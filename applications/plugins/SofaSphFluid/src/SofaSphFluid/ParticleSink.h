@@ -25,7 +25,7 @@
 #include <SofaSphFluid/config.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -35,7 +35,7 @@
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <vector>
 #include <iterator>
 #include <iostream>
@@ -74,6 +74,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
+    using index_type = sofa::defaulttype::index_type;
 
     Data<Deriv> d_planeNormal; ///< plane normal
     Data<Real> d_planeD0; ///< plane d coef at which particles acceleration is constrained to 0

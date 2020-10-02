@@ -224,7 +224,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, Ou
 {
 
 // index of lines:
-    const fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
+    const auto& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
     unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
     E1edge1verif=0; E1edge2verif=0; E1edge3verif=0;
 
@@ -234,15 +234,15 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, Ou
     {
         // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
         edge[i] = e1.getCollisionModel()->getCollisionTopology()->getEdge(edgesInTriangle1[i]);
-        if(((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p2Index()) || ((int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p1Index()))
+        if((edge[i][0]==e1.p1Index() && edge[i][1]==e1.p2Index()) || (edge[i][0]==e1.p2Index() && edge[i][1]==e1.p1Index()))
         {
             E1edge1verif = edgesInTriangle1[i]; /*msg_info()<<"- e1 1: "<<i ;*/
         }
-        if(((int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p3Index()) || ((int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p2Index()))
+        if((edge[i][0]==e1.p2Index() && edge[i][1]==e1.p3Index()) || (edge[i][0]==e1.p3Index() && edge[i][1]==e1.p2Index()))
         {
             E1edge2verif = edgesInTriangle1[i]; /*msg_info()<<"- e1 2: "<<i ;*/
         }
-        if(((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p3Index()) || ((int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p1Index()))
+        if((edge[i][0]==e1.p1Index() && edge[i][1]==e1.p3Index()) || (edge[i][0]==e1.p3Index() && edge[i][1]==e1.p1Index()))
         {
             E1edge3verif = edgesInTriangle1[i]; /*msg_info()<<"- e1 3: "<<i ;*/
         }
@@ -285,7 +285,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Out
 {
 
 // index of lines:
-    const fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
+    const auto& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
     unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
     E1edge1verif=0; E1edge2verif=0; E1edge3verif=0;
 
@@ -295,15 +295,15 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Out
     {
         // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
         edge[i] = e1.getCollisionModel()->getCollisionTopology()->getEdge(edgesInTriangle1[i]);
-        if(((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p2Index()) || ((int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p1Index()))
+        if((edge[i][0]==e1.p1Index() && edge[i][1]==e1.p2Index()) || (edge[i][0]==e1.p2Index() && edge[i][1]==e1.p1Index()))
         {
             E1edge1verif = edgesInTriangle1[i]; /*msg_info()<<"- e1 1: "<<i ;*/
         }
-        if(((int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p3Index()) || ((int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p2Index()))
+        if((edge[i][0]==e1.p2Index() && edge[i][1]==e1.p3Index()) || (edge[i][0]==e1.p3Index() && edge[i][1]==e1.p2Index()))
         {
             E1edge2verif = edgesInTriangle1[i]; /*msg_info()<<"- e1 2: "<<i ;*/
         }
-        if(((int)edge[i][0]==e1.p1Index() &&(int) edge[i][1]==e1.p3Index()) || ((int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p1Index()))
+        if((edge[i][0]==e1.p1Index() && edge[i][1]==e1.p3Index()) || (edge[i][0]==e1.p3Index() && edge[i][1]==e1.p1Index()))
         {
             E1edge3verif = edgesInTriangle1[i]; /*msg_info()<<"- e1 3: "<<i ;*/
         }
@@ -403,8 +403,8 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2,
 
 
     // index of lines:
-    const fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
-    const fixed_array<unsigned int,3>& edgesInTriangle2 = e2.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e2.getIndex());
+    const auto& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
+    const auto& edgesInTriangle2 = e2.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e2.getIndex());
 
     unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
     unsigned int E2edge1verif, E2edge2verif, E2edge3verif;
@@ -418,29 +418,29 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2,
     {
         // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
         edge[i] = e1.getCollisionModel()->getCollisionTopology()->getEdge(edgesInTriangle1[i]);
-        if(((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p2Index()) || ((int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p1Index()))
+        if((edge[i][0]==e1.p1Index() && edge[i][1]==e1.p2Index()) || (edge[i][0]==e1.p2Index() && edge[i][1]==e1.p1Index()))
         {
             E1edge1verif = edgesInTriangle1[i]; /*msg_info()<<"- e1 1: "<<i ;*/
         }
-        if(((int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p3Index()) || ((int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p2Index()))
+        if((edge[i][0]==e1.p2Index() && edge[i][1]==e1.p3Index()) || (edge[i][0]==e1.p3Index() && edge[i][1]==e1.p2Index()))
         {
             E1edge2verif = edgesInTriangle1[i]; /*msg_info()<<"- e1 2: "<<i ;*/
         }
-        if(((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p3Index()) || ((int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p1Index()))
+        if((edge[i][0]==e1.p1Index() && edge[i][1]==e1.p3Index()) || (edge[i][0]==e1.p3Index() && edge[i][1]==e1.p1Index()))
         {
             E1edge3verif = edgesInTriangle1[i]; /*msg_info()<<"- e1 3: "<<i ;*/
         }
         // Verify for E2: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
         edge[i] = e2.getCollisionModel()->getCollisionTopology()->getEdge(edgesInTriangle2[i]);
-        if(((int)edge[i][0]==e2.p1Index() && (int)edge[i][1]==e2.p2Index()) || ((int)edge[i][0]==e2.p2Index() && (int)edge[i][1]==e2.p1Index()))
+        if((edge[i][0]==e2.p1Index() && edge[i][1]==e2.p2Index()) || (edge[i][0]==e2.p2Index() && edge[i][1]==e2.p1Index()))
         {
             E2edge1verif = edgesInTriangle2[i];/*msg_info()<<"- e2 1: "<<i ;*/
         }
-        if(((int)edge[i][0]==e2.p2Index() && (int)edge[i][1]==e2.p3Index()) || ((int)edge[i][0]==e2.p3Index() && (int)edge[i][1]==e2.p2Index()))
+        if((edge[i][0]==e2.p2Index() && edge[i][1]==e2.p3Index()) || (edge[i][0]==e2.p3Index() && edge[i][1]==e2.p2Index()))
         {
             E2edge2verif = edgesInTriangle2[i];/*msg_info()<<"- e2 2: "<<i ;*/
         }
-        if(((int)edge[i][0]==e2.p1Index() && (int)edge[i][1]==e2.p3Index()) || ((int)edge[i][0]==e2.p3Index() && (int)edge[i][1]==e2.p1Index()))
+        if((edge[i][0]==e2.p1Index() && edge[i][1]==e2.p3Index()) || (edge[i][0]==e2.p3Index() && edge[i][1]==e2.p1Index()))
         {
             E2edge3verif = edgesInTriangle2[i]; /*msg_info()<<"- e2 3: "<<i ;*/
         }

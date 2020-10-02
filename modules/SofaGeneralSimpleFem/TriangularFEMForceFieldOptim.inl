@@ -48,7 +48,7 @@ namespace forcefield
 // --------------------------------------------------------------------------------------
 
 template< class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::TFEMFFOTriangleInfoHandler::applyCreateFunction(unsigned int triangleIndex, TriangleInfo &ti, const Triangle &t, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void TriangularFEMForceFieldOptim<DataTypes>::TFEMFFOTriangleInfoHandler::applyCreateFunction(Index triangleIndex, TriangleInfo &ti, const Triangle &t, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -57,7 +57,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::TFEMFFOTriangleInfoHandler::applyC
 }
 
 template< class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::TFEMFFOTriangleStateHandler::applyCreateFunction(unsigned int triangleIndex, TriangleState &ti, const Triangle &t, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void TriangularFEMForceFieldOptim<DataTypes>::TFEMFFOTriangleStateHandler::applyCreateFunction(Index triangleIndex, TriangleState &ti, const Triangle &t, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -170,7 +170,7 @@ inline void TriangularFEMForceFieldOptim<DataTypes>::computeTriangleRotation(Tra
     result[1].normalize();
 }
 template <class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(unsigned int i, TriangleInfo& ti, const Triangle t, const VecCoord& x0)
+void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(Index i, TriangleInfo& ti, const Triangle t, const VecCoord& x0)
 {
     if (t[0] >= x0.size() || t[1] >= x0.size() || t[2] >= x0.size())
     {
@@ -197,7 +197,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(unsigned int i, T
 }
 
 template <class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(unsigned int i, TriangleState& ti, const Triangle t, const VecCoord& x)
+void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(Index i, TriangleState& ti, const Triangle t, const VecCoord& x)
 {
     if (t[0] >= x.size() || t[1] >= x.size() || t[2] >= x.size())
     {
@@ -463,7 +463,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(const core::Mechanic
 }
 
 template<class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::getTriangleVonMisesStress(unsigned int i, Real& stressValue)
+void TriangularFEMForceFieldOptim<DataTypes>::getTriangleVonMisesStress(Index i, Real& stressValue)
 {
     Deriv s = d_triangleState[i].stress;
     Real vonMisesStress = sofa::helper::rsqrt(s[0]*s[0] - s[0]*s[1] + s[1]*s[1] + 3*s[2]);
@@ -471,7 +471,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::getTriangleVonMisesStress(unsigned
 }
 
 template<class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection)
+void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(Index i, Real& stressValue, Deriv& stressDirection)
 {
     Real stressValue2;
     Deriv stressDirection2;
@@ -479,7 +479,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(unsigne
 }
 
 template<class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection, Real& stressValue2, Deriv& stressDirection2)
+void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(Index i, Real& stressValue, Deriv& stressDirection, Real& stressValue2, Deriv& stressDirection2)
 {
     const TriangleState& ts = d_triangleState[i];
     Deriv s = ts.stress;

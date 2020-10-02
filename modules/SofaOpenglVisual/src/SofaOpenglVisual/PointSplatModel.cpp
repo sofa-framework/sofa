@@ -36,7 +36,7 @@
 
 #include <SofaBaseTopology/TopologyData.inl>
 
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -59,7 +59,7 @@ PointSplatModel::PointSplatModel() //const std::string &name, std::string filena
     : radius(initData(&radius, 1.0f, "radius", "Radius of the spheres.")),
       textureSize(initData(&textureSize, 32, "textureSize", "Size of the billboard texture.")),
       alpha(initData(&alpha, 1.0f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
-      color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=[1.0,1.0,1.0,1.0])")),
+      color(initData(&color, sofa::helper::types::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=[1.0,1.0,1.0,1.0])")),
       _topology(nullptr),
       _mstate(nullptr),
       texture_data(nullptr),
@@ -87,7 +87,7 @@ void PointSplatModel::init()
     getContext()->get(loader);
     if(loader && _mstate)
     {
-        unsigned int nbPoints = _mstate->getSize();
+        size_t nbPoints = _mstate->getSize();
 
         const helper::vector<unsigned int> idxInRegularGrid = loader->getHexaIndicesInGrid();
 
@@ -124,7 +124,7 @@ void PointSplatModel::reinit()
             const float x = i / (float) half_texture_size;
             const float y = j / (float) half_texture_size;
             const float dist = sqrt(x*x + y*y);
-            const float value = cos(M_PI_2 * dist);
+            const float value = cosf(M_PI_2 * dist);
             const unsigned char texValue = (value < 0.0f) ? 0 : (unsigned char) (255.0f * alpha.getValue() * value);
 
             texture_data[half_texture_size + i + (half_texture_size + j) * texture_size] = texValue;
@@ -222,7 +222,7 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
             m = 0.5f + 2.0f * pData[i] / 255.0f;
         }
 
-        const defaulttype::RGBAColor& mc = color.getValue() ;
+        const sofa::helper::types::RGBAColor& mc = color.getValue() ;
         glColor4f (m*mc.r(), m*mc.g(), m*mc.b(), mc.a());
 
         glBegin( GL_QUADS );

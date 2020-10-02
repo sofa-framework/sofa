@@ -1,5 +1,6 @@
 # CMake package configuration file for the gtest library
 
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 if(NOT TARGET gtest)

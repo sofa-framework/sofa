@@ -1,5 +1,6 @@
 # CMake package configuration file for the SofaDistanceGrid plugin
 
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 find_package(SofaFramework REQUIRED)

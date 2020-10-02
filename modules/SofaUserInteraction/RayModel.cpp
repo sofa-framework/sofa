@@ -49,17 +49,17 @@ RayCollisionModel::RayCollisionModel(SReal length)
     this->contactResponse.setValue("ray"); // use RayContact response class
 }
 
-void RayCollisionModel::resize(int size)
+void RayCollisionModel::resize(std::size_t size)
 {
     this->core::CollisionModel::resize(size);
 
-    if ((int)length.size() < size)
+    if (length.size() < size)
     {
         length.reserve(size);
-        while ((int)length.size() < size)
+        while (length.size() < size)
             length.push_back(defaultLength.getValue());
         direction.reserve(size);
-        while ((int)direction.size() < size)
+        while (direction.size() < size)
             direction.push_back(Vector3());
 
     }
@@ -100,7 +100,7 @@ int RayCollisionModel::addRay(const Vector3& origin, const Vector3& direction, S
     return i;
 }
 
-void RayCollisionModel::draw(const core::visual::VisualParams* vparams,int index)
+void RayCollisionModel::draw(const core::visual::VisualParams* vparams, index_type index)
 {
     if( !vparams->isSupported(core::visual::API_OpenGL) ) return;
 
@@ -110,7 +110,7 @@ void RayCollisionModel::draw(const core::visual::VisualParams* vparams,int index
 
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
-    sofa::defaulttype::RGBAColor color(1.0, 0.0, 1.0, 1.0);
+    sofa::helper::types::RGBAColor color(1.0, 0.0, 1.0, 1.0);
     vparams->drawTool()->drawLine(p1,p2,color);
     vparams->drawTool()->restoreLastState();
 }

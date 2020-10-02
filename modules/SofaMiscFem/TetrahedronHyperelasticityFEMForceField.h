@@ -187,8 +187,8 @@ public:
 
       }
 
-      void applyCreateFunction(unsigned int, TetrahedronRestInformation &t, const Tetrahedron &,
-                               const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
+      void applyCreateFunction(index_type, TetrahedronRestInformation &t, const Tetrahedron &,
+                               const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &);
 
     protected:
       TetrahedronHyperelasticityFEMForceField<DataTypes>* ff;

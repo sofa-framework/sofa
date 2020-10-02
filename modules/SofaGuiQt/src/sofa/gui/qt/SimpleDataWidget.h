@@ -404,25 +404,25 @@ public:
     enum { NDIM = 0 };
     enum { SIZE = 1 };
     /// Get the number of rows
-    static int size(const data_type&) { return SIZE; }
+    static std::size_t size(const data_type&) { return SIZE; }
     /// Get the name of a row, or nullptr if the index should be used instead
-    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
+    static const char* header(const data_type& /*d*/, std::size_t /*i*/ = 0)
     {
         return nullptr;
     }
     /// Get a row
-    static const value_type* get(const data_type& d, int i = 0)
+    static const value_type* get(const data_type& d, std::size_t i = 0)
     {
         return (i == 0) ? &d : nullptr;
     }
     /// Set a row
-    static void set( const value_type& v, data_type& d, int i = 0)
+    static void set( const value_type& v, data_type& d, std::size_t i = 0)
     {
         if (i == 0)
             d = v;
     }
     /// Resize
-    static void resize( int /*s*/, data_type& /*d*/)
+    static void resize( std::size_t /*s*/, data_type& /*d*/)
     {
     }
 };
@@ -459,7 +459,7 @@ public:
 
     bool createWidgets(DataWidget* parent, const data_type& d, bool readOnly)
     {
-        for (int i=0; i<N; ++i)
+        for (std::size_t i=0; i<N; ++i)
             if (!w[i].createWidgets(parent, *vhelper::get(d,i), readOnly))
                 return false;
 
@@ -468,17 +468,17 @@ public:
     void setReadOnly(bool readOnly)
     {
 
-        for (int i=0; i<N; ++i)
+        for (std::size_t i=0; i<N; ++i)
             w[i].setReadOnly(readOnly);
     }
     void readFromData(const data_type& d)
     {
-        for (int i=0; i<N; ++i)
+        for (std::size_t i=0; i<N; ++i)
             w[i].readFromData(*vhelper::get(d,i));
     }
     void writeToData(data_type& d)
     {
-        for (int i=0; i<N; ++i)
+        for (std::size_t i=0; i<N; ++i)
         {
             value_type v = *vhelper::get(d,i);
             w[i].writeToData(v);
@@ -488,7 +488,7 @@ public:
 
     void insertWidgets()
     {
-        for (int i=0; i<N; ++i)
+        for (std::size_t i=0; i<N; ++i)
         {
             assert(w[i].w != nullptr);
             container_layout->addWidget(w[i].w);
@@ -529,30 +529,30 @@ public:
 
     bool createWidgets(DataWidget* parent, const data_type& d, bool readOnly)
     {
-        for (int y=0; y<L; ++y)
-            for (int x=0; x<C; ++x)
+        for (std::size_t y=0; y<L; ++y)
+            for (std::size_t x=0; x<C; ++x)
                 if (!w[y][x].createWidgets( parent, *vhelper::get(*rhelper::get(d,y),x), readOnly))
                     return false;
         return true;
     }
     void setReadOnly(bool readOnly)
     {
-        for (int y=0; y<L; ++y)
-            for (int x=0; x<C; ++x)
+        for (std::size_t y=0; y<L; ++y)
+            for (std::size_t x=0; x<C; ++x)
                 w[y][x].setReadOnly(readOnly);
     }
     void readFromData(const data_type& d)
     {
-        for (int y=0; y<L; ++y)
-            for (int x=0; x<C; ++x)
+        for (std::size_t y=0; y<L; ++y)
+            for (std::size_t x=0; x<C; ++x)
                 w[y][x].readFromData(*vhelper::get(*rhelper::get(d,y),x));
     }
     void writeToData(data_type& d)
     {
-        for (int y=0; y<L; ++y)
+        for (std::size_t y=0; y<L; ++y)
         {
             row_type r = *rhelper::get(d,y);
-            for (int x=0; x<C; ++x)
+            for (std::size_t x=0; x<C; ++x)
             {
                 value_type v = *vhelper::get(r,x);
                 w[y][x].writeToData(v);
@@ -565,9 +565,9 @@ public:
     void insertWidgets()
     {
         assert(container_layout);
-        for (int y=0; y<L; ++y)
+        for (std::size_t y=0; y<L; ++y)
         {
-            for (int x=0; x<C; ++x)
+            for (std::size_t x=0; x<C; ++x)
             {
                 container_layout->addWidget(w[y][x].w,y,x);
             }
@@ -587,21 +587,21 @@ public:
     typedef T value_type;
     enum { NDIM = 1 };
     enum { SIZE = N };
-    static int size(const data_type&) { return SIZE; }
-    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
+    static std::size_t size(const data_type&) { return SIZE; }
+    static const char* header(const data_type& /*d*/, std::size_t /*i*/ = 0)
     {
         return nullptr;
     }
-    static const value_type* get(const data_type& d, int i = 0)
+    static const value_type* get(const data_type& d, std::size_t i = 0)
     {
         return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
     }
-    static void set( const value_type& v, data_type& d, int i = 0)
+    static void set( const value_type& v, data_type& d, std::size_t i = 0)
     {
         if ((unsigned)i < (unsigned)size(d))
             d[i] = v;
     }
-    static void resize( int /*s*/, data_type& /*d*/)
+    static void resize( std::size_t /*s*/, data_type& /*d*/)
     {
     }
 
@@ -670,35 +670,36 @@ class data_widget_container < sofa::core::topology::Topology::Hexahedron > : pub
 /// sofa::defaulttype::Vec support
 ////////////////////////////////////////////////////////////////
 
-template<int N, class T>
+template<std::size_t N, class T>
 class vector_data_trait < sofa::defaulttype::Vec<N, T> >
 {
 public:
     typedef sofa::defaulttype::Vec<N, T> data_type;
     typedef T value_type;
+    typedef typename data_type::size_type size_type;
     enum { NDIM = 1 };
     enum { SIZE = N };
-    static int size(const data_type&) { return SIZE; }
-    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
+    static size_type size(const data_type&) { return SIZE; }
+    static const char* header(const data_type& /*d*/, size_type /*i*/ = 0)
     {
         return nullptr;
     }
-    static const value_type* get(const data_type& d, int i = 0)
+    static const value_type* get(const data_type& d, size_type i = 0)
     {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
+        return (i < size(d)) ? &(d[i]) : nullptr;
     }
-    static void set( const value_type& v, data_type& d, int i = 0)
+    static void set( const value_type& v, data_type& d, size_type i = 0)
     {
-        if ((unsigned)i < (unsigned)size(d))
+        if (i < size(d))
             d[i] = v;
     }
-    static void resize( int /*s*/, data_type& /*d*/)
+    static void resize( size_type /*s*/, data_type& /*d*/)
     {
     }
 };
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<2, float> >::header(const data_type& /*d*/, int i)
+inline const char* vector_data_trait < sofa::defaulttype::Vec<2, float> >::header(const data_type& /*d*/, size_type i)
 {
     switch(i)
     {
@@ -709,7 +710,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<2, float> >::heade
 }
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<2, double> >::header(const data_type& /*d*/, int i)
+inline const char* vector_data_trait < sofa::defaulttype::Vec<2, double> >::header(const data_type& /*d*/, size_type i)
 {
     switch(i)
     {
@@ -720,7 +721,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<2, double> >::head
 }
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<3, float> >::header(const data_type& /*d*/, int i)
+inline const char* vector_data_trait < sofa::defaulttype::Vec<3, float> >::header(const data_type& /*d*/, size_type i)
 {
     switch(i)
     {
@@ -732,7 +733,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<3, float> >::heade
 }
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<3, double> >::header(const data_type& /*d*/, int i)
+inline const char* vector_data_trait < sofa::defaulttype::Vec<3, double> >::header(const data_type& /*d*/, size_type i)
 {
     switch(i)
     {
@@ -743,7 +744,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<3, double> >::head
     return nullptr;
 }
 
-template<int N, class T>
+template<std::size_t N, class T>
 class data_widget_container < sofa::defaulttype::Vec<N, T> > : public fixed_vector_data_widget_container < sofa::defaulttype::Vec<N, T> >
 {};
 
@@ -759,8 +760,8 @@ public:
     typedef T value_type;
     enum { NDIM = 1 };
     enum { SIZE = 4 };
-    static int size(const data_type&) { return SIZE; }
-    static const char* header(const data_type& /*d*/, int i = 0)
+    static std::size_t size(const data_type&) { return SIZE; }
+    static const char* header(const data_type& /*d*/, std::size_t i = 0)
     {
         switch(i)
         {
@@ -771,16 +772,16 @@ public:
         }
         return nullptr;
     }
-    static const value_type* get(const data_type& d, int i = 0)
+    static const value_type* get(const data_type& d, std::size_t i = 0)
     {
         return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
     }
-    static void set( const value_type& v, data_type& d, int i = 0)
+    static void set( const value_type& v, data_type& d, std::size_t i = 0)
     {
         if ((unsigned)i < (unsigned)size(d))
             d[i] = v;
     }
-    static void resize( int /*s*/, data_type& /*d*/)
+    static void resize( std::size_t /*s*/, data_type& /*d*/)
     {
     }
 };
@@ -795,7 +796,7 @@ class data_widget_container < Quater<T> > : public fixed_vector_data_widget_cont
 ////////////////////////////////////////////////////////////////
 using sofa::helper::Polynomial_LD;
 
-template<typename Real, unsigned int N>
+template<typename Real, std::size_t N>
 class data_widget_trait < Polynomial_LD<Real,N> >
 {
 public:
@@ -808,7 +809,7 @@ public:
     }
     static void readFromData(Widget* w, const data_type& d)
     {
-        int length = (int) d.getString().length();
+        std::size_t length = d.getString().length();
         if (w->text().toStdString() != d.getString())
         {
             w->setMaxLength(length+2); w->setReadOnly(true);
@@ -883,22 +884,22 @@ public:
     typedef sofa::core::objectmodel::VectorObjectRef data_type;
     typedef sofa::core::objectmodel::ObjectRef       value_type;
 
-    static int size(const data_type& d) { return d.size(); }
-    static const char* header(const data_type& , int i = 0)
+    static std::size_t size(const data_type& d) { return d.size(); }
+    static const char* header(const data_type& , std::size_t i = 0)
     {
         std::ostringstream _header; _header<<i;
         return ("Path " + _header.str()).c_str();
     }
-    static const value_type* get(const data_type& d, int i = 0)
+    static const value_type* get(const data_type& d, std::size_t i = 0)
     {
         return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
     }
-    static void set( const value_type& v, data_type& d, int i = 0)
+    static void set( const value_type& v, data_type& d, std::size_t i = 0)
     {
         if ((unsigned)i < (unsigned)size(d))
             d[i] = v;
     }
-    static void resize( int /*s*/, data_type& /*d*/)
+    static void resize( std::size_t /*s*/, data_type& /*d*/)
     {
     }
 };
@@ -908,7 +909,7 @@ public:
 /// sofa::defaulttype::Mat support
 ////////////////////////////////////////////////////////////////
 
-template<int L, int C, class T>
+template<std::size_t L, std::size_t C, class T>
 class vector_data_trait < sofa::defaulttype::Mat<L, C, T> >
 {
 public:
@@ -916,26 +917,26 @@ public:
     typedef typename data_type::Line value_type;
     enum { NDIM = 1 };
     enum { SIZE = L };
-    static int size(const data_type&) { return SIZE; }
-    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
+    static std::size_t size(const data_type&) { return SIZE; }
+    static const char* header(const data_type& /*d*/, std::size_t /*i*/ = 0)
     {
         return nullptr;
     }
-    static const value_type* get(const data_type& d, int i = 0)
+    static const value_type* get(const data_type& d, std::size_t i = 0)
     {
         return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
     }
-    static void set( const value_type& v, data_type& d, int i = 0)
+    static void set( const value_type& v, data_type& d, std::size_t i = 0)
     {
         if ((unsigned)i < (unsigned)size(d))
             d[i] = v;
     }
-    static void resize( int /*s*/, data_type& /*d*/)
+    static void resize( std::size_t /*s*/, data_type& /*d*/)
     {
     }
 };
 
-template<int L, int C, class T>
+template<std::size_t L, std::size_t C, class T>
 class data_widget_container < sofa::defaulttype::Mat<L, C, T> > : public fixed_grid_data_widget_container < sofa::defaulttype::Mat<L, C, T> >
 {};
 

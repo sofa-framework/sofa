@@ -56,10 +56,10 @@ public:
     FCPointHandler(FixedPlaneConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
         : TopologySubsetDataHandler<BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
-    void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+    void applyDestroyFunction(index_type /*index*/, value_type& /*T*/);
 
-    bool applyTestCreateFunction(unsigned int /*index*/,
-                                 const helper::vector< unsigned int > & /*ancestors*/,
+    bool applyTestCreateFunction(index_type /*index*/,
+                                 const helper::vector< index_type > & /*ancestors*/,
                                  const helper::vector< double > & /*coefs*/);
 protected:
     FixedPlaneConstraint<DataTypes> *fc;
@@ -67,17 +67,17 @@ protected:
 
 /// Define RemovalFunction
 template< class DataTypes>
-void FixedPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void FixedPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, value_type &)
 {
     if (fc)
     {
-        fc->removeConstraint((unsigned int) pointIndex);
+        fc->removeConstraint((index_type) pointIndex);
     }
 }
 
 /// Define TestNewPointFunction
 template< class DataTypes>
-bool FixedPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const helper::vector<unsigned int> &, const helper::vector<double> &)
+bool FixedPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(index_type, const helper::vector<index_type> &, const helper::vector<double> &)
 {
     if (fc)
     {
@@ -160,14 +160,14 @@ void FixedPlaneConstraint<DataTypes>::applyConstraint(const MechanicalParams* mp
 }
 
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::addConstraint(int index)
+void FixedPlaneConstraint<DataTypes>::addConstraint(index_type index)
 {
     d_indices.beginEdit()->push_back(index);
     d_indices.endEdit();
 }
 
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::removeConstraint(int index)
+void FixedPlaneConstraint<DataTypes>::removeConstraint(index_type index)
 {
     removeValue(*d_indices.beginEdit(),(unsigned int)index);
     d_indices.endEdit();

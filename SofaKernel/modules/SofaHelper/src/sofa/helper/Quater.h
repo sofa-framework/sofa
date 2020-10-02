@@ -44,7 +44,7 @@ private:
 public:
 
     typedef Real value_type;
-    typedef int size_type;
+    typedef std::size_t size_type;
 
     Quater();
     ~Quater();
@@ -164,13 +164,13 @@ public:
 
     Quater vectQuatMult(const defaulttype::Vec<3,Real>& vect);
 
-    Real& operator[](int index)
+    Real& operator[](size_type index)
     {
         assert(index >= 0 && index < 4);
         return _q[index];
     }
 
-    const Real& operator[](int index) const
+    const Real& operator[](size_type index) const
     {
         assert(index >= 0 && index < 4);
         return _q[index];

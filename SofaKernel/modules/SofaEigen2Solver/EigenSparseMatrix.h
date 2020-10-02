@@ -72,9 +72,10 @@ public:
     enum { Nin=InDataTypes::deriv_total_size, Nout=OutDataTypes::deriv_total_size };
     typedef defaulttype::Mat<Nout,Nin, OutReal> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
 
+    using Index = defaulttype::BaseMatrix::Index;
 protected:
-    typedef std::map<int,Block> BlockRowMap;        ///< Map which represents one block-view row of the matrix. The index represents the block-view column index of an entry.
-    typedef std::map<int,BlockRowMap> BlockMatMap;  ///< Map which represents a block-view matrix. The index represents the block-view index of a block-view row.
+    typedef std::map<Index,Block> BlockRowMap;        ///< Map which represents one block-view row of the matrix. The index represents the block-view column index of an entry.
+    typedef std::map<Index,BlockRowMap> BlockMatMap;  ///< Map which represents a block-view matrix. The index represents the block-view index of a block-view row.
     BlockMatMap incomingBlocks;                     ///< To store block-view data before it is compressed in optimized format.
     typedef Eigen::Matrix<InReal,Eigen::Dynamic,1>  VectorEigenIn;
 
@@ -270,7 +271,7 @@ public:
 //                this->compressedMatrix.startVec(rowStarted++);
 
 
-                for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block
+                for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block
                 {
                     int blCol = crs.colsIndex[xj];     // block column
                     const Block& b = crs.colsValue[xj]; // block value

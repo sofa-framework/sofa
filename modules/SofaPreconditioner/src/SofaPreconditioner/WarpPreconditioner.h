@@ -59,6 +59,7 @@ public:
     typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
     typedef TMatrix TRotationMatrix;
     typedef typename Inherit::JMatrixType JMatrixType;
+    using Index = typename TMatrix::Index;
 
     Data <std::string> solverName; ///< Name of the solver/preconditioner to warp
     Data<unsigned> f_useRotationFinder; ///< Which rotation Finder to use
@@ -82,7 +83,7 @@ public:
 
     bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
-    unsigned getSystemDimention(const sofa::core::MechanicalParams* mparams);
+    Index getSystemDimention(const sofa::core::MechanicalParams* mparams);
 
     void computeResidual(const core::ExecParams* params, defaulttype::BaseVector* /*f*/) override;
 

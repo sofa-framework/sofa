@@ -27,10 +27,10 @@ target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual )
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${OPENHAPTICS_INCLUDE_DIR}>")
 
 # Install rules for the library and the headers; CMake package configurations files
-sofa_generate_package(
-    NAME ${PROJECT_NAME}
-    TARGETS ${PROJECT_NAME}
-    VERSION ${PROJECT_VERSION}
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    PACKAGE_VERSION ${PROJECT_VERSION}
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "VolumetricRendering"
     RELOCATABLE "plugins"

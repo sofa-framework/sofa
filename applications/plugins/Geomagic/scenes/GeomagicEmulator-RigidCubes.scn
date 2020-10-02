@@ -67,10 +67,10 @@
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
         
 		<MechanicalObject name="instrumentState" template="Rigid3" />
-		<UniformMass name="mass" totalMass="0.05" />
+		<UniformMass name="mass" totalMass="0.5" />
 		
 		<RestShapeSpringsForceField stiffness='1000000' angularStiffness='1000000' external_rest_shape='@../Omni/DOFs' points='0' external_points='0'/>
-        <LCPForceFeedback name="LCPFF1" activate="true" forceCoef="0.1"/> 
+        <LCPForceFeedback name="LCPFF1" activate="true" forceCoef="1.0"/> 
         <UncoupledConstraintCorrection/>
 		
 		<Node name="VisuTool" >

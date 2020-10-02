@@ -23,15 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "config.h"
-
+#include <SofaDeformable/config.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/vector.h>
 #include <sofa/core/BaseMapping.h>
-
-#include <sofa/defaulttype/RGBAColor.h>
-
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -95,7 +90,7 @@ public:
 
     Data<bool> d_recomputeIndices;
     Data<bool> d_drawSpring;                      ///< draw Spring
-    Data<defaulttype::RGBAColor> d_springColor;
+    Data<sofa::helper::types::RGBAColor> d_springColor;
     Data<float> d_showIndicesScale;
 
     Data<VecReal> d_zeroLength;       /// Springs initial lengths

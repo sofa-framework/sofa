@@ -60,7 +60,7 @@ TetrahedronCollisionModel::TetrahedronCollisionModel()
     enum_type = TETRAHEDRON_TYPE;
 }
 
-void TetrahedronCollisionModel::resize(int size)
+void TetrahedronCollisionModel::resize(std::size_t size)
 {
     this->core::CollisionModel::resize(size);
     elems.resize(size);
@@ -155,7 +155,7 @@ void TetrahedronCollisionModel::addTetraToDraw(const Tetrahedron& t, std::vector
     normalVertices.push_back(p + n4*0.1);
 }
 
-void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams,int index)
+void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams, index_type index)
 {
     vparams->drawTool()->saveLastState();
 
@@ -183,7 +183,7 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
 
         std::vector<sofa::defaulttype::Vector3> tetraVertices;
         std::vector<sofa::defaulttype::Vector3> normalVertices;
-        for (int i = 0; i<size; i++)
+        for (std::size_t i = 0; i<size; i++)
         {
             Tetrahedron t(this, i);
             this->addTetraToDraw(t, tetraVertices, normalVertices);
@@ -215,7 +215,7 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
     Vector3 minElem, maxElem;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    for (int i=0; i<size; i++)
+    for (std::size_t i=0; i<size; i++)
     {
         Tetrahedron t(this,i);
         const Vector3& pt1 = x[t.p1Index()];
@@ -261,7 +261,7 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
         cubeModel->resize(size);  // size = number of Tetrahedrons
         if (!empty())
         {
-            for (int i=0; i<size; i++)
+            for (std::size_t i=0; i<size; i++)
             {
                 Tetrahedron t(this,i);
                 const Vector3& pt1 = x[t.p1Index()];

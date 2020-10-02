@@ -39,6 +39,7 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/kdTree.h>
 
+#include <SofaBaseVisual/VisualModelImpl.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 namespace sofa
@@ -56,7 +57,7 @@ public:
     static defaulttype::Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real> getF(const typename OutDataTypes::Coord&)  { return defaulttype::Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real>(); }
 };
 
-template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
+template< std::size_t _spatial_dimensions,  std::size_t _material_dimensions, int _order, typename _Real>
 class OutDataTypesInfo<defaulttype::DefGradientTypes<_spatial_dimensions, _material_dimensions, _order, _Real> >
 {
 public:
@@ -92,7 +93,7 @@ public:
 
 
 ///Abstract interface to allow forward/backward mapping of arbitrary points (no need to know exact in/output types)
-template <int spatial_dimensions,typename Real>
+template < std::size_t spatial_dimensions,typename Real>
 class BasePointMapper : public virtual core::objectmodel::BaseObject
 {
 protected:
@@ -344,8 +345,8 @@ protected :
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
-    const helper::vector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
-    const helper::vector<int> *extvertPosIdx;
+    const helper::vector<component::visualmodel::VisualModelImpl::VisualTriangle> *extTriangles;
+    const helper::vector<component::visualmodel::VisualModelImpl::visual_index_type> *extvertPosIdx;
 
     void updateForceMask() override;
 

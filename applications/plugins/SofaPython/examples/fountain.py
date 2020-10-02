@@ -30,11 +30,11 @@ class Fountain(Sofa.PythonScriptController):
     def createCube(self,parentNode,name,vx,vy,vz,color):
         node = parentNode.createChild(name)
 
-        node.createObject('EulerImplicit')
+        node.createObject('EulerImplicitSolver')
         node.createObject('CGLinearSolver',iterations=25,tolerance=1.0e-9,threshold=1.0e-9)
-        object = node.createObject('MechanicalObject',name='MecaObject',template='Rigid')
+        object = node.createObject('MechanicalObject',name='MecaObject',template='Rigid3d')
         node.createObject('UniformMass',totalMass='1')
-        node.createObject('SphereModel',radius='0.5', group='1')
+        node.createObject('SphereCollisionModel',radius='0.5', group='1')
 
         # VisualNode
         VisuNode = node.createChild('Visu')

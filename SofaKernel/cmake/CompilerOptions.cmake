@@ -1,5 +1,10 @@
 #### Compiler options
 
+if(COMPILEROPTIONS_LOADED)
+    return()
+endif()
+set(COMPILEROPTIONS_LOADED 1)
+
 ## GCC-specific
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
     ## Find out the version of g++ (and save it in GCXX_VERSION)
@@ -39,6 +44,18 @@ if(WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP -wd4250 -wd4251 -wd4275 -wd4675 -wd4996")
     if(MSVC_TOOLSET_VERSION GREATER 140) # > VS 2015
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus")
+    endif()
+
+    # Focus on max speed in Release Mode with link-time optimization
+    option(SOFA_ENABLE_LINK_TIME_OPTIMIZATION "Enable LTCG IN release mode (MSVC only for now) [Warning, use a lot of disk space!]" OFF)
+
+    if(SOFA_ENABLE_LINK_TIME_OPTIMIZATION)
+        add_compile_options(
+            "$<$<CONFIG:Release>:/GL>" # Whole Program Optimization
+        )
+        add_link_options(
+            "$<$<CONFIG:Release>:/LTCG>" # Link time code Optimization
+        )
     endif()
 endif()
 

@@ -27,7 +27,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/ColorMap.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 #include <SofaBaseTopology/TopologyData.inl>
 
@@ -56,7 +56,7 @@ using namespace sofa::core::topology;
 // --------------------------------------------------------------------------------------
 
 template< class DataTypes>
-void TriangularFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, TriangleInformation &, const core::topology::BaseMeshTopology::Triangle &t, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void TriangularFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(index_type triangleIndex, TriangleInformation &, const core::topology::BaseMeshTopology::Triangle &t, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -316,7 +316,7 @@ void TriangularFEMForceField<DataTypes>::reinit()
 
     for (Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
     {
-        triangleHandler->applyCreateFunction(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0, (const sofa::helper::vector< double >)0);
+        triangleHandler->applyCreateFunction(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::helper::vector< index_type > )0, (const sofa::helper::vector< double >)0);
     }
 
     edgeInfo.endEdit();
@@ -361,7 +361,7 @@ SReal TriangularFEMForceField<DataTypes>::getPotentialEnergy(const core::Mechani
 // --- Get the rotation of node
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::getRotation(Transformation& R, unsigned int nodeIdx)
+void TriangularFEMForceField<DataTypes>::getRotation(Transformation& R, index_type nodeIdx)
 {
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
     int numNeiTri=m_topology->getTrianglesAroundVertex(nodeIdx).size();
@@ -514,15 +514,15 @@ void TriangularFEMForceField<DataTypes>::getFractureCriteria(int elementIndex, D
 }
 
 template<class DataTypes>
-int TriangularFEMForceField<DataTypes>::getFracturedEdge()
+typename TriangularFEMForceField<DataTypes>::Index TriangularFEMForceField<DataTypes>::getFracturedEdge()
 {
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     if (f_fracturable.getValue())
     {
-        int nbEdges = m_topology->getNbEdges();
+        std::size_t nbEdges = m_topology->getNbEdges();
 
-        for( int i=0; i<nbEdges; i++ )
+        for(std::size_t i=0; i<nbEdges; i++ )
         {
             if (edgeInf[i].fracturable)
             {
@@ -533,7 +533,7 @@ int TriangularFEMForceField<DataTypes>::getFracturedEdge()
 
     edgeInfo.endEdit();
 
-    return -1;
+    return sofa::defaulttype::InvalidID;
 }
 
 
@@ -1422,7 +1422,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     vparams->drawTool()->disableLighting();
 
-    sofa::defaulttype::RGBAColor color;
+    sofa::helper::types::RGBAColor color;
     std::vector<sofa::defaulttype::Vec4f> colorVector;
     std::vector<sofa::defaulttype::Vector3> vertices;
 
@@ -1437,11 +1437,11 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             Index b = m_topology->getTriangle(i)[1];
             Index c = m_topology->getTriangle(i)[2];
 
-            colorVector.push_back(sofa::defaulttype::RGBAColor(0,1,0,1));
+            colorVector.push_back(sofa::helper::types::RGBAColor(0,1,0,1));
             vertices.push_back(sofa::defaulttype::Vector3(x[a]));
-            colorVector.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
+            colorVector.push_back(sofa::helper::types::RGBAColor(0,0.5,0.5,1));
             vertices.push_back(sofa::defaulttype::Vector3(x[b]));
-            colorVector.push_back(sofa::defaulttype::RGBAColor(0,0,1,1));
+            colorVector.push_back(sofa::helper::types::RGBAColor(0,0,1,1));
             vertices.push_back(sofa::defaulttype::Vector3(x[c]));
         }
         vparams->drawTool()->drawTriangles(vertices,colorVector);
@@ -1459,7 +1459,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     if (showStressVector.getValue())
     {
-        color = sofa::defaulttype::RGBAColor(1,0,1,1);
+        color = sofa::helper::types::RGBAColor(1,0,1,1);
         for(unsigned int i=0; i<nbTriangles; ++i)
         {
             Index a = m_topology->getTriangle(i)[0];
@@ -1541,7 +1541,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         {
             if (triangleInf[i].differenceToCriteria > 0)
             {
-                color = sofa::defaulttype::RGBAColor( 0.4 + 0.4 * (triangleInf[i].differenceToCriteria - minDifference ) /  (maxDifference - minDifference) , 0.0 , 0.0, 0.5);
+                color = sofa::helper::types::RGBAColor( 0.4 + 0.4 * (triangleInf[i].differenceToCriteria - minDifference ) /  (maxDifference - minDifference) , 0.0 , 0.0, 0.5);
 
                 Index a = m_topology->getTriangle(i)[0];
                 Index b = m_topology->getTriangle(i)[1];

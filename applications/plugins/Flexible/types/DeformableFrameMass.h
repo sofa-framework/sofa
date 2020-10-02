@@ -14,14 +14,14 @@ namespace defaulttype
 
 
     /** Mass associated with a frame */
-    template<int _spatial_dimensions,int _dim, typename _Real>
+    template<std::size_t _spatial_dimensions,std::size_t _dim, typename _Real>
     class DeformableFrameMass : public Mat<_dim,_dim, _Real>
     {
     public:
         typedef _Real Real;
 
-        static const unsigned int spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
-        static const unsigned int VSize = _dim;
+        static const std::size_t spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
+        static const std::size_t VSize = _dim;
 
         typedef Mat<VSize, VSize, Real> MassMatrix;
 
@@ -145,13 +145,13 @@ namespace defaulttype
         }
     };
 
-    template<class Deriv,int _spatial_dimensions,int _dim,typename _Real>
+    template<class Deriv,std::size_t _spatial_dimensions,std::size_t _dim,typename _Real>
     Deriv operator/(const Deriv& d, const DeformableFrameMass<_spatial_dimensions, _dim, _Real>& m)
     {
         return m.getInverse() * d;
     }
 
-    template<class Deriv,int _spatial_dimensions,int _dim,typename _Real>
+    template<class Deriv,std::size_t _spatial_dimensions,std::size_t _dim,typename _Real>
     Deriv operator*(const DeformableFrameMass<_spatial_dimensions, _dim,_Real>& m,const Deriv& d)
     {
         return d * m;

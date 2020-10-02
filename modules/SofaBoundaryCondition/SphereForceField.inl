@@ -60,7 +60,7 @@ SphereForceField<DataTypes>::SphereForceField()
     , sphereRadius(initData(&sphereRadius, (Real)1, "radius", "sphere radius"))
     , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
     , damping(initData(&damping, (Real)5, "damping", "force damping"))
-    , color(initData(&color, defaulttype::RGBAColor(0.0f,0.0f,1.0f, 1.0f), "color", "sphere color. (default=[0,0,1,1])"))
+    , color(initData(&color, sofa::helper::types::RGBAColor(0.0f,0.0f,1.0f, 1.0f), "color", "sphere color. (default=[0,0,1,1])"))
     , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     , bilateral( initData(&bilateral, false, "bilateral", "if true the sphere force field is applied on both sides"))
 {

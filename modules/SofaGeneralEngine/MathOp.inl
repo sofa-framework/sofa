@@ -249,7 +249,7 @@ struct MathOpTraitsVecReal
         Ops;
 };
 
-template<int N, typename Real>
+template< std::size_t N, typename Real>
 class MathOpTraits< defaulttype::Vec<N,Real> > : public MathOpTraitsVecReal< defaulttype::Vec<N,Real> > {};
 
 /// Bool-like ops

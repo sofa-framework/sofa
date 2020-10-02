@@ -49,7 +49,7 @@ namespace
 {
 
 template<class V>
-void renumber(V* v, V* tmp, const sofa::helper::vector< unsigned int > &index )
+void renumber(V* v, V* tmp, const sofa::helper::vector< sofa::defaulttype::index_type > &index )
 {
     if (v == nullptr)
         return;
@@ -58,7 +58,7 @@ void renumber(V* v, V* tmp, const sofa::helper::vector< unsigned int > &index )
         return;
 
     *tmp = *v;
-    for (unsigned int i = 0; i < v->size(); ++i)
+    for (std::size_t i = 0; i < v->size(); ++i)
         (*v)[i] = (*tmp)[index[i]];
 }
 
@@ -97,7 +97,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity. (default=false)"))
     , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display. (default=0.0001)"))
     , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere. (default=0)"))
-    , d_color(initData(&d_color, defaulttype::Vec4f(1,1,1,1), "showColor", "Color for object display. (default=[1 1 1 1])"))
+    , d_color(initData(&d_color, helper::types::RGBAColor::white(), "showColor", "Color for object display. (default=[1 1 1 1])"))
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
@@ -436,7 +436,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
                 }
             }
 
-            vector< vector< unsigned int > > ancestors = pointsAdded.ancestorsList;
+            const auto& ancestors = pointsAdded.ancestorsList;
             vector< vector< double       > > coefs     = pointsAdded.coefs;
 
             resize(prevSizeMechObj + nbPoints);
@@ -504,7 +504,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
         }
         case core::topology::POINTSREMOVED:
         {
-            const sofa::helper::vector<unsigned int> tab = ( static_cast< const PointsRemoved * >( *itBegin ) )->getArray();
+            const auto& tab = ( static_cast< const PointsRemoved * >( *itBegin ) )->getArray();
 
             unsigned int prevSizeMechObj   = getSize();
             unsigned int lastIndexMech = prevSizeMechObj - 1;
@@ -521,9 +521,9 @@ void MechanicalObject<DataTypes>::handleStateChange()
         {
             using sofa::helper::vector;
 
-            const vector< unsigned int > indicesList = ( static_cast <const PointsMoved *> (*itBegin))->indicesList;
-            const vector< vector< unsigned int > > ancestors = ( static_cast< const PointsMoved * >( *itBegin ) )->ancestorsList;
-            const vector< vector< double > > coefs = ( static_cast< const PointsMoved * >( *itBegin ) )->baryCoefsList;
+            const auto& indicesList = ( static_cast <const PointsMoved *> (*itBegin))->indicesList;
+            const auto& ancestors = ( static_cast< const PointsMoved * >( *itBegin ) )->ancestorsList;
+            const vector< vector< double > >& coefs = ( static_cast< const PointsMoved * >( *itBegin ) )->baryCoefsList;
 
             if (ancestors.size() != indicesList.size() || ancestors.empty())
             {
@@ -557,7 +557,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
         }
         case core::topology::POINTSRENUMBERING:
         {
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
+            const auto &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
 
             renumberValues( tab );
             break;
@@ -573,7 +573,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int outputIndex)
+void MechanicalObject<DataTypes>::replaceValue (const index_type inputIndex, const index_type outputIndex)
 {
     //const unsigned int maxIndex = std::max(inputIndex, outputIndex);
     const unsigned int maxIndex = inputIndex<outputIndex ? outputIndex : inputIndex;
@@ -607,7 +607,7 @@ void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int 
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
+void MechanicalObject<DataTypes>::swapValues (const index_type idx1, const index_type idx2)
 {
     //const unsigned int maxIndex = std::max(idx1, idx2);
     const unsigned int maxIndex = idx1<idx2 ? idx2 : idx1;
@@ -646,7 +646,7 @@ void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< unsigned int > &index )
+void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< index_type > &index )
 {
     VecDeriv dtmp;
     VecCoord ctmp;
@@ -798,7 +798,7 @@ void MechanicalObject<DataTypes>::applyScale(const SReal sx,const SReal sy,const
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const
+void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<index_type>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const
 {
     helper::ReadAccessor< Data<VecCoord> > x_rA = this->readPositions();
 
@@ -814,7 +814,7 @@ void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<unsigne
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, const sofa::helper::vector< unsigned int >& ancestors, const sofa::helper::vector< double >& coefs)
+void MechanicalObject<DataTypes>::computeWeightedValue( const index_type i, const sofa::helper::vector< index_type >& ancestors, const sofa::helper::vector< double >& coefs)
 {
     // HD interpolate position, speed,force,...
     // assume all coef sum to 1.0
@@ -871,7 +871,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 
 // Force the position of a point (and force its velocity to zero value)
 template <class DataTypes>
-void MechanicalObject<DataTypes>::forcePointPosition(const unsigned int i, const sofa::helper::vector< double >& m_x)
+void MechanicalObject<DataTypes>::forcePointPosition(const index_type i, const sofa::helper::vector< double >& m_x)
 {
     helper::WriteAccessor< Data<VecCoord> > x_wA = this->writePositions();
     helper::WriteAccessor< Data<VecDeriv> > v_wA = this->writeVelocities();
@@ -1587,13 +1587,17 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
     {
         const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
 
-#if !defined(NDEBUG)
-        const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
-        if (!val.empty() && val.size() != (unsigned int)this->getSize())
+#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+        if(d!=NULL)
         {
-            msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
+            const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
+            if (!val.empty() && val.size() != (unsigned int)this->getSize())
+            {
+                msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
+            }
         }
-#endif
+#endif // defined(SOFA_DEBUG) || !defined(NDEBUG)
+
         return d;
     }
     else

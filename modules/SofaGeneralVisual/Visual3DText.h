@@ -25,7 +25,7 @@
 #include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 namespace sofa
 {
 namespace core
@@ -68,7 +68,7 @@ public:
     Data<std::string> d_text; ///< Test to display
     Data<defaulttype::Vec3f> d_position; ///< 3d position
     Data<float> d_scale; ///< text scale
-    Data<defaulttype::RGBAColor> d_color; ///< text color. (default=[1.0,1.0,1.0,1.0])
+    Data<sofa::helper::types::RGBAColor> d_color; ///< text color. (default=[1.0,1.0,1.0,1.0])
     Data<bool> d_depthTest; ///< perform depth test
 
 

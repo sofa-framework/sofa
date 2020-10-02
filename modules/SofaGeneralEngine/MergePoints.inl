@@ -87,7 +87,7 @@ void MergePoints<DataTypes>::doUpdate()
     if (f_X2_mapping.isSet() && !f_X2_mapping.getValue().empty()) // mode injection
     {                
         // mapping of X2
-        sofa::helper::vector <unsigned int> mapping = f_X2_mapping.getValue();
+        auto mapping = f_X2_mapping.getValue();
 
         // fill buffer1 to full X1
         points = x1;

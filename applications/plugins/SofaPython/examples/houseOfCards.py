@@ -8,8 +8,8 @@ import Sofa
 
 sizeHouseOfCards=4
 friction=math.sqrt(0.8)
-contactDistance=0.03
-    
+contactDistance=0.3
+counterCard=0    
     
     
     
@@ -28,31 +28,35 @@ def convertDegreeToRadian(a):
 
 def createCard(node,position,rotation):
 	
-	cardNode = node.createChild('Card')
+	cardNode = node.createChild('Card_'+str(counterCard))
 	
-	cardNode.createObject('EulerImplicit',name='cg_odesolver',printLog='false',rayleighStiffness='0.1', rayleighMass='0.1')
+	global counterCard
+	counterCard = counterCard+1
+	
+	cardNode.createObject('EulerImplicitSolver',name='cg_odesolver',printLog='false',rayleighStiffness='0.1', rayleighMass='0.1')
 	cardNode.createObject('CGLinearSolver',name='linear solver',iterations='15',tolerance='1.0e-5',threshold='1.0e-5')
-	cardNode.createObject('LMConstraintSolver', listening="1",  constraintVel="1",  constraintPos="1", numIterations=25)
+	cardNode.createObject('LMConstraintSolver', listening="1",  constraintVel="1",  constraintPos="1", numIterations=25, maxError='1.0e-6')
 	
 	posStr = str(position[0])+' '+str(position[1])+' '+str(position[2])
 	rotStr = str(rotation[0])+' '+str(rotation[1])+' '+str(rotation[2])
 
-	cardNode.createObject('MechanicalObject',name='Rigid Object',template='Rigid',translation=posStr,rotation=rotStr)
-        cardNode.createObject('UniformMass',totalmas=0.5,filenameMass="BehaviorModels/card.rigid")
+	cardNode.createObject('MechanicalObject',name='Rigid Object',template='Rigid3d',translation=posStr,rotation=rotStr)
+        cardNode.createObject('UniformMass',totalMass=0.5,filename="BehaviorModels/card.rigid")
 
         # VisualNode
         VisuNode = cardNode.createChild('Visu')
-        VisuNode.createObject('OglModel',name='Visual',fileMesh='mesh/card.obj')
+        VisuNode.createObject('MeshObjLoader', name='loaderVisu', filename='mesh/card.obj')
+        VisuNode.createObject('OglModel',name='Visual', src='@loaderVisu')
         VisuNode.createObject('RigidMapping',input='@..',output='@.')
 
         # VisualNode
         collNode = cardNode.createChild('collision')
         collNode.createObject('MeshObjLoader', name='loader', filename='mesh/cardCollision.obj')
-	collNode.createObject('Mesh', src='@loader')
+	collNode.createObject('MeshTopology', src='@loader')
 	collNode.createObject('MechanicalObject', src='@loader')
-	collNode.createObject('Triangle', name='cardt', contactFriction=friction)
-	collNode.createObject('Line', name='cardl',  contactFriction=friction)
-	collNode.createObject('Point', name='cardp', contactFriction=friction)
+	collNode.createObject('TriangleCollisionModel', name='cardt', contactFriction=friction)
+	collNode.createObject('LineCollisionModel', name='cardl',  contactFriction=friction)
+	collNode.createObject('PointCollisionModel', name='cardp', contactFriction=friction)
         collNode.createObject('RigidMapping',input='@..',output='@.')
 
 	return cardNode;
@@ -109,11 +113,13 @@ def createHouseOfCards(node):
 
 # scene creation method
 def createScene(rootNode):
-
+	rootNode.createObject('RequiredPlugin', name='SofaPython')
+	rootNode.createObject('RequiredPlugin', name='SofaOpenglVisual')
+	rootNode.createObject('RequiredPlugin', name='SofaMiscCollision')
 	rootNode.findData('dt').value = 0.001
 	rootNode.findData('gravity').value=[0.0, -10, 0.0]
 
-	rootNode.createObject('CollisionPipeline', verbose=0, depth=10, draw=0)
+	rootNode.createObject('DefaultPipeline', verbose=0, depth=10, draw=0)
 	rootNode.createObject('BruteForceDetection', name='N2')
 	rootNode.createObject('MinProximityIntersection', name='Proximity', alarmDistance=contactDistance, contactDistance=contactDistance*0.5)
 	rootNode.createObject('DefaultContactManager', name='Response', response='distanceLMConstraint')
@@ -126,12 +132,12 @@ def createScene(rootNode):
 	# floor
 	floorNode = rootNode.createChild('Floor')
 	floorNode.createObject('MeshObjLoader', name='loader', filename='mesh/floor.obj')
-	floorNode.createObject('Mesh', src='@loader')
+	floorNode.createObject('MeshTopology', src='@loader')
 	floorNode.createObject('MechanicalObject', src='@loader')
-	floorNode.createObject('Triangle', name='Floor', simulated=0, moving=0, contactFriction=friction)
-	floorNode.createObject('Line', name='Floor', simulated=0, moving=0, contactFriction=friction)
-	floorNode.createObject('Point', name='Floor', simulated=0, moving=0, contactFriction=friction)
-	floorNode.createObject('OglModel', name='FloorV', filename='mesh/floor.obj')
+	floorNode.createObject('TriangleCollisionModel', name='FloorT', simulated=0, moving=0, contactFriction=friction)
+	floorNode.createObject('LineCollisionModel', name='FloorL', simulated=0, moving=0, contactFriction=friction)
+	floorNode.createObject('PointCollisionModel', name='FloorP', simulated=0, moving=0, contactFriction=friction)
+	floorNode.createObject('OglModel', name='FloorV', src='@loader')
 	
 	
 	# castle

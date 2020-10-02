@@ -101,9 +101,9 @@ public:
 
     void init() override;
 
-    int getNbPoints() const override;
+    std::size_t getNbPoints() const override;
 
-    void setNbPoints(int n) override;
+    void setNbPoints(std::size_t  n) override;
 
     // Complete sequence accessors
 
@@ -248,34 +248,34 @@ public:
     size_t getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const helper::vector<unsigned int> getConnectedElement(unsigned int elem) override;
+    virtual const helper::vector<index_type> getConnectedElement(index_type elem) override;
 
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const helper::vector<unsigned int> getElementAroundElement(unsigned int elem) override;
+    virtual const helper::vector<index_type> getElementAroundElement(index_type elem) override;
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const helper::vector<unsigned int> getElementAroundElements(helper::vector<unsigned int> elems) override;
+    virtual const helper::vector<index_type> getElementAroundElements(helper::vector<index_type> elems) override;
     /// @}
 
     // Get point positions (same methods as points accessors but not inherited)
-    SReal getPosX(int i) const;
-    SReal getPosY(int i) const;
-    SReal getPosZ(int i) const;
+    SReal getPosX(index_type i) const;
+    SReal getPosY(index_type i) const;
+    SReal getPosZ(index_type i) const;
 
     // Points accessors (not always available)
 
     bool hasPos() const override;
-    SReal getPX(int i) const override;
-    SReal getPY(int i) const override;
-    SReal getPZ(int i) const override;
+    SReal getPX(index_type i) const override;
+    SReal getPY(index_type i) const override;
+    SReal getPZ(index_type i) const override;
 
     // for procedural creation without file loader
     void clear() override;
     void addPoint(SReal px, SReal py, SReal pz) override;
-    void addEdge( int a, int b ) override;
-    void addTriangle( int a, int b, int c ) override;
-    void addQuad( int a, int b, int c, int d ) override;
-    void addTetra( int a, int b, int c, int d ) override;
-    void addHexa( int a, int b, int c, int d, int e, int f, int g, int h ) override;
+    void addEdge( index_type a, index_type b ) override;
+    void addTriangle( index_type a, index_type b, index_type c ) override;
+    void addQuad( index_type a, index_type b, index_type c, index_type d ) override;
+    void addTetra( index_type a, index_type b, index_type c, index_type d ) override;
+    void addHexa( index_type a, index_type b, index_type c, index_type d, index_type e, index_type f, index_type g, index_type h ) override;
 
     /// get the current revision of this mesh (use to detect changes)
     int getRevision() const override { return revision; }
@@ -306,13 +306,13 @@ public:
     // opposite dirction: return -1
     // same direction: return 1
     // otherwise: return 0
-    int computeRelativeOrientationInTri(const unsigned int ind_p0, const unsigned int ind_p1, const unsigned int ind_t);
+    int computeRelativeOrientationInTri(const PointID ind_p0, const PointID ind_p1, const PointID ind_t);
 
     // test whether p0p1 has the same orientation as triangle t
     // opposite dirction: return -1
     // same direction: return 1
     // otherwise: return 0
-    int computeRelativeOrientationInQuad(const unsigned int ind_p0, const unsigned int ind_p1, const unsigned int ind_q);
+    int computeRelativeOrientationInQuad(const PointID ind_p0, const PointID ind_p1, const PointID ind_q);
 
     /// Will change order of vertices in triangle: t[1] <=> t[2]
     void reOrientateTriangle(TriangleID id) override;
@@ -338,7 +338,7 @@ public:
     Data<SeqUV>	seqUVs; ///< List of uv coordinates
 
 protected:
-    int  nbPoints;
+    std::size_t  nbPoints;
 
     bool validTetrahedra;
     bool validHexahedra;
@@ -620,10 +620,10 @@ public:
     /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge
     *
     */
-    Edge getLocalEdgesInTetrahedron (const unsigned int i) const override;
+    Edge getLocalEdgesInTetrahedron (const HexahedronID i) const override;
 
     /** \brief Returns for each index (between 0 and 12) the two vertex indices that are adjacent to that edge */
-    Edge getLocalEdgesInHexahedron (const unsigned int i) const override;
+    Edge getLocalEdgesInHexahedron (const HexahedronID i) const override;
 
   	/** \ brief returns the topologyType */
 	  sofa::core::topology::TopologyObjectType getTopologyType() const override {return UpperTopology;}

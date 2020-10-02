@@ -211,7 +211,7 @@ static PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * args)
 static PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * args)
 {
     float r = 0.0f, g = 0.0f, b = 0.0f;
-    sofa::defaulttype::RGBAColor color;
+    sofa::helper::types::RGBAColor color;
     if (!PyArg_ParseTuple(args, "fff", &r, &g, &b)) {
         return nullptr;
     }

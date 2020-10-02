@@ -69,7 +69,7 @@ struct SOFA_HELPER_API NumericTest : public virtual BaseTest
 
 
     /// return the maximum difference between corresponding entries, or the infinity if the vectors have different sizes
-    template< int N, typename Real, typename Vector2>
+    template< std::size_t N, typename Real, typename Vector2>
     static Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const Vector2& m2 )
     {
         if( N !=m2.size() ) {
@@ -86,7 +86,7 @@ struct SOFA_HELPER_API NumericTest : public virtual BaseTest
 
 
     /// return the maximum difference between corresponding entries
-    template< int N, typename Real>
+    template< std::size_t N, typename Real>
     static Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const sofa::defaulttype::Vec<N,Real>& m2 )
     {
         Real result = 0;
@@ -156,7 +156,7 @@ struct SOFA_HELPER_API NumericTest : public virtual BaseTest
     }
 
     /// Return the maximum difference between corresponding entries, or the infinity if the matrices have different sizes
-    template<int M, int N, typename Real, typename Matrix2>
+    template<std::size_t M, std::size_t N, typename Real, typename Matrix2>
     static Real matrixMaxDiff( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2 )
     {
         Real result = 0;
@@ -245,11 +245,11 @@ struct data_traits
 };
 
 // Do not use this class directly
-template<class DataTypes, int N, bool isVector>
+template<class DataTypes, std::size_t N, bool isVector>
 struct setRotWrapper
 { static void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot); };
 
-template<class DataTypes, int N>
+template<class DataTypes, std::size_t N>
 struct setRotWrapper<DataTypes, N, true>
 { static void setRot(typename DataTypes::Coord& /*coord*/, const sofa::helper::Quater<SReal>& /*rot*/) {} };
 
@@ -263,7 +263,7 @@ struct setRotWrapper<DataTypes, 2, false>
 // rotation vector please use the following line instead
 //{ static void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot)	{ coord.getOrientation() = rot.toEulerVector().z(); } };
 
-template<class DataTypes, int N>
+template<class DataTypes, std::size_t N>
 struct setRotWrapper<DataTypes, N, false>
 { static void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot) 	{ DataTypes::setCRot(coord, rot); } };
 
@@ -281,14 +281,14 @@ typename DataTypes::Coord createCoord(const sofa::defaulttype::Vector3& pos, con
     return temp;
 }
 
-template <int N, class real>
+template <std::size_t N, class real>
 void EXPECT_VEC_DOUBLE_EQ(sofa::defaulttype::Vec<N, real> const& expected, sofa::defaulttype::Vec<N, real> const& actual) {
     typedef typename sofa::defaulttype::Vec<N,real>::size_type size_type;
     for (size_type i=0; i<expected.total_size; ++i)
         EXPECT_DOUBLE_EQ(expected[i], actual[i]);
 }
 
-template <int L, int C, class real>
+template <std::size_t L, std::size_t C, class real>
 void EXPECT_MAT_DOUBLE_EQ(sofa::defaulttype::Mat<L,C,real> const& expected, sofa::defaulttype::Mat<L,C,real> const& actual) {
     typedef typename sofa::defaulttype::Mat<L,C,real>::size_type size_type;
     for (size_type i=0; i<expected.nbLines; ++i)
@@ -296,7 +296,7 @@ void EXPECT_MAT_DOUBLE_EQ(sofa::defaulttype::Mat<L,C,real> const& expected, sofa
             EXPECT_DOUBLE_EQ(expected(i,j), actual(i,j));
 }
 
-template <int L, int C, class real>
+template <std::size_t L, std::size_t C, class real>
 void EXPECT_MAT_NEAR(sofa::defaulttype::Mat<L,C,real> const& expected, sofa::defaulttype::Mat<L,C,real> const& actual, real abs_error) {
     typedef typename sofa::defaulttype::Mat<L,C,real>::size_type size_type;
     for (size_type i=0; i<expected.nbLines; ++i)

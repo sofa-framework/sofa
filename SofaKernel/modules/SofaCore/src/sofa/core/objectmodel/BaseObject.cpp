@@ -54,9 +54,12 @@ BaseObject::BaseObject()
 BaseObject::~BaseObject()
 {
     assert(l_master.get() == nullptr); // an object that is still a slave should not be able to be deleted, as at least one smart pointer points to it
-    for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
+    for(auto slave : l_slaves)
     {
-        (*iSlaves)->l_master.reset();
+        if (slave.get())
+        {
+            slave->l_master.reset();
+        }
     }
 }
 
@@ -66,7 +69,13 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 {
     if (!after) after = BaseContext::getDefault();
     if (before == after) return;
-    for (unsigned int i = 0; i < l_slaves.size(); ++i) l_slaves.get(i)->l_context.set(after);
+    for (auto slave : l_slaves)
+    {
+        if (slave.get())
+        {
+            slave->l_context.set(after);
+        }
+    }
     if (after != BaseContext::getDefault())
     {
         // update links
@@ -75,7 +84,7 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 }
 
 /// This method insures that slaves objects have master and context links set correctly
-void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, bool add)
+void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, std::size_t /*index*/, bool add)
 {
     if (!ptr) return;
     if (add) { ptr->l_master.set(this); ptr->l_context.set(getContext()); }
@@ -138,7 +147,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
 
     if (attributeList != nullptr)
     {
-        for (unsigned int j = 0; j<attributeList->size(); ++j)
+        for (std::size_t j = 0; j<attributeList->size(); ++j)
         {
             it_map = dataLoaderMap.find ((*attributeList)[j]);
             if (it_map != dataLoaderMap.end())
@@ -212,10 +221,10 @@ const BaseObject::VecSlaves& BaseObject::getSlaves() const
 
 BaseObject* BaseObject::getSlave(const std::string& name) const
 {
-    for(VecSlaves::const_iterator iSlaves = l_slaves.begin(); iSlaves != l_slaves.end(); ++iSlaves)
+    for (auto slave : l_slaves)
     {
-        if ((*iSlaves)->getName() == name)
-            return iSlaves->get();
+        if (slave.get() && slave->getName() == name)
+            return slave.get();
     }
     return nullptr;
 }
@@ -243,13 +252,13 @@ void BaseObject::removeSlave(BaseObject::SPtr s)
 
 void BaseObject::init()
 {
-	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
-	{
-		if ((*iData)->isRequired() && !(*iData)->isSet())
-		{
-        msg_warning() << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" ;
-		}
-	}
+    for(auto data: this->m_vecData)
+    {
+        if (data->isRequired() && !data->isSet())
+        {
+            msg_error() << "Required data \"" << data->getName() << "\" has not been set. (Current value is " << data->getValueString() << ")" ;
+        }
+    }
 }
 
 void BaseObject::bwdInit()

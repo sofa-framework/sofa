@@ -140,6 +140,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/vector_algebra.h
     ${SRC_ROOT}/vector_device.h
     ${SRC_ROOT}/types/RGBAColor.h
+    ${SRC_ROOT}/types/RGBAColor_fwd.h
     ${SRC_ROOT}/types/Material.h
     ${SRC_ROOT}/logging/Messaging.h
     ${SRC_ROOT}/logging/Message.h
@@ -426,7 +427,12 @@ if(JSON_FOUND)
         )
 endif()
 
-sofa_install_targets(SofaFramework ${PROJECT_NAME} "SofaFramework" "src")
+sofa_add_targets_to_package(
+    PACKAGE_NAME SofaFramework
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "SofaFramework"
+    )
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaHelper_test)

@@ -25,7 +25,7 @@
 #include <SofaGeneralDeformable/TriangularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 
@@ -43,7 +43,8 @@ namespace forcefield
 typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(unsigned int , EdgeInformation &ei, const core::topology::Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(index_type , EdgeInformation &ei, const core::topology::Edge &, 
+    const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -66,7 +67,8 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFu
 
 
 template< class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded, const sofa::helper::vector<core::topology::Triangle> &, const sofa::helper::vector<sofa::helper::vector<unsigned int> > &, const sofa::helper::vector<sofa::helper::vector<double> > &)
+void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleCreation(const sofa::helper::vector<index_type> &triangleAdded, const sofa::helper::vector<core::topology::Triangle> &, 
+    const sofa::helper::vector<sofa::helper::vector<index_type> > &, const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
     using namespace core::topology;
     if (ff)
@@ -110,7 +112,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
                         }
                     }
 
-                    const sofa::helper::vector< unsigned int > shell = ff->m_topology->getTrianglesAroundEdge(edgeIndex);
+                    const auto& shell = ff->m_topology->getTrianglesAroundEdge(edgeIndex);
                     if (shell.size()==2)
                     {
 
@@ -172,7 +174,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
 
 
 template< class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved)
+void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleDestruction(const sofa::helper::vector<index_type> &triangleRemoved)
 {
     using namespace core::topology;
     if (ff)
@@ -203,7 +205,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
 
                     unsigned int edgeIndex = te[j];
 
-                    const sofa::helper::vector< unsigned int > shell = ff->m_topology->getTrianglesAroundEdge(edgeIndex);
+                    const auto& shell = ff->m_topology->getTrianglesAroundEdge(edgeIndex);
                     if (shell.size()==3)
                     {
 
@@ -290,9 +292,9 @@ template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
 {
     using namespace core::topology;
-    const sofa::helper::vector<unsigned int> &triangleAdded = e->getIndexArray();
+    const auto &triangleAdded = e->getIndexArray();
     const sofa::helper::vector<Triangle> &elems = e->getElementArray();
-    const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ancestors = e->ancestorsList;
+    const auto & ancestors = e->ancestorsList;
     const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
 
     applyTriangleCreation(triangleAdded, elems, ancestors, coefs);
@@ -301,14 +303,14 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopology
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
 {
-    const sofa::helper::vector<unsigned int> &triangleRemoved = e->getArray();
+    const auto &triangleRemoved = e->getArray();
 
     applyTriangleDestruction(triangleRemoved);
 }
 
 
 template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDestruction(const sofa::helper::vector<unsigned int> &tab)
+void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDestruction(const sofa::helper::vector<index_type> &tab)
 {
     using namespace core::topology;
     if(ff)
@@ -346,7 +348,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDes
 
             }
 
-            const sofa::helper::vector<unsigned int> &shell= ff->m_topology->getTrianglesAroundVertex(lastIndexVec[i]);
+            const auto &shell= ff->m_topology->getTrianglesAroundVertex(lastIndexVec[i]);
             for (j=0; j<shell.size(); ++j)
             {
 
@@ -407,7 +409,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDes
 
 
 template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointRenumbering(const sofa::helper::vector<unsigned int> &tab)
+void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointRenumbering(const sofa::helper::vector<index_type> &tab)
 {
     if(ff)
     {
@@ -427,14 +429,14 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointRen
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::PointsRemoved* e)
 {
-    const sofa::helper::vector<unsigned int> & tab = e->getArray();
+    const auto & tab = e->getArray();
     applyPointDestruction(tab);
 }
 
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::PointsRenumbering* e)
 {
-    const sofa::helper::vector<unsigned int> &newIndices = e->getIndexArray();
+    const auto &newIndices = e->getIndexArray();
     applyPointRenumbering(newIndices);
 }
 
@@ -505,24 +507,24 @@ void TriangularBendingSprings<DataTypes>::reinit()
     /// prepare to store info in the edge array
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
     edgeInf.resize(m_topology->getNbEdges());
-    unsigned int i;
+    index_type i;
     // set edge tensor to 0
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
 
         edgeHandler->applyCreateFunction(i, edgeInf[i],
-                m_topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
+                m_topology->getEdge(i),  (const sofa::helper::vector< index_type > )0,
                 (const sofa::helper::vector< double >)0);
     }
 
     // create edge tensor by calling the triangle creation function
-    sofa::helper::vector<unsigned int> triangleAdded;
+    sofa::helper::vector<index_type> triangleAdded;
     for (i=0; i<m_topology->getNbTriangles(); ++i)
         triangleAdded.push_back(i);
 
     edgeHandler->applyTriangleCreation(triangleAdded,
             (const sofa::helper::vector<Triangle>)0,
-            (const sofa::helper::vector<sofa::helper::vector<unsigned int> >)0,
+            (const sofa::helper::vector<sofa::helper::vector<index_type> >)0,
             (const sofa::helper::vector<sofa::helper::vector<double> >)0);
 
     edgeInfo.endEdit();
@@ -731,22 +733,22 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
             {
                 if (d<edgeInf[i].restlength*0.9999)
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor::red());
+                    colors.push_back(sofa::helper::types::RGBAColor::red());
                 }
                 else
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor::green());
+                    colors.push_back(sofa::helper::types::RGBAColor::green());
                 }
             }
             else
             {
                 if (d<edgeInf[i].restlength*0.9999)
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
+                    colors.push_back(sofa::helper::types::RGBAColor(1,0.5, 0,1));
                 }
                 else
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
+                    colors.push_back(sofa::helper::types::RGBAColor(0,1,0.5,1));
                 }
             }
 

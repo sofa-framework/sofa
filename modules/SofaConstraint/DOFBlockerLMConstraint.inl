@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 
 namespace sofa
@@ -40,7 +40,7 @@ namespace constraintset
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction(unsigned int /*nbPoints*/, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+bool DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction(index_type /*nbPoints*/, const sofa::helper::vector< index_type > &, const sofa::helper::vector< double >& )
 {
     if (fc)
     {
@@ -54,11 +54,11 @@ bool DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction
 
 // Define RemovalFunction
 template< class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyDestroyFunction(index_type pointIndex, value_type &)
 {
     if (fc)
     {
-        fc->removeConstraint((unsigned int) pointIndex);
+        fc->removeConstraint((index_type) pointIndex);
     }
     return;
 }
@@ -72,14 +72,14 @@ void DOFBlockerLMConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::addConstraint(unsigned int index)
+void DOFBlockerLMConstraint<DataTypes>::addConstraint(index_type index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::removeConstraint(unsigned int index)
+void DOFBlockerLMConstraint<DataTypes>::removeConstraint(index_type index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -138,7 +138,7 @@ void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(const core::Constr
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++numParticle)
     {
-        const unsigned int index=*it;
+        const index_type index=*it;
         for (unsigned int i=0; i<axis.size(); ++i)
         {
             c->writeLine(cIndex).addCol(index,axis[i]);
@@ -198,13 +198,13 @@ void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* v
     vparams->drawTool()->saveLastState();
 
     const SetIndexArray & indices = f_indices.getValue();
-    sofa::defaulttype::RGBAColor color = sofa::defaulttype::RGBAColor::yellow();
+    sofa::helper::types::RGBAColor color = sofa::helper::types::RGBAColor::yellow();
 
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
     {
-        unsigned int index=(*it);
+        index_type index=(*it);
         Coord pos=x[index];
         defaulttype::Vector3 position;
         DataTypes::get(position[0], position[1], position[2], pos);

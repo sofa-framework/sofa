@@ -49,6 +49,11 @@ GridMeshCreator::GridMeshCreator(): MeshLoader()
 {
 }
 
+void GridMeshCreator::doClearBuffers()
+{
+
+}
+
 
 void GridMeshCreator::insertUniqueEdge( unsigned a, unsigned b )
 {
@@ -82,9 +87,9 @@ void GridMeshCreator::insertQuad(unsigned a, unsigned b, unsigned c, unsigned d)
 }
 
 
-bool GridMeshCreator::load()
+bool GridMeshCreator::doLoad()
 {
-    helper::WriteAccessor<Data<vector<sofa::defaulttype::Vector3> > > my_positions (d_positions);
+    auto my_positions = getWriteOnlyAccessor(d_positions);
     unsigned numX = resolution.getValue()[0], numY=resolution.getValue()[1];
 
     // Warning: Vertex creation order must be consistent with method vert.
@@ -148,7 +153,6 @@ bool GridMeshCreator::load()
     d_edges.endEdit();
 
     return true;
-
 }
 
 

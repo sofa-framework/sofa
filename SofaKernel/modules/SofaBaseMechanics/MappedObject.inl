@@ -53,12 +53,12 @@ void MappedObject<DataTypes>::init()
     if (getSize() == 0)
     {        
         sofa::core::behavior::BaseMechanicalState* mstate = this->getContext()->getMechanicalState();
-        int nbp = mstate->getSize();
+        std::size_t nbp = mstate->getSize();
         if (nbp > 0)
         {
             VecCoord& x = *getX();
             x.resize(nbp);
-            for (int i=0; i<nbp; i++)
+            for (std::size_t i=0; i<nbp; i++)
             {
                 DataTypes::set(x[i], mstate->getPX(i), mstate->getPY(i), mstate->getPZ(i));
             }

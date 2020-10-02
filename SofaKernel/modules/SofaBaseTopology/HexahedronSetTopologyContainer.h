@@ -97,7 +97,7 @@ public:
     /// Procedural creation methods
     /// @{
     void clear() override;
-    void addHexa( int a, int b, int c, int d, int e, int f, int g, int h ) override;
+    void addHexa(index_type a, index_type b, index_type c, index_type d, index_type e, index_type f, index_type g, index_type h ) override;
     /// @}
 
 

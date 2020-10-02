@@ -70,6 +70,8 @@ public:
     typedef component::container::MechanicalObject<typename RigidContactMapper::DataTypes> MMechanicalObject;
     typedef mapping::RigidMapping< InDataTypes, typename RigidContactMapper::DataTypes > MMapping;
 
+    using index_type = sofa::defaulttype::index_type;
+
     MCollisionModel* model;
     simulation::Node::SPtr child;
     typename MMapping::SPtr mapping;
@@ -90,7 +92,7 @@ public:
 
     MMechanicalState* createMapping(const char* name="contactPoints");
 
-    void resize(int size)
+    void resize(std::size_t size)
     {
         if (mapping != nullptr)
             mapping->clear(size);
@@ -99,7 +101,7 @@ public:
         nbp = 0;
     }
 
-    int addPoint(const Coord& P, int index, Real&)
+    index_type addPoint(const Coord& P, index_type index, Real&)
     {
         int i = nbp++;
         if ((int)outmodel->getSize() <= i)
@@ -141,7 +143,7 @@ public:
 template <class TVec3Types>
 class ContactMapper<RigidSphereModel,TVec3Types > : public RigidContactMapper<RigidSphereModel, TVec3Types >{
     public:
-        int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
+        sofa::defaulttype::index_type addPoint(const typename TVec3Types::Coord & P, sofa::defaulttype::index_type index,typename TVec3Types::Real & r)
         {
             RigidSphere e(this->model, index);
             const typename SphereCollisionModel<sofa::defaulttype::Rigid3Types>::DataTypes::Coord & rCenter = e.rigidCenter();
@@ -158,7 +160,7 @@ class ContactMapper<RigidSphereModel,TVec3Types > : public RigidContactMapper<Ri
 template <class TVec3Types>
 class ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types > : public RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >{
     public:
-        int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
+        sofa::defaulttype::index_type addPoint(const typename TVec3Types::Coord & P, sofa::defaulttype::index_type index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
             const defaulttype::Quaternion & ori = this->model->orientation(index);
@@ -170,7 +172,7 @@ class ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types
 template <class TVec3Types>
 class ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types > : public RigidContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >{
     public:
-        int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
+        sofa::defaulttype::index_type addPoint(const typename TVec3Types::Coord & P, sofa::defaulttype::index_type index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
             const defaulttype::Quaternion & ori = this->model->orientation(index);
@@ -182,7 +184,7 @@ class ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3T
 template <class TVec3Types>
 class ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types > : public RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >{
     public:
-        int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
+        sofa::defaulttype::index_type addPoint(const typename TVec3Types::Coord & P, sofa::defaulttype::index_type index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
             const defaulttype::Quaternion & ori = this->model->orientation(index);

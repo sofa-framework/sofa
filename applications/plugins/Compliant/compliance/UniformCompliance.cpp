@@ -15,7 +15,7 @@ using namespace sofa::defaulttype;
 
 // Register in the Factory
 int UniformComplianceClass = core::RegisterObject("Uniform compliance")
-        .add< UniformCompliance< Vec1Types > >(true)
+        .add< UniformCompliance< Vec1Types > >()
         .add< UniformCompliance< Vec2Types > >()
         .add< UniformCompliance< Vec3Types > >()
         .add< UniformCompliance< Vec6Types > >()

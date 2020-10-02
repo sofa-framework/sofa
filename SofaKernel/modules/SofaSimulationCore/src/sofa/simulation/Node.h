@@ -195,7 +195,7 @@ public:
         {
         }
 
-        value_type operator[](unsigned int i) const
+        value_type operator[](std::size_t i) const
         {
             return this->get(i);
         }

@@ -338,7 +338,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
                 case core::topology::POINTSREMOVED:
                 {
                     int nbPoints = _topology->getNbPoints();
-                    const sofa::helper::vector<unsigned int>& tab = (static_cast<const sofa::core::topology::PointsRemoved *>(*changeIt))->getArray();
+                    const auto& tab = (static_cast<const sofa::core::topology::PointsRemoved *>(*changeIt))->getArray();
 
                     helper::vector<Spring>& springs = *this->springs.beginEdit();
                     // springs.push_back(Spring(m1,m2,ks,kd,initpos));

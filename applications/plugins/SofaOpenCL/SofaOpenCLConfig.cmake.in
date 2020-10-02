@@ -1,5 +1,6 @@
 # CMake package configuration file for the SofaOpenCL plugin
 
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 find_package(OpenCL REQUIRED)

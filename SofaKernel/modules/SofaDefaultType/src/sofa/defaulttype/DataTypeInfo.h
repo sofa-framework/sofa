@@ -690,7 +690,7 @@ struct TextTypeInfo
     }
 };
 
-template<class TDataType, int static_size = TDataType::static_size>
+template<class TDataType, std::size_t static_size = TDataType::static_size>
 struct FixedArrayTypeInfo
 {
     typedef TDataType DataType;

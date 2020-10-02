@@ -1,5 +1,5 @@
 # CMake package configuration file for the Compliant plugin
-
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 set(COMPLIANT_HAVE_SOFAPYTHON @COMPLIANT_HAVE_SOFAPYTHON@)

@@ -54,7 +54,7 @@ using namespace sofa::core::topology;
 
 OglCylinderModel::OglCylinderModel()
     : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
-      color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Color of the cylinders."))
+      color(initData(&color, sofa::helper::types::RGBAColor(1.0,1.0,1.0,1.0), "color", "Color of the cylinders."))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
       // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
 {
@@ -160,12 +160,12 @@ void OglCylinderModel::setColor(std::string color)
     setColor(r,g,b,a);
 }
 
-void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, int& vindex, int& /*nindex*/, int& /*tindex*/, int& /*count*/)
+void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, index_type& vindex, index_type& /*nindex*/, index_type& /*tindex*/, int& /*count*/)
 {
     const VecCoord& x = this->read( core::ConstVecCoordId::position() )->getValue();
     const SeqEdges& edges = d_edges.getValue();
 
-    int nbv = x.size();
+    int nbv = int(x.size());
 
     *out << "g "<<name<<"\n";
 

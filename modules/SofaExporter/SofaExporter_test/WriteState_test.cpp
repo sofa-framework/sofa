@@ -208,7 +208,6 @@ namespace sofa {
                 std::cout<<"Problem opening file "+referenceFile<<std::endl;
                 return false;
             }
-
             if (f1.tellg() != f2.tellg())
             {
                 std::cout<<"File size mismatch "<<std::endl;

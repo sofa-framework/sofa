@@ -129,10 +129,12 @@ public:
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     int getCounter(const core::ExecParams*) const { return getCounter(); }
 
+    void setLinkedBase(Base* link);
+
     virtual size_t getSize() const = 0;
-    virtual Base* getLinkedBase(unsigned int index=0) const = 0;
-    virtual BaseData* getLinkedData(unsigned int index=0) const = 0;
-    virtual std::string getLinkedPath(unsigned int index=0) const = 0;
+    virtual Base* getLinkedBase(std::size_t index=0) const = 0;
+    virtual BaseData* getLinkedData(std::size_t index=0) const = 0;
+    virtual std::string getLinkedPath(std::size_t index=0) const = 0;
 
     /// @name Serialization API
     /// @{

@@ -107,7 +107,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
             picked.body->getContext()->get(topologyModifier);
 
             // Problem of type takeng by functions called: Converting selectedElem <unsigned int> in <int>
-            helper::vector<int> ElemList_int;
+            helper::vector<index_type> ElemList_int;
             ElemList_int.resize(selectedElem.size());
             for (unsigned int i = 0; i<selectedElem.size(); ++i)
                 ElemList_int[i] = selectedElem[i];
@@ -203,8 +203,8 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
                     const sofa::core::topology::BaseMeshTopology::TrianglesInTetrahedron& tetraTri = topo_curr->getTrianglesInTetrahedron(selectedElem[0]);
 
                     int volTmp = -1;
-                    std::map<unsigned int, unsigned int> MappingMap = topoMap->getGlob2LocMap();
-                    std::map<unsigned int, unsigned int>::iterator it;
+                    std::map<index_type, index_type> MappingMap = topoMap->getGlob2LocMap();
+                    std::map<index_type, index_type>::iterator it;
 
                     for (unsigned int j = 0; j<4; ++j)
                     {
@@ -425,7 +425,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
 
 // ** Return a vector of elements directly neighboor of a given list of elements **
 template <class DataTypes>
-sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getNeighboorElements(VecIds& elementsToTest)
+typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<DataTypes>::getNeighboorElements(VecIds& elementsToTest)
 {
     VecIds vertexList;
     VecIds neighboorList;
@@ -555,7 +555,7 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getNeig
 
 // ** Function testing if elements are in the range of a given zone **
 template <class DataTypes>
-sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getElementInZone(VecIds& elementsToTest)
+typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<DataTypes>::getElementInZone(VecIds& elementsToTest)
 {
     // - STEP 0: Compute appropriate scale from BB:  selectorScale = 100 => zone = all mesh
     defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
@@ -661,7 +661,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
     std::vector<sofa::defaulttype::Vector3> vertices_quads;
     std::vector<sofa::defaulttype::Vector3> vertices_triangles;
-    sofa::defaulttype::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
+    sofa::helper::types::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
 
     for (unsigned int i=0; i<selectedElem.size(); ++i)
     {

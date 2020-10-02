@@ -49,8 +49,7 @@ public :
 
 
 public :
-	bool load() override;
-
+    bool doLoad() override;
 protected :
 	enum ElementType{ LINEAR, TRIANGLE, QUADRILATERAL, TETRAHEDRA, HEXAHEDRA, PRISM, PYRAMID, SPHERE, CIRCLE };
 
@@ -59,6 +58,7 @@ protected :
 
 	bool readGID(std::ifstream& file);
 
+        void doClearBuffers() override;
 private :
 
 	bool readLinearElements(std::ifstream& file);

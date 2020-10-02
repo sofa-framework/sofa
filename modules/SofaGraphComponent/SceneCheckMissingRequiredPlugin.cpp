@@ -109,7 +109,7 @@ void SceneCheckMissingRequiredPlugin::doInit(Node* node)
 
     for(auto& plugin : plugins)
     {
-        for(auto& pluginName : plugin->d_pluginName.getValue())
+        for(auto& pluginName : plugin->d_loadedPlugins.getValue())
         {
             m_loadedPlugins[pluginName] = true;
         }

@@ -53,7 +53,6 @@ void RepulsiveSpringForceField<DataTypes>::addForce(const sofa::core::Mechanical
     f2.resize(x2.size());
     for (unsigned int i=0; i<springs.size(); i++)
     {
-#if 1
         int a = springs[i].m1;
         int b = springs[i].m2;
         Coord u = x2[b]-x1[a];
@@ -82,7 +81,6 @@ void RepulsiveSpringForceField<DataTypes>::addForce(const sofa::core::Mechanical
             }
         }
         else
-#endif
         {
             Mat& m = this->dfdx[i];
             for( int j=0; j<N; ++j )

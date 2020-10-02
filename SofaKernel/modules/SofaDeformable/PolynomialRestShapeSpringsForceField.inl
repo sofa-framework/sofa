@@ -25,16 +25,8 @@
 #pragma once
 
 #include <sofa/core/behavior/ForceField.inl>
-#include "PolynomialRestShapeSpringsForceField.h"
+#include <SofaDeformable/PolynomialRestShapeSpringsForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/config.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <assert.h>
-#include <iostream>
-#include <fstream>
 #include <sofa/helper/AdvancedTimer.h>
 
 
@@ -55,7 +47,7 @@ PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialRestShapeSpringsForce
     , d_polynomialDegree(initData(&d_polynomialDegree, "polynomialDegree", "vector of values that show polynomials degrees"))
     , d_recomputeIndices(initData(&d_recomputeIndices, false, "recompute_indices", "Recompute indices (should be false for BBOX)"))
     , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
-    , d_springColor(initData(&d_springColor, defaulttype::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f), "springColor","spring color"))
+    , d_springColor(initData(&d_springColor, sofa::helper::types::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f), "springColor","spring color"))
     , d_showIndicesScale(initData(&d_showIndicesScale, (float)0.02, "showIndicesScale", "Scale for indices display. (default=0.02)"))
     , d_zeroLength(initData(&d_zeroLength,"initialLength","initial virtual length of the spring"))
     , d_smoothShift(initData(&d_smoothShift,double(0.0),"smoothShift","denominator correction adding shift value"))

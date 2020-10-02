@@ -77,7 +77,7 @@ void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper
 }
 
 
-void DynamicSparseGridTopologyModifier::removeHexahedraProcess( const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedItems)
+void DynamicSparseGridTopologyModifier::removeHexahedraProcess( const sofa::helper::vector<index_type> &indices, const bool removeIsolatedItems)
 {
     if( !everRenumbered) renumberAttributes( indices);
     everRenumbered = false;
@@ -86,14 +86,14 @@ void DynamicSparseGridTopologyModifier::removeHexahedraProcess( const sofa::help
 }
 
 
-void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::helper::vector<unsigned int> &hexahedra )
+void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::helper::vector<index_type> &hexahedra )
 {
     helper::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
 
     // Update the data
     unsigned int nbElt = iirg.size();
     std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>& regularG2Topo = *m_DynContainer->idInRegularGrid2IndexInTopo.beginEdit();
-    for ( sofa::helper::vector<unsigned int>::const_iterator it = hexahedra.begin(); it != hexahedra.end(); ++it )
+    for ( auto it = hexahedra.begin(); it != hexahedra.end(); ++it )
     {
         nbElt--;
 

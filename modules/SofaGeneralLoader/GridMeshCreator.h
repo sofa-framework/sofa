@@ -46,7 +46,7 @@ public:
     SOFA_CLASS(GridMeshCreator,sofa::core::loader::MeshLoader);
     virtual std::string type() { return "This object is procedurally created"; }
     bool canLoad() override { return true; }
-    bool load() override; ///< create the grid
+    bool doLoad() override; ///< create the grid
 
     Data< defaulttype::Vec2i > resolution;  ///< Number of vertices in each direction
     Data< int > trianglePattern;            ///< 0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles.
@@ -54,6 +54,7 @@ public:
 protected:
     GridMeshCreator();
 
+    void doClearBuffers() override;
     ///< index of a vertex, given its integer coordinates (between 0 and resolution) in the plane.
     unsigned vert( unsigned x, unsigned y) { return x + y*resolution.getValue()[0]; }
 

@@ -43,9 +43,9 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
 endif()
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_generate_package(
-    NAME MiniFlowVR
-    VERSION 0.1
+sofa_create_package_with_targets(
+    PACKAGE_NAME MiniFlowVR
+    PACKAGE_VERSION 0.1
     TARGETS ${PROJECT_NAME}
     INCLUDE_SOURCE_DIR "include"
     INCLUDE_INSTALL_DIR "extlibs/MiniFlowVR"

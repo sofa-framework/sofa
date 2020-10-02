@@ -4,7 +4,7 @@
 
 #include "ConstantAssembledMapping.h"
 #include "ConstantAssembledMultiMapping.h"
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
@@ -42,7 +42,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
 
     Data< pairs_type > pairs; ///< index pairs for computing deltas
     Data< SReal > d_showObjectScale; ///< drawing size
-    Data< defaulttype::RGBAColor > d_color; ///< drawing color
+    Data< sofa::helper::types::RGBAColor > d_color; ///< drawing color
 
 
 
@@ -50,7 +50,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
     AdditionMapping()
         : pairs( initData(&pairs, "pairs", "index pairs for computing additions") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(-1), "showObjectScale", "Scale for object display"))
-        , d_color(initData(&d_color, defaulttype::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+        , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     {}
 
     enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };

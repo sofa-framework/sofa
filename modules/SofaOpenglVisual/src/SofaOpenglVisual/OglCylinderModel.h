@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/core/topology/Topology.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -56,6 +56,8 @@ class SOFA_OPENGL_VISUAL_API OglCylinderModel : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS2(OglCylinderModel,core::visual::VisualModel,Vec3State);
+
+    using index_type = sofa::defaulttype::index_type;
 protected:
     OglCylinderModel();
     ~OglCylinderModel() override;
@@ -66,7 +68,7 @@ public:
 
     void drawVisual(const core::visual::VisualParams* vparams) override;
 
-    void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, int& /*vindex*/, int& /*nindex*/, int& /*tindex*/, int& /*count*/) override;
+    void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, index_type& /*vindex*/, index_type& /*nindex*/, index_type& /*tindex*/, int& /*count*/) override;
 
 private:
     void setColor(float r, float g, float b, float a);
@@ -75,7 +77,7 @@ private:
 private:
     Data<float>		radius; ///< Radius of the cylinder.
     // Data<float>		alpha;
-    Data<defaulttype::RGBAColor>	color; ///< Color of the cylinders.
+    Data<sofa::helper::types::RGBAColor>	color; ///< Color of the cylinders.
 
     typedef sofa::helper::vector<core::topology::Edge>  SeqEdges;
     Data<SeqEdges> d_edges; ///< List of edge indices

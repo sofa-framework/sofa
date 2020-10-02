@@ -49,7 +49,7 @@ public:
     typedef core::DataEngine Inherited;
 
     SOFA_CLASS(MergeROIs,Inherited);
-    typedef unsigned int Index;
+    typedef sofa::defaulttype::index_type Index;
 
     //Input
     Data<unsigned int> d_nbROIs; ///< size of indices/value vector

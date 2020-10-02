@@ -54,10 +54,10 @@ using namespace core::topology;
 
 
 template< class DataTypes >
-void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::applyCreateFunction(unsigned int tetrahedronIndex,
+void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::applyCreateFunction(index_type tetrahedronIndex,
                                                                                               TetrahedronRestInformation &tinfo,
                                                                                               const Tetrahedron &,
-                                                                                              const sofa::helper::vector<unsigned int> &,
+                                                                                              const sofa::helper::vector<index_type> &,
                                                                                               const sofa::helper::vector<double> &)
 {
 
@@ -255,7 +255,7 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     for (Topology::TetrahedronID i=0;i<m_topology->getNbTetrahedra();++i)
     {
         m_tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
-                                                m_topology->getTetrahedron(i),  (const vector< unsigned int > )0,
+                                                m_topology->getTetrahedron(i),  (const vector< index_type > )0,
                                                 (const vector< double >)0);
     }
 

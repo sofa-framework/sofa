@@ -6,6 +6,7 @@
 
 <Node name="root" dt="0.005" >
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaHaptics'/>
 	<VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
 	<RequiredPlugin name="SofaPython" pluginName="SofaPython" />
 	<Gravity name="G" gravity="10 0 0" />
@@ -36,9 +37,9 @@
 			<MeshObjLoader filename="mesh/raptor_8kp.obj"  name="loader"/>
 			<MeshTopology src="@loader" name="raptorVisualModel"  />
 			<MechanicalObject src="@loader" name="raptorState"/>		
-			<TriangleCollisionModel name="raptor" contactStiffness="100"/>
-			<LineCollisionModel name="raptor" contactStiffness="100"/>	
-			<PointCollisionModel name="raptor" contactStiffness="100"/>	
+			<TriangleCollisionModel contactStiffness="100"/>
+			<LineCollisionModel contactStiffness="100"/>	
+			<PointCollisionModel contactStiffness="100"/>	
 			<BarycentricMapping name="tongueMapping" input="@../mecaRaptor" output="@raptorState" mapForces="false"/>
 		</Node>
 	</Node>
@@ -76,8 +77,8 @@
 			<MeshObjLoader filename="dental_instrument_centerline.obj"  name="loader"/>
 			<MeshTopology src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
-			<LineCollisionModel name="instrument" contactStiffness="10" />
-			<PointCollisionModel name="instrument" contactStiffness="10" /> 
+			<LineCollisionModel contactStiffness="10" />
+			<PointCollisionModel contactStiffness="10" /> 
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<VectorSpringForceField  object1="@Input/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />

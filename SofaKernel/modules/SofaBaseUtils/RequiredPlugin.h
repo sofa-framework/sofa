@@ -56,6 +56,8 @@ public:
     sofa::core::objectmodel::Data<bool> d_requireOne; ///< Display an error message if no plugin names were successfully loaded
     sofa::core::objectmodel::Data<bool> d_requireAll; ///< Display an error message if any plugin names failed to be loaded
 
+    sofa::core::objectmodel::Data<helper::vector<std::string> > d_loadedPlugins; ///< name of the loaded plugins
+
 protected:
     RequiredPlugin();
     ~RequiredPlugin() override {}
@@ -64,7 +66,7 @@ public:
 
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
 
-    void loadPlugin();
+    bool loadPlugin();
 
 };
 

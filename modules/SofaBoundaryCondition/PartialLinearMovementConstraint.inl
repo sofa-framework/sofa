@@ -27,7 +27,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
@@ -45,18 +45,18 @@ namespace projectiveconstraintset
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+bool PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(index_type, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
 {
     return lc != 0;
 }
 
 // Define RemovalFunction
 template< class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, value_type &)
 {
     if (lc)
     {
-        lc->removeIndex((unsigned int) pointIndex);
+        lc->removeIndex((index_type) pointIndex);
     }
 }
 
@@ -111,14 +111,14 @@ void PartialLinearMovementConstraint<DataTypes>::clearIndices()
 }
 
 template <class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::addIndex(unsigned int index)
+void PartialLinearMovementConstraint<DataTypes>::addIndex(index_type index)
 {
     m_indices.beginEdit()->push_back(index);
     m_indices.endEdit();
 }
 
 template <class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::removeIndex(unsigned int index)
+void PartialLinearMovementConstraint<DataTypes>::removeIndex(index_type index)
 {
     removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();
@@ -484,7 +484,7 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
         return;
 
     sofa::helper::vector<defaulttype::Vector3> vertices;
-    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (showMovement.getValue())
     {

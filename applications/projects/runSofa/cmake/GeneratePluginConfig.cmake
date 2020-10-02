@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
+include_guard(GLOBAL)
+
 macro(sofa_generate_plugin_config config_filename)
     # Generate default list of plugins (according to the options)
     get_property(_allTargets GLOBAL PROPERTY __GlobalTargetList__)

@@ -71,8 +71,8 @@ public:
     /// Procedural creation methods
     /// @{
     void clear() override;
-    void addEdge( int, int ) override {}
-    void addTriangle( int a, int b, int c ) override;
+    void addEdge(index_type, index_type) override {}
+    void addTriangle(index_type a, index_type b, index_type c ) override;
     /// @}
 
     /// BaseMeshTopology API

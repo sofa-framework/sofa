@@ -1,5 +1,6 @@
 # CMake package configuration file for SofaTest
 
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 find_package(SofaFramework REQUIRED)

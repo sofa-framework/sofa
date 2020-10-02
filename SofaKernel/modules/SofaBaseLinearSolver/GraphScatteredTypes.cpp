@@ -49,17 +49,17 @@ void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector
     parent->projectResponse(res);     // q is projected to the constrained space
 }
 
-unsigned int GraphScatteredMatrix::rowSize()
+std::size_t GraphScatteredMatrix::rowSize()
 {
-    unsigned int nbRow=0, nbCol=0;
+    std::size_t nbRow=0, nbCol=0;
     this->parent->getMatrixDimension(&nbRow, &nbCol);
     return nbRow;
 
 }
 
-unsigned int GraphScatteredMatrix::colSize()
+std::size_t GraphScatteredMatrix::colSize()
 {
-    unsigned int nbRow=0, nbCol=0;
+    std::size_t nbRow=0, nbCol=0;
     this->parent->getMatrixDimension(&nbRow, &nbCol);
     return nbCol;
 }

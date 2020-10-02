@@ -25,7 +25,7 @@
 #include <SofaBoundaryCondition/SurfacePressureForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <vector>
 #include <set>
 #include <iostream>
@@ -506,7 +506,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
 
     vparams->drawTool()->disableLighting();
 
-    const sofa::defaulttype::RGBAColor boxcolor(0.0f, 0.8f, 0.3f, 1.0f);
+    const sofa::helper::types::RGBAColor boxcolor(0.0f, 0.8f, 0.3f, 1.0f);
 
     vparams->drawTool()->setMaterial(boxcolor);
     vparams->drawTool()->drawBoundingBox(DataTypes::getCPos(m_min.getValue()), DataTypes::getCPos(m_max.getValue()));
@@ -519,7 +519,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
     if (m_drawForceScale.getValue() && m_f.size()==x.size())
     {
         std::vector< defaulttype::Vector3 > points;
-        const sofa::defaulttype::RGBAColor color(0,1,0.5,1);
+        const sofa::helper::types::RGBAColor color(0,1,0.5,1);
 
         for (unsigned int i=0; i<x.size(); i++)
         {

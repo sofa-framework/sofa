@@ -24,7 +24,7 @@
 
 #include <SofaGeneralEngine/RandomPointDistributionInSurface.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <cstdlib>
 #include <ctime>
 #include <climits>
@@ -271,7 +271,7 @@ void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::Visua
     for (unsigned int i=0 ; i<in.size() ; i++)
         vertices.push_back(in[i]);
 
-    vparams->drawTool()->drawPoints(vertices, 5.0, sofa::defaulttype::RGBAColor::red());
+    vparams->drawTool()->drawPoints(vertices, 5.0, sofa::helper::types::RGBAColor::red());
     vertices.clear();
 
     if (drawOutputPoints.getValue())
@@ -279,7 +279,7 @@ void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::Visua
         for (unsigned int i=0 ; i<out.size() ; i++)
             vertices.push_back(out[i]);
 
-        vparams->drawTool()->drawPoints(vertices, 5.0, sofa::defaulttype::RGBAColor::blue());
+        vparams->drawTool()->drawPoints(vertices, 5.0, sofa::helper::types::RGBAColor::blue());
     }
 
     vparams->drawTool()->restoreLastState();
