@@ -29,8 +29,10 @@ namespace sofa
 namespace defaulttype
 {
 
-using index_type = unsigned int;
-constexpr index_type InvalidID = UINT_MAX;
+//using index_type = unsigned int;
+//using size_type = unsigned int;
+//
+//constexpr index_type InvalidID = UINT_MAX;
 
 
 } // namespace defaulttype
