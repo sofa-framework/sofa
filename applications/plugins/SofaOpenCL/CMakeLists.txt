@@ -1,7 +1,11 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaOpenCL)
 
 set(SOFAOPENCL_VERSION 0.1)
+
+find_package(OpenCL REQUIRED)
+find_package(SofaGeneral REQUIRED)
+sofa_find_package(SofaSphFluid QUIET)
 
 set(HEADER_FILES
     CPUSPHFluidForceField.h
@@ -19,10 +23,6 @@ set(HEADER_FILES
     OpenCLPlaneForceField.inl
     OpenCLProgram.h
     OpenCLProgramParser.h
-    OpenCLSPHFluidForceField.h
-    OpenCLSPHFluidForceField.inl
-    OpenCLSpatialGridContainer.h
-    OpenCLSpatialGridContainer.inl
     OpenCLSphereForceField.h
     OpenCLSphereForceField.inl
     OpenCLSpringForceField.h
@@ -52,8 +52,6 @@ set(SOURCE_FILES
     OpenCLMouseInteraction.cpp
     OpenCLPlaneForceField.cpp
     OpenCLProgram.cpp
-    OpenCLSPHFluidForceField.cpp
-    OpenCLSpatialGridContainer.cpp
     OpenCLSphereForceField.cpp
     OpenCLSpringForceField.cpp
     OpenCLUniformMass.cpp
@@ -72,8 +70,6 @@ set(OTHER_FILES
     kernels/OpenCLGenericParticleForceField_Sphere.macrocl
     kernels/OpenCLMechanicalObject.cl
     kernels/OpenCLMemoryManager.cl
-    kernels/OpenCLSPHFluidForceField.cl
-    kernels/OpenCLSpatialGridContainer.cl
     kernels/OpenCLSpatialGridForce.cl
     kernels/OpenCLSpringForceField.cl
     kernels/OpenCLUniformMass.cl
@@ -81,8 +77,24 @@ set(OTHER_FILES
     kernels/oclRadixSort/Scan_b.cl
 )
 
-find_package(OpenCL REQUIRED)
-find_package(SofaGeneral REQUIRED)
+if(SofaSphFluid_FOUND)
+    list(APPEND HEADER_FILES
+        OpenCLSPHFluidForceField.h
+        OpenCLSPHFluidForceField.inl
+        OpenCLSpatialGridContainer.h
+        OpenCLSpatialGridContainer.inl)
+    list(APPEND SOURCE_FILES
+        OpenCLSPHFluidForceField.cpp
+        OpenCLSpatialGridContainer.cpp)
+    list(APPEND OTHER_FILES
+        kernels/OpenCLSPHFluidForceField.cl
+        kernels/OpenCLSpatialGridContainer.cl
+        )
+    message(STATUS "SofaOpenCL: optional dependency to SofaSphFluid found. Activing <OpenCLSPHFluidForceField>.")
+else()
+    message(STATUS "SofaOpenCL: optional dependency to SofaSphFluid not found. De-activing <OpenCLSPHFluidForceField>")
+endif()
+
 
 message(WARNING "SofaOpenCL: TODO: don't use absolute path (SOFA_SRC_DIR)")
 
@@ -91,7 +103,15 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${OTHER_FILES
 add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
 
 add_definitions("-DSOFA_BUILD_GPU_OPENCL")
-target_link_libraries(${PROJECT_NAME} ${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaSphFluid SofaUserInteraction csparse) # taucs taucs_mt system-taucs)
+target_link_libraries(${PROJECT_NAME} ${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaUserInteraction csparse) # taucs taucs_mt system-taucs)
+if(SofaSphFluid_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaSphFluid) # taucs taucs_mt system-taucs)
+endif()
 
-## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(SofaOpenCL ${SOFAOPENCL_VERSION} SofaOpenCL SofaOpenCL)
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME}
+    VERSION ${SOFAOPENCL_VERSION}
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
+    RELOCATABLE "plugins"
+)

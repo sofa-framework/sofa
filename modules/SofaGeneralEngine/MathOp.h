@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,61 +53,48 @@ public:
 protected:
     MathOp();
 
-    ~MathOp();
+    ~MathOp() override;
 public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str );
+    void parseFields ( const std::map<std::string,std::string*>& str ) override;
 
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void doUpdate() override;
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const MathOp<VecT>* = NULL)
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
+    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
+    static std::string GetCustomTemplateName()
     {
         return Data<Value>::templateName();
     }
 
-    Data<unsigned int> f_nbInputs;
+    Data<unsigned int> f_nbInputs; ///< Number of input values
     helper::vector<Data<VecValue>*> vf_inputs;
-    sofa::core::objectmodel::Data< sofa::helper::OptionsGroup > f_op;
-    Data<VecValue> f_output;
+    sofa::core::objectmodel::Data< sofa::helper::OptionsGroup > f_op; ///< Selected operation to apply
+    Data<VecValue> f_output; ///< Output values
 
 protected:
     void createInputs(int nb = -1);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MATHOP_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_MATHOP_CPP)
 
 extern template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<int> >;
 extern template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<bool> >;
-#ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<double> >;
 extern template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<defaulttype::Vec2d> >;
 extern template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<defaulttype::Vec3d> >;
-extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2dTypes::VecCoord >;
-extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2dTypes::VecDeriv >;
-extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3dTypes::VecCoord >;
-extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3dTypes::VecDeriv >;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<float> >;
-extern template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<defaulttype::Vec2f> >;
-extern template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<defaulttype::Vec3f> >;
-extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2fTypes::VecCoord >;
-extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2fTypes::VecDeriv >;
-extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3fTypes::VecCoord >;
-extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3fTypes::VecDeriv >;
-#endif //SOFA_DOUBLE
+extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2Types::VecCoord >;
+extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
+extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3Types::VecCoord >;
+extern template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3Types::VecDeriv >;
+ 
 #endif
 
 } // namespace engine

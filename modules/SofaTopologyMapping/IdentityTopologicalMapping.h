@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,9 +50,9 @@ public:
     SOFA_CLASS(IdentityTopologicalMapping,sofa::core::topology::TopologicalMapping);
 protected:
     IdentityTopologicalMapping();
-    virtual ~IdentityTopologicalMapping();
+    ~IdentityTopologicalMapping() override;
 public:
-    virtual void init();
+    void init() override;
 
 
     /** \brief Translates the TopologyChange objects from the source to the target.
@@ -61,9 +61,9 @@ public:
      * reflect the effects of the first topology changes on the second topology.
      *
      */
-    virtual void updateTopologicalMappingTopDown();
+    void updateTopologicalMappingTopDown() override;
 
-    virtual unsigned int getFromIndex(unsigned int ind);
+    unsigned int getFromIndex(unsigned int ind) override;
 
 };
 

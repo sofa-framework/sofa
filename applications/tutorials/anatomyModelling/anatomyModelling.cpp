@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -29,7 +29,7 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/PluginManager.h>
 
-#include <SofaSimulationGraph/graph.h>
+#include <SofaSimulationGraph/config.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
@@ -37,11 +37,10 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaMisc/initSofaMisc.h>
 
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
@@ -77,8 +76,6 @@
 #include <forcefield\StiffSpringLink.h>
 #endif
 
-//Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
-#include <sofa/component/typedef/Sofa_typedef.h>
 
 using namespace sofa;
 using namespace sofa::helper;
@@ -112,7 +109,6 @@ typedef sofa::component::engine::ImageSampler<ImageUC> ImageSampler_ImageUC;
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
 #define V3(type) StdVectorTypes<Vec<3,type>,Vec<3,type>,type>
-#define EV3(type) ExtVectorTypes<Vec<3,type>,Vec<3,type>,type>
 
 #define Rigid3(type)  StdRigidTypes<3,type>
 #define Affine3(type)  StdAffineTypes<3,type>
@@ -141,7 +137,7 @@ typedef sofa::component::container::MechanicalObject< Affine3(double) > Mechanic
 
 // mapping
 typedef sofa::component::mapping::LinearMapping< Affine3(double) , V3(double) > LinearMapping_Affine_Vec3d;
-typedef sofa::component::mapping::LinearMapping< Affine3(double) , EV3(float) > LinearMapping_Affine_ExtVec3f;
+typedef sofa::component::mapping::LinearMapping< Affine3(double) , V3(float) > LinearMapping_Affine_Vec3f;
 typedef sofa::component::mapping::LinearMapping< Affine3(double) , F332(double) > LinearMapping_Affine_F332;
 typedef sofa::component::mapping::LinearMapping< Rigid3(double), Affine3(double)  > LinearMapping_Rigid_Affine;
 
@@ -651,7 +647,7 @@ simulation::Node::SPtr createScene()
 	component::visualmodel::OglModel::SPtr m_visual = addNew< component::visualmodel::OglModel >(muscleVisuNode,"visual");
 	m_visual->setSrc("", loader.get());
 	m_visual->setColor(0.75f, 0.25f, 0.25f, 1.0f);
-	LinearMapping_Affine_ExtVec3f::SPtr m_visualMapping = addNew<LinearMapping_Affine_ExtVec3f>(muscleVisuNode,"mapping");
+        LinearMapping_Affine_Vec3f::SPtr m_visualMapping = addNew<LinearMapping_Affine_Vec3f>(muscleVisuNode,"mapping");
     m_visualMapping->setModels(frameDof.get(), m_visual.get());
 	
 	return root;
@@ -670,11 +666,10 @@ int main(int argc, char** argv)
 
     glutInit(&argc,argv);
 
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaMisc();
     sofa::gui::initMain();
 
     if (int err = sofa::gui::GUIManager::Init(argv[0],"")) return err;

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,24 +56,20 @@ public:
 
 
     ComplementaryROI();
-    ~ComplementaryROI();
+    ~ComplementaryROI() override;
 
     /// Update
-    virtual void update();
+    void doUpdate() override;
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     /// Assign the field values stored in the given map of name -> value pairs
-    virtual void parseFields ( const std::map<std::string,std::string*>& str );
+    void parseFields ( const std::map<std::string,std::string*>& str ) override;
 
 
-    virtual void init();
-    virtual void reinit();
-
-    virtual std::string getTemplateName() const;
-
-    static std::string templateName(const ComplementaryROI<DataTypes>* = NULL);
+    void init() override;
+    void reinit() override;
 
 protected:
 
@@ -92,13 +88,10 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API ComplementaryROI<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API ComplementaryROI<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP)
+extern template class SOFA_GENERAL_ENGINE_API ComplementaryROI<defaulttype::Vec3Types>;
+ 
+
 #endif
 
 } // namespace engine

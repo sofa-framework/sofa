@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <SofaBaseTopology/GridTopology.h>
-#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -55,7 +54,7 @@ public:
     /** \brief Overload method of @sa GridTopology::getPointInGrid.
      * Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
      * */
-    Vector3 getPointInGrid(int i, int j, int k) const;
+    Vector3 getPointInGrid(int i, int j, int k) const override;
 
     /// Set Cylinder grid center by @param 3 SReal
     void setCenter(SReal x, SReal y, SReal z);

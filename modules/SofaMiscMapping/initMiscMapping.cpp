@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
 #include <SofaMiscMapping/initMiscMapping.h>
 
 
@@ -38,19 +37,6 @@ void initMiscMapping()
         first = false;
     }
 }
-
-SOFA_LINK_CLASS(BeamLinearMapping)
-SOFA_LINK_CLASS(CenterPointMechanicalMapping)
-SOFA_LINK_CLASS(CenterOfMassMapping)
-SOFA_LINK_CLASS(CenterOfMassMultiMapping)
-SOFA_LINK_CLASS(CenterOfMassMulti2Mapping)
-SOFA_LINK_CLASS(CurveMapping)
-SOFA_LINK_CLASS(ExternalInterpolationMapping)
-SOFA_LINK_CLASS(SubsetMultiMapping)
-SOFA_LINK_CLASS(TubularMapping)
-SOFA_LINK_CLASS(VoidMapping)
-SOFA_LINK_CLASS(DeformableOnRigidFrameMapping)
-SOFA_LINK_CLASS(CatmullRomSplineMapping)
 
 } // namespace component
 

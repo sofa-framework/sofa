@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,42 +46,43 @@ public:
     SOFA_CLASS(TetrahedronSetTopologyContainer,TriangleSetTopologyContainer);
 
 
-    typedef core::topology::BaseMeshTopology::PointID			         PointID;
-    typedef core::topology::BaseMeshTopology::EdgeID			            EdgeID;
-    typedef core::topology::BaseMeshTopology::TriangleID		         TriangleID;
-    typedef core::topology::BaseMeshTopology::TetraID			         TetraID;
-    typedef core::topology::BaseMeshTopology::Edge				         Edge;
-    typedef core::topology::BaseMeshTopology::Triangle			         Triangle;
-    typedef core::topology::BaseMeshTopology::Tetra				         Tetra;
-    typedef core::topology::BaseMeshTopology::SeqTetrahedra			   SeqTetrahedra;
-    typedef core::topology::BaseMeshTopology::TetrahedraAroundVertex	TetrahedraAroundVertex;
-    typedef core::topology::BaseMeshTopology::TetrahedraAroundEdge		TetrahedraAroundEdge;
-    typedef core::topology::BaseMeshTopology::TetrahedraAroundTriangle	TetrahedraAroundTriangle;
-    typedef core::topology::BaseMeshTopology::EdgesInTetrahedron		   EdgesInTetrahedron;
-    typedef core::topology::BaseMeshTopology::TrianglesInTetrahedron	TrianglesInTetrahedron;
+    typedef core::topology::BaseMeshTopology::PointID                     PointID;
+    typedef core::topology::BaseMeshTopology::EdgeID                      EdgeID;
+    typedef core::topology::BaseMeshTopology::TriangleID                  TriangleID;
+    typedef core::topology::BaseMeshTopology::TetraID                     TetraID;
+    typedef core::topology::BaseMeshTopology::TetrahedronID               TetrahedronID;
+    typedef core::topology::BaseMeshTopology::Edge                        Edge;
+    typedef core::topology::BaseMeshTopology::Triangle                    Triangle;
+    typedef core::topology::BaseMeshTopology::Tetra                       Tetra;
+    typedef core::topology::BaseMeshTopology::SeqTetrahedra               SeqTetrahedra;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundVertex      TetrahedraAroundVertex;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundEdge        TetrahedraAroundEdge;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundTriangle    TetrahedraAroundTriangle;
+    typedef core::topology::BaseMeshTopology::EdgesInTetrahedron          EdgesInTetrahedron;
+    typedef core::topology::BaseMeshTopology::TrianglesInTetrahedron      TrianglesInTetrahedron;
 
 
-    typedef Tetra			Tetrahedron;
+    typedef Tetra            Tetrahedron;
     typedef sofa::helper::vector<TetraID>         VecTetraID;
 
 protected:
     TetrahedronSetTopologyContainer();
 
-    virtual ~TetrahedronSetTopologyContainer() {}
+    ~TetrahedronSetTopologyContainer() override {}
 public:
-    virtual void init();
+    void init() override;
 
     //add removed tetrahedron index
-    void addRemovedTetraIndex(sofa::helper::vector< unsigned int >& tetrahedra);
+    void addRemovedTetraIndex(sofa::helper::vector< TetrahedronID >& tetrahedra);
 
     //get removed tetrahedron index
-    sofa::helper::vector< unsigned int >& getRemovedTetraIndex();
+    sofa::helper::vector< TetrahedronID >& getRemovedTetraIndex();
 
     /// Procedural creation methods
     /// @{
-    virtual void clear();
-    virtual void addTriangle( int, int, int ) {}
-    virtual void addTetra( int a, int b, int c, int d );
+    void clear() override;
+    void addTriangle( int, int, int ) override {}
+    void addTetra( int a, int b, int c, int d ) override;
     /// @}
 
 
@@ -90,7 +91,7 @@ public:
     /// @{
 
     /** \brief Returns the tetrahedra array. */
-    virtual const SeqTetrahedra& getTetrahedra()
+    const SeqTetrahedra& getTetrahedra() override
     {
         return getTetrahedronArray();
     }
@@ -103,16 +104,16 @@ public:
      * @param ID of a tetrahedron.
      * @return The corresponding tetrahderon.
      */
-    virtual const Tetrahedron getTetrahedron (TetraID i);
+    const Tetrahedron getTetrahedron (TetraID i) override;
 
 
     /** \brief Returns the indices of a tetrahedron given four vertex indices.
      *
      * @param the four vertex indices.
      * @return the ID of the corresponding tetrahedron.
-     * @return -1 if none
+     * @return InvalidID if none
      */
-    virtual int getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+    TetrahedronID getTetrahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4) override;
 
 
     /** \brief Returns the 6 edges adjacent to a given tetrahedron.
@@ -120,7 +121,7 @@ public:
      * @param ID of a tetrahedron.
      * @return EdgesInTetrahedron list composing the input tetrahedron.
      */
-    virtual const EdgesInTetrahedron& getEdgesInTetrahedron(TetraID i) ;
+    const EdgesInTetrahedron& getEdgesInTetrahedron(TetraID id) override;
 
 
     /** \brief Returns the 4 triangles adjacent to a given tetrahedron.
@@ -128,7 +129,7 @@ public:
      * @param ID of a tetrahedron.
      * @return TrianglesInTetrahedron list composing the input tetrahedron.
      */
-    virtual const TrianglesInTetrahedron& getTrianglesInTetrahedron(TetraID i) ;
+    const TrianglesInTetrahedron& getTrianglesInTetrahedron(TetraID id) override;
 
 
     /** \brief Returns the set of tetrahedra adjacent to a given vertex.
@@ -136,7 +137,7 @@ public:
      * @param ID of a vertex.
      * @return TetrahedraAroundVertex list around the input vertex.
      */
-    virtual const TetrahedraAroundVertex& getTetrahedraAroundVertex(PointID i);
+    const TetrahedraAroundVertex& getTetrahedraAroundVertex(PointID id) override;
 
 
     /** \brief Returns the set of tetrahedra adjacent to a given edge.
@@ -144,7 +145,7 @@ public:
      * @param ID of an edge.
      * @return TetrahedraAroundVertex list around the input edge.
      */
-    virtual const TetrahedraAroundEdge& getTetrahedraAroundEdge(EdgeID i) ;
+    const TetrahedraAroundEdge& getTetrahedraAroundEdge(EdgeID id) override;
 
 
     /** \brief Returns the set of tetrahedra adjacent to a given triangle.
@@ -152,7 +153,7 @@ public:
      * @param ID of a triangle.
      * @return TetrahedraAroundVertex list around the input triangle.
      */
-    virtual const TetrahedraAroundTriangle& getTetrahedraAroundTriangle(TriangleID i) ;
+    const TetrahedraAroundTriangle& getTetrahedraAroundTriangle(TriangleID id) override;
 
 
     /** \brief Returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex.
@@ -162,7 +163,7 @@ public:
      * @return the position of this vertex in the tetrahedron (i.e. either 0, 1, 2 or 3).
      * @return -1 if none.
      */
-    virtual int getVertexIndexInTetrahedron(const Tetrahedron &t, PointID vertexIndex) const;
+    int getVertexIndexInTetrahedron(const Tetrahedron &t, PointID vertexIndex) const override;
 
 
     /** \brief Returns the index (either 0, 1 ,2, 3, 4 or 5) of the edge whose global index is edgeIndex.
@@ -172,7 +173,7 @@ public:
      * @return the position of this edge in the tetrahedron (i.e. either 0, 1, 2, 3, 4 or 5).
      * @return -1 if none.
      */
-    virtual int getEdgeIndexInTetrahedron(const EdgesInTetrahedron &t, EdgeID edgeIndex) const;
+    int getEdgeIndexInTetrahedron(const EdgesInTetrahedron &t, EdgeID edgeIndex) const override;
 
 
     /** \brief Returns the index (either 0, 1 ,2 or 3) of the triangle whose global index is triangleIndex.
@@ -182,19 +183,19 @@ public:
      * @return the position of this triangle in the tetrahedron (i.e. either 0, 1, 2 or 3).
      * @return -1 if none.
      */
-    virtual int getTriangleIndexInTetrahedron(const TrianglesInTetrahedron &t, TriangleID triangleIndex) const;
+    int getTriangleIndexInTetrahedron(const TrianglesInTetrahedron &t, TriangleID triangleIndex) const override;
 
 
     /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge.
      *
      */
-    virtual Edge getLocalEdgesInTetrahedron (const unsigned int i) const;
+    Edge getLocalEdgesInTetrahedron (const EdgeID i) const override;
 
 
     /** \brief Returns for each index (between 0 and 3) the three local vertices indices that are adjacent to that triangle
      *
      */
-    virtual Triangle getLocalTrianglesInTetrahedron (const PointID i) const;
+    Triangle getLocalTrianglesInTetrahedron (const TriangleID i) const override;
 
     /// @}
 
@@ -202,6 +203,9 @@ public:
 
     /// Dynamic Topology API
     /// @{
+
+    /// Method called by component Init method. Will create all the topology neighboorhood buffers and call @see TriangleSetTopologyContainer::initTopology()
+    void initTopology();
 
     /** \brief Checks if the topology is coherent
      *
@@ -213,7 +217,7 @@ public:
      * @see m_tetrahedraAroundEdge
      * @see m_tetrahedraAroundTriangle
      */
-    virtual bool checkTopology() const;
+    bool checkTopology() const override;
 
 
     /// Get information about connexity of the mesh
@@ -222,31 +226,34 @@ public:
       *
       * @return true if only one connected component
       */
-    virtual bool checkConnexity();
+    bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent();
+    size_t getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const VecTetraID getConnectedElement(TetraID elem);
+    const VecTetraID getConnectedElement(TetraID elem) override;
 
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const VecTetraID getElementAroundElement(TetraID elem);
+    const VecTetraID getElementAroundElement(TetraID elem) override;
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const VecTetraID getElementAroundElements(VecTetraID elems);
+    const VecTetraID getElementAroundElements(VecTetraID elems) override;
+
+    /// Returns the set of element indices adjacent to a given element with direct link from n-1 order element type (i.e triangle for tetrahedron)
+    const VecTetraID getOppositeElement(TetraID elemID);
     /// @}
 
 
 
     /** \brief Returns the number of tetrahedra in this topology.
-     *	The difference to getNbTetrahedra() is that this method does not generate the tetra array if it does not exist.
+     *    The difference to getNbTetrahedra() is that this method does not generate the tetra array if it does not exist.
      */
-    unsigned int getNumberOfTetrahedra() const;
+    size_t getNumberOfTetrahedra() const;
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const;
+    size_t getNumberOfElements() const override;
 
 
     /** \brief Returns the Tetrahedron array. */
@@ -287,6 +294,8 @@ public:
 
     /// @}
 
+       /** \brief Returns the type of the topology */
+       sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::TETRAHEDRON;}
 
     inline friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t)
     {
@@ -296,17 +305,17 @@ public:
                 << t.m_trianglesInTetrahedron;
 
         out << " "<< t.m_tetrahedraAroundVertex.size();
-        for (unsigned int i=0; i<t.m_tetrahedraAroundVertex.size(); i++)
+        for (size_t i=0; i<t.m_tetrahedraAroundVertex.size(); i++)
         {
             out << " " << t.m_tetrahedraAroundVertex[i];
         }
         out <<" "<< t.m_tetrahedraAroundEdge.size();
-        for (unsigned int i=0; i<t.m_tetrahedraAroundEdge.size(); i++)
+        for (size_t i=0; i<t.m_tetrahedraAroundEdge.size(); i++)
         {
             out << " " << t.m_tetrahedraAroundEdge[i];
         }
         out <<" "<< t.m_tetrahedraAroundTriangle.size();
-        for (unsigned int i=0; i<t.m_tetrahedraAroundTriangle.size(); i++)
+        for (size_t i=0; i<t.m_tetrahedraAroundTriangle.size(); i++)
         {
             out << " " << t.m_tetrahedraAroundTriangle[i];
         }
@@ -350,14 +359,14 @@ protected:
      *
      * Create the set of edges when needed.
      */
-    virtual void createEdgeSetArray();
+    void createEdgeSetArray() override;
 
 
     /** \brief Creates the TriangleSet array.
      *
      * Create the array of Triangles
      */
-    virtual void createTriangleSetArray();
+    void createTriangleSetArray() override;
 
 
     /** \brief Creates the TetrahedronSet array.
@@ -450,18 +459,18 @@ protected:
 
 
     /// \brief Function creating the data graph linked to d_tetrahedron
-    virtual void updateTopologyEngineGraph();
+    void updateTopologyEngineGraph() override;
 
 
     /// Use a specific boolean @see m_tetrahedronTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setTetrahedronTopologyToDirty() {m_tetrahedronTopologyDirty = true;}
-    void cleanTetrahedronTopologyFromDirty() {m_tetrahedronTopologyDirty = false;}
+    void setTetrahedronTopologyToDirty();
+    void cleanTetrahedronTopologyFromDirty();
     const bool& isTetrahedronTopologyDirty() {return m_tetrahedronTopologyDirty;}
 
 public:
-	/// force the creation of triangles
-	Data<bool>  d_createTriangleArray;
+    /// force the creation of triangles
+    Data<bool>  d_createTriangleArray;
 
     /// provides the set of tetrahedra.
     Data< sofa::helper::vector<Tetrahedron> > d_tetrahedron;

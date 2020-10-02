@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,6 +24,7 @@
 
 #include "SquareDistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/gl.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
 
@@ -61,7 +62,7 @@ template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::init()
 {
     edgeContainer = dynamic_cast<topology::EdgeSetTopologyContainer*>( this->getContext()->getMeshTopology() );
-    if( !edgeContainer ) serr<<"No EdgeSetTopologyContainer found ! "<<sendl;
+    msg_error_when(!edgeContainer) << "No EdgeSetTopologyContainer found ! ";
 
     SeqEdges links = edgeContainer->getEdges();
 
@@ -69,37 +70,7 @@ void SquareDistanceMapping<TIn, TOut>::init()
 
     // only used for warning message
     bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
-    if( compliance ) serr<<"Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance"<<sendl;
-
-    // compute the rest lengths if they are not known
-//    if( f_restLengths.getValue().size() != links.size() )
-//    {
-//        helper::WriteOnlyAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
-//        typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
-//        restLengths.resize( links.size() );
-//        if(!(f_computeDistance.getValue()))
-//        {
-//            for(unsigned i=0; i<links.size(); i++ )
-//            {
-//                restLengths[i] = (pos[links[i][0]] - pos[links[i][1]]).norm();
-
-//                if( restLengths[i]<=s_null_distance_epsilon && compliance ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
-//            }
-//        }
-//        else
-//        {
-//            if( compliance ) serr<<"Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance"<<sendl;
-//            for(unsigned i=0; i<links.size(); i++ )
-//                restLengths[i] = (Real)0.;
-//        }
-//    }
-//    else // manually set
-//        if( compliance ) // for warning message
-//        {
-//            helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
-//            for(unsigned i=0; i<links.size(); i++ )
-//                if( restLengths[i]<=s_null_distance_epsilon ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
-//        }
+    msg_error_when(compliance) << "Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance";
 
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
@@ -229,7 +200,6 @@ void SquareDistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mp
 template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-    //    cerr<<"SquareDistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& ) does nothing " << endl;
 }
 
 

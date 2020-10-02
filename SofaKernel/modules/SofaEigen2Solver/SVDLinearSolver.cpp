@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2011
-//
-// Copyright: See COPYING file that comes with this distribution
 #include <SofaEigen2Solver/SVDLinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
@@ -45,9 +42,6 @@ using core::VecId;
 using namespace sofa::defaulttype;
 using namespace sofa::core::behavior;
 using namespace sofa::simulation;
-#ifdef DISPLAY_TIME
-using sofa::helper::system::thread::CTime;
-#endif
 
 template<class TMatrix, class TVector>
 SVDLinearSolver<TMatrix,TVector>::SVDLinearSolver()
@@ -55,9 +49,6 @@ SVDLinearSolver<TMatrix,TVector>::SVDLinearSolver()
     , f_minSingularValue( initData(&f_minSingularValue,(Real)1.0e-6,"minSingularValue","Thershold under which a singular value is set to 0, for the stabilization of ill-conditioned system.") )
     , f_conditionNumber( initData(&f_conditionNumber,(Real)0.0,"conditionNumber","Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.") )
 {
-#ifdef DISPLAY_TIME
-    timeStamp = 1.0 / (double)CTime::getRefTicksPerSec();
-#endif
 }
 
 
@@ -68,10 +59,9 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printComment("SVD");
 #endif
-#ifdef DISPLAY_TIME
-    CTime timer;
-    double time1 = (double) timer.getTime();
-#endif
+
+    sofa::helper::AdvancedTimer::stepBegin("Solve-SVD");
+
     const bool verbose  = f_verbose.getValue();
 
     /// Convert the matrix and the right-hand vector to Eigen objects
@@ -124,17 +114,13 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         x[i] = (Real) solution(i);
     }
 
-#ifdef DISPLAY_TIME
-        time1 = (double)(((double) timer.getTime() - time1) * timeStamp / (nb_iter-1));
-        dmsg_info() << " solve, SVD = "<<time1;
-#endif
-        dmsg_info() << "solve, rhs vector = " << msgendl << rhs.transpose() << msgendl
-                    << " solution =   \n" << msgendl << x << msgendl
-                    << " verification, mx - b = " << msgendl << (m * solution - rhs ).transpose() << msgendl;
+    sofa::helper::AdvancedTimer::stepEnd("Solve-SVD");
+
+    dmsg_info() << "solve, rhs vector = " << msgendl << rhs.transpose() << msgendl
+                << " solution =   \n" << msgendl << x << msgendl
+                << " verification, mx - b = " << msgendl << (m * solution - rhs ).transpose() << msgendl;
 }
 
-
-SOFA_DECL_CLASS(SVDLinearSolver)
 
 int SVDLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
         .add< SVDLinearSolver< FullMatrix<double>, FullVector<double> > >()

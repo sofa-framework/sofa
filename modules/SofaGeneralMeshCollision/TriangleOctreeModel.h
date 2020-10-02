@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
 
@@ -40,24 +40,19 @@ namespace component
 namespace collision
 {
 
-class SOFA_GENERAL_MESH_COLLISION_API TriangleOctreeModel : public  TriangleModel, public TriangleOctreeRoot
+class SOFA_GENERAL_MESH_COLLISION_API TriangleOctreeModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public TriangleOctreeRoot
 {
 public:
-    SOFA_CLASS(TriangleOctreeModel, TriangleModel);
+    SOFA_CLASS(TriangleOctreeModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
 protected:
     TriangleOctreeModel();
 public:
-#if 0
-    /// the triangles associated to a point
-    helper::vector<helper::vector<int> > pTri;
-#endif
 
     /// the normals for each point
     helper::vector<defaulttype::Vector3> pNorms;
-    //vector < defaulttype::Vector4 > octreeVec;
-    void draw(const core::visual::VisualParams* vparams);
-    virtual void computeBoundingTree(int maxDepth=0);
-    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
+    void draw(const core::visual::VisualParams* vparams) override;
+    void computeBoundingTree(int maxDepth=0) override;
+    void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
     /// init the octree creation
     void buildOctree ();
 };

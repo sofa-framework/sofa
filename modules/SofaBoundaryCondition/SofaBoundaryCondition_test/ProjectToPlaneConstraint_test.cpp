@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,7 +68,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
     /// Create the context for the matrix tests.
     void SetUp()
     {
-//        if( sofa::simulation::getSimulation()==NULL )
+//        if( sofa::simulation::getSimulation()==nullptr )
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Create the scene
@@ -135,9 +135,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
        for (unsigned i=0; i<numNodes; i++){
            xprev[i] = x[i] = CPos(i,0,0);
        }
-//       cerr<<"test_projectPosition, x before = " << x << endl;
        projection->projectPosition(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
-//       cerr<<"test_projectPosition, x after = " << x << endl;
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted
@@ -146,7 +144,6 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
            if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
               Real scal = (x[i]-origin)*normal; // null if x is in the plane
-//              cerr<<"scal = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of constrained particle " << i << " is wrong: " << x[i] ;
@@ -157,7 +154,6 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
            {
               CPos dx = x[i]-xprev[i];
               Real scal = dx*dx;
-//              cerr<<"scal gap = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of unconstrained particle " << i << " is wrong: " << x[i] ;
@@ -175,9 +171,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
        for (unsigned i=0; i<numNodes; i++){
            vprev[i] = v[i] = CPos(i,0,0);
        }
-//       cerr<<"test_projectVelocity, v before = " << v << endl;
        projection->projectVelocity(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()) );
-//       cerr<<"test_projectVelocity, v after = " << v << endl;
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted
@@ -186,7 +180,6 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
            if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
               Real scal = v[i]*normal; // null if v is in the plane
-//              cerr<<"scal = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of constrained particle " << i << " is wrong: " << v[i] ;
@@ -197,7 +190,6 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
            {
               CPos dv = v[i]-vprev[i];
               Real scal = dv*dv;
-//              cerr<<"scal gap = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of unconstrained particle " << i << " is wrong: " << v[i] ;
@@ -210,9 +202,8 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     void TearDown()
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);
-//        cerr<<"tearing down"<<endl;
     }
 
 

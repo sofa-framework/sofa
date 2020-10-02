@@ -1,0 +1,41 @@
+<Node name="root" dt="0.005">
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <DefaultPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="Response" response="default" />
+    <DefaultCollisionGroupManager name="Group" />
+    <DiscreteIntersection />
+
+    <MeshGmshLoader name="MeshLoader" filename="mesh/liver.msh" />
+    <MeshObjLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
+
+    <Node name="Liver">
+        <EulerImplicitSolver />
+        <CGLinearSolver iterations="1000" tolerance="1e-5" threshold="1e-5"/>
+        <MechanicalObject name="dofs" src="@../MeshLoader"/>
+
+        <TetrahedronSetTopologyContainer name="TetraTopo" src="@../MeshLoader"/>
+        <TetrahedronSetGeometryAlgorithms />
+
+        <MeshMatrixMass massDensity="1.5" topology="@TetraTopo" />
+        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.45" youngModulus="5000" />
+        
+        <FixedConstraint  name="FixedConstraint" indices="3" />
+        <PartialFixedConstraint  name="FixedConstraint" indices="39 64" fixedDirections="1 1 0" />
+
+        <Node name="Visu" >
+            <OglModel  name="VisualModel" src="@../../LiverSurface" color="0 1 1"/>
+            <BarycentricMapping name="VisualMapping" input="@../dofs" output="@VisualModel" />
+        </Node>
+        <Node name="Surf" >
+            <SphereLoader filename="mesh/liver.sph" />
+            <MechanicalObject name="spheres" position="@[-1].position" />
+            <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+            <BarycentricMapping name="CollisionMapping" input="@../dofs" output="@spheres" />
+        </Node>
+
+    </Node>
+</Node>

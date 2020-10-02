@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/gl.h>
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -462,9 +463,9 @@ public:
     typedef helper::vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
-    Data<helper::OptionsGroup> method;
-    Data< bool > computeRecursive;
-    Data< ParamTypes > param;
+    Data<helper::OptionsGroup> method; ///< method (param)
+    Data< bool > computeRecursive; ///< if true: insert nodes recursively and build the graph
+    Data< ParamTypes > param; ///< Parameters
     /**@}*/
 
     //@name sample data (points+connectivity)
@@ -472,20 +473,20 @@ public:
     typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
-    Data< SeqPositions > position;
-    Data< SeqPositions > fixedPosition;
+    Data< SeqPositions > position; ///< output positions
+    Data< SeqPositions > fixedPosition; ///< user defined sample positions
 
     typedef typename core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
     typedef helper::WriteOnlyAccessor<Data< SeqEdges > > waEdges;
-    Data< SeqEdges > edges;
-    Data< SeqEdges > graphEdges;
+    Data< SeqEdges > edges; ///< edges connecting neighboring nodes
+    Data< SeqEdges > graphEdges; ///< oriented graph connecting parent to child nodes
 
     typedef typename core::topology::BaseMeshTopology::Hexa Hexa;
     typedef typename core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
     typedef helper::WriteOnlyAccessor<Data< SeqHexahedra > > waHexa;
-    Data< SeqHexahedra > hexahedra;
+    Data< SeqHexahedra > hexahedra; ///< output hexahedra
     /**@}*/
 
     //@name distances (may be used for shape function computation)
@@ -504,17 +505,14 @@ public:
 
     //@name visu data
     /**@{*/
-    Data<bool> f_clearData;
-    Data< float > showSamplesScale;
-    Data< int > drawMode;
-    Data< bool > showEdges;
-    Data< bool > showGraph;
-	Data< bool > showFaces;
+    Data<bool> f_clearData; ///< clear distance image after computation
+    Data< float > showSamplesScale; ///< show samples
+    Data< int > drawMode; ///< 0: points, 1: spheres
+    Data< bool > showEdges; ///< show edges
+    Data< bool > showGraph; ///< show graph
+	Data< bool > showFaces; ///< show the faces of cubes
 
     /**@}*/
-
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const ImageSampler<ImageTypes>* = NULL) { return ImageTypes::Name();    }
     ImageSampler()    :   Inherited()
         , image(initData(&image,ImageTypes(),"image",""))
         , transform(initData(&transform,TransformType(),"transform",""))
@@ -549,7 +547,7 @@ public:
         ImageSamplerSpecialization<ImageTypes>::init( this );
     }
 
-    virtual void init()
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -563,18 +561,14 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void update()
+    void doUpdate() override
     {
-        updateAllInputsIfDirty(); // easy to ensure that all inputs are up-to-date
-
-        cleanDirty();
-
         raParam params(this->param);
 
         if(this->method.getValue().getSelectedId() == REGULAR)
@@ -617,7 +611,7 @@ protected:
         }
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
         {
@@ -637,7 +631,7 @@ protected:
     }
 
 #ifndef SOFA_NO_OPENGL
-    virtual void draw(const core::visual::VisualParams* vparams)
+    void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;
@@ -654,7 +648,7 @@ protected:
             {
             case 1:
                 glPushAttrib(GL_LIGHTING_BIT);
-                glEnable(GL_LIGHTING);
+                vparams->drawTool()->enableLighting();
                 vparams->drawTool()->drawSpheres(this->position.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.1,0.7,0.1,1));
                 vparams->drawTool()->drawSpheres(this->fixedPosition.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.1,0.7,0.1,1));
                 glPopAttrib();
@@ -794,7 +788,6 @@ protected:
         }
         //        for(unsigned int i=0;i<nb;i++) sampler->sout<<"("<<pos[indices[i]]<<") ";  sampler->sout<<sampler->sendl;
         Coord p;
-        typename helper::vector<Coord>::iterator it;
         // add corners
         unsigned int corners[8]= {addPoint(Coord(BB[0][0],BB[0][1],BB[0][2]),pos,indices),addPoint(Coord(BB[1][0],BB[0][1],BB[0][2]),pos,indices),addPoint(Coord(BB[0][0],BB[1][1],BB[0][2]),pos,indices),addPoint(Coord(BB[1][0],BB[1][1],BB[0][2]),pos,indices),addPoint(Coord(BB[0][0],BB[0][1],BB[1][2]),pos,indices),addPoint(Coord(BB[1][0],BB[0][1],BB[1][2]),pos,indices),addPoint(Coord(BB[0][0],BB[1][1],BB[1][2]),pos,indices),addPoint(Coord(BB[1][0],BB[1][1],BB[1][2]),pos,indices)};
         // add cell center

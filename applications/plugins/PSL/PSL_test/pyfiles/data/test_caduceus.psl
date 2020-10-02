@@ -1,0 +1,259 @@
+Node : {
+    name : "root"
+    gravity : "0 -1000 0"
+    dt : "0.04"
+    VisualStyle : {
+        displayFlags : "showVisual"
+    } 
+    LCPConstraintSolver : {
+        printLog : "0"
+        initial_guess : "0"
+        build_lcp : "0"
+        tolerance : "0.001"
+        maxIt : "1000"
+        mu : "0.2"
+    }  
+    FreeMotionAnimationLoop : {}
+    DefaultPipeline : {
+        verbose : "0"
+        draw : "0"
+        depth : "15"
+    } 
+    BruteForceDetection : {
+        name : "N2"
+    } 
+    MinProximityIntersection : {
+        name : "Proximity"
+        alarmDistance : "1.5"
+        contactDistance : "1"
+    }
+    
+    LightManager : {}
+    SpotLight : {
+        name : "light1"
+        color : "1 1 1 1"
+        position : "0 80 25"
+        direction : "0 -1 -0.8"
+        cutoff : "30"
+        exponent : "1"
+    } 
+    SpotLight : {
+        name : "light2"
+        color : "1 1 1 1"
+        position : "0 40 100"
+        direction : "0 0 -1"
+        cutoff : "30"
+        exponent : "1"
+    } 
+    
+    DefaultContactManager : {
+        name : "Response"
+        response : "FrictionContact"
+    } 
+    DefaultVisualManagerLoop : {
+        name : "defaultVisualManagerLoop"
+        printLog : "0"
+        tags : ""
+        listening : "0"
+    } 
+    InteractiveCamera : {
+        name : "baseCamera"
+        printLog : "0"
+        tags : ""
+        listening : "1"
+        position : "0 0 0"
+        orientation : "0 0 0 1"
+        lookAt : "0 0 0"
+        distance : "0"
+        fieldOfView : "45"
+        zNear : "1.89871"
+        zFar : "78.548"
+        computeZClip : "1"
+        minBBox : "-12.6155 3.17147e-07 -12.7176"
+        maxBBox : "13.1948 66.863 12.4085"
+        widthViewport : "800"
+        heightViewport : "600"
+        projectionType : "Perspective"
+        activated : "1"
+        fixedLookAt : "0"
+        modelViewMatrix : "1 0 0 -0 0 1 0 -0 0 0 1 -0 0 0 0 1"
+        projectionMatrix : "1.81066 0 0 0 0 2.41421 0 0 0 0 -1.04954 -3.89149 0 0 -1 0"
+        zoomSpeed : "250"
+        panSpeed : "0.1"
+        pivot : "2"
+    } 
+    Node : {
+        name : "Snake"
+        SparseGridRamificationTopology : {
+            name : "grid"
+            fileTopology : "mesh/snake_body.obj"
+            n : "4 12 3"
+            nbVirtualFinerLevels : "3"
+            finestConnectivity : "0"
+        } 
+        EulerImplicitSolver : {
+            name : "cg_odesolver"
+            rayleighStiffness : "0.03"
+            rayleighMass : "1"
+        } 
+        CGLinearSolver : {
+            name : "linear solver"
+            iterations : "20"
+            tolerance : "1e-12"
+            threshold : "1e-18"
+        } 
+        MechanicalObject : {
+            name : "dofs"
+            tags : "NoPicking"
+            position : "@grid.position"
+        } 
+        UniformMass : {
+            totalmass : "1"
+        } 
+        HexahedronFEMForceField : {
+            name : "FEM"
+            printLog : "0"
+            method : "large"
+            poissonRatio : "0.3"
+            youngModulus : "30000"
+            updateStiffnessMatrix : "0"
+        } 
+        UncoupledConstraintCorrection : {}
+        Node : {
+            name : "Collis"
+            MeshObjLoader : {
+                name : "loader"
+                filename : "mesh/meca_snake_900tri.obj"
+            } 
+            MeshTopology : {}
+            MechanicalObject : {
+                name : "CollisModel"
+            } 
+            TTriangleModel : {
+                selfCollision : "0"
+            } 
+            TLineModel : {
+                selfCollision : "0"
+            } 
+            TPointModel : {
+                selfCollision : "0"
+            } 
+            BarycentricMapping : {
+                input : "@.."
+                output : "@."
+            } 
+        }
+        Node : {
+            name : "VisuBody"
+            tags : "Visual"
+            OglModel : {
+                name : "VisualBody"
+                fileMesh : "mesh/snake_body.obj"
+            } 
+            BarycentricMapping : {
+                input : "@.."
+                output : "@VisualBody"
+            } 
+        }
+        Node : {
+            name : "VisuCornea"
+            tags : "Visual"
+            OglModel : {
+                name : "VisualCornea"
+                fileMesh : "mesh/snake_cornea.obj"
+            } 
+            BarycentricMapping : {
+                input : "@.."
+                output : "@VisualCornea"
+            } 
+        }
+        Node : {
+            name : "VisuEye"
+            tags : "Visual"
+            OglModel : {
+                name : "VisualEye"
+                fileMesh : "mesh/snake_yellowEye.obj"
+            } 
+            BarycentricMapping : {
+                input : "@.."
+                output : "@VisualEye"
+            } 
+        }
+    }
+    Node : {
+        name : "Base"
+        Node : {
+            name : "Stick"
+            MeshObjLoader : {
+                name : "loader"
+                filename : "mesh/collision_batons.obj"
+            } 
+            MeshTopology : {}
+            MechanicalObject : {
+                name : "CollisModel"
+            } 
+            TLineModel : {
+                moving : "0"
+                simulated : "0"
+            } 
+            TPointModel : {
+                moving : "0"
+                simulated : "0"
+            } 
+        }
+        Node : {
+            name : "Blobs"
+            MeshObjLoader : {
+                name : "loader"
+                filename : "mesh/collision_boules_V3.obj"
+            } 
+            MeshTopology : {}
+            MechanicalObject : {
+                name : "CollisModel"
+            } 
+            TTriangleModel : {
+                moving : "0"
+                simulated : "0"
+            } 
+            TLineModel : {
+                moving : "0"
+                simulated : "0"
+            } 
+            TPointModel : {
+                moving : "0"
+                simulated : "0"
+            } 
+        }
+        Node : {
+            name : "Foot"
+            MeshObjLoader : {
+                name : "loader"
+                filename : "mesh/collision_pied.obj"
+            } 
+            MeshTopology : {}
+            MechanicalObject : {
+                name : "CollisModel"
+            } 
+            TTriangleModel : {
+                moving : "0"
+                simulated : "0"
+            } 
+            TLineModel : {
+                moving : "0"
+                simulated : "0"
+            } 
+            TPointModel : {
+                moving : "0"
+                simulated : "0"
+            } 
+        }
+        Node : {
+            name : "Visu"
+            tags : "Visual"
+            OglModel : {
+                name : "OglModel"
+                fileMesh : "mesh/SOFA_pod.obj"
+            } 
+        }
+    }
+}

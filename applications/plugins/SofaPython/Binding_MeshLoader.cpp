@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,36 +22,13 @@
 
 #include "Binding_MeshLoader.h"
 #include "Binding_BaseLoader.h"
+#include "PythonToSofa.inl"
 
-using namespace sofa::core::loader;
-using namespace sofa::core;
-using namespace sofa::core::objectmodel;
-
-extern "C" PyObject * MeshLoader_reinit(PyObject *self, PyObject * /*args*/)
-{
-    MeshLoader* obj=down_cast<MeshLoader>(((PySPtr<Base>*)self)->object->toBaseLoader());
-    obj->reinit();
-    Py_RETURN_NONE;
-}
-
-
-
+#include <sofa/core/loader/MeshLoader.h>
+using sofa::core::loader::MeshLoader ;
 
 SP_CLASS_METHODS_BEGIN(MeshLoader)
-SP_CLASS_METHOD(MeshLoader,reinit)
-/*
-SP_CLASS_METHOD(MeshLoader,applyTranslation)
-SP_CLASS_METHOD(MeshLoader,applyRotation)
-SP_CLASS_METHOD(MeshLoader,applyScale)
-SP_CLASS_METHOD(MeshLoader,setTranslation)
-SP_CLASS_METHOD(MeshLoader,setRotation)
-SP_CLASS_METHOD(MeshLoader,setScale)
-SP_CLASS_METHOD(MeshLoader,getTranslation)
-SP_CLASS_METHOD(MeshLoader,getRotation)
-SP_CLASS_METHOD(MeshLoader,getScale)
-*/
 SP_CLASS_METHODS_END
-
 
 SP_CLASS_TYPE_SPTR(MeshLoader,MeshLoader,BaseLoader)
 

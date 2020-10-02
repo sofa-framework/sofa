@@ -172,10 +172,6 @@ void LabelPointImageToolBoxAction::sectionButtonClick()
 
 
 
-SOFA_DECL_CLASS(LabelPointImageToolBoxAction)
-
-
-
 }
 }
 }

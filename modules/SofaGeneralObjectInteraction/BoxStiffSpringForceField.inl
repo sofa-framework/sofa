@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,13 +22,9 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 #include <map>
@@ -48,8 +44,8 @@ BoxStiffSpringForceField<DataTypes>::BoxStiffSpringForceField(MechanicalState* o
     : StiffSpringForceField<DataTypes>(object1, object2, ks, kd),
       box_object1( initData( &box_object1, Vec6(0,0,0,1,1,1), "box_object1", "Box for the object1 where springs will be attached") ),
       box_object2( initData( &box_object2, Vec6(0,0,0,1,1,1), "box_object2", "Box for the object2 where springs will be attached") ),
-      factorRestLength( sofa::core::objectmodel::Base::initData( &factorRestLength, (SReal)1.0, "factorRestLength", "Factor used to compute the rest length of the springs generated"))
-
+      factorRestLength( sofa::core::objectmodel::Base::initData( &factorRestLength, (SReal)1.0, "factorRestLength", "Factor used to compute the rest length of the springs generated")),
+	  forceOldBehavior(initData(&forceOldBehavior, true, "forceOldBehavior", "Keep using the old behavior"))
 {
 }
 
@@ -58,8 +54,20 @@ BoxStiffSpringForceField<DataTypes>::BoxStiffSpringForceField(double ks, double 
     : StiffSpringForceField<DataTypes>(ks, kd),
       box_object1( initData( &box_object1, Vec6(0,0,0,1,1,1), "box_object1", "Box for the object1 where springs will be attached") ),
       box_object2( initData( &box_object2, Vec6(0,0,0,1,1,1), "box_object2", "Box for the object2 where springs will be attached") ),
-      factorRestLength( sofa::core::objectmodel::Base::initData( &factorRestLength, (SReal)1.0, "factorRestLength", "Factor used to compute the rest length of the springs generated"))
+      factorRestLength( sofa::core::objectmodel::Base::initData( &factorRestLength, (SReal)1.0, "factorRestLength", "Factor used to compute the rest length of the springs generated")),
+	  forceOldBehavior(initData(&forceOldBehavior, true, "forceOldBehavior", "Keep using the old behavior"))
 {
+}
+
+template <class DataTypes>
+void BoxStiffSpringForceField<DataTypes>::init()
+{
+	if(forceOldBehavior.getValue())
+	{
+		 msg_warning("BoxStiffSpringForceField") << "The behavior of the component has changed."
+												 << " If you want to use the old behavior you should add the parameter \"forceOldBehavior=true\" to your scene."
+												 << " If you want to remove this warning and use the new behavior you need to add \"forceOldBehavior=false\"." << "\n";
+	}
 }
 
 template <class DataTypes>
@@ -113,7 +121,10 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
                 if (indice_unused[it->second])
                 {
                     indice_unused[it->second] = false;
-                    this->addSpring(indices1[i], indices2[it->second], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
+					if(forceOldBehavior.getValue())
+						this->addSpring(indices1[i], indices2[it->second], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
+					else
+						this->addSpring(indices1[i], indices2[it->second], this->getStiffness(), this->getDamping(), it->first*factorRestLength.getValue() );
                     break;
                 }
             }
@@ -141,7 +152,10 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
                 if (indice_unused[it->second])
                 {
                     indice_unused[it->second] = false;
-                    this->addSpring( indices1[it->second], indices2[i], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
+					if(forceOldBehavior.getValue())
+						this->addSpring(indices1[i], indices2[it->second], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
+					else
+						this->addSpring( indices1[it->second], indices2[i], this->getStiffness(), this->getDamping(), it->first*factorRestLength.getValue() );
                     break;
                 }
             }
@@ -154,24 +168,15 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
 template <class DataTypes>
 void BoxStiffSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowInteractionForceFields())
         return;
 
     Inherit::draw(vparams);
-    //     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    //     glDisable (GL_LIGHTING);
-    //     glPointSize(10);
-    //     glColor4f (1,0.5,0.5,1);
-    //     glBegin (GL_POINTS);
-    //     const SetIndex& indices = this->f_indices.getValue();
-    //     for (typename SetIndex::const_iterator it = indices.begin();
-    //         it != indices.end();
-    //         ++it)
-    //     {
-    //         gl::glVertexT(x[*it]);
-    //     }
-    //     glEnd();
+
+    vparams->drawTool()->saveLastState();
+
+    sofa::defaulttype::RGBAColor color;
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     ///draw the constraint box
     const Vec6& b1=box_object1.getValue();
@@ -190,65 +195,64 @@ void BoxStiffSpringForceField<DataTypes>::draw(const core::visual::VisualParams*
     const Real& Zmin2=b2[2];
     const Real& Zmax2=b2[5];
 
+    color = sofa::defaulttype::RGBAColor(0,0.5,0.5,1);
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmin1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmax1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmin1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymin1,Zmin1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmin1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymax1,Zmin1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymax1,Zmin1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymax1,Zmin1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymax1,Zmin1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymax1,Zmax1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymax1,Zmax1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmax1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymin1,Zmax1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymin1,Zmax1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymin1,Zmax1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymax1,Zmax1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymin1,Zmax1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymin1,Zmin1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin1,Ymax1,Zmax1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymax1,Zmax1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymax1,Zmin1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymin1,Zmin1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymax1,Zmin1));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax1,Ymax1,Zmax1));
+    vparams->drawTool()->drawLines(vertices,1,color);
+    vertices.clear();
 
-    glBegin(GL_LINES);
+    color = sofa::defaulttype::RGBAColor(0.5,0.5,0,1);
 
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmin2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmax2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmin2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymin2,Zmin2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmin2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymax2,Zmin2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymax2,Zmin2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymax2,Zmin2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymax2,Zmin2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymax2,Zmax2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymax2,Zmax2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmax2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymin2,Zmax2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymin2,Zmax2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymin2,Zmax2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymax2,Zmax2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymin2,Zmax2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymin2,Zmin2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmin2,Ymax2,Zmax2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymax2,Zmax2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymax2,Zmin2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymin2,Zmin2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymax2,Zmin2));
+    vertices.push_back(sofa::defaulttype::Vector3(Xmax2,Ymax2,Zmax2));
 
-    glColor4f (0,0.5,0.5,1);
-    glVertex3d(Xmin1,Ymin1,Zmin1);
-    glVertex3d(Xmin1,Ymin1,Zmax1);
-    glVertex3d(Xmin1,Ymin1,Zmin1);
-    glVertex3d(Xmax1,Ymin1,Zmin1);
-    glVertex3d(Xmin1,Ymin1,Zmin1);
-    glVertex3d(Xmin1,Ymax1,Zmin1);
-    glVertex3d(Xmin1,Ymax1,Zmin1);
-    glVertex3d(Xmax1,Ymax1,Zmin1);
-    glVertex3d(Xmin1,Ymax1,Zmin1);
-    glVertex3d(Xmin1,Ymax1,Zmax1);
-    glVertex3d(Xmin1,Ymax1,Zmax1);
-    glVertex3d(Xmin1,Ymin1,Zmax1);
-    glVertex3d(Xmin1,Ymin1,Zmax1);
-    glVertex3d(Xmax1,Ymin1,Zmax1);
-    glVertex3d(Xmax1,Ymin1,Zmax1);
-    glVertex3d(Xmax1,Ymax1,Zmax1);
-    glVertex3d(Xmax1,Ymin1,Zmax1);
-    glVertex3d(Xmax1,Ymin1,Zmin1);
-    glVertex3d(Xmin1,Ymax1,Zmax1);
-    glVertex3d(Xmax1,Ymax1,Zmax1);
-    glVertex3d(Xmax1,Ymax1,Zmin1);
-    glVertex3d(Xmax1,Ymin1,Zmin1);
-    glVertex3d(Xmax1,Ymax1,Zmin1);
-    glVertex3d(Xmax1,Ymax1,Zmax1);
+    vparams->drawTool()->drawLines(vertices,1,color);
 
-    glColor4f (0.5,0.5,0,1);
-
-    glVertex3d(Xmin2,Ymin2,Zmin2);
-    glVertex3d(Xmin2,Ymin2,Zmax2);
-    glVertex3d(Xmin2,Ymin2,Zmin2);
-    glVertex3d(Xmax2,Ymin2,Zmin2);
-    glVertex3d(Xmin2,Ymin2,Zmin2);
-    glVertex3d(Xmin2,Ymax2,Zmin2);
-    glVertex3d(Xmin2,Ymax2,Zmin2);
-    glVertex3d(Xmax2,Ymax2,Zmin2);
-    glVertex3d(Xmin2,Ymax2,Zmin2);
-    glVertex3d(Xmin2,Ymax2,Zmax2);
-    glVertex3d(Xmin2,Ymax2,Zmax2);
-    glVertex3d(Xmin2,Ymin2,Zmax2);
-    glVertex3d(Xmin2,Ymin2,Zmax2);
-    glVertex3d(Xmax2,Ymin2,Zmax2);
-    glVertex3d(Xmax2,Ymin2,Zmax2);
-    glVertex3d(Xmax2,Ymax2,Zmax2);
-    glVertex3d(Xmax2,Ymin2,Zmax2);
-    glVertex3d(Xmax2,Ymin2,Zmin2);
-    glVertex3d(Xmin2,Ymax2,Zmax2);
-    glVertex3d(Xmax2,Ymax2,Zmax2);
-    glVertex3d(Xmax2,Ymax2,Zmin2);
-    glVertex3d(Xmax2,Ymin2,Zmin2);
-    glVertex3d(Xmax2,Ymax2,Zmin2);
-    glVertex3d(Xmax2,Ymax2,Zmax2);
-
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 

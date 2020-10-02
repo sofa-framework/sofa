@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -38,11 +38,10 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaMisc/initSofaMisc.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
@@ -52,9 +51,6 @@
 #include <SofaBaseVisual/VisualStyle.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
-
-//Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
-#include <sofa/component/typedef/Sofa_typedef.h>
 
 #include <utility>
 
@@ -250,11 +246,10 @@ int main(int argc, char** argv)
     .option(&verbose,'v',"verbose","print debug info")
     (argc,argv);
 
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaMisc();
     sofa::gui::initMain();
 
     if (int err = sofa::gui::GUIManager::Init(argv[0],"")) return err;
@@ -270,9 +265,7 @@ int main(int argc, char** argv)
     sofa::simulation::getSimulation()->init(groot.get());
     sofa::gui::GUIManager::SetScene(groot);
 
-#ifdef PS3
     groot->setAnimate(true);
-#endif
 
     // Run the main loop
     if (int err = sofa::gui::GUIManager::MainLoop(groot))

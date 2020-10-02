@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sstream>
-
+#include <fstream>
 
 namespace sofa
 {
@@ -38,8 +38,6 @@ namespace loader
 {
 
 using namespace sofa::defaulttype;
-
-SOFA_DECL_CLASS(OffSequenceLoader)
 
 int OffSequenceLoaderClass = core::RegisterObject("Read and load an .off file at each timestep")
         .add< OffSequenceLoader >();
@@ -156,14 +154,14 @@ bool OffSequenceLoader::load(const char * filename)
 
     if (!file.good())
     {
-        serr << "Cannot read file '" << m_filename << "'." << sendl;
+        msg_error() << "Cannot read file '" << m_filename << "'.";
         return false;
     }
 
     file >> cmd;
     if (cmd != "OFF")
     {
-        serr << "Not a OFF file (header problem) '" << m_filename << "'." << sendl;
+        msg_error() << "Not a OFF file (header problem) '" << m_filename << "'.";
         return false;
     }
 

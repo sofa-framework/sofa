@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
 #include <SofaConstraint/initConstraint.h>
 
 
@@ -38,21 +37,6 @@ void initConstraint()
         first = false;
     }
 }
-
-SOFA_LINK_CLASS(LocalMinDistance)
-SOFA_LINK_CLASS(LMDNewProximityIntersection)
-SOFA_LINK_CLASS(FrictionContact)
-SOFA_LINK_CLASS(UnilateralInteractionConstraint)
-SOFA_LINK_CLASS(UncoupledConstraintCorrection)
-SOFA_LINK_CLASS(PrecomputedConstraintCorrection)
-SOFA_LINK_CLASS(LinearSolverConstraintCorrection)
-SOFA_LINK_CLASS(LCPConstraintSolver)
-SOFA_LINK_CLASS(GenericConstraintSolver)
-SOFA_LINK_CLASS(BilateralInteractionConstraint)
-SOFA_LINK_CLASS(ConstraintAnimationLoop)
-SOFA_LINK_CLASS(StopperConstraint)
-SOFA_LINK_CLASS(SlidingConstraint)
-
 
 } // namespace component
 

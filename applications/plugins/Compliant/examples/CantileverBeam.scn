@@ -4,7 +4,7 @@
     <RequiredPlugin name="Flexible" />
     <RequiredPlugin name="Compliant" />
     <Node name="Cube grid" >
-<!--        <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" />-->
+<!--        <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" />-->
 <!--        <MinresSolver verbose="0" implicitVelocity="1" implicitPosition="1" kkt="true" warm="false" maxIterations="25" precision="1e-6" />-->
 <!--        <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"  />-->
          <CompliantImplicitSolver printLog="0" />

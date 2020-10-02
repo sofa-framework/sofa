@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,11 +61,11 @@ public:
 
     /** @name  topology */
     //@{
-    Data< SeqPositions > f_inPosition;
+    Data< SeqPositions > f_inPosition; ///< input node positions
     typedef sofa::core::topology::BaseMeshTopology Topo;
     Topo* parentTopology;
-    Data< helper::vector<unsigned int> > f_cell;
-    Data< helper::vector<unsigned int> > f_indices;
+    Data< helper::vector<unsigned int> > f_cell; ///< cell index associated with each sample
+    Data< helper::vector<unsigned int> > f_indices; ///< list of cells where sampling is performed (all by default)
 
     typedef topology::TetrahedronSetGeometryAlgorithms<defaulttype::StdVectorTypes<Coord,Coord,Real> > TetraGeoAlg;
     TetraGeoAlg* tetraGeoAlgo;
@@ -73,13 +73,13 @@ public:
 
     /** @name orientation data */
     //@{
-    Data< SeqPositions > f_orientation; // = rest deformation gradient orientation in each cell (Euler angles)
-    Data< bool > f_useLocalOrientation;
+    Data< SeqPositions > f_orientation; ///< = rest deformation gradient orientation in each cell (Euler angles)
+    Data< bool > f_useLocalOrientation; ///< tells if orientations are defined in the local basis on each cell
     //@}
 
-    Data< helper::vector<Real> > f_fineVolumes;
+    Data< helper::vector<Real> > f_fineVolumes; ///< input cell volumes (typically computed from a fine model)
 
-    virtual void init()
+    void init() override
     {
         Inherited::init();
 
@@ -97,22 +97,22 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
     TopologyGaussPointSampler()    :   Inherited()
       , f_inPosition(initData(&f_inPosition,SeqPositions(),"inPosition","input node positions"))
-      , parentTopology( 0 )
+      , parentTopology( nullptr )
       , f_cell(initData(&f_cell,"cell","cell index associated with each sample"))
       , f_indices(initData(&f_indices,"indices","list of cells where sampling is performed (all by default)"))
-      , tetraGeoAlgo( 0 )
+      , tetraGeoAlgo( nullptr )
       , f_orientation(initData(&f_orientation,"orientation","input orientation (Euler angles) inside each cell"))
       , f_useLocalOrientation(initData(&f_useLocalOrientation,false,"useLocalOrientation","tells if orientations are defined in the local basis on each cell"))
       , f_fineVolumes(initData(&f_fineVolumes,"fineVolumes","input cell volumes (typically computed from a fine model)"))
     {
     }
 
-    virtual ~TopologyGaussPointSampler()
+    ~TopologyGaussPointSampler() override
     {
 
     }
@@ -123,11 +123,8 @@ protected:
         if(indices.find(index)!=indices.end()) return true; else return false;
     }
 
-    virtual void update()
+    void doUpdate() override
     {
-        this->updateAllInputsIfDirty();
-        cleanDirty();
-
         if( !parentTopology ) return;
 
         raPositions parent(f_inPosition);

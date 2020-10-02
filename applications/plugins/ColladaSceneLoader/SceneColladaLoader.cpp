@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,12 +40,12 @@
 #include <stack>
 #include <algorithm>
 
-#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
+#if COLLADASCENELOADER_HAVE_FLEXIBLE
 #include <Flexible/deformationMapping/LinearMapping.h>
 #endif
 
 
-#ifdef SOFA_HAVE_PLUGIN_IMAGE
+#if COLLADASCENELOADER_HAVE_IMAGE
 #include <image/ImageContainer.h>
 #include <image/MeshToImageEngine.h>
 #include <image/ImageFilter.h>
@@ -72,30 +72,28 @@ using namespace sofa::component::collision;
 using namespace sofa::component::projectiveconstraintset;
 using namespace sofa::simulation;
 
-SOFA_DECL_CLASS(SceneColladaLoader)
-
 int SceneColladaLoaderClass = core::RegisterObject("Specific scene loader for Collada file format.")
         .add< SceneColladaLoader >()
         ;
 
 SceneColladaLoader::SceneColladaLoader() : SceneLoader()
-    , subSceneRoot()
-	, importer()
-	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
-	, generateCollisionModels(initData(&generateCollisionModels, true, "generateCollisionModels", "generate point/line/triangle collision models for imported meshes"))
-    , collisionProximity(initData(&collisionProximity, 0.01f, "contactProximity", "collision proximity for the generated collision models"))
-    , collisionStiffness(initData(&collisionStiffness, 10.0f, "contactStiffness", "collision stiffness for the generated collision models"))
-    , collisionFriction(initData(&collisionFriction, 0.0f, "contactFriction", "collision friction for the generated collision models"))
-    , collisionGroup(initData(&collisionGroup, "collisionGroup", "collision group for the generated collision models"))
-#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
-    , useFlexible(initData(&useFlexible, false, "useFlexible", "Use the Flexible plugin (it will replace the SkinningMapping with a LinearMapping)"))
+  , subSceneRoot()
+  , importer()
+  , animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
+  , generateCollisionModels(initData(&generateCollisionModels, true, "generateCollisionModels", "generate point/line/triangle collision models for imported meshes"))
+  , collisionProximity(initData(&collisionProximity, 0.01f, "contactProximity", "collision proximity for the generated collision models"))
+  , collisionStiffness(initData(&collisionStiffness, 10.0f, "contactStiffness", "collision stiffness for the generated collision models"))
+  , collisionFriction(initData(&collisionFriction, 0.0f, "contactFriction", "collision friction for the generated collision models"))
+  , collisionGroup(initData(&collisionGroup, "collisionGroup", "collision group for the generated collision models"))
+#if COLLADASCENELOADER_HAVE_FLEXIBLE    
+  , useFlexible(initData(&useFlexible, false, "useFlexible", "Use the Flexible plugin (it will replace the SkinningMapping with a LinearMapping)"))
 #endif
-#ifdef SOFA_HAVE_PLUGIN_IMAGE
-    , generateShapeFunction(initData(&generateShapeFunction, false, "generateShapeFunction", "Generate a shape function that could be used in another simulation"))
-    , voxelSize(initData(&voxelSize, (SReal)0.02, "voxelSize", "voxelSize used for shape function generation"))
+#if COLLADASCENELOADER_HAVE_IMAGE
+  , generateShapeFunction(initData(&generateShapeFunction, false, "generateShapeFunction", "Generate a shape function that could be used in another simulation"))
+  , voxelSize(initData(&voxelSize, (SReal)0.02, "voxelSize", "voxelSize used for shape function generation"))
 #endif
 {
-	
+
 }
 
 SceneColladaLoader::~SceneColladaLoader()
@@ -105,8 +103,8 @@ SceneColladaLoader::~SceneColladaLoader()
 
 void SceneColladaLoader::init()
 {
-	if(0 == subSceneRoot)
-		return;
+    if(0 == subSceneRoot)
+        return;
 
     // retrieving parent node
     core::objectmodel::BaseContext* currentContext = getContext();
@@ -114,8 +112,8 @@ void SceneColladaLoader::init()
     if(!parentNode)
     {
         sout << "Error: SceneColladaLoader::init, loader " << name.getValue() << "has no parentNode" << sendl;
-		if(currentContext)
-			sout << "Context is : " << currentContext->getName() << sendl;
+        if(currentContext)
+            sout << "Context is : " << currentContext->getName() << sendl;
 
         return;
     }
@@ -266,7 +264,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                     // generating a name
                     std::string meshName(currentAiMesh->mName.data, currentAiMesh->mName.length);
 
-					// the node representing a part of the current mesh construction (skinning, collision, visualization ...)
+                    // the node representing a part of the current mesh construction (skinning, collision, visualization ...)
                     Node::SPtr currentSubNode = meshNode;
 
                     // generating a MechanicalObject and a SkinningMapping if the mesh contains bones and filling up theirs properties
@@ -333,7 +331,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             // adding the generated SkeletalMotionConstraint to its parent Node
                             currentSubNode->addObject(currentSkeletalMotionConstraint);
                             currentSkeletalMotionConstraint->setName("skeletalMotionConstraint");
-							currentSkeletalMotionConstraint->setAnimationSpeed(animationSpeed.getValue());
+                            currentSkeletalMotionConstraint->setAnimationSpeed(animationSpeed.getValue());
 
                             aiNode* parentAiNode = NULL;
                             if(parentNodeInfo)
@@ -348,59 +346,66 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                     else
                     {
                         currentBoneMechanicalObject = sofa::core::objectmodel::New<MechanicalObject<Rigid3Types> >();
-						{
-							// adding the generated MechanicalObject to its parent Node
-							currentSubNode->addObject(currentBoneMechanicalObject);
+                        {
+                            // adding the generated MechanicalObject to its parent Node
+                            currentSubNode->addObject(currentBoneMechanicalObject);
 
-							std::stringstream nameStream(meshName);
-							if(meshName.empty())
-								nameStream << componentIndex++;
-							currentBoneMechanicalObject->setName(nameStream.str());
+                            std::stringstream nameStream(meshName);
+                            if(meshName.empty())
+                                nameStream << componentIndex++;
+                            currentBoneMechanicalObject->setName(nameStream.str());
 
-							// filling up position coordinate array
-							currentBoneMechanicalObject->resize(1);
+                            // filling up position coordinate array
+                            currentBoneMechanicalObject->resize(1);
 
-							{
+                            {
                                 Data<helper::vector<Rigid3Types::Coord> >* d_x = currentBoneMechanicalObject->write(core::VecCoordId::position());
                                 helper::vector<Rigid3Types::Coord> &x = *d_x->beginEdit();
-								
-								Vec3d boneTranslation(0.0, 0.0, 0.0);
-								Quaternion boneQuat(0.0, 0.0, 1.0, 1.0);
+
+                                Vec3d boneTranslation(0.0, 0.0, 0.0);
+                                Quaternion boneQuat(0.0, 0.0, 1.0, 1.0);
 
                                 x[0] = Rigid3Types::Coord(boneTranslation, boneQuat);
 
-								d_x->endEdit();
-							}
-						}
+                                d_x->endEdit();
+                            }
+                        }
 
                         UniformMass<Rigid3Types, Rigid3Mass>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3Types, Rigid3Mass> >();
-						{
-							// adding the generated UniformMass to its parent Node
-							currentSubNode->addObject(currentUniformMass);
-                            currentUniformMass->setName("mass");
-							
-						}
+                        {
+                            // adding the generated UniformMass to its parent Node
+                            currentSubNode->addObject(currentUniformMass);
+
+                            std::stringstream nameStream(meshName);
+                            if(meshName.empty())
+                                nameStream << componentIndex++;
+                            currentUniformMass->setName(nameStream.str());
+                        }
 
                         FixedConstraint<Rigid3Types>::SPtr currentFixedConstraint = sofa::core::objectmodel::New<FixedConstraint<Rigid3Types> >();
-						{
-							// adding the generated FixedConstraint to its parent Node
-							currentSubNode->addObject(currentFixedConstraint);
-							currentFixedConstraint->setName("fixedConstraint");
+                        {
+                            // adding the generated FixedConstraint to its parent Node
+                            currentSubNode->addObject(currentFixedConstraint);
 
-							currentFixedConstraint->f_fixAll.setValue(true);
-						}
+                            std::stringstream nameStream(meshName);
+                            if(meshName.empty())
+                                nameStream << componentIndex++;
+                            currentFixedConstraint->setName(nameStream.str());
+
+                            currentFixedConstraint->d_fixAll.setValue(true);
+                        }
                     }
 
-					std::stringstream rigidNameStream;
-					if(currentAiMesh->HasBones())
-						rigidNameStream << "skinning_" << (int)meshId;
-					else
-						rigidNameStream << "rigid_" << (int)meshId;
+                    std::stringstream rigidNameStream;
+                    if(currentAiMesh->HasBones())
+                        rigidNameStream << "skinning_" << (int)meshId;
+                    else
+                        rigidNameStream << "rigid_" << (int)meshId;
 
-					Node::SPtr rigidNode = getSimulation()->createNewNode(rigidNameStream.str());
-					currentSubNode->addChild(rigidNode);
+                    Node::SPtr rigidNode = getSimulation()->createNewNode(rigidNameStream.str());
+                    currentSubNode->addChild(rigidNode);
 
-					currentSubNode = rigidNode;
+                    currentSubNode = rigidNode;
 
                     std::map<Vec3d,unsigned> vertexMap; // no to superimpose identical vertices
 
@@ -458,7 +463,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
 
                         helper::vector<core::topology::BaseMeshTopology::Triangle>& seqTriangles = *currentMeshTopology->seqTriangles.beginEdit();
-#ifdef SOFA_HAVE_PLUGIN_IMAGE
+#if COLLADASCENELOADER_HAVE_IMAGE
                         if( generateShapeFunction.getValue() )
                         {
                             if( numTriangles || numQuads ) seqTriangles.reserve(numTriangles+numQuads*2);
@@ -551,52 +556,48 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                     }
 
 
-					if(generateCollisionModels.getValue())
-					{
-                        TTriangleModel<defaulttype::Vec3Types>::SPtr currentTTriangleModel = sofa::core::objectmodel::New<TTriangleModel<defaulttype::Vec3Types> >();
-						{
-							// adding the generated TTriangleModel to its parent Node
-							currentSubNode->addObject(currentTTriangleModel);
+                    if(generateCollisionModels.getValue())
+                    {
+                        TriangleCollisionModel<defaulttype::Vec3Types>::SPtr currentTriangleCollisionModel = sofa::core::objectmodel::New<TriangleCollisionModel<defaulttype::Vec3Types> >();
+                        {
+                            // adding the generated TriangleCollisionModel to its parent Node
+                            currentSubNode->addObject(currentTriangleCollisionModel);
 							currentTTriangleModel->setName("triangleModel");
                             currentTTriangleModel->setProximity(collisionProximity.getValue());
                             currentTTriangleModel->setContactStiffness(collisionStiffness.getValue());
                             currentTTriangleModel->setContactFriction(collisionFriction.getValue());
-                            currentTTriangleModel->setGroups(collisionGroup.getValue());
-						}
-
-
-                        TLineModel<defaulttype::Vec3Types>::SPtr currentTLineModel = sofa::core::objectmodel::New<TLineModel<defaulttype::Vec3Types> >();
-						{
-							// adding the generated TLineModel to its parent Node
-                            currentSubNode->addObject(currentTLineModel);
-							currentTLineModel->setName("lineModel");
-                            currentTLineModel->setProximity(collisionProximity.getValue());
-                            currentTLineModel->setContactStiffness(collisionStiffness.getValue());
-                            currentTLineModel->setContactFriction(collisionFriction.getValue());
-                            currentTLineModel->setGroups(collisionGroup.getValue());
-						}
-
-                        TPointModel<defaulttype::Vec3Types>::SPtr currentTPointModel = sofa::core::objectmodel::New<TPointModel<defaulttype::Vec3Types> >();
-						{
-							// adding the generated TPointModel to its parent Node
-                            currentSubNode->addObject(currentTPointModel);
-							currentTPointModel->setName("pointModel");
-                            currentTPointModel->setProximity(collisionProximity.getValue());
-                            currentTPointModel->setContactStiffness(collisionStiffness.getValue());
-                            currentTPointModel->setContactFriction(collisionFriction.getValue());
-                            currentTPointModel->setGroups(collisionGroup.getValue());
+                            std::stringstream nameStream(meshName);
+                            if(meshName.empty())
+                                nameStream << componentIndex++;
+                            currentTriangleCollisionModel->setName(nameStream.str());
                         }
-					}
 
-//					std::string xnodeName(currentAiNode->mName.data);
-//					std::string xmeshName(currentAiMesh->mName.data);
-//					std::cout << "nodeName: " << xnodeName << std::endl;
-//					std::cout << " - meshName: " << xmeshName << std::endl;
-//					std::cout << std::endl;
+                        LineCollisionModel<defaulttype::Vec3Types>::SPtr currentLineCollisionModel = sofa::core::objectmodel::New<LineCollisionModel<defaulttype::Vec3Types> >();
+                        {
+                            // adding the generated LineCollisionModel to its parent Node
+                            currentSubNode->addObject(currentLineCollisionModel);
 
-					if(currentAiMesh->HasBones())
+                            std::stringstream nameStream(meshName);
+                            if(meshName.empty())
+                                nameStream << componentIndex++;
+                            currentLineCollisionModel->setName(nameStream.str());
+                        }
+
+                        PointCollisionModel<defaulttype::Vec3Types>::SPtr currentPointCollisionModel = sofa::core::objectmodel::New<PointCollisionModel<defaulttype::Vec3Types> >();
+                        {
+                            // adding the generated PointCollisionModel to its parent Node
+                            currentSubNode->addObject(currentPointCollisionModel);
+
+                            std::stringstream nameStream(meshName);
+                            if(meshName.empty())
+                                nameStream << componentIndex++;
+                            currentPointCollisionModel->setName(nameStream.str());
+                        }
+                    }
+
+                    if(currentAiMesh->HasBones())
                     {
-#ifdef SOFA_HAVE_PLUGIN_IMAGE
+#if COLLADASCENELOADER_HAVE_IMAGE
                         if( generateShapeFunction.getValue() )
                         {
                             SReal vsize = this->voxelSize.getValue();
@@ -609,7 +610,6 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             M2I->padSize.setValue(2);
                             M2I->rotateImage.setValue(false);
                             M2I->f_nbMeshes.setValue(1);
-//                            M2I->createInputMeshesData();
                             M2I->backgroundValue.setValue(0);
                             engine::MeshToImageEngine<defaulttype::ImageB>::SeqValues values(1,1);
                             (*M2I->vf_values[0]).setValue(values);
@@ -622,12 +622,6 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             IC0->image.setParent(&M2I->image);
                             IC0->transform.setParent(&M2I->transform);
                             labelNode->addObject(IC0);
-
-//                            misc::ImageViewer<defaulttype::ImageB>::SPtr IV0 = sofa::core::objectmodel::New<misc::ImageViewer<defaulttype::ImageB> >();
-//                            IV0->setName( "viewer" );
-//                            IV0->image.setParent( &M2I->image );
-//                            IV0->transform.setParent( &M2I->transform );
-//                            labelNode->addObject(IV0);
 
                             // rasterized weights on surface
                             for( unsigned int b = 0 ; b < currentAiMesh->mNumBones /*&& b<1*/ ; ++b )
@@ -644,7 +638,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                 M2I->padSize.setValue(2);
                                 M2I->rotateImage.setValue(false);
                                 M2I->f_nbMeshes.setValue(1);
-//                                M2I->createInputMeshesData();
+                                //                                M2I->createInputMeshesData();
 
                                 std::stringstream nameStream(meshName);
                                 if(meshName.empty())
@@ -690,171 +684,179 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                 IC0->transform.setParent(&M2I->transform);
                                 dofNode->addObject(IC0);
 
-//                                misc::ImageViewer<defaulttype::ImageD>::SPtr IV0 = sofa::core::objectmodel::New<misc::ImageViewer<defaulttype::ImageD> >();
-//                                IV0->setName( "viewer" );
-//                                IV0->image.setParent( &M2I->image );
-//                                IV0->transform.setParent( &M2I->transform );
-//                                dofNode->addObject(IV0);
+                                //                                misc::ImageViewer<defaulttype::ImageD>::SPtr IV0 = sofa::core::objectmodel::New<misc::ImageViewer<defaulttype::ImageD> >();
+                                //                                IV0->setName( "viewer" );
+                                //                                IV0->image.setParent( &M2I->image );
+                                //                                IV0->transform.setParent( &M2I->transform );
+                                //                                dofNode->addObject(IV0);
 
-//                                engine::ImageFilter<defaulttype::ImageD,defaulttype::ImageD>::SPtr IF = sofa::core::objectmodel::New<engine::ImageFilter<defaulttype::ImageD,defaulttype::ImageD> >();
-//                                IF->setName( "diffusion" );
-//                                IF->inputImage.setParent(&M2I->image);
-//                                IF->inputTransform.setParent(&M2I->transform);
-//                                IF->filter.beginEdit()->setSelectedItem( 23 ); IF->filter.endEdit();
-//                                engine::ImageFilter<defaulttype::ImageD,defaulttype::ImageD>::ParamTypes params(4);
-//                                params[0] = 0; params[1] = params[2] = 1; params[3] = 1e-5;
-//                                IF->param.setValue(params);
-//                                IF->f_printLog.setValue(true);
-//                                dofNode->addObject(IF);
+                                //                                engine::ImageFilter<defaulttype::ImageD,defaulttype::ImageD>::SPtr IF = sofa::core::objectmodel::New<engine::ImageFilter<defaulttype::ImageD,defaulttype::ImageD> >();
+                                //                                IF->setName( "diffusion" );
+                                //                                IF->inputImage.setParent(&M2I->image);
+                                //                                IF->inputTransform.setParent(&M2I->transform);
+                                //                                IF->filter.beginEdit()->setSelectedItem( 23 ); IF->filter.endEdit();
+                                //                                engine::ImageFilter<defaulttype::ImageD,defaulttype::ImageD>::ParamTypes params(4);
+                                //                                params[0] = 0; params[1] = params[2] = 1; params[3] = 1e-5;
+                                //                                IF->param.setValue(params);
+                                //                                IF->f_printLog.setValue(true);
+                                //                                dofNode->addObject(IF);
 
-//                                ImageContainer<defaulttype::ImageD>::SPtr IC = sofa::core::objectmodel::New<ImageContainer<defaulttype::ImageD> >();
-//                                IC->setName( "image" );
-//                                IC->image.setParent(&IF->outputImage);
-//                                IC->transform.setParent(&IF->outputTransform);
-//                                dofNode->addObject(IC);
+                                //                                ImageContainer<defaulttype::ImageD>::SPtr IC = sofa::core::objectmodel::New<ImageContainer<defaulttype::ImageD> >();
+                                //                                IC->setName( "image" );
+                                //                                IC->image.setParent(&IF->outputImage);
+                                //                                IC->transform.setParent(&IF->outputTransform);
+                                //                                dofNode->addObject(IC);
 
-//                                misc::ImageViewer<defaulttype::ImageD>::SPtr IV = sofa::core::objectmodel::New<misc::ImageViewer<defaulttype::ImageD> >();
-//                                IV->setName( "viewer" );
-//                                IV->image.setParent( &IF->outputImage );
-//                                IV->transform.setParent( &IF->outputTransform );
-//                                dofNode->addObject(IV);
+                                //                                misc::ImageViewer<defaulttype::ImageD>::SPtr IV = sofa::core::objectmodel::New<misc::ImageViewer<defaulttype::ImageD> >();
+                                //                                IV->setName( "viewer" );
+                                //                                IV->image.setParent( &IF->outputImage );
+                                //                                IV->transform.setParent( &IF->outputTransform );
+                                //                                dofNode->addObject(IV);
 
                             }
                         } else
 #endif
-#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
-                        if(useFlexible.getValue())
-                        {
-                            LinearMapping<Rigid3Types, Vec3Types>::SPtr currentLinearMapping = sofa::core::objectmodel::New<LinearMapping<Rigid3Types, Vec3Types> >();
-
-                            // adding the generated LinearMapping to its parent Node
-                            currentSubNode->addObject(currentLinearMapping);
-
-                            std::stringstream nameStream(meshName);
-                            if(meshName.empty())
-                                nameStream << componentIndex++;
-                            currentLinearMapping->setName(nameStream.str());
-
-                            currentLinearMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
-
-                            LinearMapping<Rigid3Types, Vec3Types>::VecVReal& weights = *currentLinearMapping->f_w.beginEdit();
-                            LinearMapping<Rigid3Types, Vec3Types>::VecVRef& indices = *currentLinearMapping->f_index.beginEdit();
-
-                            indices.resize(vertexMap.size());
-                            weights.resize(vertexMap.size());
-
-                            for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
+#if COLLADASCENELOADER_HAVE_FLEXIBLE
+                            if(useFlexible.getValue())
                             {
-                                aiBone*& bone = currentAiMesh->mBones[k];
+                                LinearMapping<Rigid3Types, Vec3Types>::SPtr currentLinearMapping = sofa::core::objectmodel::New<LinearMapping<Rigid3Types, Vec3Types> >();
 
+                                // adding the generated LinearMapping to its parent Node
+                                currentSubNode->addObject(currentLinearMapping);
 
-//                                helper:vector<float> boneW((size_t)currentAiMesh->mNumVertices,.0f);
+                                std::stringstream nameStream(meshName);
+                                if(meshName.empty())
+                                    nameStream << componentIndex++;
+                                currentLinearMapping->setName(nameStream.str());
 
-                                for(unsigned int l = 0; l < bone->mNumWeights; ++l)
-                                {
-                                    const unsigned int& vertexid = bone->mWeights[l].mVertexId;
+                                currentLinearMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
 
-                                    if(vertexid >= currentAiMesh->mNumVertices)
-                                    {
-                                        sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
-                                        return false;
-                                    }
-
-                                    Vec3d v(currentAiMesh->mVertices[vertexid][0], currentAiMesh->mVertices[vertexid][1], currentAiMesh->mVertices[vertexid][2]);
-
-                                    unsigned int id = vertexMap[v];
-                                    float weight = bone->mWeights[l].mWeight;
-
-//                                    boneW[id]=weight;
-
-                                    if( std::find( indices[id].begin(), indices[id].end(), k ) == indices[id].end() )
-                                    {
-                                        indices[id].push_back(k);
-                                        weights[id].push_back(weight);
-                                    }
-                                }
-
-//                                std::cerr<<"MESH "<<meshId<<" - DOF "<<k<<": "<<boneW<<std::endl;
-
-                            }
-
-                            currentLinearMapping->f_w.endEdit();
-                            currentLinearMapping->f_index.endEdit();
-						}
-                        else
-#endif
-						{
-                            SkinningMapping<Rigid3Types, Vec3Types>::SPtr currentSkinningMapping = sofa::core::objectmodel::New<SkinningMapping<Rigid3Types, Vec3Types> >();
-							{
-								// adding the generated SkinningMapping to its parent Node
-								currentSubNode->addObject(currentSkinningMapping);
-								currentSkinningMapping->setName("mapping");
-
-								currentSkinningMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
-
-                                helper::vector<helper::SVector<SkinningMapping<Rigid3Types, Vec3Types>::InReal> > weights;
-                                helper::vector<helper::SVector<unsigned int> > indices;
-                                helper::vector<unsigned int> nbref;
+                                LinearMapping<Rigid3Types, Vec3Types>::VecVReal& weights = *currentLinearMapping->f_w.beginEdit();
+                                LinearMapping<Rigid3Types, Vec3Types>::VecVRef& indices = *currentLinearMapping->f_index.beginEdit();
 
                                 indices.resize(vertexMap.size());
                                 weights.resize(vertexMap.size());
-                                nbref.resize(vertexMap.size(),0);
 
-								for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
-								{
-									aiBone*& bone = currentAiMesh->mBones[k];
+                                for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
+                                {
+                                    aiBone*& bone = currentAiMesh->mBones[k];
 
-									for(unsigned int l = 0; l < bone->mNumWeights; ++l)
-									{
 
+                                    //                                helper:vector<float> boneW((size_t)currentAiMesh->mNumVertices,.0f);
+
+                                    for(unsigned int l = 0; l < bone->mNumWeights; ++l)
+                                    {
                                         const unsigned int& vertexid = bone->mWeights[l].mVertexId;
 
                                         if(vertexid >= currentAiMesh->mNumVertices)
-										{
-											sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << currentAiMesh->mName.C_Str()  << " - in node : " << currentNode->getName() << sendl;
-											return false;
-										}
+                                        {
+                                            sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
+                                            return false;
+                                        }
 
                                         Vec3d v(currentAiMesh->mVertices[vertexid][0], currentAiMesh->mVertices[vertexid][1], currentAiMesh->mVertices[vertexid][2]);
 
                                         unsigned int id = vertexMap[v];
                                         float weight = bone->mWeights[l].mWeight;
 
+                                        //                                    boneW[id]=weight;
+
                                         if( std::find( indices[id].begin(), indices[id].end(), k ) == indices[id].end() )
                                         {
-                                            weights[id].push_back(weight);
                                             indices[id].push_back(k);
-                                            ++nbref[id];
+                                            weights[id].push_back(weight);
                                         }
+                                    }
 
-									}
-								}
+                                    //                                std::cerr<<"MESH "<<meshId<<" - DOF "<<k<<": "<<boneW<<std::endl;
 
-								currentSkinningMapping->setWeights(weights, indices, nbref);
-							}
-						}
+                                }
+
+                                currentLinearMapping->f_w.endEdit();
+                                currentLinearMapping->f_index.endEdit();
+                            }
+                            else
+#endif
+                            {
+                                SkinningMapping<Rigid3Types, Vec3Types>::SPtr currentSkinningMapping = sofa::core::objectmodel::New<SkinningMapping<Rigid3Types, Vec3Types> >();
+                                {
+                                    // adding the generated SkinningMapping to its parent Node
+                                    currentSubNode->addObject(currentSkinningMapping);
+
+                                    std::stringstream nameStream(meshName);
+                                    if(meshName.empty())
+                                        nameStream << componentIndex++;
+                                    currentSkinningMapping->setName(nameStream.str());
+
+                                    currentSkinningMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
+
+                                    helper::vector<helper::SVector<SkinningMapping<Rigid3Types, Vec3Types>::InReal> > weights;
+                                    helper::vector<helper::SVector<unsigned int> > indices;
+                                    helper::vector<unsigned int> nbref;
+
+                                    indices.resize(vertexMap.size());
+                                    weights.resize(vertexMap.size());
+                                    nbref.resize(vertexMap.size(),0);
+
+                                    for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
+                                    {
+                                        aiBone*& bone = currentAiMesh->mBones[k];
+
+                                        for(unsigned int l = 0; l < bone->mNumWeights; ++l)
+                                        {
+
+                                            const unsigned int& vertexid = bone->mWeights[l].mVertexId;
+
+                                            if(vertexid >= currentAiMesh->mNumVertices)
+                                            {
+                                                sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
+                                                return false;
+                                            }
+
+                                            Vec3d v(currentAiMesh->mVertices[vertexid][0], currentAiMesh->mVertices[vertexid][1], currentAiMesh->mVertices[vertexid][2]);
+
+                                            unsigned int id = vertexMap[v];
+                                            float weight = bone->mWeights[l].mWeight;
+
+                                            if( std::find( indices[id].begin(), indices[id].end(), k ) == indices[id].end() )
+                                            {
+                                                weights[id].push_back(weight);
+                                                indices[id].push_back(k);
+                                                ++nbref[id];
+                                            }
+
+                                        }
+                                    }
+
+                                    currentSkinningMapping->setWeights(weights, indices, nbref);
+                                }
+                            }
                     }
-					else
-					{
+                    else
+                    {
                         RigidMapping<Rigid3Types, Vec3Types>::SPtr currentRigidMapping = sofa::core::objectmodel::New<RigidMapping<Rigid3Types, Vec3Types> >();
-						{
-							// adding the generated RigidMapping to its parent Node
-							currentSubNode->addObject(currentRigidMapping);
-							currentRigidMapping->setName("mapping");
+                        {
+                            // adding the generated RigidMapping to its parent Node
+                            currentSubNode->addObject(currentRigidMapping);
 
-							currentRigidMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
-						}
-					}
+                            std::stringstream nameStream(meshName);
+                            if(meshName.empty())
+                                nameStream << componentIndex++;
+                            currentRigidMapping->setName(nameStream.str());
 
-					// node used for visualization
-					std::stringstream visuNameStream;
-					visuNameStream << "visualization " << (int)meshId;
+                            currentRigidMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
+                        }
+                    }
 
-					Node::SPtr visuNode = getSimulation()->createNewNode(visuNameStream.str());
-					currentSubNode->addChild(visuNode);
+                    // node used for visualization
+                    std::stringstream visuNameStream;
+                    visuNameStream << "visualization " << (int)meshId;
 
-					currentSubNode = visuNode;
-					
+                    Node::SPtr visuNode = getSimulation()->createNewNode(visuNameStream.str());
+                    currentSubNode->addChild(visuNode);
+
+                    currentSubNode = visuNode;
+
                     // generating an OglModel and filling up its properties
                     OglModel::SPtr currentOglModel = sofa::core::objectmodel::New<OglModel>();
                     {
@@ -864,86 +866,25 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                         if(0 != currentAiMesh->mNumVertices)
                         {
-                            ResizableExtVector<Vec3f> normals;
+                            sofa::helper::vector<OglModel::Deriv> normals;
                             normals.resize(currentAiMesh->mNumVertices);
                             memcpy(&normals[0], currentAiMesh->mNormals, currentAiMesh->mNumVertices * sizeof(aiVector3D));
                             currentOglModel->setVnormals(&normals);
                         }
-
-                        // filling up position array (by default : done by an IdentityMapping, but necessary if we use a SkinningMapping)
-                        //if(currentAiMesh->HasBones())
-                        //{
-                        //currentOglModel->m_positions.setParent(&currentMechanicalObject->x);
-                        //currentOglModel->m_positions.setReadOnly(true);
-                        //}
-
-                        // vertex / triangle / quad array are automatically filled up with the MeshTopology data
-
-                        // filling up vertex array (redundancy with positions coordinates but required ?!)
-//                         if(0 != currentAiMesh->mNumVertices)
-//                         {
-//                         	ResizableExtVector<Vec3d> vertices;
-//                         	vertices.resize(currentAiMesh->mNumVertices);
-//                         	memcpy(&vertices[0], currentAiMesh->mVertices, currentAiMesh->mNumVertices * sizeof(aiVector3D));
-//                         	currentOglModel->setVertices(&vertices);
-//                         }
-// 
-//                         // filling up triangle array
-//                         ResizableExtVector<OglModel::Triangle> triangles;
-//                         unsigned int numTriangles = 0;
-//                         for(int k = 0; k < currentAiMesh->mNumFaces; ++k)
-//                         	if(3 == currentAiMesh->mFaces[k].mNumIndices)
-//                         		++numTriangles;
-// 
-//                         if(0 != numTriangles)
-//                         {
-//                         	triangles.resize(numTriangles);
-// 
-//                         	unsigned int triangleOffset = 0;
-//                         	for(int k = 0; k < currentAiMesh->mNumFaces; ++k)
-//                         	{
-//                         		if(3 != currentAiMesh->mFaces[k].mNumIndices)
-//                         			continue;
-// 
-//                         		memcpy(&triangles[0] + triangleOffset, currentAiMesh->mFaces[k].mIndices, sizeof(Triangle));
-//                         		++triangleOffset;
-//                         	}
-//                         	currentOglModel->setTriangles(&triangles);
-//                         }
-// 
-//                         // filling up quad array
-//                         ResizableExtVector<OglModel::Quad> quads;
-//                         unsigned int numQuads = 0;
-//                         for(int k = 0; k < currentAiMesh->mNumFaces; ++k)
-//                         	if(4 == currentAiMesh->mFaces[k].mNumIndices)
-//                         		++numQuads;
-// 
-//                         if(0 != numQuads)
-//                         {
-//                         	quads.resize(numQuads);
-// 
-//                         	unsigned int quadOffset = 0;
-//                         	for(int k = 0; k < currentAiMesh->mNumFaces; ++k)
-//                         	{
-//                         		if(4 != currentAiMesh->mFaces[k].mNumIndices)
-//                         			continue;
-// 
-//                         		memcpy(&quads[0] + quadOffset, currentAiMesh->mFaces[k].mIndices, sizeof(Quad));
-//                         		++quadOffset;
-//                         	}
-// 
-//                         	currentOglModel->setQuads(&quads);
-//                         }
                     }
 
-                    IdentityMapping<Vec3Types, ExtVec3fTypes>::SPtr currentIdentityMapping = sofa::core::objectmodel::New<IdentityMapping<Vec3Types, ExtVec3fTypes> >();
-					{
-						// adding the generated IdentityMapping to its parent Node
-						currentSubNode->addObject(currentIdentityMapping);
-						currentIdentityMapping->setName("mapping");
+                    IdentityMapping<Vec3Types, Vec3Types>::SPtr currentIdentityMapping = sofa::core::objectmodel::New<IdentityMapping<Vec3Types, Vec3Types> >();
+                    {
+                        // adding the generated IdentityMapping to its parent Node
+                        currentSubNode->addObject(currentIdentityMapping);
 
-						currentIdentityMapping->setModels(currentMechanicalObject.get(), currentOglModel.get());
-					}
+                        std::stringstream nameStream(meshName);
+                        if(meshName.empty())
+                            nameStream << componentIndex++;
+                        currentIdentityMapping->setName(nameStream.str());
+
+                        currentIdentityMapping->setModels(currentMechanicalObject.get(), currentOglModel.get());
+                    }
                 }
             }
 
@@ -976,8 +917,6 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
 bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, helper::vector<projectiveconstraintset::SkeletonJoint<Rigid3Types> > &skeletonJoints, helper::vector<SkeletonBone>& skeletonBones) const
 {
-    //std::cout << "fillSkeletalInfo : begin" << std::endl;
-
     // return now if their is no scene, no mesh or no skeletonBones
     if(!scene || !mesh || !mesh->HasBones())
     {
@@ -989,10 +928,6 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
 
     // compute the mesh transformation into a rigid
     Mat4x4d meshWorldTranformation(meshTransformation[0]);
-//	for(int j = 0; j < 4; ++j)
-//		for(int i = 0; i < 4; ++i)
-//			meshWorldTranformation[j][i] = meshTransformation[j][i];
-
     Rigid3Types::Coord meshTransformationRigid;
     meshTransformationRigid.getCenter()[0] = meshWorldTranformation[0][3];
     meshTransformationRigid.getCenter()[1] = meshWorldTranformation[1][3];
@@ -1000,16 +935,12 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
     Mat3x3d rot; rot = meshWorldTranformation;
     meshTransformationRigid.getOrientation().fromMatrix(rot);
 
-    //std::cout << "ANIMATION" << std::endl;
-
     // register every SkeletonJoint
     for(unsigned int j = 0; j < scene->mNumAnimations; ++j)
     {
         // for now we just want to handle one animation
         if(1 == j)
             break;
-
-        //std::cout << "num channels : " << scene->mAnimations[j]->mNumChannels << std::endl;
 
         aiAnimation*& animation = scene->mAnimations[j];
         for(unsigned int k = 0; k < animation->mNumChannels; ++k)
@@ -1036,7 +967,6 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
             aiQuatKey	rotationKey;
 
             unsigned int numKey = std::max(channel->mNumPositionKeys, channel->mNumRotationKeys);
-            //int numKey = std::max(channel->mNumScalingKeys , std::max(channel->mNumPositionKeys, channel->mNumRotationKeys));
 
             skeletonJoint.mTimes.resize(numKey);
             skeletonJoint.mChannels.resize(numKey);
@@ -1061,15 +991,6 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
                     aiMatrix4x4 rotation(rotationKey.mValue.GetMatrix());
                     transformation *= rotation;
                 }
-
-                // 							if(l < channel->mNumScalingKeys)
-                // 							{
-                // 								scaleKey = channel->mScalingKeys[l];
-                // 								time = scaleKey.mTime;
-                // 								aiMatrix4x4 scale;
-                // 								aiMatrix4x4::Scaling(scaleKey.mValue, scale);
-                // 								transformation *= scale;
-                // 							}
 
                 Mat4x4d localTranformation(transformation[0]);
 
@@ -1111,8 +1032,6 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
     // register every SkeletonJoint and their parents and fill up theirs properties
     for(std::size_t i = 0; i < skeletonJoints.size(); ++i)
     {
-//        SkeletonJoint<Rigid3Types>& skeletonJoint = skeletonJoints[i];
-
         aiNode*	node = NULL;
 
         // find the ai node corresponding to the SkeletonJoint

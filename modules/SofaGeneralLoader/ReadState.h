@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,19 +21,13 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_READSTATE_H
 #define SOFA_COMPONENT_MISC_READSTATE_H
-#include "config.h"
+#include <SofaGeneralLoader/config.h>
 
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/ExecParams.h>
 
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -55,16 +49,16 @@ class SOFA_GENERAL_LOADER_API ReadState: public core::objectmodel::BaseObject
 public:
     SOFA_CLASS(ReadState,core::objectmodel::BaseObject);
 
-    sofa::core::objectmodel::DataFileName f_filename;
-    Data < double > f_interval;
-    Data < double > f_shift;
-    Data < bool > f_loop;
-    Data < double > f_scalePos;
+    sofa::core::objectmodel::DataFileName d_filename;
+    Data < double > d_interval; ///< time duration between inputs
+    Data < double > d_shift; ///< shift between times in the file and times when they will be read
+    Data < bool > d_loop; ///< set to 'true' to re-read the file when reaching the end
+    Data < double > d_scalePos; ///< scale the input mechanical object
 
 protected:
     core::behavior::BaseMechanicalState* mmodel;
     std::ifstream* infile;
-#ifdef SOFA_HAVE_ZLIB
+#if SOFAGENERALLOADER_HAVE_ZLIB
     gzFile gzfile;
 #endif
     double nextTime;
@@ -73,15 +67,15 @@ protected:
 
     ReadState();
 
-    virtual ~ReadState();
+    ~ReadState() override;
 public:
-    virtual void init();
+    void init() override;
 
-    virtual void reset();
+    void reset() override;
 
     void setTime(double time);
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     void processReadState();
     void processReadState(double time);
@@ -94,8 +88,10 @@ public:
     template<class T>
     static bool canCreate(T* obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMechanicalState() == NULL)
+        if (context->getMechanicalState() == nullptr) {
+            arg->logError("No mechanical state found in the context node.");
             return false;
+        }
         return BaseObject::canCreate(obj, context, arg);
     }
 
@@ -109,12 +105,12 @@ class SOFA_GENERAL_LOADER_API ReadStateCreator: public simulation::Visitor
 public:
     ReadStateCreator(const core::ExecParams* params);
     ReadStateCreator(const std::string &n, bool _createInMapping, const core::ExecParams* params, bool i=true, int c=0);
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     void setSceneName(std::string &n) { sceneName = n;}
     void setCounter(int c) {counterReadState = c;}
     void setCreateInMapping(bool b) {createInMapping=b;}
-    virtual const char* getClassName() const { return "ReadStateCreator"; }
+    const char* getClassName() const override { return "ReadStateCreator"; }
 protected:
     void addReadState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
     std::string sceneName;
@@ -128,11 +124,11 @@ class SOFA_GENERAL_LOADER_API ReadStateActivator: public simulation::Visitor
 {
 public:
     ReadStateActivator(const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     bool getState() const {return state;}
     void setState(bool active) {state=active;}
-    virtual const char* getClassName() const { return "ReadStateActivator"; }
+    const char* getClassName() const override { return "ReadStateActivator"; }
 protected:
     void changeStateReader(sofa::component::misc::ReadState *ws);
 
@@ -143,11 +139,11 @@ class SOFA_GENERAL_LOADER_API ReadStateModifier: public simulation::Visitor
 {
 public:
     ReadStateModifier(const core::ExecParams* params, double _time) : Visitor(params), time(_time) {}
-    virtual Result processNodeTopDown( simulation::Node*  );
+    Result processNodeTopDown( simulation::Node*  ) override;
 
     double getTime() const { return time; }
     void setTime(double _time) { time=_time; }
-    virtual const char* getClassName() const { return "ReadStateModifier"; }
+    const char* getClassName() const override { return "ReadStateModifier"; }
 protected:
     void changeTimeReader(sofa::component::misc::ReadState *rs) { rs->processReadState(time); }
 

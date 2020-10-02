@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,18 +48,16 @@ public:
 
     typedef core::collision::IntersectorFactory<LocalMinDistance> IntersectorFactory;
 
-    // Data<bool> useSphereTriangle;
-    // Data<bool> usePointPoint;
-    Data<bool> filterIntersection;
-    Data<double> angleCone;
-    Data<double> coneFactor;
-    Data<bool> useLMDFilters;
+    Data<bool> filterIntersection; ///< Activate LMD filter
+    Data<double> angleCone; ///< Filtering cone extension angle
+    Data<double> coneFactor; ///< Factor for filtering cone angle computation
+    Data<bool> useLMDFilters; ///< Use external cone computation (Work in Progress)
 
 
 protected:
     LocalMinDistance();
 public:
-    virtual void init();
+    void init() override;
 
     bool testIntersection(Cube& ,Cube&);
 
@@ -95,10 +93,10 @@ public:
     bool testValidity(Line&, const defaulttype::Vector3&);
     bool testValidity(Triangle&, const defaulttype::Vector3&);
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// Actions to accomplish when the broadPhase is started. By default do nothing.
-    virtual void beginBroadPhase() {}
+    void beginBroadPhase() override {}
 
     int beginIntersection(sofa::core::CollisionModel* /*model1*/, sofa::core::CollisionModel* /*model2*/, OutputVector* /*contacts*/)
     {
@@ -118,7 +116,7 @@ namespace core
 {
 namespace collision
 {
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_CPP)
 extern template class SOFA_CONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
 #endif
 }

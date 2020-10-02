@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
@@ -86,9 +86,9 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
         {
 
             /// describe the jth edge index of triangle no i
-            const EdgesInTriangle &te= ff->_topology->getEdgesInTriangle(triangleAdded[i]);
+            const EdgesInTriangle &te= ff->m_topology->getEdgesInTriangle(triangleAdded[i]);
             /// describe the jth vertex index of triangle no i
-            const Triangle &t= ff->_topology->getTriangle(triangleAdded[i]);
+            const Triangle &t= ff->m_topology->getTriangle(triangleAdded[i]);
             // store points
             for(j=0; j<3; ++j)
                 point[j]=(restPosition)[t[j]];
@@ -125,7 +125,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
                 dpk= point[j]-point[l];
                 val1= -cotangent[j]*(lambda+mu)/2;
 
-                if (ff->_topology->getEdge(te[j])[0]==t[l])
+                if (ff->m_topology->getEdge(te[j])[0]==t[l])
                 {
                     for (u=0; u<3; ++u)
                     {
@@ -175,9 +175,9 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
         {
 
             /// describe the jth edge index of triangle no i
-            const EdgesInTriangle &te= ff->_topology->getEdgesInTriangle(triangleRemoved[i]);
+            const EdgesInTriangle &te= ff->m_topology->getEdgesInTriangle(triangleRemoved[i]);
             /// describe the jth vertex index of triangle no i
-            const Triangle &t= ff->_topology->getTriangle(triangleRemoved[i]);
+            const Triangle &t= ff->m_topology->getTriangle(triangleRemoved[i]);
             // store points
             for(j=0; j<3; ++j)
                 point[j]=(restPosition)[t[j]];
@@ -214,7 +214,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
                 dpk= point[j]-point[l];
                 val1= -cotangent[j]*(lambda+mu)/2;
 
-                if (ff->_topology->getEdge(te[j])[0]==t[l])
+                if (ff->m_topology->getEdge(te[j])[0]==t[l])
                 {
                     for (u=0; u<3; ++u)
                     {
@@ -268,9 +268,11 @@ template <class DataTypes> TriangularTensorMassForceField<DataTypes>::Triangular
     , updateMatrix(true)
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , lambda(0)
     , mu(0)
-    , edgeHandler(NULL)
+    , edgeHandler(nullptr)    
+    , m_topology(nullptr)
 {
     edgeHandler = new TriangularTMEdgeHandler(this,&edgeInfo);
 }
@@ -282,15 +284,28 @@ template <class DataTypes> TriangularTensorMassForceField<DataTypes>::~Triangula
 
 template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init()
 {
-    sout << "initializing TriangularTensorMassForceField" << sendl;
+    msg_info() << "initializing TriangularTensorMassForceField";
     this->Inherited::init();
 
-    _topology = this->getContext()->getMeshTopology();
-
-    if (_topology->getNbTriangles()==0)
+    if (l_topology.empty())
     {
-        serr << "ERROR(TriangularTensorMassForceField): object must have a Triangular Set Topology."<<sendl;
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
+    }
+
+    if (m_topology->getNbTriangles()==0)
+    {
+        msg_warning() << "No triangles found in linked Topology.";
     }
     updateLameCoefficients();
 
@@ -299,7 +314,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     /// prepare to store info in the edge array
-    edgeInf.resize(_topology->getNbEdges());
+    edgeInf.resize(m_topology->getNbEdges());
 
     if (_initialPoints.size() == 0)
     {
@@ -308,18 +323,18 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
         _initialPoints=p;
     }
 
-    int i;
+    unsigned int i;
     // set edge tensor to 0
-    for (i=0; i<_topology->getNbEdges(); ++i)
+    for (i=0; i<m_topology->getNbEdges(); ++i)
     {
-        edgeHandler->applyCreateFunction(i,edgeInf[i],_topology->getEdge(i),
+        edgeHandler->applyCreateFunction(i,edgeInf[i],m_topology->getEdge(i),
                 (const sofa::helper::vector<unsigned int>)0,
                 (const sofa::helper::vector<double>)0
                                         );
     }
     // create edge tensor by calling the triangle creation function
     sofa::helper::vector<unsigned int> triangleAdded;
-    for (i=0; i<_topology->getNbTriangles(); ++i)
+    for (i=0; i<m_topology->getNbTriangles(); ++i)
         triangleAdded.push_back(i);
 
     edgeHandler->applyTriangleCreation(triangleAdded,
@@ -328,7 +343,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
             (const sofa::helper::vector<sofa::helper::vector<double> >)0
                                       );
 
-    edgeInfo.createTopologicalEngine(_topology,edgeHandler);
+    edgeInfo.createTopologicalEngine(m_topology,edgeHandler);
     edgeInfo.linkToTriangleDataArray();
     edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
@@ -341,7 +356,7 @@ void TriangularTensorMassForceField<DataTypes>::addForce(const core::MechanicalP
     const VecCoord& x = d_x.getValue();
 
     unsigned int i,v0,v1;
-    unsigned int nbEdges=_topology->getNbEdges();
+    unsigned int nbEdges=m_topology->getNbEdges();
     EdgeRestInformation *einfo;
 
     helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
@@ -352,8 +367,8 @@ void TriangularTensorMassForceField<DataTypes>::addForce(const core::MechanicalP
     for(i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
-        v0=_topology->getEdge(i)[0];
-        v1=_topology->getEdge(i)[1];
+        v0=m_topology->getEdge(i)[0];
+        v1=m_topology->getEdge(i)[1];
         dp0=x[v0]-_initialPoints[v0];
         dp1=x[v1]-_initialPoints[v1];
         dp = dp1-dp0;
@@ -375,7 +390,7 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(const core::Mechanical
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int v0,v1;
-    int nbEdges=_topology->getNbEdges();
+    size_t nbEdges=m_topology->getNbEdges();
     EdgeRestInformation *einfo;
 
     helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
@@ -383,11 +398,11 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(const core::Mechanical
     Deriv force;
     Coord dp0,dp1,dp;
 
-    for(int i=0; i<nbEdges; i++ )
+    for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
-        v0=_topology->getEdge(i)[0];
-        v1=_topology->getEdge(i)[1];
+        v0=m_topology->getEdge(i)[0];
+        v1=m_topology->getEdge(i)[1];
         dp0=dx[v0];
         dp1=dx[v1];
         dp = dp1-dp0;
@@ -406,46 +421,48 @@ void TriangularTensorMassForceField<DataTypes>::updateLameCoefficients()
 {
     lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
     mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-    //	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 
 
 template<class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    int i;
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
+    vparams->drawTool()->saveLastState();
+
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    int nbTriangles=_topology->getNbTriangles();
+    size_t nbTriangles=m_topology->getNbTriangles();
 
-    glDisable(GL_LIGHTING);
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::defaulttype::Vec4f> colors;
+    std::vector<sofa::defaulttype::Vector3> normals;
 
-    glBegin(GL_TRIANGLES);
-    for(i=0; i<nbTriangles; ++i)
+    vparams->drawTool()->disableLighting();
+
+    for(unsigned int i=0; i<nbTriangles; ++i)
     {
-        int a = _topology->getTriangle(i)[0];
-        int b = _topology->getTriangle(i)[1];
-        int c = _topology->getTriangle(i)[2];
+        int a = m_topology->getTriangle(i)[0];
+        int b = m_topology->getTriangle(i)[1];
+        int c = m_topology->getTriangle(i)[2];
 
-        glColor4f(0,1,0,1);
-        helper::gl::glVertexT(x[a]);
-        glColor4f(0,0.5,0.5,1);
-        helper::gl::glVertexT(x[b]);
-        glColor4f(0,0,1,1);
-        helper::gl::glVertexT(x[c]);
+        colors.push_back(sofa::defaulttype::RGBAColor::green());
+        vertices.push_back(x[a]);
+        colors.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
+        vertices.push_back(x[b]);
+        colors.push_back(sofa::defaulttype::RGBAColor::blue());
+        vertices.push_back(x[c]);
     }
-    glEnd();
-
+    vparams->drawTool()->drawTriangles(vertices, normals, colors);
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->setPolygonMode(0, false);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

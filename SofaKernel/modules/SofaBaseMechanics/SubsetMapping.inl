@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,6 +45,8 @@ SubsetMapping<TIn, TOut>::SubsetMapping()
     , f_radius( initData(&f_radius, (Real)1.0e-5, "radius", "search radius to find corresponding points in case no indices are given"))
     , f_handleTopologyChange( initData(&f_handleTopologyChange, true, "handleTopologyChange", "Enable support of topological changes for indices (disable if it is linked from SubsetTopologicalMapping::pointD2S)"))
     , f_ignoreNotFound( initData(&f_ignoreNotFound, false, "ignoreNotFound", "True to ignore points that are not found in the input model, they will be treated as fixed points"))
+    , f_resizeToModel( initData(&f_resizeToModel, false, "resizeToModel", "True to resize the output MechanicalState to match the size of indices"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , matrixJ()
     , updateJ(false)
 {
@@ -74,21 +76,6 @@ int SubsetMapping<TIn, TOut>::addPoint(int index)
     f_indices.endEdit();
     return i;
 }
-
-// Handle topological changes
-/*
-template <class TIn, class TOut>
-void SubsetMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
-{
-    core::topology::BaseMeshTopology* topoFrom = this->fromModel->getContext()->getMeshTopology();
-    if (t != topoFrom) return;
-
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin=topoFrom->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd=topoFrom->endChange();
-    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->fromModel->getSize());
-    f_indices.endEdit();
-}
-*/
 
 template <class TIn, class TOut>
 void SubsetMapping<TIn, TOut>::init()
@@ -140,7 +127,7 @@ void SubsetMapping<TIn, TOut>::init()
                 ++numnotfound;
                 if(!ignoreNotFound)
                 {
-                    sout<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model within a radius of "<<rmax<<"."<<sendl;
+                    msg_error() << "Point " << i << "=" << out[i] << " not found in input model within a radius of " << rmax << ".";
                 }
                 indices[i] = (unsigned int)-1;
             }
@@ -148,7 +135,7 @@ void SubsetMapping<TIn, TOut>::init()
         f_indices.endEdit();
         if (numnotfound > 0)
         {
-            sout << out.size() << " points, " << out.size()-numnotfound << " found, " << numnotfound << " fixed points" << sendl;
+            msg_info() << out.size() << " points, " << out.size() - numnotfound << " found, " << numnotfound << " fixed points";
         }
     }
     else if (!ignoreNotFound)
@@ -158,7 +145,7 @@ void SubsetMapping<TIn, TOut>::init()
         {
             if ((unsigned)indices[i] >= inSize)
             {
-                serr << "ERROR(SubsetMapping): incorrect index "<<indices[i]<<" (input size "<<inSize<<")"<<sendl;
+                msg_error() << "incorrect index "<<indices[i]<<" (input size "<<inSize<<")";
                 indices.erase(indices.begin()+i);
                 --i;
             }
@@ -166,12 +153,31 @@ void SubsetMapping<TIn, TOut>::init()
         f_indices.endEdit();
     }
     this->Inherit::init();
+    
+    if (f_handleTopologyChange.getValue())
+    {
+        if (l_topology.empty())
+        {
+            msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+            l_topology.set(this->getContext()->getMeshTopologyLink());
 
-    topology = this->getContext()->getMeshTopology();
+        }
 
-    // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology);
-    f_indices.registerTopologicalData();
+        sofa::core::topology::BaseMeshTopology* topology = l_topology.get();
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        if (topology)
+        {
+            // Initialize functions and parameters for topological changes
+            f_indices.createTopologicalEngine(topology);
+            f_indices.registerTopologicalData();
+        }
+        else
+        {
+            msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << " Set handleTopologyChange to false if topology is not needed.";
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        }
+    }
 
     postInit();
 }
@@ -187,7 +193,15 @@ template <class TIn, class TOut>
 void SubsetMapping<TIn, TOut>::apply ( const core::MechanicalParams* /*mparams*/, OutDataVecCoord& dOut, const InDataVecCoord& dIn )
 {
     const IndexArray& indices = f_indices.getValue();
-
+    
+    if (f_resizeToModel.getValue() || this->toModel->getSize() < indices.size())
+    { 
+        if (this->toModel->getSize() != indices.size()) 
+        { 
+            this->toModel->resize(indices.size()); 
+        } 
+    }
+    
     const InVecCoord& in = dIn.getValue();
     const OutVecCoord& out0 = this->toModel->read(core::ConstVecCoordId::restPosition())->getValue();
     OutVecCoord& out = *dOut.beginEdit();
@@ -280,22 +294,6 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::ConstraintParams * /*cparam
         }
     }
     dOut.endEdit();
-    //int offset = out.size();
-    //out.resize(offset+in.size());
-
-    //const IndexArray& indices = f_indices.getValue();
-    //for(unsigned int i = 0; i < in.size(); ++i)
-    //{
-    //  OutConstraintIterator itOut;
-    //  std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
-    //
-    //  for (itOut=iter.first;itOut!=iter.second;itOut++)
-    //    {
-    //      unsigned int indexIn = itOut->first;
-    //      OutDeriv data = (OutDeriv) itOut->second;
-    //      out[i+offset].add( indices[indexIn] , data );
-    //    }
-    //}
 }
 
 template<class TIn, class TOut>

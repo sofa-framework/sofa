@@ -11,7 +11,7 @@ CONTACT:
  - erik.pernod@gmail.com 
 
 
-LICENCE :
+LICENSE :
  - OpenCTM library is an Open source, with a very liberal license (zlib/libpng license).
 
 

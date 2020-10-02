@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,7 +37,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <string.h>
+#include <cstring>
 
 #include <SofaSimulationTree/GNode.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -65,7 +65,8 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::computeEdgeDiffusionCoefficie
     edgeDiffusionCoefficient.clear();
     edgeDiffusionCoefficient.resize(nbEdges);
 
-    unsigned int i,j,k,l, nbTetra;
+    size_t nbTetra, i;
+    unsigned int j,k,l;
     typename DataTypes::Real val1,volume;
     typename DataTypes::Real diff;
     Vec3 point[4],shapeVector[4];
@@ -73,7 +74,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::computeEdgeDiffusionCoefficie
     for (i=0; i<nbEdges; ++i)
         edgeDiffusionCoefficient[i] = 0;
 
-    nbTetra = topology->getNbTetrahedra();
+    nbTetra = m_topology->getNbTetrahedra();
     const typename TetrahedronDiffusionFEMForceField<DataTypes>::MechanicalTypes::VecCoord position = this->mechanicalObject->read(core::ConstVecCoordId::position())->getValue();
 
     typename DataTypes::Real anisotropyRatio = this->d_transverseAnisotropyRatio.getValue();
@@ -82,9 +83,9 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::computeEdgeDiffusionCoefficie
     for (i=0; i<nbTetra; ++i)
     {
         // get a reference on the edge set of the ith added tetrahedron
-        const EdgesInTetrahedron &te= topology->getEdgesInTetrahedron(i);
+        const EdgesInTetrahedron &te= m_topology->getEdgesInTetrahedron(i);
         //get a reference on the vertex set of the ith added tetrahedron
-        const Tetrahedron &t= topology->getTetrahedron(i);
+        const Tetrahedron &t= m_topology->getTetrahedron(i);
 
         // store points
         for(j=0; j<4; ++j)
@@ -110,8 +111,8 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::computeEdgeDiffusionCoefficie
             for(j=0;j<6;++j)
             {
                 /// local indices of the edge
-                k = topology->getLocalEdgesInTetrahedron(j)[0];
-                l = topology->getLocalEdgesInTetrahedron(j)[1];
+                k = m_topology->getLocalEdgesInTetrahedron(j)[0];
+                l = m_topology->getLocalEdgesInTetrahedron(j)[1];
 
                 val1 = dot(shapeVector[k],shapeVector[l])*diff;
                 edgeDiffusionCoefficient[te[j]] += val1;
@@ -126,8 +127,8 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::computeEdgeDiffusionCoefficie
             for(j=0;j<6;++j)
             {
                 /// local indices of the edge
-                k = topology->getLocalEdgesInTetrahedron(j)[0];
-                l = topology->getLocalEdgesInTetrahedron(j)[1];
+                k = m_topology->getLocalEdgesInTetrahedron(j)[0];
+                l = m_topology->getLocalEdgesInTetrahedron(j)[1];
 
                 val1= dot(shapeVector[k],shapeVector[l]+direction * ((anisotropyRatio-1)*dot(direction,shapeVector[l])))*diff;
                 edgeDiffusionCoefficient[te[j]] += val1;
@@ -149,6 +150,8 @@ TetrahedronDiffusionFEMForceField<DataTypes>::TetrahedronDiffusionFEMForceField(
       d_transverseAnisotropyDirectionArray(initData(&d_transverseAnisotropyDirectionArray, "transverseAnisotropyArray","Data to handle topology on tetrahedra")),
       d_tagMeshMechanics(initData(&d_tagMeshMechanics, std::string("meca"),"tagMechanics","Tag of the Mechanical Object.")),
       d_drawConduc( initData(&d_drawConduc, (bool)false, "drawConduc","To display conductivity map."))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 {
     this->f_listening.setValue(true);
 }
@@ -167,21 +170,30 @@ template <class DataTypes>
 void TetrahedronDiffusionFEMForceField<DataTypes>::init()
 {
     this->Inherited::init();
-    // Test if topology is present and is a appropriate
-    topology = this->getContext()->getMeshTopology();
 
-    // Save the number of edges in the mesh
-    nbEdges = topology->getNbEdges();
-
-    if (!topology)
+    if (l_topology.empty())
     {
-        serr  << "Error: TetrahedralMitchellShaefferForceField is not able to acces topology!" << sendl;
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    if (topology->getNbTetrahedra()==0)
+
+
+    // Save the number of edges in the mesh
+    nbEdges = m_topology->getNbEdges();
+    
+    if (m_topology->getNbTetrahedra()==0)
     {
-        serr << "ERROR(TetrahedronDiffusionFEMForceField): object must have a Tetrahedral Set Topology."<<sendl;
-        return;
+        msg_warning() << "No tetrahedra found in linked Topology.";
     }
 
     /// Initialize all the diffusion coefficients (for tetras) to the value given by the user.
@@ -191,17 +203,17 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     /// case no potential vector input
     if(tetraDiff.size()==0)
     {
-        tetraDiff.resize(topology->getNbTetrahedra());
-        for(int i=0; i<topology->getNbTetrahedra(); i++)
+        tetraDiff.resize(m_topology->getNbTetrahedra());
+        for(size_t i=0; i<m_topology->getNbTetrahedra(); i++)
             tetraDiff[i]=this->d_constantDiffusionCoefficient.getValue();
     }
     /// possible input tetrahedral diffusion coefficient
     else
     {
         loadedDiffusivity = true;
-        if((int)(tetraDiff.size())!=topology->getNbTetrahedra())
+        if(tetraDiff.size() != m_topology->getNbTetrahedra())
         {
-            serr<<"ERROR(TetrahedronDiffusionFEMForceField): error wrong size of potential input vector."<<sendl;
+            msg_error() <<"Wrong size of potential input vector.";
             return;
         }
 
@@ -212,21 +224,19 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     /// Get the mechanical object containing the mesh position in 3D
     Tag mechanicalTag(d_tagMeshMechanics.getValue());
     this->getContext()->get(mechanicalObject, mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
-    if (mechanicalObject==NULL)
+    if (mechanicalObject==nullptr)
     {
-        serr<<"ERROR(TetrahedronDiffusionFEMForceField): cannot find the mechanical object."<<sendl;
-        msg_info() <<"mechanicalObj = "<<mechanicalObject ;
-
+        msg_error() << "cannot find the mechanical object named '" << mechanicalObject << msgendl;
         return;
     }
 
     if(d_transverseAnisotropyRatio.getValue()!=1.0)
     {
-        msg_info() << "(TetrahedronDiffusionFEMForceField) anisotropic (r="<<sqrt(d_transverseAnisotropyRatio.getValue())<<") diffusion.";
+        msg_info() << "anisotropic (r="<<sqrt(d_transverseAnisotropyRatio.getValue())<<") diffusion.";
     }
     else
     {
-        msg_info() << "(TetrahedronDiffusionFEMForceField) isotropic diffusion.";
+        msg_info() << "isotropic diffusion.";
     }
 
     // prepare to store info in the edge array
@@ -243,7 +253,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::reinit()
 template <class DataTypes>
 SReal TetrahedronDiffusionFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
 {
-    serr<<"TetrahedronDiffusionFEMForceField::getPotentialEnergy not implemented yet"<<sendl;
+    msg_warning() <<"Method getPotentialEnergy not implemented yet." ;
     return 0;
 }
 
@@ -269,13 +279,13 @@ template <class DataTypes>
 typename TetrahedronDiffusionFEMForceField<DataTypes>::Real TetrahedronDiffusionFEMForceField<DataTypes>::getTetraDiffusionCoefficient(unsigned int i)
 {
     sofa::helper::vector<Real> tetraDiff = this->d_tetraDiffusionCoefficient.getValue();
-    if((int) i <= topology->getNbTetrahedra())
+    if(i <= m_topology->getNbTetrahedra())
     {
         return tetraDiff[i];
     }
     else
     {
-        serr<<  "Tetra i is larger than topology->getNbTetrahedra() " << sendl;
+        msg_error() << "Tetra i is larger than m_topology->getNbTetrahedra() " ;
         return -1;
     }
 }
@@ -292,8 +302,8 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::setDiffusionCoefficient(const
     // Save the new diffusion coefficient for each tetrahedron
     sofa::helper::vector <Real>& tetraDiff = *(d_tetraDiffusionCoefficient.beginEdit());
     tetraDiff.clear();
-    tetraDiff.resize(topology->getNbTetrahedra());
-    for(int i=0; i<topology->getNbTetrahedra(); i++)
+    tetraDiff.resize(m_topology->getNbTetrahedra());
+    for(size_t i=0; i<m_topology->getNbTetrahedra(); i++)
         tetraDiff[i] = d_constantDiffusionCoefficient.getValue();
     d_tetraDiffusionCoefficient.endEdit();
 
@@ -311,7 +321,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::setDiffusionCoefficient(const
 
     // Save the new diffusion coefficient for each tetrahedron
     sofa::helper::vector <Real>& tetraDiff = *(d_tetraDiffusionCoefficient.beginEdit());
-    for(int i=0; i<topology->getNbTetrahedra(); i++)
+    for(size_t i=0; i<m_topology->getNbTetrahedra(); i++)
         tetraDiff[i] = val[i];
     d_tetraDiffusionCoefficient.endEdit();
 
@@ -332,10 +342,10 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addForce (const core::Mechani
 
     Coord dp;
 
-    for(unsigned int i=0; i<nbEdges; i++ )
+    for(size_t i=0; i<nbEdges; i++ )
     {
-        v0=topology->getEdge(i)[0];
-        v1=topology->getEdge(i)[1];
+        v0=m_topology->getEdge(i)[0];
+        v1=m_topology->getEdge(i)[1];
 
         //Case 1D Diffusion
         if (d_1DDiffusion.getValue())
@@ -372,10 +382,10 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addDForce(const sofa::core::M
 
     Coord dp;
 
-    for(int i=0; i<(int)nbEdges; i++ )
+    for(size_t i=0; i<nbEdges; i++ )
     {
-        v0=topology->getEdge(i)[0];
-        v1=topology->getEdge(i)[1];
+        v0=m_topology->getEdge(i)[0];
+        v1=m_topology->getEdge(i)[1];
 
         if (d_1DDiffusion.getValue())
         {
@@ -405,10 +415,10 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addKToMatrix(const core::Mech
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = r.matrix;
 
-    if((int)(mat->colSize()) != (topology->getNbPoints()*N) || (int)(mat->rowSize()) != (topology->getNbPoints()*N))
+    if((int)(mat->colSize()) != (m_topology->getNbPoints()*N) || (int)(mat->rowSize()) != (m_topology->getNbPoints()*N))
     {
-        serr<<"Wrong size of the input Matrix: need resize in addKToMatrix function."<<sendl;
-        mat->resize(topology->getNbPoints()*N,topology->getNbPoints()*N);
+        msg_error()<<"Wrong size of the input Matrix: need resize in addKToMatrix function.";
+        mat->resize(m_topology->getNbPoints()*N,m_topology->getNbPoints()*N);
     }
 
     Real kFactor = mparams->kFactor();
@@ -417,10 +427,10 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addKToMatrix(const core::Mech
     unsigned int v0,v1;
 
 
-    for(int i=0; i<(int)nbEdges; i++ )
+    for(size_t i=0; i<nbEdges; i++ )
     {
-        v0=topology->getEdge(i)[0];
-        v1=topology->getEdge(i)[1];
+        v0=m_topology->getEdge(i)[0];
+        v1=m_topology->getEdge(i)[1];
 
         mat->add(offset+N*v1, offset+N*v0, -kFactor * edgeDiffusionCoefficient[i]);
         mat->add(offset+N*v0, offset+N*v1, -kFactor * edgeDiffusionCoefficient[i]);
@@ -451,12 +461,12 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
         this->mechanicalObject->read(core::ConstVecCoordId::restPosition())->getValue();
         vparams->drawTool()->setLightingEnabled(false);
 
-        unsigned int nbr = topology->getNbTriangles();
+        unsigned int nbr = m_topology->getNbTriangles();
         sofa::helper::vector<unsigned int> surfaceTri;
 
         for (unsigned int i=0; i<nbr; ++i)
         {
-            if((topology->getTetrahedraAroundTriangle(i)).size() == 1)
+            if((m_topology->getTetrahedraAroundTriangle(i)).size() == 1)
                 surfaceTri.push_back(i);
         }
 
@@ -466,7 +476,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
         for (unsigned int i=0; i<surfaceTri.size(); ++i)
         {
             sofa::defaulttype::Vector3 point[3];
-            Triangle tri = topology->getTriangle(surfaceTri[i]);
+            Triangle tri = m_topology->getTriangle(surfaceTri[i]);
             for (unsigned int j=0; j<3; ++j)
                 point[j] = restPosition[tri[j]];
 
@@ -479,7 +489,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
 
         vparams->drawTool()->drawLines(vertices, 1, colorLine);
 
-        unsigned int nbrTetra = topology->getNbTetrahedra();
+        unsigned int nbrTetra = m_topology->getNbTetrahedra();
         Real maxDiffusion = 0.0;
         for (unsigned int i = 0; i<nbrTetra; ++i)
         {
@@ -487,14 +497,14 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
                 maxDiffusion = d_tetraDiffusionCoefficient.getValue()[i];
         }
 
-        colorLine = sofa::defaulttype::Vec4f(0.2, 0.2, 0.2, 1.0);
+        colorLine = sofa::defaulttype::Vec4f(0.2f, 0.2f, 0.2f, 1.0f);
         vertices.clear();
         for (unsigned int i = 0; i<nbrTetra; ++i)
         {
             Real Ratio = d_tetraDiffusionCoefficient.getValue()[i] / maxDiffusion;
             sofa::defaulttype::Vec4f tetraColor(0.0, Ratio, 0.5-Ratio, 1.0);
 
-            Tetrahedron tetra = topology->getTetrahedron(i);
+            Tetrahedron tetra = m_topology->getTetrahedron(i);
             sofa::defaulttype::Vec<3,SReal> point[4];
 
             for (unsigned int j = 0; j<4; j++)

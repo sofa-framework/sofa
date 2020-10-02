@@ -1,10 +1,12 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 
 project(SofaGeneralSimpleFem_test)
 
-set(SOURCE_FILES
-    AffinePatch_test.cpp
-    LinearElasticity_test.cpp
+set(SOURCE_FILES ../../empty.cpp)
+
+list(APPEND SOURCE_FILES
+AffinePatch_test.cpp
+LinearElasticity_test.cpp
 )
 
 add_definitions("-DSOFAGENERALSIMPLEFEM_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")

@@ -6,7 +6,7 @@
 	<BruteForceDetection name="Detection" />
 	<NewProximityIntersection name="Proximity"  alarmDistance="5.0"  contactDistance="2.5" />
 	<DefaultContactManager name="Response"  response="default" />
-	<EulerImplicitSolver name="cg_odesolver"  printLog="0" />
+	<EulerImplicitSolver name="cg_odesolver"  printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
 	<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="40"  tolerance="1e-009"  threshold="1e-009" />
 	<SceneColladaLoader name="character" filename="scene.dae.human"  animationSpeed="1.0" generateCollisionModels="0" />
 </Node>

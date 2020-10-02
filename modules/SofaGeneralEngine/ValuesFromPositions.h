@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -69,15 +67,15 @@ protected:
 
     ValuesFromPositions();
 
-    ~ValuesFromPositions() {}
+    ~ValuesFromPositions() override {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void doUpdate() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -87,8 +85,12 @@ public:
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+            {
+                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+                              "' found in the context node.");
                 return false; // this template is not the same as the existing MechanicalState
+            }
         }
 
         return BaseObject::canCreate(obj, context, arg);
@@ -100,17 +102,6 @@ public:
     {
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const ValuesFromPositions<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
 
 protected:
     struct TempData
@@ -137,40 +128,34 @@ protected:
 
 public:
     //Input
-    Data<VecReal> f_inputValues;
-    Data<CPos> f_direction;
-    Data<VecCoord> f_X0;
-    Data<helper::vector<Edge> > f_edges;
-    Data<helper::vector<Triangle> > f_triangles;
-    Data<helper::vector<Tetra> > f_tetrahedra;
+    Data<VecReal> f_inputValues; ///< Input values
+    Data<CPos> f_direction; ///< Direction along which the values are interpolated
+    Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
+    Data<helper::vector<Edge> > f_edges; ///< Edge Topology
+    Data<helper::vector<Triangle> > f_triangles; ///< Triangle Topology
+    Data<helper::vector<Tetra> > f_tetrahedra; ///< Tetrahedron Topology
 
     //Output scalars
-    Data<VecReal> f_values;
-    Data<VecReal> f_edgeValues;
-    Data<VecReal> f_triangleValues;
-    Data<VecReal> f_tetrahedronValues;
+    Data<VecReal> f_values; ///< Values of the points contained in the ROI
+    Data<VecReal> f_edgeValues; ///< Values of the edges contained in the ROI
+    Data<VecReal> f_triangleValues; ///< Values of the triangles contained in the ROI
+    Data<VecReal> f_tetrahedronValues; ///< Values of the tetrahedra contained in the ROI
 
     //Output vectors
-    Data<sofa::helper::vector<Vec3> > f_pointVectors;
-    Data<sofa::helper::vector<Vec3> > f_edgeVectors;
-    Data<sofa::helper::vector<Vec3> > f_triangleVectors;
-    Data<sofa::helper::vector<Vec3> > f_tetrahedronVectors;
+    Data<sofa::helper::vector<Vec3> > f_pointVectors; ///< Vectors of the points contained in the ROI
+    Data<sofa::helper::vector<Vec3> > f_edgeVectors; ///< Vectors of the edges contained in the ROI
+    Data<sofa::helper::vector<Vec3> > f_triangleVectors; ///< Vectors of the triangles contained in the ROI
+    Data<sofa::helper::vector<Vec3> > f_tetrahedronVectors; ///< Vectors of the tetrahedra contained in the ROI
 
     // parameters
-    sofa::core::objectmodel::Data< sofa::helper::OptionsGroup > p_fieldType;
-    Data <bool> p_drawVectors;
-    Data <float> p_vectorLength;
+    sofa::core::objectmodel::Data< sofa::helper::OptionsGroup > p_fieldType; ///< field type of output elements
+    Data <bool> p_drawVectors; ///< draw vectors line
+    Data <float> p_vectorLength; ///< vector length visualisation. 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP)
+extern template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<defaulttype::Rigid3Types>; 
 #endif
 
 } // namespace engine

@@ -1,0 +1,33 @@
+Node : {
+    name : "root"
+
+    ### Declaring a template. It is instanciated lated.
+    Template : {
+        name : "Circle"
+        properties : {
+            name : "defaultName"
+            numchild : 3
+        }
+
+        Node : {
+            name : p"name"
+
+            MechanicalObject : {
+                    name : "mstate"
+            }
+
+            Python : '''
+                     self.getObject("mstate").position = [3,4,5]
+                     '''
+        }
+    }
+
+    ### Instanciating the same template two times.
+    Circle : {
+        name : "Circle"
+        numpoints : 5
+    }
+}
+
+
+

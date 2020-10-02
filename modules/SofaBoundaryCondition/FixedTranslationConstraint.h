@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,10 +67,13 @@ protected:
     friend class FixedTranslationConstraintInternalData<DataTypes>;
 
 public:
-    SetIndex f_indices;
-    Data<bool> f_fixAll;
-    Data<SReal> _drawSize;
-    SetIndex f_coordinates;
+    SetIndex f_indices; ///< Indices of the fixed points
+    Data<bool> f_fixAll; ///< filter all the DOF to implement a fixed object
+    Data<SReal> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
+    SetIndex f_coordinates; ///< Coordinates of the fixed points
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<FixedTranslationConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
     FixedTranslationConstraint();
 
@@ -82,15 +85,15 @@ public:
     void removeIndex(unsigned int index);
 
     // -- Constraint interface
-    void init();
+    void init() override;
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
@@ -116,35 +119,16 @@ protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 
 };
 
-#ifndef SOFA_FLOAT
-template<>
-void FixedTranslationConstraint<defaulttype::Vec6dTypes>::draw(const core::visual::VisualParams* vparams);
-#endif
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDTRANSLATIONCONSTRAINT_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<defaulttype::Rigid2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<defaulttype::Vec6Types>;
 
-#ifndef SOFA_DOUBLE
-template<>
-void FixedTranslationConstraint<defaulttype::Vec6fTypes>::draw(const core::visual::VisualParams* vparams);
-#endif
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDTRANSLATIONCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<defaulttype::Rigid2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<defaulttype::Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<defaulttype::Rigid2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<defaulttype::Vec6fTypes>;
-#endif
 #endif
 
 } // namespace projectiveconstraintset

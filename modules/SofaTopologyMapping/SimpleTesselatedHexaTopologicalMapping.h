@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,11 +65,11 @@ protected:
      *
          * Does nothing.
          */
-    virtual ~SimpleTesselatedHexaTopologicalMapping() {}
+    ~SimpleTesselatedHexaTopologicalMapping() override {}
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
-    virtual void init();
+    void init() override;
 
     /** \brief Translates the TopologyChange objects from the source to the target.
      *
@@ -77,7 +77,7 @@ public:
      * reflect the effects of the first topology changes on the second topology.
      *
      */
-    virtual void updateTopologicalMappingTopDown() {};
+    void updateTopologicalMappingTopDown() override {};
 
     /** \brief Translates the TopologyChange objects from the source to the target.
      *

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,8 +24,10 @@
 
 #include "DistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/gl.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
+#include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
 
 namespace sofa
 {
@@ -37,7 +39,7 @@ namespace mapping
 {
 
 
-static const SReal s_null_distance_epsilon = 1e-8;
+static const SReal s_null_distance_epsilon = std::numeric_limits<SReal>::epsilon();
 
 
 template <class TIn, class TOut>
@@ -48,6 +50,8 @@ DistanceMapping<TIn, TOut>::DistanceMapping()
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color,defaulttype::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , d_geometricStiffness(initData(&d_geometricStiffness, 2u, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_edgeContainer(nullptr)
 {
 }
 
@@ -60,10 +64,24 @@ DistanceMapping<TIn, TOut>::~DistanceMapping()
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::init()
 {
-    edgeContainer = dynamic_cast<topology::EdgeSetTopologyContainer*>( this->getContext()->getMeshTopology() );
-    if( !edgeContainer ) serr<<"No EdgeSetTopologyContainer found ! "<<sendl;
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
 
-    SeqEdges links = edgeContainer->getEdges();
+    }
+
+    m_edgeContainer = dynamic_cast<topology::EdgeSetTopologyContainer*>(l_topology.get());
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_edgeContainer == nullptr)
+    {
+        msg_error() << "No EdgeSetTopologyContainer component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    SeqEdges links = m_edgeContainer->getEdges();
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
 
     this->getToModel()->resize( links.size() );
@@ -86,23 +104,25 @@ void DistanceMapping<TIn, TOut>::init()
             {
                 restLengths[i] = (pos[links[i][0]] - pos[links[i][1]]).norm();
 
-                if( restLengths[i]<=s_null_distance_epsilon && compliance ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
+                msg_error_when(restLengths[i] <= s_null_distance_epsilon && compliance) << "Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof " << i << " if used with a compliance";
             }
         }
         else
         {
-            if( compliance ) serr<<"Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance"<<sendl;
+            msg_error_when(compliance) << "Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance";
             for(unsigned i=0; i<links.size(); i++ )
                 restLengths[i] = (Real)0.;
         }
     }
-    else // manually set
-        if( compliance ) // for warning message
-        {
-            helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
-            for(unsigned i=0; i<links.size(); i++ )
-                if( restLengths[i]<=s_null_distance_epsilon ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
-        }
+    else if (compliance) // for warning message
+    {
+        helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
+        std::stringstream sstream;
+        for (unsigned i = 0; i < links.size(); i++)
+            if (restLengths[i] <= s_null_distance_epsilon) 
+                sstream << "Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof " << i << " if used with a compliance \n";
+        msg_error_when(!sstream.str().empty()) << sstream.str();
+    }
 
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
@@ -122,7 +142,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
     helper::WriteOnlyAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
     helper::ReadAccessor<Data<helper::vector<Real> > > restLengths(f_restLengths);
-    SeqEdges links = edgeContainer->getEdges();
+    SeqEdges links = m_edgeContainer->getEdges();
 
     jacobian.clear();
 
@@ -180,8 +200,6 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
     }
 
     jacobian.compress();
-//    serr<<"apply, jacobian: "<<std::endl<< jacobian << sendl;
-
 }
 
 
@@ -216,7 +234,7 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
     }
     else
     {
-        const SeqEdges& links = edgeContainer->getEdges();
+        const SeqEdges& links = m_edgeContainer->getEdges();
 
         for(unsigned i=0; i<links.size(); i++ )
         {
@@ -252,16 +270,17 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
                 }
                 parentForce[links[i][0]] -= df;
                 parentForce[links[i][1]] += df;
-         //       cerr<<"DistanceMapping<TIn, TOut>::applyDJT, df = " << df << endl;
             }
         }
     }
 }
 
 template <class TIn, class TOut>
-void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
+void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& in, const Data<OutMatrixDeriv>& out)
 {
-    //    cerr<<"DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& ) does nothing " << endl;
+    const OutMatrixDeriv& childMat  = sofa::helper::read(out, cparams).ref();
+    InMatrixDeriv&        parentMat = sofa::helper::write(in, cparams).wref();
+    addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
 }
 
 
@@ -287,7 +306,7 @@ void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, 
 
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get(mparams)].read() );
-    const SeqEdges& links = edgeContainer->getEdges();
+    const SeqEdges& links = m_edgeContainer->getEdges();
 
     unsigned int size = this->fromModel->getSize();
     K.resizeBlocks(size,size);
@@ -336,7 +355,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     glPushAttrib(GL_LIGHTING_BIT);
 
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
-    const SeqEdges& links = edgeContainer->getEdges();
+    const SeqEdges& links = m_edgeContainer->getEdges();
 
 
 
@@ -371,7 +390,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::updateForceMask()
 {
-    const SeqEdges& links = edgeContainer->getEdges();
+    const SeqEdges& links = m_edgeContainer->getEdges();
 
     for(size_t i=0; i<links.size(); i++ )
     {
@@ -401,6 +420,8 @@ DistanceMultiMapping<TIn, TOut>::DistanceMultiMapping()
     , d_color(initData(&d_color, defaulttype::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
     , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_edgeContainer(nullptr)
 {
 }
 
@@ -422,7 +443,7 @@ void DistanceMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int
             break;
     if(i==this->fromModels.size())
     {
-        serr<<"SubsetMultiMapping<TIn, TOut>::addPoint, parent "<<from->getName()<<" not found !"<< sendl;
+        msg_error() << "SubsetMultiMapping<TIn, TOut>::addPoint, parent " << from->getName() << " not found !";
         assert(0);
     }
 
@@ -442,10 +463,24 @@ void DistanceMultiMapping<TIn, TOut>::addPoint( int from, int index)
 template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::init()
 {
-    edgeContainer = dynamic_cast<topology::EdgeSetTopologyContainer*>( this->getContext()->getMeshTopology() );
-    if( !edgeContainer ) serr<<"No EdgeSetTopologyContainer found ! "<<sendl;
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
 
-    const SeqEdges& links = edgeContainer->getEdges();
+    }
+
+    m_edgeContainer = dynamic_cast<topology::EdgeSetTopologyContainer*>(l_topology.get());
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+    
+    if (m_edgeContainer == nullptr)
+    {
+        msg_error() << "No EdgeSetTopologyContainer component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+    
+    const SeqEdges& links = m_edgeContainer->getEdges();
 
     this->getToModels()[0]->resize( links.size() );
 
@@ -471,23 +506,24 @@ void DistanceMultiMapping<TIn, TOut>::init()
 
                 restLengths[i] = (pos0 - pos1).norm();
 
-                if( restLengths[i]==0 && compliance ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
+                msg_error_when(restLengths[i] == 0 && compliance) << "Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof " << i << " if used with a compliance";
             }
         }
         else
         {
-            if( compliance ) serr<<"Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance"<<sendl;
+            msg_error_when(compliance) << "Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance";
             for(unsigned i=0; i<links.size(); i++ )
                 restLengths[i] = (Real)0.;
         }
     }
-    else // manually set
-        if( compliance ) // for warning message
-        {
-            helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
-            for(unsigned i=0; i<links.size(); i++ )
-                if( restLengths[i]<=s_null_distance_epsilon ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
-        }
+    else if( compliance ) // manually set // for warning message
+    {
+        helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
+        std::stringstream sstream;
+        for(unsigned i=0; i<links.size(); i++ )
+            if( restLengths[i]<=s_null_distance_epsilon ) sstream <<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance \n";
+        msg_error_when(!sstream.str().empty()) << sstream.str();
+    }
 
     alloc();
 
@@ -507,7 +543,7 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
 
     const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
     helper::ReadAccessor<Data<helper::vector<Real> > > restLengths(f_restLengths);
-    const SeqEdges& links = edgeContainer->getEdges();
+    const SeqEdges& links = m_edgeContainer->getEdges();
 
 
     unsigned totalInSize = 0;
@@ -622,7 +658,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
 
     const SReal kfactor = mparams->kFactor();
     const OutVecDeriv& childForce = this->getToModels()[0]->readForces().ref();
-    const SeqEdges& links = edgeContainer->getEdges();
+    const SeqEdges& links = m_edgeContainer->getEdges();
     const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
 
     unsigned size = this->getFromModels().size();
@@ -681,7 +717,6 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
             }
             parentForce0[pair0[1]] -= df;
             parentForce1[pair1[1]] += df;
- //       cerr<<"DistanceMapping<TIn, TOut>::applyDJT, df = " << df << endl;
         }
     }
 
@@ -708,7 +743,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[(const core::State<TOut>*)this->getToModels()[0]].read() );
-    const SeqEdges& links = edgeContainer->getEdges();
+    const SeqEdges& links = m_edgeContainer->getEdges();
     const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
 
     for(size_t i=0; i<links.size(); i++)
@@ -774,7 +809,7 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
-    const SeqEdges& links = edgeContainer->getEdges();
+    const SeqEdges& links = m_edgeContainer->getEdges();
 
     const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
 
@@ -815,7 +850,7 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::updateForceMask()
 {
-    const SeqEdges& links = edgeContainer->getEdges();
+    const SeqEdges& links = m_edgeContainer->getEdges();
     const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
 
     for(size_t i=0; i<links.size(); i++ )

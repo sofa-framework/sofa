@@ -1,0 +1,6 @@
+This is libQGLViewer version 2.7.1. Packaged on November 13, 2017.
+
+The complete change log is available in doc/changeLog.html
+
+The latest releases and changeLog are available at:
+http://www.libqglviewer.com/changeLog.html

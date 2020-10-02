@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,18 +58,18 @@ protected:
     Visual3DText();
 
 public:
-    virtual void init();
+    void init() override;
 
-    virtual void reinit();
+    void reinit() override;
 
-    virtual void drawTransparent(const core::visual::VisualParams* vparams);
+    void drawTransparent(const core::visual::VisualParams* vparams) override;
 
 public:
-    Data<std::string> d_text;
-    Data<defaulttype::Vec3f> d_position;
-    Data<float> d_scale;
-    Data<defaulttype::RGBAColor> d_color;
-    Data<bool> d_depthTest;
+    Data<std::string> d_text; ///< Test to display
+    Data<defaulttype::Vec3f> d_position; ///< 3d position
+    Data<float> d_scale; ///< text scale
+    Data<defaulttype::RGBAColor> d_color; ///< text color. (default=[1.0,1.0,1.0,1.0])
+    Data<bool> d_depthTest; ///< perform depth test
 
 
 };

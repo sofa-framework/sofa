@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,25 +22,25 @@
 
 #include "Binding_BaseMechanicalState.h"
 #include "Binding_BaseState.h"
+#include "PythonToSofa.inl"
+
+using sofa::core::behavior::BaseMechanicalState ;
+
+static BaseMechanicalState* get_basemechanicalstate(PyObject* self) {
+    return sofa::py::unwrap<BaseMechanicalState>(self);
+}
 
 
-using namespace sofa::core::behavior;
-using namespace sofa::core;
-using namespace sofa::core::objectmodel;
-
-
-
-extern "C" PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObject * args)
+static PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObject * args)
 {
-    BaseMechanicalState* obj=((PySPtr<Base>*)self)->object->toBaseMechanicalState();
+    BaseMechanicalState* obj  = get_basemechanicalstate( self );
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
-        int ix,iy,iz; // helper: you can set integer values
+        int ix,iy,iz; /// helper: you can set integer values
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
-            PyErr_BadArgument();
-            return NULL;
+            return nullptr;
         }
         dx = (double)ix;
         dy = (double)iy;
@@ -50,17 +50,16 @@ extern "C" PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObj
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseMechanicalState_applyScale(PyObject *self, PyObject * args)
+static PyObject * BaseMechanicalState_applyScale(PyObject *self, PyObject * args)
 {
-    BaseMechanicalState* obj=((PySPtr<Base>*)self)->object->toBaseMechanicalState();
+    BaseMechanicalState* obj  = get_basemechanicalstate( self );
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
-        int ix,iy,iz; // helper: you can set integer values
+        int ix,iy,iz; /// helper: you can set integer values
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
-            PyErr_BadArgument();
-            return NULL;
+            return nullptr;
         }
         dx = (double)ix;
         dy = (double)iy;
@@ -70,17 +69,16 @@ extern "C" PyObject * BaseMechanicalState_applyScale(PyObject *self, PyObject * 
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseMechanicalState_applyRotation(PyObject *self, PyObject * args)
+static PyObject * BaseMechanicalState_applyRotation(PyObject *self, PyObject * args)
 {
-    BaseMechanicalState* obj=((PySPtr<Base>*)self)->object->toBaseMechanicalState();
+    BaseMechanicalState* obj  = get_basemechanicalstate( self );
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
-        int ix,iy,iz; // helper: you can set integer values
+        int ix,iy,iz; /// helper: you can set integer values
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
-            PyErr_BadArgument();
-            return NULL;
+            return nullptr;
         }
         dx = (double)ix;
         dy = (double)iy;
@@ -90,14 +88,11 @@ extern "C" PyObject * BaseMechanicalState_applyRotation(PyObject *self, PyObject
     Py_RETURN_NONE;
 }
 
-
-
 SP_CLASS_METHODS_BEGIN(BaseMechanicalState)
 SP_CLASS_METHOD(BaseMechanicalState,applyTranslation)
 SP_CLASS_METHOD(BaseMechanicalState,applyScale)
 SP_CLASS_METHOD(BaseMechanicalState,applyRotation)
 SP_CLASS_METHODS_END
-
 
 SP_CLASS_TYPE_SPTR(BaseMechanicalState,BaseMechanicalState,BaseState)
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -210,30 +210,32 @@ public:
     PersistentContactBarycentricMapping()
         : Inherit()
         ,  m_persistentMapper(initLink("persistentMapper", "Internal persistent mapper created depending on the type of topology"))
+        , m_init(false)
     {
     }
 
     PersistentContactBarycentricMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to)
         , m_persistentMapper(initLink("persistentMapper", "Internal persistent mapper created depending on the type of topology"))
+        , m_init(false)
     {
     }
 
-    virtual ~PersistentContactBarycentricMapping()
+    ~PersistentContactBarycentricMapping() override
     {
     }
 
-    virtual void init();
+    void init() override;
 
-    void beginAddContactPoint();
+    void beginAddContactPoint() override;
 
     int addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
 
-    int keepContactPointFromInputMapping(const int);
+    int keepContactPointFromInputMapping(const int) override;
 
-    void applyPositionAndFreePosition();
+    void applyPositionAndFreePosition() override;
 
-    void handleEvent(sofa::core::objectmodel::Event*);
+    void handleEvent(sofa::core::objectmodel::Event*) override;
 
 protected:
     bool m_init;
@@ -246,26 +248,13 @@ protected:
 };
 
 
-#ifndef SOFA_FLOAT
 using sofa::defaulttype::Vec3dTypes;
-#endif
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-#endif
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3dTypes, Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3fTypes, Vec3fTypes >;
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3fTypes, Vec3dTypes >;
-#endif
-#endif
+
+#if  !defined(SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_CPP)
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactBarycentricMapping< Vec3Types, Vec3Types >;
+
+
 #endif
 
 } // namespace mapping

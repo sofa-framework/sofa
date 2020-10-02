@@ -5,6 +5,7 @@
 
 
 <Node 	name="Root" gravity="0 0 0" dt="0.05"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="image"/>
     <RequiredPlugin pluginName="Flexible"/>
 
@@ -73,14 +74,15 @@
 		<Node name="Collision">
 		        <VisualStyle displayFlags="hideBehaviorModels" />
 			<MeshObjLoader name="MeshLoader" filename="../data/mesh/steak.obj"/>
-			<Mesh src="@MeshLoader" /> 
+			<MeshTopology src="@MeshLoader" /> 
                         <MechanicalObject  name="PointSet"  />
 <!--                         <UniformMass totalMass="1000"/> -->
 			<LinearMapping template="Affine,Vec3d"/>
 		</Node>
 
 		<Node name="Visu">
-			<OglModel name="Beam" fileMesh="../data/mesh/steak.obj" texturename="../data/mesh/steak.png" normals="0" />
+			<MeshObjLoader name="meshLoader_0" filename="../data/mesh/steak.obj" handleSeams="1" />
+			<OglModel name="Beam" src="@meshLoader_0" texturename="../data/mesh/steak.png" normals="0" />
 			<LinearMapping template="Affine,ExtVec3f"/>
 		</Node>
     </Node>

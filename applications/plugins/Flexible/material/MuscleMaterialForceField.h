@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,16 +51,16 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > f_lambda0;
-    Data<helper::vector<Real> > f_sigmaMax;
-    Data<helper::vector<Real> > f_a;
+    Data<helper::vector<Real> > f_lambda0; ///< optimal fiber stretch
+    Data<helper::vector<Real> > f_sigmaMax; ///< maximum isometric stress
+    Data<helper::vector<Real> > f_a; ///< activation level
     Data<helper::vector<Real> > f_b;
     Data<helper::vector<Real> > f_Vvm;
     Data<helper::vector<Real> > f_Ver;
     Data<helper::vector<Real> > f_Vsh;
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Real b=0,Vvm=0,Ver=0,lambda0=0,Vsh=0,a=0,sigmaMax=0;
         for(unsigned int i=0; i<this->material.size(); i++)

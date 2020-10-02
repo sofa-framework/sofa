@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,6 @@
 #ifndef SOFA_COMPONENT_COLLISION_LMDNEWPROXIMITYINTERSECTION_INL
 #define SOFA_COMPONENT_COLLISION_LMDNEWPROXIMITYINTERSECTION_INL
 
-#include <sofa/helper/system/config.h>
 #include <SofaConstraint/LMDNewProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/proximity.h>
@@ -44,11 +43,7 @@ namespace collision
 
 template< class TFilter1, class TFilter2 >
 inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id, int indexLine1, int indexLine2,  TFilter1 &f1, TFilter2 &f2)
-//inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id)
 {
-
-//	std::cout<<"doIntersectionLine "<<indexLine1 <<" and Line "<<indexLine2 <<" is called" <<std::endl;
-
     bool debug=false;
     if(indexLine1==-1 || indexLine2==-1)
         debug=true;
@@ -111,14 +106,12 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
     //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     detection->point[0]=p;
     detection->point[1]=q;
     detection->normal=pq;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
-    //detection->value -= contactDist;
 
     if(debug)
         std::cout<<" --------------------------------- ACCEPTED ! --------------------------------"<<pq<<std::endl;
@@ -127,7 +120,6 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
 
 template< class TFilter1, class TFilter2 >
 inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, OutputVector* contacts, int id, int indexLine1, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
-//inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, OutputVector* contacts, int id, bool swapElems)
 {
     std::cout<<"doIntersectionLinePoint is called"<<std::endl;
     const defaulttype::Vector3 AB = p2-p1;
@@ -139,14 +131,9 @@ inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, co
 
     double alpha = 0.5;
 
-    //if (A < -0.000001 || A > 0.000001)
-    {
-        alpha = b/A;
-        //if (alpha < 0.000001 || alpha > 0.999999)
-        //        return 0;
-        if (alpha < 0.0) alpha = 0.0;
-        else if (alpha > 1.0) alpha = 1.0;
-    }
+    alpha = b/A;
+    if (alpha < 0.0) alpha = 0.0;
+    else if (alpha > 1.0) alpha = 1.0;
 
     defaulttype::Vector3 p,pq, qp;
     p = p1 + AB * alpha;
@@ -161,13 +148,9 @@ inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, co
     if (!f2.validPoint(indexPoint2, qp))
         return 0;
 
-
-
-    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
 
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = id;
     if (swapElems)
     {
@@ -183,13 +166,11 @@ inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, co
     }
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
-    //detection->value -= contactDist;
     return 1;
 }
 
 template< class TFilter1, class TFilter2 >
 inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id, int indexPoint1, int indexPoint2, TFilter1 &f1, TFilter2 &f2)
-//inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id)
 {
     defaulttype::Vector3 pq;
     pq = q-p;
@@ -203,23 +184,19 @@ inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, c
     if (!f2.validPoint(indexPoint2, qp))
         return 0;
 
-    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     detection->point[0]=p;
     detection->point[1]=q;
     detection->normal=pq;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
-    //detection->value -= contactDist;
     return 1;
 }
 
 template< class TFilter1, class TFilter2 >
 inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& /*n*/, const defaulttype::Vector3& q, OutputVector* contacts, int id,  Triangle &e1, unsigned int *edgesIndices, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
-//inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& /*n*/, const defaulttype::Vector3& q, OutputVector* contacts, int id, bool swapElems)
 {
     const defaulttype::Vector3 AB = p2-p1;
     const defaulttype::Vector3 AC = p3-p1;
@@ -247,10 +224,6 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
     beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
     defaulttype::Vector3 pq;
     defaulttype::Vector3 p;
-    //if (alpha < 0.000001 ||
-    //    beta  < 0.000001 ||
-    //    alpha + beta  > 0.999999)
-    //        return 0;
     if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
     {
         // nearest point is on an edge or corner
@@ -263,7 +236,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
             ///////////////////////
             // closest point is A
             ///////////////////////
-            if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1)) return 0; // this corner is not considered
             alpha = 0.0;
             beta = 0.0;
             //p = p1 + AB * alpha + AC * beta;
@@ -281,7 +254,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
             ///////////////////////////
             // closest point is on AB : convention edgesIndices 0
             ///////////////////////////
-            if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)) return 0; // this edge is not considered
             alpha = pAB;
             beta = 0.0;
             pq = q-p1 - AB*alpha;// p= p1 + AB * alpha + AC * beta;
@@ -296,7 +269,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
             ///////////////////////////
             // closest point is on AC: convention edgesIndices 2
             ///////////////////////////
-            if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
+            if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)) return 0; // this edge is not considered
             alpha = 0.0;
             beta = pAC;
             pq = q-p1 - AC*beta;// p= p1 + AB * alpha + AC * beta;
@@ -316,7 +289,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
                 //////////////////////
                 // closest point is B
                 //////////////////////
-                if (!(flags&TriangleModel::FLAG_P2)) return 0; // this point is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2)) return 0; // this point is not considered
                 alpha = 1.0;
                 beta = 0.0;
                 pq = q-p2;
@@ -329,7 +302,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
             else if (pBC > 0.999999)
             {
                 // closest point is C
-                if (!(flags&TriangleModel::FLAG_P3)) return 0; // this point is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)) return 0; // this point is not considered
                 alpha = 0.0;
                 beta = 1.0;
                 pq = q-p3;
@@ -344,7 +317,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
                 ///////////////////////////
                 // closest point is on BC: convention edgesIndices 1
                 ///////////////////////////
-                if (!(flags&TriangleModel::FLAG_E23)) return 0; // this edge is not considered
+                if (!(flags&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E23)) return 0; // this edge is not considered
                 alpha = 1.0-pBC;
                 beta = pBC;
                 pq = q-p1 - AB * alpha - AC * beta;
@@ -374,10 +347,8 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
     if (!f2.validPoint(indexPoint2, qp))
         return 0;
 
-    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     if (swapElems)
     {
@@ -393,14 +364,6 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
     }
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
-
-    //printf("\n normale : x = %f , y = %f, z = %f",detection->normal.x(),detection->normal.y(),detection->normal.z());
-    //if (e2.getCollisionModel()->isStatic() && detection->normal * e2.n() < -0.95)
-    //{ // The elements are interpenetrating
-    //	detection->normal = -detection->normal;
-    //	detection->value = -detection->value;
-    //}
-    //detection->value -= contactDist;
     return 1;
 }
 
@@ -473,7 +436,7 @@ int LMDNewProximityIntersection::computeIntersection(TSphere<T1>& e1, TSphere<T2
 template<class T>
 bool LMDNewProximityIntersection::testIntersection(Line&, TSphere<T>&)
 {
-    serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere)."<<sendl;
+    msg_error() << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Sphere).";
     return true;
 }
 
@@ -501,7 +464,7 @@ int LMDNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, O
 template<class T>
 bool LMDNewProximityIntersection::testIntersection(Triangle&, TSphere<T>&)
 {
-    serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere)."<<sendl;
+    msg_error() << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Sphere).";
     return true;
 }
 
@@ -510,7 +473,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e
 {
 
 // index of lines:
-    const sofa::helper::fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getTopology()->getEdgesInTriangle(e1.getIndex());
+    const sofa::helper::fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getCollisionTopology()->getEdgesInTriangle(e1.getIndex());
     unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
     E1edge1verif=0; E1edge2verif=0; E1edge3verif=0;
 
@@ -518,11 +481,10 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e
 
     // verify the edge ordering //
     sofa::core::topology::BaseMeshTopology::Edge edge[3];
-    //std::cout<<"E1 & E2 verif: ";
     for (int i=0; i<3; i++)
     {
         // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
-        edge[i] = e1.getCollisionModel()->getTopology()->getEdge(edgesInTriangle1[i]);
+        edge[i] = e1.getCollisionModel()->getCollisionTopology()->getEdge(edgesInTriangle1[i]);
         if(((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p2Index()) || ((int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p1Index()))
         {
             E1edge1verif = edgesInTriangle1[i]; /*std::cout<<"- e1 1: "<<i ;*/

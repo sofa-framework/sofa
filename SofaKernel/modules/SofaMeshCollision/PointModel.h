@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,15 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_POINTMODEL_H
-#define SOFA_COMPONENT_COLLISION_POINTMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaMeshCollision/LocalMinDistanceFilter.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 
 namespace sofa
@@ -40,18 +40,18 @@ namespace collision
 {
 
 template<class DataTypes>
-class TPointModel;
+class PointCollisionModel;
 
 class PointLocalMinDistanceFilter;
 
 template<class TDataTypes>
-class TPoint : public core::TCollisionElementIterator<TPointModel<TDataTypes> >
+class TPoint : public core::TCollisionElementIterator<PointCollisionModel<TDataTypes> >
 {
 public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef TPointModel<DataTypes> ParentModel;
+    typedef PointCollisionModel<DataTypes> ParentModel;
 
     TPoint(ParentModel* model, int index);
     TPoint() {}
@@ -67,30 +67,17 @@ public:
     bool hasFreePosition() const;
 
     bool testLMD(const sofa::defaulttype::Vector3 &, double &, double &);
-
-    bool activated(core::CollisionModel *cm = 0) const;
-};
-
-class PointActiver
-{
-public:
-    PointActiver() {}
-    virtual ~PointActiver() {}
-    virtual bool activePoint(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
-	static PointActiver* getDefaultActiver() { static PointActiver defaultActiver; return &defaultActiver; }
 };
 
 template<class TDataTypes>
-class SOFA_MESH_COLLISION_API TPointModel : public core::CollisionModel
+class SOFA_MESH_COLLISION_API PointCollisionModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TPointModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(PointCollisionModel, TDataTypes), core::CollisionModel);
 
-//    typedef Vec3Types InDataTypes;
-//    typedef Vec3Types DataTypes;
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
-    typedef TPointModel<DataTypes> ParentModel;
+    typedef PointCollisionModel<DataTypes> ParentModel;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -100,21 +87,22 @@ public:
 
     friend class TPoint<DataTypes>;
 protected:
-    TPointModel();
+    PointCollisionModel();
 public:
-    virtual void init();
+    void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size);
+    void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0);
+    void computeBoundingTree(int maxDepth=0) override;
 
-    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
+    void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams*,int index) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2);
+    bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
@@ -122,62 +110,52 @@ public:
 
     PointLocalMinDistanceFilter *getFilter() const;
 
-    //template< class TFilter >
-    //TFilter *getFilter() const
-    //{
-    //	if (m_lmdFilter != 0)
-    //		return m_lmdFilter;
-    //	else
-    //		return &m_emptyFilter;
-    //}
-
     void setFilter(PointLocalMinDistanceFilter * /*lmdFilter*/);
 
     const Deriv& velocity(int index) const;
 
-    Data<bool> bothSide; // to activate collision on both side of the point model (when surface normals are defined on these points)
+    Data<bool> bothSide; ///< to activate collision on both side of the point model (when surface normals are defined on these points)
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+        {
+            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+                          "' found in the context node.");
             return false;
+        }
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+    void updateNormals();
 
-    static std::string templateName(const TPointModel<DataTypes>* = NULL)
+    sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
     {
-        return DataTypes::Name();
+        return l_topology.get();
     }
-
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible);
 
 protected:
 
     core::behavior::MechanicalState<DataTypes>* mstate;
 
-    Data<bool> computeNormals;
-
-    Data<std::string> PointActiverPath;
+    Data<bool> computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
 
     VecDeriv normals;
 
     PointLocalMinDistanceFilter *m_lmdFilter;
     EmptyFilter m_emptyFilter;
 
-    Data<bool> m_displayFreePosition;
+    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
+                                      
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<PointCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    void updateNormals();
-
-    PointActiver *myActiver;
 };
+
 
 template<class DataTypes>
 inline TPoint<DataTypes>::TPoint(ParentModel* model, int index)
@@ -209,7 +187,7 @@ template<class DataTypes>
 inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TPointModel<DataTypes>::velocity(int index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
+inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(int index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->normals.size()) ? this->model->normals[this->index] : Deriv(); }
@@ -217,22 +195,13 @@ inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigne
 template<class DataTypes>
 inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
-template<class DataTypes>
-inline bool TPoint<DataTypes>::activated(core::CollisionModel *cm) const
-{
-    return this->model->myActiver->activePoint(this->index, cm);
-}
+template <class TDataTypes> using TPointModel [[deprecated("The TPointModel is now deprecated, please use PointCollisionModel instead. Compatibility stops at v20.06")]] = PointCollisionModel<TDataTypes>;
+using PointModel [[deprecated("The PointModel is now deprecated, please use PointCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = PointCollisionModel<sofa::defaulttype::Vec3Types>;
+using Point = TPoint<sofa::defaulttype::Vec3Types>;
 
-typedef TPointModel<sofa::defaulttype::Vec3Types> PointModel;
-typedef TPoint<sofa::defaulttype::Vec3Types> Point;
+#if  !defined(SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_CPP)
+extern template class SOFA_MESH_COLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_POINTMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MESH_COLLISION_API TPointModel<defaulttype::Vec3fTypes>;
-#endif
 #endif
 
 //bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension);

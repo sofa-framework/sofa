@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -211,11 +211,6 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
         sofa::gpu::cuda::CudaSortPrepare(numElements);
     }
 
-#ifdef SOFA_DEV
-    //sortTmp.recreate(radixSortTempStorage(nbPoints*8));
-    //sortTmp.deviceWrite();
-#endif
-
     //cells.recreate(nbCells+1);
     cellGhost.recreate(nbCells);
     //sortedPos.recreate(nbPoints);
@@ -305,6 +300,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 template<class TCoord, class TDeriv, class TReal>
 void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::draw(const core::visual::VisualParams* )
 {
+#ifdef SOFA_NO_OPENGL
     if (!lastX) return;
     int nbPoints = particleHash.size();
     int index0 = nbCells+BSIZE;
@@ -335,6 +331,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
     }
     glEnd();
     glPointSize(1);
+#endif // SOFA_NO_OPENGL
 }
 
 } // namespace container

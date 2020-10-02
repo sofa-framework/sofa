@@ -137,7 +137,7 @@ private:
     std::map<unsigned int, unsigned int> atomToDOFIndexes;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_FILEMANAGER_PML)
+#if  !defined(SOFA_BUILD_FILEMANAGER_PML)
 extern template class SOFA_BUILD_FILEMANAGER_PML_API LMLConstraint<Vec3Types>;
 #endif
 

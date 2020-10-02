@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="" gravity="0 -1 0" dt="1">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="Flexible" pluginName="Flexible" />
     <RequiredPlugin pluginName="Compliant"/>
 
@@ -15,7 +16,7 @@
         <!--Subdivided cube-->
         <RegularGridTopology name="grid" n="4 4 10" min="0 0 0" max="3 3 12"  />
         <MechanicalObject name="DOF" template="Vec3d" />
-        <UniformMass name="themass" mass="1" />
+        <UniformMass name="themass" vertexMass="1" />
 
         <!--maintain points of plane x=0 fixed -->
         <BoxROI template="Vec3d" name="O_box_roi" box="-0.01 -0.01 -0.01   3.01 3.01 0.01  "  drawPoints="1" drawSize="30" />
@@ -35,12 +36,12 @@
         </Node>
 
         <Node name="VisuHexa"  >
-                <VisualModel color="1 0.8 0.2 0.3" />
+                <OglModel color="1 0.8 0.2 0.3" />
                 <IdentityMapping />
         </Node>
         <Node name="VisuHexa2"  >
                 <VisualStyle displayFlags="showWireframe"/>
-                <VisualModel color="1 0.8 0.2 1" />
+                <OglModel color="1 0.8 0.2 1" />
                 <IdentityMapping />
         </Node>
 
@@ -55,7 +56,7 @@
         <!--Subdivided cube-->
         <RegularGridTopology name="grid" n="4 4 10" min="0 0 0" max="3 3 12"  />
         <MechanicalObject name="DOF" template="Vec3d" />
-        <UniformMass name="themass" mass="1" />
+        <UniformMass name="themass" vertexMass="1" />
 
         <!--maintain points of plane x=0 fixed -->
         <BoxROI template="Vec3d" name="O_box_roi" box="-0.01 -0.01 -0.01   3.01 3.01 0.01  "  drawPoints="1" drawSize="30" />
@@ -79,12 +80,12 @@
         </Node>
 
         <Node name="VisuHexa"  >
-                <VisualModel color="1 0.2 0.2 0.3" />
+                <OglModel color="1 0.2 0.2 0.3" />
                 <IdentityMapping />
         </Node>
         <Node name="VisuHexa2"  >
                 <VisualStyle displayFlags="showWireframe"/>
-                <VisualModel color="1 0.2 0.2 1" />
+                <OglModel color="1 0.2 0.2 1" />
                 <IdentityMapping />
         </Node>
 
@@ -99,7 +100,7 @@
         <!--Subdivided cube-->
         <RegularGridTopology name="grid" n="4 4 10" min="0 0 0" max="3 3 12"  />
         <MechanicalObject name="DOF" template="Vec3d" />
-        <UniformMass name="themass" mass="1" />
+        <UniformMass name="themass" vertexMass="1" />
 
         <!--maintain points of plane x=0 fixed -->
         <BoxROI template="Vec3d" name="O_box_roi" box="-0.01 -0.01 -0.01   3.01 3.01 0.01  "  drawPoints="1" drawSize="30" />
@@ -119,12 +120,12 @@
         </Node>
 
         <Node name="VisuHexa"  >
-                <VisualModel color="0.8 0.8 1 0.3" />
+                <OglModel color="0.8 0.8 1 0.3" />
                 <IdentityMapping />
         </Node>
         <Node name="VisuHexa2"  >
                 <VisualStyle displayFlags="showWireframe"/>
-                <VisualModel color="0.8 0.8 1 1" />
+                <OglModel color="0.8 0.8 1 1" />
                 <IdentityMapping />
         </Node>
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,10 +22,6 @@
 #include <SofaUserInteraction/RemovePrimitivePerformer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologicalMapping.h>
-
-#if 0
-#include <SofaMiscCollision/TetrahedronModel.h>
-#endif
 #include <sofa/simulation/Simulation.h>
 
 namespace sofa
@@ -43,7 +39,7 @@ RemovePrimitivePerformer<DataTypes>::RemovePrimitivePerformer(BaseMouseInteracto
     ,firstClick (0)
     ,surfaceOnVolume(false)
     ,volumeOnSurface(false)
-    ,topo_curr(NULL)
+    ,topo_curr(nullptr)
 {}
 
 
@@ -90,7 +86,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
         if(topologyModifier)
             topologyChangeManager.removeItemsFromCollisionModel(model, (int)picked.indexCollisionElement);
 
-        picked.body=NULL;
+        picked.body=nullptr;
         this->interactor->setBodyPicked(picked);
     }
     else // second case remove a zone of element
@@ -121,7 +117,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
             if (surfaceOnVolume) // In the case of deleting a volume from a surface an volumique collision model is needed (only tetra available for the moment)
             {
 #if 0
-                model = sofa::core::objectmodel::New<TetrahedronModel>();
+                model = sofa::core::objectmodel::New<TetrahedronCollisionModel>();
                 //model->setContext(topo_curr->getContext());
                 topo_curr->getContext()->addObject(model);
 #endif
@@ -133,7 +129,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
 
             // Handle Removing of topological element (from any type of topology)
             if(topologyModifier) topologyChangeManager.removeItemsFromCollisionModel(model.get(),ElemList_int );
-            picked.body=NULL;
+            picked.body=nullptr;
             this->interactor->setBodyPicked(picked);
 
             if (surfaceOnVolume) // In the case of deleting a volume from a surface an volumique collision model is needed (only tetra available for the moment)
@@ -164,7 +160,7 @@ template <class DataTypes>
 bool RemovePrimitivePerformer<DataTypes>::createElementList()
 {
     // - STEP 1: Looking for current topology type
-    topo_curr = picked.body->getContext()->getMeshTopology();
+    topo_curr = picked.body->getCollisionTopology();
     if (topo_curr->getNbHexahedra())
         topoType = sofa::core::topology::HEXAHEDRON;
     else if (topo_curr->getNbTetrahedra())
@@ -314,7 +310,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
             }
 
             // Switching variables to initial topology (topotype, topology) clear list of surfacique elements selected
-            topo_curr = picked.body->getMeshTopology();
+            topo_curr = picked.body->getCollisionTopology();
             topoType = topoTypeTmp;
             selectedElem.clear();
 
@@ -651,26 +647,21 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getElem
 //***************************************************************************************************************
 
 template <class DataTypes>
-void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams* )
+void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    if (picked.body == NULL) return;
+    if (picked.body == nullptr) return;
 
-    if (mstateCollision == NULL) return;
+    if (mstateCollision == nullptr) return;
 
 
     const VecCoord& X = mstateCollision->read(core::ConstVecCoordId::position())->getValue();
-    //core::topology::BaseMeshTopology* topo = picked.body->getMeshTopology();
 
-    glDisable(GL_LIGHTING);
-    glColor3f(0.3f,0.8f,0.3f);
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
 
-
-    if (topoType == sofa::core::topology::QUAD || topoType == sofa::core::topology::HEXAHEDRON)
-        glBegin (GL_QUADS);
-    else
-        glBegin (GL_TRIANGLES);
-
+    std::vector<sofa::defaulttype::Vector3> vertices_quads;
+    std::vector<sofa::defaulttype::Vector3> vertices_triangles;
+    sofa::defaulttype::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
 
     for (unsigned int i=0; i<selectedElem.size(); ++i)
     {
@@ -688,10 +679,10 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
             for (unsigned int j = 0; j<8; ++j)
             {
-                glVertex3d(coordP[j][0], coordP[j][1], coordP[j][2]);
-                glVertex3d(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]);
-                glVertex3d(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]);
-                glVertex3d(coordP[(j+3)%4][0], coordP[(j+3)%4][1], coordP[(j+3)%4][2]);
+                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[j][0], coordP[j][1], coordP[j][2]));
+                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]));
+                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]));
+                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[(j+3)%4][0], coordP[(j+3)%4][1], coordP[(j+3)%4][2]));
             }
             break;
         }
@@ -705,9 +696,9 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
             for (unsigned int j = 0; j<4; ++j)
             {
-                glVertex3d(coordP[j][0], coordP[j][1], coordP[j][2]);
-                glVertex3d(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]);
-                glVertex3d(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]);
+                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[j][0], coordP[j][1], coordP[j][2]));
+                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]));
+                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]));
             }
             break;
         }
@@ -718,7 +709,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
             for (unsigned int j = 0; j<4; j++)
             {
                 Coord coordP = X[quad[j]];
-                glVertex3d(coordP[0], coordP[1], coordP[2]);
+                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[0], coordP[1], coordP[2]));
             }
             break;
         }
@@ -729,12 +720,12 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
             for (unsigned int j = 0; j<3; j++)
             {
                 Coord coordP = X[tri[j]];
-                glVertex3d(coordP[0] * 1.001, coordP[1] * 1.001, coordP[2] * 1.001);
+                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[0] * 1.001, coordP[1] * 1.001, coordP[2] * 1.001));
             }
             for (unsigned int j = 0; j<3; j++)
             {
                 Coord coordP = X[tri[j]];
-                glVertex3d(coordP[0] * 0.999, coordP[1] * 0.999, coordP[2] * 0.999);
+                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[0] * 0.999, coordP[1] * 0.999, coordP[2] * 0.999));
             }
 
             break;
@@ -742,12 +733,11 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
         default:
             break;
         }
-
-
-
     }
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawQuads(vertices_quads, color);
+    vparams->drawTool()->drawTriangles(vertices_triangles, color);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 

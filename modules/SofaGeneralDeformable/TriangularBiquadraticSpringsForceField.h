@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -134,40 +132,39 @@ protected:
         }
     };
 
-    sofa::component::topology::TriangleData<helper::vector<TriangleRestInformation> > triangleInfo;
-    sofa::component::topology::EdgeData<helper::vector<EdgeRestInformation> > edgeInfo;
-
-    sofa::core::topology::BaseMeshTopology* _topology;
+    sofa::component::topology::TriangleData<helper::vector<TriangleRestInformation> > triangleInfo; ///< Internal triangle data
+    sofa::component::topology::EdgeData<helper::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
+    
     Data < VecCoord >  _initialPoints;										///< the intial positions of the points
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio;
-    Data<Real> f_youngModulus;
-    Data<Real> f_dampingRatio;
-    Data<bool> f_useAngularSprings; // whether angular springs should be included
+    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
+    Data<Real> f_dampingRatio; ///< Ratio damping/stiffness
+    Data<bool> f_useAngularSprings; ///< whether angular springs should be included
 
-    Data<bool> f_compressible; // whether the material is compressible or not
+    Data<bool> f_compressible; ///< whether the material is compressible or not
     /**** coefficient that controls how the material can cope with very compressible cases
     must be between 0 and 1 : if 0 then the deformation may diverge for large compression
     if 1 then the material can undergo large compression even inverse elements ***/
-    Data<Real> f_stiffnessMatrixRegularizationWeight;
+    Data<Real> f_stiffnessMatrixRegularizationWeight; ///< Regularization of the Stiffnes Matrix (between 0 and 1)
 
-    Real lambda;  /// first Lam� coefficient
-    Real mu;    /// second Lam� coefficient
+    Real lambda;  /// first Lame coefficient
+    Real mu;    /// second Lame coefficient
 
 
     TriangularBiquadraticSpringsForceField();
 
     virtual ~TriangularBiquadraticSpringsForceField();
 public:
-    virtual void init();
+    void init() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
 
@@ -183,7 +180,7 @@ public:
         f_poissonRatio.setValue((Real)ratio);
     }
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 
@@ -228,27 +225,27 @@ public:
         TriangularBiquadraticSpringsForceField<DataTypes>* ff;
     };
 
-
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TriangularBiquadraticSpringsForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected :
     TRBSEdgeHandler* edgeHandler;
     TRBSTriangleHandler* triangleHandler;
+
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
     sofa::component::topology::EdgeData<helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangularBiquadraticSpringsForceField<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangularBiquadraticSpringsForceField<sofa::defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_GENERAL_DEFORMABLE_API TriangularBiquadraticSpringsForceField<sofa::defaulttype::Vec3Types>;
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_CPP)
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_CPP)
 
 } //namespace forcefield
 

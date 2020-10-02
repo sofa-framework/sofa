@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/SVector.h>
 
@@ -66,19 +66,16 @@ public:
 
     /// inputs
     Data< SeqPositions > inputPosition;
-    Data< SeqTriangles > inputTriangles;
-    Data< SeqQuads > inputQuads;
+    Data< SeqTriangles > inputTriangles; ///< input triangles
+    Data< SeqQuads > inputQuads; ///< input quads
 
     /// outputs
     Data< SeqPositions > position;
-    Data< SeqTriangles > triangles;
-    Data< SeqQuads > quads;
-    Data< VecSeqIndex > indices;
-    Data< SeqPositions > closingPosition;
-    Data< SeqTriangles > closingTriangles;
-
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const MeshClosingEngine<DataTypes>* = NULL) { return DataTypes::Name();    }
+    Data< SeqTriangles > triangles; ///< Triangles of closed mesh
+    Data< SeqQuads > quads; ///< Quads of closed mesh (=input quads with current method)
+    Data< VecSeqIndex > indices; ///< Index lists of the closing parts
+    Data< SeqPositions > closingPosition; ///< Vertices of the closing parts
+    Data< SeqTriangles > closingTriangles; ///< Triangles of the closing parts
 
 protected:
 
@@ -95,10 +92,10 @@ protected:
     {
     }
 
-    virtual ~MeshClosingEngine() {}
+    ~MeshClosingEngine() override {}
 
 public:
-    virtual void init()
+    void init() override
     {
         addInput(&inputPosition);
         addInput(&inputTriangles);
@@ -112,17 +109,13 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    { update();  }
-    void update();
+    void reinit()    override { update();  }
+    void doUpdate() override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MeshClosingEngine_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API MeshClosingEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API MeshClosingEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_MeshClosingEngine_CPP)
+extern template class SOFA_GENERAL_ENGINE_API MeshClosingEngine<defaulttype::Vec3Types>;
+ 
 #endif
 
 } // namespace engine

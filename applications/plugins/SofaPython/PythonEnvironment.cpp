@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <fstream>
 #include "PythonMacros.h"
 #include "PythonEnvironment.h"
 #include "PythonScriptController.h"
@@ -29,13 +30,15 @@
 #include <sofa/simulation/Node.h>
 
 #include <sofa/helper/Utils.h>
+#include <sofa/helper/StringUtils.h>
+using sofa::helper::getAStringCopy ;
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager;
+using sofa::helper::system::Plugin;
 
 #if defined(__linux__)
 #  include <dlfcn.h>            // for dlopen(), see workaround in Init()
 #endif
-
-
-using namespace sofa::component::controller;
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
@@ -46,8 +49,62 @@ namespace sofa
 namespace simulation
 {
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// \brief The PythonEnvironmentData class which hold "static" data as long as python is running
+///
+/// The class currently hold the argv that are exposed in the python 'sys.argv'.
+/// The elements added are copied and the object hold the pointer to the memory allocated.
+/// The memory is release when the object is destructed or the reset function called.
+///
+/// Other elements than sys.argv may be added depending on future needs.
+///
+////////////////////////////////////////////////////////////////////////////////////////////////////
+class PythonEnvironmentData
+{
+public:
+    ~PythonEnvironmentData() { reset(); }
+
+    int size() { return m_argv.size(); }
+
+    void add(const std::string& data)
+    {
+        m_argv.push_back( getAStringCopy(data.c_str()) );
+    }
+
+    void reset()
+    {
+        for(auto s : m_argv)
+            delete[] s;
+        m_argv.clear();
+    }
+
+    char* getDataAt(unsigned int index)
+    {
+        return m_argv[index];
+    }
+
+    char** getDataBuffer()
+    {
+        return &m_argv[0];
+    }
+
+private:
+    std::vector<char*> m_argv;
+};
+
+PythonEnvironmentData* PythonEnvironment::getStaticData()
+{
+    static PythonEnvironmentData* m_staticdata { nullptr } ;
+
+    if( !m_staticdata )
+        m_staticdata = new PythonEnvironmentData();
+
+    return m_staticdata;
+}
+
 PyMODINIT_FUNC initModulesHelper(const std::string& name, PyMethodDef* methodDef)
 {
+    PythonEnvironment::gil lock(__func__);
     Py_InitModule(name.c_str(), methodDef);
 }
 
@@ -74,12 +131,17 @@ void PythonEnvironment::Init()
 
     // Prevent the python terminal from being buffered, not to miss or mix up traces.
     if( putenv( (char*)"PYTHONUNBUFFERED=1" ) )
-        SP_MESSAGE_WARNING("failed to set environment variable PYTHONUNBUFFERED")
+        SP_MESSAGE_WARNING("failed to set environment variable PYTHONUNBUFFERED");
 
     if ( !Py_IsInitialized() )
     {
         Py_Initialize();
     }
+
+    PyEval_InitThreads();
+
+    // the first gil lock is here
+    gil lock(__func__);
 
     // Append sofa modules to the embedded python environment.
     bindSofaPythonModule();
@@ -94,12 +156,9 @@ void PythonEnvironment::Init()
     // Workaround: try to import numpy and to launch numpy.finfo to cache data;
     // this prevents a deadlock when calling numpy.finfo from a worker thread.
     // ocarre: may crash on some configurations, we have to find a fix
-    PyRun_SimpleString("\
-try:\n\
-    import numpy\n\
-    numpy.finfo(float)\n\
-except:\n\
-    pass");
+    PyRun_SimpleString("try:\n\timport numpy;numpy.finfo(float)\nexcept:\n\tpass");
+    // Workaround: try to import scipy from the main thread this prevents a deadlock when importing scipy from a worker thread when we use the SofaScene asynchronous loading
+    PyRun_SimpleString("try:\n\tfrom scipy import misc, optimize\nexcept:\n\tpass\n");
 
 
     // If the script directory is not available (e.g. if the interpreter is invoked interactively
@@ -124,7 +183,7 @@ except:\n\
     // Add the directories listed in the SOFAPYTHON_PLUGINS_PATH environnement
     // variable (colon-separated) to sys.path
     char * pathVar = getenv("SOFAPYTHON_PLUGINS_PATH");
-    if (pathVar != NULL)
+    if (pathVar != nullptr)
     {
         std::istringstream ss(pathVar);
         std::string path;
@@ -136,6 +195,9 @@ except:\n\
                 SP_MESSAGE_WARNING("no such directory: '" + path + "'");
         }
     }
+
+    // Add the directories listed in SofaPython.so/../../python
+    addPythonModulePathsForPluginsByName("SofaPython");
 
     // python livecoding related
     PyRun_SimpleString("from SofaPython.livecoding import onReimpAFile");
@@ -150,7 +212,12 @@ except:\n\
 void PythonEnvironment::Release()
 {
     // Finish the Python Interpreter
-    Py_Finalize();
+
+    // obviously can't use raii here
+    if( Py_IsInitialized() ) {
+        PyGILState_Ensure();
+        Py_Finalize();
+    }
 }
 
 void PythonEnvironment::addPythonModulePath(const std::string& path)
@@ -159,7 +226,12 @@ void PythonEnvironment::addPythonModulePath(const std::string& path)
     if (addedPath.find(path)==addedPath.end()) {
         // note not to insert at first 0 place
         // an empty string must be at first so modules can be found in the current directory first.
-        PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());
+
+        {
+            gil lock(__func__);
+            PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());
+        }
+
         SP_MESSAGE_INFO("Added '" + path + "' to sys.path");
         addedPath.insert(path);
     }
@@ -181,47 +253,65 @@ void PythonEnvironment::addPythonModulePathsFromConfigFile(const std::string& pa
 
 void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& pluginsDirectory)
 {
+    bool added = false;
+
+    std::vector<std::string> pythonDirs = {
+        pluginsDirectory + "/python",
+        pluginsDirectory + "/python2.7",
+    };
+
     std::vector<std::string> files;
     FileSystem::listDirectory(pluginsDirectory, files);
-
     for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i)
     {
-        const std::string pluginPath = pluginsDirectory + "/" + *i;
-        if (FileSystem::exists(pluginPath) && FileSystem::isDirectory(pluginPath))
+        const std::string pluginSubdir = pluginsDirectory + "/" + *i;
+        if (FileSystem::exists(pluginSubdir) && FileSystem::isDirectory(pluginSubdir))
         {
-            const std::string pythonDir = pluginPath + "/python";
-            if (FileSystem::exists(pythonDir) && FileSystem::isDirectory(pythonDir))
-            {
-                addPythonModulePath(pythonDir);
-            }
+            pythonDirs.push_back(pluginSubdir + "/python");
+            pythonDirs.push_back(pluginSubdir + "/python2.7");
         }
+    }
+
+    for(std::string pythonDir : pythonDirs)
+    {
+        // Search for a subdir "site-packages"
+        if (FileSystem::exists(pythonDir+"/site-packages") && FileSystem::isDirectory(pythonDir+"/site-packages"))
+        {
+            addPythonModulePath(pythonDir+"/site-packages");
+            added = true;
+        }
+        // Or fallback to "python"
+        else if (FileSystem::exists(pythonDir) && FileSystem::isDirectory(pythonDir))
+        {
+            addPythonModulePath(pythonDir);
+            added = true;
+        }
+    }
+
+    if(!added)
+    {
+        msg_warning("PythonEnvironment") << "No python dir found in " << pluginsDirectory;
     }
 }
 
-/*
-// helper functions
-sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( const char *filename )
+void PythonEnvironment::addPythonModulePathsForPluginsByName(const std::string& pluginName)
 {
-    PyObject *script = importScript(filename);
-    if (!script)
-        return 0;
+    std::map<std::string, Plugin>& map = PluginManager::getInstance().getPluginMap();
+    for( const auto& elem : map)
+    {
+        Plugin p = elem.second;
+        if ( p.getModuleName() == pluginName )
+        {
+            std::string pluginLibraryPath = elem.first;
+            // moduleRoot should be 2 levels above the library (plugin_name/lib/plugin_name.so)
+            std::string moduleRoot = FileSystem::getParentDirectory(FileSystem::getParentDirectory(pluginLibraryPath));
 
-    // the root node
-    GNode::SPtr groot = sofa::core::objectmodel::New<GNode>(); // TODO: passer par une factory
-    groot->setName( "root" );
-   // groot->setGravity( Coord3(0,-10,0) );
-
-    if (!initGraph(script,groot))
-        groot = 0;
-
-   else
-        printf("Root node name after pyhton: %s\n",groot->getName().c_str());
-
-    Py_DECREF(script);
-
-    return groot;
+            addPythonModulePathsForPlugins(moduleRoot);
+            return;
+        }
+    }
+    msg_warning("PythonEnvironment") << pluginName << " not found in PluginManager's map.";
 }
-*/
 
 // some basic RAII stuff to handle init/termination cleanly
   namespace {
@@ -231,7 +321,6 @@ sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( cons
           // initialization is done when loading the plugin
           // otherwise it can be executed too soon
           // when an application is directly linking with the SofaPython library
-//        PythonEnvironment::Init();
       }
 
       ~raii() {
@@ -246,6 +335,7 @@ sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( cons
 // basic script functions
 std::string PythonEnvironment::getError()
 {
+    gil lock(__func__);
     std::string error;
 
     PyObject *ptype, *pvalue /* error msg */, *ptraceback /*stack snapshot and many other informations (see python traceback structure)*/;
@@ -258,10 +348,11 @@ std::string PythonEnvironment::getError()
 
 bool PythonEnvironment::runString(const std::string& script)
 {
+    gil lock(__func__);
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
     PyObject* result = PyRun_String(script.data(), Py_file_input, pDict, pDict);
 
-    if(0 == result)
+    if(nullptr == result)
     {
         SP_MESSAGE_ERROR("Script (string) import error")
         PyErr_Print();
@@ -276,6 +367,7 @@ bool PythonEnvironment::runString(const std::string& script)
 
 std::string PythonEnvironment::getStackAsString()
 {
+    gil lock(__func__);
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
     PyObject* pFunc = PyDict_GetItemString(pDict, "getStackForSofa");
     if (PyCallable_Check(pFunc))
@@ -288,71 +380,105 @@ std::string PythonEnvironment::getStackAsString()
     return "Python Stack is empty.";
 }
 
-bool PythonEnvironment::runFile( const char *filename, const std::vector<std::string>& arguments)
+std::string PythonEnvironment::getPythonCallingPointString()
 {
-//    SP_MESSAGE_INFO( "Loading python script \""<<filename<<"\"" )
-    std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
-    std::string bareFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
-//    SP_MESSAGE_INFO( "script directory \""<<dir<<"\"" )
-
-    //    SP_MESSAGE_INFO( commandString.c_str() )
-
-    if(!arguments.empty())
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
+    PyObject* pFunc = PyDict_GetItemString(pDict, "getPythonCallingPointAsString");
+    if (PyCallable_Check(pFunc))
     {
-        char**argv = new char*[arguments.size()+1];
-        argv[0] = new char[bareFilename.size()+1];
-        strcpy( argv[0], bareFilename.c_str() );
-        for( size_t i=0 ; i<arguments.size() ; ++i )
-        {
-            argv[i+1] = new char[arguments[i].size()+1];
-            strcpy( argv[i+1], arguments[i].c_str() );
+        PyObject* res = PyObject_CallFunction(pFunc, nullptr);
+        std::string tmp=PyString_AsString(PyObject_Str(res));
+        Py_DECREF(res) ;
+        return tmp;
+    }
+    return "Python Stack is empty.";
+}
+
+helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileInfo()
+{
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
+    PyObject* pFunc = PyDict_GetItemString(pDict, "getPythonCallingPoint");
+    if (pFunc && PyCallable_Check(pFunc))
+    {
+        PyObject* res = PyObject_CallFunction(pFunc, nullptr);
+        if(res && PySequence_Check(res) ){
+            PyObject* filename = PySequence_GetItem(res, 0) ;
+            PyObject* number = PySequence_GetItem(res, 1) ;
+            std::string tmp=PyString_AsString(filename);
+            auto lineno = PyInt_AsLong(number);
+            Py_DECREF(res) ;
+            return SOFA_FILE_INFO_COPIED_FROM(tmp, lineno);
         }
+    }
+    return SOFA_FILE_INFO_COPIED_FROM("undefined", -1);
+}
 
-        Py_SetProgramName(argv[0]); // TODO check what it is doing exactly
+void PythonEnvironment::setArguments(const std::string& filename, const std::vector<std::string>& arguments)
+{
+    const std::string basename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename.c_str());
 
-        PySys_SetArgv(arguments.size()+1, argv);
+    PythonEnvironmentData* data = getStaticData() ;
+    data->reset() ;
+    data->add( basename );
 
-        for( size_t i=0 ; i<arguments.size()+1 ; ++i )
-        {
-            delete [] argv[i];
+    if(!arguments.empty()) {
+        for(const std::string& arg : arguments) {
+            data->add(arg);
         }
-        delete [] argv;
     }
 
-    //  Py_BEGIN_ALLOW_THREADS
+    PySys_SetArgvEx( data->size(), data->getDataBuffer(), 0);
+}
+
+bool PythonEnvironment::runFile(const std::string& filename, const std::vector<std::string>& arguments) {
+    const gil lock(__func__);
+    const std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
+
+    const std::string basename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename.c_str());
 
     // Load the scene script
-    char* pythonFilename = strdup(filename);
-    PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
-    free(pythonFilename);
+    PyObject* script = PyFile_FromString((char*)filename.c_str(), (char*)("r"));
 
-    if( !scriptPyFile )
-    {
+    if(!arguments.empty())
+        setArguments(filename, arguments);
+
+    if( !script ) {
         SP_MESSAGE_ERROR("cannot open file:" << filename)
         PyErr_Print();
         return false;
     }
 
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
+    PyObject* __main__ = PyModule_GetDict(PyImport_AddModule("__main__"));
 
-    std::string backupFileName;
-    PyObject* backupFileObject = PyDict_GetItemString(pDict, "__file__");
-    if(backupFileObject)
-        backupFileName = PyString_AsString(backupFileObject);
+    // save/restore __main__.__file__
+    PyObject* __file__ = PyDict_GetItemString(__main__, "__file__");
+    Py_XINCREF(__file__);
 
-    PyObject* newFileObject = PyString_FromString(filename);
-    PyDict_SetItemString(pDict, "__file__", newFileObject);
-
-    int error = PyRun_SimpleFileEx(PyFile_AsFile(scriptPyFile), filename, 1);
-
-    backupFileObject = PyString_FromString(backupFileName.c_str());
-    PyDict_SetItemString(pDict, "__file__", backupFileObject);
-
-    //  Py_END_ALLOW_THREADS
-
-    if(0 != error)
+    // temporarily set __main__.__file__ = filename during file loading
     {
-        SP_MESSAGE_ERROR("Script (file:" << bareFilename << ") import error")
+        PyObject* __tmpfile__ = PyString_FromString(filename.c_str());
+        PyDict_SetItemString(__main__, "__file__", __tmpfile__);
+        Py_XDECREF(__tmpfile__);
+    }
+
+    const int error = PyRun_SimpleFileEx(PyFile_AsFile(script), filename.c_str(), 0);
+
+    // don't wait for gc to close the file
+    PyObject_CallMethod(script, (char*) "close", nullptr);
+    Py_XDECREF(script);
+
+    // restore backup if needed
+    if(__file__) {
+        PyDict_SetItemString(__main__, "__file__", __file__);
+    } else {
+        const int err = PyDict_DelItemString(__main__, "__file__");
+        assert(!err); (void) err;
+    }
+
+    Py_XDECREF(__file__);
+
+    if(error) {
+        SP_MESSAGE_ERROR("Script (file:" << basename << ") import error")
         PyErr_Print();
         return false;
     }
@@ -360,50 +486,12 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     return true;
 }
 
-/*
-bool PythonEnvironment::initGraph(PyObject *script, sofa::simulation::tree::GNode::SPtr graphRoot)  // calls the method "initGraph(root)" of the script
-{
-    // pDict is a borrowed reference
-    PyObject *pDict = PyModule_GetDict(script);
-
-    // pFunc is also a borrowed reference
-    PyObject *pFunc = PyDict_GetItemString(pDict, "initGraph");
-
-    if (PyCallable_Check(pFunc))
-    {
-      //  PyObject *args = PyTuple_New(1);
-      //  PyTuple_SetItem(args,0,object(graphRoot.get()).ptr());
-
-        try
-        {
-            //PyObject_CallObject(pFunc, NULL);//args);
-            boost::python::call<int>(pFunc,boost::ref(*graphRoot.get()));
-        }
-        catch (const error_already_set e)
-        {
-            SP_MESSAGE_EXCEPTION("")
-            PyErr_Print();
-
-        }
-
-      //  Py_DECREF(args);
-
-        return true;
-    }
-    else
-    {
-        PyErr_Print();
-        return false;
-    }
-}
-*/
-
 void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
 {
+    gil lock(__func__);
     // unload python modules to force importing their eventual modifications
     PyRun_SimpleString("SofaPython.unloadModules()");
 }
-
 
 void PythonEnvironment::setAutomaticModuleReload( bool b )
 {
@@ -413,13 +501,67 @@ void PythonEnvironment::setAutomaticModuleReload( bool b )
         SceneLoader::removeListener( SceneLoaderListerner::getInstance() );
 }
 
-
 void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
 {
+    gil lock(__func__);
     PyRun_SimpleString( std::string( "try: SofaPython.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
 }
 
 
+
+static const bool debug_gil = false;
+
+static PyGILState_STATE lock(const char* trace) {
+    if(debug_gil && trace) {
+        std::clog << ">> " << trace << " wants the gil" << std::endl;
+    }
+
+    // this ensures that we start with no active thread before first locking the
+    // gil: this way the last gil unlock lets python threads to run (otherwise
+    // the main thread still holds the gil, preventing python threads to run
+    // until the main thread exits).
+
+    // the first gil aquisition should happen right after the python interpreter
+    // is initialized.
+    static const PyThreadState* init = PyEval_SaveThread(); (void) init;
+
+    return PyGILState_Ensure();
+}
+
+
+PythonEnvironment::gil::gil(const char* trace)
+    : state(lock(trace)),
+      trace(trace) { }
+
+
+PythonEnvironment::gil::~gil() {
+
+    PyGILState_Release(state);
+
+    if(debug_gil && trace) {
+        std::clog << "<< " << trace << " released the gil" << std::endl;
+    }
+
+}
+
+
+
+PythonEnvironment::no_gil::no_gil(const char* trace)
+    : state(PyEval_SaveThread()),
+      trace(trace) {
+    if(debug_gil && trace) {
+        std::clog << ">> " << trace << " temporarily released the gil" << std::endl;
+    }
+}
+
+PythonEnvironment::no_gil::~no_gil() {
+
+    if(debug_gil && trace) {
+        std::clog << "<< " << trace << " wants to reacquire the gil" << std::endl;
+    }
+
+    PyEval_RestoreThread(state);
+}
 
 } // namespace simulation
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,7 +52,7 @@ class PatchTestMovementConstraintInternalData
 };
 
 /** 
-    Impose a motion to all the boundary points of a mesh. The motion of the 4 corners are given in the data m_cornerMovements and the movements of the edge points are computed by linear interpolation. 
+    Impose a motion to all the boundary points of a mesh. The motion of the 4 corners are given in the data d_cornerMovements and the movements of the edge points are computed by linear interpolation.
 */
 template <class TDataTypes>
 class PatchTestMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
@@ -82,21 +82,21 @@ protected:
 
 public :
     /// indices of the DOFs of the mesh
-    SetIndex m_meshIndices;
+    SetIndex d_meshIndices;
      /// indices of the DOFs the constraint is applied to
-    SetIndex m_indices;
+    SetIndex d_indices;
     /// data begin time when the constraint is applied
-    Data <double> m_beginConstraintTime;
+    Data <double> d_beginConstraintTime;
     /// data end time when the constraint is applied
-    Data <double> m_endConstraintTime;
+    Data <double> d_endConstraintTime;
     /// coordinates of the DOFs the constraint is applied to
-    Data<VecCoord> m_constrainedPoints;
+    Data<VecCoord> d_constrainedPoints;
     /// the movements of the corner points (this is the difference between initial and final positions of the 4 corners)
-    Data<VecDeriv> m_cornerMovements;
+    Data<VecDeriv> d_cornerMovements;
     /// the coordinates of the corner points
-    Data<VecCoord> m_cornerPoints;
+    Data<VecCoord> d_cornerPoints;
     /// Draw constrained points
-    Data <bool> m_drawConstrainedPoints;
+    Data <bool> d_drawConstrainedPoints;
     /// initial constrained DOFs position
     VecCoord x0;
     /// final constrained DOFs position
@@ -106,6 +106,9 @@ public :
     /// final mesh DOFs position
     VecCoord meshPointsXf;
  
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<PatchTestMovementConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     PatchTestMovementConstraint();
 
@@ -118,27 +121,27 @@ public:
     void removeConstraint(unsigned int index);
    
     /// -- Constraint interface
-    void init();
+    void init() override;
 
     /// Cancel the possible forces
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     /// Cancel the possible velocities
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     /// Apply the computed movements to the border mesh points between beginConstraintTime and endConstraintTime
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     // Implement projectMatrix for assembled solver of compliant
-    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
+    void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
-    void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */)
+    void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */) override
     {
-        serr << "projectJacobianMatrix not implemented" << sendl;
+        msg_error() <<"projectJacobianMatrix not implemented";
     }
 
     /// Compute the theoretical final positions
     void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData); 
 
     /// Draw the constrained points (= border mesh points)
-     virtual void draw(const core::visual::VisualParams* vparams);
+     void draw(const core::visual::VisualParams* vparams) override;
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
@@ -158,9 +161,6 @@ public:
     };
 
 protected:
-  
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
     
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
@@ -168,7 +168,7 @@ protected:
 private:
 
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 
     /// Find the corners of the grid mesh
     void findCornerPoints();
@@ -184,15 +184,10 @@ private:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3Types>;
+
 #endif
 
 

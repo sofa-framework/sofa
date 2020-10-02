@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,10 +21,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_MESHSTLLOADER_H
 #define SOFA_COMPONENT_LOADER_MESHSTLLOADER_H
-#include "config.h"
+#include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/core/objectmodel/BaseData.h>
 
 namespace sofa
 {
@@ -43,13 +42,7 @@ public:
 protected:
     MeshSTLLoader();
 public:
-    virtual bool load();
-
-    template <class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
-    {
-        return BaseLoader::canCreate (obj, context, arg);
-    }
+    bool load() override;
 
 protected:
 
@@ -61,9 +54,9 @@ protected:
 
 public:
     //Add Data here
-    Data <unsigned int> _headerSize;
-    Data <bool> _forceBinary;
-    Data <bool> d_mergePositionUsingMap;
+    Data <unsigned int> _headerSize; ///< Size of the header binary file (just before the number of facet).
+    Data <bool> _forceBinary; ///< Force reading in binary mode. Even in first keyword of the file is solid.
+    Data <bool> d_mergePositionUsingMap; ///< Since positions are duplicated in a STL, they have to be merged. Using a map to do so will temporarily duplicate memory but should be more efficient. Disable it if memory is really an issue.
 
 };
 

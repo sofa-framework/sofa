@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -131,17 +131,23 @@ public:
     /// By default, assume that all edges have the same viscosity
     Data<double> m_viscosity;
 
-    Data<bool> m_useTopology;
+    Data<bool> m_useTopology; ///< Activate/Desactivate topology mode of the component (springs on each edge)
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<VectorSpringForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    
     sofa::component::topology::EdgeSetTopologyContainer* edgeCont;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
     sofa::component::topology::EdgeSetTopologyModifier* edgeMod;
-protected:
-    VectorSpringForceField(MechanicalState* _object=NULL);
 
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
+
+protected:
+    VectorSpringForceField();
+    VectorSpringForceField(MechanicalState* _object);
     VectorSpringForceField(MechanicalState* _object1, MechanicalState* _object2);
-    virtual ~VectorSpringForceField();
+    virtual ~VectorSpringForceField() override;
 
     EdgeDataHandler* edgeHandler;
 
@@ -151,33 +157,33 @@ public:
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
-    virtual void init();
-    virtual void bwdInit();
+    void init() override;
+    void bwdInit() override;
 
     void createDefaultSprings();
 
-    virtual void handleEvent( core::objectmodel::Event* e );
+    void handleEvent( core::objectmodel::Event* e ) override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2);
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const { return m_potentialEnergy; }
+    SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override { return m_potentialEnergy; }
 
     Real getStiffness() const
     {
-        return (Real)(m_stiffness.getValue());
+        return Real(m_stiffness.getValue());
     }
     const Real getViscosity() const
     {
-        return (Real)(m_viscosity.getValue());
+        return Real(m_viscosity.getValue());
     }
     const topology::EdgeData<sofa::helper::vector<Spring> >& getSpringArray() const
     {
         return springArray;
     }
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     // -- Modifiers
 
@@ -196,17 +202,13 @@ public:
     class Loader;
     friend class Loader;
 
-    virtual void updateForceMask();
+    void updateForceMask() override;
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_VECTORSPRINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API VectorSpringForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API VectorSpringForceField<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_VECTORSPRINGFORCEFIELD_CPP)
+extern template class SOFA_GENERAL_DEFORMABLE_API VectorSpringForceField<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace interactionforcefield

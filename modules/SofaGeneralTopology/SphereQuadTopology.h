@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,10 +21,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_SPHEREQUADTOPOLOGY_H
 #define SOFA_COMPONENT_TOPOLOGY_SPHEREQUADTOPOLOGY_H
-#include "config.h"
 
 #include <SofaGeneralTopology/CubeTopology.h>
-#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -44,11 +42,11 @@ protected:
     SphereQuadTopology(int nx, int ny, int nz);
     SphereQuadTopology();
 public:
-    Vector3 getPoint(int x, int y, int z) const;
+    Vector3 getPoint(int x, int y, int z) const override;
 
 protected:
-    Data< Vector3 > center;
-    Data< SReal > radius;
+    Data< Vector3 > center; ///< Center of the sphere
+    Data< SReal > radius; ///< Radius of the sphere
 };
 
 } // namespace topology

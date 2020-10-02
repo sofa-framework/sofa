@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,12 +23,10 @@
 #define SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/map.h>
@@ -56,7 +54,7 @@ public:
     typedef sofa::defaulttype::Vec<1,Real>                       Coord1D;
     typedef sofa::defaulttype::Vec<2,Real>                       Coord2D;
     typedef sofa::defaulttype::Vec<3,Real>                       Coord3D;
-    typedef sofa::defaulttype::ResizableExtVector <Coord2D>      ResizableExtVector2D;
+    typedef helper::vector <Coord2D>          VecCoord2D;
     typedef sofa::helper::vector <Coord3D>    VecCoord3D;
 
 
@@ -64,25 +62,15 @@ protected:
 
     TextureInterpolation();
 
-    ~TextureInterpolation() {}
+    ~TextureInterpolation() override {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void doUpdate() override;
 
-    void draw(const core::visual::VisualParams* vparams);
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const TextureInterpolation<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
 
@@ -93,22 +81,22 @@ protected:
     Data <VecCoord3D> _inputCoords;
 
     /// output texture coordinate vector
-    Data <ResizableExtVector2D> _outputCoord;
+    Data <VecCoord2D> _outputCoord;
 
     /// bool used to specify scalar input field (if higher template is needed)
     Data<bool> _scalarField;
 
     /// Data for interpolation scale:
     Data <Real> _minVal;
-    Data <Real> _maxVal;
-    Data <bool> _changeScale;
+    Data <Real> _maxVal; ///< maximum value of state value for interpolation.
+    Data <bool> _changeScale; ///< compute texture interpolation on manually scale defined above.
 
     /// Data for interpolation scale:
     Data <bool> drawPotentiels;
-    Data <float> showIndicesScale;
+    Data <float> showIndicesScale; ///< Debug : scale of state values displayed.
 
-    Data <unsigned int> _vertexPloted;
-    Data <std::map < std::string, sofa::helper::vector<Real> > > f_graph;
+    Data <unsigned int> _vertexPloted; ///< Vertex index of values display in graph for each iteration.
+    Data <std::map < std::string, sofa::helper::vector<Real> > > f_graph; ///< Vertex state value per iteration
 
     void updateGraph();
     void resetGraph();
@@ -116,17 +104,10 @@ protected:
     void standardLinearInterpolation();
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec1dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec2dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec1fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec2fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP)
+extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec1Types>;
+extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec2Types>;
+extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec3Types>;
 #endif
 
 } // namespace engine

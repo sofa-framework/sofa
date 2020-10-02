@@ -1,0 +1,43 @@
+<Node name="root" dt="0.01" showBoundingTree="0" gravity="0 -9.81 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
+    <DefaultPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.1" />
+    <DefaultCollisionGroupManager />
+    
+    <Node name="Simulation">
+
+        <Node name="CubeObstacle">
+            <OglModel name="cubeVisual" filename="mesh/cube.obj" color="green"/>
+        </Node>
+
+        <Node name="liver">
+            <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <CGLinearSolver iterations="150" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+
+            <MeshGmshLoader name="loader" filename="mesh/liver.msh"/>
+
+            <TetrahedronSetTopologyContainer name="tetras" src="@loader"/>
+            <TetrahedronSetTopologyModifier   name="Modifier" />
+            <TetrahedronSetTopologyAlgorithms name="TopoAlgo"  template="Vec3d" />
+            <TetrahedronSetGeometryAlgorithms name="GeomAlgo"  template="Vec3d" />
+
+            <MechanicalObject name="meca"/>
+            <DiagonalMass vertexMass="100"/>
+
+            <TetrahedronFEMForceField youngModulus="1000000" poissonRatio="0.45"/>
+            <DistanceGridForceField filename="mesh/cubeDistanceGrid.fmesh" stiffnessIn="100000000" stiffnessOut="0" draw="true" drawPoints="true" printLog="false" drawSize="2"/>
+
+            <Node name="visual">
+                <OglModel name="visu" filename="mesh/liver.obj"/>
+                <BarycentricMapping input="@../meca" output="@visu"/>
+            </Node>
+
+            <PlaneForceField stiffness="1000000" d="-1"/>
+
+        </Node>
+
+    </Node>
+</Node>

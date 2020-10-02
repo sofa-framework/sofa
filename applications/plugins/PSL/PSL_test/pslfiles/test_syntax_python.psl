@@ -1,0 +1,45 @@
+Node : {
+    name : "root"
+
+    TestResult : {
+        name : "result"
+        result : "Success"
+    }
+
+    Node : {
+        name : "valid"
+        Python : '''print("PRINT-1")'''
+        Python : "print('PRINT-2')"
+    }
+
+    Node : {
+        name : "invalid1"
+        Python : []
+    }
+
+    Node : {
+        name : "invalid2"
+        Python : {}
+    }
+
+    Node : {
+        name : "invalid3"
+        Python : 1
+    }
+
+    Node : {
+        name : "invalid4"
+        Python : 1.0
+    }
+
+    Node : {
+        name : "invalid4"
+        Python : None
+    }
+
+    Node : {
+        name : "invalid5"
+        Python : getFunction()
+    }
+}
+

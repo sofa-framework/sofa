@@ -1,5 +1,5 @@
-#ifndef DAMPINGCOMPLIANCE_H
-#define DAMPINGCOMPLIANCE_H
+#ifndef SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_H
+#define SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_H
 
 #include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
@@ -49,7 +49,7 @@ public:
     }
 
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         this->rayleighStiffness.setValue(0); // Rayleigh damping makes no sense here
 
@@ -81,28 +81,28 @@ public:
 
 
     /// Return a pointer to the compliance matrix
-    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams*) {
+    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams*) override {
         if( m_lastDt != this->getContext()->getDt() ) reinit();
         return &matC;
 	}
 
     /// unassembled API
-    virtual void addClambda(const core::MechanicalParams *, DataVecDeriv & res, const DataVecDeriv &lambda, SReal cfactor)
+    virtual void addClambda(const core::MechanicalParams *, DataVecDeriv & res, const DataVecDeriv &lambda, SReal cfactor) override
     {
         if( m_lastDt != this->getContext()->getDt() ) reinit();
         matC.addMult( res, lambda, cfactor );
     }
 
     // stiffness implementation makes no sense
-    virtual SReal getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
-    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix*, SReal, unsigned int& ) {}
-    virtual void addForce(const core::MechanicalParams*, DataVecDeriv&, const DataVecCoord&, const DataVecDeriv&) {}
-    virtual void addDForce(const core::MechanicalParams*, DataVecDeriv&, const DataVecDeriv&) {}
+    virtual SReal getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& ) const override { return 0; }
+    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix*, SReal, unsigned int& ) override {}
+    virtual void addForce(const core::MechanicalParams*, DataVecDeriv&, const DataVecCoord&, const DataVecDeriv&) override {}
+    virtual void addDForce(const core::MechanicalParams*, DataVecDeriv&, const DataVecDeriv&) override {}
 
 
 	typedef typename DataTypes::Real real;
 
-	Data<real> damping;
+	Data<real> damping; ///< damping value
 
 protected:
 
@@ -114,9 +114,15 @@ protected:
 };
 
 
-}
-}
-}
-
-
+#if !defined(SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_CPP)
+extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec6Types>;
+extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec1Types>;
 #endif
+
+}
+}
+}
+
+
+#endif // SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_H

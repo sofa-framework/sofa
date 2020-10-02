@@ -3,6 +3,8 @@ import Sofa
 import inspect
 import os
 
+from Macro import *
+
 ## @package SofaTest
 #  Python helper to perform test in Sofa
 
@@ -17,7 +19,7 @@ class Controller(Sofa.PythonScriptController):
     
     ## Send a success event.
     def sendSuccess(self):
-        self.node.sendScriptEvent('success', 0)
+        self.root.sendScriptEvent('success', 0)
         self.root.findData('animate').value = 0
 
     ## Send a failure event.
@@ -37,7 +39,7 @@ class Controller(Sofa.PythonScriptController):
                                             info.lineno, 'Failure')
         print '$$$$$ Reason:', msg
         # print #lines[ info.lineno - 1 ]
-        self.node.sendScriptEvent('failure', 0)
+        self.root.sendScriptEvent('failure', 0)
         self.root.findData('animate').value = 0
         
     ## Send a success event if value is true. Otherwise a failure event is sent.

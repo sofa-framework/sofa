@@ -36,22 +36,22 @@ protected:
 
 public:
     sofa::core::objectmodel::DataFileName outPath;
-    Data<defaulttype::Vec3Types::VecCoord> position;
-    Data<bool> applyInverseTransform;
-    Data<unsigned int> exportEveryNbSteps;
-    Data<bool> exportAtBegin;
-    Data<bool> exportAtEnd;
+    Data<defaulttype::Vec3Types::VecCoord> position; ///< points position (will use mechanical state if this is empty)
+    Data<bool> applyInverseTransform; ///< apply inverse transform specified in loaders
+    Data<unsigned int> exportEveryNbSteps; ///< export file only at specified number of steps (0=disable)
+    Data<bool> exportAtBegin; ///< export file at the initialization
+    Data<bool> exportAtEnd; ///< export file when the simulation is finished
 
 	RegistrationExporter();
-	virtual ~RegistrationExporter();
+	~RegistrationExporter() override;
 
     void writeMesh();
 
-	void init();
-	void cleanup();
-	void bwdInit();
+	void init() override;
+	void cleanup() override;
+	void bwdInit() override;
 
-	void handleEvent(sofa::core::objectmodel::Event *);
+	void handleEvent(sofa::core::objectmodel::Event *) override;
 };
 
 } // namespace misc

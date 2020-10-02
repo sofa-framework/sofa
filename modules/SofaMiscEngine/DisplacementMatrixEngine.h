@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,12 +72,13 @@ public:
 
     // methods
     DisplacementTransformEngine();
-    void init();   // compute the inverse matrices
-    void update(); // compute the displacements wrt original positions
+    void init() override;   // compute the inverse matrices
+    void doUpdate() override; // compute the displacements wrt original positions
 
-    // To simplify the template name in the xml file
-    virtual std::string getTemplateName() const { return templateName(this); }
-    static std::string templateName(const DisplacementTransformEngine<DataTypes,OutputType>* = NULL) { return DataTypes::Name()+std::string(",")+defaulttype::DataTypeInfo<OutputType>::name(); }
+    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
+    /// so we need to override that by implementing GetCustomTemplateName() function
+    /// More details on the name customization infrastructure is in NameDecoder.h
+    static const std::string GetCustomTemplateName() { return DataTypes::Name()+std::string(",")+defaulttype::DataTypeInfo<OutputType>::name(); }
 
 protected:
     helper::vector<OutputType> inverses;  ///< inverse initial positions
@@ -121,13 +122,9 @@ public:
     // Method
     DisplacementMatrixEngine();
 
-    void init();   // compute the inverse matrices
-    void reinit(); // compute S*inverse and store it once and for all.
-    void update(); // compute the displacements wrt original positions
-
-    // To simplify the template name in the xml file
-    virtual std::string getTemplateName() const { return templateName(this); }
-    static std::string templateName(const DisplacementMatrixEngine<DataTypes>* = NULL) { return DataTypes::Name(); }
+    void init() override;   // compute the inverse matrices
+    void reinit() override; // compute S*inverse and store it once and for all.
+    void doUpdate() override; // compute the displacements wrt original positions
 
     // inputs
     Data< helper::vector< sofa::defaulttype::Vec<3,Real> > > d_scales; ///< scale matrices

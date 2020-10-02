@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,8 +68,8 @@ public:
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 
-    SetIndex f_indices;
-    Data<SReal> _drawSize;
+    SetIndex f_indices; ///< Indices of the fixed points
+    Data<SReal> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 protected:
     PointConstraint();
 
@@ -77,19 +77,19 @@ protected:
 public:
 
     // -- Constraint interface
-    void init();
+    void init() override;
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
     virtual const sofa::defaulttype::BaseMatrix* getJ(const core::MechanicalParams* );
 
     using core::behavior::ProjectiveConstraintSet<DataTypes>::applyConstraint;
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
 protected :
@@ -99,13 +99,10 @@ protected :
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POINTCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec3fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POINTCONSTRAINT_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API PointConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace projectiveconstraintset

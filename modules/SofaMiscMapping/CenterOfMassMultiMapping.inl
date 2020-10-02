@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -92,16 +92,18 @@ public :
 template <class TIn, class TOut>
 void CenterOfMassMultiMapping< TIn, TOut >::apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
 {
+    SOFA_UNUSED(mparams);
+
     typedef typename InVecCoord::iterator iter_coord;
 
     //Not optimized at all...
     helper::vector<OutVecCoord*> outPos;
     for(unsigned int i=0; i<dataVecOutPos.size(); i++)
-        outPos.push_back(dataVecOutPos[i]->beginEdit(mparams));
+        outPos.push_back(dataVecOutPos[i]->beginEdit());
 
     helper::vector<const InVecCoord*> inPos;
     for(unsigned int i=0; i<dataVecInPos.size(); i++)
-        inPos.push_back(&dataVecInPos[i]->getValue(mparams));
+        inPos.push_back(&dataVecInPos[i]->getValue());
 
     assert( outPos.size() == 1); // we are dealing with a many to one mapping.
     InCoord COM;
@@ -118,23 +120,25 @@ void CenterOfMassMultiMapping< TIn, TOut >::apply(const core::MechanicalParams* 
 
     //Really Not optimized at all...
     for(unsigned int i=0; i<dataVecOutPos.size(); i++)
-        dataVecOutPos[i]->endEdit(mparams);
+        dataVecOutPos[i]->endEdit();
 }
 
 
 template <class TIn, class TOut>
 void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
 {
+    SOFA_UNUSED(mparams);
+
     typedef typename InVecDeriv::iterator iter_deriv;
 
     //Not optimized at all...
     helper::vector<OutVecDeriv*> outDeriv;
     for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-        outDeriv.push_back(dataVecOutVel[i]->beginEdit(mparams));
+        outDeriv.push_back(dataVecOutVel[i]->beginEdit());
 
     helper::vector<const InVecDeriv*> inDeriv;
     for(unsigned int i=0; i<dataVecInVel.size(); i++)
-        inDeriv.push_back(&dataVecInVel[i]->getValue(mparams));
+        inDeriv.push_back(&dataVecInVel[i]->getValue());
 
     assert( outDeriv.size() == 1 );
 
@@ -152,21 +156,23 @@ void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const core::MechanicalParams*
 
     //Really Not optimized at all...
     for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-        dataVecOutVel[i]->endEdit(mparams);
+        dataVecOutVel[i]->endEdit();
 }
 
 
 template < class TIn, class TOut >
 void CenterOfMassMultiMapping< TIn, TOut >::applyJT(const core::MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
 {
+    SOFA_UNUSED(mparams);
+
     //Not optimized at all...
     helper::vector<InVecDeriv*> outDeriv;
     for(unsigned int i=0; i<dataVecOutForce.size(); i++)
-        outDeriv.push_back(dataVecOutForce[i]->beginEdit(mparams));
+        outDeriv.push_back(dataVecOutForce[i]->beginEdit());
 
     helper::vector<const OutVecDeriv*> inDeriv;
     for(unsigned int i=0; i<dataVecInForce.size(); i++)
-        inDeriv.push_back(&dataVecInForce[i]->getValue(mparams));
+        inDeriv.push_back(&dataVecInForce[i]->getValue());
 
 
     assert( inDeriv.size() == 1 );
@@ -197,7 +203,7 @@ void CenterOfMassMultiMapping< TIn, TOut >::applyJT(const core::MechanicalParams
 
     //Really Not optimized at all...
     for(unsigned int i=0; i<dataVecOutForce.size(); i++)
-        dataVecOutForce[i]->endEdit(mparams);
+        dataVecOutForce[i]->endEdit();
 }
 
 

@@ -1,0 +1,33 @@
+### THE PROBLEM HERE IS THAT WE NEED TO DEFINE PRECISELY WHAT ARE THE CLOSURE OF TEMPLATE
+Node : {
+    name : "root"
+
+    Template : {
+        name : "MyTemplate"
+        Node : {
+            name : "MyTemplate"
+            MechanicalObject : {
+                name : "mstate"
+                position : "1 2 3 4"
+            }
+        }
+    }
+
+    MyTemplate : {}
+    MyTemplate : {}
+
+    Python : '''
+             cp=0
+             for child in root.getChildren():
+                if child.name == "MyTemplate":
+                    cp+=1
+             if cp != 2:
+                Sofa.msg_error(root, "Problem in instantiating the templates")
+             else:
+                testresult = "Success"
+             '''
+
+    TestResult : testresult
+}
+
+

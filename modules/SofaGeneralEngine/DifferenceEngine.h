@@ -1,7 +1,7 @@
  
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,42 +51,26 @@ public:
 
     DifferenceEngine();
 
-    virtual ~DifferenceEngine() {}
+    ~DifferenceEngine() override {}
 
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const DifferenceEngine<TDataType>* = NULL)
-    {
-        return defaulttype::DataTypeInfo<TDataType>::name();
-    }
-
+    void doUpdate() override;
 
 protected:
 
-    Data<VecData> d_input;
-    Data<VecData> d_substractor;
-    Data<VecData> d_output;
+    Data<VecData> d_input; ///< input vector
+    Data<VecData> d_substractor; ///< vector to substract to input
+    Data<VecData> d_output; ///< output vector = input-substractor
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_DifferenceEngine_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_COMPONENT_ENGINE_DifferenceEngine_CPP)
 extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec1d>;
 extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec3d>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec1f>;
-extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec3f>;
-#endif
+
 #endif
 
 } // namespace engine

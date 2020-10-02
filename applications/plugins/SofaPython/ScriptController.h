@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/simulation/Node.h>
-#include "ScriptEvent.h"
+#include <sofa/core/objectmodel/ScriptEvent.h>
 #include "ScriptFunction.h"
 
 /// fwd declaration
@@ -83,27 +83,24 @@ public:
     /// @{
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override ;
 
     /// Initialization method called at graph creation and modification, during top-down traversal.
-    virtual void init();
+    void init() override ;
 
     /// Initialization method called at graph creation and modification, during bottom-up traversal.
-    virtual void bwdInit();
-
-    /// Update method called when variables used in precomputation are modified.
-//    virtual void reinit();
+    void bwdInit() override ;
 
     /// Save the initial state for later uses in reset()
-    virtual void storeResetState();
+    void storeResetState() override ;
 
     /// Reset to initial state
-    virtual void reset();
+    void reset() override ;
 
     /// Called just before deleting this object
     /// Any object in the tree bellow this object that are to be removed will be removed only after this call,
     /// so any references this object holds should still be valid.
-    virtual void cleanup();
+    void cleanup() override ;
 
     /// @}
 
@@ -115,41 +112,41 @@ public:
     /**
     * @brief Mouse event callback.
     */
-    virtual void onMouseEvent(core::objectmodel::MouseEvent *);
+    void onMouseEvent(core::objectmodel::MouseEvent *) override ;
 
     /**
     * @brief Key Press event callback.
     */
-    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
+    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) override ;
 
     /**
     * @brief Key Release event callback.
     */
-    virtual void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
+    void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *) override ;
 
     /**
     * @brief Begin Animation event callback.
     */
-    virtual void onBeginAnimationStep(const double);
+    void onBeginAnimationStep(const double) override ;
 
     /**
     * @brief End Animation event callback.
     */
-    virtual void onEndAnimationStep(const double);
+    void onEndAnimationStep(const double) override ;
 
     /// @}
 
     /**
     * @brief GUI event callback.
     */
-    virtual void onGUIEvent(core::objectmodel::GUIEvent *);
+    void onGUIEvent(core::objectmodel::GUIEvent *) override ;
 
-    virtual void handleEvent(core::objectmodel::Event *);
+    void handleEvent(core::objectmodel::Event *) override ;
 
     /**
      * @brief draw callback.
      */
-    virtual void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams*) override ;
 
 protected:
     /// @name Script interface
@@ -174,6 +171,7 @@ protected:
     virtual bool script_onKeyPressed(const char c) = 0;
     virtual bool script_onKeyReleased(const char c) = 0;
 
+    virtual void script_onMouseMove(const int posX, const int posY) = 0;
     virtual void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed) = 0;
     virtual void script_onMouseButtonRight(const int posX,const int posY,const bool pressed) = 0;
     virtual void script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed) = 0;

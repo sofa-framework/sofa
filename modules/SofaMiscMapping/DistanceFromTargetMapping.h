@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -104,32 +104,32 @@ public:
 
     /// Update the position of a target
     void updateTarget( unsigned index, const InCoord& position);
-    virtual void updateTarget( unsigned index, SReal x, SReal y, SReal z );
+    void updateTarget( unsigned index, SReal x, SReal y, SReal z ) override;
 
     /// Remove all targets
     void clear();
 
-    virtual void init();
+    void init() override;
 
-    virtual void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
+    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in) override;
 
-    virtual void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
+    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in) override;
 
-    virtual void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in);
+    void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in) override;
 
-    virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in);
+    void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
+    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ();
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    const sofa::defaulttype::BaseMatrix* getJ() override;
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
-    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce );
-    virtual const defaulttype::BaseMatrix* getK();
+    void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
+    const defaulttype::BaseMatrix* getK() override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
-    Data<float> d_showObjectScale;
-    Data<defaulttype::RGBAColor> d_color;
+    void draw(const core::visual::VisualParams* vparams) override;
+    Data<float> d_showObjectScale; ///< Scale for object display
+    Data<defaulttype::RGBAColor> d_color; ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
 
 protected:
     DistanceFromTargetMapping();
@@ -144,22 +144,16 @@ protected:
     /// r=b-a only for position (eventual rotation, affine transform... remains null)
     void computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b );
 
-    virtual void updateForceMask();
+    void updateForceMask() override;
 
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DistanceFromTargetMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec1dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Rigid3dTypes, defaulttype::Vec1dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec1fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Rigid3fTypes, defaulttype::Vec1fTypes >;
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_DistanceFromTargetMapping_CPP)
+extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
+extern template class SOFA_MISC_MAPPING_API DistanceFromTargetMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
+
 
 #endif
 

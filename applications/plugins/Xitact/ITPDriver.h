@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,12 +31,10 @@
 #include <sofa/core/behavior/BaseController.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaUserInteraction/Controller.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
 
-//#include <sofa/gui/PickHandler.h>
-//#include <sofa/gui/qt/SofaMouseManager.h>
 #include <SofaUserInteraction/RayModel.h>
 #include <Xitact/config.h>
 
@@ -83,11 +81,11 @@ class SOFA_XITACTPLUGIN_API ITPDriver : public sofa::component::controller::Cont
 public:
 
     SOFA_CLASS(ITPDriver,sofa::component::controller::Controller);
-    Data<double> Scale;
-    Data<bool> permanent;
-    Data <int> indexTool;
-    Data <sofa::defaulttype::Vec3d> direction;
-    Data <sofa::defaulttype::Vec3d> position;
+    Data<double> Scale; ///< Default scale applied to the Phantom Coordinates. 
+    Data<bool> permanent; ///< Apply the force feedback permanently
+    Data <int> indexTool; ///< index of the tool to simulate (if more than 1). Index 0 correspond to first tool.
+    Data <sofa::defaulttype::Vec3d> direction; ///< index of the tool to simulate (if more than 1). Index 0 correspond to first tool.
+    Data <sofa::defaulttype::Vec3d> position; ///< index of the tool to simulate (if more than 1). Index 0 correspond to first tool.
 
     XiToolDataITP	data;
 

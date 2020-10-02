@@ -3,17 +3,13 @@
 *         InvertibleFVM.txt        *
 ************************************
 
-
+Implementation of article \"Invertible finite elements for robust simulation of large deformation\",
+Irving, G., Teran, J., and Fedkiw, R., SCA 2004
 
 AUTHOR :
  - Matthieu Nesme
 
-
-
-
 LICENCE :
- - None
-
-
+ - LGPL
 
 OTHER COMMENTS :

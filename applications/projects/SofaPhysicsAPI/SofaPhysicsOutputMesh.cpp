@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -186,40 +186,40 @@ unsigned int SofaPhysicsOutputMesh::Impl::getNbVertices() ///< number of vertice
 {
     if (!sObj) return 0;
     // we cannot use getVertices() method directly as we need the Data revision
-    Data<ResizableExtVector<Coord> > * data =
+    Data<sofa::helper::vector<Coord> > * data =
         (!sObj->m_vertPosIdx.getValue().empty()) ?
         &(sObj->m_vertices2) : &(sObj->m_positions);
     return (unsigned int) data->getValue().size();
 }
 const Real* SofaPhysicsOutputMesh::Impl::getVPositions()  ///< vertices positions (Vec3)
 {
-    Data<ResizableExtVector<Coord> > * data =
+    Data<sofa::helper::vector<Coord> > * data =
         (!sObj->m_vertPosIdx.getValue().empty()) ?
         &(sObj->m_vertices2) : &(sObj->m_positions);
-    return (const Real*) data->getValue().getData();
+    return (const Real*) data->getValue().data();
 }
 const Real* SofaPhysicsOutputMesh::Impl::getVNormals()    ///< vertices normals   (Vec3)
 {
-    Data<ResizableExtVector<Deriv> > * data = &(sObj->m_vnormals);
-    return (const Real*) data->getValue().getData();
+    Data<sofa::helper::vector<Deriv> > * data = &(sObj->m_vnormals);
+    return (const Real*) data->getValue().data();
 }
 
 const Real* SofaPhysicsOutputMesh::Impl::getVTexCoords()  ///< vertices UVs       (Vec2)
 {
-    Data<ResizableExtVector<TexCoord> > * data = &(sObj->m_vtexcoords);
-    return (const Real*) data->getValue().getData();
+    Data<sofa::helper::vector<TexCoord> > * data = &(sObj->m_vtexcoords);
+    return (const Real*) data->getValue().data();
 }
 
 int SofaPhysicsOutputMesh::Impl::getTexCoordRevision()    ///< changes each time tex coord data are updated
 {
-    Data<ResizableExtVector<TexCoord> > * data = &(sObj->m_vtexcoords);
+    Data<sofa::helper::vector<TexCoord> > * data = &(sObj->m_vtexcoords);
     data->getValue(); // make sure the data is updated
     return data->getCounter();
 }
 
 int SofaPhysicsOutputMesh::Impl::getVerticesRevision()    ///< changes each time vertices data are updated
 {
-    Data<ResizableExtVector<Coord> > * data =
+    Data<sofa::helper::vector<Coord> > * data =
         (!sObj->m_vertPosIdx.getValue().empty()) ?
         &(sObj->m_vertices2) : &(sObj->m_positions);
     data->getValue(); // make sure the data is updated
@@ -237,7 +237,7 @@ unsigned int SofaPhysicsOutputMesh::Impl::getNbAttributes(int index)            
   if ((unsigned)index >= sVA.size())
     return 0;
   else 
-    return dynamic_cast< Data<ResizableExtVector<Real> >* >(sVA[index]->getSEValue())->getValue().size();
+    return dynamic_cast< Data<sofa::helper::vector<Real> >* >(sVA[index]->getSEValue())->getValue().size();
 }
 
 const char*  SofaPhysicsOutputMesh::Impl::getVAttributeName(int index)          ///< vertices attribute name
@@ -267,7 +267,7 @@ const Real*  SofaPhysicsOutputMesh::Impl::getVAttributeValue(int index)         
     if ((unsigned)index >= sVA.size())
         return NULL;
     else
-        return (const Real*)((ResizableExtVector<Real>*)sVA[index]->getSEValue()->getValueVoidPtr())->getData();
+        return (const Real*)((sofa::helper::vector<Real>*)sVA[index]->getSEValue()->getValueVoidPtr())->data();
 }
 
 int          SofaPhysicsOutputMesh::Impl::getVAttributeRevision(int index)      ///< changes each time vertices attribute is updated
@@ -297,34 +297,34 @@ int SofaPhysicsOutputMesh::Impl::getLinesRevision()    ///< changes each time li
 
 unsigned int SofaPhysicsOutputMesh::Impl::getNbTriangles() ///< number of triangles
 {
-    Data<ResizableExtVector<Triangle> > * data = &(sObj->m_triangles);
+    Data<sofa::helper::vector<Triangle> > * data = &(sObj->m_triangles);
     return (unsigned int) data->getValue().size();
 }
 const Index* SofaPhysicsOutputMesh::Impl::getTriangles()   ///< triangles topology (3 indices / triangle)
 {
-    Data<ResizableExtVector<Triangle> > * data = &(sObj->m_triangles);
-    return (const Index*) data->getValue().getData();
+    Data<sofa::helper::vector<Triangle> > * data = &(sObj->m_triangles);
+    return (const Index*) data->getValue().data();
 }
 int SofaPhysicsOutputMesh::Impl::getTrianglesRevision()    ///< changes each time triangles data is updated
 {
-    Data<ResizableExtVector<Triangle> > * data = &(sObj->m_triangles);
+    Data<sofa::helper::vector<Triangle> > * data = &(sObj->m_triangles);
     data->getValue(); // make sure the data is updated
     return data->getCounter();
 }
 
 unsigned int SofaPhysicsOutputMesh::Impl::getNbQuads() ///< number of quads
 {
-    Data<ResizableExtVector<Quad> > * data = &(sObj->m_quads);
+    Data<sofa::helper::vector<Quad> > * data = &(sObj->m_quads);
     return (unsigned int) data->getValue().size();
 }
 const Index* SofaPhysicsOutputMesh::Impl::getQuads()   ///< quads topology (4 indices / quad)
 {
-    Data<ResizableExtVector<Quad> > * data = &(sObj->m_quads);
-    return (const Index*) data->getValue().getData();
+    Data<sofa::helper::vector<Quad> > * data = &(sObj->m_quads);
+    return (const Index*) data->getValue().data();
 }
 int SofaPhysicsOutputMesh::Impl::getQuadsRevision()    ///< changes each time quads data is updated
 {
-    Data<ResizableExtVector<Quad> > * data = &(sObj->m_quads);
+    Data<sofa::helper::vector<Quad> > * data = &(sObj->m_quads);
     data->getValue(); // make sure the data is updated
     return data->getCounter();
 }

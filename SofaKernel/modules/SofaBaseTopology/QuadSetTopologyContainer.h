@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,15 +58,15 @@ public:
 protected:
     QuadSetTopologyContainer();
 
-    virtual ~QuadSetTopologyContainer() {}
+    ~QuadSetTopologyContainer() override {}
 public:
-    virtual void init();
+    void init() override;
 
 
     /// Procedural creation methods
     /// @{
-    virtual void clear();
-    virtual void addQuad( int a, int b, int c, int d );
+    void clear() override;
+    void addQuad( int a, int b, int c, int d ) override;
     /// @}
 
 
@@ -77,7 +77,7 @@ public:
     /** \brief Returns the quad array.
      *
      */
-    virtual const SeqQuads& getQuads()
+    const SeqQuads& getQuads() override
     {
         return getQuadArray();
     }
@@ -90,16 +90,16 @@ public:
      * @param ID of a Quad.
      * @return The corresponding Quad.
      */
-    virtual const Quad getQuad(QuadID i);
+    const Quad getQuad(QuadID id) override;
 
 
     /** Returns the indices of a quad given four vertex indices.
      *
      * @param the four vertex indices.
      * @return the ID of the corresponding quad.
-     * @return -1 if none
+     * @return InvalidID if none
      */
-    virtual int getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+    QuadID getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4) override;
 
 
     /** \brief Returns the set of edges adjacent to a given quad.
@@ -107,7 +107,7 @@ public:
      * @param ID of a quad.
      * @return EdgesInQuad list composing the input quad.
     */
-    virtual const EdgesInQuad& getEdgesInQuad(QuadID i) ;
+    const EdgesInQuad& getEdgesInQuad(QuadID id) override;
 
 
     /** \brief Returns the set of quads adjacent to a given vertex.
@@ -115,7 +115,7 @@ public:
      * @param ID of a vertex.
      * @return QuadsAroundVertex list around the input vertex.
      */
-    virtual const QuadsAroundVertex& getQuadsAroundVertex(PointID i);
+    const QuadsAroundVertex& getQuadsAroundVertex(PointID id) override;
 
 
     /** \brief Returns the set of quads adjacent to a given edge.
@@ -123,7 +123,7 @@ public:
      * @param ID of an edge.
      * @return QuadsAroundEdge list around the input edge.
      */
-    virtual const QuadsAroundEdge& getQuadsAroundEdge(EdgeID i);
+    const QuadsAroundEdge& getQuadsAroundEdge(EdgeID id) override;
 
 
     /** \brief Returns the index (either 0, 1, 2, 3) of the vertex whose global index is vertexIndex.
@@ -133,7 +133,7 @@ public:
      * @return the position of this vertex in the quad (i.e. either 0, 1, 2, 3).
      * @return -1 if none.
      */
-    virtual int getVertexIndexInQuad(const Quad &t, PointID vertexIndex) const;
+    int getVertexIndexInQuad(const Quad &t, PointID vertexIndex) const override;
 
 
     /** \brief Returns the index (either 0, 1, 2, 3) of the edge whose global index is edgeIndex.
@@ -143,7 +143,7 @@ public:
      * @return the position of this edge in the quad (i.e. either 0, 1, 2, 3).
      * @return -1 if none.
      */
-    virtual int getEdgeIndexInQuad(const EdgesInQuad &t, EdgeID edheIndex) const;
+    int getEdgeIndexInQuad(const EdgesInQuad &t, EdgeID edheIndex) const override;
 
     /// @}
 
@@ -151,7 +151,8 @@ public:
 
     /// Dynamic Topology API
     /// @{
-
+    /// Method called by component Init method. Will create all the topology neighboorhood buffers and call @see EdgeSetTopologyContainer::initTopology()
+    void initTopology();
 
     /** \brief Checks if the topology is coherent
     *
@@ -161,7 +162,7 @@ public:
     * @see m_quadsAroundVertex
     * @see m_quadsAroundEdge
     */
-    virtual bool checkTopology() const;
+    bool checkTopology() const override;
 
 
     /// Get information about connexity of the mesh
@@ -170,31 +171,31 @@ public:
       *
       * @return true if only one connected component
       */
-    virtual bool checkConnexity();
+    bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent();
+    size_t getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const VecQuadID getConnectedElement(QuadID elem);
+    const VecQuadID getConnectedElement(QuadID elem) override;
 
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const VecQuadID getElementAroundElement(QuadID elem);
+    const VecQuadID getElementAroundElement(QuadID elem) override;
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const VecQuadID getElementAroundElements(VecQuadID elems);
+    const VecQuadID getElementAroundElements(VecQuadID elems) override;
     /// @}
 
 
     /** \brief Returns the number of quads in this topology.
      * The difference to getNbQuads() is that this method does not generate the quad array if it does not exist.
      */
-    unsigned int getNumberOfQuads() const;
+    size_t getNumberOfQuads() const;
 
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const;
+    size_t getNumberOfElements() const override;
 
 
     /** \brief Returns the Quad array. */
@@ -223,6 +224,8 @@ public:
 
     /// @}
 
+    /** \brief Returns the type of the topology */
+    sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::QUAD;}
 
 protected:
 
@@ -237,7 +240,7 @@ protected:
      *
      * Create the set of edges when needed.
      */
-    virtual void createEdgeSetArray();
+    void createEdgeSetArray() override;
 
 
     /** \brief Creates the array of edge indices for each quad.
@@ -293,13 +296,13 @@ protected:
 
 
     /// \brief Function creating the data graph linked to d_quad
-    virtual void updateTopologyEngineGraph();
+    void updateTopologyEngineGraph() override;
 
 
     /// Use a specific boolean @see m_quadTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
-    void setQuadTopologyToDirty() {m_quadTopologyDirty = true;}
-    void cleanQuadTopologyFromDirty() {m_quadTopologyDirty = false;}
+    void setQuadTopologyToDirty();
+    void cleanQuadTopologyFromDirty();
     const bool& isQuadTopologyDirty() {return m_quadTopologyDirty;}
 
 protected:

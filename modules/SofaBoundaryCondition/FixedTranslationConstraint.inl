@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/FixedTranslationConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa
@@ -56,25 +56,25 @@ void FixedTranslationConstraint<DataTypes>::FCPointHandler::applyDestroyFunction
 
 template< class DataTypes>
 FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , _drawSize( initData(&_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , f_coordinates( initData(&f_coordinates,"coordinates","Coordinates of the fixed points") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_pointHandler(nullptr)
 {
     // default to indice 0
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
-
-    pointHandler = new FCPointHandler(this, &f_indices);
 }
 
 
 template <class DataTypes>
 FixedTranslationConstraint<DataTypes>::~FixedTranslationConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    if (m_pointHandler)
+        delete m_pointHandler;
 }
 
 template <class DataTypes>
@@ -104,15 +104,30 @@ void FixedTranslationConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology, pointHandler);
-    f_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+    
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-    f_coordinates.createTopologicalEngine(topology);
-    f_coordinates.registerTopologicalData();
+        // Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &f_indices);
+        f_indices.createTopologicalEngine(_topology, m_pointHandler);
+        f_indices.registerTopologicalData();
 
+        f_coordinates.createTopologicalEngine(_topology);
+        f_coordinates.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 }
 
 
@@ -136,7 +151,7 @@ void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::Mechani
 
     if (f_fixAll.getValue() == true)
     {
-        for (int i = 0; i < topology->getNbPoints(); ++i)
+        for (int i = 0; i < l_topology.get()->getNbPoints(); ++i)
         {
             clearPos(res[i]);
         }
@@ -189,31 +204,44 @@ void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::Me
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    glDisable(GL_LIGHTING);
-    glPointSize(10);
-    glColor4f(1, 0.5, 0.5, 1);
-    glBegin(GL_POINTS);
+
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+
     if (f_fixAll.getValue() == true)
     {
         for (unsigned i = 0; i < x.size(); i++)
         {
-            sofa::helper::gl::glVertexT(x[i].getCenter());
+            sofa::defaulttype::Vector3 v;
+            const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[i]);
+            for(std::size_t j=0 ; j<cpos.size() && j<3; j++)
+                v[j] = cpos[j];
+
+            vertices.push_back(v);
         }
     }
     else
     {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            sofa::helper::gl::glVertexT(x[*it].getCenter());
+            sofa::defaulttype::Vector3 v;
+            const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[*it]);
+            for(std::size_t j=0 ; j<cpos.size() && j<3; j++)
+                v[j] = cpos[j];
+
+            vertices.push_back(v);
         }
     }
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawPoints(vertices, 10, color);
+    vparams->drawTool()->restoreLastState();
+
 }
 
 

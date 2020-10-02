@@ -1,3 +1,24 @@
+# Welcome
+
+Welcome to the SOFA Community! Here is a brief summary of how it is structured:
+- SOFA Users: people using SOFA by writing scenes or using the SOFA API.
+- SOFA Developpers: people programming into SOFA, modifying the API, writing plugins.
+- SOFA Contributors: (awesome) people proposing their changes in SOFA code via pull-requests.
+- SOFA Reviewers: people reviewing and merging the pull-requests. This group is validated by the Scientific and Technical Committee (STC).
+- SOFA Consortium: research centers and companies willing to share the cost of development and maintenance of SOFA, hosted by the Inria Foundation.
+- SOFA Consortium Staff: administrators of SOFA and its ecosystem. This group is directed by the Executive Committee (EC).
+
+All SOFA Developpers are gladly invited to the SOFA-dev meetings.  
+They take place remotely every Wednesday at 10 a.m. CET and are animated by the SOFA Reviewers + the Consortium Staff.  
+[Subscribe to SOFA-dev mailing-list](https://sympa.inria.fr/sympa/subscribe/sofa-dev) to get the agenda, reports and conference room url.
+
+About the steering committees:
+- SOFA Scientific and Technical Committee (STC): defines the technical roadmap twice a year, validate the contribution rules, the Reviewers team and discuss every technical point in SOFA.
+- SOFA Executive Committee (EC): decides on evolutions of the membership contract, the communication policy and the priorities of the Consortium.
+
+A more detailed definition of the committees is available [in the SOFA website](https://www.sofa-framework.org/consortium/presentation/).
+
+
 # Getting started
 
 Please **read carefully** [the GitHub guide on Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/). We also recommend you to check this [more detailed documentation on issues and pull requests](https://help.github.com/categories/collaborating-with-issues-and-pull-requests/).
@@ -67,9 +88,60 @@ Reviewing:
 - **Control the builds**: Dashboard > Details in the pull request checks.
 - Merge method: **prefer "merge"** or "squash" over "rebase".
 
-Remember that
+Remember that:
 
 - You can **add commits** in a pull request: see [GitHub documentation](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/).
 - If the pull request contains out of scope commits (from a previous merge with master), **consider rebasing it**.
 
 For more information on forks and pull request, check out [this GitHub guide](https://guides.github.com/activities/forking/).
+
+
+### SOFA Developer Certificate Of Origin (DCO)
+
+SOFA is using the [mechanism of the linux project](https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin) to track and secure all issues related to copyrights: the Developper Certificate of Origin (DCO). If you are contributing code or documentation to the SOFA project, and using the git signed-off-by mechanism, you are agreeing to this certificate.  This DCO essentially means that:
+
+- you offer the changes under the same license agreement as the project, and
+- you have the right to do that,
+- you did not steal somebody else’s work.
+
+The original DCO is available online : [http://developercertificate.org](http://developercertificate.org)
+
+```
+Developer Certificate of Origin
+Version 1.1
+
+Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
+1 Letterman Drive
+Suite D4700
+San Francisco, CA, 94129
+
+Everyone is permitted to copy and distribute verbatim copies of this
+license document, but changing it is not allowed.
+
+
+Developer's Certificate of Origin 1.1
+
+By making a contribution to this project, I certify that:
+
+(a) The contribution was created in whole or in part by me and I
+    have the right to submit it under the open source license
+    indicated in the file; or
+
+(b) The contribution is based upon previous work that, to the best
+    of my knowledge, is covered under an appropriate open source
+    license and I have the right under that license to submit that
+    work with modifications, whether created in whole or in part
+    by me, under the same open source license (unless I am
+    permitted to submit under a different license), as indicated
+    in the file; or
+
+(c) The contribution was provided directly to me by some other
+    person who certified (a), (b) or (c) and I have not modified
+    it.
+
+(d) I understand and agree that this project and the contribution
+    are public and that a record of the contribution (including all
+    personal information I submit with it, including my sign-off) is
+    maintained indefinitely and may be redistributed consistent with
+    this project or the open source license(s) involved.
+```

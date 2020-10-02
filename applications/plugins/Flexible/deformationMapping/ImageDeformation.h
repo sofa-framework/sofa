@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -83,22 +83,18 @@ public:
 
     Data<helper::OptionsGroup> deformationMethod; ///< forward, backward
     Data<helper::OptionsGroup> interpolation; ///< Nearest,Linear,Cubic
-    Data<bool> weightByVolumeChange;
-    Data< defaulttype::Vec<3,unsigned int> > dimensions;
+    Data<bool> weightByVolumeChange; ///< for images representing densities, weight intensities according to the local volume variation
+    Data< defaulttype::Vec<3,unsigned int> > dimensions; ///< output image dimensions
 
     typedef helper::vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
-    Data< ParamTypes > param;
+    Data< ParamTypes > param; ///< Parameters
 
     Data< ImageTypes > inputImage;
     Data< TransformType > inputTransform;
 
     Data< ImageTypes > outputImage;
     Data< TransformType > outputTransform;
-
-
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const ImageDeformation<ImageTypes>* = NULL) { return ImageTypes::Name(); }
 
     ImageDeformation()    :   Inherited()
         , deformationMethod ( initData ( &deformationMethod,"deformationMethod","" ) )
@@ -128,9 +124,9 @@ public:
         interpolation.setValue(interpOptions);
     }
 
-    virtual ~ImageDeformation() {}
+    ~ImageDeformation() override {}
 
-    virtual void init()
+    void init() override
     {
         addInput(&inputImage);
         addInput(&inputTransform);
@@ -144,11 +140,11 @@ public:
         if( !deformationMapping ) serr<<"No deformation mapping found"<<sendl;
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void update()
+    void doUpdate() override
     {
         if(!deformationMapping) return;
 
@@ -311,7 +307,6 @@ protected:
             break;
         }
 
-        cleanDirty();
     }
 
 
@@ -366,7 +361,7 @@ protected:
         return dot(d-a,cross(b-a,c-a))/6.;
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
         {

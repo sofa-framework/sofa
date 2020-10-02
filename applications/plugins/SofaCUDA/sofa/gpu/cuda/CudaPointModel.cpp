@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,34 +35,33 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaPointModel)
-
-int CudaPointModelClass = core::RegisterObject("GPU-based point collision model using CUDA")
-        .add< CudaPointModel >()
+int CudaPointCollisionModelClass = core::RegisterObject("GPU-based point collision model using CUDA")
+        .add< CudaPointCollisionModel >()
         .addAlias("CudaPoint")
+        .addAlias("CudaPointModel")
         ;
 
 using namespace defaulttype;
 
-CudaPointModel::CudaPointModel()
+CudaPointCollisionModel::CudaPointCollisionModel()
     : groupSize( initData( &groupSize, (int)BSIZE, "groupSize", "number of point per collision element" ) )
     , mstate(NULL)
 {
 }
 
-void CudaPointModel::resize(int size)
+void CudaPointCollisionModel::resize(int size)
 {
     this->core::CollisionModel::resize(size);
 }
 
-void CudaPointModel::init()
+void CudaPointCollisionModel::init()
 {
     this->CollisionModel::init();
     mstate = dynamic_cast< core::behavior::MechanicalState<InDataTypes>* > (getContext()->getMechanicalState());
 
     if (mstate==NULL)
     {
-        serr << "ERROR: CudaPointModel requires a CudaVec3f Mechanical Model.\n";
+        serr << "ERROR: CudaPointCollisionModel requires a CudaVec3f Mechanical Model.\n";
         return;
     }
 
@@ -72,8 +71,9 @@ void CudaPointModel::init()
     resize(nelems);
 }
 
-void CudaPointModel::draw(const core::visual::VisualParams* ,int index)
+void CudaPointCollisionModel::draw(const core::visual::VisualParams* ,int index)
 {
+#ifndef SOFA_NO_OPENGL
     const int gsize = groupSize.getValue();
     CudaPoint t(this,index);
     glBegin(GL_POINTS);
@@ -85,10 +85,12 @@ void CudaPointModel::draw(const core::visual::VisualParams* ,int index)
         glVertex3fv(x[i0+p].ptr());
     }
     glEnd();
+#endif // SOFA_NO_OPENGL
 }
 
-void CudaPointModel::draw(const core::visual::VisualParams* vparams)
+void CudaPointCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (isActive() && vparams->displayFlags().getShowCollisionModels())
     {
         if (vparams->displayFlags().getShowWireFrame())
@@ -111,13 +113,14 @@ void CudaPointModel::draw(const core::visual::VisualParams* vparams)
     }
     if (isActive() && getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
+#endif // SOFA_NO_OPENGL
 }
 
-using sofa::component::collision::CubeModel;
+using sofa::component::collision::CubeCollisionModel;
 
-void CudaPointModel::computeBoundingTree(int maxDepth)
+void CudaPointCollisionModel::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const int npoints = mstate->getSize();
     const int gsize = groupSize.getValue();
     const int nelems = (npoints + gsize-1)/gsize;

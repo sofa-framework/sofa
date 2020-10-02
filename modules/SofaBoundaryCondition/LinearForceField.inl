@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,23 +43,39 @@ template<class DataTypes>
 LinearForceField<DataTypes>::LinearForceField()
     : data(new LinearForceFieldInternalData<DataTypes>())
     , points(initData(&points, "points", "points where the force is applied"))
-    , force(initData(&force, (Real)1.0, "force", "applied force to all points"))
-    , keyTimes(initData(&keyTimes, "times", "key times for the interpolation"))
-    , keyForces(initData(&keyForces, "forces", "forces corresponding to the key times"))
-    , arrowSizeCoef(initData(&arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+    , d_force(initData(&d_force, (Real)1.0, "force", "applied force to all points"))
+    , d_keyTimes(initData(&d_keyTimes, "times", "key times for the interpolation"))
+    , d_keyForces(initData(&d_keyForces, "forces", "forces corresponding to the key times"))
+    , d_arrowSizeCoef(initData(&d_arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+    , l_topology(initLink("topology", "link to the topology container"))
 { }
 
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::init()
 {
-    topology = this->getContext()->getMeshTopology();
-
-    // Initialize functions and parameters for topology data and handler
-    points.createTopologicalEngine(topology);
-    points.registerTopologicalData();
-
     Inherit::init();
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+    
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+        
+        // Initialize functions and parameters for topology data and handler
+        points.createTopologicalEngine(_topology);
+        points.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 }
 
 template<class DataTypes>
@@ -68,15 +84,12 @@ void LinearForceField<DataTypes>::addPoint(unsigned index)
     points.beginEdit()->push_back(index);
     points.endEdit();
 
-}// LinearForceField::addPoint
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::removePoint(unsigned /*index*/)
 {
-// removeValue(*points.beginEdit(), index);
-    //points.endEdit();
-
-}// LinearForceField::removePoint
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::clearPoints()
@@ -84,29 +97,29 @@ void LinearForceField<DataTypes>::clearPoints()
     points.beginEdit()->clear();
     points.endEdit();
 
-}// LinearForceField::clearPoints
+}
 
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::addKeyForce(Real time, Deriv force)
 {
     // TODO : sort the key force while adding a new one
-    keyTimes.beginEdit()->push_back( time);
-    keyTimes.endEdit();
-    keyForces.beginEdit()->push_back( force );
-    keyForces.endEdit();
+    d_keyTimes.beginEdit()->push_back( time);
+    d_keyTimes.endEdit();
+    d_keyForces.beginEdit()->push_back( force );
+    d_keyForces.endEdit();
 
-}// LinearForceField::addKeyForce
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::clearKeyForces()
 {
-    keyTimes.beginEdit()->clear();
-    keyTimes.endEdit();
-    keyForces.beginEdit()->clear();
-    keyForces.endEdit();
+    d_keyTimes.beginEdit()->clear();
+    d_keyTimes.endEdit();
+    d_keyForces.beginEdit()->clear();
+    d_keyForces.endEdit();
 
-}// LinearForceField::clearKeyForces
+}
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f1, const DataVecCoord& /*p1*/, const DataVecDeriv&)
@@ -115,50 +128,70 @@ void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mpara
 
     Real cT = (Real) this->getContext()->getTime();
 
-    if (keyTimes.getValue().size() != 0 && cT >= *keyTimes.getValue().begin() && cT <= *keyTimes.getValue().rbegin())
+    if (d_keyTimes.getValue().size() != 0 && cT >= *d_keyTimes.getValue().begin())
     {
-        nextT = *keyTimes.getValue().begin();
-        prevT = nextT;
-
-        bool finished = false;
-
-        typename helper::vector< Real >::const_iterator it_t = keyTimes.getValue().begin();
-        typename VecDeriv::const_iterator it_f = keyForces.getValue().begin();
-
-        // WARNING : we consider that the key-events are in chronological order
-        // here we search between which keyTimes we are.
-        while( it_t != keyTimes.getValue().end() && !finished)
+        Deriv targetForce;
+        if (cT < *d_keyTimes.getValue().rbegin())
         {
-            if ( *it_t <= cT )
+            nextT = *d_keyTimes.getValue().begin();
+            prevT = nextT;
+
+            bool finished = false;
+
+            typename helper::vector< Real >::const_iterator it_t = d_keyTimes.getValue().begin();
+            typename VecDeriv::const_iterator it_f = d_keyForces.getValue().begin();
+
+            // WARNING : we assume that the key-events are in chronological order
+            // here we search between which keyTimes we are.
+            while( it_t != d_keyTimes.getValue().end() && !finished)
             {
-                prevT = *it_t;
-                prevF = *it_f;
+                if ( *it_t <= cT )
+                {
+                    prevT = *it_t;
+                    prevF = *it_f;
+                }
+                else
+                {
+                    nextT = *it_t;
+                    nextF = *it_f;
+                    finished = true;
+                }
+                it_t++;
+                it_f++;
             }
-            else
+            if (finished)
             {
-                nextT = *it_t;
-                nextF = *it_f;
-                finished = true;
+                Deriv slope = (nextF - prevF)*(1.0/(nextT - prevT));
+                targetForce = slope*(cT - prevT) + prevF;
+                targetForce *= d_force.getValue();
             }
-            it_t++;
-            it_f++;
         }
-        const SetIndexArray& indices = points.getValue();
-        if (finished)
+        else
         {
+            targetForce = d_keyForces.getValue()[d_keyTimes.getValue().size() - 1];
+        }
 
-            Deriv slope = (nextF - prevF)*(1.0/(nextT - prevT));
-            Deriv ff = slope*(cT - prevT) + prevF;
-
-            Real f = force.getValue();
-
-            for(unsigned i = 0; i < indices.size(); i++)
-            {
-                _f1[indices[i]] += ff*f;
-            }
+        for(auto index : points.getValue())
+        {
+            _f1[index] += targetForce;
         }
     }
-}// LinearForceField::addForce
+}
+
+template<class DataTypes>
+void LinearForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
+{
+    //TODO: remove this line (avoid warning message) ...
+    mparams->setKFactorUsed(true);
+}
+
+template<class DataTypes>
+void LinearForceField<DataTypes>::addKToMatrix(defaulttype::BaseMatrix* matrix, SReal kFact, unsigned int& offset)
+{
+    SOFA_UNUSED(matrix);
+    SOFA_UNUSED(kFact);
+    SOFA_UNUSED(offset);
+}
 
 template<class DataTypes>
 SReal LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
@@ -167,12 +200,12 @@ SReal LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
     const VecCoord& _x = x.getValue();
     const SetIndexArray& indices = points.getValue();
     SReal e=0;
-    if (keyTimes.getValue().size() != 0 && cT >= *keyTimes.getValue().begin() && cT <= *keyTimes.getValue().rbegin() && prevT != nextT)
+    if (d_keyTimes.getValue().size() != 0 && cT >= *d_keyTimes.getValue().begin() && cT <= *d_keyTimes.getValue().rbegin() && prevT != nextT)
     {
         Real dt = (cT - prevT)/(nextT - prevT);
         Deriv ff = (nextF - prevF)*dt + prevF;
 
-        Real f = force.getValue();
+        Real f = d_force.getValue();
 
         for(unsigned i = 0; i < indices.size(); i++)
         {
@@ -181,7 +214,7 @@ SReal LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
     }
 
     return e;
-}// LinearForceField::getPotentialEnergy
+}
 
 template< class DataTypes>
 void LinearForceField<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)

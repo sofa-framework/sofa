@@ -1,0 +1,13 @@
+Node : {
+    name : "root"
+
+    Python : '''result="Success"'''
+
+    MechanicalObject : {
+        name : "aMechanicalObject1"
+    }
+
+    TestResult : result
+}
+
+

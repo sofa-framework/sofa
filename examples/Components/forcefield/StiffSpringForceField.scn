@@ -2,7 +2,7 @@
 <Node 	 name="root"  dt="0.005"  >
 	<VisualStyle name="visualStyle1"  displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
 	<Node 	 name="Poutre1"  >
-		<EulerImplicitSolver name="cg_odesolver"  printLog="0" />
+		<EulerImplicitSolver name="cg_odesolver"  printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-09"  threshold="1e-09" />
 		<Node 	 name="M1"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />

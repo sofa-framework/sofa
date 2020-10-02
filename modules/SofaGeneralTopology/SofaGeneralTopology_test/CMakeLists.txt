@@ -1,8 +1,10 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 
 project(SofaGeneralTopology_test)
 
-set(SOURCE_FILES
+set(SOURCE_FILES ../../empty.cpp)
+
+list(APPEND SOURCE_FILES
     #BezierTetrahedronTopology_test.cpp
     CylinderGridTopology_test.cpp
     SphereGridTopology_test.cpp

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 -0.1 " dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="Flexible"/>
   <RequiredPlugin pluginName="image"/>
 
@@ -20,7 +21,7 @@
 
   <TransferFunction name="youngM" template="ImageUC,ImageD" inputImage="@extruder.outputImage" param="0 0 100 1000 255 100000"/>
   <!--  <ImageViewer template="ImageD" name="viewer" image="@youngM.outputImage" transform="@extruder.outputTransform" /> -->
-  <EulerImplicitSolver />
+  <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver  />
 
 
@@ -48,22 +49,22 @@
     </Node>
     
     <Node 	name="collision"   >
-      <Mesh name="mesh" position="@../../mc1.position"  triangles="@../../mc1.triangles"/>
+      <MeshTopology name="mesh" position="@../../mc1.position"  triangles="@../../mc1.triangles"/>
       <MechanicalObject  template="Vec3d" name="pts" src="@mesh"  />
       <UniformMass totalMass="10" />
-      <Triangle />
+      <TriangleCollisionModel />
       <LinearMapping template="Affine,Vec3d"/>
     </Node>
 
     <Node 	name="visual"   >
       <VisualStyle displayFlags="showWireframe  " />
-      <Mesh name="mesh" position="@../../mc1.position"  triangles="@../../mc1.triangles"/>
-      <VisualModel template="ExtVec3f" name="Visual" color="1 0.8 0.8 "/>
+      <MeshTopology name="mesh" position="@../../mc1.position"  triangles="@../../mc1.triangles"/>
+      <OglModel template="ExtVec3f" name="Visual" color="1 0.8 0.8 "/>
       <LinearMapping template="Affine,ExtVec3f"/>
     </Node>
     <Node 	name="inclusion"   >
-      <Mesh name="mesh" position="@../../mc2.position"  triangles="@../../mc2.triangles"/>
-      <VisualModel template="ExtVec3f" name="Visual" color="0.5 0.8 0.8 "/>
+      <MeshTopology name="mesh" position="@../../mc2.position"  triangles="@../../mc2.triangles"/>
+      <OglModel template="ExtVec3f" name="Visual" color="0.5 0.8 0.8 "/>
       <LinearMapping template="Affine,ExtVec3f"/>
     </Node>
   </Node>

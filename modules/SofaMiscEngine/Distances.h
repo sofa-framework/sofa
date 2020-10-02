@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_DISTANCES_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -92,27 +90,27 @@ protected:
 
     Distances ( sofa::component::topology::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet );
 
-    virtual ~Distances() {}
+    ~Distances() override {}
 
 public:
-    Data<unsigned int> showMapIndex;
-    Data<bool> showDistanceMap;
-    Data<bool> showGoalDistanceMap;
-    Data<double> showTextScaleFactor;
-    Data<bool> showGradientMap;
-    Data<double> showGradientsScaleFactor;
-    Data<Coord> offset;
-    Data<sofa::helper::OptionsGroup> distanceType;
-    Data<bool> initTarget;
-    Data<int> initTargetStep;
-    Data<std::map<unsigned int, unsigned int> > zonesFramePair;
-    Data<double> harmonicMaxValue;
+    Data<unsigned int> showMapIndex; ///< Frame DOF index on which display values.
+    Data<bool> showDistanceMap; ///< show the dsitance for each point of the target point set.
+    Data<bool> showGoalDistanceMap; ///< show the dsitance for each point of the target point set.
+    Data<double> showTextScaleFactor; ///< Scale to apply on the text.
+    Data<bool> showGradientMap; ///< show gradients for each point of the target point set.
+    Data<double> showGradientsScaleFactor; ///< scale for the gradients displayed.
+    Data<Coord> offset; ///< translation offset between the topology and the point set.
+    Data<sofa::helper::OptionsGroup> distanceType; ///< type of distance to compute for inserted frames.
+    Data<bool> initTarget; ///< initialize the target MechanicalObject from the grid.
+    Data<int> initTargetStep; ///< initialize the target MechanicalObject from the grid using this step.
+    Data<std::map<unsigned int, unsigned int> > zonesFramePair; ///< Correspondance between the segmented value and the frames.
+    Data<double> harmonicMaxValue; ///< Max value used to initialize the harmonic distance grid.
 
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void doUpdate() override;
 
     /** \brief Compute the distance map depending ion the distance type.
     *
@@ -138,7 +136,7 @@ public:
     */
     void getDistances ( VVD& distances, VecVecCoord& gradients, const VecCoord& goals );
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// Pre-construction check method called by ObjectFactory.
     ///
@@ -148,13 +146,15 @@ public:
     template<class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
-        if ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) == NULL )
-            context->serr << "Cannot create "<<className ( obj ) <<" as the hexas container is missing."<<context->sendl;
-        if ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) == NULL )
-            context->serr << "Cannot create "<<className ( obj ) <<" as the target point set is missing."<<context->sendl;
-        if ( dynamic_cast<sofa::component::topology::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) == NULL )
+        if (arg->findObject(arg->getAttribute("hexaContainerPath", "../..")) == nullptr) {
+            msg_error(context) << "Cannot create " << className(obj) << " as the hexas container is missing.";
+        }
+        if (arg->findObject(arg->getAttribute("targetPath", "..")) == nullptr) {
+            msg_error(context) << "Cannot create " << className(obj) << " as the target point set is missing.";
+        }
+        if ( dynamic_cast<sofa::component::topology::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) == nullptr )
             return false;
-        if ( dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) == NULL )
+        if ( dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) == nullptr )
             return false;
         return true;
     }
@@ -166,8 +166,8 @@ public:
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>(
-                ( arg?dynamic_cast<sofa::component::topology::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) :NULL ),
-                ( arg?dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) :NULL ) );
+                ( arg?dynamic_cast<sofa::component::topology::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) :nullptr ),
+                ( arg?dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) :nullptr ) );
 
         if ( context ) context->addObject ( obj );
 
@@ -188,22 +188,13 @@ public:
 
         return obj;
     }
-    std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-    static std::string templateName(const Distances<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
 
 private:
-    Data<std::string> fileDistance;
-    Data<std::string> targetPath;
+    Data<std::string> fileDistance; ///< file containing the result of the computation of the distances
+    Data<std::string> targetPath; ///< path to the goal point set topology
     core::behavior::MechanicalState<DataTypes>* target;
 
-    Data<std::string> hexaContainerPath;
+    Data<std::string> hexaContainerPath; ///< path to the grid used to compute the distances
     sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
     sofa::component::topology::DynamicSparseGridGeometryAlgorithms< DataTypes >* hexaGeoAlgo;
     const unsigned char * densityValues; // Density values
@@ -231,15 +222,8 @@ private:
     inline void addContribution ( double& valueWrite, int& nbTest, double*** valueRead, const int& x, const int& y, const int& z, const int coeff, const bool& useStiffnessMap );
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_DISTANCES_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3dTypes>;
-//extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3fTypes>;
-//extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_DISTANCES_CPP)
+extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3Types>; 
 #endif
 
 } // namespace engine

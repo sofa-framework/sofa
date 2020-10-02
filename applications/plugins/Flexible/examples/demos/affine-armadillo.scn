@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="Root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="image"/>
 
@@ -14,7 +15,7 @@
     <VoronoiShapeFunction name="SF" position="@sampler.position" src="@image" useDijkstra="true" method="0" nbRef="5" />
     
     <Node name="Affine" >
-        <EulerImplicitSolver />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="20" tolerance="1e-15" threshold="1e-15"/>
         
         <MechanicalObject template="Affine" name="dof"  showObject="true" showObjectScale="1" position="@../sampler.position" />
@@ -34,12 +35,13 @@
         </Node>
         
         <Node name="Collision">
-            <Mesh src="@../../loader" />
+            <MeshTopology src="@../../loader" />
             <MechanicalObject name="dof" />
-            <TTriangleModel />
+            <TriangleCollisionModel />
             <LinearMapping template="Affine,Vec3d" />
             <Node name="Visual"  >
-                <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
+                <MeshObjLoader name="meshLoader_0" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+                <OglModel src="@meshLoader_0"   />
                 <IdentityMapping template="Vec3d,ExtVec3f"  />
             </Node>
         </Node>

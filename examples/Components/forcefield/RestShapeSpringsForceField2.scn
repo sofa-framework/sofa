@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<Node name="root" dt="0.01" gravity="0 0 0" >
+      <RequiredPlugin name="SofaSparseSolver"/>
+      <VisualStyle displayFlags=" showCollisionModels showForceFields" />
+
+      <FreeMotionAnimationLoop />
+      <GenericConstraintSolver maxIt="1000" tolerance="1e-10" printLog="false" />
+
+	<Node name="Object1">
+		<MechanicalObject name="ms" template="Rigid3d" position="0 0 0 0 0 0 0 1" showObject="false"/>
+		<SphereCollisionModel radius="0.01" color="0 1 0 1" />  
+	</Node> 
+	
+	<Node name="Object2">
+		<EulerImplicitSolver rayleighMass="0" rayleighStiffness="0"/>
+		<SparseLUSolver />
+		<MechanicalObject name="mstate" template="Rigid3d" position="0.1 0 0  0  0 0 0 1" />     
+		<SphereCollisionModel color="1 0 0 1" radius="0.01" />
+		<RestShapeSpringsForceField stiffness="11" angularStiffness="11" external_rest_shape="@../Object1/ms" points="0" external_points="0" drawSpring="true" springColor="1 1 1 1"/>
+		<UniformMass totalMass="0.01" />
+		<SphereCollisionModel radius="0.0005" color="1 0 0  1" />
+		    
+		<LinearSolverConstraintCorrection /> 
+	</Node> 
+</Node>

@@ -1,0 +1,51 @@
+###################################################################################################
+## PYTHON COMMENT'S
+###################################################################################################
+// C's COMMENTS
+Node : {
+    ## HERE
+    name : "root"
+
+    Template : # and here
+    {
+        name : "MyTemplate"
+        properties : {
+            name : "defaultName"
+            numchild : [3, 3, 3]
+        }
+
+
+        Node : {
+            name : p"name"
+
+            Template : {
+
+            }
+
+
+            MechanicalObject : {
+                    name : "mstate"
+            }
+
+            Python : '''
+
+                     for i in range(0,numchild):
+                        self.createChild("child"+str(i))
+                     '''
+        }
+    }
+
+    MyTemplate :
+    {
+        name : "Object1"
+        numchild : 5
+    }
+
+    MyTemplate : {
+        name : "Object2"
+        numchild : 9
+    }
+}
+
+
+

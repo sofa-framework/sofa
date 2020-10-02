@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,45 +43,26 @@ namespace collision
 /**
  * @brief LocalMinDistance cone information class for a Line collision primitive.
  */
-class LineInfo : public InfoFilter //< topology::Edge >
+class LineInfo : public InfoFilter
 {
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
 
 public:
     /**
-     * @brief Empty constructor. Required by EdgeData<>.
-     */
-    LineInfo()
-        : InfoFilter(NULL)
-        , m_computedRightAngleCone(0.0)
-        , m_computedLeftAngleCone(0.0)
-        , m_twoTrianglesAroundEdge(false)
-    {
-//        todo=false;
-    }
-
-    /**
      * @brief Default constructor.
      */
-    LineInfo(LocalMinDistanceFilter *lmdFilters)
-        : InfoFilter(lmdFilters)
-        , m_computedRightAngleCone(0.0)
-        , m_computedLeftAngleCone(0.0)
-        , m_twoTrianglesAroundEdge(false)
-    {
-//        todo=false;
-    }
+    LineInfo(LocalMinDistanceFilter *lmdFilters = nullptr);
 
     /**
      * @brief Default destructor.
      */
-    virtual ~LineInfo() {}
+    ~LineInfo() override {}
 
     /**
      * @brief Returns the validity of a detected contact according to this LineInfo.
      */
-    virtual bool validate(const unsigned int edge_index, const defaulttype::Vector3& PQ);
+    bool validate(const unsigned int edge_index, const defaulttype::Vector3& PQ) override;
 
     /**
      * @brief Output stream.
@@ -103,7 +84,7 @@ public:
     /**
      * @brief Computes the region of interest cone of the Line primitive.
      */
-    virtual void buildFilter(unsigned int /*e*/);
+    void buildFilter(unsigned int /*e*/) override;
 
 protected:
 
@@ -115,7 +96,6 @@ protected:
     double	m_computedRightAngleCone; ///<
     double	m_computedLeftAngleCone; ///<
     bool	m_twoTrianglesAroundEdge; ///<
-//    bool todo;
 };
 
 
@@ -129,14 +109,14 @@ public:
 
 protected:
     LineLocalMinDistanceFilter();
-    virtual ~LineLocalMinDistanceFilter();
+    ~LineLocalMinDistanceFilter() override;
 
 public:
 
     /**
      * @brief Scene graph initialization method.
      */
-    void init();
+    void init() override;
 
     /**
      * @name These methods check the validity of a found intersection.
@@ -190,8 +170,8 @@ public:
     };
 
 private:
-    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo;
-    topology::EdgeData< sofa::helper::vector<LineInfo> > m_lineInfo;
+    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo; ///< point filter data
+    topology::EdgeData< sofa::helper::vector<LineInfo> > m_lineInfo; ///< line filter data
 
     PointInfoHandler* pointInfoHandler;
     LineInfoHandler* lineInfoHandler;

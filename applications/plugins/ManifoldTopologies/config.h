@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,9 +22,9 @@
 #ifndef MANIFOLDTOPOLOGIES_CONFIG_H
 #define MANIFOLDTOPOLOGIES_CONFIG_H
 
-#include <SofaBase/config.h>
+#include <sofa/config.h>
 
-#ifdef SOFA_BUILD_MANIFOLD_TOPOLOGIES
+#ifdef SOFA_BUILD_MANIFOLDTOPOLOGIES
 #  define SOFA_TARGET ManifoldTopologies
 #  define SOFA_MANIFOLD_TOPOLOGIES_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else

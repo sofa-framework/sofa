@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,9 +43,9 @@ public:
     SOFA_CLASS(BaseMaterial,core::objectmodel::BaseObject);
 
     BaseMaterial() {}
-    virtual ~BaseMaterial() {}
+    ~BaseMaterial() override {}
 
-    virtual void init()
+    void init() override
     {
         this->core::objectmodel::BaseObject::init();
     }
@@ -60,10 +60,6 @@ public:
     virtual void computeDStress (defaulttype::Vector3 & ,defaulttype::Vector3 &) {}
 
     virtual void computeStress (unsigned int /*iElement*/)=0;//to be pure virtual
-    virtual void handleTopologyChange()
-    {
-        serr<<"ERROR(BaseMaterial) this method handleTopologyChange() is not already implemented in base class"<<sendl;
-    }
 	
 
 private:

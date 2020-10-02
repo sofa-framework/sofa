@@ -9,6 +9,6 @@
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
         <TetrahedronSetTopologyContainer name="Container" src="@loader" />
         <MechanicalObject name="Volume" />
-        <TetrahedronSetGeometryAlgorithms  name="GeomAlgo" drawTetrahedra="1" drawColorTetrahedra="1.0 1.0 0.3" />
+        <TetrahedronSetGeometryAlgorithms  name="GeomAlgo" drawTetrahedra="1" drawColorTetrahedra="1.0 1.0 0.3 1.0" />
     </Node>
 </Node>

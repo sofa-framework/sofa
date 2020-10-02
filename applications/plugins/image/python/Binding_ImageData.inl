@@ -2,7 +2,6 @@
 // with preprocessor macros
 // no to have to duplicate code
 
-
 // preprocessor functions to concatenate 2 variables
 #define PASTER(x,y) x ## y
 #define EVALUATOR(x,y)  PASTER(x,y)
@@ -17,9 +16,12 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
 
 
-extern "C" PyObject * EVALUATOR(BOUNDNAME,getPtrs)(PyObject * self, PyObject * /*args*/)
+
+
+
+static PyObject * EVALUATOR(BOUNDNAME,getPtrs)(PyObject * self, PyObject * /*args*/)
 {
-    Data<IMAGETYPE>* data=((PyPtr< Data<IMAGETYPE> >*)self)->object;
+    Data<IMAGETYPE>* data = sofa::py::unwrap< Data<IMAGETYPE> >( self );
     IMAGETYPE& image = *data->beginEdit();  // where should be the endedit?
 
     IMAGETYPE::imCoord dim = image.getDimensions();
@@ -53,11 +55,31 @@ extern "C" PyObject * EVALUATOR(BOUNDNAME,getPtrs)(PyObject * self, PyObject * /
 }
 
 
+
+
+static PyObject * EVALUATOR(BOUNDNAME,getDimensions)(PyObject * self, PyObject * /*args*/)
+{
+    Data<IMAGETYPE>* data = sofa::py::unwrap< Data<IMAGETYPE> >( self );
+    const IMAGETYPE& image = data->getValue();
+
+    IMAGETYPE::imCoord dim = image.getDimensions();
+
+    PyObject* res = PyList_New(5);
+    PyList_SetItem( res, 0, PyFloat_FromDouble( dim[0] ) );
+    PyList_SetItem( res, 1, PyFloat_FromDouble( dim[1] ) );
+    PyList_SetItem( res, 2, PyFloat_FromDouble( dim[2] ) );
+    PyList_SetItem( res, 3, PyFloat_FromDouble( dim[3] ) );
+    PyList_SetItem( res, 4, PyFloat_FromDouble( dim[4] ) );
+
+    return res;
+}
+
 #define SP_CLASS_SIMPLE_METHOD(M) {#M, EVALUATOR(BOUNDNAME,M), METH_VARARGS, ""},
 #define SP_CLASS_SIMPLE__METHOD_KW(M) {#M, (PyCFunction)EVALUATOR(BOUNDNAME,M), METH_KEYWORDS|METH_VARARGS, ""},
 
 SP_CLASS_METHODS_BEGIN(BOUNDNAME)
 SP_CLASS_SIMPLE_METHOD(getPtrs)
+SP_CLASS_SIMPLE_METHOD(getDimensions)
 SP_CLASS_METHODS_END
 
 #undef SP_CLASS_SIMPLE__METHOD_KW

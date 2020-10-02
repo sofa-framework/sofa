@@ -77,7 +77,7 @@ endif (VERBOSE_SOFA)
 ## ===================== SOFA_INCLUDE_FRAMEWORK_DIR
 find_path(SOFA_INCLUDE_FRAMEWORK_DIR
     NAME
-    sofa/core/core.h #use a file .h looks like important file to find the path directory
+    sofa/core/config.h #use a file .h looks like important file to find the path directory
     PATHS
     ${SOFA_DIR}/framework
     ## comment to allow CMake to search in system environment variables and
@@ -128,12 +128,11 @@ list(APPEND SOFA_INCLUDE_OTHER_DIRS
     ${SOFA_INCLUDE_EXTLIBS}/colladadom
     ${SOFA_INCLUDE_EXTLIBS}/csparse
     ${SOFA_INCLUDE_EXTLIBS}/cudpp
-    ${SOFA_INCLUDE_EXTLIBS}/eigen-3.2.1
     ${SOFA_INCLUDE_EXTLIBS}/ffmpeg
     ${SOFA_INCLUDE_EXTLIBS}/fftpack
     ${SOFA_INCLUDE_EXTLIBS}/fishpack
     ${SOFA_INCLUDE_EXTLIBS}/indexedmap
-    ${SOFA_INCLUDE_EXTLIBS}/libQGLViewer-2.3.3
+    ${SOFA_INCLUDE_EXTLIBS}/libQGLViewer-2.7.1
     ${SOFA_INCLUDE_EXTLIBS}/LML
     ${SOFA_INCLUDE_EXTLIBS}/metis
     ${SOFA_INCLUDE_EXTLIBS}/miniFlowVR/include
@@ -190,13 +189,12 @@ set(SOFA_INCLUDE_DIRS
 ##
 ## SOFA group the components by functionality and maturity state.
 ## 50 new groups are contained in 5 different categories:
-## BASE, COMMON, GENERAL, ADVANCED and MISC.
+## BASE, COMMON, GENERAL and MISC.
 ##
 ## 1- collect all library name to search in the SOFA_LIBS_NAME list splitted into 5 parts
 ##    * the SOFA LIBS BASE LIST
 ##    * the SOFA COMMON LIST
 ##    * THE SOFA GENERAL LIST
-##    * THE SOFA ADVANCED LIST
 ##    * THE SOFA MISC LIST
 ## 2- for each library :
 ##    * get it CMAKE_SOFA_LIB_NAME and it associate REAL_SOFA_LIB_NAME
@@ -230,7 +228,6 @@ list(APPEND SOFA_LIB_COMPONENT_NAME
     SofaComponentCommon       SOFA_LIB_COMPONENT_COMMON
     SofaComponentGeneral      SOFA_LIB_COMPONENT_GENERAL
     #SofaComponentMiscDev      SOFA_LIB_COMPONENT_MISC_DEV
-    SofaComponentAdvanced     SOFA_LIB_COMPONENT_ADVANCED
     #SofaComponentAdvancedDev  SOFA_LIB_COMPONENT_ADVANCED_DEV
     )
 list(LENGTH SOFA_LIB_COMPONENT_NAME sofaLibComponentList)
@@ -290,12 +287,9 @@ list(APPEND SOFA_LIB_ADVANCED_NAME
     #SofaAdvancedFem            SOFA_LIB_ADVANCED_FEM
     #SofaAdvancedInteraction    SOFA_LIB_ADVANCED_INTERACTION
     SofaEigen2Solver           SOFA_LIB_EIGEN2_SOLVER
-    SofaEulerianFluid          SOFA_LIB_EULERIAN_FUILD
     #SofaMjedFem                SOFA_LIB_MJED_FEM
     SofaNonUniformFem          SOFA_LIB_NON_UNIFORM_FEM
     #SofaNonUniformFemDev       SOFA_LIB_NON_UNIFORM_FEM_DEV
-    SofaSphFluid               SOFA_LIB_SPH_FUILD
-    SofaVolumetricData         SOFA_LIB_VOLUMETRIC_DATA
     )
 list(LENGTH SOFA_LIB_GENERAL_NAME sofaAdvancedLibList)
 math(EXPR passToMiscLib "${sofaAdvancedLibList}/2+${passToAdvancedLib}")
@@ -304,8 +298,6 @@ math(EXPR passToMiscLib "${sofaAdvancedLibList}/2+${passToAdvancedLib}")
 ## Put the name of the library SOFA MISC to search and put it associate CMakeName
 list(APPEND SOFA_LIB_MISC_NAME
     SofaMisc                  SOFA_LIB_MISC
-    SofaMiscCollision         SOFA_LIB_MISC_COLLISION
-    #SofaMiscCollisionDev      SOFA_LIB_MISC_COLLISION_DEV
     SofaMiscFem               SOFA_LIB_MISC_FEM
     #SofaMiscDev               SOFA_LIB_MISC_DEV
     #SofaMiscFemDev            SOFA_LIB_MISC_FEM_DEV

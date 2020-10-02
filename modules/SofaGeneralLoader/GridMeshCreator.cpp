@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,8 +36,6 @@ namespace loader
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using helper::vector;
-
-SOFA_DECL_CLASS(GridMeshCreator)
 
 int GridMeshCreatorClass = core::RegisterObject("Procedural creation of a two-dimensional mesh.")
         .add< GridMeshCreator >()
@@ -95,7 +93,6 @@ bool GridMeshCreator::load()
         for(unsigned x=0; x<numX; x++)
         {
             my_positions.push_back( Vector3(x * 1./(numX-1), y * 1./(numY-1), 0) );
-            //            cerr<<"GridMeshCreator::load, add point " << Vector3(i * 1./(numX-1), j * 1./(numY-1), 0) << endl;
         }
     }
 

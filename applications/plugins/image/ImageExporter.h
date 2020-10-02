@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -224,7 +224,7 @@ public:
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
-    Data< ImageTypes > image;
+    Data< ImageTypes > image; ///< image
 
     // transform data
     typedef SReal Real;
@@ -236,13 +236,9 @@ public:
     // output file
     sofa::core::objectmodel::DataFileName m_filename;
 
-    Data<unsigned int> exportEveryNbSteps;
-    Data<bool> exportAtBegin;
-    Data<bool> exportAtEnd;
-
-
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const ImageExporter<ImageTypes>* = NULL) { return ImageTypes::Name(); }
+    Data<unsigned int> exportEveryNbSteps; ///< export file only at specified number of steps (0=disable)
+    Data<bool> exportAtBegin; ///< export file at the initialization
+    Data<bool> exportAtEnd; ///< export file when the simulation is finished
 
     ImageExporter()	: Inherited()
         , image(initData(&image,ImageTypes(),"image","image"))
@@ -263,11 +259,11 @@ public:
         ImageExporterSpecialization<ImageTypes>::init( *this );
     }
 
-    virtual ~ImageExporter() {}
+    ~ImageExporter() override {}
 
-    virtual	void cleanup() 	{ if (exportAtEnd.getValue()) write();	}
+    	void cleanup() override { if (exportAtEnd.getValue()) write();	}
 
-    virtual void bwdInit()	{ if (exportAtBegin.getValue())	write(); }
+    void bwdInit() override { if (exportAtBegin.getValue())	write(); }
 
 protected:
 
@@ -278,7 +274,7 @@ protected:
     }
 
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
         {

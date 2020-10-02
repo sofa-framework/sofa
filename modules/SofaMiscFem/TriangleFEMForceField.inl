@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,16 +24,14 @@
 
 #include "TriangleFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <vector>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include "config.h"
-
-// #define DEBUG_TRIANGLEFEM
 
 namespace sofa
 {
@@ -49,23 +47,24 @@ namespace forcefield
 template <class DataTypes>
 TriangleFEMForceField<DataTypes>::
 TriangleFEMForceField()
-    : _mesh(NULL)
-    , _indexedElements(NULL)
+    : _indexedElements(nullptr)
     , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
+    , m_topology(nullptr)
     , method(LARGE)
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
-    , f_poisson(initData(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_young(initData(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
-    , f_thickness(initData(&f_thickness,(Real)1.,"thickness","Thickness of the elements"))
+    , f_poisson(initData(&f_poisson,Real(0.3),"poissonRatio","Poisson ratio in Hooke's law"))
+    , f_young(initData(&f_young,Real(1000.),"youngModulus","Young modulus in Hooke's law"))
+    , f_thickness(initData(&f_thickness,Real(1.),"thickness","Thickness of the elements"))
 //    , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , f_planeStrain(initData(&f_planeStrain,false,"planeStrain","Plane strain or plane stress assumption"))
+    , l_topology(initLink("topology", "link to the topology container"))    
 {}
 
 template <class DataTypes>
 TriangleFEMForceField<DataTypes>::~TriangleFEMForceField()
 {
-	f_poisson.setRequired(true);
-	f_young.setRequired(true);
+    f_poisson.setRequired(true);
+    f_young.setRequired(true);
 }
 
 
@@ -78,29 +77,45 @@ void TriangleFEMForceField<DataTypes>::init()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    //    serr<<"TriangleFEMForceField<DataTypes>::init(), node = "<<this->getContext()->getName()<<sendl;
-    _mesh = this->getContext()->getMeshTopology();
-
-    if( _mesh )
-        sout<<"TriangleFEMForceField<DataTypes>::init, mesh has " <<_mesh->getTriangles().size() <<" triangles and " << _mesh->getQuads().size() << " quads" << sendl;
-
-    if (_mesh==NULL || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
+    if (l_topology.empty())
     {
-        serr << "ERROR(TriangleFEMForceField): Need a MeshTopology with triangles or quads."<<sendl;
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    if (!_mesh->getTriangles().empty())
+
+    if (m_topology->getTriangles().empty() && m_topology->getNbQuads() <= 0)
     {
-        _indexedElements = & (_mesh->getTriangles());
+        msg_error() << "Need a MeshTopology with triangles or quads.";
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+    else
+    {
+        msg_info() << "TriangleFEMForceField<DataTypes>::init, mesh has " << m_topology->getTriangles().size() << " triangles and " << m_topology->getQuads().size() << " quads" << sendl;
+    }
+   
+    if (!m_topology->getTriangles().empty())
+    {
+        _indexedElements = & (m_topology->getTriangles());
     }
     else
     {
         sofa::core::topology::BaseMeshTopology::SeqTriangles* trias = new sofa::core::topology::BaseMeshTopology::SeqTriangles;
-        int nbcubes = _mesh->getNbQuads();
+        int nbcubes = m_topology->getNbQuads();
         trias->reserve(nbcubes*2);
         for (int i=0; i<nbcubes; i++)
         {
-            sofa::core::topology::BaseMeshTopology::Quad q = _mesh->getQuad(i);
+            sofa::core::topology::BaseMeshTopology::Quad q = m_topology->getQuad(i);
             trias->push_back(Element(q[0],q[1],q[2]));
             trias->push_back(Element(q[0],q[2],q[3]));
         }
@@ -211,10 +226,6 @@ void TriangleFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, cons
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplacement &J, Coord /*a*/, Coord b, Coord c )
 {
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::computeStrainDisplacement"<<sendl;
-#endif
-
     //    //Coord ab_cross_ac = cross(b, c);
     Real determinant = b[0] * c[1]; // Surface * 2
 
@@ -394,28 +405,15 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
     F[4] = /* J[4][0] * KJtD[0] + J[4][1] * KJtD[1] + */ J[4][2] * KJtD[2];
 
     F[5] = /* J[5][0] * KJtD[0] + */ J[5][1] * KJtD[1] /* + J[5][2] * KJtD[2] */ ;
-
-
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeForce, displacement = " << Depl << endl;
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeForce, strain = " << JtD << endl;
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeForce, stress = " << KJtD << endl;
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeForce, Force = " << F << endl;
 }
 
 
 /*
 ** SMALL DEFORMATION METHODS
 */
-
-
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::initSmall()
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::initSmall"<<sendl;
-#endif
-
     Transformation identity;
     identity[0][0]=identity[1][1]=identity[2][2]=1;
     identity[0][1]=identity[0][2]=0;
@@ -431,11 +429,6 @@ void TriangleFEMForceField<DataTypes>::initSmall()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, const VecCoord &p, Index elementIndex, bool implicit )
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::accumulateForceSmall"<<sendl;
-#endif
-
     Index a = (*_indexedElements)[elementIndex][0];
     Index b = (*_indexedElements)[elementIndex][1];
     Index c = (*_indexedElements)[elementIndex][2];
@@ -469,26 +462,9 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, const 
     f[c] += Coord( F[4], F[5], 0);
 }
 
-
-//template <class DataTypes>
-//void TriangleFEMForceField<DataTypes>::accumulateDampingSmall(VecCoord&, Index )
-//{
-
-//#ifdef DEBUG_TRIANGLEFEM
-//    sout << "TriangleFEMForceField::accumulateDampingSmall"<<sendl;
-//#endif
-
-//}
-
-
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::applyStiffnessSmall"<<sendl;
-#endif
-
     typename VecElement::const_iterator it;
     unsigned int i(0);
 
@@ -526,11 +502,6 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, 
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::initLarge()
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::initLarge"<<sendl;
-#endif
-
     _rotatedInitialElements.resize(_indexedElements->size());
 
     typename VecElement::const_iterator it;
@@ -567,11 +538,6 @@ void TriangleFEMForceField<DataTypes>::initLarge()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c)
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::computeRotationLarge"<<sendl;
-#endif
-
     // first vector on first edge
     // second vector in the plane of the two first edges
     // third vector orthogonal to first and second
@@ -604,11 +570,6 @@ void TriangleFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, 
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const VecCoord &p, Index elementIndex, bool implicit )
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::accumulateForceLarge"<<sendl;
-#endif
-
     // triangle vertex indices
     Index a = (*_indexedElements)[elementIndex][0];
     Index b = (*_indexedElements)[elementIndex][1];
@@ -661,21 +622,12 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const V
 //void TriangleFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Index )
 //{
 
-//#ifdef DEBUG_TRIANGLEFEM
-//    sout << "TriangleFEMForceField::accumulateDampingLarge"<<sendl;
-//#endif
-
 //}
 
 
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
 {
-
-#ifdef DEBUG_TRIANGLEFEM
-    sout << "TriangleFEMForceField::applyStiffnessLarge"<<sendl;
-#endif
-
     typename VecElement::const_iterator it;
     unsigned int i(0);
 
@@ -716,20 +668,20 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, 
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields())
         return;
-    //     if (!this->_object)
-    //         return;
+
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
+
+    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    glDisable(GL_LIGHTING);
-
-    glBegin(GL_TRIANGLES);
     typename VecElement::const_iterator it;
     for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it)
     {
@@ -737,18 +689,16 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         Index b = (*it)[1];
         Index c = (*it)[2];
 
-        glColor4f(0,1,0,1);
-        helper::gl::glVertexT(x[a]);
-        glColor4f(0,0.5,0.5,1);
-        helper::gl::glVertexT(x[b]);
-        glColor4f(0,0,1,1);
-        helper::gl::glVertexT(x[c]);
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0,1,0,1));
+        vertices.push_back(sofa::defaulttype::Vector3(x[a]));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
+        vertices.push_back(sofa::defaulttype::Vector3(x[b]));
+        colorVector.push_back(sofa::defaulttype::RGBAColor(0,0,1,1));
+        vertices.push_back(sofa::defaulttype::Vector3(x[c]));
     }
-    glEnd();
+    vparams->drawTool()->drawTriangles(vertices,colorVector);
 
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 
@@ -786,30 +736,18 @@ void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix( StiffnessM
 
     S = RR*Ke;
     SR = S*RRt;
-
-    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, strain-displacement  = " << endl << J << endl;
-    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, rotation  = " << endl << Rot << endl;
-    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, material stiffness = " << endl << K << endl;
-    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, in-plane stiffness = " << endl << JKJt << endl;
-    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, expanded stiffness = " << endl << Ke << endl;
-    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, rotated stiffness = " << endl << SR << endl;
-
 }
 
 
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
-    //    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, " << _indexedElements->size() << " elements" << endl<< endl;
-
     for(unsigned i=0; i< _indexedElements->size() ; i++)
     {
         StiffnessMatrix JKJt,RJKJtRt;
         computeElementStiffnessMatrix(JKJt, RJKJtRt, _materialsStiffnesses[i], _strainDisplacements[i], _rotations[i]);
         this->addToMatrix(mat,offset,(*_indexedElements)[i],RJKJtRt,-k);
     }
-
-    //    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, final matrix = " << endl << *mat << endl;
 }
 
 

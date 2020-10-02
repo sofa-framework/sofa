@@ -1,0 +1,4 @@
+# those scenes use shader (e.g. due to OglFluidModel), can't run on CI VM.
+ignore "OglFluidModel_SPH.scn"
+ignore "OglFluidModel_SPHParticles.scn"
+ignore "SPHParticleSink_obstacle.scn"

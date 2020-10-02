@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,7 +55,7 @@ class EndPoint;
   */
 class SOFA_GENERAL_MESH_COLLISION_API DSAPBox{
 public:
-    DSAPBox(Cube c,EndPoint * mi = 0x0,EndPoint * ma = 0x0) : cube(c),min(mi),max(ma){}
+    DSAPBox(Cube c,EndPoint * mi = nullptr,EndPoint * ma = nullptr) : cube(c),min(mi),max(ma){}
 
     void update(int axis,double alarmDist);
 
@@ -69,11 +69,7 @@ public:
 
     double squaredDistance(const DSAPBox & other,int axis)const;
 
-
-    inline void show()const{
-        std::cout<<"MIN "<<cube.minVect()<<std::endl;
-        std::cout<<"MAX "<<cube.maxVect()<<std::endl;
-    }
+    void show() const;
 
     Cube cube;
     EndPoint * min;
@@ -115,11 +111,11 @@ private:
       */
     void update();
 
-    Data<bool> bDraw;
+    Data<bool> bDraw; ///< enable/disable display of results
 
-    Data< helper::fixed_array<defaulttype::Vector3,2> > box;
+    Data< helper::fixed_array<defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
-    CubeModel::SPtr boxModel;
+    CubeCollisionModel::SPtr boxModel;
 
     std::vector<DSAPBox> _boxes;//boxes
     EndPointList _end_points;//end points of _boxes
@@ -134,31 +130,31 @@ private:
 protected:
     DirectSAP();
 
-    ~DirectSAP();
+    ~DirectSAP() override;
 
     std::vector<EndPoint*> _to_del;//EndPoint arrays to delete when deleting DirectSAP
 public:
     void setDraw(bool val) { bDraw.setValue(val); }
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    void addCollisionModel (core::CollisionModel *cm);
+    void addCollisionModel (core::CollisionModel *cm) override;
 
     /**
       *Unuseful methods because all is done in addCollisionModel
       */
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ){}
-    void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&){}
+    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ) override {}
+    void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&) override {}
 
-    virtual void endBroadPhase();
-    virtual void beginNarrowPhase();
+    void endBroadPhase() override;
+    void beginNarrowPhase() override;
 
 
     /* for debugging */
-    inline void draw(const core::visual::VisualParams*){}
+    void draw(const core::visual::VisualParams*) override {}
 
-    inline virtual bool needsDeepBoundingTree()const{return false;}
+    inline bool needsDeepBoundingTree()const override {return false;}
 };
 
 

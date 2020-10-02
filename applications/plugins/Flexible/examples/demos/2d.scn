@@ -7,7 +7,7 @@
 
   <Node name="Flexible 2D" >
     
-    <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+    <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
     
     <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="0 0 0" rotation="0 0 45 " scale="1 1 0" />

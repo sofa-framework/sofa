@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,68 +23,70 @@
 
 #include "Binding_Topology.h"
 #include "Binding_BaseObject.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::core::topology;
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 
-extern "C" PyObject * Topology_hasPos(PyObject *self, PyObject * /*args*/)
+static inline Topology* get_topology(PyObject* obj) {
+    return sofa::py::unwrap<Topology>(obj);
+}
+
+
+static PyObject * Topology_hasPos(PyObject *self, PyObject * /*args*/)
 {
-    Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
+    Topology* obj = get_topology( self );
     return PyBool_FromLong(obj->hasPos());
 }
 
-extern "C" PyObject * Topology_getNbPoints(PyObject *self, PyObject * /*args*/)
+static PyObject * Topology_getNbPoints(PyObject *self, PyObject * /*args*/)
 {
-    Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
+    Topology* obj = get_topology( self );
     return PyInt_FromLong(obj->getNbPoints());
 }
 
-extern "C" PyObject * Topology_setNbPoints(PyObject *self, PyObject * args)
+static PyObject * Topology_setNbPoints(PyObject *self, PyObject * args)
 {
-    Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
+    Topology* obj = get_topology( self );
     int nb;
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
-        PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     obj->setNbPoints(nb);
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Topology_getPX(PyObject *self, PyObject * args)
+static PyObject * Topology_getPX(PyObject *self, PyObject * args)
 {
-    Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
+    Topology* obj = get_topology( self );
     int i;
     if (!PyArg_ParseTuple(args, "i",&i))
     {
-        PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->getPX(i));
 }
 
-extern "C" PyObject * Topology_getPY(PyObject *self, PyObject * args)
+static PyObject * Topology_getPY(PyObject *self, PyObject * args)
 {
-    Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
+    Topology* obj = get_topology( self );
     int i;
     if (!PyArg_ParseTuple(args, "i",&i))
     {
-        PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->getPY(i));
 }
 
-extern "C" PyObject * Topology_getPZ(PyObject *self, PyObject * args)
+static PyObject * Topology_getPZ(PyObject *self, PyObject * args)
 {
-    Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
+    Topology* obj = get_topology( self );
     int i;
     if (!PyArg_ParseTuple(args, "i",&i))
     {
-        PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->getPZ(i));
 }

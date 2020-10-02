@@ -9,8 +9,9 @@
 // standard headers on some systems, you must include Python.h before any
 // standard headers are included."
 #if defined(_MSC_VER)
-// intrusive_ptr.hpp has to be ahead of python.h on windows to support debug compilation.
-#include <boost/intrusive_ptr.hpp>
+// intrusive_ptr.hpp has to be ahead of python.h on windows to support debug
+// compilation.
+#include <sofa/core/sptr.h>
 
 // undefine _DEBUG since we want to always link to the release version of
 // python and pyconfig.h automatically links debug version if _DEBUG is
@@ -22,11 +23,9 @@
 
 #endif
 
-#if defined(__APPLE__) && defined(__MACH__)
-#    include <Python/Python.h>
-#else
-#    include <Python.h>
-#endif
+
+#include <Python.h>
+
 
 #if defined(_MSC_VER)
 // redefine _DEBUG if it was undefed

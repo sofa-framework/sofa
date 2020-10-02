@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_H
 #include "config.h"
@@ -49,19 +46,15 @@ class LinearSpring
 {
 public:
     typedef T Real;
-    int     m1, m2;  ///< the two extremities of the spring: masses m1 and m2
-    Real  ks;      ///< spring stiffness
-    Real  kd;      ///< damping factor
-    Real  initpos; ///< rest length of the spring
-    bool elongationOnly; //only forbid elongation, not compression
+    int  m1, m2;            ///< the two extremities of the spring: masses m1 and m2
+    Real ks;                ///< spring stiffness
+    Real kd;                ///< damping factor
+    Real initpos;           ///< rest length of the spring
+    bool elongationOnly;    ///< only forbid elongation, not compression
+    bool enabled;           ///< false to disable this spring (i.e. broken)
 
-    LinearSpring(int m1=0, int m2=0, double ks=0.0, double kd=0.0, double initpos=0.0, bool noCompression=false)
-        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos), elongationOnly(noCompression)
-    {
-    }
-
-    LinearSpring(int m1, int m2, float ks, float kd=0, float initpos=0, bool noCompression=false)
-        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos), elongationOnly(noCompression)
+    LinearSpring(int m1=0, int m2=0, Real ks=0.0, Real kd=0.0, Real initpos=0.0, bool noCompression=false, bool enabled=true)
+        : m1(m1), m2(m2), ks(ks), kd(kd), initpos(initpos), elongationOnly(noCompression), enabled(enabled)
     {
     }
 
@@ -112,11 +105,13 @@ public:
 
     typedef LinearSpring<Real> Spring;
 
-    Data<SReal> ks;
-    Data<SReal> kd;
-    Data<float> showArrowSize;
-    Data<int> drawMode; //Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
-    Data<sofa::helper::vector<Spring> > springs;
+    Data<SReal> ks; ///< uniform stiffness for the all springs
+    Data<SReal> kd; ///< uniform damping for the all springs
+    Data<float> showArrowSize; ///< size of the axis
+    Data<int> drawMode;             ///Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
+    Data<sofa::helper::vector<Spring> > springs; ///< pairs of indices, stiffness, damping, rest length
+
+protected:
     core::objectmodel::DataFileName fileSprings;
 
 protected:
@@ -129,9 +124,8 @@ protected:
 
     virtual void addSpringForce(Real& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring);
 
-
-    SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=100.0, SReal _kd=5.0);
     SpringForceField(SReal _ks=100.0, SReal _kd=5.0);
+    SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=100.0, SReal _kd=5.0);
 
 public:
     bool load(const char *filename);
@@ -141,15 +135,15 @@ public:
 
     const sofa::helper::vector< Spring >& getSprings() const {return springs.getValue();}
 
-    virtual void reinit();
-    virtual void init();
+    void reinit() override;
+    void init() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2);
-    virtual void addDForce(const core::MechanicalParams*, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2 );
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2) override;
+    void addDForce(const core::MechanicalParams*, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2 ) override;
 
     // Make other overloaded version of getPotentialEnergy() to show up in subclass.
     using Inherit::getPotentialEnergy;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const;
+    SReal getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const override;
 
     using Inherit::addKToMatrix;
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/);
@@ -163,7 +157,7 @@ public:
     int getDrawMode() const {return drawMode.getValue();}
     void setDrawMode(int m) {drawMode.setValue(m);}
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     // -- Modifiers
 
@@ -197,36 +191,28 @@ public:
         springs.endEdit();
     }
 
-    virtual void updateForceMask();
+    void updateForceMask() override;
 
-    virtual void handleTopologyChange(core::topology::Topology *topo);
+    void handleTopologyChange(core::topology::Topology *topo) override;
 
     /// initialization to export kinetic, potential energy  and force intensity to gnuplot files format
-    virtual void initGnuplot(const std::string path);
+    void initGnuplot(const std::string path) override;
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    virtual void exportGnuplot(SReal time);
+    void exportGnuplot(SReal time) override;
 
     protected:
     /// stream to export Potential Energy to gnuplot files
     std::ofstream* m_gnuplotFileEnergy;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
 extern template class SOFA_DEFORMABLE_API LinearSpring<double>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1dTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_DEFORMABLE_API LinearSpring<float>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1fTypes>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6fTypes>;
-#endif
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3Types>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2Types>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1Types>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6Types>;
+extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace interactionforcefield

@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include <SofaTest/Sofa_test.h>
 
 #include <SofaPython/PythonFactory.h>
@@ -6,6 +8,10 @@
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
+
+#include <sofa/core/ObjectFactory.h>
+#include <SofaPython/PythonToSofa.inl>
+
 using sofa::simulation::Node;
 
 #include <sofa/core/ObjectFactory.h>
@@ -43,7 +49,6 @@ int ExternalComponent::nbcalls = 0;
 
 
 //////////////////// //////// Registering the new component in the factory /////////////////////////
-SOFA_DECL_CLASS (ExternalComponent)
 int ExternalComponentClass = core::RegisterObject ( "An dummy External Component" )
         .add<ExternalComponent>(true);
 }
@@ -53,9 +58,10 @@ int ExternalComponentClass = core::RegisterObject ( "An dummy External Component
 ////////////////////////////// Binding the new component in Python /////////////////////////////////
 SP_DECLARE_CLASS_TYPE(ExternalComponent)
 
-extern "C" PyObject * ExternalComponent_helloWorld(PyObject *self, PyObject * /*args*/)
+static PyObject * ExternalComponent_helloWorld(PyObject *self, PyObject * /*args*/)
 {
-    sofa::ExternalComponent* obj= down_cast<sofa::ExternalComponent>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object->toBaseObject());
+    sofa::ExternalComponent* obj = sofa::py::unwrap<sofa::ExternalComponent>(self);
+
     obj->helloWorld();
     Py_RETURN_NONE;
 }
@@ -80,6 +86,7 @@ protected:
     {
         /// ADDING new component in the python Factory
         /// of course its binding must be defined!
+        simulation::PythonEnvironment::gil lock(__func__);
         SP_ADD_CLASS_IN_FACTORY( ExternalComponent, sofa::ExternalComponent )
     }
 
@@ -114,7 +121,7 @@ protected:
                  "class NonCustomizedObject(object):   \n"
                  "   def __init__(self):               \n"
                  "        return None                  \n"
-                 "   def __str__(self):                \n"
+                 "   def __repr__(self):                \n"
                  "        return 'default'             \n"
                  "class CustomObject(object):           \n"
                  "   def getAsACreateObjectParameter(self):            \n"
@@ -166,7 +173,7 @@ std::vector<std::vector<std::string>> dataconversionvalues =
      {"'XX_'+first.findData('name').getLinkPath()", "XX_@/theFirst.name"},
      {"first.findData('name').getLinkPath()", "theFirst"},
      {"first.findData('name')", "theFirst"},
-     {"'XX_'+rootNode.getAsACreateObjectParameter()", "XX_@"},
+     {"'XX_'+rootNode.getAsACreateObjectParameter()", "XX_@/"},
      {"CustomObject()", "custom value"}
     } ;
 

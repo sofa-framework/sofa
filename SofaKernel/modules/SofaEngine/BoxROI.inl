@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,13 +22,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_BOXROI_INL
 #define SOFA_COMPONENT_ENGINE_BOXROI_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaEngine/BoxROI.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <limits>
@@ -82,6 +76,7 @@ BoxROI<DataTypes>::BoxROI()
     , d_computeTetrahedra( initData(&d_computeTetrahedra, true,"computeTetrahedra","If true, will compute tetrahedra list and index list inside the ROI. (default = true)") )
     , d_computeHexahedra( initData(&d_computeHexahedra, true,"computeHexahedra","If true, will compute hexahedra list and index list inside the ROI. (default = true)") )
     , d_computeQuad( initData(&d_computeQuad, true,"computeQuad","If true, will compute quad list and index list inside the ROI. (default = true)") )
+    , d_strict( initData(&d_strict, true,"strict","If true, an element is inside the box iif all of its nodes are inside. If False, only the center point of the element is checked. (default = true)") )
     , d_indices( initData(&d_indices,"indices","Indices of the points contained in the ROI") )
     , d_edgeIndices( initData(&d_edgeIndices,"edgeIndices","Indices of the edges contained in the ROI") )
     , d_triangleIndices( initData(&d_triangleIndices,"triangleIndices","Indices of the triangles contained in the ROI") )
@@ -126,12 +121,6 @@ BoxROI<DataTypes>::BoxROI()
     d_deprecatedX0.setDisplayed(false);
     d_deprecatedIsVisible.setDisplayed(false);
 
-    if(!d_alignedBoxes.isSet() && !d_orientedBoxes.isSet())
-    {
-        d_alignedBoxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
-        d_alignedBoxes.endEdit();
-    }
-
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
 }
@@ -174,7 +163,7 @@ void BoxROI<DataTypes>::init()
             }else{
                 msg_warning(this) << "No attribute 'rest_position' in component '" << getName() << "'.\n"
                                   << "The BoxROI component thus have no input and is thus deactivated.\n" ;
-                m_componentstate = ComponentState::Invalid ;
+                d_componentState.setValue(ComponentState::Invalid) ;
                 return ;
             }
         }
@@ -192,7 +181,7 @@ void BoxROI<DataTypes>::init()
                 }else{
                     msg_warning(this) << "No attribute 'position' in component '" << getName() << "'.\n"
                                       << "The BoxROI component thus have no input and is thus deactivated.\n" ;
-                    m_componentstate = ComponentState::Invalid ;
+                    d_componentState.setValue(ComponentState::Invalid) ;
                     return ;
                 }
             }
@@ -204,14 +193,14 @@ void BoxROI<DataTypes>::init()
                                         "To remove this error message you can either:\n"
                                         "   - to specifiy the DOF where to apply the BoxROI with the 'position' attribute.\n"
                                         "   - to add MechanicalObject or MeshLoader component before the BoxROI in the scene graph.\n";
-                    m_componentstate = ComponentState::Invalid ;
+                    d_componentState.setValue(ComponentState::Invalid) ;
                     return ;
                 }
 
                 BaseData* parent = mstate->findData("rest_position");
                 if(!parent){
                     dmsg_error(this) <<  "Unable to find a rest_position attribute in the MechanicalObject '" << mstate->getName() << "'";
-                    m_componentstate = ComponentState::Invalid ;
+                    d_componentState.setValue(ComponentState::Invalid) ;
                     return ;
                 }
                 d_X0.setParent(parent);
@@ -283,7 +272,7 @@ void BoxROI<DataTypes>::init()
                                  "To remove this message you can either: \n"
                                  "  - set value into one or more of the attributes 'edges', 'triangles', 'tetrahedra', 'hexahedra'. \n"
                                  "  - add a TopologyContainer and a BaseMeshTopology in the context of this object. \n";
-            m_componentstate = ComponentState::Invalid ;
+            d_componentState.setValue(ComponentState::Invalid) ;
             return ;
         }*/
     }
@@ -309,7 +298,7 @@ void BoxROI<DataTypes>::init()
     addOutput(&d_quadInROI);
     addOutput(&d_nbIndices);
 
-    m_componentstate = ComponentState::Valid ;
+    d_componentState.setValue(ComponentState::Valid) ;
 
     /// The following is a trick to force the initial selection of the element by the engine.
     bool tmp=d_doUpdate.getValue() ;
@@ -322,6 +311,12 @@ void BoxROI<DataTypes>::init()
 template <class DataTypes>
 void BoxROI<DataTypes>::reinit()
 {
+    if(!d_alignedBoxes.isSet() && !d_orientedBoxes.isSet())
+    {
+        d_alignedBoxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
+        d_alignedBoxes.endEdit();
+    }
+
     vector<Vec6>& alignedBoxes = *(d_alignedBoxes.beginEdit());
     if (!alignedBoxes.empty())
     {
@@ -457,6 +452,16 @@ bool BoxROI<DataTypes>::isEdgeInBoxes(const Edge& e)
 }
 
 template <class DataTypes>
+bool BoxROI<DataTypes>::isEdgeInBoxesStrict(const Edge& e)
+{
+    const VecCoord& x0 = d_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[e[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[e[1]]);
+
+    return isPointInBoxes(p0) && isPointInBoxes(p1);
+}
+
+template <class DataTypes>
 bool BoxROI<DataTypes>::isTriangleInBoxes(const Triangle& t)
 {
     const VecCoord& x0 = d_X0.getValue();
@@ -466,6 +471,17 @@ bool BoxROI<DataTypes>::isTriangleInBoxes(const Triangle& t)
     CPos c = (p2+p1+p0)/3.0;
 
     return (isPointInBoxes(c));
+}
+
+template <class DataTypes>
+bool BoxROI<DataTypes>::isTriangleInBoxesStrict(const Triangle& t)
+{
+    const VecCoord& x0 = d_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
+    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
+
+    return (isPointInBoxes(p0) && isPointInBoxes(p1) && isPointInBoxes(p2));
 }
 
 template <class DataTypes>
@@ -479,6 +495,18 @@ bool BoxROI<DataTypes>::isTetrahedronInBoxes(const Tetra &t)
     CPos c = (p3+p2+p1+p0)/4.0;
 
     return (isPointInBoxes(c));
+}
+
+template <class DataTypes>
+bool BoxROI<DataTypes>::isTetrahedronInBoxesStrict(const Tetra &t)
+{
+    const VecCoord& x0 = d_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
+    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
+    CPos p3 =  DataTypes::getCPos(x0[t[3]]);
+
+    return (isPointInBoxes(p0) && isPointInBoxes(p1) && isPointInBoxes(p2) && isPointInBoxes(p3));
 }
 
 template <class DataTypes>
@@ -499,6 +527,23 @@ bool BoxROI<DataTypes>::isHexahedronInBoxes(const Hexa &t)
 }
 
 template <class DataTypes>
+bool BoxROI<DataTypes>::isHexahedronInBoxesStrict(const Hexa &t)
+{
+    const VecCoord& x0 = d_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
+    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
+    CPos p3 =  DataTypes::getCPos(x0[t[3]]);
+    CPos p4 =  DataTypes::getCPos(x0[t[4]]);
+    CPos p5 =  DataTypes::getCPos(x0[t[5]]);
+    CPos p6 =  DataTypes::getCPos(x0[t[6]]);
+    CPos p7 =  DataTypes::getCPos(x0[t[7]]);
+
+    return (isPointInBoxes(p0) && isPointInBoxes(p1) && isPointInBoxes(p2) && isPointInBoxes(p3) &&
+            isPointInBoxes(p4) && isPointInBoxes(p5) && isPointInBoxes(p6) && isPointInBoxes(p7));
+}
+
+template <class DataTypes>
 bool BoxROI<DataTypes>::isQuadInBoxes(const Quad& q)
 {
     const VecCoord& x0 = d_X0.getValue();
@@ -509,157 +554,179 @@ bool BoxROI<DataTypes>::isQuadInBoxes(const Quad& q)
     CPos c = (p3+p2+p1+p0)/4.0;
 
     return (isPointInBoxes(c));
+}
 
+template <class DataTypes>
+bool BoxROI<DataTypes>::isQuadInBoxesStrict(const Quad& q)
+{
+    const VecCoord& x0 = d_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[q[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[q[1]]);
+    CPos p2 =  DataTypes::getCPos(x0[q[2]]);
+    CPos p3 =  DataTypes::getCPos(x0[q[3]]);
+
+    return (isPointInBoxes(p0) && isPointInBoxes(p1) && isPointInBoxes(p2) && isPointInBoxes(p3));
 }
 
 // The update method is called when the engine is marked as dirty.
 template <class DataTypes>
-void BoxROI<DataTypes>::update()
+void BoxROI<DataTypes>::doUpdate()
 {
-    if(m_componentstate==ComponentState::Invalid){
-        cleanDirty() ;
+    if(d_componentState.getValue() == ComponentState::Invalid){
         return ;
     }
 
-    if(!d_doUpdate.getValue()){
-        cleanDirty() ;
-        return ;
-    }
 
-    const vector<Vec6>&  alignedBoxes  = d_alignedBoxes.getValue();
-    const vector<Vec10>& orientedBoxes = d_orientedBoxes.getValue();
+    if(d_doUpdate.getValue()){
 
-    if (alignedBoxes.empty() && orientedBoxes.empty()) { cleanDirty(); return; }
+        // Check whether an element can partially be inside the box or if all of its nodes must be inside
+        bool strict = d_strict.getValue();
 
+        // Write accessor for topological element indices in BOX
+        SetIndex& indices = *d_indices.beginWriteOnly();
+        SetIndex& edgeIndices = *d_edgeIndices.beginWriteOnly();
+        SetIndex& triangleIndices = *d_triangleIndices.beginWriteOnly();
+        SetIndex& tetrahedronIndices = *d_tetrahedronIndices.beginWriteOnly();
+        SetIndex& hexahedronIndices = *d_hexahedronIndices.beginWriteOnly();
+        SetIndex& quadIndices = *d_quadIndices.beginWriteOnly();
 
-    // Read accessor for input topology
-    ReadAccessor< Data<vector<Edge> > > edges = d_edges;
-    ReadAccessor< Data<vector<Triangle> > > triangles = d_triangles;
-    ReadAccessor< Data<vector<Tetra> > > tetrahedra = d_tetrahedra;
-    ReadAccessor< Data<vector<Hexa> > > hexahedra = d_hexahedra;
-    ReadAccessor< Data<vector<Quad> > > quad = d_quad;
+        // Write accessor for toplogical element in BOX
+        WriteOnlyAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
+        WriteOnlyAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
+        WriteOnlyAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
+        WriteOnlyAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
+        WriteOnlyAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
+        WriteOnlyAccessor< Data<vector<Quad> > > quadInROI = d_quadInROI;
 
-    const VecCoord& x0 = d_X0.getValue();
-
-    cleanDirty();
-
-    // Write accessor for topological element indices in BOX
-    SetIndex& indices = *d_indices.beginWriteOnly();
-    SetIndex& edgeIndices = *d_edgeIndices.beginWriteOnly();
-    SetIndex& triangleIndices = *d_triangleIndices.beginWriteOnly();
-    SetIndex& tetrahedronIndices = *d_tetrahedronIndices.beginWriteOnly();
-    SetIndex& hexahedronIndices = *d_hexahedronIndices.beginWriteOnly();
-    SetIndex& quadIndices = *d_quadIndices.beginWriteOnly();
-
-    // Write accessor for toplogical element in BOX
-    WriteOnlyAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
-    WriteOnlyAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
-    WriteOnlyAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
-    WriteOnlyAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
-    WriteOnlyAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
-    WriteOnlyAccessor< Data<vector<Quad> > > quadInROI = d_quadInROI;
+        // Clear lists
+        indices.clear();
+        edgeIndices.clear();
+        triangleIndices.clear();
+        tetrahedronIndices.clear();
+        hexahedronIndices.clear();
+        quadIndices.clear();
 
 
-    // Clear lists
-    indices.clear();
-    edgeIndices.clear();
-    triangleIndices.clear();
-    tetrahedronIndices.clear();
-    hexahedronIndices.clear();
-    quadIndices.clear();
+        pointsInROI.clear();
+        edgesInROI.clear();
+        trianglesInROI.clear();
+        tetrahedraInROI.clear();
+        hexahedraInROI.clear();
+        quadInROI.clear();
 
 
-    pointsInROI.clear();
-    edgesInROI.clear();
-    trianglesInROI.clear();
-    tetrahedraInROI.clear();
-    hexahedraInROI.clear();
-    quadInROI.clear();
-
-
-    //Points
-    for( unsigned i=0; i<x0.size(); ++i )
-    {
-        if (isPointInBoxes(i))
+        if (d_X0.getValue().size() == 0)
         {
-            indices.push_back(i);
-            pointsInROI.push_back(x0[i]);
+            msg_warning() << "No rest position yet defined. Box might not work properly. \n"
+                            "This may be caused by an early call of init() on the box before  \n"
+                            "the mesh or the MechanicalObject of the node was initialized too";
+            return;
         }
-    }
 
-    //Edges
-    if (d_computeEdges.getValue())
-    {
-        for(unsigned int i=0 ; i<edges.size() ; i++)
+        const vector<Vec6>&  alignedBoxes  = d_alignedBoxes.getValue();
+        const vector<Vec10>& orientedBoxes = d_orientedBoxes.getValue();
+
+        if (alignedBoxes.empty() && orientedBoxes.empty()) { return; }
+
+
+        // Read accessor for input topology
+        ReadAccessor< Data<vector<Edge> > > edges = d_edges;
+        ReadAccessor< Data<vector<Triangle> > > triangles = d_triangles;
+        ReadAccessor< Data<vector<Tetra> > > tetrahedra = d_tetrahedra;
+        ReadAccessor< Data<vector<Hexa> > > hexahedra = d_hexahedra;
+        ReadAccessor< Data<vector<Quad> > > quad = d_quad;
+
+        const VecCoord& x0 = d_X0.getValue();
+
+
+        //Points
+        for( unsigned i=0; i<x0.size(); ++i )
         {
-            Edge e = edges[i];
-            if (isEdgeInBoxes(e))
+            if (isPointInBoxes(i))
             {
-                edgeIndices.push_back(i);
-                edgesInROI.push_back(e);
+                indices.push_back(i);
+                pointsInROI.push_back(x0[i]);
             }
         }
-    }
 
-    //Triangles
-    if (d_computeTriangles.getValue())
-    {
-        for(unsigned int i=0 ; i<triangles.size() ; i++)
+        //Edges
+        if (d_computeEdges.getValue())
         {
-            Triangle t = triangles[i];
-            if (isTriangleInBoxes(t))
+            for(unsigned int i=0 ; i<edges.size() ; i++)
             {
-                triangleIndices.push_back(i);
-                trianglesInROI.push_back(t);
+                Edge e = edges[i];
+                bool is_in_box = (strict) ? isEdgeInBoxesStrict(e) : isEdgeInBoxes(e);
+                if (is_in_box)
+                {
+                    edgeIndices.push_back(i);
+                    edgesInROI.push_back(e);
+                }
             }
         }
-    }
 
-    //Tetrahedra
-    if (d_computeTetrahedra.getValue())
-    {
-        for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
+        //Triangles
+        if (d_computeTriangles.getValue())
         {
-            Tetra t = tetrahedra[i];
-            if (isTetrahedronInBoxes(t))
+            for(unsigned int i=0 ; i<triangles.size() ; i++)
             {
-                tetrahedronIndices.push_back(i);
-                tetrahedraInROI.push_back(t);
+                Triangle t = triangles[i];
+                bool is_in_box = (strict) ? isTriangleInBoxesStrict(t) : isTriangleInBoxes(t);
+                if (is_in_box)
+                {
+                    triangleIndices.push_back(i);
+                    trianglesInROI.push_back(t);
+                }
             }
         }
-    }
 
-    //Hexahedra
-    if (d_computeHexahedra.getValue())
-    {
-        for(unsigned int i=0 ; i<hexahedra.size() ; i++)
+        //Tetrahedra
+        if (d_computeTetrahedra.getValue())
         {
-            Hexa t = hexahedra[i];
-            if (isHexahedronInBoxes(t))
+            for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
             {
-                hexahedronIndices.push_back(i);
-                hexahedraInROI.push_back(t);
-                break;
+                Tetra t = tetrahedra[i];
+                bool is_in_box = (strict) ? isTetrahedronInBoxesStrict(t) : isTetrahedronInBoxes(t);
+                if (is_in_box)
+                {
+                    tetrahedronIndices.push_back(i);
+                    tetrahedraInROI.push_back(t);
+                }
             }
         }
-    }
 
-    //Quads
-    if (d_computeQuad.getValue())
-    {
-        for(unsigned int i=0 ; i<quad.size() ; i++)
+        //Hexahedra
+        if (d_computeHexahedra.getValue())
         {
-            Quad q = quad[i];
-            if (isQuadInBoxes(q))
+            for(unsigned int i=0 ; i<hexahedra.size() ; i++)
             {
-                quadIndices.push_back(i);
-                quadInROI.push_back(q);
+                Hexa t = hexahedra[i];
+                bool is_in_box = (strict) ? isHexahedronInBoxesStrict(t) : isHexahedronInBoxes(t);
+                if (is_in_box)
+                {
+                    hexahedronIndices.push_back(i);
+                    hexahedraInROI.push_back(t);
+                }
             }
         }
+
+        //Quads
+        if (d_computeQuad.getValue())
+        {
+            for(unsigned int i=0 ; i<quad.size() ; i++)
+            {
+                Quad q = quad[i];
+                bool is_in_box = (strict) ? isQuadInBoxesStrict(q) : isQuadInBoxes(q);
+                if (is_in_box)
+                {
+                    quadIndices.push_back(i);
+                    quadInROI.push_back(q);
+                }
+            }
+        }
+
+
+        d_nbIndices.setValue(indices.size());
     }
-
-
-    d_nbIndices.setValue(indices.size());
 
     d_indices.endEdit();
     d_edgeIndices.endEdit();
@@ -674,7 +741,7 @@ void BoxROI<DataTypes>::update()
 template <class DataTypes>
 void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(m_componentstate==ComponentState::Invalid)
+    if(d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
     if (!vparams->displayFlags().getShowBehaviorModels() && !this->d_drawSize.getValue())
@@ -976,17 +1043,19 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 template <class DataTypes>
 void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if( onlyVisible && !d_drawBoxes.getValue() )
         return;
 
-    if(m_componentstate==ComponentState::Invalid)
+    if(d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
-    const vector<Vec6>&  alignedBoxes =d_alignedBoxes.getValue(params);
-    const vector<Vec10>& orientedBoxes=d_orientedBoxes.getValue(params);
+    const vector<Vec6>&  alignedBoxes =d_alignedBoxes.getValue();
+    const vector<Vec10>& orientedBoxes=d_orientedBoxes.getValue();
 
     const Real max_real = std::numeric_limits<Real>::max();
-    const Real min_real = std::numeric_limits<Real>::min();
+    const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
@@ -1020,7 +1089,7 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
         }
     }
 
-    this->f_bbox.setValue(params,TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 
@@ -1051,11 +1120,7 @@ void BoxROI<DataTypes>::getPointsFromOrientedBox(const Vec10& box, vector<Vec3>&
 template<class DataTypes>
 void BoxROI<DataTypes>::handleEvent(Event *event)
 {
-    if (AnimateBeginEvent::checkEventType(event))
-    {
-        setDirtyValue();
-        update();
-    }
+    SOFA_UNUSED(event);
 }
 
 } // namespace boxroi

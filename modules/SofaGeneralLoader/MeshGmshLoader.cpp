@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,6 +23,9 @@
 #include <SofaGeneralLoader/MeshGmshLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
+#include <fstream>
+#include <sofa/helper/io/Mesh.h>
+
 
 namespace sofa
 {
@@ -37,16 +40,12 @@ using namespace sofa::defaulttype;
 using std::string;
 using std::stringstream;
 
-SOFA_DECL_CLASS(MeshGmshLoader)
-
 int MeshGmshLoaderClass = core::RegisterObject("Specific mesh loader for Gmsh file format.")
         .add< MeshGmshLoader >()
         ;
 
 bool MeshGmshLoader::load()
 {
-    sout << "Loading Gmsh file: " << m_filename << sendl;
-
     string cmd;
     bool fileRead = false;
     unsigned int gmshFormat = 0;
@@ -67,7 +66,7 @@ bool MeshGmshLoader::load()
     {
         gmshFormat = 2;
         string line;
-        std::getline(file, line); // we don't care about this line (2 0 8)
+        std::getline(file, line); // we don't need this line (2 0 8)
         std::getline(file, cmd); // end Version
         std::istringstream endMeshReader(cmd);
         string endMesh;
@@ -75,7 +74,7 @@ bool MeshGmshLoader::load()
 
         if (endMesh != string("$EndMeshFormat") ) // it should end with $EndMeshFormat
         {
-            serr << "Closing File" << sendl;
+            msg_error() << "No $EndMeshFormat flag found at the end of the file. Closing File";
             file.close();
             return false;
         }
@@ -89,18 +88,28 @@ bool MeshGmshLoader::load()
         gmshFormat = 1;
     }
 
-
     std::istringstream nodeReader(cmd);
     string node;
     nodeReader >> node;
     // -- Reading file
     if (node == "$NOD" || node == "$Nodes") // Gmsh format
     {
-        fileRead = readGmsh(file, gmshFormat);
+        // By default for Gmsh file format, create subElements except if specified not to.
+        if (!d_createSubelements.isSet())
+            d_createSubelements.setValue(true);
+
+        // TODO 2018-04-06: temporary change to unify loader API
+        //fileRead = readGmsh(file, gmshFormat);
+        (void)gmshFormat;
+        file.close();
+        helper::io::Mesh* _mesh = helper::io::Mesh::Create("gmsh", filename);
+
+        copyMeshToData(_mesh);
+        delete _mesh;
     }
     else //if it enter this "else", it means there is a problem before in the factory or in canLoad()
     {
-        serr << "Error: MeshGmshLoader: File '" << m_filename << "' finally appears not to be a Gmsh file." << sendl;
+        msg_error() << "File '" << m_filename << "' finally appears not to be a Gmsh file.";
         file.close();
         return false;
     }
@@ -133,7 +142,7 @@ void MeshGmshLoader::normalizeGroup(helper::vector< sofa::core::loader::Primitiv
 
 bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
 {
-    sout << "Reading Gmsh file: " << gmshFormat << sendl;
+    dmsg_info() << "Reading Gmsh file: " << gmshFormat;
 
     string cmd;
 
@@ -170,7 +179,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     file >> cmd;
     if (cmd != "$ENDNOD" && cmd != "$EndNodes")
     {
-        serr << "Error: MeshGmshLoader: '$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'" << sendl;
+        msg_error() << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'";
         file.close();
         return false;
     }
@@ -180,7 +189,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     file >> cmd;
     if (cmd != "$ELM" && cmd != "$Elements")
     {
-        serr << "Error: MeshGmshLoader: '$ELM' or '$Elements' expected, found '" << cmd << "'" << sendl;
+        msg_error() << "'$ELM' or '$Elements' expected, found '" << cmd << "'";
         file.close();
         return false;
     }
@@ -236,7 +245,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             case 3: // Quad
                 nnodes = 4;
                 break;
-            case 4: // Tetra                
+            case 4: // Tetra
                 nnodes = 4;
                 break;
             case 5: // Hexa
@@ -250,14 +259,15 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                 break;
             case 11: // Quadratic Tetrahedron
                 nnodes = 10;
-                break; 
+                break;
             default:
-                serr << "Error: MeshGmshLoader: Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found." << sendl;
+                msg_warning() << "Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found.";
                 nnodes = 0;
             }
         }
-        //store real index of node and not line index
 
+
+        //store real index of node and not line index
         helper::vector <unsigned int> nodes;
         nodes.resize (nnodes);
         const unsigned int edgesInQuadraticTriangle[3][2] = {{0,1}, {1,2}, {2,0}};
@@ -269,7 +279,6 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             int t = 0;
             file >> t;
             nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
-            //sout << "nodes[" << n << "] = " << nodes[n] << sendl;
         }
 
         switch (etype)
@@ -386,19 +395,10 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     file >> cmd;
     if (cmd != "$ENDELM" && cmd!="$EndElements")
     {
-        serr << "Error: MeshGmshLoader: '$ENDELM' or '$EndElements' expected, found '" << cmd << "'" << sendl;
+        msg_error() << "'$ENDELM' or '$EndElements' expected, found '" << cmd << "'";
         file.close();
         return false;
     }
-
-    // sout << "Loading topology complete:";
-    // if (npoints>0) sout << ' ' << npoints << " points";
-    // if (nlines>0)  sout << ' ' << nlines  << " lines";
-    // if (ntris>0)   sout << ' ' << ntris   << " triangles";
-    // if (nquads>0)  sout << ' ' << nquads  << " quads";
-    // if (ntetrahedra>0) sout << ' ' << ntetrahedra << " tetrahedra";
-    // if (ncubes>0)  sout << ' ' << ncubes  << " cubes";
-    // sout << sendl;
 
     file.close();
     return true;

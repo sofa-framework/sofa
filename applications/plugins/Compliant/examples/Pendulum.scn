@@ -15,19 +15,19 @@
 		<MinresSolver precision="0" relative="false" iterations="100" />
 		
 		<!-- main dofs -->
-		<MechanicalObject template="Rigid" name="arbDOF"  position="-0.5 0 0 0 0 0 1 0 0 0 0 0 0 1"  showObject="1" />
+		<MechanicalObject template="Rigid3d" name="arbDOF"  position="-0.5 0 0 0 0 0 1 0 0 0 0 0 0 1"  showObject="1" />
 		<!-- second is fixed -->
 		<FixedConstraint indices="1" />
 		
 		<!-- mass properties (same for all the dofs as we don't care about the second one)-->
-		<RigidMass template="Rigid" 
+		<RigidMass template="Rigid3d" 
 							 mass = "15.118914645401" 
 							 inertia = "0.0047246608266878 1.2622718841968 1.2622718841968" />
 		
 		
 		<!-- define joints w.r.t main dofs -->
 		<Node name="joints" >
-			<MechanicalObject template="Rigid" name="mObject5"  position="0 0 0 0 0 0 1 0 0 0 0 0 0 1"  />
+			<MechanicalObject template="Rigid3d" name="mObject5"  position="0 0 0 0 0 0 1 0 0 0 0 0 0 1"  />
 			
 			<!-- this is similar to RigidRigidMapping, but uses assembled
 			     mapping matrices. source is filled as a list of (id rigid_offset) -->

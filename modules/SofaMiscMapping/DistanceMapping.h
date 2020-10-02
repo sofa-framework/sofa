@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -95,35 +95,40 @@ public:
     Data< defaulttype::RGBAColor > d_color;         ///< drawing color
     Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
-    virtual void init();
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<DistanceMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
+
+
+    void init() override;
 
     using Inherit::apply;
 
-    virtual void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
+    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in) override;
 
-    virtual void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
+    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in) override;
 
-    virtual void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in);
+    void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in) override;
 
-    virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in);
+    void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
+    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ();
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    const sofa::defaulttype::BaseMatrix* getJ() override;
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
-    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce );
-    virtual const defaulttype::BaseMatrix* getK();
+    void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
+    const defaulttype::BaseMatrix* getK() override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void updateForceMask();
+    void updateForceMask() override;
 
 protected:
     DistanceMapping();
     virtual ~DistanceMapping();
 
-    topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
+    topology::EdgeSetTopologyContainer* m_edgeContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                               ///< Assembled geometric stiffness matrix
@@ -190,6 +195,10 @@ public:
     Data< helper::vector<defaulttype::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
     Data< unsigned >                           d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<DistanceMultiMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
+
     // Append particle of given index within the given model to the subset.
     void addPoint(const core::BaseState* fromModel, int index);
     // Append particle of given index within the given model to the subset.
@@ -197,62 +206,68 @@ public:
 
 
 
-    virtual void init();
+    void init() override;
 
-    virtual void apply(const core::MechanicalParams *mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
+    void apply(const core::MechanicalParams *mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos) override
     {
+        SOFA_UNUSED(mparams);
+
         //Not optimized at all...
         helper::vector<OutVecCoord*> vecOutPos;
         for(unsigned int i=0; i<dataVecOutPos.size(); i++)
-            vecOutPos.push_back(dataVecOutPos[i]->beginEdit(mparams));
+            vecOutPos.push_back(dataVecOutPos[i]->beginEdit());
 
         helper::vector<const InVecCoord*> vecInPos;
         for(unsigned int i=0; i<dataVecInPos.size(); i++)
-            vecInPos.push_back(&dataVecInPos[i]->getValue(mparams));
+            vecInPos.push_back(&dataVecInPos[i]->getValue());
 
         this->apply(vecOutPos, vecInPos);
 
         //Really Not optimized at all...
         for(unsigned int i=0; i<dataVecOutPos.size(); i++)
-            dataVecOutPos[i]->endEdit(mparams);
+            dataVecOutPos[i]->endEdit();
 
     }
 
-    virtual void applyJ(const core::MechanicalParams *mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
+    void applyJ(const core::MechanicalParams *mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel) override
     {
+        SOFA_UNUSED(mparams);
+
         //Not optimized at all...
         helper::vector<OutVecDeriv*> vecOutVel;
         for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-            vecOutVel.push_back(dataVecOutVel[i]->beginEdit(mparams));
+            vecOutVel.push_back(dataVecOutVel[i]->beginEdit());
 
         helper::vector<const InVecDeriv*> vecInVel;
         for(unsigned int i=0; i<dataVecInVel.size(); i++)
-            vecInVel.push_back(&dataVecInVel[i]->getValue(mparams));
+            vecInVel.push_back(&dataVecInVel[i]->getValue());
 
         this->applyJ(vecOutVel, vecInVel);
 
         //Really Not optimized at all...
         for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-            dataVecOutVel[i]->endEdit(mparams);
+            dataVecOutVel[i]->endEdit();
 
     }
 
-    virtual void applyJT(const core::MechanicalParams *mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+    void applyJT(const core::MechanicalParams *mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override
     {
+        SOFA_UNUSED(mparams);
+
         //Not optimized at all...
         helper::vector<InVecDeriv*> vecOutForce;
         for(unsigned int i=0; i<dataVecOutForce.size(); i++)
-            vecOutForce.push_back(dataVecOutForce[i]->beginEdit(mparams));
+            vecOutForce.push_back(dataVecOutForce[i]->beginEdit());
 
         helper::vector<const OutVecDeriv*> vecInForce;
         for(unsigned int i=0; i<dataVecInForce.size(); i++)
-            vecInForce.push_back(&dataVecInForce[i]->getValue(mparams));
+            vecInForce.push_back(&dataVecInForce[i]->getValue());
 
         this->applyJT(vecOutForce, vecInForce);
 
         //Really Not optimized at all...
         for(unsigned int i=0; i<dataVecOutForce.size(); i++)
-            dataVecOutForce[i]->endEdit(mparams);
+            dataVecOutForce[i]->endEdit();
 
     }
 
@@ -263,23 +278,23 @@ public:
     virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
     virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
     virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
-    virtual void applyJT( const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) {}
-    virtual void applyDJT(const core::MechanicalParams*, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce);
+    void applyJT( const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) override {}
+    void applyDJT(const core::MechanicalParams*, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override;
 
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
-    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce );
-    virtual const defaulttype::BaseMatrix* getK();
+    void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
+    const defaulttype::BaseMatrix* getK() override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void updateForceMask();
+    void updateForceMask() override;
 
 protected:
     DistanceMultiMapping();
     virtual ~DistanceMultiMapping();
 
-    topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
+    topology::EdgeSetTopologyContainer* m_edgeContainer;  ///< where the edges are defined
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     helper::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
     helper::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
@@ -317,19 +332,12 @@ private:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DistanceMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Rigid3dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Rigid3dTypes, defaulttype::Vec1dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Rigid3fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Rigid3fTypes, defaulttype::Vec1fTypes >;
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_DistanceMapping_CPP)
+extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
+extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
+
 
 #endif
 

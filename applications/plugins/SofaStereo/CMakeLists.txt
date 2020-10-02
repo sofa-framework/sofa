@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaStereo)
 
 set(SOFASTEREO_MAJOR_VERSION 0)
@@ -27,13 +27,11 @@ set(SOURCE_FILES
 
 find_package(SofaFramework REQUIRED)
 find_package(SofaGeneral REQUIRED)
+find_package(SofaOpenglVisual REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PLUGIN_STEREO")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFASTEREO_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 target_link_libraries(${PROJECT_NAME} SofaCore SofaOpenglVisual)
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package(SofaStereo ${SOFASTEREO_VERSION} ${PROJECT_NAME} SofaStereo)

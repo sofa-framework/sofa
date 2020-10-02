@@ -1,0 +1,121 @@
+Node : {
+    name : "root"
+
+    TestResult : {
+        name : "result"
+        result : "Success"
+    }
+
+    OglModel: {
+        name : "valid0"
+    }
+
+    OglModel: {
+        name : str("ValidName")
+    }
+
+    OglModel: {
+        name : 1.0
+    }
+
+    OglModel: {
+        name : "valid1"
+        Python : '''print("PRINT-1")'''
+    }
+
+    OglModel : {
+        name : "valid2"
+        name : "file1"
+    }
+
+    OglModel : {
+        name : "valid3"
+        name : str("filemesh")
+    }
+
+    OglModel : {
+        name : "properties1"
+        properties : {
+            p0 : "prop0"
+            p1 : "prop1"
+            p2 : "prop2"
+        }
+    }
+
+    OglModel: {
+        name : "valid5"
+        something : '''X'''
+    }
+
+    OglModel : {
+        name : "invalidDupliatedProperties1"
+        properties : {
+            p0 : "prop0"
+            p1 : "prop1"
+            p2 : "prop2"
+        }
+        properties : {
+            p3 : "prop0"
+            p4 : "prop1"
+            p5 : "prop2"
+        }
+    }
+
+    OglModel : {
+        name : "invalid"
+        fileMesh : {}
+    }
+
+    OglModel : {
+        name : "invalid"
+        fileMesh : []
+    }
+
+    OglModel : {
+        name : "invalid"
+        fileMesh : []
+    }
+
+    ## Test when a non existing data field is used
+    OglModel: {
+        name : "invalid3"
+        something : [1.0]
+    }
+
+    OglModel: {
+        name : "invalid4"
+        something : []
+    }
+
+    OglModel: {
+        name : "invalid5"
+        something : {"a":"b"}
+    }
+
+    OglModel: {
+        name : "invalid6"
+        something : {}
+    }
+
+    OglModel: {
+        name : "invalid6"
+        Node : {
+            name : "error"
+        }
+    }
+
+    OglModel: {
+        name : "invalid6"
+        Node : {
+            name : "error"
+        }
+    }
+
+    Python : '''
+             for node in root.getChildren():
+                if node.name.find("invalid"):
+                    root.getObject("result").result="Fail"
+             '''
+
+}
+

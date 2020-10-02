@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,9 +24,9 @@
 
 #include <SofaMiscFem/TetrahedralTensorMassForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -92,9 +92,9 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
         {
 
             /// get a reference on the edge set of the ith added tetrahedron
-            const EdgesInTetrahedron &te= ff->_topology->getEdgesInTetrahedron(tetrahedronAdded[i]);
+            const EdgesInTetrahedron &te= ff->m_topology->getEdgesInTetrahedron(tetrahedronAdded[i]);
             ///get a reference on the vertex set of the ith added tetrahedron
-            const Tetrahedron &t= ff->_topology->getTetrahedron(tetrahedronAdded[i]);
+            const Tetrahedron &t= ff->m_topology->getTetrahedron(tetrahedronAdded[i]);
             // store points
             for(j=0; j<4; ++j)
                 point[j]=(restPosition)[t[j]];
@@ -116,8 +116,8 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
             for(j=0; j<6; ++j)
             {
                 /// local indices of the edge
-                k = ff->_topology->getLocalEdgesInTetrahedron(j)[0];
-                l = ff->_topology->getLocalEdgesInTetrahedron(j)[1];
+                k = ff->m_topology->getLocalEdgesInTetrahedron(j)[0];
+                l = ff->m_topology->getLocalEdgesInTetrahedron(j)[1];
 
                 Mat3 &m=edgeData[te[j]].DfDx;
 
@@ -126,7 +126,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
                 // print if obtuse tetrahedron along that edge
                 msg_info_when(val1<0, ff) << "negative cotangent["<<tetrahedronAdded[i]<<"]["<<j<<"]" ;
 
-                if (ff->_topology->getEdge(te[j])[0]!=t[l])
+                if (ff->m_topology->getEdge(te[j])[0]!=t[l])
                 {
                     for (u=0; u<3; ++u)
                     {
@@ -178,9 +178,9 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
         {
 
             /// get a reference on the edge set of the ith added tetrahedron
-            const EdgesInTetrahedron &te= ff->_topology->getEdgesInTetrahedron(tetrahedronRemoved[i]);
+            const EdgesInTetrahedron &te= ff->m_topology->getEdgesInTetrahedron(tetrahedronRemoved[i]);
             ///get a reference on the vertex set of the ith added tetrahedron
-            const Tetrahedron &t= ff->_topology->getTetrahedron(tetrahedronRemoved[i]);
+            const Tetrahedron &t= ff->m_topology->getTetrahedron(tetrahedronRemoved[i]);
             // store points
             for(j=0; j<4; ++j)
                 point[j]=(restPosition)[t[j]];
@@ -202,8 +202,8 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
             for(j=0; j<6; ++j)
             {
                 /// local indices of the edge
-                k = ff->_topology->getLocalEdgesInTetrahedron(j)[0];
-                l = ff->_topology->getLocalEdgesInTetrahedron(j)[1];
+                k = ff->m_topology->getLocalEdgesInTetrahedron(j)[0];
+                l = ff->m_topology->getLocalEdgesInTetrahedron(j)[1];
 
                 Mat3 &m=edgeData[te[j]].DfDx;
 
@@ -211,7 +211,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
                 // print if obtuse tetrahedron along that edge
                 msg_info_when(val1<0, ff) <<"negative cotangent["<<tetrahedronRemoved[i]<<"]["<<j<<"]" ;
 
-                if (ff->_topology->getEdge(te[j])[0]!=t[l])
+                if (ff->m_topology->getEdge(te[j])[0]!=t[l])
                 {
                     for (u=0; u<3; ++u)
                     {
@@ -269,7 +269,9 @@ template <class DataTypes> TetrahedralTensorMassForceField<DataTypes>::Tetrahedr
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
     , lambda(0)
     , mu(0)
+    , l_topology(initLink("topology", "link to the topology container"))
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , m_topology(nullptr)
 {
     edgeHandler = new TetrahedralTMEdgeHandler(this, &edgeInfo);
 }
@@ -283,17 +285,30 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
 {
     this->Inherited::init();
 
-    _topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    edgeInfo.createTopologicalEngine(_topology,edgeHandler);
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    edgeInfo.createTopologicalEngine(m_topology,edgeHandler);
     edgeInfo.linkToTetrahedronDataArray();
     edgeInfo.registerTopologicalData();
 
 
-    if (_topology->getNbTetrahedra()==0)
+    if (m_topology->getNbTetrahedra()==0)
     {
-        serr << "ERROR(TetrahedralTensorMassForceField): object must have a Tetrahedral Set Topology."<<sendl;
-        return;
+        msg_warning() << "No tetrahedra found in linked Topology.";
     }
     updateLameCoefficients();
 
@@ -301,7 +316,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
 
 
     /// prepare to store info in the edge array
-    edgeInf.resize(_topology->getNbEdges());
+    edgeInf.resize(m_topology->getNbEdges());
 
 
     if (_initialPoints.size() == 0)
@@ -311,17 +326,17 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
         _initialPoints=p;
     }
 
-    int i;
+    size_t i;
     // set edge tensor to 0
-    for (i=0; i<_topology->getNbEdges(); ++i)
+    for (i=0; i<m_topology->getNbEdges(); ++i)
     {
         edgeHandler->applyCreateFunction(i, edgeInf[i],
-                _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
+                m_topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }
     // create edge tensor by calling the tetrahedron creation function
     sofa::helper::vector<unsigned int> tetrahedronAdded;
-    for (i=0; i<_topology->getNbTetrahedra(); ++i)
+    for (i=0; i<m_topology->getNbTetrahedra(); ++i)
         tetrahedronAdded.push_back(i);
 
     edgeHandler->applyTetrahedronCreation(tetrahedronAdded,
@@ -350,7 +365,7 @@ SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core
     SReal energy=0;
 
     unsigned int v0,v1;
-    int nbEdges=_topology->getNbEdges();
+    int nbEdges=m_topology->getNbEdges();
 
     const EdgeRestInformation *einfo;
 
@@ -361,8 +376,8 @@ SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core
     for(int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
-        v0=_topology->getEdge(i)[0];
-        v1=_topology->getEdge(i)[1];
+        v0=m_topology->getEdge(i)[0];
+        v1=m_topology->getEdge(i)[1];
         dp0=x[v0]-_initialPoints[v0];
         dp1=x[v1]-_initialPoints[v1];
         dp = dp1-dp0;
@@ -389,7 +404,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
     const VecCoord& x = d_x.getValue();
 
     unsigned int v0,v1;
-    int nbEdges=_topology->getNbEdges();
+    int nbEdges=m_topology->getNbEdges();
 
     EdgeRestInformation *einfo;
 
@@ -401,8 +416,8 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
     for(int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
-        v0=_topology->getEdge(i)[0];
-        v1=_topology->getEdge(i)[1];
+        v0=m_topology->getEdge(i)[0];
+        v1=m_topology->getEdge(i)[1];
         dp0=x[v0]-_initialPoints[v0];
         dp1=x[v1]-_initialPoints[v1];
         dp = dp1-dp0;
@@ -428,7 +443,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int v0,v1;
-    int nbEdges=_topology->getNbEdges();
+    int nbEdges=m_topology->getNbEdges();
 
     EdgeRestInformation *einfo;
 
@@ -440,8 +455,8 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
     for(int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
-        v0=_topology->getEdge(i)[0];
-        v1=_topology->getEdge(i)[1];
+        v0=m_topology->getEdge(i)[0];
+        v1=m_topology->getEdge(i)[1];
         dp0=dx[v0];
         dp1=dx[v1];
         dp = dp1-dp0;
@@ -462,46 +477,39 @@ void TetrahedralTensorMassForceField<DataTypes>::updateLameCoefficients()
 {
     lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/((1-2*f_poissonRatio.getValue())*(1+f_poissonRatio.getValue()));
     mu = f_youngModulus.getValue()/(2*(1+f_poissonRatio.getValue()));
-//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 
 
 template<class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0,true);
 
-// 	VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-// 	int nbTriangles=_topology->getNbTriangles();
+    sofa::defaulttype::RGBAColor color(0,1,0,1);
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
-    /*
-        glDisable(GL_LIGHTING);
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    int nbTriangles=m_topology->getNbTriangles();
 
-        glBegin(GL_TRIANGLES);
-        for(i=0;i<nbTriangles; ++i)
-        {
-            int a = _topology->getTriangle(i)[0];
-            int b = _topology->getTriangle(i)[1];
-            int c = _topology->getTriangle(i)[2];
+    for(int i=0;i<nbTriangles; ++i)
+    {
+        int a = m_topology->getTriangle(i)[0];
+        int b = m_topology->getTriangle(i)[1];
+        int c = m_topology->getTriangle(i)[2];
 
-            glColor4f(0,1,0,1);
-            helper::gl::glVertexT(x[a]);
-            glColor4f(0,0.5,0.5,1);
-            helper::gl::glVertexT(x[b]);
-            glColor4f(0,0,1,1);
-            helper::gl::glVertexT(x[c]);
-        }
-        glEnd();
-
-    */
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+        vertices.push_back(sofa::defaulttype::Vector3(x[a]));
+        vertices.push_back(sofa::defaulttype::Vector3(x[b]));
+        vertices.push_back(sofa::defaulttype::Vector3(x[c]));
+    }
+    vparams->drawTool()->drawTriangles(vertices,color);
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

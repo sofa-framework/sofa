@@ -11,7 +11,7 @@ AUTHOR :
 
 
 
-LICENCE :
+LICENSE :
  - None
 
 

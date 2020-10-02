@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -23,17 +23,16 @@
 // launch sofaTypedefs.exe to generate sofa.h
 #include <sofa/sofa.h>
 #include <sofa/helper/ArgumentParser.h>
-#include <SofaSimulationTree/tree.h>
+#include <SofaSimulationTree/config.h>
 #include <SofaSimulationTree/GNode.h>
 #include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaMisc/initSofaMisc.h>
 
 using namespace sofa::simulation::tree;
 using namespace sofa::component::odesolver;
@@ -75,11 +74,10 @@ int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
     sofa::simulation::tree::init();
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaMisc();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
 

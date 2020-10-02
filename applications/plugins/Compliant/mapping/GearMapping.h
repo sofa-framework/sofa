@@ -57,7 +57,7 @@ namespace mapping
 
         enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
-        virtual void init()
+        virtual void init() override
         {
             this->getToModels()[0]->resize( d_pairs.getValue().size() );
             Inherit::init();
@@ -66,7 +66,7 @@ namespace mapping
 
 
         virtual void apply(typename Inherit::out_pos_type& /*out*/,
-                           const helper::vector<typename Inherit::in_pos_type>& in)  {
+                           const helper::vector<typename Inherit::in_pos_type>& in) override {
             // macro_trace;
             assert( in.size() == 2 );
             assert( this->Nout == 1 );
@@ -78,8 +78,8 @@ namespace mapping
         typedef defaulttype::Vec<2, index_type> index_pair;
         typedef helper::vector< index_pair > pairs_type;
 
-        Data< pairs_type > d_pairs;
-        Data< Real > d_ratio; // a different ratio for each pair
+        Data< pairs_type > d_pairs; ///< index pairs for computing deltas, 4 values per pair (dofindex0,kinematicdofindex0,dofindex1,kinematicdofindex1) 
+        Data< Real > d_ratio; ///< a different ratio for each pair
 
     protected:
 
@@ -88,7 +88,7 @@ namespace mapping
             , d_ratio( initData(&d_ratio, (Real)1, "ratio", "gear link ratio (can be negative)") )
         {}
 
-        void assemble(const helper::vector<typename Inherit::in_pos_type>& in ) {
+        void assemble(const helper::vector<typename Inherit::in_pos_type>& in ) override {
 
             const Real& ratio = d_ratio.getValue();
 
@@ -119,7 +119,7 @@ namespace mapping
             }
         }
 
-        virtual void updateForceMask()
+        virtual void updateForceMask() override
         {
             const pairs_type& p = d_pairs.getValue();
 

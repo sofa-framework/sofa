@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,16 +25,19 @@
 
 
 #include <sofa/simulation/Simulation.h>
+#include <sofa/helper/ArgumentParser.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 
 #include <sstream>
+#include <fstream>
 
 #include "PythonMainScriptController.h"
 #include "PythonEnvironment.h"
 #include "PythonFactory.h"
 
 using namespace sofa::core::objectmodel;
+using sofa::helper::system::SetDirectory;
 
 namespace sofa
 {
@@ -49,6 +52,7 @@ void SceneLoaderPY::setHeader(const std::string& header)
     OurHeader = header;
 }
 
+
 bool SceneLoaderPY::canLoadFileExtension(const char *extension)
 {
     std::string ext = extension;
@@ -56,16 +60,19 @@ bool SceneLoaderPY::canLoadFileExtension(const char *extension)
     return (ext=="py" || ext=="pyscn");
 }
 
+
 bool SceneLoaderPY::canWriteFileExtension(const char *extension)
 {
     return canLoadFileExtension(extension);
 }
+
 
 /// get the file type description
 std::string SceneLoaderPY::getFileTypeDesc()
 {
     return "Python Scenes";
 }
+
 
 /// get the list of file extensions
 void SceneLoaderPY::getExtensionList(ExtensionList* list)
@@ -75,17 +82,35 @@ void SceneLoaderPY::getExtensionList(ExtensionList* list)
     list->push_back("py");
 }
 
-sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
+
+sofa::simulation::Node::SPtr SceneLoaderPY::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
-    return loadSceneWithArguments(filename);
+    sofa::simulation::Node::SPtr root;
+    doLoadSceneWithArguments(filename, sceneArgs, &root);
+    return root;
 }
 
-sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments)
+
+void SceneLoaderPY::loadSceneWithArguments(const std::string& filename,
+                                           const std::vector<std::string>& arguments,
+                                           Node::SPtr* root_out)
 {
+    notifyLoadingSceneBefore();
+    doLoadSceneWithArguments(filename, arguments, root_out);
+    notifyLoadingSceneAfter(*root_out);
+}
+
+
+void SceneLoaderPY::doLoadSceneWithArguments(const std::string& filename,
+                                           const std::vector<std::string>& arguments,
+                                           Node::SPtr* root_out)
+{
+    PythonEnvironment::gil lock(__func__);    
     if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
     {
-        SP_MESSAGE_ERROR( "header script run error." )
-        return NULL;
+        SP_MESSAGE_ERROR( "header script run error." );
+        if( root_out ) *root_out = 0;
+        return;
     }
 
     PythonEnvironment::runString("createScene=None");
@@ -94,14 +119,15 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
     PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
 
     // We go the the current file's directory so that all relative path are correct
-    helper::system::SetDirectory chdir ( filename );
+    SetDirectory chdir ( filename );
 
-    notifyLoadingScene();
-    if(!PythonEnvironment::runFile(helper::system::SetDirectory::GetFileName(filename).c_str(), arguments))
+    PythonEnvironment::setArguments(SetDirectory::GetFileName(filename.c_str()), arguments);
+    if(!PythonEnvironment::runFile(SetDirectory::GetFileName(filename.c_str())))
     {
         // LOAD ERROR
-        SP_MESSAGE_ERROR( "scene script load error." )
-        return NULL;
+        SP_MESSAGE_ERROR( "scene script load error." );
+        if( root_out ) *root_out = 0;
+        return;
     }
 
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
@@ -111,9 +137,10 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
     if (PyCallable_Check(pFunc))
     {
         Node::SPtr rootNode = Node::create("root");
-        SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
+        if(root_out) *root_out = rootNode;
 
-        return rootNode;
+        SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()));
+        return;
     }
     else
     {
@@ -121,21 +148,24 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
         if (PyCallable_Check(pFunc))
         {
             Node::SPtr rootNode = Node::create("root");
-            SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
+            if(root_out) *root_out = rootNode;
 
-            rootNode->addObject( core::objectmodel::New<component::controller::PythonMainScriptController>( filename ) );
+            SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()));
+            rootNode->addObject( core::objectmodel::New<component::controller::PythonMainScriptController>( filename.c_str() ) );
 
-            return rootNode;
+            return;
         }
     }
 
-    SP_MESSAGE_ERROR( "cannot create Scene, no \"createScene(rootNode)\" nor \"createSceneAndController(rootNode)\" module method found." )
-    return NULL;
+    SP_MESSAGE_ERROR( "cannot create Scene, no \"createScene(rootNode)\" nor \"createSceneAndController(rootNode)\" module method found." );
+    if( root_out ) *root_out = 0;
+    return;
 }
 
 
-bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments)
+bool SceneLoaderPY::loadTestWithArguments(const std::string& filename, const std::vector<std::string>& arguments)
 {
+    PythonEnvironment::gil lock(__func__);    
     if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
     {
         SP_MESSAGE_ERROR( "header script run error." )
@@ -161,7 +191,7 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
     PyObject *pFunc = PyDict_GetItemString(pDict, "run");
     if (PyCallable_Check(pFunc))
     {
-        PyObject *res = PyObject_CallObject(pFunc,0);
+        PyObject *res = PyObject_CallObject(pFunc,nullptr);
         printPythonExceptions();
 
         if( !res )
@@ -189,7 +219,6 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
 }
 
 
-
 void SceneLoaderPY::write(Node* node, const char *filename)
 {
     exportPython( node, filename );
@@ -197,11 +226,7 @@ void SceneLoaderPY::write(Node* node, const char *filename)
 
 
 //////////////////////////////////////////////////////////////////////////////
-
-
-
 static const std::string s_tab = "    ";
-
 
 inline void printBaseHeader( std::ostream& out, Node* node )
 {
@@ -218,7 +243,7 @@ void exportPython( Node* node, const char* fileName )
 {
     if ( !node ) return;
 
-    if ( fileName!=NULL )
+    if ( fileName!=nullptr )
     {
         std::ofstream out( fileName );
 
@@ -237,13 +262,7 @@ void exportPython( Node* node, const char* fileName )
 }
 
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
-
-
-
-
 template<class T>
 void PythonExporterVisitor::processObject( T obj, const std::string& nodeVariable )
 {
@@ -295,6 +314,7 @@ Visitor::Result PythonExporterVisitor::processNodeTopDown(Node* node)
 
     return RESULT_CONTINUE;
 }
+
 
 void PythonExporterVisitor::processNodeBottomUp(Node* node)
 {

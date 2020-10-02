@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="image"/>
   <VisualStyle displayFlags="showWireframe showVisual showBehaviorModels" />
 
@@ -15,10 +16,10 @@
 
   <Node 	name="rigid" >
 	
-    	<EulerImplicitSolver />
+    	<EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
 	<CGLinearSolver iterations="25"/>
 
-  	<MechanicalObject template="Rigid" position="@../imagemass.position" showObject="0" showObjectScale="1"/>
+  	<MechanicalObject template="Rigid3d" position="@../imagemass.position" showObject="0" showObjectScale="1"/>
 
 <!--COMPLIANT API-->
 <!--  	<RequiredPlugin pluginName="Compliant"/> -->
@@ -32,7 +33,7 @@
 		<RigidMapping globalToLocalCoords="1"/>
 
 		<Node 	name="visual" >
-	  		<VisualModel name="mesh"  src="@../../../mesh" color="0.8 0.8 0.8 1"/> 
+	  		<OglModel name="mesh"  src="@../../../mesh" color="0.8 0.8 0.8 1"/> 
 			<IdentityMapping />
 		</Node>
 	</Node>

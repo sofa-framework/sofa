@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+
+	<MeshObjLoader name="meshLoader_0" filename="data/mesh/add_repo_cube.obj" handleSeams="1" />
+	<OglModel name="VisualModel" src="@meshLoader_0" />
+
+	<AddDataRepository path="./data/mesh" />
+    <MeshObjLoader name="meshLoader_1" filename="add_repo_cube.obj" translation="5 0 0" handleSeams="1" />
+    <OglModel name="VisualModel" src="@meshLoader_1"/>
+  
+</Node>

@@ -1,13 +1,13 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 
 set(SOFATUTORIALS_TARGETS
     # No CMakeLists.txt
     # anatomyModelling
     chainHybrid
-    compositeObject
-    houseOfCards
-    mixedPendulum
-    oneParticle
+    #compositeObject
+    #houseOfCards
+    #mixedPendulum
+    #oneParticle
     # Needs SofaTypedefs
     # oneParticleWithSofaTypedefs
     oneTetrahedron

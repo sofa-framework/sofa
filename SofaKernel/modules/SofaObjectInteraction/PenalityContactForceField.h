@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -71,11 +71,8 @@ protected:
         Deriv norm;         ///< contact normal, from m1 to m2
         Real dist;          ///< distance threshold below which a repulsion force is applied
         Real ks;            ///< spring stiffness
-//        Real mu_s;          ///< coulomb friction coefficient (currently unused)
-//        Real mu_v;          ///< viscous friction coefficient (currently unused)
         Real pen;           ///< current penetration depth
         int age;            ///< how old is this contact
-
 
         Contact(int _m1=0, int _m2=0, int _index1=0, int _index2=0, Deriv _norm=Deriv(), Real _dist=(Real)0, Real _ks=(Real)0, Real /*_mu_s*/=(Real)0, Real /*_mu_v*/=(Real)0, Real _pen=(Real)0, int _age=0)
             : m1(_m1),m2(_m2),index1(_index1),index2(_index2),norm(_norm),dist(_dist),ks(_ks),/*mu_s(_mu_s),mu_v(_mu_v),*/pen(_pen),age(_age)
@@ -96,7 +93,7 @@ protected:
         }
     };
 
-    Data<sofa::helper::vector<Contact> > contacts;
+    Data<sofa::helper::vector<Contact> > contacts; ///< Contacts
 
     // contacts from previous frame
     sofa::helper::vector<Contact> prevContacts;
@@ -116,11 +113,11 @@ public:
 
     void addContact(int m1, int m2, int index1, int index2, const Deriv& norm, Real dist, Real ks, Real mu_s = 0.0f, Real mu_v = 0.0f, int oldIndex = 0);
 
-    virtual void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
+    void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
 
-    virtual void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2);
+    void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
 
-    virtual SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const ;
+    SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override;
 
     const helper::vector< Contact >& getContact() const { return contacts.getValue();}
 
@@ -131,18 +128,14 @@ public:
             helper::vector< unsigned int > &triangle,
             helper::vector< unsigned int > &index_point) ;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void updateForceMask();
+    void updateForceMask() override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)
+extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace interactionforcefield

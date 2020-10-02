@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaCUDA)
 
 set(SOFACUDA_MAJOR_VERSION 0)
@@ -10,12 +10,8 @@ if(NOT WIN32)
     set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 endif()
 
-if(${SOFA_NO_OPENGL})
-    message(SEND_ERROR "Warning: CMake flag SOFA_NO_OPENGL is active.")
-    message("Flag SOFA_NO_OPENGL incompatible with the SofaCUDA plugin.")
-endif()
-
 set(HEADER_FILES
+    config.h.in
     sofa/gpu/cuda/CudaBarycentricMapping.h
     sofa/gpu/cuda/CudaBarycentricMapping.inl
     sofa/gpu/cuda/CudaBarycentricMappingRigid.h
@@ -28,7 +24,6 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaFixedConstraint.h
     sofa/gpu/cuda/CudaFixedConstraint.inl
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.h
-    # sofa/gpu/cuda/CudaHexahedronTLEDForceField.inl
     sofa/gpu/cuda/CudaIdentityMapping.h
     sofa/gpu/cuda/CudaIdentityMapping.inl
     sofa/gpu/cuda/CudaLineModel.h
@@ -48,8 +43,6 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaMeshMatrixMass.inl
     sofa/gpu/cuda/CudaParticleSource.h
     sofa/gpu/cuda/CudaParticleSource.inl
-    sofa/gpu/cuda/CudaParticlesRepulsionForceField.h
-    sofa/gpu/cuda/CudaParticlesRepulsionForceField.inl
     sofa/gpu/cuda/CudaPenalityContactForceField.h
     sofa/gpu/cuda/CudaPenalityContactForceField.inl
     sofa/gpu/cuda/CudaPlaneForceField.h
@@ -57,12 +50,8 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaPointModel.h
     sofa/gpu/cuda/CudaRigidMapping.h
     sofa/gpu/cuda/CudaRigidMapping.inl
-    sofa/gpu/cuda/CudaSPHFluidForceField.h
-    sofa/gpu/cuda/CudaSPHFluidForceField.inl
     sofa/gpu/cuda/CudaScan.h
     sofa/gpu/cuda/CudaSort.h
-    sofa/gpu/cuda/CudaSpatialGridContainer.h
-    sofa/gpu/cuda/CudaSpatialGridContainer.inl
     sofa/gpu/cuda/CudaSphereForceField.h
     sofa/gpu/cuda/CudaSphereForceField.inl
     sofa/gpu/cuda/CudaSphereModel.h
@@ -84,8 +73,6 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaTypes.h
     sofa/gpu/cuda/CudaUniformMass.h
     sofa/gpu/cuda/CudaUniformMass.inl
-    sofa/gpu/cuda/CudaVisualModel.h
-    sofa/gpu/cuda/CudaVisualModel.inl
     sofa/gpu/cuda/mycuda.h
 )
 
@@ -117,16 +104,12 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaLinearVelocityConstraint.cpp
     sofa/gpu/cuda/CudaMechanicalObject.cpp
     sofa/gpu/cuda/CudaMeshMatrixMass.cpp
-    sofa/gpu/cuda/CudaParticleSource.cpp
-    sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
     sofa/gpu/cuda/CudaPenalityContactForceField.cpp
     sofa/gpu/cuda/CudaPlaneForceField.cpp
     sofa/gpu/cuda/CudaPointModel.cpp
     sofa/gpu/cuda/CudaRestShapeSpringsForceField.cpp
     sofa/gpu/cuda/CudaRigidMapping.cpp
-    sofa/gpu/cuda/CudaSPHFluidForceField.cpp
     sofa/gpu/cuda/CudaSetTopology.cpp
-    sofa/gpu/cuda/CudaSpatialGridContainer.cpp
     sofa/gpu/cuda/CudaSphereForceField.cpp
     sofa/gpu/cuda/CudaSphereModel.cpp
     sofa/gpu/cuda/CudaSphereROI.cpp
@@ -140,7 +123,6 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cpp
     sofa/gpu/cuda/CudaTypes.cpp
     sofa/gpu/cuda/CudaUniformMass.cpp
-    sofa/gpu/cuda/CudaVisualModel.cpp
     sofa/gpu/cuda/mycuda.cpp
 )
 
@@ -155,15 +137,11 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaLinearMovementConstraint.cu
     sofa/gpu/cuda/CudaMechanicalObject.cu
     sofa/gpu/cuda/CudaMeshMatrixMass.cu
-    sofa/gpu/cuda/CudaParticleSource.cu
-    sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
     sofa/gpu/cuda/CudaPenalityContactForceField.cu
     sofa/gpu/cuda/CudaPlaneForceField.cu
     sofa/gpu/cuda/CudaRigidMapping.cu
-    sofa/gpu/cuda/CudaSPHFluidForceField.cu
     sofa/gpu/cuda/CudaScan.cu
     sofa/gpu/cuda/CudaSort.cu
-    sofa/gpu/cuda/CudaSpatialGridContainer.cu
     sofa/gpu/cuda/CudaSphereForceField.cu
     sofa/gpu/cuda/CudaSpringForceField.cu
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cu
@@ -173,20 +151,33 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cu
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cu
     sofa/gpu/cuda/CudaUniformMass.cu
-    sofa/gpu/cuda/CudaVisualModel.cu
     sofa/gpu/cuda/mycuda.cu
 )
 
+if(SOFA_NO_OPENGL)
+    message(WARNING "CMake flag SOFA_NO_OPENGL is active.")
+    message("OpenGL-related code wont be enabled (Sharing OpenGL buffers with CUDA)")
+else()
+    list(APPEND HEADER_FILES
+        sofa/gpu/cuda/CudaVisualModel.h
+        sofa/gpu/cuda/CudaVisualModel.inl
+    )
+    list(APPEND SOURCE_FILES
+        sofa/gpu/cuda/CudaVisualModel.cpp
+    )
+    list(APPEND CUDA_SOURCES
+        sofa/gpu/cuda/CudaVisualModel.cu
+    )
+endif()
 
 set(README_FILES SofaCUDA.txt)
 
-find_package(SofaAdvanced REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(CUDA REQUIRED)
 find_package(VolumetricRendering QUIET)
-find_package(MiniFlowVR QUIET)
+find_package(SofaValidation REQUIRED)
 
-if(VolumetricRendering_FOUND)   
+if(VolumetricRendering_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.h)
     list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.inl)
     list(APPEND SOURCE_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.cpp)
@@ -195,7 +186,16 @@ else()
     message(STATUS "SofaCUDA: Plugin VolumetricRendering was not enabled/found, therefore CudaTetrahedralVisualModel will not be compiled.")
 endif()
 
-if(MiniFlowVR_FOUND)
+find_package(SofaDistanceGrid QUIET)
+sofa_find_package(MiniFlowVR QUIET)
+
+if(SofaDistanceGrid_FOUND)
+    if(MiniFlowVR_FOUND)
+        message(STATUS "SofaCUDA: MiniFlowVR enabled.")
+    else()
+        message(STATUS "SofaCUDA: MiniFlowVR was not enabled, therefore some feature of CudaDistanceGridCollisionModel will not be compiled.")
+    endif()
+
     list(APPEND HEADER_FILES
         sofa/gpu/cuda/CudaDistanceGridCollisionModel.h
         sofa/gpu/cuda/CudaContactMapper.h
@@ -210,8 +210,42 @@ if(MiniFlowVR_FOUND)
         sofa/gpu/cuda/CudaContactMapper.cu
         sofa/gpu/cuda/CudaCollisionDetection.cu)
 else()
-    message(STATUS "SofaCUDA: MiniFlowVR was not enabled/found, therefore CudaDistanceGridCollisionModel will not be compiled.")
+    message(STATUS "SofaCUDA: SofaDistanceGrid was not enabled, therefore CudaDistanceGridCollisionModel will not be compiled.")
 endif()
+
+if (PLUGIN_SOFASPHFLUID)
+    find_package(SofaSphFluid QUIET)
+    if(SofaSphFluid_FOUND)
+        list(APPEND HEADER_FILES
+            sofa/gpu/cuda/CudaParticleSource.h
+            sofa/gpu/cuda/CudaParticleSource.inl
+            sofa/gpu/cuda/CudaSPHFluidForceField.h
+            sofa/gpu/cuda/CudaSPHFluidForceField.inl
+            sofa/gpu/cuda/CudaParticlesRepulsionForceField.h
+            sofa/gpu/cuda/CudaParticlesRepulsionForceField.inl
+            sofa/gpu/cuda/CudaSpatialGridContainer.h
+            sofa/gpu/cuda/CudaSpatialGridContainer.inl
+            )
+        list(APPEND SOURCE_FILES
+        sofa/gpu/cuda/CudaParticleSource.cpp
+        sofa/gpu/cuda/CudaSPHFluidForceField.cpp
+        sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
+        sofa/gpu/cuda/CudaSpatialGridContainer.cpp
+        )
+        list(APPEND CUDA_SOURCES
+        sofa/gpu/cuda/CudaParticleSource.cu
+        sofa/gpu/cuda/CudaSPHFluidForceField.cu
+        sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
+        sofa/gpu/cuda/CudaSpatialGridContainer.cu
+        )
+        message(STATUS "SofaCUDA: optional dependency to SofaSphFluid found. ")
+    else()
+        message(STATUS "SofaCUDA: optional dependency SofaSphFluid not found. ")
+    endif()
+else()
+    message(STATUS "SofaCUDA: optional dependency SofaSphFluid not enabled. ")
+endif()
+
 
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
 if(SOFACUDA_VERBOSE_PTXAS)
@@ -252,13 +286,7 @@ endif()
 
 option(SOFACUDA_PRECISE "Use IEEE 754-compliant floating point operations." OFF)
 
-set(SOFACUDA_ARCH "sm_20" CACHE STRING "GPU architecture, as passed to nvcc with the -arch option.")
-
 include(SofaCUDANvccFlags.cmake)
-
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaCUDA/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaCUDA/config.h" DESTINATION "include/SofaCUDA")
-
 
 # nvcc uses a "host code compiler" to compile CPU code, specified by CUDA_HOST_COMPILER.
 # With some versions of CMake, CUDA_HOST_COMPILER defaults to CMAKE_C_COMPILER,
@@ -285,10 +313,24 @@ cuda_include_directories("${CMAKE_BINARY_DIR}/include")
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWSOPTIONS})
 
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
-target_link_libraries(${PROJECT_NAME} SofaOpenglVisual SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaAdvanced SofaMisc SofaValidation)
+
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+
+if(NOT SOFA_NO_OPENGL)
+    target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
+endif()
+
+if(SofaDistanceGrid_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
+endif()
+
+if(MiniFlowVR_FOUND)
+    target_link_libraries(${PROJECT_NAME} miniFlowVR)
+endif()
+
 
 if(SOFACUDA_CUBLAS)
     cuda_add_cublas_to_target(${PROJECT_NAME})
@@ -297,9 +339,13 @@ endif()
 if(SOFACUDA_CUDPP)
     target_link_libraries(${PROJECT_NAME} cudpp)
 endif()
-if(VolumetricRendering_FOUND)  
-    target_link_libraries(${PROJECT_NAME} VolumetricRendering) 
+if(VolumetricRendering_FOUND)
+    target_link_libraries(${PROJECT_NAME} VolumetricRendering)
 endif()
+if(SofaSphFluid_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaSphFluid)
+endif()
+
 
 ## SofaCUDANvccFlags.cmake
 # Build tree
@@ -308,8 +354,10 @@ configure_file(SofaCUDANvccFlags.cmake ${CMAKE_BINARY_DIR}/cmake/SofaCUDANvccFla
 install(FILES SofaCUDANvccFlags.cmake DESTINATION lib/cmake/SofaCUDA)
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(SofaCUDA ${SOFACUDA_VERSION} SofaCUDA SofaCUDA)
-
-## Install rules for the resources
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${SOFACUDA_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+)

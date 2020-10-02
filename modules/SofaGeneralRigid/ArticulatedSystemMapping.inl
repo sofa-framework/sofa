@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,6 @@
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/helper/gl/template.h>
 
 #include <sofa/simulation/Node.h>
 
@@ -43,8 +42,8 @@ namespace mapping
 
 template <class TIn, class TInRoot, class TOut>
 ArticulatedSystemMapping<TIn, TInRoot, TOut>::ArticulatedSystemMapping ()
-    : ahc(NULL)
-    , m_fromModel(NULL), m_toModel(NULL), m_fromRootModel(NULL)
+    : ahc(nullptr)
+    , m_fromModel(nullptr), m_toModel(nullptr), m_fromRootModel(nullptr)
 {
 
 }
@@ -55,13 +54,13 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
 
     if(this->getFromModels1().empty())
     {
-        serr << "Error while iniatilizing ; input Model not found" << sendl;
+        msg_error() << "While iniatilizing ; input Model not found.";
         return;
     }
 
     if(this->getToModels().empty())
     {
-        serr << "Error while iniatilizing ; output Model not found" << sendl;
+        msg_error() << "While iniatilizing ; output Model not found.";
         return;
     }
 
@@ -92,7 +91,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     helper::WriteAccessor<Data<OutVecCoord> > xtoData = *m_toModel->write(core::VecCoordId::position());
     apply(xtoData.wref(),
             xfrom,
-            m_fromRootModel == NULL ? NULL : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue());
+            m_fromRootModel == nullptr ? nullptr : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue());
     Inherit::init();
     /*
     OutVecDeriv& vto = m_toModel->read(core::ConstVecDerivId::velocity())->getValue();
@@ -533,6 +532,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
+    vparams->drawTool()->saveLastState();
+
     if (!vparams->displayFlags().getShowMappings()) return;
     std::vector< sofa::defaulttype::Vector3 > points;
     std::vector< sofa::defaulttype::Vector3 > pointsLine;
@@ -562,6 +563,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
 
     vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
     vparams->drawTool()->drawLines(pointsLine, 1, sofa::defaulttype::Vec<4,float>(0,0,1,1));
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace mapping

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,19 +24,16 @@
 
 #include "TriangularAnisotropicFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <sofa/helper/system/gl.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <vector>
 #include <algorithm>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <assert.h>
-
-// #define DEBUG_TRIANGLEFEM
+#include <sofa/defaulttype/VecTypes.h>
+#include <cassert>
 
 namespace sofa
 {
@@ -73,7 +70,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleHandler::applyCr
 {
     if (ff)
     {
-        //const Triangle &t = ff->_topology->getTriangle(triangleIndex);
+        //const Triangle &t = ff->m_topology->getTriangle(triangleIndex);
         Index a = t[0];
         Index b = t[1];
         Index c = t[2];
@@ -95,10 +92,24 @@ void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleHandler::applyCr
 template< class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::init()
 {
-    _topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // Create specific handler for TriangleData
-    localFiberDirection.createTopologicalEngine(_topology, triangleHandler);
+    localFiberDirection.createTopologicalEngine(m_topology, triangleHandler);
     localFiberDirection.registerTopologicalData();
 
     Inherited::init();
@@ -123,7 +134,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
     f_poisson2.setValue(poiss2);
 
     helper::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
-    lfd.resize(_topology->getNbTriangles());
+    lfd.resize(m_topology->getNbTriangles());
     localFiberDirection.endEdit();
     Inherited::reinit();
 }
@@ -138,7 +149,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::getFiberDir(int element, Der
     {
         const Deriv& ref = lfd[element];
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        core::topology::BaseMeshTopology::Triangle t = _topology->getTriangle(element);
+        core::topology::BaseMeshTopology::Triangle t = m_topology->getTriangle(element);
         dir = (x[t[1]]-x[t[0]])*ref[0] + (x[t[2]]-x[t[0]])*ref[1];
     }
     else
@@ -292,43 +303,42 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
 template <class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    glPolygonOffset(1.0, 2.0);
-    glEnable(GL_POLYGON_OFFSET_FILL);
     Inherited::draw(vparams);
-    glDisable(GL_POLYGON_OFFSET_FILL);
+
     if (!vparams->displayFlags().getShowForceFields())
         return;
 
     helper::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
 
-    if (showFiber.getValue() && lfd.size() >= (unsigned)_topology->getNbTriangles())
+    if (showFiber.getValue() && lfd.size() >= (unsigned)m_topology->getNbTriangles())
     {
+        vparams->drawTool()->saveLastState();
+        sofa::defaulttype::RGBAColor color(0, 0, 0, 1.0);
+        std::vector<sofa::defaulttype::Vector3> vertices;
+
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        int nbTriangles=_topology->getNbTriangles();
-        glColor3f(0,0,0);
-        glBegin(GL_LINES);
+        int nbTriangles=m_topology->getNbTriangles();
 
         for(int i=0; i<nbTriangles; ++i)
         {
 
             if ( (unsigned int)i < lfd.size())
             {
-                Index a = _topology->getTriangle(i)[0];
-                Index b = _topology->getTriangle(i)[1];
-                Index c = _topology->getTriangle(i)[2];
+                Index a = m_topology->getTriangle(i)[0];
+                Index b = m_topology->getTriangle(i)[1];
+                Index c = m_topology->getTriangle(i)[2];
 
                 Coord center = (x[a]+x[b]+x[c])/3;
                 Coord d = (x[b]-x[a])*lfd[i][0] + (x[c]-x[a])*lfd[i][1];
                 d*=0.25;
-                helper::gl::glVertexT(center-d);
-                helper::gl::glVertexT(center+d);
+                vertices.push_back(sofa::defaulttype::Vector3(center-d));
+                vertices.push_back(sofa::defaulttype::Vector3(center+d));
             }
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices,1,color);
+        vparams->drawTool()->restoreLastState();
     }
     localFiberDirection.endEdit();
-#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

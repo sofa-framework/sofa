@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_CYLINDERMODEL_CPP
+#define SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_CPP
 #include "CylinderModel.inl"
 
 namespace sofa
@@ -35,30 +35,16 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
 
-SOFA_DECL_CLASS(Cylinder)
+int RigidCylinderCollisionModelClass = core::RegisterObject("Collision model which represents a set of rigid cylinders")
+        .add<  CylinderCollisionModel<defaulttype::Rigid3Types> >()
 
-int RigidCylinderModelClass = core::RegisterObject("Collision model which represents a set of rigid cylinders")
-#ifndef SOFA_FLOAT
-        .add<  TCylinderModel<defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add < TCylinderModel<defaulttype::Rigid3fTypes> >()
-#endif
-        //TODO(dmarchal): Fix deprecated management...
         .addAlias("Cylinder")
         .addAlias("CylinderModel")
-//.addAlias("CylinderMesh")
-//.addAlias("CylinderSet")
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3dTypes>;
-template class SOFA_BASE_COLLISION_API TCylinderModel<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3fTypes>;
-template class SOFA_BASE_COLLISION_API TCylinderModel<defaulttype::Rigid3fTypes>;
-#endif
+template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3Types>;
+template class SOFA_BASE_COLLISION_API CylinderCollisionModel<defaulttype::Rigid3Types>;
+
 
 
 

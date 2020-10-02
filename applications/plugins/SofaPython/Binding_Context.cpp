@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,8 +23,7 @@
 #include "Binding_Context.h"
 #include "Binding_BaseContext.h"
 
-using namespace sofa::core::objectmodel;
-
+using sofa::core::objectmodel::Context;
 
 SP_CLASS_METHODS_BEGIN(Context)
 SP_CLASS_METHODS_END

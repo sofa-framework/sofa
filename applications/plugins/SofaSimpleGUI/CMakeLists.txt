@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaSimpleGUI)
 
 set(SOFASIMPLEGUI_VERSION 0.1)
@@ -31,18 +31,13 @@ set(SOURCE_FILES
 
 
 find_package(SofaMisc REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaSimulationGraph SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationGraph SofaBase SofaCommon SofaGeneral SofaMisc)
+target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFASIMPLEGUI_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFASIMPLEGUI")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package(SofaSimpleGUI ${SOFASIMPLEGUI_VERSION} ${PROJECT_NAME} SofaSimpleGUI)
-
-## Install rules for the resources
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

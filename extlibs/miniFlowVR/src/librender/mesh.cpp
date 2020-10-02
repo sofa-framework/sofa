@@ -132,7 +132,7 @@ void Mesh::init(int nbp, int nbf, int attribs)
   }
 }
 
-#if defined(WIN32) || defined(_XBOX)
+#if defined(WIN32)
 #define strcasecmp stricmp
 #endif
 

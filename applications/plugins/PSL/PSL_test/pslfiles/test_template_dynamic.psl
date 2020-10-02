@@ -1,0 +1,51 @@
+Node : {
+    TestResult : {
+        name : "result"
+        result: "Fail"
+    }
+    Python : '''from psl.dsl import *'''
+
+    name : "root"
+
+    Template : {
+        name : "MyTemplate"
+        properties : {
+            tname : "no-name"
+            numchild : 3
+			color : "1.0 0.0 0.0 0.0"
+        }
+        Node : {
+            name : p"tname"
+            Python : '''
+                     from psl.dsl import *
+                     for i in range(0, numchild):
+                         c = Node(self, name="n"+str(i))
+                         MechanicalObject(c)
+                         OglModel(c)
+                     '''
+        }
+    }
+
+    MyTemplate : {
+        tname : "objet1"
+        numchild : 2
+		color : "1.0 0.0 0.0 0.0"
+    }
+    MyTemplate : {
+        tname : "objet2"
+        numchild : 4
+    }
+
+    Python : '''
+             cp=0
+             for child in root.getChildren():
+                if child.name == "MyTemplate":
+                    cp+=1
+             if cp != 2:
+                Sofa.msg_error(root, "Problem in instantiating the templates")
+             else:
+                result = "Success"
+             '''
+}
+
+

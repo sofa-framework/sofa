@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,9 +35,6 @@ namespace sofa {
 
 namespace {
 
-using std::cout;
-using std::cerr;
-using std::endl;
 using namespace component;
 using namespace defaulttype;
 using namespace core::objectmodel;
@@ -209,7 +206,6 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
            {
               CPos dv = v[i]-vprev[i];
               Real scal = dv*dv;
-//              cerr<<"scal gap = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of unconstrained particle " << i << " is wrong: " << v[i] ;
@@ -222,7 +218,7 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
 
     void TearDown()
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);
     }
 

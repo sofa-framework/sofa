@@ -1,0 +1,33 @@
+Template : {
+        name : "Cube"
+        Node : {
+                name : "Cube"
+                OglModel : {
+                        filename : "mesh/cube.obj"
+                }
+        }
+}
+
+Template : {
+        name : "Plane"
+        Node : {
+                name : "Plane"
+                OglModel : {
+                        filename : "mesh/plane.obj"
+                }
+        }
+}
+
+Template : {
+        name : "Sphere"
+        properties : {
+            position : "0 0 0"
+        }
+        Node : {
+                name : "Sphere"
+                OglModel : {
+                        translation : p"position"
+                        filename : "mesh/sphere.obj"
+                }
+        }
+}

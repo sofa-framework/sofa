@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -26,6 +26,7 @@
 
 #include <SofaTest/Sofa_test.h>
 #include <SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneUtils.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -50,7 +51,7 @@
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaRigid/RigidMapping.h>
 
-
+using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types> ;
 
 namespace sofa
 {
@@ -86,8 +87,6 @@ public:
     typedef sofa::defaulttype::Vec<3,SReal> Vec3;
     typedef sofa::component::forcefield::UniformCompliance<defaulttype::Vec1Types> UniformCompliance1;
 
-    typedef modeling::MechanicalObject3 MechanicalObject3;
-
     // Vec3-Vec1
     typedef sofa::component::mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
     typedef sofa::component::mapping::DistanceFromTargetMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceFromTargetMapping31;
@@ -117,7 +116,7 @@ protected:
         UniformMass3::SPtr mass = core::objectmodel::New<UniformMass3>();
         string_node->addObject(mass);
         mass->setName(oss.str()+"_mass");
-        mass->d_mass.setValue( totalMass/numParticles );
+        mass->d_vertexMass.setValue( totalMass/numParticles );
 
 
 
@@ -198,7 +197,7 @@ protected:
         mass = core::objectmodel::New<UniformMass3>();
         string_node->addObject(mass);
         mass->setName(oss.str()+"_mass");
-        mass->d_mass.setValue( totalMass/numParticles );
+        mass->d_vertexMass.setValue( totalMass/numParticles );
 
 
         //--------

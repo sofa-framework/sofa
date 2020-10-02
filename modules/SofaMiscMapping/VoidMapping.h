@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,64 +45,64 @@ public:
     typedef sofa::core::behavior::BaseMechanicalState In;
     typedef sofa::core::behavior::BaseMechanicalState Out;
 
-    void init()
+    void init() override
     {
         fromModel = dynamic_cast<In*>(this->getContext()->getMechanicalState());
         toModel = dynamic_cast<Out*>(this->getContext()->getMechanicalState());
     }
 
     /// Accessor to the input model of this mapping
-    virtual  helper::vector<core::BaseState*> getFrom()
+    virtual  helper::vector<core::BaseState*> getFrom() override
     {
         helper::vector<core::BaseState*> vec(1,fromModel);
         return vec;
     }
 
     /// Accessor to the output model of this mapping
-    virtual helper::vector<core::BaseState*> getTo()
+    virtual helper::vector<core::BaseState*> getTo() override
     {
         helper::vector<core::BaseState*> vec(1,toModel);
         return vec;
     }
 
     /// Disable the mapping to get the original coordinates of the mapped model.
-    virtual void disable()
+    void disable() override
     {
     }
 
     /// Get the source (upper) model.
-    virtual helper::vector<sofa::core::behavior::BaseMechanicalState*> getMechFrom()
+    virtual helper::vector<sofa::core::behavior::BaseMechanicalState*> getMechFrom() override
     {
         helper::vector<sofa::core::behavior::BaseMechanicalState*> vec(1, fromModel);
         return vec;
     }
 
     /// Get the destination (lower, mapped) model.
-    virtual helper::vector<sofa::core::behavior::BaseMechanicalState*> getMechTo()
+    virtual helper::vector<sofa::core::behavior::BaseMechanicalState*> getMechTo() override
     {
         helper::vector<sofa::core::behavior::BaseMechanicalState*> vec(1, toModel);
         return vec;
     }
 
-    virtual void apply (const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecCoordId /* outPos */, core::ConstMultiVecCoordId /* inPos */)
+    void apply (const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecCoordId /* outPos */, core::ConstMultiVecCoordId /* inPos */) override
     {
     }
 
-    virtual void applyJ(const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* outVel */, core::ConstMultiVecDerivId /* inVel */)
+    void applyJ(const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* outVel */, core::ConstMultiVecDerivId /* inVel */) override
     {
     }
 
-    virtual void applyJT(const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* inForce */, core::ConstMultiVecDerivId /* outForce */)
+    void applyJT(const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* inForce */, core::ConstMultiVecDerivId /* outForce */) override
     {
     }
 
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
+    void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
 
-    virtual void applyJT(const core::ConstraintParams * /*cparams*/, core::MultiMatrixDerivId /* inConst */, core::ConstMultiMatrixDerivId /* outConst */)
+    void applyJT(const core::ConstraintParams * /*cparams*/, core::MultiMatrixDerivId /* inConst */, core::ConstMultiMatrixDerivId /* outConst */) override
     {
     }
 
-    virtual void computeAccFromMapping(const core::MechanicalParams* /*mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* outAcc */, core::ConstMultiVecDerivId /* inVel */, core::ConstMultiVecDerivId /* inAcc */)
+    void computeAccFromMapping(const core::MechanicalParams* /*mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* outAcc */, core::ConstMultiVecDerivId /* inVel */, core::ConstMultiVecDerivId /* inAcc */) override
     {
     }
 
@@ -110,18 +110,18 @@ protected:
     In* fromModel;
     Out* toModel;
 
-    VoidMapping():Inherit(),fromModel(NULL),toModel(NULL)
+    VoidMapping():Inherit(),fromModel(nullptr),toModel(nullptr)
     {
         this->f_mapForces.setValue(false);
         this->f_mapConstraints.setValue(false);
         this->f_mapMasses.setValue(false);
     }
 
-    virtual ~VoidMapping()
+    ~VoidMapping() override
     {
     }
 
-    virtual void updateForceMask() { fromModel->forceMask.assign(fromModel->getSize(),true); }
+    void updateForceMask() override { fromModel->forceMask.assign(fromModel->getSize(),true); }
 };
 
 } // namespace mapping

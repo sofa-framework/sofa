@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,7 +61,7 @@ void GroupFilterYoungModulus<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void GroupFilterYoungModulus<DataTypes>::update()
+void GroupFilterYoungModulus<DataTypes>::doUpdate()
 {
     //Input
     const std::string& strMap = p_mapGroupModulus.getValue();
@@ -70,8 +70,6 @@ void GroupFilterYoungModulus<DataTypes>::update()
     const helper::vector<int >& elementsGroup = f_elementsGroup.getValue();
 
     const Real& defaultModulus =  p_defaultModulus.getValue();
-
-    cleanDirty();
 
     //Output
     helper::vector<Real>& youngModulusVector = *f_youngModulus.beginWriteOnly();
@@ -112,7 +110,7 @@ void GroupFilterYoungModulus<DataTypes>::update()
                     }
 
                     if (!found)
-                        serr << "Group " << groupName << " not found" << sendl;
+                        msg_error() << "Group " << groupName << " not found";
                     else
                     {
                         mapMG[groups[gid]] = youngModulus;
@@ -121,7 +119,10 @@ void GroupFilterYoungModulus<DataTypes>::update()
                             maxSize = groups[gid].p0+ groups[gid].nbp;
                     }
                 }
-                else serr << "Error while parsing mapping" << sendl;
+                else
+                {
+                    msg_error() << "Error while parsing mapping";
+                }
             }
             //build YM vector
             youngModulusVector.clear();

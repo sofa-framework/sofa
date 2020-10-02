@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -74,7 +74,7 @@ public:
 
     /// the time steps defining the duration of the constraint
     Data<Real> m_tBegin;
-    Data<Real> m_tEnd;
+    Data<Real> m_tEnd; ///< End Time of the motion
 
     /// control parameters :
     /// first control point
@@ -88,14 +88,13 @@ public:
     /// acceleration parameters : the accaleration curve is itself a hermite spline, with first point at (0,0) and second at (1,1)
     /// and derivated on this points are :
     Data<Vec2R> m_sx0;
-    Data<Vec2R> m_sx1;
+    Data<Vec2R> m_sx1; ///< second interpolation vector
 
-
-
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<HermiteSplineConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    
 protected:
-    HermiteSplineConstraint();
-
-    HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate);
+    HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate = nullptr);
 
     ~HermiteSplineConstraint();
 public:
@@ -112,35 +111,31 @@ public:
     void computeDerivateHermiteCoefs( const Real u, Real &dH00, Real &dH10, Real &dH01, Real &dH11);
 
     /// -- Constraint interface
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class HermiteSplineConstraint<defaulttype::Rigid3dTypes>;
-extern template class HermiteSplineConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class HermiteSplineConstraint<defaulttype::Rigid3fTypes>;
-extern template class HermiteSplineConstraint<defaulttype::Vec3fTypes>;
-#endif
+template <>
+void SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>::init();
+
+
+#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace projectiveconstraintset

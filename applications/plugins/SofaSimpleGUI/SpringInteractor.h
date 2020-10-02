@@ -4,12 +4,15 @@
 #include <SofaSimpleGUI/config.h>
 #include "Interactor.h"
 
-#include <sofa/component/typedef/Sofa_typedef.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaDeformable/StiffSpringForceField.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa{
 namespace simplegui{
+    using sofa::defaulttype::Vec3Types ;
+    using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types> ;
+    using StiffSpringForceField3 = sofa::component::interactionforcefield::StiffSpringForceField<Vec3Types> ;
 
 /**
  * @brief Interaction using a spring.
@@ -31,16 +34,16 @@ public:
     SpringInteractor(const PickedPoint&  picked, SReal stiffness=(SReal) 100.);
 
     /// Insert this in the scene as a child of the given node
-    virtual void attach( SofaScene* scene );
+    void attach( SofaScene* scene ) override;
 
     /// Remove this from the scene, without destroying it.
-    virtual void detach();
+    void detach() override;
 
     /// current interaction point
-    Vec3 getPoint();
+    Vec3 getPoint() override;
 
     /// Displace the interaction to the given point
-    virtual void setPoint( const Vec3& p );
+    void setPoint( const Vec3& p ) override;
 
 };
 

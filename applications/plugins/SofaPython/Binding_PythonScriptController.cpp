@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,6 +30,8 @@ using namespace sofa::component::controller;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 
+#include "PythonToSofa.inl"
+
 #include <sofa/helper/logging/Messaging.h>
 
 // These functions are empty ones: they are meant to be overriden by real python
@@ -39,20 +41,12 @@ using namespace sofa::core::objectmodel;
 // #define LOG_UNIMPLEMENTED_METHODS // prints a message each time a
 // non-implemented (in the script) method is called
 
-// also, can we PLEASE STOP COPYPASTING EVERYTHING KTHXBY
 
-
-
-template<class T>
-static inline T* get(PyObject* obj) {
-    // functions plz
-    return dynamic_cast<T*>(((PySPtr<Base>*)obj)->object.get());
-}
-
-
+#ifdef LOG_UNIMPLEMENTED_METHODS
 static inline PythonScriptController* get_controller(PyObject* obj) {
-    return get<PythonScriptController>(obj);
+    return down_cast<PythonScriptController>( get_baseobject( obj ) );
 }
+#endif
 
 
 static PyObject * PythonScriptController_onIdle(PyObject * self, PyObject * args) {
@@ -72,7 +66,7 @@ static PyObject * PythonScriptController_onLoaded(PyObject * self, PyObject * ar
     (void) self;
     
     PyObject *pyNode;
-    if (!PyArg_ParseTuple(args, "O", &pyNode)) return NULL;
+    if (!PyArg_ParseTuple(args, "O", &pyNode)) return nullptr;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj = get_controller(self);
@@ -87,7 +81,7 @@ static PyObject * PythonScriptController_onLoaded(PyObject * self, PyObject * ar
 
 static PyObject * PythonScriptController_createGraph(PyObject * /*self*/, PyObject * args) {
     PyObject *pyNode;
-    if (!PyArg_ParseTuple(args, "O", &pyNode)) return NULL;
+    if (!PyArg_ParseTuple(args, "O", &pyNode)) return nullptr;
     
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj = get_controller(self);
@@ -104,7 +98,7 @@ static PyObject * PythonScriptController_initGraph(PyObject * self, PyObject * a
     (void) self;
 
     PyObject *pyNode;
-    if (!PyArg_ParseTuple(args, "O", &pyNode)) return NULL;
+    if (!PyArg_ParseTuple(args, "O", &pyNode)) return nullptr;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj = get_controller(self);
@@ -121,7 +115,7 @@ static PyObject * PythonScriptController_bwdInitGraph(PyObject * self, PyObject 
     (void) self;
 
     PyObject *pyNode;
-    if (!PyArg_ParseTuple(args, "O", &pyNode)) return NULL;
+    if (!PyArg_ParseTuple(args, "O", &pyNode)) return nullptr;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj = get_controller(self);
@@ -138,7 +132,7 @@ static PyObject * PythonScriptController_onBeginAnimationStep(PyObject * self, P
     (void) self;
 
     double dt;
-    if (!PyArg_ParseTuple(args, "d", &dt)) return NULL;
+    if (!PyArg_ParseTuple(args, "d", &dt)) return nullptr;
 
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -155,7 +149,7 @@ static PyObject * PythonScriptController_onEndAnimationStep(PyObject * self, PyO
     (void) self;
 
     double dt;
-    if (!PyArg_ParseTuple(args, "d", &dt)) return NULL;
+    if (!PyArg_ParseTuple(args, "d", &dt)) return nullptr;
 
     
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -216,7 +210,7 @@ static PyObject * PythonScriptController_onGUIEvent(PyObject * self, PyObject * 
     char* controlID;
     char* valueName;
     char* value;
-    if (!PyArg_ParseTuple(args, "sss", &controlID, &valueName,&value)) return NULL;
+    if (!PyArg_ParseTuple(args, "sss", &controlID, &valueName,&value)) return nullptr;
 
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -233,7 +227,7 @@ static PyObject * PythonScriptController_onKeyPressed(PyObject * self, PyObject 
     (void) self;
 
     char k;
-    if (!PyArg_ParseTuple(args, "c", &k)) return NULL;
+    if (!PyArg_ParseTuple(args, "c", &k)) return nullptr;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj = get_controller(self);
@@ -249,7 +243,7 @@ static PyObject * PythonScriptController_onKeyReleased(PyObject * self, PyObject
     (void) self;
 
     char k;
-    if (!PyArg_ParseTuple(args, "c", &k)) return NULL;
+    if (!PyArg_ParseTuple(args, "c", &k)) return nullptr;
     
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj = get_controller(self);
@@ -266,7 +260,7 @@ static PyObject * PythonScriptController_onMouseButtonLeft(PyObject * self, PyOb
 
     int x, y;
     bool pressed;
-    if (!PyArg_ParseTuple(args, "iib", &x, &y, &pressed)) return NULL;
+    if (!PyArg_ParseTuple(args, "iib", &x, &y, &pressed)) return nullptr;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj = get_controller(self);
@@ -283,7 +277,7 @@ static PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * self, Py
 
     int x, y;
     bool pressed;
-    if (!PyArg_ParseTuple(args, "iib", &x, &y, &pressed)) return NULL;
+    if (!PyArg_ParseTuple(args, "iib", &x, &y, &pressed)) return nullptr;
 
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -301,7 +295,7 @@ static PyObject * PythonScriptController_onMouseButtonRight(PyObject * self, PyO
 
     int x, y;
     bool pressed;
-    if (!PyArg_ParseTuple(args, "iib", &x, &y, &pressed)) return NULL;
+    if (!PyArg_ParseTuple(args, "iib", &x, &y, &pressed)) return nullptr;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj = get_controller(self);
@@ -317,7 +311,7 @@ static PyObject * PythonScriptController_onMouseWheel(PyObject * self, PyObject 
     (void) self;
 
     int x, y, delta;
-    if (!PyArg_ParseTuple(args, "iii",&x, &y, &delta)) return NULL;
+    if (!PyArg_ParseTuple(args, "iii",&x, &y, &delta)) return nullptr;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj = get_controller(self);
@@ -338,14 +332,14 @@ static PyObject * PythonScriptController_onScriptEvent(PyObject * self, PyObject
     char* eventName;
     PyObject *pyData;
     if (!PyArg_ParseTuple(args, "OsO", &pySenderNode, &eventName, &pyData)) {
-        return NULL;
+        return nullptr;
     }
     
     BaseNode* senderBaseNode = ((PySPtr<Base>*)pySenderNode)->object->toBaseNode();
     if (!senderBaseNode) {
         // TODO this should not happen
         PyErr_SetString(PyExc_RuntimeError, "null node wtf");
-        return NULL;
+        return nullptr;
     }
 
     // TODO check pyData
@@ -375,6 +369,15 @@ static PyObject * PythonScriptController_draw(PyObject * self, PyObject * /*args
 
 
 
+static PyObject * PythonScriptController_instance(PyObject * self, PyObject * /*args*/)
+{
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
+    return obj->scriptControllerInstance();
+}
+
+
+
+
 struct error { };
 
 template<class T>
@@ -385,12 +388,13 @@ static inline T* operator || (T* obj, error e) {
 
 
 
-static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args, PyObject* kwargs) {
+static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args, PyObject* /*kwargs*/) {
 
     try {
         PyObject* py_node = PyTuple_GetItem(args, 0) || error();
-        BaseContext* ctx = get<BaseContext>(py_node) || error();
-
+        
+        BaseContext* ctx = sofa::py::unwrap<BaseContext>(py_node) || error();
+    
         using controller_type = PythonScriptController;
         controller_type::SPtr controller = New<controller_type>();
         
@@ -407,14 +411,28 @@ static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args
         return instance;
         
     } catch (error e) {
-        PyErr_SetString(PyExc_TypeError, 
+        PyErr_SetString(PyExc_TypeError,
                         "PythonScriptController.__new__ needs a Sofa.BaseContext as first argument");
-        return NULL;
+        return nullptr;
     };
 }
        
+static PyObject * PythonScriptController_onMouseMove(PyObject * /*self*/, PyObject * args)
+{
+    int x,y;
+    if (!PyArg_ParseTuple(args, "ii",&x,&y))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
 
+#ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
+    std::cerr << obj->m_classname.getValueString() << ".onMouseMove not implemented in " << obj->name.getValueString() << std::endl;
+#endif
 
+    Py_RETURN_NONE;
+}
 
 
 SP_CLASS_METHODS_BEGIN(PythonScriptController)
@@ -424,6 +442,7 @@ SP_CLASS_METHOD(PythonScriptController,initGraph)
 SP_CLASS_METHOD(PythonScriptController,bwdInitGraph)
 SP_CLASS_METHOD(PythonScriptController,onKeyPressed)
 SP_CLASS_METHOD(PythonScriptController,onKeyReleased)
+SP_CLASS_METHOD(PythonScriptController,onMouseMove)
 SP_CLASS_METHOD(PythonScriptController,onMouseButtonLeft)
 SP_CLASS_METHOD(PythonScriptController,onMouseButtonRight)
 SP_CLASS_METHOD(PythonScriptController,onMouseButtonMiddle)
@@ -437,9 +456,11 @@ SP_CLASS_METHOD(PythonScriptController,onGUIEvent)
 SP_CLASS_METHOD(PythonScriptController,onScriptEvent)
 SP_CLASS_METHOD(PythonScriptController,draw)
 SP_CLASS_METHOD(PythonScriptController,onIdle)
+SP_CLASS_METHOD(PythonScriptController,instance)
 SP_CLASS_METHODS_END
 
 
+namespace {
 static struct patch {
 
     patch() {
@@ -448,6 +469,6 @@ static struct patch {
     }
     
 } patcher;
-
+}
 
 SP_CLASS_TYPE_SPTR(PythonScriptController, PythonScriptController, BaseObject);

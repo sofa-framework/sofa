@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,7 +34,7 @@ namespace gpu
 namespace cuda
 {
 
-typedef sofa::component::collision::TTriangleModel<CudaVec3fTypes> CudaTriangleModel;
+typedef sofa::component::collision::TriangleCollisionModel<CudaVec3fTypes> CudaTriangleModel;
 typedef sofa::component::collision::TTriangle<CudaVec3fTypes> CudaTriangle;
 
 } // namespace cuda

@@ -18,20 +18,12 @@ public:
     SOFA_CLASS(PythonTestAllocationCounter, core::objectmodel::BaseObject);
 protected:
     PythonTestAllocationCounter() { s_nbAlloc++; }
-    ~PythonTestAllocationCounter() { s_nbAlloc--; }
+    ~PythonTestAllocationCounter() override { s_nbAlloc--; }
 };
 
 int PythonTestAllocationCounterClass = core::RegisterObject("A test component counting allocations")
         .add< PythonTestAllocationCounter >()
         ;
-SOFA_DECL_CLASS(PythonTestAllocationCounter)
-
-
-
-
-
-
-
 struct MemoryTest : public ::testing::Test
 {
     MemoryTest()
@@ -56,33 +48,33 @@ struct MemoryTest : public ::testing::Test
         sofa::core::objectmodel::PythonScriptFunction pythonScriptFunctionREMOVESUB(PyObject_GetAttrString(ctr->scriptControllerInstance(), "removeSub"), false);
         sofa::core::objectmodel::PythonScriptFunction pythonScriptFunctionDETACHSUB(PyObject_GetAttrString(ctr->scriptControllerInstance(), "detachSub"), false);
 
-        pythonScriptFunctionADD(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 10u );
+        pythonScriptFunctionADD(nullptr, nullptr);
+        EXPECT_EQ( s_nbAlloc, 10u ) << "ADD";
 
-        pythonScriptFunctionADD(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 20u );
+        pythonScriptFunctionADD(nullptr, nullptr);
+        EXPECT_EQ( s_nbAlloc, 20u ) << "ADD";
 
-        pythonScriptFunctionADDSUB(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 30u );
+        pythonScriptFunctionADDSUB(nullptr, nullptr);
+        EXPECT_EQ( s_nbAlloc, 30u ) << "ADDSUB";
 
-        pythonScriptFunctionREMOVESUB(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 20u );
+        pythonScriptFunctionREMOVESUB(nullptr, nullptr);
+        EXPECT_EQ( s_nbAlloc, 20u ) << "RMSUB";
 
-        pythonScriptFunctionREMOVE(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 0u );
-
-
-        pythonScriptFunctionADDSUB(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 10u );
-        pythonScriptFunctionDETACHSUB(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 0u );
+        pythonScriptFunctionREMOVE(nullptr, nullptr);
+        EXPECT_EQ( s_nbAlloc, 0u ) << "RM";
 
 
+        pythonScriptFunctionADDSUB(nullptr, nullptr);
+        EXPECT_EQ( s_nbAlloc, 10u ) << "ADDSUB";
+        pythonScriptFunctionDETACHSUB(nullptr, nullptr);
+        EXPECT_EQ( s_nbAlloc, 0u ) << "DETACHSUB";
 
-        pythonScriptFunctionADD(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 10u );
+
+
+        pythonScriptFunctionADD(nullptr, nullptr);
+        EXPECT_EQ( s_nbAlloc, 10u ) << "ADD";
         simulation::getSimulation()->unload(root);
-        EXPECT_EQ( s_nbAlloc, 0u );
+        EXPECT_EQ( s_nbAlloc, 0u ) << "UNLOAD";
     }
 
 

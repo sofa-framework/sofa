@@ -7,12 +7,12 @@
     <Node name="Tetrahedrons Mesh">
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
         <MechanicalObject template="Vec3d" name="Volume" src="@loader" />
-        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <TetrahedronSetTopologyContainer name="Container" filename="mesh/cylinder.msh" tetrahedra="@loader.tetrahedra" />
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="1" drawColorTetrahedra="1.0 1.0 0.3" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="1" drawColorTetrahedra="1.0 1.0 0.3 1.0" />
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="360" assembling="0" />
         <DiagonalMass template="Vec3d" name="default11" massDensity="2" />
         <FixedPlaneConstraint template="Vec3d" name="default12" direction="0 0 1" dmin="-0.1" dmax="0.1" />

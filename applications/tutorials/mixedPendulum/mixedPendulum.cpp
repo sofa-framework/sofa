@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -37,13 +37,10 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/accessor.h>
 
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
-
-#include <sofa/component/typedef/Sofa_typedef.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaMisc/initSofaMisc.h>
 
 using namespace sofa::simulation::tree;
 typedef sofa::component::odesolver::EulerSolver Solver;
@@ -55,11 +52,10 @@ using sofa::core::VecId;
 int main(int, char** argv)
 {
     sofa::simulation::tree::init();
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::component::initSofaGeneral();
+    sofa::component::initSofaMisc();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
     //=========================== Build the scene
@@ -195,13 +191,9 @@ int main(int, char** argv)
     /*    groot->setAnimate(false);
     */
 
-#ifdef PS3
     groot->setAnimate(true);
-#endif
-
 
     //=========================== Run the main loop
-
     sofa::gui::GUIManager::MainLoop(groot);
 
     sofa::simulation::tree::cleanup();

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,11 +25,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaGeneralDeformable/FrameSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/io/MassSpringLoader.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Cylinder.h>
-#include <sofa/helper/gl/Axis.h>
-#include <sofa/helper/system/config.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <cassert>
 #include <iostream>
 
@@ -45,6 +41,11 @@ namespace component
 namespace interactionforcefield
 {
 
+template<class DataTypes>
+FrameSpringForceField<DataTypes>::FrameSpringForceField()
+    : FrameSpringForceField(nullptr, nullptr)
+{
+}
 
 template<class DataTypes>
 FrameSpringForceField<DataTypes>::FrameSpringForceField ( MechanicalState* object1, MechanicalState* object2 )
@@ -54,15 +55,6 @@ FrameSpringForceField<DataTypes>::FrameSpringForceField ( MechanicalState* objec
     , showExtraTorsion ( initData ( &showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation" ) )
 {
 }
-
-template<class DataTypes>
-FrameSpringForceField<DataTypes>::FrameSpringForceField()
-    : springs ( initData ( &springs,"spring","pairs of indices, stiffness, damping, rest length" ) )
-    , showLawfulTorsion ( initData ( &showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation" ) )
-    , showExtraTorsion ( initData ( &showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation" ) )
-{
-}
-
 
 template <class DataTypes>
 void FrameSpringForceField<DataTypes>::init()
@@ -104,11 +96,6 @@ void FrameSpringForceField<DataTypes>::addSpringForce ( SReal& /*potentialEnergy
 
     f1[a] += Deriv ( fT, C1);
     f2[b] -= Deriv ( fT, C2);
-
-    /*serr << "f1: " << fT1 << ", " << fR1 << sendl;
-    serr << "f2: " << fT2 << ", " << fR2 << sendl;
-    serr << "sum: " << fT2 + fT1 << ", " << fR2 + fR1 << sendl;
-    serr << "diff: " << fT2 - fT1 << ", " << fR2 - fR1 << sendl;*/
 }
 
 template<class DataTypes>
@@ -187,12 +174,16 @@ void FrameSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* /
 template<class DataTypes>
 void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if ( ! ( ( this->mstate1 == this->mstate2 ) ?vparams->displayFlags().getShowForceFields() :vparams->displayFlags().getShowInteractionForceFields() ) ) return;
     const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
-    glDisable ( GL_LIGHTING );
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::defaulttype::Vec4f> colors;
+
     bool external = ( this->mstate1!=this->mstate2 );
     const helper::vector<Spring>& springs = this->springs.getValue();
 
@@ -203,30 +194,38 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         if ( external )
         {
             if ( d < restLength *0.9999 )
-                glColor4f ( 1,0,0,1 );
+            {
+                colors.push_back(sofa::defaulttype::RGBAColor::red());
+                colors.push_back(sofa::defaulttype::RGBAColor::red());
+            }
             else
-                glColor4f ( 0,1,0,1 );
+            {
+                colors.push_back(sofa::defaulttype::RGBAColor::green());
+                colors.push_back(sofa::defaulttype::RGBAColor::green());
+            }
         }
         else
         {
             if ( d < restLength *0.9999 )
-                glColor4f ( 1,0.5f,0,1 );
+            {
+                colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
+                colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
+            }
             else
-                glColor4f ( 0,1,0.5f,1 );
-        }
-        glBegin ( GL_LINES );
-        helper::gl::glVertexT ( p1[springs[i].m1].getCenter() );
-        helper::gl::glVertexT ( p2[springs[i].m2].getCenter() );
+            {
+                colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
+                colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
+            }
 
-        //Debug: display fT: the virtual displacement of the spring( see the model on top of FrameSpringForceField.h
-        /*
-        glColor4f ( 1,1,1,1 );
-        helper::gl::glVertexT ( p1[springs[i].m1].getCenter() + p1[springs[i].m1].getOrientation().rotate ( springs[i].initRot1.rotate ( VecN ( springs[i].initLength/2, 0, 0 ) ) ) );
-        helper::gl::glVertexT ( p2[springs[i].m2].getCenter() + p2[springs[i].m2].getOrientation().rotate ( springs[i].initRot2.rotate ( VecN ( -springs[i].initLength/2, 0, 0 ) ) ) );
-        //*/
-        glEnd();
+        }
+
+        vertices.push_back( p1[springs[i].m1].getCenter() );
+        vertices.push_back( p2[springs[i].m2].getCenter() );
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->drawLines(vertices, 1, colors);
+    vparams->drawTool()->restoreLastState();
+
 }
 
 

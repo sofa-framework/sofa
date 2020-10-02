@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -22,27 +22,17 @@
 #include <SofaGraphComponent/Gravity.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <sofa/component/typedef/Sofa_typedef.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaBaseVisual/VisualStyle.h>
 
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/VecId.h>
 
-//#include <sofa/gui/GUIManager.h>
-//#include <sofa/gui/Main.h>
-
-//#include <sofa/helper/ArgumentParser.h>
-//#include <sofa/helper/system/FileRepository.h>
-//#include <sofa/helper/system/glut.h>
-
-//#include <SofaSimulationTree/GNode.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 
 #include <iostream>
 #include <fstream>
 
-//using namespace sofa::simulation::tree;
 using namespace sofa;
 using sofa::simulation::Node;
 using sofa::component::odesolver::EulerImplicitSolver;

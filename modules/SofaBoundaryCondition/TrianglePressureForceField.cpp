@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 
 #include <SofaBoundaryCondition/TrianglePressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-
-// #define DEBUG_TRIANGLEFEM
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -40,23 +38,13 @@ using namespace sofa::defaulttype;
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TrianglePressureForceField)
-
 int TrianglePressureForceFieldClass = core::RegisterObject("TrianglePressure")
-#ifndef SOFA_FLOAT
-        .add< TrianglePressureForceField<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TrianglePressureForceField<Vec3fTypes> >()
-#endif
+        .add< TrianglePressureForceField<Vec3Types> >()
+
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API TrianglePressureForceField<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API TrianglePressureForceField<Vec3fTypes>;
-#endif
+template class SOFA_BOUNDARY_CONDITION_API TrianglePressureForceField<Vec3Types>;
+
 
 
 } // namespace forcefield

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,6 +21,11 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
+
+#include <fstream>
+
+#include <Eigen/Dense>
+#include <Eigen/Jacobi>
 
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -66,6 +71,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
     typename NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::QuadratureMethod m=NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::GAUSS_LEGENDRE_METHOD;
     typename NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::QuadraturePointArray qpa;
     BarycentricCoordinatesType v;
+    Real div2 = 0.5;
 
     /// integration with linear accuracy.
     v=BarycentricCoordinatesType(0.5);
@@ -73,60 +79,61 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
     edgeNumericalIntegration.addQuadratureMethod(m,1,qpa);
     /// integration with quadratic accuracy.
     qpa.clear();
-    Real a=0.5+1/(2*sqrt(3.));
+    
+    Real a= div2 +1/(2*sqrt((Real)3));
     v=BarycentricCoordinatesType(a);
-    qpa.push_back(QuadraturePoint(v,(Real)0.5));
-    Real b=0.5-1/(2*sqrt(3.));
+    qpa.push_back(QuadraturePoint(v, div2));
+    Real b=div2-1/(2*sqrt((Real)3.));
     v=BarycentricCoordinatesType(b);
-    qpa.push_back(QuadraturePoint(v,(Real)0.5));
+    qpa.push_back(QuadraturePoint(v, div2));
     edgeNumericalIntegration.addQuadratureMethod(m,2,qpa);
     /// integration with cubic accuracy.
     qpa.clear();
-    a=0.5*(1-sqrt((Real)3/5.0));
+    a=div2*(1-sqrt((Real)3/5));
     v=BarycentricCoordinatesType(a);
     qpa.push_back(QuadraturePoint(v,(Real)(5.0/18.0)));
-    b=0.5*(1+sqrt((Real)3/5.0));
+    b=div2*(1+sqrt((Real)3/5));
     v=BarycentricCoordinatesType(b);
     qpa.push_back(QuadraturePoint(v,(Real)(5.0/18.0)));
-    v=BarycentricCoordinatesType(0.5);
+    v=BarycentricCoordinatesType(div2);
     qpa.push_back(QuadraturePoint(v,(Real)(8.0/18.0)));
     edgeNumericalIntegration.addQuadratureMethod(m,3,qpa);
     /// integration with quartic accuracy.
     qpa.clear();
-    a=0.5*(1-sqrt((Real)(3+2*sqrt(6.0/5.0))/7));
+    a=div2*(1-sqrt((Real)(3+2*sqrt(6.0/5.0))/7));
     v=BarycentricCoordinatesType(a);
-    Real a2=0.25-sqrt(5.0/6.0)/12;
+    Real a2= 0.25f - (Real)sqrt(5.0/6.0)/12;
     qpa.push_back(QuadraturePoint(v,a2));
-    a=0.5*(1+sqrt((Real)(3+2*sqrt(6.0/5.0))/7));
-    v=BarycentricCoordinatesType(a);
-    qpa.push_back(QuadraturePoint(v,a2));
-    a=0.5*(1-sqrt((Real)(3-2*sqrt(6.0/5.0))/7));
-    a2=0.25+sqrt(5.0/6.0)/12;
+    a=div2*(1+sqrt((Real)(3+2*sqrt(6.0/5.0))/7));
     v=BarycentricCoordinatesType(a);
     qpa.push_back(QuadraturePoint(v,a2));
-    a=0.5*(1+sqrt((Real)(3-2*sqrt(6.0/5.0))/7));
+    a=div2*(1-sqrt((Real)(3-2*sqrt(6.0/5.0))/7));
+    a2= 0.25f + (Real)sqrt(5.0/6.0)/12;
+    v=BarycentricCoordinatesType(a);
+    qpa.push_back(QuadraturePoint(v,a2));
+    a=div2*(1+sqrt((Real)(3-2*sqrt(6.0/5.0))/7));
     v=BarycentricCoordinatesType(a);
     qpa.push_back(QuadraturePoint(v,a2));
     edgeNumericalIntegration.addQuadratureMethod(m,4,qpa);
     /// integration with quintic accuracy.
     qpa.clear();
-    a=0.5*(1-sqrt((Real)(5+2*sqrt(10.0/7.0)))/3);
+    a=div2*(1-sqrt((Real)(5+2*sqrt(10.0/7.0)))/3);
     v=BarycentricCoordinatesType(a);
-    a2=(322-13*sqrt(70.0))/900;
+    a2= (Real)(322-13*sqrt(70.0))/900;
     qpa.push_back(QuadraturePoint(v,a2/2));
-    a=0.5*(1+sqrt((Real)(5+2*sqrt(10.0/7.0)))/3);
-    v=BarycentricCoordinatesType(a);
-    qpa.push_back(QuadraturePoint(v,a2/2));
-
-    a=0.5*(1-sqrt((Real)(5-2*sqrt(10.0/7.0)))/3);
-    v=BarycentricCoordinatesType(a);
-    a2=(322+13*sqrt(70.0))/900;
-    qpa.push_back(QuadraturePoint(v,a2/2));
-    a=0.5*(1+sqrt((Real)(5-2*sqrt(10.0/7.0)))/3);
+    a=div2*(1+sqrt((Real)(5+2*sqrt(10.0/7.0)))/3);
     v=BarycentricCoordinatesType(a);
     qpa.push_back(QuadraturePoint(v,a2/2));
 
-    v=BarycentricCoordinatesType(0.5);
+    a=div2*(1-sqrt((Real)(5-2*sqrt(10.0/7.0)))/3);
+    v=BarycentricCoordinatesType(a);
+    a2= (Real)(322+13*sqrt(70.0))/900;
+    qpa.push_back(QuadraturePoint(v,a2/2));
+    a=div2*(1+sqrt((Real)(5-2*sqrt(10.0/7.0)))/3);
+    v=BarycentricCoordinatesType(a);
+    qpa.push_back(QuadraturePoint(v,a2/2));
+
+    v=BarycentricCoordinatesType(div2);
     qpa.push_back(QuadraturePoint(v,(Real)(512/1800.0)));
     edgeNumericalIntegration.addQuadratureMethod(m,5,qpa);
 
@@ -145,9 +152,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
     varray[2]=0.9324695142031520278123016; warray[2]=0.1713244923791703450402961;
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
     }
     edgeNumericalIntegration.addQuadratureMethod(m,6,qpa);
@@ -159,12 +166,12 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
     varray[2]=0.9491079123427585245261897;	warray[2]=0.1294849661688696932706114;
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
     }
-    v=BarycentricCoordinatesType(0.5);
+    v=BarycentricCoordinatesType(div2);
     qpa.push_back(QuadraturePoint(v,(Real)warray0/2));
     edgeNumericalIntegration.addQuadratureMethod(m,7,qpa);
     /// integration with  accuracy of order 8.
@@ -177,9 +184,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
     }
     edgeNumericalIntegration.addQuadratureMethod(m,8,qpa);
@@ -193,12 +200,12 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
     }
-    v=BarycentricCoordinatesType(0.5);
+    v=BarycentricCoordinatesType(div2);
     qpa.push_back(QuadraturePoint(v,(Real)warray0/2));
     edgeNumericalIntegration.addQuadratureMethod(m,9,qpa);
 
@@ -212,9 +219,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
     nbIPs=5;
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
     }
     edgeNumericalIntegration.addQuadratureMethod(m,10,qpa);
@@ -228,12 +235,12 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
     varray[4]=0.9782286581460569928039380;	warray[4]=	0.0556685671161736664827537;
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
     }
-    v=BarycentricCoordinatesType(0.5);
+    v=BarycentricCoordinatesType(div2);
     qpa.push_back(QuadraturePoint(v,(Real)warray0/2));
     edgeNumericalIntegration.addQuadratureMethod(m,11,qpa);
     /// integration with accuracy of order 12.
@@ -246,9 +253,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
     nbIPs=6;
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
         qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
     }
     edgeNumericalIntegration.addQuadratureMethod(m,10,qpa);
@@ -290,7 +297,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeLength( BasicArrayInterfac
     const sofa::helper::vector<Edge> &ea = this->m_topology->getEdges();
     const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    for (unsigned int i=0; i<ea.size(); ++i)
+    for (size_t i=0; i<ea.size(); ++i)
     {
         const Edge &e = ea[i];
         ai[i] = (DataTypes::getCPos(p[e[0]])-DataTypes::getCPos(p[e[1]])).norm();
@@ -356,7 +363,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgeD
 
 // test if a point is on the triangle indexed by ind_e
 template<class DataTypes>
-bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::defaulttype::Vec<3,double> &pt, const unsigned int ind_e) const
+bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::defaulttype::Vec<3,double> &pt, const EdgeID ind_e) const
 {
     const double ZERO = 1e-12;
 
@@ -381,9 +388,9 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::defaulttype
 //
 template<class DataTypes>
 sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::compute2PointsBarycoefs(
-    const sofa::defaulttype::Vec<3,double> &p,
-    unsigned int ind_p1,
-    unsigned int ind_p2) const
+    const sofa::defaulttype::Vec<3, double> &p,
+    PointID ind_p1,
+    PointID ind_p2) const
 {
     const double ZERO = 1e-6;
 
@@ -447,7 +454,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
 
     myfile << edge.size() <<"\n";
 
-    for (unsigned int i=0; i<edge.size(); ++i)
+    for (size_t i=0; i<edge.size(); ++i)
     {
         myfile << i+1 << " 1 1 1 2 " << edge[i][0]+1 << " " << edge[i][1]+1 <<"\n";
     }
@@ -473,8 +480,8 @@ bool is_point_on_edge(const Vec& p, const Vec& a, const Vec& b)
 template<class DataTypes>
 sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(
     const sofa::defaulttype::Vec<3,double> &p,
-    unsigned int ind_p1,
-    unsigned int ind_p2) const
+    PointID ind_p1,
+    PointID ind_p2) const
 {
     const double ZERO = 1e-6;
 
@@ -539,7 +546,7 @@ sofa::helper::vector< double > compute_2points_barycoefs(const Vec& p, const Vec
 
 template<class DataTypes>
 sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const EdgeID edgeIndex,
-        sofa::defaulttype::Vec<3,double> c,
+        sofa::defaulttype::Vec<3, double> c,
         bool& intersected)
 {
 
@@ -681,7 +688,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
 
     if ((ind1 == -1) || (ind2 == -1))
     {
-        std::cout << "Error: EdgeSetGeometryAlgorithms::compute2EdgeIntersection, vector director is null." << std::endl;
+        msg_error() << "Vector director is null." ;
         intersected = false;
         return X;
     }
@@ -696,7 +703,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
     for (unsigned int i = 0; i<Coord::spatial_dimensions; i++)
         if ( (X[i] - edge2[0][i] - alpha * vec2[i]) > 0.1 )
         {
-            std::cout << "Error: EdgeSetGeometryAlgorithms::compute2EdgeIntersection, edges don't intersect themself." << std::endl;
+            msg_error() << "Edges don't intersect themself." ;
             intersected = false;
         }
 
@@ -710,8 +717,8 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     PointSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Edges indices
-    if (showEdgeIndices.getValue())
-    {
+    if (showEdgeIndices.getValue() && this->m_topology->getNbEdges() != 0)
+    {        
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         float scale = this->getIndicesScale();
 
@@ -720,8 +727,8 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
         const sofa::helper::vector <Edge>& edgeArray = this->m_topology->getEdges();
 
-        helper::vector<defaulttype::Vector3> positions;
-        for (unsigned int i = 0; i < edgeArray.size(); i++)
+        std::vector<defaulttype::Vector3> positions;
+        for (size_t i = 0; i < edgeArray.size(); i++)
         {
 
             Edge the_edge = edgeArray[i];
@@ -737,25 +744,22 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
 
     // Draw edges
-    if (_draw.getValue())
+    if (d_drawEdges.getValue() && this->m_topology->getNbEdges() != 0)
     {
         const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
 
-        if (!edgeArray.empty())
-        {
-            const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-            std::vector<defaulttype::Vector3> positions;
-            positions.reserve(edgeArray.size()*2u);
-            for (unsigned int i = 0; i<edgeArray.size(); i++)
-            {
-                const Edge& e = edgeArray[i];
-                positions.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
-                positions.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
-            }
-            vparams->drawTool()->drawLines(positions,1.0f, _drawColor.getValue());
-            vparams->drawTool()->drawPoints(positions, 4.0f, _drawColor.getValue());
+        std::vector<defaulttype::Vector3> positions;
+        positions.reserve(edgeArray.size()*2u);
+        for (size_t i = 0; i<edgeArray.size(); i++)
+        {
+            const Edge& e = edgeArray[i];
+            positions.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
+            positions.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
         }
+        vparams->drawTool()->drawLines(positions, 1.0f, _drawColor.getValue());
+        vparams->drawTool()->drawPoints(positions, 4.0f, _drawColor.getValue());
     }
 
 }
@@ -777,7 +781,6 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
 
     for(unsigned pointId=0; pointId<pos.size(); pointId++ )
     {
-        //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, point " << pointId << endl;
         EdgesAroundVertex ve = this->m_topology->getEdgesAroundVertex(pointId);
         edgeVec.resize(ve.size());
         numEdges.push_back((unsigned)ve.size());            // number of edges attached to this point
@@ -797,7 +800,6 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
             CPos p0 = DataTypes::getCPos(pos[edge[0]]);
             CPos p1 = DataTypes::getCPos(pos[edge[1]]);
             edgeVec[e] = p1 - p0;
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights debug: edge "<< edge << ", edgeVec = " << edgeVec[e] << endl;
             // each edge vector adds e.et to the matrix
             for(unsigned j=0; j<3; j++)
                 for(unsigned k=0; k<3; k++)
@@ -814,31 +816,25 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
             // axis x
             a=defaulttype::Vector3(1,0,0);
             cholBksb(u,L,a); // solve EEt.u=x using the Cholesky decomposition
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, ux = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][0] = u * edgeVec[i];
-                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to x = " << weights[n+i][0] << endl;
             }
 
             // axis y
             a=defaulttype::Vector3(0,1,0);
             cholBksb(u,L,a); // solve EEt.u=y using the Cholesky decomposition
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uy = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][1] = u * edgeVec[i];
-                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to y = " << weights[n+i][1] << endl;
             }
 
             // axis z
             a=defaulttype::Vector3(0,0,1);
             cholBksb(u,L,a); // solve EEt.u=z using the Cholesky decomposition
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uz = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][2] = u * edgeVec[i];
-                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to z = " << weights[n+i][2] << endl;
             }
         }
         else
@@ -849,7 +845,6 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
 
             typedef Eigen::Matrix<SReal,3,3> EigenM33;
             EigenM33 emat = eigenMat(EEt);
-//            Eigen::JacobiSVD<EigenM33> jacobi(emat, Eigen::ComputeThinU | Eigen::ComputeThinV);
             Eigen::JacobiSVD<EigenM33> jacobi(emat, Eigen::ComputeFullU | Eigen::ComputeFullV);
             Eigen::Matrix<SReal,3,1> solution;
 
@@ -859,11 +854,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
             // least-squares solve EEt.u=x
             for(int i=0; i<3; i++)
                 u[i] = solution(i);
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, ux = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][0] = u * edgeVec[i];
-                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to x = " << weights[n+i][0] << endl;
             }
 
             // axis y
@@ -872,11 +865,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
             // least-squares solve EEt.u=y
             for(int i=0; i<3; i++)
                 u[i] = solution(i);
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uy = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][1] = u * edgeVec[i];
-                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to y = " << weights[n+i][1] << endl;
             }
 
             // axis z
@@ -885,11 +876,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
             // least-squares solve EEt.u=z
             for(int i=0; i<3; i++)
                 u[i] = solution(i);
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uz = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][2] = u * edgeVec[i];
-                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to z = " << weights[n+i][2] << endl;
             }
         }
 
@@ -898,7 +887,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
 
 
 template<class DataTypes>
-void EdgeSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index, const core::topology::PointAncestorElem &ancestorElem
+void EdgeSetGeometryAlgorithms<DataTypes>::initPointAdded(PointID index, const core::topology::PointAncestorElem &ancestorElem
         , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs)
 {
     using namespace sofa::core::topology;

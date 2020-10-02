@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_PAIRBOXROI_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/VecId.h>
@@ -67,15 +65,15 @@ protected:
 
     PairBoxROI();
 
-    ~PairBoxROI() {}
+    ~PairBoxROI() override {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void doUpdate() override;
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams*) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -85,8 +83,12 @@ public:
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+            {
+                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+                              "' found in the context node.");
                 return false; // this template is not the same as the existing MechanicalState
+            }
         }
 
         return BaseObject::canCreate(obj, context, arg);
@@ -99,17 +101,6 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const PairBoxROI<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-
 protected:
     bool isPointInBox(const CPos& p, const Vec6& b);
     bool isPointInBox(const PointID& pid, const Vec6& b);
@@ -118,36 +109,30 @@ public:
     //Input
     /// A box is defined using xmin, ymin, zmin, xmax, ymax, zmax
     //Box surrounding the mesh
-    Data<Vec6> inclusiveBox; 
+    Data<Vec6> inclusiveBox; ///< Inclusive box defined by xmin,ymin,zmin, xmax,ymax,zmax
     //Box inside the mesh 
-    Data<Vec6> includedBox; 
-    Data<VecCoord> f_X0;
+    Data<Vec6> includedBox; ///< Included box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
     // Point coordinates of the mesh in 3D in double.
-    Data <VecCoord> positions; 
+    Data <VecCoord> positions; ///< Vertices of the mesh loaded
    
 
     //Output
-    Data<SetIndex> f_indices;
-    Data<VecCoord > f_pointsInROI;
+    Data<SetIndex> f_indices; ///< Indices of the points contained in the ROI
+    Data<VecCoord > f_pointsInROI; ///< Points contained in the ROI
 
     //Parameter
-    Data<bool> p_drawInclusiveBox;
-    Data<bool> p_drawIncludedBox;
-    Data<bool> p_drawPoints;
-    Data<double> _drawSize;
+    Data<bool> p_drawInclusiveBox; ///< Draw Inclusive Box
+    Data<bool> p_drawIncludedBox; ///< Draw Included Box
+    Data<bool> p_drawPoints; ///< Draw Points
+    Data<double> _drawSize; ///< Draw Size
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Rigid3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec6dTypes>; //Phuoc
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Rigid3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec6fTypes>; //Phuoc
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP)
+extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Rigid3Types>;
+extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec6Types>; //Phuoc
+ 
 #endif
 
 } // namespace engine

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,14 +56,14 @@ public:
 
     }
 
-    ~AverageCatchAllVector() {}
+    ~AverageCatchAllVector() override {}
 
-    void init()
+    void init() override
     {
         reinit();
     }
 
-    void reinit()
+    void reinit() override
     {
         helper::vector<Type> data;
         const helper::vector<Type> &data1 = _data1.getValue();
@@ -79,13 +79,13 @@ public:
 
     }
 
-    Data< helper::vector<Type> > _data;
-    Data< helper::vector<Type> > _data1;
-    Data< helper::vector<Type> > _data2;
+    Data< helper::vector<Type> > _data; ///< data_out
+    Data< helper::vector<Type> > _data1; ///< data_in1
+    Data< helper::vector<Type> > _data2; ///< data_in2
 
 protected:
 
-    virtual void update()
+    void doUpdate() override
     {
     }
 

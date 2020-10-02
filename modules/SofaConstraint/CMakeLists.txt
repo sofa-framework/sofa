@@ -1,7 +1,16 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaConstraint)
 
 set(HEADER_FILES
+    config.h
+    initConstraint.h
+    )
+
+set(SOURCE_FILES
+    initConstraint.cpp
+    )
+
+list(APPEND HEADER_FILES
     BilateralConstraintResolution.h
     BilateralInteractionConstraint.h
     BilateralInteractionConstraint.inl
@@ -9,12 +18,13 @@ set(HEADER_FILES
     ConstraintAttachBodyPerformer.h
     ConstraintAttachBodyPerformer.inl
     ConstraintSolverImpl.h
+    ConstraintStoreLambdaVisitor.h
     ContactDescription.h
+    ContactIdentifier.h
     FreeMotionAnimationLoop.h
     FrictionContact.h
     FrictionContact.inl
     GenericConstraintCorrection.h
-    GenericConstraintCorrection.inl
     GenericConstraintSolver.h
     LCPConstraintSolver.h
     LMDNewProximityIntersection.h
@@ -23,6 +33,8 @@ set(HEADER_FILES
     LinearSolverConstraintCorrection.inl
     LocalMinDistance.h
     LocalMinDistance.inl
+    MappingGeometricStiffnessForceField.h
+    MappingGeometricStiffnessForceField.inl
     PrecomputedConstraintCorrection.h
     PrecomputedConstraintCorrection.inl
     SlidingConstraint.h
@@ -33,17 +45,30 @@ set(HEADER_FILES
     StopperConstraint.inl
     UncoupledConstraintCorrection.h
     UncoupledConstraintCorrection.inl
+    UniformConstraint.h
+    UniformConstraint.inl
     UnilateralInteractionConstraint.h
     UnilateralInteractionConstraint.inl
-    config.h
-    initConstraint.h
-)
-
-set(SOURCE_FILES
+    BarycentricDistanceLMConstraintContact.h
+    BarycentricDistanceLMConstraintContact.inl
+    DOFBlockerLMConstraint.h
+    DOFBlockerLMConstraint.inl
+    FixedLMConstraint.h
+    FixedLMConstraint.inl
+    DistanceLMContactConstraint.h
+    DistanceLMContactConstraint.inl
+    DistanceLMConstraint.h
+    DistanceLMConstraint.inl
+    LMConstraintSolver.h
+    LMConstraintDirectSolver.h
+    )
+list(APPEND SOURCE_FILES
     BilateralInteractionConstraint.cpp
     ConstraintAnimationLoop.cpp
     ConstraintAttachBodyPerformer.cpp
     ConstraintSolverImpl.cpp
+    ConstraintStoreLambdaVisitor.cpp
+    ContactIdentifier.cpp
     FreeMotionAnimationLoop.cpp
     FrictionContact.cpp
     GenericConstraintCorrection.cpp
@@ -52,46 +77,25 @@ set(SOURCE_FILES
     LMDNewProximityIntersection.cpp
     LinearSolverConstraintCorrection.cpp
     LocalMinDistance.cpp
+    MappingGeometricStiffnessForceField.cpp
     PrecomputedConstraintCorrection.cpp
     SlidingConstraint.cpp
     StickContactConstraint.cpp
     StopperConstraint.cpp
     UncoupledConstraintCorrection.cpp
+    UniformConstraint.cpp
     UnilateralInteractionConstraint.cpp
-    initConstraint.cpp
-)
-
-
-    list(APPEND HEADER_FILES
-        BarycentricDistanceLMConstraintContact.h
-        BarycentricDistanceLMConstraintContact.inl
-        DOFBlockerLMConstraint.h
-        DOFBlockerLMConstraint.inl
-        FixedLMConstraint.h
-        FixedLMConstraint.inl
-        DistanceLMContactConstraint.h
-        DistanceLMContactConstraint.inl
-        DistanceLMConstraint.h
-        DistanceLMConstraint.inl
-        LMConstraintSolver.h
-        LMConstraintDirectSolver.h
+    BarycentricDistanceLMConstraintContact.cpp
+    DOFBlockerLMConstraint.cpp
+    FixedLMConstraint.cpp
+    DistanceLMContactConstraint.cpp
+    DistanceLMConstraint.cpp
+    LMConstraintSolver.cpp
+    LMConstraintDirectSolver.cpp
     )
-
-    list(APPEND SOURCE_FILES
-        BarycentricDistanceLMConstraintContact.cpp
-        DOFBlockerLMConstraint.cpp
-        FixedLMConstraint.cpp
-        DistanceLMContactConstraint.cpp
-        DistanceLMConstraint.cpp
-        LMConstraintSolver.cpp
-        LMConstraintDirectSolver.cpp
-    )
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CONSTRAINT")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} "SofaGeneral/${PROJECT_NAME}")

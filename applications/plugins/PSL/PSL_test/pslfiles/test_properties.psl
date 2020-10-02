@@ -1,0 +1,14 @@
+Node : {
+    name : "root"
+
+    /// properties are Data field attached to the object at load time.
+    properties :
+    {
+        aIntProperty : 1
+        aStringProperty : "Success"
+    }
+
+    TestResult : self.aStringProperty
+}
+
+

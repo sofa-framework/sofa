@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,59 +77,62 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< helper::vector< unsigned int > > points;
-    Data< VecReal > stiffness;
-    Data< VecReal > angularStiffness;
-    Data< helper::vector< CPos > > pivotPoints;
-    Data< std::string > external_rest_shape;
-    Data< helper::vector< unsigned int > > external_points;
-    Data< bool > recompute_indices;
-    Data< bool > drawSpring;
-    Data< defaulttype::RGBAColor > springColor;
+    Data< helper::vector< unsigned int > > d_points; ///< points controlled by the rest shape springs
+    Data< VecReal > d_stiffness; ///< stiffness values between the actual position and the rest shape position
+    Data< VecReal > d_angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
+    Data< helper::vector< CPos > > d_pivotPoints; ///< global pivot points used when translations instead of the rigid mass centers
+    Data< helper::vector< unsigned int > > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
+    Data< bool > d_recompute_indices; ///< Recompute indices (should be false for BBOX)
+    Data< bool > d_drawSpring; ///< draw Spring
+    Data< defaulttype::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
 
-    sofa::core::behavior::MechanicalState< DataTypes > *restMState;
+    SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_restMState;
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
-    //VecDeriv Springs_dir;
 protected:
     RestShapeSpringsForceField();
+
 public:
     /// BaseObject initialization method.
-    void bwdInit();
-
-    virtual void reinit();
+    void bwdInit() override ;
+    void parse(core::objectmodel::BaseObjectDescription *arg) override ;
+    void reinit() override ;
 
     /// Add the forces.
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(x);
+
+        msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
 
     /// Brings ForceField contribution to the global system stiffness matrix.
-    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
+    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
-    virtual void addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & addSubIndex );
+    void addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & addSubIndex ) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
     const DataVecCoord* getExtPosition() const;
     const VecIndex& getIndices() const { return m_indices; }
     const VecIndex& getExtIndices() const { return (useRestMState ? m_ext_indices : m_indices); }
 
-    virtual void updateForceMask();
+    void updateForceMask() override;
 
 protected :
 
     void recomputeIndices();
+    bool checkOutOfBoundsIndices();
+    bool checkOutOfBoundsIndices(const VecIndex &indices, const unsigned int dimension);
 
     VecIndex m_indices;
-    VecReal k;
     VecIndex m_ext_indices;
     helper::vector<CPos> m_pivots;
 
@@ -140,25 +143,10 @@ private :
     bool useRestMState; /// An external MechanicalState is used as rest reference.
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)
-
-#ifndef SOFA_FLOAT
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3dTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec2dTypes>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec1dTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec6dTypes>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3dTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3fTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec2fTypes>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec1fTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec6fTypes>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3fTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid2fTypes>;
-#endif
-
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)
+extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3Types>;
 #endif
 
 } // namespace forcefield

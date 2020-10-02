@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,16 +43,21 @@ protected:
 
 public:
 
-    StopperConstraintResolution1Dof(const double &min, const double &max) { nbLines=1; _min=min; _max=max; }
+    StopperConstraintResolution1Dof(const double &min, const double &max)
+        : core::behavior::ConstraintResolution(1)
+        , _min(min)
+        , _max(max)
+    { 
+    }
 
-    virtual void init(int line, double** w, double *force)
+    void init(int line, double** w, double *force) override
     {
         _w = w[line][line];
         _invW = 1.0/_w;
         force[line  ] = 0.0;
     }
 
-    virtual void resolution(int line, double** /*w*/, double* d, double* force, double*)
+    void resolution(int line, double** /*w*/, double* d, double* force, double*) override
     {
         double dfree = d[line] - _w * force[line];
 
@@ -89,43 +94,26 @@ protected:
 
     unsigned int cid;
 
-    Data<int> index;
-    Data<double> min, max;
+    Data<int> index; ///< index of the stop constraint
+    Data<double> min; ///< minimum value accepted
+    Data<double> max; ///< maximum value accepted
 
 
 
-    StopperConstraint(MechanicalState* object)
-        : Inherit(object)
-        , index(initData(&index, 0, "index", "index of the stop constraint"))
-        , min(initData(&min, -100.0, "min", "minimum value accepted"))
-        , max(initData(&max, 100.0, "max", "maximum value accepted"))
-    {
-    }
-
-
-    StopperConstraint()
-        : index(initData(&index, 0, "index", "index of the stop constraint"))
-        , min(initData(&min, -100.0, "min", "minimum value accepted"))
-        , max(initData(&max, 100.0, "max", "maximum value accepted"))
-    {
-    }
+    StopperConstraint(MechanicalState* object = nullptr);
 
     virtual ~StopperConstraint() {}
 public:
-    virtual void init();
-    virtual void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x);
-    virtual void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v);
+    void init() override;
+    void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x) override;
+    void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v) override;
 
-    virtual void getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
+    void getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class StopperConstraint<defaulttype::Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class StopperConstraint<defaulttype::Vec1fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_CPP)
+extern template class StopperConstraint<defaulttype::Vec1Types>;
+
 #endif
 
 } // namespace constraintset

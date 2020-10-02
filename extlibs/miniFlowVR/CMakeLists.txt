@@ -1,7 +1,5 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(miniFlowVR)
-
-find_package(Boost REQUIRED)
 
 set(HEADER_FILES
 	include/ftl/cmdline.h
@@ -37,8 +35,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/extlibs/MiniFlowVR>")
 
 # The code must be relocatable if we want to link a shared library against it
 if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
@@ -46,9 +43,10 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
 endif()
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_create_package(MiniFlowVR 0.0 ${PROJECT_NAME} "")
-
-foreach(HEADER ${HEADER_FILES})
-    string(REGEX MATCH "f(.*)[/\\]" DIR ${HEADER})
-    install(FILES ${HEADER} DESTINATION "include/${DIR}")
-endforeach(HEADER HEADERS)
+sofa_generate_package(
+    NAME MiniFlowVR
+    VERSION 0.1
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "include"
+    INCLUDE_INSTALL_DIR "extlibs/MiniFlowVR"
+    )

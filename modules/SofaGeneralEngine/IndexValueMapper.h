@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,14 +23,11 @@
 #define INDEXVALUEMAPPER_H_
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
-
 
 namespace sofa
 {
@@ -40,7 +37,6 @@ namespace component
 
 namespace engine
 {
-
 
 template <class DataTypes>
 class IndexValueMapper : public sofa::core::DataEngine
@@ -56,44 +52,29 @@ public:
 protected:
 
     IndexValueMapper();
-    ~IndexValueMapper() {}
+    ~IndexValueMapper() override {}
 public:
-    void init();
-    void reinit();
-    void update();
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const IndexValueMapper<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
+    void init() override;
+    void reinit() override;
+    void doUpdate() override;
 
     //Input
-    Data<sofa::helper::vector<Real> > f_inputValues;
-    Data<sofa::helper::vector<Index> > f_indices;
-    Data<Real> f_value;
+    Data<sofa::helper::vector<Real> > f_inputValues; ///< Already existing values (can be empty)
+    Data<sofa::helper::vector<Index> > f_indices; ///< Indices to map value on
+    Data<Real> f_value; ///< Value to map indices on
 
     //Output
-    Data<sofa::helper::vector<Real> > f_outputValues;
+    Data<sofa::helper::vector<Real> > f_outputValues; ///< New map between indices and values
 
     //Parameter
-    Data<Real> p_defaultValue;
+    Data<Real> p_defaultValue; ///< Default value for indices without any value
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(INDEXVALUEMAPPER_CPP_)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API IndexValueMapper<sofa::defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API IndexValueMapper<sofa::defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(INDEXVALUEMAPPER_CPP_)
+extern template class SOFA_GENERAL_ENGINE_API IndexValueMapper<sofa::defaulttype::Vec3Types>;
+ 
 #endif
-
 
 } // namespace engine
 

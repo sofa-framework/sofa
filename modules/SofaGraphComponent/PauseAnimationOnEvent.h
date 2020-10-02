@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,14 +45,14 @@ public:
 protected:
     PauseAnimationOnEvent();
 
-    virtual ~PauseAnimationOnEvent();
+    ~PauseAnimationOnEvent() override;
 public:
-    virtual void init();
+    void init() override;
 
     bool paused;
-    bool isPaused();
+    bool isPaused() override;
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
 };
 

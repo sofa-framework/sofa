@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
 #include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
 
 
@@ -38,16 +37,6 @@ void initGeneralSimpleFEM()
         first = false;
     }
 }
-
-SOFA_LINK_CLASS(BeamFEMForceField)
-SOFA_LINK_CLASS(HexahedralFEMForceField)
-SOFA_LINK_CLASS(HexahedralFEMForceFieldAndMass)
-SOFA_LINK_CLASS(HexahedronFEMForceFieldAndMass)
-SOFA_LINK_CLASS(TetrahedralCorotationalFEMForceField)
-//SOFA_LINK_CLASS(TriangularAnisotropicFEMForceField)
-//SOFA_LINK_CLASS(TriangleFEMForceField)
-//SOFA_LINK_CLASS(TriangularFEMForceField)
-SOFA_LINK_CLASS(TriangularFEMForceFieldOptim)
 
 
 } // namespace component

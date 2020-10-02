@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,13 +22,14 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_INL
 
-#include <SofaBoundaryCondition/AffineMovementConstraint.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
 #include <sofa/helper/cast.h>
 
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
 
 namespace sofa
 {
@@ -61,7 +62,7 @@ void AffineMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(u
 
 template <class DataTypes>
 AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , data(new AffineMovementConstraintInternalData<DataTypes>)
     , m_meshIndices( initData(&m_meshIndices,"meshIndices","Indices of the mesh") )
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
@@ -71,11 +72,11 @@ AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
     , m_quaternion( initData(&m_quaternion,"quaternion","quaternion applied to border points") )
     , m_translation(  initData(&m_translation,"translation","translation applied to border points") )
     , m_drawConstrainedPoints(  initData(&m_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_pointHandler(nullptr)
 {
-    pointHandler = new FCPointHandler(this, &m_indices);
-
     if(!m_beginConstraintTime.isSet())
-     m_beginConstraintTime = 0; 
+        m_beginConstraintTime = 0;
     if(!m_endConstraintTime.isSet())
         m_endConstraintTime = 20;
 }
@@ -85,10 +86,10 @@ AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
 template <class DataTypes>
 AffineMovementConstraint<DataTypes>::~AffineMovementConstraint()
 {
-    if (pointHandler)
-        delete pointHandler;
+    if (m_pointHandler)
+        delete m_pointHandler;
 }
- 
+
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::clearConstraints()
 {
@@ -118,11 +119,27 @@ void AffineMovementConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    // Initialize functions and parameters
-    m_indices.createTopologicalEngine(topology, pointHandler);
-    m_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";        
+
+        // Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &m_indices);
+        m_indices.createTopologicalEngine(_topology, m_pointHandler);
+        m_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 
     const SetIndexArray & indices = m_indices.getValue();
 
@@ -132,7 +149,7 @@ void AffineMovementConstraint<DataTypes>::init()
         const unsigned int index=indices[i];
         if (index >= maxIndex)
         {
-            serr << "Index " << index << " not valid!" << sendl;
+            msg_error() << "Index " << index << " not valid!";
             removeConstraint(index);
         }
     }
@@ -172,44 +189,45 @@ void AffineMovementConstraint<DataTypes>::projectPosition(const core::Mechanical
     sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( this->getContext()->getRootContext() );
     helper::WriteAccessor<DataVecCoord> x = xData;
     const SetIndexArray & indices = m_indices.getValue();
-    
+
     // Time
     SReal beginTime = m_beginConstraintTime.getValue();
     SReal endTime = m_endConstraintTime.getValue();
     SReal totalTime = endTime - beginTime;
-   
+
     //initialize initial mesh Dofs positions, if it's not done
     if(meshPointsX0.size()==0)
         this->initializeInitialPositions(m_meshIndices.getValue(),xData,meshPointsX0);
 
     //initialize final mesh Dofs positions, if it's not done
     if(meshPointsXf.size()==0)
-       this->initializeFinalPositions(m_meshIndices.getValue(),xData, meshPointsX0, meshPointsXf);
-  
+        this->initializeFinalPositions(m_meshIndices.getValue(),xData, meshPointsX0, meshPointsXf);
+
     //initialize initial constrained Dofs positions, if it's not done
     if(x0.size() == 0)
         this->initializeInitialPositions(indices,xData,x0);
 
-     //initialize final constrained Dofs positions, if it's not done
+    //initialize final constrained Dofs positions, if it's not done
     if (xf.size() == 0)
         this->initializeFinalPositions(indices,xData,x0,xf);
-
     // Update the intermediate Dofs positions computed by linear interpolation
-   SReal time = root->getTime();
-   if( time > beginTime && time <= endTime && totalTime > 0)
-    { 
-        for (size_t i = 0; i< indices.size(); ++i)
-        { 
-            x[indices[i]] = ((xf[indices[i]]-x0[indices[i]])*time + (x0[indices[i]]*endTime - xf[indices[i]]*beginTime))/totalTime;
+    SReal time = root->getTime();
+    if( time > beginTime && time <= endTime && totalTime > 0)
+    {
+        for (auto index : indices)
+        {
+            DataTypes::setCPos( x[index],
+                                ((DataTypes::getCPos(xf[index])-DataTypes::getCPos(x0[index]))*time +
+                                 (DataTypes::getCPos(x0[index])*endTime - DataTypes::getCPos(xf[index])*beginTime))/totalTime);
         }
     }
-   else if (time > endTime)
-   {
-        for (size_t i = 0; i< indices.size(); ++i)
-        { 
-             x[indices[i]] = xf[indices[i]];
+    else if (time > endTime)
+    {
+        for (auto index : indices)
+        {
+            x[index] = xf[index];
         }
-   }  
+    }
 }
 
 template <class DataTypes>
@@ -217,12 +235,11 @@ void AffineMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Base
 {
     // clears the rows and columns associated with constrained particles
     unsigned blockSize = DataTypes::deriv_total_size;
- 
+
     for(SetIndexArray::const_iterator it= m_indices.getValue().begin(), iend=m_indices.getValue().end(); it!=iend; it++ )
     {
         M->clearRowsCols((*it) * blockSize,(*it+1) * (blockSize) );
     }
-   
 }
 
 template <class DataTypes>
@@ -230,11 +247,11 @@ void AffineMovementConstraint<DataTypes>::getFinalPositions( VecCoord& finalPos,
 {
     // Indices of mesh points
     const SetIndexArray & meshIndices = m_meshIndices.getValue();
-  
+
     // Initialize final positions
     if(meshPointsXf.size()==0)
     {this->initializeFinalPositions(meshIndices,xData,meshPointsX0,meshPointsXf);}
-   
+
     // Set final positions
     finalPos.resize(meshIndices.size());
     for (size_t i=0; i < meshIndices.size() ; ++i)
@@ -253,51 +270,48 @@ void AffineMovementConstraint<DataTypes>::initializeInitialPositions (const SetI
     {
         x0[indices[i]] = x[indices[i]];
     }
-    
-}
-
-template <class DataTypes>
-void AffineMovementConstraint<DataTypes>::transform(const SetIndexArray & indices, VecCoord& x0, VecCoord& xf)
-{
-    Vector3 translation = m_translation.getValue();
- 
-    for (size_t i=0; i < indices.size() ; ++i)
-    {
-         DataTypes::setCPos(xf[indices[i]], (m_rotation.getValue())*DataTypes::getCPos(x0[indices[i]]) + translation);
-    }
-  
 }
 
 
 template <>
-void AffineMovementConstraint<defaulttype::Rigid3Types>::transform(const SetIndexArray & indices, defaulttype::Rigid3Types::VecCoord& x0, defaulttype::Rigid3Types::VecCoord& xf)
+void AffineMovementConstraint<defaulttype::Rigid3Types>::transform(const SetIndexArray & indices,
+                                                                   defaulttype::Rigid3Types::VecCoord& x0,
+                                                                   defaulttype::Rigid3Types::VecCoord& xf)
 {
     // Get quaternion and translation values
     RotationMatrix rotationMat(0);
-    Quat quat =  m_quaternion.getValue(); 
+    Quat quat =  m_quaternion.getValue();
     quat.toMatrix(rotationMat);
     Vector3 translation = m_translation.getValue();
 
     // Apply transformation
     for (size_t i=0; i < indices.size() ; ++i)
     {
-        // Translation 
+        // Translation
         xf[indices[i]].getCenter() = rotationMat*(x0[indices[i]].getCenter()) + translation;
-
         // Rotation
         xf[indices[i]].getOrientation() = (quat)+x0[indices[i]].getOrientation();
-
     }
+}
 
+template <class DataTypes>
+void AffineMovementConstraint<DataTypes>::transform(const SetIndexArray & indices, VecCoord& x0, VecCoord& xf)
+{
+    Vector3 translation = m_translation.getValue();
+
+    for (size_t i=0; i < indices.size() ; ++i)
+    {
+        DataTypes::setCPos(xf[indices[i]], (m_rotation.getValue())*DataTypes::getCPos(x0[indices[i]]) + translation);
+    }
 }
 
 
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::initializeFinalPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0, VecCoord& xf)
 {
-     Deriv displacement; 
-     helper::WriteAccessor<DataVecCoord> x = xData;
-   
+    Deriv displacement;
+    helper::WriteAccessor<DataVecCoord> x = xData;
+
     xf.resize(x.size());
     
     // if the positions were not initialized
@@ -317,13 +331,13 @@ void AffineMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
 
     if(m_drawConstrainedPoints.getValue())
     {
-        for (SetIndexArray::const_iterator it = indices.begin();it != indices.end();++it)
+        for( auto& index : indices )
         {
-            point = DataTypes::getCPos(x[*it]);
+            point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
         vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4,float>(1,0.5,0.5,1));
-    }  
+    }
 }
 
 

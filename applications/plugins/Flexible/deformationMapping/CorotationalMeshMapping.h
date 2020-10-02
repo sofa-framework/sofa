@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -99,7 +99,7 @@ public:
 
     typedef defaulttype::Mat<3,3,Real> Mat3x3;
 
-    virtual void init()
+    virtual void init() override
     {
         this->getToModel()->resize( 1 );
         baseMatrices.resize( 1 );
@@ -147,7 +147,7 @@ public:
         this->Inherit::init();
     }
 
-    virtual void apply(const core::MechanicalParams */*mparams*/, Data<VecCoord>& dOut, const Data<VecCoord>& dIn)
+    virtual void apply(const core::MechanicalParams */*mparams*/, Data<VecCoord>& dOut, const Data<VecCoord>& dIn) override
     {
         helper::WriteOnlyAccessor< Data<VecCoord> >  posOut = dOut;
         helper::ReadAccessor< Data<VecCoord> >  pos = dIn;
@@ -155,9 +155,6 @@ public:
 
         rot.resize(this->clusters.size());
 
-        //#ifdef _OPENMP
-        //        #pragma omp parallel for
-        //#endif
         for (unsigned int i=0 ; i<this->clusters.size() ; ++i)
         {
             Mat3x3 M;
@@ -181,7 +178,7 @@ public:
         }
     }
 
-    virtual void applyJ(const core::MechanicalParams */*mparams*/, Data<VecDeriv>& dOut, const Data<VecDeriv>& dIn)
+    virtual void applyJ(const core::MechanicalParams */*mparams*/, Data<VecDeriv>& dOut, const Data<VecDeriv>& dIn) override
     {
 
         helper::WriteOnlyAccessor< Data<VecDeriv> >  vOut = dOut;
@@ -195,7 +192,7 @@ public:
             }
         }
     }
-    virtual void applyJT(const core::MechanicalParams */*mparams*/, Data<VecDeriv>& dIn, const Data<VecDeriv>& dOut)
+    virtual void applyJT(const core::MechanicalParams */*mparams*/, Data<VecDeriv>& dIn, const Data<VecDeriv>& dOut) override
     {
         helper::ReadAccessor< Data<VecDeriv> >  vOut = dOut;
         helper::WriteAccessor< Data<VecDeriv> >  v = dIn;
@@ -208,20 +205,15 @@ public:
             }
         }
     }
-    virtual void applyJT(const core::ConstraintParams */*cparams*/, Data<MatrixDeriv>& /*dIn*/, const Data<MatrixDeriv>& /*dOut*/) {}
+    virtual void applyJT(const core::ConstraintParams */*cparams*/, Data<MatrixDeriv>& /*dIn*/, const Data<MatrixDeriv>& /*dOut*/) override {}
 
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentDfId*/, core::ConstMultiVecDerivId )
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentDfId*/, core::ConstMultiVecDerivId ) override
     {
-        //        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
-        //        const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
-        //        const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
-        //        helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
-        //        geometricStiffness.addMult(parentForceData,parentDisplacementData,mparams->kFactor()*childForce[0][0]);
     }
 
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()    { return &baseMatrices; }
+    virtual const sofa::defaulttype::BaseMatrix* getJ() override { return &jacobian; }
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override { return &baseMatrices; }
 
 
 protected:
@@ -247,17 +239,17 @@ protected:
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
 public:
-    Data< SeqTetrahedra > in_tetrahedra;
-    Data< SeqHexahedra > in_hexahedra;
-    Data< SeqTriangles > in_triangles;
-    Data< SeqQuads > in_quads;
-    Data< SeqEdges > in_edges;
+    Data< SeqTetrahedra > in_tetrahedra; ///< input tetrahedra
+    Data< SeqHexahedra > in_hexahedra; ///< input hexahedra
+    Data< SeqTriangles > in_triangles; ///< input triangles
+    Data< SeqQuads > in_quads; ///< input quads
+    Data< SeqEdges > in_edges; ///< input edges
 
-    Data< SeqTetrahedra > out_tetrahedra;
-    Data< SeqHexahedra > out_hexahedra;
-    Data< SeqTriangles > out_triangles;
-    Data< SeqQuads > out_quads;
-    Data< SeqEdges > out_edges;
+    Data< SeqTetrahedra > out_tetrahedra; ///< output tetrahedra
+    Data< SeqHexahedra > out_hexahedra; ///< output hexahedra
+    Data< SeqTriangles > out_triangles; ///< output triangles
+    Data< SeqQuads > out_quads; ///< output quads
+    Data< SeqEdges > out_edges; ///< output edges
 
 protected:
     VecVecID clusters;  ///< groups of points for which we compute the transformation
@@ -269,13 +261,9 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CorotationalMeshMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API CorotationalMeshMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API CorotationalMeshMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_CorotationalMeshMapping_CPP)
+extern template class SOFA_Flexible_API CorotationalMeshMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+
 
 #endif
 

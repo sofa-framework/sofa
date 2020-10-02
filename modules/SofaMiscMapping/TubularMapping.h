@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -82,32 +82,24 @@ public:
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef defaulttype::Vec<N,Real> Vec;
 
-    void init();
+    void init() override;
 
-    virtual void apply ( const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn );
+    void apply ( const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn ) override;
 
-    virtual void applyJ( const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn );
+    void applyJ( const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn ) override;
 
-    virtual void applyJT ( const core::MechanicalParams* mparams, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn );
+    void applyJT ( const core::MechanicalParams* mparams, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn ) override;
 
-    virtual void applyJT ( const core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn );
+    void applyJT ( const core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn ) override;
 
-    Data<unsigned int> m_nbPointsOnEachCircle; // number of points along the circles around each point of the input object (10 by default)
-    Data<double> m_radius; // radius of the circles around each point of the input object (1 by default)
-    Data<int> m_peak; // if 1 or 2 creates a peak at the end
+    Data<unsigned int> m_nbPointsOnEachCircle; ///< number of points along the circles around each point of the input object (10 by default)
+    Data<double> m_radius; ///< radius of the circles around each point of the input object (1 by default)
+    Data<int> m_peak; ///< if 1 or 2 creates a peak at the end
 
     container::RadiusContainer* radiusContainer;
 protected:
 
-    TubularMapping ( )
-        : Inherit ( )
-        , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
-        , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
-        , m_peak (initData(&m_peak, 0, "peak", "=0 no peak, =1 peak on the first segment =2 peak on the two first segment, =-1 peak on the last segment"))
-        ,radiusContainer(NULL)
-    {
-    }
-
+    TubularMapping ( );
     virtual ~TubularMapping()
     {}
 
@@ -116,23 +108,12 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_TUBULARMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_TUBULARMAPPING_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API TubularMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API TubularMapping< defaulttype::Rigid3dTypes, defaulttype::ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API TubularMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API TubularMapping< defaulttype::Rigid3fTypes, defaulttype::ExtVec3fTypes >;
-#endif
+extern template class SOFA_MISC_MAPPING_API TubularMapping< defaulttype::Rigid3Types, defaulttype::Vec3dTypes >;
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API TubularMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API TubularMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3dTypes >;
-#endif
-#endif
+
+
 
 #endif
 

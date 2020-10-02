@@ -149,7 +149,6 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         
         self.rigids = dict()
         self.joints = dict()
-        self.meshExporters = list()
 
         # the set of tags simulated as rigids
         self.param.rigidTags={"rigid"}
@@ -215,15 +214,11 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         """
         if not os.path.exists(dir):
             os.makedirs(dir)
-        for rigid in self.rigids.values():
+        for rigid in self.rigids.itervalues():
             for mid,visual in rigid.visuals.iteritems():
                 filename = os.path.join(dir, os.path.basename(self.model.meshes[mid].source))
                 e = visual.node.createObject('ObjExporter', name='ObjExporter', filename=filename, printLog=True, exportAtEnd=ExportAtEnd)
                 self.meshExporters.append(e)
-
-    def exportMeshes(self):
-        for e in self.meshExporters:
-            e.writeOBJ()
 
 
     def createScene(self):

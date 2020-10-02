@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 
 project(SofaPython_test)
 
@@ -8,7 +8,11 @@ set(SOURCE_FILES
     python_test_list.cpp
     memory.cpp
     PythonFactory_test.cpp
+    SofaModule_test.cpp
+    PythonBinding_test_list.cpp
     PythonScriptControllerHelper_test.cpp
+    PythonScriptController_test.cpp
+    SofaModule_test.cpp
 )
 
 set(PYTHON_FILES
@@ -21,10 +25,21 @@ set(PYTHON_FILES
     python/test_Quaternion.py
     python/test_Tools.py
     python/test_mass.py
+    python/test_memory.py
     python/test_units.py
+    python/test_SofaModule.py
     python/test_MeshLoader.py
     python/test_PythonFactory.py
     python/test_PythonScriptControllerHelper.py
+    python/test_PythonScriptController.py
+    python/test_BindingBase.py
+    python/test_BindingBaseObject.py
+    python/test_BindingData.py
+    python/test_BindingLink.py
+    python/test_BindingNode.py
+    python/test_BindingSofa.py
+    python/test_PythonEnvironment.py
+    python/unicodeData.py
 )
 
 

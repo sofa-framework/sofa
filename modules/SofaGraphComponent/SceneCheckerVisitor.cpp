@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,66 +20,78 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SceneCheckerVisitor.h"
-#include "RequiredPlugin.h"
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
+
+#include <algorithm>
+#include <sofa/version.h>
 
 namespace sofa
 {
 namespace simulation
 {
-using sofa::component::misc::RequiredPlugin ;
-using sofa::core::ObjectFactory ;
+namespace _scenechecking_
+{
+
 using sofa::core::ExecParams ;
-using sofa::helper::system::PluginRepository ;
-using sofa::helper::system::PluginManager ;
 
 SceneCheckerVisitor::SceneCheckerVisitor(const ExecParams* params) : Visitor(params)
 {
+
 }
+
 
 SceneCheckerVisitor::~SceneCheckerVisitor()
 {
 }
 
+
+void SceneCheckerVisitor::addCheck(SceneCheck::SPtr check)
+{
+    if( std::find(m_checkset.begin(), m_checkset.end(), check) == m_checkset.end() )
+        m_checkset.push_back(check) ;
+}
+
+
+void SceneCheckerVisitor::removeCheck(SceneCheck::SPtr check)
+{
+    m_checkset.erase( std::remove( m_checkset.begin(), m_checkset.end(), check ), m_checkset.end() );
+}
+
 void SceneCheckerVisitor::validate(Node* node)
 {
-    helper::vector< RequiredPlugin* > plugins ;
-    node->getTreeObjects< RequiredPlugin >(&plugins) ;
+    std::stringstream tmp;
+    bool first = true;
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        tmp << (first ? "" : ", ") << check->getName() ;
+        first = false;
+    }
+    msg_info("SceneCheckerVisitor") << "Validating node \""<< node->getName() << "\" with checks: [" << tmp.str() << "]" ;
 
-    for(auto& plugin : plugins)
-        m_requiredPlugins[plugin->getName()] = true ;
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        check->doInit(node) ;
+    }
 
     execute(node) ;
+
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        check->doPrintSummary() ;
+    }
+    msg_info("SceneCheckerVisitor") << "Finished validating node \""<< node->getName() << "\".";
 }
+
 
 Visitor::Result SceneCheckerVisitor::processNodeTopDown(Node* node)
 {
-    for (auto& object : node->object )
+    for(SceneCheck::SPtr& check : m_checkset)
     {
-        ObjectFactory::ClassEntry entry = ObjectFactory::getInstance()->getEntry(object->getClassName());
-        if(!entry.creatorMap.empty())
-        {
-            ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(object->getTemplateName());
-            if(entry.creatorMap.end() != it && *it->second->getTarget()){
-                std::string pluginName = it->second->getTarget() ;
-                std::string path = PluginManager::getInstance().findPlugin(pluginName) ;
-                if( PluginManager::getInstance().pluginIsLoaded(path)
-                    && m_requiredPlugins.find(pluginName) == m_requiredPlugins.end() )
-                {
-                    msg_warning("SceneChecker") << "This scene is using component '" << object->getClassName() << "'. " << msgendl
-                                                << "This component is part of the '" << pluginName << "' plugin but there is no <RequiredPlugin name='" << pluginName << "'> directive in your scene." << msgendl
-                                                << "Your scene may not work on a sofa environment that does not have pre-loaded the plugin." << msgendl
-                                                << "To fix your scene and remove this warning you need to add the RequiredPlugin directive at the beginning of your scene. ";
-                }
-            }
-
-        }
+        check->doCheckOn(node) ;
     }
+
     return RESULT_CONTINUE;
 }
 
+} // namespace _scenechecking_
 } // namespace simulation
-
 } // namespace sofa
-

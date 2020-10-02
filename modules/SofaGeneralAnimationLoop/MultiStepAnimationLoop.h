@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,9 +43,9 @@ public:
 protected:
     MultiStepAnimationLoop(simulation::Node* gnode);
 
-    virtual ~MultiStepAnimationLoop();
+    ~MultiStepAnimationLoop() override;
 public:
-    virtual void step (const sofa::core::ExecParams* params, SReal dt);
+    void step (const sofa::core::ExecParams* params, SReal dt) override;
 
     /// Construction method called by ObjectFactory.
     template<class T>
@@ -58,8 +58,8 @@ public:
         return obj;
     }
 
-    Data<int> collisionSteps;
-    Data<int> integrationSteps;
+    Data<int> collisionSteps; ///< number of collision steps between each frame rendering
+    Data<int> integrationSteps; ///< number of integration steps between each collision detection
 };
 
 } // namespace animationloop

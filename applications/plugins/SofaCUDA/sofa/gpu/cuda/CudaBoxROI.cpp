@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,14 +33,14 @@ namespace component
 
 namespace engine
 {
-template class boxroi::BoxROI<gpu::cuda::CudaVec2fTypes>;
-template class boxroi::BoxROI<gpu::cuda::CudaVec3fTypes>;
-template class boxroi::BoxROI<gpu::cuda::CudaVec3f1Types>;
-template class boxroi::BoxROI<gpu::cuda::CudaRigid3fTypes>;
+template class SOFA_GPU_CUDA_API boxroi::BoxROI<gpu::cuda::CudaVec2fTypes>;
+template class SOFA_GPU_CUDA_API boxroi::BoxROI<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API boxroi::BoxROI<gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API boxroi::BoxROI<gpu::cuda::CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class boxroi::BoxROI<gpu::cuda::CudaVec2dTypes>;
-template class boxroi::BoxROI<gpu::cuda::CudaVec3dTypes>;
-template class boxroi::BoxROI<gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API boxroi::BoxROI<gpu::cuda::CudaVec2dTypes>;
+template class SOFA_GPU_CUDA_API boxroi::BoxROI<gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API boxroi::BoxROI<gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace engine
@@ -52,8 +52,6 @@ namespace gpu
 
 namespace cuda
 {
-
-SOFA_DECL_CLASS(CudaBoxROI)
 
 int BoxROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::engine::boxroi::BoxROI<CudaVec2fTypes> >()

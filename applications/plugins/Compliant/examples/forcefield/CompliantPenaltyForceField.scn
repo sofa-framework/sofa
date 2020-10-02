@@ -10,7 +10,7 @@
 
         
         <MechanicalObject name="DOF" template="Vec3d" position="0 1 0" showObject="true" drawMode="1"/>
-        <UniformMass name="themass" mass="1" />
+        <UniformMass name="themass" vertexMass="1" />
         
         <Node name="diff">
             <MechanicalObject name="DOF" template="Vec3d"/>

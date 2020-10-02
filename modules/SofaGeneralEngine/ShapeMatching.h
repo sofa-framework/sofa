@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_SHAPEMATCHING_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -69,27 +67,24 @@ public:
 
     ShapeMatching();
 
-    virtual ~ShapeMatching() {}
+    ~ShapeMatching() override {}
 
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void doUpdate() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    Data<unsigned int> iterations;
-    Data< Real > affineRatio;
-    Data< Real > fixedweight;
-    Data< VecCoord > fixedPosition0;
-    Data< VecCoord > fixedPosition;
+    Data<unsigned int> iterations; ///< Number of iterations.
+    Data< Real > affineRatio; ///< Blending between affine and rigid.
+    Data< Real > fixedweight; ///< weight of fixed particles.
+    Data< VecCoord > fixedPosition0; ///< rest positions of non mechanical particles.
+    Data< VecCoord > fixedPosition; ///< current (fixed) positions of non mechanical particles.
     Data< VecCoord > position; ///< input (current mstate position)
     Data< VVI > cluster; ///< input2 (clusters)
     Data< VecCoord > targetPosition;       ///< result
-
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const ShapeMatching<DataTypes>* = NULL)    {    return DataTypes::Name();    }
 
 private:
     sofa::core::behavior::MechanicalState<DataTypes>* mstate;
@@ -108,15 +103,10 @@ private:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP)
+extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Rigid3Types>;
+ 
 #endif
 
 } // namespace engine

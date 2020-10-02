@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,9 +38,6 @@
 
 namespace sofa {
 
-using std::cout;
-using std::cerr;
-using std::endl;
 using namespace component;
 using namespace defaulttype;
 /**  Patch test in 2D and 3D.
@@ -137,9 +134,8 @@ struct TetrahedronNumericalIntegration_test : public Sofa_test<typename _DataTyp
 
     void TearDown()
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);
-//        cerr<<"tearing down"<<endl;
     }
 
 };

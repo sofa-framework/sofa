@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,19 +38,15 @@ namespace engine
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(TranslateTransformMatrixEngine)
 int TranslateTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given translation")
         .add< TranslateTransformMatrixEngine >();
 
-SOFA_DECL_CLASS(InvertTransformMatrixEngine)
 int InvertTransformMatrixEngineClass = core::RegisterObject("Inverts the input transform")
         .add< InvertTransformMatrixEngine >();
 
-SOFA_DECL_CLASS(ScaleTransformMatrixEngine)
 int ScaleTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given scale transformation")
         .add< ScaleTransformMatrixEngine >();
 
-SOFA_DECL_CLASS(RotateTransformMatrixEngine)
 int RotateTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given rotation")
         .add< RotateTransformMatrixEngine >();
 
@@ -79,7 +75,7 @@ void AbstractTransformMatrixEngine::reinit()
  * InvertTransformMatrixEngine
  */
 
-void InvertTransformMatrixEngine::update()
+void InvertTransformMatrixEngine::doUpdate()
 {
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
@@ -104,7 +100,7 @@ void TranslateTransformMatrixEngine::init()
     setDirtyValue();
 }
 
-void TranslateTransformMatrixEngine::update()
+void TranslateTransformMatrixEngine::doUpdate()
 {
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
     helper::ReadAccessor< Data<Vector3> > translation = d_translation;
@@ -133,12 +129,11 @@ void RotateTransformMatrixEngine::init()
     setDirtyValue();
 }
 
-void RotateTransformMatrixEngine::update()
+void RotateTransformMatrixEngine::doUpdate()
 {
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
     helper::ReadAccessor< Data<Vector3> > rotation = d_rotation;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
-
 
     Matrix4 myT;
     myT.identity();
@@ -166,7 +161,7 @@ void ScaleTransformMatrixEngine::init()
     setDirtyValue();
 }
 
-void ScaleTransformMatrixEngine::update()
+void ScaleTransformMatrixEngine::doUpdate()
 {
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
     helper::ReadAccessor< Data<Vector3> > scale = d_scale;

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,6 +23,7 @@
 #include <SofaGeneralLoader/MeshOffLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <fstream>
 
 namespace sofa
 {
@@ -35,15 +36,13 @@ namespace loader
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(MeshOffLoader)
-
 int MeshOffLoaderClass = core::RegisterObject("Specific mesh loader for Off file format.")
         .add< MeshOffLoader >()
         ;
 
 bool MeshOffLoader::load()
 {
-    sout << "Loading OFF file: " << m_filename << sendl;
+    msg_info() << "Loading OFF file: " << m_filename;
 
     bool fileRead = false;
 
@@ -54,14 +53,14 @@ bool MeshOffLoader::load()
 
     if (!file.good())
     {
-        serr << "Cannot read file '" << m_filename << "'." << sendl;
+        msg_error() << "Cannot read file '" << m_filename << "'.";
         return false;
     }
 
     file >> cmd;
     if (cmd != "OFF")
     {
-        serr << "Not a OFF file (header problem) '" << m_filename << "'." << sendl;
+        msg_error() << "Not a OFF file (header problem) '" << m_filename << "'.";
         return false;
     }
 

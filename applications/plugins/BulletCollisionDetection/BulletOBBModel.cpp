@@ -12,24 +12,16 @@ namespace collision
 {
 
 int BulletOBBModelClass = core::RegisterObject("collision model using a set of OBBs, it can be used in the bullet collision pipeline")
-#ifndef SOFA_FLOAT
-        .add< TBulletOBBModel<defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TBulletOBBModel<defaulttype::Rigid3fTypes> >()
-#endif
+        .add< TBulletOBBModel<defaulttype::Rigid3Types> >()
+
         .addAlias("BulletOBBModel")
         .addAlias("BtOBBModel")
         .addAlias("BulletOBB")
         .addAlias("BtOBB")
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BULLETCOLLISIONDETECTION_API TBulletOBBModel<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BULLETCOLLISIONDETECTION_API TBulletOBBModel<defaulttype::Rigid3fTypes>;
-#endif
+template class SOFA_BULLETCOLLISIONDETECTION_API TBulletOBBModel<defaulttype::Rigid3Types>;
+
 
 
 //SofaBox::SofaBox( const btVector3& boxHalfExtents)

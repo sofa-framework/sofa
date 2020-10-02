@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,81 +22,83 @@
 
 #include "Binding_GridTopology.h"
 #include "Binding_MeshTopology.h"
+#include "PythonToSofa.inl"
 
-using namespace sofa::component::topology;
-using namespace sofa::core::objectmodel;
+#include <SofaBaseTopology/GridTopology.h>
+using sofa::component::topology::GridTopology ;
 
-extern "C" PyObject * GridTopology_setSize(PyObject *self, PyObject * args)
+/// getting a GridTopology* from a PyObject*
+static inline GridTopology* get_GridTopology(PyObject* obj) {
+    return sofa::py::unwrap<GridTopology>(obj);
+}
+
+
+static PyObject * GridTopology_setSize(PyObject *self, PyObject * args)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     int nx,ny,nz;
     if (!PyArg_ParseTuple(args, "iii",&nx,&ny,&nz))
     {
-        PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     obj->setSize(nx,ny,nz);
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * GridTopology_getNx(PyObject *self, PyObject * /*args*/)
+
+static PyObject * GridTopology_getNx(PyObject *self, PyObject * /*args*/)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     return PyInt_FromLong(obj->getNx());
 }
 
-extern "C" PyObject * GridTopology_setNx(PyObject *self, PyObject * args)
+static PyObject * GridTopology_setNx(PyObject *self, PyObject * args)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     int nb;
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
-        PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     obj->setNx(nb);
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * GridTopology_getNy(PyObject *self, PyObject * /*args*/)
+static PyObject * GridTopology_getNy(PyObject *self, PyObject * /*args*/)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     return PyInt_FromLong(obj->getNy());
 }
 
-extern "C" PyObject * GridTopology_setNy(PyObject *self, PyObject * args)
+static PyObject * GridTopology_setNy(PyObject *self, PyObject * args)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     int nb;
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
-        PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     obj->setNy(nb);
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * GridTopology_getNz(PyObject *self, PyObject * /*args*/)
+static PyObject * GridTopology_getNz(PyObject *self, PyObject * /*args*/)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     return PyInt_FromLong(obj->getNz());
 }
 
-extern "C" PyObject * GridTopology_setNz(PyObject *self, PyObject * args)
+static PyObject * GridTopology_setNz(PyObject *self, PyObject * args)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     int nb;
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
-        PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     obj->setNz(nb);
     Py_RETURN_NONE;
 }
-
-
 
 
 SP_CLASS_METHODS_BEGIN(GridTopology)

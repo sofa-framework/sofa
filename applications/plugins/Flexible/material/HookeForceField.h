@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,12 +53,12 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > _youngModulus;
-    Data<helper::vector<Real> > _poissonRatio;
-    Data<helper::vector<Real> > _viscosity;
+    Data<helper::vector<Real> > _youngModulus; ///< Young Modulus
+    Data<helper::vector<Real> > _poissonRatio; ///< Poisson Ratio ]-1,0.5[
+    Data<helper::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Real youngModulus=0,poissonRatio=0,viscosity=0;
         for(unsigned int i=0; i<this->material.size(); i++)
@@ -76,7 +76,7 @@ public:
     }
 
     //Pierre-Luc : I added this function to be able to evaluate forces without using visitors
-    virtual void addForce(typename Inherit::DataVecDeriv& _f , const typename Inherit::DataVecCoord& _x , const typename Inherit::DataVecDeriv& _v, const helper::vector<SReal> _vol)
+    virtual void addForce(typename Inherit::DataVecDeriv& _f , const typename Inherit::DataVecCoord& _x , const typename Inherit::DataVecDeriv& _v, const helper::vector<SReal> _vol) override
      {
          if(this->f_printLog.getValue()==true)
              std::cout << SOFA_CLASS_METHOD << std::endl;
@@ -139,7 +139,6 @@ protected:
         , _poissonRatio(initData(&_poissonRatio,helper::vector<Real>((int)1,(Real)0),"poissonRatio","Poisson Ratio ]-1,0.5["))
         , _viscosity(initData(&_viscosity,helper::vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
-        // _poissonRatio.setWidget("poissonRatio");
     }
 
     virtual ~HookeForceField()     {    }
@@ -166,19 +165,19 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > _youngModulusX;
-    Data<helper::vector<Real> > _youngModulusY;
-    Data<helper::vector<Real> > _youngModulusZ;
-    Data<helper::vector<Real> > _poissonRatioXY;
-    Data<helper::vector<Real> > _poissonRatioYZ;
-    Data<helper::vector<Real> > _poissonRatioZX;
-    Data<helper::vector<Real> > _shearModulusXY;
-    Data<helper::vector<Real> > _shearModulusYZ;
-    Data<helper::vector<Real> > _shearModulusZX;
-    Data<helper::vector<Real> > _viscosity;
+    Data<helper::vector<Real> > _youngModulusX; ///< Young Modulus along X
+    Data<helper::vector<Real> > _youngModulusY; ///< Young Modulus along Y
+    Data<helper::vector<Real> > _youngModulusZ; ///< Young Modulus along Z
+    Data<helper::vector<Real> > _poissonRatioXY; ///< Poisson Ratio about XY plane ]-1,0.5[
+    Data<helper::vector<Real> > _poissonRatioYZ; ///< Poisson Ratio about YZ plane ]-1,0.5[
+    Data<helper::vector<Real> > _poissonRatioZX; ///< Poisson Ratio about ZX plane ]-1,0.5[
+    Data<helper::vector<Real> > _shearModulusXY; ///< Shear Modulus about XY plane
+    Data<helper::vector<Real> > _shearModulusYZ; ///< Shear Modulus about YZ plane
+    Data<helper::vector<Real> > _shearModulusZX; ///< Shear Modulus about ZX plane
+    Data<helper::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         if(_DataTypes::material_dimensions==3)
         {
@@ -255,7 +254,6 @@ protected:
         , _shearModulusZX(initData(&_shearModulusZX,helper::vector<Real>((int)1,(Real)1500),"shearModulusZX","Shear Modulus about ZX plane"))
         , _viscosity(initData(&_viscosity,helper::vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
-        // _poissonRatio.setWidget("poissonRatio");
     }
 
     virtual ~HookeOrthotropicForceField()     {    }
@@ -281,15 +279,15 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > _youngModulusX;
-    Data<helper::vector<Real> > _youngModulusY;
-    Data<helper::vector<Real> > _poissonRatioXY;
-    Data<helper::vector<Real> > _poissonRatioYZ;
-    Data<helper::vector<Real> > _shearModulusXY;
-    Data<helper::vector<Real> > _viscosity;
+    Data<helper::vector<Real> > _youngModulusX; ///< Young Modulus along X
+    Data<helper::vector<Real> > _youngModulusY; ///< Young Modulus along Y
+    Data<helper::vector<Real> > _poissonRatioXY; ///< Poisson Ratio about XY plane ]-1,0.5[
+    Data<helper::vector<Real> > _poissonRatioYZ; ///< Poisson Ratio about YZ plane ]-1,0.5[
+    Data<helper::vector<Real> > _shearModulusXY; ///< Shear Modulus about XY plane
+    Data<helper::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
             Real youngModulusX=0,youngModulusY=0,poissonRatioXY=0,poissonRatioYZ=0,shearModulusXY=0,viscosity=0;
             for(unsigned int i=0; i<this->material.size(); i++)
@@ -331,7 +329,6 @@ protected:
         , _shearModulusXY(initData(&_shearModulusXY,helper::vector<Real>((int)1,(Real)1500),"shearModulusXY","Shear Modulus about XY plane"))
         , _viscosity(initData(&_viscosity,helper::vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
-        // _poissonRatio.setWidget("poissonRatio");
     }
 
     virtual ~HookeTransverseForceField()     {    }

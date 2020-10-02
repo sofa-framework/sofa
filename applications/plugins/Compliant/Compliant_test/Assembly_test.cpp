@@ -2,6 +2,10 @@
 
 #include "../assembly/AssemblyVisitor.h"
 #include <SofaBoundaryCondition/ConstantForceField.h>
+#include <sofa/defaulttype/RigidTypes.h>
+using sofa::defaulttype::Rigid3Types;
+using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types> ;
+using MechanicalObjectRigid3 = sofa::component::container::MechanicalObject<Rigid3Types> ;
 
 namespace sofa
 {

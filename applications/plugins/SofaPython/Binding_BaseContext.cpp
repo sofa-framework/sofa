@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,132 +25,75 @@
 #include "Binding_Base.h"
 #include "Binding_Vector.h"
 #include "PythonFactory.h"
+#include "PythonToSofa.inl"
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 using namespace sofa::defaulttype;
+
 #include <sofa/core/ObjectFactory.h>
 using namespace sofa::core;
+
 #include <sofa/core/objectmodel/BaseContext.h>
 using namespace sofa::core::objectmodel;
+
 #include <sofa/simulation/Node.h>
 using namespace sofa::simulation;
 using namespace sofa::defaulttype;
 
+static inline BaseContext* get_basecontext(PyObject* obj) {
+    return sofa::py::unwrap<BaseContext>(obj);
+}
 
-extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
+
+static PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     PyPtr<Vector3>* pyVec;
-    if (!PyArg_ParseTuple(args, "O",&pyVec))
-        Py_RETURN_NONE;
+    if (!PyArg_ParseTuple(args, "O",&pyVec)) {
+        return nullptr;
+    }
+
     obj->setGravity(*pyVec->object);
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseContext_getGravity(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseContext_getGravity(PyObject *self, PyObject * /*args*/)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return SP_BUILD_PYPTR(Vector3,Vector3,new Vector3(obj->getGravity()),true); // "true", because I manage the deletion myself
 }
 
-extern "C" PyObject * BaseContext_getTime(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseContext_getTime(PyObject *self, PyObject * /*args*/)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return PyFloat_FromDouble(obj->getTime());
 }
 
-extern "C" PyObject * BaseContext_getDt(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseContext_getDt(PyObject *self, PyObject * /*args*/)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return PyFloat_FromDouble(obj->getDt());
 }
 
-extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*args*/)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return sofa::PythonFactory::toPython(obj->getRootContext());
 }
 
-
-/// This function converts an PyObject into a sofa string.
-/// string that can be safely parsed in helper::vector<int> or helper::vector<double>
-static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
+/// object factory
+static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args, PyObject * kw, bool printWarnings)
 {
-    /// String are just returned as string.
-    if (PyString_Check(value))
-    {
-        return out << PyString_AsString(value) ;
-    }
-
-
-    if( PySequence_Check(value) )
-    {
-        /// It is a sequence...so we can iterate over it.
-        PyObject *iterator = PyObject_GetIter(value);
-        if(iterator)
-        {
-            bool first = true;
-            while(PyObject* next = PyIter_Next(iterator))
-            {
-                if(first) first = false;
-                else out << ' ';
-
-                pythonToSofaDataString(next, out);
-                Py_DECREF(next);
-            }
-            Py_DECREF(iterator);
-
-            if (PyErr_Occurred())
-            {
-                msg_error("SofaPython") << "error while iterating." << msgendl
-                                        << PythonEnvironment::getStackAsString() ;
-            }
-            return out;
-        }
-    }
-
-
-    /// Check if the object has an explicit conversion to a Sofa path. If this is the case
-    /// we use it.
-    if( PyObject_HasAttrString(value, "getAsACreateObjectParameter") ){
-       PyObject* retvalue = PyObject_CallMethod(value, (char*)"getAsACreateObjectParameter", nullptr) ;
-       return pythonToSofaDataString(retvalue, out);
-    }
-
-    /// Default conversion for standard type:
-    if( !(PyInt_Check(value) || PyLong_Check(value) || PyFloat_Check(value) || PyBool_Check(value) ))
-    {
-        msg_warning("SofaPython") << "You are trying to convert a non primitive type to Sofa using the 'str' operator." << msgendl
-                                  << "Automatic conversion is provided for: String, Integer, Long, Float and Bool and Sequences." << msgendl
-                                  << "Other objects should implement the method getAsACreateObjectParameter(). " << msgendl
-                                  << "This function should return a string usable as a parameter in createObject()." << msgendl
-                                  << "So to remove this message you must add a method getAsCreateObjectParameter(self) "
-                                     "to the object you are passing the createObject function." << msgendl
-                                  << PythonEnvironment::getStackAsString() ;
-    }
-
-
-    PyObject* tmpstr=PyObject_Str(value);
-    out << PyString_AsString(tmpstr) ;
-    Py_DECREF(tmpstr) ;
-    return out ;
-}
-
-
-// object factory
-extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args, PyObject * kw, bool printWarnings)
-{
-    BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* context = get_basecontext( self );
 
     char *type;
     if (!PyArg_ParseTuple(args, "s",&type))
     {
-        PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
-    // temporarily, the name is set to the type name.
-    // if a "name" parameter is provided, it will overwrite it.
+    /// temporarily, the name is set to the type name.
+    /// if a "name" parameter is provided, it will overwrite it.
     BaseObjectDescription desc(type,type);
 
     bool warning = printWarnings;
@@ -172,23 +115,53 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
             {
                 std::stringstream s;
                 pythonToSofaDataString(value, s) ;
-                desc.setAttribute(PyString_AsString(key),s.str().c_str());
+                desc.setAttribute(PyString_AsString(key),s.str());
             }
         }
         Py_DecRef(keys);
         Py_DecRef(values);
     }
 
-    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc);
-    if (obj==0)
+    // Same system as in ElementNameHelper (XML parser)
+    static std::map<std::string, int> instanceCounter;
+
+    if (std::string(desc.getAttribute("name")).empty())
     {
-        SP_MESSAGE_ERROR( "createObject: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'" );
-        for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
-            SP_MESSAGE_ERROR(*it);
-        PyErr_BadArgument();
-        return NULL;
+        std::string type = desc.getAttribute("type");
+        std::string shortName = sofa::core::ObjectFactory::ShortName(type);
+        if (instanceCounter.find(shortName) != instanceCounter.end())
+            shortName += std::to_string(instanceCounter[shortName]++);
+        else
+            instanceCounter[shortName] = 1;
+        msg_error("createObject") << "Empty string given to property 'name': Forcefully setting an empty name is forbidden.\n"
+                                      "Renaming to " + shortName +" to avoid unexpected behaviors.";
+        desc.setAttribute("name", shortName);
     }
 
+    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc);
+    if (obj == nullptr)
+    {
+        std::stringstream msg;
+        msg << "Unable to create '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'." ;
+        for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
+            msg << " " << *it << msgendl ;
+
+        //todo(STC6) do it or remove it ?
+        //todo(dmarchal 2018/10/01) I don't like that because it is weird to have error reporting
+        //strategy into the createObject implementation instead of into a dedicated exception.
+        //in addition this is the first time we are not using the macro from msg_*
+        BaseObjectDescription desc("InfoComponent", "InfoComponent") ;
+        BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc) ;
+        obj->setName( "Not created ("+std::string(type)+")" ) ;
+        sofa::helper::logging::Message m(sofa::helper::logging::Message::Runtime,
+                                         sofa::helper::logging::Message::Error) ;
+        m << msg.str() ;
+        obj->addMessage(  m ) ;
+        //todo(STC6) end of do it or remove it.
+
+        PyErr_SetString(PyExc_RuntimeError, msg.str().c_str()) ;
+        return nullptr;
+    }
 
     if( warning )
     {
@@ -196,40 +169,47 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
         {
             if (!it.second.isAccessed())
             {
-                obj->serr <<"Unused Attribute: \""<<it.first <<"\" with value: \"" <<(std::string)it.second<<"\"" << obj->sendl;
+                obj->serr <<"Unused Attribute: \""<<it.first <<"\" with value: \"" <<(std::string)it.second<<"\" (" << obj->getPathName() << ")" << obj->sendl;
             }
         }
 
         Node *node = static_cast<Node*>(context);
         if (node && node->isInitialized())
-            SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
+            msg_warning(node) << "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized";
     }
-
+    auto fileinfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
+    obj->setInstanciationSourceFilePos(fileinfo->line);
+    obj->setInstanciationSourceFileName(fileinfo->filename);
     return sofa::PythonFactory::toPython(obj.get());
 }
-extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args, PyObject * kw)
+
+static PyObject * BaseContext_createObject(PyObject * self, PyObject * args, PyObject * kw)
 {
     return BaseContext_createObject_Impl( self, args, kw, true );
 }
-extern "C" PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObject * args, PyObject * kw)
+
+static PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObject * args, PyObject * kw)
 {
-    SP_MESSAGE_DEPRECATED("BaseContext_createObject_noWarning is deprecated, use the keyword warning=False in BaseContext_createObject instead.")
-            return BaseContext_createObject_Impl( self, args, kw, false );
+    BaseContext* context = get_basecontext( self );
+    msg_deprecated(context)
+            << "BaseContext_createObject_noWarning is deprecated, use the keyword warning=False in BaseContext_createObject instead." ;
+
+    return BaseContext_createObject_Impl( self, args, kw, false );
 }
 
 /// the complete relative path to the object must be given
 /// returns None with a warning if the object is not found
-extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObject * kw)
+static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObject * kw)
 {
-    BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* context = get_basecontext( self );
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
     {
-        SP_MESSAGE_WARNING( "BaseContext_getObject: wrong argument, should be a string (the complete relative path)" )
-                Py_RETURN_NONE;
+        return nullptr;
     }
 
-    bool warning = true;
+    bool emitWarningMessage = true;
+
     if (kw && PyDict_Size(kw)>0)
     {
         PyObject* keys = PyDict_Keys(kw);
@@ -241,7 +221,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
             if( !strcmp(PyString_AsString(key),"warning") )
             {
                 if PyBool_Check(value)
-                        warning = (value==Py_True);
+                        emitWarningMessage = (value==Py_True);
                 break;
             }
         }
@@ -252,14 +232,15 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
     if (!context || !path)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     BaseObject::SPtr sptr;
     context->get<BaseObject>(sptr,path);
     if (!sptr)
     {
-        if(warning) SP_MESSAGE_WARNING( "BaseContext_getObject: component "<<path<<" not found (the complete relative path is needed)" )
-                Py_RETURN_NONE;
+        if( emitWarningMessage )
+            msg_error(context) << "Unable to find : " << path ;
+        Py_RETURN_NONE ;
     }
 
     return sofa::PythonFactory::toPython(sptr.get());
@@ -268,20 +249,21 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
 
 /// the complete relative path to the object must be given
 /// returns None if the object is not found
-extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * args)
+static PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * args)
 {
-    SP_MESSAGE_DEPRECATED("BaseContext_getObject_noWarning is deprecated, use the keyword warning=False in BaseContext_getObject instead.")
-            BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* context = get_basecontext( self );
+    msg_deprecated(context)
+            << "BaseContext_getObject_noWarning is deprecated, use the keyword warning=False in BaseContext_getObject instead." ;
+
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
     {
-        SP_MESSAGE_WARNING( "BaseContext_getObject_noWarning: wrong argument, should be a string (the complete relative path)" )
-                Py_RETURN_NONE;
+        return nullptr;
     }
     if (!context || !path)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     BaseObject::SPtr sptr;
     context->get<BaseObject>(sptr,path);
@@ -290,25 +272,22 @@ extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject 
     return sofa::PythonFactory::toPython(sptr.get());
 }
 
-
-
-
+//TODO(PR:304) do it or remove  :)
 // @TODO: pass keyword arguments rather than optional arguments?
-extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
+static PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
 {
-    BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
-    char* search_direction= NULL;
-    char* type_name= NULL;
-    char* name= NULL;
+    BaseContext* context = get_basecontext( self );
+    char* search_direction= nullptr;
+    char* type_name= nullptr;
+    char* name= nullptr;
     if ( !PyArg_ParseTuple ( args, "|sss", &search_direction, &type_name, &name ) ) {
-        SP_MESSAGE_WARNING( "BaseContext_getObjects: wrong arguments! Expected format: getObjects ( OPTIONAL STRING searchDirection, OPTIONAL STRING typeName, OPTIONAL STRING name )" )
-                Py_RETURN_NONE;
+        return nullptr;
     }
 
     if (!context)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
 
     sofa::core::objectmodel::BaseContext::SearchDirection search_direction_enum= sofa::core::objectmodel::BaseContext::Local;
@@ -337,11 +316,11 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
         }
         else
         {
-            SP_MESSAGE_WARNING( "BaseContext_getObjects: Invalid search direction, using 'Local'. Expected: 'SearchUp', 'Local', 'SearchDown', 'SearchRoot', or 'SearchParents'." )
+            msg_warning(context) << "BaseContext_getObjects: Invalid search direction, using 'Local'. Expected: 'SearchUp', 'Local', 'SearchDown', 'SearchRoot', or 'SearchParents'." ;
         }
     }
 
-    sofa::helper::vector< boost::intrusive_ptr<BaseObject> > list;
+    sofa::helper::vector< BaseObject::SPtr > list;
     context->get<BaseObject>(&list,search_direction_enum);
 
     PyObject *pyList = PyList_New(0);
@@ -364,27 +343,81 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
 }
 
 SP_CLASS_METHODS_BEGIN(BaseContext)
-SP_CLASS_METHOD(BaseContext,getRootContext)
-SP_CLASS_METHOD(BaseContext,getTime)
-SP_CLASS_METHOD(BaseContext,getDt)
-SP_CLASS_METHOD(BaseContext,getGravity)
-SP_CLASS_METHOD(BaseContext,setGravity)
-SP_CLASS_METHOD_KW(BaseContext,createObject)
-SP_CLASS_METHOD_KW(BaseContext,createObject_noWarning) // deprecated
-SP_CLASS_METHOD_KW(BaseContext,getObject)
-SP_CLASS_METHOD(BaseContext,getObject_noWarning) // deprecated
-SP_CLASS_METHOD(BaseContext,getObjects)
+SP_CLASS_METHOD_DOC(BaseContext,getRootContext,
+                "Returns the root context of the Sofa Scene.\n"
+                "example:\n"
+                "   root = node.getRootContext()\n"
+                "   root.animate=false")
+SP_CLASS_METHOD_DOC(BaseContext,getTime,
+                "Returns the accumulated time since the beginnning of the simulation.\n"
+                "example:\n"
+                "   time = node.getTime()\n"
+                "   ")
+SP_CLASS_METHOD_DOC(BaseContext,getDt,
+                "Returns the current timestep used in the simulation.\n"
+                "example:\n"
+                "   time = node.getDt()\n"
+                "   ")
+SP_CLASS_METHOD_DOC(BaseContext,getGravity,
+                "Returns the gravity that is applied to node's children (a Sofa.Vector3 object).\n"
+                "example:\n"
+                "   g = node.getGravity()\n"
+                "   print(str(g.x)"
+                )
+SP_CLASS_METHOD_DOC(BaseContext,setGravity,
+                "Sets the gravity applied to the node (a Sofa.Vector3 object).\n"
+                "example:\n"
+                "   g = Sofa.Vector3(0.0,-9.81,0.0)\n"
+                "   node.setGravity(g)"
+                )
+SP_CLASS_METHOD_KW_DOC(BaseContext,createObject,
+               "Creates a Sofa object and then adds it to the node. "
+               "First argument is the type name, parameters are passed as subsequent keyword arguments.\n"
+               "Automatic conversion is performed for Scalar, Integer, String, List & Sequence as well as \n"
+               "object with a getAsCreateObjectParameter(self)."
+               "example:\n"
+               "   object = node.createObject('MechanicalObject',name='mObject', dx=1, dy=2, dz=3)"
+               )
+SP_CLASS_METHOD_KW_DOC(BaseContext,createObject_noWarning,   // deprecated
+               "(Deprecated) Creates a Sofa object and then adds it to the node. "
+               "First argument is the type name, parameters are passed as subsequent keyword arguments. \n"
+               "IMPORTANT: In this version, no warning is output in the console if the object cannot be initialized.\n"
+               "example:\n"
+               "   object = node.createObject_noWarning('MechanicalObject',name='mObject',dx='x',dy='y',dz='z')"
+               )
+SP_CLASS_METHOD_KW_DOC(BaseContext,getObject,
+                "Returns the object by its path. Can be in this node or another, in function of the path.\n"
+                "Returns None if no object with the given name can be found.                            \n"
+                "examples:\n"
+                "   mecanicalState = node.getObject('DOFs')\n"
+                "   mesh = node.getObject('visuNode/OglModel')"
+                )
+SP_CLASS_METHOD_DOC(BaseContext,getObject_noWarning,
+                "(Deprecated) Returns the object by its path. Can be in this node or another, in function of the path... \n"
+                "IMPORTANT: In this version, no warning is output in the console if the object cannot be initialized.\n"
+                "examples:\n"
+                "   mecanicalState = node.getObject_noWarning('DOFs')\n"
+                "   mesh = node.getObject('visuNode/OglModel')"
+
+                ) // deprecated
+SP_CLASS_METHOD_DOC(BaseContext,getObjects,
+                "Returns a list of the objects of this node. \n"
+                "example:\n"
+                "   objects = node.getObjects()\n"
+                "   for obj in objets:\n"
+                "       print (obj.name)"
+                )
 SP_CLASS_METHODS_END
 
 
-extern "C" PyObject * BaseContext_getAttr_animate(PyObject *self, void*)
+static PyObject * BaseContext_getAttr_animate(PyObject *self, void*)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return PyBool_FromLong(obj->getAnimate());
 }
-extern "C" int BaseContext_setAttr_animate(PyObject *self, PyObject * args, void*)
+static int BaseContext_setAttr_animate(PyObject *self, PyObject * args, void*)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     if (!PyBool_Check(args))
     {
         PyErr_BadArgument();
@@ -394,14 +427,15 @@ extern "C" int BaseContext_setAttr_animate(PyObject *self, PyObject * args, void
     return 0;
 }
 
-extern "C" PyObject * BaseContext_getAttr_active(PyObject *self, void*)
+static PyObject * BaseContext_getAttr_active(PyObject *self, void*)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return PyBool_FromLong(obj->isActive());
 }
-extern "C" int BaseContext_setAttr_active(PyObject *self, PyObject * args, void*)
+
+static int BaseContext_setAttr_active(PyObject *self, PyObject * args, void*)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     if (!PyBool_Check(args))
     {
         PyErr_BadArgument();
@@ -414,7 +448,6 @@ extern "C" int BaseContext_setAttr_active(PyObject *self, PyObject * args, void*
 SP_CLASS_ATTRS_BEGIN(BaseContext)
 SP_CLASS_ATTR(BaseContext,active)
 SP_CLASS_ATTR(BaseContext,animate)
-//SP_CLASS_ATTR(BaseContext,gravity) // attribut objets = problème... le setter ne fonctionne pas
 SP_CLASS_ATTRS_END
 
 SP_CLASS_TYPE_SPTR_ATTR(BaseContext,BaseContext,Base)

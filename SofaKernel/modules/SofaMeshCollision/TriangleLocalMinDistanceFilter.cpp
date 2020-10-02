@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,6 +38,11 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
+TriangleInfo::TriangleInfo(LocalMinDistanceFilter *lmdFilters)
+    : InfoFilter(lmdFilters)
+{
+}
+
 void TriangleInfo::buildFilter(unsigned int tri_index)
 {
 
@@ -59,15 +64,12 @@ void TriangleInfo::buildFilter(unsigned int tri_index)
 
 bool TriangleInfo::validate(const unsigned int tri_index, const defaulttype::Vector3 &PQ)
 {
-    //std::cout<<"TriangleInfo::validate on tri "<<tri_index<<"is called"<<std::endl;
     if (isValid())
     {
-        //std::cout<<" is Valid !"<<std::endl;
         return ( (m_normal * PQ) >= 0.0 );
     }
     else
     {
-        //std::cout<<" not valid => build ------------------------ for triangle "<< tri_index <<std::endl;
         buildFilter(tri_index);
         return validate(tri_index, PQ);
     }
@@ -75,13 +77,14 @@ bool TriangleInfo::validate(const unsigned int tri_index, const defaulttype::Vec
 
 
 TriangleLocalMinDistanceFilter::TriangleLocalMinDistanceFilter()
-    : m_pointInfo(initData(&m_pointInfo, "pointInfo", "point filter data"))
+    : l_topology(initLink("topology", "link to the topology container"))
+    , m_pointInfo(initData(&m_pointInfo, "pointInfo", "point filter data"))
     , m_lineInfo(initData(&m_lineInfo, "lineInfo", "line filter data"))
     , m_triangleInfo(initData(&m_triangleInfo, "triangleInfo", "triangle filter data"))
-    , pointInfoHandler(NULL)
-    , lineInfoHandler(NULL)
-    , triangleInfoHandler(NULL)
-    , bmt(NULL)
+    , pointInfoHandler(nullptr)
+    , lineInfoHandler(nullptr)
+    , triangleInfoHandler(nullptr)
+    , bmt(nullptr)
 {
 }
 
@@ -94,17 +97,25 @@ TriangleLocalMinDistanceFilter::~TriangleLocalMinDistanceFilter()
 
 void TriangleLocalMinDistanceFilter::init()
 {
-    bmt = getContext()->getMeshTopology();
-    std::cout<<"Mesh Topology found :"<<bmt->getName()<<std::endl;
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    bmt = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
     component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(getContext()->getMechanicalState());
 
 
-    if(mstateVec3d == NULL)
+    if(mstateVec3d == nullptr)
     {
-        serr<<"WARNING: init failed for TriangleLocalMinDistanceFilter no mstateVec3d found"<<sendl;
+        msg_error() << "Init failed for TriangleLocalMinDistanceFilter no mstateVec3d found.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
 
-    if (bmt != 0)
+    if (bmt != nullptr)
     {
 
         pointInfoHandler = new PointInfoHandler(this,&m_pointInfo);
@@ -114,8 +125,7 @@ void TriangleLocalMinDistanceFilter::init()
 
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
-        int i;
-        for (i=0; i<bmt->getNbPoints(); i++)
+        for (int i=0; i<bmt->getNbPoints(); i++)
         {
             pInfo[i].setLMDFilters(this);
             pInfo[i].setBaseMeshTopology(bmt);
@@ -129,7 +139,7 @@ void TriangleLocalMinDistanceFilter::init()
 
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
         lInfo.resize(bmt->getNbEdges());
-        for (i=0; i<bmt->getNbEdges(); i++)
+        for (unsigned int i=0; i<bmt->getNbEdges(); i++)
         {
             lInfo[i].setLMDFilters(this);
             lInfo[i].setBaseMeshTopology(bmt);
@@ -143,19 +153,18 @@ void TriangleLocalMinDistanceFilter::init()
 
         helper::vector< TriangleInfo >& tInfo = *(m_triangleInfo.beginEdit());
         tInfo.resize(bmt->getNbTriangles());
-        for (i=0; i<bmt->getNbTriangles(); i++)
+        for (sofa::core::topology::Topology::TriangleID i=0; i<bmt->getNbTriangles(); i++)
         {
             tInfo[i].setLMDFilters(this);
             tInfo[i].setBaseMeshTopology(bmt);
             tInfo[i].setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
         }
         m_triangleInfo.endEdit();
-        std::cout<<"create m_pointInfo, m_lineInfo, m_triangleInfo" <<std::endl;
     }
 
     if(this->isRigid())
     {
-        std::cout<<"++++++ Is rigid Found in init "<<std::endl;
+        msg_info() << "++++++ Is rigid Found in init ";
         // Precomputation of the filters in the rigid case
         //triangles:
         helper::vector< TriangleInfo >& tInfo = *(m_triangleInfo.beginEdit());
@@ -194,22 +203,9 @@ void TriangleLocalMinDistanceFilter::handleTopologyChange()
 {
     if(this->isRigid())
     {
-        serr<<"WARNING: filters optimization needed for topological change on rigid collision model"<<sendl;
+        msg_error() << "Filters optimization needed for topological change on rigid collision model";
         this->invalidate(); // all the filters will be recomputed, not only those involved in the topological change
     }
-
-    /*
-        core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
-
-        assert(bmt != 0);
-
-        std::list< const core::topology::TopologyChange * >::const_iterator itBegin = bmt->beginChange();
-        std::list< const core::topology::TopologyChange * >::const_iterator itEnd = bmt->endChange();
-
-        m_pointInfo.handleTopologyEvents(itBegin, itEnd);
-    	m_lineInfo.handleTopologyEvents(itBegin, itEnd);
-    	m_triangleInfo.handleTopologyEvents(itBegin, itEnd);
-    */
 }
 
 
@@ -218,14 +214,14 @@ void TriangleLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsig
 {
     const TriangleLocalMinDistanceFilter *tLMDFilter = this->f;
     pInfo.setLMDFilters(tLMDFilter);
-    sofa::core::topology::BaseMeshTopology * bmt = tLMDFilter->bmt; //(sofa::core::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
+    sofa::core::topology::BaseMeshTopology * bmt = tLMDFilter->bmt;
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
     component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(tLMDFilter->getContext()->getMechanicalState());
     if(tLMDFilter->isRigid())
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             pInfo.setPositionFiltering(&(mstateVec3d->read(core::ConstVecCoordId::restPosition())->getValue()));
         }
@@ -234,7 +230,7 @@ void TriangleLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsig
     else
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             pInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
         }
@@ -255,7 +251,7 @@ void TriangleLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsign
     if(tLMDFilter->isRigid())
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             lInfo.setPositionFiltering(&(mstateVec3d->read(core::ConstVecCoordId::restPosition())->getValue()));
         }
@@ -264,7 +260,7 @@ void TriangleLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsign
     else
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             lInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
         }
@@ -284,7 +280,7 @@ void TriangleLocalMinDistanceFilter::TriangleInfoHandler::applyCreateFunction(un
     if(tLMDFilter->isRigid())
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             tInfo.setPositionFiltering(&(mstateVec3d->read(core::ConstVecCoordId::restPosition())->getValue()));
         }
@@ -293,7 +289,7 @@ void TriangleLocalMinDistanceFilter::TriangleInfoHandler::applyCreateFunction(un
     else
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             tInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
         }
@@ -303,14 +299,7 @@ void TriangleLocalMinDistanceFilter::TriangleInfoHandler::applyCreateFunction(un
 
 bool TriangleLocalMinDistanceFilter::validPoint(const int pointIndex, const defaulttype::Vector3 &PQ)
 {
-    // AdvancedTimer::StepVar("Filters");
-
     PointInfo & Pi = m_pointInfo[pointIndex];
-//    if(&Pi==NULL)
-//    {
-//        serr<<"Pi == NULL"<<sendl;
-//        return true;
-//    }
 
     if(this->isRigid())
     {
@@ -327,14 +316,7 @@ bool TriangleLocalMinDistanceFilter::validPoint(const int pointIndex, const defa
 
 bool TriangleLocalMinDistanceFilter::validLine(const int lineIndex, const defaulttype::Vector3 &PQ)
 {
-    //AdvancedTimer::StepVar("Filters");
-
     LineInfo &Li = m_lineInfo[lineIndex];  // filter is precomputed
-//    if(&Li==NULL)
-//    {
-//        serr<<"Li == NULL"<<sendl;
-//        return true;
-//    }
 
     if(this->isRigid())
     {
@@ -343,22 +325,13 @@ bool TriangleLocalMinDistanceFilter::validLine(const int lineIndex, const defaul
         return Li.validate(lineIndex,PQtest);
     }
 
-    //std::cout<<"validLine "<<lineIndex<<" is called with PQ="<<PQ<<std::endl;
     return Li.validate(lineIndex, PQ);
 }
 
 
 bool TriangleLocalMinDistanceFilter::validTriangle(const int triangleIndex, const defaulttype::Vector3 &PQ)
 {
-    //AdvancedTimer::StepVar("Filters");
-    //std::cout<<"validTriangle "<<triangleIndex<<" is called with PQ="<<PQ<<std::endl;
     TriangleInfo &Ti = m_triangleInfo[triangleIndex];
-
-//    if(&Ti==NULL)
-//    {
-//        serr<<"Ti == NULL"<<sendl;
-//        return true;
-//    }
 
     if(this->isRigid())
     {
@@ -367,13 +340,10 @@ bool TriangleLocalMinDistanceFilter::validTriangle(const int triangleIndex, cons
         return Ti.validate(triangleIndex,PQtest);
     }
 
-
     return Ti.validate(triangleIndex,PQ);
 }
 
 
-
-SOFA_DECL_CLASS(TriangleLocalMinDistanceFilter)
 
 int TriangleLocalMinDistanceFilterClass = core::RegisterObject("This class manages Triangle collision models cones filters computations and updates.")
         .add< TriangleLocalMinDistanceFilter >()

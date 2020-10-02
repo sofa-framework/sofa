@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/defaulttype/BaseVector.h>
@@ -32,7 +31,6 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 
 #include <vector>
 #include <fstream>
@@ -59,7 +57,7 @@ template<class DataTypes>
 class MechanicalObjectInternalData
 {
 public:
-    MechanicalObjectInternalData(MechanicalObject<DataTypes>* = NULL) {}
+    MechanicalObjectInternalData(MechanicalObject<DataTypes>* = nullptr) {}
 };
 
 /**
@@ -96,21 +94,13 @@ public:
 protected:
     virtual ~MechanicalObject();
 public:
-    virtual void parse ( core::objectmodel::BaseObjectDescription* arg );
+    void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    PointData< VecCoord > x;
-    PointData< VecDeriv > v;
-    PointData< VecDeriv > f;
-    Data< VecDeriv > externalForces;
-    Data< VecDeriv > dx;
-    Data< VecCoord > xfree;
-    Data< VecDeriv > vfree;
-    PointData< VecCoord > x0;
-    Data< MatrixDeriv > c;
-    Data< VecCoord > reset_position;
-    Data< VecDeriv > reset_velocity;
-
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES    
+    PointData< VecCoord > x; ///< position coordinates of the degrees of freedom
+    PointData< VecDeriv > v; ///< velocity coordinates of the degrees of freedom
+    PointData< VecDeriv > f; ///< force vector of the degrees of freedom
+    PointData< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
 
     class MOPointHandler : public sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
     {
@@ -129,80 +119,80 @@ public:
         MechanicalObject<DataTypes>* obj;
     };
 
-
-
-
-
     //static void PointCreationFunction (int , void* , Coord &, const sofa::helper::vector< unsigned int > & ,   const sofa::helper::vector< double >&);
 
     //static void PointDestroyFunction (int, void*, Coord&);
 
 #else
-    Data< VecCoord > x;
-    Data< VecDeriv > v;
-    Data< VecDeriv > f;
-    Data< VecDeriv > externalForces;
-    Data< VecDeriv > dx;
-    Data< VecCoord > xfree;
-    Data< VecDeriv > vfree;
-    Data< VecCoord > x0;
-    Data< MatrixDeriv > c;
-    Data< VecCoord > reset_position;
-    Data< VecDeriv > reset_velocity;
+    Data< VecCoord > x; ///< position coordinates of the degrees of freedom
+    Data< VecDeriv > v; ///< velocity coordinates of the degrees of freedom
+    Data< VecDeriv > f; ///< force vector of the degrees of freedom
+    Data< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
 #endif
+
+    Data< VecDeriv > externalForces; ///< externalForces vector of the degrees of freedom
+    Data< VecDeriv > dx; ///< dx vector of the degrees of freedom
+    Data< VecCoord > xfree; ///< free position coordinates of the degrees of freedom
+    Data< VecDeriv > vfree; ///< free velocity coordinates of the degrees of freedom
+    Data< MatrixDeriv > c; ///< constraints applied to the degrees of freedom
+    Data< MatrixDeriv > m; ///< mappingJacobian applied to the degrees of freedom
+    Data< VecCoord > reset_position; ///< reset position coordinates of the degrees of freedom
+    Data< VecDeriv > reset_velocity; ///< reset velocity coordinates of the degrees of freedom
+
 
     defaulttype::MapMapSparseMatrix< Deriv > c2;
 
-    Data< SReal > restScale;
+    Data< SReal > restScale; ///< optional scaling of rest position coordinates (to simulated pre-existing internal tension).(default = 1.0)
 
-    Data< bool >  showObject;
-    Data< float > showObjectScale;
-    Data< bool >  showIndices;
-    Data< float > showIndicesScale;
-    Data< bool >  showVectors;
-    Data< float > showVectorsScale;
-    Data< int > drawMode;
+    Data< bool >  d_useTopology; ///< Shall this object rely on any active topology to initialize its size and positions
+
+    Data< bool >  showObject; ///< Show objects. (default=false)
+    Data< float > showObjectScale; ///< Scale for object display. (default=0.1)
+    Data< bool >  showIndices; ///< Show indices. (default=false)
+    Data< float > showIndicesScale; ///< Scale for indices display. (default=0.02)
+    Data< bool >  showVectors; ///< Show velocity. (default=false)
+    Data< float > showVectorsScale; ///< Scale for vectors display. (default=0.0001)
+    Data< int > drawMode; ///< The way vectors will be drawn: - 0: Line - 1:Cylinder - 2: Arrow.  The DOFS will be drawn: - 0: point - >1: sphere. (default=0)
     Data< defaulttype::Vec4f > d_color;  ///< drawing color
-    Data < bool > isToPrint; ///< ignore some Data for file export
 
-    virtual void init();
-    virtual void reinit();
+    void init() override;
+    void reinit() override;
 
-    virtual void storeResetState();
+    void storeResetState() override;
 
-    virtual void reset();
+    void reset() override;
 
-    virtual void writeVec(core::ConstVecId v, std::ostream &out);
-    virtual void readVec(core::VecId v, std::istream &in);
-    virtual SReal compareVec(core::ConstVecId v, std::istream &in);
+    void writeVec(core::ConstVecId v, std::ostream &out) override;
+    void readVec(core::VecId v, std::istream &in) override;
+    SReal compareVec(core::ConstVecId v, std::istream &in) override;
 
-    virtual void writeState( std::ostream& out );
+    void writeState( std::ostream& out ) override;
 
     /// @name New vectors access API based on VecId
     /// @{
 
-    virtual Data< VecCoord >* write(core::VecCoordId v);
-    virtual const Data< VecCoord >* read(core::ConstVecCoordId v) const;
+    Data< VecCoord >* write(core::VecCoordId v) override;
+    const Data< VecCoord >* read(core::ConstVecCoordId v) const override;
 
-    virtual Data< VecDeriv >* write(core::VecDerivId v);
-    virtual const Data< VecDeriv >* read(core::ConstVecDerivId v) const;
+    Data< VecDeriv >* write(core::VecDerivId v) override;
+    const Data< VecDeriv >* read(core::ConstVecDerivId v) const override;
 
-    virtual Data< MatrixDeriv >* write(core::MatrixDerivId v);
-    virtual const Data< MatrixDeriv >* read(core::ConstMatrixDerivId v) const;
+    Data< MatrixDeriv >* write(core::MatrixDerivId v) override;
+    const Data< MatrixDeriv >* read(core::ConstMatrixDerivId v) const override;
 
     /// @}
 
-    virtual void initGnuplot(const std::string path);
-    virtual void exportGnuplot(SReal time);
+    void initGnuplot(const std::string path) override;
+    void exportGnuplot(SReal time) override;
 
-    virtual void resize( size_t vsize);
+    void resize( size_t vsize) override;
     virtual void reserve(size_t vsize);
 
-    size_t getSize() const { return vsize; }
+    size_t getSize() const override { return d_size.getValue(); }
 
-    SReal getPX(size_t i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
-    SReal getPY(size_t i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }
-    SReal getPZ(size_t i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)z; }
+    SReal getPX(size_t i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
+    SReal getPY(size_t i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }
+    SReal getPZ(size_t i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)z; }
 
     SReal getVX(size_t i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)x; }
     SReal getVY(size_t i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)y; }
@@ -239,58 +229,56 @@ public:
     /// @{
 
     /// Apply translation vector to the position.
-    virtual void applyTranslation (const SReal dx, const SReal dy, const SReal dz);
+    void applyTranslation (const SReal dx, const SReal dy, const SReal dz) override;
 
     /// Rotation using Euler Angles in degree.
-    virtual void applyRotation (const SReal rx, const SReal ry, const SReal rz);
+    void applyRotation (const SReal rx, const SReal ry, const SReal rz) override;
 
-    virtual void applyRotation (const defaulttype::Quat q);
+    void applyRotation (const defaulttype::Quat q) override;
 
-    virtual void applyScale (const SReal sx, const SReal sy, const SReal sz);
+    void applyScale (const SReal sx, const SReal sy, const SReal sz) override;
 
     /// @}
 
     /// Get the indices of the particles located in the given bounding box
-    void getIndicesInSpace(sofa::helper::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const;
+    void getIndicesInSpace(sofa::helper::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const override;
 
     /// update the given bounding box, to include this
-    virtual bool addBBox(SReal* minBBox, SReal* maxBBox);
+    bool addBBox(SReal* minBBox, SReal* maxBBox) override;
     /// Bounding Box computation method.
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
+    void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
     /// @name Base Matrices and Vectors Interface
     /// @{
 
     /// Copy data to a global BaseVector the state stored in a local vector
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void copyToBaseVector(defaulttype::BaseVector* dest, core::ConstVecId src, unsigned int &offset);
+    void copyToBaseVector(defaulttype::BaseVector* dest, core::ConstVecId src, unsigned int &offset) override;
 
     /// Copy data to a local vector the state stored in a global BaseVector
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void copyFromBaseVector(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset);
+    void copyFromBaseVector(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) override;
 
     /// Add data to a global BaseVector from the state stored in a local vector
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void addToBaseVector(defaulttype::BaseVector* dest, core::ConstVecId src, unsigned int &offset);
+    void addToBaseVector(defaulttype::BaseVector* dest, core::ConstVecId src, unsigned int &offset) override;
 
     /// src and dest must have the same size.
     /// Performs: dest[i][j] += src[offset + i][j] 0<= i < src_entries  0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset);
+    void addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) override;
 
     /// src size can be smaller or equal to dest size.
     /// Performs: dest[ offset + i ][j] += src[i][j]  0<= i < src_entries  0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
     /// @param offset the offset in the MechanicalObject local vector specified by VecId dest. It will be updated to the first scalar value after the ones used by this operation when this method returns.
-    virtual void addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+    void addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset ) override;
 
 
     /// @}
 
     /// Express the matrix L in term of block of matrices, using the indices of the lines in the MatrixDeriv container
-    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &indices) const;
-    virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int line, core::ConstVecId id);
-
-    void setFilename(std::string s) {filename.setValue(s);}
+    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &indices) const override;
+    SReal getConstraintJacobianTimesVecDeriv( unsigned int line, core::ConstVecId id) override;
 
     /// @name Initial transformations accessors.
     /// @{
@@ -301,113 +289,98 @@ public:
 
     virtual Vector3 getTranslation() const {return translation.getValue();}
     virtual Vector3 getRotation() const {return rotation.getValue();}
-    virtual Vector3 getScale() const {return scale.getValue();}
+    Vector3 getScale() const override {return scale.getValue();}
 
     /// @}
-
-    void setIgnoreLoader(bool b) {ignoreLoader.setValue(b);}
-
-    std::string getFilename() {return filename.getValue();}
-
-    /// Renumber the constraint ids with the given permutation vector
-    void renumberConstraintId(const sofa::helper::vector< unsigned >& renumbering);
-
 
     /// @name Integration related methods
     /// @{
 
-    virtual void beginIntegration(SReal dt);
+    void beginIntegration(SReal dt) override;
 
-    virtual void endIntegration(const core::ExecParams* params, SReal dt);
+    void endIntegration(const core::ExecParams* params, SReal dt) override;
 
-    virtual void accumulateForce(const core::ExecParams* params, core::VecDerivId f = core::VecDerivId::force()); // see BaseMechanicalState::accumulateForce(const ExecParams*, VecId)
+    void accumulateForce(const core::ExecParams* params, core::VecDerivId f = core::VecDerivId::force()) override; // see BaseMechanicalState::accumulateForce(const ExecParams*, VecId) override
 
     /// Increment the index of the given VecCoordId, so that all 'allocated' vectors in this state have a lower index
-    virtual void vAvail(const core::ExecParams* params, core::VecCoordId& v);
+    void vAvail(const core::ExecParams* params, core::VecCoordId& v) override;
     /// Increment the index of the given VecDerivId, so that all 'allocated' vectors in this state have a lower index
-    virtual void vAvail(const core::ExecParams* params, core::VecDerivId& v);
+    void vAvail(const core::ExecParams* params, core::VecDerivId& v) override;
     /// Increment the index of the given MatrixDerivId, so that all 'allocated' vectors in this state have a lower index
     //virtual void vAvail(core::MatrixDerivId& v);
 
     /// Allocate a new temporary vector
-    virtual void vAlloc(const core::ExecParams* params, core::VecCoordId v);
+    void vAlloc(const core::ExecParams* params, core::VecCoordId v) override;
     /// Allocate a new temporary vector
-    virtual void vAlloc(const core::ExecParams* params, core::VecDerivId v);
+    void vAlloc(const core::ExecParams* params, core::VecDerivId v) override;
     /// Allocate a new temporary vector
     //virtual void vAlloc(core::MatrixDerivId v);
 
     /// Reallocate a new temporary vector
-    virtual void vRealloc(const core::ExecParams* params, core::VecCoordId v);
+    void vRealloc(const core::ExecParams* params, core::VecCoordId v) override;
     /// Reallocate a new temporary vector
-    virtual void vRealloc(const core::ExecParams* params, core::VecDerivId v);
+    void vRealloc(const core::ExecParams* params, core::VecDerivId v) override;
 
 
     /// Free a temporary vector
-    virtual void vFree(const core::ExecParams* params, core::VecCoordId v);
+    void vFree(const core::ExecParams* params, core::VecCoordId v) override;
     /// Free a temporary vector
-    virtual void vFree(const core::ExecParams* params, core::VecDerivId v);
+    void vFree(const core::ExecParams* params, core::VecDerivId v) override;
     /// Free a temporary vector
     //virtual void vFree(core::MatrixDerivId v);
 
     /// Initialize an unset vector
-    virtual void vInit(const core::ExecParams* params, core::VecCoordId v, core::ConstVecCoordId vSrc);
+    void vInit(const core::ExecParams* params, core::VecCoordId v, core::ConstVecCoordId vSrc) override;
     /// Initialize an unset vector
-    virtual void vInit(const core::ExecParams* params, core::VecDerivId v, core::ConstVecDerivId vSrc);
+    void vInit(const core::ExecParams* params, core::VecDerivId v, core::ConstVecDerivId vSrc) override;
     /// Initialize an unset vector
     //virtual void vInit(const core::ExecParams* params, core::MatrixDerivId v, core::ConstMatrixDerivId vSrc);
 
-    virtual void vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a = core::ConstVecId::null(), core::ConstVecId b = core::ConstVecId::null(), SReal f=1.0);
+    void vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a = core::ConstVecId::null(), core::ConstVecId b = core::ConstVecId::null(), SReal f=1.0) override;
 
-#ifdef SOFA_SMP
-    virtual void vOp(const core::ExecParams* params, core::VecId, core::ConstVecId, core::ConstVecId, double f, a1::Shared<double> *fSh);
-    virtual void vOpMEq(const core::ExecParams* params, core::VecId, core::ConstVecId  = core::ConstVecId::null(), a1::Shared<double> * =NULL);
-    virtual void vDot(const core::ExecParams* params, a1::Shared<double> *, core::ConstVecId , core::ConstVecId);
-#endif
+    void vMultiOp(const core::ExecParams* params, const VMultiOp& ops) override;
 
-    virtual void vMultiOp(const core::ExecParams* params, const VMultiOp& ops);
+    void vThreshold(core::VecId a, SReal threshold ) override;
 
-    virtual void vThreshold(core::VecId a, SReal threshold );
-
-    virtual SReal vDot(const core::ExecParams* params, core::ConstVecId a, core::ConstVecId b);
+    SReal vDot(const core::ExecParams* params, core::ConstVecId a, core::ConstVecId b) override;
 
     /// Sum of the entries of state vector a at the power of l>0. This is used to compute the l-norm of the vector.
-    virtual SReal vSum(const core::ExecParams* params, core::ConstVecId a, unsigned l);
+    SReal vSum(const core::ExecParams* params, core::ConstVecId a, unsigned l) override;
 
     /// Maximum of the absolute values of the entries of state vector a. This is used to compute the infinite-norm of the vector.
-    virtual SReal vMax(const core::ExecParams* params, core::ConstVecId a);
+    SReal vMax(const core::ExecParams* params, core::ConstVecId a) override;
 
-    virtual size_t vSize( const core::ExecParams* params, core::ConstVecId v );
+    size_t vSize( const core::ExecParams* params, core::ConstVecId v ) override;
 
-    virtual void resetForce(const core::ExecParams* params, core::VecDerivId f = core::VecDerivId::force());
+    void resetForce(const core::ExecParams* params, core::VecDerivId f = core::VecDerivId::force()) override;
 
-    virtual void resetAcc(const core::ExecParams* params, core::VecDerivId a = core::VecDerivId::dx());
+    void resetAcc(const core::ExecParams* params, core::VecDerivId a = core::VecDerivId::dx()) override;
 
-    virtual void resetConstraint(const core::ExecParams* params);
+    void resetConstraint(const core::ConstraintParams* cparams) override;
 
-    virtual void getConstraintJacobian(const core::ExecParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off);
-#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
-    virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID);
-#endif
+    void getConstraintJacobian(const core::ConstraintParams* cparams, sofa::defaulttype::BaseMatrix* J,unsigned int & off) override;
+
+    void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID) override;
     /// @}
 
     /// @name Debug
     /// @{
 
-    virtual void printDOF(core::ConstVecId, std::ostream& =std::cerr, int firstIndex=0, int range=-1 ) const ;
-    virtual unsigned printDOFWithElapsedTime(core::ConstVecId, unsigned =0, unsigned =0, std::ostream& =std::cerr );
+    void printDOF(core::ConstVecId, std::ostream& =std::cerr, int firstIndex=0, int range=-1 ) const override;
+    unsigned printDOFWithElapsedTime(core::ConstVecId, unsigned =0, unsigned =0, std::ostream& =std::cerr ) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// @}
 
     // handle state changes
-    virtual void handleStateChange();
+    void handleStateChange() override;
 
     /// Find mechanical particles hit by the given ray.
     /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
     /// Returns false if this object does not support picking
-    virtual bool pickParticles(const core::ExecParams* params, double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
-            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles);
+    bool pickParticles(const core::ExecParams* params, double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
+            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles) override;
 
 
    /// if this mechanical object stores independent dofs (in opposition to mapped dofs)
@@ -418,17 +391,20 @@ protected :
     /// @name Initial geometric transformations
     /// @{
 
-    Data< Vector3 > translation;
-    Data< Vector3 > rotation;
-    Data< Vector3 > scale;
-    Data< Vector3 > translation2;
-    Data< Vector3 > rotation2;
+    Data< Vector3 > translation; ///< Translation of the DOFs
+    Data< Vector3 > rotation; ///< Rotation of the DOFs
+    Data< Vector3 > scale; ///< Scale of the DOFs in 3 dimensions
+    Data< Vector3 > translation2; ///< Translation of the DOFs, applied after the rest position has been computed
+    Data< Vector3 > rotation2; ///< Rotation of the DOFs, applied the after the rest position has been computed
 
     /// @}
 
-    sofa::core::objectmodel::DataFileName filename;
-    Data< bool> ignoreLoader;
-    Data< int > f_reserve;
+    //int vsize; ///< Number of elements to allocate in vectors
+    Data< int > d_size; ///< Size of the vectors
+
+    SingleLink< MechanicalObject<DataTypes>, core::topology::BaseMeshTopology,BaseLink::FLAG_STRONGLINK|BaseLink::FLAG_STOREPATH> l_topology;
+
+    Data< int > f_reserve; ///< Size to reserve when creating vectors. (default=0)
 
     bool m_initialized;
 
@@ -438,8 +414,6 @@ protected :
     sofa::helper::vector< Data< VecCoord >		* > vectorsCoord;		///< Coordinates DOFs vectors table (static and dynamic allocated)
     sofa::helper::vector< Data< VecDeriv >		* > vectorsDeriv;		///< Derivates DOFs vectors table (static and dynamic allocated)
     sofa::helper::vector< Data< MatrixDeriv >	* > vectorsMatrixDeriv; ///< Constraint vectors table
-
-    size_t vsize; ///< Number of elements to allocate in vectors
 
     /**
      * @brief Inserts VecCoord DOF coordinates vector at index in the vectorsCoord container.
@@ -479,66 +453,33 @@ protected :
     std::ofstream* m_gnuplotFileX;
     std::ofstream* m_gnuplotFileV;
 
-    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
-#ifndef SOFA_FLOAT
 template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q);
-#endif
-#ifndef SOFA_DOUBLE
-template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q);
-#endif
-#ifndef SOFA_FLOAT
-template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
-#endif
-#ifndef SOFA_DOUBLE
-template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
-#endif
+void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const defaulttype::Quat q);
 
-#ifndef SOFA_FLOAT
 template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
-#endif
-#ifndef SOFA_DOUBLE
-template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
-#endif
+void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
 
-#ifndef SOFA_FLOAT
+
 template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
+void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+
+
 template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
-#endif
-template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams);
+void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::VisualParams* vparams);
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec2dTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec1dTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6dTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec2fTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec1fTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6fTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2fTypes>;
-#endif
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
+
+#if  !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec3Types>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec2Types>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec1Types>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6Types>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3Types>;
+extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2Types>;
+
 #endif
 
 } // namespace container

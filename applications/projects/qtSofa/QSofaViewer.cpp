@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -41,7 +41,7 @@ GLfloat camera_target[] = { 22.0, 0.0, 0.0 };
 GLfloat camera_angle = 55;
 GLfloat znear = 15;
 GLfloat zfar = 35;
-GLfloat DegToRad = 3.1415927 / 180;
+GLfloat DegToRad = M_PI / 180;
 
 
 QSofaViewer::QSofaViewer(QSofaScene *sofaScene, QGLWidget* contextSharing, QWidget *parent) :

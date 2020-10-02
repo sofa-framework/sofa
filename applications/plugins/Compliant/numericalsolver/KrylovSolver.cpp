@@ -22,10 +22,13 @@ void KrylovSolver::init() {
 
     response = this->getContext()->get<Response>(core::objectmodel::BaseContext::Local);
 
+    if( verbose.getValue() )
+        f_printLog.setValue(true) ;
+
     if( response ) {
-        sout << response->getClassName() << " found, using schur complement" << sendl;
+        msg_info() << response->getClassName() << " found, using schur complement" ;
     } else {
-        sout << "no response found, using full kkt system" << sendl;
+        msg_info() << "no response found, using full kkt system" ;
     }
     
 }
@@ -80,10 +83,9 @@ void KrylovSolver::report(const params_type& p) const {
 	if( verbose.getValue() ) {
         const char* variant = response ? "(schur)" : "(kkt)";
         
-		serr << method() << " " << variant
-             << " - iterations: " << p.iterations
-             << ", (abs) residual: " << p.precision
-             << sendl;
+		msg_info() << method() << " " << variant
+                   << " - iterations: " << p.iterations
+                   << ", (abs) residual: " << p.precision ;
 	}
     
 }

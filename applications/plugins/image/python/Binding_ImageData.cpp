@@ -5,6 +5,7 @@
 
 #include "Binding_ImageData.h"
 #include <SofaPython/Binding_Data.h>
+#include <SofaPython/PythonToSofa.inl>
 
 
 // kind of old-style templates

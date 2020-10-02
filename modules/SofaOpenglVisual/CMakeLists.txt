@@ -1,95 +1,103 @@
-cmake_minimum_required(VERSION 3.1)
-project(SofaOpenglVisual)
+cmake_minimum_required(VERSION 3.12)
+project(SofaOpenglVisual VERSION 1.0 LANGUAGES CXX)
 
-if(${SOFA_NO_OPENGL})
-    message(SEND_ERROR "Warning: CMake flag SOFA_NO_OPENGL is active.")
-    message("Flag SOFA_NO_OPENGL incompatible with the SofaOpenglVisual module.")    
+if(SOFA_NO_OPENGL)
+    message(FATAL_ERROR "SOFA_NO_OPENGL flag prevents from using the SofaOpenglVisual plugin")
 endif()
+
+find_package(SofaBase REQUIRED)
+find_package(SofaSimulation REQUIRED)
 
 set(HEADER_FILES
-    ClipPlane.h
-    OglColorMap.h
-    CompositingVisualLoop.h
-    DataDisplay.h
-    OglCylinderModel.h
-    OglGrid.h
-    OglLabel.h
-    OglLineAxis.h
-    OglModel.h
-    OglRenderingSRGB.h
-    OglSceneFrame.h
-    PointSplatModel.h
-    config.h
-    initOpenGLVisual.h
-    MergeVisualModels.h
-)
-
+    src/SofaOpenglVisual/config.h
+    src/SofaOpenglVisual/initOpenGLVisual.h
+    src/SofaOpenglVisual/ClipPlane.h
+    src/SofaOpenglVisual/OglColorMap.h
+    src/SofaOpenglVisual/CompositingVisualLoop.h
+    src/SofaOpenglVisual/DataDisplay.h
+    src/SofaOpenglVisual/OglLabel.h
+    src/SofaOpenglVisual/OglModel.h
+    src/SofaOpenglVisual/PointSplatModel.h
+    src/SofaOpenglVisual/MergeVisualModels.h
+    src/SofaOpenglVisual/LightManager.h
+    src/SofaOpenglVisual/Light.h
+    src/SofaOpenglVisual/OrderIndependentTransparencyManager.h
+    src/SofaOpenglVisual/OglOITShader.h
+    src/SofaOpenglVisual/OglAttribute.h
+    src/SofaOpenglVisual/OglAttribute.inl
+    src/SofaOpenglVisual/OglShader.h
+    src/SofaOpenglVisual/OglShaderMacro.h
+    src/SofaOpenglVisual/OglShaderVisualModel.h
+    src/SofaOpenglVisual/OglShadowShader.h
+    src/SofaOpenglVisual/OglTexture.h
+    src/SofaOpenglVisual/OglTexturePointer.h
+    src/SofaOpenglVisual/OglVariable.h
+    src/SofaOpenglVisual/OglVariable.inl
+    src/SofaOpenglVisual/OglViewport.h
+    src/SofaOpenglVisual/OglCylinderModel.h
+    src/SofaOpenglVisual/OglGrid.h
+    src/SofaOpenglVisual/OglRenderingSRGB.h
+    src/SofaOpenglVisual/OglLineAxis.h
+    src/SofaOpenglVisual/OglSceneFrame.h
+    src/SofaOpenglVisual/PostProcessManager.h
+    src/SofaOpenglVisual/SlicedVolumetricModel.h
+    src/SofaOpenglVisual/VisualManagerPass.h
+    src/SofaOpenglVisual/VisualManagerSecondaryPass.h
+    )
 set(SOURCE_FILES
-    ClipPlane.cpp
-    OglColorMap.cpp
-    CompositingVisualLoop.cpp
-    DataDisplay.cpp
-    OglCylinderModel.cpp
-    OglGrid.cpp
-    OglLabel.cpp
-    OglLineAxis.cpp
-    OglModel.cpp
-    OglRenderingSRGB.cpp
-    OglSceneFrame.cpp
-    PointSplatModel.cpp
-    initOpenGLVisual.cpp
-    MergeVisualModels.cpp
-)
-
-if(SOFA_HAVE_GLEW)
-
-    list(APPEND HEADER_FILES
-		LightManager.h
-		Light.h
-		OrderIndependentTransparencyManager.h
-		OglOITShader.h
-        OglAttribute.h
-        OglAttribute.inl
-        OglShader.h
-        OglShaderMacro.h
-        OglShaderVisualModel.h
-        OglShadowShader.h
-        OglTexture.h
-        OglTexturePointer.h
-        OglVariable.h
-        OglVariable.inl
-        OglViewport.h
-        PostProcessManager.h
-        SlicedVolumetricModel.h
-        VisualManagerPass.h
-        VisualManagerSecondaryPass.h
+    src/SofaOpenglVisual/initOpenGLVisual.cpp
+    src/SofaOpenglVisual/ClipPlane.cpp
+    src/SofaOpenglVisual/OglColorMap.cpp
+    src/SofaOpenglVisual/CompositingVisualLoop.cpp
+    src/SofaOpenglVisual/DataDisplay.cpp
+    src/SofaOpenglVisual/OglGrid.cpp
+    src/SofaOpenglVisual/OglLabel.cpp
+    src/SofaOpenglVisual/OglModel.cpp
+    src/SofaOpenglVisual/PointSplatModel.cpp
+    src/SofaOpenglVisual/MergeVisualModels.cpp
+    src/SofaOpenglVisual/Light.cpp
+    src/SofaOpenglVisual/LightManager.cpp
+    src/SofaOpenglVisual/OrderIndependentTransparencyManager.cpp
+    src/SofaOpenglVisual/OglOITShader.cpp
+    src/SofaOpenglVisual/OglAttribute.cpp
+    src/SofaOpenglVisual/OglShader.cpp
+    src/SofaOpenglVisual/OglShaderMacro.cpp
+    src/SofaOpenglVisual/OglShaderVisualModel.cpp
+    src/SofaOpenglVisual/OglShadowShader.cpp
+    src/SofaOpenglVisual/OglTexture.cpp
+    src/SofaOpenglVisual/OglTexturePointer.cpp
+    src/SofaOpenglVisual/OglVariable.cpp
+    src/SofaOpenglVisual/OglViewport.cpp
+    src/SofaOpenglVisual/OglCylinderModel.cpp
+    src/SofaOpenglVisual/OglGrid.cpp
+    src/SofaOpenglVisual/OglRenderingSRGB.cpp
+    src/SofaOpenglVisual/OglLineAxis.cpp
+    src/SofaOpenglVisual/OglSceneFrame.cpp
+    src/SofaOpenglVisual/PostProcessManager.cpp
+    src/SofaOpenglVisual/SlicedVolumetricModel.cpp
+    src/SofaOpenglVisual/VisualManagerPass.cpp
+    src/SofaOpenglVisual/VisualManagerSecondaryPass.cpp
+    )
+set(EXTRA_FILES
+    README.md
     )
 
-    list(APPEND SOURCE_FILES
-		Light.cpp
-		LightManager.cpp
-		OrderIndependentTransparencyManager.cpp
-		OglOITShader.cpp
-        OglAttribute.cpp
-        OglShader.cpp
-        OglShaderMacro.cpp
-        OglShaderVisualModel.cpp
-        OglShadowShader.cpp
-        OglTexture.cpp
-        OglTexturePointer.cpp
-        OglVariable.cpp
-        OglViewport.cpp
-        PostProcessManager.cpp
-        SlicedVolumetricModel.cpp
-        VisualManagerPass.cpp
-        VisualManagerSecondaryPass.cpp
-    )
-
-endif()
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCommon)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_OPENGL_VISUAL")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "SofaOpenglVisual"
+    RELOCATABLE "plugins"
+    )
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFAOPENGLVISUAL_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFAOPENGLVISUAL_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(SofaOpenglVisual_test)
+endif()

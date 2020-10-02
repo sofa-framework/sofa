@@ -19,14 +19,14 @@ class SOFA_Compliant_API NNCGSolver : public SequentialSolver {
     NNCGSolver();
 	
   protected:
-	virtual void solve_impl(vec& x,
+	void solve_impl(vec& x,
 							const system_type& system,
 							const vec& rhs, 
 							bool correct,
-                            real damping) const;
+                            real damping) const override;
 
 	
-	Data<bool> verbose;
+	Data<bool> verbose; ///< print stuff
 };
 
 }

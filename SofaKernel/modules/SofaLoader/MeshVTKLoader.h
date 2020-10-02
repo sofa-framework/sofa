@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,8 +25,6 @@
 
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/loader/MeshLoader.h>
-
-//#include <tinyxml.h>
 
 namespace sofa
 {
@@ -61,14 +59,7 @@ public:
     core::objectmodel::BaseData* tetrasData;
     core::objectmodel::BaseData* hexasData;
 
-    virtual bool load();
-
-    template <class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context,
-                            core::objectmodel::BaseObjectDescription* arg )
-    {
-        return BaseLoader::canCreate (obj, context, arg);
-    }
+    bool load() override;
 
 protected:
     enum VTKFileType { NONE, LEGACY, XML };

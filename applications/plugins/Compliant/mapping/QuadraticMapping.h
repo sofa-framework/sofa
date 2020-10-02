@@ -30,7 +30,7 @@ class SOFA_Compliant_API QuadraticMapping : public AssembledMapping<TIn, TOut>
     typedef QuadraticMapping self;
     typedef typename TOut::Real out_real;
     
-    Data< SReal > stiffness;
+    Data< SReal > stiffness; ///< scalar factor
     
     QuadraticMapping()
         : stiffness( initData(&stiffness, (SReal)1.0, "stiffness", "scalar factor") ) {
@@ -39,7 +39,7 @@ class SOFA_Compliant_API QuadraticMapping : public AssembledMapping<TIn, TOut>
 
     
     virtual void apply(typename self::out_pos_type& out,
-                       const typename self::in_pos_type& in ) {
+                       const typename self::in_pos_type& in ) override {
         
         // automatic output resize
         this->getToModel()->resize( 1 );
@@ -56,7 +56,7 @@ class SOFA_Compliant_API QuadraticMapping : public AssembledMapping<TIn, TOut>
 	}
 
 
-    virtual void assemble( const typename self::in_pos_type& in ) {
+    virtual void assemble( const typename self::in_pos_type& in ) override {
         typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
         J.resize( 1, self::Nin * in.size());
         J.reserve( self::Nin * in.size() );
@@ -79,7 +79,7 @@ class SOFA_Compliant_API QuadraticMapping : public AssembledMapping<TIn, TOut>
 
 
     virtual void assemble_geometric( const typename self::in_pos_type& in,
-                                     const typename self::out_force_type& out) {
+                                     const typename self::out_force_type& out) override {
         const out_real& mu = out[0][0];
         const SReal& s = stiffness.getValue();
 

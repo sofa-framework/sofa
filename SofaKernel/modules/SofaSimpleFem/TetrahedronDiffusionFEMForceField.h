@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,9 +22,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include "config.h"
 
@@ -103,19 +101,19 @@ public:
 
       //@{
       /** Other usual SOFA functions */
-      virtual void init();
-      virtual void reinit();
-      virtual void draw(const core::visual::VisualParams*);
+      void init() override;
+      void reinit() override;
+      void draw(const core::visual::VisualParams*) override;
       //@}
 
       /// Forcefield functions for Matrix system. Adding force to global forcefield vector.
-      virtual void addForce (const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dF, const DataVecCoord& dX, const DataVecDeriv& /*v*/);
+      void addForce (const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dF, const DataVecCoord& dX, const DataVecDeriv& /*v*/) override;
       /// Forcefield functions for Matrix system. Adding derivate force to global forcefield vector.
-      virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& dF , const DataVecDeriv& dX);
+      void addDForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& dF , const DataVecDeriv& dX) override;
       /// Forcefield functions for Matrix system. Adding derivate force to global forcefield vector. (direct solver)
-      void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+      void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
       /// Return Potential energy of the mesh.
-      virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const;
+      SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const override;
 
       /// Get diffusion coefficient coefficient
       sofa::helper::vector<Real> getDiffusionCoefficient();
@@ -146,6 +144,8 @@ public:
       /// Boolean enabling to visualize the different diffusion coefficient
       Data <bool> d_drawConduc;
 
+      /// Link to be set to the topology container in the component graph. 
+      SingleLink<TetrahedronDiffusionFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 
 protected:
@@ -157,26 +157,20 @@ protected:
       /// Pointer to mechanical mechanicalObject
       typename MechObject::SPtr mechanicalObject;
       /// Pointer to topology
-      sofa::core::topology::BaseMeshTopology::SPtr topology;
+      sofa::core::topology::BaseMeshTopology::SPtr m_topology;
       /// Saving the number of edges
-      unsigned int nbEdges;
+      size_t nbEdges;
 
 public:
       /// Boolean if the diffusion coefficients have loaded from file
       bool loadedDiffusivity;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1dTypes>;
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2dTypes>;
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1fTypes>;
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2fTypes>;
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP)
+extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1Types>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2Types>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3Types>;
+ 
 #endif
 
 } //namespace forcefield

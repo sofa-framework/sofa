@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,11 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
-
-
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
@@ -32,10 +27,15 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/testing/NumericTest.h>
+using sofa::helper::testing::NumericTest;
+
+#include <SofaSimulationGraph/SimpleApi.h>
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
-#include <SofaTest/TestMessageHandler.h>
 #include <sofa/helper/logging/Message.h>
+
+#include <SofaConstraint/GenericConstraintSolver.h>
 
 namespace sofa {
 
@@ -49,7 +49,7 @@ using namespace component;
 using namespace defaulttype;
 
 template <typename _DataTypes>
-struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataTypes::Real>
+struct BilateralInteractionConstraint_test : public NumericTest<>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -68,6 +68,9 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
     /// Create the context for the tests.
     void SetUp()
     {
+        sofa::simpleapi::importPlugin("SofaComponentAll");
+        sofa::simpleapi::importPlugin("SofaMiscCollision");
+        sofa::simpleapi::importPlugin("SofaOpenglVisual");
         if(simulation==nullptr)
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
     }
@@ -101,7 +104,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
                  "   <BilateralInteractionConstraint template='"<< DataTypes::Name() << "' object1='@./o1' object2='@./o2'/>     \n"
                  "</Node>                                                     \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory (__FILE__,
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         root->init(ExecParams::defaultInstance()) ;
@@ -133,7 +136,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
                  "   <BilateralInteractionConstraint template='"<< DataTypes::Name() << "' />     \n"
                  "</Node>                                                     \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory (__FILE__,
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         root->init(ExecParams::defaultInstance()) ;
@@ -158,7 +161,7 @@ void BilateralInteractionConstraint_test<Rigid3fTypes>::checkRigid3fFixForBackwa
              "   <BilateralInteractionConstraint template='"<< DataTypes::Name() << "' object1='@./o1' object2='@./o2'/>     \n"
              "</Node>                                                     \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory (__FILE__,
+    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     root->init(ExecParams::defaultInstance()) ;
@@ -217,7 +220,9 @@ bool BilateralInteractionConstraint_test<Vec3Types>::test_Vec3ConstrainedPositio
             points[i] = meca[i]->read(core::ConstVecCoordId::position())->getValue()[0];
     }
 
-    if(points[0] == points[1]) return true;
+    component::constraintset::GenericConstraintSolver *test;
+    root->get(test);
+    if(vectorMaxDiff(points[0],points[1])<test->tolerance.getValue()) return true;
     else
     {
         ADD_FAILURE() << "Error while testing if two positions are correctly constrained" << std::endl;
@@ -229,12 +234,8 @@ bool BilateralInteractionConstraint_test<Vec3Types>::test_Vec3ConstrainedPositio
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef Types<Vec3Types
-#ifdef SOFA_WITH_DOUBLE
               ,Rigid3dTypes
-#endif //
-#ifdef SOFA_WITH_FLOAT
-              ,Rigid3fTypes
-#endif //
+ //
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations

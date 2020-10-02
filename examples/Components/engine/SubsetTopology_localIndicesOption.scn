@@ -1,4 +1,5 @@
 <Node name="root" gravity="0 -9.81 0" dt="0.05">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
@@ -6,7 +7,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <TreeCollisionGroupManager name="default2" />
     <Node name="SquareGravity">
-        <EulerImplicitSolver name="cg_odesolver" />
+        <EulerImplicitSolver name="cg_odesolver"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="meshLoader" filename="mesh/square3.msh" />
         <SubsetTopology template="Vec3d" box="0.3 0 -0.1 0.6 1 0.1" drawROI="1" src="@meshLoader" rest_position="@meshLoader.position" name="Subset" localIndices="1" />
@@ -19,10 +20,12 @@
             <DiagonalMass template="Vec3d" name="default5" massDensity="1.15" />
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
-            <TTriangleModel template="Vec3d" name="default7" />
-            <VisualModel template="ExtVec3f" name="Visual" color="blue" />
-            <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
-        </Node>
+            <TriangleCollisionModel template="Vec3d" name="default7" />
+
+            <Node >
+              <OglModel name="Visual" color="blue" />
+              <IdentityMapping input="@.." output="@Visual" />
+            </Node>        </Node>
         <Node name="Out">
             <MechanicalObject template="Vec3d" name="mecaObj2" position="@../Subset.pointsOutROI" />
             <TriangleSetTopologyContainer name="Container" position="@mecaObj2.position" triangles="@../Subset.trianglesOutROI" />
@@ -30,12 +33,15 @@
             <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
             <DiagonalMass template="Vec3d" name="default5" massDensity="1.15" />
-            <TTriangleModel template="Vec3d" name="default7" />
+            <TriangleCollisionModel template="Vec3d" name="default7" />
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
             <FixedConstraint template="Vec3d" name="default6" indices="0 1" />
-            <VisualModel template="ExtVec3f" name="Visual" color="red" />
-            <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
+
+            <Node >
+              <OglModel name="Visual" color="red" />
+              <IdentityMapping input="@.." output="@Visual" />
+            </Node>
         </Node>
     </Node>
 </Node>

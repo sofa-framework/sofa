@@ -1,0 +1,1 @@
+#include<SofaImplicitField/deprecated/InterpolatedImplicitSurface.h>

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,12 +22,12 @@
 #include "OpenCLTypes.h"
 #include "OpenCLSpringForceField.inl"
 
-#include <SofaObjectInteraction/BoxStiffSpringForceField.inl>
+#include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.inl>
 #include <SofaDeformable/SpringForceField.inl>
 #include <SofaDeformable/StiffSpringForceField.inl>
 #include <SofaDeformable/MeshSpringForceField.inl>
-#include <SofaDeformable/TriangleBendingSprings.inl>
-#include <SofaDeformable/QuadBendingSprings.inl>
+#include <SofaGeneralDeformable/TriangleBendingSprings.inl>
+#include <SofaGeneralDeformable/QuadBendingSprings.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 
 
@@ -91,9 +91,6 @@ namespace gpu
 
 namespace opencl
 {
-
-SOFA_DECL_CLASS(OpenCLSpringForceField)
-SOFA_DECL_CLASS(OpenCLBoxStiffSpringForceField)
 
 int SpringForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
         .add< component::interactionforcefield::SpringForceField<OpenCLVec3fTypes> >()

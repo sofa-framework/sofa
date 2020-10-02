@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -132,13 +132,10 @@ public:
 
     Data< ImageTypes > image;
     Data< TransformType > transform;
-    Data< MassMatrix > massMatrix;
+    Data< MassMatrix > massMatrix; ///< Mass Matrix
 
     enum { NO_LUMPING=0, BLOCK_LUMPING=1, DIAGONAL_LUMPING=2 };
     Data< int > f_lumping; ///< is the mass matrix lumped? (copy each non-diagonal term on the diagonal term of the same line)  0->no, 1->by bloc, 2->diagonal matrix
-
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const MassFromDensity<DataTypes,ImageTypes>* = NULL) { return DataTypes::Name()+std::string(",")+ImageTypes::Name();  }
 
     MassFromDensity()    :   Inherited()
       , image(initData(&image,ImageTypes(),"image",""))
@@ -154,9 +151,9 @@ public:
         transform.setReadOnly(true);
     }
 
-    virtual ~MassFromDensity() {}
+    ~MassFromDensity() override {}
 
-    virtual void init()
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -168,18 +165,14 @@ public:
         this->getContext()->get( dofs, core::objectmodel::BaseContext::Local);
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void update()
+    void doUpdate() override
     {
         if(!deformationMapping) { serr<<SOFA_CLASS_METHOD<<"can't compute the mass : no mapping found"<<sendl; return; }
         if(!dofs) { serr<<SOFA_CLASS_METHOD<<"can't compute the mass : no MechanicalObject<Vec3> found"<<sendl; return; }
-
-        updateAllInputsIfDirty(); // the easy way...
-
-        cleanDirty();
 
         MassFromDensitySpec::update(this);
 
@@ -240,7 +233,7 @@ protected:
         deformationMapping->init();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
         {

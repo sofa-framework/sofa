@@ -1,0 +1,32 @@
+Node : {
+    name : "root"
+
+    TestResult : {
+        name : "result"
+        result : "Success"
+    }
+
+    Using : MechanicalObject as MyName
+
+    MechanicalObject : {
+        name : "createdFromName"
+    }
+
+    MyName : {
+        name : "createdFromAlias"
+    }
+
+    Nothing : {
+        name : "nothing"
+    }
+
+    Python : '''
+             if not root.getObject("createFromName"):
+                root.getObject("result").result="Fail"
+             if not root.getObject("createFromAlias"):
+                   root.getObject("result").result="Fail"
+             if not root.getObject("XXNothingXX"):
+                   root.getObject("result").result="Fail"
+             '''
+}
+

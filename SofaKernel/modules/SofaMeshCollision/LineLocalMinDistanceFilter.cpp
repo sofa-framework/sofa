@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,6 +40,14 @@ namespace collision
 {
 
 
+LineInfo::LineInfo(LocalMinDistanceFilter *lmdFilters)
+    : InfoFilter(lmdFilters)
+    , m_computedRightAngleCone(0.0)
+    , m_computedLeftAngleCone(0.0)
+    , m_twoTrianglesAroundEdge(false)
+{
+}
+
 void LineInfo::buildFilter(unsigned int edge_index)
 {
     using sofa::helper::vector;
@@ -50,16 +58,9 @@ void LineInfo::buildFilter(unsigned int edge_index)
     if ((int)edge_index==-1)
         debug=true;
 
-
-    //std::cout<<"buildFilter for edge"<<edge_index<<" :";
-
-
     BaseMeshTopology* bmt = this->base_mesh_topology;
-    //std::cout<<"bmt:"<<bmt<<std::endl;
 
     const Edge &e =  bmt->getEdge(edge_index);
-
-//	vector< Vector3 >& x =(l.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
 
     const sofa::defaulttype::Vector3 &pt1 = (*this->position_filtering)[e[0]];
     const sofa::defaulttype::Vector3 &pt2 = (*this->position_filtering)[e[1]];
@@ -69,10 +70,6 @@ void LineInfo::buildFilter(unsigned int edge_index)
 
     m_lineVector = pt2 - pt1;
     m_lineVector.normalize();
-
-    //BaseMeshTopology* topology = l.getCollisionModel()->getMeshTopology();
-
-
 
     const sofa::helper::vector<unsigned int>& trianglesAroundEdge = bmt->getTrianglesAroundEdge(edge_index);
 
@@ -146,19 +143,12 @@ void LineInfo::buildFilter(unsigned int edge_index)
     setValid();
 }
 
-
-
-
-//bool LineInfo::validate(const unsigned int edge_index, const defaulttype::Vector3 &PQ)
-
 bool LineInfo::validate(const unsigned int edge_index, const defaulttype::Vector3& PQ)
 {
     bool debug=false;
 
     if ((int)edge_index==-1)
         debug=true;
-
-
 
     if (isValid())
     {
@@ -208,9 +198,9 @@ bool LineInfo::validate(const unsigned int edge_index, const defaulttype::Vector
 LineLocalMinDistanceFilter::LineLocalMinDistanceFilter()
     : m_pointInfo(initData(&m_pointInfo, "pointInfo", "point filter data"))
     , m_lineInfo(initData(&m_lineInfo, "lineInfo", "line filter data"))
-    , pointInfoHandler(NULL)
-    , lineInfoHandler(NULL)
-    , bmt(NULL)
+    , pointInfoHandler(nullptr)
+    , lineInfoHandler(nullptr)
+    , bmt(nullptr)
 {
 }
 
@@ -224,7 +214,7 @@ void LineLocalMinDistanceFilter::init()
 {
     this->bmt = getContext()->getMeshTopology();
 
-    if (bmt != 0)
+    if (bmt != nullptr)
     {
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
@@ -255,16 +245,10 @@ void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned 
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
     component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
-    if(mstateVec3d != NULL)
+    if(mstateVec3d != nullptr)
     {
         pInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
     }
-
-    //component::container::MechanicalObject<Vec3fTypes>*  mstateVec3f= dynamic_cast<component::container::MechanicalObject<Vec3fTypes>*>(context->getMechanicalState())
-    //if(mstateVec3f != NULL)
-    //{
-    //	lInfo.setPositionFiltering(mstateVec3f->read(sofa::core::ConstVecCoordId::position())->getValue());
-    //}
 }
 
 
@@ -280,29 +264,15 @@ void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsigned i
 
     /////// TODO : template de la classe
     component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
-    if(mstateVec3d != NULL)
+    if(mstateVec3d != nullptr)
     {
         lInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
     }
-
-    //component::container::MechanicalObject<Vec3fTypes>*  mstateVec3f= dynamic_cast<component::container::MechanicalObject<Vec3fTypes>*>(context->getMechanicalState())
-    //if(mstateVec3f != NULL)
-    //{
-    //	lInfo.setPositionFiltering(mstateVec3f->read(sofa::core::ConstVecCoordId::position())->getValue());
-    //}
-
 }
 
 bool LineLocalMinDistanceFilter::validPoint(const int pointIndex, const defaulttype::Vector3 &PQ)
 {
-
     PointInfo & Pi = m_pointInfo[pointIndex];
-//    if(&Pi==NULL)
-//    {
-//        serr<<"Pi == NULL"<<sendl;
-//        return true;
-//    }
-
     if(this->isRigid())
     {
         // filter is precomputed in the rest position
@@ -310,20 +280,15 @@ bool LineLocalMinDistanceFilter::validPoint(const int pointIndex, const defaultt
         PQtest = pos->getOrientation().inverseRotate(PQ);
         return Pi.validate(pointIndex,PQtest);
     }
-    //else
 
     return Pi.validate(pointIndex,PQ);
 }
 
 bool LineLocalMinDistanceFilter::validLine(const int /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
 {
-    //const Edge& bmt->getEdge(lineIndex);
-    // m_lineInfo[edgeIndex].validate(lineIndex, PQ);
     return true;
 }
 
-
-SOFA_DECL_CLASS(LineLocalMinDistanceFilter)
 
 int LineLocalMinDistanceFilterClass = core::RegisterObject("This class manages Line collision models cones filters computations and updates.")
         .add< LineLocalMinDistanceFilter >()

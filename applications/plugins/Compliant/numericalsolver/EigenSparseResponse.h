@@ -21,11 +21,11 @@ public:
 
     EigenSparseResponse();
 
-    virtual void factor(const rmat& sys);
-	virtual void solve(cmat& lval, const cmat& rval) const;
-    virtual void solve(vec& lval, const vec& rval) const;
-    virtual void reinit();
-    virtual bool isSymmetric() const { return symmetric; }
+    void factor(const rmat& sys) override;
+	void solve(cmat& lval, const cmat& rval) const override;
+    virtual void solve(vec& lval, const vec& rval) const override;
+    void reinit() override;
+    bool isSymmetric() const override { return symmetric; }
 
     /// Add identity*regularize to matrix H to make it definite (Tikhonov regularization)
     /// (this is useful when H is projected with a projective constraint and becomes semidefinite)
@@ -108,13 +108,13 @@ public:
 
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(EigenSparseIterativeResponse,LinearSolver,symmetric),SOFA_TEMPLATE2(EigenSparseResponse,LinearSolver,symmetric));
 
-    Data<unsigned> d_iterations;
-    Data<SReal> d_tolerance;
+    Data<unsigned> d_iterations; ///< max iterations
+    Data<SReal> d_tolerance; ///< tolerance
 
     EigenSparseIterativeResponse();
 
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
 
 };
 

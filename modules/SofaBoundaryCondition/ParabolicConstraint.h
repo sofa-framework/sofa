@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,12 +69,15 @@ protected:
 
     /// the three points defining the parabol
     Data<Vec3R> m_P1;
-    Data<Vec3R> m_P2;
-    Data<Vec3R> m_P3;
+    Data<Vec3R> m_P2; ///< second point of the parabol
+    Data<Vec3R> m_P3; ///< third point of the parabol
 
     /// the time steps defining the velocity of the movement
     Data<Real> m_tBegin;
-    Data<Real> m_tEnd;
+    Data<Real> m_tEnd; ///< End Time of the motion
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<ParabolicConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     /// the 3 points projected in the parabol plan
     Vec3R m_locP1;
@@ -84,12 +87,7 @@ protected:
     /// the quaternion doing the projection
     QuatR m_projection;
 
-
-
-
-    ParabolicConstraint();
-
-    ParabolicConstraint(core::behavior::MechanicalState<DataTypes>* mstate);
+    ParabolicConstraint(core::behavior::MechanicalState<DataTypes>* mstate = nullptr);
 
     ~ParabolicConstraint();
 public:
@@ -110,33 +108,26 @@ public:
     Real getEndTime() {return m_tEnd.getValue();}
 
     /// -- Constraint interface
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
-
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARABOLICCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class ParabolicConstraint<defaulttype::Rigid3dTypes>;
-extern template class ParabolicConstraint<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class ParabolicConstraint<defaulttype::Rigid3fTypes>;
-extern template class ParabolicConstraint<defaulttype::Vec3fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARABOLICCONSTRAINT_CPP)
+extern template class ParabolicConstraint<defaulttype::Rigid3Types>;
+extern template class ParabolicConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace projectiveconstraintset

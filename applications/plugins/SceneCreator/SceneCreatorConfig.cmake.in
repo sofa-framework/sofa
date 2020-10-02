@@ -2,11 +2,17 @@
 
 @PACKAGE_INIT@
 
-find_package(SofaSimulation REQUIRED)
-find_package(SofaMisc REQUIRED)
+set(SCENECREATOR_HAVE_SOFASPARSESOLVER @SCENECREATOR_HAVE_SOFASPARSESOLVER@)
+
+find_package(SofaSimulation QUIET REQUIRED)
+find_package(Eigen3 QUIET REQUIRED)
+
+if(SCENECREATOR_HAVE_SOFASPARSESOLVER)
+    find_package(SofaSparseSolver QUIET REQUIRED)
+endif()
 
 if(NOT TARGET SceneCreator)
-	include("${CMAKE_CURRENT_LIST_DIR}/SceneCreatorTargets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/SceneCreatorTargets.cmake")
 endif()
 
 check_required_components(SceneCreator)

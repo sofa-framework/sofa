@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP
 #include <SofaUserInteraction/MouseInteractor.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -34,37 +34,20 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(MouseInteractor)
-
 int MouseInteractorClass = core::RegisterObject("Perform tasks related to the interaction with the mouse")
-#ifndef SOFA_DOUBLE
-        .add< MouseInteractor<defaulttype::Vec2fTypes> >()
-        .add< MouseInteractor<defaulttype::Vec3fTypes> >()
-#endif
-#ifndef SOFA_FLOAT
-        .add< MouseInteractor<defaulttype::Vec2dTypes> >()
-        .add< MouseInteractor<defaulttype::Vec3dTypes> >()
-#endif
+        .add< MouseInteractor<defaulttype::Vec2Types> >()
+        .add< MouseInteractor<defaulttype::Vec3Types> >()
+
         ;
 int MouseInteractorRigidClass = core::RegisterObject("Perform tasks related to the interaction with the mouse and rigid objects")
-#ifndef SOFA_DOUBLE
-        .add< MouseInteractor<defaulttype::Rigid3fTypes> >()
-#endif
-#ifndef SOFA_FLOAT
-        .add< MouseInteractor<defaulttype::Rigid3dTypes> >()
-#endif
+        .add< MouseInteractor<defaulttype::Rigid3Types> >()
+
         ;
 
-#ifndef SOFA_DOUBLE
-template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec2fTypes>;
-template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3fTypes>;
-template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec2dTypes>;
-template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3dTypes>;
-template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3dTypes>;
-#endif
+template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec2Types>;
+template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3Types>;
+template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3Types>;
+
 
 
 void BaseMouseInteractor::cleanup()
@@ -116,32 +99,21 @@ void BaseMouseInteractor::updatePosition(SReal )
 
 void BaseMouseInteractor::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     VecPerformer::iterator it=performers.begin(), it_end=performers.end();
     for (; it!=it_end; ++it)
         (*it)->draw(vparams);
 
-    if( !vparams->isSupported(sofa::core::visual::API_OpenGL) ) return;
-
     if (lastPicked.body)
     {
+        sofa::defaulttype::Vec4f color = sofa::defaulttype::Vec4f(0.0f,1.0f,0.0f,1.0f);
         if (isAttached)
-            glColor4f(1.0f,0.0f,0.0f,1.0f);
-        else
-            glColor4f(0.0f,1.0f,0.0f,1.0f);
+            color = sofa::defaulttype::Vec4f(1.0f,0.0f,0.0f,1.0f);
 
-        glDisable(GL_LIGHTING);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glLineWidth(3);
+        vparams->drawTool()->setPolygonMode(0, true);
         lastPicked.body->draw(vparams,lastPicked.indexCollisionElement);
+        vparams->drawTool()->setPolygonMode(0, false);
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-
-        glColor4f(1,1,1,1);
-        glLineWidth(1);
     }
-#endif /* SOFA_NO_OPENGL */
 }
 }
 }

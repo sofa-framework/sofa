@@ -16,11 +16,11 @@ namespace collision
 {
 
 template<class TDataTypes>
-class TBulletTriangleModel : public sofa::component::collision::TTriangleModel<TDataTypes>,public BulletCollisionModel
+class TBulletTriangleModel : public sofa::component::collision::TriangleCollisionModel<TDataTypes>,public BulletCollisionModel
 {
 public:
-    //SOFA_CLASS2(SOFA_TEMPLATE(TBulletTriangleModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TTriangleModel, TDataTypes),BulletCollisionModel);
-    SOFA_CLASS(SOFA_TEMPLATE(TBulletTriangleModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TTriangleModel, TDataTypes));
+    //SOFA_CLASS2(SOFA_TEMPLATE(TBulletTriangleModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes),BulletCollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(TBulletTriangleModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -30,7 +30,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     //typedef TBtTriangle<DataTypes> Element;
 
-    sofa::core::objectmodel::Data<SReal> margin;
+    sofa::core::objectmodel::Data<SReal> margin; ///< Margin used for collision detection within bullet
 
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     virtual void initBullet();
@@ -87,10 +87,10 @@ protected:
 
     TBulletTriangleModel();
 private:
-    using sofa::component::collision::TTriangleModel<TDataTypes>::mstate;
-    using sofa::component::collision::TTriangleModel<TDataTypes>::_topology;
+    using sofa::component::collision::TriangleCollisionModel<TDataTypes>::mstate;
+    using sofa::component::collision::TriangleCollisionModel<TDataTypes>::_topology;
 
-    //SOFA_CLASS(SOFA_TEMPLATE(TTriangleModel, TDataTypes), core::CollisionModel);
+    //SOFA_CLASS(SOFA_TEMPLATE(TriangleCollisionModel, TDataTypes), core::CollisionModel);
 
 
 };
@@ -98,13 +98,9 @@ private:
 typedef TBulletTriangleModel<defaulttype::Vec3Types> BulletTriangleModel;
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletTriangleModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletTriangleModel<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
+extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletTriangleModel<defaulttype::Vec3Types>;
+
 #endif
 
 }}}

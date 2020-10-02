@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -169,7 +169,7 @@ protected:
     VecCoord springRef;
     /// bool to allow the display of the 2 parts of springs torsions
     Data<bool> showLawfulTorsion;
-    Data<bool> showExtraTorsion;
+    Data<bool> showExtraTorsion; ///< dislpay the illicit part of the joint rotation
 
     FrameSpringForceFieldInternalData<DataTypes> data;
 
@@ -181,25 +181,25 @@ protected:
 
 
 
-
-    FrameSpringForceField ( MechanicalState* object1, MechanicalState* object2 );
     FrameSpringForceField();
+    FrameSpringForceField(MechanicalState* object1, MechanicalState* object2);
+
 public:
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
-    virtual void init();
+    void init() override;
 
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2);
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const { return m_potentialEnergy; }
+    SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override { return m_potentialEnergy; }
 
     sofa::helper::vector<Spring> * getSprings() { return springs.beginEdit(); }
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     // -- Modifiers
 
@@ -211,13 +211,9 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FRAMESPRINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API FrameSpringForceField<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API FrameSpringForceField<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FRAMESPRINGFORCEFIELD_CPP)
+extern template class SOFA_GENERAL_DEFORMABLE_API FrameSpringForceField<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace interactionforcefield

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,7 +55,7 @@ TriangleOctree::~TriangleOctree()
         if(childVec[i])
         {
             delete childVec[i];
-            childVec[i]=NULL;
+            childVec[i]=nullptr;
         }
     }
 }
@@ -424,7 +424,6 @@ int TriangleOctree::trace (const defaulttype::Vector3 & origin,
                 if (idxMin != -1)
                     return nearestTriangle (idxMin, origin1, direction1,result);
             }
-
         case END:
             if(idxMin==-1&&objects.size())
                 return nearestTriangle (objects[0], origin1, direction1,result);
@@ -711,7 +710,6 @@ void TriangleOctree::traceAll (const defaulttype::Vector3 & origin,
                 childVec[7 ^ a]->traceAll (origin, direction, txm, tym,
                         tzm, tx1, ty1, tz1, a, b,origin1,direction1,results);
             }
-
         case END:
             allTriangles (origin1, direction1, results);
             return;
@@ -842,9 +840,9 @@ void TriangleOctree::bboxAllCandidates(defaulttype::Vector3 bbmin, defaulttype::
 
 TriangleOctreeRoot::TriangleOctreeRoot()
 {
-    octreeRoot = NULL;
-    octreeTriangles = NULL;
-    octreePos = NULL;
+    octreeRoot = nullptr;
+    octreeTriangles = nullptr;
+    octreePos = nullptr;
     cubeSize = CUBE_SIZE;
 }
 

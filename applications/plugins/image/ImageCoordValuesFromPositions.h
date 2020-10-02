@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -165,18 +165,15 @@ public:
 
     typedef helper::vector<Coord > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
-    Data< SeqPositions > position;
+    Data< SeqPositions > position; ///< input positions
 
     Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubic
 
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waValues;
     Data< SeqPositions > values;  ///< output interpolated values
-    Data< Real > outValue;
+    Data< Real > outValue; ///< default value outside image
 
-    Data< bool > addPosition;
-
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const ImageCoordValuesFromPositions<ImageTypes>* = NULL) { return ImageTypes::Name();    }
+    Data< bool > addPosition; ///< add positions to interpolated values (to get translated positions)
 
     ImageCoordValuesFromPositions()    :   Inherited()
       , image(initData(&image,ImageTypes(),"image",""))
@@ -197,7 +194,7 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual void init()
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -207,19 +204,18 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void update()
+    void doUpdate() override
     {
         ImageCoordValuesFromPositionsSpecialization<ImageTypes>::update( *this );
-        cleanDirty();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
         {

@@ -1,0 +1,15 @@
+# CMake package configuration file for the SofaDistanceGrid plugin
+
+@PACKAGE_INIT@
+
+find_package(SofaFramework REQUIRED)
+find_package(SofaMiscCollision REQUIRED)
+
+if(NOT TARGET SofaDistanceGrid)
+    include("${CMAKE_CURRENT_LIST_DIR}/SofaDistanceGridTargets.cmake")
+endif()
+
+check_required_components(SofaDistanceGrid)
+set(SofaDistanceGrid_LIBRARIES SOFADISTANCEGRID)
+set(SofaDistanceGrid_INCLUDE_DIRS @PACKAGE_SOFADISTANCEGRID_INCLUDE_DIR@ ${SOFADISTANCEGRID_INCLUDE_DIR})
+

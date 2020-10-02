@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -70,17 +68,17 @@ protected:
 
     SubsetTopology();
 
-    ~SubsetTopology() {}
+    ~SubsetTopology() override {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void doUpdate() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    void computeBBox(const core::ExecParams* params, bool onlyVisible=false );
+    void computeBBox(const core::ExecParams* params, bool onlyVisible=false ) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -90,8 +88,12 @@ public:
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+            {
+                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+                              "' found in the context node.");
                 return false; // this template is not the same as the existing MechanicalState
+            }
         }
 
         return BaseObject::canCreate(obj, context, arg);
@@ -102,16 +104,6 @@ public:
     static typename T::SPtr create(T* tObj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         return core::objectmodel::BaseObject::create(tObj, context, arg);
-    }
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const SubsetTopology<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
     }
 
 protected:
@@ -139,53 +131,53 @@ public:
 
     //Input
     //For cube
-    Data< helper::vector<Vec6> > boxes;
+    Data< helper::vector<Vec6> > boxes; ///< Box defined by xmin,ymin,zmin, xmax,ymax,zmax
 
     //For sphere
-    Data< helper::vector<Vec3> > centers;
-    Data< helper::vector<Real> > radii;
-    Data< Vec3 > direction;
-    Data< Vec3 > normal;
-    Data< Real > edgeAngle;
-    Data< Real > triAngle;
+    Data< helper::vector<Vec3> > centers; ///< Center(s) of the sphere(s)
+    Data< helper::vector<Real> > radii; ///< Radius(i) of the sphere(s)
+    Data< Vec3 > direction; ///< Edge direction(if edgeAngle > 0)
+    Data< Vec3 > normal; ///< Normal direction of the triangles (if triAngle > 0)
+    Data< Real > edgeAngle; ///< Max angle between the direction of the selected edges and the specified direction
+    Data< Real > triAngle; ///< Max angle between the normal of the selected triangle and the specified normal direction
 
-    Data<VecCoord> f_X0;
-    Data<helper::vector<Edge> > f_edges;
-    Data<helper::vector<Triangle> > f_triangles;
-    Data<helper::vector<Quad> > f_quads;
-    Data<helper::vector<Tetra> > f_tetrahedra;
-    Data<helper::vector<Hexa> > f_hexahedra;
-    Data<SetIndex> d_tetrahedraInput;
+    Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
+    Data<helper::vector<Edge> > f_edges; ///< Edge Topology
+    Data<helper::vector<Triangle> > f_triangles; ///< Triangle Topology
+    Data<helper::vector<Quad> > f_quads; ///< Quad Topology
+    Data<helper::vector<Tetra> > f_tetrahedra; ///< Tetrahedron Topology
+    Data<helper::vector<Hexa> > f_hexahedra; ///< Hexahedron Topology
+    Data<SetIndex> d_tetrahedraInput; ///< Indices of the tetrahedra to keep
 
     //Output
-    Data<SetIndex> f_indices;
-    Data<SetIndex> f_edgeIndices;
-    Data<SetIndex> f_triangleIndices;
-    Data<SetIndex> f_quadIndices;
-    Data<SetIndex> f_tetrahedronIndices;
-    Data<SetIndex> f_hexahedronIndices;
-    Data<VecCoord > f_pointsInROI;
-    Data<VecCoord > f_pointsOutROI;
-    Data<helper::vector<Edge> > f_edgesInROI;
-    Data<helper::vector<Edge> > f_edgesOutROI;
-    Data<helper::vector<Triangle> > f_trianglesInROI;
-    Data<helper::vector<Triangle> > f_trianglesOutROI;
-    Data<helper::vector<Quad> > f_quadsInROI;
-    Data<helper::vector<Quad> > f_quadsOutROI;
-    Data<helper::vector<Tetra> > f_tetrahedraInROI;
-    Data<helper::vector<Tetra> > f_tetrahedraOutROI;
-    Data<helper::vector<Hexa> > f_hexahedraInROI;
-    Data<helper::vector<Hexa> > f_hexahedraOutROI;
-    Data<unsigned int> f_nbrborder;
+    Data<SetIndex> f_indices; ///< Indices of the points contained in the ROI
+    Data<SetIndex> f_edgeIndices; ///< Indices of the edges contained in the ROI
+    Data<SetIndex> f_triangleIndices; ///< Indices of the triangles contained in the ROI
+    Data<SetIndex> f_quadIndices; ///< Indices of the quads contained in the ROI
+    Data<SetIndex> f_tetrahedronIndices; ///< Indices of the tetrahedra contained in the ROI
+    Data<SetIndex> f_hexahedronIndices; ///< Indices of the hexahedra contained in the ROI
+    Data<VecCoord > f_pointsInROI; ///< Points contained in the ROI
+    Data<VecCoord > f_pointsOutROI; ///< Points out of the ROI
+    Data<helper::vector<Edge> > f_edgesInROI; ///< Edges contained in the ROI
+    Data<helper::vector<Edge> > f_edgesOutROI; ///< Edges out of the ROI
+    Data<helper::vector<Triangle> > f_trianglesInROI; ///< Triangles contained in the ROI
+    Data<helper::vector<Triangle> > f_trianglesOutROI; ///< Triangles out of the ROI
+    Data<helper::vector<Quad> > f_quadsInROI; ///< Quads contained in the ROI
+    Data<helper::vector<Quad> > f_quadsOutROI; ///< Quads out of the ROI
+    Data<helper::vector<Tetra> > f_tetrahedraInROI; ///< Tetrahedra contained in the ROI
+    Data<helper::vector<Tetra> > f_tetrahedraOutROI; ///< Tetrahedra out of the ROI
+    Data<helper::vector<Hexa> > f_hexahedraInROI; ///< Hexahedra contained in the ROI
+    Data<helper::vector<Hexa> > f_hexahedraOutROI; ///< Hexahedra out of the ROI
+    Data<unsigned int> f_nbrborder; ///< If localIndices option is activated, will give the number of vertices on the border of the ROI (being the n first points of each output Topology). 
 
     //Parameter
-    Data<bool> p_localIndices;
-    Data<bool> p_drawROI;
-    Data<bool> p_drawPoints;
-    Data<bool> p_drawEdges;
-    Data<bool> p_drawTriangles;
-    Data<bool> p_drawTetrahedra;
-    Data<double> _drawSize;
+    Data<bool> p_localIndices; ///< If true, will compute local dof indices in topological elements
+    Data<bool> p_drawROI; ///< Draw ROI
+    Data<bool> p_drawPoints; ///< Draw Points
+    Data<bool> p_drawEdges; ///< Draw Edges
+    Data<bool> p_drawTriangles; ///< Draw Triangles
+    Data<bool> p_drawTetrahedra; ///< Draw Tetrahedra
+    Data<double> _drawSize; ///< rendering size for box and topological elements
 
     ROIType typeROI;
     sofa::helper::vector<unsigned int> localIndices;
@@ -193,15 +185,9 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API SubsetTopology<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API SubsetTopology<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API SubsetTopology<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API SubsetTopology<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP)
+extern template class SOFA_GENERAL_ENGINE_API SubsetTopology<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API SubsetTopology<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace engine

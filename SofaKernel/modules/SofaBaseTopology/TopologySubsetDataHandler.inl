@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -177,18 +177,15 @@ template <typename TopologyElementType, typename VecT>
 void TopologySubsetDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<unsigned int> &,
         const sofa::helper::vector<TopologyElementType> &)
 {
-    std::cerr << "WARNING: addOnMovedPosition event on topology subsetData is not yet handled" << std::endl;
+    dmsg_error("TopologySubsetDataHandler") << "addOnMovedPosition event on topology subsetData is not yet handled." ;
 }
-
 
 
 template <typename TopologyElementType, typename VecT>
 void TopologySubsetDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<unsigned int> &)
 {
-    std::cerr << "WARNING: removeOnMovedPosition event on topology subsetData is not yet handled" << std::endl;
+    dmsg_error("TopologySubsetDataHandler") << "removeOnMovedPosition event on topology subsetData is not yet handled" ;
 }
-
-
 
 
 } // namespace topology

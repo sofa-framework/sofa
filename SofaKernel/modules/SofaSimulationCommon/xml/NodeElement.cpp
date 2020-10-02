@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,7 +48,7 @@ NodeElement::~NodeElement()
 
 bool NodeElement::setParent(BaseElement* newParent)
 {
-    if (newParent != NULL && dynamic_cast<NodeElement*>(newParent)==NULL)
+    if (newParent != nullptr && dynamic_cast<NodeElement*>(newParent)==nullptr)
         return false;
     else
         return Element<core::objectmodel::BaseNode>::setParent(newParent);
@@ -57,13 +57,14 @@ bool NodeElement::setParent(BaseElement* newParent)
 bool NodeElement::initNode()
 {
     core::objectmodel::BaseNode::SPtr obj = Factory::CreateObject(this->getType(), this);
-    if (obj != NULL)
+    if (obj != nullptr)
     {
         setObject(obj);
         core::objectmodel::BaseNode* baseNode;
-        if (getTypedObject()!=NULL && getParentElement()!=NULL && (baseNode = getParentElement()->getObject()->toBaseNode()))
+        if (getTypedObject()!=nullptr && getParentElement()!=nullptr && (baseNode = getParentElement()->getObject()->toBaseNode()))
         {
-            // 		std::cout << "Adding Child "<<getName()<<" to "<<getParentElement()->getName()<<std::endl;
+            getTypedObject()->setInstanciationSourceFilePos(getSrcLine());
+            getTypedObject()->setInstanciationSourceFileName(getSrcFile());
             baseNode->addChild(getTypedObject());
         }
         return true;
@@ -77,22 +78,15 @@ bool NodeElement::initNode()
 bool NodeElement::init()
 {
     bool res = Element<core::objectmodel::BaseNode>::init();
-    //Store the warnings created by the objects
+
+    /// send the errors created by the object in this node in the node's log
     for (unsigned int i=0; i<errors.size(); ++i)
     {
-        //TODO(dmarchal): This way of getting the name of a component should be replaced
-        // with the use of the ComponentInfo from message.h.
-
-        const std::string name = getObject()->getClassName() + " \"" + getObject()->getName() + "\"";
-        //MAINLOGGER( Error, errors[i], name );
-        //msg_error(this) << errors[i];
-        msg_error(name) << errors[i];
+        msg_error(getObject()) << errors[i];
     }
 
     return res;
 }
-
-SOFA_DECL_CLASS(NodeElement)
 
 helper::Creator<BaseElement::NodeFactory, NodeElement> NodeNodeClass("Node");
 

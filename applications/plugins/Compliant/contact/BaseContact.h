@@ -51,9 +51,9 @@ public:
 
 
 
-    Data< SReal > damping_ratio;
-    Data<bool> holonomic;
-    Data<bool> keep;
+    Data< SReal > damping_ratio; ///< contact damping (used for stabilization)
+    Data<bool> holonomic; ///< only enforce null relative velocity, do not try to remove penetration during the dynamics pass
+    Data<bool> keep; ///< always keep contact nodes (deactivated when not colliding
 
 protected:
 
@@ -105,16 +105,16 @@ protected:
         mappedContacts.clear();
     }
 
-    virtual ~BaseContact() {}
+    ~BaseContact() override {}
 
 
 
 public:
 
 
-    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
+    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() override { return std::make_pair(model1,model2); }
 
-    void setDetectionOutputs(core::collision::DetectionOutputVector* o)
+    void setDetectionOutputs(core::collision::DetectionOutputVector* o) override
     {
         contacts = static_cast<DetectionOutputVector*>(o);
 
@@ -123,7 +123,7 @@ public:
 
 
 
-    void createResponse(core::objectmodel::BaseContext* /*group*/ )
+    void createResponse(core::objectmodel::BaseContext* /*group*/ ) override
     {
         if( !contacts )
         {
@@ -220,7 +220,7 @@ public:
 
     /// @internal for SOFA collision mechanism
     /// called before setting-up new collisions
-    void removeResponse() {
+    void removeResponse() override {
         if( delta_node ) {
             mapper1.resize(0);
             mapper2.resize(0);
@@ -229,7 +229,7 @@ public:
 
     /// @internal for SOFA collision mechanism
     /// called when the collision components must be removed from the scene graph
-    void cleanup() {
+    void cleanup() override {
 
         // should be called only when !keep
 
@@ -248,7 +248,7 @@ public:
     /// to check if the collision components must be removed from the scene graph
     /// or if it should be kept but deactivated
     /// when the objects are no longer colliding
-    virtual bool keepAlive() { return keep.getValue(); }
+    bool keepAlive() override { return keep.getValue(); }
 
 
 protected:
@@ -505,8 +505,8 @@ public:
     typedef core::collision::Intersection Intersection;
 
 
-    Data< SReal > compliance_value;
-    Data< SReal > restitution_coef;
+    Data< SReal > compliance_value; ///< contact compliance: use model contact stiffnesses when < 0, use given value otherwise
+    Data< SReal > restitution_coef; ///< global restitution coef
 
 protected:
 

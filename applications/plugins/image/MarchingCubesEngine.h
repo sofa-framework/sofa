@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,10 +58,10 @@ public:
 
     typedef SReal Real;
 
-    Data< Real > isoValue;
-    Data< defaulttype::Vec<3,unsigned int> > subdiv;
-    Data< bool > invertNormals;
-    Data< bool > showMesh;
+    Data< Real > isoValue; ///< pixel value to extract isosurface
+    Data< defaulttype::Vec<3,unsigned int> > subdiv; ///< number of subdividions in x,y,z directions (use image dimension if =0)
+    Data< bool > invertNormals; ///< invert triangle vertex order
+    Data< bool > showMesh; ///< show reconstructed mesh
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
@@ -77,16 +77,13 @@ public:
     typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
-    Data< SeqPositions > position;
+    Data< SeqPositions > position; ///< output positions
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
-    Data< SeqTriangles > triangles;
-
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const MarchingCubesEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
+    Data< SeqTriangles > triangles; ///< output triangles
 
     MarchingCubesEngine()    :   Inherited()
         , isoValue(initData(&isoValue,(Real)(1.0),"isoValue","pixel value to extract isosurface"))
@@ -104,7 +101,7 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual void init()
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -113,13 +110,13 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void update()
+    void doUpdate() override
     {
         raImage in(this->image);
 		raTransform inT(this->transform);
@@ -150,10 +147,9 @@ protected:
         else
             cimglist_for(faces,l) tri[l]=Triangle(faces(l,0),faces(l,1),faces(l,2));
 
-        cleanDirty();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
         {
@@ -172,7 +168,7 @@ protected:
         }
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams)
+    void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;

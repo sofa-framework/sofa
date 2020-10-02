@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,15 +25,14 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Ray.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/Quater.h>
 
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/OptionsGroup.h>
+
+#include "BackgroundSetting.h"
 
 namespace sofa
 {
@@ -50,8 +49,10 @@ public:
     SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
 
     typedef sofa::core::visual::VisualParams::CameraType CameraType;
-    typedef defaulttype::Vec3Types::Real Real;
+    typedef defaulttype::Ray Ray;
+    typedef defaulttype::Vector4 Vec4;
     typedef defaulttype::Vector3 Vec3;
+    typedef defaulttype::Vector2 Vec2;
     typedef defaulttype::Matrix3 Mat3;
     typedef defaulttype::Matrix4 Mat4;
     typedef defaulttype::Quat Quat;
@@ -77,30 +78,36 @@ public:
 
     };
 
-    Data<Vec3> p_position;
-    Data<Quat> p_orientation;
-    Data<Vec3> p_lookAt;
-    Data<double> p_distance;
+    Data<Vec3> p_position; ///< Camera's position
+    Data<Quat> p_orientation; ///< Camera's orientation
+    Data<Vec3> p_lookAt; ///< Camera's look at
+    Data<double> p_distance; ///< Distance between camera and look at
 
-    Data<double> p_fieldOfView;
-    Data<double> p_zNear, p_zFar;
-    Data<bool> p_computeZClip;
-    Data<Vec3> p_minBBox, p_maxBBox;
-    Data<unsigned int> p_widthViewport, p_heightViewport;
-    Data<sofa::helper::OptionsGroup> p_type;
+    Data<double> p_fieldOfView; ///< Camera's FOV
+    Data<double> p_zNear; ///< Camera's zNear
+    Data<double> p_zFar; ///< Camera's zFar
+    Data<bool> p_computeZClip; ///< Compute Z clip planes (Near and Far) according to the bounding box
+    Data<Vec3> p_minBBox; ///< minBBox
+    Data<Vec3> p_maxBBox; ///< maxBBox
+    Data<unsigned int> p_widthViewport; ///< widthViewport
+    Data<unsigned int> p_heightViewport; ///< heightViewport
+    Data<sofa::helper::OptionsGroup> p_type; ///< Camera Type (0 = Perspective, 1 = Orthographic)
 
-    Data<bool> p_activated;
-	Data<bool> p_fixedLookAtPoint;
+    Data<bool> p_activated; ///< Camera activated ?
+	Data<bool> p_fixedLookAtPoint; ///< keep the lookAt point always fixed
     
-    Data<helper::vector<float> > p_modelViewMatrix;
-    Data<helper::vector<float> > p_projectionMatrix;
+    Data<helper::vector<SReal> > p_modelViewMatrix; ///< ModelView Matrix
+    Data<helper::vector<SReal> > p_projectionMatrix; ///< Projection Matrix
+
+    SingleLink<BaseCamera, sofa::component::configurationsetting::BackgroundSetting,
+               BaseLink::FLAG_STOREPATH> l_background ;
 
     BaseCamera();
-    virtual ~BaseCamera();
+    ~BaseCamera() override;
 
-    virtual void init();
-    virtual void reinit();
-    virtual void bwdInit();
+    void init() override;
+    void reinit() override;
+    void bwdInit() override;
 
     void activate();
     void desactivate();
@@ -117,11 +124,27 @@ public:
     void rotateCameraAroundPoint( Quat& rotation, const Vec3& point);
     virtual void rotateWorldAroundPoint( Quat& rotation, const Vec3& point, Quat orientationCam);
 
+    Vec3 screenToViewportPoint(const Vec3& p) const;
+    Vec3 screenToWorldPoint(const Vec3& p);
+
+    Vec3 viewportToScreenPoint(const Vec3& p) const;
+    Vec3 viewportToWorldPoint(const Vec3& p);
+
+    Vec3 worldToScreenPoint(const Vec3& p);
+    Vec3 worldToViewportPoint(const Vec3& p);
+
+    Ray viewportPointToRay(const Vec3&p);
+    Ray screenPointToRay(const Vec3&p);
+
+    Ray toRay() const;
+
+
     Vec3 cameraToWorldCoordinates(const Vec3& p);
     Vec3 worldToCameraCoordinates(const Vec3& p);
     Vec3 cameraToWorldTransform(const Vec3& v);
     Vec3 worldToCameraTransform(const Vec3& v);
     Vec3 screenToWorldCoordinates(int x, int y);
+    Vec2 worldToScreenCoordinates(const Vec3& p);
 
     void fitSphere(const Vec3& center, SReal radius);
     void fitBoundingBox(const Vec3& min,const Vec3& max);
@@ -132,19 +155,7 @@ public:
         return p_position.getValue();
     }
 
-    Quat getOrientation()
-    {
-        if(currentLookAt !=  p_lookAt.getValue())
-        {
-            Quat newOrientation = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
-            p_orientation.setValue(newOrientation);
-
-            currentLookAt = p_lookAt.getValue();
-        }
-
-        return p_orientation.getValue();
-    }
-
+    Quat getOrientation() ;
     Vec3 getLookAt()
     {
         return p_lookAt.getValue();
@@ -161,41 +172,20 @@ public:
         return p_fieldOfView.getValue();
     }
 
-    double getHorizontalFieldOfView()
-    {
-        const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
-        const core::visual::VisualParams::Viewport viewport = vp->viewport();
+    double getHorizontalFieldOfView() ;
 
-        float screenwidth = (float)viewport[2];
-        float screenheight = (float)viewport[3];
-        float aspectRatio = screenwidth / screenheight;
-        float fov_radian = (float)getFieldOfView()* (float)(M_PI/180);
-        float hor_fov_radian = 2.0f * atan ( tan(fov_radian/2.0f) * aspectRatio );
-        return hor_fov_radian*(180/M_PI);
-    }
+    unsigned int getCameraType() const ;
 
-    unsigned int getCameraType() const
-    {
-        return p_type.getValue().getSelectedId();
-    }
-
-    void setCameraType(unsigned int type)
-    {
-        sofa::helper::OptionsGroup* optionsGroup = p_type.beginEdit();
-
-        if (type == core::visual::VisualParams::ORTHOGRAPHIC_TYPE)
-            optionsGroup->setSelectedItem(core::visual::VisualParams::ORTHOGRAPHIC_TYPE);
-        else
-            optionsGroup->setSelectedItem(core::visual::VisualParams::PERSPECTIVE_TYPE);
-
-        p_type.endEdit();
-    }
-
+    void setCameraType(unsigned int type) ;
 
     void setBoundingBox(const Vec3 &min, const Vec3 &max)
     {
         p_minBBox.setValue(min);
         p_maxBBox.setValue(max);
+
+        sceneCenter = (min + max)*0.5;
+        sceneRadius = 0.5*(max - min).norm();
+
         computeZ();
     }
 
@@ -231,10 +221,10 @@ public:
     Vec3 getLookAtFromOrientation(const Vec3 &pos, const double &distance,const Quat & orientation);
     Vec3 getPositionFromOrientation(const Vec3 &lookAt, const double &distance, const Quat& orientation);
 
-    virtual void manageEvent(core::objectmodel::Event* e)=0;
+    virtual void manageEvent(core::objectmodel::Event* event) = 0 ;
     virtual void internalUpdate() {}
 
-    void handleEvent(sofa::core::objectmodel::Event* event);
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
     void computeZ();
 
     virtual bool isStereo()
@@ -282,6 +272,10 @@ public:
         return 1.0;
     }
 
+
+    void draw(const core::visual::VisualParams*) override ;
+    void computeClippingPlane(const core::visual::VisualParams* vp, double& zNear, double& zFar);
+    virtual void drawCamera(const core::visual::VisualParams*);
 protected:
     void updateOutputData();
 

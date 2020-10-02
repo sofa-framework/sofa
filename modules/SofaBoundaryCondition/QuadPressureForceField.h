@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,16 +59,19 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data<Deriv> pressure;
+    Data<Deriv> pressure; ///< Pressure force per unit area
 
-    Data<sofa::helper::vector<unsigned int> > quadList;
+    Data<sofa::helper::vector<unsigned int> > quadList; ///< Indices of quads separated with commas where a pressure is applied
 
     /// the normal used to define the edge subjected to the pressure force.
     Data<Deriv> normal;
 
-    Data<Real> dmin; // coordinates min of the plane for the vertex selection
-    Data<Real> dmax;// coordinates max of the plane for the vertex selection
-    Data<bool> p_showForces;
+    Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
+    Data<Real> dmax;///< coordinates max of the plane for the vertex selection
+    Data<bool> p_showForces; ///< draw quads which have a given pressure
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<QuadPressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
 
@@ -96,45 +99,32 @@ protected:
         }
     };
 
-    sofa::component::topology::QuadSparseData<sofa::helper::vector<QuadPressureInformation> > quadPressureMap;
+    sofa::component::topology::QuadSparseData<sofa::helper::vector<QuadPressureInformation> > quadPressureMap; ///< map between edge indices and their pressure
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    /// Pointer to the current topology                                                                        /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
-    QuadPressureForceField()
-        : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
-        , quadList(initData(&quadList,"quadList", "Indices of quads separated with commas where a pressure is applied"))
-        , normal(initData(&normal,"normal", "Normal direction for the plane selection of quads"))
-        , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
-        , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
-        , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw quads which have a given pressure"))
-        , quadPressureMap(initData(&quadPressureMap, "quadPressureMap", "map between edge indices and their pressure"))
-    {
-    }
+    QuadPressureForceField();
 
     virtual ~QuadPressureForceField();
 public:
-    virtual void init();
+    void init() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-    /// Constant pressure has null variation
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int & /*offset*/) {}
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
 
     /// Constant pressure has null variation
-    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ){}
+    void addKToMatrix(sofa::defaulttype::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int & /*offset*/) override {}
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const { serr << "Get potentialEnergy not implemented" << sendl; return 0.0; }
+    /// Constant pressure has null variation
+    void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override {}
 
-    void draw(const core::visual::VisualParams* vparams);
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override { msg_warning() << "Method getPotentialEnergy not implemented yet."; return 0.0; }
 
-    void setDminAndDmax(const SReal _dmin, const SReal _dmax)
-    {
-        dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);
-    }
+    void draw(const core::visual::VisualParams* vparams) override;
 
+    void setDminAndDmax(const SReal _dmin, const SReal _dmax) {dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);}
     void setNormal(const Coord n) { normal.setValue(n);}
-
     void setPressure(Deriv _pressure) { this->pressure = _pressure; updateQuadInformation(); }
 
 protected :
@@ -142,26 +132,15 @@ protected :
     void selectQuadsFromString();
     void updateQuadInformation();
     void initQuadInformation();
-    bool isPointInPlane(Coord p)
-    {
-        Real d=dot(p,normal.getValue());
-        if ((d>dmin.getValue())&& (d<dmax.getValue()))
-            return true;
-        else
-            return false;
-    }
+    bool isPointInPlane(Coord p);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API QuadPressureForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API QuadPressureForceField<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API QuadPressureForceField<defaulttype::Vec3Types>;
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
 
 
 } // namespace forcefield

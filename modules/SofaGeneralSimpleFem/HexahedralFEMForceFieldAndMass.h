@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -71,43 +71,46 @@ public:
 protected:
     HexahedralFEMForceFieldAndMass();
 public:
-    virtual void init( );
-    virtual void reinit( );
+    void init( ) override;
+    void reinit( ) override;
 
     // -- Mass interface
-    virtual  void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
+     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
     ///// WARNING this method only add diagonal elements in the given matrix !
-    virtual void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     using HexahedralFEMForceFieldT::addKToMatrix;
     using MassT::addKToMatrix;
     ///// WARNING this method only add diagonal elements in the given matrix !
-    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     ///// WARNING this method only add diagonal elements in the given matrix !
-    virtual void addMBKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void addMBKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    virtual  void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
+     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
 
-    virtual  void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
 
-    virtual SReal getKineticEnergy(const core::MechanicalParams* /* mparams */, const DataVecDeriv& /*v*/)  const ///< vMv/2 using dof->getV()
-    {serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"<<sendl; return 0;}
+    SReal getKineticEnergy(const core::MechanicalParams* /* mparams */, const DataVecDeriv& /*v*/)  const override ///< vMv/2 using dof->getV() override
+    {
+        msg_error() << "HexahedralFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"; 
+        return 0;
+    }
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
 
-    virtual void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
+    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    SReal getElementMass(unsigned int index) const;
+    SReal getElementMass(unsigned int index) const override;
 
     void setDensity(Real d) {_density.setValue( d );}
     Real getDensity() {return _density.getValue();}
@@ -125,10 +128,8 @@ protected:
     void computeLumpedMasses();
 
 protected:
-    //HFFHexahedronHandler* hexahedronHandler;
-
-    Data<Real> _density;
-    Data<bool> _useLumpedMass;
+    Data<Real> _density; ///< density == volumetric mass in english (kg.m-3)
+    Data<bool> _useLumpedMass; ///< Does it use lumped masses?
 
     topology::HexahedronData<sofa::helper::vector<ElementMass> > _elementMasses; ///< mass matrices per element
     topology::HexahedronData<sofa::helper::vector<Real> > _elementTotalMass; ///< total mass per element
@@ -137,13 +138,9 @@ protected:
     topology::PointData<sofa::helper::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_SIMPLE_FEM_API HexahedralFEMForceFieldAndMass<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_SIMPLE_FEM_API HexahedralFEMForceFieldAndMass<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)
+extern template class SOFA_GENERAL_SIMPLE_FEM_API HexahedralFEMForceFieldAndMass<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace forcefield

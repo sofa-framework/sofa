@@ -1,5 +1,5 @@
-#ifndef SOFA_COMPONENT_COMPLIANCE_LinearDiagonalCompliance_H
-#define SOFA_COMPONENT_COMPLIANCE_LinearDiagonalCompliance_H
+#ifndef SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_H
+#define SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_H
 
 #include <Compliant/config.h>
 #include "DiagonalCompliance.h"
@@ -32,18 +32,19 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef helper::WriteOnlyAccessor< Data< typename Inherit::VecDeriv > > WriteOnlyVecDeriv;
 
-    Data< Real > d_complianceMin, d_errorMin;
+    Data< Real > d_complianceMin; ///< Minimum compliance
+    Data< Real > d_errorMin; ///< complianceMin is reached for this error value
 
-    virtual void init();
+    virtual void init() override;
 
 //    virtual SReal getPotentialEnergy( const core::MechanicalParams* mparams, const typename Inherit::DataVecCoord& x ) const;
-    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams*);
+    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams*) override;
 
-    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset );
-    virtual void addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset );
-    virtual void addForce(const core::MechanicalParams *, typename Inherit::DataVecDeriv &, const typename Inherit::DataVecCoord &, const typename Inherit::DataVecDeriv &);
-    virtual void addDForce(const core::MechanicalParams *, typename Inherit::DataVecDeriv &, const typename Inherit::DataVecDeriv &);
-    virtual void addClambda(const core::MechanicalParams *, typename Inherit::DataVecDeriv &, const typename Inherit::DataVecDeriv &, SReal);
+    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset ) override;
+    virtual void addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset ) override;
+    virtual void addForce(const core::MechanicalParams *, typename Inherit::DataVecDeriv &, const typename Inherit::DataVecCoord &, const typename Inherit::DataVecDeriv &) override;
+    virtual void addDForce(const core::MechanicalParams *, typename Inherit::DataVecDeriv &, const typename Inherit::DataVecDeriv &) override;
+    virtual void addClambda(const core::MechanicalParams *, typename Inherit::DataVecDeriv &, const typename Inherit::DataVecDeriv &, SReal) override;
 
 protected:
     LinearDiagonalCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
@@ -55,8 +56,13 @@ protected:
 
 };
 
+#if !defined(SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_CPP)
+extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec3Types>;
+#endif
+
 }
 }
 }
 
-#endif // SOFA_COMPONENT_COMPLIANCE_LinearDiagonalCompliance_H
+#endif // SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_H

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -143,18 +143,14 @@ public:
 
     typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
-    Data< SeqPositions > position;
+    Data< SeqPositions > position; ///< input positions
 
     Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubic
 
     typedef helper::vector<Real> valuesType;
     typedef helper::WriteOnlyAccessor<Data< valuesType > > waValues;
     Data< valuesType > values;  ///< output interpolated values
-    Data< Real > outValue;
-
-
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const ImageValuesFromPositions<ImageTypes>* = NULL) { return ImageTypes::Name();    }
+    Data< Real > outValue; ///< default value outside image
 
     ImageValuesFromPositions()    :   Inherited()
         , image(initData(&image,ImageTypes(),"image",""))
@@ -174,7 +170,7 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual void init()
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -183,19 +179,18 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void update()
+    void doUpdate() override
     {
         ImageValuesFromPositionsSpecialization<ImageTypes>::update( *this );
-        cleanDirty();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
         {

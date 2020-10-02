@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,22 +23,3 @@
 
 #include "Binding_RigidMapping.h"
 #include "Binding_Mapping.h"
-/*
-#include <sofa/core/topology/Topology.h>
-using namespace sofa::core::topology;
-using namespace sofa::core;
-
-SP_CLASS_METHODS_BEGIN(Topology)
-SP_CLASS_METHOD(Topology,hasPos)
-SP_CLASS_METHOD(Topology,getNbPoints)
-SP_CLASS_METHOD(Topology,setNbPoints)
-SP_CLASS_METHOD(Topology,getPX)
-SP_CLASS_METHOD(Topology,getPY)
-SP_CLASS_METHOD(Topology,getPZ)
-SP_CLASS_METHODS_END
-
-
-SP_CLASS_TYPE_SPTR(Topology,Topology,BaseObject)
-
-*/
-

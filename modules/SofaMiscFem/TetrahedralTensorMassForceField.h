@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/helper/fixed_array.h>
@@ -104,17 +102,19 @@ protected:
     };
     typedef typename VecCoord::template rebind<EdgeRestInformation>::other edgeRestInfoVector;
 
-
-    sofa::core::topology::BaseMeshTopology* _topology;
     VecCoord  _initialPoints;///< the intial positions of the points
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio;
-    Data<Real> f_youngModulus;
+    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TetrahedralTensorMassForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 
     TetrahedralTensorMassForceField();
 
@@ -122,21 +122,21 @@ protected:
 
 public:
 
-    virtual void init();
+    void init() override;
     void initNeighbourhoodPoints();
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
 
     virtual Real getLambda() const { return lambda;}
     virtual Real getMu() const { return mu;}
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams) const ;
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override;
     void setYoungModulus(const double modulus)
     {
         f_youngModulus.setValue((Real)modulus);
@@ -145,7 +145,7 @@ public:
     {
         f_poissonRatio.setValue((Real)ratio);
     }
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 
@@ -180,8 +180,8 @@ public:
 
 protected:
 
-//    EdgeData < typename VecType < EdgeRestInformation > > edgeInfo;
-    topology::EdgeData < edgeRestInfoVector > edgeInfo;
+//    EdgeData < typename VecType < EdgeRestInformation > > edgeInfo; ///< Internal edge data
+    topology::EdgeData < edgeRestInfoVector > edgeInfo; ///< Internal edge data
 
 //    EdgeData < typename VecType < EdgeRestInformation > > &getEdgeInfo() {return edgeInfo;}
     topology::EdgeData < edgeRestInfoVector > &getEdgeInfo() {return edgeInfo;}
@@ -189,18 +189,16 @@ protected:
 
     TetrahedralTMEdgeHandler* edgeHandler;
 
+    sofa::core::topology::BaseMeshTopology* m_topology;
+
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FEM_API TetrahedralTensorMassForceField<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FEM_API TetrahedralTensorMassForceField<sofa::defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_MISC_FEM_API TetrahedralTensorMassForceField<sofa::defaulttype::Vec3Types>;
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP)
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP)
 
 
 } //namespace forcefield

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,16 +68,16 @@ protected:
      *
          * Does nothing.
          */
-    virtual ~Mesh2PointTopologicalMapping() {}
+    ~Mesh2PointTopologicalMapping() override {}
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
-    virtual void init();
+    void init() override;
 
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
-    virtual void updateTopologicalMappingTopDown();
+    void updateTopologicalMappingTopDown() override;
 
-    virtual unsigned int getGlobIndex(unsigned int ind)
+    unsigned int getGlobIndex(unsigned int ind) override
     {
         if(ind<pointSource.size())
         {
@@ -89,7 +89,7 @@ public:
         }
     }
 
-    virtual unsigned int getFromIndex(unsigned int ind)
+    unsigned int getFromIndex(unsigned int ind) override
     {
         return ind;
     }
@@ -140,10 +140,10 @@ protected:
 
     std::set<unsigned int> pointsToRemove;
 
-    size_t addInputPoint(unsigned int i, PointSetTopologyModifier* toPointMod=NULL); ///< Returns the number of points added inside the output topology. 
-    void addInputEdge(unsigned int i, PointSetTopologyModifier* toPointMod=NULL);
-    void addInputTriangle(unsigned int i, PointSetTopologyModifier* toPointMod=NULL);
-    void addInputTetrahedron(unsigned int i, PointSetTopologyModifier* toPointMod=NULL);
+    size_t addInputPoint(unsigned int i, PointSetTopologyModifier* toPointMod=nullptr); ///< Returns the number of points added inside the output topology. 
+    void addInputEdge(unsigned int i, PointSetTopologyModifier* toPointMod=nullptr);
+    void addInputTriangle(unsigned int i, PointSetTopologyModifier* toPointMod=nullptr);
+    void addInputTetrahedron(unsigned int i, PointSetTopologyModifier* toPointMod=nullptr);
 
     void swapInput(Element elem, int i1, int i2);
     void removeInput(Element elem, const sofa::helper::vector<unsigned int>& tab );
@@ -153,11 +153,11 @@ protected:
     void removeOutputPoints( const sofa::helper::vector<unsigned int>& tab );
 
 protected:
-    bool internalCheck(const char* step, const helper::fixed_array <int, NB_ELEMENTS >& nbInputRemoved);
+    bool internalCheck(const char* step, const helper::fixed_array <size_t, NB_ELEMENTS >& nbInputRemoved);
     
     bool internalCheck(const char* step)
     {
-        helper::fixed_array <int, NB_ELEMENTS > nbInputRemoved;
+        helper::fixed_array <size_t, NB_ELEMENTS > nbInputRemoved;
         nbInputRemoved.assign(0);
         return internalCheck(step, nbInputRemoved);
     }

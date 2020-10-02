@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,11 +32,8 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(InteractiveCamera)
-
 int InteractiveCameraClass = core::RegisterObject("InteractiveCamera")
         .add< InteractiveCamera >()
-        .addAlias("Camera")
         ;
 
 
@@ -44,10 +41,10 @@ InteractiveCamera::InteractiveCamera()
     :p_zoomSpeed(initData(&p_zoomSpeed, (double) 250.0 , "zoomSpeed", "Zoom Speed"))
     ,p_panSpeed(initData(&p_panSpeed, (double) 0.1 , "panSpeed", "Pan Speed"))
     ,p_pivot(initData(&p_pivot, 2 , "pivot", "Pivot (0 => Camera lookAt, 1 => Camera position, 2 => Scene center, 3 => World center"))
-	,currentMode(InteractiveCamera::NONE_MODE)
+    ,currentMode(InteractiveCamera::NONE_MODE)
     ,isMoving(false)
-	{
-}
+    {
+    }
 
 InteractiveCamera::~InteractiveCamera()
 {
@@ -62,11 +59,6 @@ void InteractiveCamera::moveCamera(int x, int y)
     Quat newQuat;
     const unsigned int widthViewport = p_widthViewport.getValue();
     const unsigned int heightViewport = p_heightViewport.getValue();
-
-    //std::cout << "widthViewport: " << widthViewport << std::endl;
-    //std::cout << "heightViewport: " << heightViewport << std::endl;
-    //std::cout << "x: " << x << std::endl;
-    //std::cout << "y: " << y << std::endl;
 
     if (isMoving)
     {
@@ -97,10 +89,6 @@ void InteractiveCamera::moveCamera(int x, int y)
                 pivot = sceneCenter;
                 break;
             }
-            //pivot = p_lookAt.getValue();
-            //pivot = (Vec3(x,y, p_distance.getValue()));
-            //std::cout << "Pivot : " <<  pivot << std::endl;
-            //rotateCameraAroundPoint(newQuat, pivot);
             rotateWorldAroundPoint(newQuat, pivot, this->getOrientation());
         }
         else if (currentMode == ZOOM_MODE)
@@ -111,13 +99,12 @@ void InteractiveCamera::moveCamera(int x, int y)
             Vec3 trans(0.0, 0.0, zoomDistance);
             trans = cameraToWorldTransform(trans);
             translate(trans);
-            //translateLookAt(trans);
             Vec3 newLookAt = cameraToWorldCoordinates(Vec3(0,0,-zoomStep));
             if (dot(getLookAt() - getPosition(), newLookAt - getPosition()) < 0
-				&& !p_fixedLookAtPoint.getValue() )
-			{
-				translateLookAt(newLookAt - getLookAt());
-			}
+                && !p_fixedLookAtPoint.getValue() )
+            {
+                translateLookAt(newLookAt - getLookAt());
+            }
             getDistance(); // update distance between camera position and lookat
         }
         else if (currentMode == PAN_MODE)
@@ -125,10 +112,10 @@ void InteractiveCamera::moveCamera(int x, int y)
             Vec3 trans(lastMousePosX - x,  y-lastMousePosY, 0.0);
             trans = cameraToWorldTransform(trans)*p_panSpeed.getValue()*( 0.01*sceneRadius ) ;
             translate(trans);
-			if ( !p_fixedLookAtPoint.getValue() )
-			{
-				translateLookAt(trans);
-			}
+            if ( !p_fixedLookAtPoint.getValue() )
+            {
+                translateLookAt(trans);
+            }
         }
         //must call update afterwards
 
@@ -142,17 +129,11 @@ void InteractiveCamera::moveCamera(int x, int y)
 
         Vec3 trans(0.0, 0.0, zoomDistance);
         trans = cameraToWorldTransform(trans);
-        //serr << "old position = " << getPosition() << sendl;
-        //serr << "old lookat   = " << getLookAt() << sendl;
         translate(trans);
-        //serr << "new position = " << getPosition() << sendl;
         Vec3 newLookAt = cameraToWorldCoordinates(Vec3(0,0,-zoomStep));
-        //serr << "new lookat   = " << newLookAt << sendl;
-        //translateLookAt(trans);
         if (dot(getLookAt() - getPosition(), newLookAt - getPosition()) < 0
-			&& !p_fixedLookAtPoint.getValue() )
+            && !p_fixedLookAtPoint.getValue() )
         {
-            //serr << "Moving target point" << sendl;
             translateLookAt(newLookAt - getLookAt());
         }
         getDistance(); // update distance between camera position and lookat

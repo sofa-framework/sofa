@@ -1,7 +1,20 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaMiscFem)
 
+# Dependencies
+sofa_find_package(Newmat BOTH_SCOPES)
+find_package(SofaCommon REQUIRED) # SofaSimpleFem
+
 set(HEADER_FILES
+    config.h
+    initMiscFEM.h
+    )
+
+set(SOURCE_FILES
+    initMiscFEM.cpp
+    )
+
+list(APPEND HEADER_FILES
     BaseMaterial.h
     BoyceAndArruda.h
     Costa.h
@@ -17,43 +30,40 @@ set(HEADER_FILES
     TetrahedralTensorMassForceField.h
     TetrahedralTensorMassForceField.inl
     VerondaWestman.h
-    config.h
-    initMiscFEM.h
+
+    TetrahedronHyperelasticityFEMForceField.h
+    TetrahedronHyperelasticityFEMForceField.inl
     TriangleFEMForceField.h
     TriangleFEMForceField.inl
-    TriangularAnisotropicFEMForceField.h
-    TriangularAnisotropicFEMForceField.inl
-    TriangularFEMForceField.h
-    TriangularFEMForceField.inl
-)
-
-set(SOURCE_FILES
+    )
+list(APPEND SOURCE_FILES
     FastTetrahedralCorotationalForceField.cpp
     StandardTetrahedralFEMForceField.cpp
     TetrahedralTensorMassForceField.cpp
-    initMiscFEM.cpp
-    TriangularAnisotropicFEMForceField.cpp
-    TriangleFEMForceField.cpp
-    TriangularFEMForceField.cpp
-)
 
-if(SOFA_HAVE_NEWMAT)
-    list(APPEND HEADER_FILES PlasticMaterial.h)
-    list(APPEND SOURCE_FILES PlasticMaterial.cpp)
+    TetrahedronHyperelasticityFEMForceField.cpp
+    TriangleFEMForceField.cpp
+    )
+
+if(Newmat_FOUND)
+    list(APPEND HEADER_FILES
+        PlasticMaterial.h
+        TriangularAnisotropicFEMForceField.h
+        TriangularAnisotropicFEMForceField.inl
+        TriangularFEMForceField.h
+        TriangularFEMForceField.inl
+        )
+    list(APPEND SOURCE_FILES
+        PlasticMaterial.cpp
+        TriangularAnisotropicFEMForceField.cpp
+        TriangularFEMForceField.cpp
+        )
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem)
-
-if(NOT SOFA_NO_OPENGL)
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaOpenglVisual)
-endif()
-
-if(SOFA_HAVE_NEWMAT)
+if(Newmat_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_FEM")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaMisc ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_install_targets(SofaMisc ${PROJECT_NAME} "SofaMisc/${PROJECT_NAME}")

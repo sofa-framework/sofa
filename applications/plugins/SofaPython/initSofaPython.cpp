@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,7 +32,7 @@ SOFA_SOFAPYTHON_API void initExternalModule()
     if (first)
     {
         sofa::simulation::PythonEnvironment::Init();
-        first = false;        
+        first = false;
     }
 }
 
@@ -53,7 +53,7 @@ SOFA_SOFAPYTHON_API const char* getModuleLicense()
 
 SOFA_SOFAPYTHON_API const char* getModuleDescription()
 {
-    return "Imbeds Python scripts in Sofa";
+    return "Python Environment and modules for scripting in Sofa";
 }
 
 SOFA_SOFAPYTHON_API const char* getModuleComponentList()
@@ -64,10 +64,7 @@ SOFA_SOFAPYTHON_API const char* getModuleComponentList()
 
 }
 
-
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-SOFA_LINK_CLASS(PythonScriptController)
-
-
-// register the loader in the factory
+/// register the loader in the factory
 const sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
+

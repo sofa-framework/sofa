@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,73 +70,56 @@ using namespace gpu::opencl;
 
 
 
-#ifndef SOFA_DOUBLE
 
 // -- Mass interface
+//Vec3f
 template <>
-void UniformMass<OpenCLVec3fTypes, float>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
+void UniformMass<OpenCLVec3Types, float>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    UniformMassOpenCL3f_addMDx(dx.size(), (float)(mass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
+    UniformMassOpenCL3f_addMDx(dx.size(), (d_vertexMass.getValue() * d_factor), f.deviceWrite(), dx.deviceRead());
 
     d_f.endEdit();
 }
 
 template <>
-void UniformMass<OpenCLVec3fTypes, float>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f)
+void UniformMass<OpenCLVec3Types, float>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
 
-    UniformMassOpenCL3f_accFromF(f.size(), mass.getValue(), a.deviceWrite(), f.deviceRead());
+    UniformMassOpenCL3f_accFromF(f.size(), d_vertexMass.getValue(), a.deviceWrite(), f.deviceRead());
 
     d_a.endEdit();
 }
 
 template <>
-void UniformMass<OpenCLVec3fTypes, float>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
+void UniformMass<OpenCLVec3Types, float>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
 {
     VecDeriv& f = *d_f.beginEdit();
     //const VecCoord& x = d_x.getValue();
     //const VecDeriv& v = d_v.getValue();
 
     // weight
-    Vec3d g ( this->getContext()->getGravity() );
+    Vec3d g(this->getContext()->getGravity());
     Deriv theGravity;
-    DataTypes::set( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * mass.getValue();
+    DataTypes::set(theGravity, g[0], g[1], g[2]);
+    Deriv mg = theGravity * d_vertexMass.getValue();
     UniformMassOpenCL3f_addForce(f.size(), mg.ptr(), f.deviceWrite());
 
     d_f.endEdit();
 }
-/*
-template <>
-bool UniformMass<gpu::opencl::OpenCLVec3fTypes, float>::addBBox(SReal* minBBox, SReal* maxBBox)
-{
-	const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-	//if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
-	for (unsigned int i=0; i<x.size(); i++)
-	{
-		//const Coord& p = x[i];
-		const Coord& p = x.getCached(i);
-		for (int c=0;c<3;c++)
-		{
-			if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-			if (p[c] < minBBox[c]) minBBox[c] = p[c];
-		}
-	}
-	return true;
-}*/
 
+//Vec3f1
 template <>
-void UniformMass<OpenCLVec3f1Types, float>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
+void UniformMass<OpenCLVec3f1Types, float>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    UniformMassOpenCL3f1_addMDx(dx.size(), (float)(mass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
+    UniformMassOpenCL3f1_addMDx(dx.size(), (d_vertexMass.getValue() * d_factor), f.deviceWrite(), dx.deviceRead());
 
     d_f.endEdit();
 }
@@ -147,7 +130,7 @@ void UniformMass<OpenCLVec3f1Types, float>::accFromF(const core::MechanicalParam
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
 
-    UniformMassOpenCL3f1_accFromF(f.size(), mass.getValue(), a.deviceWrite(), f.deviceRead());
+    UniformMassOpenCL3f1_accFromF(f.size(), d_vertexMass.getValue(), a.deviceWrite(), f.deviceRead());
 
     d_a.endEdit();
 }
@@ -160,59 +143,42 @@ void UniformMass<OpenCLVec3f1Types, float>::addForce(const core::MechanicalParam
     //const VecDeriv& v = d_v.getValue();
 
     // weight
-    Vec3d g ( this->getContext()->getGravity() );
+    Vec3d g(this->getContext()->getGravity());
     Deriv theGravity;
-    DataTypes::set( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * mass.getValue();
+    DataTypes::set(theGravity, g[0], g[1], g[2]);
+    Deriv mg = theGravity * d_vertexMass.getValue();
     UniformMassOpenCL3f1_addForce(f.size(), mg.ptr(), f.deviceWrite());
 
     d_f.endEdit();
 }
-/*
-template <>
-bool UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addBBox(SReal* minBBox, SReal* maxBBox)
-{
-	const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-	//if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
-	for (unsigned int i=0; i<x.size(); i++)
-	{
-		//const Coord& p = x[i];
-		const Coord& p = x.getCached(i);
-		for (int c=0;c<3;c++)
-		{
-			if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-			if (p[c] < minBBox[c]) minBBox[c] = p[c];
-		}
-	}
-	return true;
-}*/
 
+//Rigid3f
 template <>
-SReal UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const
+double UniformMass<gpu::opencl::OpenCLRigid3fTypes, sofa::defaulttype::Rigid3fMass>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ , const DataVecCoord& d_x) const
 {
     const VecCoord& x = d_x.getValue();
 
     SReal e = 0;
     // gravity
-    Vec3d g ( this->getContext()->getGravity() );
-    for (unsigned int i=0; i<x.size(); i++)
+    Vec3d g(this->getContext()->getGravity());
+    for (unsigned int i = 0; i < x.size(); i++)
     {
-        e += g*mass.getValue().mass*x[i].getCenter();
+        e += g * d_vertexMass.getValue().mass * x[i].getCenter();
     }
     return e;
 }
 
 template <>
-SReal UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int ) const
+double UniformMass<gpu::opencl::OpenCLRigid3fTypes, sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int) const
 {
-    return (SReal)(mass.getValue().mass);
+    return (SReal)(d_vertexMass.getValue().mass);
 }
 
 template <>
 void UniformMass<gpu::opencl::OpenCLRigid3fTypes, sofa::defaulttype::Rigid3fMass>::draw(const sofa::core::visual::VisualParams* vparams)
 {
-    if(!vparams->displayFlags().getShowBehaviorModels())return;
-//	if (!getContext()->getShowBehaviorModels())return;
+    if (!vparams->displayFlags().getShowBehaviorModels())return;
+    //	if (!getContext()->getShowBehaviorModels())return;
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
     defaulttype::Vec3d len;
 
@@ -223,30 +189,27 @@ void UniformMass<gpu::opencl::OpenCLRigid3fTypes, sofa::defaulttype::Rigid3fMass
     // So to get lx,ly,lz back we need to do
     //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
     // Note that RigidMass inertiaMatrix is already divided by M
-    double m00 = mass.getValue().inertiaMatrix[0][0];
-    double m11 = mass.getValue().inertiaMatrix[1][1];
-    double m22 = mass.getValue().inertiaMatrix[2][2];
-    len[0] = sqrt(m11+m22-m00);
-    len[1] = sqrt(m00+m22-m11);
-    len[2] = sqrt(m00+m11-m22);
+    double m00 = d_vertexMass.getValue().inertiaMatrix[0][0];
+    double m11 = d_vertexMass.getValue().inertiaMatrix[1][1];
+    double m22 = d_vertexMass.getValue().inertiaMatrix[2][2];
+    len[0] = sqrt(m11 + m22 - m00);
+    len[1] = sqrt(m00 + m22 - m11);
+    len[2] = sqrt(m00 + m11 - m22);
 
-    for (unsigned int i=0; i<x.size(); i++)
+    for (unsigned int i = 0; i < x.size(); i++)
     {
         helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
     }
 }
 
-#endif
-#ifndef SOFA_FLOAT
-
-// -- Mass interface
+// Vec3d
 template <>
 void UniformMass<OpenCLVec3dTypes, double>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    UniformMassOpenCL3d_addMDx(dx.size(), (double)(mass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
+    UniformMassOpenCL3d_addMDx(dx.size(), (double)(d_vertexMass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
 
     d_f.endEdit();
 }
@@ -257,7 +220,7 @@ void UniformMass<OpenCLVec3dTypes, double>::accFromF(const core::MechanicalParam
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
 
-    UniformMassOpenCL3d_accFromF(f.size(), mass.getValue(), a.deviceWrite(), f.deviceRead());
+    UniformMassOpenCL3d_accFromF(f.size(), d_vertexMass.getValue(), a.deviceWrite(), f.deviceRead());
 
     d_a.endEdit();
 }
@@ -273,14 +236,14 @@ void UniformMass<OpenCLVec3dTypes, double>::addForce(const core::MechanicalParam
     Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * mass.getValue();
+    Deriv mg = theGravity * d_vertexMass.getValue();
     UniformMassOpenCL3d_addForce(f.size(), mg.ptr(), f.deviceWrite());
 
     d_f.endEdit();
 }
 /*
 template <>
-bool UniformMass<gpu::opencl::OpenCLVec3dTypes, double>::addBBox(SReal* minBBox, SReal* maxBBox)
+bool UniformMass<gpu::opencl::OpenCLVec3Types, double>::addBBox(SReal* minBBox, SReal* maxBBox)
 {
 	const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 	//if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
@@ -303,7 +266,7 @@ void UniformMass<OpenCLVec3d1Types, double>::addMDx(const core::MechanicalParams
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    UniformMassOpenCL3d1_addMDx(dx.size(), (double)(mass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
+    UniformMassOpenCL3d1_addMDx(dx.size(), (double)(d_vertexMass.getValue()*d_factor), f.deviceWrite(), dx.deviceRead());
 
     d_f.endEdit();
 }
@@ -314,7 +277,7 @@ void UniformMass<OpenCLVec3d1Types, double>::accFromF(const core::MechanicalPara
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
 
-    UniformMassOpenCL3d1_accFromF(f.size(), mass.getValue(), a.deviceWrite(), f.deviceRead());
+    UniformMassOpenCL3d1_accFromF(f.size(), d_vertexMass.getValue(), a.deviceWrite(), f.deviceRead());
 
     d_a.endEdit();
 }
@@ -330,7 +293,7 @@ void UniformMass<OpenCLVec3d1Types, double>::addForce(const core::MechanicalPara
     Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * mass.getValue();
+    Deriv mg = theGravity * d_vertexMass.getValue();
     UniformMassOpenCL3d1_addForce(f.size(), mg.ptr(), f.deviceWrite());
 
     d_f.endEdit();
@@ -356,7 +319,7 @@ bool UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::addBBox(SReal* minBBox
 
 
 template <>
-SReal UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const
+SReal UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3Mass>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const
 {
     const VecCoord& x = d_x.getValue();
 
@@ -365,19 +328,19 @@ SReal UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass
     Vec3d g ( this->getContext()->getGravity() );
     for (unsigned int i=0; i<x.size(); i++)
     {
-        e += g*mass.getValue().mass*x[i].getCenter();
+        e += g*d_vertexMass.getValue().mass*x[i].getCenter();
     }
     return e;
 }
 
 template <>
-SReal UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getElementMass(unsigned int ) const
+SReal UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3Mass>::getElementMass(unsigned int ) const
 {
-    return (SReal)(mass.getValue().mass);
+    return (SReal)(d_vertexMass.getValue().mass);
 }
 
 template <>
-void UniformMass<gpu::opencl::OpenCLRigid3dTypes, sofa::defaulttype::Rigid3dMass>::draw(const sofa::core::visual::VisualParams* vparams)
+void UniformMass<gpu::opencl::OpenCLRigid3dTypes, sofa::defaulttype::Rigid3Mass>::draw(const sofa::core::visual::VisualParams* vparams)
 {
     if(!vparams->displayFlags().getShowBehaviorModels())return;
 //	if (!getContext()->getShowBehaviorModels())return;
@@ -391,9 +354,9 @@ void UniformMass<gpu::opencl::OpenCLRigid3dTypes, sofa::defaulttype::Rigid3dMass
     // So to get lx,ly,lz back we need to do
     //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
     // Note that RigidMass inertiaMatrix is already divided by M
-    double m00 = mass.getValue().inertiaMatrix[0][0];
-    double m11 = mass.getValue().inertiaMatrix[1][1];
-    double m22 = mass.getValue().inertiaMatrix[2][2];
+    double m00 = d_vertexMass.getValue().inertiaMatrix[0][0];
+    double m11 = d_vertexMass.getValue().inertiaMatrix[1][1];
+    double m22 = d_vertexMass.getValue().inertiaMatrix[2][2];
     len[0] = sqrt(m11+m22-m00);
     len[1] = sqrt(m00+m22-m11);
     len[2] = sqrt(m00+m11-m22);
@@ -404,7 +367,7 @@ void UniformMass<gpu::opencl::OpenCLRigid3dTypes, sofa::defaulttype::Rigid3dMass
     }
 }
 
-#endif
+
 
 } // namespace mass
 

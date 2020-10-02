@@ -1,11 +1,18 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaBoundaryCondition)
 
 set(HEADER_FILES
+    config.h
+    initBoundaryCondition.h
+    )
+
+set(SOURCE_FILES
+    initBoundaryCondition.cpp
+    )
+
+list(APPEND HEADER_FILES
     AffineMovementConstraint.h
     AffineMovementConstraint.inl
-    BuoyantForceField.h
-    BuoyantForceField.inl
     ConicalForceField.h
     ConicalForceField.inl
     ConstantForceField.h
@@ -66,15 +73,18 @@ set(HEADER_FILES
     TrianglePressureForceField.inl
     UniformVelocityDampingForceField.h
     UniformVelocityDampingForceField.inl
-    VaccumSphereForceField.h
-    VaccumSphereForceField.inl
-    config.h
-    initBoundaryCondition.h
-)
+    ProjectToLineConstraint.h
+    ProjectToLineConstraint.inl
+    ProjectToPlaneConstraint.h
+    ProjectToPlaneConstraint.inl
+    ProjectToPointConstraint.h
+    ProjectToPointConstraint.inl
+    ProjectDirectionConstraint.h
+    ProjectDirectionConstraint.inl
+    )
 
-set(SOURCE_FILES
+list(APPEND SOURCE_FILES
     AffineMovementConstraint.cpp
-    BuoyantForceField.cpp
     ConicalForceField.cpp
     ConstantForceField.cpp
     DiagonalVelocityDampingForceField.cpp
@@ -105,36 +115,14 @@ set(SOURCE_FILES
     TorsionForceField.cpp
     TrianglePressureForceField.cpp
     UniformVelocityDampingForceField.cpp
-    VaccumSphereForceField.cpp
-    initBoundaryCondition.cpp
-)
-
-
-    list(APPEND HEADER_FILES
-        ProjectToLineConstraint.h
-        ProjectToLineConstraint.inl
-        ProjectToPlaneConstraint.h
-        ProjectToPlaneConstraint.inl
-        ProjectToPointConstraint.h
-        ProjectToPointConstraint.inl
-        ProjectDirectionConstraint.h
-        ProjectDirectionConstraint.inl
+    ProjectToLineConstraint.cpp
+    ProjectToPlaneConstraint.cpp
+    ProjectToPointConstraint.cpp
+    ProjectDirectionConstraint.cpp
     )
-
-    list(APPEND SOURCE_FILES
-          ProjectToLineConstraint.cpp
-          ProjectToPlaneConstraint.cpp
-          ProjectToPointConstraint.cpp
-          ProjectDirectionConstraint.cpp
-    )
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaEigen2Solver)
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION  "${SOFAGENERAL_VERSION}")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BOUNDARY_CONDITION")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} "SofaGeneral/${PROJECT_NAME}")

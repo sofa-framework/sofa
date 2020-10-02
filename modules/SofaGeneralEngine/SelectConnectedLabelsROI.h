@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SelectConnectedLabelsROI_H_
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -56,16 +54,17 @@ public:
     typedef unsigned int Index;
 
     //Input
-    Data<unsigned int> d_nbLabels;
+    Data<unsigned int> d_nbLabels; ///< number of label lists
     typedef helper::vector<helper::SVector<T> > VecVLabels;
     helper::vectorData<VecVLabels> d_labels;
-    Data<helper::vector<T> > d_connectLabels;
+    Data<helper::vector<T> > d_connectLabels; ///< Pairs of label to be connected accross different label lists
 
     //Output
-    Data<helper::vector<Index> > d_indices;
+    Data<helper::vector<Index> > d_indices; ///< selected point/cell indices
 
-    virtual std::string getTemplateName() const    {        return templateName(this);    }
-    static std::string templateName(const SelectConnectedLabelsROI* = NULL)    {       return sofa::defaulttype::DataTypeName<T>::name();    }
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
+    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
+    static std::string GetCustomTemplateName(){       return sofa::defaulttype::DataTypeName<T>::name();    }
 
     SelectConnectedLabelsROI(): Inherited()
       , d_nbLabels ( initData ( &d_nbLabels,(unsigned int)0,"nbLabels","number of label lists" ) )
@@ -76,9 +75,9 @@ public:
         d_labels.resize(d_nbLabels.getValue());
     }
 
-    virtual ~SelectConnectedLabelsROI() {}
+    ~SelectConnectedLabelsROI() override {}
 
-    virtual void init()
+    void init() override
     {
         addInput(&d_nbLabels);
         d_labels.resize(d_nbLabels.getValue());
@@ -87,7 +86,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()
+    void reinit() override
     {
         d_labels.resize(d_nbLabels.getValue());
         update();
@@ -95,14 +94,14 @@ public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         d_labels.parseSizeData(arg, d_nbLabels);
         Inherit1::parse(arg);
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         d_labels.parseFieldsSizeData(str, d_nbLabels);
         Inherit1::parseFields(str);
@@ -111,11 +110,8 @@ public:
 protected:
 
 
-    virtual void update()
+    void doUpdate() override
     {
-        updateAllInputsIfDirty();
-        cleanDirty();
-
         helper::WriteOnlyAccessor< Data< helper::vector<Index> > > indices = d_indices;
         indices.clear();
 

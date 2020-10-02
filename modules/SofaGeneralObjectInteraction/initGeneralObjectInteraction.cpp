@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
 #include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
 
 
@@ -38,11 +37,6 @@ void initGeneralObjectInteraction()
         first = false;
     }
 }
-
-SOFA_LINK_CLASS(AttachConstraint)
-SOFA_LINK_CLASS(BoxStiffSpringForceField)
-SOFA_LINK_CLASS(InteractionEllipsoidForceField)
-SOFA_LINK_CLASS(RepulsiveSpringForceField)
 
 
 } // namespace component

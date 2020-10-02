@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,11 +21,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_SPHERELOADER_H
 #define SOFA_COMPONENT_LOADER_SPHERELOADER_H
-#include "config.h"
+#include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/BaseLoader.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -42,11 +40,11 @@ protected:
     SphereLoader();
 public:
     // Point coordinates in 3D in double.
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions;
-    Data< helper::vector<SReal> > radius;
-    Data< defaulttype::Vector3 > d_scale;
-    Data< defaulttype::Vector3 > d_translation;
-    virtual bool load();
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions; ///< Sphere centers
+    Data< helper::vector<SReal> > radius; ///< Radius of each sphere
+    Data< defaulttype::Vector3 > d_scale; ///< Scale applied to sphere positions
+    Data< defaulttype::Vector3 > d_translation; ///< Translation applied to sphere positions
+    bool load() override;
 };
 
 } //loader

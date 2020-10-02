@@ -1,34 +1,32 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaSimulation)
-
-## Dependencies
-find_package(SofaFramework REQUIRED)
-
-## Version
-set(SOFASIMULATION_VERSION ${SofaFramework_VERSION})
-
-## sofa/simulation/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/simulation/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/sofa/simulation/config.h" DESTINATION include/sofa/simulation)
-
-## Subdirectories
-add_subdirectory(../modules/SofaSimulationCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCommon)
-add_subdirectory(../modules/SofaSimulationTree ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree)
-add_subdirectory(../modules/SofaSimulationGraph ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationGraph)
 
 set(SOFASIMULATION_TARGETS
     SofaSimulationCommon
     SofaSimulationGraph
     SofaSimulationTree
-)
+    )
 
 foreach(TARGET ${SOFASIMULATION_TARGETS})
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>") # For sofa/simulation/config.h
-    set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX _d)
-    set_target_properties(${TARGET} PROPERTIES FOLDER SofaSimulation) # IDE folder
-    set_target_properties(${TARGET} PROPERTIES VERSION ${SOFASIMULATION_VERSION})
+    add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
 endforeach()
 
-## CMake package configurations files
-sofa_write_package_config_files(SofaSimulation ${SOFASIMULATION_VERSION})
+set(SRC_ROOT src/SofaSimulation)
+set(HEADER_FILES
+    ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/initSofaSimulation.h
+    )
+set(SOURCE_FILES
+    ${SRC_ROOT}/initSofaSimulation.cpp
+    )
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFASIMULATION_TARGETS})
+
+sofa_generate_package(
+    NAME ${PROJECT_NAME}
+    VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
+    )

@@ -16,8 +16,6 @@ namespace qt
 
 using namespace defaulttype;
 
-//SOFA_DECL_CLASS(ImageToolBoxWidget);
-
 //class SOFA_IMAGE_GUI_API imagetoolbox_data_widget_container;
 
 template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<unsigned char> >;

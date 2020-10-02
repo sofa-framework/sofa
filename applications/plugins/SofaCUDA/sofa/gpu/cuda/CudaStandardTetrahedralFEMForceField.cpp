@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,8 +34,6 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaStandardTetrahedralFEMForceField)
-
 int StandardTetrahedralFEMForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
 .add< component::forcefield::StandardTetrahedralFEMForceField<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -49,9 +47,9 @@ int StandardTetrahedralFEMForceFieldCudaClass = core::RegisterObject("Supports G
 } // namespace gpu
 
 
-template class component::forcefield::StandardTetrahedralFEMForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API component::forcefield::StandardTetrahedralFEMForceField<sofa::gpu::cuda::CudaVec3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class component::forcefield::StandardTetrahedralFEMForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API component::forcefield::StandardTetrahedralFEMForceField<sofa::gpu::cuda::CudaVec3dTypes>;
 #endif
 
 } // namespace sofa

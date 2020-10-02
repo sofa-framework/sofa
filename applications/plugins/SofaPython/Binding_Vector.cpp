@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,24 +22,30 @@
 
 #include "Binding_Vector.h"
 #include <sofa/defaulttype/Vec.h>
-using namespace sofa::defaulttype;
+#include "PythonToSofa.inl"
 
+using sofa::defaulttype::Vector3 ;
 
-using namespace sofa::defaulttype;
+static inline Vector3* get_vector3(PyObject* obj) {
+    return sofa::py::unwrap<Vector3>(obj);
+}
+
 
 SP_CLASS_ATTR_GET(Vector3,x)(PyObject *self, void*)
 {
-    Vector3* obj=((PyPtr<Vector3>*)self)->object;
+    Vector3* obj = get_vector3( self );
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->x());
 }
+
+
 SP_CLASS_ATTR_SET(Vector3,x)(PyObject *self, PyObject * args, void*)
 {
-    Vector3* obj=((PyPtr<Vector3>*)self)->object;
+    Vector3* obj = get_vector3( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -49,19 +55,22 @@ SP_CLASS_ATTR_SET(Vector3,x)(PyObject *self, PyObject * args, void*)
     return 0;
 }
 
+
 SP_CLASS_ATTR_GET(Vector3,y)(PyObject *self, void*)
 {
-    Vector3* obj=((PyPtr<Vector3>*)self)->object;
+    Vector3* obj = get_vector3( self );
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->y());
 }
+
+
 SP_CLASS_ATTR_SET(Vector3,y)(PyObject *self, PyObject * args, void*)
 {
-    Vector3* obj=((PyPtr<Vector3>*)self)->object;
+    Vector3* obj = get_vector3( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -71,19 +80,22 @@ SP_CLASS_ATTR_SET(Vector3,y)(PyObject *self, PyObject * args, void*)
     return 0;
 }
 
+
 SP_CLASS_ATTR_GET(Vector3,z)(PyObject *self, void*)
 {
-    Vector3* obj=((PyPtr<Vector3>*)self)->object;
+    Vector3* obj = get_vector3( self );
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(obj->z());
 }
+
+
 SP_CLASS_ATTR_SET(Vector3,z)(PyObject *self, PyObject * args, void*)
 {
-    Vector3* obj=((PyPtr<Vector3>*)self)->object;
+    Vector3* obj = get_vector3( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -102,16 +114,17 @@ PyObject * Vector3_PyNew(PyTypeObject * /*type*/, PyObject *args, PyObject * /*k
     Vector3 *obj = new Vector3();
     double x,y,z;
     if (!PyArg_ParseTuple(args, "ddd",&x,&y,&z))
-        return 0;
+        return nullptr;
     obj->x()=x;
     obj->y()=y;
     obj->z()=z;
     return SP_BUILD_PYPTR(Vector3,Vector3,obj,true); // "true", because I manage the deletion myself (below)
 }
+
 void Vector3_PyFree(void * self)
 {
     if (!((PyPtr<Vector3>*)self)->deletable) return;
-    Vector3* obj=((PyPtr<Vector3>*)self)->object;
+    Vector3* obj = get_vector3( (PyObject*)self );
     delete obj; // done!
 }
 

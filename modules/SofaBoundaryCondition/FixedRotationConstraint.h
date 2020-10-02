@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,32 +59,29 @@ public:
 
 protected:
     FixedRotationConstraint();
-    virtual ~FixedRotationConstraint();
+    ~FixedRotationConstraint() override;
 public:
-    void init();
+    void init() override;
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& dx);
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& dx);
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& x);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& c);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& dx) override;
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& dx) override;
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& x) override;
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& c) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
 protected :
-    Data< bool > FixedXRotation;
-    Data< bool > FixedYRotation;
-    Data< bool > FixedZRotation;
+    Data< bool > FixedXRotation; ///< Prevent Rotation around X axis
+    Data< bool > FixedYRotation; ///< Prevent Rotation around Y axis
+    Data< bool > FixedZRotation; ///< Prevent Rotation around Z axis
     helper::vector<defaulttype::Quat> previousOrientation;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDROTATIONCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class FixedRotationConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class FixedRotationConstraint<defaulttype::Rigid3fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDROTATIONCONSTRAINT_CPP)
+extern template class FixedRotationConstraint<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace projectiveconstraintset
