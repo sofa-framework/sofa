@@ -294,7 +294,7 @@ struct AssemblyVisitor::process_helper {
             rmat& Jp = full[ pdofs ]; // (input) full mapping from independent dofs to parent p of dofs c
             {
                 // mapping blocks
-                MySPtr<rmat> jc( convertSPtr<rmat>( g[*e.first].data->J ) );
+                helper::OwnershipSPtr<rmat> jc( convertSPtr<rmat>( g[*e.first].data->J ) );
 
                 if( zero( *jc ) )
                 {

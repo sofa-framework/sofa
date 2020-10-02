@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -77,13 +74,13 @@ void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::Mechanical
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    data.plane.normal = planeNormal.getValue();
-    data.plane.d = planeD.getValue();
-    data.plane.stiffness = stiffness.getValue();
-    data.plane.damping = damping.getValue();
+    m_data.plane.normal = d_planeNormal.getValue();
+    m_data.plane.d = d_planeD.getValue();
+    m_data.plane.stiffness = d_stiffness.getValue();
+    m_data.plane.damping = d_damping.getValue();
     f.resize(x.size());
-    data.penetration.resize(x.size());
-    PlaneForceFieldCuda3f_addForce(x.size(), &data.plane, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+    m_data.penetration.resize(x.size());
+    PlaneForceFieldCuda3f_addForce(x.size(), &m_data.plane, m_data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
 
     d_f.endEdit();
 }
@@ -96,10 +93,10 @@ void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::Mechanica
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
-    double stiff = data.plane.stiffness;
-    data.plane.stiffness *= (Real)kFactor;
-    PlaneForceFieldCuda3f_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
-    data.plane.stiffness = (Real)stiff;
+    double stiff = m_data.plane.stiffness;
+    m_data.plane.stiffness *= (Real)kFactor;
+    PlaneForceFieldCuda3f_addDForce(dx.size(), &m_data.plane, m_data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    m_data.plane.stiffness = (Real)stiff;
 
     d_df.endEdit();
 }
@@ -112,13 +109,13 @@ void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addForce(const core::Mechanica
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    data.plane.normal = planeNormal.getValue();
-    data.plane.d = planeD.getValue();
-    data.plane.stiffness = stiffness.getValue();
-    data.plane.damping = damping.getValue();
+    m_data.plane.normal = d_planeNormal.getValue();
+    m_data.plane.d = d_planeD.getValue();
+    m_data.plane.stiffness = d_stiffness.getValue();
+    m_data.plane.damping = d_damping.getValue();
     f.resize(x.size());
-    data.penetration.resize(x.size());
-    PlaneForceFieldCuda3f1_addForce(x.size(), &data.plane, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+    m_data.penetration.resize(x.size());
+    PlaneForceFieldCuda3f1_addForce(x.size(), &m_data.plane, m_data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
 
     d_f.endEdit();
 }
@@ -131,10 +128,10 @@ void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addDForce(const core::Mechanic
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
-    double stiff = data.plane.stiffness;
-    data.plane.stiffness *= (Real)kFactor;
-    PlaneForceFieldCuda3f1_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
-    data.plane.stiffness = (Real)stiff;
+    double stiff = m_data.plane.stiffness;
+    m_data.plane.stiffness *= (Real)kFactor;
+    PlaneForceFieldCuda3f1_addDForce(dx.size(), &m_data.plane, m_data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    m_data.plane.stiffness = (Real)stiff;
 
     d_df.endEdit();
 }
@@ -148,13 +145,14 @@ void PlaneForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::Mechanical
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    data.plane.normal = planeNormal.getValue();
-    data.plane.d = planeD.getValue();
-    data.plane.stiffness = stiffness.getValue();
-    data.plane.damping = damping.getValue();
+    m_data.plane.normal = d_planeNormal.getValue();
+    m_data.plane.d = d_planeD.getValue();
+    m_data.plane.stiffness = d_stiffness.getValue();
+    m_data.plane.damping = d_damping.getValue();
+
     f.resize(x.size());
-    data.penetration.resize(x.size());
-    PlaneForceFieldCuda3d_addForce(x.size(), &data.plane, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+    m_data.penetration.resize(x.size());
+    PlaneForceFieldCuda3d_addForce(x.size(), &m_data.plane, m_data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
 
     d_f.endEdit();
 }
@@ -167,10 +165,10 @@ void PlaneForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::Mechanica
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
-    double stiff = data.plane.stiffness;
-    data.plane.stiffness *= (Real)kFactor;
-    PlaneForceFieldCuda3d_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
-    data.plane.stiffness = (Real)stiff;
+    double stiff = m_data.plane.stiffness;
+    m_data.plane.stiffness *= (Real)kFactor;
+    PlaneForceFieldCuda3d_addDForce(dx.size(), &m_data.plane, m_data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    m_data.plane.stiffness = (Real)stiff;
 
     d_df.endEdit();
 }
@@ -183,13 +181,14 @@ void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addForce(const core::Mechanica
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    data.plane.normal = planeNormal.getValue();
-    data.plane.d = planeD.getValue();
-    data.plane.stiffness = stiffness.getValue();
-    data.plane.damping = damping.getValue();
+    m_data.plane.normal = d_planeNormal.getValue();
+    m_data.plane.d = d_planeD.getValue();
+    m_data.plane.stiffness = d_stiffness.getValue();
+    m_data.plane.damping = d_damping.getValue();
+
     f.resize(x.size());
-    data.penetration.resize(x.size());
-    PlaneForceFieldCuda3d1_addForce(x.size(), &data.plane, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+    m_data.penetration.resize(x.size());
+    PlaneForceFieldCuda3d1_addForce(x.size(), &m_data.plane, m_data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
 
     d_f.endEdit();
 }
@@ -202,10 +201,10 @@ void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addDForce(const core::Mechanic
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     df.resize(dx.size());
-    double stiff = data.plane.stiffness;
-    data.plane.stiffness *= (Real)kFactor;
-    PlaneForceFieldCuda3d1_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
-    data.plane.stiffness = (Real)stiff;
+    double stiff = m_data.plane.stiffness;
+    m_data.plane.stiffness *= (Real)kFactor;
+    PlaneForceFieldCuda3d1_addDForce(dx.size(), &m_data.plane, m_data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    m_data.plane.stiffness = (Real)stiff;
 
     d_df.endEdit();
 }

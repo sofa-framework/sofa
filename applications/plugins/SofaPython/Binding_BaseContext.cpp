@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -27,7 +24,6 @@
 #include "Binding_BaseContext.h"
 #include "Binding_Base.h"
 #include "Binding_Vector.h"
-#include "ScriptEnvironment.h"
 #include "PythonFactory.h"
 
 #include <sofa/defaulttype/Vec3Types.h>
@@ -131,17 +127,20 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
         Py_RETURN_NONE;
     }
 
+
     if( warning )
     {
-        Node *node = static_cast<Node*>(context);
-        if (node)
+        for( auto it : desc.getAttributeMap() )
         {
-            //SP_MESSAGE_INFO( "Sofa.Node.createObject("<<type<<") node="<<node->getName()<<" isInitialized()="<<node->isInitialized() )
-            if (node->isInitialized())
-                SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
-    //        if (!ScriptEnvironment::isNodeCreatedByScript(node))
-    //            SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is not created by the script" )
+            if (!it.second.isAccessed())
+            {
+                obj->serr <<"Unused Attribute: \""<<it.first <<"\" with value: \"" <<(std::string)it.second<<"\"" << obj->sendl;
+            }
         }
+
+        Node *node = static_cast<Node*>(context);
+        if (node && node->isInitialized())
+            SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
     }
 
     return sofa::PythonFactory::toPython(obj.get());

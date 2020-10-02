@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -38,7 +35,7 @@ namespace helper
 #define MAXIMUM_NUMBER_OF_DEVICES 8
 #endif
 
-/* Generic MemoryManager
+/** Generic MemoryManager
  * Its use is informative only and it cannot be instancied (linkage error otherwise).
  */
 template <class T>
@@ -85,7 +82,7 @@ public :
     static bool isNull(device_pointer p) {return p==NULL;}
 };
 
-//CPU MemoryManager
+/// CPU MemoryManager
 template <class T >
 class CPUMemoryManager : public MemoryManager<T>
 {
@@ -96,22 +93,6 @@ public:
         typedef CPUMemoryManager<T2> other;
     };
 
-    /*
-    	enum { MAX_DEVICES = 0 };
-    	enum { BSIZE = 1 };
-
-    	typedef T* host_pointer;
-    	typedef void* device_pointer;
-
-    	static int numDevices() { return 0 ; }
-
-    	static host_pointer hostAlloc(int n) { return new T[n]; }
-    	static device_pointer deviceAlloc(int d, int n) { return NULL; }
-    	static void memcpyHostToDevice(int d, device_pointer dDestPointer, const host_pointer hSrcPointer, size_t n) { return ;}
-    	static void memcpyDeviceToHost(int d, host_pointer hDestPointer, const device_pointer dSrcPointer , size_t n) { return ;}
-    	static void memcpyDeviceToDevice(device_pointer dDestPointer, const device_pointer dSrcPointer , size_t n) { return ;}
-    	static void memsetDevice(int d, int value,size_t n) { return ;}
-    	static void copyToHostSingle(int );*/
 };
 
 }

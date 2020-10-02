@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -29,8 +26,13 @@
 
 #include <map>
 #include <iostream>
-#include <sstream>
 #include <string>
+
+
+/// adding string serialization to std::map to make it compatible with Data
+/// \todo: refactoring of the containers required
+/// More info PR #113: https://github.com/sofa-framework/sofa/pull/113
+
 
 namespace std
 {
@@ -39,10 +41,10 @@ namespace std
 template<class K, class T>
 std::ostream& operator<< ( std::ostream& o, const std::map<K,T>& m )
 {
-    typename std::map<K,T>::const_iterator it=m.begin();
-    if (it == m.end()) return o;
+    typename std::map<K,T>::const_iterator it=m.begin(), itend=m.end();
+    if (it == itend) return o;
     o << it->first << " " << it->second; it++;
-    for ( ; it != m.end() ; ++it)
+    for ( ; it != itend ; ++it)
     {
         o << "\n" << it->first << " " << it->second;
     }
@@ -69,16 +71,6 @@ std::istream& operator>> ( std::istream& i, std::map<K,T>& m )
     return i;
 }
 
-}
-
-namespace sofa
-{
-
-namespace helper
-{
-
-} // namespace helper
-
-} // namespace sofa
+} // namespace std
 
 #endif

@@ -1,142 +1,95 @@
 #ifndef COMPLIANT_MISC_PYTHON_H
 #define COMPLIANT_MISC_PYTHON_H
 
-#include <sofa/core/objectmodel/Base.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
-namespace impl { 
-template<class T> struct argtype;
+template<class T>
+struct opaque {
 
-template<> struct argtype< sofa::core::objectmodel::Base* >  {
-    static std::string value() { return "c_void_p"; }
-};
-
-
-template<> struct argtype< int >  {
-    static std::string value() { return  "c_int"; }
-};
-
-template<> struct argtype< unsigned >  {
-    static std::string value() { return  "c_uint"; }
-};
-
-template<> struct argtype< float >  {
-    static std::string value() { return  "c_float"; }
-};
-
-template<> struct argtype< double >  {
-    static std::string value() { return  "c_double"; }
-};
-
-template<> struct argtype< void >  {
-    static std::string value() { return  "None"; }
-};
-
-template<> struct argtype< char >  {
-    static std::string value() { return  "c_char"; }
-};
-
-template<class T> struct argtype< T * > {
-    static std::string value() {
-        return  "POINTER(" + argtype<T>::value() + ")";
-    }
-};
-
-template<class T> struct argtype< const T > : argtype<T> { };
-
-// TODO more as needed
-
-template<class Ret>
-static std::string make_argtypes( Ret (*func) () ) {
-    (void)func;
-    return "[]";
-}
-
-template<class Ret>
-static std::string make_restype( Ret (*func) () ) {
-    (void)func;
-    return argtype<Ret>::value();
-}
-
-
-template<class Ret, class Arg>
-static std::string make_argtypes( Ret (*func) (Arg) ) {
-    (void)func;
-    return "[" + argtype<Arg>::value() + "]";
-}
-
-template<class Ret, class Arg>
-static std::string make_restype( Ret (*func) (Arg) ) {
-    (void)func;
-    return argtype<Ret>::value();
-}
-
-
-template<class Ret, class Arg1, class Arg2>
-static std::string make_argtypes( Ret (*func) (Arg1, Arg2) ) {
-    (void)func;
-    return "[" + argtype<Arg1>::value() + "," + argtype<Arg2>::value() + "]";
-}
-
-template<class Ret, class Arg1, class Arg2>
-static std::string make_restype( Ret (*func) (Arg1, Arg2) ) {
-    (void)func;
-    return argtype<Ret>::value();
-}
-
-}
-
-// TODO more as needed
-
-
-class python {
-
-public:
-
-    typedef sofa::core::objectmodel::Base* object;
-
-    typedef void (*func_ptr_type)();
-private:
-    typedef std::map<func_ptr_type, std::string> map_type;
-    static map_type _argtypes, _restype;
-
-
-    static const char* find(const map_type& map, func_ptr_type ptr) {
-        map_type::const_iterator it = map.find( ptr );
-        if( it == map.end() ) return 0;
-        return it->second.c_str();
-    }
-
-public:
+    opaque() : data(0) { }
     
-    template<class Arg>
-    static python add(Arg arg) {
-        _argtypes[ func_ptr_type(arg) ] = impl::make_argtypes(arg);
-        _restype[ func_ptr_type(arg) ] = impl::make_restype(arg);
-        return python();
+    T* data;
+    
+    friend std::istream& operator>>(std::istream& in , const opaque& ) {
+        // TODO emit warning
+        return in;
     }
 
-
-    template<class Arg>
-    static const char* argtypes(Arg arg) {
-        return find(_argtypes, func_ptr_type(arg) );
-    }
-
-    template<class Arg>
-    static const char* restype(Arg arg) {
-        return find(_restype, func_ptr_type(arg) );
+    friend std::ostream& operator<<(std::ostream& out, const opaque& ) {
+        return out << "#<opaque>";
     }
 
 };
 
 
+namespace sofa {
+namespace defaulttype {
 
-struct with_py_callback {
-    typedef void* (*py_callback_type)(int);
-    py_callback_type py_callback;
+template<class T>
+struct DataTypeInfo< opaque<T> > {
+    // can't believe there is no default-impl i can override
 
-    with_py_callback();
-    virtual ~with_py_callback();
+    typedef opaque<T> DataType;
+    typedef DataType BaseType;
+    typedef DataType ValueType;
+    
+    typedef DataTypeInfo<BaseType> BaseTypeInfo;
+    typedef DataTypeInfo<ValueType> ValueTypeInfo;
+
+    static const bool CopyOnWrite = false;
+    static const bool ValidInfo = false;
+    static const bool FixedSize = true;
+    static const bool ZeroConstructor = true;
+    static const bool SimpleCopy = true;
+    static const bool SimpleLayout = true;
+    static const bool Integer = false;
+    static const bool Scalar = false;
+    static const bool Text = false;
+    static const bool Container = false;        
+
+    static std::size_t size() { return 1; }
+    static std::size_t size(const DataType& /*data*/) { return 1; }
+    
+    static std::size_t byteSize() { return sizeof(opaque<T>); }    
+    static bool setSize(DataType& /*data*/, std::size_t /*size*/) { return false; }
+
+    template <typename U>
+    static void getValue(const DataType& /*data*/, std::size_t /*index*/, U& /*value*/)
+    {
+    }
+
+    template<typename U>
+    static void setValue(DataType& /*data*/, std::size_t /*index*/, const U& /*value*/)
+    {
+    }
+
+    static void getValueString(const DataType& /*data*/, std::size_t /*index*/, std::string& /*value*/)
+    {
+    }
+
+    static void setValueString(DataType& /*data*/, std::size_t /*index*/, const std::string& /*value*/)
+    {
+    }
+
+    
+    static const void* getValuePtr(const DataType& type)
+    {
+        return (void*) &type;
+    }
+
+    static void* getValuePtr(DataType& type)
+    {
+        return (void*) &type;
+    }
+
+    static const char* name() { return "opaque"; }
 };
+
+}
+}
+
+
+
 
 
 

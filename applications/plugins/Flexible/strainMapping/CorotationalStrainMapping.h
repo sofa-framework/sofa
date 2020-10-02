@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -54,9 +51,15 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE2(CorotationalStrainMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMappingT,BlockType ));
 
-    /** @name  Corotational methods */
+    /** @name  Corotational methods
+       SMALL = Cauchy strain
+       QR = Nesme et al, 2005, "Efficient, Physically Plausible Finite Elements"
+       POLAR = Etzmuß et al, 2003, "A Fast Finite Element Solution for Cloth Modelling" ; Muller et al, 2004 "Interactive Virtual Materials"
+       SVD = Irving et al, 2004, "Invertible finite elements for robust simulation of large deformation"
+       FROBENIUS = Muller et al, 2016, "A Robust Method to Extract the Rotational Part of Deformations"
+    */
     //@{
-    enum DecompositionMethod { POLAR=0, QR, SMALL, SVD, NB_DecompositionMethod };
+    enum DecompositionMethod { POLAR=0, QR, SMALL, SVD, FROBENIUS, NB_DecompositionMethod };
     Data<helper::OptionsGroup> f_method;
     //@}
 
@@ -103,6 +106,14 @@ public:
             }
             break;
         }
+        case FROBENIUS:
+        {
+            for( size_t i=0 ; i<jacobianBlock.size() ; i++ )
+            {
+                jacobianBlock[i].init_frobenius( f_geometricStiffness.getValue() );
+            }
+            break;
+        }
         }
     }
 
@@ -144,6 +155,14 @@ public:
             }
             break;
         }
+        case FROBENIUS:
+        {
+            for( size_t i=0 ; i<this->jacobian.size() ; i++ )
+            {
+                this->jacobian[i].init_frobenius( f_geometricStiffness.getValue() );
+            }
+            break;
+        }
         }
     }
 
@@ -156,10 +175,11 @@ protected:
     {
         helper::OptionsGroup Options;
         Options.setNbItems( NB_DecompositionMethod );
-        Options.setItemName( SMALL, "small" );
-        Options.setItemName( QR,    "qr"    );
-        Options.setItemName( POLAR, "polar" );
-        Options.setItemName( SVD,   "svd"   );
+        Options.setItemName( SMALL,     "small"     );
+        Options.setItemName( QR,        "qr"        );
+        Options.setItemName( POLAR,     "polar"     );
+        Options.setItemName( SVD,       "svd"       );
+        Options.setItemName( FROBENIUS, "frobenius" );
         Options.setSelectedItem( SVD );
         f_method.setValue( Options );
     }
@@ -221,6 +241,18 @@ protected:
             {
                 out[i] = typename Inherit::OutCoord();
                 jacobianBlock[i].addapply_svd( out[i], in[i] );
+            }
+            break;
+        }
+        case FROBENIUS:
+        {
+#ifdef _OPENMP
+        #pragma omp parallel for if (this->d_parallel.getValue())
+#endif
+            for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
+            {
+                out[i] = typename Inherit::OutCoord();
+                jacobianBlock[i].addapply_frobenius( out[i], in[i] );
             }
             break;
         }
@@ -290,6 +322,18 @@ protected:
             }
             break;
         }
+        case FROBENIUS:
+        {
+#ifdef _OPENMP
+        #pragma omp parallel for if (this->d_parallel.getValue())
+#endif
+            for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
+            {
+                out[i] = typename Inherit::OutCoord();
+                this->jacobian[i].addapply_frobenius( out[i], in[i] );
+            }
+            break;
+        }
         }
 
         dOut.endEdit();
@@ -352,6 +396,17 @@ protected:
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
                     this->jacobian[i].addDForce_svd( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
+                }
+                break;
+            }
+            case FROBENIUS:
+            {
+#ifdef _OPENMP
+        #pragma omp parallel for if (this->d_parallel.getValue())
+#endif
+                for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
+                {
+                    this->jacobian[i].addDForce_frobenius( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
                 }
                 break;
             }

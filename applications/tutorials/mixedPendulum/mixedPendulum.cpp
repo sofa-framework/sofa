@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -129,7 +126,7 @@ int main(int, char** argv)
     UniformMassRigid3::SPtr rigidMass = sofa::core::objectmodel::New<UniformMassRigid3>();
     rigidBody->addObject(rigidMass);
     rigidMass->setName("M2");
-    UniformMassRigid3::MassType* m = rigidMass->mass.beginEdit();
+    UniformMassRigid3::MassType* m = rigidMass->d_mass.beginEdit();
     m->mass=0.3;
     UniformMassRigid3::MassType::Mat3x3 inertia;
     inertia.fill(0.0);
@@ -139,7 +136,7 @@ int main(int, char** argv)
     inertia[2][2] = in;
     m->inertiaMatrix = inertia;
     m->recalc();
-    rigidMass->mass.endEdit();
+    rigidMass->d_mass.endEdit();
 
 
     //-------------------- the particles attached to the rigid body
@@ -157,12 +154,12 @@ int main(int, char** argv)
     RigidMappingRigid3_to_3::SPtr rigidMapping = sofa::core::objectmodel::New<RigidMappingRigid3_to_3>();
     rigidMapping->setModels(rigidDOF.get(),rigidParticleDOF.get());
 
-    // Setting paths is redundant with previous line 
+    // Setting paths is redundant with previous line
     // std::string pathobject1("@"+rigidBody->getName()+"/"+rigidDOF->getName());
     // std::string pathobject2("@"+rigidParticles->getName()+"/"+rigidParticleDOF->getName());
     // rigidMapping->setPathInputObject(pathobject1);
     // rigidMapping->setPathOutputObject(pathobject2);
-    
+
     rigidParticles->addObject( rigidMapping );
     rigidMapping->setName("Map23");
 
@@ -199,7 +196,7 @@ int main(int, char** argv)
     */
 
 #ifdef PS3
-	groot->setAnimate(true);
+    groot->setAnimate(true);
 #endif
 
 

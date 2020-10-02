@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -28,6 +25,17 @@
 #include "PythonEnvironment.h"
 #include "ScriptController.h"
 #include <sofa/core/objectmodel/DataFileName.h>
+
+/// Forward declarations
+namespace sofa {
+    namespace core{
+        namespace objectmodel{ class IdleEvent ;}
+    }
+    namespace helper{
+        namespace system{ class FileEventListener; }
+    }
+}
+
 
 namespace sofa
 {
@@ -46,9 +54,11 @@ public:
     PyObject* scriptControllerInstance() const {return m_ScriptControllerInstance;}
 
     bool isDerivedFrom(const std::string& name, const std::string& module = "__main__");
-
+    void doLoadScript();
+    void refreshBinding();
 protected:
     PythonScriptController();
+    virtual ~PythonScriptController();
 
     void handleEvent(core::objectmodel::Event *event);
 
@@ -91,6 +101,9 @@ protected:
     /// drawing
     virtual void script_draw(const core::visual::VisualParams*);
 
+    /// Idle event is sent a regular interval from the host application
+    virtual void script_onIdleEvent(const sofa::core::objectmodel::IdleEvent* event);
+
     /// @}
 
 public:
@@ -98,7 +111,11 @@ public:
     sofa::core::objectmodel::Data<std::string>  m_classname;
     sofa::core::objectmodel::Data< helper::vector< std::string > >  m_variables; // array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
     sofa::core::objectmodel::Data<bool>         m_timingEnabled;
+    sofa::core::objectmodel::Data<bool>         m_doAutoReload;
+
 protected:
+    sofa::helper::system::FileEventListener* m_filelistener ;
+
     PyObject *m_ScriptControllerClass;      // class implemented in the script to use to instanciate the python controller
     //PyObject *m_ScriptControllerInstanceDict;  // functions dictionnary
     PyObject *m_ScriptControllerInstance;   // instance of m_ScriptControllerClass
@@ -122,6 +139,7 @@ protected:
     PyObject *m_Func_reset;
     PyObject *m_Func_cleanup;
     PyObject *m_Func_draw;
+    PyObject *m_Func_onIdle;
 };
 
 

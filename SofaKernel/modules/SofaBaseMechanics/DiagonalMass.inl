@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -46,6 +43,31 @@ namespace component
 
 namespace mass
 {
+
+template <class DataTypes, class MassType>
+DiagonalMass<DataTypes, MassType>::DiagonalMass()
+    : f_mass( initData(&f_mass, "mass", "values of the particles masses") )
+    , pointHandler(NULL)
+    , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
+    , m_computeMassOnRest(initData(&m_computeMassOnRest, false, "computeMassOnRest", "if true, the mass of every element is computed based on the rest position rather than the position"))
+    , m_totalMass(initData(&m_totalMass, (Real)-1.0, "totalMass", "Total mass of the object (read only)"))
+    , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
+    , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
+    , fileMass( initData(&fileMass,  "fileMass", "an Xsp3.0 file to specify the mass parameters" ) )
+    , topologyType(TOPOLOGY_UNKNOWN)
+{
+    this->addAlias(&fileMass,"filename");
+
+    m_totalMass.setReadOnly(true);
+}
+
+template <class DataTypes, class MassType>
+DiagonalMass<DataTypes, MassType>::~DiagonalMass()
+{
+    if (pointHandler)
+        delete pointHandler;
+}
+
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyCreateFunction(unsigned int, MassType &m, const Point &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
@@ -371,32 +393,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
     applyHexahedronDestruction(hexahedronRemoved);
 }
 
-template <class DataTypes, class MassType>
-DiagonalMass<DataTypes, MassType>::DiagonalMass()
-    : f_mass( initData(&f_mass, "mass", "values of the particles masses") )
-    , pointHandler(NULL)
-    , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
-    , m_computeMassOnRest(initData(&m_computeMassOnRest, false, "computeMassOnRest", "if true, the mass of every element is computed based on the rest position rather than the position"))
-    , m_totalMass(initData(&m_totalMass, "totalMass", "Total mass of the object (read only)"))
-    , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
-    , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
-    , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
-    , topologyType(TOPOLOGY_UNKNOWN)
-{
-    this->addAlias(&fileMass,"filename");
 
-    m_totalMass.setReadOnly(true);
-}
-
-
-
-
-template <class DataTypes, class MassType>
-DiagonalMass<DataTypes, MassType>::~DiagonalMass()
-{
-    if (pointHandler)
-        delete pointHandler;
-}
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::clear()
@@ -774,6 +771,7 @@ void DiagonalMass<DataTypes, MassType>::init()
     Inherited::init();
     initTopologyHandlers();
 
+    // TODO(dmarchal): this code is duplicated with the one in RigidImpl
     if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
     {
         MassVector &masses= *f_mass.beginEdit();
@@ -873,9 +871,12 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels())
+        return;
+
     const MassVector &masses= f_mass.getValue();
-    if (masses.empty()) return;
+    if (masses.empty())
+        return;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord gravityCenter;

@@ -9,6 +9,11 @@ find_package(SofaFramework REQUIRED)
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
 
+if(${SOFA_NO_OPENGL})
+    message(SEND_ERROR "Warning: CMake flag SOFA_NO_OPENGL is active.")
+    message("Flag SOFA_NO_OPENGL incompatible with the VolumetricRendering plugin.")
+endif()
+
 set(HEADER_FILES
     initVolumetricRendering.h
     OglTetrahedralModel.h

@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -41,7 +38,7 @@ namespace helper
 namespace gl
 {
     
-FrameBufferObject::FrameBufferObject(bool depthTexture, bool enableDepth, bool enableColor, GLint defaultWindowFramebuffer)
+FrameBufferObject::FrameBufferObject(bool depthTexture, bool enableDepth, bool enableColor, bool enableMipMap, GLint defaultWindowFramebuffer)
     :m_defaultWindowFramebufferID(defaultWindowFramebuffer)
     ,width(0)
     ,height(0)
@@ -51,10 +48,11 @@ FrameBufferObject::FrameBufferObject(bool depthTexture, bool enableDepth, bool e
     ,depthTexture(depthTexture)
     ,enableDepth(enableDepth)
     ,enableColor(enableColor)
+    ,enableMipMap(enableMipMap)
 {
 }
 
-FrameBufferObject::FrameBufferObject(const fboParameters& fboParams, bool depthTexture, bool enableDepth, bool enableColor, GLint defaultWindowFramebuffer)
+FrameBufferObject::FrameBufferObject(const fboParameters& fboParams, bool depthTexture, bool enableDepth, bool enableColor, bool enableMipMap, GLint defaultWindowFramebuffer)
     :m_defaultWindowFramebufferID(defaultWindowFramebuffer)
     ,width(0)
     ,height(0)
@@ -65,6 +63,7 @@ FrameBufferObject::FrameBufferObject(const fboParameters& fboParams, bool depthT
     ,depthTexture(depthTexture)
     ,enableDepth(enableDepth)
     ,enableColor(enableColor)
+    ,enableMipMap(enableMipMap)
 {
 }
 
@@ -311,12 +310,17 @@ void FrameBufferObject::initDepthBuffer()
 void FrameBufferObject::initColorBuffer()
 {
     glBindTexture(GL_TEXTURE_2D, colorTextureID);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    if(enableMipMap)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    else
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
     glTexImage2D(GL_TEXTURE_2D, 0, _fboParams.colorInternalformat,  width, height, 0, _fboParams.colorFormat, _fboParams.colorType, NULL);
+    if(enableMipMap)
+        glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
 
 }

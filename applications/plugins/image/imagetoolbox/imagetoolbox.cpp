@@ -1,8 +1,10 @@
 #define SOFA_IMAGE_IMAGETOOLBOX_CPP
 
+#include "imagetoolbox.h"
+
 #include <QDataStream>
 #include <QMetaType>
-#include "imagetoolbox.h"
+
 #include <sofa/core/ObjectFactory.h>
 #include <image/image_gui/config.h>
 

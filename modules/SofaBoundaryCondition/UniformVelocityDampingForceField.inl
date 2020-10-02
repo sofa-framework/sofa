@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -40,6 +37,7 @@ namespace forcefield
 template<class DataTypes>
 UniformVelocityDampingForceField<DataTypes>::UniformVelocityDampingForceField()
     : dampingCoefficient(initData(&dampingCoefficient, Real(0.1), "dampingCoefficient", "velocity damping coefficient"))
+    , d_implicit(initData(&d_implicit, false, "implicit", "should it generate damping matrix df/dv? (explicit otherwise, i.e. only generating a force)"))
 {
     core::objectmodel::Base::addAlias( &dampingCoefficient, "damping" );
 }
@@ -55,35 +53,41 @@ void UniformVelocityDampingForceField<DataTypes>::addForce (const core::Mechanic
 }
 
 template<class DataTypes>
-void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /*d_df*/ , const DataVecDeriv& /*d_dx*/)
+void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx)
 {
     (void)mparams->kFactor(); // get rid of warning message
-//    Real bfactor = (Real)mparams->bFactor();
 
-//    if( bfactor )
-//    {
-//        sofa::helper::WriteAccessor<DataVecDeriv> df(d_df);
-//        const VecDeriv& dx = d_dx.getValue();
+    if( !d_implicit.getValue() ) return;
 
-//        bfactor *= dampingCoefficient.getValue();
+    Real bfactor = (Real)mparams->bFactor();
 
-//        for(unsigned int i=0; i<dx.size(); i++)
-//            df[i] -= dx[i]*bfactor;
-//    }
+    if( bfactor )
+    {
+        sofa::helper::WriteAccessor<DataVecDeriv> df(d_df);
+        const VecDeriv& dx = d_dx.getValue();
+
+        bfactor *= dampingCoefficient.getValue();
+
+        for(unsigned int i=0; i<dx.size(); i++)
+            df[i] -= dx[i]*bfactor;
+    }
 }
 
 template<class DataTypes>
-void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*bFact*/, unsigned int& /*offset*/)
+void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal bFact, unsigned int& offset)
 {
-//    const unsigned int size = this->mstate->getMatrixSize();
+    if( !d_implicit.getValue() ) return;
 
-//    for( unsigned i=0 ; i<size ; i++ )
-//        mat->add( offset+i, offset+i, -dampingCoefficient.getValue()*bFact );
+    const unsigned int size = this->mstate->getMatrixSize();
+
+    for( unsigned i=0 ; i<size ; i++ )
+        mat->add( offset+i, offset+i, -dampingCoefficient.getValue()*bFact );
 }
 
 template <class DataTypes>
 SReal UniformVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
 {
+    // TODO
     return 0;
 }
 
@@ -95,6 +99,7 @@ SReal UniformVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core
 } // namespace sofa
 
 #endif
+
 
 
 

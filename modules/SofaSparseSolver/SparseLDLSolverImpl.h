@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -44,7 +41,7 @@ namespace linearsolver
 
 //defaut structure for a LDL factorization
 template<class VecInt,class VecReal>
-class SpaseLDLImplInvertData : public MatrixInvertData {
+class SparseLDLImplInvertData : public MatrixInvertData {
 public :
     int n, P_nnz, L_nnz;
     VecInt P_rowind,P_colptr,L_rowind,L_colptr,LT_rowind,LT_colptr;
@@ -170,7 +167,7 @@ protected :
     SparseLDLSolverImpl() : Inherit() {}
 
     template<class VecInt,class VecReal>
-    void solve_cpu(Real * x,const Real * b,SpaseLDLImplInvertData<VecInt,VecReal> * data) {
+    void solve_cpu(Real * x,const Real * b,SparseLDLImplInvertData<VecInt,VecReal> * data) {
         int n = data->n;
         const Real * invD = &data->invD[0];
         const int * perm = &data->perm[0];
@@ -282,7 +279,7 @@ protected :
     }
 
     template<class VecInt,class VecReal>
-    void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SpaseLDLImplInvertData<VecInt,VecReal> * data) {
+    void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SparseLDLImplInvertData<VecInt,VecReal> * data) {
         data->new_factorization_needed = data->P_colptr.size() == 0 || data->P_rowind.size() == 0 || CSPARSE_need_symbolic_factorization(n, M_colptr, M_rowind, data->n, (int *) &data->P_colptr[0],(int *) &data->P_rowind[0]);
 
         data->n = n;

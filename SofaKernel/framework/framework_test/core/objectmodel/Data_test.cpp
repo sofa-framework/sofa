@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -137,15 +134,13 @@ struct DataFileNameVector_test: public ::testing::Test
 
 TEST_F(DataFileNameVector_test , setValueAsString_spaces )
 {
-    // fails because setValueAsString does not look for a vector
-    dataFileNameVector.setValueAsString( std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt "+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt" );
+    dataFileNameVector.setValueAsString( "['"+std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
     ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
 }
 
 TEST_F(DataFileNameVector_test , read_spaces )
 {
-    // fails because read is considering that path are separated with space, so path cannot contain spaces (creating 6 entries)
-    dataFileNameVector.read( std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt "+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt" );
+    dataFileNameVector.read( "['" + std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
     ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
 }
 

@@ -66,12 +66,14 @@ class Fontain(Sofa.PythonScriptController):
         self.particleCount+=1
         # add the controller script
         node.createObject('PythonScriptController', filename='fontain.py', classname='Particle')
+        return node
      
     # optionnally, script can create a graph...
     def createGraph(self,node):
         print 'Fontain.createGraph called from node '+node.name    
         for i in range(1,100):
-            self.spawnParticle()
+            node = self.spawnParticle()
+            node.init()
         return 0
     
     def onScriptEvent(self,senderNode,eventName,data):

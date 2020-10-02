@@ -81,5 +81,14 @@ namespace sofa {
     }
 
 
+// precision is not good enough
+//    typedef CorotationalStrainMappingTest<CorotationalStrainMapping<defaulttype::F331Types,defaulttype::E331Types>> CorotationalStrainMappingTest331;
+//    TEST_F( CorotationalStrainMappingTest331, forbenius )
+//    {
+//        ASSERT_TRUE( this->runTest( 4 ) ); // forbenius
+//    }
+
+
+
 
 } // namespace sofa

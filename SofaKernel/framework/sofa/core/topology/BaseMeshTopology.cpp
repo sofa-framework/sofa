@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -357,47 +354,47 @@ void BaseMeshTopology::reOrientateTriangle(TriangleID /*id*/)
     serr<<"reOrientateTriangle() not supported." << sendl;
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginChange() const
+std::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginChange() const
 {
     serr << "beginChange() not supported." << sendl;
-    sofa::helper::list<const TopologyChange *>::const_iterator l;
+    std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::endChange() const
+std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endChange() const
 {
     serr<<"endChange() not supported." << sendl;
-    sofa::helper::list<const TopologyChange *>::const_iterator l;
+    std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginStateChange() const
+std::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginStateChange() const
 {
     serr<<"beginStateChange() not supported." << sendl;
-    sofa::helper::list<const TopologyChange *>::const_iterator l;
+    std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::endStateChange() const
+std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endStateChange() const
 {
     serr<<"endStateChange() not supported." << sendl;
-    sofa::helper::list<const TopologyChange *>::const_iterator l;
+    std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
 
-sofa::helper::list<TopologyEngine *>::const_iterator BaseMeshTopology::beginTopologyEngine() const
+std::list<TopologyEngine *>::const_iterator BaseMeshTopology::beginTopologyEngine() const
 {
     serr<<"beginTopologyEngine() not supported." << sendl;
-    sofa::helper::list<TopologyEngine *>::const_iterator l;
+    std::list<TopologyEngine *>::const_iterator l;
     return l;
 }
 
 
-sofa::helper::list<TopologyEngine *>::const_iterator BaseMeshTopology::endTopologyEngine() const
+std::list<TopologyEngine *>::const_iterator BaseMeshTopology::endTopologyEngine() const
 {
     serr<<"endTopologyEngine() not supported." << sendl;
-    sofa::helper::list<TopologyEngine *>::const_iterator l;
+    std::list<TopologyEngine *>::const_iterator l;
     return l;
 }
 

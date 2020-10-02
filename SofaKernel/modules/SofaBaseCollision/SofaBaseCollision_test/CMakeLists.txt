@@ -6,6 +6,7 @@ set(SOURCE_FILES
     BroadPhase_test.cpp
     OBB_test.cpp
     Sphere_test.cpp
+    DefaultPipeline_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

@@ -21,7 +21,7 @@
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
         <TTriangleModel template="Vec3d" name="default7" />
-        <BoxROI template="Vec3d" box="3 3 0 6 6 1" drawBoxes="1" position="@mecaObj.position" drawTriangles="1" triangles="@Container.triangles" name="boxROI" />
+        <BoxROI template="Vec3d" box="3 3 0 6 6 1" orientedBox="3 9 0 6 7 0 3 7 0 1   8 3 0 9 5.5 0 8 6 0 1" drawBoxes="1" position="@mecaObj.position" drawTriangles="1" triangles="@Container.triangles" name="boxROI" />
         <Node name="visu">
             <VisualModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 0.6 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
             <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@.." output="@Visual" />

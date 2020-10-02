@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -78,7 +75,7 @@ bool TagSet::includes(const TagSet& t) const
     }
 #if 1
     // Simple but not optimal version
-    for (sofa::helper::set<Tag>::const_iterator first2 = t.begin(), last2 = t.end();
+    for (std::set<Tag>::const_iterator first2 = t.begin(), last2 = t.end();
         first2 != last2; ++first2)
     {
         Tag t2 = *first2;
@@ -99,8 +96,8 @@ bool TagSet::includes(const TagSet& t) const
     // First test : no negative tag from t should appear as positive in this
     if (t.begin()->negative())
     {
-        sofa::helper::set<Tag>::const_reverse_iterator first1, last1;
-        sofa::helper::set<Tag>::const_iterator first2, last2;
+        std::set<Tag>::const_reverse_iterator first1, last1;
+        std::set<Tag>::const_iterator first2, last2;
         first1 = this->rbegin(); last1 = this->rend();
         first2 = t.begin(); last2 = t.end();
         for (; first2 != last2; ++first1)
@@ -119,8 +116,8 @@ bool TagSet::includes(const TagSet& t) const
     // Second test : all positive tags from t should appear as positive in this
     if (!t.rbegin()->negative())
     {
-        sofa::helper::set<Tag>::const_iterator first1, last1;
-        sofa::helper::set<Tag>::const_iterator first2, last2;
+        std::set<Tag>::const_iterator first1, last1;
+        std::set<Tag>::const_iterator first2, last2;
         first1 = this->lower_bound(Tag(0)); last1 = this->end();
         first2 = t.lower_bound(Tag(0)); last2 = t.end();
         //for(; first1 != last1 && first1->negative(); ++first1); // skip negative tags in this

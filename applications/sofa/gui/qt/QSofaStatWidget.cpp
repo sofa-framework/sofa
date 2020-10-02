@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -133,9 +130,9 @@ void QSofaStatWidget::addCollisionModelsStat(const sofa::helper::vector< sofa::c
         item->setText(0,v[i]->getName().c_str());
         item->setText(2,QString::number(v[i]->getSize()));
         {
-        const helper::set<int>& groups = v[i]->getGroups();
+        const std::set<int>& groups = v[i]->getGroups();
         QString groupString;
-        helper::set<int>::const_iterator it = groups.begin(), itend = groups.end();
+        std::set<int>::const_iterator it = groups.begin(), itend = groups.end();
         for( ; it != itend ; ++it ) groupString += QString::number(*it) + ", ";
         item->setText(3,groupString);
         }

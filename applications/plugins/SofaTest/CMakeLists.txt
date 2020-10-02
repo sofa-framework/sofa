@@ -16,6 +16,7 @@ set(HEADER_FILES
     PrimitiveCreation.h
     Sofa_test.h
     TestMessageHandler.h
+    #LogMessage.h
 )
 
 set(SOURCE_FILES

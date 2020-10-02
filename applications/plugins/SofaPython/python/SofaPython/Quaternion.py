@@ -31,6 +31,10 @@ def im(q):
     """imaginary part"""
     return array(q[:3])
 
+def angle(q):
+    """get angle in rad"""
+    return 2.0* math.acos(re(q))
+
 # TODO optimize
 def prod(a, b):
     """product"""
@@ -229,7 +233,7 @@ def quatToAxis(q):
         axis = [0.0,1.0,0.0]
     else :
         axis = numpy.asarray(q)[0:3]/sine
-    phi =  math.acos(q[3]) * 2.0
+    phi =  angle(q)
     return [axis, phi]
 
 def quatToRotVec(q):

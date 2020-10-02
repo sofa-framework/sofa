@@ -165,6 +165,7 @@ void BaseSequentialSolver::init() {
 	// fallback in case we missed
 	if( !response ) {
         response = new LDLTResponse();
+        response->setName("response");
         this->getContext()->addObject( response );
         serr << "fallback Response: "
                   << response->getClassName()

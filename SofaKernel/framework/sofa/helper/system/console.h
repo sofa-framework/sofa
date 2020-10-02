@@ -28,8 +28,10 @@ public:
 
 #ifdef WIN32
     typedef unsigned SystemColorType;
+    typedef unsigned SystemCodeType;
 #else
     typedef std::string SystemColorType;
+    typedef std::string SystemCodeType;
 #endif
 
     /// this color type can be used with stream operator on any system
@@ -43,8 +45,19 @@ public:
         void operator= ( const Console::SystemColorType& v ) { value=v; }
     };
 
+    struct CodeType
+    {
+        Console::SystemCodeType value;
+        CodeType() : value(DEFAULT_CODE.value) {}
+        CodeType( const CodeType& c ) : value(c.value) {}
+        CodeType( const Console::SystemCodeType& v ) : value(v) {}
+        void operator= ( const CodeType& c ) { value=c.value; }
+        void operator= ( const Console::SystemCodeType& v ) { value=v; }
+    };
+
     /// to use stream operator with a color on any system
     SOFA_HELPER_API friend std::ostream& operator<<(std::ostream &stream, ColorType color);
+    SOFA_HELPER_API friend std::ostream& operator<<(std::ostream &stream, CodeType color);
 
     static const ColorType BLUE;
     static const ColorType GREEN;
@@ -64,6 +77,10 @@ public:
     static const ColorType BRIGHT_BLACK;
     static const ColorType DEFAULT_COLOR;
 
+    static const CodeType ITALIC;
+    static const CodeType UNDERLINE;
+    static const CodeType DEFAULT_CODE;
+
     enum ColorsStatus {ColorsEnabled, ColorsDisabled, ColorsAuto};
     /// Enable or disable colors in stdout / stderr.
     ///
@@ -73,6 +90,8 @@ public:
     /// By default, colors are disabled.
     static void setColorsStatus(ColorsStatus status);
     static ColorsStatus getColorsStatus();
+
+    static size_t getColumnCount() ;
 
 private:
     static ColorsStatus s_colorsStatus;

@@ -13,7 +13,7 @@
 <!--   <MinProximityIntersection alarmDistance="2" contactDistance="0.1" /> -->
 
    <!-- a null global friction coefficient force to use the product of frictionCoef per CollisionModel pair -->
-  <DefaultContactManager response="FrictionCompliantContact" />
+  <DefaultContactManager response="FrictionCompliantContact" responseParams="frictionCoefficientMixingMethod=AVERAGE"/>
 	
   <CompliantImplicitSolver stabilization="1" warm_start="1" />
 
@@ -55,7 +55,7 @@
       <MeshObjLoader filename="mesh/cube.obj" name="loader" scale3d="20 2 20" />
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
       <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
-      <TriangleModel template="Vec3d" simulated="0" moving="0" contactFriction="1" contactRestitution="0"/>
+      <TriangleModel template="Vec3d" simulated="0" moving="0" contactFriction=".5" contactRestitution="0"/>
 <!--       <LineModel template="Vec3d" contactFriction="10" contactRestitution="0"/> -->
 <!--       <PointModel template="Vec3d" contactFriction="10" contactRestitution="0"/> -->
       <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />

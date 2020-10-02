@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -38,7 +35,7 @@ TagFactory::TagFactory()
     tagsList.push_back(std::string("Visual"));
 }
 
-/*SOFA_HELPER_API*/ unsigned int TagFactory::getID(std::string name)
+unsigned int TagFactory::getID(std::string name)
 {
     if (name.empty()) return 0;
     TagFactory * tagfac = TagFactory::getInstance();
@@ -63,7 +60,7 @@ TagFactory::TagFactory()
     }
 }
 
-/*SOFA_HELPER_API*/ std::string TagFactory::getName(unsigned int id)
+std::string TagFactory::getName(unsigned int id)
 {
     if( id < getInstance()->tagsList.size() )
         return getInstance()->tagsList[id];
@@ -71,7 +68,7 @@ TagFactory::TagFactory()
         return "";
 }
 
-/*SOFA_HELPER_API*/ TagFactory* TagFactory::getInstance()
+TagFactory* TagFactory::getInstance()
 {
     static TagFactory instance;
     return &instance;

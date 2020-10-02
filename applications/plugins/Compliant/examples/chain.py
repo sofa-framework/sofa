@@ -1,69 +1,53 @@
 import Sofa
 
+from Compliant import StructuralAPI
 
-from Compliant import Rigid, Frame
+StructuralAPI.geometric_stiffness=2
 
 def createScene(root):
     
     # root node setup
     root.createObject('RequiredPlugin', pluginName = 'Compliant')
     root.createObject('VisualStyle', displayFlags="showBehavior" )
+    root.createObject('CompliantAttachButtonSetting' )
     
     # simuation parameters
     root.dt = 1e-2
     root.gravity = [0, -9.8, 0]
     
     # ode solver
-    ode = root.createObject('CompliantImplicitSolver')
-    ode.stabilization = "pre-stabilization"
+    ode = root.createObject('CompliantImplicitSolver', neglecting_compliance_forces_in_geometric_stiffness=False, stabilization = "pre-stabilization")
     
     # numerical solver
-    num = root.createObject('MinresSolver')
-    num.iterations = 500
+    root.createObject('SequentialSolver', name='numsolver', iterations=250, precision=1e-14, iterateOnBilaterals=True)
+    root.createObject('LDLTResponse', name='response')
+    #root.createObject('LUResponse', name='response')
     
     # scene node
     scene = root.createChild('scene')
     
     # script variables
-    n = 10
-    length = 2
+    nbLink = 10
+    linkSize = 2
     
-    # objects creation
-    obj = []
+    # links creation
+    links = []
     
-    for i in xrange(n):
     # rigid bodies
-        body = Rigid.Body()
-        body.name = 'link-' + str(i)
-        body.dofs.translation = [0, length * i, 0]
-        
-        body.inertia_forces = 'true'
-        
-        obj.append( body )
-        # insert the object into the scene node, saves the created
-        # node in body_node
-        body.node = body.insert( scene )
-        body.node.getObject("dofs").showObject=True
-        
+    for i in xrange(nbLink):
+        body = StructuralAPI.RigidBody(root, "link-{0}".format(i))
+        body.setManually(offset = [0, -1.*linkSize * i, 0, 0,0,0,1], inertia_forces = True)
+        body.dofs.showObject = True
+        body.dofs.showObjectScale = 0.25*linkSize
+        links.append( body )
+    # attach first link
+    links[0].setFixed()
+    
     # joints creation
-    for i in xrange( n-1 ):
-    # the joint
-        j = Rigid.SphericalJoint()
+    for i in xrange( nbLink-1 ):
+        off1 = links[i].addOffset("offset-{0}-{1}".format(i, i+1), [0, -0.5*linkSize, 0, 0,0,0,1])
+        off2 = links[i+1].addOffset("offset-{0}-{1}".format(i+1, i), [0, 0.5*linkSize, 0, 0,0,0,1])
+        StructuralAPI.HingeRigidJoint(2, "joint-{0}-{1}".format(i, i+1), off1.node, off2.node, isCompliance=True, compliance=0)
+        #StructuralAPI.BallAndSocketRigidJoint("joint-{0}-{1}".format(i, i+1), off1.node, off2.node, isCompliance=True, compliance=0)
         
-        # joint offset definitions
-        up = Rigid.Frame.Frame()
-        up.translation = [0, length /2 , 0]
         
-        down = Rigid.Frame.Frame()
-        down.translation = [0, -length /2 , 0]
-        
-        # append node/offset to the joint
-        j.append( obj[i].node, up ) # parent
-        j.append( obj[i+1].node, down) # child
-        
-        j.insert(scene)
-    
-    # attach first node
-    obj[0].node.createObject('FixedConstraint', indices='0')
-    
-    # and wheee !

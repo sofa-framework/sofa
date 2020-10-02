@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -220,6 +217,8 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
             if (!line.empty())
             {
                 *outfile << "SCALARS" << " " << names[i] << " ";
+                *outfile << line << std::endl;
+                *outfile << "LOOKUP_TABLE default" << std::endl;
             }
             else
             {
@@ -235,10 +234,13 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
                     sizeSeg = 3;
                 }
                 *outfile << "VECTORS" << " " << names[i] << " ";
+                *outfile << line << std::endl;
             }
-            *outfile << line << std::endl;
+
             *outfile << segmentString(field->getValueString(),sizeSeg) << std::endl;
             *outfile << std::endl;
+
+
         }
     }
 }
@@ -379,9 +381,35 @@ void VTKExporter::writeVTKSimple()
     std::string filename = vtkFilename.getFullPath();
 
     std::ostringstream oss;
-    oss << nbFiles;
+    oss << "_" << nbFiles;
 
-    if ( filename.size() > 3 && filename.substr(filename.size()-4)==".vtu")
+    if (filename.size() > 3) {
+        std::string ext;
+        std::string baseName;
+        if (filename.substr(filename.size()-4)==".vtu") {
+            ext = ".vtu";
+            baseName = filename.substr(0, filename.size()-4);
+        }
+
+        if (filename.substr(filename.size()-4)==".vtk") {
+            ext = ".vtk";
+            baseName = filename.substr(0, filename.size()-4);
+        }
+
+        /// no extension given => default "vtu"
+        if (ext == "") {
+            ext = ".vtu";
+            baseName = filename;
+        }
+
+        if (overwrite.getValue())
+            filename = baseName + ext;
+        else
+            filename = baseName + oss.str() + ext;
+
+    }
+
+    /*if ( filename.size() > 3 && filename.substr(filename.size()-4)==".vtu")
     {
         if (!overwrite.getValue())
             filename = filename.substr(0,filename.size()-4) + oss.str() + ".vtu";
@@ -391,7 +419,7 @@ void VTKExporter::writeVTKSimple()
         if (!overwrite.getValue())
             filename += oss.str();
         filename += ".vtu";
-    }
+    }*/
 
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )

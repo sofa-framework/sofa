@@ -17,8 +17,10 @@ def createScene(node):
     
     model = SofaPython.sml.Model(os.path.join(os.path.dirname(__file__),"two_bones.xml"))
     scene_two_bones = Compliant.sml.SceneSkinning(node, model)
-    scene_two_bones.param.showRigid=True
-    scene_two_bones.param.showOffset=True
+    scene_two_bones.param.showRigid = True
+    scene_two_bones.param.showOffset = True
+    scene_two_bones.param.showRigidScale = 0.05
+    scene_two_bones.param.showOffsetScale = 0.025
     
     scene_two_bones.createScene()
     

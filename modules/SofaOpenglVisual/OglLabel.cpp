@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -57,6 +54,8 @@ OglLabel::OglLabel(): stepCounter(0)
   ,x(initData(&x, (unsigned int)10, "x", "The x position of the text on the screen"))
   ,y(initData(&y, (unsigned int)10, "y", "The y position of the text on the screen"))
   ,fontsize(initData(&fontsize, (unsigned int)14, "fontsize", "The size of the font used to display the text on the screen"))
+  //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
+  //This field should support the color="red" api.
   ,color(initData(&color, std::string("contrast"), "color", "The color of the text to display"))
   ,updateLabelEveryNbSteps(initData(&updateLabelEveryNbSteps, (unsigned int)0, "updateLabelEveryNbSteps", "Update the display of the label every nb of time steps"))
   ,f_visible(initData(&f_visible,true,"visible","Is label displayed"))
@@ -117,19 +116,19 @@ void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
 
     // Save state and disable clipping plane
     glPushAttrib(GL_ENABLE_BIT);
-	for(int i = 0; i < GL_MAX_CLIP_PLANES; ++i)
-		glDisable(GL_CLIP_PLANE0+i);
+    for(int i = 0; i < GL_MAX_CLIP_PLANES; ++i)
+        glDisable(GL_CLIP_PLANE0+i);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_TEXTURE_1D);
     glDisable(GL_BLEND);
     glDepthMask(1);
 
     vparams->drawTool()->setLightingEnabled(false);
-	// vparams->drawTool()->setPolygonMode(1,true);
+    // vparams->drawTool()->setPolygonMode(1,true);
 
-	// color of the text
+    // color of the text
     Color color( r, g, b, a);
-	glColor4f( r, g, b, a );
+    glColor4f( r, g, b, a );
 
     glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &color[0]);
     static const float emissive[4] = { 0.0f, 0.0f, 0.0f, 0.0f};

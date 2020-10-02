@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -85,7 +82,7 @@ public:
 
     // operator std::ostream&() const { return m_ostream; }
 
-    friend inline SofaOStream& operator<<( SofaOStream& out, const logging::FileInfo& fi )
+    friend inline SofaOStream& operator<<( SofaOStream& out, const logging::FileInfo::SPtr& fi )
     {
         out.m_fileInfo = fi;
         return out;
@@ -117,7 +114,7 @@ public:
     std::streamsize precision( std::streamsize p ) { return m_ostream.precision(p); }
 
     std::ostringstream& ostringstream() const { return m_ostream; }
-    const logging::FileInfo& fileInfo() const { return m_fileInfo; }
+    const logging::FileInfo::SPtr& fileInfo() const { return m_fileInfo; }
     const logging::Message::Type& messageType() const { return m_messageType; }
     const logging::Message::Class& messageClass() const { return m_messageClass; }
 
@@ -125,7 +122,7 @@ public:
     void clear()
     {
         str("");
-        m_fileInfo = helper::logging::FileInfo();
+        m_fileInfo = helper::logging::EmptyFileInfo;
         m_messageType = (logging::Message::Type)DefaultMessageType;
         m_messageClass = logging::Message::Runtime;
     }
@@ -136,7 +133,7 @@ protected:
     std::ostringstream& m_ostream;
 
     /// the current FileInfo
-    logging::FileInfo m_fileInfo;
+    logging::FileInfo::SPtr m_fileInfo {helper::logging::EmptyFileInfo};
     /// the current Message type
     logging::Message::Type m_messageType;
     /// the current Message class

@@ -42,15 +42,17 @@ template <class DataType>
 void NormEngine<DataType>::update()
 {
     helper::ReadAccessor<Data<VecData> > in = d_input;
-    helper::WriteOnlyAccessor<Data<VecReal> > out = d_output;
     int l = d_normType.getValue();
+
+    cleanDirty();
+
+    helper::WriteOnlyAccessor<Data<VecReal> > out = d_output;
 
     out.resize( in.size() );
 
     for( size_t i=0 ; i<in.size() ; ++i )
         out[i] = in[i].lNorm(l);
 
-    cleanDirty();
 
 }
 

@@ -1,26 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* This component is open-source                                               *
-*                                                                             *
-* Authors: Damien Marchal                                                     *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -81,6 +76,7 @@
 
 #define nmsg_info(emitter)       sofa::helper::logging::MessageDispatcher::null()
 #define nmsg_deprecated(emitter) sofa::helper::logging::MessageDispatcher::null()
+#define nmsg_advice(emitter) sofa::helper::logging::MessageDispatcher::null()
 #define nmsg_warning(emitter)    sofa::helper::logging::MessageDispatcher::null()
 #define nmsg_error(emitter)      sofa::helper::logging::MessageDispatcher::null()
 #define nmsg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::null()
@@ -93,12 +89,14 @@
 #define dmsg_warning(emitter)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
 #define dmsg_error(emitter)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
 #define dmsg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
+#define dmsg_advice(emitter)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
 #else
 #define dmsg_info(emitter)       nmsg_info(emitter)
 #define dmsg_deprecated(emitter) nmsg_deprecated(emitter)
 #define dmsg_warning(emitter)    nmsg_warning(emitter)
 #define dmsg_error(emitter)      nmsg_error(emitter)
 #define dmsg_fatal(emitter)      nmsg_fatal(emitter)
+#define dmsg_advice(emitter)     nmsg_advice(emitter)
 #endif // NDEBUG
 
 #define msg_info(emitter)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
@@ -106,5 +104,27 @@
 #define msg_warning(emitter)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
 #define msg_error(emitter)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
 #define msg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
+#define msg_advice(emitter)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
+
+#define msg_info_when(cond)          if(cond) sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
+#define msg_deprecated_when(cond)    if(cond) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
+#define msg_warning_when(cond)       if(cond) sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
+#define msg_error_when(cond)         if(cond) sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
+#define msg_fatal_when(cond)         if(cond) sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
+#define msg_advice_when(cond)        if(cond) sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
+
+#define logmsg_info(emitter)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
+#define logmsg_deprecated(emitter) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
+#define logmsg_warning(emitter)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
+#define logmsg_error(emitter)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
+#define logmsg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
+#define logmsg_advice(emitter)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
+
+#define msg_info_withfile(emitter, file, line)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
+#define msg_deprecated_withfile(emitter, file, line) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
+#define msg_warning_withfile(emitter, file,line)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
+#define msg_error_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
+#define msg_fatal_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
+#define msg_advice_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
 
 #endif // MESSAGING_H

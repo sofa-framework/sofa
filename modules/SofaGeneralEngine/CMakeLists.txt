@@ -95,6 +95,8 @@ set(HEADER_FILES
     Spiral.inl
     SubsetTopology.h
     SubsetTopology.inl
+    SumEngine.h
+    SumEngine.inl
     TextureInterpolation.h
     TextureInterpolation.inl
     TransformEngine.h
@@ -162,6 +164,7 @@ set(SOURCE_FILES
     SphereROI.cpp
     Spiral.cpp
     SubsetTopology.cpp
+    SumEngine.cpp
     TextureInterpolation.cpp
     TransformEngine.cpp
     TransformMatrixEngine.cpp

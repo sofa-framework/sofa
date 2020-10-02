@@ -1,26 +1,11 @@
 <!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
-<Node name="Root" gravity="0 -9.81 0" dt="0.02">
-    <VisualStyle displayFlags="showVisual showBehaviorModels" />
-    <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
-    <BruteForceDetection name="Detection" />
-    <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <DefaultContactManager name="Response" response="default" />
-    <TreeCollisionGroupManager name="Group" />
-    <Node name="STL file">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshSTLLoader name="STLLoader" filename="mesh/circle_knot_ascii.stl" />
-        <MechanicalObject name="dofs" scale="1" src="@STLLoader" />
-        <TriangleSetTopologyContainer name="topo" src="@STLLoader" />
-        <TriangleSetTopologyModifier name="modif" />
-        <TriangleSetTopologyAlgorithms name="algo" />
-        <TriangleSetGeometryAlgorithms name="triGeo" />
-        <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
-        <DiagonalMass massDensity="0.15" />
-        <TriangleModel />
-        <Node>
-            <OglModel src="@../STLLoader" name="VisualModel" color="red" />
-            <IdentityMapping name="mapping" input="@.." output="@VisualModel" />
-        </Node>
-    </Node>
+<Node>
+    <VisualStyle displayFlags="showVisual" />
+
+    <MeshSTLLoader name="STLLoader" filename="mesh/circle_knot_ascii.stl" printLog="true" />
+    <OglModel src="@STLLoader" name="VisualModel" color="red" />
+
+    <OglModel fileMesh="mesh/circle_knot_ascii.stl" name="VisualModel2" color="green" translation="10 0 0" />
+
+
 </Node>

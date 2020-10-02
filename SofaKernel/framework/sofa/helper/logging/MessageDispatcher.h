@@ -1,28 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* This component is open-source                                               *
-*                                                                             *
-* Authors: Damien Marchal                                                     *
-*          Bruno Carrez                                                       *
-*          Matthieu Nesme                                                     *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -80,13 +73,13 @@ public:
             {}
 
             LoggerStream(Message::Class mclass, Message::Type type,
-                         const std::string& sender, FileInfo fileInfo)
+                         const std::string& sender, const FileInfo::SPtr& fileInfo)
                 : m_message( mclass, type, sender, fileInfo )
             {
             }
 
             LoggerStream(Message::Class mclass, Message::Type type,
-                         const sofa::core::objectmodel::Base* sender, FileInfo fileInfo);
+                         const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo);
 
             ~LoggerStream() ;
 
@@ -125,19 +118,22 @@ public:
         static void clearHandlers() ; ///< to remove every MessageHandlers
         static std::vector<MessageHandler*>& getHandlers(); ///< the list of MessageHandlers
 
-        static LoggerStream info(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) ;
-        static LoggerStream info(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) ;
-        static LoggerStream deprecated(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) ;
-        static LoggerStream deprecated(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) ;
-        static LoggerStream warning(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) ;
-        static LoggerStream warning(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) ;
-        static LoggerStream error(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) ;
-        static LoggerStream error(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) ;
-        static LoggerStream fatal(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) ;
-        static LoggerStream fatal(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) ;
+        static LoggerStream info(Message::Class mclass, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream info(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream deprecated(Message::Class mclass, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream deprecated(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream warning(Message::Class mclass, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream warning(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream error(Message::Class mclass, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream error(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream fatal(Message::Class mclass, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream fatal(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream advice(Message::Class mclass, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream advice(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+
         static const NullLoggerStream& null() { return NullLoggerStream::getInstance(); }
-        static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const std::string& sender = "", FileInfo fileInfo = FileInfo());
-        static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo());
+        static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo);
+        static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo);
 
         /// Process the Message by all the Message handlers.
         /// Called in the destructor of LoggerStream

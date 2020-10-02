@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -114,10 +111,10 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
         GlText::initTexture();
         s_asciiTexture->init();
     }
-    const unsigned int nb_char_width = 16;
-    const unsigned int nb_char_height = 16;
-    const float worldHeight = 1.0f;
-    const float worldWidth = 0.50f;
+    static const unsigned int nb_char_width = 16;
+    static const unsigned int nb_char_height = 16;
+    static const float worldHeight = 1.0f;
+    static const float worldWidth = 0.50f;
 
     std::vector<Vector3> vertices;
     std::vector<Vector2> UVs;
@@ -192,10 +189,10 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
     }
     defaulttype::Mat<4, 4, GLfloat> modelviewM;
 
-    const unsigned int nb_char_width = 16;
-    const unsigned int nb_char_height = 16;
-    const float worldHeight = 1.0;
-    const float worldWidth = 0.5;
+    static const unsigned int nb_char_width = 16;
+    static const unsigned int nb_char_height = 16;
+    static const float worldHeight = 1.0;
+    static const float worldWidth = 0.5;
 
     glPushAttrib(GL_TEXTURE_BIT);
     glEnable(GL_TEXTURE_2D);

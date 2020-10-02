@@ -43,7 +43,7 @@ bool GIDMeshLoader::load()
 
 bool GIDMeshLoader::readGID(std::ifstream &file)
 {
-	helper::vector<Coord>& vertices = *positions.beginEdit();
+	helper::vector<Coord>& vertices = *d_positions.beginEdit();
 
 	std::string line;
 	std::istringstream iss;
@@ -263,7 +263,7 @@ bool GIDMeshLoader::readGID(std::ifstream &file)
 		std::transform(line.begin(), line.end(), line.begin(), ::tolower);
 	}
 
-	positions.endEdit();
+	d_positions.endEdit();
 
 	do
 	{
@@ -305,7 +305,7 @@ bool GIDMeshLoader::readLinearElements(std::ifstream &file)
 {
 	std::string line;
 	std::istringstream iss;
-	helper::vector<Edge>& meshEdges = *edges.beginEdit();
+	helper::vector<Edge>& meshEdges = *d_edges.beginEdit();
 
 	std::getline(file, line);
 	std::transform(line.begin(), line.end(), line.begin(), ::tolower);
@@ -360,7 +360,7 @@ bool GIDMeshLoader::readTriangleElements(std::ifstream &file)
 {
 	std::string line;
 	std::istringstream iss;
-	helper::vector<Triangle>& meshTriangles = *triangles.beginEdit();
+	helper::vector<Triangle>& meshTriangles = *d_triangles.beginEdit();
 
 	std::getline(file, line);
 	std::transform(line.begin(), line.end(), line.begin(), ::tolower);
@@ -419,7 +419,7 @@ bool GIDMeshLoader::readQuadrilateralElements(std::ifstream &file)
 {
 	std::string line;
 	std::istringstream iss;
-	helper::vector<Quad>& meshQuads = *quads.beginEdit();
+	helper::vector<Quad>& meshQuads = *d_quads.beginEdit();
 
 	std::getline(file, line);
 	std::transform(line.begin(), line.end(), line.begin(), ::tolower);
@@ -486,7 +486,7 @@ bool GIDMeshLoader::readTetrahedralElements(std::ifstream &file)
 {
 	std::string line;
 	std::istringstream iss;
-	helper::vector<Tetrahedron>& meshTetra = *tetrahedra.beginEdit();
+	helper::vector<Tetrahedron>& meshTetra = *d_tetrahedra.beginEdit();
 
 	std::getline(file, line);
 	std::transform(line.begin(), line.end(), line.begin(), ::tolower);
@@ -546,7 +546,7 @@ bool GIDMeshLoader::readTetrahedralElements(std::ifstream &file)
 		std::transform(line.begin(), line.end(), line.begin(), ::tolower);
 	}
 
-	tetrahedra.endEdit();
+	d_tetrahedra.endEdit();
 	return true;
 }
 
@@ -554,7 +554,7 @@ bool GIDMeshLoader::readHexahedralElements(std::ifstream &file)
 {
 	std::string line;
 	std::istringstream iss;
-	helper::vector<Hexahedron>& meshHexa = *hexahedra.beginEdit();
+	helper::vector<Hexahedron>& meshHexa = *d_hexahedra.beginEdit();
 
 	std::getline(file, line);
 	std::transform(line.begin(), line.end(), line.begin(), ::tolower);

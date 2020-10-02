@@ -1,0 +1,32 @@
+<html>
+<head>
+</head>
+
+<body>
+
+<center><H1>...I'm so Fancy...</h1><hr>
+{} = {0} + {1} + {0} <br><br>
+</center> 
+<center>
+Experiment started at: $starttime <br>
+Experiment duration: $duration <br>
+Configuration file: <a href="$cfgfilename">$cfgfilename</a> <br>
+
+<table border='1'>
+<tr>
+<td>#</td><td>Directory</td><td>Scene</td><td>Log</td><td>Timing</td>
+#set $i = 0 
+#for $result in $results
+<tr>    
+<td>$i</td> 
+<td><a href="$result['directory']"</a>View</td>
+<td><a href="$result['scene']">View</a></td>
+<td><a href="$result['logfile']">View</a></td>
+<td>$result['duration'] seconds</td>
+</tr>
+#end for
+</table>
+</center>
+
+</body>
+</html>

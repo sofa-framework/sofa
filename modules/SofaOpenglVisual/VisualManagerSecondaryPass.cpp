@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -71,7 +68,7 @@ void VisualManagerSecondaryPass::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     multiPassEnabled=checkMultipass(context);
-    fbo = new FrameBufferObject(true, true, true);
+    fbo = new FrameBufferObject(true, true, true, true);
 }
 
 void VisualManagerSecondaryPass::initVisual()
@@ -83,16 +80,16 @@ void VisualManagerSecondaryPass::initVisual()
     else
     {
         m_shaderPostproc = sofa::core::objectmodel::New<OglShader>();
-        m_shaderPostproc->vertFilename.setValueAsString("shaders/compositing.vert");
+        m_shaderPostproc->vertFilename.addPath("shaders/compositing.vert");
 
 
         if(fragFilename.getValue().empty())
         {
             std::cerr << "fragFilename attribute shall not be null. Using compositing.frag instead" << std::endl;
-            m_shaderPostproc->fragFilename.setValueAsString("shaders/compositing.frag");
+            m_shaderPostproc->fragFilename.addPath("shaders/compositing.frag");
         }
         else
-            m_shaderPostproc->fragFilename.setValueAsString(fragFilename.getFullPath());
+            m_shaderPostproc->fragFilename.addPath(fragFilename.getFullPath(),true);
 
         m_shaderPostproc->init();
         m_shaderPostproc->initVisual();
@@ -242,6 +239,7 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
                 glActiveTexture(GL_TEXTURE0+nbFbo);
                 glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, currentSecondaryPass->getFBO()->getColorTexture());
+                glGenerateMipmap(GL_TEXTURE_2D);
 
                 ++nbFbo;
             }
@@ -263,6 +261,7 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
                     glActiveTexture(GL_TEXTURE0+nbFbo);
                     glEnable(GL_TEXTURE_2D);
                     glBindTexture(GL_TEXTURE_2D, currentPass->getFBO()->getColorTexture());
+                    glGenerateMipmap(GL_TEXTURE_2D);
                     ++nbFbo;
 
                     //std::cout<<"***"<< this->getName() <<"*** GL_TEXTURE"<<nbFbo<<" depth from "<<currentPass->getName()<<std::endl;

@@ -1,31 +1,27 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "PythonMacros.h"
 #include "PythonEnvironment.h"
 #include "SceneLoaderPY.h"
-#include "ScriptEnvironment.h"
 
 
 #include <sofa/simulation/Simulation.h>
@@ -114,9 +110,7 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
     if (PyCallable_Check(pFunc))
     {
         Node::SPtr rootNode = Node::create("root");
-        ScriptEnvironment::enableNodeQueuedInit(false);
         SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
-        ScriptEnvironment::enableNodeQueuedInit(true);
 
         return rootNode;
     }
@@ -126,9 +120,7 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
         if (PyCallable_Check(pFunc))
         {
             Node::SPtr rootNode = Node::create("root");
-            ScriptEnvironment::enableNodeQueuedInit(false);
             SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
-            ScriptEnvironment::enableNodeQueuedInit(true);
 
             rootNode->addObject( core::objectmodel::New<component::controller::PythonMainScriptController>( filename ) );
 
@@ -168,8 +160,6 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
     PyObject *pFunc = PyDict_GetItemString(pDict, "run");
     if (PyCallable_Check(pFunc))
     {
-        ScriptEnvironment::enableNodeQueuedInit(false);
-
         PyObject *res = PyObject_CallObject(pFunc,0);
         printPythonExceptions();
 
@@ -188,8 +178,6 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
         bool result = ( res == Py_True );
         Py_DECREF(res);
 
-
-        ScriptEnvironment::enableNodeQueuedInit(true);
         return result;
     }
     else

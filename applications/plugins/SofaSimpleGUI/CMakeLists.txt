@@ -3,6 +3,11 @@ project(SofaSimpleGUI)
 
 set(SOFASIMPLEGUI_VERSION 0.1)
 
+if(${SOFA_NO_OPENGL})
+    message(SEND_ERROR "Warning: CMake flag SOFA_NO_OPENGL is active.")
+    message("Flag SOFA_NO_OPENGL incompatible with the SofaSimpleGUI plugin.")
+endif()
+
 set(HEADER_FILES
     Camera.h
     Interactor.h

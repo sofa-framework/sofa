@@ -3,7 +3,7 @@ project(SofaAdvanced)
 
 ## Dependencies
 find_package(SofaGeneral REQUIRED)
-find_package(MiniFlowVR)
+find_package(MiniFlowVR QUIET)
 set(SOFA_HAVE_MINIFLOWVR ${MiniFlowVR_FOUND})
 set(SOFA_HAVE_FLOWVR ${MiniFlowVR_FOUND}) # cmakedefine
 

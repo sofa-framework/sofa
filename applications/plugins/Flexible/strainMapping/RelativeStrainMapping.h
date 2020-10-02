@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -52,29 +49,17 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(RelativeStrainMapping,TStrain), SOFA_TEMPLATE(BaseStrainMappingT,BlockType));
 
 
-    /// @name  Different ways to decompose the strain
-    //@{
-    //    enum RelativeMethod { ADDITION=0, MULTIPLICATION, NB_PlasticMethod }; ///< ADDITION -> Müller method (faster), MULTIPLICATION -> Fedkiw method
-    //    Data<helper::OptionsGroup> f_method;
-    //@}
-
     /// @name  Strain offset
     //@{
-    Data<typename Inherit::InVecCoord> offset;
-    Data<bool> inverted;
+    Data<typename Inherit::InVecCoord> d_offset;
+    Data<bool> d_inverted;
     //@}
-
 
     virtual void reinit()
     {
-        typename Inherit::InCoord off = typename Inherit::InCoord();
-        if(offset.getValue().size()==1) off = offset.getValue()[0];
-
+        bool inverted = d_inverted.getValue();
         for( size_t i=0 ; i<this->jacobian.size() ; i++ )
-        {
-            if(i<offset.getValue().size()) off = offset.getValue()[i];
-            this->jacobian[i].init(off,inverted.getValue());
-        }
+            this->jacobian[i].init(inverted);
 
         Inherit::reinit();
     }
@@ -83,58 +68,36 @@ protected:
 
     RelativeStrainMapping( core::State<TStrain>* from = NULL, core::State<TStrain>* to = NULL )
         : Inherit ( from, to )
-        //        , f_method ( initData ( &f_method,"method","" ) )
-        , offset(initData(&offset,"offset","Strain offset"))
-        , inverted( initData(&inverted, false, "inverted", "offset-Strain (rather than Strain-offset )") )
+        , d_offset(initData(&d_offset,"offset","Strain offset"))
+        , d_inverted( initData(&d_inverted, false, "inverted", "offset-Strain (rather than Strain-offset )") )
     {
-        //        helper::OptionsGroup Options;
-        //        Options.setNbItems( NB_PlasticMethod );
-        //        Options.setItemName( ADDITION,       "addition" );
-        //        Options.setItemName( MULTIPLICATION, "multiplication" );
-        //        Options.setSelectedItem( ADDITION );
-        //        f_method.setValue( Options );
     }
 
     virtual ~RelativeStrainMapping() { }
 
-    //    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
-    //    {
-    //        helper::ReadAccessor<Data<typename Inherit::InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
-    //        helper::ReadAccessor<Data<typename Inherit::OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
-    //        if(inpos.size()!=outpos.size()) this->resizeOut();
+    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
+    {
+        helper::ReadAccessor<Data<typename Inherit::InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<typename Inherit::OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
+        helper::ReadAccessor<Data<typename Inherit::InVecCoord> > offset (this->d_offset);
+        if(inpos.size()!=outpos.size()) this->resizeOut();
 
-    //        typename Inherit::OutVecCoord& out = *dOut.beginWriteOnly();
-    //        const typename Inherit::InVecCoord&  in  =  dIn.getValue();
+        typename Inherit::OutVecCoord& out = *dOut.beginWriteOnly();
+        const typename Inherit::InVecCoord&  in  =  dIn.getValue();
 
-    //        typename Inherit::InCoord off = typename Inherit::InCoord();
-    //        if(offset.getValue().size()==1) off = offset.getValue()[0];
-
-    //        switch( f_method.getValue().getSelectedId() )
-    //        {
-    //        case MULTIPLICATION:
-    //        {
-    //            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
-    //            {
-    //                out[i] = typename Inherit::OutCoord();
-    //                if(i<offset.getValue().size()) off = offset.getValue()[i];
-    //                this->jacobian[i].addapply_multiplication( out[i], in[i], off );
-    //            }
-    //            break;
-    //        }
-    //        case ADDITION:
-    //        {
-    //            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
-    //            {
-    //                out[i] = typename Inherit::OutCoord();
-    //                if(i<offset.getValue().size()) off = offset.getValue()[i];
-    //                this->jacobian[i].addapply_addition( out[i], in[i],  off );
-    //            }
-    //            break;
-    //        }
-    //        }
-
-    //        dOut.endEdit();
-    //    }
+        if(offset.size()==0)
+        {
+            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+                out[i] =in[i];
+        }
+        else
+            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            {
+                out[i] = typename Inherit::OutCoord();
+                this->jacobian[i].addapply_diff( out[i], in[i], offset[ std::min((unsigned int)offset.size()-1,i) ] );
+            }
+        dOut.endEdit();
+    }
 
 }; // class RelativeStrainMapping
 

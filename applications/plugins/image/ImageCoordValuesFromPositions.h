@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -48,32 +45,34 @@ namespace engine
  */
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageType>
 struct ImageCoordValuesFromPositionsSpecialization
 {
 };
 
+/// forward declaration
+template <class ImageType> class ImageCoordValuesFromPositions;
+
 
 /// Specialization for regular Image
-template <>
-struct ImageCoordValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class T>
+struct ImageCoordValuesFromPositionsSpecialization<defaulttype::Image<T>>
 {
+    typedef ImageCoordValuesFromPositions<defaulttype::Image<T>> ImageCoordValuesFromPositionsT;
 
-    template<class ImageCoordValuesFromPositions>
-    static void update(ImageCoordValuesFromPositions& This)
+    static void update(ImageCoordValuesFromPositionsT& This)
     {
-        typedef typename ImageCoordValuesFromPositions::Real Real;
-        typedef typename ImageCoordValuesFromPositions::Coord Coord;
-        typedef typename ImageCoordValuesFromPositions::T T;
+        typedef typename ImageCoordValuesFromPositionsT::Real Real;
+        typedef typename ImageCoordValuesFromPositionsT::Coord Coord;
 
-        typename ImageCoordValuesFromPositions::raTransform inT(This.transform);
-        typename ImageCoordValuesFromPositions::raPositions pos(This.position);
+        typename ImageCoordValuesFromPositionsT::raTransform inT(This.transform);
+        typename ImageCoordValuesFromPositionsT::raPositions pos(This.position);
 
-        typename ImageCoordValuesFromPositions::raImage in(This.image);
+        typename ImageCoordValuesFromPositionsT::raImage in(This.image);
         if(in->isEmpty()) return;
         const cimg_library::CImg<T>& img = in->getCImg(This.time);
 
-        typename ImageCoordValuesFromPositions::waValues val(This.values);
+        typename ImageCoordValuesFromPositionsT::waValues val(This.values);
         Coord outval (This.outValue.getValue(),This.outValue.getValue(),This.outValue.getValue());
         val.resize(pos.size());
 
@@ -145,8 +144,7 @@ struct ImageCoordValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE
 template <class _ImageTypes>
 class ImageCoordValuesFromPositions : public core::DataEngine
 {
-    friend struct ImageCoordValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct ImageCoordValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct ImageCoordValuesFromPositionsSpecialization<_ImageTypes>;
 
 public:
     typedef core::DataEngine Inherited;
@@ -217,7 +215,7 @@ protected:
 
     virtual void update()
     {
-        ImageCoordValuesFromPositionsSpecialization<ImageTypes::label>::update( *this );
+        ImageCoordValuesFromPositionsSpecialization<ImageTypes>::update( *this );
         cleanDirty();
     }
 

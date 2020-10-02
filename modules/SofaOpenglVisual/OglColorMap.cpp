@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -245,25 +242,21 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
 
     glDisable(GL_TEXTURE_1D);
 
+    // Restore model view matrix
+    glPopMatrix(); // GL_MODELVIEW
+
     // Restore projection matrix
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 
-    // Restore model view matrix
     glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-
-    // Maximum & minimum
-    std::ostringstream smin, smax;
-    smin << d_min.getValue() * d_legendRangeScale.getValue();
-    smax << d_max.getValue() * d_legendRangeScale.getValue();
 
     // Adjust the text color according to the background luminance
     GLfloat bgcol[4];
     glGetFloatv(GL_COLOR_CLEAR_VALUE,bgcol);
 
     Color textcolor(1.0f, 1.0f, 1.0f, 1.0f);
-    sofa::defaulttype::Vec3f luminanceMatrix(0.212f, 0.715f, 0.072f);
+    static const sofa::defaulttype::Vec3f luminanceMatrix(0.212f, 0.715f, 0.072f);
     float backgroundLuminance = sofa::defaulttype::Vec3f(bgcol[0], bgcol[1], bgcol[2]) * luminanceMatrix;
     if(backgroundLuminance > 0.5f)
         textcolor = Color(0.0f, 0.0f, 0.0f, 1.0f);
@@ -276,6 +269,13 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
                                               textcolor,
                                               legendTitle.c_str());
     }
+
+
+
+    // Maximum & minimum
+    std::ostringstream smin, smax;
+    smin << d_min.getValue() * d_legendRangeScale.getValue();
+    smax << d_max.getValue() * d_legendRangeScale.getValue();
 
 
 

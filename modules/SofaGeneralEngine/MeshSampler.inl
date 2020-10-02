@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -46,7 +43,8 @@ using namespace core::objectmodel;
 
 template <class DataTypes>
 MeshSampler<DataTypes>::MeshSampler()
-    : number(initData(&number, (unsigned int)1, "number", "Sample number"))
+    : DataEngine()
+    , number(initData(&number, (unsigned int)1, "number", "Sample number"))
     , position(initData(&position,"position","Input positions."))
     , f_edges(initData(&f_edges,"edges","Input edges for geodesic sampling (Euclidean distances are used if not specified)."))
     , maxIter(initData(&maxIter, (unsigned int)100, "maxIter", "Max number of Lloyd iterations."))
@@ -74,6 +72,12 @@ void MeshSampler<DataTypes>::update()
 {
     sofa::helper::ReadAccessor< Data< VecCoord > > pos = this->position;
 
+    number.updateIfDirty();
+    f_edges.updateIfDirty();
+    maxIter.updateIfDirty();
+
+    cleanDirty();
+
     VVI ngb;    if(this->f_edges.getValue().size()!=0) computeNeighbors(ngb); // one ring neighbors from edges
     VI voronoi;
     VD distances;
@@ -88,14 +92,13 @@ void MeshSampler<DataTypes>::update()
         if(!LLoyd(distances,voronoi,ngb)) break;
         count++;
     }
-    if (this->f_printLog.getValue()) std::cout<<this->getName()<<": Lloyd relaxation done in "<<count<<" iterations\n";
+    if (this->f_printLog.getValue()) sout<<this->getPathName()<<": Lloyd relaxation done in "<<count<<" iterations"<<sendl;
 
     // get export position from indices
     sofa::helper::WriteOnlyAccessor< Data< VI > > ind = this->outputIndices;
     sofa::helper::WriteOnlyAccessor< Data< VecCoord > > outPos = this->outputPosition;
     outPos.resize(ind.size());		for (unsigned int i=0; i<ind.size(); ++i)  outPos[i]=pos[ind[i]];
 
-    cleanDirty();
 }
 
 template <class DataTypes>
@@ -134,7 +137,7 @@ void MeshSampler<DataTypes>::farthestPointSampling(VD& distances,VI& voronoi,con
         computeDistances( distances, voronoi, ngb);
     }
 
-    if (this->f_printLog.getValue()) std::cout<<this->getName()<<": farthestPointSampling done\n";
+    if (this->f_printLog.getValue()) sout<<this->getPathName()<<": farthestPointSampling done"<<sendl;
 }
 
 template <class DataTypes>

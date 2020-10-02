@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -299,7 +296,7 @@ public:
             return true;
         else
         {
-            helper::set<int>::const_iterator it = group.getValue().begin(), itend = group.getValue().end();
+            std::set<int>::const_iterator it = group.getValue().begin(), itend = group.getValue().end();
             for( ; it != itend ; ++it )
                 if( model->group.getValue().count(*it)>0 ) // both models are included in the same group -> do not collide
                     return false;
@@ -407,13 +404,13 @@ public:
 
 
     /// Return the group IDs containing this model.
-    const helper::set<int>& getGroups() const { return group.getValue(); }
+    const std::set<int>& getGroups() const { return group.getValue(); }
 
     /// add the group ID to this model.
     void addGroup(const int groupId) { group.beginEdit()->insert(groupId); group.endEdit(); }
 
 	/// Set the group IDs to this model
-	void setGroups(const helper::set<int>& ids) { group.setValue(ids); }
+    void setGroups(const std::set<int>& ids) { group.setValue(ids); }
 
     /// @}
 
@@ -474,7 +471,7 @@ protected:
 
     /// No collision can occur between collision
     /// models included in a common group (i.e. sharing a common id)
-    Data< helper::set<int> > group;
+    Data< std::set<int> > group;
 
     /// Number of collision elements
     int size;

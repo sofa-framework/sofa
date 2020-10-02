@@ -6,11 +6,14 @@
 
 
 #include <SofaPython/PythonMacros.h>
+#include <SofaPython/PythonFactory.h>
+#include <SofaPython/Binding_Data.h>
 #include "Binding_AssembledSystem.h"
 
 #include <sofa/helper/cast.h>
 #include <sofa/simulation/Simulation.h>
 #include "../assembly/AssemblyVisitor.h"
+#include "../odesolver/CompliantImplicitSolver.h"
 
 
 
@@ -18,6 +21,8 @@ using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 using namespace sofa::component::linearsolver;
+using namespace sofa::component::odesolver;
+using namespace sofa::core::behavior;
 
 
 
@@ -116,9 +121,95 @@ extern "C" PyObject * _Compliant_getImplicitAssembledSystem(PyObject * /*self*/,
 }
 
 
+// takes a CompliantImplicitSolver and a BaseMechanicalState
+// returns the lambdas contained in the BaseMechanicalState
+// (the corresponding multivecid is in the CompliantImplicitSolver)
+// @warning you have to look at the CompliantImplicitSolver's formulation (vel,dv,acc) to deduce constraint forces from lambdas
+extern "C" PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
+{
+    PyObject* pySolver, *pyState;
+    if (!PyArg_ParseTuple(args, "OO", &pySolver, &pyState))
+    {
+        SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    CompliantImplicitSolver* solver = static_cast<CompliantImplicitSolver*>(((PySPtr<Base>*)pySolver)->object->toOdeSolver());
+    if (!solver)
+    {
+        SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a CompliantImplicitSolver" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    BaseMechanicalState* mstate = ((PySPtr<Base>*)pyState)->object->toBaseMechanicalState();
+    if (!mstate)
+    {
+        SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a BaseMechanicalState" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    objectmodel::BaseData* data;
+
+    const VecId& vecid = solver->lagrange.id().getId(mstate);
+    if( vecid.isNull() )
+    {
+        SP_MESSAGE_WARNING( "_Compliant_getConstraintForce: allocating lambda vector for mstate "<<mstate->getPathName() )
+
+        VecDerivId id(VecDerivId::V_FIRST_DYNAMIC_INDEX);
+        mstate->vAvail( ExecParams::defaultInstance(), id );
+        solver->lagrange.id().setId(mstate, id);
+
+        mstate->vAlloc(ExecParams::defaultInstance(),id);
+
+        data = mstate->baseWrite(id);
+    }
+    else
+        data = mstate->baseWrite(vecid);
+
+    return SP_BUILD_PYPTR(Data,BaseData,data,false);
+}
+
+/// takes a Context and a CompliantImplicitSolver
+extern "C" PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject * args)
+{
+    PyObject* pyNode, *pySolver;
+    if (!PyArg_ParseTuple(args, "OO", &pyNode, &pySolver))
+    {
+        SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    BaseContext* context = ((PySPtr<Base>*)pyNode)->object->toBaseContext();
+    if (!context)
+    {
+        SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a BaseContext" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    CompliantImplicitSolver* solver = static_cast<CompliantImplicitSolver*>(((PySPtr<Base>*)pySolver)->object->toOdeSolver());
+    if (!solver)
+    {
+        SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a CompliantImplicitSolver" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    propagate_lambdas_visitor vis( MechanicalParams::defaultInstance(), solver->lagrange );
+    context->executeVisitor( &vis );
+
+    Py_RETURN_NONE;
+}
+
 // Methods of the module
 SP_MODULE_METHODS_BEGIN(_Compliant)
 SP_MODULE_METHOD(_Compliant,getAssembledImplicitMatrix)
 SP_MODULE_METHOD(_Compliant,getImplicitAssembledSystem)
+SP_MODULE_METHOD(_Compliant,getLambda)
+SP_MODULE_METHOD(_Compliant,propagateLambdas)
 SP_MODULE_METHODS_END
 

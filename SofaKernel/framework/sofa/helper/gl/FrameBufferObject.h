@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -76,14 +73,15 @@ private:
     bool depthTexture;
     bool enableDepth;
     bool enableColor;
+    bool enableMipMap;
 
     static GLint getCurrentFramebufferID();
 
 public:
-    FrameBufferObject(bool depthTexture = false, bool enableDepth = true, bool enableColor = true, GLint defaultWindowFramebuffer = getCurrentFramebufferID());
+    FrameBufferObject(bool depthTexture = false, bool enableDepth = true, bool enableColor = true, bool enableMipMap = false, GLint defaultWindowFramebuffer = getCurrentFramebufferID());
     virtual ~FrameBufferObject();
 
-    FrameBufferObject(const fboParameters& FboFormat, bool depthTexture = false, bool enableDepth = true, bool enableColor = true, GLint defaultWindowFramebuffer = getCurrentFramebufferID() );
+    FrameBufferObject(const fboParameters& FboFormat, bool depthTexture = false, bool enableDepth = true, bool enableColor = true, bool enableMipMap = false, GLint defaultWindowFramebuffer = getCurrentFramebufferID() );
     void setFormat(const fboParameters& fboParams) { _fboParams = fboParams; }
 
     void init(unsigned int width, unsigned height);

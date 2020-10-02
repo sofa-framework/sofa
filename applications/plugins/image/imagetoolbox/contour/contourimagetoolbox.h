@@ -1,6 +1,8 @@
 #ifndef CONTOURIMAGETOOLBOX_H
 #define CONTOURIMAGETOOLBOX_H
 
+#include <image/image_gui/config.h>
+
 #include "contourimagetoolboxaction.h"
 
 #include <sofa/core/DataEngine.h>
@@ -9,8 +11,6 @@
 #include <image/ImageTypes.h>
 
 #include "../labelimagetoolbox.h"
-
-#include <image/image_gui/config.h>
 
 namespace sofa
 {

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -29,7 +26,6 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
-#include "ScriptEnvironment.h"
 using namespace sofa::simulation;
 #include <sofa/core/ExecParams.h>
 using namespace sofa::core;
@@ -214,7 +210,6 @@ extern "C" PyObject * Node_createChild(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&nodeName))
         Py_RETURN_NONE;
     Node* child = obj->createChild(nodeName).get();
-    ScriptEnvironment::nodeCreatedByScript(child);
     return sofa::PythonFactory::toPython(child);
 }
 
@@ -255,11 +250,6 @@ extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObj
 
     if (warning && node->isInitialized())
         SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is already initialized ("<<object->getName()<<")" )
-//    if (!ScriptEnvironment::isNodeCreatedByScript(node))
-//        SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is not created by the script" )
-
-    //object->init();
-    // plus besoin !! node->init(sofa::core::ExecParams::defaultInstance());
 
     Py_RETURN_NONE;
 }

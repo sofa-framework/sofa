@@ -1,102 +1,63 @@
-# CONTRIBUTING GUIDELINES
+# Getting started
+
+Please **read carefully** [the GitHub guide on Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/). We also recommend you to check this [more detailed documentation on issues and pull requests](https://help.github.com/categories/collaborating-with-issues-and-pull-requests/).
 
 
-## Pull-requests
+# Forum
 
-- Pull-request must be properly submitted
-    - Intelligible description of the PR: description of the **issue solved**, or the **feature added**
-	- one PR = one logical modification (one fix or one new feature)
-- Commit must build **successfully** on Jenkins for all platforms (compilation + tests + examples)
-- **Examples** (at least one) must be provided showing the new feature
-	- examples/Components
-- **Test** required for each new component or if an issue is fixed
-    - SofaTest
-    - in myplugin/myplugin_test
-    - possibly for each template e.g. Vec3d, Rigid3d ?
-- Code must be **documented** in a Doxygen compliant way and in english
-    - global presentation in header
-    - description of each function and parameter/Data
+For any **question** (help needed, problem of understanding SOFA, announcements), create a topic on [the SOFA forum](https://www.sofa-framework.org/community/forum/) and benefit from the feedback of the community.
+
+When creating a new topic, pay attention to some tips:
+
+- **Check existing topics** using the Search bar. Your question may have been answered already.
+- **Be clear** about what your problem is: what was the expected outcome, what happened instead? Detail how someone else can recreate the problem.
+- **Additional infos**: link to demos, screenshots or code showing the problem.
 
 
-## General rules
+# Issues
 
-### Base rules
-The base rules are Google C++ Style Guide: https://google.github.io/styleguide/cppguide.html   
-All rules below **replace** the corresponding base rules.  
-For any subject not mentionned below, please refer to the base.
+For **bug tracking**, **feature proposals** and **task management**, create a [SOFA issue](https://github.com/sofa-framework/sofa/issues)! There is nothing to it and whatever issue you are having, you are likely not the only one, so others will find your issue helpful, too. Issues labeled "discussion" are also used for larger topics: architecture, future of SOFA, long term dev, etc.
 
-### Naming
-Identifiers must respect the following conventions
+Please **DO NOT create an issue for questions or support**. Use [the SOFA forum](https://www.sofa-framework.org/community/forum/) instead.
 
-- Class names are in UpperCamelCase
-- Function names are in lowerCamelCase()
-- Namespaces names are in lowercase
-- Variables names are in lowerCamelCase and must express their use more than their type.  
-Exceptions:  mathematical objects like `Matrix M`, local iterators variables like `i`, `j`, `k`  and usual symbols like `x` for positions or `v` for velocities.
-- Data member variables names must begin with `d_`
-- Link member variables names (e.g. SingleLink) must begin with `l_`
-- Other member variables names must begin with `m_ `(exception: this is not mandatory for PODs as well as public attributes)
-- Names for booleans variables must answer a question: `m_isRed`, `m_hasName`
-- C++ files must must have the extension .h, .cpp, or .inl
-- Files that define a class should have the same name as the class and should contain only one class.
-- Each library name should be prefixed with `Sofa`.
+When creating an issue, pay attention to the following tips:
 
-### Formatting
-- Special characters like TAB and page break must be avoided.
-- Indentation must use **4 spaces** everywhere (C++ and Python), but there must be no indentation for namespaces
-- Braces use the **Allman style**: the opening brace associated with a control statement is on the next line, indented to the same level as the control statement, and statements within the braces are indented to the next level.
+- **Check existing issues**. What you are running into may have been addressed already.
+- **Set the right label** to your issue among our label list or propose them in the description.
+- **Be clear** about what your problem is: what was the expected outcome, what happened instead? Detail how someone else can recreate the problem.
 
-    ```cpp
-    while (x == y)
-    {
-        something();
-        somethingElse();
-    }
-    finalThing();
-    ```
-- A space character should be used in the following situations:
-    - After C++ reserved words: `if (true)`
-    - Around binary operators: `a + b`
-    - After commas: `doSomething(a, b, c)`
-    - After semicolons in for statements: `for (unsigned int i = 0; i < container.size(); i++)`
-    ```cpp
-    for (unsigned int i = 0; i < container.size(); ++i )
-    {
-        if ((a + b) > c)
-        {
-            doSomething(a, b, c);
-        }
-    }
-    ```
-
-- Template declarations are split on two lines
-    ```cpp
-    template<class T>
-    static void dynamicCast(T*& ptr, Base* b);
-    ```
-
-### Coding
-- You should try to use as few `#include` directive as possible.
-- You should limit as much as possible the amount of code in included files (*.h, *.inl).
-- All definitions should reside in source files. The header files should declare an interface only.
-- Variables should be initialized when they are declared.
-- You should use `const` profusely.
-- You should use `assert` profusely.
-- You must avoid the `using` directive in header files (.h and .inl): ~~`using namespace foo;`~~
-- You should declare automatic variables only when you need them (not before).
-- You must always initialize pointers, either to the address of something, or to `NULL`
+For more information on issues, check out [this GitHub guide](https://guides.github.com/features/issues/).  
 
 
-## SOFA specific rules
-- Tricky code should not be commented but rewritten! In general, the use of comments should be minimized by making the code self-documenting by appropriate name choices and an explicit logical structure.
-- All the code under development must be tagged `SOFA_DEV`
-- The use of magic numbers in the code should be avoided. Numbers other than 0 and 1 should be declared as named constants instead.
-- All internal data, needed by your component, and that can’t be recomputed must be put inside a `Data` or a `DataPtr`. This way, your component can be saved. Also, this `Data` will be automatically displayed inside the GUI.
-- Use `sout`, `serr`, `sendl` instead of `cout`, `cerr`, `endl` in SOFA Components.
-- `serr` will automatically display inside the console a message with a warning, the name of the component, and its class.  
-If you modify the component in the graph, you will see a tabulation named `Warnings` with the log of all the `serr` done by the component.
-- `sout` will display inside the console a message ONLY if the Data f_printLog is set to true.  
-If you modify the component in the graph, you will see a tabulation named `Outputs` with the log of all the `sout` done by the component
-- Use `sofa::helper::vector` and `sofa::helper::set` instead of `std::vector` and `std::set`
-- Only use `sofa::simulation::tree::GNode` when you need to directly use access to the children or the parent of the node. If not, use the more generic `sofa::simulation::Node`
+# Pull-requests
 
+If you are able to patch the bug or add the feature yourself – fantastic, make a pull request with the code! Be sure you have read any documents on contributing and you understand [the SOFA license](https://github.com/sofa-framework/sofa/blob/master/LICENCE.txt). Once you have submitted a pull request the maintainer(s) can compare your branch to the existing one and decide whether or not to incorporate (pull in) your changes.
+
+### Reminder - How to pull request (from GitHub documentation)
+
+- **[Fork](http://guides.github.com/activities/forking/)** the repository and clone it locally.
+- [Connect your clone](https://help.github.com/articles/configuring-a-remote-for-a-fork/) to [the original **upstream** repository](https://github.com/sofa-framework/sofa/) by adding it as a remote.
+- **Create a branch** for your changes.
+- Make your changes.
+- Pull in changes from upstream often to [**sync your fork**](https://help.github.com/articles/syncing-a-fork/) so that merge conflicts will be less likely in your pull request.
+- [**Create a pull-request**](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) when you are ready to propose your changes into the main project.
+
+### Rules for SOFA pull requests
+
+- Description must explain the **issue solved** or the **feature added**, and this must be reported in the **[CHANGELOG.md](https://github.com/sofa-framework/sofa/blob/master/CHANGELOG.md)** file.
+- Code must follow **[our guidelines](https://github.com/sofa-framework/sofa/blob/master/GUIDELINES.md)**.
+- Commit must build **successfully** on Jenkins for all steps (compilation + tests + examples).
+- **Unit Tests** are required for each new component or if an issue is fixed.
+- **Examples** (at least one) must be provided showing the new feature.
+
+### Reviewing (for the reviewers team)
+
+- Make sure the pull request is **labelized** and well assigned.
+- Control that it follows **our rules** (defined above).
+- You can **add commits** in a pull request: see [GitHub documentation](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/).
+- If the pull request contains out of scope commits (from a previous merge with master), **consider rebasing it**.
+- **Control the builds**: Dashboard > Details in the pull request checks.
+- Merge method: **prefer "rebase"** or "squash" over "merge" to keep linear history.
+
+
+For more information on forks and pull request, check out [this GitHub guide](https://guides.github.com/activities/forking/).

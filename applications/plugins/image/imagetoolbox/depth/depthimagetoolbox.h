@@ -1,6 +1,8 @@
 #ifndef DEPTHIMAGETOOLBOX_H
 #define DEPTHIMAGETOOLBOX_H
 
+#include <image/image_gui/config.h>
+
 #include <QTextStream>
 #include <QFile>
 
@@ -18,8 +20,6 @@
 #include "../depth/depthimagetoolbox.h"
 #include <image/ImageTypes.h>
 #include "meshData.h"
-
-#include <image/image_gui/config.h>
 
 
 

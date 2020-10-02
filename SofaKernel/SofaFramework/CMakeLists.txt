@@ -49,7 +49,21 @@ elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
     set(SOFA_FLOAT 1)           # Used in sofa/config.h.in
 endif()
 
-
+# If you really don't understand the negated logics of SOFA_DOUBLE and
+# SOFA_FLOAT please consider using SOFA_WITH_FLOAT and SOFA_WITH_DOUBLE.
+# Eg: SOFA_WITH_FLOAT indicate that you need to generate the
+# float code and SOFA_WITH_DOUBLE indicates that you
+# nedd to generate the double related code.
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
+    set(SOFA_WITH_FLOAT 1)
+endif()
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
+    set(SOFA_WITH_DOUBLE 1)
+endif()
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL both)
+    set(SOFA_WITH_FLOAT 1)
+    set(SOFA_WITH_DOUBLE 1)
+endif()
 
 ### Dependencies
 
@@ -124,7 +138,7 @@ set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 find_package(PNG)
 if(PNG_FOUND)
     sofa_create_target(PNG SofaFramework "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}")
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
+        list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
 
 
     sofa_install_get_libraries("${PNG_LIBRARY}/libpng")
@@ -132,9 +146,9 @@ endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
 
 ## Boost
-find_package(Boost COMPONENTS thread system date_time QUIET)
-
-set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
+# optional boost libraries
+find_package(Boost REQUIRED system filesystem locale
+                   OPTIONAL_COMPONENTS thread date_time)
 set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
 
@@ -175,7 +189,7 @@ list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
 ## Version
-set(SOFAFRAMEWORK_VERSION "16.dev.0")
+set(SOFAFRAMEWORK_VERSION "17.dev.0")
 
 ## sofa/version.h
 set(SOFA_VERSION "999999")
@@ -216,11 +230,6 @@ if(MSVC)
     if(SOFA_VECTORIZE)
         target_compile_options(SofaHelper PUBLIC "/arch:SSE2 /fp:fast")
     endif()
-endif()
-
-# Eigen
-if(MSVC)
-    target_compile_definitions(SofaHelper PUBLIC "-DEIGEN_DONT_ALIGN")
 endif()
 
 set(SOFAFRAMEWORK_TARGETS SofaCore SofaDefaultType SofaHelper)

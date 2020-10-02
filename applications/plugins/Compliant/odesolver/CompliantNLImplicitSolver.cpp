@@ -706,9 +706,10 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
 
 
     // propagate lambdas if asked to
-    if( propagate_lambdas.getValue() ) {
-        scoped::timer step("lambda propagation");
-        simulation::propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), sys.dt );
+    unsigned constraint_f = this->constraint_forces.getValue().getSelectedId();
+    if( constraint_f && sys.n ) {
+        scoped::timer step("constraint_forces");
+        simulation::propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), formulation.getValue().getSelectedId()==FORMULATION_VEL ? 1.0/sys.dt : 1.0, constraint_f>1, constraint_f==3 );
         send( prop );
     }
 
