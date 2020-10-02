@@ -80,7 +80,7 @@ int MessageDispatcher::addHandler(MessageHandler* o){
     std::vector<MessageHandler*>& handlers = getHandlers();
     if( std::find(handlers.begin(), handlers.end(), o) == handlers.end()){
         handlers.push_back(o) ;
-        return handlers.size()-1 ;
+        return (int)(handlers.size()-1);
     }
     return -1;
 }
@@ -88,7 +88,7 @@ int MessageDispatcher::addHandler(MessageHandler* o){
 int MessageDispatcher::rmHandler(MessageHandler* o){
     std::vector<MessageHandler*>& handlers = getHandlers();
     handlers.erase(remove(handlers.begin(), handlers.end(), o), handlers.end());
-    return handlers.size()-1 ;
+    return (int)(handlers.size()-1);
 }
 
 void MessageDispatcher::clearHandlers(){

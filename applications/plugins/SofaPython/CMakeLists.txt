@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaPython)
 
 set(SOFAPYTHON_MAJOR_VERSION 0)
@@ -20,6 +20,7 @@ set(HEADER_FILES
     Binding_Context.h
     Binding_Data.h
     Binding_DataEngine.h
+    Binding_DataFileNameVector.h
     Binding_DisplayFlagsData.h
     Binding_OptionsGroupData.h
     Binding_GridTopology.h
@@ -70,6 +71,7 @@ set(SOURCE_FILES
     Binding_Context.cpp
     Binding_Data.cpp
     Binding_DataEngine.cpp
+    Binding_DataFileNameVector.cpp
     Binding_DisplayFlagsData.cpp
     Binding_OptionsGroupData.cpp
     Binding_GridTopology.cpp

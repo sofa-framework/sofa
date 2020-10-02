@@ -261,8 +261,8 @@ bool BaseViewer::load()
             currentCamera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
             currentCamera->setName(core::objectmodel::Base::shortName(currentCamera.get()));
             groot->addObject(currentCamera);
-            currentCamera->p_position.forceSet();
-            currentCamera->p_orientation.forceSet();
+            //currentCamera->p_position.forceSet();
+            //currentCamera->p_orientation.forceSet();
             currentCamera->bwdInit();
         }
         component::visualmodel::VisualStyle::SPtr visualStyle = NULL;

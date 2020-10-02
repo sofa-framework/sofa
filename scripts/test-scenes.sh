@@ -67,7 +67,6 @@ do
             elif [[ -z ${SCENES+x} ]]; then
                 SCENES="$arg"
             else
-		echo $arg
                 echo "Superfluous argument: $arg"
                 usage; exit 1
             fi;;
@@ -78,7 +77,7 @@ if [[ -z ${BUILD_DIR+x} || -z ${SCENES+x} ]]; then
     usage; exit 1
 elif [[ ! -d "$BUILD_DIR" ]]; then
     echo "$BUILD_DIR: no such directory"; exit 1;
-elif [[ ! -f "$SCENES" && ! -d "$BUILD_DIR/$SCENES" ]]; then
+elif [[ ! -f "$SCENES" && ! -d "$SCENES" ]]; then
     echo "$SCENES: no such file or directory"; exit 1;
 fi
 
@@ -126,7 +125,7 @@ list_scenes() {
     if [[ -f "$SCENES" ]]; then
         cat "$SCENES"
     else
-        find "$BUILD_DIR/$SCENES" -name '*.scn' | sed -e "s:$BUILD_DIR/::"
+        find "$SCENES" -name '*.scn'
     fi
 }
 
@@ -145,6 +144,8 @@ run_all_scenes() {
             run_single_scene "$scene"
         fi
     done
+    echo "Done."
+    echo "Output has been written to $BUILD_DIR/$OUTPUT_LOG_FILE"
 }
 
 run_all_scenes

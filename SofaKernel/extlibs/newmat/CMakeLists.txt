@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(newmat)
 
 set(HEADER_FILES
@@ -51,4 +51,4 @@ endif()
 
 
 include(../../SofaFramework/SofaMacros.cmake)
-sofa_create_package(Newmat 2.6.2 newmat newmat)
+sofa_create_package(Newmat 0 ${PROJECT_NAME} ${PROJECT_NAME})

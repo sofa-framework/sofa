@@ -27,7 +27,6 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/Vec.h>
-#include <boost/static_assert.hpp>
 #include <iostream>
 #include <sofa/helper/logging/Messaging.h>
 
@@ -71,7 +70,7 @@ public:
       /// Specific constructor with a single line.
       explicit Mat(Line r1)
       {
-        BOOST_STATIC_ASSERT(L == 1);
+        static_assert(L == 1, "");
         this->elems[0]=r1;
       }
     */
@@ -79,7 +78,7 @@ public:
     /// Specific constructor with 2 lines.
     Mat(Line r1, Line r2)
     {
-        BOOST_STATIC_ASSERT(L == 2);
+        static_assert(L == 2, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
     }
@@ -87,7 +86,7 @@ public:
     /// Specific constructor with 3 lines.
     Mat(Line r1, Line r2, Line r3)
     {
-        BOOST_STATIC_ASSERT(L == 3);
+        static_assert(L == 3, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -96,7 +95,7 @@ public:
     /// Specific constructor with 4 lines.
     Mat(Line r1, Line r2, Line r3, Line r4)
     {
-        BOOST_STATIC_ASSERT(L == 4);
+        static_assert(L == 4, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -289,27 +288,27 @@ public:
     }
 
     /// Special access to first line.
-    Line& x() { BOOST_STATIC_ASSERT(L >= 1); return this->elems[0]; }
+    Line& x() { static_assert(L >= 1, ""); return this->elems[0]; }
     /// Special access to second line.
-    Line& y() { BOOST_STATIC_ASSERT(L >= 2); return this->elems[1]; }
+    Line& y() { static_assert(L >= 2, ""); return this->elems[1]; }
     /// Special access to third line.
-    Line& z() { BOOST_STATIC_ASSERT(L >= 3); return this->elems[2]; }
+    Line& z() { static_assert(L >= 3, ""); return this->elems[2]; }
     /// Special access to fourth line.
-    Line& w() { BOOST_STATIC_ASSERT(L >= 4); return this->elems[3]; }
+    Line& w() { static_assert(L >= 4, ""); return this->elems[3]; }
 
     /// Special access to first line (read-only).
-    const Line& x() const { BOOST_STATIC_ASSERT(L >= 1); return this->elems[0]; }
+    const Line& x() const { static_assert(L >= 1, ""); return this->elems[0]; }
     /// Special access to second line (read-only).
-    const Line& y() const { BOOST_STATIC_ASSERT(L >= 2); return this->elems[1]; }
+    const Line& y() const { static_assert(L >= 2, ""); return this->elems[1]; }
     /// Special access to thrid line (read-only).
-    const Line& z() const { BOOST_STATIC_ASSERT(L >= 3); return this->elems[2]; }
+    const Line& z() const { static_assert(L >= 3, ""); return this->elems[2]; }
     /// Special access to fourth line (read-only).
-    const Line& w() const { BOOST_STATIC_ASSERT(L >= 4); return this->elems[3]; }
+    const Line& w() const { static_assert(L >= 4, ""); return this->elems[3]; }
 
     /// Set matrix to identity.
     void identity()
     {
-        BOOST_STATIC_ASSERT(L == C);
+        static_assert(L == C, "");
         clear();
         for (int i=0; i<L; i++)
             this->elems[i][i]=1;
@@ -321,7 +320,7 @@ public:
     /// Returns the identity matrix
     static Mat<L,L,real> Identity()
     {
-        BOOST_STATIC_ASSERT(L == C);
+        static_assert(L == C, "");
         Mat<L,L,real> id;
         for (int i=0; i<L; i++)
             id[i][i]=1;
@@ -349,7 +348,7 @@ public:
     /// Transpose current matrix.
     void transpose()
     {
-        BOOST_STATIC_ASSERT(L == C);
+        static_assert(L == C, "");
         for (int i=0; i<L; i++)
             for (int j=i+1; j<C; j++)
             {
@@ -681,7 +680,7 @@ public:
     /// this = ( this + this.transposed() ) / 2.0
     void symmetrize()
     {
-        BOOST_STATIC_ASSERT( C == L );
+        static_assert( C == L, "" );
         for(int l=0; l<L; l++)
             for(int c=l+1; c<C; c++)
                 this->elems[l][c] = this->elems[c][l] = ( this->elems[l][c] + this->elems[c][l] ) * 0.5f;

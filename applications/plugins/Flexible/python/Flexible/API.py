@@ -563,6 +563,7 @@ class Behavior:
             "ImageGaussPointSampler",
             template=shapeFunction.prefix+"ImageR,"+(self.labelImage.template() if not self.labelImage is None else "ImageUC"),
             name="sampler",
+            evaluateShapeFunction=False,
             indices=shapeFunctionPath+".indices", weights=shapeFunctionPath+".weights", transform=shapeFunctionPath+".transform",
             method="2", order=self.type[2:], targetNumber=nbPoints,
             **samplerArgs)

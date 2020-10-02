@@ -25,8 +25,6 @@
 #ifndef SOFA_HELPER_INDEX_TYPE_H
 #define SOFA_HELPER_INDEX_TYPE_H
 
-#include <boost/type_traits.hpp>
-
 namespace sofa
 {
 

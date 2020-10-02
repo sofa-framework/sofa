@@ -6,14 +6,7 @@
 
 #include <Eigen/Core>
 
-// Use Boost.Chrono as a header-only library, and avoid depending on
-// Boost.System.  Quote from the Boost.Chrono documentation:
-// "When BOOST_CHRONO_HEADER_ONLY is defined the lib is header-only. However, you
-// will either need to define BOOST_CHRONO_DONT_PROVIDE_HYBRID_ERROR_HANDLING or
-// link with Boost.System."
-#define BOOST_CHRONO_HEADER_ONLY
-#define BOOST_CHRONO_DONT_PROVIDE_HYBRID_ERROR_HANDLING
-#include <boost/chrono.hpp>
+#include <chrono>
 
 namespace sofa {
 namespace component {
@@ -92,7 +85,7 @@ class SOFA_Compliant_API Benchmark : public core::objectmodel::BaseObject {
 
   protected:
 	
-	typedef boost::chrono::high_resolution_clock clock_type;
+    typedef std::chrono::high_resolution_clock clock_type;
 	clock_type::time_point last;
 
 	void push(const vec& primal, const vec& dual);

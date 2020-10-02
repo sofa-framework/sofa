@@ -26,7 +26,7 @@
 #define SOFA_HELPER_SYSTEM_DYNAMICLIBRARY_H
 
 #include <sofa/helper/helper.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <iostream>
 
 
@@ -59,7 +59,7 @@ public:
         const std::string& filename() const;
     private:
         void * m_realHandle;
-        boost::shared_ptr<std::string> m_filename;
+        std::shared_ptr<std::string> m_filename;
         Handle(const std::string& filename, void *handle);
     };
 

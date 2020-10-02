@@ -646,7 +646,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
                 if(x.size() == 0)
                     x.resize(1);
 
-                if(currentToolIndex >= xfree.size() || currentToolIndex >= x.size())
+                if((size_t)currentToolIndex >= xfree.size() || (size_t)currentToolIndex >= x.size())
                     serr<<"currentToolIndex exceed the size of xfree/x vectors"<<std::endl;
                 else
                 {

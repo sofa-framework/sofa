@@ -935,7 +935,7 @@ void RealGUI::setTitle ( std::string windowTitle )
 
 void RealGUI::fileNew()
 {
-    std::string newScene("share/config/newScene.scn");
+    std::string newScene("config/newScene.scn");
     if (sofa::helper::system::DataRepository.findFile (newScene))
         fileOpen(sofa::helper::system::DataRepository.getFile ( newScene ).c_str());
 }

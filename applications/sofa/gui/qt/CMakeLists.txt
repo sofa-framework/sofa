@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaGuiQt)
 
 set(MOC_HEADER_FILES
@@ -111,7 +111,7 @@ if(SOFA_DUMP_VISITOR_INFO)
 endif()
 
 
-if(SOFA_ENABLE_QWT)
+if(SOFAGUI_ENABLE_QWT)
 
     list(APPEND MOC_HEADER_FILES
          GraphDataWidget.h
@@ -186,7 +186,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${EXT_QT_LIBRARIES})
-if(SOFA_ENABLE_QWT)
+if(SOFAGUI_ENABLE_QWT)
     target_link_libraries(${PROJECT_NAME} PUBLIC qwt)
 endif()
 if(SOFAGUI_QGLVIEWER)

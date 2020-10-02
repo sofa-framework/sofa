@@ -169,6 +169,8 @@ public:
     virtual void saveLastState();
     virtual void restoreLastState();
 
+    virtual void readPixels(int x, int y, int w, int h, float* rgb, float* z = NULL);
+
 protected:
 
     bool mLightEnabled;

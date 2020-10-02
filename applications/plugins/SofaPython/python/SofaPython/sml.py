@@ -143,6 +143,7 @@ class Model:
             self.com = None # x,y,z
             self.inertia = None # Ixx, Ixy, Ixz, Iyy, Iyz, Izz or Ixx, Iyy, Izz
             self.inertia_rotation = None # only useful for diagonal (3 values) inertia
+            self.massInfo = None # store the SofaPython.mass.RigidMassInfo() once computed
 
             self.skinnings=list()
             if not solidXml is None:
@@ -458,13 +459,13 @@ def setupUnits(myUnits):
     if printLog:
         Sofa.msg_info("SofaPython.sml",message)
 
-def getSolidRigidMassInfo(solid, density):
+def getSolidRigidMassInfo(solid, density, scale=1):
     massInfo = mass.RigidMassInfo()
     for mesh in solid.mesh:
         if solid.meshAttributes[mesh.id].simulation is True:
             # mesh mass info
             mmi = mass.RigidMassInfo()
-            mmi.setFromMesh(mesh.source, density=density)
+            mmi.setFromMesh(mesh.source, density=density, scale3d=[scale]*3)
             massInfo += mmi
     return massInfo
 

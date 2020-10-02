@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 project(SofaFramework_test)
 
@@ -12,6 +12,7 @@ set(SOURCE_FILES
     helper/KdTree_test.cpp
     helper/Utils_test.cpp
     helper/Quater_test.cpp
+    helper/system/FileRepository_test.cpp
     helper/system/FileSystem_test.cpp
     helper/system/atomic_test.cpp
     helper/logging/logging_test.cpp

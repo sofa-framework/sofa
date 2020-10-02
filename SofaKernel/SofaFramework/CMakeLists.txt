@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaFramework)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
@@ -132,38 +132,35 @@ endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
 
 ## Boost
-find_package(Boost COMPONENTS thread system date_time chrono QUIET)
+find_package(Boost COMPONENTS thread system date_time QUIET)
 
 set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
 set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
-set(SOFA_HAVE_BOOST_CHRONO ${Boost_CHRONO_FOUND})
 
 list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
 
-if(SOFA_HAVE_BOOST_SYSTEM
-   AND SOFA_HAVE_BOOST_THREAD
-   AND SOFA_HAVE_BOOST_DATE_TIME
-   AND SOFA_HAVE_BOOST_CHRONO)
-    set(SOFA_HAVE_BOOST 1)
+# if(SOFA_HAVE_BOOST_SYSTEM
+#    AND SOFA_HAVE_BOOST_THREAD
+#    AND SOFA_HAVE_BOOST_DATE_TIME)
+#     set(SOFA_HAVE_BOOST 1)
 
-    sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    sofa_create_target(BoostChrono SofaFramework "${Boost_CHRONO_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+#     sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+#     sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+#     sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
 
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostChrono_Target})
+# 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target})
+# 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target})
+#     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
 
-    sofa_install_get_libraries(${Boost_SYSTEM_LIBRARY})
-    sofa_install_get_libraries(${Boost_THREAD_LIBRARY})
-    sofa_install_get_libraries(${Boost_DATE_TIME_LIBRARY})
-    sofa_install_get_libraries(${Boost_CHRONO_LIBRARY})
-else()
-    list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
-endif()
+#     sofa_install_get_libraries(${Boost_SYSTEM_LIBRARY})
+#     sofa_install_get_libraries(${Boost_THREAD_LIBRARY})
+#     sofa_install_get_libraries(${Boost_DATE_TIME_LIBRARY})
+# else()
+#     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
+# endif()
+
+list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 
 ## Eigen
 find_package(Eigen3 REQUIRED)
@@ -178,10 +175,10 @@ list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
 ## Version
-set(SOFAFRAMEWORK_VERSION "15.12.0")
+set(SOFAFRAMEWORK_VERSION "16.dev.0")
 
 ## sofa/version.h
-set(SOFA_VERSION "151200")
+set(SOFA_VERSION "999999")
 set(SOFA_VERSION_STR "\"devel\"")
 configure_file(../framework/sofa/version.h.in "${CMAKE_BINARY_DIR}/include/sofa/version.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/sofa)
@@ -218,21 +215,6 @@ endif()
 if(MSVC)
     if(SOFA_VECTORIZE)
         target_compile_options(SofaHelper PUBLIC "/arch:SSE2 /fp:fast")
-    endif()
-endif()
-
-# C++11
-if(NOT WIN32)
-    if(SOFA_USE_C++11)
-
-        # If we compile in c++11, then everyone linking against us should, so we
-        # put -std=c++11 in the INTERFACE_COMPILE_OPTIONS of SofaHelper.
-        #
-        # Exceptionnally, you can prevent a target from being compiled with this
-        # option with the SOFA_NO_CXX11 property.  E.g.
-        #   set_target_properties(Foo PROPERTIES SOFA_NO_CXX11 1)
-
-        target_compile_options(SofaHelper PUBLIC "$<$<AND:$<NOT:$<BOOL:$<TARGET_PROPERTY:SOFA_NO_CXX11>>>,$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>>:${CXX11_FLAG}>")
     endif()
 endif()
 

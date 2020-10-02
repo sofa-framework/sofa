@@ -77,7 +77,7 @@ void Stabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabiliz
 
 
 
-void Stabilization::filterConstraints( helper::vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
+void Stabilization::filterConstraints( helper::vector<bool>*& activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
 {
     // All the constraints remain active
     // but non-violated constraint must not be stabilized
@@ -106,7 +106,6 @@ void Stabilization::filterConstraints( helper::vector<bool>* activateMask, const
     delete [] violation;
 
     activateMask = &mask;
-    (void) activateMask;
 }
 
 

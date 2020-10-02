@@ -89,7 +89,7 @@ protected:
 	std::vector<double> m_timeSinceWakeUp; // For each monitored node, the duration since it has awaken
 	std::vector<bool> m_initialState; // The initial state of each node we are monitoring (for reset)
 
-	typedef boost::shared_ptr<BaseStateTester> StateTesterPtr;
+	typedef std::shared_ptr<BaseStateTester> StateTesterPtr;
 	typedef std::vector<StateTesterPtr> StateTesters;
 	StateTesters m_stateTesters; // All supported templates
 	StateTesters m_correspondingTesters; // The correct template for each state of the list m_statesThanCanSleep

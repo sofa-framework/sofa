@@ -199,6 +199,9 @@ static void DrawFullScreenQuad()
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 }
 
 bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)

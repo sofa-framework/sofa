@@ -34,7 +34,7 @@
 
 #include <vector>
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 
 namespace sofa
@@ -82,7 +82,7 @@ protected:
     sofa::helper::vector<Coord> rotatedPoints0;
     sofa::helper::vector<Coord> rotatedPoints1;
 
-    boost::scoped_ptr<MatrixType> matrixJ;
+    std::unique_ptr<MatrixType> matrixJ;
     bool updateJ;
 
     BeamLinearMapping()

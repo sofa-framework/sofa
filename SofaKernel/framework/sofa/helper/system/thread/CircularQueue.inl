@@ -26,9 +26,7 @@
 #include <sofa/helper/helper.h>
 #include "CircularQueue.h"
 
-#ifdef SOFA_HAVE_BOOST
-#include <boost/thread/thread.hpp>
-#endif
+#include <thread>
 #include <iostream>
 
 namespace sofa
@@ -272,9 +270,7 @@ inline SOFA_HELPER_API bool ManyThreadsPerEnd::pop(AtomicInt array[], int maxSiz
 {
     if(isEmpty(maxSize))
     {
-#ifdef SOFA_HAVE_BOOST
-        boost::thread::yield();
-#endif
+        std::this_thread::yield();
         return false;
     }
     // atomically reserve the element to read
@@ -299,9 +295,7 @@ inline SOFA_HELPER_API bool ManyThreadsPerEnd::push(AtomicInt array[], int maxSi
 {
     if(isFull(maxSize))
     {
-#ifdef SOFA_HAVE_BOOST
-        boost::thread::yield();
-#endif
+		std::this_thread::yield();
         return false;
     }
 

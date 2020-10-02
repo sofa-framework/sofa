@@ -557,7 +557,7 @@ io::Image* Texture::getImage(void)
 Texture::~Texture(void)
 {
     if (id) glDeleteTextures(1, &id);
-    delete image;
+    delete image; image=0;
 }
 } // namespace gl
 } // namespace helper

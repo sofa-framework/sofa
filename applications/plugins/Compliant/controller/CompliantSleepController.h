@@ -50,7 +50,7 @@ protected:
 	template <class DataTypes> void addCompliance()
 		{ m_complianceTesters.push_back(ComplianceTesterPtr(new ComplianceTester<DataTypes>())); }
 
-	typedef boost::shared_ptr<BaseComplianceTester> ComplianceTesterPtr;
+	typedef std::shared_ptr<BaseComplianceTester> ComplianceTesterPtr;
 	typedef std::vector<ComplianceTesterPtr> ComplianceTesters;
 	ComplianceTesters m_complianceTesters; // All supported templates
 

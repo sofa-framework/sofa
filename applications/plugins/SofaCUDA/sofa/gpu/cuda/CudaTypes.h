@@ -394,7 +394,7 @@ public:
 
     Vec3r1 cross( const Vec3r1& b ) const
     {
-        BOOST_STATIC_ASSERT(N == 3);
+        static_assert(N == 3, "");
         return Vec3r1(
                 (*this)[1]*b[2] - (*this)[2]*b[1],
                 (*this)[2]*b[0] - (*this)[0]*b[2],

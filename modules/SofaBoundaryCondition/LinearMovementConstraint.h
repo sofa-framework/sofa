@@ -36,8 +36,7 @@
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/utility/enable_if.hpp>
+#include <type_traits>
 #include <set>
 
 namespace sofa
@@ -161,9 +160,9 @@ protected:
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
     template <class MyCoord>
-    void interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x);
+    void interpolatePosition(Real cT, typename std::enable_if<!std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);
     template <class MyCoord>
-    void interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x);
+    void interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;

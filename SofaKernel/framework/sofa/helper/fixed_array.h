@@ -55,7 +55,6 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/helper.h>
-#include <boost/static_assert.hpp>
 
 #include <cstddef>
 #include <stdexcept>
@@ -97,14 +96,14 @@ public:
     /// Specific constructor for 1-element vectors.
     explicit fixed_array(value_type r1)
     {
-        BOOST_STATIC_ASSERT(N==1);
+        static_assert(N==1, "");
         this->elems[0]=r1;
     }
 
     /// Specific constructor for 2-elements vectors.
     fixed_array(value_type r1, value_type r2)
     {
-        BOOST_STATIC_ASSERT(N == 2);
+        static_assert(N == 2, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
     }
@@ -112,7 +111,7 @@ public:
     /// Specific constructor for 3-elements vectors.
     fixed_array(value_type r1, value_type r2, value_type r3)
     {
-        BOOST_STATIC_ASSERT(N == 3);
+        static_assert(N == 3, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -121,7 +120,7 @@ public:
     /// Specific constructor for 4-elements vectors.
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4)
     {
-        BOOST_STATIC_ASSERT(N == 4);
+        static_assert(N == 4, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -131,7 +130,7 @@ public:
     /// Specific constructor for 5-elements vectors.
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5)
     {
-        BOOST_STATIC_ASSERT(N == 5);
+        static_assert(N == 5, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -142,7 +141,7 @@ public:
     /// Specific constructor for 6-elements vectors.
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6)
     {
-        BOOST_STATIC_ASSERT(N == 6);
+        static_assert(N == 6, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -154,7 +153,7 @@ public:
     /// Specific constructor for 7-elements vectors.
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7)
     {
-        BOOST_STATIC_ASSERT(N == 7);
+        static_assert(N == 7, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -167,7 +166,7 @@ public:
     /// Specific constructor for 8-elements vectors.
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8)
     {
-        BOOST_STATIC_ASSERT(N == 8);
+        static_assert(N == 8, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -181,7 +180,7 @@ public:
     /// Specific constructor for 9-elements vectors.
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9)
     {
-        BOOST_STATIC_ASSERT(N == 9);
+        static_assert(N == 9, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -196,7 +195,7 @@ public:
     /// Specific constructor for 10-elements vectors.
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9, value_type r10)
     {
-        BOOST_STATIC_ASSERT(N == 10);
+        static_assert(N == 10, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;

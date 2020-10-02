@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(LeapMotion)
 
 set(LEAPMOTION_MAJOR_VERSION 0)

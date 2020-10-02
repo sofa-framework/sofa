@@ -32,7 +32,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 
 #include <algorithm>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 
 namespace
 {
@@ -198,7 +198,7 @@ void LCPForceFeedback<DataTypes>::init()
     }
 }
 
-boost::mutex s_mtx;
+std::mutex s_mtx;
 
 template <class DataTypes>
 void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv& forces)

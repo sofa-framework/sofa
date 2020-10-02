@@ -31,9 +31,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <vector>
-
-#include <boost/scoped_ptr.hpp>
-
+#include <memory>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 

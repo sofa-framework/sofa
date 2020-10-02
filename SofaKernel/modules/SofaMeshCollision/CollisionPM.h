@@ -5,8 +5,9 @@
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
-#include <boost/unordered_map.hpp>
+#include <unordered_map>
 #include <sofa/core/collision/Intersection.h>
+#include <sofa/helper/hash.h>
 
 namespace sofa
 {
@@ -83,7 +84,8 @@ namespace collision
             }
         };
 
-        typedef boost::unordered_map<std::pair<int,int>,CollidingPair> umap_collision;
+
+        typedef std::unordered_map<std::pair<int,int>,CollidingPair> umap_collision;
 
 
         CollidingPM(){

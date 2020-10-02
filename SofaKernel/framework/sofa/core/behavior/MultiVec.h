@@ -76,7 +76,7 @@ public:
     /// Allocate a new temporary vector with the given type (sofa::core::V_COORD or sofa::core::V_DERIV).
     TMultiVec( BaseVectorOperations* vop, bool dynamic=true) : vop(vop), v(MyMultiVecId::null()), dynamic(dynamic)
     {
-        BOOST_STATIC_ASSERT(vtype == V_COORD || vtype == V_DERIV);
+        static_assert(vtype == V_COORD || vtype == V_DERIV, "");
         vop->v_alloc( v );
     }
 

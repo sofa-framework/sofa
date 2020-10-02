@@ -9,9 +9,9 @@
   <DefaultPipeline depth="6" />
   <BruteForceDetection />
   
-  <NewProximityIntersection alarmDistance=".1" contactDistance="0.1" />
+  <NewProximityIntersection alarmDistance=".2" contactDistance="0.1" />
 
-  <DefaultContactManager responseParams="restitution=0" response="FrictionCompliantContact" />
+  <DefaultContactManager responseParams="restitution=0" response="CompliantContact" />
 	
   <CompliantImplicitSolver stabilization="1" warm_start="1" />
 

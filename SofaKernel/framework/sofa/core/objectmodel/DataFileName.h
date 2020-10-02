@@ -178,6 +178,12 @@ public:
     }
     virtual void virtualEndEdit() { endEdit(); }
 
+    void addPath(const std::string& v)
+    {
+        sofa::helper::vector<std::string>& val = *beginEdit();
+        val.push_back(v);
+        endEdit();
+    }
     void setValueAsString(const std::string& v)
     {
         sofa::helper::vector<std::string>& val = *beginEdit();

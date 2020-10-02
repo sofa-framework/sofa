@@ -248,7 +248,7 @@ void LinearMovementConstraint<DataTypes>::projectPosition(const core::Mechanical
 
 template <class DataTypes>
 template <class MyCoord>
-void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x)
+void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename std::enable_if<!std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x)
 {
     const SetIndexArray & indices = m_indices.getValue();
 //                cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition,  current time cT = "<<cT<<endl;
@@ -273,7 +273,7 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
 
 template <class DataTypes>
 template <class MyCoord>
-void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x)
+void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x)
 {
     const SetIndexArray & indices = m_indices.getValue();
 

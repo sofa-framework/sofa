@@ -36,8 +36,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
 
-#include <boost/type_traits/is_same.hpp>
-#include <boost/utility/enable_if.hpp>
+#include <type_traits>
 #include <set>
 
 

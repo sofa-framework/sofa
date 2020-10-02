@@ -264,7 +264,7 @@ void PartialLinearMovementConstraint<DataTypes>::projectPosition(const core::Mec
 
 template <class DataTypes>
 template <class MyCoord>
-void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x)
+void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename std::enable_if<!std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x)
 {
     const SetIndexArray & indices = m_indices.getValue();
     //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition,  current time cT = "<<cT<<endl;
@@ -354,7 +354,7 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
 
 template <class DataTypes>
 template <class MyCoord>
-void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x)
+void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x)
 {
     const SetIndexArray & indices = m_indices.getValue();
 

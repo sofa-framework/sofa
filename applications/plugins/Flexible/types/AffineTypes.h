@@ -105,7 +105,7 @@ public:
         /// Write the OpenGL transformation matrix
         void writeOpenGlMatrix ( float m[16] ) const
         {
-            BOOST_STATIC_ASSERT(_spatial_dimensions == 3);
+            static_assert(_spatial_dimensions == 3, "");
             m[0] = (float)getAffine()(0,0);
             m[4] = (float)getAffine()(0,1);
             m[8] = (float)getAffine()(0,2);

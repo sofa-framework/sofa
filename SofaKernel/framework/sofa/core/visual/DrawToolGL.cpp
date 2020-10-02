@@ -1114,6 +1114,15 @@ void DrawToolGL::restoreLastState()
     glPopAttrib();
 }
 
+void DrawToolGL::readPixels(int x, int y, int w, int h, float* rgb, float* z)
+{
+    if(rgb != NULL && sizeof(*rgb) == 3 * sizeof(float) * w * h)
+        glReadPixels(x, y, w, h, GL_RGB, GL_FLOAT, rgb);
+
+    if(z != NULL && sizeof(*z) == sizeof(float) * w * h)
+        glReadPixels(x, y, w, h, GL_DEPTH_COMPONENT, GL_FLOAT, z);
+}
+
 } // namespace visual
 
 } // namespace core

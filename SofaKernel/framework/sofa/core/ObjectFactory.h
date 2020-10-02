@@ -35,8 +35,6 @@
 #include <iostream>
 #include <typeinfo>
 
-#include <boost/shared_ptr.hpp>
-
 namespace sofa
 {
 
@@ -63,7 +61,7 @@ public:
     class Creator
     {
     public:
-        typedef boost::shared_ptr<Creator> SPtr;
+        typedef std::shared_ptr<Creator> SPtr;
 
         virtual ~Creator() { }
         /// Pre-construction check.
@@ -95,7 +93,7 @@ public:
     class ClassEntry
     {
     public:
-        typedef boost::shared_ptr<ClassEntry> SPtr;
+        typedef std::shared_ptr<ClassEntry> SPtr;
 
         std::string className;
         std::set<std::string> aliases;

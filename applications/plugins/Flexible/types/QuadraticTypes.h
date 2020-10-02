@@ -143,7 +143,7 @@ public:
         /// Write the OpenGL transformation matrix
         void writeOpenGlMatrix ( float m[16] ) const
         {
-            BOOST_STATIC_ASSERT(spatial_dimensions == 3);
+            static_assert(spatial_dimensions == 3, "");
             m[0] = (float)getQuadratic()(0,0);
             m[4] = (float)getQuadratic()(0,1);
             m[8] = (float)getQuadratic()(0,2);
