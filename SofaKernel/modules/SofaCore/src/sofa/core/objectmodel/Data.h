@@ -42,20 +42,7 @@ class TData : public BaseData
 public:
     typedef T value_type;
 
-    /// @name Class reflection system
-    /// @{
-    typedef TClass<TData<T>,BaseData> MyClass;
-    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
-    const BaseClass* getClass() const { return GetClass(); }
-    static std::string templateName(const TData<T>* = nullptr)
-    {
-        T* ptr = nullptr;
-        return BaseData::typeName(ptr);
-    }
-    /// @}
-
-    explicit TData(const BaseInitData& init)
-        : BaseData(init), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
+    explicit TData(const BaseInitData& init) : BaseData(init)
     {
     }
 
@@ -65,7 +52,7 @@ public:
         TData( sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly) {}
 
     TData( const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
-        : BaseData(helpMsg, isDisplayed, isReadOnly), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
+        : BaseData(helpMsg, isDisplayed, isReadOnly)
     {
     }
 
@@ -124,11 +111,7 @@ protected:
 
     BaseLink::InitLink<TData<T> > initLink(const char* name, const char* help);
 
-    void doSetParent(BaseData* parent) override;
-
     bool updateFromParentValue(const BaseData* parent) override;
-
-    SingleLink<TData<T>,TData<T>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentData;
 };
 
 
@@ -295,19 +278,11 @@ public:
     using TData<T>::updateIfDirty;
     using TData<T>::notifyEndEdit;
 
-    /// @name Class reflection system
-    /// @{
-    typedef TClass<Data<T>, TData<T> > MyClass;
-    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
-    virtual const BaseClass* getClass() const
-    { return GetClass(); }
-
-    static std::string templateName(const Data<T>* = nullptr)
+    static std::string templateName(const TData<T>* = nullptr)
     {
         T* ptr = nullptr;
         return BaseData::typeName(ptr);
     }
-    /// @}
 
     /// @name Construction / destruction
     /// @{
@@ -591,18 +566,12 @@ BaseLink::InitLink<TData<T> > TData<T>::initLink(const char* name, const char* h
 }
 
 template <class T>
-void TData<T>::doSetParent(BaseData* parent)
-{
-    parentData.set(dynamic_cast<TData<T>*>(parent));
-    BaseData::doSetParent(parent);
-}
-
-template <class T>
 bool TData<T>::updateFromParentValue(const BaseData* parent)
 {
-    if (parent == parentData.get())
+    auto typedParent = dynamic_cast<const TData<T>*>(parent);
+    if (typedParent)
     {
-        virtualSetLink(*parentData.get());
+        virtualSetLink(*parent);
         return true;
     }
     else

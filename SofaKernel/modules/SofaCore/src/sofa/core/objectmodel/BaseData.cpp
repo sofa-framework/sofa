@@ -44,7 +44,7 @@ BaseData::BaseData(const std::string& h, DataFlags dataflags)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counter(), m_isSet(), m_dataFlags(dataflags)
     , m_owner(nullptr), m_name("")
-    , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
+    , parentData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     m_counter = 0;
     m_isSet = false;
@@ -59,7 +59,7 @@ BaseData::BaseData( const char* helpMsg, bool isDisplayed, bool isReadOnly) : Ba
 BaseData::BaseData( const std::string& h, bool isDisplayed, bool isReadOnly)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counter(), m_isSet(), m_dataFlags(FLAG_DEFAULT), m_owner(nullptr), m_name("")
-    , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
+    , parentData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     m_counter = 0;
     m_isSet = false;
@@ -72,7 +72,7 @@ BaseData::BaseData( const BaseInitData& init)
     : help(init.helpMsg), ownerClass(init.ownerClass), group(init.group), widget(init.widget)
     , m_counter(), m_isSet(), m_dataFlags(init.dataFlags)
     , m_owner(init.owner), m_name(init.name)
-    , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
+    , parentData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     m_counter = 0;
     m_isSet = false;
@@ -124,9 +124,12 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
         }
         return false;
     }
-    doSetParent(parent);
-    if (!path.empty())
-        parentBaseData.set(parent, path);
+
+    if (path.empty())
+        parentData.set(parent);
+    else
+        parentData.set(parent, path);
+
     if (parent)
     {
         addInput(parent);
@@ -143,26 +146,21 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
 bool BaseData::setParent(const std::string& path)
 {
     BaseData* parent = nullptr;
-    if (this->findDataLinkDest(parent, path, &parentBaseData))
+    if (this->findDataLinkDest(parent, path, &parentData))
         return setParent(parent, path);
     else // simply set the path
     {
-        if (parentBaseData.get())
-            this->delInput(parentBaseData.get());
-        parentBaseData.set(parent, path);
+        if (parentData.get())
+            this->delInput(parentData.get());
+        parentData.set(parent, path);
         return false;
     }
 }
 
-void BaseData::doSetParent(BaseData* parent)
-{
-    parentBaseData.set(parent);
-}
-
 void BaseData::doDelInput(DDGNode* n)
 {
-    if (parentBaseData == n)
-        doSetParent(nullptr);
+    if (parentData == n)
+        parentData.set(nullptr);
     DDGNode::doDelInput(n);
 }
 
@@ -176,13 +174,13 @@ void BaseData::update()
             (*it)->update();
         }
     }
-    if (parentBaseData)
+    if (parentData)
     {
 #ifdef SOFA_DDG_TRACE
         if (m_owner)
             m_owner->sout << "Data " << m_name << ": update from parent " << parentBaseData->m_name<< m_owner->sendl;
 #endif
-        updateFromParentValue(parentBaseData);
+        updateFromParentValue(parentData);
         // If the value is dirty clean it
         if(this->isDirty())
         {
