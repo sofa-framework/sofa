@@ -39,16 +39,16 @@ namespace sofa
 namespace defaulttype
 {
 
-template<std::size_t N, typename real>
+template<sofa::size_type N, typename real>
 class RigidDeriv;
 
-template<std::size_t N, typename real>
+template<sofa::size_type N, typename real>
 class RigidCoord;
 
-template<std::size_t N, typename real>
+template<sofa::size_type N, typename real>
 class RigidMass;
 
-template<std::size_t N, typename real>
+template<sofa::size_type N, typename real>
 class StdRigidTypes;
 
 //=============================================================================
@@ -62,7 +62,7 @@ class RigidDeriv<3, real>
 {
 public:
     typedef real value_type;
-    typedef std::size_t size_type;
+    typedef sofa::size_type size_type;
     typedef real Real;
     typedef Vec<3,Real> Pos;
     typedef Vec<3,Real> Rot;
@@ -284,49 +284,49 @@ inline RigidDeriv<3,real> operator/(RigidDeriv<3, real> r,real2 a)
     return r;
 }
 
-template<std::size_t N,typename T>
+template<sofa::size_type N,typename T>
 typename RigidDeriv<N,T>::Pos& getLinear(RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
-template<std::size_t N, typename T>
+template<sofa::size_type N, typename T>
 const typename RigidDeriv<N,T>::Pos& getLinear(const RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
-template<std::size_t N, typename T>
+template<sofa::size_type N, typename T>
 typename RigidDeriv<N,T>::Rot& getAngular(RigidDeriv<N,T>& v)
 {
     return v.getAngular();
 }
 
-template<std::size_t N, typename T>
+template<sofa::size_type N, typename T>
 const typename RigidDeriv<N,T>::Rot& getAngular(const RigidDeriv<N,T>& v)
 {
     return v.getAngular();
 }
 
-template<std::size_t N,typename T>
+template<sofa::size_type N,typename T>
 typename RigidDeriv<N,T>::Pos& getVCenter(RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
-template<std::size_t N, typename T>
+template<sofa::size_type N, typename T>
 const typename RigidDeriv<N,T>::Pos& getVCenter(const RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
-template<std::size_t N, typename T>
+template<sofa::size_type N, typename T>
 typename RigidDeriv<N,T>::Rot& getVOrientation(RigidDeriv<N,T>& v)
 {
     return v.getAngular();
 }
 
-template<std::size_t N, typename T>
+template<sofa::size_type N, typename T>
 const typename RigidDeriv<N,T>::Rot& getVOrientation(const RigidDeriv<N,T>& v)
 {
     return v.getAngular();
@@ -344,7 +344,7 @@ class RigidCoord<3,real>
 {
 public:
     typedef real value_type;
-    typedef std::size_t size_type;
+    typedef sofa::size_type size_type;
     typedef real Real;
     typedef Vec<3,Real> Pos;
     typedef helper::Quater<Real> Rot;
@@ -932,7 +932,7 @@ public:
 
         Coord c;
 
-        for (std::size_t i = 0; i < ancestors.size(); i++)
+        for (sofa::size_type i = 0; i < ancestors.size(); i++)
         {
             // Position interpolation.
             c.getCenter() += ancestors[i].getCenter() * coefs[i];
@@ -970,7 +970,7 @@ public:
 
         Deriv d;
 
-        for (std::size_t i = 0; i < ancestors.size(); i++)
+        for (sofa::size_type i = 0; i < ancestors.size(); i++)
         {
             d += ancestors[i] * coefs[i];
         }
@@ -1025,7 +1025,7 @@ class RigidDeriv<2,real>
 {
 public:
     typedef real value_type;
-    typedef std::size_t size_type;
+    typedef sofa::size_type size_type;
     typedef real Real;
     typedef Vec<2,Real> Pos;
     typedef Real Rot;
@@ -1249,7 +1249,7 @@ class RigidCoord<2,real>
 {
 public:
     typedef real value_type;
-    typedef std::size_t size_type;
+    typedef sofa::size_type size_type;
     typedef real Real;
     typedef Vec<2,Real> Pos;
     typedef Real Rot;
@@ -1786,7 +1786,7 @@ public:
 
         Coord c;
 
-        for (std::size_t i = 0; i < ancestors.size(); i++)
+        for (sofa::size_type i = 0; i < ancestors.size(); i++)
         {
             c += ancestors[i] * coefs[i];
         }
@@ -1800,7 +1800,7 @@ public:
 
         Deriv d;
 
-        for (std::size_t i = 0; i < ancestors.size(); i++)
+        for (sofa::size_type i = 0; i < ancestors.size(); i++)
         {
             d += ancestors[i] * coefs[i];
         }
@@ -1839,13 +1839,13 @@ template<> inline const char* Rigid2fTypes::Name() { return "Rigid2f"; }
 typedef StdRigidTypes<2,SReal> Rigid2Types;
 typedef RigidMass<2,SReal> Rigid2Mass;
 
-template<std::size_t N, typename real>
+template<sofa::size_type N, typename real>
 struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidDeriv<N,real>, sofa::defaulttype::RigidDeriv<N,real>::total_size >
 {
     static std::string name() { std::ostringstream o; o << "RigidDeriv<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
 };
 
-template<std::size_t N, typename real>
+template<sofa::size_type N, typename real>
 struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidCoord<N,real>, sofa::defaulttype::RigidCoord<N,real>::total_size >
 {
     static std::string name() { std::ostringstream o; o << "RigidCoord<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
@@ -1887,7 +1887,7 @@ static Vec3 rigidVelocity( const Vec3& omega, const Vec3& v, const Vec3& pv, con
 template<class V1, class Vec, class Rot>
 static void displace( V1& v, Vec translation, Rot rotation )
 {
-    for(std::size_t i=0; i<v.size(); i++)
+    for(sofa::size_type i=0; i<v.size(); i++)
         v[i] = translation + rotation.rotate(v[i]);
 }
 
@@ -1895,7 +1895,7 @@ static void displace( V1& v, Vec translation, Rot rotation )
 template<class V1, class Rot>
 static void rotate( V1& v, Rot rotation )
 {
-    for(std::size_t i=0; i<v.size(); i++)
+    for(sofa::size_type i=0; i<v.size(); i++)
         v[i] = rotation.rotate(v[i]);
 }
 

@@ -38,7 +38,7 @@ namespace defaulttype
 
 enum NoInit { NOINIT }; ///< use when calling Vec or Mat constructor to skip initialization of values to 0
 
-template < std::size_t N, typename real=float>
+template < sofa::size_type N, typename real=float>
 class Vec : public helper::fixed_array<real,N>
 {
 
@@ -765,7 +765,7 @@ public:
 
 
 /// Same as Vec except the values are not initialized by default
-template <std::size_t N, typename real=float>
+template <sofa::size_type N, typename real=float>
 class VecNoInit : public Vec<N,real>
 {
 public:
@@ -782,7 +782,7 @@ public:
     }
 
     /// Assignment from a vector with different dimensions.
-    template<std::size_t M, typename real2>
+    template<sofa::size_type M, typename real2>
     void operator=(const Vec<M,real2>& v)
     {
         this->Vec<N,real>::operator=(v);
@@ -796,19 +796,19 @@ public:
 };
 
 /// Read from an input stream
-template<std::size_t N,typename Real>
+template<sofa::size_type N,typename Real>
 std::istream& operator >> ( std::istream& in, Vec<N,Real>& v )
 {
-    for(std::size_t i=0; i<N; ++i )
+    for(size_type i=0; i<N; ++i )
         in>>v[i];
     return in;
 }
 
 /// Write to an output stream
-template<std::size_t N,typename Real>
+template<sofa::size_type N,typename Real>
 std::ostream& operator << ( std::ostream& out, const Vec<N,Real>& v )
 {
-    for(std::size_t i=0; i<N-1; ++i )
+    for(size_type i=0; i<N-1; ++i )
         out<<v[i]<<" ";
     out<<v[N-1];
     return out;
@@ -948,13 +948,13 @@ namespace std
 {
 
 // template <>
-template<std::size_t N, class T>
+template<sofa::size_type N, class T>
 struct less< sofa::defaulttype::Vec<N,T> >
 {
     bool operator()(const  sofa::defaulttype::Vec<N,T>& x, const  sofa::defaulttype::Vec<N,T>& y) const
     {
         //msg_info()<<"specialized std::less, x = "<<x<<", y = "<<y<<std::endl;
-        for(std::size_t i=0; i<N; ++i )
+        for(sofa::size_type i=0; i<N; ++i )
         {
             if( x[i]<y[i] )
                 return true;

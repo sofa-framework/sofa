@@ -69,6 +69,7 @@ public:
     typename MMapper::SPtr mapper;
 
     using index_type = sofa::defaulttype::index_type;
+    using size_type = sofa::defaulttype::index_type;
 
     BarycentricContactMapper()
         : model(nullptr), mapping(nullptr), mapper(nullptr)
@@ -84,7 +85,7 @@ public:
 
     MMechanicalState* createMapping(const char* name="contactPoints");
 
-    void resize(std::size_t size)
+    void resize(size_type size)
     {
         if (mapping != nullptr)
         {
@@ -155,13 +156,13 @@ public:
 
     index_type addPoint(const Coord& P, index_type index, Real&)
     {
-        std::size_t nbt = this->model->getCollisionTopology()->getNbTriangles();
+        auto nbt = this->model->getCollisionTopology()->getNbTriangles();
         if (index < nbt)
             return this->mapper->createPointInTriangle(P, index, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
         else
         {
             index_type qindex = (index - nbt)/2;
-            std::size_t nbq = this->model->getCollisionTopology()->getNbQuads();
+            auto nbq = this->model->getCollisionTopology()->getNbQuads();
             if (qindex < nbq)
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else
@@ -175,14 +176,14 @@ public:
     index_type addPointB(const Coord& P, index_type index, Real& /*r*/, const defaulttype::Vector3& baryP)
     {
 
-        std::size_t nbt = this->model->getCollisionTopology()->getNbTriangles();
+        auto nbt = this->model->getCollisionTopology()->getNbTriangles();
         if (index < nbt)
             return this->mapper->addPointInTriangle(index, baryP.ptr());
         else
         {
             // TODO: barycentric coordinates usage for quads
             index_type qindex = (index - nbt)/2;
-            std::size_t nbq = this->model->getCollisionTopology()->getNbQuads();
+            auto nbq = this->model->getCollisionTopology()->getNbQuads();
             if (qindex < nbq)
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else

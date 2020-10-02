@@ -48,7 +48,7 @@ typedef Topology::Hexahedron       Hexahedron;
 class SOFA_CORE_API TopologyHandler
 {
 public:
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     TopologyHandler() : lastElementIndex(0) {}
 

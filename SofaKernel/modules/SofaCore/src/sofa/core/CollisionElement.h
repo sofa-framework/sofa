@@ -51,7 +51,7 @@ class BaseCollisionElementIterator
 public:
     typedef std::vector<int>::const_iterator VIterator;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     /// Constructor.
     /// In most cases it will be used by the CollisionModel to

@@ -35,7 +35,7 @@ void GeometryAlgorithms::init()
 {
 }
 
-void GeometryAlgorithms::initPointsAdded(const helper::vector< sofa::defaulttype::index_type >& /*indices*/, const helper::vector< PointAncestorElem >& /*ancestorElems*/
+void GeometryAlgorithms::initPointsAdded(const helper::vector< sofa::index_type >& /*indices*/, const helper::vector< PointAncestorElem >& /*ancestorElems*/
     , const helper::vector< core::VecCoordId >& /*coordVecs*/, const helper::vector< core::VecDerivId >& /*derivVecs */)
 {
 }

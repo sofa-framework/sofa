@@ -98,7 +98,7 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::setCollisionModel(MCollisio
 }
 
 template < class TCollisionModel, class DataTypes >
-void SubsetContactMapper<TCollisionModel,DataTypes>::resize(std::size_t size)
+void SubsetContactMapper<TCollisionModel,DataTypes>::resize(size_type size)
 {
     if (mapping!=nullptr)
         mapping->clear(size);

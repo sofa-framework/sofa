@@ -80,7 +80,7 @@ public:
     MMechanicalState* createMapping(const char* name="contactPoints");
 
     void cleanup();
-    void resize(std::size_t size);
+    void resize(size_type size);
     index_type addPoint(const Coord& P, index_type index, Real&);
     void update();
     void updateXfree();

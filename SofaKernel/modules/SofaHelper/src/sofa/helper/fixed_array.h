@@ -58,6 +58,7 @@
 #include <cassert>
 #include <iostream>
 
+
 namespace sofa
 {
 
@@ -79,7 +80,7 @@ public:
     typedef const T*       const_iterator;
     typedef T&             reference;
     typedef const T&       const_reference;
-    typedef std::size_t    size_type;
+    typedef sofa::size_type    size_type;
     typedef std::ptrdiff_t difference_type;
 
     fixed_array()

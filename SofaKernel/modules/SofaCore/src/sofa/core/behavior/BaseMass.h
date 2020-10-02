@@ -109,9 +109,9 @@ public:
     virtual void exportGnuplot(const MechanicalParams* mparams, SReal time)=0;
 
     /// Get the mass relative to the DOF at \a index.
-    virtual SReal getElementMass(sofa::defaulttype::index_type index) const =0;
+    virtual SReal getElementMass(sofa::index_type index) const =0;
     /// Get the matrix relative to the DOF at \a index.
-    virtual void getElementMass(sofa::defaulttype::index_type index, defaulttype::BaseMatrix *m) const = 0;
+    virtual void getElementMass(sofa::index_type index, defaulttype::BaseMatrix *m) const = 0;
 
     virtual bool isDiagonal() { return false; }
 

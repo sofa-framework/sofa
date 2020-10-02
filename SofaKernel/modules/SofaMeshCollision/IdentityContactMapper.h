@@ -80,7 +80,7 @@ public:
 
     MMechanicalState* createMapping(const char* name="contactPoints");
 
-    void resize(std::size_t /*size*/)
+    void resize(size_type /*size*/)
     {
     }
 
@@ -152,7 +152,7 @@ public:
         return model->getMechanicalState();
     }
 
-    void resize(std::size_t /*size*/)
+    void resize(size_type /*size*/)
     {
     }
 

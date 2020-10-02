@@ -55,7 +55,7 @@ public:
     /// Output Topology
     typedef BaseMeshTopology Out;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 protected:
     TopologicalMapping()

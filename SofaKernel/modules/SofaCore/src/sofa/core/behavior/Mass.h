@@ -165,8 +165,8 @@ public:
 
 
     /// recover the mass of an element
-    SReal getElementMass(sofa::defaulttype::index_type) const override;
-    void getElementMass(sofa::defaulttype::index_type index, defaulttype::BaseMatrix *m) const override;
+    SReal getElementMass(sofa::index_type) const override;
+    void getElementMass(sofa::index_type index, defaulttype::BaseMatrix *m) const override;
 
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files

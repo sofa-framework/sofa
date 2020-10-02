@@ -45,7 +45,7 @@ class CollisionElementActiver
 public:
     CollisionElementActiver() {}
     virtual ~CollisionElementActiver() {}
-    virtual bool isCollElemActive(sofa::defaulttype::index_type /*index*/, core::CollisionModel * /*cm*/ = nullptr) { return true; }
+    virtual bool isCollElemActive(sofa::index_type /*index*/, core::CollisionModel * /*cm*/ = nullptr) { return true; }
     static CollisionElementActiver* getDefaultActiver() { static CollisionElementActiver defaultActiver; return &defaultActiver; }
 };
 
@@ -95,7 +95,9 @@ public:
     typedef CollisionElementIterator Iterator;
     typedef topology::BaseMeshTopology Topology;
     typedef sofa::defaulttype::Vector3::value_type Real;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
+    using size_type = sofa::size_type;
+
 protected:
     /// Constructor
     CollisionModel() ;
@@ -137,7 +139,7 @@ public:
     }
 
     /// Get the number of elements.
-    std::size_t getSize() const
+    size_type getSize() const
     {
         return size;
     }
@@ -155,19 +157,19 @@ public:
     }
 
     /// Get the number of contacts attached to the collision model
-    std::size_t getNumberOfContacts() const
+    size_type getNumberOfContacts() const
     {
         return numberOfContacts;
     }
 
     /// Set the number of contacts attached to the collision model
-    void setNumberOfContacts(std::size_t i)
+    void setNumberOfContacts(size_type i)
     {
         numberOfContacts = i;
     }
 
     /// Set the number of elements.
-    virtual void resize(std::size_t s)
+    virtual void resize(size_type s)
     {
         size = s;
     }
@@ -434,10 +436,10 @@ protected:
     Data< std::set<int> > group;
 
     /// Number of collision elements
-    std::size_t size;
+    size_type size;
 
     /// number of contacts attached to the collision model
-    std::size_t numberOfContacts;
+    size_type numberOfContacts;
 
     /// Pointer to the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
     SingleLink<CollisionModel,CollisionModel,BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> previous;

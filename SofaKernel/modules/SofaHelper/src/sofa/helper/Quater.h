@@ -44,7 +44,7 @@ private:
 public:
 
     typedef Real value_type;
-    typedef std::size_t size_type;
+    typedef sofa::size_type size_type;
 
     Quater();
     ~Quater();

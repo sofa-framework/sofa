@@ -32,7 +32,7 @@ namespace sofa
 namespace defaulttype
 {
 
-template <std::size_t L, std::size_t C, class real=float>
+template <sofa::size_type L, sofa::size_type C, class real=float>
 class Mat : public helper::fixed_array<VecNoInit<C,real>,L>
     //class Mat : public Vec<L,Vec<C,real> >
 {
@@ -717,11 +717,11 @@ public:
 
 
 
-template <std::size_t L, std::size_t C, typename real> Mat<L,L,real> Mat<L,C,real>::s_identity = Mat<L,L,real>::Identity();
+template <sofa::size_type L, sofa::size_type C, typename real> Mat<L,L,real> Mat<L,C,real>::s_identity = Mat<L,L,real>::Identity();
 
 
 /// Same as Mat except the values are not initialized by default
-template <std::size_t L, std::size_t C, typename real=float>
+template <sofa::size_type L, sofa::size_type C, typename real=float>
 class MatNoInit : public Mat<L,C,real>
 {
 public:
@@ -737,7 +737,7 @@ public:
     }
 
     /// Assignment from another matrix
-    template<std::size_t L2, std::size_t C2, typename real2> void operator=(const Mat<L2,C2,real2>& m)
+    template<sofa::size_type L2, sofa::size_type C2, typename real2> void operator=(const Mat<L2,C2,real2>& m)
     {
         this->Mat<L,C,real>::operator=(m);
     }
@@ -784,7 +784,7 @@ template<class real>
 inline real oneNorm(const Mat<3,3,real>& A)
 {
     real norm = 0.0;
-    for (std::size_t i=0; i<3; i++)
+    for (sofa::size_type i=0; i<3; i++)
     {
         real columnAbsSum = helper::rabs(A(0,i)) + helper::rabs(A(1,i)) + helper::rabs(A(2,i));
         if (columnAbsSum > norm)
@@ -798,7 +798,7 @@ template<class real>
 inline real infNorm(const Mat<3,3,real>& A)
 {
     real norm = 0.0;
-    for (std::size_t i=0; i<3; i++)
+    for (sofa::size_type i=0; i<3; i++)
     {
         real rowSum = helper::rabs(A(i,0)) + helper::rabs(A(i,1)) + helper::rabs(A(i,2));
         if (rowSum > norm)
@@ -808,31 +808,31 @@ inline real infNorm(const Mat<3,3,real>& A)
 }
 
 /// trace of a square matrix
-template<std::size_t N, class real>
+template<sofa::size_type N, class real>
 inline real trace(const Mat<N,N,real>& m)
 {
     real t = m[0][0];
-    for(std::size_t i=1 ; i<N ; ++i ) t += m[i][i];
+    for(sofa::size_type i=1 ; i<N ; ++i ) t += m[i][i];
     return t;
 }
 
 /// diagonal of a square matrix
-template<std::size_t N, class real>
+template<sofa::size_type N, class real>
 inline Vec<N,real> diagonal(const Mat<N,N,real>& m)
 {
     Vec<N,real> v;
-    for(std::size_t i=0 ; i<N ; ++i ) v[i] = m[i][i];
+    for(sofa::size_type i=0 ; i<N ; ++i ) v[i] = m[i][i];
     return v;
 }
 
 #define MIN_DETERMINANT  1.0e-100
 
 /// Matrix inversion (general case).
-template<std::size_t S, class real>
+template<sofa::size_type S, class real>
 bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
-    std::size_t i, j, k;
-    Vec<S, std::size_t> r, c, row, col;
+    sofa::size_type i, j, k;
+    Vec<S, sofa::size_type> r, c, row, col;
 
     Mat<S,S,real> m1 = from;
     Mat<S,S,real> m2;
@@ -943,7 +943,7 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 #undef MIN_DETERMINANT
 
 /// Inverse Matrix considering the matrix as a transformation.
-template<std::size_t S, class real>
+template<sofa::size_type S, class real>
 bool transformInvertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
     Mat<S-1,S-1,real> R, R_inv;
@@ -956,7 +956,7 @@ bool transformInvertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 
     dest.setsub(0,0,R_inv);
     dest.setsub(0,S-1,t_inv);
-    for (std::size_t i=0; i<S-1; ++i)
+    for (sofa::size_type i=0; i<S-1; ++i)
         dest(S-1,i)=0.0;
     dest(S-1,S-1)=1.0;
 
@@ -986,20 +986,20 @@ typedef Mat<2,2,SReal> Matrix2;
 typedef Mat<3,3,SReal> Matrix3;
 typedef Mat<4,4,SReal> Matrix4;
 
-template <std::size_t L, std::size_t C, typename real>
+template <sofa::size_type L, sofa::size_type C, typename real>
 std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)
 {
     o << '[' << m[0];
-    for (std::size_t i=1; i<L; i++)
+    for (sofa::size_type i=1; i<L; i++)
         o << ',' << m[i];
     o << ']';
     return o;
 }
 
-template <std::size_t L, std::size_t C, typename real>
+template <sofa::size_type L, sofa::size_type C, typename real>
 std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
 {
-    std::size_t c;
+    sofa::size_type c;
     c = in.peek();
     while (c==' ' || c=='\n' || c=='[')
     {
@@ -1008,7 +1008,7 @@ std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
         c = in.peek();
     }
     in >> m[0];
-    for (std::size_t i=1; i<L; i++)
+    for (sofa::size_type i=1; i<L; i++)
     {
         c = in.peek();
         while (c==' ' || c==',')
@@ -1035,13 +1035,13 @@ std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
 
 /// printing in other software formats
 
-template <std::size_t L, std::size_t C, typename real>
+template <sofa::size_type L, sofa::size_type C, typename real>
 void printMatlab(std::ostream& o, const Mat<L,C,real>& m)
 {
     o<<"[";
-    for(std::size_t l=0; l<L; ++l)
+    for(sofa::size_type l=0; l<L; ++l)
     {
-        for(std::size_t c=0; c<C; ++c)
+        for(sofa::size_type c=0; c<C; ++c)
         {
             o<<m[l][c];
             if( c!=C-1 ) o<<",\t";
@@ -1052,13 +1052,13 @@ void printMatlab(std::ostream& o, const Mat<L,C,real>& m)
 }
 
 
-template <std::size_t L, std::size_t C, typename real>
+template <sofa::size_type L, sofa::size_type C, typename real>
 void printMaple(std::ostream& o, const Mat<L,C,real>& m)
 {
     o<<"matrix("<<L<<","<<C<<", [";
-    for(std::size_t l=0; l<L; ++l)
+    for(sofa::size_type l=0; l<L; ++l)
     {
-        for(std::size_t c=0; c<C; ++c)
+        for(sofa::size_type c=0; c<C; ++c)
         {
             o<<m[l][c];
             o<<",\t";
@@ -1071,23 +1071,23 @@ void printMaple(std::ostream& o, const Mat<L,C,real>& m)
 
 
 /// Create a matrix as \f$ u v^T \f$
-template <std::size_t L, std::size_t C, typename T>
+template <sofa::size_type L, sofa::size_type C, typename T>
 inline Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v )
 {
     Mat<L,C,T> res(NOINIT);
-    for(std::size_t i=0; i<L; i++ )
-        for(std::size_t j=0; j<C; j++ )
+    for(sofa::size_type i=0; i<L; i++ )
+        for(sofa::size_type j=0; j<C; j++ )
             res[i][j] = u[i]*v[j];
     return res;
 }
 
 /// Compute the scalar product of two matrix (sum of product of all terms)
-template <std::size_t L, std::size_t C, typename real>
+template <sofa::size_type L, sofa::size_type C, typename real>
 inline real scalarProduct(const Mat<L,C,real>& left,const Mat<L,C,real>& right)
 {
     real product(0.);
-    for(std::size_t i=0; i<L; i++)
-        for(std::size_t j=0; j<C; j++)
+    for(sofa::size_type i=0; i<L; i++)
+        for(sofa::size_type j=0; j<C; j++)
             product += left(i,j) * right(i,j);
     return product;
 }
@@ -1113,7 +1113,7 @@ inline defaulttype::Mat<3, 3, Real> crossProductMatrix(const defaulttype::Vec<3,
 
 
 /// return a * b^T
-template<std::size_t L,class Real>
+template<sofa::size_type L,class Real>
 static Mat<L,L,Real> tensorProduct(const Vec<L,Real> a, const Vec<L,Real> b )
 {
     typedef Mat<L,L,Real> Mat;
@@ -1135,7 +1135,7 @@ static Mat<L,L,Real> tensorProduct(const Vec<L,Real> a, const Vec<L,Real> b )
 // Specialization of the defaulttype::DataTypeInfo type traits template
 ////////////////////////////////////////////
 
-template<std::size_t L, std::size_t C, typename real>
+template<sofa::size_type L, sofa::size_type C, typename real>
 struct DataTypeInfo< sofa::defaulttype::Mat<L,C,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Mat<L,C,real> >
 {
     static std::string name() { std::ostringstream o; o << "Mat<" << L << "," << C << "," << DataTypeName<real>::name() << ">"; return o.str(); }

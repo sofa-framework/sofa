@@ -76,7 +76,7 @@ public:
     SOFA_ABSTRACT_CLASS(BaseMechanicalState, BaseState);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseMechanicalState);
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 protected:
     BaseMechanicalState();
 

@@ -37,7 +37,7 @@ namespace io
 class SOFA_HELPER_API MeshTopologyLoader
 {
 public:
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     MeshTopologyLoader():m_mesh(nullptr) {}
     virtual ~MeshTopologyLoader() {}
