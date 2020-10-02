@@ -200,7 +200,7 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
         }
         else rimage->getCImg(exporter.time).save(fname.c_str());
 
-        msg_info(exporter) << "Saved image " << fname <<" ("<< rimage->getCImg(exporter.time).pixel_type() <<")" ;
+        msg_info(&exporter) << "Saved image " << fname <<" ("<< rimage->getCImg(exporter.time).pixel_type() <<")" ;
 
         return true;
     }

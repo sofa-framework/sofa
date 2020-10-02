@@ -692,7 +692,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
                 {
                     int test = dof_buf - dof;
                     if (test>2 || test< -2)
-                        dmsg_info() << "YES !!!! for constraint id1 dof1 = " << dof_buf << " dof2 = " << dof;
+                        dmsg_info() << "For constraint id1 dof1 = " << dof_buf << " dof2 = " << dof;
                 }
 
                 dof_buf = dof;
