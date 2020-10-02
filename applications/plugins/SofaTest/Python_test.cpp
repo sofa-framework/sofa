@@ -86,7 +86,8 @@ void Python_scene_test::run( const Python_test_data& data ) {
 			simulation::getSimulation()->animate(root.get(), root->getDt());
 		}
 	} catch( const result& test_result ) {
-		ASSERT_TRUE(test_result.value);
+        ASSERT_TRUE(test_result.value);
+        simulation::getSimulation()->unload( root.get() );
 	}
 }
 

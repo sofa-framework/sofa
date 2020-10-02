@@ -110,28 +110,28 @@ void BackTrace::dump()
         }
     }
 #elif !defined(__GNUC__) && !defined(__APPLE__) && defined(WIN32) && !defined(_XBOX) && !defined(PS3)
-	unsigned int   i;
-	void         * stack[100];
-	unsigned short frames;
-	SYMBOL_INFO  * symbol;
-	HANDLE         process;
+    unsigned int   i;
+    void         * stack[100];
+    unsigned short frames;
+    SYMBOL_INFO  * symbol;
+    HANDLE         process;
 
-	process = GetCurrentProcess();
+    process = GetCurrentProcess();
 
-	SymInitialize(process, NULL, TRUE);
+    SymInitialize(process, NULL, TRUE);
 
-	frames = CaptureStackBackTrace(0, 100, stack, NULL);
-	symbol = (SYMBOL_INFO *)calloc(sizeof(SYMBOL_INFO) + 256 * sizeof(char), 1);
-	symbol->MaxNameLen = 255;
-	symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+    frames = CaptureStackBackTrace(0, 100, stack, NULL);
+    symbol = (SYMBOL_INFO *)calloc(sizeof(SYMBOL_INFO) + 256 * sizeof(char), 1);
+    symbol->MaxNameLen = 255;
+    symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
 
-	for (i = 0; i < frames; i++)
-	{
-		SymFromAddr(process, (DWORD64)(stack[i]), 0, symbol);
-		std::cerr << (frames - i - 1) << ": " << symbol->Name << " - 0x" << std::hex << symbol->Address << std::dec << std::endl;
-	}
+    for (i = 0; i < frames; i++)
+    {
+        SymFromAddr(process, (DWORD64)(stack[i]), 0, symbol);
+        std::cerr << (frames - i - 1) << ": " << symbol->Name << " - 0x" << std::hex << symbol->Address << std::dec ;
+    }
 
-	free(symbol);
+    free(symbol);
 #endif
 }
 
@@ -141,55 +141,55 @@ void BackTrace::dump()
 void BackTrace::autodump()
 {
 #if !defined(_XBOX) && !defined(PS3)
-	signal(SIGABRT, BackTrace::sig);
+    signal(SIGABRT, BackTrace::sig);
     signal(SIGSEGV, BackTrace::sig);
     signal(SIGILL, BackTrace::sig);
     signal(SIGFPE, BackTrace::sig);
     signal(SIGINT, BackTrace::sig);
     signal(SIGTERM, BackTrace::sig);
 #if !defined(WIN32)
-	signal(SIGPIPE, BackTrace::sig);
+    signal(SIGPIPE, BackTrace::sig);
 #endif
 #endif
 }
 
 static std::string SigDescription(int sig)
 {
-	switch (sig)
-	{
-	case SIGABRT:
-		return "SIGABRT: usually caused by an abort() or assert()";
-		break;
-	case SIGFPE:
-		return "SIGFPE: arithmetic exception, such as divide by zero";
-		break;
-	case SIGILL:
-		return "SIGILL: illegal instruction";
-		break;
-	case SIGINT:
-		return "SIGINT: interactive attention signal, probably a ctrl+c";
-		break;
-	case SIGSEGV:
-		return "SIGSEGV: segfault";
-		break;
-	case SIGTERM:
-	default:
-		return "SIGTERM: a termination request was sent to the program";
-		break;
-	}
+    switch (sig)
+    {
+    case SIGABRT:
+        return "SIGABRT: usually caused by an abort() or assert()";
+        break;
+    case SIGFPE:
+        return "SIGFPE: arithmetic exception, such as divide by zero";
+        break;
+    case SIGILL:
+        return "SIGILL: illegal instruction";
+        break;
+    case SIGINT:
+        return "SIGINT: interactive attention signal, probably a ctrl+c";
+        break;
+    case SIGSEGV:
+        return "SIGSEGV: segfault";
+        break;
+    case SIGTERM:
+    default:
+        return "SIGTERM: a termination request was sent to the program";
+        break;
+    }
 
-	return "Unknown signal";
+    return "Unknown signal";
 }
 
 void BackTrace::sig(int sig)
 {
 #if !defined(_XBOX) && !defined(PS3)
-	std::cerr << std::endl << "########## SIG " << sig << " - " << SigDescription(sig) << " ##########" << std::endl;
+    std::cerr << std::endl << "########## SIG " << sig << " - " << SigDescription(sig) << " ##########" << std::endl;
     dump();
     signal(sig,SIG_DFL);
     raise(sig);
 #else
-	std::cerr << std::endl << "ERROR: BackTrace::sig(" << sig << " - " << SigDescription(sig) << ") not supported." << std::endl;
+    std::cerr << std::endl << "ERROR: BackTrace::sig(" << sig << " - " << SigDescription(sig) << ") not supported." << std::endl;
 #endif
 }
 

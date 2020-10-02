@@ -95,16 +95,21 @@ public:
     virtual void virtualSetValue(const std::string& v) { setValue(v); }
     virtual bool read(const std::string& s );
 
-    virtual const std::string& getRelativePath() const { return getValue(); }
+    virtual const std::string& getRelativePath() const
+    {
+        this->updateIfDirty();
+        return m_relativepath ;
+    }
+
     virtual const std::string& getFullPath() const
     {
         this->updateIfDirty();
-        return fullpath;
+        return m_fullpath;
     }
     virtual const std::string& getAbsolutePath() const
     {
         this->updateIfDirty();
-        return fullpath;
+        return m_fullpath;
     }
 
     virtual void update()
@@ -116,7 +121,8 @@ public:
 protected:
     void updatePath();
 
-    std::string fullpath;
+    std::string m_fullpath;
+    std::string m_relativepath;
 
 private:
     DataFileName(const Inherit& d);

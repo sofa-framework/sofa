@@ -45,7 +45,8 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
 	virtual void solve_impl(vec& x,
 							const system_type& system,
 							const vec& rhs,
-                            bool correct) const;
+                            bool correct,
+                            real damping = 0) const;
 
     virtual void factor_impl(const system_type& system);
 
@@ -56,7 +57,8 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
 	           const system_type& sys,
 	           const vec& rhs,
 	           vec& tmp1, vec& tmp2,
-			   bool correct = false) const;
+			   bool correct = false,
+               real damping = 0) const;
 	
 	// response matrix
 	typedef Response response_type;
@@ -159,9 +161,10 @@ protected:
 
 
     void solve_local(vec& x,
-                    const system_type& system,
-                    const vec& rhs,
-                    bool correct) const;
+                     const system_type& system,
+                     const vec& rhs,
+                     bool correct,
+                     real damping = 0) const;
 
     virtual void fetch_unilateral_blocks(const system_type& system);
 

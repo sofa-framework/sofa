@@ -34,8 +34,6 @@
 
 #include <Eigen/LU>
 #include <Eigen/QR>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -69,13 +67,13 @@ LMConstraintSolver::LMConstraintSolver()
     traceKineticEnergy.setGroup("Statistics");
     this->f_listening.setValue(true);
 
-	numIterations.setRequired(true);
-	maxError.setRequired(true);
+    numIterations.setRequired(true);
+    maxError.setRequired(true);
 }
 
 void LMConstraintSolver::init()
 {
-	sofa::core::behavior::ConstraintSolver::init();
+    sofa::core::behavior::ConstraintSolver::init();
 
     helper::vector< core::behavior::BaseConstraintCorrection* > listConstraintCorrection;
     ((simulation::Node*) getContext())->get<core::behavior::BaseConstraintCorrection>(&listConstraintCorrection, core::objectmodel::BaseContext::SearchDown);
@@ -121,7 +119,7 @@ bool LMConstraintSolver::needPriorStatePropagation(core::ConstraintParams::Const
             if (!c[i]->isCorrectionComputedWithSimulatedDOF(order))
             {
                 needPriorPropagation=true;
-                if (f_printLog.getValue()) cerr << "Propagating the State because of "<< c[i]->getName() << endl;
+                msg_info() << "Propagating the State because of "<< c[i]->getName() ;
                 break;
             }
         }
@@ -135,9 +133,6 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
     //************************************************************
     // Update the State of the Mapped dofs                      //
     //************************************************************
-
-//    if (f_printLog.getValue()) cerr << "LMConstraintSolver::prepareStates"<<endl;
-
     core::MechanicalParams mparams;
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::TRACE_ARGUMENT arg;
@@ -161,7 +156,7 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
         LMConstraintVisitor.setOrder(orderState);
         LMConstraintVisitor.setTags(getTags()).execute(this->getContext());
 
-        if (f_printLog.getValue()) cerr << "LMConstraintSolver::prepareStates for accelerations"<<endl;
+        msg_info() << "prepareStates for accelerations";
 
         simulation::MechanicalProjectJacobianMatrixVisitor(&mparams).execute(this->getContext());
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -171,17 +166,15 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
     else if (orderState==core::ConstraintParams::VEL)
     {
         if (!constraintVel.getValue()) return false;
-        if (f_printLog.getValue()) cerr << "LMConstraintSolver::prepareStates for velocities"<<endl;
+
+        msg_info() << "prepareStates for velocities";
+
+        simulation::MechanicalProjectVelocityVisitor projectState(&mparams, this->getContext()->getTime(), core::VecDerivId(vid));
+        projectState.execute(this->getContext());
         if (needPriorStatePropagation(orderState))
         {
-            simulation::MechanicalPropagateVelocityVisitor propagateState(&mparams, 0.0, core::VecDerivId(vid),false);
+            simulation::MechanicalPropagateOnlyVelocityVisitor propagateState(&mparams, 0.0, core::VecDerivId(vid),false);
             propagateState.execute(this->getContext());
-        }
-        else
-        {
-            //TODO: change ProjectVelocityVisitor to pass the VecId
-            simulation::MechanicalProjectVelocityVisitor projectVel(&mparams,this->getContext()->getTime(), core::VecDerivId(vid) );
-            projectVel.execute(this->getContext());
         }
 
         // calling writeConstraintEquations
@@ -198,18 +191,16 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
     else
     {
         if (!constraintPos.getValue()) return false;
-        if (f_printLog.getValue()) cerr << "LMConstraintSolver::prepareStates for positions"<<endl;
+        msg_info() << "prepareStates for positions";
 
+        simulation::MechanicalProjectPositionVisitor projectPos(&mparams, this->getContext()->getTime(), core::VecCoordId(vid));
+        projectPos.execute(this->getContext());
         if (needPriorStatePropagation(orderState))
         {
-            simulation::MechanicalPropagatePositionVisitor propagateState(&mparams, 0.0, core::VecCoordId(vid), false);
+            simulation::MechanicalPropagateOnlyPositionVisitor propagateState(&mparams, 0.0, core::VecCoordId(vid), false);
             propagateState.execute(this->getContext());
         }
-        else
-        {
-            simulation::MechanicalProjectPositionVisitor projectPos(&mparams,this->getContext()->getTime(), core::VecCoordId(vid));
-            projectPos.execute(this->getContext());
-        }
+
         // calling writeConstraintEquations
         LMConstraintVisitor.setOrder(orderState);
         LMConstraintVisitor.setTags(getTags()).execute(this->getContext());
@@ -227,11 +218,11 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
     for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)
     {
         numConstraint += LMConstraints[mat]->getNumConstraint(orderState);
-        if (f_printLog.getValue()) cerr << "LMConstraintSolver::prepareStates, constraint " << LMConstraints[mat]->getName()
+        msg_info()    << "LMConstraintSolver::prepareStates, constraint " << LMConstraints[mat]->getName()
                     << " between "<< LMConstraints[mat]->getSimulatedMechModel1()->getName()
                     << " and " << LMConstraints[mat]->getSimulatedMechModel2()->getName()
                     <<", add "<<  LMConstraints[mat]->getNumConstraint(orderState)
-                    << " constraint for order "<< orderState <<endl;
+                    << " constraint for order "<< orderState ;
     }
     if (numConstraint == 0)
     {
@@ -242,19 +233,19 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
     if      (orderState==core::ConstraintParams::POS)
     {
         sofa::helper::AdvancedTimer::valSet("numConstraintsPosition", numConstraint);
-        if (f_printLog.getValue()) cerr << "Applying the constraint on the position"<<endl;
+        msg_info() << "Applying the constraint on the position";
     }
     else if (orderState==core::ConstraintParams::VEL)
     {
         sofa::helper::AdvancedTimer::valSet("numConstraintsVelocity", numConstraint);
-        if (f_printLog.getValue()) cerr << "Applying the constraint on the velocity"<<endl;
+        msg_info() << "Applying the constraint on the velocity" ;
     }
     else if (orderState==core::ConstraintParams::ACC)
     {
         sofa::helper::AdvancedTimer::valSet("numConstraintsAcceleration", numConstraint);
-        if (f_printLog.getValue()) cerr << "Applying the constraint on the acceleration"<<endl;
+        msg_info() << "Applying the constraint on the acceleration" ;
     }
-    else cerr << "Order Not recognized " << orderState << endl;
+    else msg_warning() << "Order Not recognized " << orderState ;
 
     setDofs.clear();
     dofUsed.clear();
@@ -267,7 +258,6 @@ bool LMConstraintSolver::buildSystem(const core::ConstraintParams *cParams, Mult
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SystemCreation");
 #endif
-//    cerr<<"-----------LMConstraintSolver::buildSystem " <<  endl;
 
     sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem Prepare");
     const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
@@ -280,8 +270,6 @@ bool LMConstraintSolver::buildSystem(const core::ConstraintParams *cParams, Mult
         {
             setDofs.insert(constraint->getSimulatedMechModel1());
             setDofs.insert(constraint->getSimulatedMechModel2());
-//            cerr<<"LMConstraintSolver::buildSystem, inserting " << constraint->getSimulatedMechModel1()->getName() << endl;
-//            cerr<<"LMConstraintSolver::buildSystem, inserting " << constraint->getSimulatedMechModel2()->getName() << endl;
         }
     }
     for (SetDof::iterator it=setDofs.begin(); it!=setDofs.end();)
@@ -291,7 +279,6 @@ bool LMConstraintSolver::buildSystem(const core::ConstraintParams *cParams, Mult
 
         if (!(*currentIt)->getContext()->getMass())
         {
-//            cerr << "LMConstraintSolver::buildSystem, erase " << (*currentIt)->getName() << endl;
             setDofs.erase(currentIt);
         }
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -385,13 +372,10 @@ bool LMConstraintSolver::solveSystem(const core::ConstraintParams* cParams, Mult
     //************************************************************
     // Solving the System using Eigen2
     //************************************************************
-    if (f_printLog.getValue())
-    {
-        cerr << "W= L0.M0^-1.L0^T + L1.M1^-1.L1^T + ...: "<<endl;
-        cerr <<"\n" << W << endl;
-        cerr << "for a constraint: " << ""<<endl;
-        cerr << "\n" << c << endl;
-    }
+    msg_info() << "W= L0.M0^-1.L0^T + L1.M1^-1.L1^T + ...: " << msgendl
+               << W << msgendl
+               << "for a constraint: " << msgendl
+               << c ;
 
     const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
 
@@ -450,8 +434,8 @@ void LMConstraintSolver::buildLeftMatrix(const DofToMatrix& invMassMatrix, DofTo
         const SparseMatrixEigen &invMass=invMassMatrix.find(dofs)->second;
         const SparseMatrixEigen &L=LMatrix[dofs];
 
-        if (f_printLog.getValue())  cerr << "Matrix L for " << dofs->getName() << "\n" << L << endl;
-        if (f_printLog.getValue())  cerr << "Matrix M-1 for " << dofs->getName() << "\n" << invMass << endl;
+        msg_info() << "Matrix L for " << dofs->getName() << "\n" << L << msgendl
+                   << "Matrix M-1 for " << dofs->getName() << "\n" << invMass ;
 
         const SparseMatrixEigen &invM_LTrans=invMass*L.transpose();
         invMass_Ltrans.insert( std::make_pair(dofs,invM_LTrans) );
@@ -646,7 +630,8 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( MultiVecId id, C
         const helper::vector< core::behavior::BaseLMConstraint* > &LMConstraints,
         const MatrixEigen &W, const VectorEigen &c, VectorEigen &Lambda)
 {
-    if (f_printLog.getValue()) cerr << "Using Gauss-Seidel solution"<<endl;
+    msg_info() <<  "Using Gauss-Seidel solution" ;
+
     std::string orderName;
     switch (Order)
     {
@@ -762,17 +747,23 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( MultiVecId id, C
                 if (!constraintOrder[constraintEntry]->isActive())
                 {
                     Lambda.block(idxConstraint,0,numConstraintToProcess,1).setZero();
-                    if (f_printLog.getValue())
-                        cerr <<"["<< iteration << "/" << numIterations.getValue() <<"] ###Deactivated###" << (LambdaPreviousIteration - Lambda.block(idxConstraint,0,numConstraintToProcess,1)).sum()  << " for system n°" << idxConstraint << "/" << W.cols() << " of " << numConstraintToProcess << " equations "
-                                << " between " << constraint->getSimulatedMechModel1()->getName() << " and " << constraint->getSimulatedMechModel2()->getName() << ""<<endl;
+
+                    msg_info() << "["<< iteration << "/" << numIterations.getValue() <<"] ###Deactivated###"
+                               << (LambdaPreviousIteration - Lambda.block(idxConstraint,0,numConstraintToProcess,1)).sum()
+                               << " for system n°" << idxConstraint << "/" << W.cols() << " of " << numConstraintToProcess << " equations "
+                               << " between " << constraint->getSimulatedMechModel1()->getName() << " and " << constraint->getSimulatedMechModel2()->getName() ;
+
                     correctionDone |=    ( (LambdaPreviousIteration - Lambda.block(idxConstraint,0,numConstraintToProcess,1)).sum() != 0);
                 }
                 else
                 {
                     Lambda.block(idxConstraint,0,numConstraintToProcess,1)=newLambda;
-                    if (f_printLog.getValue())
-                        cerr <<"["<< iteration << "/" << numIterations.getValue() <<"] " << (LambdaPreviousIteration - Lambda.block(idxConstraint,0,numConstraintToProcess,1)).sum()  << " for system n°" << idxConstraint << "/" << W.cols() << " of " << numConstraintToProcess << " equations "
-                                << " between " << constraint->getSimulatedMechModel1()->getName() << " and " << constraint->getSimulatedMechModel2()->getName() << ""<<endl;
+
+                    msg_info() <<"["<< iteration << "/" << numIterations.getValue() <<"] "
+                               << (LambdaPreviousIteration - Lambda.block(idxConstraint,0,numConstraintToProcess,1)).sum()
+                               << " for system n°" << idxConstraint << "/" << W.cols() << " of " << numConstraintToProcess << " equations "
+                               << " between " << constraint->getSimulatedMechModel1()->getName() << " and " << constraint->getSimulatedMechModel2()->getName() ;
+
                     correctionDone |=  ( (LambdaPreviousIteration - Lambda.block(idxConstraint,0,numConstraintToProcess,1)).sum() != 0);
                 }
             }
@@ -798,15 +789,12 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( MultiVecId id, C
         graphGSError.endEdit();
         continueIteration = (residual > maxError.getValue());
 
-        if (this->f_printLog.getValue()) cerr << "ITERATION " << iteration << " ENDED:  Residual for iteration " << iteration << " = " << residual <<endl;
+        msg_info() << "ITERATION " << iteration << " ENDED:  Residual for iteration " << iteration << " = " << residual ;
     }
 
+    msg_info_when(iteration == numIterations.getValue()) << "no convergence in Gauss-Seidel for " << orderName;
 
-    if (iteration == numIterations.getValue() && f_printLog.getValue())
-        cerr << "no convergence in Gauss-Seidel for " << orderName;
-
-    if (f_printLog.getValue())
-        cerr << "Gauss-Seidel done in " << iteration << " iterations "<<endl;
+    msg_info() << "Gauss-Seidel done in " << iteration << " iterations ";
 
     if (Order == core::ConstraintParams::VEL && traceKineticEnergy.getValue()) return false;
     return true;
@@ -830,12 +818,11 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
     //Eigen::SparseMatrix<SReal> invM_Ltrans_colMajor = Eigen::SparseMatrix<SReal>(invM_Ltrans);
 
     A.noalias() = invM_Ltrans*c;
-    if (f_printLog.getValue())
-    {
-        cerr << "M^-1.L^T " << "\n" << invM_Ltrans << endl;
-        cerr << "Lambda " << dofs->getName() << "\n" << c << endl;
-        cerr << "Correction " << dofs->getName() << "\n" << A << endl;
-    }
+
+    msg_info() << "M^-1.L^T " << "\n" << invM_Ltrans << msgendl
+               << "Lambda " << dofs->getName() << "\n" << c << msgendl
+               << "Correction " << dofs->getName() << "\n" << A ;
+
     const unsigned int dimensionDofs=dofs->getDerivDimension();
 
     //In case of position correction, we need to update the velocities
@@ -865,7 +852,8 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
             offset=0;
             FullVector<SReal> v(Acorrection.data(), (Index)Acorrection.rows());
 
-            if (f_printLog.getValue())  cerr << "Lambda Corrected for Rigid " << "\n" << Acorrection << endl;
+            msg_info() << "Lambda Corrected for Rigid " << "\n" << Acorrection ;
+
             dofs->addFromBaseVectorSameSize(id,&v,offset );
 
         }

@@ -51,8 +51,6 @@ using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
-using std::cerr;
-using std::endl;
 
 template<class TMatrix, class TVector>
 ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
@@ -62,7 +60,7 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     , f_update_step( initData(&f_update_step,(unsigned)1,"update_step","Number of steps before the next refresh of precondtioners") )
     , f_build_precond( initData(&f_build_precond,true,"build_precond","Build the preconditioners, if false build the preconditioner only at the initial step") )
     , f_preconditioners( initData(&f_preconditioners, "preconditioners", "If not empty: path to the solvers to use as preconditioners") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )    
+    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
     f_graph.setWidget("graph");
 //    f_graph.setReadOnly(true);

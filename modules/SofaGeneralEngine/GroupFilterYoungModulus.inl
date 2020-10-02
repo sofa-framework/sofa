@@ -182,12 +182,6 @@ void GroupFilterYoungModulus<DataTypes>::update()
             youngModulusVector[i] = mapMG[elem];
         }
     }
-
-
-
-    //std::cout << youngModulusVector.size() << std::endl;
-    //std::cout << youngModulusVector << std::endl;
-
     f_youngModulus.endEdit();
 }
 

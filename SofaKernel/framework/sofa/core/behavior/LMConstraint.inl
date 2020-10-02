@@ -54,9 +54,6 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
     {
         //Constraint created by passing Mechanical State directly, need to find the name of the path to be able to save the scene eventually
 
-//            std::cerr << "start LMConstraint<DataTypes1,DataTypes2>::init(), simulatedObject1 = " << simulatedObject1->getName() << std::endl;
-//            std::cerr << "start LMConstraint<DataTypes1,DataTypes2>::init(), simulatedObject2 = " << simulatedObject2->getName() << std::endl;
-
         if (constrainedObject1->getContext() != getContext())
         {
             BaseContext *context = NULL;
@@ -102,8 +99,6 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
                 break;
             simulatedObject2 = mapping->getMechFrom()[0];
         }
-//                std::cerr << "LMConstraint<DataTypes1,DataTypes2>::init(), simulatedObject1 = " << simulatedObject1->getName() << std::endl;
-//                std::cerr << "LMConstraint<DataTypes1,DataTypes2>::init(), simulatedObject2 = " << simulatedObject2->getName() << std::endl;
     }
 }
 

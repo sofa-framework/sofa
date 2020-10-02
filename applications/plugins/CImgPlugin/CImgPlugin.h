@@ -1,0 +1,13 @@
+#ifndef INITCIMGPLUGIN_H
+#define INITCIMGPLUGIN_H
+
+#include <sofa/helper/system/config.h>
+
+#ifdef SOFA_BUILD_CIMGPLUGIN
+#define SOFA_CIMGPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_CIMGPLUGIN_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+
+#endif // INITCIMGPLUGIN_H

@@ -37,6 +37,7 @@ namespace component
 namespace linearsolver
 {
 
+//TODO(dmarchal) this should be unified with the way we handle message and error in sofa.
 //#define NEWMAT_CHECK
 //#define NEWMAT_VERBOSE
 
@@ -80,7 +81,7 @@ public:
 #ifdef NEWMAT_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("NewMatMatrix") << "Invalid read access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
             return 0.0;
         }
 #endif
@@ -95,7 +96,7 @@ public:
 #ifdef NEWMAT_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("NewMatMatrix") << "Invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")";
             return;
         }
 #endif
@@ -110,7 +111,7 @@ public:
 #ifdef NEWMAT_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("NewMatMatrix") << "Invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")";
             return;
         }
 #endif
@@ -125,7 +126,7 @@ public:
 #ifdef NEWMAT_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("NewMatMatrix") << "invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
             return;
         }
 #endif
@@ -140,7 +141,7 @@ public:
 #ifdef NEWMAT_CHECK
         if (i >= rowSize())
         {
-            std::cerr << "ERROR: invalid write access to row "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("NewMatMatrix") << "ERROR: invalid write access to row "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")";
             return;
         }
 #endif
@@ -155,7 +156,7 @@ public:
 #ifdef NEWMAT_CHECK
         if (j >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to column "<<j<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("NewMatMatrix") << "ERROR: invalid write access to column "<<j<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")";
             return;
         }
 #endif
@@ -170,7 +171,7 @@ public:
 #ifdef NEWMAT_CHECK
         if (i >= rowSize() || i >= colSize())
         {
-            std::cerr << "ERROR: invalid write access to row and column "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            msg_error("NewMatMatrix") << "ERROR: invalid write access to row and column "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")";
             return;
         }
 #endif
@@ -297,7 +298,7 @@ template<>
 inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::resize(Index nbRow, Index nbCol)
 {
     if (nbCol != nbRow)
-        std::cerr << "ERROR: NEWMAT::SymmetricMatrix must be square, size "<<nbRow<<"x"<<nbCol<<" not supported."<<std::endl;
+        msg_error("NewMatMatrix") << "SymmetricMatrix must be square, size "<<nbRow<<"x"<<nbCol<<" not supported.";
     M::ReSize(nbRow);
 }
 
@@ -305,7 +306,7 @@ template<>
 inline void TNewMatMatrix<NEWMAT::BandMatrix>::resize(Index nbRow, Index nbCol)
 {
     if (nbCol != nbRow)
-        std::cerr << "ERROR: NEWMAT::BandMatrix must be square, size "<<nbRow<<"x"<<nbCol<<" not supported."<<std::endl;
+        msg_error("NewMatMatrix") << "BandMatrix must be square, size "<<nbRow<<"x"<<nbCol<<" not supported." ;
     M::ReSize(nbRow, bandWidth, bandWidth);
 }
 
@@ -313,7 +314,7 @@ template<>
 inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::resize(Index nbRow, Index nbCol)
 {
     if (nbCol != nbRow)
-        std::cerr << "ERROR: NEWMAT::SymmetricBandMatrix must be square, size "<<nbRow<<"x"<<nbCol<<" not supported."<<std::endl;
+        msg_error("NewMatMatrix") << "SymmetricBandMatrix must be square, size "<<nbRow<<"x"<<nbCol<<" not supported." ;
     M::ReSize(nbRow, bandWidth);
 }
 
@@ -326,7 +327,7 @@ inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::set(Index i, Index j, double
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
     {
-        std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+        msg_error("NewMatMatrix") << "Invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
         return;
     }
 #endif
@@ -343,7 +344,7 @@ inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::add(Index i, Index j, double
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
     {
-        std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+        msg_error("NewMatMatrix")<< "Invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
         return;
     }
 #endif
@@ -357,7 +358,7 @@ inline SReal TNewMatMatrix<NEWMAT::BandMatrix>::element(Index i, Index j) const
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
     {
-        std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+        msg_error("NewMatMatrix") << "Invalid read access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
         return 0.0;
     }
 #endif
@@ -377,7 +378,7 @@ inline void TNewMatMatrix<NEWMAT::BandMatrix>::set(Index i, Index j, double v)
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
     {
-        std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+        msg_error("NewMatMatrix") << "Invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
         return;
     }
 #endif
@@ -396,7 +397,7 @@ inline void TNewMatMatrix<NEWMAT::BandMatrix>::add(Index i, Index j, double v)
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
     {
-        std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+        msg_error("NewMatMatrix") << "Invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
         return;
     }
 #endif
@@ -412,7 +413,7 @@ inline SReal TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::element(Index i, Index 
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
     {
-        std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+        msg_error("NewMatMatrix") << "Invalid read access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")";
         return 0.0;
     }
 #endif
@@ -431,13 +432,13 @@ inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::set(Index i, Index j, do
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
     {
-        std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+        msg_error("NewMatMatrix") << "Invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")";
         return;
     }
 #endif
     if (j < i-bandWidth || j > i+bandWidth)
     {
-        std::cerr << "ERROR: trying to set "<<v<<" to element ("<<i<<","<<j<<") in NEWMAT::SymmetricBandMatrix of bandwidth "<<bandWidth<<std::endl;
+        msg_error("NewMatMatrix") << "Trying to set "<<v<<" to element ("<<i<<","<<j<<") in NEWMAT::SymmetricBandMatrix of bandwidth "<<bandWidth;
         return;
     }
     if (j <= i)
@@ -453,13 +454,13 @@ inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::add(Index i, Index j, do
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
     {
-        std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+        msg_error("NewMatMatrix") << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")";
         return;
     }
 #endif
     if (j < i-bandWidth || j > i+bandWidth)
     {
-        std::cerr << "ERROR: trying to set "<<v<<" to element ("<<i<<","<<j<<") in NEWMAT::SymmetricBandMatrix of bandwidth "<<bandWidth<<std::endl;
+        msg_error("NewMatMatrix") << "Trying to set "<<v<<" to element ("<<i<<","<<j<<") in NEWMAT::SymmetricBandMatrix of bandwidth "<<bandWidth;
         return;
     }
     if (j <= i)

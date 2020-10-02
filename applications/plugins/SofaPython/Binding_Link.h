@@ -27,6 +27,6 @@
 SP_DECLARE_CLASS_TYPE(Link)
 
 PyObject *GetLinkValuePython(sofa::core::objectmodel::BaseLink* link);
-bool SetLinkValuePython(sofa::core::objectmodel::BaseLink* link, PyObject* value);
+int SetLinkValuePython(sofa::core::objectmodel::BaseLink* link, PyObject* value);
 
 #endif // BINDING_BASELINK_H

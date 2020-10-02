@@ -25,12 +25,16 @@ add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaOpenglVisual/SofaOpenglVisua
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralEngine/SofaGeneralEngine_test tests/SofaGeneralEngine)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralExplicitOdeSolver/SofaGeneralExplicitOdeSolver_test tests/SofaGeneralExplicitOdeSolver)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralImplicitOdeSolver/SofaGeneralImplicitOdeSolver_test tests/SofaGeneralImplicitOdeSolver)
+add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralTopology/SofaGeneralTopology_test tests/SofaGeneralTopology)
 # add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralLinearSolver/SofaGeneralLinearSolver_test tests/SofaGeneralLinearSolver)
 # add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralLoader/SofaGeneralLoader_test tests/SofaGeneralLoader)
 # add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralMeshCollision/SofaGeneralMeshCollision_test tests/SofaGeneralMeshCollision)
 # add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralRigid/SofaGeneralRigid_test tests/SofaGeneralRigid)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralSimpleFem/SofaGeneralSimpleFem_test tests/SofaGeneralSimpleFem)
+add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGraphComponent/SofaGraphComponent_test tests/SofaGraphComponent)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscMapping/SofaMiscMapping_test tests/SofaMiscMapping)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscSolver/SofaMiscSolver_test tests/SofaMiscSolver)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscTopology/SofaMiscTopology_test tests/SofaMiscTopology)
+add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaVolumetricData/SofaVolumetricData_test tests/SofaVolumetricData)
+
 

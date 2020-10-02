@@ -124,7 +124,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
 {
-    std::cout << "Compute the initial invert matrix with CS_PARSE" << std::endl;
+    msg_info("PrecomputedLinearSolver") << "Compute the initial invert matrix with CS_PARSE" ;
 
     CompressedRowSparseMatrix<double> matSolv;
     FullVector<double> r;
@@ -146,14 +146,15 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
         b.set(j,0.0);
     }
 
-    std::cout << "Precomputing constraint correction LU decomposition " << std::endl;
+    msg_info("PrecomputedLinearSolver") << "Precomputing constraint correction LU decomposition " ;
     solver.invert(matSolv);
 
     for (unsigned int j=0; j<systemSize; j++)
     {
-        std::cout.precision(2);
-        std::cout << "Precomputing constraint correction : " << std::fixed << (float)j/(float)systemSize*100.0f << " %   " << '\xd';
-        std::cout.flush();
+        std::stringstream tmp;
+        tmp.precision(2);
+        tmp << "Precomputing constraint correction : " << std::fixed << (float)j/(float)systemSize*100.0f << " %   " << '\xd';
+        msg_info("PrecomputedLinearSolver") << tmp.str() ;
 
         if (j>0) b.set(j-1,0.0);
         b.set(j,1.0);
@@ -164,8 +165,8 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
             internalData.Minv.set(j,i,r.element(i) * factInt);
         }
     }
-    std::cout << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
-    std::cout.flush();
+    msg_info("PrecomputedLinearSolver") << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
+
 }
 #endif
 
@@ -209,7 +210,8 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatri
         core::MechanicalParams mparams = *core::MechanicalParams::defaultInstance();
         //TODO get the m b k factor from euler
 
-        std::cerr << "ERROR : the construction of the matrix when the solver is used only as cvonstraint correction is not implemented. You first need to save the matrix into a file" << std::endl;
+        msg_error() << "The construction of the matrix when the solver is used only as cvonstraint "
+                       "correction is not implemented. You first need to save the matrix into a file. " ;
         setSystemMBKMatrix(&mparams);
     }
 

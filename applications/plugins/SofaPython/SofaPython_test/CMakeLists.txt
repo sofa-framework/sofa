@@ -16,6 +16,7 @@ set(PYTHON_FILES
     python/sysPathDuplicate.py
     python/dataVecResize.py
     python/testController.py
+    python/moduleReload.py
     python/test_PySceneWithPyCtlr.py
     python/test_Quaternion.py
     python/test_Tools.py

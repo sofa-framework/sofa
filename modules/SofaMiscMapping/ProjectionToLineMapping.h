@@ -26,9 +26,9 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MultiMapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-//#include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -79,7 +79,7 @@ public:
     Data< OutVecCoord >      f_origins; ///< origins of the lines the point is projected to
     Data< OutVecCoord >      f_directions; ///< directions of the lines the point is projected to (should be normalized, and are normalized in init)
     Data< SReal >            d_drawScale; ///< drawing scale
-    Data< defaulttype::Vec4f >  d_drawColor; ///< drawing color
+    Data< defaulttype::RGBAColor >  d_drawColor; ///< drawing color
 
     virtual void init();
     virtual void reinit();
@@ -173,7 +173,7 @@ public:
 
     Data< helper::vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< SReal >            d_drawScale; ///< drawing scale
-    Data< defaulttype::Vec4f >  d_drawColor; ///< drawing color
+    Data< defaulttype::RGBAColor >  d_drawColor; ///< drawing color
 
     virtual void init();
     virtual void reinit();

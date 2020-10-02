@@ -3,17 +3,17 @@
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -30,13 +30,12 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
 
 namespace sofa {
 namespace {
 
-using std::cout;
-using std::cerr;
-using std::endl;
 using namespace component;
 using namespace defaulttype;
 using sofa::core::objectmodel::New;
@@ -71,7 +70,7 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     /// Create the context for the tests.
     void SetUp()
-    {        
+    {
         // Init
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -123,7 +122,7 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
         for(unsigned i = 0; i<numNodes; i++)
             indices.push_back(i);
          projection->f_indices.setValue(indices);
-       
+
          /// Init
          sofa::simulation::getSimulation()->init(root.get());
     }
@@ -186,7 +185,7 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
        {
           if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
-              CPos diffPoints = (v[i]-Deriv()); 
+              CPos diffPoints = (v[i]-Deriv());
               Real scal = diffPoints.norm(); // should be null
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
@@ -229,6 +228,7 @@ TYPED_TEST_CASE(ProjectToPointConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( ProjectToPointConstraint_test , oneConstrainedParticle )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
@@ -236,6 +236,7 @@ TYPED_TEST( ProjectToPointConstraint_test , oneConstrainedParticle )
 // next test case
 TYPED_TEST( ProjectToPointConstraint_test , allParticlesConstrained )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_allParticlesConstrained();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );

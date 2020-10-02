@@ -34,6 +34,7 @@ namespace component
 namespace loader
 {
 
+//TODO(dmarchal 2017-05-06): Seems there is two version of this code... one is in SpringMassLoader.
 class SOFA_GENERAL_LOADER_API MeshXspLoader : public sofa::core::loader::MeshLoader
 {
 public:
@@ -46,10 +47,6 @@ public:
     template <class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
-        //std::cout << "MeshXspLoader::cancreate()" << std::endl;
-
-        //      std::cout << BaseLoader::m_filename << " is not an Gmsh file." << std::endl;
-        //    BaseObjectDescription, i.e. arg->getAttribute("filename")
         return BaseLoader::canCreate (obj, context, arg);
     }
 

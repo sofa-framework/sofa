@@ -69,16 +69,14 @@ DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping
 template <class TIn, class TInRoot, class TOut>
 int DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::addPoint(const OutCoord& /*c*/)
 {
-    //int i = points.getValue().size();
-    //points.beginEdit()->push_back(c);
-    std::cout<<"addPoint should be supressed"<<std::endl;
+    msg_info() << "addPoint should be supressed" ;
     return 0;
 }
 
 template <class TIn, class TInRoot, class TOut>
 int DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::addPoint(const OutCoord& /*c*/, int /*indexFrom*/)
 {
-    std::cout<<"addPoint should be supressed"<<std::endl;
+    msg_info() << "addPoint should be supressed" ;
     return 0;
 }
 
@@ -156,8 +154,6 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::Vec
     {
         m_fromRootModel = this->getFromModels2()[0];
     }
-
-    //std::cout<<"+++++++++ apply is called"<<std::endl;
 
     if (m_fromRootModel)
     {
@@ -335,27 +331,12 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ve
     if (m_fromRootModel)
     {
         Deriv v,omega;
-        //	unsigned int val;
-        //	unsigned int cpt;
-        //	const VecCoord& pts = this->getPoints();
-        //        out.resize(in.size());
-
-
-        // switch (repartition.getValue().size())
-        //{
-        //    case 0:
-        //   std::cout<<"case 0"<<std::endl;
-        //std::cout<<" in.size() = "<<in.size()<<"  rotatedPoint.size()" <<rotatedPoints.size()<<std::endl;
-
-
         if (in.size() > rotatedPoints.size())
         {
-            bool log = this->f_printLog.getValue();
-            //std::cout<<"+++++++++++ LOG +++++++++ "<<log<<std::endl;
-            //this->f_printLog.setValue(true);
-            serr<<"Warning: applyJT was called before any apply ("<<in.size() << "!="<<rotatedPoints.size()<<")"<<sendl;
-            //this->propagateX();
-            //	if (m_fromModel!=NULL && m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue()!=NULL && m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue()!=NULL)
+            bool log = this->notMuted();
+
+            msg_warning()<<" applyJT was called before any apply ("<<in.size() << "!="<<rotatedPoints.size()<<")";
+
             const InDataVecCoord* xfromData = m_toModel->read(core::ConstVecCoordId::position());
             const InVecCoord xfrom = xfromData->getValue();
             OutDataVecCoord* xtoData = m_toModel->write(core::VecCoordId::position());
@@ -388,56 +369,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ve
             for(unsigned int i=0; i<in.size(); i++)
                 out[i]+=rootX.getOrientation().inverseRotate(in[i]);
         }
-        /*
-        break;
-
-        case 1://one value specified : uniform repartition mapping on the input dofs
-        std::cout<<"case 1"<<std::endl;
-        val = repartition.getValue()[0];
-        cpt=0;
-        for(unsigned int ito=0;ito<(*outRoot).size();ito++){
-        v=Deriv();omega=Deriv();/////////////////
-        for(unsigned int i=0;i<val;i++){
-        Deriv f = in[cpt];
-        v += f;
-        omega += cross(rotatedPoints[cpt],f);
-        out[cpt]= rootX.getOrientation().inverseRotate(in[cpt]);
-        cpt++;
-        }
-        (*outRoot)[ito].getVCenter() += v;
-        (*outRoot)[ito].getVOrientation() += omega;
-
-
-        }
-        break;
-
-        default:
-        std::cout<<"case default"<<std::endl;
-        if (repartition.getValue().size() != (*outRoot).size()){
-        serr<<"Error : mapping dofs repartition is not correct"<<sendl;
-        return;
-        }
-
-        cpt=0;
-        for(unsigned int ito=0;ito<(*outRoot).size();ito++){
-        v=Deriv();omega=Deriv();////////////////////////
-        for(unsigned int i=0;i<repartition.getValue()[ito];i++){
-        Deriv f = in[cpt];
-        out[cpt]= rootX.getOrientation().inverseRotate(in[cpt]);
-        v += f;
-        omega += cross(rotatedPoints[cpt],f);
-        cpt++;
-        }
-        (*outRoot)[ito].getVCenter() += v;
-        (*outRoot)[ito].getVOrientation() += omega;
-
-        }
-        break;
-
-        }*/
     }
-
-
     else
     {
         out.resize(in.size());
@@ -486,9 +418,6 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
                     ++colIt;
                 }
 
-                //std::cout << "omega = " << omega.norm() << std::endl;
-                //std::cout << "v = " << v.norm() << std::endl;
-
                 const InRootDeriv result(m_rootLinearForceScaleFactor.getValue() * v, m_rootAngularForceScaleFactor.getValue() * omega);
 
                 if (!indexFromEnd.getValue())
@@ -498,6 +427,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
                 else
                 {
                     // Commented by PJ. Bug??
+                    // todo(dmarchal 2017-05-03) so what ?
                     // oRoot.addCol(out.size() - 1 - index.getValue(), result);
 
                     const unsigned int numDofs = m_fromModel->getSize();
@@ -506,55 +436,6 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
             }
         }
     }
-    else
-    {
-
-    }
-
-    //int outSize=out.size();
-    //out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
-
-    //if (m_fromRootModel)
-    //{
-    //	int outRootSize = outroot->size();
-    //	outroot->resize(in.size() + outRootSize); // we can accumulate in "out" constraints from several mappings
-
-    //	for(unsigned int i=0; i<in.size(); i++)
-    //	{
-    //		Vector v,omega;
-    //		OutConstraintIterator itIn;
-    //		std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
-
-    //		for (itIn=iter.first;itIn!=iter.second;itIn++)
-    //		{
-    //			const unsigned int node_index = itIn->first;// index of the node
-    //			// out = Jt in
-    //			// Jt = [ I     ]
-    //			//      [ -OM^t ]
-    //			// -OM^t = OM^
-
-    //			const Deriv f = (Deriv) itIn->second;
-    //			v += f;
-    //			omega += cross(rotatedPoints[node_index],f);
-    //			InDeriv f_deform = rootX.getOrientation().inverseRotate(f);
-    //			out[outSize+i].add(node_index,f_deform);
-    //		}
-
-    //		const InRoot::Deriv result(v, omega);
-    //		if (!indexFromEnd.getValue())
-    //		{
-    //			(*outroot)[outRootSize+i].add(index.getValue(), result);
-    //		}
-    //		else
-    //		{
-    //			(*outroot)[outRootSize+i].add(out.size() - 1 - index.getValue(), result);
-    //		}
-    //	}
-    //}
-    //else
-    //{
-
-    //}
 }
 
 
@@ -564,10 +445,10 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 {
     core::topology::BaseMeshTopology* from = t->toBaseMeshTopology();
     if(from == NULL ) {
-		this->serr << __FUNCTION__ << ": could not cast topology to BaseMeshTopology" << this->sendl; 
-		return;
-	}
-	std::list<const core::topology::TopologyChange *>::const_iterator itBegin = from->beginChange();
+        this->serr << __FUNCTION__ << ": could not cast topology to BaseMeshTopology" << this->sendl;
+        return;
+    }
+    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = from->beginChange();
     std::list<const core::topology::TopologyChange *>::const_iterator itEnd = from->endChange();
 
     for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
@@ -576,19 +457,19 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
         const core::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
         switch ( changeType )
         {
-			case core::topology::TRIANGLESADDED:       ///< To notify the end for the current sequence of topological change events
-			{
+            case core::topology::TRIANGLESADDED:       ///< To notify the end for the current sequence of topological change events
+            {
                 core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
-				if(this->f_applyRestPosition.getValue() )
+                if(this->f_applyRestPosition.getValue() )
                     core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-				break;
-			}
-			default:
-				break;
+                break;
+            }
+            default:
+                break;
 
-		}
+        }
 
-	}
+    }
 
 }
 
@@ -665,7 +546,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //		apply(*m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue(),m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
 //
 //
-//	if( this->f_printLog.getValue())	{
+//	if( notMuted())	{
 //		serr<<"DeformableOnRigidFrameMapping::propageX processed :"<<sendl;
 //		if (m_fromRootModel!=NULL)
 //			serr<<"input root: "<<*m_fromRootModel->read(sofa::core::ConstVecCoordId::position())->getValue();
@@ -681,7 +562,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //	if (m_fromModel!=NULL && m_toModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()!=NULL && m_fromModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()!=NULL)
 //		apply(*m_toModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue(), *m_fromModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()));
 //
-//	if( this->f_printLog.getValue()){
+//	if( notMuted()){
 //		serr<<"DeformableOnRigidFrameMapping::propageXfree processed"<<sendl;
 //		if (m_fromRootModel!=NULL)
 //			serr<<"input root: "<<*m_fromRootModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue();
@@ -697,7 +578,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //	if (m_fromModel!=NULL && m_toModel->getV()!=NULL && m_fromModel->getV()!=NULL)
 //		applyJ(m_toModel->read(core::ConstVecDerivId::velocity())->getValue(), m_fromModel->read(core::ConstVecCoordId::velocity())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getV()));
 //
-//	if( this->f_printLog.getValue()){
+//	if( notMuted()){
 //		serr<<"DeformableOnRigidFrameMapping::propagateV processed"<<sendl;
 //		if (m_fromRootModel!=NULL)
 //			serr<<"V input root: "<<m_fromRootModel->read(core::ConstVecDerivId::velocity())->getValue();
@@ -715,7 +596,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //		applyJ(*m_toModel->getDx(), *m_fromModel->getDx(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getDx()));
 //
 //
-//	if( this->f_printLog.getValue()){
+//	if( notMuted()){
 //		serr<<"DeformableOnRigidFrameMapping::propagateDx processed"<<sendl;
 //		if (m_fromRootModel!=NULL)
 //			serr<<"input root: "<<*m_fromRootModel->getDx();
@@ -733,7 +614,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //		applyJT(*m_fromModel->getF(), *m_toModel->getF(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getF()));
 //
 //
-//	if( this->f_printLog.getValue()){
+//	if( notMuted()){
 //		serr<<"DeformableOnRigidFrameMapping::accumulateForce processed"<<sendl;
 //		serr<<" input f : "<<*m_toModel->getF();
 //		if (m_fromRootModel!=NULL)
@@ -752,7 +633,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //	applyJT(*m_fromModel->getF(), *m_toModel->getF(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getF()));
 //
 //
-//	if( this->f_printLog.getValue()){
+//	if( notMuted()){
 //		serr<<"DeformableOnRigidFrameMapping::accumulateDf processed"<<sendl;
 //		serr<<" input df : "<<*m_toModel->getF();
 //		if (m_fromRootModel!=NULL)
@@ -795,7 +676,6 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::recomputeRigidMass()
 
 if (m_fromModel==NULL || m_fromRootModel==NULL)
 return;
-std::cout<<"recmpute Rigid Mass" <<std::endl;
 
 
 masses = m_fromModel->getContext()->getMass();

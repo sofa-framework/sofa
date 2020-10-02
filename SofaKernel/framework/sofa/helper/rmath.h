@@ -186,7 +186,7 @@ inline T factorial (T Number)
 
 //inline void printerror( const char* msg )
 //{
-//    std::cerr<<msg<<std::endl;
+//    msg_info()<<msg<<std::endl;
 //    assert(0);
 //}
 

@@ -101,8 +101,7 @@ void OBJExporter::writeOBJ()
     outfile.close();
     mtlfile.close();
 
-    if( f_printLog.getValue() )
-        sout << "Exporting OBJ as: " << filename.c_str() << " with MTL file: " << mtlfilename.c_str() << sendl;
+    msg_info() << "Exporting OBJ as: " << filename.c_str() << " with MTL file: " << mtlfilename.c_str() ;
 }
 
 void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
@@ -124,10 +123,11 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
         case 'P':
         case 'p':
         {
-            if (!activateExport)
-                std::cout << "Starting OBJ sequece export..." << std::endl;
-            else
-                std::cout << "Ending OBJ sequece export..." << std::endl;
+            if (!activateExport){
+                msg_info() << "Starting OBJ sequence export..." ;
+            }else{
+                msg_info() << "Ending OBJ sequence export..." ;
+            }
             activateExport = !activateExport;
             break;
         }

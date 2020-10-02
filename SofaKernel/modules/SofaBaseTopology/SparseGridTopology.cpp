@@ -536,7 +536,7 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
 
 void SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)
 {
-    std::cerr<<"SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)\n";
+    msg_info()<<"SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)\n";
 
     unsigned char *textureData;
     int width,height,depth;

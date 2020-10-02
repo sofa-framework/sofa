@@ -29,6 +29,7 @@ set(HEADER_FILES
     VecTypes.h
     defaulttype.h
     init.h
+    Color.h
 )
 
 set(SOURCE_FILES

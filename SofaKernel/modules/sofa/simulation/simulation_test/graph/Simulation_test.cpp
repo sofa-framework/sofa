@@ -3,30 +3,32 @@
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBaseMechanics/UniformMass.h>
-
 
 namespace sofa {
 using namespace modeling;
@@ -63,7 +65,7 @@ struct Scene_test: public Sofa_test<SReal>
 
     Scene_test()
     {
-        //std::cerr << "Simulation_test::Simulation_test" << std::endl;
+        //msg_info("SimulationTest") << "Simulation_test::Simulation_test" ;
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         //sofa::simulation::setSimulation(simulation = new sofa::simulation::tree::TreeSimulation());
     }
@@ -232,19 +234,53 @@ protected:
 };
 
 // run the tests
-TEST_F( Scene_test,computeBBox) { this->computeBBox(); }
+TEST_F( Scene_test,computeBBox) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->computeBBox();
+}
 
 // component destruction
-TEST_F( Scene_test,objectDestruction_replace) { this->objectDestruction_replace(); }
-TEST_F( Scene_test,objectDestruction_delete) { this->objectDestruction_delete(); checkDeletions(); }
-TEST_F( Scene_test,objectDestruction_setNull) { this->objectDestruction_setNull(); }
-TEST_F( Scene_test,objectDestruction_reset) { this->objectDestruction_reset(); }
-TEST_F( Scene_test,objectDestruction_subObject) { this->objectDestruction_subObject(); checkDeletions(); }
-TEST_F( Scene_test,objectDestruction_subNodeAndStep) { this->objectDestruction_subNodeAndStep(); }
+TEST_F( Scene_test,objectDestruction_replace) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->objectDestruction_replace();
+}
+
+TEST_F( Scene_test,objectDestruction_delete) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->objectDestruction_delete(); checkDeletions();
+}
+
+TEST_F( Scene_test,objectDestruction_setNull) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->objectDestruction_setNull();
+}
+
+TEST_F( Scene_test,objectDestruction_reset) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->objectDestruction_reset();
+}
+
+TEST_F( Scene_test,objectDestruction_subObject) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->objectDestruction_subObject(); checkDeletions();
+}
+
+TEST_F( Scene_test,objectDestruction_subNodeAndStep) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->objectDestruction_subNodeAndStep();
+}
 
 // graph destruction
-TEST_F( Scene_test,sceneDestruction_unload) { this->sceneDestruction_unload(); }
-TEST_F( Scene_test,sceneDestruction_createnewgraph) { this->sceneDestruction_createnewgraph(); }
+TEST_F( Scene_test,sceneDestruction_unload) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->sceneDestruction_unload();
+}
+
+TEST_F( Scene_test,sceneDestruction_createnewgraph) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->sceneDestruction_createnewgraph();
+}
+
 // Node destruction does not trigger sub-graph destruction. You need to unload the node before. The two following tests are thus irrelevant.
 //TEST_F( Simulation_test,sceneDestruction_reset) { this->sceneDestruction_reset(); }
 //TEST_F( Simulation_test,sceneDestruction_setNull) { this->sceneDestruction_setNull(); }

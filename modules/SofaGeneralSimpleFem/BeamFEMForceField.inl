@@ -73,8 +73,8 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField()
 {
     edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
 
-	_poissonRatio.setRequired(true);
-	_youngModulus.setReadOnly(true);
+    _poissonRatio.setRequired(true);
+    _youngModulus.setReadOnly(true);
 }
 
 template<class DataTypes>
@@ -94,10 +94,10 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     , _assembling(false)
     , edgeHandler(NULL)
 {
-    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);  
+    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
 
-	_poissonRatio.setRequired(true);
-	_youngModulus.setReadOnly(true);
+    _poissonRatio.setRequired(true);
+    _youngModulus.setReadOnly(true);
 }
 
 template<class DataTypes>
@@ -127,9 +127,7 @@ void BeamFEMForceField<DataTypes>::init()
 
 
     stiffnessContainer = context->core::objectmodel::BaseContext::get<container::StiffnessContainer>();
-    //  	lengthContainer = context->core::objectmodel::BaseContext::get<container::LengthContainer>();
     poissonContainer = context->core::objectmodel::BaseContext::get<container::PoissonContainer>();
-    //	radiusContainer = context->core::objectmodel::BaseContext::get<container::RadiusContainer>();
 
     if (_topology==NULL)
     {
@@ -176,15 +174,12 @@ template <class DataTypes>
 void BeamFEMForceField<DataTypes>::reinit()
 {
     unsigned int n = _indexedElements->size();
-    //_beamQuat.resize( n );
-    //_stiffnessMatrices.resize( n );
     _forces.resize( this->mstate->getSize() );
 
     initBeams( n );
     for (unsigned int i=0; i<n; ++i)
         reinitBeam(i);
-//        serr<<"reinitBeam Ok"<<sendl;
-    sout << "BeamFEMForceField: init OK, "<<n<<" elements."<<sendl;
+    msg_info() << "reinit OK, "<<n<<" elements." ;
 }
 
 template <class DataTypes>
@@ -195,26 +190,15 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     Index b = (*_indexedElements)[i][1];
 
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    //    sout << "Beam "<<i<<" : ("<<a<<' '<<b<<") : beamsData size = "<<beamsData.size()<<" mstate size = "<<this->mstate->getSize()<<" x0 size = "<<x0.size()<<sendl;
-    //if (needInit)
     if (stiffnessContainer)
         stiffness = stiffnessContainer->getStiffness(i) ;
     else
         stiffness =  _youngModulus.getValue() ;
 
-    //if (lengthContainer)
-    //	length = lengthContainer->getLength(i) ;
-    //else
     length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
 
-    //if (radiusContainer)
-    //	radius = radiusContainer->getRadius(i) ;
-    //else
     radius = _radius.getValue() ;
     radiusInner = _radiusInner.getValue();
-    //if (poissonContainer)
-    //	poisson = poissonContainer->getPoisson(i) ;
-    //else
     poisson = _poissonRatio.getValue() ;
 
 
@@ -240,24 +224,9 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
 {
     VecDeriv& f = *(dataF.beginEdit());
     const VecCoord& p=dataX.getValue();
-    //const VecDeriv& v=dataV.getValue();
-
-    //std::cout<<" BeamFEMForceField<DataTypes>::addForce  "<<std::endl;
     f.resize(p.size());
-    //_beamQuat.resize( _indexedElements->size() );
 
     //// First compute each node rotation
-    //unsigned int i;
-
-    //_nodeRotations.resize(p.size());
-    ////Mat3x3d R; R.identity();
-    //for(i=0; i<p.size(); ++i)
-    //{
-    //	//R = R * MatrixFromEulerXYZ(p[i][3], p[i][4], p[i][5]);
-    //	//_nodeRotations[i] = R;
-    //	p[i].getOrientation().toMatrix(_nodeRotations[i]);
-    //}
-
     typename VecElement::const_iterator it;
 
     if (_partial_list_segment)
@@ -269,11 +238,9 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
             Element edge= (*_indexedElements)[i];
             Index a = edge[0];
             Index b = edge[1];
-            //std::cout<<"addForce for segment "<<a<<" - "<<b<<std::endl;
             initLarge(i,a,b);
             accumulateForceLarge( f, p, i, a, b );
         }
-
     }
     else
     {
@@ -288,8 +255,6 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
             accumulateForceLarge( f, p, i, a, b );
         }
     }
-    //std::cout << "F_beam = " << f << std::endl;
-
 
     dataF.endEdit();
 }
@@ -305,7 +270,6 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
 
     if (_partial_list_segment)
     {
-
         for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
         {
             unsigned int i = _list_segment.getValue()[j];
@@ -315,7 +279,6 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
 
             applyStiffnessLarge(df, dx, i, a, b, kFactor);
         }
-
     }
     else
     {
@@ -357,8 +320,6 @@ void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
     Real L3 = (Real) (L2 * _L);
     Real EIy = (Real)(_E * _Iy);
     Real EIz = (Real)(_E * _Iz);
-
-    //std::cout<<" Young Modulus :"<<_E<<std::endl;
 
     // Find shear-deformation parameters
     if (_Asy == 0)
@@ -448,7 +409,6 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 
     if(Theta>(SReal)0.0000001)
     {
-        //std::cout << "beam " << i << " : Theta = " << Theta << std::endl;
         dW.normalize();
 
         beamQuat(i) = quatA*dQ.axisToQuat(dW, Theta/2);
@@ -579,7 +539,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
     {
         unsigned int i=0;
 
-		unsigned int &offset = r.offset;
+        unsigned int &offset = r.offset;
 
         if (_partial_list_segment)
         {
@@ -637,7 +597,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
                 Transformation R,Rt;
                 q.toMatrix(R);
                 Rt.transpose(R);
-                const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;                
+                const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
                 StiffnessMatrix K;
                 bool exploitSymmetry = _useSymmetricAssembly.getValue();
 
@@ -672,12 +632,6 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
                         }
                     }
                 }
-
-                /*double sumDiffTrans=0.0;
-                for (size_t ii = 0; ii < 12; ii++)
-                    for (size_t jj = ii+1; jj < 12; jj++)
-                        sumDiffTrans += fabs(K.elems[ii][jj] - K.elems[jj][ii]);
-                std::cout << "[" << this->getName() << "]: difference in symmetry: " << sumDiffTrans << std::endl;*/
 
                 int index[12];
                 for (int x1=0; x1<6; x1++)
@@ -759,7 +713,6 @@ void BeamFEMForceField<DataTypes>::setBeam(unsigned int i, double E, double L, d
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
     bd[i].init(E,L,nu,r,rInner);
     beamsData.endEdit();
-    //_indexedElements = &_topology->getEdges();
 }
 
 template<class DataTypes>
@@ -775,178 +728,15 @@ void BeamFEMForceField<DataTypes>::BeamInfo::init(double E, double L, double nu,
     _G=_E/(2.0*(1.0+_nu));
     _Iz = M_PI*(r*r*r*r - rInner*rInner*rInner*rInner)/4.0;
 
-    //_Iz = M_PI*(r*r*r*r)/4.0;
     _Iy = _Iz ;
     _J = _Iz+_Iy;
     _A = M_PI*(r*r - rInner*rInner);
 
-    //std::cout << "Iz = " << _Iz << std::endl;
-    //std::cout << "A = " << _A << std::endl;
 
     _Asy = 0.0;
     _Asz = 0.0;
-
-    //_k_loc.ReSize(12, 12);
-    //_k_flex.ReSize(12,12);
-    //_lambda.ReSize(12, 12);
-    //_u_init.ReSize(12,1);
-    //_u_actual.ReSize(12,1);
-    //_f_k.ReSize(12,1);
-
-    //_k_loc=0;
-    //_u_init=0;
-
-    //_Ke.ReSize(12,12);
-
-    //localStiffness();
-}
-/*
-void BeamInfo::localStiffness()
-{
-	int      i,j;
-	double   phiy, phiz;
-	double   L2 = _L * _L;
-	double   L3 = L2 * _L;
-	double   EIy = _E * _Iy;
-	double   EIz = _E * _Iz;
-
-	// Find shear-deformation parameters
-	if (_Asy == 0)
-		phiy = 0.0;
-	else
-		phiy = 24.0*(1.0+_nu)*_Iz/(_Asy*L2);
-
-	if (_Asz == 0)
-		phiz = 0.0;
-	else
-		phiz = 24.0*(1.0+_nu)*_Iy/(_Asz*L2);
-
-
-	// Define stiffness matrix 'k' in local coordinates
-	Try {
-		_k_loc = 0;
-		_k_loc(1,1)   = _E*_A/_L;
-		_k_loc(2,2)   = 12.0*EIz/(L3*(1.0+phiy));
-		_k_loc(3,3)   = 12.0*EIy/(L3*(1.0+phiz));
-		_k_loc(4,4)   = _G*_J/_L;
-		_k_loc(5,5)   = (4.0+phiz)*EIy/(_L*(1.0+phiz));
-		_k_loc(6,6)   = (4.0+phiy)*EIz/(_L*(1.0+phiy));
-		_k_loc(7,7)   = _k_loc(1,1);
-		_k_loc(8,8)   = _k_loc(2,2);
-		_k_loc(9,9)   = _k_loc(3,3);
-		_k_loc(10,10) = _k_loc(4,4);
-		_k_loc(11,11) = _k_loc(5,5);
-		_k_loc(12,12) = _k_loc(6,6);
-
-		_k_loc(5,3)   = -6.0*EIy/(L2*(1.0+phiz));
-		_k_loc(6,2)   =  6.0*EIz/(L2*(1.0+phiy));
-		_k_loc(7,1)   = -_k_loc(1,1);
-		_k_loc(8,2)   = -_k_loc(2,2);
-		_k_loc(8,6)   = -_k_loc(6,2);
-		_k_loc(9,3)   = -_k_loc(3,3);
-		_k_loc(9,5)   = -_k_loc(5,3);
-		_k_loc(10,4)  = -_k_loc(4,4);
-		_k_loc(11,3)  = _k_loc(5,3);
-		_k_loc(11,5)  = (2.0-phiz)*EIy/(_L*(1.0+phiz));
-		_k_loc(11,9)  = -_k_loc(5,3);
-		_k_loc(12,2)  = _k_loc(6,2);
-		_k_loc(12,6)  = (2.0-phiy)*EIz/(_L*(1.0+phiy));
-		_k_loc(12,8)  = -_k_loc(6,2);
-
-		for (i=1; i<=11; i++)
-			for (j=i+1; j<=12; j++)
-				_k_loc(i,j) = _k_loc(j,i);
-
-		_k_flex = _k_loc;
-
-// 		for (i=1; i<=12; i++)
-// 			_k_flex(i,i) = FLEXIBILITY * _k_flex(i,i);
-
-	}
-	CatchAll { sout << "ERROR while computing '_k_loc'" << NewMAT::Exception::what() << sendl;
-	}
-}
-*/
-/*
-template<class DataTypes>
-void BeamFEMForceField<DataTypes>::computeUinit(unsigned int i, Vec3d &P1, Vec3d &P2, Vec3d &LoX1, Vec3d &LoY1, Vec3d &LoZ1, Vec3d &LoX2, Vec3d &LoY2, Vec3d &LoZ2)
-{
-	beamsData[i].computeUinit(P1, P2, LoX1, LoY1, LoZ1, LoX2, LoY2, LoZ2);
 }
 
-void BeamInfo::computeUinit(Vec3d &P1, Vec3d &P2, Vec3d &LoX1, Vec3d &LoY1, Vec3d &LoZ1, Vec3d &LoX2, Vec3d &LoY2, Vec3d &LoZ2)
-{
-	Vec3d        p2; //position of point2 in local frame (LoX1,LoY1,LoZ1);
-	Vec3d      P1P2, p1p2, p1p2_init, u_init;
-	Vec3d      LoX1_loc, LoY1_loc, LoZ1_loc, LoX2_loc, LoY2_loc, LoZ2_loc;
-	defaulttype::Mat3x3d    R1;
-	NewMAT::ColumnVector Finit(9);
-	NewMAT::ColumnVector Uinit(9);
-	NewMAT::Matrix K(9,9);
-
-	Finit=0; Uinit=0; K=0;
-
-	LoX1_loc = Vec3d(1.0,0.0,0.0);
-	LoY1_loc = Vec3d(0.0,1.0,0.0);
-	LoZ1_loc = Vec3d(0.0,0.0,1.0);
-
- 	Try{
-		K.SubMatrix(1,6,1,6) = _k_loc.SubMatrix(7,12,7,12);
-	}
-	CatchAll {
-		sout << "ERROR while computing 'K' in ComputeUinit" << NewMAT::Exception::what() << sendl;
-	}
-
-	P1P2 = P2 - P1;
-	p1p2_init = Vec3d(_L,0.0,0.0); //the beam is aligned along LoX1 if there is no initial deformation
-
-	R1[0] = LoX1;
-	R1[1] = LoY1;
-	R1[2] = LoZ1;
-
-	p1p2 = R1*P1P2;
-
-	u_init = p1p2 - p1p2_init;
-
-	// add lagrange multipliers:
-	K(7,1) = 1.0; K(1,7) = 1.0;
-	K(8,2) = 1.0; K(2,8) = 1.0;
-	K(9,3) = 1.0; K(3,9) = 1.0;
-
-	//_u_init must respect displacements
-	Finit(7) = u_init[0];
-	Finit(8) = u_init[1];
-	Finit(9) = u_init[2];
-
-	Try
-	{
-		Uinit = K.i() *	 Finit;
-	}
-	CatchAll
-	{
-		sout << "ERROR while computing 'Uinit = K.i() * Finit' in ComputeUinit" << NewMAT::Exception::what() << sendl;
-	}
-	_u_init=0.0;
- 	_u_init.SubMatrix(7,12,1,1) = Uinit.SubMatrix(1,6,1,1);
-	Vec3d vtemp = Vec3d(Uinit(4), Uinit(5), Uinit(6));
-
-	if (vtemp == Vec3d(0.0,0.0,0.0))
-		vtemp = Vec3d(0.0,0.0,1.0);
-
-	Quaternion q(vtemp, vtemp.norm());
-	vtemp.normalize();
-
-	LoX2_loc = q.rotate(LoX1_loc);
-	LoY2_loc = q.rotate(LoY1_loc);
-	LoZ2_loc = q.rotate(LoZ1_loc);
-
-	LoX2 = LoX1 * LoX2_loc[0] + LoY1 * LoX2_loc[1] + LoZ1 * LoX2_loc[2] ;
-	LoY2 = LoX1 * LoY2_loc[0] + LoY1 * LoY2_loc[1] + LoZ1 * LoY2_loc[2] ;
-	LoZ2 = LoX1 * LoZ2_loc[0] + LoY1 * LoZ2_loc[1] + LoZ1 * LoZ2_loc[2] ;
-
-	_u_actual = _u_init;
-}
-*/
 } // namespace forcefield
 
 } // namespace component

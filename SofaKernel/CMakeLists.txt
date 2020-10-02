@@ -99,8 +99,9 @@ if(NOT WIN32)
 endif(NOT WIN32)
 
 
-## Try to find an installed boost. If boost is not found, use miniBoost.
-find_package(Boost REQUIRED)
+## Try to find an installed Boost (1.54.0 or higher).
+set(BOOST_MIN_VERSION "1.54.0")
+find_package(Boost ${BOOST_MIN_VERSION} REQUIRED)
 
 ### Dependency pack for Windows
 if(MSVC)
@@ -144,15 +145,12 @@ if(MSVC)
 
 endif()
 
-option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/) when installing" ON)
-if(SOFA_INSTALL_RESOURCES_FILES)
-    # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
-    # build directory, it points to the source tree, whereas in the install
-    # directory, it contains to relative paths to the installed resource directory.
-    configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-    configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
-    install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
-endif()
+# Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
+# build directory, it points to the source tree, whereas in the install
+# directory, it contains to relative paths to the installed resource directory.
+configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
+configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
+install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
 
 ### Extlibs
 option(SOFA_USE_MASK "Use mask optimization" ON)

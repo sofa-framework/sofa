@@ -599,14 +599,12 @@ void BilateralInteractionConstraint<DataTypes>::handleEvent(Event *event)
     if (KeypressedEvent::checkEventType(event))
     {
         KeypressedEvent *ev = static_cast<KeypressedEvent *>(event);
-
-        //std::cout << "key pressed " << std::endl;
         switch(ev->getKey())
         {
 
         case 'A':
         case 'a':
-            std::cout << "Activating constraint" << std::endl;
+            msg_info() << "Activating constraint" ;
             activated = true;
             break;
         }
@@ -618,7 +616,7 @@ void BilateralInteractionConstraint<DataTypes>::handleEvent(Event *event)
         ++iteration;
         if (!activated && activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration)
         {
-            std::cout << "Activating constraint" << std::endl;
+            msg_info() << "Activating constraint" ;
             activated = true;
         }
     }

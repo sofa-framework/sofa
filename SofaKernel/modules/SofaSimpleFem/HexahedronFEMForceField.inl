@@ -327,7 +327,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 {
 // 	serr<<"HexahedronFEMForceField<DataTypes>::computeElementStiffnessAsFinest"<<sendl;
 
-    const bool verbose = this->f_printLog.getValue() && (elementIndice==0);
+    const bool verbose = elementIndice==0;
     // X = n0 (1-x1)(1-x2)(1-x3)/8 + n1 (1+x1)(1-x2)(1-x3)/8 + n2 (1+x1)(1+x2)(1-x3)/8 + n3 (1-x1)(1+x2)(1-x3)/8 + n4 (1-x1)(1-x2)(1+x3)/8 + n5 (1+x1)(1-x2)(1+x3)/8 + n6 (1+x1)(1+x2)(1+x3)/8 + n7 (1-x1)(1+x2)(1+x3)/8
     // J = [ DXi / xj ] = [ (n1i-n0i)(1-x2)(1-x3)/8+(n2i-n3i)(1+x2)(1-x3)/8+(n5i-n4i)(1-x2)(1+x3)/8+(n6i-n7i)(1+x2)(1+x3)/8  (n3i-n0i)(1-x1)(1-x3)/8+(n2i-n1i)(1+x1)(1-x3)/8+(n7i-n4i)(1-x1)(1+x3)/8+(n6i-n5i)(1+x1)(1+x3)/8  (n4i-n0i)(1-x1)(1-x2)/8+(n5i-n1i)(1+x1)(1-x2)/8+(n6i-n2i)(1+x1)(1+x2)/8+(n7i-n3i)(1-x1)(1+x2)/8 ]
     // if it is an orthogonal regular hexahedra: J = [ [ l0/2 0 0 ] [ 0 l1/2 0 ] [ 0 0 l2/2 ] ] det(J) = l0l1l2/8 = vol/8
@@ -365,12 +365,10 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
         detJ = defaulttype::determinant(J);
         J_1.invert(J);
         J_1t.transpose(J_1);
-        if (verbose)
-        {
-            sout << "J = "<<J<<sendl;
-            sout << "invJ = "<<J_1<<sendl;
-            sout << "detJ = "<<detJ<<sendl;
-        }
+
+        dmsg_info_when(verbose) << "J = " << J << msgendl
+                                << "invJ = "  << J_1 << msgendl
+                                << "detJ = " << detJ << msgendl;
     }
 //     else
 //         sout << "Hexa "<<elementIndice<<" is NOT a parallelepiped."<<sendl;
@@ -404,12 +402,10 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                     detJ = defaulttype::determinant(J);
                     J_1.invert(J);
                     J_1t.transpose(J_1);
-                    if (verbose)
-                    {
-                        sout << "J = "<<J<<sendl;
-                        sout << "invJ = "<<J_1<<sendl;
-                        sout << "detJ = "<<detJ<<sendl;
-                    }
+
+                    dmsg_info_when(verbose) << "J = " << J << msgendl
+                                            << "invJ = "  << J_1 << msgendl
+                                            << "detJ = " << detJ << msgendl;
                 }
                 Real qx[8];
                 Real qy[8];
@@ -421,12 +417,12 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                     Real dNi_dx1 =(Real)( (_coef[i][0])*(1+_coef[i][1]*x2)*(1+_coef[i][2]*x3)/8.0);
                     Real dNi_dx2 =(Real)((1+_coef[i][0]*x1)*(_coef[i][1])*(1+_coef[i][2]*x3)/8.0);
                     Real dNi_dx3 =(Real)((1+_coef[i][0]*x1)*(1+_coef[i][1]*x2)*(_coef[i][2])/8.0);
-                    if (verbose) sout << "dN"<<i<<"/dxi = "<<dNi_dx1<<" "<<dNi_dx2<<" "<<dNi_dx3<<""<<sendl;
+                    dmsg_info_when(verbose) << "dN"<<i<<"/dxi = "<<dNi_dx1<<" "<<dNi_dx2<<" "<<dNi_dx3;
 #ifdef DN_USE_J
                     qx[i] = dNi_dx1*J_1[0][0] + dNi_dx2*J_1[1][0] + dNi_dx3*J_1[2][0];
                     qy[i] = dNi_dx1*J_1[0][1] + dNi_dx2*J_1[1][1] + dNi_dx3*J_1[2][1];
                     qz[i] = dNi_dx1*J_1[0][2] + dNi_dx2*J_1[1][2] + dNi_dx3*J_1[2][2];
-                    if (verbose) sout << "q"<<i<<" = "<<qx[i]<<" "<<qy[i]<<" "<<qz[i]<<""<<sendl;
+                    dmsg_info_when(verbose) << "q"<<i<<" = "<<qx[i]<<" "<<qy[i]<<" "<<qz[i]<<"";
 #else
                     qx[i] = dNi_dx1;
                     qy[i] = dNi_dx2;
@@ -448,7 +444,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                     MBi[3][0] = W * qy[i]; MBi[3][1] = W * qx[i]; MBi[3][2] = (Real)0;
                     MBi[4][0] = (Real)0;   MBi[4][1] = W * qz[i]; MBi[4][2] = W * qy[i];
                     MBi[5][0] = W * qz[i]; MBi[5][1] = (Real)0;   MBi[5][2] = W * qx[i];
-                    if (verbose) sout << "MB"<<i<<" = "<<MBi<<""<<sendl;
+
+                    dmsg_info_when(verbose) << "MB"<<i<<" = "<<MBi<<"";
+
                     for(int j=i; j<8; ++j)
                     {
                         Mat33 k; // k = BjtMBi
@@ -554,7 +552,8 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 
     if (verbose)
     {
-        sout<<"============================HexahedronFEMForceField<DataTypes>::computeElementStiffness:  Element "<<"   ===STIFNESSMATRIX===="<<sendl;
+        std::stringstream tmp;
+        tmp <<"============================ computeElementStiffness:  Element "<<"   ===STIFNESSMATRIX====" << msgendl;
         for(int inode=0; inode<8; inode++)
         {
             for(int icomp=0; icomp<3; icomp++)
@@ -563,20 +562,19 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 
                 for(int jnode=0; jnode<8; jnode++)
                 {
-                    std::cout<<"| ";
+                    tmp<<"| ";
                     for(int jcomp=0; jcomp<3; jcomp++)
                     {
                         int jmatrix=jnode*3+jcomp;
-                        sout<<K[imatrix][jmatrix]<<" ";
+                        tmp<<K[imatrix][jmatrix]<<" ";
                     }
                 }
-                sout<<" |"<<sendl;
+                tmp<<" |  "<<std::endl;
             }
-            sout<<sendl;
+            tmp<<"  "<<sendl;
         }
-
-        //<<K<<std::endl
-        sout<<"==============================================================="<<sendl;
+        tmp<<"===============================================================" << msgendl;
+        msg_info() << tmp.str() ;
     }
 }
 
@@ -1272,6 +1270,29 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 }
 
 
+
+template<class DataTypes>
+void HexahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    if( !onlyVisible ) return;
+
+    helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::VecCoordId::position());
+
+    static const Real max_real = std::numeric_limits<Real>::max();
+    static const Real min_real = std::numeric_limits<Real>::lowest();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
+    for (size_t i=0; i<x.size(); i++)
+    {
+        for (int c=0; c<3; c++)
+        {
+            if (x[i][c] > maxBBox[c]) maxBBox[c] = (Real)x[i][c];
+            else if (x[i][c] < minBBox[c]) minBBox[c] = (Real)x[i][c];
+        }
+    }
+
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+}
 
 
 template<class DataTypes>

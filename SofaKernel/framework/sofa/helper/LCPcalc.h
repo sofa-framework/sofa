@@ -106,9 +106,6 @@ inline SOFA_HELPER_API double absError(double f1x, double f1y, double f1z, doubl
 
 
 SOFA_HELPER_API int resoudreLCP(int, double *, double **, double *);
-SOFA_HELPER_API int lcp_lexicolemke(int, double *, double **, double *);
-// same with pre-allocated matrix A
-SOFA_HELPER_API int lcp_lexicolemke(int, double *, double **, double **, double *);
 
 
 SOFA_HELPER_API void afficheSyst(double *q,double **M, int *base, double **mat, int dim);

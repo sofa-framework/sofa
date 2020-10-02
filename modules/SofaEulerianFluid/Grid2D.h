@@ -134,7 +134,7 @@ public:
 #ifdef DEBUGGRID
         if (((unsigned)x>=(unsigned)nx) || ((unsigned)y>=(unsigned)ny))
         {
-            std::cerr<<"INVALID CELL "<<x<<','<<y<<std::endl;
+            msg_info("Grid2D")<<"INVALID CELL "<<x<<','<<y ;
             return &bcell;
         }
 #endif
@@ -146,7 +146,7 @@ public:
 #ifdef DEBUGGRID
         if (((unsigned)x>=(unsigned)nx) || ((unsigned)y>=(unsigned)ny))
         {
-            std::cerr<<"INVALID CELL "<<x<<','<<y<<std::endl;
+            msg_info("Grid2D")<<"INVALID CELL "<<x<<','<<y ;
             return &bcell;
         }
 #endif

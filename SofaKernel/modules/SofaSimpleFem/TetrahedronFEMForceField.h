@@ -349,13 +349,8 @@ protected:
 
     }
 
-    virtual ~TetrahedronFEMForceField()
-    {
-// 	    if (_gatherPt) delete _gatherPt;
-// 	    if (_gatherBsize)  delete _gatherBsize;
-// 	    _gatherPt = NULL;
-// 	    _gatherBsize = NULL
-    }
+    virtual ~TetrahedronFEMForceField();
+
 public:
     void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
 

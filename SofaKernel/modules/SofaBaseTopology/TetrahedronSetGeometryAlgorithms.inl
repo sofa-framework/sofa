@@ -289,7 +289,124 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
         qpa.push_back(QuadraturePoint(v,d1));
     }
     tetrahedronNumericalIntegration.addQuadratureMethod(m,8,qpa);
-
+    /// integration with  accuracy of order 10 with 81 points
+    // This rule is originally from 
+    // A SET OF SYMMETRIC QUADRATURE RULES
+    // ON TRIANGLES AND TETRAHEDRA*
+    // Linbo Zhang, Tao Cui and Hui Liu:
+    // See software PHG http://lsec.cc.ac.cn/phg/
+    qpa.clear();
+    v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
+    c1= (Real).04574189830483037077884770618329337/6.0;
+    qpa.push_back(QuadraturePoint(v,(Real)c1 ));
+    // 4 points
+    a=(Real).11425191803006935688146412277598412;
+    b=1-3*a;
+    c3=(Real)0.01092727610912416907498417206565671/6.0;
+    for (i=0;i<4;++i) {
+        v=BarycentricCoordinatesType(a,a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c3));
+    }
+    // 4 points
+    a=(Real).01063790234539248531264164411274776;
+    b=1-3*a;
+    c3=(Real).00055352334192264689534558564012282/6.0;
+    for (i=0;i<4;++i) {
+        v=BarycentricCoordinatesType(a,a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c3));
+    }
+    // 4 points
+    a=(Real).31274070833535645859816704980806110;
+    b=1-3*a;
+    c3=(Real).02569337913913269580782688316792080/6.0;
+    for (i=0;i<4;++i) {
+        v=BarycentricCoordinatesType(a,a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c3));
+    }
+    // 6 points
+    a=(Real).01631296303281644000000000000000000;
+    b=(Real)0.5-a;
+    c5= (Real) .00055387649657283109312967562590035/6.0;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(a,a,a,a);
+        v[edgesInTetrahedronArray[i][0]]=b;
+        v[edgesInTetrahedronArray[i][1]]=b;
+        qpa.push_back(QuadraturePoint(v,c5));
+    }
+    /// 12 points
+    a=(Real).03430622963180452385835196582344460;
+    b=(Real) .59830121060139461905983787517050400;
+    c=(Real) 1-2*a-b;
+    d=(Real) .01044842402938294329072628200105773/6.0;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(a,a,a,a);
+        v[edgesInTetrahedronArray[i][0]]=b;
+        v[edgesInTetrahedronArray[i][1]]=c;
+        qpa.push_back(QuadraturePoint(v,d));
+        v[edgesInTetrahedronArray[i][0]]=c;
+        v[edgesInTetrahedronArray[i][1]]=b;
+        qpa.push_back(QuadraturePoint(v,d));
+    }
+    /// 12 points
+    a=(Real).12346418534551115945916818783743644;
+    b=(Real).47120066204746310257913700590727081;
+    c=(Real) 1-2*a-b;
+    d=(Real) .02513844602651287118280517785487423/6.0;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(a,a,a,a);
+        v[edgesInTetrahedronArray[i][0]]=b;
+        v[edgesInTetrahedronArray[i][1]]=c;
+        qpa.push_back(QuadraturePoint(v,d));
+        v[edgesInTetrahedronArray[i][0]]=c;
+        v[edgesInTetrahedronArray[i][1]]=b;
+        qpa.push_back(QuadraturePoint(v,d));
+    }
+    /// 12 points
+    a=(Real).40991962933181117418479812480531207;
+    b=(Real).16546413290740130923509687990363569;
+    c=(Real) 1-2*a-b;
+    d=(Real) .01178620679249594711782155323755017/6.0;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(a,a,a,a);
+        v[edgesInTetrahedronArray[i][0]]=b;
+        v[edgesInTetrahedronArray[i][1]]=c;
+        qpa.push_back(QuadraturePoint(v,d));
+        v[edgesInTetrahedronArray[i][0]]=c;
+        v[edgesInTetrahedronArray[i][1]]=b;
+        qpa.push_back(QuadraturePoint(v,d));
+    }
+    /// 12 points
+    a=(Real).17397243903011716743177479785668929;
+    b=(Real).62916375300275643773181882027844514;
+    c=(Real) 1-2*a-b;
+    d=(Real) .01332022473886650471019828463616468/6.0;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(a,a,a,a);
+        v[edgesInTetrahedronArray[i][0]]=b;
+        v[edgesInTetrahedronArray[i][1]]=c;
+        qpa.push_back(QuadraturePoint(v,d));
+        v[edgesInTetrahedronArray[i][0]]=c;
+        v[edgesInTetrahedronArray[i][1]]=b;
+        qpa.push_back(QuadraturePoint(v,d));
+    }
+    /// 12 points
+    a=(Real).03002157005631784150255786784038011;
+    b=(Real).81213056814351208262160080755918730;
+    c=(Real) 1-2*a-b;
+    d=(Real) .00615987577565961666092767531756180/6.0;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(a,a,a,a);
+        v[edgesInTetrahedronArray[i][0]]=b;
+        v[edgesInTetrahedronArray[i][1]]=c;
+        qpa.push_back(QuadraturePoint(v,d));
+        v[edgesInTetrahedronArray[i][0]]=c;
+        v[edgesInTetrahedronArray[i][1]]=b;
+        qpa.push_back(QuadraturePoint(v,d));
+    }
+    tetrahedronNumericalIntegration.addQuadratureMethod(m,10,qpa);
 }
 
 
@@ -605,7 +722,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
     if(ind_ta == core::topology::BaseMeshTopology::InvalidID)
         std::cout << "ERROR: Can't find the seed" << std::endl;
     Real d = r;
-//		const Tetrahedron &ta=this->m_topology->getTetrahedron(ind_ta);
+//      const Tetrahedron &ta=this->m_topology->getTetrahedron(ind_ta);
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
     unsigned int t_test=ind_ta;

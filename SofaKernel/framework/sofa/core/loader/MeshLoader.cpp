@@ -39,10 +39,15 @@ MeshLoader::MeshLoader() : BaseLoader()
     , d_triangles(initData(&d_triangles,"triangles","Triangles of the mesh loaded"))
     , d_quads(initData(&d_quads,"quads","Quads of the mesh loaded"))
     , d_polygons(initData(&d_polygons,"polygons","Polygons of the mesh loaded"))
+    , d_highOrderEdgePositions(initData(&d_highOrderEdgePositions,"highOrderEdgePositions","High order edge points of the mesh loaded"))
+    , d_highOrderTrianglePositions(initData(&d_highOrderTrianglePositions,"highOrderTrianglePositions","High order triangle points of the mesh loaded"))
+    , d_highOrderQuadPositions(initData(&d_highOrderQuadPositions,"highOrderQuadPositions","High order quad points of the mesh loaded"))
     , d_tetrahedra(initData(&d_tetrahedra,"tetrahedra","Tetrahedra of the mesh loaded"))
     , d_hexahedra(initData(&d_hexahedra,"hexahedra","Hexahedra of the mesh loaded"))
     , d_pentahedra(initData(&d_pentahedra,"pentahedra","Pentahedra of the mesh loaded"))
     , d_pyramids(initData(&d_pyramids,"pyramids","Pyramids of the mesh loaded"))
+    , d_highOrderTetrahedronPositions(initData(&d_highOrderTetrahedronPositions,"highOrderTetrahedronPositions","High order tetrahedron points of the mesh loaded"))
+    , d_highOrderHexahedronPositions(initData(&d_highOrderHexahedronPositions,"highOrderHexahedronPositions","High order hexahedron points of the mesh loaded"))
     , d_normals(initData(&d_normals,"normals","Normals of the mesh loaded"))
     , d_edgesGroups(initData(&d_edgesGroups,"edgesGroups","Groups of Edges"))
     , d_trianglesGroups(initData(&d_trianglesGroups,"trianglesGroups","Groups of Triangles"))
@@ -95,7 +100,7 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 
     if (arg->getAttribute("scale"))
     {
-        SReal s = (SReal) atof(arg->getAttribute("scale"));
+        SReal s = (SReal) arg->getAttributeAsFloat("scale", 1.0);
         d_scale.setValue(d_scale.getValue()*s);
     }
 
@@ -237,7 +242,7 @@ void MeshLoader::updateElements()
         for (size_t i = 0; i < triangles.size(); ++i)
             eSetTri.insert(uniqueOrder(triangles[i]));
         int nbnewTri = 0;
-  
+
         for (size_t i = 0; i < pentahedra.size(); ++i)
         {
             Pentahedron p = pentahedra[i];
@@ -256,7 +261,7 @@ void MeshLoader::updateElements()
                 quads.push_back(quad2);
                 ++nbnewQuad;
             }
-            if (eSetQuad.insert(uniqueOrder(quad3)).second){ // the element was inserted     
+            if (eSetQuad.insert(uniqueOrder(quad3)).second){ // the element was inserted
                 quads.push_back(quad3);
                 ++nbnewQuad;
             }
@@ -268,7 +273,7 @@ void MeshLoader::updateElements()
                 triangles.push_back(tri2);
                 ++nbnewTri;
             }
-           
+
         }
         if (nbnewQuad > 0 || nbnewTri>0 )
             sout << nbnewQuad << " quads, "<<nbnewTri<<" triangles were missing around the pentahedra" << sendl;
@@ -276,7 +281,7 @@ void MeshLoader::updateElements()
     if (d_pyramids.getValue().size() > 0 && d_createSubelements.getValue())
     {
         helper::ReadAccessor<Data<helper::vector< Pyramid > > > pyramids = this->d_pyramids;
-        
+
         helper::WriteAccessor<Data<helper::vector< Quad > > > quads = this->d_quads;
         helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->d_triangles;
 
@@ -289,7 +294,7 @@ void MeshLoader::updateElements()
         for (size_t i = 0; i < triangles.size(); ++i)
             eSetTri.insert(uniqueOrder(triangles[i]));
         int nbnewTri = 0;
-        
+
         for (size_t i = 0; i < pyramids.size(); ++i)
         {
             Pyramid p = pyramids[i];
@@ -337,7 +342,7 @@ void MeshLoader::updateElements()
             Tetrahedron t = tetrahedra[i];
             Triangle e1(t[0],t[2],t[1]);
             Triangle e2(t[0],t[1],t[3]);
-            Triangle e3(t[0],t[3],t[2]); 
+            Triangle e3(t[0],t[3],t[2]);
             Triangle e4(t[1],t[2],t[3]);  //vtk ordering http://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf
             if (eSet.insert(uniqueOrder(e1)).second){ // the element was inserted
                 triangles.push_back(e1);

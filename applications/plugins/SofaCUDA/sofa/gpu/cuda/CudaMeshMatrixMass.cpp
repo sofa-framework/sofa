@@ -29,7 +29,6 @@
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.inl>
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
-#include <SofaGeneralTopology/BezierTetrahedronSetGeometryAlgorithms.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>

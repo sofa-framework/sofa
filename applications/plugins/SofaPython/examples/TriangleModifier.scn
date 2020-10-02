@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 0 0" time="0" animate="0"   >
+    <RequiredPlugin name="SofaPython" pluginName="SofaPython" />
+    <InteractiveCamera position="0.5 0.5 -2" distance="2.0" zNear="-10" zFar="10" />
+	<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+	<PythonScriptController filename="TriangleModifier.py" classname="TriangleModifier"/>
+    
+    <TriangleSetTopologyContainer name="triangleContainer" position="0 0 0 0.5 0 0 0 1 0 1 1 0 1 0 0" />
+    <TriangleSetTopologyModifier name="triangleModifier"  />
+    <MechanicalObject position="@triangleContainer.position" />
+    <UniformMass />
+    <TriangleSetGeometryAlgorithms drawTriangles="true" />
+    
+    
+    
+</Node>

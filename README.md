@@ -1,9 +1,6 @@
-[![SOFA, Simulation Open-Framework Architecture]
-(https://www.sofa-framework.org/wp-content/uploads/2013/01/SOFA_LOGO_ORANGE_2-normal.png)]
-(https://www.sofa-framework.org/)
+[![SOFA, Simulation Open-Framework Architecture](https://www.sofa-framework.org/wp-content/uploads/2013/01/SOFA_LOGO_ORANGE_2-normal.png)](https://www.sofa-framework.org/)
 
-
-# Introduction
+## Introduction
 
 SOFA is an open source framework primarily targeted at real-time simulation, 
 with an emphasis on medical simulation.  
@@ -22,13 +19,13 @@ SOFA's advanced software architecture allows:
 (5) the comparison of various algorithms available in SOFA. 
 
 
-# Installation
+## Installation
 
 For up-to-date instructions, please refer to the SOFA documentation:  
 https://www.sofa-framework.org/documentation
 
 
-# Contribution
+## Contribution
 
 The SOFA community will be pleased to welcome you!  
 Find all the ways to get involved here: https://www.sofa-framework.org/community/get-involved/
@@ -36,13 +33,30 @@ Find all the ways to get involved here: https://www.sofa-framework.org/community
 Before creating any issue or pull request, please read carefully [our CONTRIBUTING rules](https://github.com/sofa-framework/sofa/blob/master/CONTRIBUTING.md).
 
 
-# Information
+## Information
 
-Authors: See [Authors.txt](https://github.com/sofa-framework/sofa/blob/master/Authors.txt)
+### Authors
+See [Authors.txt](https://github.com/sofa-framework/sofa/blob/master/Authors.txt)
 
-Licence: See [LICENCE.txt](https://github.com/sofa-framework/sofa/blob/master/LICENCE.txt)
+### License
+SOFA is LGPL, except:
+- applications/projects (GPL)
+- applications/sofa (GPL)
+- applications/tutorials (GPL)
+- applications/plugins/OptiTrackNatNet (GPL)
+- applications/plugins/SofaPML (GPL)
+- applications/plugins/Registration (QPL)
+- sub-directories with a license file specifying a different license
 
-Contact information: contact@sofa-framework.org
+LGPL refers to the GNU Lesser General Public License as published by the Free Software
+Foundation; either version 2.1 of the License, or (at your option) any later 
+version.
+
+GPL refers to the GNU General Public License as published by the Free Software Foundation;
+either version 2 of the License, or (at your option) any later version.
+
+### Contact information
+contact@sofa-framework.org
 
 -----------------------------------------------------------------------------
 

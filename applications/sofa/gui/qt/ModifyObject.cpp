@@ -25,12 +25,17 @@
 #include "QDisplayDataWidget.h"
 #include "QDataDescriptionWidget.h"
 #include "QTabulationModifyObject.h"
-
+#include <QTextBrowser>
+#include <QDesktopServices>
 #include <sofa/gui/qt/QTransformationWidget.h>
 #ifdef SOFA_HAVE_QWT
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #include <sofa/gui/qt/QMomentumStatWidget.h>
 #endif
+
+#include <sofa/helper/logging/Messaging.h>
+using sofa::helper::logging::Message ;
+
 
 #include <iostream>
 
@@ -58,26 +63,24 @@ namespace qt
 
 
 ModifyObject::ModifyObject(void *Id,
-    QTreeWidgetItem* item_clicked,
-    QWidget* parent,
-    const ModifyObjectFlags& dialogFlags,
-    const char* name,
-    bool modal, Qt::WindowFlags f )
+                           QTreeWidgetItem* item_clicked,
+                           QWidget* parent,
+                           const ModifyObjectFlags& dialogFlags,
+                           const char* name,
+                           bool modal, Qt::WindowFlags f )
     :QDialog(parent, f),
-     Id_(Id),
-     item_(item_clicked),
-     node(NULL),
-     data_(NULL),
-     dialogFlags_(dialogFlags),
-     outputTab(NULL),
-     logOutputEdit(NULL),
-     warningTab(NULL),
-     logWarningEdit(NULL),
-     transformation(NULL)
-#ifdef SOFA_HAVE_QWT
-     ,energy(NULL)
-     ,momentum(NULL)
-#endif
+      Id_(Id),
+      item_(item_clicked),
+      node(NULL),
+      data_(NULL),
+      dialogFlags_(dialogFlags),
+      messageTab(NULL),
+      messageEdit(NULL),
+      transformation(NULL)
+    #ifdef SOFA_HAVE_QWT
+    ,energy(NULL)
+    ,momentum(NULL)
+    #endif
 {
     setWindowTitle(name);
     //setObjectName(name);
@@ -114,18 +117,18 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
     //add a scrollable area for data properties
     QScrollArea* m_scrollArea = new QScrollArea();
-//    const int screenHeight = QApplication::desktop()->height();
+    //    const int screenHeight = QApplication::desktop()->height();
     m_scrollArea->setMinimumSize(600,QApplication::desktop()->height() * 0.75);
     m_scrollArea->setWidgetResizable(true);
     dialogTab->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_scrollArea->setWidget(dialogTab);
     generalLayout->addWidget(m_scrollArea);
 
-//    generalLayout->addWidget(dialogTab);
+    //    generalLayout->addWidget(dialogTab);
 
     connect(dialogTab, SIGNAL( currentChanged(int)), this, SLOT( updateTables()));
 
-//    bool isNode = (dynamic_cast< simulation::Node *>(node) != NULL);
+    //    bool isNode = (dynamic_cast< simulation::Node *>(node) != NULL);
 
     buttonUpdate = new QPushButton( this );
     buttonUpdate->setObjectName("buttonUpdate");
@@ -175,7 +178,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             core::objectmodel::BaseData* data=*it;
             if (!data)
             {
-                std::cerr << "ERROR: NULL Data in " << node->getName() << std::endl;
+                dmsg_error("ModifyObject") << "NULL Data in '" << node->getName() << "'" ;
                 continue;
             }
 
@@ -183,7 +186,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
             if (!data->getGroup())
             {
-                std::cerr << "ERROR: NULL group for Data " << data->getName() << " in " << node->getName() << std::endl;
+                dmsg_error("ModifyObject") << "NULL group for Data (" << data->getName() << "() in (" << node->getName() << "'";
                 continue;
             }
 
@@ -310,31 +313,22 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         }
 #endif
 
-        // Info Widget
+        /// Info Widget
         {
-#ifdef DEBUG_GUI
-            std::cout << "GUI: add Tab Infos" << std::endl;
-#endif
             QDataDescriptionWidget* description=new QDataDescriptionWidget(dialogTab, node);
             dialogTab->addTab(description, QString("Infos"));
         }
 
-        //Console
+        /// Message widget
         {
             updateConsole();
-            if (outputTab)
+            if (messageTab)
             {
-#ifdef DEBUG_GUI
-                std::cout << "GUI: add Tab Logs" << std::endl;
-#endif
-                dialogTab->addTab(outputTab,  QString("Logs"));
-            }
-            if (warningTab)
-            {
-#ifdef DEBUG_GUI
-                std::cout << "GUI: add Tab Warnings" << std::endl;
-#endif
-                dialogTab->addTab(warningTab, QString("Warnings"));
+                std::stringstream tmp;
+                int numMessages = node->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
+                                                             Message::Error, Message::Warning, Message::Fatal});
+                tmp << "Messages(" << numMessages << ")" ;
+                dialogTab->addTab(messageTab, QString::fromStdString(tmp.str()));
             }
         }
 
@@ -358,6 +352,21 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         resize( QSize(450, 130).expandedTo(minimumSizeHint()) );
     }
 }
+
+void ModifyObject::clearMessages()
+{
+    node->clearWarnings();
+    messageEdit->clear();
+
+    std::stringstream tmp;
+    int numMessages = node->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
+                                                 Message::Error, Message::Warning, Message::Fatal});
+    tmp << "Messages(" << numMessages << ")" ;
+
+    dialogTab->setTabText(dialogTab->indexOf(messageTab), QString::fromStdString(tmp.str()));
+}
+
+
 
 void ModifyObject::createDialog(core::objectmodel::BaseData* data)
 {
@@ -417,76 +426,101 @@ void ModifyObject::createDialog(core::objectmodel::BaseData* data)
     connect(this, SIGNAL(updateDataWidgets()), displaydatawidget, SLOT(UpdateWidgets()) );
 }
 
+const std::string toHtmlString(const Message::Type t)
+{
+    switch(t)
+    {
+    case Message::Info:
+        return "<font color='green'>Info</font>";
+    case Message::Advice:
+        return "<font color='green'>Advice</font>";
+    case Message::Deprecated:
+        return "<font color='grey'>Deprecated</font>";
+    case Message::Warning:
+        return "<font color='darkcyan'>Warning</font>";
+    case Message::Error:
+        return "<font color='red'>Error</font>";
+    case Message::Fatal:
+        return "Fatal";
+    default:
+        return "Undefine";
+    }
+    return "Undefine";
+}
+
+class ClickableTextEdit : public QTextEdit
+{
+public:
+    Q_OBJECT
+
+public:
+    ClickableTextEdit(QWidget* w) : QTextEdit(w) {
+
+    }
+
+
+};
+
+
+
+void ModifyObject::openExternalBrowser(const QUrl &link)
+{
+    QDesktopServices::openUrl(link) ;
+}
+
 //******************************************************************************************
 void ModifyObject::updateConsole()
 {
-    //Console Warnings
-    if ( !node->getWarnings().empty())
+    if (!messageEdit)
     {
-        if (!logWarningEdit)
-        {
-            warningTab = new QWidget();
-            QVBoxLayout* tabLayout = new QVBoxLayout( warningTab);
-            tabLayout->setMargin(0);
-            tabLayout->setSpacing(1);
-            tabLayout->setObjectName("tabWarningLayout");
-            QPushButton *buttonClearWarnings = new QPushButton(warningTab);
-            buttonClearWarnings->setObjectName("buttonClearWarnings");
-            tabLayout->addWidget(buttonClearWarnings);
-            buttonClearWarnings->setText( tr("&Clear"));
-            connect( buttonClearWarnings, SIGNAL( clicked()), this, SLOT( clearWarnings()));
+        messageTab = new QWidget();
+        QVBoxLayout* tabLayout = new QVBoxLayout( messageTab);
+        tabLayout->setMargin(0);
+        tabLayout->setSpacing(1);
+        tabLayout->setObjectName("tabWarningLayout");
+        QPushButton *buttonClearWarnings = new QPushButton(messageTab);
+        buttonClearWarnings->setObjectName("buttonClearWarnings");
+        tabLayout->addWidget(buttonClearWarnings);
+        buttonClearWarnings->setText( tr("&Clear"));
+        connect( buttonClearWarnings, SIGNAL( clicked()), this, SLOT( clearMessages()));
 
-            logWarningEdit = new QTextEdit( warningTab);
-            logWarningEdit->setObjectName("WarningEdit");
-            tabLayout->addWidget( logWarningEdit );
-
-            logWarningEdit->setReadOnly(true);
-        }
-
-        if (dialogTab->currentWidget() == warningTab)
-        {
-            logWarningEdit->setText(QString(node->getWarnings().c_str()));
-            logWarningEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-            logWarningEdit->ensureCursorVisible();
-        }
+        messageEdit = new QTextBrowser(messageTab);
+        //messageEdit->backwardAvailable(false);
+        connect(messageEdit, SIGNAL(anchorClicked(const QUrl&)), this, SLOT(openExternalBrowser(const QUrl&)));
+        messageEdit->setObjectName("WarningEdit");
+        messageEdit->setOpenExternalLinks(false);
+        messageEdit->setOpenLinks(false);
+        tabLayout->addWidget( messageEdit );
+        messageEdit->setReadOnly(true);
     }
-    //Console Outputs
-    if ( !node->getOutputs().empty())
+
+    if (dialogTab->currentWidget() == messageTab)
     {
-        if (!logOutputEdit)
+        std::stringstream tmp;
+        tmp << "<table>";
+        tmp << "<tr><td><td><td><td>" ;
+        m_numMessages = 0 ;
+        for(const Message& message : node->getLoggedMessages())
         {
-            outputTab = new QWidget();
-            QVBoxLayout* tabLayout = new QVBoxLayout( outputTab );
-            tabLayout->setMargin(0);
-            tabLayout->setSpacing(1);
-            tabLayout->setObjectName("tabOutputLayout");
-            QPushButton *buttonClearOutputs = new QPushButton(outputTab);
-            buttonClearOutputs->setObjectName("buttonClearOutputs");
-            tabLayout->addWidget(buttonClearOutputs);
-            buttonClearOutputs->setText( tr("&Clear"));
-            connect( buttonClearOutputs, SIGNAL( clicked()), this, SLOT( clearOutputs()));
-
-            logOutputEdit = new QTextEdit( outputTab );
-            logOutputEdit->setObjectName("OutputEdit");
-            tabLayout->addWidget( logOutputEdit );
-
-            logOutputEdit->setReadOnly(true);
+            tmp << "<tr>";
+            tmp << "<td>["<<toHtmlString(message.type())<<"]</td>" ;
+            tmp << "<td><i>" << message.messageAsString() << "</i></td>" ;
+            m_numMessages++;
         }
+        tmp << "</table>";
 
-        if (dialogTab->currentWidget() == outputTab)
-        {
-            logOutputEdit->setText(QString(node->getOutputs().c_str()));
-            logOutputEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-            logOutputEdit->ensureCursorVisible();
-        }
+        messageEdit->setHtml(QString(tmp.str().c_str()));
+        messageEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+        messageEdit->ensureCursorVisible();
     }
+
 }
 
 //*******************************************************************************************************************
 void ModifyObject::updateValues()
 {
     if (buttonUpdate == NULL // || !buttonUpdate->isEnabled()
-       ) return;
+            ) return;
 
     //Make the update of all the values
     if (node)
@@ -610,7 +644,7 @@ void ModifyObject::reject   ()
         emit  dataModified( dataModifiedString  );
     }
 
-//          else if (data) emit endDataModification(data);
+    //          else if (data) emit endDataModification(data);
     emit(dialogClosed(Id_));
     deleteLater();
     QDialog::reject();
@@ -636,7 +670,7 @@ void ModifyObject::accept   ()
         std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
 #endif
     }
-//          else if (data) emit endDataModification(data);
+    //          else if (data) emit endDataModification(data);
     emit(dialogClosed(Id_));
     deleteLater();
     QDialog::accept();

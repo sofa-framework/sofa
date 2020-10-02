@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <sofa/helper/logging/Messaging.h>
+
 #include <SofaConstraint/GenericConstraintSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -69,31 +71,31 @@ GenericConstraintSolver::GenericConstraintSolver()
 , current_cp(&cp1)
 , last_cp(NULL)
 {
-	addAlias(&maxIt, "maxIt");
+    addAlias(&maxIt, "maxIt");
 
-	graphErrors.setWidget("graph");
-	graphErrors.setGroup("Graph");
+    graphErrors.setWidget("graph");
+    graphErrors.setGroup("Graph");
 
-	graphConstraints.setWidget("graph");
-	graphConstraints.setGroup("Graph");
+    graphConstraints.setWidget("graph");
+    graphConstraints.setGroup("Graph");
 
-	graphForces.setWidget("graph_linear");
-	graphForces.setGroup("Graph2");
+    graphForces.setWidget("graph_linear");
+    graphForces.setGroup("Graph2");
 
-	graphViolations.setWidget("graph_linear");
-	graphViolations.setGroup("Graph2");
+    graphViolations.setWidget("graph_linear");
+    graphViolations.setGroup("Graph2");
 
-	currentNumConstraints.setReadOnly(true);
-	currentNumConstraints.setGroup("Stats");
-	currentNumConstraintGroups.setReadOnly(true);
-	currentNumConstraintGroups.setGroup("Stats");
-	currentIterations.setReadOnly(true);
-	currentIterations.setGroup("Stats");
-	currentError.setReadOnly(true);
-	currentError.setGroup("Stats");
+    currentNumConstraints.setReadOnly(true);
+    currentNumConstraints.setGroup("Stats");
+    currentNumConstraintGroups.setReadOnly(true);
+    currentNumConstraintGroups.setGroup("Stats");
+    currentIterations.setReadOnly(true);
+    currentIterations.setGroup("Stats");
+    currentError.setReadOnly(true);
+    currentError.setGroup("Stats");
 
-	maxIt.setRequired(true);
-	tolerance.setRequired(true);
+    maxIt.setRequired(true);
+    tolerance.setRequired(true);
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
@@ -102,21 +104,21 @@ GenericConstraintSolver::~GenericConstraintSolver()
 
 void GenericConstraintSolver::init()
 {
-	core::behavior::ConstraintSolver::init();
+    core::behavior::ConstraintSolver::init();
 
-	// Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
-	if (!constraintCorrections.empty())
-	{
+    // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
+    if (!constraintCorrections.empty())
+    {
         for (unsigned int i = 0; i < constraintCorrections.size(); i++)
             constraintCorrections[i]->removeConstraintSolver(this);
         constraintCorrections.clear();
-	}
+    }
 
-	getContext()->get<core::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
-	constraintCorrectionIsActive.resize(constraintCorrections.size());
+    getContext()->get<core::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
+    constraintCorrectionIsActive.resize(constraintCorrections.size());
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
         constraintCorrections[i]->addConstraintSolver(this);
-	context = (simulation::Node*) getContext();
+    context = (simulation::Node*) getContext();
 }
 
 void GenericConstraintSolver::cleanup()
@@ -138,38 +140,38 @@ void GenericConstraintSolver::removeConstraintCorrection(core::behavior::BaseCon
 
 bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParams, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-	sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
+    sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
 
-	last_cp = current_cp;
+    last_cp = current_cp;
 
-	time = 0.0;
-	timeTotal = 0.0;
+    time = 0.0;
+    timeTotal = 0.0;
     timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
 
-	simulation::common::VectorOperations vop(cParams, this->getContext());
-	vop.v_clear(this->m_fId);
-	vop.v_clear(this->m_dxId);
+    simulation::common::VectorOperations vop(cParams, this->getContext());
+    vop.v_clear(this->m_fId);
+    vop.v_clear(this->m_dxId);
 
-	if ( displayTime.getValue() )
-	{
-		time = (double) timer.getTime();
-		timeTotal = (double) timerTotal.getTime();
-	}
+    if ( displayTime.getValue() )
+    {
+        time = (double) timer.getTime();
+        timeTotal = (double) timerTotal.getTime();
+    }
 
-	return true;
+    return true;
 }
 
 bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-	unsigned int numConstraints = 0;
+    unsigned int numConstraints = 0;
 
     sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
-	// mechanical action executed from root node to propagate the constraints
-	simulation::MechanicalResetConstraintVisitor(cParams).execute(context);
-	// calling buildConstraintMatrix
-	//simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
+    // mechanical action executed from root node to propagate the constraints
+    simulation::MechanicalResetConstraintVisitor(cParams).execute(context);
+    // calling buildConstraintMatrix
+    //simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
 
-	MechanicalSetConstraint(cParams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
+    MechanicalSetConstraint(cParams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
     MechanicalAccumulateConstraint2(cParams, core::MatrixDerivId::holonomicC(), reverseAccumulateOrder.getValue()).execute(context);
 
     // suppress the constraints that are on DOFS currently concerned by projective constraint
@@ -179,95 +181,96 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
-	current_cp->clear(numConstraints);
+    current_cp->clear(numConstraints);
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
-	MechanicalGetConstraintViolationVisitor(cParams, &current_cp->dFree).execute(context);
+    MechanicalGetConstraintViolationVisitor(cParams, &current_cp->dFree).execute(context);
     sofa::helper::AdvancedTimer::stepEnd ("Get Constraint Value");
 
     sofa::helper::AdvancedTimer::stepBegin("Get Constraint Resolutions");
-	MechanicalGetConstraintResolutionVisitor(cParams, current_cp->constraintsResolutions).execute(context);
+    MechanicalGetConstraintResolutionVisitor(cParams, current_cp->constraintsResolutions).execute(context);
     sofa::helper::AdvancedTimer::stepEnd("Get Constraint Resolutions");
 
-    if (this->f_printLog.getValue()) sout<<"GenericConstraintSolver: "<<numConstraints<<" constraints"<<sendl;
+    msg_info() <<"GenericConstraintSolver: "<<numConstraints<<" constraints";
 
-	// Test if the nodes containing the constraint correction are active (not sleeping)
-	for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-		constraintCorrectionIsActive[i] = !constraintCorrections[i]->getContext()->isSleeping();
+    // Test if the nodes containing the constraint correction are active (not sleeping)
+    for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+        constraintCorrectionIsActive[i] = !constraintCorrections[i]->getContext()->isSleeping();
 
     if (unbuilt.getValue())
-	{
-		for (unsigned int i=0;i<constraintCorrections.size();i++)
-		{
-			core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-			cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence); 
-		}
- 
+    {
+        for (unsigned int i=0;i<constraintCorrections.size();i++)
+        {
+            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence);
+        }
+
         sofa::component::linearsolver::SparseMatrix<double>* Wdiag = &current_cp->Wdiag;
-		Wdiag->resize(numConstraints, numConstraints);
+        Wdiag->resize(numConstraints, numConstraints);
 
-		// for each contact, the constraint corrections that are involved with the contact are memorized
-		current_cp->cclist_elems.clear();
-		current_cp->cclist_elems.resize(numConstraints);
-		int nbCC = constraintCorrections.size();
-		for (unsigned int i = 0; i < numConstraints; i++)
-			current_cp->cclist_elems[i].resize(nbCC, NULL);
+        // for each contact, the constraint corrections that are involved with the contact are memorized
+        current_cp->cclist_elems.clear();
+        current_cp->cclist_elems.resize(numConstraints);
+        int nbCC = constraintCorrections.size();
+        for (unsigned int i = 0; i < numConstraints; i++)
+            current_cp->cclist_elems[i].resize(nbCC, NULL);
 
-		unsigned int nbObjects = 0;
-		for (unsigned int c_id = 0; c_id < numConstraints;)
-		{
-			bool foundCC = false;
-			nbObjects++;
-			unsigned int l = current_cp->constraintsResolutions[c_id]->nbLines;
+        unsigned int nbObjects = 0;
+        for (unsigned int c_id = 0; c_id < numConstraints;)
+        {
+            bool foundCC = false;
+            nbObjects++;
+            unsigned int l = current_cp->constraintsResolutions[c_id]->nbLines;
 
-			for (unsigned int j = 0; j < constraintCorrections.size(); j++)
-			{
-				core::behavior::BaseConstraintCorrection* cc = constraintCorrections[j];
-				if (cc->hasConstraintNumber(c_id))
-				{
-					current_cp->cclist_elems[c_id][j] = cc;
-					cc->getBlockDiagonalCompliance(Wdiag, c_id, c_id + l - 1);
-					foundCC = true;
-				}
-			}
+            for (unsigned int j = 0; j < constraintCorrections.size(); j++)
+            {
+                core::behavior::BaseConstraintCorrection* cc = constraintCorrections[j];
+                if (cc->hasConstraintNumber(c_id))
+                {
+                    current_cp->cclist_elems[c_id][j] = cc;
+                    cc->getBlockDiagonalCompliance(Wdiag, c_id, c_id + l - 1);
+                    foundCC = true;
+                }
+            }
 
-			if (!foundCC)
-				serr << "WARNING: no constraintCorrection found for constraint" << c_id << sendl;
+            if (!foundCC)
+                serr << "WARNING: no constraintCorrection found for constraint" << c_id << sendl;
 
-			double** w =  current_cp->getW();
-			for(unsigned int m = c_id; m < c_id + l; m++)
-				for(unsigned int n = c_id; n < c_id + l; n++)
-					w[m][n] = Wdiag->element(m, n);
+            double** w =  current_cp->getW();
+            for(unsigned int m = c_id; m < c_id + l; m++)
+                for(unsigned int n = c_id; n < c_id + l; n++)
+                    w[m][n] = Wdiag->element(m, n);
 
-			c_id += l;
-		}
+            c_id += l;
+        }
 
-		current_cp->change_sequence = false;
-		if(current_cp->constraints_sequence.size() == nbObjects)
-			current_cp->change_sequence=true;
-	}
-	else
-	{
-		sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
-		if (this->f_printLog.getValue()) sout<<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" <<sendl;
-		for (unsigned int i=0; i<constraintCorrections.size(); i++)
-		{
-			core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-			sofa::helper::AdvancedTimer::stepBegin("Object name: " + cc->getName());
-			cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
-			sofa::helper::AdvancedTimer::stepEnd("Object name: " + cc->getName());
-		}
+        current_cp->change_sequence = false;
+        if(current_cp->constraints_sequence.size() == nbObjects)
+            current_cp->change_sequence=true;
+    }
+    else
+    {
+        sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
+        msg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
 
-		sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
-		if (this->f_printLog.getValue()) sout<<" computeCompliance_done "  <<sendl;
-	}
+        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        {
+            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            sofa::helper::AdvancedTimer::stepBegin("Object name: " + cc->getName());
+            cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
+            sofa::helper::AdvancedTimer::stepEnd("Object name: " + cc->getName());
+        }
+
+        sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
+        msg_info() << " computeCompliance_done "  ;
+    }
 
 
-	if ( displayTime.getValue() )
-	{
-		sout<<" build_LCP " << ( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
-		time = (double) timer.getTime();
-	}
+    if ( displayTime.getValue() )
+    {
+        msg_info() << " build_LCP " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
+        time = (double) timer.getTime();
+    }
 
     return true;
 }
@@ -284,80 +287,85 @@ void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFacto
 
 void afficheLCP(std::ostream& file, double *q, double **M, double *f, int dim, bool printMatrix = true)
 {
-	file.precision(9);
-	// affichage de la matrice du LCP
+    file.precision(9);
+    // affichage de la matrice du LCP
         if (printMatrix) {
-        file << std::endl << " M = [";
-	for(int compteur=0;compteur<dim;compteur++) {
-		for(int compteur2=0;compteur2<dim;compteur2++) {
-			file << "\t" << M[compteur][compteur2];
-		}
-		file << std::endl;
-	}
-        file << "      ];" << std::endl << std::endl;
+        file << msgendl << " M = [";
+    for(int compteur=0;compteur<dim;compteur++) {
+        for(int compteur2=0;compteur2<dim;compteur2++) {
+            file << "\t" << M[compteur][compteur2];
+        }
+        file << msgendl;
+    }
+        file << "      ];" << msgendl << msgendl;
         }
 
-	// affichage de q
-	file << " q = [";
-	for(int compteur=0;compteur<dim;compteur++) {
-		file << "\t" << q[compteur];
-	}
-	file << "      ];" << std::endl << std::endl;
+    // affichage de q
+    file << " q = [";
+    for(int compteur=0;compteur<dim;compteur++) {
+        file << "\t" << q[compteur];
+    }
+    file << "      ];" << msgendl << msgendl;
 
-	// affichage de f
-	file << " f = [";
-	for(int compteur=0;compteur<dim;compteur++) {
-		file << "\t" << f[compteur];
-	}
-	file << "      ];" << std::endl << std::endl;
+    // affichage de f
+    file << " f = [";
+    for(int compteur=0;compteur<dim;compteur++) {
+        file << "\t" << f[compteur];
+    }
+    file << "      ];" << msgendl << msgendl;
 }
 
 bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
-	current_cp->tolerance = tolerance.getValue();
-	current_cp->maxIterations = maxIt.getValue();
-	current_cp->scaleTolerance = scaleTolerance.getValue();
-	current_cp->allVerified = allVerified.getValue();
-	current_cp->sor = sor.getValue();
-	current_cp->unbuilt = unbuilt.getValue();
+    current_cp->tolerance = tolerance.getValue();
+    current_cp->maxIterations = maxIt.getValue();
+    current_cp->scaleTolerance = scaleTolerance.getValue();
+    current_cp->allVerified = allVerified.getValue();
+    current_cp->sor = sor.getValue();
+    current_cp->unbuilt = unbuilt.getValue();
 
-	if (unbuilt.getValue())
-	{
-		sofa::helper::AdvancedTimer::stepBegin("ConstraintsUnbuiltGaussSeidel");
-		current_cp->unbuiltGaussSeidel(0, this);
-		sofa::helper::AdvancedTimer::stepEnd("ConstraintsUnbuiltGaussSeidel");
-	}
-	else
-	{
-        if (this->f_printLog.getValue())
+    if (unbuilt.getValue())
+    {
+        sofa::helper::AdvancedTimer::stepBegin("ConstraintsUnbuiltGaussSeidel");
+        current_cp->unbuiltGaussSeidel(0, this);
+        sofa::helper::AdvancedTimer::stepEnd("ConstraintsUnbuiltGaussSeidel");
+    }
+    else
+    {
+        if (notMuted())
         {
-            std::cout << "---> Before Resolution" << std::endl;
-            afficheLCP(std::cout, current_cp->getDfree(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), true);
+            std::stringstream tmp;
+            tmp << "---> Before Resolution" << msgendl  ;
+            afficheLCP(tmp, current_cp->getDfree(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), true);
+
+            msg_info() << tmp.str() ;
         }
 
-		sofa::helper::AdvancedTimer::stepBegin("ConstraintsGaussSeidel");
-		current_cp->gaussSeidel(0, this);
-		sofa::helper::AdvancedTimer::stepEnd("ConstraintsGaussSeidel");
-	}
+        sofa::helper::AdvancedTimer::stepBegin("ConstraintsGaussSeidel");
+        current_cp->gaussSeidel(0, this);
+        sofa::helper::AdvancedTimer::stepEnd("ConstraintsGaussSeidel");
+    }
 
     this->currentError.setValue(current_cp->currentError);
     this->currentIterations.setValue(current_cp->currentIterations);
     this->currentNumConstraints.setValue(current_cp->getNumConstraints());
     this->currentNumConstraintGroups.setValue(current_cp->getNumConstraintGroups());
 
-	if ( displayTime.getValue() )
-	{
-		sout<<" TOTAL solve_LCP " <<( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
-		time = (double) timer.getTime();
-	}
-
-    if(this->f_printLog.getValue())
+    if ( displayTime.getValue() )
     {
-        std::cout << "---> After Resolution" << std::endl;
-        afficheLCP(std::cout, current_cp->_d.ptr(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), false);
+        msg_info() <<" TOTAL solve_LCP " <<( (double) timer.getTime() - time)*timeScale<<" ms" ;
+        time = (double) timer.getTime();
     }
-	
-	return true;
+
+    if(notMuted())
+    {
+        std::stringstream tmp;
+        tmp << "---> After Resolution" << msgendl;
+        afficheLCP(tmp, current_cp->_d.ptr(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), false);
+        msg_info() << tmp.str() ;
+    }
+
+    return true;
 }
 
 void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam) {
@@ -370,55 +378,50 @@ void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam) {
 
 bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cParams, MultiVecId res1, MultiVecId res2)
 {
-	using sofa::helper::AdvancedTimer;
-	using core::behavior::BaseConstraintCorrection;
+    using sofa::helper::AdvancedTimer;
+    using core::behavior::BaseConstraintCorrection;
 
-	if (this->f_printLog.getValue())
-        serr << "KeepContactForces done" << sendl;
+    msg_info() << "KeepContactForces done" ;
 
     AdvancedTimer::stepBegin("Compute And Apply Motion Correction");
 
-	if (cParams->constOrder() == core::ConstraintParams::POS_AND_VEL)
-	{
+    if (cParams->constOrder() == core::ConstraintParams::POS_AND_VEL)
+    {
         core::MultiVecCoordId xId(res1);
-		core::MultiVecDerivId vId(res2);
-		for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-		{
-			if (!constraintCorrectionIsActive[i]) continue;
-			BaseConstraintCorrection* cc = constraintCorrections[i];
-			cc->computeAndApplyMotionCorrection(cParams, xId, vId, this->m_fId, &current_cp->f);
-		}
-	}
-	else if (cParams->constOrder() == core::ConstraintParams::POS)
-	{
-		core::MultiVecCoordId xId(res1);
-		for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-		{
-			if (!constraintCorrectionIsActive[i]) continue;
-			BaseConstraintCorrection* cc = constraintCorrections[i];
-			cc->computeAndApplyPositionCorrection(cParams, xId, this->m_fId, &current_cp->f);
-		}
-	}
-	else if (cParams->constOrder() == core::ConstraintParams::VEL)
-	{
+        core::MultiVecDerivId vId(res2);
+        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+        {
+            if (!constraintCorrectionIsActive[i]) continue;
+            BaseConstraintCorrection* cc = constraintCorrections[i];
+            cc->computeAndApplyMotionCorrection(cParams, xId, vId, this->m_fId, &current_cp->f);
+        }
+    }
+    else if (cParams->constOrder() == core::ConstraintParams::POS)
+    {
+        core::MultiVecCoordId xId(res1);
+        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+        {
+            if (!constraintCorrectionIsActive[i]) continue;
+            BaseConstraintCorrection* cc = constraintCorrections[i];
+            cc->computeAndApplyPositionCorrection(cParams, xId, this->m_fId, &current_cp->f);
+        }
+    }
+    else if (cParams->constOrder() == core::ConstraintParams::VEL)
+    {
         core::MultiVecDerivId vId(res1);
-		for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-		{
-			if (!constraintCorrectionIsActive[i]) continue;
-			BaseConstraintCorrection* cc = constraintCorrections[i];
-			cc->computeAndApplyVelocityCorrection(cParams, vId, this->m_fId, &current_cp->f);
-		}
-	}
+        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+        {
+            if (!constraintCorrectionIsActive[i]) continue;
+            BaseConstraintCorrection* cc = constraintCorrections[i];
+            cc->computeAndApplyVelocityCorrection(cParams, vId, this->m_fId, &current_cp->f);
+        }
+    }
 
     AdvancedTimer::stepEnd("Compute And Apply Motion Correction");
 
-	if (this->f_printLog.getValue())
-		serr << "Compute And Apply Motion Correction in constraintCorrection done" << sendl;
+    msg_info() << "Compute And Apply Motion Correction in constraintCorrection done" ;
 
-	if (displayTime.getValue())
-    {
-        sout << " TotalTime " << ((double) timerTotal.getTime() - timeTotal) * timeScale << " ms" << sendl;
-    }
+    msg_info_when(displayTime.getValue()) << " TotalTime " << ((double) timerTotal.getTime() - timeTotal) * timeScale << " ms" ;
 
     return true;
 }
@@ -426,41 +429,41 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 
 ConstraintProblem* GenericConstraintSolver::getConstraintProblem()
 {
-	return last_cp;
+    return last_cp;
 }
 
 void GenericConstraintSolver::lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2)
 {
-	if( (current_cp != p1) && (current_cp != p2) ) // Le ConstraintProblem courant n'est pas locké
-		return;
+    if( (current_cp != p1) && (current_cp != p2) ) // Le ConstraintProblem courant n'est pas locké
+        return;
 
-	if( (&cp1 != p1) && (&cp1 != p2) ) // cp1 n'est pas locké
-		current_cp = &cp1;
-	else if( (&cp2 != p1) && (&cp2 != p2) ) // cp2 n'est pas locké
-		current_cp = &cp2;
-	else
-		current_cp = &cp3; // cp1 et cp2 sont lockés, donc cp3 n'est pas locké
+    if( (&cp1 != p1) && (&cp1 != p2) ) // cp1 n'est pas locké
+        current_cp = &cp1;
+    else if( (&cp2 != p1) && (&cp2 != p2) ) // cp2 n'est pas locké
+        current_cp = &cp2;
+    else
+        current_cp = &cp3; // cp1 et cp2 sont lockés, donc cp3 n'est pas locké
 }
 
 void GenericConstraintProblem::clear(int nbC)
 {
-	ConstraintProblem::clear(nbC);
+    ConstraintProblem::clear(nbC);
 
-	freeConstraintResolutions();
-	constraintsResolutions.resize(nbC);
-	_d.resize(nbC);
+    freeConstraintResolutions();
+    constraintsResolutions.resize(nbC);
+    _d.resize(nbC);
 }
 
 void GenericConstraintProblem::freeConstraintResolutions()
 {
-	for(unsigned int i=0; i<constraintsResolutions.size(); i++)
-	{
-		if (constraintsResolutions[i] != NULL)
-		{
-			delete constraintsResolutions[i];
-			constraintsResolutions[i] = NULL;
-		}
-	}
+    for(unsigned int i=0; i<constraintsResolutions.size(); i++)
+    {
+        if (constraintsResolutions[i] != NULL)
+        {
+            delete constraintsResolutions[i];
+            constraintsResolutions[i] = NULL;
+        }
+    }
 }
 int GenericConstraintProblem::getNumConstraints()
 {
@@ -484,26 +487,26 @@ int GenericConstraintProblem::getNumConstraintGroups()
 
 void GenericConstraintProblem::solveTimed(double tol, int maxIt, double timeout)
 {
-	double tempTol = tolerance;
-	int tempMaxIt = maxIterations;
+    double tempTol = tolerance;
+    int tempMaxIt = maxIterations;
 
-	tolerance = tol;
-	maxIterations = maxIt;
+    tolerance = tol;
+    maxIterations = maxIt;
 
 // TODO : for the unbuild version to work in the haptic thread, we have to duplicate the ConstraintCorrections first...
 /*	if(unbuilt)
-		unbuiltGaussSeidel(timeout);
-	else
+        unbuiltGaussSeidel(timeout);
+    else
 */		gaussSeidel(timeout);
 
-	tolerance = tempTol;
-	maxIterations = tempMaxIt;
+    tolerance = tempTol;
+    maxIterations = tempMaxIt;
 }
 
 // Debug is only available when called directly by the solver (not in haptic thread)
 void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolver* solver)
 {
-	if(!dimension)
+    if(!dimension)
     {
         currentError = 0.0;
         currentIterations = 0;
@@ -513,65 +516,64 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
     double t0 = (double)sofa::helper::system::thread::CTime::getTime() ;
     double timeScale = 1.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
 
-	double *dfree = getDfree();
-	double *force = getF();
-	double **w = getW();
-	double tol = tolerance;
+    double *dfree = getDfree();
+    double *force = getF();
+    double **w = getW();
+    double tol = tolerance;
 
-	double *d = _d.ptr();
+    double *d = _d.ptr();
 
-	int i, j, k, l, nb;
+    int i, j, k, l, nb;
 
     double errF[6] = {0,0,0,0,0,0};
-	double error=0.0;
+    double error=0.0;
 
-	bool convergence = false;
+    bool convergence = false;
     sofa::helper::vector<double> tempForces;
-	if(sor != 1.0) tempForces.resize(dimension);
+    if(sor != 1.0) tempForces.resize(dimension);
 
-	if(scaleTolerance && !allVerified)
-		tol *= dimension;
+    if(scaleTolerance && !allVerified)
+        tol *= dimension;
 
-	if(solver)
+    if(solver)
     {
-		for(i=0; i<dimension; )
+        for(i=0; i<dimension; )
         {
             if(!constraintsResolutions[i])
             {
-				std::cerr << "Bad size of constraintsResolutions in GenericConstraintProblem" << std::endl;
-                //std::cout << "size="<< constraintsResolutions.size()<<std::endl;
+                msg_error("GenericConstraintSolver") << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
 
-				dimension = i;
-				break;
+                dimension = i;
+                break;
             }
             constraintsResolutions[i]->init(i, w, force);
-			i += constraintsResolutions[i]->nbLines;
-		}
-	}
+            i += constraintsResolutions[i]->nbLines;
+        }
+    }
 
-	bool showGraphs = false;
-	sofa::helper::vector<double>* graph_residuals = NULL;
-	std::map < std::string, sofa::helper::vector<double> > *graph_forces = NULL, *graph_violations = NULL;
-	sofa::helper::vector<double> tabErrors;
+    bool showGraphs = false;
+    sofa::helper::vector<double>* graph_residuals = NULL;
+    std::map < std::string, sofa::helper::vector<double> > *graph_forces = NULL, *graph_violations = NULL;
+    sofa::helper::vector<double> tabErrors;
 
-	if(solver)
-	{
-		showGraphs = solver->computeGraphs.getValue();
+    if(solver)
+    {
+        showGraphs = solver->computeGraphs.getValue();
 
-		if(showGraphs)
-		{
-			graph_forces = solver->graphForces.beginEdit();
-			graph_forces->clear();
+        if(showGraphs)
+        {
+            graph_forces = solver->graphForces.beginEdit();
+            graph_forces->clear();
 
-			graph_violations = solver->graphViolations.beginEdit();
-			graph_violations->clear();
+            graph_violations = solver->graphViolations.beginEdit();
+            graph_violations->clear();
 
-			graph_residuals = &(*solver->graphErrors.beginEdit())["Error"];
-			graph_residuals->clear();
-		}
-	
-		tabErrors.resize(dimension);
-	}
+            graph_residuals = &(*solver->graphErrors.beginEdit())["Error"];
+            graph_residuals->clear();
+        }
+
+        tabErrors.resize(dimension);
+    }
 
  /*   if(schemeCorrection)
     {
@@ -590,146 +592,142 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
     }
 */
 
-	for(i=0; i<maxIterations; i++)
-	{
-		bool constraintsAreVerified = true;
+    for(i=0; i<maxIterations; i++)
+    {
+        bool constraintsAreVerified = true;
         if(sor != 1.0)
-		{
-			for(j=0; j<dimension; j++)
-				tempForces[j] = force[j];
-		}
+        {
+            for(j=0; j<dimension; j++)
+                tempForces[j] = force[j];
+        }
 
-		error=0.0;
-		for(j=0; j<dimension; ) // increment of j realized at the end of the loop
-		{
-			//1. nbLines provide the dimension of the constraint  (max=6)
-			nb = constraintsResolutions[j]->nbLines;
+        error=0.0;
+        for(j=0; j<dimension; ) // increment of j realized at the end of the loop
+        {
+            //1. nbLines provide the dimension of the constraint  (max=6)
+            nb = constraintsResolutions[j]->nbLines;
 
-			//2. for each line we compute the actual value of d
-			//   (a)d is set to dfree
-			for(l=0; l<nb; l++)
-			{
-				errF[l] = force[j+l];
-				d[j+l] = dfree[j+l];
-			}
+            //2. for each line we compute the actual value of d
+            //   (a)d is set to dfree
+            for(l=0; l<nb; l++)
+            {
+                errF[l] = force[j+l];
+                d[j+l] = dfree[j+l];
+            }
             //   (b) contribution of forces are added to d     => TODO => optimization (no computation when force= 0 !!)
-			for(k=0; k<dimension; k++)
-				for(l=0; l<nb; l++)
-					d[j+l] += w[j+l][k] * force[k];
+            for(k=0; k<dimension; k++)
+                for(l=0; l<nb; l++)
+                    d[j+l] += w[j+l][k] * force[k];
 
-			//3. the specific resolution of the constraint(s) is called
-			constraintsResolutions[j]->resolution(j, w, d, force, dfree);
+            //3. the specific resolution of the constraint(s) is called
+            constraintsResolutions[j]->resolution(j, w, d, force, dfree);
 
-			//4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
-			double contraintError = 0.0;
-			if(nb > 1)
-			{
-				for(l=0; l<nb; l++)
-				{
-					double lineError = 0.0;
-					for (int m=0; m<nb; m++)
-					{
-						double dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
-						lineError += dofError * dofError;
-					}
-					lineError = sqrt(lineError);
-					if(lineError > tol)
-						constraintsAreVerified = false;
+            //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
+            double contraintError = 0.0;
+            if(nb > 1)
+            {
+                for(l=0; l<nb; l++)
+                {
+                    double lineError = 0.0;
+                    for (int m=0; m<nb; m++)
+                    {
+                        double dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
+                        lineError += dofError * dofError;
+                    }
+                    lineError = sqrt(lineError);
+                    if(lineError > tol)
+                        constraintsAreVerified = false;
 
-					contraintError += lineError;
-				}
-			}
-			else
-			{
-				contraintError = fabs(w[j][j] * (force[j] - errF[0]));
-				if(contraintError > tol)
-					constraintsAreVerified = false;
-			}
+                    contraintError += lineError;
+                }
+            }
+            else
+            {
+                contraintError = fabs(w[j][j] * (force[j] - errF[0]));
+                if(contraintError > tol)
+                    constraintsAreVerified = false;
+            }
 
-			if(constraintsResolutions[j]->tolerance)
-			{
-				if(contraintError > constraintsResolutions[j]->tolerance)
-					constraintsAreVerified = false;
-				contraintError *= tol / constraintsResolutions[j]->tolerance;
-			}
+            if(constraintsResolutions[j]->tolerance)
+            {
+                if(contraintError > constraintsResolutions[j]->tolerance)
+                    constraintsAreVerified = false;
+                contraintError *= tol / constraintsResolutions[j]->tolerance;
+            }
 
-			error += contraintError;
-			if(solver)
-				tabErrors[j] = contraintError;
+            error += contraintError;
+            if(solver)
+                tabErrors[j] = contraintError;
 
-			j += nb;
-		}
+            j += nb;
+        }
 
-		if(showGraphs)
-		{
-			for(j=0; j<dimension; j++)
-			{
-				std::ostringstream oss;
-				oss << "f" << j;
+        if(showGraphs)
+        {
+            for(j=0; j<dimension; j++)
+            {
+                std::ostringstream oss;
+                oss << "f" << j;
 
-				sofa::helper::vector<double>& graph_force = (*graph_forces)[oss.str()];
-				graph_force.push_back(force[j]);
+                sofa::helper::vector<double>& graph_force = (*graph_forces)[oss.str()];
+                graph_force.push_back(force[j]);
 
-				sofa::helper::vector<double>& graph_violation = (*graph_violations)[oss.str()];
-				graph_violation.push_back(d[j]);
-			}
-		
-			graph_residuals->push_back(error);
-		}
+                sofa::helper::vector<double>& graph_violation = (*graph_violations)[oss.str()];
+                graph_violation.push_back(d[j]);
+            }
 
-		if(sor != 1.0)
-		{
-			for(j=0; j<dimension; j++)
-				force[j] = sor * force[j] + (1-sor) * tempForces[j];
-		}
+            graph_residuals->push_back(error);
+        }
+
+        if(sor != 1.0)
+        {
+            for(j=0; j<dimension; j++)
+                force[j] = sor * force[j] + (1-sor) * tempForces[j];
+        }
 
         double t1 = (double)sofa::helper::system::thread::CTime::getTime();
-		double dt = (t1 - t0)*timeScale;
+        double dt = (t1 - t0)*timeScale;
 
-		if(timeout && dt > timeout)
-		{
-			if(solver && solver->f_printLog.getValue())
-				std::cout << "TimeOut" << std::endl;
-            
+        if(timeout && dt > timeout)
+        {
+
+            msg_info_when(solver!=nullptr, solver) <<  "TimeOut" ;
+
             currentError = error;
             currentIterations = i+1;
-			return;
-		}
-		else if(allVerified)
-		{
-			if(constraintsAreVerified)
-			{
-				convergence = true;
-				break;
-			}
-		}
-		else if(error < tol/* && i>0*/) // do not stop at the first iteration (that is used for initial guess computation)
-		{
-			convergence = true;
-			break;
-		}
-	}
+            return;
+        }
+        else if(allVerified)
+        {
+            if(constraintsAreVerified)
+            {
+                convergence = true;
+                break;
+            }
+        }
+        else if(error < tol/* && i>0*/) // do not stop at the first iteration (that is used for initial guess computation)
+        {
+            convergence = true;
+            break;
+        }
+    }
 
     currentError = error;
     currentIterations = i+1;
-	if(solver)
-	{
-		if(!convergence)
-		{
-			if(solver->f_printLog.getValue())
-				solver->serr << "No convergence : error = " << error << solver->sendl;
-			else
-				solver->sout << "No convergence : error = " << error << solver->sendl;
-		}
-		else if(solver->displayTime.getValue())
-			solver->sout<<" Convergence after " << i+1 << " iterations " << solver->sendl;
+    if(solver)
+    {
+        if(!convergence)
+        {
+            msg_info(solver) << "No convergence : error = " << error ;
+        }
+        else msg_info_when(solver->displayTime.getValue(), solver) << " Convergence after " << i+1 << " iterations " ;
 
-		for(i=0; i<dimension; i += constraintsResolutions[i]->nbLines)
-			constraintsResolutions[i]->store(i, force, convergence);
-	}
+        for(i=0; i<dimension; i += constraintsResolutions[i]->nbLines)
+            constraintsResolutions[i]->store(i, force, convergence);
+    }
 
-	sofa::helper::AdvancedTimer::valSet("GS iterations", i+1);
-	
+    sofa::helper::AdvancedTimer::valSet("GS iterations", i+1);
+
 /*
     if(schemeCorrection)
     {
@@ -740,36 +738,36 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
         }
     }	*/
 
-	if(showGraphs)
-	{
-		solver->graphErrors.endEdit();
+    if(showGraphs)
+    {
+        solver->graphErrors.endEdit();
 
-		sofa::helper::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
-		graph_constraints.clear();
+        sofa::helper::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
+        graph_constraints.clear();
 
-		for(j=0; j<dimension; )
-		{
-			nb = constraintsResolutions[j]->nbLines;
+        for(j=0; j<dimension; )
+        {
+            nb = constraintsResolutions[j]->nbLines;
 
-			if(tabErrors[j])
-				graph_constraints.push_back(tabErrors[j]);
-			else if(constraintsResolutions[j]->tolerance)
-				graph_constraints.push_back(constraintsResolutions[j]->tolerance);
-			else
-				graph_constraints.push_back(tol);
+            if(tabErrors[j])
+                graph_constraints.push_back(tabErrors[j]);
+            else if(constraintsResolutions[j]->tolerance)
+                graph_constraints.push_back(constraintsResolutions[j]->tolerance);
+            else
+                graph_constraints.push_back(tol);
 
-			j += nb;
-		}
-		solver->graphConstraints.endEdit();
+            j += nb;
+        }
+        solver->graphConstraints.endEdit();
 
-		solver->graphForces.endEdit();
-	}
+        solver->graphForces.endEdit();
+    }
 }
 
 
 void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstraintSolver* solver)
 {
-	if(!dimension)
+    if(!dimension)
     {
         currentError = 0.0;
         currentIterations = 0;
@@ -779,184 +777,184 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
     double t0 = (double)sofa::helper::system::thread::CTime::getTime();
     double timeScale = 1.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
 
-	double *dfree = getDfree();
-	double *force = getF();
-	double **w = getW();
-	double tol = tolerance;
+    double *dfree = getDfree();
+    double *force = getF();
+    double **w = getW();
+    double tol = tolerance;
 
-	double *d = _d.ptr();
+    double *d = _d.ptr();
 
-	int i, j, l, nb;
+    int i, j, l, nb;
 
     double errF[6] = {0,0,0,0,0,0};
-	double error=0.0;
+    double error=0.0;
 
-	bool convergence = false;
+    bool convergence = false;
     sofa::helper::vector<double> tempForces;
-	if(sor != 1.0) tempForces.resize(dimension);
+    if(sor != 1.0) tempForces.resize(dimension);
 
-	if(scaleTolerance && !allVerified)
-		tol *= dimension;
+    if(scaleTolerance && !allVerified)
+        tol *= dimension;
 
-	if(solver)
-	{
-		for(i=0; i<dimension; )
-		{
-			if(!constraintsResolutions[i])
-			{
-				std::cerr << "Bad size of constraintsResolutions in GenericConstraintProblem" << std::endl;
-				dimension = i;
-				break;
-			}
-			constraintsResolutions[i]->init(i, w, force);
-			i += constraintsResolutions[i]->nbLines;
-		}
-		memset(force, 0, dimension * sizeof(double));	// Erase previous forces for the time being
-	}
-	
-	bool showGraphs = false;
-	sofa::helper::vector<double>* graph_residuals = NULL;
-	std::map < std::string, sofa::helper::vector<double> > *graph_forces = NULL, *graph_violations = NULL;
-	sofa::helper::vector<double> tabErrors;
+    if(solver)
+    {
+        for(i=0; i<dimension; )
+        {
+            if(!constraintsResolutions[i])
+            {
+                msg_warning(solver) << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
+                dimension = i;
+                break;
+            }
+            constraintsResolutions[i]->init(i, w, force);
+            i += constraintsResolutions[i]->nbLines;
+        }
+        memset(force, 0, dimension * sizeof(double));	// Erase previous forces for the time being
+    }
 
-	if(solver)
-	{
-		showGraphs = solver->computeGraphs.getValue();
+    bool showGraphs = false;
+    sofa::helper::vector<double>* graph_residuals = NULL;
+    std::map < std::string, sofa::helper::vector<double> > *graph_forces = NULL, *graph_violations = NULL;
+    sofa::helper::vector<double> tabErrors;
 
-		if(showGraphs)
-		{
-			graph_forces = solver->graphForces.beginEdit();
-			graph_forces->clear();
+    if(solver)
+    {
+        showGraphs = solver->computeGraphs.getValue();
 
-			graph_violations = solver->graphViolations.beginEdit();
-			graph_violations->clear();
+        if(showGraphs)
+        {
+            graph_forces = solver->graphForces.beginEdit();
+            graph_forces->clear();
 
-			graph_residuals = &(*solver->graphErrors.beginEdit())["Error"];
-			graph_residuals->clear();
-		}
-	
-		tabErrors.resize(dimension);
-	}
+            graph_violations = solver->graphViolations.beginEdit();
+            graph_violations->clear();
 
-	for(i=0; i<maxIterations; i++)
-	{
-		bool constraintsAreVerified = true;
+            graph_residuals = &(*solver->graphErrors.beginEdit())["Error"];
+            graph_residuals->clear();
+        }
+
+        tabErrors.resize(dimension);
+    }
+
+    for(i=0; i<maxIterations; i++)
+    {
+        bool constraintsAreVerified = true;
         if(sor != 1.0)
-		{
-			for(j=0; j<dimension; j++)
-				tempForces[j] = force[j];
-		}
+        {
+            for(j=0; j<dimension; j++)
+                tempForces[j] = force[j];
+        }
 
-		error=0.0;
-		for(j=0; j<dimension; ) // increment of j realized at the end of the loop
-		{
-			//1. nbLines provide the dimension of the constraint  (max=6)
-			nb = constraintsResolutions[j]->nbLines;
+        error=0.0;
+        for(j=0; j<dimension; ) // increment of j realized at the end of the loop
+        {
+            //1. nbLines provide the dimension of the constraint  (max=6)
+            nb = constraintsResolutions[j]->nbLines;
 
-			//2. for each line we compute the actual value of d
-			//   (a)d is set to dfree
-			for(l=0; l<nb; l++)
-			{
-				errF[l] = force[j+l];
-				d[j+l] = dfree[j+l];
-			}
+            //2. for each line we compute the actual value of d
+            //   (a)d is set to dfree
+            for(l=0; l<nb; l++)
+            {
+                errF[l] = force[j+l];
+                d[j+l] = dfree[j+l];
+            }
 
-			//   (b) contribution of forces are added to d
-			for (ConstraintCorrectionIterator iter=cclist_elems[j].begin(); iter!=cclist_elems[j].end(); ++iter)
-			{
-				if(*iter)
-					(*iter)->addConstraintDisplacement(d, j, j+nb-1);
-			}
+            //   (b) contribution of forces are added to d
+            for (ConstraintCorrectionIterator iter=cclist_elems[j].begin(); iter!=cclist_elems[j].end(); ++iter)
+            {
+                if(*iter)
+                    (*iter)->addConstraintDisplacement(d, j, j+nb-1);
+            }
 
-			//3. the specific resolution of the constraint(s) is called
-			constraintsResolutions[j]->resolution(j, w, d, force, dfree);
+            //3. the specific resolution of the constraint(s) is called
+            constraintsResolutions[j]->resolution(j, w, d, force, dfree);
 
-			//4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
-			double contraintError = 0.0;
-			if(nb > 1)
-			{
-				for(l=0; l<nb; l++)
-				{
-					double lineError = 0.0;
-					for (int m=0; m<nb; m++)
-					{
-						double dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
-						lineError += dofError * dofError;
-					}
-					lineError = sqrt(lineError);
-					if(lineError > tol)
-						constraintsAreVerified = false;
+            //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
+            double contraintError = 0.0;
+            if(nb > 1)
+            {
+                for(l=0; l<nb; l++)
+                {
+                    double lineError = 0.0;
+                    for (int m=0; m<nb; m++)
+                    {
+                        double dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
+                        lineError += dofError * dofError;
+                    }
+                    lineError = sqrt(lineError);
+                    if(lineError > tol)
+                        constraintsAreVerified = false;
 
-					contraintError += lineError;
-				}
-			}
-			else
-			{
-				contraintError = fabs(w[j][j] * (force[j] - errF[0]));
-				if(contraintError > tol)
-					constraintsAreVerified = false;
-			}
+                    contraintError += lineError;
+                }
+            }
+            else
+            {
+                contraintError = fabs(w[j][j] * (force[j] - errF[0]));
+                if(contraintError > tol)
+                    constraintsAreVerified = false;
+            }
 
-			if(constraintsResolutions[j]->tolerance)
-			{
-				if(contraintError > constraintsResolutions[j]->tolerance)
-					constraintsAreVerified = false;
-				contraintError *= tol / constraintsResolutions[j]->tolerance;
-			}
+            if(constraintsResolutions[j]->tolerance)
+            {
+                if(contraintError > constraintsResolutions[j]->tolerance)
+                    constraintsAreVerified = false;
+                contraintError *= tol / constraintsResolutions[j]->tolerance;
+            }
 
-			error += contraintError;
-			if(solver)
-				tabErrors[j] = contraintError;
+            error += contraintError;
+            if(solver)
+                tabErrors[j] = contraintError;
 
-			//5. the force is updated for the constraint corrections
-			bool update = false;
-			for(l=0; l<nb; l++)
-				update |= (force[j+l] || errF[l]);
+            //5. the force is updated for the constraint corrections
+            bool update = false;
+            for(l=0; l<nb; l++)
+                update |= (force[j+l] || errF[l]);
 
-			if(update)
-			{
+            if(update)
+            {
                 double tempF[6] = {0,0,0,0,0,0};
-				for(l=0; l<nb; l++)
-				{
-					tempF[l] = force[j+l];
-					force[j+l] -= errF[l]; // DForce
-				}
+                for(l=0; l<nb; l++)
+                {
+                    tempF[l] = force[j+l];
+                    force[j+l] -= errF[l]; // DForce
+                }
 
-				for (ConstraintCorrectionIterator iter=cclist_elems[j].begin(); iter!=cclist_elems[j].end(); ++iter)
-				{
-					if(*iter)
-						(*iter)->setConstraintDForce(force, j, j+nb-1, update);
-				}
+                for (ConstraintCorrectionIterator iter=cclist_elems[j].begin(); iter!=cclist_elems[j].end(); ++iter)
+                {
+                    if(*iter)
+                        (*iter)->setConstraintDForce(force, j, j+nb-1, update);
+                }
 
-				for(l=0; l<nb; l++)
-					force[j+l] = tempF[l];
-			}
+                for(l=0; l<nb; l++)
+                    force[j+l] = tempF[l];
+            }
 
-			j += nb;
-		}
+            j += nb;
+        }
 
-		if(showGraphs)
-		{
-			for(j=0; j<dimension; j++)
-			{
-				std::ostringstream oss;
-				oss << "f" << j;
+        if(showGraphs)
+        {
+            for(j=0; j<dimension; j++)
+            {
+                std::ostringstream oss;
+                oss << "f" << j;
 
-				sofa::helper::vector<double>& graph_force = (*graph_forces)[oss.str()];
-				graph_force.push_back(force[j]);
+                sofa::helper::vector<double>& graph_force = (*graph_forces)[oss.str()];
+                graph_force.push_back(force[j]);
 
-				sofa::helper::vector<double>& graph_violation = (*graph_violations)[oss.str()];
-				graph_violation.push_back(d[j]);
-			}
+                sofa::helper::vector<double>& graph_violation = (*graph_violations)[oss.str()];
+                graph_violation.push_back(d[j]);
+            }
 
-			graph_residuals->push_back(error);
-		}
+            graph_residuals->push_back(error);
+        }
 
-		if(sor != 1.0)
-		{
-			for(j=0; j<dimension; j++)
-				force[j] = sor * force[j] + (1-sor) * tempForces[j];
-		}
+        if(sor != 1.0)
+        {
+            for(j=0; j<dimension; j++)
+                force[j] = sor * force[j] + (1-sor) * tempForces[j];
+        }
         if(timeout)
         {
             double t1 = (double)sofa::helper::system::thread::CTime::getTime();
@@ -969,66 +967,62 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
                 return;
             }
         }
-		else if(allVerified)
-		{
-			if(constraintsAreVerified)
-			{
-				convergence = true;
-				break;
-			}
-		}
-		else if(error < tol/* && i>0*/) // do not stop at the first iteration (that is used for initial guess computation)
-		{
-			convergence = true;
-			break;
-		}
-	}
-    
-	sofa::helper::AdvancedTimer::valSet("GS iterations", i+1);
+        else if(allVerified)
+        {
+            if(constraintsAreVerified)
+            {
+                convergence = true;
+                break;
+            }
+        }
+        else if(error < tol/* && i>0*/) // do not stop at the first iteration (that is used for initial guess computation)
+        {
+            convergence = true;
+            break;
+        }
+    }
+
+    sofa::helper::AdvancedTimer::valSet("GS iterations", i+1);
 
     currentError = error;
     currentIterations = i+1;
 
-	if(solver)
-	{
-		if(!convergence)
-		{
-			if(solver->f_printLog.getValue())
-				solver->serr << "No convergence : error = " << error << solver->sendl;
-			else
-				solver->sout << "No convergence : error = " << error << solver->sendl;
-		}
-		else if(solver->displayTime.getValue())
-			solver->sout<<" Convergence after " << i+1 << " iterations " << solver->sendl;
+    if(solver)
+    {
+        if(!convergence)
+        {
+            msg_info(solver) << "No convergence : error = " << error ;
+        }
+        else msg_info_when(solver->displayTime.getValue(),solver) <<" Convergence after " << i+1 << " iterations ";
 
-		for(i=0; i<dimension; i += constraintsResolutions[i]->nbLines)
-			constraintsResolutions[i]->store(i, force, convergence);
-	}
+        for(i=0; i<dimension; i += constraintsResolutions[i]->nbLines)
+            constraintsResolutions[i]->store(i, force, convergence);
+    }
 
-	if(showGraphs)
-	{
-		solver->graphErrors.endEdit();
+    if(showGraphs)
+    {
+        solver->graphErrors.endEdit();
 
-		sofa::helper::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
-		graph_constraints.clear();
+        sofa::helper::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
+        graph_constraints.clear();
 
-		for(j=0; j<dimension; )
-		{
-			nb = constraintsResolutions[j]->nbLines;
+        for(j=0; j<dimension; )
+        {
+            nb = constraintsResolutions[j]->nbLines;
 
-			if(tabErrors[j])
-				graph_constraints.push_back(tabErrors[j]);
-			else if(constraintsResolutions[j]->tolerance)
-				graph_constraints.push_back(constraintsResolutions[j]->tolerance);
-			else
-				graph_constraints.push_back(tol);
+            if(tabErrors[j])
+                graph_constraints.push_back(tabErrors[j]);
+            else if(constraintsResolutions[j]->tolerance)
+                graph_constraints.push_back(constraintsResolutions[j]->tolerance);
+            else
+                graph_constraints.push_back(tol);
 
-			j += nb;
-		}
-		solver->graphConstraints.endEdit();
+            j += nb;
+        }
+        solver->graphConstraints.endEdit();
 
-		solver->graphForces.endEdit();
-	}
+        solver->graphForces.endEdit();
+    }
 }
 
 

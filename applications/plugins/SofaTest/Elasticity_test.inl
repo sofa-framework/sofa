@@ -117,7 +117,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
 
     // Regular grid topology
     RegularGridTopology::SPtr gridMesh = modeling::addNew<RegularGridTopology>(SquareNode,"loader");
-    gridMesh->setNumVertices(numX,numY,numZ);
+    gridMesh->setSize(numX,numY,numZ);
     gridMesh->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
 
     //Mechanical object
@@ -291,7 +291,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     mappedParticles->addChild(deformableGrid);                                       // second parent
 
     component::topology::RegularGridTopology::SPtr deformableGrid_grid = modeling::addNew<component::topology::RegularGridTopology>( deformableGrid, "grid" );
-    deformableGrid_grid->setNumVertices(numX,numY,numZ);
+    deformableGrid_grid->setSize(numX,numY,numZ);
     deformableGrid_grid->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
 
     MechanicalObject3::SPtr deformableGrid_dof = modeling::addNew< MechanicalObject3>(deformableGrid,"dof");

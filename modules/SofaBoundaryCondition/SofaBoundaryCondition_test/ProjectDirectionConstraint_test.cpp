@@ -3,17 +3,17 @@
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -27,6 +27,9 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
+
+#include <SofaTest/TestMessageHandler.h>
+
 
 namespace sofa {
 
@@ -56,7 +59,7 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
     typedef typename ProjectDirectionConstraint::Indices Indices;
     typedef component::topology::PointSetTopologyContainer PointSetTopologyContainer;
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
-  
+
     simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests
 
@@ -68,7 +71,7 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
 
      /// Create the context for the tests.
     void SetUp()
-    {      
+    {
         //Init
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -80,7 +83,7 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
 
         dofs = New<MechanicalObject>();
         root->addObject(dofs);
-        
+
         // Project direction constraint
         projection = New<ProjectDirectionConstraint>();
         root->addObject(projection);
@@ -137,14 +140,14 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
        projection->projectPosition(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
 
        helper::vector<CPos> m_origin;
-     
+
        // particle original position
        const VecCoord& xOrigin = projection->getMState()->read(core::ConstVecCoordId::position())->getValue();
         for( typename Indices::const_iterator it = indices.begin() ; it != indices.end() ; ++it )
         {
              m_origin.push_back( DataTypes::getCPos(xOrigin[*it]) );
         }
-    
+
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted
@@ -235,9 +238,11 @@ typedef Types<
 
 // Test suite for all the instanciations
 TYPED_TEST_CASE(ProjectDirectionConstraint_test, DataTypes);
+
 // first test case
 TYPED_TEST( ProjectDirectionConstraint_test , oneConstrainedParticle )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
@@ -245,6 +250,7 @@ TYPED_TEST( ProjectDirectionConstraint_test , oneConstrainedParticle )
 // second test case
 TYPED_TEST( ProjectDirectionConstraint_test , allParticlesConstrained )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_allParticlesConstrained();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );

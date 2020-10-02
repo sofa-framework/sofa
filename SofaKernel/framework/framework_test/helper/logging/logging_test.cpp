@@ -1,6 +1,28 @@
+/******************************************************************************
+*       SOFA, Simulation-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #include <gtest/gtest.h>
 #include <exception>
 #include <algorithm>
+#include <thread>
 
 #include <iostream>
 using std::endl ;
@@ -32,7 +54,11 @@ using sofa::helper::logging::MainRoutingMessageHandler ;
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
 
-#include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
+#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
+using sofa::helper::logging::PerComponentLoggingMessageHandler ;
+using sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
+
+#include <sofa/core/logging/RichConsoleStyleMessageFormatter.h>
 using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -45,9 +71,6 @@ class MyMessageHandler : public MessageHandler
 public:
     virtual void process(Message& m){
         m_messages.push_back(m);
-
-        //        if( !m.sender().empty() )
-        //            std::cerr<<m<<std::endl;
     }
 
     size_t numMessages(){
@@ -62,10 +85,9 @@ public:
     }
 } ;
 
-
-
 TEST(LoggingTest, noHandler)
 {
+    // This test does not test anything, except the absence of crash
     MessageDispatcher::clearHandlers() ;
 
     msg_info("") << " info message with conversion" << 1.5 << "\n" ;
@@ -89,7 +111,7 @@ TEST(LoggingTest, oneHandler)
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h.numMessages() == 4u ) ;
+    EXPECT_EQ( h.numMessages() , 4u ) ;
 }
 
 TEST(LoggingTest, duplicatedHandler)
@@ -110,6 +132,65 @@ TEST(LoggingTest, duplicatedHandler)
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
     EXPECT_TRUE( h.numMessages() == 4u) ;
+}
+
+void f1()
+{
+    for(unsigned int i=0;i<100000;i++){
+        msg_info("Thread1") << "Hello world" ;
+        msg_warning("Thread1") << "Hello world" ;
+        msg_error("Thread1") << "Hello world" ;
+    }
+}
+
+void f2()
+{
+    for(unsigned int i=0;i<100000;i++){
+        msg_info("Thread2") << "Hello world" ;
+        msg_warning("Thread2") << "Hello world" ;
+        msg_error("Thread2") << "Hello world" ;
+    }
+}
+
+void f3()
+{
+    for(unsigned int i=0;i<100000;i++){
+        msg_info("Thread3") << "Hello world" ;
+        msg_warning("Thread3") << "Hello world" ;
+        msg_error("Thread3") << "Hello world" ;
+    }
+}
+
+
+
+TEST(LoggingTest, threadingTests)
+{
+    if(!SOFA_WITH_THREADING){
+        std::cout << "Test canceled because sofa is not compiled with SOFA_WITH_THREADING option." << std::endl ;
+        return ;
+    }
+
+    MessageDispatcher::clearHandlers() ;
+
+    CountingMessageHandler& mh = MainCountingMessageHandler::getInstance();
+    mh.reset();
+
+    // First add is expected to return the handler ID.
+    EXPECT_TRUE(MessageDispatcher::addHandler(&mh) == 0) ;
+
+    std::thread t1(f1);
+    std::thread t1bis(f1);
+    std::thread t2(f2);
+    std::thread t3(f3);
+
+    t1.join();
+    t1bis.join();
+    t2.join();
+    t3.join();
+
+    EXPECT_EQ( mh.getMessageCountFor(Message::Info), 400000) ;
+    EXPECT_EQ( mh.getMessageCountFor(Message::Warning), 400000) ;
+    EXPECT_EQ( mh.getMessageCountFor(Message::Error), 400000) ;
 }
 
 
@@ -133,19 +214,19 @@ TEST(LoggingTest, withoutDevMode)
     EXPECT_TRUE( h.numMessages() == 4u ) ;
 }
 
-//TEST(LoggingTest, speedTest)
-//{
-//    MessageDispatcher::clearHandlers() ;
+TEST(LoggingTest, speedTest)
+{
+    MessageDispatcher::clearHandlers() ;
 
-//    MyMessageHandler h;
-//    MessageDispatcher::addHandler(&h) ;
+    MyMessageHandler h;
+    MessageDispatcher::addHandler(&h) ;
 
-//    for(unsigned int i=0;i<10000;i++){
-//        msg_info("") << " info message with conversion" << 1.5 << "\n" ;
-//        msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
-//        msg_error("") << " error message with conversion" << 1.5 << "\n" ;
-//    }
-//}
+    for(unsigned int i=0;i<100000;i++){
+        msg_info("") << " info message with conversion" << 1.5 << "\n" ;
+        msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
+        msg_error("") << " error message with conversion" << 1.5 << "\n" ;
+    }
+}
 
 
 
@@ -164,25 +245,40 @@ TEST(LoggingTest, emptyMessage)
     msg_info("");
     EXPECT_EQ( h.numMessages(), 1u );
 }
-
-
+#include <string>
+#include <sofa/core/objectmodel/Data.h>
+using sofa::core::objectmodel::TData ;
 
 
 
 class MyComponent : public sofa::core::objectmodel::BaseObject
 {
 public:
+
     MyComponent()
     {
+
+    }
+
+    void emitSerrSoutMessages(){
         f_printLog.setValue(true); // to print sout
         serr<<"regular serr"<<sendl;
         sout<<"regular sout"<<sendl;
         serr<<SOFA_FILE_INFO<<"serr with fileinfo"<<sendl;
         sout<<SOFA_FILE_INFO<<"sout with fileinfo"<<sendl;
     }
+
+    void emitMessages(){
+        msg_info(this) << "an info message" ;
+        msg_warning(this) << "a warning message" ;
+        msg_error(this) << "an error message" ;
+    }
 };
 
-TEST(LoggingTest, BaseObject)
+
+
+
+TEST(LoggingTest, checkBaseObjectSerr)
 {
     MessageDispatcher::clearHandlers() ;
     MyMessageHandler h;
@@ -191,6 +287,7 @@ TEST(LoggingTest, BaseObject)
 
     MyComponent c;
 
+    c.emitSerrSoutMessages();
     /// the constructor of MyComponent is sending 4 messages
     EXPECT_EQ( h.numMessages(), 4u ) ;
 
@@ -263,8 +360,123 @@ TEST(LoggingTest, BaseObject)
 
 }
 
+TEST(LoggingTest, checkBaseObjectMsgAPI)
+{
+    MessageDispatcher::clearHandlers() ;
+    MyMessageHandler h;
+    MessageDispatcher::addHandler(&h) ;
+
+
+    MyComponent c;
+
+    c.f_printLog.setValue(true);
+
+    c.emitMessages() ;
+    EXPECT_EQ(h.numMessages(), 3u);
+    EXPECT_EQ(c.getLoggedMessages().size(), 0u) ;
+
+    /// We install the handler that copy the message into the component.
+    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+
+    c.emitMessages() ;
+    EXPECT_EQ(h.numMessages(), 6u);
+
+    std::stringstream s;
+    s << "============= Back log ==============" << std::endl ;
+    for(auto& message : c.getLoggedMessages()){
+        s << message << std::endl ;
+    }
+    s << "=====================================" << std::endl ; ;
+    EXPECT_EQ(c.getLoggedMessages().size(), 3u) << s.str();
+
+    msg_info(&c) << "A fourth message ";
+
+    EXPECT_EQ(c.getLoggedMessages().size(), 4u) << s.str();
+}
+
+TEST(LoggingTest, checkBaseObjectMsgAPInoPrintLog)
+{
+    MessageDispatcher::clearHandlers() ;
+    MyMessageHandler h;
+    MessageDispatcher::addHandler(&h) ;
+
+
+    MyComponent c;
+
+    c.f_printLog.setValue(false);
+
+    c.emitMessages() ;
+    EXPECT_EQ(h.numMessages(), 2u);
+    EXPECT_EQ(c.getLoggedMessages().size(), 0u) ;
+
+    /// We install the handler that copy the message into the component.
+    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+
+    c.emitMessages() ;
+    EXPECT_EQ(h.numMessages(), 4u);
+
+    std::stringstream s;
+    s << "============= Back log ==============" << std::endl ;
+    for(auto& message : c.getLoggedMessages()){
+        s << message << std::endl ;
+    }
+    s << "=====================================" << std::endl ; ;
+    EXPECT_EQ(c.getLoggedMessages().size(), 2u) << s.str();
+
+    msg_info(&c) << "A fourth message ";
+
+    EXPECT_EQ(c.getLoggedMessages().size(), 2u) << s.str();
+}
+
+
+TEST(LoggingTest, checkBaseObjectQueueSize)
+{
+    /// We install the handler that copy the message into the component.
+    MessageDispatcher::clearHandlers() ;
+    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+
+    MyComponent c;
+    c.f_printLog.setValue(true);
+
+    /// Filling the internal message queue.
+    for(unsigned int i=0;i<100;i++){
+        c.emitMessages();
+    }
+    EXPECT_EQ(c.getLoggedMessages().size(), 100u);
+}
+
+TEST(LoggingTest, checkBaseObjectSoutSerr)
+{
+    /// We install the handler that copy the message into the component.
+    MessageDispatcher::clearHandlers() ;
+    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+
+    MyComponent c;
+    c.emitSerrSoutMessages();
+
+    /// Well serr message are routed through warning while
+    /// Sout are routed to the Info ones.
+    EXPECT_TRUE(c.getLoggedMessagesAsString({Message::Error}).empty());
+    EXPECT_TRUE(c.getLoggedMessagesAsString({Message::Fatal}).empty());
+    EXPECT_FALSE(c.getLoggedMessagesAsString({Message::Warning}).empty());
+    EXPECT_FALSE(c.getLoggedMessagesAsString({Message::Error,
+                                              Message::Warning,
+                                              Message::Fatal}).empty());
+
+    EXPECT_TRUE(c.getLoggedMessagesAsString({Message::Deprecated}).empty());
+    EXPECT_TRUE(c.getLoggedMessagesAsString({Message::Advice}).empty());
+    EXPECT_FALSE(c.getLoggedMessagesAsString({Message::Info}).empty());
+    EXPECT_FALSE(c.getLoggedMessagesAsString({Message::Info,
+                                              Message::Deprecated,
+                                              Message::Advice}).empty());
+
+}
+
+
 #undef MESSAGING_H
-#define WITH_SOFA_DEVTOOLS
+#ifndef WITH_SOFA_DEVTOOLS
+   #define WITH_SOFA_DEVTOOLS
+#endif
 #undef dmsg_info
 #undef dmsg_deprecated
 #undef dmsg_error
@@ -295,8 +507,6 @@ TEST(LoggingTest, withDevMode)
     EXPECT_TRUE( h.numMessages() == 6u ) ;
 }
 
-
-
 TEST(LoggingTest, checkLoggingMessageHandler)
 {
     CountingMessageHandler& m = MainCountingMessageHandler::getInstance() ;
@@ -322,8 +532,8 @@ TEST(LoggingTest, checkLoggingMessageHandler)
             std::cout << message << std::endl ;
         }
     }
-
 }
+
 
 TEST(LoggingTest, checkCountingMessageHandler)
 {

@@ -59,7 +59,7 @@ typename SubsetContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Subse
         simulation::Node* parent = dynamic_cast<simulation::Node*>(instate->getContext());
         if (parent==NULL)
         {
-            std::cerr << "ERROR: SubsetContactMapper only works for scenegraph scenes.\n";
+            msg_error("SubsetContactMapper") << "SubsetContactMapper only works for scenegraph scenes.";
             return NULL;
         }
         child = parent->createChild(name);
@@ -73,7 +73,7 @@ typename SubsetContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Subse
         simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
         if (parent==NULL)
         {
-            std::cerr << "ERROR: SubsetContactMapper only works for scenegraph scenes.\n";
+            msg_error("SubsetContactMapper") << "SubsetContactMapper only works for scenegraph scenes.";
             return NULL;
         }
         child = parent->createChild(name);

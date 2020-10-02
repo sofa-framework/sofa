@@ -73,6 +73,8 @@ sofa::simulation::Node::SPtr SceneLoaderXML::load(const char *filename)
     if (!canLoadFileName(filename))
         return 0;
 
+    notifyLoadingScene();
+
     xml::BaseElement* xml = xml::loadFromFile ( filename );
     root = processXML(xml, filename);
 
@@ -140,6 +142,8 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
 /// Load from a string in memory
 Node::SPtr SceneLoaderXML::loadFromMemory ( const char *filename, const char *data, unsigned int size )
 {
+    notifyLoadingScene();
+
     xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
 
     Node::SPtr root = processXML(xml, filename);

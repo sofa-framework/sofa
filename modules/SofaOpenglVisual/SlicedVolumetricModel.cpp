@@ -67,9 +67,7 @@ const int SlicedVolumetricModel::__edges__[12][2] = {{ 0,1 }, { 3,2 }, { 4,5 }, 
 SlicedVolumetricModel::SlicedVolumetricModel() //const std::string &name, std::string filename, std::string loader, std::string textureName)
     :
     alpha(initData(&alpha, 0.2f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
-    //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-    //This field should support the color="red" api.
-    color(initData(&color, std::string("white"), "color", "Billboard color.")),
+    color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=1.0,1.0,1.0,1.0)")),
     _nbPlanes(initData(&_nbPlanes, 100, "nbSlices", "Number of billboards.")),
     _topology(NULL),
     _mstate(NULL),
@@ -146,17 +144,12 @@ void SlicedVolumetricModel::init()
 
 void SlicedVolumetricModel::reinit()
 {
-    setColor(color.getValue());
-
     if( _nbPlanesOld != _nbPlanes.getValue() || _first )
     {
-        // 	if( _nbPlanes.getValue()>2048)_nbPlanes.setValue(2048);
         alpha.setValue((alpha.getValue()*Real(_nbPlanesOld))/Real(_nbPlanes.getValue()));
         _planeSeparations = (Real)((_maxBBox[0]-_minBBox[0]) / (Real)_nbPlanes.getValue());
-// 		cerr<<"_planeSeparations : "<<_planeSeparations<<endl;
         _nbPlanesOld = _nbPlanes.getValue();
     }
-
 }
 
 void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vparams)
@@ -219,12 +212,6 @@ void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vp
 // 	glDisable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
-
-
-
-
-
     float mat[16];
     glGetFloatv( GL_MODELVIEW_MATRIX, mat );
     vRight=Coord( mat[0], mat[4], mat[8] );
@@ -234,8 +221,8 @@ void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vp
 
     glBindTexture(GL_TEXTURE_3D, _texname);
 
-
-    glColor4f( r,g,b, alpha.getValue());
+    auto& c=color.getValue() ;
+    glColor4f( c.r(),c.g(),c.b(), alpha.getValue());
 
     glEnable(GL_TEXTURE_3D);
 
@@ -563,63 +550,6 @@ int SlicedVolumetricModel::intersectionSegmentPlane( const Coord&s0,const Coord&
     }
 
     else return 0;
-}
-
-
-
-
-void SlicedVolumetricModel::setColor(float r, float g, float b)
-{
-    this->r = r;
-    this->g = g;
-    this->b = b;
-}
-
-static int hexval(char c)
-{
-    if (c>='0' && c<='9') return c-'0';
-    else if (c>='a' && c<='f') return (c-'a')+10;
-    else if (c>='A' && c<='F') return (c-'A')+10;
-    else return 0;
-}
-
-void SlicedVolumetricModel::setColor(std::string color)
-{
-    if (color.empty()) return;
-    float r = 1.0f;
-    float g = 1.0f;
-    float b = 1.0f;
-    if (color[0]>='0' && color[0]<='9')
-    {
-        sscanf(color.c_str(),"%f %f %f", &r, &g, &b);
-    }
-    else if (color[0]=='#' && color.length()>=7)
-    {
-        r = (hexval(color[1])*16+hexval(color[2]))/255.0f;
-        g = (hexval(color[3])*16+hexval(color[4]))/255.0f;
-        b = (hexval(color[5])*16+hexval(color[6]))/255.0f;
-    }
-    else if (color[0]=='#' && color.length()>=4)
-    {
-        r = (hexval(color[1])*17)/255.0f;
-        g = (hexval(color[2])*17)/255.0f;
-        b = (hexval(color[3])*17)/255.0f;
-    }
-    else if (color == "white")    { r = 1.0f; g = 1.0f; b = 1.0f; }
-    else if (color == "black")    { r = 0.0f; g = 0.0f; b = 0.0f; }
-    else if (color == "red")      { r = 1.0f; g = 0.0f; b = 0.0f; }
-    else if (color == "green")    { r = 0.0f; g = 1.0f; b = 0.0f; }
-    else if (color == "blue")     { r = 0.0f; g = 0.0f; b = 1.0f; }
-    else if (color == "cyan")     { r = 0.0f; g = 1.0f; b = 1.0f; }
-    else if (color == "magenta")  { r = 1.0f; g = 0.0f; b = 1.0f; }
-    else if (color == "yellow")   { r = 1.0f; g = 1.0f; b = 0.0f; }
-    else if (color == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
-    else
-    {
-        serr << "Unknown color "<<color<<sendl;
-        return;
-    }
-    setColor(r,g,b);
 }
 
 } // namespace visualmodel

@@ -85,8 +85,8 @@ bool MeshSTLLoader::load()
 
 bool MeshSTLLoader::readBinarySTL(const char *filename)
 {
-    if( this->f_printLog.getValue() )
-        sout << "Reading binary STL file..." << sendl;
+    dmsg_info() << "Reading binary STL file..." ;
+
     std::ifstream dataFile (filename, std::ios::in | std::ios::binary);
 
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(this->d_positions.beginWriteOnly());
@@ -196,8 +196,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     this->d_triangles.endEdit();
     this->d_normals.endEdit();
 
-    if( this->f_printLog.getValue() )
-        sout << "done!" << sendl;
+    dmsg_info() << "done!" ;
 
     return true;
 }
@@ -205,8 +204,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
 bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
 {
-    if( this->f_printLog.getValue() )
-        sout << "Reading STL file..." << sendl;
+    dmsg_info() << "Reading STL file..." ;
 
     // Init
     std::string buffer;
@@ -308,8 +306,7 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
 
     dataFile.close();
 
-    if( this->f_printLog.getValue() )
-        sout << "done!" << sendl;
+    dmsg_info() << "done!" ;
 
     return true;
 }

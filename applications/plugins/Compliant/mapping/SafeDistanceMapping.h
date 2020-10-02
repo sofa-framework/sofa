@@ -5,12 +5,12 @@
 
 #include "AssembledMapping.h"
 #include "AssembledMultiMapping.h"
-
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
-	
+
 namespace component
 {
 
@@ -38,10 +38,10 @@ class SOFA_Compliant_API SafeDistanceMapping : public AssembledMapping<TIn, TOut
 {
   public:
     SOFA_CLASS(SOFA_TEMPLATE2(SafeDistanceMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
-	
+
     typedef SafeDistanceMapping self;
-	
-	typedef defaulttype::Vec<2, unsigned> index_pair;
+
+    typedef defaulttype::Vec<2, unsigned> index_pair;
     typedef helper::vector< index_pair > pairs_type;
 
     Data< pairs_type > d_pairs;
@@ -52,7 +52,7 @@ class SOFA_Compliant_API SafeDistanceMapping : public AssembledMapping<TIn, TOut
     Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     Data< SReal > d_showObjectScale; ///< drawing size
-    Data< defaulttype::Vec4f > d_color; ///< drawing color
+    Data< defaulttype::RGBAColor > d_color; ///< drawing color
 
 protected:
 
@@ -62,14 +62,14 @@ protected:
     helper::vector<SReal> m_lengths, m_invlengths;       ///< inverse of current distances. Null represents the infinity (null distance)
 
 
-	
+
     SafeDistanceMapping()
         : d_pairs( initData(&d_pairs, "pairs", "index pairs for computing distance") )
         , d_restLengths( initData(&d_restLengths, "restLengths", "rest lengths") )
         , d_epsilonLength( initData(&d_epsilonLength, 1e-4, "epsilonLength", "Threshold to consider a length too close to 0") )
         , d_geometricStiffness( initData(&d_geometricStiffness, 2u, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(-1), "showObjectScale", "Scale for object display"))
-        , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
+        , d_color(initData(&d_color, defaulttype::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     {}
 
     enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
@@ -112,8 +112,8 @@ public:
         Inherit1::reinit();
     }
 
-	virtual void apply(typename self::out_pos_type& out, 
-	                   const typename self::in_pos_type& in )  {
+    virtual void apply(typename self::out_pos_type& out,
+                       const typename self::in_pos_type& in )  {
 
         const pairs_type& pairs = d_pairs.getValue();
         const helper::vector<SReal>& restLengths = d_restLengths.getValue();
@@ -182,7 +182,7 @@ public:
             }
         }
 
-	}
+    }
 
     virtual void assemble( const typename self::in_pos_type& in )
     {
@@ -191,7 +191,7 @@ public:
         const pairs_type& pairs = d_pairs.getValue();
         const helper::vector<SReal>& restLengths = d_restLengths.getValue();
 
-		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
+        typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
         J.resize( size, Nin * in.size() );
         J.reserve( pairs.size() * TIn::spatial_dimensions );
@@ -249,7 +249,7 @@ public:
         }
 
         J.finalize();
-	}
+    }
 
 
     virtual void assemble_geometric( const typename self::in_pos_type& in, const typename self::out_force_type& out )
@@ -346,7 +346,7 @@ public:
             }
         }
     }
-	
+
 };
 
 
@@ -407,7 +407,7 @@ protected:
     SafeDistanceFromTargetMapping()
         : d_indices( initData(&d_indices, "indices", "index of dof to compute the distance") )
         , d_targetPositions( initData(&d_targetPositions, "targets", "positions the distances are measured from") )
-        , d_restLengths( initData(&d_restLengths, "restLengths", "rest lengths") )        
+        , d_restLengths( initData(&d_restLengths, "restLengths", "rest lengths") )
         , d_directions( initData(&d_directions, "directions", "Given directions (must be colinear with the vector formed by the points)") )
         , d_epsilonLength( initData(&d_epsilonLength, 1e-4, "epsilonLength", "Threshold to consider a length too close to 0") )
         , d_geometricStiffness( initData(&d_geometricStiffness, 2u, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)") )

@@ -44,11 +44,11 @@ GNode::GNode(const std::string& name, GNode* parent)
 
 GNode::~GNode()
 {
-	for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
     {
-		GNode::SPtr gnode = sofa::core::objectmodel::SPtr_static_cast<GNode>(*it);
-		gnode->l_parent.remove(this);
-	}
+        GNode::SPtr gnode = sofa::core::objectmodel::SPtr_static_cast<GNode>(*it);
+        gnode->l_parent.remove(this);
+    }
 }
 
 /// Create, add, then return the new child of this Node
@@ -175,7 +175,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
             }
             break;
         case SearchRoot:
-            std::cerr << "SearchRoot SHOULD NOT BE POSSIBLE HERE!\n";
+            dmsg_error("GNode") << "SearchRoot SHOULD NOT BE POSSIBLE HERE.";
             break;
         }
     }
@@ -226,7 +226,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
         }
         else if (pend < path.length())
         {
-            //std::cerr << "ERROR: child node "<<name<<" not found in "<<getPathName()<<std::endl;
+            //dmsg_error("GNode") << "Child node "<<name<<" not found in "<<getPathName();
             return NULL;
         }
         else
@@ -234,7 +234,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
             core::objectmodel::BaseObject* obj = simulation::Node::getObject(name);
             if (obj == NULL)
             {
-                //std::cerr << "ERROR: object "<<name<<" not found in "<<getPathName()<<std::endl;
+                //dmsg_error("GNode") << "Object "<<name<<" not found in "<<getPathName();
                 return NULL;
             }
             else
@@ -242,7 +242,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
                 void* result = class_info.dynamicCast(obj);
                 if (result == NULL)
                 {
-                    std::cerr << "ERROR: object "<<name<<" in "<<getPathName()<<" does not implement class "<<class_info.name()<<std::endl;
+                    dmsg_error("GNode") << "Object "<<name<<" in "<<getPathName()<<" does not implement class "<<class_info.name() ;
                     return NULL;
                 }
                 else
@@ -299,7 +299,7 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
             }
             break;
         case SearchRoot:
-            std::cerr << "SearchRoot SHOULD NOT BE POSSIBLE HERE!\n";
+            dmsg_error("GNode") << "SearchRoot SHOULD NOT BE POSSIBLE HERE.";
             break;
         }
     }
@@ -388,7 +388,7 @@ void GNode::updateContext()
     {
         if( debug_ )
         {
-            std::cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *parent()->getContext() << std::endl;
+            msg_info()<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *parent()->getContext() ;
         }
         copyContext(*parent());
     }
@@ -401,7 +401,7 @@ void GNode::updateSimulationContext()
     {
         if( debug_ )
         {
-            std::cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *parent()->getContext() << std::endl;
+            msg_info()<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *parent()->getContext() ;
         }
         copySimulationContext(*parent());
     }

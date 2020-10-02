@@ -30,6 +30,10 @@
 #include <image/ImageViewer.h>
 #include "TestImageEngine.h"
 
+/// To activate showing the picture during the test.
+/// Set this to true.
+#define DO_DISPLAY false
+
 namespace sofa {
 
 /**  Test suite for engine data image.
@@ -45,53 +49,38 @@ struct ImageEngine_test : public Sofa_test<>
     // Root of the scene graph
     simulation::Node::SPtr root;
 
-
     // Unload scene
     void TearDown()
     {
-//        std::cerr << "start TearDown" << std::endl;
         if (root!=NULL)
             sofa::simulation::getSimulation()->unload(root);
-//        std::cerr << "end TearDown" << std::endl;
     }
 
-
-
-
     // Test link
+    /// To suceed this test need imagemagick to be installed.
     void testDataLink()
     {
-
-//#define __DISPLAY__
-
         typedef defaulttype::Image<unsigned char> Image;
 
         core::objectmodel::Data< Image > data1;
         core::objectmodel::Data< Image > data2;
 
-
-        // Set data1
         Image::CImgT img( (std::string(IMAGETEST_SCENES_DIR) + "/lena.jpg").c_str() );
 
-#ifdef __DISPLAY__
-        img.display("loaded image");
-#endif
+        if(DO_DISPLAY)
+           img.display("loaded image");
 
         data1.setValue(img);
 
-#ifdef __DISPLAY__
-        data1.getValue().getCImg().display("data1");
-#endif
-
+        if(DO_DISPLAY)
+            data1.getValue().getCImg().display("data1");
 
         // Set data link
         sofa::modeling::setDataLink(&data1,&data2);
         data1.getValue();
 
-#ifdef __DISPLAY__
-        data2.getValue().getCImg().display("data2");
-#endif
-
+        if(DO_DISPLAY)
+            data2.getValue().getCImg().display("data2");
 
         // Check that data values are the same
         ASSERT_EQ(data1.getValue(),data2.getValue());
@@ -106,54 +95,21 @@ struct ImageEngine_test : public Sofa_test<>
         helper::WriteAccessor<Data< Image > > w1(data1);
         w1->getCImg(0).fill(0);
 
-#ifdef __DISPLAY__
-        data1.getValue().getCImg().display("data1 after clear");
-#endif
+        if(DO_DISPLAY)
+            data1.getValue().getCImg().display("data1 after clear");
 
         // Check that data values are the same
         ASSERT_EQ(data1.getValue(),data2.getValue());
 
-#ifdef __DISPLAY__
-        data2.getValue().getCImg().display("data2 after clear");
-#endif
+        if(DO_DISPLAY)
+            data2.getValue().getCImg().display("data2 after clear");
 
         // Check if pointers are still equal
         if(&data1.getValue()!= &data2.getValue())
         {
             ADD_FAILURE() << "Data Link duplicates the datas ! " << std::endl;
         }
-
-
-
-
-
-//        // Change value of data2
-////        data2.getValue();
-//        helper::WriteAccessor<Data< Image > > w2(data2);
-//        w2->getCImg(0).fill(255,0,0);
-
-//#ifdef __DISPLAY__
-//        data2.getValue().getCImg().display("data2 after modif");
-//        data1.getValue().getCImg().display("data1 after modif");
-//#endif
-
-//        std::cerr<<&data1.getValue()<<" "<<&data2.getValue()<<" "<<(data1.getValue()==data2.getValue())<<std::endl;
-
-//        w1->getCImg(0).load((std::string(IMAGETEST_SCENES_DIR) + "/lena.jpg").c_str());
-
-//        std::cerr<<&data1.getValue()<<" "<<&data2.getValue()<<" "<<(data1.getValue()==data2.getValue())<<std::endl;
-
-
-//#ifdef __DISPLAY__
-//        data1.getValue().getCImg().display("data1 end");
-//        data2.getValue().getCImg().display("data2 end");
-//#endif
-
     }
-
-
-
-
 
     /// Scene with simple engines
     ///
@@ -196,9 +152,6 @@ struct ImageEngine_test : public Sofa_test<>
         TestImageEngine::SPtr imageEngine2 = sofa::modeling::addNew<TestImageEngine>(root);
         sofa::modeling::setDataLink(&imageEngine->outputImage,&imageEngine2->inputImage);
 
-
-
-
         // Init simulation
         sofa::simulation::getSimulation()->init(root.get());
 
@@ -206,20 +159,11 @@ struct ImageEngine_test : public Sofa_test<>
         for(int l=0;l<2;++l)
         {
             sofa::simulation::getSimulation()->animate(root.get(),0.5);
-//            std::cerr << "== loop "<<l<<std::endl;
-//            std::cerr << "engine2 size " << imageEngine2->inputImage.getValue().getCImg(0).size() << std::endl;
-//            std::cerr << "image shared shared: " << imageContainer->image.getValue().getCImg(0).is_shared() << " " << &imageContainer->image.getValue().getCImg(0)<< std::endl;
-//            std::cerr << "engine input shared: " << imageEngine->inputImage.getValue().getCImg(0).is_shared() << " " << &imageEngine->inputImage.getValue().getCImg(0)<< std::endl;
-//            std::cerr << "engine output shared: " << imageEngine->outputImage.getValue().getCImg(0).is_shared() << " " << &imageEngine->outputImage.getValue().getCImg(0)<< std::endl;
-//            std::cerr << "engine2 input shared: " << imageEngine2->inputImage.getValue().getCImg(0).is_shared() << " " << &imageEngine2->inputImage.getValue().getCImg(0)<< std::endl;
         }
-
 
         // Check if pointers of images that should be shared are equal
         ASSERT_EQ(&imageContainer->image.getValue(),&imageEngine->inputImage.getValue());
         ASSERT_EQ(&imageEngine->outputImage.getValue(),&imageEngine2->inputImage.getValue());
-
-
     }
 
 
@@ -273,8 +217,6 @@ struct ImageEngine_test : public Sofa_test<>
         sofa::modeling::setDataLink(&imageEngine->outputImage,&imageViewer->image);
         //sofa::modeling::setDataLink(&imageContainer->image,&imageViewer->image);
 
-
-
         // Init simulation
         sofa::simulation::getSimulation()->init(root.get());
 
@@ -282,23 +224,13 @@ struct ImageEngine_test : public Sofa_test<>
         for(int l=0;l<2;++l)
         {
             sofa::simulation::getSimulation()->animate(root.get(),0.5);
-//            std::cerr << "== loop "<<l<<std::endl;
-//            std::cerr << "viewer size " << imageViewer->image.getValue().getCImg(0).size() << std::endl;
-//            std::cerr << "image shared shared: " << imageContainer->image.getValue().getCImg(0).is_shared() << " " << &imageContainer->image.getValue().getCImg(0)<< std::endl;
-//            std::cerr << "engine input shared: " << imageEngine->inputImage.getValue().getCImg(0).is_shared() << " " << &imageEngine->inputImage.getValue().getCImg(0)<< std::endl;
-//            std::cerr << "engine output shared: " << imageEngine->outputImage.getValue().getCImg(0).is_shared() << " " << &imageEngine->outputImage.getValue().getCImg(0)<< std::endl;
-//            std::cerr << "viewer input shared: " << imageViewer->image.getValue().getCImg(0).is_shared() << " " << &imageViewer->image.getValue().getCImg(0)<< std::endl;
         }
 
 
         // Check if pointers of images that should be shared are equal
         ASSERT_EQ(&imageContainer->image.getValue(),&imageEngine->inputImage.getValue());
         ASSERT_EQ(&imageEngine->outputImage.getValue(),&imageViewer->image.getValue());
-
     }
-
-
-
 };
 
 // Test
@@ -366,8 +298,6 @@ struct ImageDataEngine_test : public DataEngine_test<DataEngineType>
             if( typeinfo->name().find("Image") != std::string::npos || typeinfo->name().find("BranchingImage") != std::string::npos )
             {
                 defaulttype::BaseImage* img = static_cast<defaulttype::BaseImage*>( data->beginEditVoidPtr() );
-//                std::cerr<<data->getName()<<" is a Data<Image>\n";
-                // allocate input
                 img->setDimensions( defaulttype::BaseImage::imCoord(2,2,2,1,1) );
                 img->fill(1.0);
                 data->endEditVoidPtr();

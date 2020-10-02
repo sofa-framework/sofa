@@ -69,10 +69,10 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     VisualModelImpl* obj = this;
 
     if (arg->getAttribute("normals")!=NULL)
-        obj->setUseNormals(atoi(arg->getAttribute("normals"))!=0);
+        obj->setUseNormals(arg->getAttributeAsInt("normals", 1)!=0);
 
     if (arg->getAttribute("castshadow")!=NULL)
-        obj->setCastShadow(atoi(arg->getAttribute("castshadow"))!=0);
+        obj->setCastShadow(arg->getAttributeAsInt("castshadow", 1)!=0);
 
     if (arg->getAttribute("flip")!=NULL)
         obj->flipFaces();
@@ -81,24 +81,34 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
         obj->setColor(arg->getAttribute("color"));
 
     if (arg->getAttribute("su")!=NULL || arg->getAttribute("sv")!=NULL)
-        m_scaleTex = TexCoord((float)atof(arg->getAttribute("su","1.0")),(float)atof(arg->getAttribute("sv","1.0")));
+        m_scaleTex = TexCoord(arg->getAttributeAsFloat("su",1.0),
+                              arg->getAttributeAsFloat("sv",1.0));
 
     if (arg->getAttribute("du")!=NULL || arg->getAttribute("dv")!=NULL)
-        m_translationTex = TexCoord((float)atof(arg->getAttribute("du","0.0")),(float)atof(arg->getAttribute("dv","0.0")));
+        m_translationTex = TexCoord(arg->getAttributeAsFloat("du",0.0),
+                                    arg->getAttributeAsFloat("dv",0.0));
 
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
-        m_rotation.setValue(Vec3Real((Real)(atof(arg->getAttribute("rx","0.0"))),(Real)(atof(arg->getAttribute("ry","0.0"))),(Real)(atof(arg->getAttribute("rz","0.0")))));
+        m_rotation.setValue(Vec3Real((Real)arg->getAttributeAsFloat("rx",0.0),
+                                     (Real)arg->getAttributeAsFloat("ry",0.0),
+                                     (Real)arg->getAttributeAsFloat("rz",0.0)));
 
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-        m_translation.setValue(Vec3Real((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
+        m_translation.setValue(Vec3Real((Real)arg->getAttributeAsFloat("dx",0.0),
+                                        (Real)arg->getAttributeAsFloat("dy",0.0),
+                                        (Real)arg->getAttributeAsFloat("dz",0.0)));
 
     if (arg->getAttribute("scale")!=NULL)
     {
-        m_scale.setValue(Vec3Real((Real)atof(arg->getAttribute("scale","1.0")), (Real)atof(arg->getAttribute("scale","1.0")), (Real)atof(arg->getAttribute("scale","1.0"))));
+        m_scale.setValue(Vec3Real((Real)arg->getAttributeAsFloat("scale",1.0),
+                                  (Real)arg->getAttributeAsFloat("scale",1.0),
+                                  (Real)arg->getAttributeAsFloat("scale",1.0)));
     }
     else if (arg->getAttribute("sx")!=NULL || arg->getAttribute("sy")!=NULL || arg->getAttribute("sz")!=NULL)
     {
-        m_scale.setValue(Vec3Real((Real)atof(arg->getAttribute("sx","1.0")), (Real)atof(arg->getAttribute("sy","1.0")), (Real)atof(arg->getAttribute("sz","1.0"))));
+        m_scale.setValue(Vec3Real((Real)arg->getAttributeAsFloat("sx",1.0),
+                                  (Real)arg->getAttributeAsFloat("sy",1.0),
+                                  (Real)arg->getAttributeAsFloat("sz",1.0)));
     }
 }
 
@@ -1097,58 +1107,17 @@ void VisualModelImpl::setColor(float r, float g, float b, float a)
 #endif
 }
 
-static int hexval(char c)
-{
-    if (c>='0' && c<='9') return c-'0';
-    else if (c>='a' && c<='f') return (c-'a')+10;
-    else if (c>='A' && c<='F') return (c-'A')+10;
-    else return 0;
-}
-
-//TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-// This code should be factored out.
 void VisualModelImpl::setColor(std::string color)
 {
-    if (color.empty()) return;
-    float r = 1.0f;
-    float g = 1.0f;
-    float b = 1.0f;
-    float a = 1.0f;
-    if (color[0]>='0' && color[0]<='9')
-    {
-        sscanf(color.c_str(),"%f %f %f %f", &r, &g, &b, &a);
-    }
-    else if (color[0]=='#' && color.length()>=7)
-    {
-        r = (hexval(color[1])*16+hexval(color[2]))/255.0f;
-        g = (hexval(color[3])*16+hexval(color[4]))/255.0f;
-        b = (hexval(color[5])*16+hexval(color[6]))/255.0f;
-        if (color.length()>=9)
-            a = (hexval(color[7])*16+hexval(color[8]))/255.0f;
-    }
-    else if (color[0]=='#' && color.length()>=4)
-    {
-        r = (hexval(color[1])*17)/255.0f;
-        g = (hexval(color[2])*17)/255.0f;
-        b = (hexval(color[3])*17)/255.0f;
-        if (color.length()>=5)
-            a = (hexval(color[4])*17)/255.0f;
-    }
-    else if (color == "white")    { r = 1.0f; g = 1.0f; b = 1.0f; }
-    else if (color == "black")    { r = 0.0f; g = 0.0f; b = 0.0f; }
-    else if (color == "red")      { r = 1.0f; g = 0.0f; b = 0.0f; }
-    else if (color == "green")    { r = 0.0f; g = 1.0f; b = 0.0f; }
-    else if (color == "blue")     { r = 0.0f; g = 0.0f; b = 1.0f; }
-    else if (color == "cyan")     { r = 0.0f; g = 1.0f; b = 1.0f; }
-    else if (color == "magenta")  { r = 1.0f; g = 0.0f; b = 1.0f; }
-    else if (color == "yellow")   { r = 1.0f; g = 1.0f; b = 0.0f; }
-    else if (color == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
-    else
-    {
-        sout << "Unknown color "<<color<<sendl;
+    if (color.empty())
         return;
+
+    RGBAColor theColor;
+    if( !RGBAColor::read(color, theColor) )
+    {
+        msg_info(this) << "Unable to decode color '"<< color <<"'." ;
     }
-    setColor(r,g,b,a);
+    setColor(theColor.r(),theColor.g(),theColor.b(),theColor.a());
 }
 
 #ifdef SOFA_SMP
@@ -1296,17 +1265,18 @@ void VisualModelImpl::computeMesh()
         {
             if (SparseGridTopology *spTopo = dynamic_cast< SparseGridTopology *>(m_topology))
             {
-                sout << "VisualModel: getting marching cube mesh from topology : ";
                 sofa::helper::io::Mesh m;
                 spTopo->getMesh(m);
                 setMesh(m, !texturename.getValue().empty());
-                sout << m.getVertices().size() << " points, " << m.getFacets().size()  << " triangles." << sendl;
+                dmsg_info() << " getting marching cube mesh from topology, "
+                            << m.getVertices().size() << " points, "
+                            << m.getFacets().size()  << " triangles." ;
+
                 useTopology = false; //visual model needs to be created only once at initial time
                 return;
             }
 
-            if (this->f_printLog.getValue())
-                sout << "VisualModel: copying " << m_topology->getNbPoints() << " points from topology." << sendl;
+            dmsg_info() << " copying " << m_topology->getNbPoints() << " points from topology." ;
 
             vertices.resize(m_topology->getNbPoints());
 
@@ -1324,8 +1294,7 @@ void VisualModelImpl::computeMesh()
 
             if (mstate)
             {
-                if (this->f_printLog.getValue())
-                    sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
+                dmsg_info() << " copying " << mstate->getSize() << " points from mechanical state" ;
 
                 vertices.resize(mstate->getSize());
 
@@ -1346,8 +1315,7 @@ void VisualModelImpl::computeMesh()
     const vector< Triangle >& inputTriangles = m_topology->getTriangles();
 
 
-    if (this->f_printLog.getValue())
-        sout << "VisualModel: copying " << inputTriangles.size() << " triangles from topology." << sendl;
+    dmsg_info() << " copying " << inputTriangles.size() << " triangles from topology" ;
 
     ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
     triangles.resize(inputTriangles.size());
@@ -1361,8 +1329,7 @@ void VisualModelImpl::computeMesh()
 
     const vector< BaseMeshTopology::Quad >& inputQuads = m_topology->getQuads();
 
-    if (this->f_printLog.getValue())
-        sout << "VisualModel: copying " << inputQuads.size()<< " quads from topology." << sendl;
+    dmsg_info() << " copying " << inputQuads.size()<< " quads from topology." ;
 
     ResizableExtVector< Quad >& quads = *(m_quads.beginEdit());
     quads.resize(inputQuads.size());
@@ -1769,11 +1736,10 @@ void VisualModelImpl::handleTopologyChange()
 
             if (mstate)
             {
-                if (this->f_printLog.getValue())
-                {
-                    sout << "VisualModel: oldsize    " << this->getSize()  << sendl;
-                    sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
-                }
+
+                dmsg_info() << " changing size.  " << msgendl
+                            << " oldsize    " << this->getSize() << msgendl
+                            << " copying " << mstate->getSize() << " points from mechanical state.";
 
                 vertices.resize(mstate->getSize());
 

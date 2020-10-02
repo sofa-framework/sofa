@@ -72,8 +72,17 @@
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
+
 #include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaSimpleFem/TetrahedronFEMForceField.h>
+#include <SofaMiscFem/TriangularFEMForceField.h>
+
+#include <SofaGeneralTopology/CylinderGridTopology.h>
+#include <SofaGeneralTopology/SphereGridTopology.h>
+
+#include <SofaBaseLinearSolver/FullVector.h>
 
 namespace sofa
 {
@@ -93,6 +102,16 @@ using sofa::component::odesolver::EulerSolver ;
 using sofa::component::loader::MeshObjLoader ;
 using sofa::component::topology::MeshTopology ;
 
+using sofa::component::topology::RegularGridTopology ;
+using sofa::component::topology::CylinderGridTopology ;
+using sofa::component::topology::SphereGridTopology;
+
+
+/// Dense state vector deriving from BaseVector, used to access data in the scene graph
+typedef component::linearsolver::FullVector<SReal> FullVector;
+
+
+
 #ifndef SOFA_NO_OPENGL
 using sofa::component::visualmodel::OglModel ;
 #else
@@ -101,8 +120,11 @@ using sofa::component::visualmodel::VisualModelImpl;
 
 using sofa::component::mapping::BarycentricMapping ;
 using sofa::component::mapping::RigidMapping ;
+using sofa::component::mapping::IdentityMapping ;
 
 using sofa::component::interactionforcefield::StiffSpringForceField ;
+using sofa::component::forcefield::TetrahedronFEMForceField;
+using sofa::component::forcefield::TriangularFEMForceField;
 using sofa::component::mass::UniformMass ;
 
 using sofa::simulation::graph::DAGSimulation ;
@@ -117,11 +139,14 @@ using sofa::core::objectmodel::New ;
 using sofa::helper::system::DataRepository ;
 
 
-/////////////////// INSTANTIATE THE DIFFERENT TEMPLATE WE NEED TO USE ///////////////////////////
+/////////////////// ALIAS FOR THE DIFFERENT TEMPLATE WE NEED TO USE ///////////////////////////
 typedef CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >    CGLinearSolverGraph;
 typedef UniformMass<Vec3Types, SReal>                                   UniformMass3;
 typedef StiffSpringForceField<Vec3Types >                               StiffSpringForceField3;
+typedef TetrahedronFEMForceField<Vec3Types>                             TetrahedronFEMForceField3;
+typedef TriangularFEMForceField<Vec3Types>                              TriangularFEMForceField3;
 
+typedef IdentityMapping<Vec3Types, ExtVec3fTypes>       IdentityMapping3_to_Ext3;
 typedef BarycentricMapping<Vec3Types, Vec3Types >       BarycentricMapping3_to_3;
 typedef BarycentricMapping<Vec3Types, ExtVec3fTypes>    BarycentricMapping3_to_Ext3;
 typedef RigidMapping<Rigid3Types, Vec3Types >           RigidMappingRigid3_to_3;
@@ -229,7 +254,7 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     else
     {
-        std::cerr << "Error: " << scheme << " Integration Scheme not recognized" << std::endl;
+        msg_error("SceneCreator") << scheme << " Integration Scheme not recognized.  " ;
     }
     return node;
 }
@@ -313,8 +338,8 @@ Node::SPtr createCollisionNodeVec3(Node::SPtr  parent, MechanicalObject3::SPtr  
     return CollisionNode;
 }
 
-Node::SPtr createVisualNodeVec3(Node::SPtr  parent, MechanicalObject3::SPtr  dof,  const std::string &filename, const std::string& color,
-                                                                 const Deriv3& translation, const Deriv3 &rotation)
+simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent, MechanicalObject3::SPtr  dof,  const std::string &filename, const std::string& color,
+                                                                 const Deriv3& translation, const Deriv3 &rotation, const MappingType &mappingT)
 {
     Node::SPtr  VisualNode =parent->createChild("Visu");
 
@@ -329,12 +354,26 @@ Node::SPtr createVisualNodeVec3(Node::SPtr  parent, MechanicalObject3::SPtr  dof
     visual->setRotation(rotation[0],rotation[1],rotation[2]);
     VisualNode->addObject(visual);
 
-    BarycentricMapping3_to_Ext3::SPtr mapping = New<BarycentricMapping3_to_Ext3>();
-    mapping->setModels(dof.get(), visual.get());
-    mapping->setName("Mapping Visual");
-    mapping->setPathInputObject(refDof);
-    mapping->setPathOutputObject(refVisual);
-    VisualNode->addObject(mapping);
+    if (mappingT == MT_Barycentric) // TODO check if possible to create a baseMapping::SPtr before the switch
+    {
+        BarycentricMapping3_to_Ext3::SPtr mapping = sofa::core::objectmodel::New<BarycentricMapping3_to_Ext3>();
+        mapping->setModels(dof.get(), visual.get());
+        mapping->setName("Mapping Visual");
+        mapping->setPathInputObject(refDof);
+        mapping->setPathOutputObject(refVisual);
+        VisualNode->addObject(mapping);
+    }
+    else if (mappingT == MT_Identity)
+    {
+        IdentityMapping3_to_Ext3::SPtr mapping = sofa::core::objectmodel::New<IdentityMapping3_to_Ext3>();
+        mapping->setModels(dof.get(), visual.get());
+        mapping->setName("Mapping Visual");
+        mapping->setPathInputObject(refDof);
+        mapping->setPathOutputObject(refVisual);
+        VisualNode->addObject(mapping);
+    }
+    else
+        msg_error("SceneCreator") << "Visual Mapping creation not possible. Mapping should be Barycentric or Identity. Found MappingType enum: " << mappingT ;
 
     return VisualNode;
 }
@@ -439,16 +478,323 @@ void addCollisionModels(Node::SPtr CollisionNode, const std::vector<std::string>
     }
 }
 
-//template<class Component>
-//typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="")
-//{
-//    typename Component::SPtr component = New<Component>();
-//    parentNode->addObject(component);
-//    component->setName(parentNode->getName()+"_"+name);
-//    return component;
-//}
+
+void addTetraFEM(simulation::Node::SPtr currentNode, const std::string& objectName,
+                 SReal totalMass, SReal young, SReal poisson)
+{
+    // Add Mass
+    UniformMass3::SPtr uniMassSpring = sofa::core::objectmodel::New<UniformMass3>();
+    uniMassSpring->setTotalMass(totalMass);
+    uniMassSpring->setName(objectName + "_mass");
+    currentNode->addObject(uniMassSpring);
+
+    // Add FEM
+    TetrahedronFEMForceField3::SPtr tetraFEMFF = sofa::core::objectmodel::New<TetrahedronFEMForceField3>();
+    tetraFEMFF->setName(objectName + "_FEM");
+    tetraFEMFF->setComputeGlobalMatrix(false);
+    tetraFEMFF->setMethod("large");
+    tetraFEMFF->setPoissonRatio(poisson);
+    tetraFEMFF->setYoungModulus(young);
+    currentNode->addObject(tetraFEMFF);
+}
+
+void addTriangleFEM(simulation::Node::SPtr currentNode, const std::string& objectName,
+                    SReal totalMass, SReal young, SReal poisson)
+{
+    // Add Mass
+    UniformMass3::SPtr uniMassSpring = sofa::core::objectmodel::New<UniformMass3>();
+    uniMassSpring->setTotalMass(totalMass);
+    uniMassSpring->setName(objectName + "_mass");
+    currentNode->addObject(uniMassSpring);
+
+    // Add FEM
+    TriangularFEMForceField3::SPtr triFEMFF = sofa::core::objectmodel::New<TriangularFEMForceField3>();
+    triFEMFF->setName(objectName + "_FEM");
+    triFEMFF->setMethod("large");
+    triFEMFF->setPoisson(poisson);
+    triFEMFF->setYoung(young);
+    currentNode->addObject(triFEMFF);
+}
 
 
+simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string& objectName,
+                               const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
+                               const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
+    // or dmsg_ for developpers.
+    if (parent == NULL){
+        msg_warning("SceneCreator") << "Parent node is NULL. Returning Null Pointer." ;
+        return NULL;
+    }
+
+    // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
+    if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
+        msg_warning("SceneCreator") << "Grid Size has a non positive value. Returning Null Pointer." ;
+        return NULL;
+    }
+
+    // Check rigid
+    bool isRigid = false;
+    if (totalMass < 0.0 || young < 0.0 || poisson < 0.0)
+        isRigid = true;
+
+    // Add Cube Node
+    sofa::simulation::Node::SPtr cube;
+    if (isRigid)
+        cube = parent->createChild(objectName + "_node");
+    else
+        cube = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
+
+
+    // Add mecaObj
+    MechanicalObject3::SPtr dofFEM = sofa::core::objectmodel::New<MechanicalObject3>(); dofFEM->setName(objectName + "_dof");
+    dofFEM->setTranslation(translation[0],translation[1],translation[2]);
+    dofFEM->setRotation(rotation[0],rotation[1],rotation[2]);
+    dofFEM->setScale(scale[0],scale[1],scale[2]);
+    cube->addObject(dofFEM);
+
+    // Add FEM and Mass system
+    if (!isRigid) // Add FEM and Mass system
+        addTetraFEM(cube, objectName, totalMass, young, poisson);
+
+    // Add topo
+    RegularGridTopology::SPtr grid = sofa::core::objectmodel::New<RegularGridTopology>();
+    grid->setName(objectName + "_grid");
+    grid->setSize(gridSize[0], gridSize[1], gridSize[2]);
+    grid->setPos(-0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f); // by default object is centered and volume equal to 1 unit, use dof modifier to change the scale/position/rotation
+    cube->addObject(grid);
+
+
+    // Add collisions models
+    std::vector<std::string> colElements;
+    colElements.push_back("Triangle");
+    colElements.push_back("Line");
+    colElements.push_back("Point");
+    sofa::modeling::addCollisionModels(cube, colElements);
+
+    //Node VISUAL
+    createVisualNodeVec3(cube, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
+
+    return cube;
+}
+
+
+simulation::Node::SPtr addRigidCube(simulation::Node::SPtr parent, const std::string& objectName,
+                                    const Deriv3& gridSize,
+                                    const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    return addCube(parent, objectName, gridSize, -1.f, -1.f, -1.f, translation, rotation, scale);
+}
+
+
+
+simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::string& objectName,
+                                   const Deriv3& gridSize, const Deriv3& axis, SReal radius, SReal length,
+                                   SReal totalMass, SReal young, SReal poisson,
+                                   const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
+    // or dmsg_ for developpers.
+    if (parent == NULL){
+        msg_warning("SceneCreator") << "Warning: parent node is NULL. Returning Null Pointer." ;
+        return NULL;
+    }
+
+    // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
+    if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
+        msg_warning("SceneCreator") << "Warning: Grid Size has a non positive value. Returning Null Pointer." ;
+        return NULL;
+    }
+
+    // Check rigid
+    bool isRigid = false;
+    if (totalMass < 0.0 || young < 0.0 || poisson < 0.0)
+        isRigid = true;
+
+    // Add Cylinder Node
+    sofa::simulation::Node::SPtr cylinder;
+    if (isRigid)
+        cylinder = parent->createChild(objectName + "_node");
+    else
+        cylinder = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
+
+
+    // Add mecaObj
+    MechanicalObject3::SPtr dofFEM = sofa::core::objectmodel::New<MechanicalObject3>(); dofFEM->setName(objectName + "_dof");
+    dofFEM->setTranslation(translation[0],translation[1],translation[2]);
+    dofFEM->setRotation(rotation[0],rotation[1],rotation[2]);
+    dofFEM->setScale(scale[0],scale[1],scale[2]);
+    cylinder->addObject(dofFEM);
+
+    if (!isRigid) // Add FEM and Mass system
+        addTetraFEM(cylinder, objectName, totalMass, young, poisson);
+
+    // Add topo
+    CylinderGridTopology::SPtr grid = sofa::core::objectmodel::New<CylinderGridTopology>();
+    grid->setName(objectName + "_grid");
+    grid->setSize(gridSize[0], gridSize[1], gridSize[2]);
+    grid->setRadius(radius);
+    grid->setLength(length);
+    grid->setAxis(axis[0], axis[1], axis[2]);
+    cylinder->addObject(grid);
+
+
+    // Add collisions models
+    std::vector<std::string> colElements;
+    colElements.push_back("Triangle");
+    colElements.push_back("Line");
+    colElements.push_back("Point");
+    sofa::modeling::addCollisionModels(cylinder, colElements);
+
+    //Node VISUAL
+    createVisualNodeVec3(cylinder, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
+
+    return cylinder;
+}
+
+
+simulation::Node::SPtr addRigidCylinder(simulation::Node::SPtr parent, const std::string& objectName,
+                                   const Deriv3& gridSize, const Deriv3& axis, SReal radius, SReal length,
+                                   const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    return addCylinder(parent, objectName, gridSize, axis, radius, length, -1.f, -1.f, -1.f, translation, rotation, scale);
+}
+
+simulation::Node::SPtr addSphere(simulation::Node::SPtr parent, const std::string& objectName,
+                                   const Deriv3& gridSize, const Deriv3& axis, SReal radius,
+                                   SReal totalMass, SReal young, SReal poisson,
+                                   const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
+    // or dmsg_ for developpers.
+    if (parent == NULL){
+        msg_warning("SceneCreator") << "Warning: parent node is NULL. Returning Null Pointer." ;
+        return NULL;
+    }
+
+    // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
+    if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
+        msg_warning("SceneCreator") << "Warning: Grid Size has a non positive value. Returning Null Pointer." ;
+        return NULL;
+    }
+
+    // Check rigid
+    bool isRigid = false;
+    if (totalMass < 0.0 || young < 0.0 || poisson < 0.0)
+        isRigid = true;
+
+    // Add Sphere Node
+    sofa::simulation::Node::SPtr sphere;
+    if (isRigid)
+        sphere = parent->createChild(objectName + "_node");
+    else
+        sphere = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
+
+
+    // Add mecaObj
+    MechanicalObject3::SPtr dofFEM = sofa::core::objectmodel::New<MechanicalObject3>(); dofFEM->setName(objectName + "_dof");
+    dofFEM->setTranslation(translation[0],translation[1],translation[2]);
+    dofFEM->setRotation(rotation[0],rotation[1],rotation[2]);
+    dofFEM->setScale(scale[0],scale[1],scale[2]);
+    sphere->addObject(dofFEM);
+
+    if (!isRigid) // Add FEM and Mass system
+        addTetraFEM(sphere, objectName, totalMass, young, poisson);
+
+    // Add topo
+    SphereGridTopology::SPtr grid = sofa::core::objectmodel::New<SphereGridTopology>();
+    grid->setName(objectName + "_grid");
+    grid->setSize(gridSize[0], gridSize[1], gridSize[2]);
+    grid->setRadius(radius);
+    grid->setAxis(axis[0], axis[1], axis[2]);
+    sphere->addObject(grid);
+
+
+    // Add collisions models
+    std::vector<std::string> colElements;
+    colElements.push_back("Triangle");
+    colElements.push_back("Line");
+    colElements.push_back("Point");
+    sofa::modeling::addCollisionModels(sphere, colElements);
+
+    //Node VISUAL
+    createVisualNodeVec3(sphere, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
+
+    return sphere;
+}
+
+
+simulation::Node::SPtr addRigidSphere(simulation::Node::SPtr parent, const std::string& objectName,
+                                      const Deriv3& gridSize, const Deriv3& axis, SReal radius,
+                                      const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    return addSphere(parent, objectName, gridSize, axis, radius, -1.f, -1.f, -1.f, translation, rotation, scale);
+}
+
+
+simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string& objectName,
+                                const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
+                                const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
+    // or dmsg_ for developpers.
+    if (parent == NULL){
+        msg_warning("SceneCreator") << " Parent node is NULL. Returning Null Pointer." ;
+        return NULL;
+    }
+
+    // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
+    if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
+        msg_warning("SceneCreator") << " Grid Size has a non positive value. Returning Null Pointer." ;
+        return NULL;
+    }
+
+    // Check rigid
+    bool isRigid = false;
+    if (totalMass < 0.0 || young < 0.0 || poisson < 0.0)
+        isRigid = true;
+
+    // Add plane node
+    sofa::simulation::Node::SPtr planeNode;
+    if (isRigid)
+        planeNode = parent->createChild(objectName + "_node");
+    else
+        planeNode = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
+
+    // Add mecaObj
+    MechanicalObject3::SPtr dofPlane = sofa::core::objectmodel::New<MechanicalObject3>(); dofPlane->setName("FEM Object");
+    dofPlane->setTranslation(translation[0],translation[1],translation[2]);
+    dofPlane->setRotation(rotation[0],rotation[1],rotation[2]);
+    dofPlane->setScale(scale[0],scale[1],scale[2]);
+    planeNode->addObject(dofPlane);
+
+    if (!isRigid) // Add FEM and Mass system
+        addTriangleFEM(planeNode, objectName, totalMass, young, poisson);
+
+    // Add topo
+    sofa::component::topology::RegularGridTopology::SPtr gridPlane = sofa::core::objectmodel::New<sofa::component::topology::RegularGridTopology>();
+    gridPlane->setSize(gridSize[0], gridSize[1], gridSize[2]);
+    gridPlane->setPos(-0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f);
+    planeNode->addObject(gridPlane);
+
+    std::vector<std::string> colElements;
+    colElements.push_back("Triangle");
+    colElements.push_back("Line");
+    colElements.push_back("Point");
+    sofa::modeling::addCollisionModels(planeNode, colElements);
+
+    //Node VISUAL
+    createVisualNodeVec3(planeNode, dofPlane, "", "green", Deriv3(), Deriv3(), MT_Identity);
+
+    return planeNode;
+}
+
+simulation::Node::SPtr addRigidPlane(simulation::Node::SPtr parent, const std::string& objectName, const Deriv3& gridSize,
+                                     const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    return addPlane(parent, objectName, gridSize, -1.f, -1.f, -1.f, translation, rotation, scale);
+}
 
 /// Create a stiff string
 Node::SPtr massSpringString
@@ -511,8 +857,6 @@ Node::SPtr initSofa()
     setSimulation(new simulation::graph::DAGSimulation());
     root = simulation::getSimulation()->createNewGraph("root");
     return root;
-//    root = modeling::newRoot();
-//    root->setName("Solver_test_scene_root");
 }
 
 

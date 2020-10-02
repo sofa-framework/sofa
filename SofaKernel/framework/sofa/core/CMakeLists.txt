@@ -139,6 +139,8 @@ set(HEADER_FILES
     visual/VisualManager.h
     visual/VisualModel.h
     visual/VisualParams.h
+    logging/RichConsoleStyleMessageFormatter.h
+    logging/PerComponentLoggingMessageHandler.h
 )
 
 set(SOURCE_FILES
@@ -232,6 +234,8 @@ set(SOURCE_FILES
     visual/VisualManager.cpp
     visual/VisualModel.cpp
     visual/VisualParams.cpp
+    logging/RichConsoleStyleMessageFormatter.cpp
+    logging/PerComponentLoggingMessageHandler.cpp
 )
 
 if(NOT SOFA_NO_OPENGL)
@@ -274,7 +278,7 @@ endif()
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaDefaultType)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CORE")

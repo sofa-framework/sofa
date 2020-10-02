@@ -207,7 +207,7 @@ public:
                 }
                 else
                 {
-                    std::cerr<<"Error parsing Spring : Unknown Attribute "<<str<<std::endl;
+                    msg_error("JointSprintForceField")<<"Unknown Attribute while parsing '"<<str<<"'" ;
                     return in;
                 }
 

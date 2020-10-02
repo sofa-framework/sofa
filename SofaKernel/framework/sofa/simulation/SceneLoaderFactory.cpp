@@ -30,6 +30,8 @@ namespace sofa
 namespace simulation
 {
 
+SceneLoader::Listeners SceneLoader::s_listerners;
+
 SceneLoaderFactory* SceneLoaderFactory::getInstance()
 {
     static SceneLoaderFactory instance;

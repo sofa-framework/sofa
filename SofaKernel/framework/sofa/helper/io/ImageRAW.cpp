@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/io/ImageRAW.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <iostream>
@@ -50,18 +51,18 @@ void ImageRAW::initHeader(unsigned hsize)
 
 bool ImageRAW::load(std::string filename)
 {
-	m_bLoaded = 0;
+    m_bLoaded = 0;
 
     if (!sofa::helper::system::DataRepository.findFile(filename))
     {
-        std::cerr << "File " << filename << " not found " << std::endl;
+        msg_error("ImageRAW") << "File '" << filename << "' not found " ;
         return false;
     }
     FILE *file;
     /* make sure the file is there and open it read-only (binary) */
     if ((file = fopen(filename.c_str(), "rb")) == NULL)
     {
-        std::cerr << "File not found : " << filename << std::endl;
+        msg_error("ImageRAW") << "File not found : '" << filename << "'";
         return false;
     }
 
@@ -97,7 +98,7 @@ bool ImageRAW::load(std::string filename)
     }
 
     fclose(file);
-	m_bLoaded = 1;
+    m_bLoaded = 1;
     return true;
 }
 
@@ -105,12 +106,12 @@ bool ImageRAW::save(std::string filename, int)
 {
     FILE *file;
 #ifndef NDEBUG
-    std::cout << "Writing RAW file " << filename << std::endl;
+    msg_info("ImageRAW") << "Writing RAW file " << filename ;
 #endif
     /* make sure the file is there and open it read-only (binary) */
     if ((file = fopen(filename.c_str(), "wb")) == NULL)
     {
-        std::cerr << "File write access failed : " << filename << std::endl;
+        msg_error("ImageRAW") << "File write access failed : '" << filename << "'";
         return false;
     }
 

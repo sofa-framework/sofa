@@ -97,15 +97,16 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
     {
         this->addTag (*it);
 
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin constraints reset" << sendl;
+        dmsg_info() << "begin constraints reset" ;
         sofa::simulation::MechanicalResetConstraintVisitor(params).execute(this->getContext());
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end constraints reset" << sendl;
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin collision for tag: "<< *it << sendl;
+        dmsg_info() << "end constraints reset" ;
+
+        dmsg_info() << "begin collision for tag: "<< *it ;
         computeCollision(params);
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end collision" << sendl;
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin integration  for tag: "<< *it << sendl;
+        dmsg_info() << "step, end collision" ;
+        dmsg_info() << "step, begin integration  for tag: "<< *it ;
         integrate(params, dt);
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end integration" << sendl;
+        dmsg_info() << "end integration" << sendl;
 
         this->removeTag (*it);
     }

@@ -260,12 +260,12 @@ void AdvancedTimer::end(IdTimer id, std::ostream& result)
 
     if (curTimer.empty())
     {
-        std::cerr << "ERROR: AdvanceTimer::end(" << id << ") called while begin was not" << std::endl;
+        msg_error("AdvancedTimer::end") << "timer[" << id << "] called while begin was not" ;
         return;
     }
     if (id != curTimer.top())
     {
-        std::cerr << "ERROR: AdvanceTimer::end(" << id << ") does not correspond to last call to begin(" << curTimer.top() << ")" << std::endl;
+        msg_error("AdvancedTimer::end") << "timer[" << id << "] does not correspond to last call to begin(" << curTimer.top() << ")" ;
         return;
     }
     helper::vector<Record>* curRecords = getCurRecords();
@@ -304,12 +304,12 @@ void AdvancedTimer::end(IdTimer id)
 
     if (curTimer.empty())
     {
-        std::cerr << "ERROR: AdvanceTimer::end(" << id << ") called while begin was not" << std::endl;
+        msg_error("AdvancedTimer::end") << "timer[" << id << "] called while begin was not" ;
         return;
     }
     if (id != curTimer.top())
     {
-        std::cerr << "ERROR: AdvanceTimer::end(" << id << ") does not correspond to last call to begin(" << curTimer.top() << ")" << std::endl;
+        msg_error("AdvancedTimer::end") << "timer[" << id << "] does not correspond to last call to begin(" << curTimer.top() << ")" ;
         return;
     }
     helper::vector<Record>* curRecords = getCurRecords();

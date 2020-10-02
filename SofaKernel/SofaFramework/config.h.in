@@ -60,6 +60,13 @@
 
 #cmakedefine SOFA_USE_MASK
 
+#cmakedefine SOFA_WITH_DEVTOOLS
+
+/// This can be either true or false
+#define SOFA_WITH_THREADING ${SOFA_WITH_THREADING_}
+
+#define SOFA_WITH_EXPERIMENTAL_FEATURES ${SOFA_WITH_EXPERIMENTAL_FEATURES_}
+
 #ifdef _MSC_VER
 #define EIGEN_DONT_ALIGN
 #endif // _MSC_VER

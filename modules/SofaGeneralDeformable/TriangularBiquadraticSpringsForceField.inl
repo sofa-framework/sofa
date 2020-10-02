@@ -87,11 +87,10 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
         for(j=0; j<3; ++j)
         {
             cotangent[j]=(restSquareLength[(j+1)%3] +restSquareLength[(j+2)%3]-restSquareLength[j])/(4*area);
-            if (ff->f_printLog.getValue())
-            {
-                if (cotangent[j]<0)
-                    ff->serr<<"negative cotangent["<<triangleIndex<<"]["<<j<<"]"<<ff->sendl;
-            }
+
+            msg_info_when(cotangent[j]<0, ff) <<"negative cotangent["
+                                              << triangleIndex<<"]["
+                                              <<j<<"]" ;
         }
         for(j=0; j<3; ++j)
         {
@@ -554,7 +553,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual:
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */ 
+#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

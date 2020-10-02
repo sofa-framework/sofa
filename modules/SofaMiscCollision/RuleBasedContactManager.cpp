@@ -119,8 +119,7 @@ std::string RuleBasedContactManager::replaceVariables(std::string response)
             }
         }
     }
-    if (this->f_printLog.getValue())
-        sout << "Output response string : " << res << sendl;
+    msg_info() << "Output response string : " << res ;
     return res;
 }
 

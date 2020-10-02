@@ -28,8 +28,8 @@
 #include <SofaBaseMechanics/MechanicalObjectTasks.inl>
 #endif
 #include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 
@@ -44,7 +44,9 @@
 #include <assert.h>
 #include <iostream>
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 #include <SofaBaseTopology/TopologyData.inl>
+#endif // SOFA_HAVE_NEW_TOPOLOGYCHANGES
 
 namespace
 {
@@ -148,7 +150,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     setVecDeriv(core::VecDerivId::dx().index, &dx);
     setVecDeriv(core::VecDerivId::freeVelocity().index, &vfree);
     setVecDeriv(core::VecDerivId::resetVelocity().index, &reset_velocity);
-    setVecMatrixDeriv(core::MatrixDerivId::holonomicC().index, &c);
+    setVecMatrixDeriv(core::MatrixDerivId::constraintJacobian().index, &c);
 
     // These vectors are set as modified as they are mandatory in the MechanicalObject.
     x               .forceSet();
@@ -289,38 +291,58 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
 
     if (arg->getAttribute("size") != NULL)
     {
-        resize(atoi(arg->getAttribute("size", "0")));
+        int newsize = arg->getAttributeAsInt("size", 1) ;
+        if(newsize>=0)
+        {
+            resize(newsize) ;
+        }
+        else
+        {
+            msg_warning(this) << "The attribute 'size' cannot have a negative value.  "
+                                 "The value "<<newsize<<" is ignored. Current value is " <<getSize()<< ".  "
+                                 "To remove this warning you need to fix your scene.";
+        }
     }
 
     if (arg->getAttribute("scale") != NULL)
     {
-        SReal s = (SReal)atof(arg->getAttribute("scale", "1.0"));
+        SReal s = (SReal)arg->getAttributeAsFloat("scale", 1.0);
         scale.setValue(Vector3(s, s, s));
     }
 
     if (arg->getAttribute("sx") != NULL || arg->getAttribute("sy") != NULL || arg->getAttribute("sz") != NULL)
     {
-        scale.setValue(Vector3((SReal)(atof(arg->getAttribute("sx","1.0"))),(SReal)(atof(arg->getAttribute("sy","1.0"))),(SReal)(atof(arg->getAttribute("sz","1.0")))));
+        scale.setValue(Vector3((SReal)arg->getAttributeAsFloat("sx",1.0),
+                               (SReal)arg->getAttributeAsFloat("sy",1.0),
+                               (SReal)arg->getAttributeAsFloat("sz",1.0)));
     }
 
     if (arg->getAttribute("rx") != NULL || arg->getAttribute("ry") != NULL || arg->getAttribute("rz") != NULL)
     {
-        rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0")))));
+        rotation.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx",0.0),
+                                  (SReal)arg->getAttributeAsFloat("ry",0.0),
+                                  (SReal)arg->getAttributeAsFloat("rz",0.0)));
     }
 
     if (arg->getAttribute("dx") != NULL || arg->getAttribute("dy") != NULL || arg->getAttribute("dz") != NULL)
     {
-        translation.setValue(Vector3((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
+        translation.setValue(Vector3((Real)arg->getAttributeAsFloat("dx",0.0),
+                                     (Real)arg->getAttributeAsFloat("dy",0.0),
+                                     (Real)arg->getAttributeAsFloat("dz",0.0)));
     }
 
     if (arg->getAttribute("rx2") != NULL || arg->getAttribute("ry2") != NULL || arg->getAttribute("rz2") != NULL)
     {
-        rotation2.setValue(Vector3((SReal)(atof(arg->getAttribute("rx2","0.0"))),(SReal)(atof(arg->getAttribute("ry2","0.0"))),(SReal)(atof(arg->getAttribute("rz2","0.0")))));
+        rotation2.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx2",0.0),
+                                   (SReal)arg->getAttributeAsFloat("ry2",0.0),
+                                   (SReal)arg->getAttributeAsFloat("rz2",0.0)));
     }
 
     if (arg->getAttribute("dx2") != NULL || arg->getAttribute("dy2") != NULL || arg->getAttribute("dz2") != NULL)
     {
-        translation2.setValue(Vector3((Real)atof(arg->getAttribute("dx2","0.0")), (Real)atof(arg->getAttribute("dy2","0.0")), (Real)atof(arg->getAttribute("dz2","0.0"))));
+        translation2.setValue(Vector3((Real)arg->getAttributeAsFloat("dx2",0.0),
+                                      (Real)arg->getAttributeAsFloat("dy2",0.0),
+                                      (Real)arg->getAttributeAsFloat("dz2",0.0)));
     }
 
 
@@ -1209,37 +1231,14 @@ void MechanicalObject<DataTypes>::init()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reinit()
 {
-    Vector3 p0;
-    sofa::component::topology::RegularGridTopology *grid;
-    this->getContext()->get(grid, sofa::core::objectmodel::BaseContext::Local);
-    if (grid) p0 = grid->getP0();
-
     if (scale.getValue() != Vector3(1.0,1.0,1.0))
-    {
         this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
-        if (grid) p0 = p0.linearProduct(scale.getValue());
-    }
 
     if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
-    {
         this->applyRotation(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]);
 
-        if (grid)
-        {
-            msg_warning(this) << "MechanicalObject initial rotation is not applied to its grid topology. \n"
-                                 "Regular grid topologies rotations are unsupported.\n" ;
-        }
-    }
-
     if (translation.getValue()[0]!=0.0 || translation.getValue()[1]!=0.0 || translation.getValue()[2]!=0.0)
-    {
         this->applyTranslation( translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
-        if (grid) p0 += translation.getValue();
-    }
-
-
-    if (grid)
-        grid->setP0(p0);
 }
 
 template <class DataTypes>
@@ -2565,7 +2564,7 @@ void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core:
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint(const core::ExecParams* params)
 {
-    Data<MatrixDeriv>& c_data = *this->write(core::MatrixDerivId::holonomicC());
+    Data<MatrixDeriv>& c_data = *this->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv *c = c_data.beginEdit(params);
     c->clear();
     c_data.endEdit(params);
@@ -2576,7 +2575,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
 {
     // Compute J
     const size_t N = Deriv::size();
-    const MatrixDeriv& c = this->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& c = this->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -2598,6 +2597,34 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
 
     off += this->getSize() * N;
 }
+
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+template <class DataTypes>
+void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID)
+{
+    const size_t N = Deriv::size();
+    Data<MatrixDeriv>* cMatrix= this->write(mID);
+
+    unsigned int columnIndex = 0;
+    MatrixDeriv& jacobian = *cMatrix->beginEdit();
+
+
+    for (unsigned int i=0; i<list_n.size(); i++)
+    { //loop on the nodes on which we assign the identity blocks
+        unsigned int node= list_n[i];
+
+        for(unsigned int j=0; j<N; j++)
+        {   //identity block
+            typename DataTypes::MatrixDeriv::RowIterator rowIterator = jacobian.writeLine(N*node + j);
+            Deriv d;
+            d[j]=1.0;
+            rowIterator.setCol(node,  d);
+            columnIndex++;
+        }
+    }
+
+}
+#endif
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& /*renumbering*/)
@@ -3401,16 +3428,11 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
 
         defaulttype::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
         defaulttype::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
-//                            cerr<<"MechanicalObject<DataTypes>::pickParticles, ray point = " << rayOx << ", " << rayOy << ", " << rayOz << endl;
-//                            cerr<<"MechanicalObject<DataTypes>::pickParticles, ray dir = " << rayDx << ", " << rayDy << ", " << rayDz << endl;
-//                            cerr<<"MechanicalObject<DataTypes>::pickParticles, radius0 = " << radius0 << endl;
-//                            cerr<<"MechanicalObject<DataTypes>::pickParticles, dRadius = " << dRadius << endl;
         for (size_t i=0; i< vsize; ++i)
         {
             defaulttype::Vec<3,Real> pos;
             DataTypes::get(pos[0],pos[1],pos[2],x[i]);
 
-//                                    cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << " = " << pos << endl;
             if (pos == origin) continue;
             SReal dist = (pos-origin)*direction;
             if (dist < 0) continue; // discard particles behind the camera, such as mouse position
@@ -3418,13 +3440,10 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
             defaulttype::Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
             SReal distToRay = vecPoint.norm2();
             SReal maxr = radius0 + dRadius*dist;
-//                                    cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", maxR = " << maxr << endl;
             if (distToRay <= maxr*maxr)
             {
                 particles.insert(std::make_pair(distToRay,std::make_pair(this,i)));
-//                                            cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", distance = " << r2 << " inserted " << endl;
             }
-//                                    cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", distance = " << r2 << " not inserted " << endl;
         }
         return true;
     }

@@ -49,7 +49,7 @@ using sofa::simulation::Node;
 using sofa::simulation::Simulation;
 using sofa::simulation::MutationListener;
 
-QPixmap* getPixmap(core::objectmodel::Base* obj);
+QPixmap* getPixmap(core::objectmodel::Base* obj, bool, bool,bool);
 
 class SOFA_SOFAGUIQT_API GraphListenerQListView : public MutationListener
 {
@@ -79,7 +79,7 @@ public:
     virtual void addSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
     virtual void removeSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
     virtual void moveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
-	virtual void sleepChanged(Node* node);
+    virtual void sleepChanged(Node* node);
     virtual void addDatas(core::objectmodel::BaseObject* parent);
     virtual void removeDatas(core::objectmodel::BaseObject* parent);
     virtual void freeze(Node* groot);

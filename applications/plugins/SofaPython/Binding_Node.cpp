@@ -105,7 +105,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject *
     if (!node || !path)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     bool warning = true;
@@ -244,7 +244,7 @@ extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObj
     if (!object)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     node->addObject(object);
 
@@ -274,7 +274,7 @@ extern "C" PyObject * Node_removeObject(PyObject *self, PyObject * args)
     if (!object)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     node->removeObject(object);
 
@@ -294,7 +294,7 @@ extern "C" PyObject * Node_addChild(PyObject *self, PyObject * args)
     if (!child)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->addChild(child);
     Py_RETURN_NONE;
@@ -310,7 +310,7 @@ extern "C" PyObject * Node_removeChild(PyObject *self, PyObject * args)
     if (!child)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->removeChild(child);
     Py_RETURN_NONE;
@@ -326,7 +326,7 @@ extern "C" PyObject * Node_moveChild(PyObject *self, PyObject * args)
     if (!child)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->moveChild(child);
     Py_RETURN_NONE;
@@ -347,10 +347,10 @@ extern "C" PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "sO",&eventName,&pyUserData))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     PythonScriptEvent event(node,eventName,pyUserData);
-    down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    node->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
     Py_RETURN_NONE;
 }
 
@@ -361,7 +361,7 @@ extern "C" PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&eventName))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     sofa::core::objectmodel::KeypressedEvent event(eventName ? eventName[0] : '\0');
     down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
@@ -375,7 +375,7 @@ extern "C" PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&eventName))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     sofa::core::objectmodel::KeyreleasedEvent event(eventName ? eventName[0] : '\0');
     down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
@@ -408,7 +408,8 @@ extern "C" PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObjec
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
-    node->execute<MechanicalPropagatePositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance()); // only mechanical mappings
+    node->execute<MechanicalProjectPositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance()); // projective constraints
+    node->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance()); // only mechanical mappings
     node->execute<UpdateMappingVisitor>(sofa::core::MechanicalParams::defaultInstance()); // propagating position and velocity through non mechanical mappings
     node->execute<VisualUpdateVisitor>(sofa::core::MechanicalParams::defaultInstance());
 
@@ -428,6 +429,10 @@ extern "C" PyObject * Node_printGraph(PyObject *self, PyObject * /*args*/)
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * Node_getAsACreateObjectParameter(PyObject * self, PyObject *args)
+{
+    return Node_getLinkPath(self, args);
+}
 
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node,executeVisitor)
@@ -457,6 +462,7 @@ SP_CLASS_METHOD(Node,getMechanicalMapping)
 SP_CLASS_METHOD(Node,propagatePositionAndVelocity)
 SP_CLASS_METHOD(Node,isInitialized)
 SP_CLASS_METHOD(Node,printGraph)
+SP_CLASS_METHOD(Node,getAsACreateObjectParameter)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Node,Node,Context)

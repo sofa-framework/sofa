@@ -115,7 +115,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
     // Define a
     MultiVecDeriv a(&vop, pID);
-	a.realloc( &vop, true, true );
+    a.realloc( &vop, true, true );
     if(cpt ==0)
     {
         a.clear();
@@ -136,7 +136,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     //b = f;
     // b = M a
     if (rM != 0.0 || rK != 0.0 || beta != 0.5)
-    {  
+    {
         mop.propagateDx(a);
 
         mop.addMBKdx(b, -h*(1-gamma)*rM, h*(1-gamma), h*(1-gamma)*rK + h*h*(1-2*beta)/2.0,true,true);
@@ -179,7 +179,6 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     b.eq(vel, a, h*(0.5-beta));
     b.peq(aResult, h*beta);
     newPos.eq(pos, b, h);
-    std::cout<<"there"<<std::endl;
     solveConstraint(dt,xResult,core::ConstraintParams::POS);
     // v_{t+h} = v_t + h ( (1-\gamma) a_t + \gamma a_{t+h} )
     newVel.eq(vel, a, h*(1-gamma));

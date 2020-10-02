@@ -422,15 +422,19 @@ void Fluid3D::updateVisual()
                     int* b = base+3*i;
                     if (addFace(b[edgepts[tri[0]]],b[edgepts[tri[1]]],b[edgepts[tri[2]]])<0)
                     {
-                        std::cerr << "  mk=0x"<<std::hex<<mk<<std::dec<<" p1="<<tri[0]<<" p2="<<tri[1]<<" p3="<<tri[2]<<std::endl;
-                        for (int e=0; e<12; e++) std::cerr << "  e"<<e<<"="<<b[edgepts[e]];
-                        std::cerr<<std::endl;
+                        std::stringstream tmp;
+                        tmp<< "  mk=0x"<<std::hex<<mk<<std::dec<<" p1="<<tri[0]<<" p2="<<tri[1]<<" p3="<<tri[2];
+                        for (int e=0; e<12; e++)
+                            tmp << "  e"<<e<<"="<<b[edgepts[e]];
+                        tmp<<msgendl;
                         for (int ddz=-1; ddz<=0; ddz++)
                             for (int ddy=-1; ddy<=0; ddy++)
                                 for (int ddx=-1; ddx<=0; ddx++)
                                 {
-                                    std::cerr << " val("<<x+ddx<<','<<y+ddy<<','<<z+ddz<<")="<<(double)data[i+ddx*dx+ddy*dy+ddz*dz]<<std::endl;
+                                    tmp << " val("<<x+ddx<<','<<y+ddy<<','<<z+ddz<<")="<<(double)data[i+ddx*dx+ddy*dy+ddz*dz]<<msgendl;
                                 }
+
+                        msg_info() << tmp.str();
                     }
                     tri+=3;
                 }
@@ -438,7 +442,6 @@ void Fluid3D::updateVisual()
             }
         }
     }
-    //std::cout << points.size() << " points, "<<facets.size() <<" faces"<<std::endl;
 
     for (unsigned int i=0; i<points.size(); i++)
     {

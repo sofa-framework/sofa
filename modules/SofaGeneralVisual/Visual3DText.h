@@ -25,7 +25,7 @@
 #include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
-
+#include <sofa/defaulttype/RGBAColor.h>
 namespace sofa
 {
 namespace core
@@ -64,16 +64,11 @@ public:
 
     virtual void drawTransparent(const core::visual::VisualParams* vparams);
 
-private:
-    void setColor(float r, float g, float b, float a);
-    void setColor(std::string color);
-    defaulttype::Vec4f m_color;
-
 public:
     Data<std::string> d_text;
     Data<defaulttype::Vec3f> d_position;
     Data<float> d_scale;
-    Data<std::string> d_color;
+    Data<defaulttype::RGBAColor> d_color;
     Data<bool> d_depthTest;
 
 

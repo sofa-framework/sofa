@@ -60,8 +60,7 @@ CollisionAnimationLoop::~CollisionAnimationLoop()
 
 void CollisionAnimationLoop::computeCollision(const core::ExecParams* params)
 {
-    if (this->f_printLog.getValue()) std::cerr<<"CollisionAnimationLoop::computeCollision()"<<std::endl;
-
+    dmsg_info() <<"CollisionAnimationLoop::computeCollision()" ;
 
     {
         CollisionBeginEvent evBegin;

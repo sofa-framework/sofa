@@ -83,7 +83,8 @@ void PythonMainScriptController::loadScript()
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
 
-    helper::logging::MessageDispatcher::LoggerStream msg = msg_info("PythonMainScriptController");
+
+    std::stringstream msg;
     msg << "Found callbacks: ";
 
     #define BIND_SCRIPT_FUNC_WITH_MESSAGE(funcName){\
@@ -112,6 +113,9 @@ void PythonMainScriptController::loadScript()
     BIND_SCRIPT_FUNC_WITH_MESSAGE(onIdle)
 
     #undef BIND_SCRIPT_FUNC_WITH_MESSAGE
+
+    msg_info("PythonMainScriptController") << msg.str();
+
 }
 
 void PythonMainScriptController::script_onIdleEvent(const IdleEvent* event)

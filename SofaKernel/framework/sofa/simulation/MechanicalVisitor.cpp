@@ -481,7 +481,7 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
     {
         unsigned int constraintId=0;
         core::ConstraintParams cparams;
-        simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::holonomicC(), constraintId).execute(node);
+        simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::constraintJacobian(), constraintId).execute(node);
 
     }
     //cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver start solve obj"<<endl;
@@ -491,7 +491,10 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
     //cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver end solve obj"<<endl;
     //obj->propagatePositionAndVelocity(nextTime,core::VecCoordId::position(),core::VecDerivId::velocity());
 
-    MechanicalPropagatePositionAndVelocityVisitor(&mparams, nextTime,VecCoordId::position(),VecDerivId::velocity(),
+    MechanicalProjectPositionAndVelocityVisitor(&mparams, nextTime,VecCoordId::position(),VecDerivId::velocity()
+            ).execute( node );
+
+    MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, nextTime,VecCoordId::position(),VecDerivId::velocity(),
 #ifdef SOFA_SUPPORT_MAPPED_MASS
             VecDerivId::dx(),
 #endif
@@ -799,16 +802,6 @@ void MechanicalPropagateDxVisitor::bwdMechanicalState(simulation::Node* , core::
 }
 
 
-Visitor::Result MechanicalPropagateVelocityVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
-{
-    if (applyProjections)
-    {
-        c->projectVelocity(mparams, v);
-    }
-    return RESULT_CONTINUE;
-}
-
-
 Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     //mm->setDx(dx);
@@ -850,7 +843,7 @@ Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMappedMechanicalSt
 }
 
 
-Visitor::Result MechanicalPropagatePositionAndResetForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     //mm->setX(x);
     //mm->setF(f);
@@ -859,7 +852,7 @@ Visitor::Result MechanicalPropagatePositionAndResetForceVisitor::fwdMechanicalSt
 }
 
 
-Visitor::Result MechanicalPropagatePositionAndResetForceVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
     if (!ignoreMask)
     {
@@ -877,27 +870,16 @@ Visitor::Result MechanicalPropagatePositionAndResetForceVisitor::fwdMechanicalMa
     return RESULT_CONTINUE;
 }
 
-Visitor::Result MechanicalPropagatePositionAndResetForceVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
-{
-    if (applyProjections)
-    {
-        c->projectPosition(mparams, x);
-    }
-    return RESULT_CONTINUE;
-}
-
-void MechanicalPropagatePositionAndResetForceVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
-{
-    mm->forceMask.activate(false);
-}
-
-
-Visitor::Result MechanicalPropagatePositionAndResetForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     mm->resetForce(this->params, f.getId(mm));
     return RESULT_CONTINUE;
 }
 
+void MechanicalPropagateOnlyPositionAndResetForceVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
+{
+    mm->forceMask.activate(false);
+}
 
 
 Visitor::Result MechanicalAddMDxVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
@@ -934,23 +916,23 @@ Visitor::Result MechanicalAccFromFVisitor::fwdMass(simulation::Node* /*node*/, c
 
 
 
-MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVelocityVisitor(
+MechanicalPropagateOnlyPositionAndVelocityVisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor(
     const sofa::core::MechanicalParams* mparams,
-    SReal time, MultiVecCoordId x, MultiVecDerivId v,
+    SReal time, MultiVecCoordId x, MultiVecDerivId v
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-    MultiVecDerivId a,
+    , MultiVecDerivId a
 #endif
-    bool m)
-    : MechanicalVisitor(mparams), currentTime(time), x(x), v(v),
+    , bool m)
+    : MechanicalVisitor(mparams), currentTime(time), x(x), v(v)
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-      a(a),
+    , a(a)
 #endif
-      ignoreMask(m), applyProjections(true)
+    , ignoreMask(m)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
-    //cerr<<"::MechanicalPropagatePositionAndVelocityVisitor"<<endl;
+    //cerr<<"::MechanicalPropagateOnlyPositionAndVelocityVisitor"<<endl;
 }
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
@@ -1039,27 +1021,38 @@ Visitor::Result MechanicalProjectPositionVisitor::fwdProjectiveConstraintSet(sim
     return RESULT_CONTINUE;
 }
 
+Visitor::Result MechanicalProjectPositionAndVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+{
+    return RESULT_PRUNE;
+}
+Visitor::Result MechanicalProjectPositionAndVelocityVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
+{
+    c->projectPosition(mparams /* PARAMS FIRST */, pos);
+    c->projectVelocity(mparams /* PARAMS FIRST */, vel);
+    return RESULT_CONTINUE;
+}
 
 
 
 
-MechanicalPropagatePositionVisitor::MechanicalPropagatePositionVisitor(const sofa::core::MechanicalParams* mparams, SReal t, MultiVecCoordId x, bool m )
-    : MechanicalVisitor(mparams) , t(t), x(x), ignoreMask(m), applyProjections(true)
+
+MechanicalPropagateOnlyPositionVisitor::MechanicalPropagateOnlyPositionVisitor(const sofa::core::MechanicalParams* mparams, SReal t, MultiVecCoordId x, bool m )
+    : MechanicalVisitor(mparams) , t(t), x(x), ignoreMask(m)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
-    //cerr<<"::MechanicalPropagatePositionVisitor"<<endl;
+    //cerr<<"::MechanicalPropagateOnlyPositionVisitor"<<endl;
 }
 
 
-Visitor::Result MechanicalPropagatePositionVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+Visitor::Result MechanicalPropagateOnlyPositionVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
 {
     //mm->setX(x);
     return RESULT_CONTINUE;
 }
 
-Visitor::Result MechanicalPropagatePositionVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+Visitor::Result MechanicalPropagateOnlyPositionVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
     if (!ignoreMask)
     {
@@ -1077,26 +1070,16 @@ Visitor::Result MechanicalPropagatePositionVisitor::fwdMechanicalMapping(simulat
     return RESULT_CONTINUE;
 }
 
-
-
-void MechanicalPropagatePositionVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
+void MechanicalPropagateOnlyPositionVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
     mm->forceMask.activate(false);
 }
 
-Visitor::Result MechanicalPropagatePositionVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
-{
-    if (applyProjections)
-    {
-        c->projectPosition(mparams, x);
-    }
-    return RESULT_CONTINUE;
-}
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+Visitor::Result MechanicalPropagateOnlyPositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 #else
-Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+Visitor::Result MechanicalPropagateOnlyPositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
 #endif
 {
     //mm->setX(x);
@@ -1108,7 +1091,7 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalStat
     return RESULT_CONTINUE;
 }
 
-Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+Visitor::Result MechanicalPropagateOnlyPositionAndVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
     if (!ignoreMask)
     {
@@ -1132,50 +1115,36 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalMapp
     return RESULT_CONTINUE;
 }
 
-void MechanicalPropagatePositionAndVelocityVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
+void MechanicalPropagateOnlyPositionAndVelocityVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
     mm->forceMask.activate(false);
 }
 
-Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
-{
-    if (applyProjections)
-    {
-        c->projectPosition(mparams, x);
-        c->projectVelocity(mparams, v);
-    }
-//    cerr<<"MechanicalPropagatePositionAndVelocityVisitor::fwdProjectiveConstraintSet" << endl;
-    return RESULT_CONTINUE;
-}
 
-
-
-
-MechanicalPropagateVelocityVisitor::MechanicalPropagateVelocityVisitor(
+MechanicalPropagateOnlyVelocityVisitor::MechanicalPropagateOnlyVelocityVisitor(
     const sofa::core::MechanicalParams* mparams,
-    SReal time, MultiVecDerivId v,
+    SReal time, MultiVecDerivId v
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-    MultiVecDerivId a,
+    , MultiVecDerivId a
 #endif
-    bool m)
-    : MechanicalVisitor(mparams), currentTime(time), v(v),
+    , bool m)
+    : MechanicalVisitor(mparams), currentTime(time), v(v)
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-      a(a),
+    , a(a)
 #endif
-      ignoreMask(m),
-      applyProjections(true)
+    , ignoreMask(m)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
 
     setReadWriteVectors();
 #endif
-    //cerr<<"::MechanicalPropagateVelocityVisitor"<<endl;
+    //cerr<<"::MechanicalPropagateOnlyVelocityVisitor"<<endl;
 }
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-Visitor::Result MechanicalPropagateVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+Visitor::Result MechanicalPropagateOnlyVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 #else
-Visitor::Result MechanicalPropagateVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+Visitor::Result MechanicalPropagateOnlyVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
 #endif
 {
     //mm->setV(v);
@@ -1186,7 +1155,7 @@ Visitor::Result MechanicalPropagateVelocityVisitor::fwdMechanicalState(simulatio
     return RESULT_CONTINUE;
 }
 
-Visitor::Result MechanicalPropagateVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+Visitor::Result MechanicalPropagateOnlyVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
     if (!ignoreMask)
     {
@@ -1208,7 +1177,7 @@ Visitor::Result MechanicalPropagateVelocityVisitor::fwdMechanicalMapping(simulat
     return RESULT_CONTINUE;
 }
 
-void MechanicalPropagateVelocityVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
+void MechanicalPropagateOnlyVelocityVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
     mm->forceMask.activate(false);
 }

@@ -17,7 +17,8 @@
         <MechanicalObject />
         <UniformMass totalmass="1000.0" />
         <SparseGrid n="8 6 6" fileTopology="mesh/liver-smooth.obj" />
-        <BoxConstraint box="-2.5 0 -2.5 7.5 3 2" />
+        <BoxROI name="box1" box="-2.5 0 -2.5 7.5 3 2" />
+        <FixedConstraint indices="@box1.indices"/>
         <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
         <FFDDistanceGrid fileFFDDistanceGrid="mesh/liver-smooth.obj" scale="1.0" usePoints="0" proximity="0.1" contactStiffness="500.0" contactFriction="0.0" />
         <Node name="Visu">
@@ -35,7 +36,7 @@
         <MechanicalObject name="dofs" />
         <UniformMass totalmass="100" />
         <Node name="T">
-            <include href="Objects/TriangleSetTopology.xml" />
+            <include href="../../Objects/TriangleSetTopology.xml" />
             <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />

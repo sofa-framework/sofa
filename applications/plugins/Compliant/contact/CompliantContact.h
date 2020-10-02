@@ -92,7 +92,7 @@ protected:
     void create_node()
     {
 
-//        simulation::MechanicalPropagatePositionAndVelocityVisitor bob( sofa::core::MechanicalParams::defaultInstance() );
+//        simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor bob( sofa::core::MechanicalParams::defaultInstance() );
 //        this->mstate1->getContext()->getRootContext()->executeVisitor( &bob );
 //        this->mstate2->getContext()->getRootContext()->executeVisitor( &bob );
 //        this->mstate1->getContext()->executeVisitor( &bob );

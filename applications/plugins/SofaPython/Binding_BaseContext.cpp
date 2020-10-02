@@ -71,18 +71,82 @@ extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*ar
     return sofa::PythonFactory::toPython(obj->getRootContext());
 }
 
+
+/// This function converts an PyObject into a sofa string.
+/// string that can be safely parsed in helper::vector<int> or helper::vector<double>
+static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
+{
+    /// String are just returned as string.
+    if (PyString_Check(value))
+    {
+        return out << PyString_AsString(value) ;
+    }
+
+
+    if( PySequence_Check(value) )
+    {
+        /// It is a sequence...so we can iterate over it.
+        PyObject *iterator = PyObject_GetIter(value);
+        if(iterator)
+        {
+            bool first = true;
+            while(PyObject* next = PyIter_Next(iterator))
+            {
+                if(first) first = false;
+                else out << ' ';
+
+                pythonToSofaDataString(next, out);
+                Py_DECREF(next);
+            }
+            Py_DECREF(iterator);
+
+            if (PyErr_Occurred())
+            {
+                msg_error("SofaPython") << "error while iterating." << msgendl
+                                        << PythonEnvironment::getStackAsString() ;
+            }
+            return out;
+        }
+    }
+
+
+    /// Check if the object has an explicit conversion to a Sofa path. If this is the case
+    /// we use it.
+    if( PyObject_HasAttrString(value, "getAsACreateObjectParameter") ){
+       PyObject* retvalue = PyObject_CallMethod(value, (char*)"getAsACreateObjectParameter", nullptr) ;
+       return pythonToSofaDataString(retvalue, out);
+    }
+
+    /// Default conversion for standard type:
+    if( !(PyInt_Check(value) || PyLong_Check(value) || PyFloat_Check(value) || PyBool_Check(value) ))
+    {
+        msg_warning("SofaPython") << "You are trying to convert a non primitive type to Sofa using the 'str' operator." << msgendl
+                                  << "Automatic conversion is provided for: String, Integer, Long, Float and Bool and Sequences." << msgendl
+                                  << "Other objects should implement the method getAsACreateObjectParameter(). " << msgendl
+                                  << "This function should return a string usable as a parameter in createObject()." << msgendl
+                                  << "So to remove this message you must add a method getAsCreateObjectParameter(self) "
+                                     "to the object you are passing the createObject function." << msgendl
+                                  << PythonEnvironment::getStackAsString() ;
+    }
+
+
+    PyObject* tmpstr=PyObject_Str(value);
+    out << PyString_AsString(tmpstr) ;
+    Py_DECREF(tmpstr) ;
+    return out ;
+}
+
+
 // object factory
 extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args, PyObject * kw, bool printWarnings)
 {
     BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
 
-//    std::cout << "<PYTHON> BaseContext_createObject PyTuple_Size=" << PyTuple_Size(args) << " PyDict_Size=" << PyDict_Size(kw) << std::endl;
-
     char *type;
     if (!PyArg_ParseTuple(args, "s",&type))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     // temporarily, the name is set to the type name.
@@ -102,15 +166,13 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
             if( !strcmp( PyString_AsString(key), "warning") )
             {
                 if PyBool_Check(value)
-                    warning = (value==Py_True);
+                        warning = (value==Py_True);
             }
             else
             {
-            //    std::cout << PyString_AsString(PyList_GetItem(keys,i)) << "=\"" << PyString_AsString(PyObject_Str(PyList_GetItem(values,i))) << "\"" << std::endl;
-                if (PyString_Check(value))
-                    desc.setAttribute(PyString_AsString(key),PyString_AsString(value));
-                else
-                    desc.setAttribute(PyString_AsString(key),PyString_AsString(PyObject_Str(value)));
+                std::stringstream s;
+                pythonToSofaDataString(value, s) ;
+                desc.setAttribute(PyString_AsString(key),s.str().c_str());
             }
         }
         Py_DecRef(keys);
@@ -124,7 +186,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
         for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
             SP_MESSAGE_ERROR(*it);
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 
@@ -152,7 +214,7 @@ extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args,
 extern "C" PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObject * args, PyObject * kw)
 {
     SP_MESSAGE_DEPRECATED("BaseContext_createObject_noWarning is deprecated, use the keyword warning=False in BaseContext_createObject instead.")
-    return BaseContext_createObject_Impl( self, args, kw, false );
+            return BaseContext_createObject_Impl( self, args, kw, false );
 }
 
 /// the complete relative path to the object must be given
@@ -164,7 +226,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
     if (!PyArg_ParseTuple(args, "s",&path))
     {
         SP_MESSAGE_WARNING( "BaseContext_getObject: wrong argument, should be a string (the complete relative path)" )
-        Py_RETURN_NONE;
+                Py_RETURN_NONE;
     }
 
     bool warning = true;
@@ -179,7 +241,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
             if( !strcmp(PyString_AsString(key),"warning") )
             {
                 if PyBool_Check(value)
-                    warning = (value==Py_True);
+                        warning = (value==Py_True);
                 break;
             }
         }
@@ -190,14 +252,14 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
     if (!context || !path)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     BaseObject::SPtr sptr;
     context->get<BaseObject>(sptr,path);
     if (!sptr)
     {
         if(warning) SP_MESSAGE_WARNING( "BaseContext_getObject: component "<<path<<" not found (the complete relative path is needed)" )
-        Py_RETURN_NONE;
+                Py_RETURN_NONE;
     }
 
     return sofa::PythonFactory::toPython(sptr.get());
@@ -209,17 +271,17 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
 extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * args)
 {
     SP_MESSAGE_DEPRECATED("BaseContext_getObject_noWarning is deprecated, use the keyword warning=False in BaseContext_getObject instead.")
-    BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+            BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
     {
         SP_MESSAGE_WARNING( "BaseContext_getObject_noWarning: wrong argument, should be a string (the complete relative path)" )
-        Py_RETURN_NONE;
+                Py_RETURN_NONE;
     }
     if (!context || !path)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     BaseObject::SPtr sptr;
     context->get<BaseObject>(sptr,path);
@@ -240,17 +302,17 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
     char* name= NULL;
     if ( !PyArg_ParseTuple ( args, "|sss", &search_direction, &type_name, &name ) ) {
         SP_MESSAGE_WARNING( "BaseContext_getObjects: wrong arguments! Expected format: getObjects ( OPTIONAL STRING searchDirection, OPTIONAL STRING typeName, OPTIONAL STRING name )" )
-        Py_RETURN_NONE;
+                Py_RETURN_NONE;
     }
 
     if (!context)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     sofa::core::objectmodel::BaseContext::SearchDirection search_direction_enum= sofa::core::objectmodel::BaseContext::Local;
-    if ( search_direction ) 
+    if ( search_direction )
     {
         std::string search_direction_str ( search_direction );
         if ( search_direction_str == "SearchUp" )
@@ -273,7 +335,7 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
         {
             search_direction_enum= sofa::core::objectmodel::BaseContext::SearchParents;
         }
-        else 
+        else
         {
             SP_MESSAGE_WARNING( "BaseContext_getObjects: Invalid search direction, using 'Local'. Expected: 'SearchUp', 'Local', 'SearchDown', 'SearchRoot', or 'SearchParents'." )
         }

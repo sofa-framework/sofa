@@ -181,10 +181,11 @@ macro(sofa_add_generic directory name type)
             set_target_properties(${name} PROPERTIES FOLDER ${type}s) # IDE folder
             set_target_properties(${name} PROPERTIES DEBUG_POSTFIX "_d")
         endif()
+
+        set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${name})
+        set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${option})
     else()
-
         message("${type} ${name} (${CMAKE_CURRENT_LIST_DIR}/${directory}) does not exist and will be ignored.")
-
     endif()
 endmacro()
 

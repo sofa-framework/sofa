@@ -136,7 +136,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     mappedParticles->addChild(deformableGrid);                                       // second parent
 
     RegularGridTopology::SPtr deformableGrid_grid = addNew<RegularGridTopology>( deformableGrid, "grid" );
-    deformableGrid_grid->setNumVertices(numX,numY,numZ);
+    deformableGrid_grid->setSize(numX,numY,numZ);
     deformableGrid_grid->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
 
     MechanicalObject3::SPtr deformableGrid_dof = addNew< MechanicalObject3>(deformableGrid,"dof");

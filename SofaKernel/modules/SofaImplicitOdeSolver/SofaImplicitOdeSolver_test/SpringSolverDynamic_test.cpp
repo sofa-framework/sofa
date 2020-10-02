@@ -3,23 +3,25 @@
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
 
 #include <sofa/core/ExecParams.h>
 
@@ -55,14 +57,14 @@ struct SpringSolverDynamic_test : public Sofa_test<typename _DataTypes::Real>
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
 
     /// Root of the scene graph
-    simulation::Node::SPtr root;      
+    simulation::Node::SPtr root;
     /// Tested simulation
-    simulation::Simulation* simulation;  
+    simulation::Simulation* simulation;
 
-    
+
     /// Create the context for the scene
     void SetUp()
-    { 
+    {
         // Init simulation
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
@@ -91,7 +93,7 @@ struct SpringSolverDynamic_test : public Sofa_test<typename _DataTypes::Real>
 
         // Animate
         do
-        {              
+        {
             // Record the mass position
             Coord p0=dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[0];
 
@@ -130,6 +132,7 @@ TYPED_TEST_CASE(SpringSolverDynamic_test, DataTypes);
 // Test case EulerImplicit Solver
 TYPED_TEST( SpringSolverDynamic_test , EulerImplicitSolverDynamicTest )
 {
+   EXPECT_MSG_NOEMIT(Error) ;
    this->loadScene("EulerImplicitSpringDynamicTest.xml");
    ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(0.01));
 }

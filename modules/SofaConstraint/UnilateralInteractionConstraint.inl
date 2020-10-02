@@ -54,14 +54,6 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     c.contactId = id;
     c.localId	= localid;
     c.contactDistance = contactDistance;
-
-    /*
-    if (this->f_printLog.getValue())
-    {
-    	std::cout << "P : " << P << " - PFree : " << Pfree << std::endl;
-    	std::cout << "Q : " << Q << " - QFree : " << Qfree << std::endl;
-    }
-    */
 }
 
 
@@ -398,10 +390,10 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
         /*
         if (c.dfree < 0)
         {
-        	glLineWidth(5);
-        	glColor4f(0,1,0,1);
-        	helper::gl::glVertexT(c.Pfree);
-        	helper::gl::glVertexT(c.Qfree);
+            glLineWidth(5);
+            glColor4f(0,1,0,1);
+            helper::gl::glVertexT(c.Pfree);
+            helper::gl::glVertexT(c.Qfree);
         }
         */
 

@@ -32,6 +32,8 @@
  * This software is provided "as is" without express or implied
  * warranty, and with no claim as to its suitability for any purpose.
  *
+ * 16 Mar 2017 - stop printing an extra space at end of <<.
+ * 17 Jan 2017 - add std::enable_if to replace static_assert (Damien Marchal)
  * 29 Jun 2005 - remove boost includes and reverse iterators. (Jeremie Allard)
  * 23 Aug 2002 - fix for Non-MSVC compilers combined with MSVC libraries.
  * 05 Aug 2001 - minor update (Nico Josuttis)
@@ -91,6 +93,7 @@ public:
 
 
     /// Specific constructor for 1-element vectors.
+    template<int NN = N, typename std::enable_if<NN==1,int>::type = 0>
     explicit fixed_array(value_type r1)
     {
         static_assert(N==1, "");
@@ -98,6 +101,7 @@ public:
     }
 
     /// Specific constructor for 2-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==2,int>::type = 0>
     fixed_array(value_type r1, value_type r2)
     {
         static_assert(N == 2, "");
@@ -106,6 +110,7 @@ public:
     }
 
     /// Specific constructor for 3-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==3,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3)
     {
         static_assert(N == 3, "");
@@ -115,6 +120,7 @@ public:
     }
 
     /// Specific constructor for 4-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==4,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4)
     {
         static_assert(N == 4, "");
@@ -125,6 +131,7 @@ public:
     }
 
     /// Specific constructor for 5-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==5,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5)
     {
         static_assert(N == 5, "");
@@ -136,6 +143,7 @@ public:
     }
 
     /// Specific constructor for 6-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==6,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6)
     {
         static_assert(N == 6, "");
@@ -148,6 +156,7 @@ public:
     }
 
     /// Specific constructor for 7-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==7,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7)
     {
         static_assert(N == 7, "");
@@ -161,6 +170,7 @@ public:
     }
 
     /// Specific constructor for 8-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==8,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8)
     {
         static_assert(N == 8, "");
@@ -175,6 +185,7 @@ public:
     }
 
     /// Specific constructor for 9-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==9,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9)
     {
         static_assert(N == 9, "");
@@ -190,6 +201,7 @@ public:
     }
 
     /// Specific constructor for 10-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==10,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9, value_type r10)
     {
         static_assert(N == 10, "");
@@ -320,17 +332,20 @@ public:
     }
 
     // assign one value to all elements
-    void assign (const T& value)
+    inline void assign (const T& value)
     {
         //std::fill_n(begin(),size(),value);
         for (size_type i=0; i<N; i++)
             elems[i] = value;
     }
 
+    //template<int NN = N, typename std::enable_if<NN>0,int>::type = 0>
     inline friend std::ostream& operator << (std::ostream& out, const fixed_array<T,N>& a)
     {
-        for( size_type i=0; i<N; i++ )
-            out<<a.elems[i]<<" ";
+        static_assert(N>0, "Cannot create a zero size arrays") ;
+        for( size_type i=0; i<N-1; i++ )
+            out << a.elems[i]<<" ";
+        out << a.elems[N-1];
         return out;
     }
 
@@ -482,6 +497,10 @@ inline fixed_array<T, 10> make_array(const T& v0, const T& v1, const T& v2, cons
     v[9] = v9;
     return v;
 }
+
+#ifndef FIXED_ARRAY_CPP
+extern template class SOFA_HELPER_API fixed_array<float, 4> ;
+#endif //
 
 } // namespace helper
 

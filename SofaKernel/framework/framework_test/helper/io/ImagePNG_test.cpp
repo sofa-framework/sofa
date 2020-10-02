@@ -3,17 +3,17 @@
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -23,31 +23,13 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <cstring>
 
-#include <gtest/gtest.h>
-
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::MessageDispatcher ;
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::Message ;
-
-#include <sofa/helper/logging/LoggingMessageHandler.h>
-using sofa::helper::logging::MainLoggingMessageHandler ;
-
-#include <sofa/helper/logging/CountingMessageHandler.h>
-using sofa::helper::logging::MainCountingMessageHandler ;
-
+#include <SofaTest/Sofa_test.h>
 
 namespace sofa {
 
-
-class ImagePNG_test : public ::testing::Test
+class ImagePNG_test : public Sofa_test<>
 {
 protected:
-    ImagePNG_test() {
-        MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( &MainCountingMessageHandler::getInstance() ) ;
-        MessageDispatcher::addHandler( &MainLoggingMessageHandler::getInstance() ) ;
-    }
 
     void SetUp()
     {
@@ -88,13 +70,12 @@ protected:
             EXPECT_TRUE(0 == std::memcmp(data, testdata, width*height*bpp));
         }
     };
-
 };
 
 TEST_F(ImagePNG_test, ImagePNG_NoFile)
 {
     /// This generate a test failure if no error message is generated.
-    ExpectMessage raii(Message::Error) ;
+    EXPECT_MSG_EMIT(Error) ;
 
     sofa::helper::io::ImagePNG imgNoFile;
     EXPECT_FALSE(imgNoFile.load("image/randomnamewhichdoesnotexist.png"));
@@ -102,6 +83,9 @@ TEST_F(ImagePNG_test, ImagePNG_NoFile)
 
 TEST_F(ImagePNG_test, ImagePNG_NoImg)
 {
+    /// This generate a test failure if no error message is generated.
+    EXPECT_MSG_EMIT(Error) ;
+
     sofa::helper::io::ImagePNG imgNoImage;
     EXPECT_FALSE(imgNoImage.load("image/imagetest_noimage.png"));
 }

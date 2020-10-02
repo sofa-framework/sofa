@@ -76,7 +76,7 @@ public:
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {}
     virtual void setViewerResolution(int /* width */, int /* height */) {}
     virtual void setFullScreen() {}
-    virtual void setBackgroundColor(const defaulttype::Vector3& /*color*/) {}
+    virtual void setBackgroundColor(const defaulttype::RGBAColor& /*color*/) {}
     virtual void setBackgroundImage(const std::string& /*image*/) {}
 
     virtual BaseViewer* getViewer() {return NULL;}
@@ -113,19 +113,19 @@ protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
     virtual ~BaseGUI();
 
-    static std::string mGuiName; // would like to make it const but not possible with the current implementation of RealGUI...
+    static std::string mGuiName;
     static std::string configDirectoryPath;
     static std::string screenshotDirectoryPath;
     static const char* mProgramName;
 };
 
 ////// TO declare into BaseViewer
-//setScene();
-//resetView();
-//setBackgroundColour(...)
-//setBackgroundImage(...)
-//setScene()
-//getSceneFileName()
+///setScene();
+///resetView();
+///setBackgroundColour(...)
+///setBackgroundImage(...)
+///setScene()
+///getSceneFileName()
 
 } // namespace gui
 

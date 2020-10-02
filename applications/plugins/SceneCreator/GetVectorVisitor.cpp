@@ -31,9 +31,6 @@
 //
 #include "GetVectorVisitor.h"
 #include <sofa/defaulttype/Vec.h>
-#include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {

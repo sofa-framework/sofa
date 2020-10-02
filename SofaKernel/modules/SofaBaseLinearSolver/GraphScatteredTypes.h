@@ -133,23 +133,23 @@ public:
     /// TO IMPLEMENT
     void add(int /*row*/, SReal /*v*/)
     {
-        std::cerr<<"WARNING : add an element is not supported in MultiVector"<<std::endl;
+        msg_warning("GraphScatterredType")<<"add an element is not supported in MultiVector";
     }
 
     /// TO IMPLEMENT
     void set(int /*row*/, SReal /*v*/)
     {
-        std::cerr<<"WARNING : set an element is not supported in MultiVector"<<std::endl;
+        msg_warning("GraphScatterredType")<<"set an element is not supported in MultiVector";
     }
 
     SReal element(int /*i*/)
     {
-        std::cerr<<"WARNING : get a single element is not supported in MultiVector"<<std::endl;
+        msg_info("GraphScatterredType")<<"get a single element is not supported in MultiVector";
         return 0;
     }
 
     void resize( int ){
-        std::cerr<<"WARNING : resize is not supported in MultiVector"<<std::endl;
+        msg_info("GraphScatterredType")<<"resize is not supported in MultiVector";
         assert(false);
     }
 
@@ -193,12 +193,12 @@ public:
     /// TO IMPLEMENT
     void add(int /*row*/, SReal /*v*/)
     {
-        std::cerr<<"WARNING : add an element is not supported in ParallelMultiVector"<<std::endl;
+        msg_info()<<"WARNING : add an element is not supported in ParallelMultiVector"<<std::endl;
     }
 
     SReal element(int /*i*/)
     {
-        std::cerr<<"WARNING : get a single element is not supported in ParallelMultiVector"<<std::endl;
+        msg_info()<<"WARNING : get a single element is not supported in ParallelMultiVector"<<std::endl;
         return 0;
     }
 

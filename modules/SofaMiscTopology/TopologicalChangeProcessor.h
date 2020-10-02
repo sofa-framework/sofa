@@ -171,20 +171,20 @@ public:
 
     void display()
     {
-        std::cout << "***(TriangleIncisionInformation)***" << std::endl;
-        std::cout << "Time to incise: " << timeToIncise << std::endl;
-        std::cout << "Triangle indices : ";
+        std::stringstream tmp ;
+        tmp<< "Time to incise: " << timeToIncise << msgendl;
+        tmp<< "Triangle indices : ";
         for (unsigned int i = 0 ; i < triangleIndices.size() ; i++)
-            std::cout << triangleIndices[i] << " ";
-        std::cout <<  std::endl;
-        std::cout << "Barycentric coordinates : ";
+            tmp<< triangleIndices[i] << " ";
+        tmp<<  msgendl;
+        tmp<< "Barycentric coordinates : ";
         for (unsigned int i = 0 ; i < barycentricCoordinates.size() ; i++)
-            std::cout << barycentricCoordinates[i] << " | " ;
-        std::cout <<  std::endl;
-        std::cout << "Coordinates : ";
+            tmp<< barycentricCoordinates[i] << " | " ;
+        tmp<<  msgendl;
+        tmp<< "Coordinates : ";
         for (unsigned int i = 0 ; i < coordinates.size() ; i++)
-            std::cout << coordinates[i] << " | " ;
-        std::cout <<  std::endl;
+            tmp<< coordinates[i] << " | " ;
+        msg_info("TriangleIncisionInformation") << tmp.str() ;
     }
 
 
@@ -198,9 +198,7 @@ public:
 
         if (coordinates.size() != triangleIndices.size())
         {
-//                std::cout << "computeCoordinates:: about to resize coordinates with  " <<  triangleIndices.size() << std::endl;
             coordinates.resize(triangleIndices.size());
-//                std::cout << "computeCoordinates:: is now resized  " <<  coordinates.size() << std::endl;
         }
 
         for (unsigned int i = 0 ; i < coordinates.size() ; i++)
@@ -210,7 +208,7 @@ public:
 
             if ( (int)triIndex >= topology->getNbTriangles())
             {
-                std::cout << "ERROR(TriangleIncisionInformation::computeCoordinates) bad index to access triangles  " <<  triIndex << std::endl;
+                msg_error("TriangleIncisionInformation") << " Bad index to access triangles  " <<  triIndex ;
             }
 
             triangleGeo->getTriangleVertexCoordinates(triIndex, coord);
@@ -222,11 +220,8 @@ public:
             }
         }
 
-//            std::cout << "computeCoordinates:: size " <<  coordinates.size() << std::endl;
-
         return coordinates;
     }
-
 };
 
 

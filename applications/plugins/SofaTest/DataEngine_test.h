@@ -25,7 +25,6 @@
 
 #include "Sofa_test.h"
 
-
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
@@ -139,7 +138,7 @@ struct DataEngine_test : public Sofa_test<>
         // modifying inputs to ensure the engine should be evaluated
         for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
         {
-            parent_inputs[i]->setDirtyValue();            
+            parent_inputs[i]->setDirtyValue();
             CHECKCOUNTER( 0 );  // c'est parti mon kiki
         }
 

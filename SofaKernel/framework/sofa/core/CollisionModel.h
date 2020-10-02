@@ -26,6 +26,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/CollisionElement.h>
 
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -97,13 +98,13 @@ protected:
         , contactFriction(initData(&contactFriction, (SReal)0.0, "contactFriction", "Contact friction coefficient (dry or viscous or unused depending on the contact method)"))
         , contactRestitution(initData(&contactRestitution, (SReal)0.0, "contactRestitution", "Contact coefficient of restitution"))
         , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts.\nNote that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
-        , color(initData(&color, defaulttype::Vec4f(1,0,0,1), "color", "color used to display the collision model if requested"))
+        , color(initData(&color, defaulttype::RGBAColor(1,0,0,1), "color", "color used to display the collision model if requested"))
         , group(initData(&group,"group","IDs of the groups containing this model. No collision can occur between collision models included in a common group (e.g. allowing the same object to have multiple collision models)"))
         , size(0)
         , numberOfContacts(0)
         , previous(initLink("previous", "Previous (coarser / upper / parent level) CollisionModel in the hierarchy."))
         , next(initLink("next", "Next (finer / lower / child level) CollisionModel in the hierarchy."))
-		, userData(NULL)
+        , userData(NULL)
     {
     }
     /// Destructor
@@ -409,9 +410,8 @@ public:
     /// add the group ID to this model.
     void addGroup(const int groupId) { group.beginEdit()->insert(groupId); group.endEdit(); }
 
-	/// Set the group IDs to this model
+    /// Set the group IDs to this model
     void setGroups(const std::set<int>& ids) { group.setValue(ids); }
-
     /// @}
 
 
@@ -424,7 +424,10 @@ public:
     /// Get a color that can be used to display this CollisionModel
     const float* getColor4f();
     /// Set a color that can be used to display this CollisionModel
-    void setColor4f(const float *c) {color.setValue(defaulttype::Vec4f(c[0],c[1],c[2],c[3]));}
+
+    void setColor4f(const float *c) {
+        color.setValue(defaulttype::RGBAColor(c[0],c[1],c[2],c[3]));
+    }
 
     /// Set of differents parameters
     void setProximity       (const SReal a)        { proximity.setValue(a); }
@@ -436,11 +439,11 @@ public:
         return enum_type;
     }
 
-	/// Set user data
-	void SetUserData(void* pUserData)  { userData = pUserData; }
+    /// Set user data
+    void SetUserData(void* pUserData)  { userData = pUserData; }
 
-	/// Get user data
-	void* GetUserData() { return userData; }
+    /// Get user data
+    void* GetUserData() { return userData; }
 
 protected:
 
@@ -467,7 +470,7 @@ protected:
     Data<std::string> contactResponse;
 
     /// color used to display the collision model if requested
-    Data<defaulttype::Vec4f> color;
+    Data<defaulttype::RGBAColor> color;
 
     /// No collision can occur between collision
     /// models included in a common group (i.e. sharing a common id)
@@ -489,7 +492,7 @@ protected:
     /// Useful for optimizations involving static_cast
     int enum_type;
 
-	void* userData;
+    void* userData;
 
 public:
 

@@ -56,6 +56,10 @@ public:
     bool isDerivedFrom(const std::string& name, const std::string& module = "__main__");
     void doLoadScript();
     void refreshBinding();
+    
+    // setup from existing python instance
+    void setInstance(PyObject* instance);
+    
 protected:
     PythonScriptController();
     virtual ~PythonScriptController();
@@ -116,30 +120,29 @@ public:
 protected:
     sofa::helper::system::FileEventListener* m_filelistener ;
 
-    PyObject *m_ScriptControllerClass;      // class implemented in the script to use to instanciate the python controller
-    //PyObject *m_ScriptControllerInstanceDict;  // functions dictionnary
-    PyObject *m_ScriptControllerInstance;   // instance of m_ScriptControllerClass
+    PyObject *m_ScriptControllerClass {nullptr};      // class implemented in the script to use to instanciate the python controller
+    PyObject *m_ScriptControllerInstance {nullptr};   // instance of m_ScriptControllerClass
 
     // optionnal script entry points:
-    PyObject *m_Func_onKeyPressed;
-    PyObject *m_Func_onKeyReleased;
-    PyObject *m_Func_onMouseButtonLeft;
-    PyObject *m_Func_onMouseButtonRight;
-    PyObject *m_Func_onMouseButtonMiddle;
-    PyObject *m_Func_onMouseWheel;
-    PyObject *m_Func_onGUIEvent;
-    PyObject *m_Func_onScriptEvent;
-    PyObject *m_Func_onBeginAnimationStep;
-    PyObject *m_Func_onEndAnimationStep;
-    PyObject *m_Func_onLoaded;
-    PyObject *m_Func_createGraph;
-    PyObject *m_Func_initGraph;
-    PyObject *m_Func_bwdInitGraph;
-    PyObject *m_Func_storeResetState;
-    PyObject *m_Func_reset;
-    PyObject *m_Func_cleanup;
-    PyObject *m_Func_draw;
-    PyObject *m_Func_onIdle;
+    PyObject *m_Func_onKeyPressed {nullptr} ;
+    PyObject *m_Func_onKeyReleased {nullptr} ;
+    PyObject *m_Func_onMouseButtonLeft {nullptr} ;
+    PyObject *m_Func_onMouseButtonRight{nullptr} ;
+    PyObject *m_Func_onMouseButtonMiddle {nullptr} ;
+    PyObject *m_Func_onMouseWheel {nullptr} ;
+    PyObject *m_Func_onGUIEvent {nullptr} ;
+    PyObject *m_Func_onScriptEvent {nullptr} ;
+    PyObject *m_Func_onBeginAnimationStep {nullptr} ;
+    PyObject *m_Func_onEndAnimationStep {nullptr} ;
+    PyObject *m_Func_onLoaded {nullptr} ;
+    PyObject *m_Func_createGraph {nullptr} ;
+    PyObject *m_Func_initGraph {nullptr} ;
+    PyObject *m_Func_bwdInitGraph {nullptr} ;
+    PyObject *m_Func_storeResetState {nullptr} ;
+    PyObject *m_Func_reset {nullptr} ;
+    PyObject *m_Func_cleanup {nullptr} ;
+    PyObject *m_Func_draw {nullptr} ;
+    PyObject *m_Func_onIdle {nullptr} ;
 };
 
 

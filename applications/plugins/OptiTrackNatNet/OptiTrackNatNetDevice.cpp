@@ -880,7 +880,7 @@ void OptiTrackNatNetDevice::update()
             sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
             if (node)
             {
-                sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
+                sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
                 sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(node);
             }
         }

@@ -118,12 +118,8 @@ void BTDLinearSolver<Matrix,Vector>::invert(SubMatrix& Inv, const BlocType& m)
 template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
 {
-    const bool verbose  = this->f_verbose.getValue() || this->f_printLog.getValue();
 
-    if( verbose )
-    {
-        serr<<"BTDLinearSolver, invert Matrix = "<< M <<sendl;
-    }
+    msg_info_when(this->f_verbose.getValue()) << "BTDLinearSolver, invert Matrix = "<< M ;
 
     const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
     const Index nb = M.rowSize() / bsize;
@@ -148,11 +144,9 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
     //if (verbose) sout << "C[0] = " << C << sendl;
     //alpha[0] = A;
     invert(alpha_inv[0],A);
-    if (verbose) sout << "alpha_inv[0] = " << alpha_inv[0] << sendl;
+    msg_info_when(this->f_verbose.getValue()) << "alpha_inv[0] = " << alpha_inv[0] ;
     lambda[0] = alpha_inv[0]*C;
-    if (verbose) sout << "lambda[0] = " << lambda[0] << sendl;
-    //if (verbose) sout << "C[0] = alpha[0]*lambda[0] = " << alpha[0]*lambda[0] << sendl;
-
+    msg_info_when(this->f_verbose.getValue()) << "lambda[0] = " << lambda[0] ;
 
     for (Index i=1; i<nb; ++i)
     {
@@ -176,15 +170,13 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
         //	serr<<" Add pair ("<<i<<","<<i-1<<")"<<sendl;
         //}
 
-        if (verbose) sout << "alpha_inv["<<i<<"] = " << alpha_inv[i] << sendl;
-        //if (verbose) sout << "A["<<i<<"] = B["<<i<<"]*lambda["<<i-1<<"]+alpha["<<i<<"] = " << B[i]*lambda[i-1]+alpha[i] << sendl;
+        msg_info_when(this->f_verbose.getValue()) << "alpha_inv["<<i<<"] = " << alpha_inv[i] ;
         if (i<nb-1)
         {
             M.getAlignedSubMatrix((i  ),(i+1),bsize,bsize,C);
-            //if (verbose) sout << "C["<<i<<"] = " << C << sendl;
             lambda[i] = alpha_inv[i]*C;
-            if (verbose) sout << "lambda["<<i<<"] = " << lambda[i] << sendl;
-            //if (verbose) sout << "C["<<i<<"] = alpha["<<i<<"]*lambda["<<i<<"] = " << alpha[i]*lambda[i] << sendl;
+
+            msg_info_when(this->f_verbose.getValue()) << "lambda["<<i<<"] = " << lambda[i] ;
         }
     }
     nBlockComputedMinv.resize(nb);
@@ -352,14 +344,7 @@ double BTDLinearSolver<Matrix,Vector>::getMinvElement(Index i, Index j)
 template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::solve (Matrix& /*M*/, Vector& x, Vector& b)
 {
-    const bool verbose  = this->f_verbose.getValue() || this->f_printLog.getValue();
-
-    if( verbose )
-    {
-        serr<<"BTDLinearSolver, b = "<< b <<sendl;
-    }
-
-    //invert(M);
+    msg_info_when(this->f_verbose.getValue() ) << "solve, b = "<< b;
 
     const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
     const Index nb = b.size() / bsize;
@@ -383,10 +368,8 @@ void BTDLinearSolver<Matrix,Vector>::solve (Matrix& /*M*/, Vector& x, Vector& b)
     }
 
     // x is the solution of the system
-    if( verbose )
-    {
-        serr<<"BTDLinearSolver::solve, solution = "<<x<<sendl;
-    }
+    msg_info_when(this->f_verbose.getValue()) << "solve, solution = "<<x;
+
 }
 
 template<class Matrix, class Vector>

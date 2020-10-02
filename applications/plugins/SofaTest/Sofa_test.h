@@ -35,8 +35,7 @@
 #include <time.h>
 #include <iostream>
 
-#include <sofa/helper/logging/LoggingMessageHandler.h>
-#include <sofa/helper/logging/CountingMessageHandler.h>
+#include <SofaTest/TestMessageHandler.h>
 
 // Maybe not the right place to put this (private header?)
 #ifndef SOFA_FLOAT
@@ -79,6 +78,24 @@ struct SOFA_TestPlugin_API BaseSofa_test : public ::testing::Test
 template <typename _Real=SReal>
 struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
 {
+    /// By default all test based on Sofa_test are failing if there is one of the following.
+    /// To prevent that you simply need to add the line
+    /// EXPECT_MSG_EMIT(Error); Where you want to allow a message.
+    sofa::helper::logging::MessageAsTestFailure m_fatal ; //(sofa::helper::logging::Message::Fatal, __FILE__, __LINE__ );
+    sofa::helper::logging::MessageAsTestFailure m_error ; //(sofa::helper::logging::Message::Error, __FILE__, __LINE__ );
+
+    //todo(dmarchal): reactive progressively the test (remove this todo after 07/04/2018)
+    ///sofa::helper::logging::MessageAsTestFailure m_warning ; //(sofa::helper::logging::Message::Warning, __FILE__, __LINE__ );
+    ///sofa::helper::logging::MessageAsTestFailure m_deprecated ; //(sofa::helper::logging::Message::Deprecated, __FILE__, __LINE__ );
+
+
+    Sofa_test() :
+        m_fatal(sofa::helper::logging::Message::Fatal, __FILE__, __LINE__ ),
+        m_error(sofa::helper::logging::Message::Error, __FILE__, __LINE__ )
+        ///m_warning(sofa::helper::logging::Message::Warning, __FILE__, __LINE__ ),
+        ///m_deprecated(sofa::helper::logging::Message::Deprecated, __FILE__, __LINE__ )
+    {
+    }
 
     /** @name Scalars
      *  Type and functions to manipulate real numbers.
@@ -279,7 +296,6 @@ struct data_traits
                 vec[j+deriv_total_size*i] = vderiv[i][j];
         }
     }
-
 };
 
 // Do not use this class directly

@@ -1,4 +1,3 @@
-add_subdirectory(extlibs/CImg)
 add_subdirectory(extlibs/DiffusionSolver)
 
 cmake_minimum_required(VERSION 3.1)

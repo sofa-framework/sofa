@@ -3,17 +3,17 @@
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -22,8 +22,6 @@
 
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message ;
-using sofa::helper::logging::ExpectMessage ;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -34,7 +32,6 @@ using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::New ;
 using sofa::core::ExecParams ;
-using sofa::defaulttype::Vec3dTypes ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
@@ -289,7 +286,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
         EXPECT_NE(planeff, nullptr) ;
 
         {
-            ExpectMessage msg(Message::Warning) ;
+            EXPECT_MSG_EMIT(Warning) ;
             planeff->init() ;
         }
 
@@ -302,7 +299,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
     ///
     bool testBehaviorWhenMissingMechanicalObject()
     {
-        ExpectMessage msg(Message::Error) ;
+        EXPECT_MSG_EMIT(Error) ;
 
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"

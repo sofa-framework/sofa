@@ -63,8 +63,7 @@ void MeshBarycentricMapperEngine<DataTypes>::init()
 
     if (TopoInput==NULL)
     {
-        this->f_printLog.setValue(true);
-        serr<<"Can not work with no input topology"<<sendl;
+        msg_error() <<"Can not work with no input topology.";
         return;
     }
 

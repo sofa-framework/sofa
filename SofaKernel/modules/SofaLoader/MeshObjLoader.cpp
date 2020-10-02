@@ -100,8 +100,7 @@ bool MeshObjLoader::readOBJ (istream &stream, const char* filename)
 {
     SOFA_UNUSED(filename);
 
-    if( this->f_printLog.getValue() )
-        sout << "MeshObjLoader::readOBJ" << sendl;
+    dmsg_info() << " readOBJ" ;
 
     vector<Vector3>& my_positions = *(d_positions.beginWriteOnly());
     vector<int> nodes, nIndices;

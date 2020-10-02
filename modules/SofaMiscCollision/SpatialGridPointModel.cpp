@@ -82,7 +82,6 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
         this->PointModel::computeBoundingTree(maxDepth);
         return;
     }
-    const bool verbose = this->f_printLog.getValue();
     int lscale = d_leafScale.getValue();
     if (lscale > Grid::GRIDDIM_LOG2) lscale = Grid::GRIDDIM_LOG2;
     int ldim = (1<<lscale);
@@ -147,8 +146,8 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
             Grid::Cell* c = g->cell+i;
             if (!c->plist.empty())
             {
-        	pfirst = c->plist.front().index;
-        	break;
+            pfirst = c->plist.front().index;
+            break;
             }
         }
         if (pfirst == -1) continue; // empty
@@ -157,8 +156,8 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
             Grid::Cell* c = g->cell+i;
             if (!c->plist.empty())
             {
-        	plast = c->plist.back().index;
-        	break;
+            plast = c->plist.back().index;
+            break;
             }
         }
         cells.push_back(OctreeCell(k, pfirst, plast));
@@ -196,7 +195,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
     int depth = 0;
     while (depth < maxDepth && cells.size() > 8)
     {
-        if (verbose) sout << "SpatialGridPointModel: cube depth "<<depth<<": "<<cells.size()<<" cells ("<<(size*100/cells.size())*0.01<<" points/cell)."<<sendl;
+        msg_info() << "SpatialGridPointModel: cube depth "<<depth<<": "<<cells.size()<<" cells ("<<(size*100/cells.size())*0.01<<" points/cell)."<<sendl;
         // compact cells inplace
         int parent = -1;
         for (unsigned int i=0; i<cells.size(); ++i)

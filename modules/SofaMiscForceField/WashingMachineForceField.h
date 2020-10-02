@@ -113,20 +113,19 @@ public:
         Deriv diff = _center.getValue() - _size.getValue() * .5;
         Deriv diff2 = - _center.getValue() - _size.getValue() * .5;
 
-        _planes[0]->setPlane( Deriv( 0, 1, 0), diff[1]  ); // sud
-        _planes[1]->setPlane( Deriv( 0, -1, 0), diff2[1]  ); // nord
-        _planes[2]->setPlane( Deriv( -1, 0, 0), diff2[0]  ); // ouest
-        _planes[3]->setPlane( Deriv( 1, 0, 0), diff[0]  ); // est
-        _planes[4]->setPlane( Deriv( 0, 0, 1), diff[2]  ); // derriere
-        _planes[5]->setPlane( Deriv( 0, 0, -1), diff2[2]  ); //devant
+        _planes[0]->setPlane( Deriv( 0, 1, 0), diff[1] ); // sud
+        _planes[1]->setPlane( Deriv( 0, -1, 0), diff2[1] ); // nord
+        _planes[2]->setPlane( Deriv( -1, 0, 0), diff2[0] ); // ouest
+        _planes[3]->setPlane( Deriv( 1, 0, 0), diff[0] ); // est
+        _planes[4]->setPlane( Deriv( 0, 0, 1), diff[2] ); // derriere
+        _planes[5]->setPlane( Deriv( 0, 0, -1), diff2[2] ); //devant
 
-        _planes[0]->setDrawColor( Coord( 0.5f,0.4f,0.4f ) );
-        _planes[1]->setDrawColor( Coord( 0.4f,0.5f,0.4f ) );
-        _planes[2]->setDrawColor( Coord( 0.4f,0.4f,0.5f ) );
-        _planes[3]->setDrawColor( Coord( 0.5f,0.5f,0.4f ) );
-        _planes[4]->setDrawColor( Coord( 0.5f,0.4f,0.5f ) );
-        _planes[5]->setDrawColor( Coord( 0.4f,0.5f,0.5f ) );
-
+        _planes[0]->setDrawColor( defaulttype::RGBAColor( 0.5f,0.4f,0.4f,1.0f ) );
+        _planes[1]->setDrawColor( defaulttype::RGBAColor( 0.4f,0.5f,0.4f,1.0f ) );
+        _planes[2]->setDrawColor( defaulttype::RGBAColor( 0.4f,0.4f,0.5f,1.0f ) );
+        _planes[3]->setDrawColor( defaulttype::RGBAColor( 0.5f,0.5f,0.4f,1.0f ) );
+        _planes[4]->setDrawColor( defaulttype::RGBAColor( 0.5f,0.4f,0.5f,1.0f ) );
+        _planes[5]->setDrawColor( defaulttype::RGBAColor( 0.4f,0.5f,0.5f,1.0f ) );
     }
 
     virtual void reinit()
@@ -150,12 +149,12 @@ public:
         _planes[4]->setPlane( Deriv( 0, 0, 1), diff[2]  ); // derriere
         _planes[5]->setPlane( Deriv( 0, 0, -1), diff2[2]  ); //devant
 
-        _planes[0]->setDrawColor( Coord( 0.5f,0.4f,0.4f ) );
-        _planes[1]->setDrawColor( Coord( 0.4f,0.5f,0.4f ) );
-        _planes[2]->setDrawColor( Coord( 0.4f,0.4f,0.5f ) );
-        _planes[3]->setDrawColor( Coord( 0.5f,0.5f,0.4f ) );
-        _planes[4]->setDrawColor( Coord( 0.5f,0.4f,0.5f ) );
-        _planes[5]->setDrawColor( Coord( 0.4f,0.5f,0.5f ) );
+        _planes[0]->setDrawColor( defaulttype::RGBAColor( 0.5f,0.4f,0.4f,1.0f ) );
+        _planes[1]->setDrawColor( defaulttype::RGBAColor( 0.4f,0.5f,0.4f,1.0f ) );
+        _planes[2]->setDrawColor( defaulttype::RGBAColor( 0.4f,0.4f,0.5f,1.0f ) );
+        _planes[3]->setDrawColor( defaulttype::RGBAColor( 0.5f,0.5f,0.4f,1.0f ) );
+        _planes[4]->setDrawColor( defaulttype::RGBAColor( 0.5f,0.4f,0.5f,1.0f ) );
+        _planes[5]->setDrawColor( defaulttype::RGBAColor( 0.4f,0.5f,0.5f,1.0f ) );
 
     }
 

@@ -19,14 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #ifndef SOFA_CORE_LOADER_MATERIAL_H_
 #define SOFA_CORE_LOADER_MATERIAL_H_
 
-#include <sofa/core/core.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/types/Material.h>
 
 namespace sofa
 {
@@ -37,126 +33,13 @@ namespace core
 namespace loader
 {
 
-class Material
-{
-public:
-    std::string 	name;		/* name of material */
-    defaulttype::Vec4f  diffuse ;	/* diffuse component */
-    defaulttype::Vec4f  ambient ;	/* ambient component */
-    defaulttype::Vec4f  specular;	/* specular component */
-    defaulttype::Vec4f  emissive;	/* emmissive component */
-    float  shininess;	/* specular exponent */
-    bool   useDiffuse;
-    bool   useSpecular;
-    bool   useAmbient;
-    bool   useEmissive;
-    bool   useShininess;
-    bool   useTexture;
-    bool   useBumpMapping;
-    bool   activated;
-    std::string   textureFilename; // path to the texture linked to the material
-    std::string   bumpTextureFilename; // path to the bump texture linked to the material
+///The Material object that was previously in this sofa::core::loader is now in sofa::helper:types::Material.
+///The following lines is there to provide backward compatibility with existing code base.
+///This is just there for a transitional period of time and will be removed after 2018-01-07
+using sofa::helper::types::Material ;
 
-    void setColor(float r, float g, float b, float a)
-    {
-        ambient = defaulttype::Vec4f(r*0.2f,g*0.2f,b*0.2f,a);
-        diffuse = defaulttype::Vec4f(r,g,b,a);
-        specular = defaulttype::Vec4f(r,g,b,a);
-        emissive = defaulttype::Vec4f(r,g,b,a);
-    }
+//TODO(dmarchal 2017-06-13): Delete that around 2018-01-07
 
-    inline friend std::ostream& operator << (std::ostream& out, const Material& m )
-    {
-        out   << m.name         << " ";
-        out  << "Diffuse"       << " " <<  m.useDiffuse   << " " <<  m.diffuse      << " ";
-        out  << "Ambient"       << " " <<  m.useAmbient   << " " <<  m.ambient      << " ";
-        out  << "Specular"      << " " <<  m.useSpecular  << " " <<  m.specular     << " ";
-        out  << "Emissive"      << " " <<  m.useEmissive  << " " <<  m.emissive     << " ";
-        out  << "Shininess"     << " " <<  m.useShininess << " " <<  m.shininess   << " ";
-        /*
-              if (m.useTexture)
-              {
-                  out << "Texture linked to the material : " << m.textureFilename << " ";
-              }
-              else
-              {
-                  out << "No texture linked to the material ";
-              }
-
-              if (m.useBumpMapping)
-              {
-                  out << "Bump texture linked to the material : " << m.bumpTextureFilename << " ";
-              }
-              else
-              {
-                  out << "No bump texture linked to the material ";
-              }
-        */
-        return out;
-    }
-    inline friend std::istream& operator >> (std::istream& in, Material &m )
-    {
-
-        std::string element;
-        in  >>  m.name ;
-        for (unsigned int i=0; i<5; ++i)
-        {
-            in  >>  element;
-            if      (element == std::string("Diffuse")   || element == std::string("diffuse")   ) { in  >>  m.useDiffuse   ; in >> m.diffuse;   }
-            else if (element == std::string("Ambient")   || element == std::string("ambient")   ) { in  >>  m.useAmbient   ; in >> m.ambient;   }
-            else if (element == std::string("Specular")  || element == std::string("specular")  ) { in  >>  m.useSpecular  ; in >> m.specular;  }
-            else if (element == std::string("Emissive")  || element == std::string("emissive")  ) { in  >>  m.useEmissive  ; in >> m.emissive;  }
-            else if (element == std::string("Shininess") || element == std::string("shininess") ) { in  >>  m.useShininess ; in >> m.shininess; }
-        }
-        return in;
-    }
-
-    Material()
-    {
-        ambient =  defaulttype::Vec4f( 0.2f,0.2f,0.2f,1.0f);
-        diffuse =  defaulttype::Vec4f( 0.75f,0.75f,0.75f,1.0f);
-        specular =  defaulttype::Vec4f( 1.0f,1.0f,1.0f,1.0f);
-        emissive =  defaulttype::Vec4f( 0.0f,0.0f,0.0f,0.0f);
-
-        shininess =  45.0f;
-        name = "Default";
-        useAmbient =  true;
-        useDiffuse =  true;
-        useSpecular =  false;
-        useEmissive =  false;
-        useShininess =  false;
-        activated = false;
-
-        useTexture = false;
-        textureFilename ="DEFAULT";
-
-        useBumpMapping = false;
-        bumpTextureFilename ="DEFAULT";
-    }
-
-    Material(const Material& mat)
-    {
-        ambient =  mat.ambient;
-        diffuse =  mat.diffuse;
-        specular =  mat.specular;
-        emissive =  mat.emissive;
-
-        shininess =  mat.shininess;
-        name = mat.name;
-        useAmbient =  mat.useAmbient;
-        useDiffuse =  mat.useDiffuse ;
-        useSpecular =  mat.useSpecular ;
-        useEmissive =  mat.useEmissive;
-        useShininess =  mat.useShininess ;
-        activated = mat.activated;
-
-        useTexture = mat.useTexture;
-        textureFilename = mat.textureFilename;
-
-        useBumpMapping = mat.useBumpMapping;
-        bumpTextureFilename = mat.bumpTextureFilename;
-    }
-};
 
 } // namespace loader
 

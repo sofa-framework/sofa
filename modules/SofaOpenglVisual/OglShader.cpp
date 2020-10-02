@@ -575,11 +575,10 @@ void OglShaderElement::init()
     if(isMultipass==NULL)
     {
         if ( OglShader* shader = mycontext->core::objectmodel::BaseContext::get<OglShader>(this->getTags()) )
-		{
+        {
             shaders.insert( shader );
-            if (f_printLog.getValue())
-                msg_info(this) << this->id.getValue() << " set in " << shader->getName();
-//            shaders.insert(mycontext->core::objectmodel::BaseContext::get<OglShader>());
+
+            msg_info() << this->id.getValue() << " set in " << shader->getName();
         }
         return;
     }

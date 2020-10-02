@@ -36,8 +36,7 @@
 #include <sofa/helper/cast.h>
 
 #include <SofaPython/config.h>
-
-
+#include <SofaPython/PythonEnvironment.h>
 
 
 // =============================================================================
@@ -48,10 +47,11 @@
 // object type python:  X_PyTypeObject
 // table des méthodes:  X_PyMethods
 // =============================================================================
-#define SP_SOFAPYOBJECT(X) X##_PyObject
+//#define SP_SOFAPYOBJECT(X) X##_PyObject
 #define SP_SOFAPYTYPEOBJECT(X) X##_PyTypeObject
 #define SP_SOFAPYMETHODS(X) X##_PyMethods
 #define SP_SOFAPYATTRIBUTES(X) X##_PyAttributes
+#define SP_SOFAPYMAPPING(X) X##_PyMapping
 #define SP_SOFAPYNEW(X) X##_PyNew       // allocator
 #define SP_SOFAPYFREE(X) X##_PyFree     // deallocator
 
@@ -61,7 +61,7 @@
 // =============================================================================
 
 // PyObject *MyModule = SP_INIT_MODULE(MyModuleName)
-#define SP_INIT_MODULE(MODULENAME) Py_InitModule(#MODULENAME,MODULENAME##ModuleMethods);
+#define SP_INIT_MODULE(MODULENAME) Py_InitModule(#MODULENAME,MODULENAME##ModuleMethods); sofa::simulation::PythonEnvironment::excludeModuleFromReload(#MODULENAME);
 
 #define SP_MODULE_METHODS_BEGIN(MODULENAME) PyMethodDef MODULENAME##ModuleMethods[] = {
 #define SP_MODULE_METHODS_END {NULL,NULL,0,NULL} };
@@ -92,13 +92,11 @@ struct PySPtr
 };
 
 template <class T>
-PyObject* BuildPySPtr(T* obj,PyTypeObject *pto)
-{
-    PySPtr<T> * pyObj = (PySPtr<T> *)PyType_GenericAlloc(pto, 0);
+static inline PyObject* BuildPySPtr(T* obj, PyTypeObject *pto) {
+    PySPtr<T> * pyObj = (PySPtr<T> *) PyType_GenericAlloc(pto, 0);
     pyObj->object = obj;
     return (PyObject*)pyObj;
 }
-
 
 // =============================================================================
 // Ptr objects passed to python
@@ -115,8 +113,7 @@ struct PyPtr
 };
 
 template <class T>
-PyObject* BuildPyPtr(T* obj,PyTypeObject *pto,bool del)
-{
+static inline PyObject* BuildPyPtr(T* obj, PyTypeObject *pto, bool del) {
     PyPtr<T> * pyObj = (PyPtr<T> *)PyType_GenericAlloc(pto, 0);
     pyObj->object = obj;
     pyObj->deletable = del;
@@ -180,6 +177,22 @@ SP_CLASS_ATTR_GET(Datamname)(PyObject *self, void*)
  */
 #define SP_CLASS_ATTR_GET(C,A) extern "C" PyObject * C##_getAttr_##A
 #define SP_CLASS_ATTR_SET(C,A) extern "C" int C##_setAttr_##A
+
+
+
+/*
+static PyMappingMethods DummyClass_PyMapping =
+    {DummyClass_size, DummyClass_getitem, DummyClass_setitem};
+
+becomes
+
+SP_CLASS_MAPPING(DummyClass)
+
+
+Note this is how to create a sequence (operators x[] and len(x))
+
+*/
+#define SP_CLASS_MAPPING(C) static PyMappingMethods SP_SOFAPYMAPPING(C) = { C##_length, C##_getitem, C##_setitem };
 
 
 
@@ -251,14 +264,16 @@ static PyTypeObject DummyChild_PyTypeObject = {
 #define SP_DECLARE_CLASS_TYPE(Type) SOFA_SOFAPYTHON_API extern PyTypeObject SP_SOFAPYTYPEOBJECT(Type);
 
 // définition générique (macro intermédiaire)
-#define SP_CLASS_TYPE_DEF(Type,ObjSize,AttrTable,ParentTypeObjet,NewFunc,FreeFunc,GetAttrFunc,SetAttrFunc, DeallocFunc)   \
+#define SP_CLASS_TYPE_DEF(Type,ObjSize,AttrTable,ParentTypeObjet,NewFunc,FreeFunc,GetAttrFunc,SetAttrFunc, DeallocFunc,Mapping)   \
                                                                     PyTypeObject SP_SOFAPYTYPEOBJECT(Type) = { \
                                                                     PyVarObject_HEAD_INIT(NULL, 0) \
                                                                     "Sofa."#Type, \
                                                                     ObjSize, \
                                                                     0, \
                                                                     (destructor)DeallocFunc, 0, \
-                                                                    0,0,0,0,0,0,0,0,0,0, \
+                                                                    0,0,0,0,0,0, \
+                                                                    Mapping, \
+                                                                    0,0,0, \
                                                                     GetAttrFunc, \
                                                                     SetAttrFunc, \
                                                                     0, \
@@ -275,26 +290,34 @@ static PyTypeObject DummyChild_PyTypeObject = {
 
 
 // définition type de base(=sans parent) sans attributs
-#define SP_CLASS_TYPE_BASE_SPTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),0,&PyBaseObject_Type,0,0,0,0,PySPtr<sofa::core::objectmodel::Base>::dealloc)
-#define SP_CLASS_TYPE_BASE_PTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),0,&PyBaseObject_Type ,0,0,0,0,0)
-#define SP_CLASS_TYPE_BASE_PTR_NEW_FREE(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),0,&PyBaseObject_Type ,SP_SOFAPYNEW(PyType),SP_SOFAPYFREE(PyType),0,0,0)
+#define SP_CLASS_TYPE_BASE_SPTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),0,&PyBaseObject_Type,0,0,0,0,PySPtr<sofa::core::objectmodel::Base>::dealloc,0)
+#define SP_CLASS_TYPE_BASE_PTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),0,&PyBaseObject_Type ,0,0,0,0,0,0)
+#define SP_CLASS_TYPE_BASE_PTR_NEW_FREE(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),0,&PyBaseObject_Type ,SP_SOFAPYNEW(PyType),SP_SOFAPYFREE(PyType),0,0,0,0)
 
 
 // définition type de base(=sans parent) avec attributs (voir SP_CLASS_ATTRS_BEGIN, SP_CLASS_ATTRS_END & SP_CLASS_ATTR)
-#define SP_CLASS_TYPE_BASE_SPTR_ATTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&PyBaseObject_Type,0,0,0,0,PySPtr<sofa::core::objectmodel::Base>::dealloc)
-#define SP_CLASS_TYPE_BASE_SPTR_ATTR_GETATTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&PyBaseObject_Type,0,0,PyType##_GetAttr,PyType##_SetAttr,PySPtr<sofa::core::objectmodel::Base>::dealloc)
-#define SP_CLASS_TYPE_BASE_PTR_ATTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&PyBaseObject_Type,0,0,0,0,0)
-#define SP_CLASS_TYPE_BASE_PTR_ATTR_NEW_FREE(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&PyBaseObject_Type,SP_SOFAPYNEW(PyType),SP_SOFAPYFREE(PyType),0,0,0)
+#define SP_CLASS_TYPE_BASE_SPTR_ATTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&PyBaseObject_Type,0,0,0,0,PySPtr<sofa::core::objectmodel::Base>::dealloc,0)
+#define SP_CLASS_TYPE_BASE_SPTR_ATTR_GETATTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&PyBaseObject_Type,0,0,PyType##_GetAttr,PyType##_SetAttr,PySPtr<sofa::core::objectmodel::Base>::dealloc,0)
+#define SP_CLASS_TYPE_BASE_PTR_ATTR(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&PyBaseObject_Type,0,0,0,0,0,0)
+#define SP_CLASS_TYPE_BASE_PTR_ATTR_NEW_FREE(PyType,CppType) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&PyBaseObject_Type,SP_SOFAPYNEW(PyType),SP_SOFAPYFREE(PyType),0,0,0,0)
 
 // définition type hérité de "Parent" sans attributs
-#define SP_CLASS_TYPE_SPTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),0,&SP_SOFAPYTYPEOBJECT(Parent),0,0,0,0,PySPtr<sofa::core::objectmodel::Base>::dealloc)
-#define SP_CLASS_TYPE_SPTR_GETATTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),0,&SP_SOFAPYTYPEOBJECT(Parent),0,0,PyType##_GetAttr,PyType##_SetAttr,PySPtr<sofa::core::objectmodel::Base>::dealloc)
-#define SP_CLASS_TYPE_PTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),0,&SP_SOFAPYTYPEOBJECT(Parent),0,0,0,0,0)
+#define SP_CLASS_TYPE_SPTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),0,&SP_SOFAPYTYPEOBJECT(Parent),0,0,0,0,PySPtr<sofa::core::objectmodel::Base>::dealloc,0)
+#define SP_CLASS_TYPE_SPTR_GETATTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),0,&SP_SOFAPYTYPEOBJECT(Parent),0,0,PyType##_GetAttr,PyType##_SetAttr,PySPtr<sofa::core::objectmodel::Base>::dealloc,0)
+#define SP_CLASS_TYPE_PTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),0,&SP_SOFAPYTYPEOBJECT(Parent),0,0,0,0,0,0)
 
 // définition type hérité de "Parent" avec attributs (voir SP_CLASS_ATTRS_BEGIN, SP_CLASS_ATTRS_END & SP_CLASS_ATTR)
-#define SP_CLASS_TYPE_SPTR_ATTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&SP_SOFAPYTYPEOBJECT(Parent),0,0,0,0,PySPtr<sofa::core::objectmodel::Base>::dealloc)
-#define SP_CLASS_TYPE_SPTR_ATTR_GETATTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&SP_SOFAPYTYPEOBJECT(Parent),0,0,PyType##_GetAttr,PyType##_SetAttr,PySPtr<sofa::core::objectmodel::Base>::dealloc)
-#define SP_CLASS_TYPE_PTR_ATTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&SP_SOFAPYTYPEOBJECT(Parent),0,0,0,0,0)
+#define SP_CLASS_TYPE_SPTR_ATTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&SP_SOFAPYTYPEOBJECT(Parent),0,0,0,0,PySPtr<sofa::core::objectmodel::Base>::dealloc,0)
+#define SP_CLASS_TYPE_SPTR_ATTR_GETATTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&SP_SOFAPYTYPEOBJECT(Parent),0,0,PyType##_GetAttr,PyType##_SetAttr,PySPtr<sofa::core::objectmodel::Base>::dealloc,0)
+#define SP_CLASS_TYPE_PTR_ATTR(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&SP_SOFAPYTYPEOBJECT(Parent),0,0,0,0,0,0)
+
+
+// définition type hérité de "Parent" avec attributs (voir SP_CLASS_ATTRS_BEGIN, SP_CLASS_ATTRS_END & SP_CLASS_ATTR) et Mapping (voir SP_CLASS_MAPPING)
+#define SP_CLASS_TYPE_SPTR_ATTR_MAPPING(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&SP_SOFAPYTYPEOBJECT(Parent),0,0,0,0,PySPtr<sofa::core::objectmodel::Base>::dealloc,&SP_SOFAPYMAPPING(PyType))
+#define SP_CLASS_TYPE_SPTR_ATTR_GETATTR_MAPPING(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PySPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&SP_SOFAPYTYPEOBJECT(Parent),0,0,PyType##_GetAttr,PyType##_SetAttr,PySPtr<sofa::core::objectmodel::Base>::dealloc,&SP_SOFAPYMAPPING(PyType))
+#define SP_CLASS_TYPE_PTR_ATTR_MAPPING(PyType,CppType,Parent) SP_CLASS_TYPE_DEF(PyType,sizeof(PyPtr<CppType>),SP_SOFAPYATTRIBUTES(PyType),&SP_SOFAPYTYPEOBJECT(Parent),0,0,0,0,0,&SP_SOFAPYMAPPING(PyType))
+
+
 
 // =============================================================================
 // SOFA DATA MEMBERS ACCESS AS ATTRIBUTES

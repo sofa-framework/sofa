@@ -73,7 +73,7 @@ void DefaultStyleMessageFormatter::formatMessage(const Message& m,std::ostream& 
     out << s_messageTypeColors[m.type()] << s_messageTypePrefixes[m.type()];
 
     if (!m.sender().empty())
-        out << Console::BLUE << "[" << m.sender() << "] ";
+        out << Console::BLUE << "[" << m.componentInfo() << "] ";
 
     out << Console::DEFAULT_COLOR << m.message().str() << std::endl;
 }

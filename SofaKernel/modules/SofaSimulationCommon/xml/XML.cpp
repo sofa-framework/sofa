@@ -332,11 +332,11 @@ BaseElement* loadFromFile(const char *filename)
     }
 
     BaseElement* r = processXMLLoading(filename, *doc);
-    //std::cerr << "clear doc"<<std::endl;
+    //dmsg_error("XML") << "clear doc";
     doc->Clear();
-    //std::cerr << "delete doc"<<std::endl;
+    //dmsg_error("XML") << "delete doc";
     delete doc;
-    //std::cerr << "<loadFromFile"<<std::endl;
+    //dmsg_error("XML") << "<loadFromFile";
     return r;
 }
 
@@ -511,7 +511,7 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
         node = BaseElement::Create(classType,name,type);
         if (node==NULL)
         {
-            std::cerr << "Node "<<root->name<<" name "<<name<<" type "<<type<<" creation failed.\n";
+            msg_error("XML") << "Node "<<root->name<<" name "<<name<<" type "<<type<<" creation failed.";
             return NULL;
         }
     }
@@ -545,8 +545,8 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
             {
                 if (!node->addChild(childnode))
                 {
-                    std::cerr << "Node "<<childnode->getClass()<<" name "<<childnode->getName()<<" type "<<childnode->getType()
-                            <<" cannot be a child of node "<<node->getClass()<<" name "<<node->getName()<<" type "<<node->getType()<<std::endl;
+                    msg_info("XML") << "Node "<<childnode->getClass()<<" name "<<childnode->getName()<<" type "<<childnode->getType()
+                            <<" cannot be a child of node "<<node->getClass()<<" name "<<node->getName()<<" type "<<node->getType();
                     delete childnode;
                 }
             }
@@ -577,7 +577,7 @@ BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc)
 
     if (doc == NULL)
     {
-        std::cerr << "Failed to open " << filename << std::endl;
+        msg_info("XML") << "Failed to open '" << filename << "'";
         return NULL;
     }
 
@@ -585,7 +585,7 @@ BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc)
 
     if (root == NULL)
     {
-        std::cerr << "empty document" << std::endl;
+        msg_info("XML") << "empty document.";
         xmlFreeDoc(doc);
         return NULL;
     }
@@ -601,7 +601,7 @@ BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc)
 
     if (graph == NULL)
     {
-        std::cerr << "XML Graph creation failed."<<std::endl;
+        msg_info("XML") << "XML Graph creation failed.";
         return NULL;
     }
 
@@ -660,7 +660,7 @@ BaseElement* includeNode(xmlNodePtr root,const char *basefilename)
     }
     if (filename.empty())
     {
-        std::cerr << "ERROR: xml include tag requires non empty filename or href attribute." << std::endl;
+        msg_info("XML") << "Xml include tag requires non empty filename or href attribute.";
         return NULL;
     }
     /*  std::cout << "XML: Including external file " << filename << " from " << basefilename << std::endl;*/
@@ -669,14 +669,14 @@ BaseElement* includeNode(xmlNodePtr root,const char *basefilename)
     doc = xmlParseFile(filename.c_str());
     if (doc == NULL)
     {
-        std::cerr << "ERROR: Failed to parse " << filename << std::endl;
+        msg_info("XML") << "Failed to parse '" << filename << "'" ;
         return NULL;
     }
 
     xmlNodePtr newroot = xmlDocGetRootElement(doc);
     if (newroot == NULL)
     {
-        std::cerr << "ERROR: empty document in " << filename << std::endl;
+        msg_info("XML") << "Empty document in '" << filename << "'";
         xmlFreeDoc(doc);
         return NULL;
     }

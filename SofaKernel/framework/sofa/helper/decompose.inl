@@ -105,13 +105,13 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
 
             if( nz < zeroTolerance() ) // edgex, edgey, edgez are null -> collapsed to a point
             {
-                //std::cerr<<"helper::QRDecomposition_stable collapased to point "<<M<<std::endl;
+                //msg_info()<<"helper::QRDecomposition_stable collapased to point "<<M<<std::endl;
                 R.identity();
                 return degenerated;
             }
             else // collapsed to edgez
             {
-                //std::cerr<<"QRDecomposition_stable collapased to edgez "<<M<<std::endl;
+                //msg_info()<<"QRDecomposition_stable collapased to edgez "<<M<<std::endl;
 
                 edgez.normalizeWithNorm( helper::rsqrt(nz) );
 
@@ -156,7 +156,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
 
             if( nz < zeroTolerance() ) // collapsed to edgey
             {
-                //std::cerr<<"QRDecomposition_stable collapased to edgey "<<M<<std::endl;
+                //msg_info()<<"QRDecomposition_stable collapased to edgey "<<M<<std::endl;
 
                 // check the main direction of edgey to try to take a not too close arbritary vector
                 Real abs0 = helper::rabs( edgey[0] );
@@ -191,7 +191,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
             }
             else // collapsed to face (edgey, edgez)
             {
-                //std::cerr<<"QRDecomposition_stable collapased to face (edgey, edgez) "<<M<<std::endl;
+                //msg_info()<<"QRDecomposition_stable collapased to face (edgey, edgez) "<<M<<std::endl;
 
                 edgex = cross( edgey, edgez );
                 edgex.normalize();
@@ -212,7 +212,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
 
             if( nz < zeroTolerance() ) // collapsed to edgex
             {
-                //std::cerr<<"QRDecomposition_stable ollapased to edgex "<<M<<std::endl;
+                //msg_info()<<"QRDecomposition_stable ollapased to edgex "<<M<<std::endl;
 
                 // check the main direction of edgex to try to take a not too close arbritary vector
                 Real abs0 = helper::rabs( edgex[0] );
@@ -247,7 +247,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
             }
             else // collapsed to face (edgez,edgex)
             {
-                //std::cerr<<"QRDecomposition_stable collapased to face (edgez, edgex) "<<M<<std::endl;
+                //msg_info()<<"QRDecomposition_stable collapased to face (edgez, edgex) "<<M<<std::endl;
 
                 edgey = cross( edgez, edgex );
                 edgey.normalize();

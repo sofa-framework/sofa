@@ -105,8 +105,12 @@ set(HEADER_FILES
     vectorLinks.h
     vector_algebra.h
     vector_device.h
+    types/RGBAColor.h
+    types/Material.h
     logging/Messaging.h
     logging/Message.h
+    logging/ComponentInfo.h
+    logging/FileInfo.h
     logging/MessageDispatcher.h
     logging/MessageHandler.h
     logging/ConsoleMessageHandler.h
@@ -121,8 +125,6 @@ set(HEADER_FILES
     logging/ClangStyleMessageFormatter.h
     logging/DefaultStyleMessageFormatter.h
     logging/ExceptionMessageHandler.h
-    logging/RichConsoleStyleMessageFormatter.h
-
 )
 
 set(SOURCE_FILES
@@ -184,8 +186,12 @@ set(SOURCE_FILES
     system/thread/debug.cpp
     system/FileRepository.cpp
     vector.cpp
+    types/fixed_array.cpp
+    types/RGBAColor.cpp
+    types/Material.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
+    logging/ComponentInfo.cpp
     logging/ClangMessageHandler.cpp
     logging/ClangStyleMessageFormatter.cpp
     logging/DefaultStyleMessageFormatter.cpp
@@ -196,7 +202,6 @@ set(SOURCE_FILES
     logging/LoggingMessageHandler.cpp
     logging/RoutingMessageHandler.cpp
     logging/ExceptionMessageHandler.cpp
-    logging/RichConsoleStyleMessageFormatter.cpp
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
@@ -222,6 +227,13 @@ if(Boost_thread_FOUND)
     list(APPEND SOURCE_FILES system/thread/TimeoutWatchdog.cpp)
 endif()
 
+if(Boost_FILESYSTEM_FOUND AND Boost_LOCALE_FOUND)
+    list(APPEND HEADER_FILES system/FileRepository.h)
+    list(APPEND SOURCE_FILES system/FileRepository.cpp)
+endif()
+
+set(SHADER_FILES "")
+
 if(NOT SOFA_NO_OPENGL)
     list(APPEND HEADER_FILES
         gl/Capture.h
@@ -233,6 +245,8 @@ if(NOT SOFA_NO_OPENGL)
         system/glu.h
         gl/Axis.h
         gl/BasicShapes.h
+        gl/BasicShapesGL.h
+        gl/BasicShapesGL.inl
         gl/Cylinder.h
         gl/Texture.h
         gl/Trackball.h
@@ -242,6 +256,7 @@ if(NOT SOFA_NO_OPENGL)
     )
     list(APPEND SOURCE_FILES
         gl/Axis.cpp
+        gl/BasicShapesGL.cpp
         gl/Cylinder.cpp
         gl/glText.cpp
         gl/Capture.cpp
@@ -267,6 +282,9 @@ if(NOT SOFA_NO_OPENGL)
             gl/FrameBufferObject.cpp
             gl/GLSLShader.cpp
         )
+        list(APPEND SHADER_FILES
+            gl/shaders/generateSphere.cppglsl
+        )
     endif()
 
 endif()
@@ -286,7 +304,7 @@ if(PS3)
 endif()
 
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES})
 if(WIN32)
     # Windows library, used in system::FileSystem
     target_link_libraries(${PROJECT_NAME} PRIVATE Shlwapi)

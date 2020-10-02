@@ -146,7 +146,7 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::move( const sofa::he
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
         const sofa::helper::vector< sofa::helper::vector< double > >& )
 {
-    std::cerr << "WARNING: move event on topology SparseData is not yet handled" << std::endl;
+    msg_warning("TopologySparseDataHandler") << "Move event on topology SparseData is not yet handled." ;
 }
 
 

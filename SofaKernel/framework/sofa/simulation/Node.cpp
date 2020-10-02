@@ -106,7 +106,6 @@ Node::Node(const std::string& name)
 {
     _context = this;
     setName(name);
-    //f_printLog.setValue(true);
 }
 
 
@@ -668,10 +667,10 @@ core::visual::VisualLoop* Node::getVisualLoop() const
 /// Find a child node given its name
 Node* Node::getChild(const std::string& name) const
 {
-//    cerr<<"Node::getChild, in "<< getName() << ", looking for " << name << endl;
+//    cerr<<"Node::getChild, in "<< getName() << ", looking for " << name ;
     for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
     {
-//        cerr<<"Node::getChild, see " << (*it)->getName() << endl;
+//        cerr<<"Node::getChild, see " << (*it)->getName() ;
         if ((*it)->getName() == name)
             return it->get();
     }
@@ -810,7 +809,7 @@ void Node::updateContext()
 {
     updateSimulationContext();
     updateVisualContext();
-    if ( debug_ ) std::cerr<<"Node::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
+    if ( debug_ ) msg_info()<<"Node::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
 }
 
 void Node::updateSimulationContext()
@@ -832,15 +831,15 @@ void Node::updateVisualContext()
         contextObject[i]->apply();
     }
 
-    if ( debug_ ) std::cerr<<"Node::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
+    if ( debug_ ) msg_info()<<"Node::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
 }
 
 /// Execute a recursive action starting from this node
 void Node::executeVisitor(Visitor* action, bool precomputedOrder)
 {
     if (!this->isActive()) return;
-	// if the current node is sleeping and the visitor can't access it, don't do anything
-	if (this->isSleeping() && !action->canAccessSleepingNode) return;
+    // if the current node is sleeping and the visitor can't access it, don't do anything
+    if (this->isSleeping() && !action->canAccessSleepingNode) return;
 
     if (!action->execParams()->checkValidStorage())
     {
@@ -1026,7 +1025,7 @@ void Node::sortComponents()
         addObject(component_from_vertex[*ii]);
         //cerr << component_from_vertex[*ii]->getName() << " ";
     }
-    //cerr << endl;
+    //cerr ;
 
 }
 
@@ -1056,11 +1055,11 @@ Node::SPtr Node::create( const std::string& name )
 
 void Node::setSleeping(bool val)
 {
-	if (val != d_isSleeping.getValue())
-	{
-		d_isSleeping.setValue(val);
-		notifySleepChanged();
-	}
+    if (val != d_isSleeping.getValue())
+    {
+        d_isSleeping.setValue(val);
+        notifySleepChanged();
+    }
 }
 
 SOFA_DECL_CLASS(Node)

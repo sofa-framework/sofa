@@ -247,7 +247,9 @@ void ReadState::processReadState()
     if (updated)
     {
         //sout<<"update from file"<<sendl;
-        sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor action1(core::MechanicalParams::defaultInstance());
+        sofa::simulation::MechanicalProjectPositionAndVelocityVisitor action0(core::MechanicalParams::defaultInstance());
+        this->getContext()->executeVisitor(&action0);
+        sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor action1(core::MechanicalParams::defaultInstance());
         this->getContext()->executeVisitor(&action1);
         sofa::simulation::UpdateMappingVisitor action2(core::MechanicalParams::defaultInstance());
         this->getContext()->executeVisitor(&action2);

@@ -544,10 +544,12 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
     for(helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
     {
         out[i]=OutCoord();
+        if (i == 0) serr << "out[0] = " << out[i] << sendl;
         for(size_t j=0; j<jacobian[i].size(); j++)
         {
             size_t index=indices[i][j];
             jacobian[i][j].addapply(out[i],in[index]);
+            if (i == 0) serr << "out["<<i<<"] + jacobian["<<i<<"]["<<j<<"].addapply(out["<<i<<"],in["<<index<<"]) = " << out[i] << sendl;
         }
     }
     dOut.endEdit();

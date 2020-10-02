@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <iostream>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/system/Locale.h>
 
 namespace sofa
 {
@@ -94,10 +95,15 @@ BaseObjectDescription* BaseObjectDescription::find(const char* /*nodeName*/, boo
     return NULL;
 }
 
-/// Remove an attribute given its name
-bool BaseObjectDescription::removeAttribute(const std::string&)
+/// Remove an attribute given its name, returns false if the attribute was not there.
+bool BaseObjectDescription::removeAttribute(const std::string& attr)
 {
-    return false;
+    AttributeMap::iterator it = attributes.find(attr);
+    if (it == attributes.end())
+        return false;
+
+    attributes.erase(it);
+    return true;
 }
 
 /// Get an attribute given its name (return defaultVal if not present)
@@ -109,6 +115,58 @@ const char* BaseObjectDescription::getAttribute(const std::string& attr, const c
     else
         return it->second.c_str();
 }
+
+/// Docs is in .h
+float BaseObjectDescription::getAttributeAsFloat(const std::string& attr, const float defaultVal)
+{
+    AttributeMap::iterator it = attributes.find(attr);
+    if (it == attributes.end())
+        return defaultVal;
+
+    // Make sure that strtof uses a dot '.' as the decimal separator.
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
+    const char* attrstr=it->second.c_str();
+    char* end=nullptr;
+    float retval = strtof(attrstr, &end);
+
+    /// It is important to check that the attribute was totally parsed to report
+    /// message to users because a silent error is the worse thing that can happen in UX.
+    if(end !=  attrstr+strlen(attrstr)){
+        std::stringstream msg;
+        msg << "Unable to parse a float value from attribute '" << attr << "'='"<<it->second.c_str()<<"'. "
+               "Use the default value '"<<defaultVal<< "' instead.";
+        errors.push_back(msg.str());
+        return defaultVal ;
+    }
+
+    return retval ;
+}
+
+/// Docs is in .h
+int BaseObjectDescription::getAttributeAsInt(const std::string& attr, const int defaultVal)
+{
+    AttributeMap::iterator it = attributes.find(attr);
+    if (it == attributes.end())
+        return defaultVal;
+
+    const char* attrstr=it->second.c_str();
+    char* end=nullptr;
+    int retval = strtol(attrstr, &end, 10);
+
+    /// It is important to check that the attribute was totally parsed to report
+    /// message to users because a silent error is the worse thing that can happen in UX.
+    if(end !=  attrstr+strlen(attrstr)){
+        std::stringstream msg;
+        msg << "Unable to parse an integer value from attribute '" << attr << "'='"<<it->second.c_str()<<"'. "
+               "Use the default value '"<<defaultVal<< "' instead.";
+        errors.push_back(msg.str());
+        return defaultVal;
+    }
+
+    return retval ;
+}
+
 
 /// Set an attribute. Override any existing value
 void BaseObjectDescription::setAttribute(const std::string& attr, const char* val)

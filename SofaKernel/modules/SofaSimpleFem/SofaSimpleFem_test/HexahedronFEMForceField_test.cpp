@@ -3,17 +3,17 @@
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -41,6 +41,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
     typedef typename ForceType::VecDeriv VecDeriv;
     typedef typename ForceType::Coord Coord;
     typedef typename ForceType::Deriv Deriv;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef typename Coord::value_type Real;
     typedef helper::Vec<3,Real> Vec3;
 
@@ -104,6 +105,22 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
         // run the forcefield_test
         Inherited::run_test( x, v, f );
     }
+
+    void test_computeBBox()
+    {
+        std::size_t n = x.size();
+        // copy the position and velocities to the scene graph
+        this->dof->resize(n);
+        typename DOF::WriteVecCoord xdof = this->dof->writePositions();
+        copyToData( xdof, x );
+        // init scene and compute force
+        sofa::simulation::getSimulation()->init(this->node.get());
+
+        Inherited::force->computeBBox(NULL, true);
+
+        EXPECT_EQ(Inherited::force->f_bbox.getValue().minBBox(), Vec3(0,0,0));
+        EXPECT_EQ(Inherited::force->f_bbox.getValue().maxBBox(), Vec3(1,1,1.1));
+    }
 };
 
 // ========= Define the list of types to instanciate.
@@ -126,6 +143,11 @@ TYPED_TEST( HexahedronFEMForceField_test , extension )
 
     // run test
     this->test_valueForce();
+}
+
+TYPED_TEST( HexahedronFEMForceField_test, test_computeBBox )
+{
+    ASSERT_NO_THROW(this->test_computeBBox()) ;
 }
 
 } // namespace sofa

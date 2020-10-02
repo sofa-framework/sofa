@@ -68,7 +68,6 @@ void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& ou
             out << s_messageTypeStrings[m.type()] << ": ["<< m.sender() <<"] " << m.message().str() << std::endl ;
 
     }
-        //    out << " message id: " << m.id() << std::endl ;
 }
 
 

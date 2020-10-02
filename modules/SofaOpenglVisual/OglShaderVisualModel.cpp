@@ -234,7 +234,7 @@ void OglShaderVisualModel::handleTopologyChange()
         {
             computeRestPositions();
             computeRestNormals();
-//            std::cerr<< "OglShaderVisualModel - Updating Rest Normals"<<std::endl;
+//            msg_info()<< "OglShaderVisualModel - Updating Rest Normals"<<std::endl;
         }
     }
 

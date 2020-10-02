@@ -3,17 +3,17 @@
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -30,6 +30,9 @@
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
+
+#include <SofaTest/TestMessageHandler.h>
+
 
 namespace sofa{
 namespace {
@@ -61,7 +64,7 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
     typedef component::projectiveconstraintset::PartialFixedConstraint<DataTypes> FixedConstraint;
     typedef component::forcefield::ConstantForceField<DataTypes> ForceField;
     typedef component::container::MechanicalObject<DataTypes> MechanicalObject;
-    
+
     typedef typename MechanicalObject::VecCoord  VecCoord;
     typedef typename MechanicalObject::Coord  Coord;
     typedef typename MechanicalObject::VecDeriv  VecDeriv;
@@ -69,11 +72,11 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
     typedef typename DataTypes::Real  Real;
     typedef sofa::helper::fixed_array<bool,Deriv::total_size> VecBool;
 
-	bool test(double epsilon)
-	{
-		//Init
+    bool test(double epsilon)
+    {
+        //Init
 
-        simulation::Simulation* simulation;  
+        simulation::Simulation* simulation;
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         Coord initCoord;
         Deriv force;
@@ -83,12 +86,12 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         for(unsigned i=0; i<fixed.size(); i++)
             fixed[i]=false;
 
-        /// Scene creation 
+        /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( defaulttype::Vector3(0,0,0) );
 
         simulation::Node::SPtr node = createEulerSolverNode(root,"test");
-        
+
         typename MechanicalObject::SPtr dofs = addNew<MechanicalObject>(node);
         dofs->resize(1);
 
@@ -98,7 +101,7 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         forceField->setForce( 0, force );
 
         typename FixedConstraint::SPtr constraint = addNew<FixedConstraint>(node);
-        
+
 
         // Init simulation
         sofa::simulation::getSimulation()->init(root.get());
@@ -123,10 +126,10 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
             fixed[i] = false;
         }
 
-        
+
         return true;
 
-	}
+    }
 };
 
 // Define the list of DataTypes to instanciate
@@ -145,10 +148,11 @@ TYPED_TEST_CASE(PartialFixedConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( PartialFixedConstraint_test , testValue )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     EXPECT_TRUE(  this->test(1e-8) );
 }
 
-}// namespace 
+}// namespace
 }// namespace sofa
 
 

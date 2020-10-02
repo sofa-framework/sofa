@@ -82,20 +82,21 @@ public:
     double squaredDistance(const ISAPBox & other)const;
 
     inline void show()const{
-        std::cout<<"MIN "<<cube.minVect()<<std::endl;
-        std::cout<<"MAX "<<cube.maxVect()<<std::endl;
+        msg_info("IncrSAP") <<"MIN "<<cube.minVect() ;
+        msg_info("IncrSAP") <<"MAX "<<cube.maxVect() ;
     }
 
     inline void showEndPoints()const{
-        std::cout<<"MIN ";
+        std::stringstream tmp;
+        tmp<<"MIN ";
         for(int i = 0 ; i < 3 ; ++i)
-            std::cout<<min(i).value<<" ";
-        std::cout<<std::endl;
+            tmp<<min(i).value<<" ";
+        tmp<<msgendl;
 
-        std::cout<<"MAX ";
+        tmp<<"MAX ";
         for(int i = 0 ; i < 3 ; ++i)
-            std::cout<<max(i).value<<" ";
-        std::cout<<std::endl;
+            tmp<<max(i).value<<" ";
+        msg_info("IncrSAP") << tmp.str() ;
     }
 
     /**
@@ -208,12 +209,6 @@ private:
     void addIfCollide(int boxID1,int boxID2,int axis1,int axis2);
     void removeCollision(int a,int b);
     void reinitDetection();
-
-    /**
-      *Inits the field intersectors used to find the right intersector between the two collision models with better speed compared to
-      *find intersector.
-      */
-//    void initIntersectors();
 
     /**
       *Used in initialisatio of IncrSAP. It clears all the IncrSAP fields.

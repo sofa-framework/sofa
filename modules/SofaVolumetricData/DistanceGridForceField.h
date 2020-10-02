@@ -160,7 +160,7 @@ public:
     Data<Real> stiffnessVolume;
     bool flipNormals;
 
-    Data<defaulttype::Vec3f> color;
+    Data<defaulttype::RGBAColor> color;
     Data<bool> bDraw;
     Data<bool> drawPoints;
     Data<Real> drawSize;
@@ -184,9 +184,7 @@ protected:
         , stiffnessArea(initData(&stiffnessArea, (Real)100, "stiffnessArea", "force stiffness if a triangle have an area less than minArea"))
         , minVolume(initData(&minVolume, (Real)0, "minVolume", "minimal volume for each tetrahedron (a flipped triangle will have a negative volume)"))
         , stiffnessVolume(initData(&stiffnessVolume, (Real)0, "stiffnessVolume", "force stiffness if a tetrahedron have an volume less than minVolume"))
-        //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-        //This field should support the color="red" api.
-        , color(initData(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "display color"))
+        , color(initData(&color, defaulttype::RGBAColor(0.0f,0.5f,0.2f,1.0f), "color", "display color.(default=[0.0,0.5,0.2,1.0])"))
         , bDraw(initData(&bDraw, false, "draw", "enable/disable drawing of distancegrid"))
         , drawPoints(initData(&drawPoints, false, "drawPoints", "enable/disable drawing of distancegrid"))
         , drawSize(initData(&drawSize, (Real)10.0f, "drawSize", "display size if draw is enabled"))

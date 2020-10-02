@@ -96,6 +96,7 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
     // We go the the current file's directory so that all relative path are correct
     helper::system::SetDirectory chdir ( filename );
 
+    notifyLoadingScene();
     if(!PythonEnvironment::runFile(helper::system::SetDirectory::GetFileName(filename).c_str(), arguments))
     {
         // LOAD ERROR

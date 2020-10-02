@@ -29,6 +29,8 @@
 #include <SofaOpenglVisual/OglColorMap.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 
+#include <sofa/defaulttype/RGBAColor.h>
+
 namespace sofa
 {
 
@@ -49,7 +51,31 @@ public:
     typedef helper::vector<Real> VecPointData;
     typedef helper::vector<Real> VecCellData;
 
+public:
+    Data<bool> f_maximalRange;
+    Data<VecPointData> f_pointData;
+    Data<VecCellData> f_triangleData, f_quadData;
+    Data<VecPointData> f_pointTriangleData, f_pointQuadData;
+    Data<defaulttype::RGBAColor> f_colorNaN; // Color for NaNs
+    Data<defaulttype::Vec2f> d_userRange;
+    Data<float> d_currentMin, d_currentMax;
+    Data<float> d_shininess;
+
+    visualmodel::OglColorMap *colorMap;
+    core::State<DataTypes> *state;
+    core::topology::BaseMeshTopology* topology;
+    Real oldMin, oldMax;
+
+    void init();
+    void drawVisual(const core::visual::VisualParams* vparams);
+    void updateVisual();
+
+    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+
 protected:
+    void computeNormals();
+    helper::vector<defaulttype::Vec3f> m_normals;
 
     DataDisplay()
         : f_maximalRange(initData(&f_maximalRange, true, "maximalRange", "Keep the maximal range through all timesteps"))
@@ -58,7 +84,7 @@ protected:
           , f_quadData(initData(&f_quadData, "quadData", "Data associated with quads"))
           , f_pointTriangleData(initData(&f_pointTriangleData, "pointTriangleData", "Data associated with nodes per triangle"))
           , f_pointQuadData(initData(&f_pointQuadData, "pointQuadData", "Data associated with nodes per quad"))
-          , f_colorNaN(initData(&f_colorNaN, sofa::defaulttype::Vec4f(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values"))
+          , f_colorNaN(initData(&f_colorNaN, defaulttype::RGBAColor(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values.(default=[0.0,0.0,0.0,1.0])"))
           , d_userRange(initData(&d_userRange, defaulttype::Vec2f(1,-1), "userRange", "Clamp to this values (if max>min)"))
           , d_currentMin(initData(&d_currentMin, 0.f, "currentMin", "Current min range"))
           , d_currentMax(initData(&d_currentMax, 0.f, "currentMax", "Current max range"))
@@ -72,44 +98,6 @@ protected:
         d_currentMin.setReadOnly(true);
         d_currentMax.setReadOnly(true);
     }
-
-public:
-
-    Data<bool> f_maximalRange;
-    Data<VecPointData> f_pointData;
-    Data<VecCellData> f_triangleData, f_quadData;
-    Data<VecPointData> f_pointTriangleData, f_pointQuadData;
-    Data<sofa::defaulttype::Vec4f> f_colorNaN; // Color for NaNs (alpha channel is not used)
-    Data<defaulttype::Vec2f> d_userRange;
-    Data<float> d_currentMin, d_currentMax;
-    Data<float> d_shininess;
-
-    visualmodel::OglColorMap *colorMap;
-    core::State<DataTypes> *state;
-    core::topology::BaseMeshTopology* topology;
-    Real oldMin, oldMax;
-
-    void init();
-    //void reinit();
-
-    //void initVisual() { initTextures(); }
-    //void clearVisual() { }
-    //void initTextures() {}
-    void drawVisual(const core::visual::VisualParams* vparams);
-    //void drawTransparent(const VisualParams* /*vparams*/)
-    void updateVisual();
-
-protected:
-
-    void computeNormals();
-    helper::vector<defaulttype::Vec3f> m_normals;
-
-public:
-
-
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
-
 };
 
 } // namespace visualmodel

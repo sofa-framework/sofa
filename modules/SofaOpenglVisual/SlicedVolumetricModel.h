@@ -25,6 +25,7 @@
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 #include <sofa/helper/gl/template.h>
@@ -66,24 +67,21 @@ public:
     virtual void drawTransparent(const core::visual::VisualParams* vparams);
 
 protected:
-    void setColor(float r, float g, float b);
-    void setColor(std::string color);
+//    void setColor(float r, float g, float b);
+//    void setColor(std::string color);
 
     void findAndDrawTriangles();
 
     Data<float>		alpha;
-    Data<std::string>	color;
+    Data<defaulttype::RGBAColor>	color;
 
     Data<int> _nbPlanes;
     int _nbPlanesOld;
-
 
     core::topology::BaseMeshTopology*	_topology;
     core::behavior::BaseMechanicalState* _mstate;
 
     unsigned char *texture_data;
-    float r,g,b;
-
 
     typedef defaulttype::ExtVec3fTypes::Coord Coord;
     typedef defaulttype::ExtVec3fTypes::VecCoord VecCoord;

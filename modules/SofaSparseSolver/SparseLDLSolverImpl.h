@@ -128,7 +128,7 @@ inline void CSPARSE_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,
         }
         if (D[k] == 0.0)
         {
-            std::cerr << "SparseLDLSolver failure to factorize, D(k,k) is zero" << std::endl;
+            msg_error("SparseLDLSolver") << "Failed to factorize, D(k,k) is zero" ;
             return;
         }
     }
@@ -169,14 +169,14 @@ protected :
     template<class VecInt,class VecReal>
     void solve_cpu(Real * x,const Real * b,SparseLDLImplInvertData<VecInt,VecReal> * data) {
         int n = data->n;
-        const Real * invD = &data->invD[0];
-        const int * perm = &data->perm[0];
-        const int * L_colptr = &data->L_colptr[0];
-        const int * L_rowind = &data->L_rowind[0];
-        const Real * L_values = &data->L_values[0];
-        const int * LT_colptr = &data->LT_colptr[0];
-        const int * LT_rowind = &data->LT_rowind[0];
-        const Real * LT_values = &data->LT_values[0];
+        const Real * invD = data->invD.data();
+        const int * perm = data->perm.data();
+        const int * L_colptr = data->L_colptr.data();
+        const int * L_rowind = data->L_rowind.data();
+        const Real * L_values = data->L_values.data();
+        const int * LT_colptr = data->LT_colptr.data();
+        const int * LT_rowind = data->LT_rowind.data();
+        const Real * LT_values = data->LT_values.data();
 
         Tmp.clear();
         Tmp.fastResize(n);
@@ -257,7 +257,7 @@ protected :
         // We give NULL and NULL to use the default option (see doc of metis for details) !
         // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
         // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
-        METIS_NodeND(&n, &xadj[0],&adj[0], NULL, NULL, perm,invperm);
+        METIS_NodeND(&n, xadj.data(), adj.data(), NULL, NULL, perm,invperm);
     }
 
     void LDL_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm,int * Parent) {
@@ -269,23 +269,24 @@ protected :
         Flag.resize(n);
         Pattern.resize(n);
 
-        CSPARSE_symbolic(n,M_colptr,M_rowind,colptr,perm,invperm,Parent,&Flag[0],&Lnz[0]);
+        CSPARSE_symbolic(n,M_colptr,M_rowind,colptr,perm,invperm,Parent,Flag.data(),Lnz.data());
     }
 
     void LDL_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,int * colptr,int * rowind,Real * values,Real * D,int * perm,int * invperm,int * Parent) {
         Y.resize(n);
 
-        CSPARSE_numeric<Real>(n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,perm,invperm,Parent,&Flag[0],&Lnz[0],&Pattern[0],&Y[0]);
+        CSPARSE_numeric<Real>(n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,perm,invperm,Parent,Flag.data(),Lnz.data(),Pattern.data(),Y.data());
     }
 
     template<class VecInt,class VecReal>
     void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SparseLDLImplInvertData<VecInt,VecReal> * data) {
-        data->new_factorization_needed = data->P_colptr.size() == 0 || data->P_rowind.size() == 0 || CSPARSE_need_symbolic_factorization(n, M_colptr, M_rowind, data->n, (int *) &data->P_colptr[0],(int *) &data->P_rowind[0]);
+        data->new_factorization_needed = data->P_colptr.size() == 0 || data->P_rowind.size() == 0 || CSPARSE_need_symbolic_factorization(n, M_colptr, M_rowind, data->n,
+                                                                                                                                         (int *) data->P_colptr.data(),(int *) data->P_rowind.data());
 
         data->n = n;
         data->P_nnz = M_colptr[data->n];
         data->P_values.clear();data->P_values.fastResize(data->P_nnz);
-        memcpy(&data->P_values[0],M_values,data->P_nnz * sizeof(Real));
+        memcpy(data->P_values.data(),M_values,data->P_nnz * sizeof(Real));
 
         // we test if the matrix has the same struct as previous factorized matrix
         if (data->new_factorization_needed) {
@@ -299,17 +300,18 @@ protected :
             data->LT_colptr.clear();data->LT_colptr.fastResize(data->n+1);
             data->P_rowind.clear();data->P_rowind.fastResize(data->P_nnz);
 
-            memcpy(&data->P_colptr[0],M_colptr,(data->n+1) * sizeof(int));
-            memcpy(&data->P_rowind[0],M_rowind,data->P_nnz * sizeof(int));
+            memcpy(data->P_colptr.data(),M_colptr,(data->n+1) * sizeof(int));
+            memcpy(data->P_rowind.data(),M_rowind,data->P_nnz * sizeof(int));
 
             //ordering function
-            LDL_ordering(data->n,M_colptr,M_rowind,&data->perm[0],&data->invperm[0]);
+            LDL_ordering(data->n,M_colptr,M_rowind,data->perm.data(),data->invperm.data());
 
             data->Parent.clear();
             data->Parent.resize(data->n);
 
             //symbolic factorization
-            LDL_symbolic(data->n,M_colptr,M_rowind,&data->L_colptr[0],&data->perm[0],&data->invperm[0],&data->Parent[0]);
+            LDL_symbolic(data->n,M_colptr,M_rowind,data->L_colptr.data(),
+                         data->perm.data(),data->invperm.data(),data->Parent.data());
 
             data->L_nnz = data->L_colptr[data->n];
 
@@ -319,16 +321,17 @@ protected :
             data->LT_values.clear();data->LT_values.fastResize(data->L_nnz);
         }
 
-        Real * D = &data->invD[0];
-        int * rowind = &data->L_rowind[0];
-        int * colptr = &data->L_colptr[0];
-        Real * values = &data->L_values[0];
-        int * tran_rowind = &data->LT_rowind[0];
-        int * tran_colptr = &data->LT_colptr[0];
-        Real * tran_values = &data->LT_values[0];
+        Real * D = data->invD.data();
+        int * rowind = data->L_rowind.data();
+        int * colptr = data->L_colptr.data();
+        Real * values = data->L_values.data();
+        int * tran_rowind = data->LT_rowind.data();
+        int * tran_colptr = data->LT_colptr.data();
+        Real * tran_values = data->LT_values.data();
 
         //Numeric Factorization
-        LDL_numeric(data->n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,&data->perm[0],&data->invperm[0],&data->Parent[0]);
+        LDL_numeric(data->n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,
+                    data->perm.data(),data->invperm.data(),data->Parent.data());
 
         //inverse the diagonal
         for (int i=0;i<data->n;i++) D[i] = 1.0/D[i];

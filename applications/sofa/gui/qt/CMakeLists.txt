@@ -9,11 +9,13 @@ set(MOC_HEADER_FILES
     GenGraphForm.h
     LinkWidget.h
     MaterialDataWidget.h
+    RGBAColorDataWidget.h
     ModifyObject.h
     QDataDescriptionWidget.h
     QDisplayDataWidget.h
     QDisplayLinkWidget.h
     QDisplayPropertyWidget.h
+    QRGBAColorPicker.h
     QModelViewTableUpdater.h
     QMouseOperations.h
     QSofaListView.h
@@ -55,12 +57,14 @@ set(SOURCE_FILES
     ImageQt.cpp
     LinkWidget.cpp
     MaterialDataWidget.cpp
+    RGBAColorDataWidget.cpp
     ModifyObject.cpp
     PickHandlerCallBacks.cpp
     QDataDescriptionWidget.cpp
     QDisplayDataWidget.cpp
     QDisplayLinkWidget.cpp
     QDisplayPropertyWidget.cpp
+    QRGBAColorPicker.cpp
     QMenuFilesRecentlyOpened.cpp
     QModelViewTableUpdater.cpp
     QMouseOperations.cpp
@@ -120,7 +124,7 @@ if(SOFAGUI_ENABLE_QWT)
          QMomentumStatWidget.h)
 
     list(APPEND SOURCE_FILES
-         GraphDataWidget.cpp         
+         GraphDataWidget.cpp
          QGraphStatWidget.cpp
          QEnergyStatWidget.cpp
          QMomentumStatWidget.cpp
@@ -163,7 +167,7 @@ if(Qt5Core_FOUND)
     set(MOC_FILES_GROUP "Generated")
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
     set(FORM_FILES_GROUP "Generated")
-    
+
 
 else()
     message("SofaGUIQt: Using Qt4")
@@ -175,7 +179,7 @@ else()
     set(MOC_FILES_GROUP "Generated")
     qt4_wrap_ui(FORM_FILES ${UI_FILES})
     set(FORM_FILES_GROUP "Generated")
-    
+
     set(EXT_QT_LIBRARIES ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTXML_LIBRARY})
 
 endif()

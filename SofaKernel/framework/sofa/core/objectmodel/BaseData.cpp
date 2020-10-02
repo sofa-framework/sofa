@@ -274,7 +274,7 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
     std::string m = msgs.str();
     if (m_owner
 #ifdef NDEBUG
-        && (!m.empty() || m_owner->f_printLog.getValue())
+        && (!m.empty() || m_owner->notMuted())
 #endif
     )
     {

@@ -45,17 +45,15 @@ using sofa::component::MakeDataAliasComponent ;
 #include <SofaTest/TestMessageHandler.h>
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::MessageDispatcher;
+using sofa::helper::logging::MainGtestMessageHandler;
 using sofa::helper::logging::MessageHandler;
 using sofa::helper::logging::ConsoleMessageHandler;
 using sofa::helper::logging::Message ;
 
-using sofa::helper::logging::MainLoggingMessageHandler ;
-using sofa::helper::logging::MainCountingMessageHandler ;
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::MessageAsTestFailure ;
+
 using sofa::helper::logging::LogMessage ;
 
-#include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
+#include <sofa/core/logging/RichConsoleStyleMessageFormatter.h>
 using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 using sofa::core::objectmodel::ComponentState ;
@@ -83,16 +81,15 @@ void perTestInit()
     if(defaultHandler==nullptr)
         defaultHandler=new ConsoleMessageHandler(new RichConsoleStyleMessageFormatter) ;
 
-    MessageDispatcher::clearHandlers() ;
-//    MessageDispatcher::addHandler( defaultHandler ) ;
-    MessageDispatcher::addHandler( &MainCountingMessageHandler::getInstance() ) ;
-    MessageDispatcher::addHandler( &MainLoggingMessageHandler::getInstance() ) ;
+    /// THE TESTS HERE ARE NOT INHERITING FROM SOFA TEST SO WE NEED TO MANUALLY INSTALL THE HANDLER
+    /// DO NO REMOVE
+    MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() );
 }
 
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAttributes)
 {
     perTestInit();
-    ExpectMessage e(Message::Error) ;
+    EXPECT_MSG_EMIT(Error) ;
 
     string scene =
         "<?xml version='1.0'?>                                               "
@@ -118,7 +115,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAttributes)
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
 {
     perTestInit();
-    ExpectMessage e(Message::Error) ;
+    EXPECT_MSG_EMIT(Error) ;
 
     string scene =
         "<?xml version='1.0'?>                                               "
@@ -143,7 +140,8 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
 {
     perTestInit();
-    ExpectMessage e(Message::Error) ;
+    EXPECT_MSG_EMIT(Error) ;
+
 
     string scene =
         "<?xml version='1.0'?>                                               "
@@ -168,7 +166,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidTargetName)
 {
     perTestInit();
-    ExpectMessage e(Message::Error) ;
+    EXPECT_MSG_EMIT(Error) ;
 
     string scene =
         "<?xml version='1.0'?>                                               \n"
@@ -193,7 +191,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidTargetName)
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidDataName)
 {
     perTestInit();
-    ExpectMessage e(Message::Warning) ;
+    EXPECT_MSG_EMIT(Warning) ;
 
     string scene =
         "<?xml version='1.0'?>                                               \n"
@@ -217,7 +215,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidDataName)
 
 TEST(MakeDataAliasComponent, checkValidBehavior)
 {
-    MessageAsTestFailure check(Message::Error) ;
+    EXPECT_MSG_NOEMIT(Error) ;
 
     string ascene =
         "<?xml version='1.0'?>                                               \n"

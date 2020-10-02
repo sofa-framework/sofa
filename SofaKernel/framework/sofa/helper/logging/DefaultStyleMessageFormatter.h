@@ -41,6 +41,10 @@ namespace helper
 namespace logging
 {
 
+/// Format the message using a very simple sofa style. For more advanced formatting style
+/// have a look at RichStyleMessageFormatter.
+/// Example:
+///           [ERROR] ClassName(instanceName): this is a message printed somewhere.
 class SOFA_HELPER_API DefaultStyleMessageFormatter : public MessageFormatter
 {
 public:
@@ -51,6 +55,7 @@ private:
         // singleton API
         DefaultStyleMessageFormatter();
         DefaultStyleMessageFormatter(const DefaultStyleMessageFormatter&);
+
         void operator=(const DefaultStyleMessageFormatter&);
         static DefaultStyleMessageFormatter s_instance;
 };

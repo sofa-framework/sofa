@@ -125,12 +125,12 @@ void RandomPointDistributionInSurface<DataTypes>::generateRandomDirections()
 {
     /*Real d[3];
     for (unsigned int i=0 ;i<3 ;i++)
-    	d[i] = (2.0*((Real) rand())/RAND_MAX) - 1.0; //[-1; 1]
+        d[i] = (2.0*((Real) rand())/RAND_MAX) - 1.0; //[-1; 1]
 
     for (unsigned int i=0 ;i<numberOfTests.getValue() ;i++)
     {
-    	Vec3 v(d[i%3], d[(i+1)%3], d[(i+2)%3]);
-    	directions.push_back(v);
+        Vec3 v(d[i%3], d[(i+1)%3], d[(i+2)%3]);
+        directions.push_back(v);
     }
     */
 
@@ -171,9 +171,7 @@ bool RandomPointDistributionInSurface<DataTypes>::isInside(Coord p)
 
     for (unsigned int i=0 ; i<numberOfTests.getValue() ; i++)
     {
-        //std::cout << "p " << p << " dir " << directions[i] << std::endl;
         trianglesOctree.octreeRoot->trace(p, directions[i], result);
-        //if intersect a triangle
         if(result.tid > -1.0)
         {
             BaseMeshTopology::Triangle triangle = triangles[result.tid];

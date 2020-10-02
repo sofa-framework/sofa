@@ -338,7 +338,7 @@ protected:
     /// newPartially solve the system
     virtual void partial_solve(Matrix& /*M*/, Vector& /*partial_solution*/, Vector& /*sparse_rh*/, ListIndex& /* indices_solution*/, ListIndex& /* indices input */)
     {
-        std::cerr<<" WARNING : partial_solve is not implemented for this solver"<<std::endl;
+        msg_info()<<" WARNING : partial_solve is not implemented for this solver";
     }
 
     class TempVectorContainer

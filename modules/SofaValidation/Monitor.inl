@@ -70,10 +70,10 @@ Monitor<DataTypes>::Monitor()
 {
     if (!f_listening.isSet()) f_listening.setValue(true);
 
-    positionsColor.setValue(defaulttype::Vec4f(1.0f,1.0f,0.0f,1.0f));
-    velocitiesColor.setValue(defaulttype::Vec4f(1.0f,1.0f,0.0f,1.0f));
-    forcesColor.setValue(defaulttype::Vec4f(1.0f,1.0f,0.0f,1.0f));
-    trajectoriesColor.setValue(defaulttype::Vec4f(1.0f,1.0f,0.0f,1.0f));
+    positionsColor=RGBAColor::yellow();
+    velocitiesColor=RGBAColor::yellow();
+    forcesColor=RGBAColor::yellow();
+    trajectoriesColor=RGBAColor::yellow();
 }
 /////////////////////////// end Monitor ///////////////////////////////////
 

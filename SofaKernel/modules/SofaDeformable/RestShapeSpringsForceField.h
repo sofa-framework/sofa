@@ -23,6 +23,8 @@
 #define SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H
 #include "config.h"
 
+#include <sofa/defaulttype/RGBAColor.h>
+
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vector.h>
@@ -83,7 +85,7 @@ public:
     Data< helper::vector< unsigned int > > external_points;
     Data< bool > recompute_indices;
     Data< bool > drawSpring;
-    Data< sofa::defaulttype::Vec4f > springColor;
+    Data< defaulttype::RGBAColor > springColor;
 
     sofa::core::behavior::MechanicalState< DataTypes > *restMState;
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;

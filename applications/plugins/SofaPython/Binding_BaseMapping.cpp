@@ -76,7 +76,7 @@ extern "C" PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
     {
         SP_MESSAGE_ERROR( "BaseMapping_setFrom: is not a BaseState*" );
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     mapping->setFrom( from );
@@ -96,7 +96,7 @@ extern "C" PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
     if (!to)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     mapping->setTo( to );

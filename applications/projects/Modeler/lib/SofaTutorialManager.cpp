@@ -149,7 +149,10 @@ void SofaTutorialManager::openTutorial(const std::string& filename)
     //Set the Graph
     xml::BaseElement* newXML = xml::loadFromFile ( filename.c_str() );
     if (newXML == NULL) return;
-    if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
+
+    msg_info_when(!newXML->init(), "SofaTutorialManager")
+            << "Objects initialization failed.";
+
     Node *root = down_cast<Node>( newXML->getObject()->toBaseNode() );
     graph->setRoot(root, false);
     graph->setFilename(filename);

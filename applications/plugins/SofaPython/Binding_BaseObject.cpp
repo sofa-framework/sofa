@@ -86,10 +86,8 @@ extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     char *valueString;
     PyObject *pyLoader;
-    if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader))
-    {
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
+    if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader)) {
+        return NULL;
     }
     BaseObject* loader=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->setSrc(valueString,loader);
@@ -112,6 +110,33 @@ extern "C" PyObject * BaseObject_getLinkPath(PyObject * self, PyObject * /*args*
 }
 
 
+extern "C" PyObject * BaseObject_getSlaves(PyObject * self, PyObject * /*args*/)
+{
+    BaseObject* node=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+
+    const BaseObject::VecSlaves& slaves = node->getSlaves();
+
+    PyObject *list = PyList_New(slaves.size());
+
+    for (unsigned int i=0; i<slaves.size(); ++i)
+        PyList_SetItem(list,i,sofa::PythonFactory::toPython(slaves[i].get()));
+
+    return list;
+}
+
+extern "C" PyObject * BaseObject_getName(PyObject * self, PyObject * /*args*/)
+{
+    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
+    BaseObject* node=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+
+    return PyString_FromString((node->getName()).c_str());
+}
+
+extern "C" PyObject * BaseObject_getAsACreateObjectParameter(PyObject * self, PyObject *args)
+{
+    return BaseObject_getLinkPath(self, args);
+}
+
 SP_CLASS_METHODS_BEGIN(BaseObject)
 SP_CLASS_METHOD(BaseObject,init)
 SP_CLASS_METHOD(BaseObject,bwdInit)
@@ -124,6 +149,9 @@ SP_CLASS_METHOD(BaseObject,getMaster)
 SP_CLASS_METHOD(BaseObject,setSrc)
 SP_CLASS_METHOD(BaseObject,getPathName)
 SP_CLASS_METHOD(BaseObject,getLinkPath)
+SP_CLASS_METHOD(BaseObject,getSlaves)
+SP_CLASS_METHOD(BaseObject,getName)
+SP_CLASS_METHOD(BaseObject,getAsACreateObjectParameter)
 SP_CLASS_METHODS_END
 
 

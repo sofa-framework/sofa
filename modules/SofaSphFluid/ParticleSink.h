@@ -45,11 +45,13 @@
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <vector>
 #include <iterator>
 #include <iostream>
 #include <ostream>
 #include <algorithm>
+
 
 namespace sofa
 {
@@ -86,7 +88,7 @@ public:
     Data<Deriv> planeNormal;
     Data<Real> planeD0;
     Data<Real> planeD1;
-    Data<defaulttype::Vec3f> color;
+    Data<defaulttype::RGBAColor> color;
     Data<bool> showPlane;
 
     sofa::component::topology::PointSubsetData< SetIndexArray > fixed;
@@ -96,9 +98,7 @@ protected:
         : planeNormal(initData(&planeNormal, "normal", "plane normal"))
         , planeD0(initData(&planeD0, (Real)0, "d0", "plane d coef at which particles acceleration is constrained to 0"))
         , planeD1(initData(&planeD1, (Real)0, "d1", "plane d coef at which particles are removed"))
-        //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-        //This field should support the color="red" api.
-        , color(initData(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
+        , color(initData(&color, defaulttype::RGBAColor(0.0f,0.5f,0.2f,1.0f), "color", "plane color. (default=[0.0,0.5,0.2,1.0])"))
         , showPlane(initData(&showPlane, false, "showPlane", "enable/disable drawing of plane"))
         , fixed(initData(&fixed, "fixed", "indices of fixed particles"))
     {
@@ -136,14 +136,12 @@ public:
         const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
         int n = x.size();
         helper::vector<unsigned int> remove;
-        const bool log = this->f_printLog.getValue();
         for (int i=n-1; i>=0; --i) // always remove points in reverse order
         {
             Real d = x[i]*planeNormal.getValue()-planeD1.getValue();
             if (d<0)
             {
-                if (log)
-                    sout << "SINK particle "<<i<<" time "<<time<<" position "<<x[i]<<" velocity "<<v[i]<<sendl;
+                msg_info() << "SINK particle "<<i<<" time "<<time<<" position "<<x[i]<<" velocity "<<v[i] ;
                 remove.push_back(i);
             }
         }
@@ -157,14 +155,14 @@ public:
 
             if (pointMod != NULL)
             {
-                sout << "ParticleSink: remove "<<remove.size()<<" particles using PointSetTopologyModifier."<<sendl;
+                msg_info() << "ParticleSink: remove "<<remove.size()<<" particles using PointSetTopologyModifier.";
                 pointMod->removePointsWarning(remove);
                 pointMod->propagateTopologicalChanges();
                 pointMod->removePointsProcess(remove);
             }
             else if(container::MechanicalObject<DataTypes>* object = dynamic_cast<container::MechanicalObject<DataTypes>*>(this->mstate.get()))
             {
-                sout << "ParticleSink: remove "<<remove.size()<<" particles using MechanicalObject."<<sendl;
+                msg_info() << "ParticleSink: remove "<<remove.size()<<" particles using MechanicalObject.";
                 // deleting the vertices
                 for (unsigned int i = 0; i < remove.size(); ++i)
                 {
@@ -176,7 +174,7 @@ public:
             }
             else
             {
-                sout << "ERROR(ParticleSink): no external object supporting removing points!"<<sendl;
+                msg_info() << "ERROR(ParticleSink): no external object supporting removing points!";
             }
         }
     }

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/io/ImageBMP.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <iostream>
 #ifdef PS3
 #include <stdio.h>
@@ -45,11 +46,11 @@ Creator<Image::FactoryImage,ImageBMP> ImageBMPClass("bmp");
 
 bool ImageBMP::load(std::string filename)
 {
-	m_bLoaded = 0;
+    m_bLoaded = 0;
 
     if (!sofa::helper::system::DataRepository.findFile(filename))
     {
-        std::cerr << "File " << filename << " not found " << std::endl;
+        msg_error("ImageBMP") << "File " << filename << " not found ";
         return false;
     }
     unsigned short int bfType;
@@ -61,13 +62,13 @@ bool ImageBMP::load(std::string filename)
     /* make sure the file is there and open it read-only (binary) */
     if ((file = fopen(filename.c_str(), "rb")) == NULL)
     {
-        std::cerr << "File not found : " << filename << std::endl;
+        msg_error("ImageBMP") << "File not found : " << filename;
         return false;
     }
 
     if(!fread(&bfType, sizeof(short int), 1, file))
     {
-        std::cerr << "Error reading file!" << std::endl;
+        msg_error("ImageBMP") << "Unable to read file!";
         fclose(file);
         return false;
     }
@@ -75,7 +76,7 @@ bool ImageBMP::load(std::string filename)
     /* check if file is a bitmap */
     if (bfType != 19778)
     {
-        std::cerr << "Not a Bitmap-File!\n";
+        msg_error("ImageBMP") << "Not a Bitmap-File!";
         fclose(file);
         return false;
     }
@@ -85,7 +86,7 @@ bool ImageBMP::load(std::string filename)
     /* get the position of the actual bitmap data */
     if (!fread(&bfOffBits, sizeof(uint32_t), 1, file))
     {
-        std::cerr << "Error reading file!\n";
+        msg_error("ImageBMP") << "Unable to read file!";
         fclose(file);
         return false;
     }
@@ -95,51 +96,51 @@ bool ImageBMP::load(std::string filename)
     /* get the width of the bitmap */
     int width;
     if (fread(&width, sizeof(int), 1, file) != 1)
-	{
-        std::cerr << "Error: fread can't read the width of the bitmap." << std::endl;
+    {
+        msg_error("ImageBMP") << "Error: fread can't read the width of the bitmap.";
         fclose(file);
-		return false;
-	}
+        return false;
+    }
 
     if (width < 0) width = -width;
     //printf("Width of Bitmap: %d\n", texture->width);
     /* get the height of the bitmap */
     int height;
     if (fread(&height, sizeof(int), 1, file) != 1)
-	{
-        std::cerr << "Error: fread can't read the height of the bitmap." << std::endl;
+    {
+        msg_error("ImageBMP") << "Error: fread can't read the height of the bitmap.";
         fclose(file);
-		return false;
-	}
+        return false;
+    }
 
     bool upsidedown = false;
     if (height < 0) { height = -height; upsidedown = true; }
     //printf("Height of Bitmap: %d\n", texture->height);
     /* get the number of planes (must be set to 1) */
     if (fread(&biPlanes, sizeof(short int), 1, file) != 1)
-	{
-        std::cerr << "Error: fread can't read the number of planes." << std::endl;
+    {
+        msg_error("ImageBMP") << "Error: fread can't read the number of planes.";
         fclose(file);
-		return false;
-	}
+        return false;
+    }
 
     if (biPlanes != 1)
     {
-        std::cerr << "Error: number of Planes not 1!\n";
+        msg_error("ImageBMP") << "Error: number of Planes not 1!";
         fclose(file);
         return false;
     }
     /* get the number of bits per pixel */
     if (!fread(&biBitCount, sizeof(short int), 1, file))
     {
-        std::cerr << "Error reading file!\n";
+        msg_error("ImageBMP") << "Error reading file!";
         fclose(file);
         return false;
     }
     //printf("Bits per Pixel: %d\n", biBitCount);
     if (biBitCount != 24 && biBitCount != 32 && biBitCount != 8)
     {
-        std::cerr << "Bits per Pixel not supported\n";
+        msg_error("ImageBMP") << "Bits per Pixel not supported";
         fclose(file);
         return false;
     }
@@ -167,7 +168,7 @@ bool ImageBMP::load(std::string filename)
     default:
         fprintf(stderr, "ImageBMP: Unsupported number of bits per pixel: %i\n", nc*8);
         fclose(file);
-		return false;
+        return false;
     }
     init(width, height, 1, 1, Image::UNORM8, channels);
     unsigned char *data = getPixels();
@@ -178,7 +179,7 @@ bool ImageBMP::load(std::string filename)
     {
         if (!fread(data, biSizeImage, 1, file))
         {
-            std::cerr << "Error loading file!\n";
+            msg_error("ImageBMP") << "Unable to load file!";
             fclose(file);
             return false;
         }
@@ -191,13 +192,13 @@ bool ImageBMP::load(std::string filename)
         {
             if (!fread(data+(upsidedown?height-1-y:y)*width*nc, width*nc, 1, file))
             {
-                std::cerr << "Error loading file!\n";
+                msg_error("ImageBMP") << "Unable to load file!";
                 fclose(file);
                 return false;
             }
             if (pad && !fread(buf, 4-((width*nc)%4), 1, file))
             {
-                std::cerr << "Error loading file!\n";
+                msg_error("ImageBMP") << "Unable to load file!";
                 fclose(file);
                 return false;
             }
@@ -217,7 +218,7 @@ bool ImageBMP::load(std::string filename)
     }
 
     fclose(file);
-	m_bLoaded = 1;
+    m_bLoaded = 1;
     return true;
 }
 
@@ -237,7 +238,7 @@ bool ImageBMP::save(std::string filename, int)
     /* make sure the file is there and open it read-only (binary) */
     if ((file = fopen(filename.c_str(), "wb")) == NULL)
     {
-        std::cerr << "File write access failed : " << filename << std::endl;
+        msg_error("ImageBMP") << "File write access failed : " << filename ;
         return false;
     }
 

@@ -26,6 +26,15 @@
 
 #include <sofa/helper/helper.h>
 
+/// Forward declaration
+namespace sofa {
+    namespace helper {
+        namespace types {
+            class RGBAColor;
+        }
+    }
+}
+
 
 namespace sofa
 {
@@ -39,13 +48,14 @@ namespace gl
 class SOFA_HELPER_API Color
 {
 public:
-
-    Color();
-
-    ~Color();
+    static void set(const sofa::helper::types::RGBAColor& color) ;
 
     static void setHSVA( float h, float s, float v, float a );
     static void getHSVA( float* rgba, float h, float s, float v, float a );
+
+private:
+    Color();
+    ~Color();
 };
 
 } // namespace gl

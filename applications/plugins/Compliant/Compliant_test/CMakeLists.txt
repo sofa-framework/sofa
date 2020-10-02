@@ -17,6 +17,8 @@ set(SOURCE_FILES
     NormalizationMapping_test.cpp
     SafeDistanceMapping_test.cpp
 	WinchMultiMapping_test.cpp
+    UniformStiffness_test.cpp
+    DiagonalStiffness_test.cpp
 )
 
 set(PYTHON_FILES

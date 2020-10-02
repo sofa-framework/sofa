@@ -3,17 +3,17 @@
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -41,9 +41,6 @@
 
 namespace sofa {
 
-using std::cout;
-using std::cerr;
-using std::endl;
 using namespace component;
 using namespace defaulttype;
 using namespace modeling;
@@ -69,19 +66,19 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
     typedef defaulttype::Vector3 Vec3;
 
     /// Root of the scene graph
-    simulation::Node::SPtr root;      
+    simulation::Node::SPtr root;
     /// Tested simulation
-    simulation::Simulation* simulation;  
+    simulation::Simulation* simulation;
     /// Structure which contains current node and pointers to the mechanical object and the affine constraint
     PatchTestStruct<DataTypes> patchStruct;
-    /// Tested Rotation: random rotation matrix  
+    /// Tested Rotation: random rotation matrix
     defaulttype::Mat<3,3,Real> testedRotation;
     /// Tested Translation: random translation
     Coord testedTranslation;
-    
+
     /// Create the context for the scene
     void SetUp()
-    { 
+    {
         // Init simulation
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -91,7 +88,7 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
 
     /// Create a scene with a 2D regular grid and an affine constraint
     void createScene2DRegularGrid(bool randomRotation = true, bool randomTranslation=true)
-    { 
+    {
         // Create a scene with a regular grid
         patchStruct = this->createRegularGridScene(
                         root,  // attached to the root node
@@ -103,7 +100,7 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
                         Vec<6,SReal>(0.1,0.1,0,0.9,0.9,0)); // included box of pair box roi
 
         simulation::Node::SPtr SquareNode = patchStruct.SquareNode;
-     
+
         //Force field for 2D Grid
         typename MeshSpringForceField::SPtr meshSpringForceField = addNew<MeshSpringForceField> (SquareNode,"forceField");
         meshSpringForceField->setStiffness(10);
@@ -111,7 +108,7 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
         if(randomRotation)
         // Random Rotation
         {
-            
+
             SReal x,y,z,w;
             x = 0;
             y = 0;
@@ -122,7 +119,7 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
             quat.toMatrix(testedRotation);
         }
         patchStruct.affineConstraint->m_rotation.setValue(testedRotation);
-        
+
         // Random Translation
         if(randomTranslation)
         {
@@ -149,9 +146,9 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
                         Vec<6,SReal> (-0.1,-0.1,-0.1,1.1,1.1,1.1), // BoxRoi to find all mesh points
                         Vec<6,SReal>(-0.1,-0.1,-0.1,1.1,1.1,1.1), // inclusive box of pair box roi
                         Vec<6,SReal>(0.1,0.1,0.1,0.9,0.9,0.9)); // included box of pair box roi
-       
+
         simulation::Node::SPtr SquareNode = patchStruct.SquareNode;
-  
+
         // Force field for 3D Grid
         typename TetraForceField::SPtr tetraFEM = addNew<TetraForceField>(SquareNode,"forceField");
         tetraFEM->setMethod("small");
@@ -187,7 +184,7 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
             }
         }
         patchStruct.affineConstraint->m_translation.setValue(testedTranslation);
-    
+
     }
 
     void setRotation(defaulttype::Mat<3,3,Real> rotationMatrix)
@@ -206,7 +203,7 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
         // Init simulation
         sofa::simulation::getSimulation()->init(root.get());
 
-        // Compute the theoretical final positions  
+        // Compute the theoretical final positions
         VecCoord finalPos;
         patchStruct.affineConstraint->getFinalPositions( finalPos,*patchStruct.dofs->write(core::VecCoordId::position()) );
 
@@ -214,7 +211,7 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
         // Initialize
         size_t numNodes = finalPos.size();
         VecCoord xprev(numNodes);
-        VecDeriv dx(numNodes); 
+        VecDeriv dx(numNodes);
         bool hasConverged = true;
 
         for (size_t i=0; i<numNodes; i++)
@@ -248,14 +245,14 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
         // Get simulated positions
         typename MechanicalObject::WriteVecCoord x = patchStruct.dofs->writePositions();
 
-        // Compare the theoretical positions and the simulated positions   
+        // Compare the theoretical positions and the simulated positions
         bool succeed=true;
         for(size_t i=0; i<finalPos.size(); i++ )
         {
             if((finalPos[i]-x[i]).norm()>diffMaxBetweenSimulatedAndTheoreticalPosition)
-            {   
+            {
                 succeed = false;
-                ADD_FAILURE() << "final Position of point " << i << " is wrong: " << x[i] << std::endl <<"the expected Position is " << finalPos[i] << std::endl 
+                ADD_FAILURE() << "final Position of point " << i << " is wrong: " << x[i] << std::endl <<"the expected Position is " << finalPos[i] << std::endl
                     << "difference = " <<(finalPos[i]-x[i]).norm() << std::endl <<"rotation = " << testedRotation << std::endl << " translation = " << testedTranslation << std::endl
                     << "Failed seed number =" << BaseSofa_test::seed;
 

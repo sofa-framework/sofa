@@ -24,7 +24,7 @@
 #ifdef SOFA_HAVE_BOOST
 #include <boost/thread/thread.hpp>
 #endif
-#include <SofaBaseVisual/VisualTransform.h>
+#include <SofaGeneralVisual/VisualTransform.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 

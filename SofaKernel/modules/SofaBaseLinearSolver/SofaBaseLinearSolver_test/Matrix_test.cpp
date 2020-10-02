@@ -3,17 +3,17 @@
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -464,7 +464,7 @@ typedef TestSparseMatrices<double,4,8,2,2> Ts4822;
 typedef TestSparseMatrices<double,360,300,3,3> TsProductTimings;
 TEST_F(TsProductTimings, benchmark )
 {
-    std::cerr<<"=== Matrix-Matrix Products:"<<std::endl;
+    msg_info()<<"=== Matrix-Matrix Products:"<<std::endl;
 
     double start, stop;
 
@@ -472,56 +472,56 @@ TEST_F(TsProductTimings, benchmark )
     start = get_time();
     matMultiplication = mat * matMultiplier;
     stop = get_time();
-    std::cerr<<"Mat:\t\t"<<stop-start<<" (ms)"<<std::endl;
+    msg_info()<<"Mat:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
     fullMultiplication.clear();
     start = get_time();
     fullMat.mul( fullMultiplication, fullMultiplier );
     stop = get_time();
-    std::cerr<<"Full:\t\t"<<stop-start<<" (ms)"<<std::endl;
+    msg_info()<<"Full:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
     crsMultiplication.clear();
     start = get_time();
     crs1.mul( crsMultiplication, crsMultiplier );
     stop = get_time();
-    std::cerr<<"CRS:\t\t"<<stop-start<<" (ms)"<<std::endl;
+    msg_info()<<"CRS:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
     eiBaseMultiplication.clear();
     start = get_time();
     eiBase.mul( eiBaseMultiplication, eiBaseMultiplier );
     stop = get_time();
-    std::cerr<<"Eigen Base ST:\t\t"<<stop-start<<" (ms)"<<std::endl;
+    msg_info()<<"Eigen Base ST:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
 #ifdef _OPENMP
     eiBaseMultiplication.clear();
     start = get_time();
     eiBase.mul_MT( eiBaseMultiplication, eiBaseMultiplier );
     stop = get_time();
-    std::cerr<<"Eigen Base MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
+    msg_info()<<"Eigen Base MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
 #endif
 
     start = get_time();
     eiDenseMultiplication = eiBase.compressedMatrix * eiDenseMultiplier;
     stop = get_time();
-    std::cerr<<"Eigen Sparse*Dense:\t\t"<<stop-start<<" (ms)"<<std::endl;
+    msg_info()<<"Eigen Sparse*Dense:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
 #ifdef _OPENMP
     start = get_time();
     eiDenseMultiplication.noalias() = component::linearsolver::mul_EigenSparseDenseMatrix_MT( eiBase.compressedMatrix, eiDenseMultiplier, omp_get_max_threads()/2 );
     stop = get_time();
-    std::cerr<<"Eigen Sparse*Dense MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
+    msg_info()<<"Eigen Sparse*Dense MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
 #endif
 
-    std::cerr<<"=== Eigen Matrix-Vector Products:"<<std::endl;
+    msg_info()<<"=== Eigen Matrix-Vector Products:"<<std::endl;
     unsigned nbrows = 100, nbcols;
-    std::cerr<<"=== nb rows:"<<nbrows<<std::endl;
+    msg_info()<<"=== nb rows:"<<nbrows<<std::endl;
 
 
     for( int j=1; j<300 ; j+=30 )
     {
         nbcols = 100 * j;
 
-        std::cerr<<"=== nb cols:"<<nbcols<<std::endl;
+        msg_info()<<"=== nb cols:"<<nbcols<<std::endl;
 
         Eigen::SparseMatrix<SReal,Eigen::RowMajor> A;
         A.resize(nbrows,nbcols);
@@ -553,7 +553,7 @@ TEST_F(TsProductTimings, benchmark )
             if( current>max ) max=current;
         }
 
-        std::cerr<<"ST: "<<sum/100.0<<" "<<min<<" "<<max<<std::endl;
+        msg_info()<<"ST: "<<sum/100.0<<" "<<min<<" "<<max<<std::endl;
 
 
 
@@ -571,7 +571,7 @@ TEST_F(TsProductTimings, benchmark )
             if( current<min ) min=current;
             if( current>max ) max=current;
         }
-        std::cerr<<"MT: "<<sum/100.0<<" "<<min<<" "<<max<<std::endl;
+        msg_info()<<"MT: "<<sum/100.0<<" "<<min<<" "<<max<<std::endl;
     #endif
     }
 

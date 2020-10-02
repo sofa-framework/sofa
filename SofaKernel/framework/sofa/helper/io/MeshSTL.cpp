@@ -46,7 +46,7 @@ void MeshSTL::init (std::string filename)
 {
     if (!sofa::helper::system::DataRepository.findFile(filename))
     {
-        std::cerr << "File " << filename << " not found " << std::endl;
+        msg_error("MeshSTL") << "File " << filename << " not found ";
         return;
     }
     loaderType = "stl";

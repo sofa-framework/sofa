@@ -25,11 +25,12 @@ When creating an issue, pay attention to the following tips:
 - **Check existing issues**. What you are running into may have been addressed already.
 - **Set the right label** to your issue among our label list or propose them in the description.
 - **Be clear** about what your problem is: what was the expected outcome, what happened instead? Detail how someone else can recreate the problem.
+- If your issue reports a bug or any abnormal behavior in SOFA, a **test highlighting the issue** should be written and pull requested.
 
 For more information on issues, check out [this GitHub guide](https://guides.github.com/features/issues/).  
 
 
-# Pull-requests
+# Pull requests
 
 If you are able to patch the bug or add the feature yourself – fantastic, make a pull request with the code! Be sure you have read any documents on contributing and you understand [the SOFA license](https://github.com/sofa-framework/sofa/blob/master/LICENCE.txt). Once you have submitted a pull request the maintainer(s) can compare your branch to the existing one and decide whether or not to incorporate (pull in) your changes.
 
@@ -40,9 +41,9 @@ If you are able to patch the bug or add the feature yourself – fantastic, make
 - **Create a branch** for your changes.
 - Make your changes.
 - Pull in changes from upstream often to [**sync your fork**](https://help.github.com/articles/syncing-a-fork/) so that merge conflicts will be less likely in your pull request.
-- [**Create a pull-request**](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) when you are ready to propose your changes into the main project.
+- [**Create a pull request**](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) when you are ready to propose your changes into the main project.
 
-### Rules for SOFA pull requests
+### Rules
 
 - Description must explain the **issue solved** or the **feature added**, and this must be reported in the **[CHANGELOG.md](https://github.com/sofa-framework/sofa/blob/master/CHANGELOG.md)** file.
 - Code must follow **[our guidelines](https://github.com/sofa-framework/sofa/blob/master/GUIDELINES.md)**.
@@ -50,14 +51,25 @@ If you are able to patch the bug or add the feature yourself – fantastic, make
 - **Unit Tests** are required for each new component or if an issue is fixed.
 - **Examples** (at least one) must be provided showing the new feature.
 
-### Reviewing (for the reviewers team)
+### Lifecycle
+
+Standard pull-requests are reviewed and approved by the "Reviewers" team.  
+Major pull-requests (BREAKING, major features) are reviewed by the "Reviewers" team and approved by the "STC members" team through a vote within a maximum period of 2 weeks.
+
+Reviewing:
 
 - Make sure the pull request is **labelized** and well assigned.
 - Control that it follows **our rules** (defined above).
+- Track the **status of each pull request** using the dedicated labels:
+  - "pr: wip" must be set if the PR has been created for a team work or if some fixes are needed (discussed in the comments).
+  - "pr: to review" must be set if the PR is ready to be reviewed. 
+  - "pr: ready" must be set **instead of merge** if another PR merge is being built on the [Dashboard](https://www.sofa-framework.org/dash/?branch=origin/master). It is used to delay the merge and avoid CI overflow.
+- **Control the builds**: Dashboard > Details in the pull request checks.
+- Merge method: **prefer "merge"** or "squash" over "rebase".
+
+Remember that
+
 - You can **add commits** in a pull request: see [GitHub documentation](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/).
 - If the pull request contains out of scope commits (from a previous merge with master), **consider rebasing it**.
-- **Control the builds**: Dashboard > Details in the pull request checks.
-- Merge method: **prefer "rebase"** or "squash" over "merge" to keep linear history.
-
 
 For more information on forks and pull request, check out [this GitHub guide](https://guides.github.com/activities/forking/).

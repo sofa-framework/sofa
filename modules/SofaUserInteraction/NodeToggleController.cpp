@@ -71,19 +71,23 @@ NodeToggleController::NodeToggleController()
 
 void NodeToggleController::init()
 {
-    if(f_printLog.getValue())
+    if(notMuted())
     {
+        std::stringstream tmp;
+
         Node* context = down_cast<Node>(getContext());
-        std::cout<<"context name = "<<context->name<<std::endl;
+
+        tmp<<"context name = "<<context->name<<msgendl;
 
         if(d_key.getValue()=='*')
-            std::cout<<"key for toggle = A (default)"<<std::endl;
+            tmp<<"key for toggle = A (default)"<<msgendl;
         else
-            std::cout<<"key for toggle = "<<d_key.getValue()<<std::endl;
-
+            tmp<<"key for toggle = "<<d_key.getValue()<<msgendl;
 
         if(d_nameNode.getValue()!="")
-            std::cout<<"name of specific node = "<<d_nameNode.getValue()<<std::endl;
+            tmp<<"name of specific node = "<<d_nameNode.getValue();
+
+        msg_info() << tmp.str() ;
     }
 
     if(d_nameNode.getValue()!="")
@@ -99,8 +103,7 @@ void NodeToggleController::init()
                 specificNode = down_cast<Node>(children[i]);
                 nodeFound = true;
 
-                if(f_printLog.getValue())
-                    std::cout<<"specific node found"<<std::endl;
+                msg_info() << "specific node found" ;
                 break;
             }
         }
@@ -127,8 +130,7 @@ void NodeToggleController::toggle()
                 sofa::simulation::DeactivationVisitor visitorON(sofa::core::ExecParams::defaultInstance(), true);
                 n->executeVisitor(&visitorON);
 
-                if(f_printLog.getValue())
-                    std::cout<<"Activate"<<std::endl;
+                msg_info() << "Activate" ;
             }
             else
             {
@@ -137,8 +139,7 @@ void NodeToggleController::toggle()
                 n->executeVisitor(&visitorOFF);
                 n->setActive(false);
 
-                if(f_printLog.getValue())
-                    std::cout<<"Desactivate"<<std::endl;
+                msg_info() << "Desactivate" ;
             }
         }
     }
@@ -156,8 +157,7 @@ void NodeToggleController::toggle()
                 sofa::simulation::DeactivationVisitor visitorON(sofa::core::ExecParams::defaultInstance(), true);
                 specificNode->executeVisitor(&visitorON);
 
-                if(f_printLog.getValue())
-                    std::cout<<"Activate"<<std::endl;
+                msg_info() << "Activate" ;
             }
             // init is in-active
             else
@@ -167,8 +167,7 @@ void NodeToggleController::toggle()
                 specificNode->executeVisitor(&visitorOFF);
                 specificNode->setActive(false);
 
-                if(f_printLog.getValue())
-                    std::cout<<"Desactivate"<<std::endl;
+                msg_info() << "Desactivate" ;
             }
         }
         else if(nodeFound)
@@ -180,8 +179,7 @@ void NodeToggleController::toggle()
                 specificNode->executeVisitor(&visitorOFF);
                 specificNode->setActive(false);
 
-                if(f_printLog.getValue())
-                    std::cout<<"Desactivate"<<std::endl;
+                msg_info() << "Desactivate" ;
             }
             else
             {
@@ -190,8 +188,7 @@ void NodeToggleController::toggle()
                 sofa::simulation::DeactivationVisitor visitorON(sofa::core::ExecParams::defaultInstance(), true);
                 specificNode->executeVisitor(&visitorON);
 
-                if(f_printLog.getValue())
-                    std::cout<<"Activate"<<std::endl;
+                msg_info() << "Activate" ;
             }
         }
     }
@@ -213,7 +210,7 @@ void NodeToggleController::onHapticDeviceEvent(core::objectmodel::HapticDeviceEv
     // toggle on button 2 pressed
     if (oev->getButton(1))
     {
-        std::cout << "NodeToggleController: switching active node" << std::endl;
+        msg_info() << "switching active node" ;
         toggle();
     }
 }
@@ -227,8 +224,7 @@ void NodeToggleController::onKeyPressedEvent(core::objectmodel::KeypressedEvent 
         case 'A':
         case 'a':
         {
-            if(f_printLog.getValue())
-                std::cout << "NodeToggleController: switching active node" << std::endl;
+            msg_info() << "switching active node" ;
             toggle();
             break;
         }
@@ -240,8 +236,7 @@ void NodeToggleController::onKeyPressedEvent(core::objectmodel::KeypressedEvent 
     {
         if(d_key.getValue()==oev->getKey())
         {
-            if(f_printLog.getValue())
-                std::cout << "NodeToggleController: switching active node" << std::endl;
+            msg_info() << "switching active node" ;
             toggle();
         }
     }

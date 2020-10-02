@@ -93,8 +93,9 @@ protected:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_DILATEENGINE_CPP)
-
+#ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
+#endif
 #endif
 
 } // namespace engine

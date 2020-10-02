@@ -106,8 +106,8 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::update()
 
     if (curveEdges.size() < 1 || curveVertices.size() < 1)
     {
-        if(f_printLog.getValue())
-            msg_warning(this) << "Initial mesh does not contain vertices or edges... No extruded mesh will be generated";
+
+        msg_warning() << "Initial mesh does not contain vertices or edges... No extruded mesh will be generated";
 
         return;
     }

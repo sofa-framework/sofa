@@ -78,8 +78,8 @@ void PipelineImpl::init()
 
     if (intersectionMethod==NULL)
     {
-        msg_warning(this) <<"no intersection component defined. Switching to the DiscreteIntersection component.  \n"
-                            "To remove this warning, you can add an intersection component to your scene.  \n"
+        msg_warning(this) <<"no intersection component defined. Switching to the DiscreteIntersection component. " << msgendl
+                            "To remove this warning, you can add an intersection component to your scene. " << msgendl
                             "More details on the collision pipeline can be found at "
                             "[sofadoc::Collision](https://www.sofa-framework.org/community/doc/using-sofa/specific-components/intersectionmethod/). ";
         sofa::core::objectmodel::BaseObjectDescription discreteIntersectionDesc("Default Intersection","DiscreteIntersection");

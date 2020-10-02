@@ -24,6 +24,7 @@
 #include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -49,7 +50,7 @@ public:
     Data<float> size;
     Data<int> nbSubdiv;
 
-    Data<sofa::defaulttype::Vec<4, float> > color;
+    Data<defaulttype::RGBAColor> color;
     Data<float> thickness;
     Data<bool> draw;
 
@@ -57,9 +58,7 @@ public:
         plane(initData(&plane, std::string("z"),  "plane", "Plane of the grid")),
         size(initData(&size, 10.0f,  "size", "Size of the squared grid")),
         nbSubdiv(initData(&nbSubdiv, 16,  "nbSubdiv", "Number of subdivisions")),
-        //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-        //This field should support the color="red" api.
-        color(initData(&color, sofa::defaulttype::Vec<4, float>(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid")),
+        color(initData(&color, defaulttype::RGBAColor(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)")),
         thickness(initData(&thickness, 1.0f,  "thickness", "Thickness of the lines in the grid")),
         draw(initData(&draw, true,  "draw", "Display the grid or not"))
     {}

@@ -41,7 +41,7 @@ extern "C" PyObject * MechanicalObject_setTranslation(PyObject *self, PyObject *
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
         dx = (double)ix;
         dy = (double)iy;
@@ -61,7 +61,7 @@ extern "C" PyObject * MechanicalObject_setScale(PyObject *self, PyObject * args)
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
         dx = (double)ix;
         dy = (double)iy;
@@ -81,7 +81,7 @@ extern "C" PyObject * MechanicalObject_setRotation(PyObject *self, PyObject * ar
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
         dx = (double)ix;
         dy = (double)iy;

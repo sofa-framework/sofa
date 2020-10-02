@@ -102,7 +102,6 @@ public:
 
     int beginIntersection(sofa::core::CollisionModel* /*model1*/, sofa::core::CollisionModel* /*model2*/, OutputVector* /*contacts*/)
     {
-        //std::cout << "beginIntersection\n";
         return 0;
     }
 

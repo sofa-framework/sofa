@@ -55,6 +55,24 @@ public:
     typedef topology::Topology::Hexahedron Hexahedron;
     typedef topology::Topology::Pentahedron Pentahedron;
     typedef topology::Topology::Pyramid Pyramid;
+    typedef topology::Topology::PointID PointID;
+    /* specify for each control point lying on an edge : the control point index, the index of the  edge, 
+     the 2 integers specifying the position within this edge (i.e. 11 for a quadratic edge, 13 within a quartic edge).. */
+    typedef sofa::helper::fixed_array<PointID,4> HighOrderEdgePosition;
+    /* specify for each control point lying on a triangle  : the control point index, the index of the  triangle, 
+     the 3 integers specifying the position within this triangle (i.e. 111 for a cubic triangle , 121 within a quartic triangle).. */
+    typedef sofa::helper::fixed_array<PointID,5> HighOrderTrianglePosition;
+    /* specify for each control point lying on a Quad  : the control point index, the index of the  quad, 
+     the 2 integers specifying the degree of the element in the x and y directions, the 2 integers specifying the position within this quad (i.e. 12 for a cubic triangle ).. */
+    typedef sofa::helper::fixed_array<PointID,6> HighOrderQuadPosition;
+    /* specify for each control point lying on a tetrahedron  : the control point index, the index of the  tetrahedron, 
+     the 3 integers specifying the position within this tetrahedron (i.e. 1111 for a quartic tetrahedron , 1211 within a quintic tetrahedron).. */
+    typedef sofa::helper::fixed_array<PointID,6> HighOrderTetrahedronPosition;
+    /* specify for each control point lying on a Hexahedron  : the control point index, the index of the  Hexahedron, 
+     the 3 integers specifying the degree of the element in the x, y and z directions, the 3 integers specifying the position within this hexahedron (i.e. 121  ).. */
+    typedef sofa::helper::fixed_array<PointID,8> HighOrderHexahedronPosition;
+
+
 
 protected:
     MeshLoader();
@@ -93,12 +111,17 @@ public:
     Data< helper::vector< Triangle > > d_triangles;
     Data< helper::vector< Quad > > d_quads;
     Data< helper::vector< helper::vector <unsigned int> > > d_polygons;
+    Data< helper::vector< HighOrderEdgePosition > > d_highOrderEdgePositions;
+    Data< helper::vector< HighOrderTrianglePosition > > d_highOrderTrianglePositions;
+    Data< helper::vector< HighOrderQuadPosition > > d_highOrderQuadPositions;
 
     // Tab of 3D elements composition
     Data< helper::vector< Tetrahedron > > d_tetrahedra;
     Data< helper::vector< Hexahedron > > d_hexahedra;
     Data< helper::vector< Pentahedron > > d_pentahedra;
     Data< helper::vector< Pyramid > > d_pyramids;
+    Data< helper::vector< HighOrderTetrahedronPosition > > d_highOrderTetrahedronPositions;
+    Data< helper::vector< HighOrderHexahedronPosition > > d_highOrderHexahedronPositions;
 
     // polygons in 3D ?
 

@@ -24,6 +24,7 @@
 
 #include "DistanceFromTargetMapping.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <iostream>
 
 namespace sofa
@@ -41,9 +42,10 @@ DistanceFromTargetMapping<TIn, TOut>::DistanceFromTargetMapping()
     , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
     , f_targetPositions(initData(&f_targetPositions, "targetPositions", "Positions to compute the distances from"))
     , f_restDistances(initData(&f_restDistances, "restLengths", "Rest lengths of the connections."))
+    //TODO(dmarchal): use a list of options instead of numeric values.
     , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
     , d_showObjectScale(initData(&d_showObjectScale, 0.f, "showObjectScale", "Scale for object display"))
-    , d_color(initData(&d_color, defaulttype::Vec4f(1,0,0,1), "showColor", "Color for object display"))
+    , d_color(initData(&d_color, defaulttype::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
 {
 }
 
@@ -317,7 +319,7 @@ void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams
             }
             b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
 
-    //        std::cerr<<SOFA_CLASS_METHOD<<childForce[i][0]<<std::endl;
+    //        msg_info()<<SOFA_CLASS_METHOD<<childForce[i][0]<<std::endl;
 
             K.addBlock(idx,idx,b);
         }

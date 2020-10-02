@@ -26,10 +26,6 @@
 #include <SofaOpenglVisual/OglModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <iostream>
-using std::cerr;
-using std::endl;
-
 namespace sofa
 {
 

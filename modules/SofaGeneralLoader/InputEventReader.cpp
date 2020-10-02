@@ -214,8 +214,6 @@ void InputEventReader::getInputEvents()
             std::getline(*inFile, line);
             std::istringstream ln(line);
 
-            //if(ln.str().empty()) std::cout << "NO EVENT" << std::endl;
-
             while(!ln.eof())
             {
                 struct input_event ev;
@@ -244,23 +242,17 @@ void InputEventReader::handleEvent(core::objectmodel::Event *event)
 
         //Pedals Value
         //get root
-        //sofa::simulation::Node* node = static_cast<sofa::simulation::Node*>(this->getContext());
-        //while (node->getParent() != NULL)
-        //	node = static_cast<sofa::simulation::Node*>(node->getParent());
-
         if (currentPedalState != NO_PEDAL)
         {
             if (oldPedalState == NO_PEDAL)
             {
                 if (currentPedalState == LEFT_PEDAL)
                 {
-                    //std::cout << "//left press event" << std::endl;
                     sofa::core::objectmodel::KeypressedEvent ev(p_key1.getValue());
                     this->getContext()->propagateEvent(core::ExecParams::defaultInstance(), &ev);
                 }
                 else
                 {
-                    //std::cout << "//right press event" << std::endl;
                     sofa::core::objectmodel::KeypressedEvent ev(p_key2.getValue());
                     this->getContext()->propagateEvent(core::ExecParams::defaultInstance(), &ev);
                 }
@@ -272,13 +264,11 @@ void InputEventReader::handleEvent(core::objectmodel::Event *event)
             {
                 if (oldPedalState == LEFT_PEDAL)
                 {
-                    //std::cout << "//left release event"<< std::endl;
                     sofa::core::objectmodel::KeyreleasedEvent ev(p_key1.getValue());
                     this->getContext()->propagateEvent(core::ExecParams::defaultInstance(), &ev);
                 }
                 else
                 {
-                    //std::cout << "//right release event"<< std::endl;
                     sofa::core::objectmodel::KeyreleasedEvent ev(p_key2.getValue());
                     this->getContext()->propagateEvent(core::ExecParams::defaultInstance(), &ev);
                 }

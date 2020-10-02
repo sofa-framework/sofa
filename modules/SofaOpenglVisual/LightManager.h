@@ -28,6 +28,7 @@
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 #ifdef SOFA_HAVE_GLEW
 #include <SofaOpenglVisual/OglShadowShader.h>
@@ -76,7 +77,7 @@ public:
     //TODO(dmarchal): sofa guidelines.
     Data<bool>                  d_shadowsEnabled;
     Data<bool>                  d_softShadowsEnabled;
-    Data<defaulttype::Vec4f>    d_ambient;
+    Data<sofa::helper::types::RGBAColor>  d_ambient;
     Data<bool>                  d_drawIsEnabled;
 
 protected:

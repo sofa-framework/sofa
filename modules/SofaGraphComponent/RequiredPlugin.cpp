@@ -38,7 +38,7 @@ namespace misc
 
 SOFA_DECL_CLASS(RequiredPlugin)
 
-int RequiredPluginClass = core::RegisterObject("Load required plugin")
+int RequiredPluginClass = core::RegisterObject("Load the required plugins")
         .add< RequiredPlugin >();
 
 RequiredPlugin::RequiredPlugin()

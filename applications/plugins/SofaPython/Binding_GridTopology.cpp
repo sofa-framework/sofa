@@ -33,22 +33,9 @@ extern "C" PyObject * GridTopology_setSize(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "iii",&nx,&ny,&nz))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->setSize(nx,ny,nz);
-    Py_RETURN_NONE;
-}
-
-extern "C" PyObject * GridTopology_setNumVertices(PyObject *self, PyObject * args)
-{
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
-    int nx,ny,nz;
-    if (!PyArg_ParseTuple(args, "iii",&nx,&ny,&nz))
-    {
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
-    }
-    obj->setNumVertices(nx,ny,nz);
     Py_RETURN_NONE;
 }
 
@@ -65,7 +52,7 @@ extern "C" PyObject * GridTopology_setNx(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->setNx(nb);
     Py_RETURN_NONE;
@@ -84,7 +71,7 @@ extern "C" PyObject * GridTopology_setNy(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->setNy(nb);
     Py_RETURN_NONE;
@@ -103,7 +90,7 @@ extern "C" PyObject * GridTopology_setNz(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->setNz(nb);
     Py_RETURN_NONE;
@@ -114,7 +101,6 @@ extern "C" PyObject * GridTopology_setNz(PyObject *self, PyObject * args)
 
 SP_CLASS_METHODS_BEGIN(GridTopology)
 SP_CLASS_METHOD(GridTopology,setSize)
-SP_CLASS_METHOD(GridTopology,setNumVertices)
 SP_CLASS_METHOD(GridTopology,getNx)
 SP_CLASS_METHOD(GridTopology,getNy)
 SP_CLASS_METHOD(GridTopology,getNz)

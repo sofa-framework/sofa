@@ -167,7 +167,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 
     if (share_matrix.getValue() && internalData.MinvPtr->rowSize() == (defaulttype::BaseMatrix::Index)systemSize)
     {
-        std::cout << "shared matrix : " << fname << " is already built" << std::endl;
+        msg_info("PrecomputedWarpPreconditioner") << "shared matrix : " << fname << " is already built." ;
     }
     else
     {
@@ -177,14 +177,13 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 
         if(compFileIn.good() && use_file.getValue())
         {
-            std::cout << "file open : " << fname << " compliance being loaded" << std::endl;
+            msg_info("PrecomputedWarpPreconditioner") << "file open : " << fname << " compliance being loaded" ;
             internalData.readMinvFomFile(compFileIn);
-            //compFileIn.read((char*) (*internalData.MinvPtr)[0], matrixSize * matrixSize * sizeof(Real));
             compFileIn.close();
         }
         else
         {
-            std::cout << "Precompute : " << fname << " compliance" << std::endl;
+            msg_info("PrecomputedWarpPreconditioner") << "Precompute : " << fname << " compliance." ;
             if (solverName.getValue().empty()) loadMatrixWithCSparse(M);
             else loadMatrixWithSolver();
 
@@ -192,7 +191,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
             {
                 std::ofstream compFileOut(fname.c_str(), std::fstream::out | std::fstream::binary);
                 internalData.writeMinvFomFile(compFileOut);
-                //compFileOut.write((char*)(*internalData.MinvPtr)[0], matrixSize * matrixSize * sizeof(Real));
                 compFileOut.close();
             }
             compFileIn.close();
@@ -218,7 +216,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M)
 {
-    std::cout << "Compute the initial invert matrix with CS_PARSE" << std::endl;
+    msg_info("PrecomputedWarpPreconditioner") << "Compute the initial invert matrix with CS_PARSE" ;
 
     FullVector<Real> r;
     FullVector<Real> b;
@@ -229,7 +227,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
 
     SparseCholeskySolver<CompressedRowSparseMatrix<Real>, FullVector<Real> > solver;
 
-    std::cout << "Precomputing constraint correction LU decomposition " << std::endl;
+    msg_info("PrecomputedWarpPreconditioner") << "Precomputing constraint correction LU decomposition " ;
     solver.invert(M);
 
     for (unsigned int j=0; j<nb_dofs; j++)
@@ -268,7 +266,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& /*M*/)
 {
-    std::cout << "WARNING ; you don't have CS_parse CG will be use, (if also can specify solverName to accelerate the precomputation" << std::endl;
+    msg_warning("PrecomputedWarpPreconditioner") << "you don't have CS_parse CG will be use, (if also can specify solverName to accelerate the precomputation" ;
     loadMatrixWithSolver();
 }
 #endif
@@ -278,7 +276,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 {
     usePrecond = false;//Don'Use precond during precomputing
 
-    std::cout << "Compute the initial invert matrix with solver" << std::endl;
+    msg_info("PrecomputedWarpPreconditioner") << "Compute the initial invert matrix with solver" ;
 
     if (mstate==NULL)
     {
@@ -336,10 +334,10 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     mstate->vAlloc(core::ExecParams::defaultInstance(), lhId);
     mstate->vAvail(core::ExecParams::defaultInstance(), rhId);
     mstate->vAlloc(core::ExecParams::defaultInstance(), rhId);
-    std::cout << "System: (" << init_mFact << " * M + " << init_bFact << " * B + " << init_kFact << " * K) " << lhId << " = " << rhId << std::endl;
+    msg_info("PrecomputedWarpPreconditioner") << "System: (" << init_mFact << " * M + " << init_bFact << " * B + " << init_kFact << " * K) " << lhId << " = " << rhId ;
     if (linearSolver)
     {
-        std::cout << "System Init Solver: " << linearSolver->getName() << " (" << linearSolver->getClassName() << ")" << std::endl;
+        msg_info("PrecomputedWarpPreconditioner") << "System Init Solver: " << linearSolver->getName() << " (" << linearSolver->getClassName() << ")" ;
         core::MechanicalParams mparams;
         mparams.setMFactor(init_mFact);
         mparams.setBFactor(init_bFact);
@@ -347,10 +345,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         linearSolver->setSystemMBKMatrix(&mparams);
     }
 
-    //<TO REMOVE>
-    //VecDeriv& force = *mstate->getVecDeriv(rhId.index);
-    //Data<VecDeriv>* dataForce = mstate->writeVecDeriv(rhId);
-    //VecDeriv& force = *dataForce->beginEdit();
     helper::WriteAccessor<Data<VecDeriv> > dataForce = *mstate->write(core::VecDerivId::externalForce());
     VecDeriv& force = dataForce.wref();
 
@@ -371,15 +365,10 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    //<TO REMOVE>
-    //VecDeriv& velocity = *mstate->getVecDeriv(lhId.index);
-    //Data<VecDeriv>* dataVelocity = mstate->writeVecDeriv(lhId);
-    //VecDeriv& velocity = *dataVelocity->beginEdit();
     helper::WriteAccessor<Data<VecDeriv> > dataVelocity = *mstate->write(core::VecDerivId::velocity());
     VecDeriv& velocity = dataVelocity.wref();
 
     VecDeriv velocity0 = velocity;
-    //VecCoord& pos =mstate->read(core::ConstVecCoordId::position())->getValue();
     helper::WriteAccessor<Data<VecCoord> > posData = *mstate->write(core::VecCoordId::position());
     VecCoord& pos = posData.wref();
     VecCoord pos0 = pos;
@@ -393,9 +382,10 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
         for (unsigned int d=0; d<dof_on_node; d++)
         {
-            std::cout.precision(2);
-            std::cout << "Precomputing constraint correction : " << std::fixed << (float)(j*dof_on_node+d)*100.0f/(float)(nb_dofs*dof_on_node) << " %   " << '\xd';
-            std::cout.flush();
+            std::stringstream tmp;
+            tmp.precision(2);
+            tmp << "Precomputing constraint correction : " << std::fixed << (float)(j*dof_on_node+d)*100.0f/(float)(nb_dofs*dof_on_node) << " %   " << '\xd';
+            msg_info("PrecomputedWarpPreconditioner") << tmp.str() ;
 
             unitary_force.clear();
             unitary_force[d]=1.0;
@@ -408,7 +398,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
             {
                 EulerSolver->f_verbose.setValue(true);
                 EulerSolver->f_printLog.setValue(true);
-                serr<<"getF : "<<force<<sendl;
+                msg_info() <<"getF : "<<force;
             }
 
             if (linearSolver)
@@ -424,7 +414,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
             {
                 EulerSolver->f_verbose.setValue(false);
                 EulerSolver->f_printLog.setValue(false);
-                serr<<"getV : "<<velocity<<sendl;
+                msg_info()<<"getV : "<<velocity;
             }
 
             Real * minvVal = (*internalData.MinvPtr)[j*dof_on_node+d];
@@ -443,9 +433,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         unitary_force.clear();
         force[pid_j] = unitary_force;
     }
-    std::cout << "Precomputing constraint correction : " << std::fixed << 100.0f << " %" << std::endl;
-    std::cout.flush();
-
+    msg_info("PrecomputedWarpPreconditioner") << "Precomputing constraint correction : " << std::fixed << 100.0f << " %" ;
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     if (linearSolver) linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
@@ -465,9 +453,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     for (unsigned int i=0; i<velocity0.size(); i++) velocity[i]=velocity0[i];
     //Reset the position
     for (unsigned int i=0; i<pos0.size(); i++) pos[i]=pos0[i];
-
-//         dataForce->endEdit();
-//         dataVelocity->endEdit();
 
     mstate->vFree(core::ExecParams::defaultInstance(), lhId);
     mstate->vFree(core::ExecParams::defaultInstance(), rhId);

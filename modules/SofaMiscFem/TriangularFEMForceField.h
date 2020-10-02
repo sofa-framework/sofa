@@ -88,6 +88,11 @@ public:
 
     typedef sofa::helper::Quater<Real> Quat;
 
+    enum {
+        LARGE = 0,   ///< Symbol of small displacements triangle solver
+        SMALL = 1,   ///< Symbol of large displacements triangle solver
+    };
+
 protected:
 
     bool _anisotropicMaterial;			                 	    /// used to turn on / off optimizations
@@ -100,9 +105,6 @@ protected:
     typedef defaulttype::Mat<3, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
 
 
-public:
-    static const int SMALL = 1;						    ///< Symbol of small displacements triangle solver
-    static const int LARGE = 0;                                             ///< Symbol of large displacements triangle solver
 protected:
     /// ForceField API
     //{
@@ -255,7 +257,16 @@ public:
     void setDamping(Real val) { f_damping.setValue(val); }
     int  getMethod() { return method; }
     void setMethod(int val) { method = val; }
-
+    void setMethod(std::string methodName) {
+        if (methodName == "small")
+            this->setMethod(SMALL);
+        else
+        {
+            if (methodName != "large")
+                serr << "unknown method: large method will be used. Remark: Available method are \"small\", \"large\" "<<sendl;
+            this->setMethod(LARGE);
+        }
+    }
 
 
 public:

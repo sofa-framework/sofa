@@ -37,7 +37,7 @@ namespace tree
 /**
 Base class for the Visitors which deal with GNodes specifically rather than Node.
 
-	@author The SOFA team </www.sofa-framework.org>
+    @author The SOFA team </www.sofa-framework.org>
 */
 class SOFA_SIMULATION_TREE_API GNodeVisitor : public Visitor
 {
@@ -69,7 +69,7 @@ public:
         GNode* g = dynamic_cast<GNode*>(node);
         if (!g)
         {
-            std::cerr << "GNodeVisitor: node is not a GNode !\n";
+            dmsg_error("GNodeVisitor") << "Node is not a GNode.";
             return RESULT_PRUNE;
         }
         else
@@ -84,7 +84,7 @@ public:
         GNode* g = dynamic_cast<GNode*>(node);
         if (!g)
         {
-            std::cerr << "GNodeVisitor: node is not a GNode !\n";
+            dmsg_error("GNodeVisitor") << "Node is not a GNode.";
         }
         else
         {

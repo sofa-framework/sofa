@@ -29,7 +29,7 @@ namespace core
 
 namespace topology
 {
-    
+
 SOFA_CORE_API TopologyObjectType parseTopologyObjectTypeFromString(const std::string& s)
 {
     std::string sUP = s;
@@ -42,7 +42,8 @@ SOFA_CORE_API TopologyObjectType parseTopologyObjectTypeFromString(const std::st
     SOFA_ENUM_CASE(TETRAHEDRON);
     SOFA_ENUM_CASE(HEXAHEDRON);
 #undef SOFA_ENUM_CASE
-    std::cerr << "ERROR parsing \"" << s << "\" as TopologyObjectType, defaulting to POINT" << std::endl;
+    msg_error("TopologyObjectType")
+            << "unable to parse '" << s << "' as TopologyObjectType, defaulting to POINT" ;
     return POINT;
 }
 
@@ -125,7 +126,7 @@ SOFA_CORE_API TopologyChangeType parseTopologyChangeTypeFromString(const std::st
     SOFA_ENUM_CASE(HEXAHEDRARENUMBERING);
     SOFA_ENUM_CASE(TOPOLOGYCHANGE_LASTID);
 #undef SOFA_ENUM_CASE
-    std::cerr << "ERROR parsing \"" << s << "\" as TopologyChangeType, defaulting to TOPOLOGYCHANGE_LASTID" << std::endl;
+    msg_warning("TopologyChange") << "problem while parsing '" << s << "' as TopologyChangeType, defaulting to TOPOLOGYCHANGE_LASTID" ;
     return TOPOLOGYCHANGE_LASTID;
 }
 

@@ -36,6 +36,8 @@
 
 #include <SofaBaseTopology/TopologyData.inl>
 
+#include <sofa/defaulttype/RGBAColor.h>
+
 namespace sofa
 {
 
@@ -59,9 +61,7 @@ PointSplatModel::PointSplatModel() //const std::string &name, std::string filena
     : radius(initData(&radius, 1.0f, "radius", "Radius of the spheres.")),
       textureSize(initData(&textureSize, 32, "textureSize", "Size of the billboard texture.")),
       alpha(initData(&alpha, 1.0f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
-      //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-      //This field should support the color="red" api.
-      color(initData(&color, std::string("white"), "color", "Billboard color.")),
+      color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=[1.0,1.0,1.0,1.0])")),
       _topology(NULL),
       _mstate(NULL),
       texture_data(NULL),
@@ -120,6 +120,7 @@ void PointSplatModel::reinit()
     texture_data = new unsigned char [texture_size * texture_size];
 
     for(unsigned int i=0; i<half_texture_size; ++i)
+    {
         for(unsigned int j=0; j<half_texture_size; ++j)
         {
             const float x = i / (float) half_texture_size;
@@ -133,8 +134,7 @@ void PointSplatModel::reinit()
             texture_data[half_texture_size - 1 - i + (half_texture_size + j) * texture_size] = texValue;
             texture_data[half_texture_size - 1 - i + (half_texture_size - 1 - j) * texture_size] = texValue;
         }
-
-    setColor(color.getValue());
+    }
 }
 
 void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
@@ -146,15 +146,11 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
     glPushAttrib(GL_ENABLE_BIT);
 
     glDisable(GL_LIGHTING);
-
-//	glClearColor (0, 0, 0, 0);
     glEnable (GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable (GL_TEXTURE_2D);
     glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-//	glDepthMask(GL_FALSE);
-//	glDisable(GL_DEPTH_TEST);
 
     GLuint	texture;
     unsigned int texture_size = (unsigned) textureSize.getValue();
@@ -221,7 +217,6 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
         Coord vPoint2(center + (( vRight + vUp) * qsize));
         Coord vPoint3(center + ((-vRight + vUp) * qsize));
 
-        // TODO: modulate color by data
         float m = 1.0f;
 
         if(!pData.empty())
@@ -229,7 +224,8 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
             m = 0.5f + 2.0f * pData[i] / 255.0f;
         }
 
-        glColor4f (m*r, m*g, m*b, a);
+        const defaulttype::RGBAColor& mc = color.getValue() ;
+        glColor4f (m*mc.r(), m*mc.g(), m*mc.b(), mc.a());
 
         glBegin( GL_QUADS );
         glTexCoord2f(0.0f, 0.0f);
@@ -245,97 +241,7 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
 
     // restore the previously stored modelview matrix
     glPopMatrix ();
-
-    // glDepthMask(GL_TRUE);
-    // glEnable(GL_DEPTH_TEST);
-
     glPopAttrib();
-}
-
-//void PointSplatModel::handleTopologyChange()
-//{
-//	std::list<const TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-//	std::list<const TopologyChange *>::const_iterator itEnd=_topology->endChange();
-//
-//	while( itBegin != itEnd )
-//	{
-//		core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-//
-//		switch( changeType )
-//		{
-//			case core::topology::POINTSREMOVED:
-//			{
-//
-//				break;
-//			}
-//
-//			default:
-//				break;
-//		}; // switch( changeType )
-//
-//		++itBegin;
-//	} // while( changeIt != last; )
-//
-//}
-
-void PointSplatModel::setColor(float r, float g, float b, float a)
-{
-    this->r = r;
-    this->g = g;
-    this->b = b;
-    this->a = a;
-}
-
-static int hexval(char c)
-{
-    if (c>='0' && c<='9') return c-'0';
-    else if (c>='a' && c<='f') return (c-'a')+10;
-    else if (c>='A' && c<='F') return (c-'A')+10;
-    else return 0;
-}
-
-void PointSplatModel::setColor(std::string color)
-{
-    if (color.empty()) return;
-    float r = 1.0f;
-    float g = 1.0f;
-    float b = 1.0f;
-    float a = 1.0f;
-    if (color[0]>='0' && color[0]<='9')
-    {
-        sscanf(color.c_str(),"%f %f %f %f", &r, &g, &b, &a);
-    }
-    else if (color[0]=='#' && color.length()>=7)
-    {
-        r = (hexval(color[1])*16+hexval(color[2]))/255.0f;
-        g = (hexval(color[3])*16+hexval(color[4]))/255.0f;
-        b = (hexval(color[5])*16+hexval(color[6]))/255.0f;
-        if (color.length()>=9)
-            a = (hexval(color[7])*16+hexval(color[8]))/255.0f;
-    }
-    else if (color[0]=='#' && color.length()>=4)
-    {
-        r = (hexval(color[1])*17)/255.0f;
-        g = (hexval(color[2])*17)/255.0f;
-        b = (hexval(color[3])*17)/255.0f;
-        if (color.length()>=5)
-            a = (hexval(color[4])*17)/255.0f;
-    }
-    else if (color == "white")    { r = 1.0f; g = 1.0f; b = 1.0f; }
-    else if (color == "black")    { r = 0.0f; g = 0.0f; b = 0.0f; }
-    else if (color == "red")      { r = 1.0f; g = 0.0f; b = 0.0f; }
-    else if (color == "green")    { r = 0.0f; g = 1.0f; b = 0.0f; }
-    else if (color == "blue")     { r = 0.0f; g = 0.0f; b = 1.0f; }
-    else if (color == "cyan")     { r = 0.0f; g = 1.0f; b = 1.0f; }
-    else if (color == "magenta")  { r = 1.0f; g = 0.0f; b = 1.0f; }
-    else if (color == "yellow")   { r = 1.0f; g = 1.0f; b = 0.0f; }
-    else if (color == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
-    else
-    {
-        serr << "Unknown color "<<color<<sendl;
-        return;
-    }
-    setColor(r,g,b,a);
 }
 
 } // namespace visualmodel

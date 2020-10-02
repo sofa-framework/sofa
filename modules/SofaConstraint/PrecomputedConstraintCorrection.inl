@@ -148,7 +148,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
         std::string dir = fileDir.getValue();
         if (!dir.empty())
         {
-			std::ifstream compFileIn((dir + "/" + fileName).c_str(), std::ifstream::binary);
+            std::ifstream compFileIn((dir + "/" + fileName).c_str(), std::ifstream::binary);
             if (compFileIn.is_open())
             {
                 invM->data = new Real[nbRows * nbCols];
@@ -410,16 +410,13 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         }
     }
 
-    //std::cout << "appCompliance = invM->data\n";
     appCompliance = invM->data;
 
     // Optimisation for the computation of W
     _indexNodeSparseCompliance.resize(v0.size());
-    //_sparseCompliance.resize(v0.size()*MAX_NUM_CONSTRAINT_PER_NODE);
-
 
     //  Print 400 first row and column of the matrix
-    if (this->f_printLog.getValue())
+    if (this->notMuted())
     {
         serr << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
 
@@ -435,14 +432,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         serr << sendl;
     }
 
-    //sout << "quit init "  << sendl;
-
-    //sout << "----------- Test Quaternions --------------" << sendl;
-
     //// rotation de -Pi/2 autour de z en init
     //Quat q0(0,0,-0.7071067811865475, 0.7071067811865475);
     //q0.normalize();
-
 
     //// rotation de -Pi/2 autour de x dans le repËre dÈfini par q0; (=rotation Pi/2 autour de l'axe y dans le repËre global)
     //Quat q_q0(-0.7071067811865475,0,0,0.7071067811865475);
@@ -472,7 +464,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 template< class DataTypes >
 void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W)
 {
-    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
     double factor = 1.0;
 
@@ -536,8 +528,8 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     int nActiveDof = 0;
     for (unsigned int i = 0; i < noSparseComplianceSize; ++i)
     {
-    	if (_indexNodeSparseCompliance[i] == 0)
-    		++nActiveDof;
+        if (_indexNodeSparseCompliance[i] == 0)
+            ++nActiveDof;
     }
     */
 
@@ -562,7 +554,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
             Vbuf.clear();
 
             MatrixDerivColConstIterator colItEnd = rowIt.end();
-            
+
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
                 const Deriv n2 = colIt.val();
@@ -618,8 +610,8 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
         //Compliance matrix is symetric ?
         for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
         {
-        	int indexCurColConst = this->mstate->getConstraintId()[curColConst];
-        	W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+            int indexCurColConst = this->mstate->getConstraintId()[curColConst];
+            W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
         }
         */
 
@@ -779,7 +771,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
 
     const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
     const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
-    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
     double dt = this->getContext()->getDt();
 
@@ -959,7 +951,7 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
     using sofa::component::forcefield::TetrahedronFEMForceField;
     using sofa::core::behavior::RotationFinder;
 
-    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::holonomicC());
+    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv& c = cData.wref();
 
     simulation::Node *node = dynamic_cast< simulation::Node * >(this->getContext());
@@ -1076,7 +1068,7 @@ template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/)
 {
     constraint_force = f;
-    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
 #ifdef NEW_METHOD_UNBUILT
     constraint_D.clear();
@@ -1161,11 +1153,11 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
 
             for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
             {
-            	unsigned int dof = itConstraint->first;
-            	Deriv n = itConstraint->second;
-            	constraint_F[dof] +=n * fC;
+                unsigned int dof = itConstraint->first;
+                Deriv n = itConstraint->second;
+                constraint_F[dof] +=n * fC;
 
-            	// TODO : remplacer pour faire + rapide !!
+                // TODO : remplacer pour faire + rapide !!
             //	setConstraintDForce(&fC, (int)c, (int)c, true);
 
             }
@@ -1249,8 +1241,8 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         //Compliance matrix is symetric ?
         for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
         {
-        	int indexCurColConst = this->mstate->getConstraintId()[curColConst];
-        	W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+            int indexCurColConst = this->mstate->getConstraintId()[curColConst];
+            W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
         }
         */
 

@@ -50,10 +50,7 @@ typedef bool (*FilterFunction) (Message&) ;
 ///
 /// \brief The RoutingMessageHandler class saves a copy of the messages in a buffer.
 ///
-/// This class is a MessageHandler that can be added to in a MessageDispatcher.
-/// Once set the class can start copying the messages passing through
-/// the MessageDispatcher in a buffer.
-///
+/// This class is a MessageHandler to implement complex routing rules.
 ///
 /// User interested in having a singleton of this class should have a look
 /// at \see MainRoutingMessageHandler.

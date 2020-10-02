@@ -110,11 +110,11 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
             for(j=0; j<3; ++j)
             {
                 cotangent[j]=(restSquareLength[(j+1)%3] +restSquareLength[(j+2)%3]-restSquareLength[j])/(4*area);
-                if (ff->f_printLog.getValue())
-                {
-                    if (cotangent[j]<0)
-                        ff->serr<<"negative cotangent["<<triangleAdded[i]<<"]["<<j<<"]"<<ff->sendl;
-                }
+
+                msg_info_when(cotangent[j]<0, ff) <<"negative cotangent["
+                                                  <<triangleAdded[i]<<"]["
+                                                  <<j<<"]" ;
+
             }
             for(j=0; j<3; ++j)
             {
@@ -199,11 +199,11 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
             for(j=0; j<3; ++j)
             {
                 cotangent[j]=(restSquareLength[(j+1)%3] +restSquareLength[(j+2)%3]-restSquareLength[j])/(4*area);
-                if (ff->f_printLog.getValue())
-                {
-                    if (cotangent[j]<0)
-                        ff->serr<<"negative cotangent["<<triangleRemoved[i]<<"]["<<j<<"]"<<ff->sendl;
-                }
+
+                msg_info_when(cotangent[j]<0, ff) << "negative cotangent["
+                                                  << triangleRemoved[i]<<"]["
+                                                  << j<<"]"<< msgendl;
+
             }
             for(j=0; j<3; ++j)
             {

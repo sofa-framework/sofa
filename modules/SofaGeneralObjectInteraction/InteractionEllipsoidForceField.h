@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/MechanicalParams.h>
 
-
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -111,12 +111,11 @@ protected:
     void initCalcF();
 
 public:
-
     Data<VecCoord1> center;
     Data<VecCoord1> vradius;
     Data<Real1> stiffness;
     Data<Real1> damping;
-    Data<defaulttype::Vec3f> color;
+    Data<defaulttype::RGBAColor> color;
     Data<bool> bDraw;
     Data<int> object2_dof_index;
     Data<bool> object2_forces;
@@ -129,9 +128,7 @@ protected:
         , vradius(initData(&vradius, "vradius", "ellipsoid radius"))
         , stiffness(initData(&stiffness, (Real1)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
         , damping(initData(&damping, (Real1)5, "damping", "force damping"))
-        //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-        //This field should support the color="red" api.
-        , color(initData(&color, defaulttype::Vec3f(0.0f,0.5f,1.0f), "color", "ellipsoid color"))
+        , color(initData(&color, defaulttype::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=[0.0,0.5,1.0,1.0])"))
         , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the ellipsoid"))
         , object2_dof_index(initData(&object2_dof_index, (int)0, "object2_dof_index", "Dof index of object 2 where the forcefield is attached"))
         , object2_forces(initData(&object2_forces, true, "object2_forces", "enable/disable propagation of forces to object 2"))

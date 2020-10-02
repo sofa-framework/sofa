@@ -58,7 +58,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
     this->_anisotropicMaterial = true;
     triangleHandler = new TRQSTriangleHandler(this, &localFiberDirection);
 
-	f_young2.setRequired(true);
+    f_young2.setRequired(true);
 }
 
 
@@ -80,11 +80,11 @@ void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleHandler::applyCr
 
         switch(ff->method)
         {
-        case SMALL :
+        case TriangularFEMForceField<DataTypes>::SMALL :
             ff->initSmall(triangleIndex,a,b,c);
             ff->computeMaterialStiffness(triangleIndex, a, b, c);
             break;
-        case LARGE :
+        case TriangularFEMForceField<DataTypes>::LARGE :
             ff->initLarge(triangleIndex,a,b,c);
             ff->computeMaterialStiffness(triangleIndex, a, b, c);
             break;
@@ -163,8 +163,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
 
     TriangleInformation *tinfo = &triangleInf[i];
 
-    //std::cout << "(TriangularAnisotropicFEMForceField::computeMaterialStiffness):Size of Triangle Information : " << triangleInf.size() << std::endl;
-
+    //TODO(dmarchal 2017-05-03) I will remove this code soon !!!
     /*Q11 = Inherited::f_young.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
     Q12 = Inherited::f_poisson.getValue()*f_young2.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
     Q22 = f_young2.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
@@ -184,16 +183,13 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     Q22 = young2Array[index]/(1-poissonArray[index]*poisson2Array[index]);
     Q66 = (Real)(youngArray[index] / (2.0*(1 + poissonArray[index])));
 
-    //if (i >= (int) localFiberDirection.size())
-    //	localFiberDirection.resize(i+1);
-
     T[0] = (initialPoints)[v2]-(initialPoints)[v1];
     T[1] = (initialPoints)[v3]-(initialPoints)[v1];
     T[2] = cross(T[0], T[1]);
 
     if (T[2] == Coord())
     {
-        std::cout << "Error(TriangularAnisotropicFEMForceField::computeMaterialStiffness): cannot compute material stiffness for a flat triangle >> return"<< std::endl;
+        msg_error() << "Cannot compute material stiffness for a flat triangle. Abort computation. ";
         return;
     }
 
@@ -220,18 +216,14 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
          * a element which index is more than the size
          * This hack is probably useless if there would be a good topological propagation
         ***********************************************************************************************/
-        std::cout << "Warning(TriangularAnisotropicFEMForceField::computeMaterialStiffness): get an element in localFiberDirection with index more than its size: i=" << i
-                << " and size=" << lfd.size() << ". The size should be "  <<  triangleInf.size() <<" (see comments in TriangularAnisotropicFEMForceField::computeMaterialStiffness)"<< std::endl;
+        dmsg_warning() << "Get an element in localFiberDirection with index more than its size: i=" << i
+                       << " and size=" << lfd.size() << ". The size should be "  <<  triangleInf.size() <<" (see comments in TriangularAnisotropicFEMForceField::computeMaterialStiffness)" ;
         lfd.resize(triangleInf.size() );
-        std::cout << "localFiberDirection resized to " << lfd.size() << std::endl;
+        dmsg_info() << "LocalFiberDirection resized to " << lfd.size() ;
     }
     else
     {
         Deriv& fiberDirLocal = lfd[i]; // orientation of the fiber in the local frame of the element (orthonormal frame)
-        //[1] = cross(T[2], T[0]);
-        //T[0].normalize();
-        //T[1].normalize();
-        //T[2].normalize();
         T.transpose();
         Tinv.invert(T);
         fiberDirLocal = Tinv * fiberDirGlobal;
@@ -290,13 +282,6 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     tinfo->materialMatrix[2][1] = K26;
     tinfo->materialMatrix[2][2] = K66;
 
-    //tinfo->materialMatrix *= (Real)(1.0/12.0);
-
-    //serr << "Young1=" << Inherited::f_young.getValue() << sendl;
-    //serr << "Young2=" << f_young2.getValue() << sendl;
-    //serr << "Poisson1=" << Inherited::f_poisson.getValue() << sendl;
-    //serr << "Poisson2=" << f_poisson2.getValue() << sendl;
-
     localFiberDirection.endEdit();
     Inherited::triangleInfo.endEdit();
 }
@@ -332,28 +317,12 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
                 Index a = _topology->getTriangle(i)[0];
                 Index b = _topology->getTriangle(i)[1];
                 Index c = _topology->getTriangle(i)[2];
-                /*
-                Mat<3,3,Real> T;
 
-                T[0] = (*Inherited::_initialPoints)[b]-(*Inherited::_initialPoints)[a];
-                T[1] = (*Inherited::_initialPoints)[c]-(*Inherited::_initialPoints)[a];
-                T[2] = cross(T[0], T[1]);
-                T[1] = cross(T[2], T[0]);
-                T[1].normalize();
-
-                Coord y = T[1];
-                Coord ab = (*Inherited::_initialPoints)[b]-(*Inherited::_initialPoints)[a];
-                y *= ab.norm();*/
                 Coord center = (x[a]+x[b]+x[c])/3;
-                //Coord d = (x[b]-x[a])*localFiberDirection[i][0] + y*localFiberDirection[i][1];
                 Coord d = (x[b]-x[a])*lfd[i][0] + (x[c]-x[a])*lfd[i][1];
                 d*=0.25;
                 helper::gl::glVertexT(center-d);
                 helper::gl::glVertexT(center+d);
-
-                //Coord testDir(1, 0, 0);
-                //Real s;
-                //computeStressAlongDirection(s, i, testDir, Inherited::triangleInfo[i].stress);
             }
         }
         glEnd();

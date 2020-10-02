@@ -4,11 +4,12 @@
 #include "ConstantAssembledMapping.h"
 #include "ConstantAssembledMultiMapping.h"
 
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
-	
+
 namespace component
 {
 
@@ -30,26 +31,26 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
 {
   public:
     SOFA_CLASS(SOFA_TEMPLATE2(DifferenceMapping,TIn,TOut), SOFA_TEMPLATE2(ConstantAssembledMapping,TIn,TOut));
-	
+
     typedef DifferenceMapping self;
-	
-	typedef defaulttype::Vec<2, unsigned> index_pair;
+
+    typedef defaulttype::Vec<2, unsigned> index_pair;
     typedef helper::vector< index_pair > pairs_type;
 
-	Data< pairs_type > pairs;
+    Data< pairs_type > pairs;
     Data< SReal > d_showObjectScale; ///< drawing size
-    Data< defaulttype::Vec4f > d_color; ///< drawing color
+    Data< defaulttype::RGBAColor > d_color; ///< drawing color
 
 
 
-	
-	DifferenceMapping() 
+
+    DifferenceMapping()
         : pairs( initData(&pairs, "pairs", "index pairs for computing deltas") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(-1), "showObjectScale", "Scale for object display"))
-        , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
+        , d_color(initData(&d_color, defaulttype::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     {}
 
-	enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
+    enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
 
     virtual void init()
     {
@@ -63,9 +64,9 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
         Inherit1::reinit();
     }
 
-	virtual void apply(typename self::out_pos_type& out, 
-	                   const typename self::in_pos_type& in )  {
-		assert( this->Nout == this->Nin );
+    virtual void apply(typename self::out_pos_type& out,
+                       const typename self::in_pos_type& in )  {
+        assert( this->Nout == this->Nin );
 
         const pairs_type& p = pairs.getValue();
         assert( !p.empty() );
@@ -74,20 +75,20 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
         {
             out[j] = TIn::getCPos( in[p[j][1]] ) - TIn::getCPos( in[p[j][0]] );
         }
-	}
+    }
 
-	virtual void assemble( const typename self::in_pos_type& in ) {
-		// jacobian matrix assembly
+    virtual void assemble( const typename self::in_pos_type& in ) {
+        // jacobian matrix assembly
         const pairs_type& p = pairs.getValue();
-		assert( !p.empty() );
+        assert( !p.empty() );
 
-		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
+        typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
-		J.resize( Nout * p.size(), Nin * in.size());
+        J.resize( Nout * p.size(), Nin * in.size());
         J.reserve( p.size()*Nout*2 );
 
-		for(unsigned k = 0, n = p.size(); k < n; ++k) {
-			
+        for(unsigned k = 0, n = p.size(); k < n; ++k) {
+
             for(unsigned i = 0; i < Nout; ++i) {
 
                 unsigned row = k * Nout + i;
@@ -106,10 +107,10 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
                     J.insertBack(row, p[k][0] * Nin + i ) = -1;
                     J.insertBack(row, p[k][1] * Nin + i ) = 1;
                 }
-			}
-		}
+            }
+        }
         J.finalize();
-	}
+    }
 
     void draw(const core::visual::VisualParams* vparams)
     {
@@ -162,7 +163,7 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
             }
         }
     }
-	
+
 };
 
 

@@ -19,14 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_CORE_OBJECTMODEL_BASE_CPP
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/logging/Messaging.h>
+using sofa::helper::logging::MessageDispatcher ;
+using sofa::helper::logging::Message ;
+
 #include <map>
 #include <typeinfo>
 #include <string.h>
 #include <sstream>
 
+#define ERROR_LOG_SIZE 100
 
 namespace sofa
 {
@@ -40,12 +45,14 @@ namespace objectmodel
 using std::string;
 static const std::string unnamed_label=std::string("unnamed");
 
+
+
 Base::Base()
     : ref_counter(0)
     , serr(_serr)
     , sout(_sout)
     , name(initData(&name,unnamed_label,"name","object name"))
-    , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
+    , f_printLog(initData(&f_printLog, false, "printLog", "if true, emits extra messages at runtime."))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
 {
@@ -62,6 +69,8 @@ Base::Base()
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
     sendl.setParent(this);
+
+
 }
 
 Base::~Base()
@@ -138,7 +147,6 @@ void Base::addData(BaseData* f, const std::string& name)
         serr << "Data field name " << name
                 << " already used in this class or in a parent class !"
                 << sendl;
-        //exit(1);
     }
     m_vecData.push_back(f);
     m_aliasData.insert(std::make_pair(name, f));
@@ -161,11 +169,9 @@ void Base::addLink(BaseLink* l)
         serr << "Link name " << name
                 << " already used in this class or in a parent class !"
                 << sendl;
-        //exit(1);
     }
     m_vecLink.push_back(l);
     m_aliasLink.insert(std::make_pair(name, l));
-    //l->setOwner(this);
 }
 
 /// Add an alias to a Link
@@ -179,15 +185,12 @@ void Base::copyAspect(int destAspect, int srcAspect)
 {
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
-        //std::cout << "  " << iData->first;
         (*iData)->copyAspect(destAspect, srcAspect);
     }
     for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
     {
-        //std::cout << "  " << iLink->first;
         (*iLink)->copyAspect(destAspect, srcAspect);
     }
-    //std::cout << std::endl;
 }
 
 /// Release memory allocated for the specified aspect.
@@ -206,7 +209,6 @@ void Base::releaseAspect(int aspect)
 /// Get the type name of this object (i.e. class and template types)
 std::string Base::getTypeName() const
 {
-    //return BaseClass::decodeTypeName(typeid(*this));
     std::string c = getClassName();
     std::string t = getTemplateName();
     if (t.empty())
@@ -240,66 +242,69 @@ void Base::setName(const std::string& n, int counter)
     setName(o.str());
 }
 
-#define MAXLOGSIZE 10000000
-
 void Base::processStream(std::ostream& out)
 {
-    // const std::string name = getClassName() + " \"" + getName() + "\"";
-
     if (serr==out)
     {
-        std::string str = serr.str();
-
-        helper::logging::MessageDispatcher::log(serr.messageClass(), serr.messageType(), this, serr.fileInfo()) << str;
-
-        if (warnings.size()+str.size() >= MAXLOGSIZE)
-        {
-            const std::string msg = "Log overflow! Resetting serr buffer.";
-            msg_warning(this) << msg;
-            warnings.clear();
-            warnings = msg;
-        }
-        warnings += str + '\n';
+        addMessage( (MessageDispatcher::log(serr.messageClass(),
+                                            serr.messageType(), sofa::helper::logging::getComponentInfo(this),
+                                            serr.fileInfo()) << serr.str()).getMessage() );
         serr.clear();
     }
     else if (sout==out)
     {
-        std::string str = sout.str();
-
         if (f_printLog.getValue())
         {
-            helper::logging::MessageDispatcher::log(serr.messageClass(), sout.messageType(), this, sout.fileInfo()) << str;
+            addMessage( (MessageDispatcher::log(sout.messageClass(),
+                                                  sout.messageType(), sofa::helper::logging::getComponentInfo(this),
+                                                  sout.fileInfo()) << sout.str()).getMessage() );
         }
-        if (outputs.size()+str.size() >= MAXLOGSIZE)
-        {
-            const std::string msg = "Log overflow! Resetting sout buffer.";
-            msg_warning(this) << msg;
-            outputs.clear();
-            outputs = msg;
-        }
-        outputs += str + '\n';
+
         sout.clear();
     }
 }
 
-const std::string& Base::getWarnings() const
+void Base::addMessage(const Message &m) const
 {
-    return warnings;
+    if(m_messageslog.size() >= ERROR_LOG_SIZE ){
+        m_messageslog.pop_front();
+    }
+    m_messageslog.push_back(m) ;
 }
 
-const std::string& Base::getOutputs() const
+void Base::clearLoggedMessages() const
 {
-    return outputs;
+   m_messageslog.clear() ;
 }
 
-void Base::clearWarnings()
+
+const std::deque<sofa::helper::logging::Message>& Base::getLoggedMessages() const
 {
-    warnings.clear();
+    return m_messageslog ;
 }
 
-void Base::clearOutputs()
+const std::string Base::getLoggedMessagesAsString(const sofa::helper::logging::Message::TypeSet t) const
 {
-    outputs.clear();
+    std::stringstream tmpstr ;
+    for(Message& m : m_messageslog){
+        if( t.find(m.type()) !=  t.end() )
+        {
+            tmpstr << m.type() << ":" <<  m.messageAsString() << std::endl;
+        }
+    }
+    return tmpstr.str();
+}
+
+size_t Base::countLoggedMessages(const sofa::helper::logging::Message::TypeSet t) const
+{
+    size_t tmp=0;
+    for(Message& m : m_messageslog){
+        if( t.find(m.type()) !=  t.end() )
+        {
+            tmp++;
+        }
+    }
+    return tmp;
 }
 
 
@@ -606,6 +611,59 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
         }
     }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////// DEPRECATED SECTION ///////////////////////////////////////////////////
+/// Everything below this point is deprecated and will be removed soon !
+/// Do not use it anymore. For each function a replacement is suggested.
+
+const std::string Base::getWarnings() const
+{
+    dmsg_deprecated(this) << " getWarning() is deprecated."
+                             " Using deprecated code may result in lower performances or un-expected behavior."
+                             " To remove this warning you need to use getLoggedMessage() instead. ";
+
+    std::stringstream tmpstr ;
+    for(Message& m : m_messageslog){
+        if(m.type()==Message::Error || m.type()==Message::Warning || m.type()==Message::Fatal)
+        {
+            tmpstr << m.messageAsString() ;
+        }
+    }
+    return tmpstr.str();
+}
+
+const std::string Base::getOutputs() const
+{
+    dmsg_deprecated(this) <<  " getOutputs() is deprecated."
+                              " Using deprecated code may result in lower performances or un-expected behavior."
+                              " To remove this warning you need to use getLoggedMessage() instead. ";
+
+    std::stringstream tmpstr ;
+    for(Message& m : m_messageslog){
+        if(m.type()==Message::Info || m.type()==Message::Advice || m.type()==Message::Deprecated){
+            tmpstr << m.messageAsString() ;
+        }
+    }
+    return tmpstr.str();
+}
+
+void Base::clearWarnings()
+{
+    dmsg_deprecated(this) <<  " clearWarnings() is deprecated."
+                              " Using deprecated code may result in lower performances or un-expected behavior."
+                              " To remove this warning you need to use clearLoggedMessages() instead. ";
+    clearLoggedMessages();
+}
+
+void Base::clearOutputs()
+{
+    dmsg_deprecated(this) <<  " clearOutput() is deprecated."
+                              " Using deprecated code may result in lower performances or un-expected behavior."
+                              " To remove this warning you need to use clearLoggedMessages() instead. ";
+    clearLoggedMessages();
+}
+
 
 
 } // namespace objectmodel

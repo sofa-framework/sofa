@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/system/gl.h>
+#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <cmath>
 
 namespace sofa
@@ -31,39 +33,29 @@ namespace helper
 
 namespace gl
 {
-Color::Color() {}
-
-Color::~Color() {}
+using sofa::helper::types::RGBAColor ;
 
 void Color::setHSVA( float h, float s, float v, float a )
 {
-    float rgba[4];
-    getHSVA( rgba, h, s, v, a);
-    glColor4fv(rgba);
+    msg_deprecated("gl::Color") << "The setHSVA function is deprecated. "
+                               "Using deprecated function may result in incorrect behavior as well as loss of performance"
+                               "To remove this error message you can update the setHSVA function with the following: "
+                               "Color::set( RGBAColor::fromHSVA(h,s,v,a) ); " ;
+
+   glColor4fv( RGBAColor::fromHSVA(h,s,v,a).data() );
 }
 
 void Color::getHSVA( float* rgba, float h, float s, float v, float a )
 {
-    // H [0, 360] S, V and A [0.0, 1.0].
-    int i = (int)floor(h/60.0f) % 6;
-    float f = h/60.0f - floor(h/60.0f);
-    float p = v * (float)(1 - s);
-    float q = v * (float)(1 - s * f);
-    float t = v * (float)(1 - (1 - f) * s);
-    rgba[3]=a;
-    switch (i)
-    {
-    case 0: rgba[0]=v; rgba[1]=t; rgba[2]=p;
-        break;
-    case 1: rgba[0]=q; rgba[1]=v; rgba[2]=p;
-        break;
-    case 2: rgba[0]=p; rgba[1]=v; rgba[2]=t;
-        break;
-    case 3: rgba[0]=p; rgba[1]=q; rgba[2]=v;
-        break;
-    case 4: rgba[0]=t; rgba[1]=p; rgba[2]=v;
-        break;
-    case 5: rgba[0]=v; rgba[1]=p; rgba[2]=q;
+    assert(rgba!=nullptr) ;
+
+    msg_deprecated("gl::Color") << "The getHSVA function is deprecated. "
+                               "Using deprecated function may result in incorrect behavior as well as loss of performance"
+                               "To remove this error message you can update the getHSVA function with the following: "
+                               "RGBAColor::fromHSVA(h,s,v,a).data() " ;
+    RGBAColor tmp=RGBAColor::fromHSVA(h,s,v,a);
+    for(unsigned int i=0; i<4;i++){
+        rgba[i] = tmp[i] ;
     }
 }
 

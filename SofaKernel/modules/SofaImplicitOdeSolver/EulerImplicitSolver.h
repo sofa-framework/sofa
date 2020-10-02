@@ -111,6 +111,7 @@ public:
     Data<bool> f_firstOrder;
     Data<bool> f_verbose;
     Data<bool> d_trapezoidalScheme;
+    Data<bool> f_solveConstraint;
 protected:
     EulerImplicitSolver();
 public:

@@ -103,7 +103,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
                         my_tinfo.linearDfDxDiag[j][n][m]=my_tinfo.linearDfDxDiag[j][m][n];
                 }
             }
-            //std::cout << "[ FTCFTetrahedronHandler ] vertex stiffness["<<j<<"]= "<<my_tinfo.linearDfDxDiag[j]<<std::endl;
         }
 
         /// compute the edge stiffness of the linear elastic material
@@ -131,18 +130,17 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
                     }
                 }
             }
-            //std::cout << "[ FTCFTetrahedronHandler ] edge stiffness["<<j<<"]= "<<my_tinfo.linearDfDx[j]<<std::endl;
         }
-		if (ff->decompositionMethod==QR_DECOMPOSITION) {
-			// compute the rotation matrix of the initial tetrahedron for the QR decomposition
-			computeQRRotation(my_tinfo.restRotation,my_tinfo.restEdgeVector);
-		} else 	if (ff->decompositionMethod==POLAR_DECOMPOSITION_MODIFIED) {
-			Mat3x3 Transformation;
-			Transformation[0]=point[1]-point[0];
-			Transformation[1]=point[2]-point[0];
-			Transformation[2]=point[3]-point[0];
-			helper::Decompose<Real>::polarDecomposition( Transformation, my_tinfo.restRotation );
-		}
+        if (ff->decompositionMethod==QR_DECOMPOSITION) {
+            // compute the rotation matrix of the initial tetrahedron for the QR decomposition
+            computeQRRotation(my_tinfo.restRotation,my_tinfo.restEdgeVector);
+        } else 	if (ff->decompositionMethod==POLAR_DECOMPOSITION_MODIFIED) {
+            Mat3x3 Transformation;
+            Transformation[0]=point[1]-point[0];
+            Transformation[1]=point[2]-point[0];
+            Transformation[2]=point[3]-point[0];
+            helper::Decompose<Real>::polarDecomposition( Transformation, my_tinfo.restRotation );
+        }
     }
 }
 
@@ -169,7 +167,6 @@ template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::~Fa
 
 template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>::init()
 {
-    //	serr << "initializing FastTetrahedralCorotationalForceField" << sendl;
     this->Inherited::init();
 
     _topology = this->getContext()->getMeshTopology();
@@ -188,7 +185,7 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
         decompositionMethod= QR_DECOMPOSITION;
     else if (f_method.getValue() == "polar2")
         decompositionMethod= POLAR_DECOMPOSITION_MODIFIED;
-	 else if ((f_method.getValue() == "none") || (f_method.getValue() == "linear"))
+     else if ((f_method.getValue() == "none") || (f_method.getValue() == "linear"))
         decompositionMethod= LINEAR_ELASTIC;
     else
     {
@@ -280,7 +277,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
         {
             //tetinfo->v[j]=ta[j];
             tetinfo->pointInfo[j] = &pointInf[ta[j]];
-        }                
+        }
 
         for (j=0; j<6; ++j)
         {
@@ -396,15 +393,15 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
             R=S.transposed()*tetinfo->restRotation;
 
         } else if (decompositionMethod==POLAR_DECOMPOSITION_MODIFIED) {
-			
-			S[0]=dp[0];
-			S[1]=dp[1];
-			S[2]=dp[2];
-			helper::Decompose<Real>::polarDecomposition( S, R );
-			R=R.transposed()*tetinfo->restRotation;
-		}  else if (decompositionMethod==LINEAR_ELASTIC) {
-			R.identity();
-		}
+
+            S[0]=dp[0];
+            S[1]=dp[1];
+            S[2]=dp[2];
+            helper::Decompose<Real>::polarDecomposition( S, R );
+            R=R.transposed()*tetinfo->restRotation;
+        }  else if (decompositionMethod==LINEAR_ELASTIC) {
+            R.identity();
+        }
         // store transpose of rotation
         tetinfo->rotation=R.transposed();
         Coord force[4];
@@ -412,16 +409,14 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
 
         for (j=0; j<6; ++j)
         {
-
             // displacement in the rest configuration
             dp[j]=tetinfo->rotation*dp[j]-tetinfo->restEdgeVector[j];
 
             // force on first vertex in the rest configuration
             force[edgesInTetrahedronArray[j][1]]+=tetinfo->linearDfDx[j]*dp[j];
+
             // force on second vertex in the rest configuration
             force[edgesInTetrahedronArray[j][0]]-=tetinfo->linearDfDx[j].multTranspose(dp[j]);
- //           if (i==0)
-	//			std::cerr<<"stiffness["<<j<<"]="<<tetinfo->linearDfDx[j]<<" v0="<< tetinfo->v[edgesInTetrahedronArray[j][0] ] <<" v1="<< tetinfo->v[edgesInTetrahedronArray[j][1] ] <<std::endl;
         }
         for (j=0; j<4; ++j)
         {
@@ -442,7 +437,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
 template <class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv&   datadF , const DataVecDeriv&   datadX )
 {
-    std::cout << "[" << this->getName() << "]: calling addDForce " << std::endl;
+    dmsg_info() << "[" << this->getName() << "]: calling addDForce " ;
     VecDeriv& df       = *(datadF.beginEdit());
     const VecCoord& dx =   datadX.getValue()  ;
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
@@ -463,6 +458,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
         Mat3x3 tmp;
 
         updateMatrix=false;
+
         // reset all edge matrices
         for(einfo=&edgeInf[0],i=0; i<nbEdges; i++,einfo++ )
         {
@@ -502,6 +498,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
     unsigned int v0,v1;
     const EdgeRestInformation *einfo;
     Coord deltax;
+
     // use the already stored matrix
     for(i=0; i<nbEdges; i++ )
     {
@@ -524,14 +521,16 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(const core::
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
         addKToMatrix(r.matrix, mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()), r.offset);
-    else serr<<"addKToMatrix found no valid matrix accessor." << sendl;
+    else
+        serr<<"addKToMatrix found no valid matrix accessor." << sendl;
 }
 
 
 template<class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal kFactor, unsigned int &offset)
 {
-    std::cout << "[" << this->getName() << "]: calling addKToMatrix " << std::endl;
+    dmsg_info() << "[" << this->getName() << "]: calling addKToMatrix " ;
+
     unsigned int j;
     int i, matCol, matRow;
     int nbEdges=_topology->getNbEdges();
@@ -628,7 +627,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
     tetrahedronInfo.endEdit();
     edgeInfo.endEdit();
     pointInfo.endEdit();
-    //std::cout << this->getName() << " M = " << *mat << std::endl;
 }
 
 template<class DataTypes>

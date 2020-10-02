@@ -314,7 +314,7 @@ protected:
 
     sofa::helper::system::thread::CTime *timer;
     SReal timeScale, time ;
-    bool debug;
+
 
     unsigned int numConstraints;
 

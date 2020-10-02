@@ -56,9 +56,7 @@ using namespace sofa::core::topology;
 
 OglCylinderModel::OglCylinderModel()
     : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
-      //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-      //This field should support the color="red" api.
-      color(initData(&color, std::string("white"), "color", "Color of the cylinders."))
+      color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Color of the cylinders."))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
       // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
 {
@@ -79,7 +77,6 @@ void OglCylinderModel::init()
 
 void OglCylinderModel::reinit()
 {
-    setColor(color.getValue());
 }
 
 void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
@@ -87,8 +84,6 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
     const VecCoord& pos = this->read( core::ConstVecCoordId::position() )->getValue();
-
-    // glPushAttrib(GL_ENABLE_BIT);
 
     vparams->drawTool()->setLightingEnabled(true);
     Real _radius = radius.getValue();
@@ -104,8 +99,6 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
 
         vparams->drawTool()->drawCylinder(p1,p2,_radius,col);
     }
-
-    // glPopAttrib();
 }
 
 

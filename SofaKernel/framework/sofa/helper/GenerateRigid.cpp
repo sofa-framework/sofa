@@ -3,17 +3,17 @@
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -200,7 +200,7 @@ bool generateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFil
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
     if (mesh == NULL)
     {
-        std::cerr << "ERROR loading mesh "<<meshFilename<<std::endl;
+        msg_error("GenerateRigid") << "unable to loading mesh from file '"<<meshFilename<<"'" ;
         return false;
     }
 
@@ -220,7 +220,7 @@ bool generateRigid(GenerateRigidInfo& res
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
     if (mesh == NULL)
     {
-        std::cerr << "ERROR loading mesh "<<meshFilename<<std::endl;
+        msg_info("GenerateRigid") << "unable to loade mesh from file '"<<meshFilename<<"'" ;
         return false;
     }
     generateRigid(res, mesh, meshFilename, density, scale, rotation);
@@ -241,7 +241,7 @@ void generateRigid( GenerateRigidInfo& res
 
     if( rigidMass.mass < 0 )
     {
-        std::cerr<<"WARNING: generateRigid: are normals inverted? "<<meshName<<std::endl;
+        msg_warning("generatedRigid")<<"are normals inverted? "<<meshName;
         rigidMass.mass = -rigidMass.mass;
         rigidMass.inertiaMatrix = -rigidMass.inertiaMatrix;
     }
