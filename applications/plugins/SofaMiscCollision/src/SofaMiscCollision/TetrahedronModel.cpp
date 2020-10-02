@@ -60,7 +60,7 @@ TetrahedronCollisionModel::TetrahedronCollisionModel()
     enum_type = TETRAHEDRON_TYPE;
 }
 
-void TetrahedronCollisionModel::resize(std::size_t size)
+void TetrahedronCollisionModel::resize(size_type size)
 {
     this->core::CollisionModel::resize(size);
     elems.resize(size);

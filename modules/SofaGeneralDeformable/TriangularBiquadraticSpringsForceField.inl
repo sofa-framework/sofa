@@ -353,16 +353,17 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
             }
         }
         /// Prints the flipped triangles in a single message to avoid flooding the user.
-        /// Only the 50 first indices are showned.
-        if(flippedTriangles.size()!=0){
+        /// Only the 50 first indices are shown.
+        const size_type flippedTrianglesNb = flippedTriangles.size();
+        if(flippedTrianglesNb != 0){
             std::stringstream tmp ;
             tmp << "[" ;
-            for(size_type i=0;i<std::min(50, flippedTriangles.size());i++)
+            for(size_type i=0 ; i<std::min(size_type(50), flippedTrianglesNb) ; i++)
             {
                 tmp << ", " << flippedTriangles[i] ;
             }
-            if(flippedTriangles.size()>=50){
-                tmp << ", ..." << flippedTriangles.size()-50 << " more]" ;
+            if(flippedTrianglesNb >=50){
+                tmp << ", ..." << flippedTrianglesNb -50 << " more]" ;
             }
             else{
                 tmp << "]" ;

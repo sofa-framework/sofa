@@ -51,7 +51,7 @@ template<class TCoord, class TDeriv, class TReal>
 class LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >
 {
 public:
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
     typedef LinearMovementConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > Data;
     typedef gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> DataTypes;
     typedef LinearMovementConstraint<DataTypes> Main;
@@ -95,7 +95,7 @@ template<int N, class real>
 class LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >
 {
 public:
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
     typedef LinearMovementConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> > Data;
     typedef gpu::cuda::CudaRigidTypes<N, real> DataTypes;
     typedef LinearMovementConstraint<DataTypes> Main;

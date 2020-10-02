@@ -79,10 +79,10 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::add(std::size_t nbEl
         {
             const sofa::helper::vector< index_type > empty_vecint;
             const sofa::helper::vector< double > empty_vecdouble;
-            this->applyCreateFunction( size+i, t, empty_vecint, empty_vecdouble);
+            this->applyCreateFunction(index_type(size+i), t, empty_vecint, empty_vecdouble);
         }
         else
-            this->applyCreateFunction( size+i, t, ancestors[i], coefs[i] );
+            this->applyCreateFunction(index_type(size+i), t, ancestors[i], coefs[i] );
 
         // Incremente the total number of edges in topology
         this->lastElementIndex++;

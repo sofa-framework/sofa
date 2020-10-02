@@ -62,10 +62,10 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(std::size_t nbEl
         {
             const sofa::helper::vector< index_type > empty_vecint;
             const sofa::helper::vector< double > empty_vecdouble;
-            test = this->applyTestCreateFunction(size + i, empty_vecint, empty_vecdouble);
+            test = this->applyTestCreateFunction(index_type(size + i), empty_vecint, empty_vecdouble);
         }
         else
-            test = this->applyTestCreateFunction(size + i, ancestors[i], coefs[i]);
+            test = this->applyTestCreateFunction(index_type(size + i), ancestors[i], coefs[i]);
 
         if (test)
             data.push_back( size+i );

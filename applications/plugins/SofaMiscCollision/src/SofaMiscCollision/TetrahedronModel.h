@@ -45,7 +45,7 @@ class TetrahedronCollisionModel;
 class Tetrahedron : public core::TCollisionElementIterator<TetrahedronCollisionModel>
 {
 public:
-    Tetrahedron(TetrahedronCollisionModel* model, int index);
+    Tetrahedron(TetrahedronCollisionModel* model, index_type index);
     Tetrahedron() {};
     explicit Tetrahedron(const core::CollisionElementIterator& i);
 
@@ -118,7 +118,7 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(std::size_t size) override;
+    void resize(size_type size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
@@ -135,7 +135,7 @@ public:
 
 };
 
-inline Tetrahedron::Tetrahedron(TetrahedronCollisionModel* model, int index)
+inline Tetrahedron::Tetrahedron(TetrahedronCollisionModel* model, index_type index)
     : core::TCollisionElementIterator<TetrahedronCollisionModel>(model, index)
 {}
 
@@ -173,7 +173,7 @@ template<class DataTypes>
 class ContactMapper<TetrahedronCollisionModel, DataTypes> : public BarycentricContactMapper<TetrahedronCollisionModel, DataTypes>
 {
 public:
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     index_type addPoint(const Coord& P, index_type index, Real&)

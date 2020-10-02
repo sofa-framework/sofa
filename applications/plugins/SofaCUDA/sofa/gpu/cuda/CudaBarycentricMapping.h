@@ -49,7 +49,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::CubeData CubeData;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 protected:
     gpu::cuda::CudaVector<CubeData> map;
@@ -103,7 +103,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::CubeData CubeData;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 protected:
     gpu::cuda::CudaVector<CubeData> map;
     topology::SparseGridTopology* topology;
@@ -163,7 +163,7 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     class MapData
     {
@@ -252,7 +252,7 @@ public:
 
     BarycentricMapperMeshTopology< In, Out > internalMapper;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 public:
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
