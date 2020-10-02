@@ -22,12 +22,14 @@
 #ifndef SOFA_HELPER_QUATER_H
 #define SOFA_HELPER_QUATER_H
 
+#include <sofa/helper/config.h>
+
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <cmath>
 #include <cassert>
 #include <iostream>
-#include <sofa/helper/config.h>
+#include <array>
 
 namespace sofa
 {
@@ -39,12 +41,12 @@ template<class Real>
 class SOFA_HELPER_API Quater
 {
 private:
-    Real _q[4];
+    std::array<Real, 4> _q;
 
 public:
-
     typedef Real value_type;
     typedef std::size_t size_type;
+    using Vector3 = std::array<Real, 3>;
 
     Quater();
     ~Quater();
@@ -53,12 +55,12 @@ public:
     Quater(const Real2 q[]) { for (int i=0; i<4; i++) _q[i] = Real(q[i]); }
     template<class Real2>
     Quater(const Quater<Real2>& q) { for (int i=0; i<4; i++) _q[i] = Real(q[i]); }
-    Quater( const defaulttype::Vec<3,Real>& axis, Real angle );
+    Quater( const Vector3& axis, Real angle );
 
     /** Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo.        
         vFrom and vTo are assumed to be normalized.
     */
-    Quater(const defaulttype::Vec<3, Real>& vFrom, const defaulttype::Vec<3, Real>& vTo);
+    Quater(const Vector3& vFrom, const Vector3& vTo);
 
     static Quater identity()
     {
@@ -78,13 +80,13 @@ public:
     /// Cast into a standard C array of elements.
     const Real* ptr() const
     {
-        return this->_q;
+        return this->_q.data();
     }
 
     /// Cast into a standard C array of elements.
     Real* ptr()
     {
-        return this->_q;
+        return this->_q.data();
     }
 
     /// Returns true if norm of Quaternion is one, false otherwise.
@@ -101,7 +103,7 @@ public:
         _q[3]=1.0;
     }
 
-    void fromFrame(defaulttype::Vec<3,Real>& x, defaulttype::Vec<3,Real>&y, defaulttype::Vec<3,Real>&z);
+    void fromFrame(Vector3& x, Vector3&y, Vector3&z);
 
 
     void fromMatrix(const defaulttype::Matrix3 &m);
@@ -160,9 +162,9 @@ public:
 
     /// Given two Quaters, multiply them together to get a third quaternion.
 
-    Quater quatVectMult(const defaulttype::Vec<3,Real>& vect);
+    Quater quatVectMult(const Vector3& vect);
 
-    Quater vectQuatMult(const defaulttype::Vec<3,Real>& vect);
+    Quater vectQuatMult(const Vector3& vect);
 
     Real& operator[](size_type index)
     {
@@ -179,9 +181,9 @@ public:
     Quater inverse() const;
 
 
-    defaulttype::Vec<3,Real> quatToRotationVector() const;
+    auto quatToRotationVector() const;
 
-    defaulttype::Vec<3,Real> toEulerVector() const;
+    auto toEulerVector() const;
 
 
     /*! Returns the slerp interpolation of Quaternions \p a and \p b, at time \p t.
@@ -203,11 +205,11 @@ public:
     // This function computes a quaternion based on an axis (defined by
     // the given vector) and an angle about which to rotate.  The angle is
     // expressed in radians.
-    Quater axisToQuat(defaulttype::Vec<3,Real> a, Real phi);
-    void quatToAxis(defaulttype::Vec<3,Real> & a, Real &phi) const;
+    Quater axisToQuat(Vector3 a, Real phi);
+    void quatToAxis(Vector3 & a, Real &phi) const;
 
 
-    static Quater createQuaterFromFrame(const defaulttype::Vec<3, Real> &lox, const defaulttype::Vec<3, Real> &loy,const defaulttype::Vec<3, Real> &loz);
+    static Quater createQuaterFromFrame(const Vector3 &lox, const Vector3&loy,const Vector3&loz);
 
     /// Create using rotation vector (axis*angle) given in parent coordinates
     template<class V>
@@ -231,17 +233,17 @@ public:
         XYZ, YXZ, ZXY, ZYX, YZX, XZY, NONE
     };
 
-    static Quater createQuaterFromEuler( defaulttype::Vec<3,Real> v, EulerOrder order = EulerOrder::ZYX)
+    static Quater createQuaterFromEuler( Vector3 v, EulerOrder order = EulerOrder::ZYX)
     {
         Real quat[4];
 
-        Real c1 = cos( v.elems[0] / 2 );
-        Real c2 = cos( v.elems[1] / 2 );
-        Real c3 = cos( v.elems[2] / 2 );
+        Real c1 = cos( v[0] / 2 );
+        Real c2 = cos( v[1] / 2 );
+        Real c3 = cos( v[2] / 2 );
 
-        Real s1 = sin( v.elems[0] / 2 );
-        Real s2 = sin( v.elems[1] / 2 );
-        Real s3 = sin( v.elems[2] / 2 );
+        Real s1 = sin( v[0] / 2 );
+        Real s2 = sin( v[1] / 2 );
+        Real s3 = sin( v[2] / 2 );
 
         switch(order)
         {
@@ -336,7 +338,7 @@ public:
     }
 
     /// Return the eulerian vector resulting of the movement between 2 quaternions
-    defaulttype::Vec<3,Real> angularDisplacement( Quater a, const Quater& b)
+    Vector3 angularDisplacement( Quater a, const Quater& b)
     {
         return quatDiff(a,b).quatToRotationVector();    // Use of quatToRotationVector instead of toEulerVector:
                                                         // this is done to keep the old behavior (before the
@@ -344,7 +346,7 @@ public:
     }
 
     /// Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo. vFrom and vTo are assumed to be normalized.
-    void setFromUnitVectors(const defaulttype::Vec<3, Real>& vFrom, const defaulttype::Vec<3, Real>& vTo);
+    void setFromUnitVectors(const Vector3& vFrom, const Vector3& vTo);
 
 
     // Print the quaternion (C style)

@@ -23,6 +23,7 @@
 #define SOFA_HELPER_VECTOR_ALGEBRA_H
 
 #include <sofa/helper/vector.h>
+#include <array>
 
 namespace sofa
 {
@@ -67,6 +68,21 @@ void axpy( V1& result, Scalar a, const V2& x, const V3& y )
     for(std::size_t i=0; i<n; i++)
         result[i] = x[i]*a + y[i];
 }
+
+/// Norm of a vector
+template<typename V>
+auto cross(const V vector1, const V vector2)
+{
+    //static_assert( std::size(vector1) == 3); // nope ?
+    static_assert(vector1.size() == 3);
+
+    return V{
+        vector1[1] * vector2[2] - vector1[2] * vector2[1],
+        vector1[2] * vector2[0] - vector1[0] * vector2[2],
+        vector1[0] * vector2[1] - vector1[1] * vector2[0]
+    };
+}
+
 
 } // namespace helper
 
