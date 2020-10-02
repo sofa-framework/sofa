@@ -62,7 +62,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     class Mat3 : public helper::fixed_array<Deriv,3>
     {

@@ -50,7 +50,7 @@ typename BarycentricMapperEdgeSetTopology<In, Out>::index_type BarycentricMapper
     MappingData& data = *vectorData.rbegin();
     data.in_index = edgeIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
-    return d_map.getValue().size()-1;
+    return size_type(d_map.getValue().size()-1);
 }
 
 template <class In, class Out>

@@ -205,10 +205,10 @@ void SubsetMapping<TIn, TOut>::apply ( const core::MechanicalParams* /*mparams*/
     const InVecCoord& in = dIn.getValue();
     const OutVecCoord& out0 = this->toModel->read(core::ConstVecCoordId::restPosition())->getValue();
     OutVecCoord& out = *dOut.beginEdit();
-    const unsigned int fromSize = in.size();
+    const auto fromSize = in.size();
 
     out.resize(indices.size());
-    for(unsigned int i = 0; i < out.size(); ++i)
+    for(std::size_t i = 0; i < out.size(); ++i)
     {
         if(indices[i] < fromSize)
             out[i] = in[ indices[i] ];
@@ -229,7 +229,7 @@ void SubsetMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /*mparams*/
     const std::size_t fromSize = in.size();
 
     out.resize(indices.size());
-    for(std::size_t i = 0; i < out.size(); ++i)
+    for(size_type i = 0; i < out.size(); ++i)
     {
         if(indices[i] < fromSize)
             out[i] = in[ indices[i] ];
@@ -342,13 +342,13 @@ const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJ
         const std::size_t rowsBlock = indices.size();
         const std::size_t colsBlock = this->fromModel->getSize();
 
-        const unsigned rows = rowsBlock * NOut;
-        const unsigned cols = colsBlock * NIn;
+        const auto rows = rowsBlock * NOut;
+        const auto cols = colsBlock * NIn;
 
         eigen.resize( rows, cols );
 
-        for (unsigned i = 0; i < indices.size(); ++i) {
-            for( unsigned j = 0; j < NOut; ++j) {
+        for (std::size_t i = 0; i < indices.size(); ++i) {
+            for(std::size_t j = 0; j < NOut; ++j) {
                 eigen.beginRow( i*NOut+j );
                 eigen.insertBack( i*NOut+j, indices[i]*NIn+j ,(SReal)1. );
             }

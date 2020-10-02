@@ -56,7 +56,7 @@ class DOFBlockerLMConstraint :  public core::behavior::LMConstraint<DataTypes,Da
 public:
     SOFA_CLASS(SOFA_TEMPLATE(DOFBlockerLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::behavior::LMConstraint, DataTypes, DataTypes));
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecDeriv VecDeriv;

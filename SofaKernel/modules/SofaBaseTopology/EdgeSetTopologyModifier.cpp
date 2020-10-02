@@ -88,8 +88,8 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 		}
 	}
 
-    std::size_t nbrP = m_container->getNbPoints();
-    for(std::size_t i=0; i<2; ++i)
+    auto nbrP = m_container->getNbPoints();
+    for(size_type i=0; i<2; ++i)
         if (e[i] + 1 > nbrP) // point not well init
         {
             nbrP = e[i] + 1;

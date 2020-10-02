@@ -307,14 +307,14 @@ public :
         return sofa::component::topology::MeshTopology::getHexahedra();
     }
 
-    std::size_t getNbPoints() const override
+    size_type getNbPoints() const override
     {
         if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
         return sofa::component::topology::MeshTopology::getNbPoints();
     }
 
     /// TODO 2018-07-23 epernod: check why this method is override to return the same result as parent class.
-    size_t getNbHexahedra() override { return this->getHexahedra().size();}
+    size_type getNbHexahedra() override { return size_type(this->getHexahedra().size());}
 };
 
 } // namespace topology

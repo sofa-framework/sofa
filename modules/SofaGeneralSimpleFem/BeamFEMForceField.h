@@ -76,7 +76,7 @@ public:
     typedef Data<VecDeriv>                  DataVecDeriv;
     typedef VecCoord Vector;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     typedef index_type Index;
     typedef BaseMeshTopology::Edge Element;

@@ -76,7 +76,7 @@ public:
 
     // -- CollisionModel interface
 
-    virtual void resize(std::size_t size) override;
+    virtual void resize(size_type size) override;
 
     virtual void computeBoundingTree(int maxDepth=0) override;
 

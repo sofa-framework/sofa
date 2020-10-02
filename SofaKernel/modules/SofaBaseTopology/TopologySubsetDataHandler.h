@@ -66,7 +66,7 @@ public:
     /// iterator
     typedef typename container_type::iterator iterator;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 protected:
     sofa::core::topology::BaseTopologyData <VecT>* m_topologyData;

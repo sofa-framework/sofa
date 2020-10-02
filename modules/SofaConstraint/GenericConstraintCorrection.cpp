@@ -192,7 +192,7 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
 
 void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const ConstraintParams* cparams, MultiVecDerivId dx, const defaulttype::BaseVector * lambda)
 {
-    for (std::size_t i = 0; i < m_linearSolvers.size(); ++i)
+    for (size_type i = 0; i < m_linearSolvers.size(); ++i)
     {
         m_linearSolvers[i]->applyConstraintForce(cparams, dx, lambda);
     }
@@ -206,7 +206,7 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* 
                                                         double positionFactor,
                                                         double velocityFactor)
 {
-    for (std::size_t i = 0; i < m_linearSolvers.size(); ++i)
+    for (size_type i = 0; i < m_linearSolvers.size(); ++i)
     {
         simulation::MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, m_linearSolvers[i]->getSystemMultiMatrixAccessor());
         m_linearSolvers[i]->getContext()->executeVisitor(&v);

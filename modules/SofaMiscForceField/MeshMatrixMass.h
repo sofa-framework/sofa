@@ -80,7 +80,7 @@ public:
     typedef helper::vector<MassType>                        MassVector;
     typedef helper::vector<MassVector>                      MassVectorVector;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     /// Topological enum to classify encounter meshes
     typedef enum

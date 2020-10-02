@@ -56,7 +56,7 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     Data<Deriv> pressure; ///< pressure is a vector with specified direction
   	Data<MatSym3> cauchyStress; ///< the Cauchy stress applied on triangles

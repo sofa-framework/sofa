@@ -155,7 +155,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             {
                 Vector3 outPos = Out::getCPos(out[i]);
                 Vector3 coefs;
-                index_type index = sofa::defaulttype::InvalidID;
+                index_type index = sofa::InvalidID;
                 double distance = 1e10;
                 for ( std::size_t t = 0; t < triangles.size(); t++ )
                 {
@@ -208,7 +208,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
         {
             Vector3 pos = Out::getCPos(out[i]);
             Vector3 coefs;
-            index_type index = sofa::defaulttype::InvalidID;
+            index_type index = sofa::InvalidID;
             double distance = 1e10;
             for ( std::size_t t = 0; t < tetras.size(); t++ )
             {

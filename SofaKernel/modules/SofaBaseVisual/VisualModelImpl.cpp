@@ -71,7 +71,7 @@ Vec3State::Vec3State()
     m_vnormals.setGroup("Vector");
 }
 
-void Vec3State::resize(std::size_t vsize)
+void Vec3State::resize(size_type vsize)
 {
     helper::WriteOnlyAccessor< Data<VecCoord > > positions = m_positions;
     if( positions.size() == vsize ) return;
@@ -85,7 +85,7 @@ void Vec3State::resize(std::size_t vsize)
     modified = true;
 }
 
-size_t Vec3State::getSize() const { return m_positions.getValue().size(); }
+size_type Vec3State::getSize() const { return size_type(m_positions.getValue().size()); }
 
 Data<Vec3State::VecCoord>* Vec3State::write(     core::VecCoordId  v )
 {
@@ -803,7 +803,7 @@ public:
                 for (std::size_t i=1; i<ancestors.size(); ++i)
                 {
                     Coord ci = x[ancestors[i]];
-                    for (std::size_t j=0; j<ci.size(); ++j)
+                    for (size_type j=0; j<ci.size(); ++j)
                         ci[j] += helper::rnear(c0[j]-ci[j]);
                     dest += ci*coefs[i];
                 }
@@ -1068,7 +1068,7 @@ void VisualModelImpl::computeTangents()
         TexCoord t3 = texcoords[triangles[i][2]];
         if (fixMergedUVSeams)
         {
-            for (std::size_t j=0; j<t1.size(); ++j)
+            for (size_type j=0; j<t1.size(); ++j)
             {
                 t2[j] += helper::rnear(t1[j]-t2[j]);
                 t3[j] += helper::rnear(t1[j]-t3[j]);
@@ -1367,9 +1367,9 @@ void VisualModelImpl::computeMesh()
 
             for (std::size_t i=0; i<vertices.size(); i++)
             {
-                vertices[i][0] = SReal(m_topology->getPX(i));
-                vertices[i][1] = SReal(m_topology->getPY(i));
-                vertices[i][2] = SReal(m_topology->getPZ(i));
+                vertices[i][0] = SReal(m_topology->getPX(size_type(i)));
+                vertices[i][1] = SReal(m_topology->getPY(size_type(i)));
+                vertices[i][2] = SReal(m_topology->getPZ(size_type(i)));
             }
 
         }
@@ -1385,9 +1385,9 @@ void VisualModelImpl::computeMesh()
 
                 for (std::size_t i=0; i<vertices.size(); i++)
                 {
-                    vertices[i][0] = (Real)mstate->getPX(i);
-                    vertices[i][1] = (Real)mstate->getPY(i);
-                    vertices[i][2] = (Real)mstate->getPZ(i);
+                    vertices[i][0] = (Real)mstate->getPX(size_type(i));
+                    vertices[i][1] = (Real)mstate->getPY(size_type(i));
+                    vertices[i][2] = (Real)mstate->getPZ(size_type(i));
                 }
 
             }
@@ -1501,7 +1501,7 @@ void VisualModelImpl::handleTopologyChange()
 
             for (std::size_t i = 0; i < nbAddedQuads; ++i)
             {
-                const auto& rQuad = qa->getQuad(i);
+                const auto& rQuad = qa->getQuad(size_type(i));
 
                 quads[nbQuaduads + i][0] = visual_index_type(rQuad[0]);
                 quads[nbQuaduads + i][1] = visual_index_type(rQuad[1]);
@@ -1598,15 +1598,15 @@ void VisualModelImpl::handleTopologyChange()
         {
             if (m_topology->getNbTriangles()>0)
             {
-                std::size_t last = m_topology->getNbPoints() -1;
+                auto last = m_topology->getNbPoints() -1;
 
-                std::size_t i,j;
+                size_type i,j;
 
                 const auto& tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
                 sofa::helper::vector<index_type> lastIndexVec;
 
-                for(std::size_t i_init = 0; i_init < tab.size(); ++i_init)
+                for(size_type i_init = 0; i_init < tab.size(); ++i_init)
                 {
                     lastIndexVec.push_back(last - i_init);
                 }
@@ -1669,7 +1669,7 @@ void VisualModelImpl::handleTopologyChange()
 
                             if(is_forgotten)
                             {
-                                std::size_t ind_forgotten = j_loc;
+                                index_type ind_forgotten = size_type(j_loc);
 
                                 bool is_in_shell = false;
                                 for (std::size_t j_glob=0; j_glob<shell.size(); ++j_glob)
@@ -1683,7 +1683,7 @@ void VisualModelImpl::handleTopologyChange()
 
                                     if(ind_forgotten<m_topology->getNbTriangles())
                                     {
-                                        const core::topology::BaseMeshTopology::Triangle t_forgotten = m_topology->getTriangle(ind_forgotten);
+                                        const auto& t_forgotten = m_topology->getTriangle(ind_forgotten);
                                         msg_info() << "Vis - last = " << last << msgendl
                                                    << "Vis - lastIndexVec[i] = " << lastIndexVec[i] << msgendl
                                                    << "Vis - tab.size() = " << tab.size() << " , tab = " << tab << msgendl
@@ -1897,14 +1897,14 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     const helper::vector<visual_index_type> &vertPosIdx = m_vertPosIdx.getValue();
     const helper::vector<visual_index_type> &vertNormIdx = m_vertNormIdx.getValue();
 
-    std::size_t nbv = x.size();
+    auto nbv = size_type(x.size());
 
     for (std::size_t i=0; i<nbv; i++)
     {
         *out << "v "<< std::fixed << x[i][0]<<' '<< std::fixed <<x[i][1]<<' '<< std::fixed <<x[i][2]<<'\n';
     }
 
-    std::size_t nbn = 0;
+    size_type nbn = 0;
 
     if (vertNormIdx.empty())
     {
@@ -1933,7 +1933,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
         }
     }
 
-    std::size_t nbt = 0;
+    size_type nbt = 0;
     if (!vtexcoords.empty())
     {
         nbt = vtexcoords.size();

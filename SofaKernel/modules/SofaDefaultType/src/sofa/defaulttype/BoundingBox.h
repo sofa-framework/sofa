@@ -311,39 +311,39 @@ struct BoundingBoxTypeInfo
         Size = 2
     };  ///< largest known fixed size for this type, as returned by size()
 
-    static size_t size() { return 3; } // supposed to be the total number of elements. Ends up being the number of elements in the 2nd dimension
-    static size_t byteSize() { return sizeof (ValueType); }  // Size of the smalest single element in the container: BoundingBox uses Vec3d internally, so double
+    static size_type size() { return 3; } // supposed to be the total number of elements. Ends up being the number of elements in the 2nd dimension
+    static size_type byteSize() { return size_type(sizeof (ValueType)); }  // Size of the smalest single element in the container: BoundingBox uses Vec3d internally, so double
 
-    static size_t size(const DataType & /*data*/) { return 2 * BaseTypeInfo::size(); } // supposed to be the nb of elements in the 1st dimension. Ends up being the total number of elems.
+    static size_type size(const DataType & /*data*/) { return size_type(2 * BaseTypeInfo::size()); } // supposed to be the nb of elements in the 1st dimension. Ends up being the total number of elems.
 
-    static bool setSize(DataType & /*data*/, size_t /*size*/) { return false; } // FixedArray -> ignore
+    static bool setSize(DataType & /*data*/, size_type /*size*/) { return false; } // FixedArray -> ignore
 
     template <typename T>
-    static void getValue(const DataType & data, size_t index,
+    static void getValue(const DataType & data, index_type index,
                          T & value) /// since TypeInfos abstract all containers as 1D arrays, T here is of ValueType
     {
         value = static_cast<T>(((ValueType*)&data)[index]);
     }
 
     template <typename T>
-    static void setValue(DataType & data, size_t index,
+    static void setValue(DataType & data, index_type index,
                          const T & value)
     {
         ((ValueType*)&data)[index] = static_cast<ValueType>(value);
     }
 
-    static double getScalarValue (const void* data, size_t index)
+    static double getScalarValue (const void* data, index_type index)
     {
         return ((ValueType*)&data)[index];
     }
 
-    static void setScalarValue (const void* data, size_t index, double value)
+    static void setScalarValue (const void* data, index_type index, double value)
     {
         ((ValueType*)&data)[index] = value;
     }
 
 
-    static void getValueString(const DataType &data, size_t index,
+    static void getValueString(const DataType &data, index_type index,
                                std::string &value)
     {
         if (index != 0) return;
@@ -352,7 +352,7 @@ struct BoundingBoxTypeInfo
         value = o.str();
     }
 
-    static void setValueString(DataType &data, size_t index,
+    static void setValueString(DataType &data, index_type index,
                                const std::string &value)
     {
         if (index != 0) return;

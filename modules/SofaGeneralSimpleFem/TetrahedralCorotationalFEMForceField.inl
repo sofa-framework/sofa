@@ -175,7 +175,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addForce(const core::Mecha
     {
     case SMALL :
     {
-        for(std::size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
+        for(size_type i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
         {
             accumulateForceSmall( f, p, i );
         }
@@ -183,7 +183,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addForce(const core::Mecha
     }
     case LARGE :
     {
-        for(std::size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
+        for(size_type i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
         {
             accumulateForceLarge( f, p, i );
         }
@@ -191,7 +191,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addForce(const core::Mecha
     }
     case POLAR :
     {
-        for(std::size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
+        for(size_type i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
         {
             accumulateForcePolar( f, p, i );
         }
@@ -213,7 +213,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce(const core::Mech
     {
     case SMALL :
     {
-        for(std::size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
+        for(size_type i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
         {
             const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
             Index a = t[0];
@@ -227,7 +227,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce(const core::Mech
     }
     case LARGE :
     {
-        for(std::size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
+        for(size_type i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
         {
             const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
             Index a = t[0];
@@ -241,7 +241,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce(const core::Mech
     }
     case POLAR :
     {
-        for(std::size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
+        for(size_type i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
         {
             const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
             Index a = t[0];
@@ -692,7 +692,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
         //erase the stiffness matrix at each time step
         if(elementIndex==0)
         {
-            for(std::size_t i=0; i<_stiffnesses.size(); ++i)
+            for(size_type i=0; i<_stiffnesses.size(); ++i)
             {
                 _stiffnesses[i].resize(0);
             }
@@ -1021,7 +1021,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
         //erase the stiffness matrix at each time step
         if(elementIndex==0)
         {
-            for(std::size_t i=0; i<_stiffnesses.size(); ++i)
+            for(size_type i=0; i<_stiffnesses.size(); ++i)
             {
                 _stiffnesses[i].resize(0);
             }
@@ -1284,7 +1284,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
 
 
     std::vector< defaulttype::Vector3 > points[4];
-    for(std::size_t i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
+    for(size_type i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
     {
         const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
 

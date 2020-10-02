@@ -168,7 +168,7 @@ public:
     void parse(core::objectmodel::BaseObjectDescription* arg) override ;
 
     /// Overload Method from @sa MeshTopology::getNbHexahedra
-    size_t getNbHexahedra() override { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
+    size_type getNbHexahedra() override { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
     /// Overload Method from @sa MeshTopology::getQuad
     Quad getQuad(int x, int y, int z);
 

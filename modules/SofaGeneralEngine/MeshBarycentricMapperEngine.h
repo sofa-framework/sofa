@@ -44,7 +44,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef defaulttype::Vec<3,Real> Vec3;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
     typedef typename sofa::helper::vector<index_type>  VecIndices;
 
 protected:

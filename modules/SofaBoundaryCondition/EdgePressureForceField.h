@@ -53,7 +53,7 @@ public:
     typedef Data<VecDeriv>                  DataVecDeriv;
     typedef sofa::defaulttype::Vec3d        Vec3d;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 protected:
 
     class EdgePressureInformation

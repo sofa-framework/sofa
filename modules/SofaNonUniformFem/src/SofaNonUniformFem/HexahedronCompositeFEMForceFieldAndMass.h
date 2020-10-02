@@ -69,7 +69,7 @@ public:
 
     typedef defaulttype::Mat<8*3, 8*3, Real> Weight;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 
 

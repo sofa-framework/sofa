@@ -49,7 +49,7 @@ CudaPointCollisionModel::CudaPointCollisionModel()
 {
 }
 
-void CudaPointCollisionModel::resize(std::size_t size)
+void CudaPointCollisionModel::resize(size_type size)
 {
     this->core::CollisionModel::resize(size);
 }

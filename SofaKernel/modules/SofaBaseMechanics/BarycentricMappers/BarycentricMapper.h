@@ -68,7 +68,7 @@ public:
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 public:
 

@@ -486,13 +486,13 @@ TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::
     return InvalidID;
 }
 
-size_t TetrahedronSetTopologyContainer::getNumberOfTetrahedra() const
+size_type TetrahedronSetTopologyContainer::getNumberOfTetrahedra() const
 {
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     return m_tetrahedron.size();
 }
 
-size_t TetrahedronSetTopologyContainer::getNumberOfElements() const
+size_type TetrahedronSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfTetrahedra();
 }
@@ -864,9 +864,9 @@ bool TetrahedronSetTopologyContainer::checkConnexity()
 }
 
 
-size_t TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
+size_type TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    size_t nbr = this->getNbTetrahedra();
+    auto nbr = this->getNbTetrahedra();
 
     if (nbr == 0)
     {

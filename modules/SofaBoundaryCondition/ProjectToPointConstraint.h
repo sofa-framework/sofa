@@ -61,7 +61,7 @@ class ProjectToPointConstraint : public core::behavior::ProjectiveConstraintSet<
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ProjectToPointConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;

@@ -635,14 +635,14 @@ void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mpa
 
 
 template <class DataTypes, class MassType>
-SReal UniformMass<DataTypes, MassType>::getElementMass (sofa::defaulttype::index_type ) const
+SReal UniformMass<DataTypes, MassType>::getElementMass (sofa::index_type ) const
 {
     return (SReal ( d_vertexMass.getValue() ));
 }
 
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::getElementMass (sofa::defaulttype::index_type  index ,
+void UniformMass<DataTypes, MassType>::getElementMass (sofa::index_type  index ,
                                                         BaseMatrix *m ) const
 {
     SOFA_UNUSED(index);

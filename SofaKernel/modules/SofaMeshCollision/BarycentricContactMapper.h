@@ -68,8 +68,8 @@ public:
     typename MMapping::SPtr mapping;
     typename MMapper::SPtr mapper;
 
-    using index_type = sofa::defaulttype::index_type;
-    using size_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
+    using size_type = sofa::index_type;
 
     BarycentricContactMapper()
         : model(nullptr), mapping(nullptr), mapper(nullptr)
@@ -131,7 +131,7 @@ class ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     index_type addPoint(const Coord& P, index_type index, Real&)
     {
@@ -152,7 +152,7 @@ class ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, DataTy
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     index_type addPoint(const Coord& P, index_type index, Real&)
     {
@@ -169,7 +169,7 @@ public:
             {
                 msg_error("ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
                                                               << "model="<<this->model->getName()<<" size="<<this->model->getSize() ;
-                return sofa::defaulttype::InvalidID;
+                return sofa::InvalidID;
             }
         }
     }
@@ -190,7 +190,7 @@ public:
             {
                 msg_error("ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
                             << "model="<<this->model->getName()<<" size="<<this->model->getSize() ;
-                return sofa::defaulttype::InvalidID;
+                return sofa::InvalidID;
             }
         }
     }
@@ -204,7 +204,7 @@ template <class DataTypes>
 class ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public BarycentricContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>{
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 public:
     index_type addPoint(const Coord& P, index_type index, Real& r){

@@ -69,7 +69,7 @@ public:
     typedef typename HexahedronFEMForceFieldAndMassT::MassT MassT;
     typedef typename HexahedronFEMForceFieldAndMassT::ElementMass ElementMass;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 public:
 

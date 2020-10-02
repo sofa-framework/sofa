@@ -49,7 +49,7 @@ class BarycentricMapperHexahedronSetTopology : public BarycentricMapperTopologyC
 {
     typedef typename BarycentricMapper<In, Out>::MappingData3D MappingData;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperHexahedronSetTopology,In,Out),

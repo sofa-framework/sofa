@@ -122,12 +122,12 @@ public:
      * The difference to getNbEdges() is that this method does not generate the edge array if it does not exist.
      * @return the number of edges.
      */
-    size_t getNumberOfEdges() const;
+    size_type getNumberOfEdges() const;
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    size_t getNumberOfElements() const override;
+    size_type getNumberOfElements() const override;
 
 
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
@@ -170,7 +170,7 @@ public:
     bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    size_t getNumberOfConnectedComponent() override;
+    size_type getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     const VecEdgeID getConnectedElement(EdgeID elem) override;

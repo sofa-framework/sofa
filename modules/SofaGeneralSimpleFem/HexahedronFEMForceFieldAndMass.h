@@ -64,7 +64,7 @@ public:
     typedef typename HexahedronFEMForceFieldT::VecElementStiffness VecElementMass;
     typedef typename HexahedronFEMForceFieldT::ElementStiffness ElementMass;
     typedef helper::vector<Real> MassVector;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 protected:
     HexahedronFEMForceFieldAndMass();

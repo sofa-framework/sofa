@@ -175,7 +175,7 @@ public:
     virtual SReal vMax(const ExecParams* params, ConstVecId a) = 0;
 
     /// Get vector size
-    virtual size_t vSize( const ExecParams* params, ConstVecId v ) = 0;
+    virtual size_type vSize( const ExecParams* params, ConstVecId v ) = 0;
 
 
     /// Apply a threshold (lower bound) to all entries
@@ -273,8 +273,8 @@ public:
     /// Write current state to the given output stream
     virtual void writeState( std::ostream& out );
 
-    virtual size_t getCoordDimension() const { return 0; }
-    virtual size_t getDerivDimension() const { return 0; }
+    virtual size_type getCoordDimension() const { return 0; }
+    virtual size_type getDerivDimension() const { return 0; }
 
     /// Translate the current state
     virtual void applyTranslation(const SReal dx, const SReal dy, const SReal dz)=0;
@@ -327,12 +327,12 @@ public:
     /// \brief Get the number of scalars per Deriv value, as necessary to build mechanical matrices and vectors.
     ///
     /// If not all Derivs have the same number of scalars, then return 1 here and overload the getMatrixSize() method.
-    virtual size_t getMatrixBlockSize() const { return getDerivDimension(); }
+    virtual size_type getMatrixBlockSize() const { return getDerivDimension(); }
 
     /// \brief Get the number of rows necessary to build mechanical matrices and vectors.
     ///
     /// In most cases this is equivalent to getSize() * getMatrixBlockSize().
-    virtual size_t getMatrixSize() const { return getSize() * getMatrixBlockSize(); }
+    virtual size_type getMatrixSize() const { return getSize() * getMatrixBlockSize(); }
 
     /// \brief Copy data to a global BaseVector from the state stored in a local vector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns

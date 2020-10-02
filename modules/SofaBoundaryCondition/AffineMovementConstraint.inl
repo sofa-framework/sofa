@@ -143,8 +143,8 @@ void AffineMovementConstraint<DataTypes>::init()
 
     const SetIndexArray & indices = m_indices.getValue();
 
-    std::size_t maxIndex=this->mstate->getSize();
-    for (std::size_t i=0; i<indices.size(); ++i)
+    auto maxIndex=this->mstate->getSize();
+    for (size_type i=0; i<indices.size(); ++i)
     {
         const index_type index=indices[i];
         if (index >= maxIndex)

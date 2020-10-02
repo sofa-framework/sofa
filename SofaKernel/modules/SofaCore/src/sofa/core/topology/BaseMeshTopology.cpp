@@ -190,7 +190,7 @@ const BaseMeshTopology::VerticesAroundVertex BaseMeshTopology::getVerticesAround
     const EdgesAroundVertex& shell = getEdgesAroundVertex(i);
     VerticesAroundVertex adjacentVertices;
 
-    for (std::size_t j = 0; j<shell.size(); j++)
+    for (size_type j = 0; j<shell.size(); j++)
     {
         Edge theEdge = edges[ shell[j] ];
         if ( theEdge[0] == i )

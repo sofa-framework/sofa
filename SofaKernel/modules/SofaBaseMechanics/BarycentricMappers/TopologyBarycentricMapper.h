@@ -50,7 +50,7 @@ public:
     typedef typename Inherit1::Real Real;
     typedef typename core::behavior::BaseMechanicalState::ForceMask ForceMask;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     ForceMask *maskFrom;
     ForceMask *maskTo;

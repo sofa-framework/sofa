@@ -205,7 +205,7 @@ public:
     static const int MULTILEVEL_MODIFICATION = core::topology::TOPOLOGYCHANGE_LASTID + 1;
 
     typedef defaulttype::Vec<3,int>	Vec3i;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     MultilevelModification(const sofa::helper::vector<index_type>& _tArray,
             const std::map<index_type, std::list<Vec3i> >& removedVoxels)

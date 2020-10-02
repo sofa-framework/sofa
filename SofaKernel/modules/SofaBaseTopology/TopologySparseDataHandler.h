@@ -69,7 +69,7 @@ public:
     typedef sofa::core::topology::TopologyElementHandler< TopologyElementType > Inherit;
     typedef typename Inherit::AncestorElem AncestorElem;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 protected:
     sofa::core::topology::BaseTopologyData <VecT>* m_topologyData;

@@ -66,7 +66,7 @@ CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::CapsuleColli
 }
 
 template<class MyReal>
-void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::resize(std::size_t size)
+void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::resize(size_type size)
 {
     this->core::CollisionModel::resize(size);
 
@@ -113,7 +113,7 @@ void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::init()
 }
 
 template <class MyReal>
-std::size_t CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::nbCap()const
+size_type CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::nbCap()const
 {
     return d_capsule_radii.getValue().size();
 }
@@ -122,7 +122,7 @@ template <class MyReal>
 void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const std::size_t ncap = _mstate->getSize();
+    const auto ncap = _mstate->getSize();
 
     bool updated = false;
     if (ncap != size)
@@ -140,7 +140,7 @@ void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::compute
     if (!empty())
     {
         typename TCapsule<defaulttype::StdRigidTypes<3,MyReal> >::Real r;
-        for (std::size_t i=0; i<ncap; i++)
+        for (size_type i=0; i<ncap; i++)
         {
             const Coord p1 = point1(i);
             const Coord p2 = point2(i);
@@ -184,7 +184,7 @@ void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(co
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());//maybe ??
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
 
-        for (std::size_t i=0; i<size; i++){
+        for (size_type i=0; i<size; i++){
             vparams->drawTool()->drawCapsule(point1(i),point2(i),(float)radius(i),col4f);
         }
 

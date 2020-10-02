@@ -357,7 +357,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
         if(flippedTriangles.size()!=0){
             std::stringstream tmp ;
             tmp << "[" ;
-            for(size_t i=0;i<std::min((size_t)50, flippedTriangles.size());i++)
+            for(size_type i=0;i<std::min(50, flippedTriangles.size());i++)
             {
                 tmp << ", " << flippedTriangles[i] ;
             }

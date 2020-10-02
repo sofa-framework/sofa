@@ -61,7 +61,7 @@ class PartialLinearMovementConstraint : public core::behavior::ProjectiveConstra
 public:
     SOFA_CLASS(SOFA_TEMPLATE(PartialLinearMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

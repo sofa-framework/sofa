@@ -120,7 +120,7 @@ void VectorSpringForceField<DataTypes>::addSpring(int m1, int m2, SReal ks, SRea
     if (useTopology && m_topology)
     {
         topology::EdgeSetTopologyContainer::EdgeID e = m_topology->getEdgeIndex(unsigned(m1),unsigned(m2));
-        if (e != sofa::defaulttype::InvalidID)
+        if (e != sofa::InvalidID)
             springArrayData[e]=Spring(Real(ks),Real(kd),restVector);
     }
     else

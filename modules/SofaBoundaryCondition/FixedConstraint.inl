@@ -360,7 +360,7 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 
         if( d_fixAll.getValue() )
         {
-            for( std::size_t i=0; i<vect->size(); i++ )
+            for(size_type i=0; i<vect->size(); i++ )
             {
                 for (unsigned int c=0; c<N; ++c)
                     vect->clear(offset + N * i + c);

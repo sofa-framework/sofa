@@ -56,7 +56,7 @@ public:
     typedef TriangleCollisionModel<DataTypes> ParentModel;
 	typedef typename DataTypes::Real Real;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     TTriangle(ParentModel* model, index_type index);
     TTriangle() {}

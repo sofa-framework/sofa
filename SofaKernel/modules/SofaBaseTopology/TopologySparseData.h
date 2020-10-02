@@ -62,7 +62,7 @@ public:
     /// const iterator
     typedef typename container_type::const_iterator const_iterator;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 
     /// Constructor

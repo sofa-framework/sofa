@@ -631,7 +631,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     helper::fixed_array<index_type,8> map_idxcoarse_idxfine;
     const SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexahedron( elementIndice );
 
-    for(std::size_t i=0; i<sizeass; ++i)
+    for(size_type i=0; i<sizeass; ++i)
     {
         for( auto it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
             if( (*it).second==i)
@@ -672,7 +672,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
         if( map_idxq_coarse[i] )
         {
-            for(std::size_t lig=0; lig<sizeass; ++lig)
+            for(size_type lig=0; lig<sizeass; ++lig)
             {
                 for(int m=0; m<3; ++m)
                     for(int n=0; n<3; ++n)
@@ -681,7 +681,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
         }
         else
         {
-            for(std::size_t lig=0; lig<sizeass; ++lig)
+            for(size_type lig=0; lig<sizeass; ++lig)
             {
                 for(int m=0; m<3; ++m)
                     for(int n=0; n<3; ++n)
@@ -708,7 +708,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     W = - Ainvf * Kg;
     linearsolver::NewMatMatrix  WB;
     WB.resize(sizeass*3,8*3);
-    for(std::size_t i=0; i<sizeass*3; ++i)
+    for(size_type i=0; i<sizeass*3; ++i)
     {
         int idx = i/3;
         int mod = i%3;
@@ -777,9 +777,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     // apply the mask to take only concerned values (an edge stays an edge, a face stays a face, if corner=1 opposite borders=0....)
     linearsolver::NewMatMatrix WBmeca;
     WBmeca.resize(sizeass*3,8*3);
-    for(std::size_t i=0; i<sizeass*3; ++i)
+    for(size_type i=0; i<sizeass*3; ++i)
     {
-        for(std::size_t j=0; j<8*3; ++j)
+        for(size_type j=0; j<8*3; ++j)
         {
             if( mask.element(i,j) /*WEIGHT_MASK[i][j]*/ )
                 WBmeca.set(i,j,WB.element(i,j));
@@ -788,14 +788,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     msg_warning()<<"WBmeca brut : "<<WBmeca<<msgendl;
 
     // normalize the coefficient to obtain sum(coefs)==1
-    for(std::size_t i=0; i<sizeass*3; ++i)
+    for(size_type i=0; i<sizeass*3; ++i)
     {
         SReal sum = 0.0;
-        for(std::size_t j=0; j<8*3; ++j)
+        for(size_type j=0; j<8*3; ++j)
         {
             sum += WBmeca.element(i,j);
         }
-        for(std::size_t j=0; j<8*3; ++j)
+        for(size_type j=0; j<8*3; ++j)
         {
             WBmeca.set(i,j, WBmeca.element(i,j) / sum );
         }

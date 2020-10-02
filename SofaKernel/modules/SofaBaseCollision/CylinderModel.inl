@@ -59,7 +59,7 @@ CylinderCollisionModel<DataTypes>::CylinderCollisionModel(core::behavior::Mechan
 }
 
 template<class DataTypes>
-void CylinderCollisionModel<DataTypes>::resize(std::size_t size)
+void CylinderCollisionModel<DataTypes>::resize(size_type size)
 {
     this->core::CollisionModel::resize(size);
 
@@ -123,7 +123,7 @@ void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     using namespace sofa::defaulttype;
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const std::size_t ncyl = m_mstate->getSize();
+    const auto ncyl = m_mstate->getSize();
 
     bool updated = false;
     if (ncyl != size)
@@ -142,7 +142,7 @@ void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!empty())
     {
         typename TCylinder<DataTypes>::Real r;
-        for (std::size_t i=0; i<ncyl; i++)
+        for (size_type i=0; i<ncyl; i++)
         {
             r = radius(i);
             SReal h2 = height(i)/2.0;

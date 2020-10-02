@@ -65,7 +65,7 @@ public:
 
     typedef typename Inherit1::ForceMask ForceMask;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 public:
     void clear(std::size_t reserve=0) override;

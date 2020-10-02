@@ -229,7 +229,7 @@ public:
     bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    size_t getNumberOfConnectedComponent() override;
+    size_type getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     const VecTetraID getConnectedElement(TetraID elem) override;
@@ -248,12 +248,12 @@ public:
     /** \brief Returns the number of tetrahedra in this topology.
      *    The difference to getNbTetrahedra() is that this method does not generate the tetra array if it does not exist.
      */
-    size_t getNumberOfTetrahedra() const;
+    size_type getNumberOfTetrahedra() const;
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    size_t getNumberOfElements() const override;
+    size_type getNumberOfElements() const override;
 
 
     /** \brief Returns the Tetrahedron array. */

@@ -2179,7 +2179,7 @@ public:
 #endif
 
     /// get the closest pickable particle
-    void getClosestParticle( core::behavior::BaseMechanicalState*& mstate, sofa::defaulttype::index_type& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
+    void getClosestParticle( core::behavior::BaseMechanicalState*& mstate, sofa::index_type& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
 
 
 };

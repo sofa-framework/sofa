@@ -57,7 +57,7 @@ class SOFA_OPENGL_VISUAL_API OglCylinderModel : public core::visual::VisualModel
 public:
     SOFA_CLASS2(OglCylinderModel,core::visual::VisualModel,Vec3State);
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 protected:
     OglCylinderModel();
     ~OglCylinderModel() override;

@@ -60,7 +60,7 @@ class LinearMovementConstraint : public core::behavior::ProjectiveConstraintSet<
 public:
     SOFA_CLASS(SOFA_TEMPLATE(LinearMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

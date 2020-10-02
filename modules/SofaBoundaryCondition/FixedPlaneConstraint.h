@@ -58,7 +58,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(FixedPlaneConstraint,DataTypes),
                SOFA_TEMPLATE(ProjectiveConstraintSet, DataTypes));
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;

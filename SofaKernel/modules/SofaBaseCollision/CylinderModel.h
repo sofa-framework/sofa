@@ -58,7 +58,7 @@ public:
 
     typedef CylinderCollisionModel<DataTypes> ParentModel;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     TCylinder(ParentModel* model, index_type index);
 
@@ -113,7 +113,7 @@ public:
     void init() override;
 
     // -- CollisionModel interface
-    void resize(std::size_t size) override;
+    void resize(size_type size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 

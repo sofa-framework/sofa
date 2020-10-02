@@ -35,7 +35,7 @@ namespace topology
 //////////////////////////////   Generic Handling of Topology Event    /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology::TopologyChange *> &_topologyChangeEvents, const std::size_t _dataSize)
+void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology::TopologyChange *> &_topologyChangeEvents, const size_type _dataSize)
 {
     if(!this->isTopologyDataRegistered())
         return;

@@ -41,7 +41,7 @@ class CubeCollisionModel;
 class Cube : public core::TCollisionElementIterator<CubeCollisionModel>
 {
 public:
-    Cube(CubeCollisionModel* model=nullptr, sofa::defaulttype::index_type index=0);
+    Cube(CubeCollisionModel* model=nullptr, sofa::index_type index=0);
 
     explicit Cube(const core::CollisionElementIterator& i);
 
@@ -57,7 +57,7 @@ class SOFA_BASE_COLLISION_API CubeCollisionModel : public core::CollisionModel
 public:
     SOFA_CLASS(CubeCollisionModel,sofa::core::CollisionModel);
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     struct CubeData
     {
@@ -91,19 +91,19 @@ public:
 protected:
     CubeCollisionModel();
 public:
-    void resize(std::size_t size) override;
+    void resize(size_type size) override;
 
     void setParentOf(index_type childIndex, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
     void setLeafCube(index_type cubeIndex, index_type childIndex);
     void setLeafCube(index_type cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
 
 
-    std::size_t getNumberCells() { return elems.size();}
+    size_type getNumberCells() { return elems.size();}
 
     void getBoundingTree ( sofa::helper::vector< std::pair< sofa::defaulttype::Vector3, sofa::defaulttype::Vector3> > &bounding )
     {
         bounding.resize(elems.size());
-        for (std::size_t index=0; index<elems.size(); index++)
+        for (size_type index=0; index<elems.size(); index++)
         {
             bounding[index] = std::make_pair( elems[index].minBBox, elems[index].maxBBox);
         }

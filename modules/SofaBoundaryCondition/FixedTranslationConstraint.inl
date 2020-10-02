@@ -131,7 +131,7 @@ void FixedTranslationConstraint<DataTypes>::init()
 }
 
 
-template<std::size_t N, class T>
+template<size_type N, class T>
 static inline void clearPos(defaulttype::RigidDeriv<N,T>& v)
 {
     getVCenter(v).clear();
@@ -151,7 +151,7 @@ void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::Mechani
 
     if (f_fixAll.getValue() == true)
     {
-        for (std::size_t i = 0; i < l_topology.get()->getNbPoints(); ++i)
+        for (size_type i = 0; i < l_topology.get()->getNbPoints(); ++i)
         {
             clearPos(res[i]);
         }
@@ -221,7 +221,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
         {
             sofa::defaulttype::Vector3 v;
             const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[i]);
-            for(std::size_t j=0 ; j<cpos.size() && j<3; j++)
+            for(size_type j=0 ; j<cpos.size() && j<3; j++)
                 v[j] = cpos[j];
 
             vertices.push_back(v);
@@ -233,7 +233,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
         {
             sofa::defaulttype::Vector3 v;
             const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[*it]);
-            for(std::size_t j=0 ; j<cpos.size() && j<3; j++)
+            for(size_type j=0 ; j<cpos.size() && j<3; j++)
                 v[j] = cpos[j];
 
             vertices.push_back(v);

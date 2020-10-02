@@ -75,7 +75,7 @@ void TopologyDataHandler <TopologyElementType, VecT>::add(const sofa::helper::ve
     for (index_type i = 0; i < nbElements; ++i)
     {
         value_type& t = data[i0+i];
-        this->applyCreateFunction(i0+i, t, elems[i],
+        this->applyCreateFunction(index_type(i0+i), t, elems[i],
             (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
             (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
             (ancestorElems.empty()             ) ? nullptr : &ancestorElems[i]);
@@ -106,8 +106,9 @@ void TopologyDataHandler <TopologyElementType, VecT>::remove( const sofa::helper
 {
 		
 	container_type& data = *(m_topologyData->beginEdit());
-	if (data.size()>0) {
-        index_type last = data.size() -1;
+	if (data.size()>0) 
+    {
+        index_type last = index_type(data.size() -1);
 
         for (std::size_t i = 0; i < index.size(); ++i)
 		{

@@ -86,7 +86,7 @@ public:
     typedef typename core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
 
     typedef sofa::defaulttype::Vector3 Vector3;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 protected:
     MechanicalObject();
@@ -186,10 +186,10 @@ public:
     void initGnuplot(const std::string path) override;
     void exportGnuplot(SReal time) override;
 
-    void resize( size_t vsize) override;
-    virtual void reserve(size_t vsize);
+    void resize( size_type vsize) override;
+    virtual void reserve(size_type vsize);
 
-    size_t getSize() const override { return d_size.getValue(); }
+    size_type getSize() const override { return d_size.getValue(); }
 
     SReal getPX(index_type i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
     SReal getPY(index_type i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }
@@ -221,7 +221,7 @@ public:
      *
      * Sum of the coefs should usually equal to 1.0
      */
-    void computeWeightedValue( const index_type i, const sofa::helper::vector< sofa::defaulttype::index_type >& ancestors, const sofa::helper::vector< double >& coefs);
+    void computeWeightedValue( const index_type i, const sofa::helper::vector< sofa::index_type >& ancestors, const sofa::helper::vector< double >& coefs);
 
     /// Force the position of a point (and force its velocity to zero value)
     void forcePointPosition( const index_type i, const sofa::helper::vector< double >& m_x);
@@ -351,7 +351,7 @@ public:
     /// Maximum of the absolute values of the entries of state vector a. This is used to compute the infinite-norm of the vector.
     SReal vMax(const core::ExecParams* params, core::ConstVecId a) override;
 
-    size_t vSize( const core::ExecParams* params, core::ConstVecId v ) override;
+    size_type vSize( const core::ExecParams* params, core::ConstVecId v ) override;
 
     void resetForce(const core::ExecParams* params, core::VecDerivId f = core::VecDerivId::force()) override;
 

@@ -71,7 +71,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     enum { SMALL = 0, ///< Symbol of small displacements tetrahedron solver
             LARGE = 1, ///< Symbol of large displacements tetrahedron solver
@@ -151,7 +151,7 @@ public:
     {
     public :
         typedef typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation TetrahedronInformation;
-        using index_type = sofa::defaulttype::index_type;
+        using index_type = sofa::index_type;
         TetrahedronHandler(TetrahedralCorotationalFEMForceField<DataTypes>* ff,
                            topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation> >* data)
             :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >(data)

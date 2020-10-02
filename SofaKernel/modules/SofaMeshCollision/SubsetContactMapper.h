@@ -68,7 +68,7 @@ public:
     simulation::Node::SPtr child;
     typename MMapping::SPtr mapping;
     typename MMechanicalState::SPtr outmodel;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     int nbp;
     bool needInit;

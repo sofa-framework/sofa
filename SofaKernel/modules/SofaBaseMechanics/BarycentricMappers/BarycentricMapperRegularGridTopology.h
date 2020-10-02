@@ -57,7 +57,7 @@ public:
     typedef typename MatrixType::Index MatrixTypeIndex;
     typedef typename Inherit1::ForceMask ForceMask;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     enum { NIn = Inherit1::NIn };
     enum { NOut = Inherit1::NOut };

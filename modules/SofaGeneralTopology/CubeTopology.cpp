@@ -187,7 +187,7 @@ void CubeTopology::updatePoints()
 {
     SeqPoints& points = *seqPoints.beginEdit();
     points.resize(nbPoints) ;
-    for(std::size_t i=0;i<nbPoints;i++)
+    for(size_type i=0;i<nbPoints;i++)
     {
         points[i] = getPoint(i);
     }

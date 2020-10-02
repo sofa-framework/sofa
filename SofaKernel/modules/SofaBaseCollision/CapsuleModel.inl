@@ -60,7 +60,7 @@ CapsuleCollisionModel<DataTypes>::CapsuleCollisionModel(core::behavior::Mechanic
 }
 
 template<class DataTypes>
-void CapsuleCollisionModel<DataTypes>::resize(std::size_t size)
+void CapsuleCollisionModel<DataTypes>::resize(size_type size)
 {
     this->core::CollisionModel::resize(size);
     _capsule_points.resize(size);
@@ -108,10 +108,10 @@ void CapsuleCollisionModel<DataTypes>::init()
         return;
     }
 
-    std::size_t nbEdges = bmt->getNbEdges();
+    auto nbEdges = bmt->getNbEdges();
     resize( nbEdges );
 
-    for(std::size_t i = 0; i < nbEdges; ++i)
+    for(size_type i = 0; i < nbEdges; ++i)
     {
         _capsule_points[i].first = bmt->getEdge(i)[0];
         _capsule_points[i].second= bmt->getEdge(i)[1];
@@ -119,7 +119,7 @@ void CapsuleCollisionModel<DataTypes>::init()
 }
 
 template <class DataTypes>
-std::size_t CapsuleCollisionModel<DataTypes>::nbCap()const
+size_type CapsuleCollisionModel<DataTypes>::nbCap()const
 {
     return _capsule_radii.getValue().size();
 }
@@ -129,7 +129,7 @@ void CapsuleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     using namespace sofa::defaulttype;
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const std::size_t ncap = l_topology.get()->getNbEdges();
+    const auto ncap = l_topology.get()->getNbEdges();
     bool updated = false;
     if (ncap != size)
     {
@@ -148,7 +148,7 @@ void CapsuleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         typename TCapsule<DataTypes>::Real r;
 
         //const typename TCapsule<DataTypes>::Real distance = (typename TCapsule<DataTypes>::Real)this->proximity.getValue();
-        for (std::size_t i=0; i<ncap; i++)
+        for (size_type i=0; i<ncap; i++)
         {
             const Coord p1 = point1(i);
             const Coord p2 = point2(i);
@@ -195,7 +195,7 @@ void CapsuleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vp
         // Check topological modifications
         //const int npoints = _mstate->getSize()/2;
 
-        for (std::size_t i=0; i<size; i++){
+        for (size_type i=0; i<size; i++){
             vparams->drawTool()->drawCapsule(point1(i),point2(i),(float)radius(i),col4f);
         }
 
@@ -239,13 +239,13 @@ const typename CapsuleCollisionModel<DataTypes>::Coord & CapsuleCollisionModel<D
 }
 
 template <class DataTypes>
-sofa::defaulttype::index_type CapsuleCollisionModel<DataTypes>::point1Index(index_type i) const
+sofa::index_type CapsuleCollisionModel<DataTypes>::point1Index(index_type i) const
 {
     return  _capsule_points[i].first;
 }
 
 template <class DataTypes>
-sofa::defaulttype::index_type CapsuleCollisionModel<DataTypes>::point2Index(index_type i) const
+sofa::index_type CapsuleCollisionModel<DataTypes>::point2Index(index_type i) const
 {
     return  _capsule_points[i].second;
 }

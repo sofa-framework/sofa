@@ -63,7 +63,7 @@ public:
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename InCoord::value_type Real;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 protected:
     Mesh2PointMechanicalMapping(core::State<In>* from = nullptr, core::State<Out>* to = nullptr);

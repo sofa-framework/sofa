@@ -47,7 +47,7 @@ using sofa::helper::AdvancedTimer;
  */
 class TriangleInfo : public InfoFilter //< Triangle >
 {
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
 public:
     /**

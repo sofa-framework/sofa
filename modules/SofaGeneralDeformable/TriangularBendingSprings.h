@@ -72,7 +72,7 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     Data<double> f_ks; ///< uniform stiffness for the all springs
     Data<double> f_kd; ///< uniform damping for the all springs

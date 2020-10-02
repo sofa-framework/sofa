@@ -145,7 +145,7 @@ void TriangleSetTopologyContainer::createTrianglesAroundEdgeArray ()
     if (hasTrianglesAroundEdge()) // created by upper topology
         return;
 
-    const size_t numTriangles = getNumberOfTriangles();
+    const auto numTriangles = getNumberOfTriangles();
     if (numTriangles == 0)
     {
         msg_warning() << "TrianglesAroundEdge buffer can't be created as no triangles are present in this topology.";
@@ -155,7 +155,7 @@ void TriangleSetTopologyContainer::createTrianglesAroundEdgeArray ()
     if(!hasEdges()) // this method should only be called when edges exist
         createEdgeSetArray();
 
-    const size_t numEdges = getNumberOfEdges();
+    const auto numEdges = getNumberOfEdges();
     if (numEdges == 0)
     {
         msg_warning() << "TrianglesAroundEdge buffer can't be created as no edges are present in this topology.";
@@ -490,12 +490,12 @@ TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriang
     return InvalidID;
 }
 
-size_t TriangleSetTopologyContainer::getNumberOfTriangles() const
+size_type TriangleSetTopologyContainer::getNumberOfTriangles() const
 {
     return d_triangle.getValue().size();
 }
 
-size_t TriangleSetTopologyContainer::getNumberOfElements() const
+size_type TriangleSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfTriangles();
 }
@@ -750,9 +750,9 @@ bool TriangleSetTopologyContainer::checkConnexity()
 }
 
 
-size_t TriangleSetTopologyContainer::getNumberOfConnectedComponent()
+size_type TriangleSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    size_t nbr = this->getNbTriangles();
+    auto nbr = this->getNbTriangles();
 
     if (nbr == 0)
     {

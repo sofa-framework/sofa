@@ -113,11 +113,11 @@ public:
     /// Random accessors
     /// @{
 
-    virtual size_t getNbEdges()                   { return getEdges().size(); }
-    virtual size_t getNbTriangles()               { return getTriangles().size(); }
-    virtual size_t getNbQuads()                   { return getQuads().size(); }
-    virtual size_t getNbTetrahedra()              { return getTetrahedra().size(); }
-    virtual size_t getNbHexahedra()	              { return getHexahedra().size(); }
+    virtual size_type getNbEdges()                   { return size_type(getEdges().size()); }
+    virtual size_type getNbTriangles()               { return size_type(getTriangles().size()); }
+    virtual size_type getNbQuads()                   { return size_type(getQuads().size()); }
+    virtual size_type getNbTetrahedra()              { return size_type(getTetrahedra().size()); }
+    virtual size_type getNbHexahedra()	              { return size_type(getHexahedra().size()); }
 
     virtual const Edge getEdge(EdgeID i)             { return getEdges()[i]; }
     virtual const Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
@@ -130,8 +130,8 @@ public:
 
     /// Bridge from old functions (using Tetra/Tetras and Hexa/Hexas) to new ones
     ///@{
-    virtual size_t getNbTetras()    { return getNbTetrahedra(); }
-    virtual size_t getNbHexas()     { return getNbHexahedra(); }
+    virtual size_type getNbTetras()    { return getNbTetrahedra(); }
+    virtual size_type getNbHexas()     { return getNbHexahedra(); }
 
     virtual Tetra getTetra(TetraID i)          { return getTetrahedra()[i]; }
     virtual Hexa getHexa(HexaID i)             { return getHexahedra()[i]; }
@@ -235,7 +235,7 @@ public:
     /// @name Deprecated names, for backward-compatibility
     /// @{
     const SeqLines& getLines() { return getEdges(); }
-    size_t getNbLines() { return getNbEdges(); }
+    size_type getNbLines() { return getNbEdges(); }
     Line getLine(LineID i) { return getEdge(i); }
     /// @}
 
@@ -269,7 +269,7 @@ public:
     virtual bool checkTopology() const { return true; }
 
     /// Returns the number of connected component.
-    virtual size_t getNumberOfConnectedComponent() {return 0;}
+    virtual size_type getNumberOfConnectedComponent() {return 0;}
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     virtual const sofa::helper::vector<index_type> getConnectedElement(index_type elem);
     /// @}

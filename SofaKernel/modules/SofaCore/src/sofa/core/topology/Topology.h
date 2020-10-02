@@ -147,8 +147,8 @@ public:
     // This is not very clean and is quit slow but it should only be used during initialization
 
     virtual bool hasPos() const { return false; }
-    virtual std::size_t getNbPoints() const { return 0; }
-    virtual void setNbPoints(std::size_t /*n*/) {}
+    virtual size_type getNbPoints() const { return 0; }
+    virtual void setNbPoints(size_type /*n*/) {}
     virtual SReal getPX(index_type /*i*/) const { return 0.0; }
     virtual SReal getPY(index_type /*i*/) const { return 0.0; }
     virtual SReal getPZ(index_type /*i*/) const { return 0.0; }

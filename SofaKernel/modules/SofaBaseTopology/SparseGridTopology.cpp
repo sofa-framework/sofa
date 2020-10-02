@@ -276,7 +276,7 @@ void SparseGridTopology::buildAsFinest(  )
         _stiffnessCoefs.resize( this->getNbHexahedra());
         _massCoefs.resize( this->getNbHexahedra());
 
-        for(size_t i=0; i<this->getNbHexahedra(); ++i)
+        for(size_type i=0; i<this->getNbHexahedra(); ++i)
         {
             if( getType(i)==BOUNDARY && _fillWeighted.getValue() )
             {
@@ -513,14 +513,14 @@ void SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)
     _min.setValue( Vector3(0,0,0) );
     _max.setValue( Vector3(width*vsize[0],height*vsize[1],depth*vsize[2]) );
 
-    const size_t nbCubesRG = _regularGrid->getNbHexahedra();
+    const auto nbCubesRG = _regularGrid->getNbHexahedra();
 
     _indicesOfRegularCubeInSparseGrid.resize(nbCubesRG, InvalidID); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
-    vector<Type> regularGridTypes(nbCubesRG, OUTSIDE); // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
+    vector<Type> regularGridTypes(typename vector<Type>::size_type(nbCubesRG), OUTSIDE); // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
 
-    vector<float> regularstiffnessCoef(nbCubesRG, 0.0);
+    vector<float> regularstiffnessCoef(typename vector<Type>::size_type(nbCubesRG), 0.0);
 
-    for(size_t i=0; i<nbCubesRG; ++i)
+    for(index_type i=0; i<nbCubesRG; ++i)
     {
         const Vec3i& hexacoord = _regularGrid->getCubeCoordinate(i);
         const RegularGridTopology::Hexa& hexa = _regularGrid->getHexahedron( hexacoord[0],hexacoord[1], hexacoord[2] );
@@ -840,7 +840,7 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
 
 
     // TODO: regarder les cellules pleines, et les ajouter
-    vector<bool> alreadyTested(regularGrid->getNbHexahedra(),false);
+    vector<bool> alreadyTested(typename vector<bool>::size_type(regularGrid->getNbHexahedra()),false);
     std::stack< Vec3i > seed;
     // x==0 and x=nx-2
     for(int y=0; y<regularGrid->getNy()-1; ++y)
@@ -898,7 +898,7 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology::SPtr reg
     int cubeCntr = 0;
 
     // add BOUNDARY cubes to valid cells
-    for(size_t w=0; w<regularGrid->getNbHexahedra(); ++w)
+    for(index_type w=0; w<regularGrid->getNbHexahedra(); ++w)
     {
         if( regularGridTypes[w] == BOUNDARY && !d_bOnlyInsideCells.getValue())
         {
@@ -919,7 +919,7 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology::SPtr reg
     }
 
     // add INSIDE cubes to valid cells
-    for(size_t w=0; w<regularGrid->getNbHexahedra(); ++w)
+    for(index_type w=0; w<regularGrid->getNbHexahedra(); ++w)
     {
         if( regularGridTypes[w] == INSIDE )
         {

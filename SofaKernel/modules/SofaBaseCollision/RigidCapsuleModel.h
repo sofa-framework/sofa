@@ -59,7 +59,7 @@ public:
 
     typedef CapsuleCollisionModel<DataTypes> ParentModel;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     TCapsule(ParentModel* model, index_type index);
 
@@ -125,7 +125,7 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(std::size_t size) override;
+    void resize(size_type size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
@@ -153,7 +153,7 @@ public:
 
     Real height(index_type index)const;
 
-    inline std::size_t nbCap()const;
+    inline size_type nbCap()const;
 
     Real defaultRadius()const;
 

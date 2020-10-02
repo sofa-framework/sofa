@@ -76,7 +76,7 @@ public:
 
     typedef typename Inherit::ForceMask ForceMask;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 protected:
     topology::PointData< sofa::helper::vector<MappingData > >  map; ///< mapper data

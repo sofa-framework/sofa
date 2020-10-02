@@ -47,7 +47,7 @@ template<class In, class Out>
 class BarycentricMapperTetrahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData3D,Tetrahedron>
 {
     typedef typename BarycentricMapper<In,Out>::MappingData3D MappingData;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Tetrahedron));

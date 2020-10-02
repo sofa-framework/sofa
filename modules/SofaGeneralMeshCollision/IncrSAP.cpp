@@ -285,7 +285,7 @@ inline void IncrSAP::addCollisionModel(core::CollisionModel *cm)
         _boxes.resize(cube_model_size + old_size);
 
         EndPointID * endPts[6];
-        for(std::size_t i = 0 ; i < cube_model->getSize() ; ++i){
+        for(size_type i = 0 ; i < cube_model->getSize() ; ++i){
             for(int j = 0 ; j < 6 ; ++j)
                 endPts[j] = new EndPointID;
 

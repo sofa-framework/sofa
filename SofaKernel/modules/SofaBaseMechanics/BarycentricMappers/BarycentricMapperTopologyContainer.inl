@@ -358,7 +358,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJ 
 template <class In, class Out, class MappingDataType, class Element>
 void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::resize( core::State<Out>* toModel )
 {
-    toModel->resize(d_map.getValue().size());
+    toModel->resize(size_type(d_map.getValue().size()));
 }
 
 template<class In, class Out, class MappingDataType, class Element>

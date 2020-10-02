@@ -53,7 +53,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef PointCollisionModel<DataTypes> ParentModel;
 
-    TPoint(ParentModel* model, sofa::defaulttype::index_type index);
+    TPoint(ParentModel* model, sofa::index_type index);
     TPoint() {}
 
     explicit TPoint(const core::CollisionElementIterator& i);
@@ -158,7 +158,7 @@ protected:
 
 
 template<class DataTypes>
-inline TPoint<DataTypes>::TPoint(ParentModel* model, sofa::defaulttype::index_type index)
+inline TPoint<DataTypes>::TPoint(ParentModel* model, sofa::index_type index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {
 

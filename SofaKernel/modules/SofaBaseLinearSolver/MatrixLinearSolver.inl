@@ -76,7 +76,7 @@ void MatrixLinearSolver<Matrix,Vector>::resetSystem()
 }
 
 template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::resizeSystem(std::size_t n)
+void MatrixLinearSolver<Matrix,Vector>::resizeSystem(size_type n)
 {
     if (!this->frozen)
     {
@@ -117,7 +117,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
         simulation::Node* root = dynamic_cast<simulation::Node*>(this->getContext());
         SReal dim = 0;
         simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(root);
-        currentGroup->systemSize = std::size_t(dim);
+        currentGroup->systemSize = size_type(dim);
         currentGroup->matrixAccessor.setDoPrintInfo( this->f_printLog.getValue() ) ;
 
         simulation::common::MechanicalOperations mops(mparams, this->getContext());

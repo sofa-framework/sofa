@@ -52,7 +52,7 @@ public:
     typedef defaulttype::Vec3Types InitTypes;
 
 protected:
-    PointSetTopologyContainer( std::size_t nPoints = 0);
+    PointSetTopologyContainer(size_type nPoints = 0);
 
     ~PointSetTopologyContainer() override {}
 public:
@@ -71,18 +71,18 @@ public:
     /// @{
 
     /** \brief Returns the number of vertices in this topology. */
-    std::size_t getNbPoints() const override { return nbPoints.getValue(); }
+    size_type getNbPoints() const override { return nbPoints.getValue(); }
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual size_t getNumberOfElements() const;
+    virtual size_type getNumberOfElements() const;
 
     /** \brief Returns a reference to the Data of points array container. */
     Data<InitTypes::VecCoord>& getPointDataArray() {return d_initPoints;}
 
     /** \brief Set the number of vertices in this topology. */
-    void setNbPoints(std::size_t n) override;
+    void setNbPoints(size_type n) override;
 
 
     /** \brief check if vertices in this topology have positions. */
@@ -122,7 +122,7 @@ public:
      *
      * @param The number of point to add.
      */
-    void addPoints(const std::size_t nPoints);
+    void addPoints(const size_type nPoints);
 
 
     /** \brief remove one DOF in this topology (simply decrement the number of DOF)
@@ -135,7 +135,7 @@ public:
      *
      * @param The number of point to remove.
      */
-    void removePoints(const std::size_t nPoints);
+    void removePoints(const size_type nPoints);
 
     /// @}
 
@@ -191,7 +191,7 @@ protected:
 
 private:
     
-    Data<std::size_t> nbPoints; ///< Number of points
+    Data<size_type> nbPoints; ///< Number of points
 
     Data<sofa::helper::vector<PointID> > points; ///< List of point indices
 };

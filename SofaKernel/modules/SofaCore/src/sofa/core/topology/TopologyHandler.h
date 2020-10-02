@@ -54,7 +54,7 @@ public:
 
     virtual ~TopologyHandler() {}
 
-    virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange *>& _topologyChangeEvents, const std::size_t _dataSize);
+    virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange *>& _topologyChangeEvents, const size_type _dataSize);
 
     virtual void ApplyTopologyChange(const core::topology::EndingEvent* /*event*/) {}
 

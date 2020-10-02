@@ -112,7 +112,7 @@ protected:
     typedef helper::vector< Col_Value > CompressedValue;
     typedef helper::vector< CompressedValue > CompressedMatrix;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     /// the information stored for each hexahedron
     class HexahedronInformation

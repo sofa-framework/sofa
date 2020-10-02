@@ -76,13 +76,13 @@ void OBBCollisionModel<DataTypes>::init()
         return;
     }
 
-    const std::size_t npoints = _mstate->getSize();
+    const auto npoints = _mstate->getSize();
     resize(npoints);
 }
 
 
 template<class DataTypes>
-void OBBCollisionModel<DataTypes>::resize(std::size_t size){
+void OBBCollisionModel<DataTypes>::resize(size_type size){
     this->core::CollisionModel::resize(size);
 
     VecCoord & vext = *(ext.beginEdit());
@@ -104,7 +104,7 @@ void OBBCollisionModel<DataTypes>::resize(std::size_t size){
 template<class DataTypes>
 void OBBCollisionModel<DataTypes>::computeBoundingTree(int maxDepth){
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const std::size_t npoints = _mstate->getSize();
+    const auto npoints = _mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -123,7 +123,7 @@ void OBBCollisionModel<DataTypes>::computeBoundingTree(int maxDepth){
 
         std::vector<Coord> vs;
         vs.reserve(8);
-        for (std::size_t i=0; i<size; i++)
+        for (size_type i=0; i<size; i++)
         {
             vs.clear();
             vertices(i,vs);
@@ -220,9 +220,9 @@ void OBBCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparam
     {
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
 
-        const std::size_t npoints = _mstate->getSize();
+        const auto npoints = _mstate->getSize();
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
-        for(std::size_t i = 0 ; i < npoints ; ++i )
+        for(size_type i = 0 ; i < npoints ; ++i )
             draw(vparams,i);
         vparams->drawTool()->setLightingEnabled(false); //Disable lightning
     }
@@ -456,8 +456,8 @@ void OBBCollisionModel<DataTypes>::computeBBox(const core::ExecParams*, bool onl
 
 
     std::vector<Coord> p;
-    const std::size_t npoints = _mstate->getSize();
-    for(std::size_t i = 0 ; i < npoints ; ++i )
+    const auto npoints = _mstate->getSize();
+    for(size_type i = 0 ; i < npoints ; ++i )
     {
         vertices(i,p);
         for (unsigned int j=0; j<8; j++)

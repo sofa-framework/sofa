@@ -49,7 +49,7 @@ RayCollisionModel::RayCollisionModel(SReal length)
     this->contactResponse.setValue("ray"); // use RayContact response class
 }
 
-void RayCollisionModel::resize(std::size_t size)
+void RayCollisionModel::resize(size_type size)
 {
     this->core::CollisionModel::resize(size);
 

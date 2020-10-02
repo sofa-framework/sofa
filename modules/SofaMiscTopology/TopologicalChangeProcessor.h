@@ -57,7 +57,7 @@ class SOFA_MISC_TOPOLOGY_API TopologicalChangeProcessor: public core::objectmode
 public:
     SOFA_CLASS(TopologicalChangeProcessor,core::objectmodel::BaseObject);
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     sofa::core::objectmodel::DataFileName m_filename;
     Data < helper::vector< helper::vector <index_type> > > m_listChanges; ///< 0 for adding, 1 for removing, 2 for cutting and associated indices.
@@ -155,7 +155,7 @@ protected:
 class TriangleIncisionInformation
 {
 public:
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     std::vector<index_type>      triangleIndices;
     std::vector<defaulttype::Vector3>                barycentricCoordinates;

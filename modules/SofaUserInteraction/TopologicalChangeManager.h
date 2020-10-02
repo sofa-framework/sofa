@@ -56,7 +56,7 @@ class TetrahedronModel;
 class SOFA_USER_INTERACTION_API TopologicalChangeManager
 {
 public:
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     TopologicalChangeManager();
     ~TopologicalChangeManager();

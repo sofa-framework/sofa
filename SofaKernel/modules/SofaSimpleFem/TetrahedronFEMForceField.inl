@@ -640,7 +640,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
         //erase the stiffness matrix at each time step
         if(elementIndex==0)
         {
-            for(std::size_t i=0; i<_stiffnesses.size(); ++i)
+            for(size_type i=0; i<_stiffnesses.size(); ++i)
             {
                 _stiffnesses[i].resize(0);
             }

@@ -70,7 +70,7 @@ public:
     enum { NIn = Inherit1::NIn };
     enum { NOut = Inherit1::NOut };
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 public:
 
@@ -152,7 +152,7 @@ protected:
     Real m_gridCellSize;
     Real m_convFactor;
     std::unordered_map<Key, helper::vector<unsigned int>, HashFunction, HashEqual> m_hashTable;
-    unsigned int m_hashTableSize;
+    std::size_t m_hashTableSize;
 
 
     BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology);

@@ -68,7 +68,7 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManage
 }
 
 template<>
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resizeSystem(std::size_t)
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resizeSystem(size_type)
 {
     if (!currentGroup->systemMatrix) currentGroup->systemMatrix = new GraphScatteredMatrix();
     if (!currentGroup->systemRHVector) currentGroup->systemRHVector = new GraphScatteredVector(nullptr,core::VecDerivId::null());

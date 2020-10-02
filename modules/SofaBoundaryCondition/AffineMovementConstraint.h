@@ -60,7 +60,7 @@ class AffineMovementConstraint : public core::behavior::ProjectiveConstraintSet<
 public:
     SOFA_CLASS(SOFA_TEMPLATE(AffineMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -78,7 +78,7 @@ public:
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 
-    static const std::size_t CoordSize = Coord::total_size;
+    static const auto CoordSize = Coord::total_size;
     typedef defaulttype::Mat<3,3,Real> RotationMatrix;
 
 protected:

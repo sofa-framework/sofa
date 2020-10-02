@@ -70,12 +70,12 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef core::behavior::MechanicalState<DataTypes> MMechanicalState;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     virtual ~BaseContactMapper() {}
     virtual MMechanicalState* createMapping(const char* name = "contactPoints") = 0;
     virtual void cleanup() = 0;
-    virtual void resize(std::size_t size) = 0;
+    virtual void resize(size_type size) = 0;
 
     //after detecting a point in collide, this point need to be added to the mapping
     //There are two way for adding the point, by its nature of referentiel : global or local.
@@ -84,7 +84,7 @@ public:
     virtual index_type addPoint(const Coord& /*P*/, index_type /*elementId*/, Real& /*r*/)
     {
         dmsg_warning("BaseContactMapper") << " addPoint is called but not implemented" ;
-        return sofa::defaulttype::InvalidID;
+        return sofa::InvalidID;
     }
 
     /// Adding a point of the global referentiel to the mapping, also giving the local referentiel

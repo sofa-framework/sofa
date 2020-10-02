@@ -52,7 +52,7 @@ public:
 
     typedef SphereCollisionModel<DataTypes> ParentModel;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     TSphere(ParentModel* model, index_type index);
 
@@ -111,7 +111,7 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(std::size_t size) override;
+    void resize(size_type size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 

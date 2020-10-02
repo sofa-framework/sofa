@@ -195,7 +195,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 
     const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
-    for(std::size_t i = 0 ; i<_topology->getNbHexahedra(); ++i)
+    for(size_type i = 0 ; i<_topology->getNbHexahedra(); ++i)
     {
         Transformation R_0_2;
         R_0_2.transpose(hexahedronInf[i].rotation);
@@ -607,7 +607,7 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
-    for(std::size_t e=0 ; e<_topology->getNbHexahedra() ; ++e)
+    for(size_type e=0 ; e<_topology->getNbHexahedra() ; ++e)
     {
         const ElementStiffness &Ke = hexahedronInf[e].stiffness;
 

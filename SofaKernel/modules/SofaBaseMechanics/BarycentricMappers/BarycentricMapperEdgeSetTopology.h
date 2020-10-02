@@ -47,7 +47,7 @@ class BarycentricMapperEdgeSetTopology : public BarycentricMapperTopologyContain
 {
     typedef typename BarycentricMapper<In,Out>::MappingData1D MappingData;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperEdgeSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Edge));

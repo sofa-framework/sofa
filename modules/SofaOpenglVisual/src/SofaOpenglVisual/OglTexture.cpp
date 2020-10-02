@@ -102,7 +102,7 @@ void OglTexture::init()
                 //Make texture
                 unsigned char* data = img->getPixels();
 
-                for(std::size_t i=0 ; i<textureData.size() && i < height*width*(nbb/8); i++)
+                for(size_type i=0 ; i<textureData.size() && i < height*width*(nbb/8); i++)
                     data[i] = (unsigned char)textureData[i];
 
                 for (std::size_t i=textureData.size() ; i<height*width*(nbb/8) ; i++)
@@ -195,7 +195,7 @@ void OglTexture::init()
             //Make texture
             unsigned char* data = img->getPixels();
 
-            for(std::size_t i=0 ; i < dummyHeight*dummyWidth*(dummyNbb/8); i++)
+            for(size_type i=0 ; i < dummyHeight*dummyWidth*(dummyNbb/8); i++)
                 data[i] = (unsigned char)128;
         }
     }

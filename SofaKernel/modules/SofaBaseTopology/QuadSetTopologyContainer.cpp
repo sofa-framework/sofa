@@ -311,14 +311,14 @@ QuadSetTopologyContainer::QuadID QuadSetTopologyContainer::getQuadIndex(PointID 
     return InvalidID;
 }
 
-size_t QuadSetTopologyContainer::getNumberOfQuads() const
+size_type QuadSetTopologyContainer::getNumberOfQuads() const
 {
     helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
     return m_quad.size();
 }
 
 
-size_t QuadSetTopologyContainer::getNumberOfElements() const
+size_type QuadSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfQuads();
 }
@@ -493,9 +493,9 @@ bool QuadSetTopologyContainer::checkConnexity()
 }
 
 
-size_t QuadSetTopologyContainer::getNumberOfConnectedComponent()
+size_type QuadSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    size_t nbr = this->getNbQuads();
+    auto nbr = this->getNbQuads();
 
     if (nbr == 0)
     {

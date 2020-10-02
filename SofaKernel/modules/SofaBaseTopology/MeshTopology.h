@@ -101,9 +101,9 @@ public:
 
     void init() override;
 
-    std::size_t getNbPoints() const override;
+    size_type getNbPoints() const override;
 
-    void setNbPoints(std::size_t  n) override;
+    void setNbPoints(size_type  n) override;
 
     // Complete sequence accessors
 
@@ -115,11 +115,11 @@ public:
 
     // Random accessors
 
-    size_t getNbEdges() override;
-    size_t getNbTriangles() override;
-    size_t getNbQuads() override;
-    size_t getNbTetrahedra() override;
-    size_t getNbHexahedra() override;
+    size_type getNbEdges() override;
+    size_type getNbTriangles() override;
+    size_type getNbQuads() override;
+    size_type getNbTetrahedra() override;
+    size_type getNbHexahedra() override;
 
     const Edge getEdge(EdgeID i) override;
     const Triangle getTriangle(TriangleID i) override;
@@ -132,7 +132,7 @@ public:
     typedef defaulttype::Vector2						UV;
     typedef helper::vector<UV>				SeqUV;
     virtual const SeqUV& getUVs();
-    virtual size_t getNbUVs();
+    virtual size_type getNbUVs();
     virtual const UV getUV(UVID i);
     void addUV(SReal u, SReal v);
     //
@@ -245,7 +245,7 @@ public:
     bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    size_t getNumberOfConnectedComponent() override;
+    size_type getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     virtual const helper::vector<index_type> getConnectedElement(index_type elem) override;
@@ -338,7 +338,7 @@ public:
     Data<SeqUV>	seqUVs; ///< List of uv coordinates
 
 protected:
-    std::size_t  nbPoints;
+    size_type  nbPoints;
 
     bool validTetrahedra;
     bool validHexahedra;

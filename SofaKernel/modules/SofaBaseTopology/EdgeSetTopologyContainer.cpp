@@ -288,9 +288,9 @@ bool EdgeSetTopologyContainer::checkConnexity()
 }
 
 
-size_t EdgeSetTopologyContainer::getNumberOfConnectedComponent()
+size_type EdgeSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    size_t nbr = this->getNbEdges();
+    auto nbr = this->getNbEdges();
 
     if (nbr == 0)
     {
@@ -482,13 +482,13 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 
 
 
-size_t EdgeSetTopologyContainer::getNumberOfEdges() const
+size_type EdgeSetTopologyContainer::getNumberOfEdges() const
 {
     d_edge.updateIfDirty();
     return d_edge.getValue().size();
 }
 
-size_t EdgeSetTopologyContainer::getNumberOfElements() const
+size_type EdgeSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfEdges();
 }

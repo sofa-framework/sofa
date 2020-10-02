@@ -57,8 +57,8 @@ public:
 
     Vec3State() ;
 
-    virtual void resize(size_t vsize) ;
-    virtual size_t getSize() const ;
+    virtual void resize(size_type vsize) ;
+    virtual size_type getSize() const ;
 
     //State API
     virtual       Data<VecCoord>* write(core::VecCoordId  v ) ;
@@ -88,7 +88,7 @@ public:
     typedef sofa::defaulttype::Vec<2, float> TexCoord;
     typedef helper::vector<TexCoord> VecTexCoord;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
     
     //Indices must be unsigned int for drawing
     using visual_index_type = unsigned int;

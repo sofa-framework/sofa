@@ -75,14 +75,14 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::apply ( const core::Mech
     helper::WriteAccessor<OutDataVecCoord> out = dOut;
 
     out.resize(outputTopo->getNbPoints());
-    for(std::size_t i = 0; i < pointMap.size(); ++i)
+    for(size_type i = 0; i < pointMap.size(); ++i)
     {
-        if (pointMap[i] != sofa::defaulttype::InvalidID)
+        if (pointMap[i] != sofa::InvalidID)
             out[pointMap[i]] = in[i];
     }
-    for(std::size_t i = 0; i < edgeMap.size(); ++i)
+    for(size_type i = 0; i < edgeMap.size(); ++i)
     {
-        if (edgeMap[i] != sofa::defaulttype::InvalidID)
+        if (edgeMap[i] != sofa::InvalidID)
             out[edgeMap[i]] = (in[ edges[i][0] ]+in[ edges[i][1] ])*0.5f;
     }
 }
@@ -101,14 +101,14 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJ( const core::Mech
     helper::WriteAccessor<OutDataVecDeriv> out = dOut;
 
     out.resize(outputTopo->getNbPoints());
-    for(std::size_t i = 0; i < pointMap.size(); ++i)
+    for(size_type i = 0; i < pointMap.size(); ++i)
     {
-        if (pointMap[i] != sofa::defaulttype::InvalidID)
+        if (pointMap[i] != sofa::InvalidID)
             out[pointMap[i]] = in[i];
     }
-    for(std::size_t i = 0; i < edgeMap.size(); ++i)
+    for(size_type i = 0; i < edgeMap.size(); ++i)
     {
-        if (edgeMap[i] != sofa::defaulttype::InvalidID)
+        if (edgeMap[i] != sofa::InvalidID)
             out[edgeMap[i]] = (in[ edges[i][0] ]+in[ edges[i][1] ])*0.5f;
     }
 }
@@ -126,14 +126,14 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::Mec
     helper::WriteAccessor<InDataVecDeriv> out = dOut;
 
     out.resize(inputTopo->getNbPoints());
-    for(std::size_t i = 0; i < pointMap.size(); ++i)
+    for(size_type i = 0; i < pointMap.size(); ++i)
     {
-        if (pointMap[i] != sofa::defaulttype::InvalidID)
+        if (pointMap[i] != sofa::InvalidID)
             out[i] += in[pointMap[i]];
     }
-    for(std::size_t i = 0; i < edgeMap.size(); ++i)
+    for(size_type i = 0; i < edgeMap.size(); ++i)
     {
-        if (edgeMap[i] != sofa::defaulttype::InvalidID)
+        if (edgeMap[i] != sofa::InvalidID)
         {
             out[edges[i][0]] += (in[edgeMap[i]])*0.5f;
             out[edges[i][1]] += (in[edgeMap[i]])*0.5f;

@@ -49,9 +49,9 @@ CubeCollisionModel::CubeCollisionModel()
     enum_type = AABB_TYPE;
 }
 
-void CubeCollisionModel::resize(std::size_t size)
+void CubeCollisionModel::resize(size_type size)
 {
-    std::size_t size0 = this->size;
+    auto size0 = this->size;
     if (size == size0) return;
     // reset parent
     CollisionModel* parent = getPrevious();
@@ -64,7 +64,7 @@ void CubeCollisionModel::resize(std::size_t size)
     this->elems.resize(size);
     this->parentOf.resize(size);
     // set additional indices
-    for (std::size_t i=size0; i<size; ++i)
+    for (size_type i=size0; i<size; ++i)
     {
         this->elems[i].children.first=core::CollisionElementIterator(getNext(), i);
         this->elems[i].children.second=core::CollisionElementIterator(getNext(), i+1);
@@ -317,7 +317,7 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
         if (!parentOf.empty())
         {
             // Finally update parentOf to reflect new cell order
-            for (std::size_t i=0; i<size; i++)
+            for (size_type i=0; i<size; i++)
                 parentOf[elems[i].children.first.getIndex()] = i;
         }
     }

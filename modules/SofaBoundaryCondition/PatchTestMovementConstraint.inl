@@ -168,7 +168,7 @@ void PatchTestMovementConstraint<DataTypes>::findCornerPoints()
     point = constrainedPoints[0];
 
     // Search if the constrained points are in the same plane
-    for(size_t i = 0; i < constrainedPoints.size() ; i++)
+    for(size_type i = 0; i < constrainedPoints.size() ; i++)
     {
         if(CoordSize > 2 && constrainedPoints[i][2]!=point[2])
         {

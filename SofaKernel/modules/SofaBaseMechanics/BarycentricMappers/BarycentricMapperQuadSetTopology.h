@@ -47,7 +47,7 @@ class BarycentricMapperQuadSetTopology : public BarycentricMapperTopologyContain
 {
     typedef typename BarycentricMapper<In,Out>::MappingData2D MappingData;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperQuadSetTopology,In,Out),

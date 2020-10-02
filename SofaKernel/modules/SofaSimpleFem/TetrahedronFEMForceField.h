@@ -103,7 +103,7 @@ public:
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
     typedef core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     enum { SMALL = 0,   ///< Symbol of small displacements tetrahedron solver
            LARGE = 1,   ///< Symbol of corotational large displacements tetrahedron solver based on a QR decomposition    -> Nesme et al 2005 "Efficient, Physically Plausible Finite Elements"

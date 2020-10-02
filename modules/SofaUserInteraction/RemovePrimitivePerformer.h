@@ -69,7 +69,7 @@ protected:
 template <class DataTypes>
 class SOFA_USER_INTERACTION_API RemovePrimitivePerformer: public       TInteractionPerformer<DataTypes>, public RemovePrimitivePerformerConfiguration
 {
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     typedef typename DataTypes::Real               Real;
     typedef typename DataTypes::Coord              Coord;

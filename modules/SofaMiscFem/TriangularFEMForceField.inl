@@ -522,7 +522,7 @@ typename TriangularFEMForceField<DataTypes>::Index TriangularFEMForceField<DataT
     {
         std::size_t nbEdges = m_topology->getNbEdges();
 
-        for(std::size_t i=0; i<nbEdges; i++ )
+        for(size_type i=0; i<nbEdges; i++ )
         {
             if (edgeInf[i].fracturable)
             {
@@ -533,7 +533,7 @@ typename TriangularFEMForceField<DataTypes>::Index TriangularFEMForceField<DataT
 
     edgeInfo.endEdit();
 
-    return sofa::defaulttype::InvalidID;
+    return sofa::InvalidID;
 }
 
 

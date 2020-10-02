@@ -63,7 +63,7 @@ public:
     /// const iterator
     typedef typename container_type::const_iterator const_iterator;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     typedef sofa::core::topology::TopologyElementHandler< TopologyElementType > Inherit;
     typedef typename Inherit::AncestorElem AncestorElem;

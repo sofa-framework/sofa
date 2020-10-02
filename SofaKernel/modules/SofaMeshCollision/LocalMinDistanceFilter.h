@@ -45,7 +45,7 @@ class LocalMinDistanceFilter;
 class SOFA_MESH_COLLISION_API InfoFilter
 {
 public:
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     /**
      * @brief Default constructor.
