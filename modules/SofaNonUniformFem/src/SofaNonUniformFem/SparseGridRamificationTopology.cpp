@@ -1111,7 +1111,7 @@ void SparseGridRamificationTopology::printNbConnexions()
         }
         tmpStr << " -- ";
     }
-    msg_info() << tmpStr;
+    msg_info() << tmpStr.str();
 }
 
 

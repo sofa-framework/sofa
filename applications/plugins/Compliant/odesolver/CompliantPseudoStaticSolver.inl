@@ -52,7 +52,7 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
 
     const SReal& threshold = d_threshold.getValue();
     const SReal& velocityFactor = d_velocityFactor.getValue();
-    bool doInfoString = notMuted();
+    bool doInfoString = this->notMuted();
 
     SReal lastVelocity = 0;
 

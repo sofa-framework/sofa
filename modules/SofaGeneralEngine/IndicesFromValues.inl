@@ -94,7 +94,7 @@ void IndicesFromValues<T>::doUpdate()
                     otherIndices.push_back(j);
                 }
             }
-            msg_info_when(index < 0) "Input value " << values[i] <<" not found";
+            msg_info_when(index < 0) << "Input value " << values[i] <<" not found";
         }
     } else {
         indices.reserve(values.size());
