@@ -28,8 +28,6 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/core/objectmodel/DataContentValue.h>
 
-CI-INRIA ARE YOU COMPILING ?
-
 namespace sofa
 {
 
