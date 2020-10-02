@@ -35,8 +35,8 @@ class SceneRegisterArticulatedRigid(Compliant.sml.SceneArticulatedRigid):
         self.param.target.scale = "1 1 1"
 
         # add rigid tag to bones and set densities
-        if "rigid" not in self.model.solidsByTag.keys():  # Maybe rigid tags are in the model
-            for bone in self.model.solidsByTag["bone"]:
+        if not self.model.getSolidsByTags({"rigid"}):  # Maybe rigid tags are in the model
+            for bone in self.model.getSolidsByTags({"bone"}):
                 bone.tags.add("rigid")
                 bone.density = self.param.density_bone
             model.updateTag()
@@ -49,9 +49,10 @@ class SceneRegisterArticulatedRigid(Compliant.sml.SceneArticulatedRigid):
         # Merge rigids in one node
         self.nodes["dofRigid"] = self.insertMergeRigid("dofRigid")
 
-        # Target node
-        if "target" in self.model.solidsByTag.keys():
-            self.__insert_target()
+        # Target node        
+        targets = self.model.getSolidsByTags({"target"})
+        if targets:
+            self.__insert_target(targets)
         else:
             print("<Registration> error: No target detected")
             return
@@ -59,15 +60,15 @@ class SceneRegisterArticulatedRigid(Compliant.sml.SceneArticulatedRigid):
         # Registration node creation
         self.__insert_registration_node()
 
-    def __insert_target(self):
+    def __insert_target(self,targets):
         """ Insert the target node in the graph"""
 
-        if len(self.model.solidsByTag["target"]) != 1:
+        if len(targets) != 1:
             print("<Registration> error: multiple target detected")
             return
 
         # Target properties
-        target = self.model.solidsByTag["target"][0]
+        target = targets[0]
         file = target.mesh[0].source
         translation = SofaPython.Tools.listToStr(target.position[:3])
         rotation = SofaPython.Tools.listToStr(target.position[3:])

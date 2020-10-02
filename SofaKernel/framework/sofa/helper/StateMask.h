@@ -27,9 +27,6 @@
 #include <sofa/helper/vector.h>
 
 #include <sofa/defaulttype/Mat.h>
-#ifdef Success
-#undef Success // dirty workaround to cope with the (dirtier) X11 define. See http://eigen.tuxfamily.org/bz/show_bug.cgi?id=253
-#endif
 #include <Eigen/SparseCore>
 
 
@@ -149,19 +146,15 @@ class SOFA_HELPER_API StateMask
 
 public:
 
-    StateMask() : activated(false) {
-        m_size = 0;
-    }
+    StateMask() : m_size(0) {}
 
     /// filling-up (and resizing when necessary) the mask
-    void assign( size_t size, bool value );
+    void assign( size_t size, bool ) { m_size=size; }
 
     /// the mask can be deactivated when the mappings must be applied to every dofs (e.g. propagatePosition)
     /// it must be activated when the mappings can be limited to active dofs
-    void activate( bool a );
-    inline bool isActivated() const {
-        return activated;
-    }
+    void activate( bool ) {}
+    inline bool isActivated() const { return false; }
 
     /// add the given dof index in the mask
     inline void insertEntry( size_t /*index */) {}
@@ -175,55 +168,27 @@ public:
     /// getting mask entries is useful for advanced uses.
     //    const InternalStorage& getEntries() const { return mask; }
 
-    void resize( size_t size );
-    inline void clear() {
-        m_size = 0;
-    }
+    void resize( size_t size ) { m_size=size; }
+    inline void clear() { m_size=0; }
 
     size_t size() const {
         return m_size;
     }
 
-    inline friend std::ostream& operator<< ( std::ostream& os, const StateMask& /*sm*/ )
-    {
-        return os;
-    }
+    inline friend std::ostream& operator<< ( std::ostream& os, const StateMask& /*sm*/ ) { return os; }
 
 
     /// filtering the given input matrix by using the mask as a diagonal projection matrix
     /// output = mask.asDiagonal() * input
     template<class Real>
-    void maskedMatrix( Eigen::SparseMatrix<Real,Eigen::RowMajor>& output, const Eigen::SparseMatrix<Real,Eigen::RowMajor>& input, size_t blockSize=1 ) const
-    {
-        typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> Mat;
-
-        output.resize( input.rows(), input.cols() );
-
-        for( size_t k=0 ; k<m_size ; ++k )
-        {
-            for( size_t i=0 ; i<blockSize ; ++i )
-            {
-                int row = k*blockSize+i;
-                output.startVec( row );
-                for( typename Mat::InnerIterator it(input,row) ; it ; ++it )
-                    output.insertBack( row, it.col() ) = it.value();
-            }
-        }
-        output.finalize();
-    }
-
-
+    void maskedMatrix( Eigen::SparseMatrix<Real,Eigen::RowMajor>& output, const Eigen::SparseMatrix<Real,Eigen::RowMajor>& input, size_t blockSize=1 ) const {output=input;}
 
     /// return the number of dofs in the mask
-    size_t nbActiveDofs() const;
-
-    //    size_t getHash() const;
-
+    size_t nbActiveDofs() const {return m_size;}
 
 protected:
 
-    bool activated; // automatic switch (the mask is only used for specific operations)
-    unsigned m_size;
+    size_t m_size;
 
 };
 

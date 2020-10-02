@@ -9,7 +9,7 @@ namespace utils {
 // nlnscg(m)
 class nlnscg : public eigen_types {
 
-    const unsigned n;
+//    const unsigned n;
     const vec metric;
     
     unsigned k;

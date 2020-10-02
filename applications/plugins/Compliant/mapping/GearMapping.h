@@ -34,7 +34,7 @@ namespace mapping
 
     public:
 
-        SOFA_CLASS(SOFA_TEMPLATE2(GearMultiMapping,TIn,TOut), SOFA_TEMPLATE2(core::MultiMapping,TIn,TOut));
+        SOFA_CLASS(SOFA_TEMPLATE2(GearMultiMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMultiMapping,TIn,TOut));
 
         typedef AssembledMultiMapping<TIn, TOut> Inherit;
         typedef TIn In;

@@ -3,7 +3,7 @@ import Sofa
 import SofaPython.sml
 
 def createScene(rootNode):
-    model = SofaPython.sml.Model("smlSimple.xml")
+    model = SofaPython.sml.Model("smlSimple.sml")
     scene = SofaPython.sml.SceneDisplay(rootNode,model)
     scene.param.colorByTag["default"]="0.8 0.8 0.8"
     scene.param.colorByTag["red"]="1. 0. 0."

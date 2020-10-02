@@ -71,9 +71,6 @@ template class SOFA_Compliant_API PythonMultiMapping< Vec1fTypes, Vec1fTypes >;
 #endif
 
 
-
-with_py_callback::with_py_callback() : py_callback(0) { }
-with_py_callback::~with_py_callback() { }
     
 
 }

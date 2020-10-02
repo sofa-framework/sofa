@@ -42,7 +42,7 @@
 #include <SofaComponentAdvanced/initComponentAdvanced.h>
 #include <SofaComponentMisc/initComponentMisc.h>
 
-#include <SofaLoader/MeshGmshLoader.h>
+#include <SofaGeneralLoader/MeshGmshLoader.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 

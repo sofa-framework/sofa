@@ -4,11 +4,11 @@
 #include <SofaSimpleGUI/config.h>
 #include <vector>
 #include <string>
+#include <sofa/simulation/Node.h>
 
 namespace sofa {
 namespace simulation {
     class Simulation;
-    class Node;
 }
 
 namespace simplegui {
@@ -108,7 +108,7 @@ public:
 
 
 protected:
-    simulation::Node* _groot; ///< root of the scene
+    simulation::Node::SPtr _groot; ///< root of the scene
     simulation::Node* _iroot; ///< root of the interactors, child of _groot
     simulation::Simulation* sofaSimulation;
 

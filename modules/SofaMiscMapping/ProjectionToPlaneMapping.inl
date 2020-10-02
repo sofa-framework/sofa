@@ -44,6 +44,7 @@ ProjectionToTargetPlaneMapping<TIn, TOut>::ProjectionToTargetPlaneMapping()
     , f_indices(initData(&f_indices, "indices", "Indices of the parent points (if empty, all input dofs are mapped)"))
     , f_origins(initData(&f_origins, "origins", "Origins of the planes on which the points are projected"))
     , f_normals(initData(&f_normals, "normals", "Normals of the planes on which the points are projected"))
+    , d_factor(initData(&d_factor, Real(1), "factor", "Projection factor (0->nothing, 1->projection on the plane (default), 2->planar symmetry, ..."))
     , d_drawScale(initData(&d_drawScale, SReal(10), "drawScale", "Draw scale"))
     , d_drawColor(initData(&d_drawColor, defaulttype::Vec4f(1,0,0,0.5), "drawColor", "Draw color"))
 {
@@ -75,6 +76,7 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::reinit()
         normals[i].normalize( OutCoord(1,0,0) ); // failsafe for null norms
 
 
+    Real factor = d_factor.getValue();
     // precompute constant jacobian
     jacobian.resizeBlocks(nb,this->getFromModel()->getSize());
     for(unsigned i=0; i<nb; i++ )
@@ -88,14 +90,13 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::reinit()
             for(unsigned k=0; k<Nout; k++ )
             {
                 if( j == k )
-                    jacobian.insertBack( i*Nout+j, index*Nin+k, 1-n[j]*n[k] );
+                    jacobian.insertBack( i*Nout+j, index*Nin+k, 1-factor*n[j]*n[k] );
                 else
-                    jacobian.insertBack( i*Nout+j, index*Nin+k, -n[j]*n[k] );
+                    jacobian.insertBack( i*Nout+j, index*Nin+k, -factor*n[j]*n[k] );
             }
         }
     }
     jacobian.compress();
-
 
     this->Inherit::reinit();
 }
@@ -111,6 +112,8 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::apply(const core::MechanicalPara
 
     size_t nb = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
 
+    Real factor = d_factor.getValue();
+
     for(unsigned i=0; i<nb; i++ )
     {
         const unsigned& index = indices.empty() ? i : indices[i] ;
@@ -119,7 +122,7 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::apply(const core::MechanicalPara
         const OutCoord& o = i<origins.size() ? origins[i] : origins.ref().back();
         const OutCoord& n = i<normals.size() ? normals[i] : normals.ref().back();
 
-        out[i] = x - n * ( (x-o) * n ); // projection on the plane
+        out[i] = x - factor * n * ( (x-o) * n ); // projection on the plane
     }
 }
 

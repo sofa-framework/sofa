@@ -15,6 +15,9 @@ template class SOFA_Compliant_API EigenSparseSolver< LDLTSparseLinearSolver, tru
 SOFA_DECL_CLASS(LDLTSolver)
 int LDLTSolverClass = core::RegisterObject("Direct LDLT solver").add< LDLTSolver >();
 
+template class SOFA_Compliant_API EigenSparseSolver< LLTSparseLinearSolver, true >;
+SOFA_DECL_CLASS(LLTSolver)
+int LLTSolverClass = core::RegisterObject("Direct LLT solver").add< LLTSolver >();
 
 template class SOFA_Compliant_API EigenSparseSolver< LUSparseLinearSolver >;
 SOFA_DECL_CLASS(LUSolver)

@@ -192,8 +192,7 @@ add_subdirectory(../framework/sofa/helper ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper
 add_subdirectory(../framework/sofa/defaulttype ${CMAKE_CURRENT_BINARY_DIR}/SofaDefaultType)
 add_subdirectory(../framework/sofa/core ${CMAKE_CURRENT_BINARY_DIR}/SofaCore)
 add_subdirectory(../framework/sofa/simulation ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCore)
-##TODO: reactivate this part when SofaTest will be rewritten to take account the split
-if(SOFA_BUILD_TESTS AND SOFA_BUILD_PACKAGES_EXTENSIONS)
+if(SOFA_BUILD_TESTS)
     add_subdirectory(../framework/framework_test ${CMAKE_CURRENT_BINARY_DIR}/framework_test)
 endif()
 
@@ -234,9 +233,6 @@ if(NOT WIN32)
         #   set_target_properties(Foo PROPERTIES SOFA_NO_CXX11 1)
 
         target_compile_options(SofaHelper PUBLIC "$<$<AND:$<NOT:$<BOOL:$<TARGET_PROPERTY:SOFA_NO_CXX11>>>,$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>>:${CXX11_FLAG}>")
-        if ("${CMAKE_CXX_COMPILER} ${CMAKE_CXX_COMPILER_ARG1}" MATCHES ".*clang") # Wno-deprecated-register does not exist in GCC
-            target_compile_options(SofaHelper PUBLIC "$<$<AND:$<NOT:$<BOOL:$<TARGET_PROPERTY:SOFA_NO_CXX11>>>,$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>>:-Wno-deprecated-register>")
-        endif()
     endif()
 endif()
 

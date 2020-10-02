@@ -134,7 +134,10 @@ public:
         getConstVecIn2Coord(inPos, vecIn2Pos);
 
         this->apply(mparams, vecOutPos, vecIn1Pos, vecIn2Pos);
+
+#ifdef SOFA_USE_MASK
         this->m_forceMaskNewStep = true;
+#endif
     }
     /// This method must be reimplemented by all mappings.
     /// InPos and OutPos by default contains VecIds of type V_COORD.
@@ -208,11 +211,13 @@ public:
         getConstVecOutDeriv(outForce, vecInForce);
         this->applyJT(mparams, vecOut1Force, vecOut2Force, vecInForce);
 
+#ifdef SOFA_USE_MASK
         if( this->m_forceMaskNewStep )
         {
             this->m_forceMaskNewStep = false;
             updateForceMask();
         }
+#endif
     }
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.

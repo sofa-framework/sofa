@@ -273,6 +273,9 @@ public:
                 if (pc[2] < zmax) pc[2]++;
                 wplane->setPlane(pc);
                 break;
+            case '5':
+                reinit();
+                break;
             }
         }
 

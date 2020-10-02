@@ -25,6 +25,12 @@
 #include <image/config.h>
 #include <sofa/helper/system/config.h>
 
+#ifdef SOFA_HAVE_SOFAPYTHON
+    #include <SofaPython/PythonFactory.h>
+    #include "python/Binding_ImageData.h"
+#endif
+
+
 namespace sofa
 {
 
@@ -48,6 +54,24 @@ void initExternalModule()
     if (first)
     {
         first = false;
+
+#ifdef SOFA_HAVE_SOFAPYTHON
+        if( PythonFactory::s_sofaPythonModule ) // add the module only if the Sofa module exists (SofaPython is loaded)
+        {
+            // adding new bindings for Data<Image<T>>
+            SP_ADD_CLASS_IN_FACTORY(ImageCData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageC>)
+            SP_ADD_CLASS_IN_FACTORY(ImageUCData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageUC>)
+            SP_ADD_CLASS_IN_FACTORY(ImageIData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageI>)
+            SP_ADD_CLASS_IN_FACTORY(ImageUIData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageUI>)
+            SP_ADD_CLASS_IN_FACTORY(ImageSData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageS>)
+            SP_ADD_CLASS_IN_FACTORY(ImageUSData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageUS>)
+            SP_ADD_CLASS_IN_FACTORY(ImageLData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageL>)
+            SP_ADD_CLASS_IN_FACTORY(ImageULData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageUL>)
+            SP_ADD_CLASS_IN_FACTORY(ImageFData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageF>)
+            SP_ADD_CLASS_IN_FACTORY(ImageDData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageD>)
+            SP_ADD_CLASS_IN_FACTORY(ImageBData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageB>)
+        }
+#endif
     }
 }
 

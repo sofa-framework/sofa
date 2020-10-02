@@ -31,13 +31,9 @@
 #include <sofa/core/objectmodel/BaseNode.h>
 
 
-#include <sofa/core/visual/DisplayFlags.h>
-#include "Binding_DisplayFlagsData.h"
+#include "PythonFactory.h"
 
-#include <sofa/helper/OptionsGroup.h>
-#include "Binding_OptionsGroupData.h"
-
-#include <SofaDeformable/SpringForceField.h>
+#include <SofaDeformable/SpringForceField.h> // should not be here
 
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
@@ -66,27 +62,28 @@ PyObject *GetDataValuePython(BaseData* data)
 {
     // depending on the data type, we return the good python type (int, float, string, array, ...)
 
-    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-    const void* valueVoidPtr = data->getValueVoidPtr();
-    int rowWidth = typeinfo->size();
-    int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
 
-    // special cases...
-    if( Data<sofa::core::visual::DisplayFlags>* df = dynamic_cast<Data<sofa::core::visual::DisplayFlags>*>(data) )
+    // special cases... from factory (e.g DisplayFlags, OptionsGroup)
     {
-        return SP_BUILD_PYPTR(DisplayFlagsData,BaseData,df,false);
+        PyObject* res = sofa::PythonFactory::toPython(data);
+        if( res ) return res;
     }
-    else if( Data<sofa::helper::OptionsGroup>* og = dynamic_cast<Data<sofa::helper::OptionsGroup>*>(data) )
-    {
-        return SP_BUILD_PYPTR(OptionsGroupData,BaseData,og,false);
-    }
-    else if ( Data<sofa::helper::vector<LinearSpring<SReal> > >* vectorLinearSpring = dynamic_cast<Data<sofa::helper::vector<LinearSpring<SReal> > >*>(data) )
+
+
+    // horrible special case that needs to be refactored
+    if ( Data<sofa::helper::vector<LinearSpring<SReal> > >* vectorLinearSpring = dynamic_cast<Data<sofa::helper::vector<LinearSpring<SReal> > >*>(data) )
     {
         // special type, a vector of LinearSpring objects
+
+        const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+        const void* valueVoidPtr = data->getValueVoidPtr();
+        int rowWidth = typeinfo->size();
+        int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+
         if (typeinfo->size(valueVoidPtr)==1)
         {
             // this type is NOT a vector; return directly the proper native type
-            const LinearSpring<SReal> value = vectorLinearSpring->getValue()[0];
+            const LinearSpring<SReal>& value = vectorLinearSpring->getValue()[0];
             LinearSpring<SReal> *obj = new LinearSpring<SReal>(value.m1,value.m2,value.ks,value.kd,value.initpos);
             return SP_BUILD_PYPTR(LinearSpring,LinearSpring<SReal>,obj,true); // "true", because I manage the deletion myself
         }
@@ -99,7 +96,7 @@ PyObject *GetDataValuePython(BaseData* data)
                 for (int j=0; j<rowWidth; j++)
                 {
                     // build each value of the list
-                    const LinearSpring<SReal> value = vectorLinearSpring->getValue()[i*rowWidth+j];
+                    const LinearSpring<SReal>& value = vectorLinearSpring->getValue()[i*rowWidth+j];
                     LinearSpring<SReal> *obj = new LinearSpring<SReal>(value.m1,value.m2,value.ks,value.kd,value.initpos);
                     PyList_SetItem(row,j,SP_BUILD_PYPTR(LinearSpring,LinearSpring<SReal>,obj,true));
                 }
@@ -110,6 +107,11 @@ PyObject *GetDataValuePython(BaseData* data)
         }
 
     }
+
+
+
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    const void* valueVoidPtr = data->getValueVoidPtr();
 
     if (!typeinfo->Container())
     {
@@ -136,6 +138,9 @@ PyObject *GetDataValuePython(BaseData* data)
     }
     else
     {
+        int rowWidth = typeinfo->size();
+        int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+
         // this is a vector; return a python list of the corresponding type (ints, scalars or strings)
 
         if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
@@ -194,7 +199,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
     int rowWidth = (typeinfo && typeinfo->ValidInfo()) ? typeinfo->size() : 1;
     int nbRows = (typeinfo && typeinfo->ValidInfo()) ? typeinfo->size(data->getValueVoidPtr()) / typeinfo->size() : 1;
 
-    // special cases...
+    // horrible special case that needs to be refactored
     Data<sofa::helper::vector<LinearSpring<SReal> > >* dataVectorLinearSpring = dynamic_cast<Data<sofa::helper::vector<LinearSpring<SReal> > >*>(data);
     if (dataVectorLinearSpring)
     {
@@ -748,7 +753,7 @@ extern "C" PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
     int rowWidth = typeinfo->size();
     int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
 
-    SP_MESSAGE_WARNING( "Data_getSize (this fonction always returns 0) rowWidth="<<rowWidth<<" nbRows="<<nbRows );
+    SP_MESSAGE_WARNING( "Data_getSize (this function always returns 0) rowWidth="<<rowWidth<<" nbRows="<<nbRows );
 
     return PyInt_FromLong(0); //temp ==> WTF ?????
 }
@@ -856,6 +861,58 @@ extern "C" PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
     return PyString_FromString(data->getName().c_str());
 }
 
+
+
+
+// returns a pointer to the Data
+extern "C" PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    void* dataValueVoidPtr = const_cast<void*>(data->getValueVoidPtr()); // data->beginEditVoidPtr();  // warning a endedit should be necessary somewhere (when releasing the python variable?)
+    void* valueVoidPtr = typeinfo->getValuePtr(dataValueVoidPtr);
+
+
+    // N-dimensional arrays
+    sofa::helper::vector<size_t> dimensions;
+    dimensions.push_back( typeinfo->size(dataValueVoidPtr) ); // total size to begin with
+    const AbstractTypeInfo* valuetypeinfo = typeinfo; // to go trough encapsulated types (at the end, it will correspond to the finest type)
+
+
+    while( valuetypeinfo->Container() )
+    {
+        size_t s = typeinfo->size(); // the current type size
+        dimensions.back() /= s; // to get the number of current type, the previous total size must be devided by the current type size
+        dimensions.push_back( s );
+        valuetypeinfo=valuetypeinfo->ValueType();
+    }
+
+    PyObject* shape = PyTuple_New(dimensions.size());
+    for( size_t i=0; i<dimensions.size() ; ++i )
+        PyTuple_SetItem( shape, i, PyLong_FromSsize_t( dimensions[i] ) );
+
+
+
+    // output = tuple( pointer, shape tuple, type name)
+    PyObject* res = PyTuple_New(3);
+
+    // the data pointer
+    PyTuple_SetItem( res, 0, PyLong_FromVoidPtr( valueVoidPtr ) );
+
+    // the shape
+    PyTuple_SetItem( res, 1, shape );
+
+    // the most basic type name
+    PyTuple_SetItem( res, 2, PyString_FromString( valuetypeinfo->name().c_str() ) );
+
+
+    return res;
+}
+
+
+
+
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
 SP_CLASS_METHOD(Data,getValueString)
@@ -868,6 +925,7 @@ SP_CLASS_METHOD(Data,updateIfDirty)
 SP_CLASS_METHOD(Data,read)
 SP_CLASS_METHOD(Data,setParent)
 SP_CLASS_METHOD(Data,getLinkPath)
+SP_CLASS_METHOD(Data,getValueVoidPtr)
 SP_CLASS_METHODS_END
 
 

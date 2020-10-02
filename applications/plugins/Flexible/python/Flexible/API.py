@@ -9,7 +9,7 @@ import SofaPython.Tools
 from SofaPython.Tools import listToStr as concat
 from SofaPython.Tools import listListToStr as lconcat
 from SofaPython import Quaternion
-import BranchingImage.API # TODO Flexible should not depend on BranchingImage
+
 
 printLog = True
 
@@ -193,7 +193,7 @@ class Deformable:
             Sofa.msg_error("Flexible.API.Deformable","addNormals : no topology for "+ self.name)
             return
         pos = '@'+self.topology.name+'.position' if self.dofs is None else  '@'+self.dofs.name+'.position'
-        self.normals = self.node.createObject("NormalsFromPoints", template='Vec3', name="normalsFromPoints", position=pos, triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
+        self.normals = self.node.createObject("NormalsFromPoints", warning=False, template='Vec3', name="normalsFromPoints", position=pos, triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
 
     def addMass(self,totalMass):
         if self.dofs is None:
@@ -263,7 +263,6 @@ class AffineMass:
         self.mass = None
 
     def massFromDensityImage(self, dofNode, dofRigidNode=None, densityImage=None, lumping='0'):
-        useBranchingImage = isinstance(densityImage, BranchingImage.API.Image)
         node = dofNode.createChild('Mass')
         node.createObject('MechanicalObject', name='massPoints', template='Vec3')
         insertLinearMapping(node, dofRigidNode, self.dofAffineNode, assemble=False)
@@ -352,11 +351,10 @@ class ShapeFunction:
     """ High-level API to manipulate ShapeFunction
     @todo better handle template
     """
-    # TODO useBranchingImage should be false by default, for now keep True for compatibility
     def __init__(self, node):
         self.node = node
         self.shapeFunction=None
-        self.prefix = ""
+        self.prefix = "" # image type prefix, can be Branching
    
     def addVoronoi(self, image, position='', cells='', nbRef=8):
         """ Add a Voronoi shape function using path to position  and possibly cells
@@ -412,6 +410,14 @@ class ShapeFunction:
             transform="@containerWeights.transform",
             weights="@containerWeights.image", indices="@containerIndices.image")
 
+    def addViewer(self):
+        if len(self.prefix)==0:
+            self.node.createObject("BranchingImageToImageConverter", template="ImageD", name="SFSelectNode", shapeFunctionWeights="@shapeFunction.weights", shapeFunctionIndices="@shapeFunction.indices", nodeIndex=0)
+        else: # brute conversion for now, not so bad
+            self.node.createObject("BranchingImageToImageConverter", template="BranchingImageD,ImageD", name="weigthsImage", conversionType=0, inputBranchingImage="@shapeFunction.weights")
+            self.node.createObject("BranchingImageToImageConverter", template="BranchingImageUI,ImageUI", name="indicesImage", conversionType=0, inputBranchingImage="@shapeFunction.indices")
+            self.node.createObject("ImageShapeFunctionSelectNode", template="ImageD", name="SFSelectNode", shapeFunctionWeights="@weigthsImage.image", shapeFunctionIndices="@indicesImage.image", nodeIndex=0)
+        self.node.createObject('ImageViewer', template="ImageD", name="SFViewer", listening=True, image="@SFSelectNode.nodeWeights", transform="@shapeFunction.transform")
 
 
 class FEMDof:
@@ -588,6 +594,7 @@ class Behavior:
         data = dict()
         with open(filename,'r') as f:
             data.update(json.load(f))
+            self.type = data['type']
             self.sampler = self.node.createObject('GaussPointContainer',name='GPContainer', volumeDim=data['volumeDim'], inputVolume=data['inputVolume'], position=data['position'], **kwargs)
             if not self.labelImage is None and not self.labels is None:
                 if self.labelImage.prefix == "Branching":
@@ -620,7 +627,7 @@ class Behavior:
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
         volumeDim = len(self.sampler.volume)/ len(self.sampler.position) if isinstance(self.sampler.volume, list) is True else 1 # when volume is a list (several GPs or order> 1)
-        data = {'volumeDim': str(volumeDim), 'inputVolume': SofaPython.Tools.listListToStr(self.sampler.volume), 'position': SofaPython.Tools.listListToStr(self.sampler.position),
+        data = {'type': self.type, 'volumeDim': str(volumeDim), 'inputVolume': SofaPython.Tools.listListToStr(self.sampler.volume), 'position': SofaPython.Tools.listListToStr(self.sampler.position),
                 'indices': self.mapping.indices, 'weights': self.mapping.weights,
                 'weightGradients': self.mapping.weightGradients, 'weightHessians': self.mapping.weightHessians}
         # @todo: add restShape ?

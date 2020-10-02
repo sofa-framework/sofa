@@ -56,7 +56,7 @@ public:
     }
 
 protected:
-    bool readOBJ (std::ifstream &file, const char* filename);
+    bool readOBJ (std::istream &stream, const char* filename);
 //    bool readMTL (const char* filename, helper::vector <sofa::core::loader::Material>& materials);
 //    void addGroup (const sofa::core::loader::PrimitiveGroup& g);
 

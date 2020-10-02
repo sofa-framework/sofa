@@ -11,7 +11,7 @@ namespace component {
 namespace odesolver {
 
 SOFA_DECL_CLASS(CompliantImplicitSolver)
-int CompliantImplicitSolverClass = core::RegisterObject("Example compliance solver using assembly")
+int CompliantImplicitSolverClass = core::RegisterObject("Newmark-beta implicit solver for constrained dynamics using assembly")
         .add< CompliantImplicitSolver >()
         .addAlias("AssembledSolver"); // deprecated, for backward compatibility only
 

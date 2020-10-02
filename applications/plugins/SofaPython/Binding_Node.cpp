@@ -57,7 +57,7 @@ extern "C" PyObject * Node_getRoot(PyObject *self, PyObject * /*args*/)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
-    // BaseNode is not binded in SofaPython, so getRoot is binded in Node instead of BaseNode
+    // BaseNode is not bound in SofaPython, so getRoot is bound in Node instead of BaseNode
     return sofa::PythonFactory::toPython(node->getRoot());
 }
 
@@ -98,17 +98,38 @@ extern "C" PyObject * Node_init(PyObject * self, PyObject * /*args*/)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
+extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
 {
-    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
+    // BaseNode is not bound in SofaPython, so getChildNode is bound in Node instead of BaseNode
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     char *path;
+
     if (!PyArg_ParseTuple(args, "s",&path))
         Py_RETURN_NONE;
     if (!node || !path)
     {
         PyErr_BadArgument();
         Py_RETURN_NONE;
+    }
+
+    bool warning = true;
+    if (kw && PyDict_Size(kw)>0)
+    {
+        PyObject* keys = PyDict_Keys(kw);
+        PyObject* values = PyDict_Values(kw);
+        for (int i=0; i<PyDict_Size(kw); i++)
+        {
+            PyObject *key = PyList_GetItem(keys,i);
+            PyObject *value = PyList_GetItem(values,i);
+            if( !strcmp(PyString_AsString(key),"warning") )
+            {
+                if( PyBool_Check(value) )
+                    warning = (value==Py_True);
+                break;
+            }
+        }
+        Py_DecRef(keys);
+        Py_DecRef(values);
     }
 
     const objectmodel::BaseNode::Children& children = node->getChildren();
@@ -123,7 +144,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
         }
     if (!childNode)
     {
-        SP_MESSAGE_ERROR( "Node.getChild(\""<<path<<"\") not found.")
+        if( warning ) SP_MESSAGE_ERROR( "Node.getChild(\""<<path<<"\") not found.")
         Py_RETURN_NONE;
     }
     return sofa::PythonFactory::toPython(childNode);
@@ -131,7 +152,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
 
 extern "C" PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
+    // BaseNode is not bound in SofaPython, so getChildNode is bound in Node instead of BaseNode
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     const objectmodel::BaseNode::Children& children = node->getChildren();
@@ -148,7 +169,7 @@ extern "C" PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
+    // BaseNode is not bound in SofaPython, so getChildNode is bound in Node instead of BaseNode
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     const objectmodel::BaseNode::Children& parents = node->getParents();
@@ -165,7 +186,7 @@ extern "C" PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Node_getPathName(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
+    // BaseNode is not bound in SofaPython, so getPathName is bound in Node instead
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     return PyString_FromString(node->getPathName().c_str());
@@ -173,7 +194,7 @@ extern "C" PyObject * Node_getPathName(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Node_getRootPath(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getRootPath is binded in Node instead
+    // BaseNode is not bound in SofaPython, so getRootPath is bound in Node instead
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     return PyString_FromString(node->getRootPath().c_str());
@@ -197,12 +218,33 @@ extern "C" PyObject * Node_createChild(PyObject *self, PyObject * args)
     return sofa::PythonFactory::toPython(child);
 }
 
-extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, bool printWarnings)
+extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject * kw, bool printWarnings)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     PyObject* pyChild;
     if (!PyArg_ParseTuple(args, "O",&pyChild))
         Py_RETURN_NONE;
+
+    bool warning = printWarnings;
+    if (kw && PyDict_Size(kw)>0)
+    {
+        PyObject* keys = PyDict_Keys(kw);
+        PyObject* values = PyDict_Values(kw);
+        for (int i=0; i<PyDict_Size(kw); i++)
+        {
+            PyObject *key = PyList_GetItem(keys,i);
+            PyObject *value = PyList_GetItem(values,i);
+            if( !strcmp(PyString_AsString(key),"warning") )
+            {
+                if( PyBool_Check(value) )
+                    warning = (value==Py_True);
+                break;
+            }
+        }
+        Py_DecRef(keys);
+        Py_DecRef(values);
+    }
+
     BaseObject* object=((PySPtr<Base>*)pyChild)->object->toBaseObject();
     if (!object)
     {
@@ -211,7 +253,7 @@ extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, bool 
     }
     node->addObject(object);
 
-    if (printWarnings && node->isInitialized())
+    if (warning && node->isInitialized())
         SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is already initialized ("<<object->getName()<<")" )
 //    if (!ScriptEnvironment::isNodeCreatedByScript(node))
 //        SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is not created by the script" )
@@ -222,13 +264,14 @@ extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, bool 
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_addObject(PyObject * self, PyObject * args)
+extern "C" PyObject * Node_addObject(PyObject * self, PyObject * args, PyObject * kw)
 {
-    return Node_addObject_Impl( self, args, true );
+    return Node_addObject_Impl( self, args, kw, true );
 }
 extern "C" PyObject * Node_addObject_noWarning(PyObject * self, PyObject * args)
 {
-    return Node_addObject_Impl( self, args, false );
+    SP_MESSAGE_DEPRECATED("Node_addObject_noWarning is deprecated, use the keyword warning=False in Node_addObject instead.")
+    return Node_addObject_Impl( self, args, NULL, false );
 }
 
 extern "C" PyObject * Node_removeObject(PyObject *self, PyObject * args)
@@ -402,15 +445,15 @@ SP_CLASS_METHOD(Node,getRoot)
 SP_CLASS_METHOD(Node,simulationStep)
 SP_CLASS_METHOD(Node,reset)
 SP_CLASS_METHOD(Node,init)
-SP_CLASS_METHOD(Node,getChild)
+SP_CLASS_METHOD_KW(Node,getChild)
 SP_CLASS_METHOD(Node,getChildren)
 SP_CLASS_METHOD(Node,getParents)
 SP_CLASS_METHOD(Node,getPathName)
 SP_CLASS_METHOD(Node,getRootPath)
 SP_CLASS_METHOD(Node,getLinkPath)
 SP_CLASS_METHOD(Node,createChild)
-SP_CLASS_METHOD(Node,addObject)
-SP_CLASS_METHOD(Node,addObject_noWarning)
+SP_CLASS_METHOD_KW(Node,addObject)
+SP_CLASS_METHOD(Node,addObject_noWarning) // deprecated
 SP_CLASS_METHOD(Node,removeObject)
 SP_CLASS_METHOD(Node,addChild)
 SP_CLASS_METHOD(Node,removeChild)

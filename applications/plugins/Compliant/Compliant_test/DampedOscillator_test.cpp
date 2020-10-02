@@ -89,7 +89,7 @@ struct DampedOscillator_test : public CompliantSolver_test
         sofa::simulation::getSimulation()->init(node.get());
         //**************************************************
 
-        if(debug) simulation::getSimulation()->exportXML ( simulation::getSimulation()->GetRoot().get(), "/tmp/oscilator.scn" );
+        if(debug) simulation::getSimulation()->exportXML ( node.get(), "/tmp/oscilator.scn" );
 
 
         //**************************************************

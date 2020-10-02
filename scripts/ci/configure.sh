@@ -102,6 +102,7 @@ append() {
 }
 
 # Options common to all configurations
+append "-DSOFA_BUILD_TUTORIALS=ON"
 append "-DSOFA_BUILD_TESTS=ON"
 append "-DPLUGIN_SOFAPYTHON=ON"
 if [[ -n "$CI_HAVE_BOOST" ]]; then

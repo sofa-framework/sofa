@@ -51,8 +51,8 @@ int MeshSTLLoaderClass = core::RegisterObject("Specific mesh loader for STL file
 
 //Base VTK Loader
 MeshSTLLoader::MeshSTLLoader() : MeshLoader()
-    , _headerSize(initData(&_headerSize, (unsigned int)80, "headerSize","Size of the header binary file (just before the number of facet)."))
-    , _forceBinary(initData(&_forceBinary, (bool)false, "forceBinary","Force reading in binary mode. Even in first keyword of the file is solid."))
+    , _headerSize(initData(&_headerSize, 80u, "headerSize","Size of the header binary file (just before the number of facet)."))
+    , _forceBinary(initData(&_forceBinary, false, "forceBinary","Force reading in binary mode. Even in first keyword of the file is solid."))
 {
 }
 
@@ -89,7 +89,8 @@ bool MeshSTLLoader::load()
 
 bool MeshSTLLoader::readBinarySTL(const char *filename)
 {
-    std::cout << "reading binary STL file" << std::endl;
+    if( this->f_printLog.getValue() )
+        sout << "Reading binary STL file..." << sendl;
     std::ifstream dataFile (filename, std::ios::in | std::ios::binary);
 
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
@@ -105,14 +106,13 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     // Skipping header file
     char buffer[256];
     dataFile.read(buffer, _headerSize.getValue());
-    sout << "Header binary file: "<< buffer << sendl;
+//    sout << "Header binary file: "<< buffer << sendl;
 
     uint32_t nbrFacet;
     dataFile.read((char*)&nbrFacet, 4);
 
     std::streampos position = 0;
     // Parsing facets
-    std::cout << "Reading file...";
     for (uint32_t i = 0; i<nbrFacet; ++i)
     {
         Triangle the_tri;
@@ -159,11 +159,13 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
         if (position == length)
             break;
     }
-    std::cout << "done!" << std::endl;
 
     positions.endEdit();
     triangles.endEdit();
     normals.endEdit();
+
+    if( this->f_printLog.getValue() )
+        sout << "done!" << sendl;
 
     return true;
 }
@@ -171,7 +173,8 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
 bool MeshSTLLoader::readSTL(const char *filename)
 {
-    sout << "reading STL file" << sendl;
+    if( this->f_printLog.getValue() )
+        sout << "Reading STL file..." << sendl;
 
     // Init
     std::ifstream dataFile (filename);
@@ -248,6 +251,9 @@ bool MeshSTLLoader::readSTL(const char *filename)
     positions.endEdit();
     triangles.endEdit();
     normals.endEdit();
+
+    if( this->f_printLog.getValue() )
+        sout << "done!" << sendl;
 
     return true;
 }

@@ -1,23 +1,10 @@
 #ifndef SOFA_COMPONENT_MAPPING_ASSEMBLEDMULTIMAPPING_H
 #define SOFA_COMPONENT_MAPPING_ASSEMBLEDMULTIMAPPING_H
 
-#include <sofa/core/Mapping.h>
 #include <sofa/core/MultiMapping.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
-
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/VecTypes.h>
-
 #include <Compliant/config.h>
-
-// #include "debug.h"
 
 namespace sofa
 {
@@ -228,10 +215,12 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
 	
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() {
-		if( js.empty() ) std::cout << "warning: empty js for " << this->getName() << " " 
-		                           <<  this->getClassName() << std::endl;
 
-		assert( !js.empty() );
+        if( js.empty() )
+        {
+            serr << "empty js for " << this->getPathName() << sendl;
+            assert(false);
+        }
 		
 		return &js;
     }
@@ -290,7 +279,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
     virtual void apply(out_pos_type& out, 
                        const helper::vector<in_pos_type>& in ) = 0;
 
-  private:
+  protected:
 
 	// allocate jacobians
 	virtual void alloc() {
@@ -336,7 +325,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	
   public:
 	
-	~AssembledMultiMapping() {
+    virtual ~AssembledMultiMapping() {
 		release();
 	}
 

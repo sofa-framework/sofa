@@ -26,6 +26,7 @@
 #define BINDING_BASESTATE_H
 
 #include "PythonMacros.h"
+#include <sofa/core/BaseState.h>
 
 SP_DECLARE_CLASS_TYPE(BaseState)
 

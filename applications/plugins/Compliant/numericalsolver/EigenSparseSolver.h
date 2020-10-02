@@ -77,6 +77,12 @@ public:
     SOFA_CLASS(LDLTSolver,SOFA_TEMPLATE2(EigenSparseSolver,LDLTSparseLinearSolver,true));
 };
 
+typedef Eigen::SimplicialLLT< AssembledSystem::cmat > LLTSparseLinearSolver;
+class SOFA_Compliant_API LLTSolver : public EigenSparseSolver< LLTSparseLinearSolver, true >
+{
+public:
+    SOFA_CLASS(LLTSolver,SOFA_TEMPLATE2(EigenSparseSolver,LLTSparseLinearSolver,true));
+};
 
 typedef Eigen::SparseLU< AssembledSystem::cmat > LUSparseLinearSolver;
 class SOFA_Compliant_API LUSolver : public EigenSparseSolver< LUSparseLinearSolver >

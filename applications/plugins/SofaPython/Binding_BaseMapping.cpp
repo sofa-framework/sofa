@@ -125,6 +125,41 @@ extern "C" PyObject * BaseMapping_applyJ(PyObject * self, PyObject * /*args*/)
     Py_RETURN_NONE;
 }
 
+
+
+// TODO inefficient
+// have a look to how to directly bind Eigen sparse matrices
+extern "C" PyObject * BaseMapping_getJs(PyObject * self, PyObject * /*args*/)
+{
+    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
+
+    const helper::vector<sofa::defaulttype::BaseMatrix*>* Js = mapping->getJs();
+
+    PyObject* Jspython = PyList_New(Js->size());
+    for( size_t i=0 ; i<Js->size() ; ++i )
+    {
+        sofa::defaulttype::BaseMatrix* J = (*Js)[i];
+
+        PyObject* Jpython = PyList_New(J->rows());
+        for( sofa::defaulttype::BaseMatrix::Index row=0 ; row<J->rows() ; ++row )
+        {
+            PyObject* Jrowpython = PyList_New(J->cols());
+
+            for( sofa::defaulttype::BaseMatrix::Index col=0 ; col<J->cols() ; ++col )
+                PyList_SetItem( Jrowpython, col, PyFloat_FromDouble( J->element(row,col) ) );
+
+
+            PyList_SetItem( Jpython, row, Jrowpython );
+
+        }
+
+        PyList_SetItem( Jspython, i, Jpython );
+    }
+
+    return Jspython;
+}
+
+
 SP_CLASS_METHODS_BEGIN(BaseMapping)
 SP_CLASS_METHOD(BaseMapping,getFrom)
 SP_CLASS_METHOD(BaseMapping,getTo)
@@ -132,6 +167,7 @@ SP_CLASS_METHOD(BaseMapping,setFrom)
 SP_CLASS_METHOD(BaseMapping,setTo)
 SP_CLASS_METHOD(BaseMapping,apply)
 SP_CLASS_METHOD(BaseMapping,applyJ)
+SP_CLASS_METHOD(BaseMapping,getJs)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(BaseMapping,BaseMapping,BaseObject)

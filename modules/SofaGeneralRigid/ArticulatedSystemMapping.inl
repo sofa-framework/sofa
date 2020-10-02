@@ -71,10 +71,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     m_fromModel = this->getFromModels1()[0];
     m_toModel = this->getToModels()[0];
 
-    sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(m_fromModel->getContext());
-    context->getNodeObject(ahc);
-    articulationCenters = ahc->getArticulationCenters();
-
     const InVecCoord& xfrom = m_fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     ArticulationPos.clear();
@@ -96,19 +92,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
         CoordinateBuf[c].x() = 0.0;
     }
 
-    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
-
-    for (; ac != acEnd; ac++)
-    {
-        (*ac)->OrientationArticulationCenter.clear();
-        (*ac)->DisplacementArticulationCenter.clear();
-        (*ac)->Disp_Rotation.clear();
-
-        // sout << "(*ac)->OrientationArticulationCenter : " << (*ac)->OrientationArticulationCenter << sendl;
-        // todo : warning if a (*a)->articulationIndex.getValue() exceed xfrom size !
-    }
-
     helper::WriteAccessor<Data<OutVecCoord> > xtoData = *m_toModel->write(core::VecCoordId::position());
     apply(xtoData.wref(),
             xfrom,
@@ -122,6 +105,31 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
 
 }
 
+template <class TIn, class TInRoot, class TOut>
+void ArticulatedSystemMapping<TIn, TInRoot, TOut>::bwdInit()
+{
+    //make sure that articulatedHierarchyContainer has been initialized before
+    m_fromModel->getContext()->get(ahc, sofa::core::objectmodel::BaseContext::SearchDown);
+    if (!ahc)
+    {
+        msg_error("ArticulatedSystemMapping::bwdInit") << "ArticulatedSystemMapping needs a ArticulatedHierarchyContainer, but it could not find it.";
+        return;
+    }
+    articulationCenters = ahc->getArticulationCenters();
+
+    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
+    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+
+    for (; ac != acEnd; ac++)
+    {
+        (*ac)->OrientationArticulationCenter.clear();
+        (*ac)->DisplacementArticulationCenter.clear();
+        (*ac)->Disp_Rotation.clear();
+
+        // sout << "(*ac)->OrientationArticulationCenter : " << (*ac)->OrientationArticulationCenter << sendl;
+        // todo : warning if a (*a)->articulationIndex.getValue() exceed xfrom size !
+    }
+}
 
 
 template <class TIn, class TInRoot, class TOut>

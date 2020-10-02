@@ -86,7 +86,7 @@ struct CentralDifferenceExplicitSolverDynamic_test : public Elasticity_test<_Dat
         root->setGravity(Coord(0,-10,0));
 
         // Solver
-        CentralDifferenceSolver::SPtr centralDifferenceSolver = addNew<CentralDifferenceSolver> (getRoot());
+        CentralDifferenceSolver::SPtr centralDifferenceSolver = addNew<CentralDifferenceSolver> (root);
         centralDifferenceSolver->f_rayleighMass.setValue(double(rm));
 
         // Set initial positions and velocities of fixed point and mass

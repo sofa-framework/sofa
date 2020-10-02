@@ -57,8 +57,6 @@ public:
 
 private:
     unsigned int stepCounter;
-    std::ofstream* outfile;
-    std::ofstream* mtlfile;
     sofa::core::objectmodel::BaseContext* context;
     unsigned int maxStep;
 

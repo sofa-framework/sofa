@@ -68,27 +68,6 @@ namespace helper
 //        return s_maskHash(mask);
 //    }
 
-#else
-
-    void StateMask::resize( size_t size )
-    {
-        m_size = size;
-    }
-
-    void StateMask::assign( size_t size, bool /*value*/ )
-    {
-        m_size = size;
-    }
-
-    void StateMask::activate( bool a )
-    {
-        activated = a;
-    }
-
-    size_t StateMask::nbActiveDofs() const
-    {
-        return m_size;
-    }
 
 #endif
 

@@ -121,7 +121,7 @@ class RigidBody:
         """ Add/remove a fixed constraint for this rigid, also set speed to 0
         """
         if isFixed and self.fixedConstraint is None:
-            self.fixedConstraint = self.node.createObject_noWarning("FixedConstraint", name="fixedConstraint")
+            self.fixedConstraint = self.node.createObject("FixedConstraint", warning=False, name="fixedConstraint")
             self.dofs.velocity=[0,0,0,0,0,0]
             self.fixedConstraint.init()
         elif not isFixed and not self.fixedConstraint is None:

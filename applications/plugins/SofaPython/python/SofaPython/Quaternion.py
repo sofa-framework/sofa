@@ -191,6 +191,8 @@ def from_line(v, sign=1, xyz=1):
     @param xyz: to indicate if v is the axis x (xyz=1), y (xyz=2) or z (xyz=3) of the matrix corresponding to the output quaternion
     @type xyz: int with the value 1/2/3
     """
+    if v[0]==0 and v[1]==0:
+        return [0,math.sqrt(2)*0.5,0,math.sqrt(2)*0.5]
     v1 = numpy.array(v) / numpy.linalg.norm(numpy.array(v), 2) * sign;
     v2 = numpy.array([v1[1], -v1[0], 0]) / numpy.linalg.norm(numpy.array([v1[1], -v1[0], 0]), 2);
     v3 = numpy.cross(v1, v2)

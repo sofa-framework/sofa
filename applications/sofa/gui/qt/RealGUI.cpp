@@ -625,13 +625,13 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
         return;
     }
     this->unloadScene();
-    Node *simuNode = dynamic_cast< Node *> (simulation::getSimulation()->load ( scene.c_str() ));
-    getSimulation()->init(simuNode);
-    if ( simuNode )
+    mSimulation = dynamic_cast< Node *> (simulation::getSimulation()->load ( scene.c_str() ));
+    getSimulation()->init(mSimulation);
+    if ( mSimulation )
     {
         if ( !pmlreader ) pmlreader = new PMLReader;
-        pmlreader->BuildStructure ( filename, simuNode );
-        setScene ( simuNode, filename );
+        pmlreader->BuildStructure ( filename, mSimulation );
+        setScene ( mSimulation, filename );
         this->setWindowFilePath(filename); //.c_str());
     }
 }
@@ -711,7 +711,7 @@ int RealGUI::closeGUI()
 
 sofa::simulation::Node* RealGUI::currentSimulation()
 {
-    return simulation::getSimulation()->GetRoot().get();
+    return mSimulation.get();
 }
 
 //------------------------------------
@@ -740,15 +740,15 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     sofa::simulation::xml::numDefault = 0;
 
     if( currentSimulation() ) this->unloadScene();
-    simulation::Node::SPtr root = simulation::getSimulation()->load ( filename.c_str() );
-    simulation::getSimulation()->init ( root.get() );
-    if ( root == NULL )
+    mSimulation = simulation::getSimulation()->load ( filename.c_str() );
+    simulation::getSimulation()->init ( mSimulation.get() );
+    if ( mSimulation == NULL )
     {
         std::cerr<<"Failed to load "<<filename.c_str()<<std::endl;
         return;
     }
-    setScene ( root, filename.c_str(), temporaryFile );
-    configureGUI(root.get());
+    setScene ( mSimulation, filename.c_str(), temporaryFile );
+    configureGUI(mSimulation.get());
 
     this->setWindowFilePath(filename.c_str());
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
@@ -869,6 +869,8 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
 
     if (root)
     {
+        mSimulation = root;
+
         eventNewTime();
 
         //simulation::getSimulation()->updateVisualContext ( root );

@@ -96,6 +96,8 @@ protected:
 
     virtual void update()
     {
+        unsigned int nodeIndex = d_nodeIndex.getValue();
+        sout << "Update image for node " << nodeIndex << sendl;
         raDist weightData(this->d_weights);
         cimg_library::CImg<DistT> const& weight=weightData->getCImg();
         raInd indicesData(this->d_indices);

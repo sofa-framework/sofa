@@ -26,7 +26,7 @@
 #define BINDING_BASEOBJECT_H
 
 #include "PythonMacros.h"
-#include <sofa/core/BaseState.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 SP_DECLARE_CLASS_TYPE(BaseObject)
 

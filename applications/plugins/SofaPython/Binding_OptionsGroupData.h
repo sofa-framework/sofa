@@ -26,6 +26,7 @@
 #define BINDING_OPTIONSGROUPDATA_H
 
 #include "PythonMacros.h"
+#include <sofa/helper/OptionsGroup.h>
 
 SP_DECLARE_CLASS_TYPE(OptionsGroupData)
 

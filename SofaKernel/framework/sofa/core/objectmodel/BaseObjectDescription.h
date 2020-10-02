@@ -121,6 +121,8 @@ public:
 
     virtual void logError(std::string s) {errors.push_back(s);}
 
+    std::vector< std::string > const& getErrors() const {return errors;}
+
 protected:
     AttributeMap attributes;
     std::vector< std::string > errors;

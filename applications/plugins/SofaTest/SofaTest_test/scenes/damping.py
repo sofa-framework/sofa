@@ -1,6 +1,6 @@
 import Sofa
+import SofaPython.Tools
 import math
-import os
 import SofaTest
 import sys
 
@@ -99,8 +99,8 @@ def createScene(node):
 
 
     # create a rigid file to give a correct inertia matrix
-    path = os.path.dirname( os.path.abspath( __file__ ) )
-    rigidFile = open(path+"/damping_mass.rigid", "wb")
+    rigidFilename = SofaPython.Tools.localPath( __file__, "damping_mass.rigid" )
+    rigidFile = open(rigidFilename, "wb")
     rigidFile.write( 'Xsp 3.0\n' )
     rigidFile.write( 'mass '+str(MASS)+'\n' )
     rigidFile.write( 'volm '+str(VOLUME)+'\n' )
@@ -118,7 +118,7 @@ def createScene(node):
     angularNode.createObject('EulerImplicit',name='odesolver',rayleighStiffness=0,rayleighMass=0)
     angularNode.createObject('CGLinearSolver',name = 'numsolver',tolerance=1e-10,threshold=1e-10,iterations=1000)
     angularNode.createObject('MechanicalObject', template="Rigid", name="dofs", position="0 0 0 0 0 0 1", velocity="0 0 0 "+str(INITIAL_VELOCITY)+" 0 0")
-    angularNode.createObject('UniformMass', filename=path+"/damping_mass.rigid")
+    angularNode.createObject('UniformMass', filename=rigidFilename)
     angularNode.createObject('UniformVelocityDampingForceField', dampingCoefficient=DAMPING_COEF)
     #angularNode.createObject('PartialFixedConstraint', indices='0', fixedDirections="1 1 1 0 1 1")
 
@@ -128,7 +128,7 @@ def createScene(node):
     translationNode.createObject('EulerImplicit',name='odesolver',rayleighStiffness=0,rayleighMass=0)
     translationNode.createObject('CGLinearSolver',name = 'numsolver',tolerance=1e-10,threshold=1e-10,iterations=1000)
     translationNode.createObject('MechanicalObject', template="Rigid", name="dofs", position="0 0 0 0 0 0 1", velocity=str(INITIAL_VELOCITY)+" 0 0  0 0 0")
-    translationNode.createObject('UniformMass', filename=path+"/damping_mass.rigid")
+    translationNode.createObject('UniformMass', filename=rigidFilename)
     translationNode.createObject('UniformVelocityDampingForceField', dampingCoefficient=DAMPING_COEF)
     #translationNode.createObject('PartialFixedConstraint', indices='0', fixedDirections="0 1 1 1 1 1")
 

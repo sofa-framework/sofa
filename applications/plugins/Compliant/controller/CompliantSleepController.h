@@ -18,6 +18,8 @@ namespace controller
  */
 class BaseComplianceTester
 {
+protected:
+    virtual ~BaseComplianceTester() {}
 public:
 	virtual bool canConvert(core::objectmodel::BaseObject* o) = 0;
 };

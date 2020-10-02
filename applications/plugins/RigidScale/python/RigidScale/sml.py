@@ -78,10 +78,8 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         self.node.createObject('RequiredPlugin', name='RigidScale')
 
         # rigidScale
-        for tag in self.param.rigidScaleTags:
-            if tag in self.model.solidsByTag:
-                for solidModel in self.model.solidsByTag[tag]:
-                    self.rigidScales[solidModel.id] = insertRigidScale(self.node, solidModel, self.param)
+        for solidModel in self.model.getSolidsByTags(self.param.rigidScaleTags):
+            self.rigidScales[solidModel.id] = insertRigidScale(self.node, solidModel, self.param)
         # joints
         for jointModel in self.model.genericJoints.values():
             self.joints[jointModel.id] = Compliant.sml.insertJoint(jointModel, self.rigidScales, self.param)

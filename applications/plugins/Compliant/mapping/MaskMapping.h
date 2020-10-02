@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_MAPPING_FILTERMAPPING_H
 #define COMPLIANT_MAPPING_FILTERMAPPING_H
 
-#include "AssembledMapping.h"
+#include "ConstantAssembledMapping.h"
 #include <Compliant/config.h>
 #include "../utils/map.h"
 
@@ -23,9 +23,9 @@ namespace mapping {
 */
 
 template <class TIn, class TOut >
-class MaskMapping : public AssembledMapping<TIn, TOut> {
+class MaskMapping : public ConstantAssembledMapping<TIn, TOut> {
 public:
-	SOFA_CLASS(SOFA_TEMPLATE2(MaskMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(MaskMapping,TIn,TOut), SOFA_TEMPLATE2(ConstantAssembledMapping,TIn,TOut));
 	
 	typedef typename TIn::Real in_real;
 	typedef typename TOut::Real out_real;
@@ -34,7 +34,7 @@ public:
     typedef helper::vector< typename TIn::Coord > dofs_type;
 	Data< dofs_type > dofs;
 
-	typedef AssembledMapping<TIn, TOut> base;
+    typedef ConstantAssembledMapping<TIn, TOut> base;
 	typedef MaskMapping self;
 
 	MaskMapping()

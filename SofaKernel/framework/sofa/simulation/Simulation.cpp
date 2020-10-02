@@ -82,8 +82,6 @@ namespace sofa
 namespace simulation
 {
 
-Node::SPtr Simulation::sRoot = NULL;
-
 using namespace sofa::defaulttype;
 using namespace sofa;
 
@@ -116,11 +114,6 @@ Simulation* getSimulation()
     assert(Simulation::theSimulation.get()!=NULL && "There is no simulation initialized.") ;
 
     return Simulation::theSimulation.get();
-}
-
-sofa::simulation::Node::SPtr Simulation::GetRoot()
-{
-    return sRoot;
 }
 
 /// Print all object in the graph
@@ -474,11 +467,7 @@ Node::SPtr Simulation::load ( const char *filename )
 
     SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
 
-    if (loader)
-    {
-        sRoot = loader->load(filename);
-        return sRoot;
-    }
+    if (loader) return loader->load(filename);
 
     // unable to load file
     serr << "extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" << sendl;

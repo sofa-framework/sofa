@@ -592,8 +592,11 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 
 	typename SparseMatrixEigen::CompressedMatrix& J = eigenJacobian.compressedMatrix;
 	
-	if( updateJ || J.size() == 0 ) {
-		
+    if( updateJ || J.size() == 0 )
+    {
+
+        updateJ = false;
+
 		J.resize(out.size() * NOut, in.size() * NIn);
 		J.setZero();
 

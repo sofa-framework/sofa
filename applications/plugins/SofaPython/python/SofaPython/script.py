@@ -5,10 +5,15 @@ import inspect
 
 class Controller(Sofa.PythonScriptController):
 
-    def __new__(cls, node, name='pythonScriptController'):
+    def __new__(cls, node, name='pythonScriptController', filename=''):
+        """
+        :param filename: you may have to define it (at least once) to create
+                        a controller for which the class is defined in an external
+                        file. Be aware the file will then be read several times.
+        """
 
         node.createObject('PythonScriptController',
-                          filename = inspect.getfile(cls),
+                          filename = filename,
                           classname = cls.__name__,
                           name = name)
         try:

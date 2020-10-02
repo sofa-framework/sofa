@@ -181,12 +181,16 @@ void SofaPluginManager::removeLibrary()
     if( sofa::helper::system::PluginManager::getInstance().unloadPlugin(location,&sstream) )
     {
         //listPlugins->removeItem(curItem);
-        delete curItem->parent()->takeChild(curItem->parent()->indexOfChild(curItem));
+        delete curItem;
 
         savePluginsToIniFile();
         emit( libraryRemoved() );
-        //description->clear();
-        //listComponents->clear();
+
+        if(this->listPlugins->selectedItems().count() < 1)
+        {
+            description->clear();
+            listComponents->clear();
+        }
     }
     else
     {
@@ -210,7 +214,7 @@ void SofaPluginManager::updateComponentList()
 
     if(curItem == NULL ) return;
     //update the component list when an item is selected
-    //listComponents->clear();
+    listComponents->clear();
 
     std::string location( curItem->text(LOCATION_COLUMN).toStdString() ); //get the location value
 

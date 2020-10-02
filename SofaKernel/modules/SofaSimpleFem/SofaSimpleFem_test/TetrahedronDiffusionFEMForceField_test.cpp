@@ -111,7 +111,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
 
         /// Load the scene
         root = simu->createNewGraph("root");
-        root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(sceneFilename.c_str()));
+        root = sofa::simulation::getSimulation()->load(sceneFilename.c_str());
 
     }
 

@@ -108,19 +108,18 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testHardString( unsigned n )
     {
-        clearScene();
-        Node::SPtr root = getRoot();
-        getRoot()->setGravity( Vec3(0,0,0) );
+        Node::SPtr root = clearScene();
+        root->setGravity( Vec3(0,0,0) );
 
         // The solver
-        complianceSolver = addNew<OdeSolver>(getRoot());
+        complianceSolver = addNew<OdeSolver>(root);
 //        root->addObject( complianceSolver );
         complianceSolver->storeDynamicsSolution(true);
-        linearSolver = addNew<LinearSolver>(getRoot());
+        linearSolver = addNew<LinearSolver>(root);
 //        root->addObject( linearSolver);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
-        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(getRoot());
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
         (void) response;
 
         // The string
@@ -200,9 +199,8 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testAttachedHardString( unsigned n )
     {
-        clearScene();
+        Node::SPtr root = clearScene();
         SReal g=10;
-        Node::SPtr root = getRoot();
         root->setGravity( Vec3(g,0,0) );
 
         // The solver
@@ -281,9 +279,8 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testConstrainedHardString( unsigned n )
     {
-        clearScene();
+        Node::SPtr root = clearScene();
         SReal g=10;
-        Node::SPtr root = getRoot();
         root->setGravity( Vec3(g,0,0) );
 
         // The solver

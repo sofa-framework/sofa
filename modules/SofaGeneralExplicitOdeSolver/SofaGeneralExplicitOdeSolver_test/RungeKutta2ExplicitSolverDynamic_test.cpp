@@ -89,9 +89,9 @@ struct RungeKutta2ExplicitSolverDynamic_test : public Elasticity_test<_DataTypes
         root->setGravity(Coord(0,-10,0));
 
         // Solver
-        RungeKutta2Solver::SPtr rungeKutta2Solver = addNew<RungeKutta2Solver> (getRoot());
+        RungeKutta2Solver::SPtr rungeKutta2Solver = addNew<RungeKutta2Solver> (root);
 
-        CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver> (getRoot());
+        CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver> (root);
         cgLinearSolver->f_maxIter=3000;
         cgLinearSolver->f_tolerance =1e-9;
         cgLinearSolver->f_smallDenominatorThreshold=1e-9;

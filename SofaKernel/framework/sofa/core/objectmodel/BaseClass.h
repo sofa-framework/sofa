@@ -59,6 +59,10 @@ protected:
     virtual ~BaseClass();
 
 public:
+
+
+    /// @todo the names could be hashed for faster comparisons
+
     std::string namespaceName;
     std::string className;
     std::string templateName;
@@ -66,11 +70,21 @@ public:
     //std::string targetName;
     helper::vector<const BaseClass*> parents;
 
+    /// returns true iff c is a parent class of this
     bool hasParent(const BaseClass* c) const
     {
         if (*this == *c) return true;
         for (unsigned int i=0; i<parents.size(); ++i)
             if (parents[i]->hasParent(c)) return true;
+        return false;
+    }
+
+    /// returns true iff a parent class of this is named parentClassName
+    bool hasParent(const std::string& parentClassName) const
+    {
+        if (className==parentClassName) return true;
+        for (unsigned int i=0; i<parents.size(); ++i)
+            if (parents[i]->hasParent(parentClassName)) return true;
         return false;
     }
 

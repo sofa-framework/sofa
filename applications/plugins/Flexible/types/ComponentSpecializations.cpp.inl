@@ -5,9 +5,6 @@
 
 #include "ComponentSpecializationsDefines.h"
 
-#ifdef Success
-#undef Success // before including eigen stuff http://eigen.tuxfamily.org/bz/show_bug.cgi?id=253
-#endif
 #include <SofaBoundaryCondition/ProjectToPointConstraint.inl>
 #include <SofaBoundaryCondition/ProjectToLineConstraint.inl>
 #include <SofaBoundaryCondition/ProjectToPlaneConstraint.inl>

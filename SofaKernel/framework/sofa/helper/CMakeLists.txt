@@ -45,6 +45,9 @@ set(HEADER_FILES
     helper.h
     init.h
     integer_id.h
+    io/BaseFileAccess.h
+    io/FileAccess.h
+    io/File.h
     io/Image.h
     io/ImageBMP.h
     io/ImageDDS.h
@@ -136,6 +139,9 @@ set(SOURCE_FILES
     gl/Trackball.cpp
     gl/Transformation.cpp
     init.cpp
+    io/BaseFileAccess.cpp
+    io/FileAccess.cpp
+    io/File.cpp
     io/Image.cpp
     io/ImageBMP.cpp
     io/ImageDDS.cpp
