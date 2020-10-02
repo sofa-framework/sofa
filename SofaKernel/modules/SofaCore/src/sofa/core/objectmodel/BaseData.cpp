@@ -80,10 +80,10 @@ BaseData::BaseData( const BaseInitData& init)
     if (init.data && init.data != this)
     {
         {
-        helper::logging::MessageDispatcher::LoggerStream msgerror = msg_error("BaseData");
-        msgerror << "initData POINTER MISMATCH: field name \"" << init.name << "\"";
-        if (init.owner)
-            msgerror << " created by class " << init.owner->getClassName();
+            helper::logging::MessageDispatcher::LoggerStream msgerror = msg_error("BaseData");
+            msgerror << "initData POINTER MISMATCH: field name \"" << init.name << "\"";
+            if (init.owner)
+                msgerror << " created by class " << init.owner->getClassName();
         }
         sofa::helper::BackTrace::dump();
         exit( EXIT_FAILURE );
@@ -118,18 +118,14 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
     {
         if (m_owner)
         {
-            msg_error(m_owner) << "Invalid Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName();        
+            msg_error(m_owner) << "Invalid Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName();
             msg_error_when(!this->getValueTypeInfo()->ValidInfo(), m_owner) << "Possible reason: destination Data " << getName() << " has an unknown type";
             msg_error_when(!parent->getValueTypeInfo()->ValidInfo(), m_owner) << "Possible reason: source Data " << parent->getName() << " has an unknown type";
         }
         return false;
     }
 
-    if (path.empty())
-        parentData.setTarget(parent);
-    else
-        parentData.setPath(path);
-
+    parentData.setTarget(parent);
     if (parent)
     {
         addInput(parent);
@@ -139,7 +135,9 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
 
         m_counter++;
         m_isSet = true;
-    }
+    }else if (!path.empty())
+        parentData.setPath(path);
+
     return true;
 }
 
@@ -168,7 +166,7 @@ void BaseData::update()
     }
     auto parent = parentData.resolvePathAndGetTarget();
     if (parent)
-    {        
+    {
 #ifdef SOFA_DDG_TRACE
         if (m_owner)
             m_owner->sout << "Data " << m_name << ": update from parent " << parentBaseData->m_name<< m_owner->sendl;
@@ -266,10 +264,10 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
 
     std::string m = msgs.str();
     if (m_owner
-#ifdef NDEBUG
-        && (!m.empty() || m_owner->notMuted())
-#endif
-    )
+        #ifdef NDEBUG
+            && (!m.empty() || m_owner->notMuted())
+        #endif
+            )
     {
         m_owner->sout << "Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName() << " : ";
         if (!m.empty()) m_owner->sout << m;
