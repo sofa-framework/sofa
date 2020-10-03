@@ -562,7 +562,7 @@ void CudaRigidDistanceGridCollisionModel::init()
     std::cout << "< CudaRigidDistanceGridCollisionModel::init()"<<std::endl;
 }
 
-void CudaRigidDistanceGridCollisionModel::resize(std::size_t s)
+void CudaRigidDistanceGridCollisionModel::resize(size_type s)
 {
     this->core::CollisionModel::resize(s);
     elems.resize(s);
