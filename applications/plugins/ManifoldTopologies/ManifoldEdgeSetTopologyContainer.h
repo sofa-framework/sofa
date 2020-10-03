@@ -52,7 +52,7 @@ class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldEdgeSetTopologyContainer : public Edg
 public:
     SOFA_CLASS(ManifoldEdgeSetTopologyContainer,EdgeSetTopologyContainer);
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     ManifoldEdgeSetTopologyContainer();
 

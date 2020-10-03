@@ -404,25 +404,25 @@ public:
     enum { NDIM = 0 };
     enum { SIZE = 1 };
     /// Get the number of rows
-    static std::size_t size(const data_type&) { return SIZE; }
+    static size_type size(const data_type&) { return SIZE; }
     /// Get the name of a row, or nullptr if the index should be used instead
-    static const char* header(const data_type& /*d*/, std::size_t /*i*/ = 0)
+    static const char* header(const data_type& /*d*/, size_type /*i*/ = 0)
     {
         return nullptr;
     }
     /// Get a row
-    static const value_type* get(const data_type& d, std::size_t i = 0)
+    static const value_type* get(const data_type& d, size_type i = 0)
     {
         return (i == 0) ? &d : nullptr;
     }
     /// Set a row
-    static void set( const value_type& v, data_type& d, std::size_t i = 0)
+    static void set( const value_type& v, data_type& d, size_type i = 0)
     {
         if (i == 0)
             d = v;
     }
     /// Resize
-    static void resize( std::size_t /*s*/, data_type& /*d*/)
+    static void resize( size_type /*s*/, data_type& /*d*/)
     {
     }
 };

@@ -65,7 +65,7 @@ namespace sofa
 namespace helper
 {
 
-template<class T, std::size_t N>
+template<class T, sofa::size_type N>
 class fixed_array
 {
 public:

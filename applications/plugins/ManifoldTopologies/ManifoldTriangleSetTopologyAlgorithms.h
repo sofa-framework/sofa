@@ -53,7 +53,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     ManifoldTriangleSetTopologyAlgorithms()
         : TriangleSetTopologyAlgorithms<DataTypes>()

@@ -799,7 +799,7 @@ public:
 template<sofa::size_type N,typename Real>
 std::istream& operator >> ( std::istream& in, Vec<N,Real>& v )
 {
-    for(size_type i=0; i<N; ++i )
+    for(sofa::size_type i=0; i<N; ++i )
         in>>v[i];
     return in;
 }
@@ -808,7 +808,7 @@ std::istream& operator >> ( std::istream& in, Vec<N,Real>& v )
 template<sofa::size_type N,typename Real>
 std::ostream& operator << ( std::ostream& out, const Vec<N,Real>& v )
 {
-    for(size_type i=0; i<N-1; ++i )
+    for(sofa::size_type i=0; i<N-1; ++i )
         out<<v[i]<<" ";
     out<<v[N-1];
     return out;
@@ -831,21 +831,21 @@ real1 cross(const defaulttype::Vec<2,real1>& a, const defaulttype::Vec<2,real2>&
 }
 
 /// Dot product (alias for operator*)
-template<std::size_t N,typename real>
+template<sofa::size_type N,typename real>
 inline real dot(const Vec<N,real>& a, const Vec<N,real>& b)
 {
     return a*b;
 }
 
 ///// multiplication with a scalar \returns a*V
-template <std::size_t N, typename real>
+template <sofa::size_type N, typename real>
 Vec<N,real> operator*(const double& a, const Vec<N,real>& V)
 {
     return V * a;
 }
 
 ///// multiplication with a scalar \returns a*V
-template <std::size_t N, typename real>
+template <sofa::size_type N, typename real>
 Vec<N,real> operator*(const float& a, const Vec<N,real>& V)
 {
     return V * a;
@@ -899,13 +899,13 @@ namespace sofa
 namespace defaulttype
 {
 
-template<std::size_t N, typename real>
+template<sofa::size_type N, typename real>
 struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,real> >
 {
     static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
 };
 
-template<std::size_t N, typename real>
+template<sofa::size_type N, typename real>
 struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
 {
     static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
@@ -917,12 +917,12 @@ struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayT
 /// \cond TEMPLATE_OVERRIDES
 
 #define DataTypeInfoName(type,suffix)\
-template<std::size_t N>\
+template<sofa::size_type N>\
 struct DataTypeInfo< sofa::defaulttype::Vec<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,type> >\
 {\
     static std::string name() { std::ostringstream o; o << "Vec" << N << suffix; return o.str(); }\
 };\
-template<std::size_t N>\
+template<sofa::size_type N>\
 struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,type> >\
 {\
     static std::string name() { std::ostringstream o; o << "VecNoInit" << N << suffix; return o.str(); }\

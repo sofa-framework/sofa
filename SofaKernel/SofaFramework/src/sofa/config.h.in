@@ -158,7 +158,7 @@ namespace sofa
 using index_type = unsigned int;
 using size_type = unsigned int;
 
-constexpr index_type InvalidID = UINT_MAX;
+constexpr index_type InvalidID = 4294967295; //UINT_MAX from limits.h
 
 }
 

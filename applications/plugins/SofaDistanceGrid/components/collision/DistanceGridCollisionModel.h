@@ -512,7 +512,7 @@ class ContactMapper<FFDDistanceGridCollisionModel,DataTypes> : public Barycentri
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     index_type addPoint(const Coord& P, index_type index, Real&)
     {
@@ -537,7 +537,7 @@ public:
     typedef RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     MMechanicalState* createMapping(const char* name="contactPoints")
     {

@@ -134,7 +134,7 @@ public:
     typedef typename DataTypes::GridData GridData;
     //typedef typename DataTypes::NeighborListener NeighborListener;
     typedef typename DataTypes::ParticleField ParticleField;
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
 public:
     SpatialGrid(Real cellWidth);
@@ -316,7 +316,7 @@ public:
     typedef SpatialGridTypes<DataTypes> GridTypes;
     typedef SpatialGrid< GridTypes > Grid;
 
-    using index_type = sofa::defaulttype::index_type;
+    using index_type = sofa::index_type;
 
     Grid* grid;
     Data<Real> d_cellWidth; ///< Width each cell in the grid. If it is used to compute neighboors, it should be greater that the max radius considered.

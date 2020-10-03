@@ -73,7 +73,7 @@ public:
       * Formula given in "Finite Random Matrix Theory, Jacobians of Matrix Transforms (without wedge products)", Alan Edelman, 2005, http://web.mit.edu/18.325/www/handouts/handout2.pdf
       * Note that dR is also easy to compute.
       */
-    template<std::size_t spatial_dimension, std::size_t material_dimension>
+    template<size_type spatial_dimension, size_type material_dimension>
     static void QRDecompositionGradient_dQ( const defaulttype::Mat<spatial_dimension,material_dimension,Real>&Q,
                                             const defaulttype::Mat<material_dimension,material_dimension,Real>&invR,
                                             const defaulttype::Mat<spatial_dimension,material_dimension,Real>& dM,
@@ -89,11 +89,11 @@ public:
         // L = lower(tmp) - (lower(tmp))^T
         defaulttype::Mat<material_dimension,material_dimension,Real> L;
 
-        for(std::size_t i = 0; i < material_dimension; ++i)
+        for(size_type i = 0; i < material_dimension; ++i)
         {
-            for(std::size_t j = 0; j < i; ++j) // strictly lower
+            for(size_type j = 0; j < i; ++j) // strictly lower
                 L[i][j] = tmp[i][j];
-            for(std::size_t j = i + 1; j < material_dimension; ++j) // strictly lower transposed
+            for(size_type j = i + 1; j < material_dimension; ++j) // strictly lower transposed
                 L[i][j] = -tmp[j][i];
         }
 
@@ -372,7 +372,7 @@ private:
       * QL algorithm with implicit shifting, applies to tridiagonal matrices
       * Derived from numerical recipies
       */
-    template <std::size_t iSize>
+    template <sofa::size_type iSize>
     static void QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaulttype::Vec<iSize,Real> &subDiag, defaulttype::Mat<iSize,iSize,Real> &V );
 
 }; // class Decompose
