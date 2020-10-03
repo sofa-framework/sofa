@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,14 +22,9 @@
 #ifndef SOFA_CORE_BEHAVIOR_ODESOLVER_H
 #define SOFA_CORE_BEHAVIOR_ODESOLVER_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/ExecParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/core/behavior/MultiMatrix.h>
-#include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
 
 namespace sofa
 {
@@ -66,7 +61,7 @@ public:
 protected:
     OdeSolver();
 
-    virtual ~OdeSolver();
+    ~OdeSolver();
 	
 private:
 	OdeSolver(const OdeSolver& n) ;
@@ -77,7 +72,7 @@ public:
     ///
     /// Specify and execute all computation for timestep integration, i.e.
     /// advancing the state from time t to t+dt, putting the resulting position and velocity in the provided vectors.
-    virtual void solve(const core::ExecParams* /*params*/, SReal /*dt*/, MultiVecCoordId /*xResult*/, MultiVecDerivId /*vResult*/) = 0; // { serr << "ERROR: " << getClassName() << " don't implement solve on custom x and v" << sendl; }
+    virtual void solve(const core::ExecParams* /*params*/, SReal /*dt*/, MultiVecCoordId /*xResult*/, MultiVecDerivId /*vResult*/) = 0;
 
     /// Main computation method.
     ///
@@ -136,8 +131,8 @@ public:
     }
 
 
-    virtual bool insertInNode( objectmodel::BaseNode* node );
-    virtual bool removeInNode( objectmodel::BaseNode* node );
+    bool insertInNode( objectmodel::BaseNode* node );
+    bool removeInNode( objectmodel::BaseNode* node );
 
 };
 
