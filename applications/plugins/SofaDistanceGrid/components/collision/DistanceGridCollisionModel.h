@@ -222,7 +222,7 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(std::size_t size) override;
+    void resize(size_type size) override;
 
     /// Create or update the bounding volume hierarchy.
     void computeBoundingTree(int maxDepth=0) override;
@@ -481,7 +481,7 @@ public:
     void setGrid(DistanceGrid* surf, index_type index=0);
 
     /// CollisionModel interface
-    void resize(std::size_t size) override;
+    void resize(size_type size) override;
 
     /// Create or update the bounding volume hierarchy.
     void computeBoundingTree(int maxDepth=0) override;

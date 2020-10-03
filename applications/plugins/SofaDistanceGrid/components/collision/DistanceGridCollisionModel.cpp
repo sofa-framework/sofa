@@ -131,7 +131,7 @@ void RigidDistanceGridCollisionModel::init()
     sout << "< RigidDistanceGridCollisionModel::init()"<<sendl;
 }
 
-void RigidDistanceGridCollisionModel::resize(std::size_t s)
+void RigidDistanceGridCollisionModel::resize(size_type s)
 {
     this->core::CollisionModel::resize(s);
     elems.resize(s);
@@ -174,7 +174,7 @@ void RigidDistanceGridCollisionModel::updateState()
     bool useInitTranslation = (initTranslation != DistanceGrid::Coord());
     bool useInitRotation = (initRotation != Vector3(0,0,0));
 
-    for (std::size_t i=0; i<size; i++)
+    for (size_type i=0; i<size; i++)
     {
         //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
         Vector3 emin, emax;
@@ -217,7 +217,7 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 
     const bool flipped = isFlipped();
     cubeModel->resize(size);
-    for (std::size_t i=0; i<size; i++)
+    for (size_type i=0; i<size; i++)
     {
         //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
         Vector3 emin, emax;
@@ -521,8 +521,8 @@ void FFDDistanceGridCollisionModel::init()
     /// fill other data and remove inactive elements
 
     sout << "FFDDistanceGridCollisionModel: initializing "<<ffdMesh->getNbHexahedra()<<" cubes."<<sendl;
-    size_t c=0;
-    for (size_t e=0; e<ffdMesh->getNbHexahedra(); e++)
+    size_type c=0;
+    for (size_type e=0; e<ffdMesh->getNbHexahedra(); e++)
     {
         if (c != e)
             elems[c].points.swap(elems[e].points); // move the list of points to the new
@@ -571,7 +571,7 @@ void FFDDistanceGridCollisionModel::init()
     sout << "FFDDistanceGridCollisionModel: "<<c<<" active cubes."<<sendl;
 }
 
-void FFDDistanceGridCollisionModel::resize(std::size_t s)
+void FFDDistanceGridCollisionModel::resize(size_type s)
 {
     this->core::CollisionModel::resize(s);
     elems.resize(s);
@@ -602,7 +602,7 @@ void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
     updateGrid();
 
     cubeModel->resize(size);
-    for (std::size_t i=0; i<size; i++)
+    for (size_type i=0; i<size; i++)
     {
         Vector3 emin, emax;
         const DeformedCube& cube = getDeformCube(i);
@@ -624,7 +624,7 @@ void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 
 void FFDDistanceGridCollisionModel::updateGrid()
 {
-    for (std::size_t index=0; index<size; index++)
+    for (size_type index=0; index<size; index++)
     {
         DeformedCube& cube = getDeformCube( index );
         const sofa::helper::vector<core::topology::BaseMeshTopology::Hexa>& cubeCorners = ffdMesh->getHexahedra();
