@@ -83,7 +83,7 @@ public:
         {
             msg_warning() << "input data 'InputMeshName' changed for 'topology', please update your scene (see PR#1487)";
         }
-        MeshBarycentricMapperEngine::parse(arg);
+        core::DataEngine::parse(arg);
     }
 
 private:
