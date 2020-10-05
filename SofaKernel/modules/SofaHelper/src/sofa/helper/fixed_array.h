@@ -278,7 +278,7 @@ public:
     }
 
     // size is constant
-    static size_type size()
+    static constexpr size_type size()
     {
         return N;
     }

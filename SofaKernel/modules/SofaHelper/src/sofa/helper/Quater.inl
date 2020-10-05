@@ -286,90 +286,20 @@ void Quater<Real>::normalize()
 template<class Real>
 void Quater<Real>::fromFrame(Vector3& x, Vector3&y, Vector3&z)
 {
+    std::array<Vector3, 3> matrix;
 
-    defaulttype::Matrix3 R(x,y,z);
-    R.transpose();
-    this->fromMatrix(R);
+    matrix[0][0] = x[0];
+    matrix[1][0] = x[1];
+    matrix[2][0] = x[2];
+    matrix[0][1] = y[0];
+    matrix[1][1] = y[1];
+    matrix[2][1] = y[2];
+    matrix[0][2] = z[0];
+    matrix[1][2] = z[1];
+    matrix[2][2] = z[2];
 
-
+    this->fromMatrix(matrix);
 }
-
-template<class Real>
-void Quater<Real>::fromMatrix(const defaulttype::Matrix3 &m)
-{
-    Real tr, s;
-
-    tr = (Real)(m.x().x() + m.y().y() + m.z().z());
-
-    // check the diagonal
-    if (tr > 0)
-    {
-        s = (float)sqrt (tr + 1);
-        _q[3] = s * 0.5f; // w OK
-        s = 0.5f / s;
-        _q[0] = (Real)((m.z().y() - m.y().z()) * s); // x OK
-        _q[1] = (Real)((m.x().z() - m.z().x()) * s); // y OK
-        _q[2] = (Real)((m.y().x() - m.x().y()) * s); // z OK
-    }
-    else
-    {
-        if (m.y().y() > m.x().x() && m.z().z() <= m.y().y())
-        {
-            s = (Real)sqrt ((m.y().y() - (m.z().z() + m.x().x())) + 1.0f);
-
-            _q[1] = s * 0.5f; // y OK
-
-            if (s != 0.0f)
-                s = 0.5f / s;
-
-            _q[2] = (Real)((m.y().z() + m.z().y()) * s); // z OK
-            _q[0] = (Real)((m.x().y() + m.y().x()) * s); // x OK
-            _q[3] = (Real)((m.x().z() - m.z().x()) * s); // w OK
-        }
-        else if ((m.y().y() <= m.x().x()  &&  m.z().z() > m.x().x())  ||  (m.z().z() > m.y().y()))
-        {
-            s = (Real)sqrt ((m.z().z() - (m.x().x() + m.y().y())) + 1.0f);
-
-            _q[2] = s * 0.5f; // z OK
-
-            if (s != 0.0f)
-                s = 0.5f / s;
-
-            _q[0] = (Real)((m.z().x() + m.x().z()) * s); // x OK
-            _q[1] = (Real)((m.y().z() + m.z().y()) * s); // y OK
-            _q[3] = (Real)((m.y().x() - m.x().y()) * s); // w OK
-        }
-        else
-        {
-            s = (Real)sqrt ((m.x().x() - (m.y().y() + m.z().z())) + 1.0f);
-
-            _q[0] = s * 0.5f; // x OK
-
-            if (s != 0.0f)
-                s = 0.5f / s;
-
-            _q[1] = (Real)((m.x().y() + m.y().x()) * s); // y OK
-            _q[2] = (Real)((m.z().x() + m.x().z()) * s); // z OK
-            _q[3] = (Real)((m.z().y() - m.y().z()) * s); // w OK
-        }
-    }
-}
-
-// template<class Real> template<class Mat33>
-//     void Quater<Real>::toMatrix(Mat33 &m) const
-// {
-// 	m[0][0] = (1.0 - 2.0 * (_q[1] * _q[1] + _q[2] * _q[2]));
-// 	m[0][1] = (2.0 * (_q[0] * _q[1] - _q[2] * _q[3]));
-// 	m[0][2] = (2.0 * (_q[2] * _q[0] + _q[1] * _q[3]));
-//
-// 	m[1][0] = (2.0 * (_q[0] * _q[1] + _q[2] * _q[3]));
-// 	m[1][1] = (1.0 - 2.0 * (_q[2] * _q[2] + _q[0] * _q[0]));
-// 	m[1][2] = (float) (2.0 * (_q[1] * _q[2] - _q[0] * _q[3]));
-//
-// 	m[2][0] = (float) (2.0 * (_q[2] * _q[0] - _q[1] * _q[3]));
-// 	m[2][1] = (float) (2.0 * (_q[1] * _q[2] + _q[0] * _q[3]));
-// 	m[2][2] = (float) (1.0 - 2.0 * (_q[1] * _q[1] + _q[0] * _q[0]));
-// }
 
 /// Build a rotation matrix, given a quaternion rotation.
 template<class Real>
@@ -484,9 +414,9 @@ Quater<Real> Quater<Real>::axisToQuat(Vector3 a, Real phi)
         return Quater();
     }
 
-    _q[0] = a[0] / anorm;;
-    _q[1] = a[1] / anorm;;
-    _q[2] = a[2] / anorm;;
+    _q[0] = Real(a[0] / anorm);
+    _q[1] = Real(a[1] / anorm);
+    _q[2] = Real(a[2] / anorm);
 
     _q[0] = _q[0] * (Real)sin(phi / 2.0);
     _q[1] = _q[1] * (Real)sin(phi / 2.0);
@@ -529,7 +459,7 @@ void Quater<Real>::quatToAxis(Vector3 & axis, Real &angle) const
 
 /// Given a quaternion, compute rotation vector (axis times angle)
 template<class Real>
-auto Quater<Real>::quatToRotationVector() const
+typename Quater<Real>::Vector3 Quater<Real>::quatToRotationVector() const
 {
 
     Quater<Real> q = *this;
@@ -571,7 +501,7 @@ auto Quater<Real>::quatToRotationVector() const
 /// Pitch: rotation about the Y-axis
 /// Yaw: rotation about the Z-axis
 template<class Real>
-auto Quater<Real>::toEulerVector() const
+typename Quater<Real>::Vector3 Quater<Real>::toEulerVector() const
 {
     Quater<Real> q = *this;
     q.normalize();
@@ -698,28 +628,12 @@ Quater<Real> Quater<Real>::slerp2(Quater<Real> &q1, Real t)
 }
 
 template<class Real>
-Quater<Real> Quater<Real>::createQuaterFromFrame(const Vector3 &lox, const Vector3 &loy,const Vector3 &loz)
-{
-    Quater<Real> q;
-    sofa::defaulttype::Mat<3,3, Real> m;
-
-    for (unsigned int i=0 ; i<3 ; i++)
-    {
-        m[i][0] = lox[i];
-        m[i][1] = loy[i];
-        m[i][2] = loz[i];
-    }
-    q.fromMatrix(m);
-    return q;
-}
-
-template<class Real>
 inline void Quater<Real>::setFromUnitVectors(const Vector3& vFrom, const Vector3& vTo)
 {
     Vector3 v1;
     Real epsilon = std::numeric_limits<Real>::epsilon();
     
-    Real res_dot = sofa::helper::dot(vFrom, vTo) + 1;
+    Real res_dot = Real(sofa::helper::dot(vFrom, vTo) + 1);
     if (res_dot < epsilon)
     {
         res_dot = 0;

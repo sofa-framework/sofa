@@ -23,6 +23,7 @@
 #define SOFA_CORE_LOADER_MESHLOADER_H
 
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/defaulttype/Mat.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/loader/PrimitiveGroup.h>
 #include <sofa/core/topology/Topology.h>

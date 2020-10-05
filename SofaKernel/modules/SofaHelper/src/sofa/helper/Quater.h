@@ -19,34 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_QUATER_H
-#define SOFA_HELPER_QUATER_H
+#pragma once
 
 #include <sofa/helper/config.h>
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/helper/fixed_array.h>
+#include <sofa/helper/logging/Messaging.h>
+
 #include <cmath>
 #include <cassert>
 #include <iostream>
-#include <array>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 template<class Real>
 class SOFA_HELPER_API Quater
 {
 private:
-    std::array<Real, 4> _q;
+    helper::fixed_array<Real, 4> _q;
 
 public:
     typedef Real value_type;
     typedef std::size_t size_type;
-    using Vector3 = std::array<Real, 3>;
+    using Vector3 = helper::fixed_array<Real, 3>;
 
     Quater();
     ~Quater();
@@ -86,7 +82,7 @@ public:
     /// Cast into a standard C array of elements.
     Real* ptr()
     {
-        return this->_q.data();
+        return &(this->_q[0]);
     }
 
     /// Returns true if norm of Quaternion is one, false otherwise.
@@ -105,8 +101,66 @@ public:
 
     void fromFrame(Vector3& x, Vector3&y, Vector3&z);
 
+    template <typename Mat33>
+    void fromMatrix(const Mat33& m)
+    {
+        Real tr, s;
 
-    void fromMatrix(const defaulttype::Matrix3 &m);
+        tr = (Real)(m[0][0] + m[1][1] + m[2][2]);
+
+        // check the diagonal
+        if (tr > 0)
+        {
+            s = (float)sqrt(tr + 1);
+            _q[3] = s * 0.5f; // w OK
+            s = 0.5f / s;
+            _q[0] = (Real)((m[2][1] - m[1][2]) * s); // x OK
+            _q[1] = (Real)((m[0][2] - m[2][0]) * s); // y OK
+            _q[2] = (Real)((m[1][0] - m[0][1]) * s); // z OK
+        }
+        else
+        {
+            if (m[1][1] > m[0][0] && m[2][2] <= m[1][1])
+            {
+                s = (Real)sqrt((m[1][1] - (m[2][2] + m[0][0])) + 1.0f);
+
+                _q[1] = s * 0.5f; // y OK
+
+                if (s != 0.0f)
+                    s = 0.5f / s;
+
+                _q[2] = (Real)((m[1][2] + m[2][1]) * s); // z OK
+                _q[0] = (Real)((m[0][1] + m[1][0]) * s); // x OK
+                _q[3] = (Real)((m[0][2] - m[2][0]) * s); // w OK
+            }
+            else if ((m[1][1] <= m[0][0] && m[2][2] > m[0][0]) || (m[2][2] > m[1][1]))
+            {
+                s = (Real)sqrt((m[2][2] - (m[0][0] + m[1][1])) + 1.0f);
+
+                _q[2] = s * 0.5f; // z OK
+
+                if (s != 0.0f)
+                    s = 0.5f / s;
+
+                _q[0] = (Real)((m[2][0] + m[0][2]) * s); // x OK
+                _q[1] = (Real)((m[1][2] + m[2][1]) * s); // y OK
+                _q[3] = (Real)((m[1][0] - m[0][1]) * s); // w OK
+            }
+            else
+            {
+                s = (Real)sqrt((m[0][0] - (m[1][1] + m[2][2])) + 1.0f);
+
+                _q[0] = s * 0.5f; // x OK
+
+                if (s != 0.0f)
+                    s = 0.5f / s;
+
+                _q[1] = (Real)((m[0][1] + m[1][0]) * s); // y OK
+                _q[2] = (Real)((m[2][0] + m[0][2]) * s); // z OK
+                _q[3] = (Real)((m[2][1] - m[1][2]) * s); // w OK
+            }
+        }
+    }
 
     template<class Mat33>
     void toMatrix(Mat33 &m) const
@@ -181,9 +235,9 @@ public:
     Quater inverse() const;
 
 
-    auto quatToRotationVector() const;
+    Vector3 quatToRotationVector() const;
 
-    auto toEulerVector() const;
+    Vector3 toEulerVector() const;
 
 
     /*! Returns the slerp interpolation of Quaternions \p a and \p b, at time \p t.
@@ -208,8 +262,20 @@ public:
     Quater axisToQuat(Vector3 a, Real phi);
     void quatToAxis(Vector3 & a, Real &phi) const;
 
+    static Quater createQuaterFromFrame(const Vector3& lox, const Vector3& loy, const Vector3& loz)
+    {
+        Quater<Real> q;
+        Real m[3][3];
 
-    static Quater createQuaterFromFrame(const Vector3 &lox, const Vector3&loy,const Vector3&loz);
+        for (unsigned int i = 0; i < 3; i++)
+        {
+            m[i][0] = lox[i];
+            m[i][1] = loy[i];
+            m[i][2] = loz[i];
+        }
+        q.fromMatrix(m);
+        return q;
+    }
 
     /// Create using rotation vector (axis*angle) given in parent coordinates
     template<class V>
@@ -360,14 +426,14 @@ public:
     bool operator==(const Quater& q) const
     {
         for (int i=0; i<4; i++)
-            if ( std::abs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return false;
+            if ( std::abs( _q[i] - q._q[i] ) > std::numeric_limits<SReal>::epsilon() ) return false;
         return true;
     }
 
     bool operator!=(const Quater& q) const
     {
         for (int i=0; i<4; i++)
-            if ( std::abs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return true;
+            if ( std::abs( _q[i] - q._q[i] ) > std::numeric_limits<SReal>::epsilon() ) return true;
         return false;
     }
 
@@ -399,9 +465,7 @@ extern template class SOFA_HELPER_API Quater<double>;
 extern template class SOFA_HELPER_API Quater<float>;
 #endif
 
-} // namespace helper
+} // namespace sofa::helper
 
-} // namespace sofa
 
-#endif
 

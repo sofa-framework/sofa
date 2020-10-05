@@ -24,6 +24,8 @@
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/defaulttype/Mat.h>
+
 
 namespace sofa
 {

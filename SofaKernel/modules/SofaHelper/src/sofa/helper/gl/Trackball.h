@@ -73,6 +73,7 @@
 #define SOFA_HELPER_GL_TRACKBALL_H
 
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/defaulttype/Vec.h>
 
 #include <sofa/helper/config.h>
 
