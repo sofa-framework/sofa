@@ -19,67 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_CORE_OBJECTMODEL_DATA_CPP
 
-#include <string>
-#include <sofa/core/config.h>
-#include <sofa/core/objectmodel/AbstractDataLink.h>
+#include <sofa/core/objectmodel/DataContentValue.h>
 
-namespace sofa::core::objectmodel
-{
-
-/**
- * @brief DataLink stores a connection between two object of type Data<XXX>
- * The class is templated by the Data type to connect.
- * The class implements the AbstractDataLink interface.
- */
-template<class T>
-class SOFA_CORE_API DataLink final : public AbstractDataLink
-{
-public:
-
-    DataLink(T& owner) : m_owner{owner} { }
-    virtual ~DataLink() {}
-
-    T* getTarget() const
-    {
-        return m_target;
-    }
-
-    void unSet(){ m_target=nullptr; m_path = ""; }
-    bool isSet() const { return hasPath() || hasTarget(); }
-
-    void setTarget(T* target)
-    {
-        m_path = "";
-        m_target = target;
-    }
-
-    T& getOwner() const { return m_owner; }
-
-protected:
-    /// Take the "generic" data and cast it to the expected type.
-    void _doSetTarget_(BaseData* target) override
-    {
-        setTarget(dynamic_cast<T*>(target));
-    }
-
-    /// Returns the typed data to its abstract one
-    BaseData* _doGetTarget_() const override
-    {
-        return DataLink::getTarget();
-    }
-
-    /// Returns the typed data to its abstract one.
-    const BaseData& _doGetOwner_() const override
-    {
-        return DataLink::getOwner();
-    }
-
-private:
-    T& m_owner  ;
-    T* m_target {nullptr};
-};
-
-} /// namespace sofa::core::objectmodel
-
+/// Everything is in the .h file.

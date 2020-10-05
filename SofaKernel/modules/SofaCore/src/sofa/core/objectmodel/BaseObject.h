@@ -24,7 +24,6 @@
 
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/DataTracker.h>
-
 namespace sofa
 {
 
@@ -139,7 +138,7 @@ public:
     BaseObject* getMaster();
 
 
-    typedef MultiLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> LinkSlaves;
+    typedef sofa::core::objectmodel::MultiLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> LinkSlaves;
     typedef LinkSlaves::Container VecSlaves;
 
     const VecSlaves& getSlaves() const;

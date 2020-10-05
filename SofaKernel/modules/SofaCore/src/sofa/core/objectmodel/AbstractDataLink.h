@@ -42,13 +42,16 @@ public:
     /// There is a one to one owner relationship.
     /// A BaseData have one and only one DataLink object.
     /// A DataLink object has one and only one BaseData as owner.
-    const BaseData& getOwner();
+    const BaseData& getOwner() const ;
 
     /// Change the targetted DataField and set the path to the empty string
     void setTarget(BaseData* target);
 
     /// Get the targetted DataField
-    BaseData* getTarget();
+    BaseData* getTarget() const;
+
+    /// Returns true if there is a target
+    bool hasTarget() const;
 
     /// Get the path (is any)
     const std::string getPath() const;
@@ -65,7 +68,14 @@ public:
     /// If there is no compatible Data at pointed path, returns false
     /// Otherwise, returns true.
     /// After a successfull call, the path is set to empty string.
-    bool resolvePathAndSetData();
+    bool resolvePathAndSetTarget();
+
+    /// Get the targetted DataField
+    /// If there is no path set, returns nullptr
+    /// If there is no owner set, returns nullptr
+    /// If there is no compatible Data at pointed path, returns nullptr
+    /// Otherwise, returns pointed target.
+    BaseData* resolvePathAndGetTarget();
 
 protected:
     ///////////////////////////////////////////////////////////////////////////
@@ -76,10 +86,10 @@ protected:
     virtual void _doSetTarget_(BaseData* target) = 0;
 
     /// Real implementation for the getTarget() method
-    virtual BaseData* _doGetTarget_() = 0;
+    virtual BaseData* _doGetTarget_() const = 0;
 
     /// Real implementation for the GetOwner() method
-    virtual const BaseData& _doGetOwner_() = 0;
+    virtual const BaseData& _doGetOwner_() const = 0;
     ///////////////////////////////////////////////////////////////////////////
 
     std::string m_path {""};
