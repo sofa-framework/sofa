@@ -151,9 +151,9 @@ int countWellCentered(C3t3& c3t3)
 template <class C3t3,class Obj>
 void printStats(C3t3& c3t3, Obj* obj, const char* step = "")
 {
-    int nb_in = countWellCentered(c3t3);
-    msg_info(obj) << step << ":  number of tetra     = " << c3t3.number_of_cells()
-                  << step << ":  well-centered tetra = " << ((double)nb_in/(double)c3t3.number_of_cells())*100 << "%";
+    int nb_in = countWellCentered(c3t3); 
+    msg_info(obj) << step << ":  number of tetra     = " << c3t3.number_of_cells() << msgendl
+                  << " - well-centered tetra = " << ((double)nb_in/(double)c3t3.number_of_cells())*100 << "%";
 }
 
 template <class DataTypes>
