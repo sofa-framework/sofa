@@ -493,132 +493,63 @@ void CylinderMesh<DataTypes>::orientate()
 }
 
 template <class DataTypes>
-void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams*)
+void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams* vparams) override
 {
+    vparams->drawTool()->saveLastState();
+
     if (m_viewPoints.getValue())
     {
-        glDisable(GL_LIGHTING);
-        helper::ReadAccessor< Data< VecCoord > > points = m_points;
-        glPointSize(8);
-        glBegin(GL_POINTS);
-        //vertices
-        //glColor3f(1.0, 0.0, 0.0);
-        glColor3f(0.0, 0.0, 1.0);
+        vparams->drawTool()->disableLighting();
+
+        helper::ReadAccessor< Data< VecCoord > > coords = m_points;
+        std::vector<defaulttype::Vector3> points;
+
+        // Vertices
+        points.resize(m_nbVertices);
         for (int i = 0; i < m_nbVertices; ++i)
-            sofa::helper::gl::glVertexT(points[i]);
-        //centers
-        //glColor3f(0.0, 0.0, 0.0);
-        glColor3f(1.0, 0.0, 0.0);
-        for (int i = m_nbVertices; i < m_nbVertices+m_nbCenters; ++i)
-            sofa::helper::gl::glVertexT(points[i]);
-        //boundary centers
-        //glColor3f(0.0, 0.0, 0.0);
-        glColor3f(0.0, 1.0, 0.0);
-        for (unsigned int i = m_nbVertices+m_nbCenters; i < points.size(); ++i)
-            sofa::helper::gl::glVertexT(points[i]);
-        glEnd();
+            points = coords[i];
+        vparams->drawTool()->drawPoints(points,8,defaulttype::Vec4f(0.0, 0.0, 1.0,1));
+        points.clear();
 
-//        //bounding box
-//        glColor3f(1.0, 0.0, 0.0);
-//		glLineWidth(10);
-//        glBegin(GL_LINE_LOOP);
-//        glVertex3f((2*a-n)*t, n*t, -m*t);
-//        glVertex3f(n*t, (2*a-n)*t, -m*t);
-//        glVertex3f(n*t, (n-2*a)*t, -m*t);
-//        glVertex3f((2*a-n)*t, -n*t, -m*t);
-//        glVertex3f((n-2*a)*t, -n*t, -m*t);
-//        glVertex3f(-n*t, (n-2*a)*t, -m*t);
-//        glVertex3f(-n*t, (2*a-n)*t, -m*t);
-//        glVertex3f((n-2*a)*t, n*t, -m*t);
-//        glEnd();
-//        glBegin(GL_LINE_LOOP);
-//        glVertex3f((2*a-n)*t, n*t, m*t);
-//        glVertex3f(n*t, (2*a-n)*t, m*t);
-//        glVertex3f(n*t, (n-2*a)*t, m*t);
-//        glVertex3f((2*a-n)*t, -n*t, m*t);
-//        glVertex3f((n-2*a)*t, -n*t, m*t);
-//        glVertex3f(-n*t, (n-2*a)*t, m*t);
-//        glVertex3f(-n*t, (2*a-n)*t, m*t);
-//        glVertex3f((n-2*a)*t, n*t, m*t);
-//        glEnd();
-//        glBegin(GL_LINES);
-//        glVertex3f((2*a-n)*t, n*t, -m*t);
-//        glVertex3f((2*a-n)*t, n*t, m*t);
-//        glVertex3f(n*t, (2*a-n)*t, -m*t);
-//        glVertex3f(n*t, (2*a-n)*t, m*t);
-//        glVertex3f(n*t, (n-2*a)*t, -m*t);
-//        glVertex3f(n*t, (n-2*a)*t, m*t);
-//        glVertex3f((2*a-n)*t, -n*t, -m*t);
-//        glVertex3f((2*a-n)*t, -n*t, m*t);
-//        glVertex3f((n-2*a)*t, -n*t, -m*t);
-//        glVertex3f((n-2*a)*t, -n*t, m*t);
-//        glVertex3f(-n*t, (n-2*a)*t, -m*t);
-//        glVertex3f(-n*t, (n-2*a)*t, m*t);
-//        glVertex3f(-n*t, (2*a-n)*t, -m*t);
-//        glVertex3f(-n*t, (2*a-n)*t, m*t);
-//        glVertex3f((n-2*a)*t, n*t, -m*t);
-//        glVertex3f((n-2*a)*t, n*t, m*t);
-//        glEnd();
-//
-//		//circle
-//		glColor3f(0.0, 0.0, 1.0);
-//		int n = 1000;
-//		float R = 0.5*m_diameter.getValue();
-//		float L = 0.5*m_length.getValue();
-//		float Pi = 3.1415926536f;
-//		glBegin(GL_LINE_LOOP);
-//		for(int i=0; i<n; ++i)
-//         glVertex3f(R*cos(2*Pi/n*i), R*sin(2*Pi/n*i), L);
-//		glEnd();
-//		glLineWidth(1);
+        // Centers
+        points.resize(m_nbCenters);
+        for (int i = 0; i < m_nbCenters; ++i)
+            points = coords[m_nbVertices+i];
+        vparams->drawTool()->drawPoints(points,8,defaulttype::Vec4f(1.0, 0.0, 0.0,1));
+        points.clear();
+        // Boundary centers
+        int size = (int)points.size()-(m_nbCenters+m_nbVertices);
+        points.resize(size);
+        for (int i = 0; i < size; ++i)
+            points = coords[m_nbCenters+m_nbVertices+i];
+        vparams->drawTool()->drawPoints(points,8,defaulttype::Vec4f(0.0, 1.0, 0.0,1));
 
-//        glBegin(GL_LINES);
-//        glVertex3f(0.0, 0.0, m*t);
-//        glVertex3f((2*a-n)*t, n*t, m*t);
-//        glVertex3f(0.0, 0.0, m*t);
-//        glVertex3f(n*t, (2*a-n)*t, m*t);
-//        glVertex3f(0.0, 0.0, m*t);
-//        glVertex3f(n*t, (n-2*a)*t, m*t);
-//        glVertex3f(0.0, 0.0, m*t);
-//        glVertex3f((2*a-n)*t, -n*t, m*t);
-//        glVertex3f(0.0, 0.0, m*t);
-//        glVertex3f((n-2*a)*t, -n*t, m*t);
-//        glVertex3f(0.0, 0.0, m*t);
-//        glVertex3f(-n*t, (n-2*a)*t, m*t);
-//        glVertex3f(0.0, 0.0, m*t);
-//        glVertex3f(-n*t, (2*a-n)*t, m*t);
-//        glVertex3f(0.0, 0.0, m*t);
-//        glVertex3f((n-2*a)*t, n*t, m*t);
-//        glEnd();
-        glPointSize(1);
-        glEnable(GL_LIGHTING);
+        vparams->drawTool()->enableLighting();
     }
 
     if (m_viewTetras.getValue())
     {
-        helper::ReadAccessor< Data< VecCoord > > points = m_points;
+        helper::ReadAccessor< Data< VecCoord > > coords = m_points;
         helper::ReadAccessor< Data< SeqTetrahedra > > tetras = m_tetras;
+        std::vector<defaulttype::Vector3> points;
 
-        glDisable(GL_LIGHTING);
-        glColor3f(0, 0, 0);
-        glBegin(GL_LINES);
-        for(size_t i = 0; i < /*4*/m_nbTetras; ++i)
+        vparams->drawTool()->disableLighting();
+
+        for(size_t i = 0; i < m_nbTetras; ++i)
         {
-//        unsigned int i = 1;
             for(int j = 0; j < 3; ++j)
             {
                 for(int k = j+1; k < 4; ++k)
                 {
-                    sofa::helper::gl::glVertexT(points[tetras[i][j]]);
-                    sofa::helper::gl::glVertexT(points[tetras[i][k]]);
+                    points.push_back(coords[tetras[i][j]]);
+                    points.push_back(coords[tetras[i][k]]);
                 }
             }
         }
-        glEnd();
-        glEnable(GL_LIGHTING);
+        vparams->drawTool()->drawLines(points,1,defaulttype::Vec4f(1.0, 1.0, 1.0,1));
+        vparams->drawTool()->enableLighting();
     }
-
-
+    vparams->drawTool()->restoreLastState();
 }
 
 } //cgal

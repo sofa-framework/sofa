@@ -516,36 +516,25 @@ protected:
 
     void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
         // draw bounding box
-
         if (!vparams->displayFlags().getShowVisualModels()) return;
         if (!drawBB.getValue()) return;
 
-        glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT );
-        glPushMatrix();
+        vparams->drawTool()->saveLastState();
 
-        const float color[]={1.,0.5,0.5,0.}, specular[]={0.,0.,0.,0.};
-        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-        glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
-        glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
-        glColor4fv(color);
-        glLineWidth(2.0);
+        const sofa::defaulttype::Vec4f color(1.,0.5,0.5,0.5);
+        vparams->drawTool()->setMaterial(color);
 
+        std::vector<defaulttype::Vector3> corners;
         defaulttype::Vec<8,defaulttype::Vector3> c;
+        corners.resize(8);
         getCorners(c);
+        for(unsigned int i=0;i<8;i++)
+            corners[i]=c[i];
 
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[0][0],c[0][1],c[0][2]); glVertex3d(c[1][0],c[1][1],c[1][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[2][0],c[2][1],c[2][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);  glVertex3d(c[0][0],c[0][1],c[0][2]); glVertex3d(c[4][0],c[4][1],c[4][2]); glVertex3d(c[6][0],c[6][1],c[6][2]); glVertex3d(c[2][0],c[2][1],c[2][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[0][0],c[0][1],c[0][2]); glVertex3d(c[1][0],c[1][1],c[1][2]); glVertex3d(c[5][0],c[5][1],c[5][2]); glVertex3d(c[4][0],c[4][1],c[4][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[1][0],c[1][1],c[1][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[7][0],c[7][1],c[7][2]); glVertex3d(c[5][0],c[5][1],c[5][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[7][0],c[7][1],c[7][2]); glVertex3d(c[5][0],c[5][1],c[5][2]); glVertex3d(c[4][0],c[4][1],c[4][2]); glVertex3d(c[6][0],c[6][1],c[6][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[2][0],c[2][1],c[2][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[7][0],c[7][1],c[7][2]); glVertex3d(c[6][0],c[6][1],c[6][2]);	glEnd ();
+        vparams->drawTool()->drawLineLoop(corners,2.0,color);
 
-
-        glPopMatrix ();
-        glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->restoreLastState();
     }
 
     /*

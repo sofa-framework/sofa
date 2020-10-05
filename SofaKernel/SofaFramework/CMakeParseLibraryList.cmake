@@ -11,11 +11,7 @@
 
 # CMake module
 
-if(CMAKEPARSELIBRARYLIST_LOADED)
-    message("============================= Skipping CMakeParseLibrary")
-    return()
-endif()
-set(CMAKEPARSELIBRARYLIST_LOADED 1)
+include_guard(GLOBAL)
 
 include(CMakeParseArguments)
 

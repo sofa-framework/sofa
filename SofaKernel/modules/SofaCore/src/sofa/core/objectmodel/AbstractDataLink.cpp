@@ -28,33 +28,62 @@ namespace sofa::core::objectmodel
 
 /// Get the DataField having thins link as an attribute
 /// there is a one to one owner relationship.
-const BaseData& AbstractDataLink::getOwner() { return _doGetOwner_(); }
+const BaseData& AbstractDataLink::getOwner() const { return _doGetOwner_(); }
 
 /// Change the targetted DataField
 void AbstractDataLink::setTarget(BaseData* target){ _doSetTarget_(target); }
 
 /// Get the targetted DataField
-BaseData* AbstractDataLink::getTarget(){ return _doGetTarget_(); }
+BaseData* AbstractDataLink::getTarget() const
+{
+    return _doGetTarget_();
+}
 
 const std::string AbstractDataLink::getPath() const
 {
     return m_path;
 }
 
+bool AbstractDataLink::hasTarget() const
+{
+    return _doGetTarget_() != nullptr;
+}
+
 void AbstractDataLink::setPath(const std::string& path)
 {
     /// Trying to resolve link
     m_path = path;
-    resolvePathAndSetData();
+    resolvePathAndSetTarget();
 }
 
-bool AbstractDataLink::resolvePathAndSetData()
+bool AbstractDataLink::resolvePathAndSetTarget()
 {
+    if(getPath().empty())
+        return false;
+
     BaseData *data = PathResolver::FindBaseDataFromPath(&getOwner(), getPath());
     if(data == nullptr)
         return false;
     setTarget(data);
     return true;
+}
+
+BaseData* AbstractDataLink::resolvePathAndGetTarget()
+{
+    BaseData *data = _doGetTarget_();
+    if(data!=nullptr)
+        return data;
+
+
+    if(getPath().empty())
+        return nullptr;
+
+    data = PathResolver::FindBaseDataFromPath(&getOwner(), getPath());
+    if(data == nullptr)
+        return nullptr;
+    setTarget(data);
+    return data;
+
 }
 
 bool AbstractDataLink::hasPath() const { return !m_path.empty(); }
