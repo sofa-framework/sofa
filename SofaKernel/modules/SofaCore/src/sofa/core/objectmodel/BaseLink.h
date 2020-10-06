@@ -53,7 +53,6 @@ public:
         FLAG_MULTILINK  = 1 << 0, ///< True if link is an array
         FLAG_STRONGLINK = 1 << 1, ///< True if link has ownership of linked object(s)
         FLAG_DOUBLELINK = 1 << 2, ///< True if link has a reciprocal link in linked object(s)
-        FLAG_DATALINK   = 1 << 3, ///< True if link points to a Data
         FLAG_DUPLICATE  = 1 << 4, ///< True if link duplicates another one (possibly with a different/specialized DestType)
         FLAG_STOREPATH  = 1 << 5, ///< True if link requires a path string in order to be created
     };
@@ -91,7 +90,10 @@ public:
     void setHelp(const std::string& val) { m_help = val; }
 
     virtual Base* getOwnerBase() const = 0;
-    virtual BaseData* getOwnerData() const = 0;
+
+    [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
+    virtual sofa::core::objectmodel::BaseData* getOwnerData() const = 0;
+
 
     /// Set one of the flags.
     void setFlag(LinkFlagsEnum flag, bool b)
@@ -104,7 +106,9 @@ public:
     bool getFlag(LinkFlagsEnum flag) const { return (m_flags&LinkFlags(flag))!=0; }
 
     bool isMultiLink() const { return getFlag(FLAG_MULTILINK); }
-    bool isDataLink() const { return getFlag(FLAG_DATALINK); }
+
+    [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
+    bool isDataLink() const { return false; }
     bool isStrongLink() const { return getFlag(FLAG_STRONGLINK); }
     bool isDoubleLink() const { return getFlag(FLAG_DOUBLELINK); }
     bool isDuplicate() const { return getFlag(FLAG_DUPLICATE); }
@@ -133,7 +137,10 @@ public:
 
     virtual size_t getSize() const = 0;
     virtual Base* getLinkedBase(std::size_t index=0) const = 0;
+
+    [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
     virtual BaseData* getLinkedData(std::size_t index=0) const = 0;
+
     virtual std::string getLinkedPath(std::size_t index=0) const = 0;
 
     /// @name Serialization API
