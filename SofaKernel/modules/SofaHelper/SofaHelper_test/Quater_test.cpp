@@ -24,6 +24,9 @@
 #include <cstdlib>
 #include <ctime>
 
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
+
 using sofa::helper::Quater;
 
 double errorThreshold = 1e-6;

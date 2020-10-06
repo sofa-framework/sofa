@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_QUATER_INL
-#define SOFA_HELPER_QUATER_INL
+#pragma once
 
 #include "Quater.h"
 #include <limits>
@@ -29,14 +28,10 @@
 #include <cstdio>
 
 #include <sofa/helper/vector_algebra.h>
+#include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
+namespace sofa::helper
 {
-
-namespace helper
-{
-
-#define RENORMCOUNT 50
 
 // Constructor
 template<class Real>
@@ -720,8 +715,180 @@ void Quater<Real>::operator*=(const Quater<Real>& q1)
             q2._q[1] * q1._q[0];
 }
 
-} // namespace helper
+template<class Real>
+Quater<Real> Quater<Real>::identity()
+{
+    return Quater(0, 0, 0, 1);
+}
 
-} // namespace sofa
+template<class Real>
+void Quater<Real>::set(Real x, Real y, Real z, Real w)
+{
+    _q[0] = x;
+    _q[1] = y;
+    _q[2] = z;
+    _q[3] = w;
+}
 
-#endif
+template<class Real>
+const Real* Quater<Real>:: ptr() const
+{
+    return this->_q.data();
+}
+
+template<class Real>
+Real* Quater<Real>::ptr()
+{
+    return &(this->_q[0]);
+}
+
+template<class Real>
+void Quater<Real>::clear()
+{
+    _q[0] = 0.0;
+    _q[1] = 0.0;
+    _q[2] = 0.0;
+    _q[3] = 1.0;
+}
+
+template<class Real>
+Real& Quater<Real>::operator[](size_type index)
+{
+    assert(index >= 0 && index < 4);
+    return _q[index];
+}
+
+template<class Real>
+const Real& Quater<Real>::operator[](size_type index) const
+{
+    assert(index >= 0 && index < 4);
+    return _q[index];
+}
+
+template<class Real>
+Quater<Real> Quater<Real>::createQuaterFromFrame(const Vector3& lox, const Vector3& loy, const Vector3& loz)
+{
+    Quater<Real> q;
+    Real m[3][3];
+
+    for (unsigned int i = 0; i < 3; i++)
+    {
+        m[i][0] = lox[i];
+        m[i][1] = loy[i];
+        m[i][2] = loz[i];
+    }
+    q.fromMatrix(m);
+    return q;
+}
+
+template<class Real>
+Quater<Real> Quater<Real>::createQuaterFromEuler(const Vector3& v, EulerOrder order)
+{
+    Real quat[4];
+
+    Real c1 = cos(v[0] / 2);
+    Real c2 = cos(v[1] / 2);
+    Real c3 = cos(v[2] / 2);
+
+    Real s1 = sin(v[0] / 2);
+    Real s2 = sin(v[1] / 2);
+    Real s3 = sin(v[2] / 2);
+
+    switch (order)
+    {
+    case EulerOrder::XYZ:
+        quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
+        quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
+        quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
+        quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
+        break;
+    case EulerOrder::YXZ:
+        quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
+        quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
+        quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
+        quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
+        break;
+    case EulerOrder::ZXY:
+        quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
+        quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
+        quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
+        quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
+        break;
+    case EulerOrder::ZYX:
+        quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
+        quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
+        quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
+        quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
+        break;
+    case EulerOrder::YZX:
+        quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
+        quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
+        quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
+        quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
+        break;
+    case EulerOrder::XZY:
+        quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
+        quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
+        quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
+        quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
+        break;
+    case EulerOrder::NONE:
+    default:
+        msg_error("Quaternion") << "FromEuler: given order is not a valid order to create a Quaternion";
+        return Quater();
+    }
+
+    Quater quatResult{ quat[0], quat[1], quat[2], quat[3] };
+    return quatResult;
+}
+
+template<class Real>
+Quater<Real> Quater<Real>::fromEuler(Real alpha, Real beta, Real gamma, EulerOrder order)
+{
+    return createQuaterFromEuler({ alpha, beta, gamma }, order);
+}
+
+
+template<class Real>
+Quater<Real> Quater<Real>::quatDiff(Quater<Real> a, const Quater<Real>& b)
+{
+    // If the axes are not oriented in the same direction, flip the axis and angle of a to get the same convention than b
+    if (a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3] < 0)
+    {
+        a[0] = -a[0];
+        a[1] = -a[1];
+        a[2] = -a[2];
+        a[3] = -a[3];
+    }
+
+    Quater q = b.inverse() * a;
+    return q;
+}
+
+template<class Real>
+typename Quater<Real>::Vector3 Quater<Real>::angularDisplacement(Quater<Real> a, const Quater<Real>& b)
+{
+    return quatDiff(a, b).quatToRotationVector();    // Use of quatToRotationVector instead of toEulerVector:
+                                                    // this is done to keep the old behavior (before the
+                                                    // correction of the toEulerVector function).
+}
+
+template<class Real>
+bool Quater<Real>::operator==(const Quater& q) const
+{
+    for (int i = 0; i < 4; i++)
+        if (std::abs(_q[i] - q._q[i]) > std::numeric_limits<SReal>::epsilon()) return false;
+    return true;
+}
+
+template<class Real>
+bool Quater<Real>::operator!=(const Quater& q) const
+{
+    for (int i = 0; i < 4; i++)
+        if (std::abs(_q[i] - q._q[i]) > std::numeric_limits<SReal>::epsilon()) return true;
+    return false;
+}
+
+
+} // namespace sofa::helper
+

@@ -24,7 +24,6 @@
 #include <sofa/helper/config.h>
 
 #include <sofa/helper/fixed_array.h>
-#include <sofa/helper/logging/Messaging.h>
 
 #include <cmath>
 #include <cassert>
@@ -58,32 +57,15 @@ public:
     */
     Quater(const Vector3& vFrom, const Vector3& vTo);
 
-    static Quater identity()
-    {
-        return Quater(0,0,0,1);
-    }
+    static Quater identity();
 
-
-    void set(Real x, Real y, Real z, Real w)
-    {
-        _q[0] = x;
-        _q[1] = y;
-        _q[2] = z;
-        _q[3] = w;
-    }
-
+    void set(Real x, Real y, Real z, Real w);
 
     /// Cast into a standard C array of elements.
-    const Real* ptr() const
-    {
-        return this->_q.data();
-    }
+    const Real* ptr() const;
 
     /// Cast into a standard C array of elements.
-    Real* ptr()
-    {
-        return &(this->_q[0]);
-    }
+    Real* ptr();
 
     /// Returns true if norm of Quaternion is one, false otherwise.
     bool isNormalized();
@@ -91,13 +73,7 @@ public:
     /// Normalize a quaternion
     void normalize();
 
-    void clear()
-    {
-        _q[0]=0.0;
-        _q[1]=0.0;
-        _q[2]=0.0;
-        _q[3]=1.0;
-    }
+    void clear();
 
     void fromFrame(Vector3& x, Vector3&y, Vector3&z);
 
@@ -220,20 +196,10 @@ public:
 
     Quater vectQuatMult(const Vector3& vect);
 
-    Real& operator[](size_type index)
-    {
-        assert(index >= 0 && index < 4);
-        return _q[index];
-    }
-
-    const Real& operator[](size_type index) const
-    {
-        assert(index >= 0 && index < 4);
-        return _q[index];
-    }
+    Real& operator[](size_type index);
+    const Real& operator[](size_type index) const;
 
     Quater inverse() const;
-
 
     Vector3 quatToRotationVector() const;
 
@@ -262,20 +228,7 @@ public:
     Quater axisToQuat(Vector3 a, Real phi);
     void quatToAxis(Vector3 & a, Real &phi) const;
 
-    static Quater createQuaterFromFrame(const Vector3& lox, const Vector3& loy, const Vector3& loz)
-    {
-        Quater<Real> q;
-        Real m[3][3];
-
-        for (unsigned int i = 0; i < 3; i++)
-        {
-            m[i][0] = lox[i];
-            m[i][1] = loy[i];
-            m[i][2] = loz[i];
-        }
-        q.fromMatrix(m);
-        return q;
-    }
+    static Quater createQuaterFromFrame(const Vector3& lox, const Vector3& loy, const Vector3& loz);
 
     /// Create using rotation vector (axis*angle) given in parent coordinates
     template<class V>
@@ -299,71 +252,10 @@ public:
         XYZ, YXZ, ZXY, ZYX, YZX, XZY, NONE
     };
 
-    static Quater createQuaterFromEuler( Vector3 v, EulerOrder order = EulerOrder::ZYX)
-    {
-        Real quat[4];
-
-        Real c1 = cos( v[0] / 2 );
-        Real c2 = cos( v[1] / 2 );
-        Real c3 = cos( v[2] / 2 );
-
-        Real s1 = sin( v[0] / 2 );
-        Real s2 = sin( v[1] / 2 );
-        Real s3 = sin( v[2] / 2 );
-
-        switch(order)
-        {
-        case EulerOrder::XYZ:
-            quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
-            quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
-            quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
-            quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
-            break;
-        case EulerOrder::YXZ:
-            quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
-            quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
-            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
-            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
-            break;
-        case EulerOrder::ZXY:
-            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
-            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
-            quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
-            quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
-            break;
-        case EulerOrder::ZYX:
-            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
-            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
-            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
-            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
-            break;
-        case EulerOrder::YZX:
-            quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
-            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
-            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
-            quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
-            break;
-        case EulerOrder::XZY:
-            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
-            quat[1] = c1 * s2 * c3 - s1 * c2 * s3;
-            quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
-            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
-            break;
-        case EulerOrder::NONE:
-        default:
-            msg_error("Quaternion") << "FromEuler: given order is not a valid order to create a Quaternion";
-            return Quater();
-        }
-
-        Quater quatResult{ quat[0], quat[1], quat[2], quat[3] };
-        return quatResult;
-    }
-
+    static Quater createQuaterFromEuler(const Vector3& v, EulerOrder order = EulerOrder::ZYX);
 
     /// Create a quaternion from Euler angles
-    static Quater fromEuler( Real alpha, Real beta, Real gamma, EulerOrder order = EulerOrder::ZYX ){
-        return createQuaterFromEuler( {alpha, beta, gamma }, order );
-    }
+    static Quater fromEuler(Real alpha, Real beta, Real gamma, EulerOrder order = EulerOrder::ZYX);
 
     /// Create using the entries of a rotation vector (axis*angle) given in parent coordinates
     template<class T>
@@ -388,28 +280,10 @@ public:
     static Quater set(T a0, T a1, T a2) { return createFromRotationVector(a0,a1,a2); }
 
     /// Return the quaternion resulting of the movement between 2 quaternions
-    Quater quatDiff( Quater a, const Quater& b)
-    {
-        // If the axes are not oriented in the same direction, flip the axis and angle of a to get the same convention than b
-        if (a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3]<0)
-        {
-            a[0] = -a[0];
-            a[1] = -a[1];
-            a[2] = -a[2];
-            a[3] = -a[3];
-        }
-
-        Quater q = b.inverse() * a;
-        return q;
-    }
+    Quater quatDiff(Quater a, const Quater& b);
 
     /// Return the eulerian vector resulting of the movement between 2 quaternions
-    Vector3 angularDisplacement( Quater a, const Quater& b)
-    {
-        return quatDiff(a,b).quatToRotationVector();    // Use of quatToRotationVector instead of toEulerVector:
-                                                        // this is done to keep the old behavior (before the
-                                                        // correction of the toEulerVector function).
-    }
+    Vector3 angularDisplacement(Quater a, const Quater& b);
 
     /// Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo. vFrom and vTo are assumed to be normalized.
     void setFromUnitVectors(const Vector3& vFrom, const Vector3& vTo);
@@ -423,41 +297,31 @@ public:
     void operator+=(const Quater& q2);
     void operator*=(const Quater& q2);
 
-    bool operator==(const Quater& q) const
-    {
-        for (int i=0; i<4; i++)
-            if ( std::abs( _q[i] - q._q[i] ) > std::numeric_limits<SReal>::epsilon() ) return false;
-        return true;
-    }
+    bool operator==(const Quater& q) const;
 
-    bool operator!=(const Quater& q) const
-    {
-        for (int i=0; i<4; i++)
-            if ( std::abs( _q[i] - q._q[i] ) > std::numeric_limits<SReal>::epsilon() ) return true;
-        return false;
-    }
+    bool operator!=(const Quater& q) const;
 
     /// write to an output stream
-    inline friend std::ostream& operator << ( std::ostream& out, const Quater& v )
+    inline friend std::ostream& operator << (std::ostream& out, const Quater& v)
     {
-        out<<v._q[0]<<" "<<v._q[1]<<" "<<v._q[2]<<" "<<v._q[3];
+        out << v._q[0] << " " << v._q[1] << " " << v._q[2] << " " << v._q[3];
         return out;
     }
 
     /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, Quater& v )
+    inline friend std::istream& operator >> (std::istream& in, Quater& v)
     {
-        in>>v._q[0]>>v._q[1]>>v._q[2]>>v._q[3];
+        in >> v._q[0] >> v._q[1] >> v._q[2] >> v._q[3];
         return in;
     }
 
-    enum { static_size = 4 };
+    static constexpr unsigned int static_size = 4;
     static unsigned int size() {return 4;}
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 4 };
+    static constexpr unsigned int total_size = 4;
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for quaternions)
-    enum { spatial_dimensions = 3 };
+    static constexpr unsigned int spatial_dimensions = 3;
 };
 
 #if  !defined(SOFA_HELPER_QUATER_CPP)
