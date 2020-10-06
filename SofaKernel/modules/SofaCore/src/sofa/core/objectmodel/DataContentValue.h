@@ -31,30 +31,30 @@ namespace sofa::core::objectmodel
 /// - CopyOnWrite==false: an independent copy (duplicated memory)
 /// - CopyOnWrite==true: shared memory while the Data is not modified (in that case the memory is duplicated to get an independent copy)
 template <class T, bool CopyOnWrite>
-class DataValue;
+class DataContentValue;
 
 template <class T>
-class DataValue<T, false>
+class DataContentValue<T, false>
 {
     T data;
 public:
 
-    DataValue()
+    DataContentValue()
         : data(T())// BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
     {
     }
 
-    explicit DataValue(const T &value)
+    explicit DataContentValue(const T &value)
         : data(value)
     {
     }
 
-    DataValue(const DataValue& dc)
+    DataContentValue(const DataContentValue& dc)
         : data(dc.getValue())
     {
     }
 
-    DataValue& operator=(const DataValue& dc )
+    DataContentValue& operator=(const DataContentValue& dc )
     {
         data = dc.getValue(); // copy
         return *this;
@@ -74,31 +74,31 @@ public:
 
 
 template <class T>
-class DataValue<T, true>
+class DataContentValue<T, true>
 {
     std::shared_ptr<T> ptr;
 public:
 
-    DataValue()
+    DataContentValue()
         : ptr(new T(T())) // BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
     {
     }
 
-    explicit DataValue(const T& value)
+    explicit DataContentValue(const T& value)
         : ptr(new T(value))
     {
     }
 
-    DataValue(const DataValue& dc)
+    DataContentValue(const DataContentValue& dc)
         : ptr(dc.ptr) // start with shared memory
     {
     }
 
-    ~DataValue()
+    ~DataContentValue()
     {
     }
 
-    DataValue& operator=(const DataValue& dc )
+    DataContentValue& operator=(const DataContentValue& dc )
     {
         //avoid self reference
         if(&dc != this)

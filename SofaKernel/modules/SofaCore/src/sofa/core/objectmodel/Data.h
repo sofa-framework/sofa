@@ -27,7 +27,6 @@
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/core/objectmodel/DataContentValue.h>
-
 namespace sofa
 {
 
@@ -49,7 +48,7 @@ public:
     {
     }
 
-    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped. 
+    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped.
     //[[deprecated("Replaced with one with std::string instead of char* version")]]
     TData( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false) :
         TData( sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly) {}
@@ -175,12 +174,10 @@ public:
         T value;
     };
 
-
     static std::string templateName()
     {
         return sofa::core::objectmodel::BaseData::typeName<Data<T>>();
     }
-
 
     // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
     virtual BaseData* getNewInstance() { return new Data();}
@@ -350,7 +347,7 @@ public:
 
 protected:
 
-    typedef DataValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
+    typedef DataContentValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
 
     /// Value
     ValueType m_value;
