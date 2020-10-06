@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
 #include <regex>
 #include "PathResolver.h"
 #include <sofa/core/objectmodel/DataLink.h>
@@ -85,6 +83,13 @@ void* PathResolver::FindLinkDestClass(Base* context, const BaseClass* destType, 
     if(context==nullptr)
         return nullptr;
     return context->findLinkDestClass(destType, path, link);
+}
+
+
+bool PathResolver::CheckPath(sofa::core::objectmodel::Base* context, const sofa::core::objectmodel::BaseClass* classType, const std::string& path)
+{
+    void* tmp = PathResolver::FindLinkDestClass(context, classType, path, nullptr);
+    return tmp != nullptr;
 }
 
 
