@@ -514,7 +514,7 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
                     this->updateVisual();
                 }
 
-                sout << "Shadows : "<<(d_shadowsEnabled.getValue()?"ENABLED":"DISABLED")<<sendl;
+                msg_info() << "Shadows : "<<(d_shadowsEnabled.getValue()?"ENABLED":"DISABLED");
             }
             break;
         }

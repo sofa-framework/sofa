@@ -390,7 +390,7 @@ protected:
 
             if ( index==-1 )
             {
-                B->sout<<"point "<<childPosition<<" outside"<<B->sendl;
+                msg_info(B)<<"point "<<childPosition<<" outside";
                 ref.resize(0);  w.resize(0);
                 if(dw) dw->resize(0);
                 if(ddw) ddw->resize(0);
@@ -564,7 +564,7 @@ protected:
 
             if ( index==-1 )
             {
-                B->sout<<"point "<<childPosition<<" outside"<<B->sendl;
+                msg_info(B)<<"point "<<childPosition<<" outside";
                 ref.resize(0);  w.resize(0);
                 if(dw) dw->resize(0);
                 if(ddw) ddw->resize(0);

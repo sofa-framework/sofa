@@ -400,11 +400,11 @@ SOFA_SOFAPYTHON_API void handle_python_error(const char* message);
         PyObject_HasAttrString(m_ScriptControllerInstance,#funcName ) ) { \
             m_Func_##funcName = PyObject_GetAttrString(m_ScriptControllerInstance,#funcName); \
             if (!PyCallable_Check(m_Func_##funcName)) \
-                {m_Func_##funcName=0; sout<<#funcName<<" not callable"<<sendl;} \
+                {m_Func_##funcName=0; msg_info()<<#funcName<<" not callable";} \
             else \
-                {sout<<#funcName<<" found"<<sendl;} \
+                {msg_info()<<#funcName<<" found";} \
     }else{ \
-        m_Func_##funcName=0; sout<<#funcName<<" not found"<<sendl; } \
+        m_Func_##funcName=0; msg_info()<<#funcName<<" not found"; } \
     }
 
 
@@ -421,11 +421,11 @@ SOFA_SOFAPYTHON_API void handle_python_error(const char* message);
         PyObject_HasAttrString(m_ScriptDataEngineInstance,#funcName ) ) { \
             m_Func_##funcName = PyObject_GetAttrString(m_ScriptDataEngineInstance,#funcName); \
             if (!PyCallable_Check(m_Func_##funcName)) \
-                {m_Func_##funcName=0; sout<<#funcName<<" not callable"<<sendl;} \
+                {m_Func_##funcName=0; msg_info()<<#funcName<<" not callable";} \
             else \
-                {sout<<#funcName<<" found"<<sendl;} \
+                {msg_info()<<#funcName<<" found";} \
     }else{ \
-        m_Func_##funcName=0; sout<<#funcName<<" not found"<<sendl; } \
+        m_Func_##funcName=0; msg_info()<<#funcName<<" not found"; } \
     }
 
 // =============================================================================

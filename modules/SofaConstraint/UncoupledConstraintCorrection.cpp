@@ -119,7 +119,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
     }
     else
     {
-        sout << "COMPLIANCE VALUE FOUND" << sendl;
+        msg_info() << "COMPLIANCE VALUE FOUND";
     }
     
 

@@ -370,7 +370,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 }
                 else
                 {
-                    sout << "INFO_print : Quad2TriangleTopologicalMapping - In2OutMap should have the quad " << k << sendl;
+                    msg_info() << "In2OutMap should have the quad " << k ;
                 }
 
                 --last;

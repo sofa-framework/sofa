@@ -376,7 +376,6 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
 
     for (unsigned int i=0; i< numDOFs; i++)
     {
-        //sout << "dx("<<i<<")="<<dx[i]<<sendl;
         Deriv dxi = dx[i]*positionFactor;
         Deriv dvi = dx[i]*velocityFactor;
         x[i] = x_free[i] + dxi;
@@ -693,7 +692,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
                 {
                     int test = dof_buf - dof;
                     if (test>2 || test< -2)
-                        sout << "YES !!!! for constraint id1 dof1 = " << dof_buf << " dof2 = " << dof << sendl;
+                        dmsg_info() << "For constraint id1 dof1 = " << dof_buf << " dof2 = " << dof;
                 }
 
                 dof_buf = dof;
