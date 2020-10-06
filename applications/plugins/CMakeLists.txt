@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 find_package(SofaFramework)
 
 sofa_add_subdirectory_external(SofaHighOrder SofaHighOrder)
-#sofa_add_subdirectory_external(SofaPython3 SofaPython3)
+sofa_add_subdirectory_external(SofaPython3 SofaPython3)
 
 sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default and first as it is used by other plugins.
 sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)

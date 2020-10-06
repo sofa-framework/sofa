@@ -125,8 +125,8 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
 
                 defaulttype::Mat<3,3,Real> R;
                 R = container->RotVec3DToRotMat3D(rotation);
-                helper::Quater< float > q; q.fromMatrix(R);
-                wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
+                helper::Quater< Real > q; q.fromMatrix(R);
+                wtransform->getRotation()= defaulttype::Vec<3, Real> (q.toEulerVector() ) * (Real)180.0 / (Real)M_PI ;
             }
             //			Real t0 = wtransform->getRotation()[0];
             //			Real t1 = wtransform->getRotation()[1];
@@ -149,7 +149,7 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
                     for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
                     defaulttype::Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
                     helper::Quater< Real > q; q.fromMatrix(R);
-                    wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
+                    wtransform->getRotation()= defaulttype::Vec<3, Real> (q.toEulerVector()) * (Real)180.0 / (Real)M_PI ;
                     wtransform->getOffsetT()=(Real)offsetT;
                     wtransform->getScaleT()=(Real)scaleT;
                     wtransform->isPerspective()=isPerspective;
@@ -291,7 +291,7 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
 
             if (!container->transformIsSet)
             {
-                wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
+                wtransform->getRotation()= defaulttype::Vec<3, Real> (q.toEulerVector()) * (Real)180.0 / (Real)M_PI ;
             }
         }
 

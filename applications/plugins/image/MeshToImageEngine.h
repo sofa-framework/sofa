@@ -334,7 +334,7 @@ protected:
 
             // get orientation from eigen vectors
             helper::Quater< Real > q; q.fromMatrix(M);
-            tr->getRotation()=q.toEulerVector()* (Real)180.0 / (Real)M_PI;
+            tr->getRotation()= defaulttype::Vec<3, Real> (q.toEulerVector())* (Real)180.0 / (Real)M_PI;
 
             // get bb
             Coord P;

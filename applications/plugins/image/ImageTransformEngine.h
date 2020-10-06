@@ -118,7 +118,7 @@ protected:
         outT->getTranslation() = r.rotate(inT->getTranslation())*s + t;
 
         helper::Quater<Real> q = r*inT->qrotation;
-        outT->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
+        outT->getRotation()= defaulttype::Vec<3, Real> (q.toEulerVector()) * (Real)180.0 / (Real)M_PI ;
 
         outT->update(); // update internal data
     }

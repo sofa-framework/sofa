@@ -3,8 +3,11 @@
 #include <SofaSphFluid/OglFluidModel.h>
 
 #include <sstream>
-#include <sofa/core/visual/VisualParams.h>
 #include <limits>
+
+#include <sofa/core/visual/VisualParams.h>
+
+#include <sofa/defaulttype/Mat.h>
 
 #include <SofaSphFluid/shaders/pointToSprite.cppglsl>
 #include <SofaSphFluid/shaders/spriteToSpriteNormal.cppglsl>

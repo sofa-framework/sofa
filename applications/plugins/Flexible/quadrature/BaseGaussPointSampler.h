@@ -29,6 +29,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/defaulttype/Mat.h>
 
 #define GAUSSLEGENDRE 0
 #define NEWTONCOTES 1
