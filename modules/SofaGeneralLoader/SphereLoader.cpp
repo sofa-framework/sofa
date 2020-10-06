@@ -49,6 +49,12 @@ SphereLoader::SphereLoader()
 {
     addAlias(&d_positions,"sphere_centers");
     addAlias(&d_scale, "scale3d");
+
+    addUpdateCallback("updateTransformPosition", { &d_translation, &d_rotation, &d_scale}, [this](const core::DataTracker&)
+    {
+        reinit();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, { });
 }
 
 
