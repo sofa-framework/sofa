@@ -34,8 +34,7 @@
 
 #include <Eigen/Core>
 
-/////Eigen::MatrixXd
-///
+///Eigen::MatrixXd
 std::ostream & operator<< (std::ostream &out, const Eigen::MatrixXd* df)
 {
     out<<(*df);
@@ -49,6 +48,7 @@ std::ostream & operator<< (std::ostream &out, const Eigen::MatrixXd& df)
     return out;
 }
 
+///Eigen::VectorXd
 std::ostream & operator<< (std::ostream &out, const Eigen::VectorXd* df)
 {
     out<<(*df);
@@ -83,7 +83,6 @@ std::istream & operator>> (std::istream &in, Eigen::MatrixXd& df)
 }
 
 ///Eigen::VectorXd
-
 std::istream & operator>> (std::istream &in, Eigen::VectorXd* df)
 {
     in.setstate(std::ios_base::failbit) ;
@@ -101,7 +100,7 @@ std::istream & operator>> (std::istream &in, Eigen::VectorXd& df)
 namespace defaulttype
 {
 
-struct EigenMatrixxDTypeInfo
+struct EigenMatrixXDTypeInfo
 {
     typedef Eigen::MatrixXd DataType;
     typedef double BaseType;
@@ -198,7 +197,7 @@ struct EigenMatrixxDTypeInfo
 
 };
 
-struct EigenVectorxDTypeInfo
+struct EigenVectorXDTypeInfo
 {
 
     typedef Eigen::VectorXd DataType;
@@ -299,21 +298,18 @@ struct EigenVectorxDTypeInfo
 
 
 template <>
-class DataTypeInfo<Eigen::MatrixXd> : public EigenMatrixxDTypeInfo
+class DataTypeInfo<Eigen::MatrixXd> : public EigenMatrixXDTypeInfo
 {
 public:
     static std::string name() { return "Eigen::MatrixXd"; }
 };
 
 template <>
-class DataTypeInfo<Eigen::VectorXd> : public EigenVectorxDTypeInfo
+class DataTypeInfo<Eigen::VectorXd> : public EigenVectorXDTypeInfo
 {
 public:
     static std::string name() { return "Eigen::VectorXd"; }
 };
-
-//template<> struct DataTypeName<Eigen::MatrixXd> { static const char* name() { return "Eigen::MatrixXd"; } };
-
 
 } // namespace defaulttype
 } // namespace sofa
