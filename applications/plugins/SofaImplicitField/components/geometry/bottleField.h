@@ -19,22 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_IMPLICIT_BOTTLEFIELD_H
-#define SOFA_IMPLICIT_BOTTLEFIELD_H
+#pragma once
 
 #include "ScalarField.h"
 #include <sofa/defaulttype/Mat.h>
-namespace sofa
+namespace sofa::component::geometry::_bottleField_
 {
 
-namespace component
-{
-
-namespace geometry
-{
-
-namespace _bottleField_
-{
 
 using sofa::defaulttype::Vec3d;
 using sofa::defaulttype::Mat3x3;
@@ -83,14 +74,6 @@ protected:
     double m_excentricity;
 };
 
-} /// _bottleField_
 
-using _bottleField_::bottleField ;
+} //namespace sofa::component::geometry::_bottleField_
 
-} /// geometry
-
-} /// component
-
-} /// sofa
-
-#endif

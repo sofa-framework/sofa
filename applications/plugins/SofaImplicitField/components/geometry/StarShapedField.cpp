@@ -24,17 +24,9 @@ using sofa::core::RegisterObject ;
 
 #include "StarShapedField.h"
 
-namespace sofa
+namespace sofa::component::geometry::_StarShapedField_
 {
 
-namespace component
-{
-
-namespace geometry
-{
-
-namespace _StarShapedField_
-{
 
 StarShapedField::StarShapedField()
     : d_inside(initData(&d_inside, false, "inside", "If true the field is oriented inside (resp. outside) the sphere. (default = false)"))
@@ -130,7 +122,5 @@ int StarShapedFieldClass = core::RegisterObject("A spherical implicit field.")
         .add< StarShapedField >()
         ;
 
-} /// _StarShapedField_
-} /// implicit
-} /// component
-} /// sofa
+} // namespace sofa::component::geometry::_StarShapedField_
+

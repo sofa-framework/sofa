@@ -19,6 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+/******************************************************************************
+*  Contributors:
+*  - damien.marchal@univ-lille.fr
+*  - olivier.goury@inria.fr
+******************************************************************************/
+
 #ifndef SOFAIMPLICITFIELD_COMPONENT_SCALARFIELD_H
 #define SOFAIMPLICITFIELD_COMPONENT_SCALARFIELD_H
 #include <SofaImplicitField/config.h>

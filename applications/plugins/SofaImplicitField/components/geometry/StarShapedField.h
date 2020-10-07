@@ -19,21 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_IMPLICIT_STARSHAPEDFIELD_H
-#define SOFA_IMPLICIT_STARSHAPEDFIELD_H
+#pragma once
 
 #include "ScalarField.h"
 #include <sofa/defaulttype/Mat.h>
-namespace sofa
-{
-
-namespace component
-{
-
-namespace geometry
-{
-
-namespace _StarShapedField_
+namespace sofa::component::geometry::_StarShapedField_
 {
 
 using sofa::defaulttype::Vec3d;
@@ -77,14 +67,6 @@ protected:
     double m_branchesRadius;
 };
 
-} /// _StarShapedField_
 
-using _StarShapedField_::StarShapedField ;
+} // namespace sofa::component::geometry::_StarShapedField_
 
-} /// geometry
-
-} /// component
-
-} /// sofa
-
-#endif

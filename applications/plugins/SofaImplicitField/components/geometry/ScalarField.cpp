@@ -19,6 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+/******************************************************************************
+*  Contributors:
+*  - damien.marchal@univ-lille.fr
+*  - olivier.goury@inria.fr
+******************************************************************************/
+
 
 #include <sofa/core/ObjectFactory.h>
 #include "ScalarField.h"
@@ -100,8 +106,7 @@ void ScalarField::getHessianByCentralFiniteDifference(const Vec3d& x, const doub
 
 void ScalarField::getHessian(Vec3d &Pos, Mat3x3& h)
 {
-    msg_warning() << "Hessian from scalaField !!!!!!!!!!!";
-    getHessianByCentralFiniteDifference(Pos, epsilon,h);
+    getHessianByCentralFiniteDifference(Pos, epsilon, h);
 }
 
 bool ScalarField::computeSegIntersection(Vec3d& posInside, Vec3d& posOutside, Vec3d& intersecPos, int i)

@@ -24,17 +24,9 @@ using sofa::core::RegisterObject ;
 
 #include "bottleField.h"
 
-namespace sofa
+namespace sofa::component::geometry::_bottleField_
 {
 
-namespace component
-{
-
-namespace geometry
-{
-
-namespace _bottleField_
-{
 using sofa::defaulttype::Vec2;
 
 bottleField::bottleField()
@@ -167,7 +159,4 @@ int bottleFieldClass = core::RegisterObject("A spherical implicit field.")
         .add< bottleField >()
         ;
 
-} /// _bottleField_
-} /// implicit
-} /// component
-} /// sofa
+} // namespace sofa::component::geometry::_bottleField_
