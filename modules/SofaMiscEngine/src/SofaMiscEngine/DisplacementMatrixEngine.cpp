@@ -25,13 +25,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace defaulttype;
@@ -41,8 +35,8 @@ int DisplacementTransformEngineClass = core::RegisterObject("Converts a vector o
     .add< DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord> >()
 ;
 
-template class SOFA_MISC_ENGINE_API DisplacementTransformEngine<Rigid3Types,Mat4x4f>;
-template class SOFA_MISC_ENGINE_API DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>;
+template class SOFA_SOFAMISCENGINE_API DisplacementTransformEngine<Rigid3Types,Mat4x4f>;
+template class SOFA_SOFAMISCENGINE_API DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>;
 
 template <>
 void DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>::setInverse( Rigid3Types::Coord& inv, const Coord& x0 )
@@ -76,8 +70,4 @@ int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of R
     .add< DisplacementMatrixEngine<Rigid3Types> >()
 ;
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::engine

@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_H
-#include "config.h"
+#pragma once
 
+#include <SofaMiscFem/config.h>
 
 
 #include <sofa/core/behavior/ForceField.h>
@@ -34,13 +33,7 @@
 #include <map>
 #include <sofa/helper/map.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 /** corotational triangle from
@@ -348,15 +341,9 @@ public:
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
 
-extern template class SOFA_MISC_FEM_API TriangularFEMForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAMISCFEM_API TriangularFEMForceField<defaulttype::Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_H
+} // namespace sofa::component::forcefield

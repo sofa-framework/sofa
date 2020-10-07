@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_INL
+#pragma once
+
 
 #include <SofaMiscFem/BoyceAndArruda.h>
 #include <SofaMiscFem/NeoHookean.h>
@@ -43,11 +43,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template< class DataTypes>
@@ -474,7 +470,6 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
     /*
     /// if the  matrix needs to be updated
     if (updateMatrix) {
-
         TetrahedronRestInformation *tetInfo;
         unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
         const std::vector< topology::Tetrahedron> &tetrahedronArray=m_topology->getTetrahedra() ;
@@ -486,13 +481,11 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 //			Matrix3 &df=tetInfo->deformationGradient;
 //			Matrix3 Tdf=df.transposed();
             core::topology::BaseMeshTopology::EdgesInTetrahedron te=m_topology->getEdgesInTetrahedron(i);
-
             /// describe the jth vertex index of triangle no i
             const topology::Tetrahedron &ta= tetrahedronArray[i];
             for(j=0;j<6;j++) {
                 einfo= &edgeInf[te[j]];
                 topology::Edge e=m_topology->getLocalEdgesInTetrahedron(j);
-
                 k=e[0];
                 l=e[1];
                 if (edgeArray[te[j]][0]!=ta[k]) {
@@ -500,41 +493,27 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
                     l=e[0];
                 }
                 Matrix3 &edgeDfDx = einfo->DfDx;
-
-
                 Coord svl=tetInfo->shapeVector[l];
                 Coord svk=tetInfo->shapeVector[k];
-
                 Matrix3  M, N;
                 Matrix6 outputTensor;
                 N.clear();
-
                 // Calculates the dS/dC tensor 6*6
                 myMaterial->ElasticityTensor(tetInfo,globalParameters,outputTensor);
                 Matrix63 mBl=tetInfo->matB[l];
                 mBl[1][0]/=2;mBl[1][1]/=2;mBl[1][2]/=2;mBl[3][0]/=2;mBl[3][1]/=2;mBl[3][2]/=2;mBl[4][0]/=2;mBl[4][1]/=2;mBl[4][2]/=2;
-
                 N=(tetInfo->matB[k].transposed()*outputTensor*mBl);
-
-
-
-
                 //Now M
                 Real productSD=0;
-
                 Coord vectSD=tetInfo->SPKTensorGeneral*svk;
                 productSD=dot(vectSD,svl);
                 M[0][1]=M[0][2]=M[1][0]=M[1][2]=M[2][0]=M[2][1]=0;
                 M[0][0]=M[1][1]=M[2][2]=(Real)productSD;
-
                 edgeDfDx += (M+N.transposed())*tetInfo->restVolume;
-
-
             }// end of for j
         }//end of for i
         updateMatrix=false;
     }// end of if
-
     */
     /// performs matrix vector computation
     Deriv deltax;	Deriv dv0,dv1;
@@ -792,8 +771,4 @@ void StandardTetrahedralFEMForceField<DataTypes>::saveMesh( const char *filename
 }
 
 
-} // namespace forcefield
-} // namespace component
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_INL
+} // namespace sofa::component::forcefield

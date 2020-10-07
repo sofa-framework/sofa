@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -41,12 +35,8 @@ int TriangularAnisotropicFEMForceFieldClass = core::RegisterObject("Triangular f
 
         ;
 
-template class SOFA_MISC_FEM_API TriangularAnisotropicFEMForceField<Vec3Types>;
+template class SOFA_SOFAMISCFEM_API TriangularAnisotropicFEMForceField<Vec3Types>;
 
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

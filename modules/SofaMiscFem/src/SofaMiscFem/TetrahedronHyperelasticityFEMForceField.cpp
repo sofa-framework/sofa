@@ -25,14 +25,8 @@
 #include "TetrahedronHyperelasticityFEMForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include "initMiscFEM.h"
-namespace sofa
-{
 
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -45,12 +39,8 @@ int TetrahedronHyperelasticityFEMForceFieldClass = core::RegisterObject("Generic
 
 ;
 
-template class SOFA_MISC_FEM_API TetrahedronHyperelasticityFEMForceField<Vec3Types>;
+template class SOFA_SOFAMISCFEM_API TetrahedronHyperelasticityFEMForceField<Vec3Types>;
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield
 

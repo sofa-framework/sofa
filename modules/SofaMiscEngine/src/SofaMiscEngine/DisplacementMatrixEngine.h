@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_H
-#define SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_H
+#pragma once
 
-#include "config.h"
+#include <SofaMiscEngine/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 
@@ -75,10 +68,9 @@ public:
     void init() override;   // compute the inverse matrices
     void doUpdate() override; // compute the displacements wrt original positions
 
-    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
-    /// so we need to override that by implementing GetCustomTemplateName() function
-    /// More details on the name customization infrastructure is in NameDecoder.h
-    static const std::string GetCustomTemplateName() { return DataTypes::Name()+std::string(",")+defaulttype::DataTypeInfo<OutputType>::name(); }
+    // To simplify the template name in the xml file
+    virtual std::string getTemplateName() const override { return templateName(this); }
+    static std::string templateName(const DisplacementTransformEngine<DataTypes,OutputType>* = nullptr) { return DataTypes::Name()+std::string(",")+defaulttype::DataTypeInfo<OutputType>::name(); }
 
 protected:
     helper::vector<OutputType> inverses;  ///< inverse initial positions
@@ -126,15 +118,13 @@ public:
     void reinit() override; // compute S*inverse and store it once and for all.
     void doUpdate() override; // compute the displacements wrt original positions
 
+    // To simplify the template name in the xml file
+    virtual std::string getTemplateName() const override { return templateName(this); }
+    static std::string templateName(const DisplacementMatrixEngine<DataTypes>* = nullptr) { return DataTypes::Name(); }
+
     // inputs
     Data< helper::vector< sofa::defaulttype::Vec<3,Real> > > d_scales; ///< scale matrices
     helper::vector<Matrix4x4> SxInverses;  ///< inverse initial positions
 };
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // FLEXIBLE_DisplacementMatrixENGINE_H
+} // namespace sofa::component::engine

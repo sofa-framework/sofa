@@ -19,25 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FEM_STVENANTKIRCHHOFF_H
-#define SOFA_COMPONENT_FEM_STVENANTKIRCHHOFF_H
-#include "config.h"
+#pragma once
 
+#include <SofaMiscFem/config.h>
 
-#include <SofaMiscFem/initMiscFEM.h>
 #include <SofaMiscFem/HyperelasticMaterial.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <string>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace fem
+namespace sofa::component::fem
 {
 
 /** a Class that describe a generic hyperelastic material : exemple of Boyce and Arruda
@@ -115,10 +107,4 @@ public:
 };
 
 
-} // namespace fem
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::fem

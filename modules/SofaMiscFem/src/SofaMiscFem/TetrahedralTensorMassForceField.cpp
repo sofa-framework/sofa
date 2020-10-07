@@ -26,13 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -46,14 +40,6 @@ int TetrahedralTensorMassForceFieldClass = core::RegisterObject("Linear Elastic 
 
         ;
 
-template class SOFA_MISC_FEM_API TetrahedralTensorMassForceField<Vec3Types>;
+template class SOFA_SOFAMISCFEM_API TetrahedralTensorMassForceField<Vec3Types>;
 
-
-
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::forcefield

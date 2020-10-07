@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_INL
+#pragma once
 
 #include <SofaMiscFem/FastTetrahedralCorotationalForceField.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -29,17 +28,8 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/decompose.h>
 
-namespace sofa
+namespace sofa::component::forcefield
 {
-
-namespace component
-{
-
-namespace forcefield
-{
-
-
-
 
 template< class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::applyCreateFunction(index_type tetrahedronIndex,
@@ -688,10 +678,4 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
 
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_INL
+} // namespace sofa::component::forcefield

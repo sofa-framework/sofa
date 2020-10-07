@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FEM_HYPERELASTICMATERIAL_H
-#define SOFA_COMPONENT_FEM_HYPERELASTICMATERIAL_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscFem/config.h>
 
 
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -34,13 +34,8 @@
 //#include <Eigen/Core>
 #include <Eigen/QR>
 #include <Eigen/Eigenvalues>
-namespace sofa
-{
 
-namespace component
-{
-
-namespace fem
+namespace sofa::component::fem
 {
 
 template<typename Real>
@@ -139,12 +134,4 @@ public:
   virtual ~StrainInformation() {}
 };
 
-} // namespace fem
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
-
+} // namespace sofa::component::fem

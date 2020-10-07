@@ -20,12 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_H
+#pragma once
 
+#include <SofaMiscFem/config.h>
 
 #include <SofaMiscFem/HyperelasticMaterial.h>
-#include "initMiscFEM.h"
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/Vec.h>
@@ -36,15 +35,9 @@
 #include <string>
 #include <map>
 
-namespace sofa
+namespace sofa::component::forcefield
 {
 
-namespace component
-{
-
-namespace forcefield
-{
-using namespace std;
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
@@ -239,10 +232,4 @@ extern template class SOFA_MISC_FEM_API TetrahedronHyperelasticityFEMForceField<
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP)
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::forcefield

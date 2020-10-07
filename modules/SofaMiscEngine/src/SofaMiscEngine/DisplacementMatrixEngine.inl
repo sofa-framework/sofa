@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_INL
-#define SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_INL
+#pragma once
 
 #include "DisplacementMatrixEngine.h"
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 ///////////////////////////////////////////////////////////////
@@ -187,10 +180,4 @@ void DisplacementMatrixEngine< DataTypes >::doUpdate()
     this->d_displacements.endEdit();
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::engine

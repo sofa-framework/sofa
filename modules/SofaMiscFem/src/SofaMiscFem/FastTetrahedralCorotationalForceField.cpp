@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -46,12 +40,6 @@ int FastTetrahedralCorotationalForceFieldClass = core::RegisterObject("Fast Coro
 
         ;
 
-template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<Vec3Types>;
+template class SOFA_SOFAMISCFEM_API FastTetrahedralCorotationalForceField<Vec3Types>;
 
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::forcefield

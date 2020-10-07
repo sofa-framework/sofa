@@ -19,30 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_INL
+#pragma once
+
+#include <SofaMiscFem/config.h>
 
 #include "TriangleFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <vector>
 #include <sofa/defaulttype/VecTypes.h>
-#include "config.h"
 
-namespace sofa
+namespace sofa::component::forcefield
 {
-
-namespace component
-{
-
-namespace forcefield
-{
-
-
 
 template <class DataTypes>
 TriangleFEMForceField<DataTypes>::
@@ -242,20 +234,15 @@ void TriangleFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplace
       | alpha1 alpha2 alpha3 |                      | 1 xa ya |
       | beta1  beta2  beta3  | = be the inverse of  | 1 xb yb |
       | gamma1 gamma2 gamma3 |                      | 1 xc yc |
-
       The strain-displacement matrix is:
       | beta1  0       beta2  0        beta3  0      |
       | 0      gamma1  0      gamma2   0      gamma3 | / (2*A)
       | gamma1 beta1   gamma2 beta2    gamma3 beta3  |
-
       where A is the area of the triangle and 2*A is the determinant of the matrix with the xa,ya,xb...
-
-
       Since a0=a1=b1=0, the matrix is triangular and its inverse is:
       |  1              0              0  |
       | -1/xb           1/xb           0  |
       | -(1-xc/xb)/yc  -xc/(xb*yc)   1/yc |
-
       our strain-displacement matrix is:
       | -1/xb           0             1/xb         0            0     0    |
       | 0              -(1-xc/xb)/yc  0            -xc/(xb*yc)  0     1/yc |
@@ -751,10 +738,4 @@ void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatri
 }
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // #ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_INL
+} // namespace sofa::component::forcefield

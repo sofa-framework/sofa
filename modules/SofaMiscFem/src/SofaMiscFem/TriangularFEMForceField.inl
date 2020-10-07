@@ -20,14 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_INL
+#pragma once
 
 #include "TriangularFEMForceField.h"
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/ColorMap.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 #include <SofaBaseTopology/TopologyData.inl>
 
@@ -40,13 +39,7 @@
 #include <algorithm>
 #include <limits>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::core::topology;
@@ -1562,11 +1555,4 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif //SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_INL
+} // namespace sofa::component::forcefield

@@ -19,26 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FEM_MATERIAL_PLASTICMATERIAL_H
-#define SOFA_COMPONENT_FEM_MATERIAL_PLASTICMATERIAL_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscFem/config.h>
 
 #include <SofaMiscFem/BaseMaterial.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
 #include <sofa/defaulttype/Vec.h>
 
-namespace sofa
+namespace sofa::component::fem::material
 {
 
-namespace component
-{
-
-namespace fem
-{
-
-namespace material
-{
 
 /**
  * Plastic material (proof of principle)
@@ -77,11 +69,4 @@ public:
 };
 
 
-} // namespace material
-
-} // namespace fem
-
-} // namespace component
-
-} // namespace sofa
-#endif
+} // namespace sofa::component::fem::material

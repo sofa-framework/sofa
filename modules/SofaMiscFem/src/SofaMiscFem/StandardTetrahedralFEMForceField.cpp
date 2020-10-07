@@ -26,13 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -43,12 +37,7 @@ int StandardTetrahedralFEMForceFieldClass = core::RegisterObject("Generic Tetrah
 
 ;
 
-template class SOFA_MISC_FEM_API StandardTetrahedralFEMForceField<Vec3Types>;
+template class SOFA_SOFAMISCFEM_API StandardTetrahedralFEMForceField<Vec3Types>;
 
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield
 

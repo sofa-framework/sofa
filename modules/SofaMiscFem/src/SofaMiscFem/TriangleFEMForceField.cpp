@@ -26,13 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -43,11 +37,7 @@ int TriangleFEMForceFieldClass = core::RegisterObject("Triangular finite element
 
         ;
 
-template class SOFA_MISC_FEM_API TriangleFEMForceField<Vec3Types>;
+template class SOFA_SOFAMISCFEM_API TriangleFEMForceField<Vec3Types>;
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

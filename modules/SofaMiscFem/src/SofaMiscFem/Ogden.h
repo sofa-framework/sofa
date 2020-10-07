@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FEM_OGDEN_H
-#define SOFA_COMPONENT_FEM_OGDEN_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscFem/config.h>
 
 
 #include <SofaMiscFem/HyperelasticMaterial.h>
@@ -32,13 +32,8 @@
 
 #include <Eigen/QR>
 #include <Eigen/Eigenvalues>
-namespace sofa
-{
 
-namespace component
-{
-
-namespace fem
+namespace sofa::component::fem
 {
 
 /** a Class that describe a generic hyperelastic material : exemple of Boyce and Arruda
@@ -238,11 +233,4 @@ class Ogden: public HyperelasticMaterial<DataTypes>
 
 };
 
-
-} // namespace fem
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::fem

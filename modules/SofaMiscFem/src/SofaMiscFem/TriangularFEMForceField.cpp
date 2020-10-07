@@ -27,29 +27,19 @@
 #include <cassert>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
 
 // Register in the Factory
 int TriangularFEMForceFieldClass = core::RegisterObject("Corotational Triangular finite elements")
-        .add< TriangularFEMForceField<Vec3Types> >()
+    .add< TriangularFEMForceField<Vec3Types> >()
 
-        ;
+    ;
 
-template class SOFA_MISC_FEM_API TriangularFEMForceField<Vec3Types>;
+template class SOFA_SOFAMISCFEM_API TriangularFEMForceField<Vec3Types>;
 
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

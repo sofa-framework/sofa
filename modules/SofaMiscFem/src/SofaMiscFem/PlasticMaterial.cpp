@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscFem/initMiscFEM.h>
+
 #include <SofaMiscFem/PlasticMaterial.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
@@ -28,16 +28,7 @@
 #include <vector>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace fem
-{
-
-namespace material
+namespace sofa::component::fem::material
 {
 
 
@@ -133,10 +124,4 @@ int PlasticMaterialClass = core::RegisterObject("Plastic material")
 .add< PlasticMaterial >()
 ;
 
-} // namespace material
-
-} // namespace fem
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::fem::material

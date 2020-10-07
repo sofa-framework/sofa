@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FEM_NEOHOOKEAN_H
-#define SOFA_COMPONENT_FEM_NEOHOOKEAN_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscFem/config.h>
 
 
 #include <SofaMiscFem/HyperelasticMaterial.h>
@@ -30,13 +30,7 @@
 #include <string>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace fem
+namespace sofa::component::fem
 {
 
 /** a Class that describe a generic hyperelastic material : exemple of Boyce and Arruda
@@ -127,10 +121,4 @@ class NeoHookean : public HyperelasticMaterial<DataTypes>{
 };
 
 
-} // namespace fem
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::fem

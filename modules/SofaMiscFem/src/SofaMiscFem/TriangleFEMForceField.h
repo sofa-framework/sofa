@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscFem/config.h>
 
 
 
@@ -45,15 +45,8 @@
 
 
 
-namespace sofa
+namespace sofa::component::forcefield
 {
-
-namespace component
-{
-
-namespace forcefield
-{
-
 
 /** Triangle FEM force field using the QR decomposition of the deformation gradient, inspired from http://www-evasion.imag.fr/Publications/2005/NPF05 , to handle large displacements.
   The material properties are uniform across the domain.
@@ -174,15 +167,9 @@ protected :
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)
 
-extern template class SOFA_MISC_FEM_API TriangleFEMForceField<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_SOFAMISCFEM_API TriangleFEMForceField<sofa::defaulttype::Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_H
+} // namespace sofa::component::forcefield
