@@ -275,7 +275,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             }
         }
 
-#ifdef SOFAGUIQT_HAVE_QT5_CHARTS
+#if SOFAGUIQT_HAVE_QT5_CHARTS
         //Energy Widget
         if (simulation::Node* real_node = dynamic_cast<simulation::Node*>(node))
         {
