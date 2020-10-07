@@ -36,8 +36,15 @@ bottleField::bottleField()
     , d_shift(initData(&d_shift, 1.0, "shift", "How much the top ellipsoid is shifted from the bottom sphere. (default=1)" ))
     , d_ellipsoidRadius(initData(&d_ellipsoidRadius, 1.0, "ellipsoidRadius", "Radius of the ellipsoid whose intersection with the sphere is taken off" ))
     , d_excentricity(initData(&d_excentricity, 1.0, "excentricity", "excentricity of ellipsoid" ))
-{init();
-    }
+{
+    init();
+    addUpdateCallback("myUpdateCallback", {&d_inside, &d_radiusSphere, &d_centerSphere, &d_shift, &d_ellipsoidRadius, &d_excentricity}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        this->init();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
+}
 
 void bottleField::init()
 {
