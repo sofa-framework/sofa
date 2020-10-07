@@ -21,15 +21,22 @@
 ******************************************************************************/
 #include <SofaMiscMapping/initMiscMapping.h>
 
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFAMISCMAPPING_API void initExternalModule();
+    SOFA_SOFAMISCMAPPING_API const char* getModuleName();
+    SOFA_SOFAMISCMAPPING_API const char* getModuleVersion();
+    SOFA_SOFAMISCMAPPING_API const char* getModuleLicense();
+    SOFA_SOFAMISCMAPPING_API const char* getModuleDescription();
+    SOFA_SOFAMISCMAPPING_API const char* getModuleComponentList();
+}
 
-
-void initMiscMapping()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -38,6 +45,31 @@ void initMiscMapping()
     }
 }
 
-} // namespace component
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace sofa
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAMISCMAPPING_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Misc Mapping.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

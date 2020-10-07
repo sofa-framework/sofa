@@ -1,7 +1,7 @@
 # CMake package configuration file for the SofaMiscEngine module
 @PACKAGE_INIT@
 
-find_package(SofaAdvanced REQUIRED)
+find_package(SofaNonUniformFem REQUIRED)
 
 ### Is the target existing ?
 if(NOT TARGET SofaMiscEngine)

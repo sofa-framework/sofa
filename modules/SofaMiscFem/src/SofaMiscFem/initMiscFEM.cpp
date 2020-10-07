@@ -19,17 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscFem/initMiscFEM.h>
+#include <SofaMiscEngine/initMiscFEM.h>
 
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFAMISCFEM_API void initExternalModule();
+    SOFA_SOFAMISCFEM_API const char* getModuleName();
+    SOFA_SOFAMISCFEM_API const char* getModuleVersion();
+    SOFA_SOFAMISCFEM_API const char* getModuleLicense();
+    SOFA_SOFAMISCFEM_API const char* getModuleDescription();
+    SOFA_SOFAMISCFEM_API const char* getModuleComponentList();
+}
 
-
-void initMiscFEM()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -38,7 +45,31 @@ void initMiscFEM()
     }
 }
 
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace component
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAMISCFEM_VERSION);
+}
 
-} // namespace sofa
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Misc FEM.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

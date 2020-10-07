@@ -19,18 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAMISCTOPOLOGY_CONFIG_H
-#define SOFAMISCTOPOLOGY_CONFIG_H
+#pragma once
 
-#include <SofaMisc/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
 #cmakedefine01 SOFAMISCTOPOLOGY_HAVE_ZLIB
 
-#ifdef SOFA_BUILD_MISC_TOPOLOGY
-#  define SOFA_TARGET SofaMiscTopology
-#  define SOFA_MISC_TOPOLOGY_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_MISC_TOPOLOGY_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#define SOFAMISCTOPOLOGY_VERSION @PROJECT_VERSION@
 
+#ifdef SOFA_BUILD_SOFAMISCTOPOLOGY
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAMISCTOPOLOGY_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAMISCTOPOLOGY_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif

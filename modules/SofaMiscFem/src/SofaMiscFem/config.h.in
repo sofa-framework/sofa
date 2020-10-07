@@ -19,16 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAMISCFORCEFIELD_CONFIG_H
-#define SOFAMISCFORCEFIELD_CONFIG_H
+#pragma once
 
-#include <SofaMisc/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_MISC_FORCE_FIELD
-#  define SOFA_TARGET SofaMiscForceField
-#  define SOFA_MISC_FORCE_FIELD_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFAMISCFEM_VERSION @PROJECT_VERSION@
+
+#ifdef SOFA_BUILD_SOFAMISCFEM
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAMISCFEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_MISC_FORCE_FIELD_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
+#  define SOFA_SOFAMISCFEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif

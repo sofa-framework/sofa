@@ -19,16 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAMISCFEM_CONFIG_H
-#define SOFAMISCFEM_CONFIG_H
+#pragma once
 
-#include <SofaMisc/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_MISC_FEM
-#  define SOFA_TARGET SofaMiscFem
-#  define SOFA_MISC_FEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFAMISCEXTRA_VERSION @PROJECT_VERSION@
+
+#ifdef SOFA_BUILD_SOFAMISCEXTRA
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAMISCEXTRA_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_MISC_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
+#  define SOFA_SOFAMISCEXTRA_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif

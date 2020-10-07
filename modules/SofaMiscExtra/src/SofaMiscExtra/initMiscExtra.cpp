@@ -21,15 +21,22 @@
 ******************************************************************************/
 #include <SofaMiscExtra/initMiscExtra.h>
 
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFAMISCEXTRA_API void initExternalModule();
+    SOFA_SOFAMISCEXTRA_API const char* getModuleName();
+    SOFA_SOFAMISCEXTRA_API const char* getModuleVersion();
+    SOFA_SOFAMISCEXTRA_API const char* getModuleLicense();
+    SOFA_SOFAMISCEXTRA_API const char* getModuleDescription();
+    SOFA_SOFAMISCEXTRA_API const char* getModuleComponentList();
+}
 
-
-void initMiscExtra()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -38,7 +45,31 @@ void initMiscExtra()
     }
 }
 
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace component
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAMISCEXTRA_VERSION);
+}
 
-} // namespace sofa
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Misc Extra.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

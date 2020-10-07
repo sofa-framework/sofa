@@ -1,7 +1,9 @@
 # CMake package configuration file for the SofaMiscForceField module
 @PACKAGE_INIT@
 
-find_package(SofaMiscTopology REQUIRED)
+find_package(SofaFramework REQUIRED) # SofaHelper
+find_package(SofaCommon REQUIRED) # SofaDeformable
+find_package(SofaGeneral REQUIRED) # SofaBoundaryCondition SofaGeneralTopology
 
 ### Is the target existing ?
 if(NOT TARGET SofaMiscForceField)

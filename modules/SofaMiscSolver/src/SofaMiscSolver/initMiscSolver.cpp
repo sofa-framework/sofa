@@ -21,15 +21,22 @@
 ******************************************************************************/
 #include <SofaMiscSolver/initMiscSolver.h>
 
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFAMISCSOLVER_API void initExternalModule();
+    SOFA_SOFAMISCSOLVER_API const char* getModuleName();
+    SOFA_SOFAMISCSOLVER_API const char* getModuleVersion();
+    SOFA_SOFAMISCSOLVER_API const char* getModuleLicense();
+    SOFA_SOFAMISCSOLVER_API const char* getModuleDescription();
+    SOFA_SOFAMISCSOLVER_API const char* getModuleComponentList();
+}
 
-
-void initMiscSolver()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -38,6 +45,31 @@ void initMiscSolver()
     }
 }
 
-} // namespace component
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace sofa
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAMISCSOLVER_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Misc Solvers.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component
