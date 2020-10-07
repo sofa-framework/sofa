@@ -29,7 +29,7 @@
 #include <QDesktopServices>
 #include <QTimer>
 #include <sofa/gui/qt/QTransformationWidget.h>
-#if SOFAGUIQT_HAVE_QWT
+#if SOFAGUIQT_HAVE_QT5_CHARTS
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #include <sofa/gui/qt/QMomentumStatWidget.h>
 #endif
@@ -77,7 +77,7 @@ ModifyObject::ModifyObject(void *Id,
       messageTab(nullptr),
       messageEdit(nullptr),
       transformation(nullptr)
-    #if SOFAGUIQT_HAVE_QWT
+    #if SOFAGUIQT_HAVE_QT5_CHARTS
     ,energy(nullptr)
     ,momentum(nullptr)
     #endif
@@ -274,6 +274,29 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 tabs[i]->addStretch();
             }
         }
+
+#if SOFAGUIQT_HAVE_QT5_CHARTS
+        //Energy Widget
+        if (simulation::Node* real_node = dynamic_cast<simulation::Node*>(node))
+        {
+            if (dialogFlags_.REINIT_FLAG)
+            {
+                energy = new QEnergyStatWidget(dialogTab, real_node);
+                dialogTab->addTab(energy, QString("Energy Stats"));
+            }
+        }
+
+        //Momentum Widget
+        if (simulation::Node* real_node = dynamic_cast<simulation::Node*>(node))
+        {
+            if (dialogFlags_.REINIT_FLAG)
+            {
+                momentum = new QMomentumStatWidget(dialogTab, real_node);
+                dialogTab->addTab(momentum, QString("Momentum Stats"));
+            }
+        }
+#endif
+
 
         /// Info Widget
         {
@@ -558,17 +581,15 @@ void ModifyObject::updateTables()
 #ifdef DEBUG_GUI
     std::cout << "GUI<emit updateDataWidgets()" << std::endl;
 #endif
-#if SOFAGUIQT_HAVE_QWT
+#if SOFAGUIQT_HAVE_QT5_CHARTS
     if (energy)
-    {
-        energy->step();
-        if (dialogTab->currentWidget() == energy) energy->updateVisualization();
+    {        
+        if (dialogTab->currentWidget() == energy) energy->step();
     }
 
     if (momentum)
     {
-        momentum->step();
-        if (dialogTab->currentWidget() == momentum) momentum->updateVisualization();
+        if (dialogTab->currentWidget() == momentum) momentum->step();
     }
 #endif
 

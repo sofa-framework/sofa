@@ -31,7 +31,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/gui/qt/QTransformationWidget.h>
-#if SOFAGUIQT_HAVE_QWT
+#if SOFAGUIQT_HAVE_QT5_CHARTS
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #endif
 #include <sofa/gui/qt/WDoubleLineEdit.h>

@@ -22,8 +22,7 @@
 #ifndef SOFA_GUI_QT_QENERGYSTATWIDGET_H
 #define SOFA_GUI_QT_QENERGYSTATWIDGET_H
 
-#include "QGraphStatWidget.h"
-
+#include <sofa/gui/qt/QGraphStatWidget.h>
 #include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
 
 namespace sofa
@@ -46,8 +45,8 @@ public:
     QEnergyStatWidget( QWidget* parent, simulation::Node* node );
 
     ~QEnergyStatWidget();
-
-    void step();
+            
+    void stepImpl() override;
 
 };
 
