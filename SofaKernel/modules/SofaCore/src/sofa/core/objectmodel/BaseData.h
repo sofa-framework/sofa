@@ -337,16 +337,6 @@ public:
     }
 };
 
-template<class Type>
-class LinkTraitsPtrCasts
-{
-public:
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::Base* b) { return b; }
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::BaseData* d) { return d->getOwner(); }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return nullptr; }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
-};
-
 /** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container
  *  and providing access to its data through a non-const void* ptr taking care of the
  * beginEdit/endEdit pairs.

@@ -25,15 +25,16 @@
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/helper/stable_vector.h>
 
+#include <sofa/core/PathResolver.h>
 #include <sstream>
 #include <utility>
 #include <vector>
-
 namespace sofa
 {
 
 namespace core
 {
+
 
 namespace objectmodel
 {
@@ -211,7 +212,6 @@ class LinkTraitsContainer<TDestType, TDestPtr, TValueType, false>
 {
 public:
     typedef SinglePtr<TDestType, TValueType> T;
-    //typedef helper::fixed_array<TValueType,1> T;
     static void clear(T& c)
     {
         c.clear();
@@ -265,44 +265,6 @@ public:
     }
 };
 
-template<class OwnerType, class DestType, bool data>
-class LinkTraitsFindDest;
-
-template<class OwnerType, class DestType>
-class LinkTraitsFindDest<OwnerType, DestType, false>
-{
-public:
-    static bool findLinkDest(OwnerType* owner, DestType*& ptr, const std::string& path, const BaseLink* link)
-    {
-        return owner->findLinkDest(ptr, path, link);
-    }
-    template<class TContext>
-    static bool checkPath(const std::string& path, TContext* context)
-    {
-        DestType* ptr = nullptr;
-        return context->findLinkDest(ptr, path, nullptr);
-    }
-};
-
-template<class OwnerType, class DestType>
-class LinkTraitsFindDest<OwnerType, DestType, true>
-{
-public:
-    static bool findLinkDest(OwnerType* owner, DestType*& ptr, const std::string& path, const BaseLink* link)
-    {
-        return owner->findDataLinkDest(ptr, path, link);
-    }
-    template<class TContext>
-    static bool checkPath(const std::string& path, TContext* context)
-    {
-        DestType* ptr = nullptr;
-        return context->findDataLinkDest(ptr, path, nullptr);
-    }
-};
-
-template<class Type>
-class LinkTraitsPtrCasts;
-
 /**
  *  \brief Container of all links in the scenegraph, from a given type of object (Owner) to another (Dest)
  *
@@ -323,9 +285,6 @@ public:
     typedef typename TraitsContainer::T Container;
     typedef typename Container::const_iterator const_iterator;
     typedef typename Container::const_reverse_iterator const_reverse_iterator;
-    typedef LinkTraitsFindDest<OwnerType, DestType, ACTIVEFLAG(FLAG_DATALINK)> TraitsFindDest;
-    typedef LinkTraitsPtrCasts<TOwnerType> TraitsOwnerCasts;
-    typedef LinkTraitsPtrCasts<TDestType> TraitsDestCasts;
 #undef ACTIVEFLAG
 
     TLink()
@@ -343,56 +302,49 @@ public:
     {
     }
 
-        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     size_t size(const core::ExecParams*) const { return size(); }
     size_t size() const
     {
         return static_cast<size_t>(m_value.size());
     }
 
-        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     bool empty(const core::ExecParams* param) const ;
     bool empty() const
     {
         return m_value.empty();
     }
 
-        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     const Container& getValue(const core::ExecParams*) const { return getValue(); }
     const Container& getValue() const
     {
         return m_value;
     }
 
-        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     const_iterator begin(const core::ExecParams*) const { return begin(); }
     const_iterator begin() const
     {
         return m_value.cbegin();
     }
 
-        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     const_iterator end(const core::ExecParams*) const { return end(); }
     const_iterator end() const
     {
         return m_value.cend();
     }
 
-        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     const_reverse_iterator rbegin(const core::ExecParams*) const { return rbegin(); }
     const_reverse_iterator rbegin() const
     {
         return m_value.crbegin();
     }
 
-        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     const_reverse_iterator rend(const core::ExecParams*) const { return rend(); }
     const_reverse_iterator rend() const
     {
@@ -423,7 +375,7 @@ public:
         if (path.empty()) return false;
         DestType* ptr = nullptr;
         if (m_owner)
-            TraitsFindDest::findLinkDest(m_owner, ptr, path, this);
+            PathResolver::FindLinkDest(m_owner, ptr, path, this);
         return add(ptr, path);
     }
 
@@ -494,20 +446,22 @@ public:
         {
             DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
             if (ptr)
-                path = BaseLink::CreateString(TraitsDestCasts::getBase(ptr), TraitsDestCasts::getData(ptr),
-                        TraitsOwnerCasts::getBase(m_owner));
+                path = BaseLink::CreateString(ptr, nullptr, m_owner);
         }
         return path;
     }
 
     Base* getLinkedBase(std::size_t index=0) const override
     {
-        return TraitsDestCasts::getBase(getIndex(index));
+        return getIndex(index);
     }
-    BaseData* getLinkedData(std::size_t index=0) const override
+
+    [[deprecated("This function has been deprecated in PR#1503 and will be removed soon. Link<> cannot hold BaseData anymore. To make link between Data use DataLink instead.")]]
+    BaseData* getLinkedData(std::size_t =0) const override
     {
-        return TraitsDestCasts::getData(getIndex(index));
+        return nullptr;
     }
+
     std::string getLinkedPath(std::size_t index=0) const override
     {
         return getPath(index);
@@ -533,7 +487,7 @@ public:
             {
                 return false;
             }
-            else if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, str, this))
+            else if (m_owner && !PathResolver::FindLinkDest(m_owner, ptr, str, this))
             {
                 // This is not an error, as the destination can be added later in the graph
                 // instead, we will check for failed links after init is completed
@@ -562,7 +516,7 @@ public:
             while (istr >> path)
             {
                 DestType *ptr = nullptr;
-                if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, path, this))
+                if (m_owner && !PathResolver::FindLinkDest(m_owner, ptr, path, this))
                 {
                     // This is not an error, as the destination can be added later in the graph
                     // instead, we will check for failed links after init is completed
@@ -619,23 +573,24 @@ public:
         if (!context)
         {
             std::string p,d;
-            return BaseLink::ParseString( path, &p, (ActiveFlags & FLAG_DATALINK) ? &d : nullptr, nullptr);
+            return BaseLink::ParseString(path, &p, nullptr, context);
         }
-        else
-        {
-            return TraitsFindDest::checkPath(path, context);
-        }
+
+        DestType* ptr = nullptr;
+        return context->findLinkDest(ptr, path, nullptr);
     }
 
     /// @}
 
     sofa::core::objectmodel::Base* getOwnerBase() const override
     {
-        return TraitsOwnerCasts::getBase(m_owner);
+        return m_owner;
     }
+
+    [[deprecated("This function has been deprecated in PR#1503 and will be removed soon. Link<> cannot hold BaseData anymore. To make link between Data use DataLink instead.")]]
     sofa::core::objectmodel::BaseData* getOwnerData() const override
     {
-        return TraitsOwnerCasts::getData(m_owner);
+        return nullptr;
     }
 
     void setOwner(OwnerType* owner)
@@ -678,9 +633,6 @@ public:
     typedef typename Inherit::ValueType ValueType;
     typedef typename Inherit::TraitsContainer TraitsContainer;
     typedef typename Inherit::Container Container;
-    typedef typename Inherit::TraitsOwnerCasts TraitsOwnerCasts;
-    typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
-    typedef typename Inherit::TraitsFindDest TraitsFindDest;
 
     typedef void (OwnerType::*ValidatorFn)(DestPtr v, std::size_t index, bool add);
 
@@ -736,7 +688,7 @@ public:
                 DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
                 if (!ptr)
                 {
-                    TraitsFindDest::findLinkDest(this->m_owner, ptr, path, this);
+                    PathResolver::FindLinkDest(this->m_owner, ptr, path, this);
                     if (ptr)
                     {
                         DestPtr v = ptr;
@@ -754,7 +706,7 @@ public:
         return ok;
     }
 
-        [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
 
     DestType* get(std::size_t index, const core::ExecParams*) const { return get(index); }
     DestType* get(std::size_t index) const
@@ -803,9 +755,6 @@ public:
     typedef typename Inherit::ValueType ValueType;
     typedef typename Inherit::TraitsContainer TraitsContainer;
     typedef typename Inherit::Container Container;
-    typedef typename Inherit::TraitsOwnerCasts TraitsOwnerCasts;
-    typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
-    typedef typename Inherit::TraitsFindDest TraitsFindDest;
     using Inherit::updateCounter;
     using Inherit::m_value;
     using Inherit::m_owner;
@@ -885,7 +834,7 @@ public:
         if (path.empty()) { reset(); return; }
         DestType* ptr = nullptr;
         if (m_owner)
-            TraitsFindDest::findLinkDest(m_owner, ptr, path, this);
+            PathResolver::FindLinkDest(m_owner, ptr, path, this);
         set(ptr, path);
     }
 
@@ -902,7 +851,7 @@ public:
             DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
             if (!ptr)
             {
-                TraitsFindDest::findLinkDest(m_owner, ptr, path, this);
+                PathResolver::FindLinkDest(m_owner, ptr, path, this);
                 if (ptr)
                 {
                     set(ptr, path);
