@@ -4,20 +4,22 @@ project(SofaMiscExtra VERSION 1.0 LANGUAGES CXX)
 find_package(SofaMiscTopology REQUIRED)
 find_package(SofaGeneral REQUIRED)
 
+set(SOFAMISCEXTRA_SRC "src/${PROJECT_NAME}")
+
 set(HEADER_FILES
-    ${SOFAMISCOTHER_SRC}/initSofaMiscExtra.h
-    ${SOFAMISCOTHER_SRC}/config.h.in
+    ${SOFAMISCEXTRA_SRC}/initSofaMiscExtra.h
+    ${SOFAMISCEXTRA_SRC}/config.h.in
     )
 
 set(SOURCE_FILES
-    ${SOFAMISCOTHER_SRC}/initSofaMiscExtra.cpp
+    ${SOFAMISCEXTRA_SRC}/initSofaMiscExtra.cpp
     )
 
 list(APPEND HEADER_FILES
-    ${SOFAMISCOTHER_SRC}/MeshTetraStuffing.h
+    ${SOFAMISCEXTRA_SRC}/MeshTetraStuffing.h
     )
 list(APPEND SOURCE_FILES
-    ${SOFAMISCOTHER_SRC}/MeshTetraStuffing.cpp
+    ${SOFAMISCEXTRA_SRC}/MeshTetraStuffing.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
