@@ -62,8 +62,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU OFF)
 endif()
 option(SOFAGUI_ENABLE_NATIVE_MENU "Enable Qt to use the operating system's native menu for the Qt GUI" ${DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU})
-sofa_set_01(SOFAGUI_USE_NATIVE_MENU VALUE ${SOFAGUI_ENABLE_NATIVE_MENU} BOTH_SCOPES)
-
 
 # NodeEditor
 option(SOFAGUIQT_ENABLE_NODEGRAPH "Build the Node graph representation. NodeEditor library is needed." OFF)
