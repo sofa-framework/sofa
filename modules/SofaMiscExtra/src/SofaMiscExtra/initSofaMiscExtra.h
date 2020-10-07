@@ -19,22 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_MAPPING_INIT_H
-#define SOFA_COMPONENT_MISC_MAPPING_INIT_H
-#include "config.h"
+#pragma once
 
-namespace sofa
-{
-
-namespace component
-{
-
-
-void SOFA_MISC_MAPPING_API initMiscMapping();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+#include <SofaMiscExtra/config.h>

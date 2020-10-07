@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscForceField/initMiscForcefield.h>
+#include <SofaMiscEngine/initSofaMiscEngine.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -28,12 +28,12 @@ namespace sofa::component
 {
 
 extern "C" {
-    SOFA_SOFAMISCFORCEFIELD_API void initExternalModule();
-    SOFA_SOFAMISCFORCEFIELD_API const char* getModuleName();
-    SOFA_SOFAMISCFORCEFIELD_API const char* getModuleVersion();
-    SOFA_SOFAMISCFORCEFIELD_API const char* getModuleLicense();
-    SOFA_SOFAMISCFORCEFIELD_API const char* getModuleDescription();
-    SOFA_SOFAMISCFORCEFIELD_API const char* getModuleComponentList();
+    SOFA_SOFAMISCENGINE_API void initExternalModule();
+    SOFA_SOFAMISCENGINE_API const char* getModuleName();
+    SOFA_SOFAMISCENGINE_API const char* getModuleVersion();
+    SOFA_SOFAMISCENGINE_API const char* getModuleLicense();
+    SOFA_SOFAMISCENGINE_API const char* getModuleDescription();
+    SOFA_SOFAMISCENGINE_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -52,7 +52,7 @@ const char* getModuleName()
 
 const char* getModuleVersion()
 {
-    return sofa_tostring(SOFAMISCFORCEFIELD_VERSION);
+    return sofa_tostring(SOFAMISCENGINE_VERSION);
 }
 
 const char* getModuleLicense()
@@ -62,7 +62,7 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "This plugin contains contains features about Misc ForceField.";
+    return "This plugin contains contains features about Misc Engine.";
 }
 
 const char* getModuleComponentList()

@@ -8,11 +8,11 @@ set(SOFAMISCTOPOLOGY_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
 	${SOFAMISCTOPOLOGY_SRC}/config.h.in
-	${SOFAMISCTOPOLOGY_SRC}/initMiscTopology.h
+	${SOFAMISCTOPOLOGY_SRC}/initSofaMiscTopology.h
 )
 
 set(SOURCE_FILES
-	${SOFAMISCTOPOLOGY_SRC}/initMiscTopology.cpp
+	${SOFAMISCTOPOLOGY_SRC}/initSofaMiscTopology.cpp
 )
 
 list(APPEND HEADER_FILES

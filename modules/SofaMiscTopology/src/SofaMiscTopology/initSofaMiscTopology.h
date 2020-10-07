@@ -19,57 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscMapping/initMiscMapping.h>
+#pragma once
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-
-namespace sofa::component
-{
-
-extern "C" {
-    SOFA_SOFAMISCMAPPING_API void initExternalModule();
-    SOFA_SOFAMISCMAPPING_API const char* getModuleName();
-    SOFA_SOFAMISCMAPPING_API const char* getModuleVersion();
-    SOFA_SOFAMISCMAPPING_API const char* getModuleLicense();
-    SOFA_SOFAMISCMAPPING_API const char* getModuleDescription();
-    SOFA_SOFAMISCMAPPING_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFAMISCMAPPING_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Misc Mapping.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+#include <SofaMiscTopology/config.h>

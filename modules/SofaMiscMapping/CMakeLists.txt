@@ -8,11 +8,11 @@ set(SOFAMISCMAPPING_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFAMISCMAPPING_SRC}/config.h.in
-    ${SOFAMISCMAPPING_SRC}/initMiscMapping.h
+    ${SOFAMISCMAPPING_SRC}/initSofaMiscMapping.h
     )
 
 set(SOURCE_FILES
-    ${SOFAMISCMAPPING_SRC}/initMiscMapping.cpp
+    ${SOFAMISCMAPPING_SRC}/initSofaMiscMapping.cpp
     )
 
 list(APPEND HEADER_FILES

@@ -19,22 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_ENGINE_INIT_H
-#define SOFA_COMPONENT_MISC_ENGINE_INIT_H
-#include "config.h"
+#pragma once
 
-namespace sofa
-{
-
-namespace component
-{
-
-
-void SOFA_MISC_ENGINE_API initMiscEngine();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+#include <SofaMiscEngine/config.h>

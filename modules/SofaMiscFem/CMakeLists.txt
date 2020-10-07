@@ -9,11 +9,11 @@ set(SOFAMISCFEM_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFAMISCFEM_SRC}/config.h.in
-    ${SOFAMISCFEM_SRC}/initMiscFEM.h
+    ${SOFAMISCFEM_SRC}/initSofaMiscFEM.h
     )
 
 set(SOURCE_FILES
-    ${SOFAMISCFEM_SRC}/initMiscFEM.cpp
+    ${SOFAMISCFEM_SRC}/initSofaMiscFEM.cpp
     )
 
 list(APPEND HEADER_FILES

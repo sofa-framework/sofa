@@ -7,13 +7,13 @@ set(SOFAMISCSOLVER_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFAMISCSOLVER_SRC}/config.h.in
-    ${SOFAMISCSOLVER_SRC}/initMiscSolver.h
+    ${SOFAMISCSOLVER_SRC}/initSofaMiscSolver.h
     ${SOFAMISCSOLVER_SRC}/DampVelocitySolver.h
     ${SOFAMISCSOLVER_SRC}/NewmarkImplicitSolver.h
 )
 
 set(SOURCE_FILES
-    ${SOFAMISCSOLVER_SRC}/initMiscSolver.cpp
+    ${SOFAMISCSOLVER_SRC}/initSofaMiscSolver.cpp
     ${SOFAMISCSOLVER_SRC}/DampVelocitySolver.cpp
     ${SOFAMISCSOLVER_SRC}/NewmarkImplicitSolver.cpp
 )

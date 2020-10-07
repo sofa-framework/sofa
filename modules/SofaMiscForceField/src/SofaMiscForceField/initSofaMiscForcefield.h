@@ -20,18 +20,5 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMiscExtra/config.h>
 
-namespace sofa
-{
-
-namespace component
-{
-    
-void SOFA_MISC_EXTRA_API initMiscExtra();
-
-}// namespace component
-
-} // namespace sofa
-
-
+#include <SofaMiscForceField/config.h>

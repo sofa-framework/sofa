@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscExtra/initMiscExtra.h>
+#include <SofaMiscMapping/initSofaMiscMapping.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -28,12 +28,12 @@ namespace sofa::component
 {
 
 extern "C" {
-    SOFA_SOFAMISCEXTRA_API void initExternalModule();
-    SOFA_SOFAMISCEXTRA_API const char* getModuleName();
-    SOFA_SOFAMISCEXTRA_API const char* getModuleVersion();
-    SOFA_SOFAMISCEXTRA_API const char* getModuleLicense();
-    SOFA_SOFAMISCEXTRA_API const char* getModuleDescription();
-    SOFA_SOFAMISCEXTRA_API const char* getModuleComponentList();
+    SOFA_SOFAMISCMAPPING_API void initExternalModule();
+    SOFA_SOFAMISCMAPPING_API const char* getModuleName();
+    SOFA_SOFAMISCMAPPING_API const char* getModuleVersion();
+    SOFA_SOFAMISCMAPPING_API const char* getModuleLicense();
+    SOFA_SOFAMISCMAPPING_API const char* getModuleDescription();
+    SOFA_SOFAMISCMAPPING_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -52,7 +52,7 @@ const char* getModuleName()
 
 const char* getModuleVersion()
 {
-    return sofa_tostring(SOFAMISCEXTRA_VERSION);
+    return sofa_tostring(SOFAMISCMAPPING_VERSION);
 }
 
 const char* getModuleLicense()
@@ -62,7 +62,7 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "This plugin contains contains features about Misc Extra.";
+    return "This plugin contains contains features about Misc Mapping.";
 }
 
 const char* getModuleComponentList()
