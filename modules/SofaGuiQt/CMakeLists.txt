@@ -16,6 +16,8 @@ set(QT_TARGETS ${QT_TARGETS} Qt5::Core Qt5::Gui Qt5::OpenGL)
 sofa_find_package(Qt5 COMPONENTS Charts QUIET BOTH_SCOPES)
 if(Qt5Charts_FOUND)
     set(QT_TARGETS ${QT_TARGETS} Qt5::Charts)
+else()
+    message(STATUS "SofaGuiQt: Qt5Charts not found. No chart nor Profile will be compiled")
 endif()
 
 # QDocBrowser
