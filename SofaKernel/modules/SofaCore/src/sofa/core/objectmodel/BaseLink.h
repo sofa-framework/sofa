@@ -92,8 +92,7 @@ public:
     virtual Base* getOwnerBase() const = 0;
 
     [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
-    virtual sofa::core::objectmodel::BaseData* getOwnerData() const = 0;
-
+    sofa::core::objectmodel::BaseData* getOwnerData() const { return nullptr; }
 
     /// Set one of the flags.
     void setFlag(LinkFlagsEnum flag, bool b)
@@ -139,7 +138,7 @@ public:
     virtual Base* getLinkedBase(std::size_t index=0) const = 0;
 
     [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
-    virtual BaseData* getLinkedData(std::size_t index=0) const = 0;
+    BaseData* getLinkedData(std::size_t =0) const { return nullptr; }
 
     virtual std::string getLinkedPath(std::size_t index=0) const = 0;
 
@@ -147,7 +146,7 @@ public:
     /// @{
 
     /// Read the command line
-    virtual bool read( const std::string& str ) = 0;
+    bool read( const std::string& str );
 
     /// Update pointers in case the pointed-to objects have appeared
     /// @return false if there are broken links
@@ -182,6 +181,34 @@ public:
     static std::string CreateString(Base* object, BaseData* data, Base* from);
 
     /// @}
+
+    virtual int findIndexForPath(const std::string& path) const;
+
+    bool removePath(const std::string& path);
+
+    bool removeAt(int indice){ return _doRemoveAt_(indice); }
+    virtual bool _doRemoveAt_(size_t) = 0;
+
+    bool remove(Base* b){ return _doRemove_(b); }
+    virtual bool _doRemove_(Base*) = 0;
+
+    bool add(Base* b, const std::string& str){ return _doAdd_(b, str); }
+    virtual bool _doAdd_(Base*, const std::string& s) = 0;
+
+    bool contains (Base* b) const { return _doContains_(b); }
+    virtual bool _doContains_(Base*) const = 0;
+
+    std::string getPath(std::size_t index=0) const
+    {
+        if (index >= getSize())
+            return std::string();
+        std::string path;
+        Base* b=getLinkedBase(index);
+        if(b)
+            return CreateString(b, nullptr, getOwnerBase());
+        return getLinkedPath(index);
+    }
+    virtual std::string _doGetPath_(std::size_t index=0) const =0;
 
 protected:
     unsigned int m_flags;

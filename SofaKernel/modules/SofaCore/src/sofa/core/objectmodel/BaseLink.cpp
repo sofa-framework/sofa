@@ -55,6 +55,128 @@ BaseLink::~BaseLink()
 {
 }
 
+
+int BaseLink::findIndexForPath(const std::string& path) const
+{
+    for (std::size_t index=0; index<getSize(); ++index)
+    {
+        std::string p = getPath(index);
+        if (p == path)
+            return index;
+    }
+
+    return -1;
+}
+
+bool BaseLink::removePath(const std::string &path)
+{
+    if (path.empty())
+        return false;
+
+    int index = findIndexForPath(path);
+    if(index<0)
+        return false;
+    return removeAt(index);
+}
+
+/// Read a string...
+/// and store the analyzed part in the Link.
+/// Fille the content of a link from a string
+bool BaseLink::read(const std::string& str)
+{
+    if (str.empty())
+        return true;
+
+    bool ok = true;
+
+    Base* owner = getOwnerBase();
+
+    /// Allows spaces in links values for single links
+    if (!getFlag(BaseLink::FLAG_MULTILINK))
+    {
+        Base* ptr = nullptr;
+
+        /// Is there an @ ?
+        if (str[0] != '@')
+        {
+            return false; /// If no then drop it
+        }
+        else if (owner && !PathResolver::FindLinkDest(owner, ptr, str, this))
+        {
+            /// This is not an error, as the destination can be added later in the graph
+            /// instead, we will check for failed links after init is completed
+            add(ptr, str);
+            return true;
+        }
+        else
+        {
+            /// read should return false if link is not properly added despite
+            /// already having an owner and being able to look for linkDest
+            add(ptr, str);
+            return ptr != nullptr;
+        }
+    }
+    else
+    {
+        std::vector<Base*> container;
+        std::istringstream istr(str.c_str());
+        std::string path;
+
+        /// Find the target of each path, and store those targets in
+        /// a temporary vector of (pointer, path) pairs
+        std::vector< std::pair<Base*, std::string> > newLinks;
+        while (istr >> path)
+        {
+            Base *ptr = nullptr;
+            if (owner && !PathResolver::FindLinkDest(owner, ptr, path, this))
+            {
+                // This is not an error, as the destination can be added later in the graph
+                // instead, we will check for failed links after init is completed
+                //ok = false;
+            }
+            else if (path[0] != '@')
+            {
+                ok = false;
+            }
+            newLinks.push_back(std::make_pair(ptr, path));
+        }
+
+        /// Add the objects that are not already present to the container of this Link
+        for (auto link : newLinks)
+        {
+            Base* ptr = link.first;
+            std::string& path = link.second;
+
+            if(!contains(ptr))
+                add(ptr, path);
+        }
+
+        // Remove the objects from the container that are not in the new list
+        // TODO epernod 2018-08-01: This cast from size_t to unsigned int remove a large amount of warnings.
+        // But need to be rethink in the future. The problem is if index i is a site_t, then we need to template container<size_t> which impact the whole architecture.
+        std::size_t csize = container.size();
+        for (std::size_t i = 0; i != csize; i++)
+        {
+            Base* dest(container[i]);
+            bool destFound = false;
+
+            auto j = newLinks.begin();
+            while (j != newLinks.end() && !destFound)
+            {
+                if (j->first == dest)
+                    destFound = true;
+                j++;
+            }
+
+            if (!destFound)
+                remove(dest);
+        }
+    }
+
+    return ok;
+}
+
+
 /// Print the value of the associated variable
 void BaseLink::printValue( std::ostream& o ) const
 {
@@ -172,6 +294,7 @@ std::string BaseLink::CreateString(const std::string& path, const std::string& d
     return result;
 }
 
+///
 std::string BaseLink::CreateStringPath(Base* dest, Base* from)
 {
     if (!dest || dest == from) return std::string("[]");

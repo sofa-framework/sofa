@@ -351,9 +351,33 @@ public:
         return m_value.crend();
     }
 
+    bool _doContains_(Base* bv) const override
+    {
+        DestType* v = dynamic_cast<DestType*>(bv);
+        return contains(v);
+    }
+
+    bool _doRemove_(Base* bv) override
+    {
+        DestType* v = dynamic_cast<DestType*>(bv);
+        return remove(v);
+    }
+
+    bool _doAdd_(Base* bv, const std::string& path) override
+    {
+        DestType* tmp = dynamic_cast<DestType*>(bv);
+        return add(tmp, path);
+    }
+
+    bool _doRemoveAt_(size_t index) override
+    {
+        return removeAt(index);
+    }
+
     bool add(DestPtr v)
     {
-        if (!v) return false;
+        if (!v)
+            return false;
         std::size_t index = TraitsContainer::add(m_value,v);
         updateCounter();
         added(v, index);
@@ -392,33 +416,12 @@ public:
 
     bool removeAt(std::size_t index)
     {
-        if (index >= m_value.size())
-            return false;
-
+        if (index >= m_value.size()) return false;
+        DestType* v = TraitsDestPtr::get(TraitsValueType::get(m_value[index]));
         TraitsContainer::remove(m_value,index);
         updateCounter();
-        DestPtr v=m_value[index];
         removed(v, index);
         return true;
-    }
-
-    bool removePath(const std::string& path)
-    {
-        if (path.empty()) return false;
-        std::size_t n = m_value.size();
-        for (std::size_t index=0; index<n; ++index)
-        {
-            std::string p = getPath(index);
-            if (p == path)
-            {
-                DestPtr v = m_value[index];
-                TraitsContainer::remove(m_value,index);
-                updateCounter();
-                removed(v, index);
-                return true;
-            }
-        }
-        return false;
     }
 
     const BaseClass* getDestClass() const override
@@ -436,18 +439,11 @@ public:
         return size();
     }
 
-    std::string getPath(std::size_t index) const
+    std::string _doGetPath_(std::size_t index=0) const override
     {
-        if (index >= m_value.size())
-            return std::string();
         std::string path;
-        const ValueType& value = m_value[index];
-        if (!TraitsValueType::path(value, path))
-        {
-            DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
-            if (ptr)
-                path = BaseLink::CreateString(ptr, nullptr, m_owner);
-        }
+        if (index < m_value.size())
+            TraitsValueType::path(m_value[index], path);
         return path;
     }
 
@@ -456,111 +452,9 @@ public:
         return getIndex(index);
     }
 
-    [[deprecated("This function has been deprecated in PR#1503 and will be removed soon. Link<> cannot hold BaseData anymore. To make link between Data use DataLink instead.")]]
-    BaseData* getLinkedData(std::size_t =0) const override
-    {
-        return nullptr;
-    }
-
     std::string getLinkedPath(std::size_t index=0) const override
     {
         return getPath(index);
-    }
-
-    /// @name Serialization API
-    /// @{
-
-    /// Read the command line
-    virtual bool read( const std::string& str ) override
-    {
-        if (str.empty())
-            return true;
-
-        bool ok = true;
-
-        // Allows spaces in links values for single links
-        if (!getFlag(BaseLink::FLAG_MULTILINK))
-        {
-            DestType* ptr = nullptr;
-
-            if (str[0] != '@')
-            {
-                return false;
-            }
-            else if (m_owner && !PathResolver::FindLinkDest(m_owner, ptr, str, this))
-            {
-                // This is not an error, as the destination can be added later in the graph
-                // instead, we will check for failed links after init is completed
-                add(ptr, str);
-                return true;
-            }
-            else
-            {
-                // read should return false if link is not properly added despite
-                // already having an owner and being able to look for linkDest
-                add(ptr, str);
-                return ptr != nullptr;
-            }
-
-        }
-        else
-        {
-            Container& container = m_value;
-            std::istringstream istr(str.c_str());
-            std::string path;
-
-            // Find the target of each path, and store those targets in
-            // a temporary vector of (pointer, path) pairs
-            typedef std::vector< std::pair<DestPtr, std::string> > PairVector;
-            PairVector newList;
-            while (istr >> path)
-            {
-                DestType *ptr = nullptr;
-                if (m_owner && !PathResolver::FindLinkDest(m_owner, ptr, path, this))
-                {
-                    // This is not an error, as the destination can be added later in the graph
-                    // instead, we will check for failed links after init is completed
-                    //ok = false;
-                }
-                else if (path[0] != '@')
-                {
-                    ok = false;
-                }
-                newList.push_back(std::make_pair(ptr, path));
-            }
-
-            // Add the objects that are not already present to the container of this Link
-            for (typename PairVector::iterator i = newList.begin(); i != newList.end(); i++)
-            {
-                const DestPtr ptr = i->first;
-                const std::string& path = i->second;
-
-                if (TraitsContainer::find(container, ptr) == container.size()) // Not found
-                    add(ptr, path);
-            }
-
-            // Remove the objects from the container that are not in the new list
-            // TODO epernod 2018-08-01: This cast from size_t to unsigned int remove a large amount of warnings.
-            // But need to be rethink in the future. The problem is if index i is a site_t, then we need to template container<size_t> which impact the whole architecture.
-            std::size_t csize = container.size();
-            for (std::size_t i = 0; i != csize; i++)
-            {
-                DestPtr dest(container[i]);
-                bool destFound = false;
-                typename PairVector::iterator j = newList.begin();
-                while (j != newList.end() && !destFound)
-                {
-                    if (j->first == dest)
-                        destFound = true;
-                    j++;
-                }
-
-                if (!destFound)
-                    remove(dest);
-            }
-        }
-
-        return ok;
     }
 
 
@@ -580,18 +474,11 @@ public:
         return context->findLinkDest(ptr, path, nullptr);
     }
 
-    /// @}
-
     sofa::core::objectmodel::Base* getOwnerBase() const override
     {
         return m_owner;
     }
 
-    [[deprecated("This function has been deprecated in PR#1503 and will be removed soon. Link<> cannot hold BaseData anymore. To make link between Data use DataLink instead.")]]
-    sofa::core::objectmodel::BaseData* getOwnerData() const override
-    {
-        return nullptr;
-    }
 
     void setOwner(OwnerType* owner)
     {
@@ -784,11 +671,6 @@ public:
     void setValidator(ValidatorFn fn)
     {
         m_validator = fn;
-    }
-
-    std::string getPath() const
-    {
-        return Inherit::getPath(0);
     }
 
     DestType* get(const core::ExecParams*) const { return get(); }
