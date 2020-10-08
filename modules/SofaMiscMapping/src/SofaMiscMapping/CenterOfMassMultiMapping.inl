@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_INL
+#pragma once
 
 #include <SofaMiscMapping/CenterOfMassMultiMapping.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -30,13 +29,7 @@
 #include <algorithm>
 #include <functional>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template < typename Model >
@@ -256,11 +249,4 @@ void CenterOfMassMultiMapping< TIn, TOut >::draw(const core::visual::VisualParam
     vparams->drawTool()->drawLines(points, 1, sofa::defaulttype::Vec<4,float>(1,1,0,1));
 }
 
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_INL
+} // namespace sofa::component::mapping

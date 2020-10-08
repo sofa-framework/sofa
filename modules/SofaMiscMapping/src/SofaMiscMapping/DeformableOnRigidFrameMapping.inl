@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_INL
-#define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_INL
+#pragma once
 
 #include <SofaMiscMapping/DeformableOnRigidFrameMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TInRoot, class TOut>
@@ -528,10 +521,4 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual:
     vparams->drawTool()->drawPoints(points, 7, sofa::defaulttype::Vec<4,float>(1,1,0,1));
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_INL
+} // namespace sofa::component::mapping

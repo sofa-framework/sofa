@@ -25,16 +25,9 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
-//#include <typeinfo>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
@@ -46,14 +39,9 @@ int GearSpringForceFieldClass = core::RegisterObject("Gear springs for Rigids")
 
         ;
 
-template class SOFA_MISC_FORCE_FIELD_API GearSpring<defaulttype::Rigid3Types>;
-template class SOFA_MISC_FORCE_FIELD_API GearSpringForceField<defaulttype::Rigid3Types>;
+template class SOFA_SOFAMISCFORCEFIELD_API GearSpring<defaulttype::Rigid3Types>;
+template class SOFA_SOFAMISCFORCEFIELD_API GearSpringForceField<defaulttype::Rigid3Types>;
 
 
-
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::interactionforcefield
 

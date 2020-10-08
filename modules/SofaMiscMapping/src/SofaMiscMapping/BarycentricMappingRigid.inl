@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPINGRIGID_INL
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPINGRIGID_INL
+#pragma once
 
 #include <SofaMiscMapping/BarycentricMappingRigid.h>
 #include <SofaBaseMechanics/BarycentricMapping.inl>
 
 #include <sofa/helper/decompose.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class In, class Out>
@@ -525,10 +518,4 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
     }
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

@@ -28,15 +28,7 @@
 #include <iostream>
 
 
-
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace odesolver
+namespace sofa::component::odesolver
 {
 
 using namespace sofa::defaulttype;
@@ -68,9 +60,4 @@ void DampVelocitySolver::solve(const core::ExecParams* params, SReal dt, sofa::c
     msg_info() <<"DampVelocitySolver, final v = "<< vel ;
 }
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::odesolver

@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_TOPOLOGICALCHANGEPROCESSOR_H
-#define SOFA_COMPONENT_MISC_TOPOLOGICALCHANGEPROCESSOR_H
+#pragma once
+
 #include <SofaMiscTopology/config.h>
 
 
@@ -32,17 +32,11 @@
 
 #if SOFAMISCTOPOLOGY_HAVE_ZLIB
 #include <zlib.h>
-#endif
+#endif // SOFAMISCTOPOLOGY_HAVE_ZLIB
 
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 class TriangleIncisionInformation;
@@ -52,7 +46,7 @@ class TriangleIncisionInformation;
  *
  * SIMPLE METHODE FOR THE MOMENT. DON'T HANDLE MULTIPLE TOPOLOGIES
 */
-class SOFA_MISC_TOPOLOGY_API TopologicalChangeProcessor: public core::objectmodel::BaseObject
+class SOFA_SOFAMISCTOPOLOGY_API TopologicalChangeProcessor: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(TopologicalChangeProcessor,core::objectmodel::BaseObject);
@@ -218,11 +212,4 @@ public:
     }
 };
 
-
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::misc

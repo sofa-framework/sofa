@@ -25,14 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -43,13 +36,7 @@ int LennardJonesForceFieldClass = core::RegisterObject("Lennard-Jones forces for
 
         ;
 
-template class SOFA_MISC_FORCE_FIELD_API LennardJonesForceField<Vec3Types>;
+template class SOFA_SOFAMISCFORCEFIELD_API LennardJonesForceField<Vec3Types>;
 
 
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace namespace sofa::component::forcefield

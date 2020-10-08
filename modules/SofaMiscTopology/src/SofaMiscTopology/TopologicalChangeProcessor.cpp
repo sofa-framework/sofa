@@ -46,13 +46,7 @@
     #define DEBUG_MSG false
 #endif
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 using namespace defaulttype;
@@ -1450,8 +1444,4 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     }
 }
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::misc

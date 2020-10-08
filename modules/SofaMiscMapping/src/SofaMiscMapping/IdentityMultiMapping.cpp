@@ -28,13 +28,7 @@
 
 using namespace sofa::defaulttype;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 // Register in the Factory
@@ -44,12 +38,8 @@ int IdentityMultiMappingClass = core::RegisterObject("Concatenate several States
 
         ;
 
-template class SOFA_MISC_MAPPING_API IdentityMultiMapping< Vec3Types, Vec3Types >;
-template class SOFA_MISC_MAPPING_API IdentityMultiMapping< Rigid3Types, Rigid3Types >;
+template class SOFA_SOFAMISCMAPPING_API IdentityMultiMapping< Vec3Types, Vec3Types >;
+template class SOFA_SOFAMISCMAPPING_API IdentityMultiMapping< Rigid3Types, Rigid3Types >;
 
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::mapping

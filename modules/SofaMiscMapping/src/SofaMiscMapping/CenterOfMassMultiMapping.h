@@ -19,24 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_H
-#define SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscMapping/config.h>
 
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/behavior/BaseMass.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
+namespace sofa::component::mapping
 {
-
-namespace component
-{
-
-namespace mapping
-{
-
 
 template <class TIn, class TOut>
 class CenterOfMassMultiMapping : public core::MultiMapping<TIn, TOut>
@@ -111,16 +104,10 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_CPP)
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+extern template class SOFA_SOFAMISCMAPPING_API CenterOfMassMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class SOFA_SOFAMISCMAPPING_API CenterOfMassMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_SOFAMISCMAPPING_API CenterOfMassMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 
 #endif
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_H
+} // namespace sofa::component::mapping

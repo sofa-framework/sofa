@@ -117,9 +117,9 @@ public :
         Real m_strainEnergy;
 
         /// Output stream
-        inline friend ostream& operator<< ( ostream& os, const TetrahedronRestInformation& /*eri*/ ) {  return os;  }
+        inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronRestInformation& /*eri*/ ) {  return os;  }
         /// Input stream
-        inline friend istream& operator>> ( istream& in, TetrahedronRestInformation& /*eri*/ ) { return in; }
+        inline friend std::istream& operator>> ( std::istream& in, TetrahedronRestInformation& /*eri*/ ) { return in; }
 
         TetrahedronRestInformation() {}
     };
@@ -132,9 +132,9 @@ public :
         Matrix3 DfDx;
 
         /// Output stream
-        inline friend ostream& operator<< ( ostream& os, const EdgeInformation& /*eri*/ ) {  return os;  }
+        inline friend std::ostream& operator<< (std::ostream& os, const EdgeInformation& /*eri*/ ) {  return os;  }
         /// Input stream
-        inline friend istream& operator>> ( istream& in, EdgeInformation& /*eri*/ ) { return in; }
+        inline friend std::istream& operator>> (std::istream& in, EdgeInformation& /*eri*/ ) { return in; }
 
         EdgeInformation() {}
     };
@@ -146,7 +146,7 @@ public :
     bool  m_meshSaved ;
 
     Data<bool> d_stiffnessMatrixRegularizationWeight; ///< Regularization of the Stiffness Matrix (between true or false)
-    Data<string> d_materialName; ///< the name of the material
+    Data<std::string> d_materialName; ///< the name of the material
     Data<SetParameterArray> d_parameterSet; ///< The global parameters specifying the material
     Data<SetAnisotropyDirectionArray> d_anisotropySet; ///< The global directions of anisotropy of the material
 
@@ -158,17 +158,17 @@ public :
 
 public:
 
-    void setMaterialName(const string name) {
+    void setMaterialName(const std::string name) {
         d_materialName.setValue(name);
     }
-    void setparameter(const vector<Real> param) {
+    void setparameter(const SetParameterArray param) {
         d_parameterSet.setValue(param);
     }
-    void setdirection(const vector<Coord> direction) {
+    void setdirection(const SetAnisotropyDirectionArray direction) {
         d_anisotropySet.setValue(direction);
     }
 
-    class SOFA_MISC_FEM_API TetrahedronHandler : public TopologyDataHandler<Tetrahedron,sofa::helper::vector<TetrahedronRestInformation> >
+    class SOFA_SOFAMISCFEM_API TetrahedronHandler : public TopologyDataHandler<Tetrahedron,sofa::helper::vector<TetrahedronRestInformation> >
     {
     public:
       typedef typename TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
@@ -227,7 +227,7 @@ using sofa::defaulttype::Vec3fTypes;
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP)
 
-extern template class SOFA_MISC_FEM_API TetrahedronHyperelasticityFEMForceField<Vec3Types>;
+extern template class SOFA_SOFAMISCFEM_API TetrahedronHyperelasticityFEMForceField<Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP)

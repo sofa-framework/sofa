@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_SquareDistanceMapping_INL
-#define SOFA_COMPONENT_MAPPING_SquareDistanceMapping_INL
+#pragma once
 
 #include "SquareDistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
@@ -28,15 +27,8 @@
 #include <iostream>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
+namespace sofa::component::mapping
 {
-
-namespace component
-{
-
-namespace mapping
-{
-
 
 static const SReal s_null_distance_epsilon = 1e-8;
 
@@ -309,12 +301,4 @@ void SquareDistanceMapping<TIn, TOut>::updateForceMask()
 }
 
 
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

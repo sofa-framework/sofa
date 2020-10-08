@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_TUBULARMAPPING_H
-#define SOFA_COMPONENT_MAPPING_TUBULARMAPPING_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscMapping/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -29,13 +29,7 @@
 #include <SofaGeneralSimpleFem/RadiusContainer.h>
 #include <vector>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
@@ -110,17 +104,11 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_MAPPING_TUBULARMAPPING_CPP)
 
-extern template class SOFA_MISC_MAPPING_API TubularMapping< defaulttype::Rigid3Types, defaulttype::Vec3dTypes >;
+extern template class SOFA_SOFAMISCMAPPING_API TubularMapping< defaulttype::Rigid3Types, defaulttype::Vec3dTypes >;
 
 
 
 
 #endif
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

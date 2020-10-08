@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_INL
+#pragma once
 
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
@@ -28,13 +27,7 @@
 #include <iostream>
 #include <SofaBaseMechanics/IdentityMapping.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
@@ -234,10 +227,4 @@ void SubsetMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparam
     }
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_INL
+} // namespace sofa::component::mapping

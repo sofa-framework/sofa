@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_DistanceMapping_INL
-#define SOFA_COMPONENT_MAPPING_DistanceMapping_INL
+#pragma once
 
 #include "DistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
@@ -29,15 +28,8 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
 
-namespace sofa
+namespace sofa::component::mapping
 {
-
-namespace component
-{
-
-namespace mapping
-{
-
 
 static const SReal s_null_distance_epsilon = std::numeric_limits<SReal>::epsilon();
 
@@ -863,10 +855,4 @@ void DistanceMultiMapping<TIn, TOut>::updateForceMask()
 }
 
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

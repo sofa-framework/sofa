@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_TUBULARMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_TUBULARMAPPING_INL
+#pragma once
 
 #include <SofaMiscMapping/TubularMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
@@ -240,10 +233,4 @@ void TubularMapping<TIn, TOut>::applyJT( const core::ConstraintParams * /*cparam
     dOut.endEdit();
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_MAPPING_TUBULARMAPPING_INL
+} // namespace sofa::component::mapping

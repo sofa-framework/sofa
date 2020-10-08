@@ -32,14 +32,9 @@
 
 
 
-namespace sofa
+namespace sofa::component::odesolver
 {
 
-namespace component
-{
-
-namespace odesolver
-{
 using core::VecId;
 using namespace sofa::defaulttype;
 using namespace core::behavior;
@@ -183,9 +178,4 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 int NewmarkImplicitSolverClass = core::RegisterObject("Implicit time integratorusing Newmark scheme")
         .add< NewmarkImplicitSolver >();
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::odesolver

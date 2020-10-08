@@ -19,24 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_SquareMapping_H
-#define SOFA_COMPONENT_MAPPING_SquareMapping_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscMapping/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 
-namespace sofa
+namespace sofa::component::mapping
 {
-
-namespace component
-{
-
-namespace mapping
-{
-
-
 
 /**
     x -> x²
@@ -114,15 +106,9 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_SquareMapping_CPP)
-extern template class SOFA_MISC_MAPPING_API SquareMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
+extern template class SOFA_SOFAMISCMAPPING_API SquareMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
 
 
 #endif
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

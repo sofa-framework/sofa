@@ -24,13 +24,7 @@
 #include "DistanceMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace defaulttype;
@@ -48,18 +42,10 @@ int DistanceMultiMappingClass = core::RegisterObject("Compute edge extensions")
 
         ;
 
-template class SOFA_MISC_MAPPING_API DistanceMapping< Vec3Types, Vec1Types >;
-template class SOFA_MISC_MAPPING_API DistanceMapping< Rigid3Types, Vec1Types >;
-template class SOFA_MISC_MAPPING_API DistanceMultiMapping< Vec3Types, Vec1Types >;
-template class SOFA_MISC_MAPPING_API DistanceMultiMapping< Rigid3Types, Vec1Types >;
+template class SOFA_SOFAMISCMAPPING_API DistanceMapping< Vec3Types, Vec1Types >;
+template class SOFA_SOFAMISCMAPPING_API DistanceMapping< Rigid3Types, Vec1Types >;
+template class SOFA_SOFAMISCMAPPING_API DistanceMultiMapping< Vec3Types, Vec1Types >;
+template class SOFA_SOFAMISCMAPPING_API DistanceMultiMapping< Rigid3Types, Vec1Types >;
 
 
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mapping

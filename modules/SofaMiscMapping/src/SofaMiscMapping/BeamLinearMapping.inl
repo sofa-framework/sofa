@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_INL
+#pragma once
 
 #include <SofaMiscMapping/BeamLinearMapping.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -31,13 +30,7 @@
 
 #include <string>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -342,11 +335,4 @@ const sofa::defaulttype::BaseMatrix* BeamLinearMapping<TIn, TOut>::getJ()
     return matrixJ.get();
 }
 
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

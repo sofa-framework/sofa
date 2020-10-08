@@ -19,21 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_VOIDMAPPING_H
-#define SOFA_COMPONENT_MAPPING_VOIDMAPPING_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscMapping/config.h>
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/helper/vector.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 class VoidMapping : public sofa::core::BaseMapping
@@ -124,10 +118,4 @@ protected:
     void updateForceMask() override { fromModel->forceMask.assign(fromModel->getSize(),true); }
 };
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

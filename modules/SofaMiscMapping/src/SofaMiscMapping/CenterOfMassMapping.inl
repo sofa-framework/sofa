@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_INL
+#pragma once
 
 #include <SofaMiscMapping/CenterOfMassMapping.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -33,13 +32,7 @@
 #include <string>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
@@ -168,11 +161,4 @@ void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpar
     vparams->drawTool()->restoreLastState();
 }
 
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

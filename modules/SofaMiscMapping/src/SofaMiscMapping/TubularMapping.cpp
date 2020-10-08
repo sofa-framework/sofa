@@ -25,13 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
@@ -45,14 +39,6 @@ int TubularMappingClass = core::RegisterObject("Create a Tube around rigid point
 
         ;
 
-template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_SOFAMISCMAPPING_API TubularMapping< Rigid3Types, Vec3dTypes >;
 
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mapping

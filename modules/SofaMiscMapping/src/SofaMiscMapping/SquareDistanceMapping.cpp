@@ -24,13 +24,7 @@
 #include "SquareDistanceMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace defaulttype;
@@ -43,16 +37,8 @@ int SquareDistanceMappingClass = core::RegisterObject("Compute square edge exten
 
         ;
 
-template class SOFA_MISC_MAPPING_API SquareDistanceMapping< Vec3Types, Vec1Types >;
-template class SOFA_MISC_MAPPING_API SquareDistanceMapping< Rigid3Types, Vec1Types >;
+template class SOFA_SOFAMISCMAPPING_API SquareDistanceMapping< Vec3Types, Vec1Types >;
+template class SOFA_SOFAMISCMAPPING_API SquareDistanceMapping< Rigid3Types, Vec1Types >;
 
 
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mapping

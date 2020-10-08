@@ -26,13 +26,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
@@ -43,11 +37,7 @@ int CenterOfMassMappingClass = core::RegisterObject("Set the point to the center
         .add< CenterOfMassMapping< Rigid2Types, Vec2Types > >()
 ;
 
-template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_SOFAMISCMAPPING_API CenterOfMassMapping< Rigid3Types, Vec3dTypes >;
 
-} // namespace mapping
 
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mapping

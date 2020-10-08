@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_INL
+#pragma once
 
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMiscMapping/IdentityMultiMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
@@ -236,11 +229,4 @@ void IdentityMultiMapping<TIn, TOut>::updateForceMask()
 }
 
 
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_INL
+} // namespace sofa::component::mapping

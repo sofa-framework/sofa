@@ -19,22 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_H
-#define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscMapping/config.h>
 
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 /**
@@ -108,17 +102,11 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP)
-extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
-extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
-extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+extern template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
+extern template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 
 #endif
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_H
+} // namespace sofa::component::mapping

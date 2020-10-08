@@ -24,13 +24,7 @@
 #include "SquareMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace defaulttype;
@@ -42,16 +36,8 @@ int SquareMappingClass = core::RegisterObject("Compute the square")
 
         ;
 
-template class SOFA_MISC_MAPPING_API SquareMapping< Vec1Types, Vec1Types >;
-template class SOFA_MISC_MAPPING_API SquareMapping< Rigid3Types, Vec1Types >;
+template class SOFA_SOFAMISCMAPPING_API SquareMapping< Vec1Types, Vec1Types >;
+template class SOFA_SOFAMISCMAPPING_API SquareMapping< Rigid3Types, Vec1Types >;
 
 
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mapping

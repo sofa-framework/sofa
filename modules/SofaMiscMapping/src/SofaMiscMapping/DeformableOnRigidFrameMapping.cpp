@@ -23,13 +23,7 @@
 #include <SofaMiscMapping/DeformableOnRigidFrameMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace defaulttype;
@@ -40,12 +34,7 @@ int DeformableOnRigidFrameMappingClass = core::RegisterObject("Set the positions
 
         ;
 
-template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3Types, Vec3dTypes >;
+template class SOFA_SOFAMISCMAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3Types, Vec3dTypes >;
 
 
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa.
+} // namespace sofa::component::mapping

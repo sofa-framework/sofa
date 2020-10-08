@@ -28,13 +28,7 @@
 
 using namespace sofa::defaulttype;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 // Register in the Factory
@@ -46,14 +40,9 @@ int SubsetMultiMappingClass = core::RegisterObject("Compute a subset of the inpu
 
         ;
 
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3Types, Vec3Types >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec1Types, Vec1Types >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3Types, Rigid3Types >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3Types, Vec3Types >;
+template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< Vec3Types, Vec3Types >;
+template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< Vec1Types, Vec1Types >;
+template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< Rigid3Types, Rigid3Types >;
+template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< Rigid3Types, Vec3Types >;
 
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::mapping

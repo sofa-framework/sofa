@@ -19,25 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_SquareMapping_INL
-#define SOFA_COMPONENT_MAPPING_SquareMapping_INL
+#pragma once
 
 #include "SquareMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
+namespace sofa::component::mapping
 {
-
-namespace component
-{
-
-namespace mapping
-{
-
-
-
 
 template <class TIn, class TOut>
 SquareMapping<TIn, TOut>::SquareMapping()
@@ -188,12 +178,4 @@ void SquareMapping<TIn, TOut>::updateForceMask()
 }
 
 
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

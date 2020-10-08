@@ -19,20 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_H
-#define SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscMapping/config.h>
 
 #include <sofa/core/MultiMapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 /// concatanate several entire mechanical states together
@@ -98,15 +92,9 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_CPP)
-extern template class SOFA_MISC_MAPPING_API IdentityMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
-extern template class SOFA_MISC_MAPPING_API IdentityMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_SOFAMISCMAPPING_API IdentityMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class SOFA_SOFAMISCMAPPING_API IdentityMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
 
 #endif
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_H
+} // namespace sofa::component::mapping

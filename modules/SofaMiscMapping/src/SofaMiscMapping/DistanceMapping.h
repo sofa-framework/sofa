@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_DistanceMapping_H
-#define SOFA_COMPONENT_MAPPING_DistanceMapping_H
-#include "config.h"
+#pragma once
+
+#include <SofaMiscMapping/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MultiMapping.h>
@@ -32,13 +32,7 @@
 #include <sofa/helper/types/RGBAColor.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 
@@ -333,18 +327,12 @@ private:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_DistanceMapping_CPP)
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
-extern template class SOFA_MISC_MAPPING_API DistanceMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
-extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
-extern template class SOFA_MISC_MAPPING_API DistanceMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
+extern template class SOFA_SOFAMISCMAPPING_API DistanceMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class SOFA_SOFAMISCMAPPING_API DistanceMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
+extern template class SOFA_SOFAMISCMAPPING_API DistanceMultiMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class SOFA_SOFAMISCMAPPING_API DistanceMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
 
 
 #endif
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping
