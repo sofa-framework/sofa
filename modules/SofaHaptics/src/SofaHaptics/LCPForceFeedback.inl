@@ -355,6 +355,7 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
     unsigned char cbuf_index=mCurBufferId;
     unsigned char nbuf_index=mNextBufferId;
 
+    //Very wierd, Do I miss something why have this two if condition doing the samething
     if (buf_index == cbuf_index || buf_index == nbuf_index)
         buf_index++;
 
