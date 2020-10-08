@@ -27,7 +27,6 @@
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 
 using namespace sofa::helper::testing;
 using namespace sofa::component::collision;
@@ -64,7 +63,6 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
 
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
