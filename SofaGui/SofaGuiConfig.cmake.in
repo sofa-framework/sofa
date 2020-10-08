@@ -17,7 +17,6 @@ set(SOFAGUIQT_HAVE_TINYXML @SOFAGUIQT_HAVE_TINYXML@)
 
 # Find dependencies
 find_package(SofaGeneral REQUIRED)
-find_package(SofaMisc REQUIRED)
 
 if(SOFAGUI_HAVE_SOFAGUIQT)
     if(SOFAGUIQT_HAVE_QTVIEWER)

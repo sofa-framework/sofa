@@ -9,7 +9,6 @@ using std::endl;
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
@@ -38,7 +37,6 @@ SofaScene::SofaScene()
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
 }
 
 void SofaScene::step( SReal dt)
