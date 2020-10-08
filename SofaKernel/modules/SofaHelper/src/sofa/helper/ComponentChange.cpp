@@ -140,6 +140,50 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"SparseGridMultipleTopology", Pluginized("v20.06", "SofaNonUniformFem")},
     {"SparseGridRamificationTopology", Pluginized("v20.06", "SofaNonUniformFem")},
 
+    // SofaMiscEngine was pluginized in #1520
+    { "DisplacementTransformEngine", Pluginized("v20.12", "SofaMiscEngine") },
+    { "Distances", Pluginized("v20.12", "SofaMiscEngine") },
+    { "ProjectiveTransformEngine", Pluginized("v20.12", "SofaMiscEngine") },
+
+    // SofaMiscExtra was pluginized in #1520
+    { "MeshTetraStuffing", Pluginized("v20.12", "SofaMiscExtra") },
+
+    // SofaMiscFem was pluginized in #1520
+    { "FastTetrahedralCorotationalForceField", Pluginized("v20.12", "SofaMiscFem") },
+    { "StandardTetrahedralFEMForceField", Pluginized("v20.12", "SofaMiscFem") },
+    { "TetrahedralTensorMassForceField", Pluginized("v20.12", "SofaMiscFem") },
+    { "TetrahedronHyperelasticityFEMForceField", Pluginized("v20.12", "SofaMiscFem") },
+    { "TriangleFEMForceField", Pluginized("v20.12", "SofaMiscFem") },
+    { "TriangularAnisotropicFEMForceField", Pluginized("v20.12", "SofaMiscFem") },
+    { "TriangularFEMForceField", Pluginized("v20.12", "SofaMiscFem") },
+        
+    // SofaMiscForceField was pluginized in #1520
+    { "GearSpringForceField", Pluginized("v20.12", "SofaMiscForceField") },
+    { "MeshMatrixMass", Pluginized("v20.12", "SofaMiscForceField") },
+    { "LennardJonesForceField", Pluginized("v20.12", "SofaMiscForceField") },
+
+    // SofaMiscMapping was pluginized in #1520
+    { "BeamLinearMapping", Pluginized("v20.12", "SofaMiscMapping") },
+    { "CenterOfMassMapping", Pluginized("v20.12", "SofaMiscMapping") },
+    { "CenterOfMassMulti2Mapping", Pluginized("v20.12", "SofaMiscMapping") },
+    { "CenterOfMassMultiMapping", Pluginized("v20.12", "SofaMiscMapping") },
+    { "DeformableOnRigidFrameMapping", Pluginized("v20.12", "SofaMiscMapping") },
+    { "DistanceFromTargetMapping", Pluginized("v20.12", "SofaMiscMapping") },
+    { "DistanceMapping", Pluginized("v20.12", "SofaMiscMapping") },
+    { "IdentityMultiMapping", Pluginized("v20.12", "SofaMiscMapping") },
+    { "SquareDistanceMapping", Pluginized("v20.12", "SofaMiscMapping") },
+    { "SquareMapping", Pluginized("v20.12", "SofaMiscMapping") },
+    { "SubsetMultiMapping", Pluginized("v20.12", "SofaMiscMapping") },
+    { "TubularMapping", Pluginized("v20.12", "SofaMiscMapping") },
+    { "VoidMapping", Pluginized("v20.12", "SofaMiscMapping") },
+
+    // SofaMiscSolver was pluginized in #1520
+    { "DampVelocitySolver", Pluginized("v20.12", "SofaMiscSolver") },
+    { "NewmarkImplicitSolver", Pluginized("v20.12", "SofaMiscSolver") },
+
+    // SofaMiscTopology was pluginized in #1520
+    { "TopologicalChangeProcessor", Pluginized("v20.12", "SofaMiscTopology") },
+
     /***********************/
     // REMOVED SINCE v20.06
 
