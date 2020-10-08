@@ -125,7 +125,7 @@ void DecimateMesh<DataTypes>::doUpdate()
     }
     else
     {
-        msg_erro() << "You must add a stop condition using either targetedNumberOfEdges or targetedRatioOfEdges" ;
+        msg_error(this) << "You must add a stop condition using either targetedNumberOfEdges or targetedRatioOfEdges" ;
     }
 
 

@@ -291,15 +291,15 @@ namespace cgal
 		//output edges
 		
 		std::set<PointID> bdPoints;
-		
+#if 0
 		for (unsigned int i=0 ; i<edges.size() ; i++)
 		{
 			Edge e = edges[i];
-			Vertex_handle va = mapPointVertexHandle[e[0]], vb = mapPointVertexHandle[e[1]];
-			for (typename CDT::Vertices_in_constraint_iterator it =   
-				 cdt.vertices_in_constraint_begin(va,vb), succ = it, itend =
-				 cdt.vertices_in_constraint_end(va,vb); ++succ != itend; ++it)
-			{
+            Vertex_handle va = mapPointVertexHandle[e[0]], vb = mapPointVertexHandle[e[1]];
+            for (typename CDT::Vertices_in_constraint_iterator it =
+                 cdt.vertices_in_constraint_begin(va,vb), succ = it, itend =
+                 cdt.vertices_in_constraint_end(va,vb); ++succ != itend; ++it)
+            {
 				std::pair<Vertex_handle, Vertex_handle> edge(*it, *succ);
 				bool first = true;
 				Vertex_handle prev;
@@ -351,7 +351,7 @@ namespace cgal
 				}
 			}
 		}
-		
+#endif
 		/*
 		 for (typename CDT::Subconstraint_iterator scit = cdt.subconstraints_begin();
 		 scit != cdt.subconstraints_end(); ++scit)
