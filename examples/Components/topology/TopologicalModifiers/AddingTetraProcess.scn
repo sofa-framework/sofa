@@ -1,6 +1,8 @@
 <?xml version="1.0" ?>
 <!-- Automatic Tetrahedron adding example: Element added are define in: ./AddingTetrahedraProcess.txt -->
 <Node name="root" gravity="0 0 -9" dt="0.01">
+    <RequiredPlugin name='SofaMiscTopology'/>
+    
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showWireframe" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
