@@ -134,8 +134,8 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalPa
         const unsigned int N = Deriv::size();
         const VecBool& blockedDirection = d_fixedDirections.getValue();
         helper::WriteAccessor<DataVecDeriv> res = vData;
-        //serr<<"PartialFixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
-        if( d_fixAll.getValue()==true )
+        
+        if( this->d_fixAll.getValue()==true )
         {
             // fix everyting
             for( unsigned i=0; i<res.size(); i++ )
@@ -148,7 +148,7 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalPa
         }
         else
         {
-            const SetIndexArray & indices = d_indices.getValue();
+            const SetIndexArray & indices = this->d_indices.getValue();
             unsigned i=0;
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
             {
