@@ -151,7 +151,9 @@ private:
     Data<float> collisionProximity;
     Data<float> collisionStiffness;
     Data<float> collisionFriction;
-    Data<helper::set<int> > collisionGroup;
+
+#if COLLADASCENELOADER_HAVE_FLEXIBLE
+    Data<bool> useFlexible; ///< Use the Flexible plugin (it will replace the SkinningMapping with a LinearMapping)
 #endif
 #if COLLADASCENELOADER_HAVE_IMAGE
     Data<bool> generateShapeFunction; ///< Generate a shape function that could be used in another simulation

@@ -222,20 +222,24 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
             SOFATIMER_NEXTSTEP("CorrectV");
             mop.solveConstraint(newVel,core::ConstraintParams::VEL);
         }
-        SOFATIMER_NEXTSTEP("UpdateX");
-        if(!this->f_onlyVelocity.getValue())
+        
+        if (!this->d_onlyVelocity.getValue())
         {
+            SOFATIMER_NEXTSTEP("UpdateX");
             // pos = pos + h vel
             newPos.eq(pos, newVel, h);
+        }
 
 	    if (solveConstraint)
-            {
-                SOFATIMER_NEXTSTEP("CorrectX");
-                mop.solveConstraint(newPos,core::ConstraintParams::POS);
-            }
+        {
+            SOFATIMER_NEXTSTEP("CorrectX");
+            mop.solveConstraint(newPos,core::ConstraintParams::POS);
         }
+
 #undef SOFATIMER_NEXTSTEP
         sofa::helper::AdvancedTimer::stepEnd  (prevStep);
+    }
+
     }
 #ifndef SOFA_NO_VMULTIOP
     else

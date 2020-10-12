@@ -127,15 +127,15 @@ void PartialFixedConstraint<DataTypes>::projectResponse(const core::MechanicalPa
 // But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null or 
 // to set the projectVelocity option to True. If not, the fixed point is going to drift.
 template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData)
+void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
     if(f_projectVelocity.getValue())
     {
         const unsigned int N = Deriv::size();
-        const VecBool& blockedDirection = fixedDirections.getValue();
+        const VecBool& blockedDirection = d_fixedDirections.getValue();
         helper::WriteAccessor<DataVecDeriv> res = vData;
         //serr<<"PartialFixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
-        if( f_fixAll.getValue()==true )
+        if( d_fixAll.getValue()==true )
         {
             // fix everyting
             for( unsigned i=0; i<res.size(); i++ )
@@ -148,7 +148,7 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalPa
         }
         else
         {
-            const SetIndexArray & indices = f_indices.getValue();
+            const SetIndexArray & indices = d_indices.getValue();
             unsigned i=0;
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
             {

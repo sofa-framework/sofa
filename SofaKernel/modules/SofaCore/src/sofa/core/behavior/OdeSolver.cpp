@@ -34,7 +34,7 @@ namespace behavior
 {
 
 OdeSolver::OdeSolver():
-f_onlyVelocity(initData(&f_onlyVelocity,false,"onlyVelocity","do not perform the position integration in the solver"))
+    d_onlyVelocity(initData(&d_onlyVelocity,false,"onlyVelocity","do not perform the position integration in the solver"))
 {}
 
 OdeSolver::~OdeSolver()

@@ -241,8 +241,9 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
     const int id2 = e1.getCollisionModel()->getSize()*3 + e2.getIndex()*12; // index of contacts involving points in e2
 
     bool useNormal = true;
-    bool bothSide1 = e1.getCollisionModel()->bothSide.getValue();
-    bool bothSide2 = e2.getCollisionModel()->bothSide.getValue();
+    bool bothSide1 = e1.getCollisionModel()->d_bothSide.getValue();
+    bool bothSide2 = e2.getCollisionModel()->d_bothSide.getValue();
+
 
     if(bothSide1 && bothSide2)
         useNormal=false;

@@ -153,24 +153,18 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
 {
     int revision = m_topology->getRevision();
     if (revision == m_topologyRevision)
-    //    needsUpdate = false;
-    const unsigned npoints = mstate->getSize();
-    const unsigned ntris = _topology->getNbTriangles();
+        return;
+    
+    const unsigned nquads = m_topology->getNbQuads();
+    const unsigned ntris = m_topology->getNbTriangles();
     unsigned newsize = ntris;
-    const unsigned nquads = _topology->getNbQuads();
     if(triangulateQuads.getValue())
         newsize += 2*nquads;
 
-    int revision = _topology->getRevision();
-    if (newsize==(unsigned)size && revision == meshRevision)
-        return;
-    meshRevision = revision;
-
+    //meshRevision = revision;
     m_topologyRevision = revision;
-    needsUpdate=true;
+    m_needsUpdate =true;
 
-    const unsigned nquads = m_topology->getNbQuads();
-    const unsigned ntris = m_topology->getNbTriangles();
     resize(newsize);
 
     if (nquads == 0) // only triangles
