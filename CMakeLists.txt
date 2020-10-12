@@ -240,6 +240,8 @@ add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 
 # Temporary compatibility while modularizing SofaGeneral
 sofa_add_module(modules/SofaGeneralVisual SofaGeneralVisual ON)
+sofa_add_module(modules/SofaGraphComponent SofaGraphComponent ON)
+    
 add_subdirectory(SofaGeneral)
 
 ## Modules

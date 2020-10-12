@@ -20,7 +20,6 @@ set(SOFAGENERAL_TARGETS
     SofaBoundaryCondition
     SofaConstraint
     SofaGeneralEngine
-    SofaGraphComponent
     SofaTopologyMapping
     SofaUserInteraction
 )
@@ -32,6 +31,7 @@ endforeach()
 # Modules
 set(SOFAGENERAL_MODULES
     SofaGeneralVisual
+    SofaGraphComponent
 )
 foreach(MODULE ${SOFAGENERAL_MODULES})
     find_package(${MODULE} REQUIRED)

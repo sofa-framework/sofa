@@ -19,62 +19,72 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#include "SceneCheckerVisitor.h"
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
-#include <SofaGeneralDeformable/initGeneralDeformable.h>
-#include <SofaGeneralExplicitOdeSolver/initGeneralExplicitODESolver.h>
-#include <SofaGeneralImplicitOdeSolver/initGeneralImplicitODESolver.h>
-#include <SofaGeneralLinearSolver/initGeneralLinearSolver.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaGeneralMeshCollision/initGeneralMeshCollision.h>
-#include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
-#include <SofaGeneralRigid/initGeneralRigid.h>
-#include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
-#include <SofaGeneralTopology/initGeneralTopology.h>
-#include <SofaGeneralEngine/initGeneralEngine.h>
-#include <SofaTopologyMapping/initTopologyMapping.h>
-#include <SofaBoundaryCondition/initBoundaryCondition.h>
-#include <SofaUserInteraction/initUserInteraction.h>
-#include <SofaConstraint/initConstraint.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
+#include <algorithm>
+#include <sofa/version.h>
 
-namespace sofa
+namespace sofa::simulation::_scenechecking_
+{
+using sofa::core::ExecParams ;
+
+SceneCheckerVisitor::SceneCheckerVisitor(const ExecParams* params) : Visitor(params)
 {
 
-namespace component
-{
-
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-
-    initGeneralAnimationLoop();
-    initGeneralDeformable();
-    initGeneralExplicitODESolver();
-    initGeneralImplicitODESolver();
-    initGeneralLinearSolver();
-    initGeneralLoader();
-    initGeneralMeshCollision();
-    initGeneralObjectInteraction();
-    initGeneralRigid();
-    initGeneralSimpleFEM();
-    initGeneralTopology();
-    initGeneralEngine();
-    initTopologyMapping();
-    initBoundaryCondition();
-    initUserInteraction();
-    initConstraint();
 }
 
 
-} // namespace component
+SceneCheckerVisitor::~SceneCheckerVisitor()
+{
+}
 
-} // namespace sofa
+
+void SceneCheckerVisitor::addCheck(SceneCheck::SPtr check)
+{
+    if( std::find(m_checkset.begin(), m_checkset.end(), check) == m_checkset.end() )
+        m_checkset.push_back(check) ;
+}
+
+
+void SceneCheckerVisitor::removeCheck(SceneCheck::SPtr check)
+{
+    m_checkset.erase( std::remove( m_checkset.begin(), m_checkset.end(), check ), m_checkset.end() );
+}
+
+void SceneCheckerVisitor::validate(Node* node)
+{
+    std::stringstream tmp;
+    bool first = true;
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        tmp << (first ? "" : ", ") << check->getName() ;
+        first = false;
+    }
+    msg_info("SceneCheckerVisitor") << "Validating node \""<< node->getName() << "\" with checks: [" << tmp.str() << "]" ;
+
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        check->doInit(node) ;
+    }
+
+    execute(node) ;
+
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        check->doPrintSummary() ;
+    }
+    msg_info("SceneCheckerVisitor") << "Finished validating node \""<< node->getName() << "\".";
+}
+
+
+Visitor::Result SceneCheckerVisitor::processNodeTopDown(Node* node)
+{
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        check->doCheckOn(node) ;
+    }
+
+    return RESULT_CONTINUE;
+}
+
+} // namespace sofa::simulation::_scenechecking_

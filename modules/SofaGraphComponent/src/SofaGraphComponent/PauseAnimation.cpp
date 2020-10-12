@@ -19,62 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#include <SofaGraphComponent/PauseAnimation.h>
+#include <sofa/core/visual/VisualParams.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
-#include <SofaGeneralDeformable/initGeneralDeformable.h>
-#include <SofaGeneralExplicitOdeSolver/initGeneralExplicitODESolver.h>
-#include <SofaGeneralImplicitOdeSolver/initGeneralImplicitODESolver.h>
-#include <SofaGeneralLinearSolver/initGeneralLinearSolver.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaGeneralMeshCollision/initGeneralMeshCollision.h>
-#include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
-#include <SofaGeneralRigid/initGeneralRigid.h>
-#include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
-#include <SofaGeneralTopology/initGeneralTopology.h>
-#include <SofaGeneralEngine/initGeneralEngine.h>
-#include <SofaTopologyMapping/initTopologyMapping.h>
-#include <SofaBoundaryCondition/initBoundaryCondition.h>
-#include <SofaUserInteraction/initUserInteraction.h>
-#include <SofaConstraint/initConstraint.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
-
-namespace sofa
+namespace sofa::component::misc
 {
 
-namespace component
+PauseAnimation::PauseAnimation()
+    : root(nullptr)
 {
-
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-
-    initGeneralAnimationLoop();
-    initGeneralDeformable();
-    initGeneralExplicitODESolver();
-    initGeneralImplicitODESolver();
-    initGeneralLinearSolver();
-    initGeneralLoader();
-    initGeneralMeshCollision();
-    initGeneralObjectInteraction();
-    initGeneralRigid();
-    initGeneralSimpleFEM();
-    initGeneralTopology();
-    initGeneralEngine();
-    initTopologyMapping();
-    initBoundaryCondition();
-    initUserInteraction();
-    initConstraint();
 }
 
+PauseAnimation::~PauseAnimation()
+{
+}
 
-} // namespace component
+void PauseAnimation::init()
+{
+    BaseObject::init();
+    //simu = sofa::simulation::getSimulation();
+    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext());
+    root = dynamic_cast<simulation::Node *>(context->getRootContext());
 
-} // namespace sofa
+    //root = dynamic_cast<sofa::core::objectmodel::BaseNode*>(this->getContext());
+    // TODO: add methods in BaseNode to get parent nodes and/or root node
+}
+
+void PauseAnimation::pause()
+{
+    if (root)
+        root->getContext()->setAnimate(false);
+}
+
+} // namespace sofa::component::misc

@@ -19,62 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#include "SceneCheckerListener.h"
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
-#include <SofaGeneralDeformable/initGeneralDeformable.h>
-#include <SofaGeneralExplicitOdeSolver/initGeneralExplicitODESolver.h>
-#include <SofaGeneralImplicitOdeSolver/initGeneralImplicitODESolver.h>
-#include <SofaGeneralLinearSolver/initGeneralLinearSolver.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaGeneralMeshCollision/initGeneralMeshCollision.h>
-#include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
-#include <SofaGeneralRigid/initGeneralRigid.h>
-#include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
-#include <SofaGeneralTopology/initGeneralTopology.h>
-#include <SofaGeneralEngine/initGeneralEngine.h>
-#include <SofaTopologyMapping/initTopologyMapping.h>
-#include <SofaBoundaryCondition/initBoundaryCondition.h>
-#include <SofaUserInteraction/initUserInteraction.h>
-#include <SofaConstraint/initConstraint.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
+#include <SofaGraphComponent/SceneCheckAPIChange.h>
+using sofa::simulation::scenechecking::SceneCheckAPIChange;
+#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
+using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
+#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
+using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
+#include <SofaGraphComponent/SceneCheckUsingAlias.h>
+using sofa::simulation::scenechecking::SceneCheckUsingAlias;
 
-namespace sofa
-{
-
-namespace component
+namespace sofa::simulation::_scenechecking_
 {
 
 
-void initSofaGeneral()
+SceneCheckerListener::SceneCheckerListener()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    m_sceneChecker.addCheck(SceneCheckDuplicatedName::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
+}
 
+SceneCheckerListener* SceneCheckerListener::getInstance()
+{
+    static SceneCheckerListener sceneLoaderListener;
+    return &sceneLoaderListener;
+}
 
-    initGeneralAnimationLoop();
-    initGeneralDeformable();
-    initGeneralExplicitODESolver();
-    initGeneralImplicitODESolver();
-    initGeneralLinearSolver();
-    initGeneralLoader();
-    initGeneralMeshCollision();
-    initGeneralObjectInteraction();
-    initGeneralRigid();
-    initGeneralSimpleFEM();
-    initGeneralTopology();
-    initGeneralEngine();
-    initTopologyMapping();
-    initBoundaryCondition();
-    initUserInteraction();
-    initConstraint();
+void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node)
+{
+    if(node.get())
+        m_sceneChecker.validate(node.get());
 }
 
 
-} // namespace component
-
-} // namespace sofa
+} // nnamespace sofa::simulation::_scenechecking_

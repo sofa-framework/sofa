@@ -19,62 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
-#include <SofaGeneralDeformable/initGeneralDeformable.h>
-#include <SofaGeneralExplicitOdeSolver/initGeneralExplicitODESolver.h>
-#include <SofaGeneralImplicitOdeSolver/initGeneralImplicitODESolver.h>
-#include <SofaGeneralLinearSolver/initGeneralLinearSolver.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaGeneralMeshCollision/initGeneralMeshCollision.h>
-#include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
-#include <SofaGeneralRigid/initGeneralRigid.h>
-#include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
-#include <SofaGeneralTopology/initGeneralTopology.h>
-#include <SofaGeneralEngine/initGeneralEngine.h>
-#include <SofaTopologyMapping/initTopologyMapping.h>
-#include <SofaBoundaryCondition/initBoundaryCondition.h>
-#include <SofaUserInteraction/initUserInteraction.h>
-#include <SofaConstraint/initConstraint.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
+#include <SofaGraphComponent/config.h>
 
-namespace sofa
+#include <sofa/simulation/SceneLoaderFactory.h>
+#include <sofa/simulation/Visitor.h>
+
+#include <SofaGraphComponent/SceneCheckerVisitor.h>
+using sofa::simulation::scenechecking::SceneCheckerVisitor;
+
+
+namespace sofa::simulation::_scenechecking_
 {
 
-namespace component
+/// to be able to react when a scene is loaded
+class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckerListener : public SceneLoader::Listener
 {
+public:
+    static SceneCheckerListener* getInstance();
+    virtual ~SceneCheckerListener() {}
 
+    virtual void rightAfterLoadingScene(Node::SPtr node) override;
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
+    // Do nothing on reload
+    virtual void rightBeforeReloadingScene() override {}
+    virtual void rightAfterReloadingScene(Node::SPtr node) override
     {
-        first = false;
+        SOFA_UNUSED(node);
     }
 
+private:
+    SceneCheckerListener();
+    SceneCheckerVisitor m_sceneChecker;
+};
 
-    initGeneralAnimationLoop();
-    initGeneralDeformable();
-    initGeneralExplicitODESolver();
-    initGeneralImplicitODESolver();
-    initGeneralLinearSolver();
-    initGeneralLoader();
-    initGeneralMeshCollision();
-    initGeneralObjectInteraction();
-    initGeneralRigid();
-    initGeneralSimpleFEM();
-    initGeneralTopology();
-    initGeneralEngine();
-    initTopologyMapping();
-    initBoundaryCondition();
-    initUserInteraction();
-    initConstraint();
-}
+} // namespace sofa::simulation::_scenechecking_
 
-
-} // namespace component
-
-} // namespace sofa
+namespace sofa::simulation::scenechecking
+{
+using _scenechecking_::SceneCheckerListener;
+} // namespace sofa::simulation::scenechecking

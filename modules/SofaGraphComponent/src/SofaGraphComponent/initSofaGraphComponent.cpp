@@ -19,62 +19,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#include <SofaGraphComponent/initSofaGraphComponent.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
-#include <SofaGeneralDeformable/initGeneralDeformable.h>
-#include <SofaGeneralExplicitOdeSolver/initGeneralExplicitODESolver.h>
-#include <SofaGeneralImplicitOdeSolver/initGeneralImplicitODESolver.h>
-#include <SofaGeneralLinearSolver/initGeneralLinearSolver.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaGeneralMeshCollision/initGeneralMeshCollision.h>
-#include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
-#include <SofaGeneralRigid/initGeneralRigid.h>
-#include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
-#include <SofaGeneralTopology/initGeneralTopology.h>
-#include <SofaGeneralEngine/initGeneralEngine.h>
-#include <SofaTopologyMapping/initTopologyMapping.h>
-#include <SofaBoundaryCondition/initBoundaryCondition.h>
-#include <SofaUserInteraction/initUserInteraction.h>
-#include <SofaConstraint/initConstraint.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFAGRAPHCOMPONENT_API void initExternalModule();
+    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleName();
+    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleVersion();
+    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleLicense();
+    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleDescription();
+    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleComponentList();
+}
 
-
-void initSofaGeneral()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
     {
         first = false;
     }
-
-
-    initGeneralAnimationLoop();
-    initGeneralDeformable();
-    initGeneralExplicitODESolver();
-    initGeneralImplicitODESolver();
-    initGeneralLinearSolver();
-    initGeneralLoader();
-    initGeneralMeshCollision();
-    initGeneralObjectInteraction();
-    initGeneralRigid();
-    initGeneralSimpleFEM();
-    initGeneralTopology();
-    initGeneralEngine();
-    initTopologyMapping();
-    initBoundaryCondition();
-    initUserInteraction();
-    initConstraint();
 }
 
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace component
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAGRAPHCOMPONENT_VERSION);
+}
 
-} // namespace sofa
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about General Visual.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

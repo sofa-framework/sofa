@@ -5,6 +5,8 @@ find_package(SofaBase REQUIRED)
 find_package(SofaCommon REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SofaGeneral REQUIRED)
+find_package(SofaGraphComponent REQUIRED)
+
 
 set(SRC_ROOT src/sofa/gui)
 
@@ -38,7 +40,7 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaCommon SofaGeneral SofaMisc)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaCommon SofaGeneral SofaMisc SofaGraphComponent)
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaGui
