@@ -2,6 +2,7 @@
 <Node name="root" dt="0.005" gravity="0 -9.81 0" >
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName='SofaHaptics'/>
+    <RequiredPlugin pluginName='SofaExporter'/>
     <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
     <RequiredPlugin name="Geomagic plugin" pluginName="Geomagic" />
     
@@ -19,29 +20,34 @@
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
-        <MechanicalObject name="dofs" src="@meshLoader" />
+        <MechanicalObject name="liverDofs" src="@meshLoader" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <DiagonalMass  name="computed using mass density" massDensity="1" />
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
         <PrecomputedConstraintCorrection recompute="true"/>
 
+        <WriteState name="StateWriter_1" filename="liverDofs.data" period="0.01" writeX="1" writeV="0" writeF="0" time="0"/>
+        
         <FixedConstraint  name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
             <MeshObjLoader name="meshLoader_2" filename="mesh/liver-smooth.obj" handleSeams="1" />
             <OglModel  name="VisualModel" src="@meshLoader_2" />
-            <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
+            <BarycentricMapping name="visual mapping" input="@../liverDofs" output="@VisualModel" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">
             <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject name="spheres" position="@[-1].position" />
             <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
-            <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />
+            <BarycentricMapping name="sphere mapping" input="@../liverDofs" output="@spheres" />
+            
+            <WriteState name="StateWriter_2" filename="spheres.data" period="0.01" writeX="1" writeV="0" writeF="0" time="0"/>
         </Node>
     </Node>
     
     <!-- ADDED: the Mechanical state Controller gathers events from the Omni driver and populates the Mechanical state -->
     <Node name="Omni">
         <MechanicalObject template="Rigid3d" name="DOFs" position="@GeomagicDevice.positionDevice"/>
+        <WriteState name="StateWriter_3" filename="DOFs.data" period="0.01" writeX="1" writeV="0" writeF="0" time="0"/>
         <MechanicalStateController template="Rigid3d" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
         <Node name="VisuAvatar" activated="false" >
             <MeshObjLoader name="meshLoader_0" filename="mesh/sphere.obj" scale="0.1" handleSeams="1" />
@@ -72,6 +78,7 @@
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
         <MechanicalObject name="instrumentState" template="Rigid3d" />
+        <WriteState name="StateWriter_4" filename="instrumentState.data" period="0.01" writeX="1" writeV="0" writeF="0" time="0"/>
         <UniformMass name="mass" totalMass="0.5" />
         <LCPForceFeedback activate="true" forceCoef="0.1"/> <!-- ADDED : Compute a force-feedback for the device -->
         <UncoupledConstraintCorrection/>
