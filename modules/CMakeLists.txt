@@ -20,5 +20,6 @@ else()
     sofa_add_module(SofaOpenglVisual SofaOpenglVisual ON)
 endif()
 
+
 # All the other targets visible in "modules" are not real module
 # and are contained in packages (SofaGeneral, SofaAdvanced, SofaMisc, SofaGui).

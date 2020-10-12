@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_GENERAL_VISUAL_INIT_H
-#define SOFA_COMPONENT_GENERAL_VISUAL_INIT_H
-#include "config.h"
+#pragma once
 
-namespace sofa
-{
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace component
-{
+#define SOFAGENERALVISUAL_VERSION @PROJECT_VERSION@
 
-
-void SOFA_GENERAL_VISUAL_API initGeneralVisual();
-
-} // namespace component
-
-} // namespace sofa
-
+#ifdef SOFA_BUILD_SOFAGENERALVISUAL
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAGENERALVISUAL_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAGENERALVISUAL_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
-

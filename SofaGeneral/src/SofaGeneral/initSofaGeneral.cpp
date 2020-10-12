@@ -33,7 +33,6 @@
 #include <SofaGeneralRigid/initGeneralRigid.h>
 #include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
 #include <SofaGeneralTopology/initGeneralTopology.h>
-#include <SofaGeneralVisual/initGeneralVisual.h>
 #include <SofaGeneralEngine/initGeneralEngine.h>
 #include <SofaGraphComponent/initGraphComponent.h>
 #include <SofaTopologyMapping/initTopologyMapping.h>
@@ -69,7 +68,6 @@ void initSofaGeneral()
     initGeneralRigid();
     initGeneralSimpleFEM();
     initGeneralTopology();
-    initGeneralVisual();
     initGeneralEngine();
     initGraphComponent();
     initTopologyMapping();

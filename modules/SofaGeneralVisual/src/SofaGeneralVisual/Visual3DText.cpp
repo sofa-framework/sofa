@@ -19,16 +19,71 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGENERALVISUAL_CONFIG_H
-#define SOFAGENERALVISUAL_CONFIG_H
 
-#include <SofaGeneral/config.h>
+#include <SofaGeneralVisual/Visual3DText.h>
 
-#ifdef SOFA_BUILD_GENERAL_VISUAL
-#  define SOFA_TARGET SofaGeneralVisual
-#  define SOFA_GENERAL_VISUAL_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_GENERAL_VISUAL_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/helper/system/gl.h>
 
-#endif
+
+namespace sofa::component::visualmodel
+{
+
+int Visual3DTextClass = core::RegisterObject("Display 3D camera-oriented text")
+        .add< Visual3DText >()
+        ;
+
+
+
+Visual3DText::Visual3DText()
+    : d_text(initData(&d_text, "text", "Test to display"))
+    , d_position(initData(&d_position, defaulttype::Vec3f(), "position", "3d position"))
+    , d_scale(initData(&d_scale, 1.f, "scale", "text scale"))
+    , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1.0,1.0,1.0,1.0), "color", "text color. (default=[1.0,1.0,1.0,1.0])"))
+    , d_depthTest(initData(&d_depthTest, true, "depthTest", "perform depth test"))
+{
+}
+
+
+void Visual3DText::init()
+{
+    VisualModel::init();
+
+    reinit();
+
+    updateVisual();
+}
+
+void Visual3DText::reinit()
+{
+}
+
+void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
+{
+#ifndef SOFA_NO_OPENGL
+    if(!vparams->displayFlags().getShowVisualModels()) return;
+
+    const defaulttype::Vec3f& pos = d_position.getValue();
+    float scale = d_scale.getValue();
+
+    const bool& depthTest = d_depthTest.getValue();
+    if( !depthTest )
+    {
+        glPushAttrib(GL_ENABLE_BIT);
+        glDisable(GL_DEPTH_TEST);
+    }
+
+    vparams->drawTool()->setLightingEnabled(true);
+
+
+    vparams->drawTool()->draw3DText(pos,scale,d_color.getValue(),d_text.getValue().c_str());
+
+
+    if( !depthTest )
+        glPopAttrib();
+#endif /* SOFA_NO_OPENGL */
+}
+
+} // namespace sofa::component::visualmodel

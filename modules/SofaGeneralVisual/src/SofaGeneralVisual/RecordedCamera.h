@@ -19,24 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef RECORDEDCAMERA_H
-#define RECORDEDCAMERA_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralVisual/config.h>
 
 #include <SofaBaseVisual/BaseCamera.h>
 #include <sofa/helper/gl/Trackball.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
-namespace sofa
+namespace sofa::component::visualmodel
 {
 
-namespace component
-{
-
-namespace visualmodel
-{
-
-class SOFA_GENERAL_VISUAL_API RecordedCamera : public BaseCamera
+class SOFA_SOFAGENERALVISUAL_API RecordedCamera : public BaseCamera
 {
 public:
     SOFA_CLASS(RecordedCamera, BaseCamera);
@@ -112,10 +105,4 @@ protected:
     sofa::helper::vector <Vec3> m_rotationPoints;
 };
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // RecordedCamera_H
+} // namespace sofa::component::visualmodel
