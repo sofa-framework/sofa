@@ -1,3 +1,25 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_WINCHMULTIMAPPING_CPP
 #include "WinchMultiMapping.h"
 
 #include <sofa/core/ObjectFactory.h>
@@ -11,36 +33,19 @@ namespace component
 namespace mapping
 {
 
-
-
-
 SOFA_DECL_CLASS(WinchMultiMapping)
 
 using namespace defaulttype;
 
 // Register in the Factory
 int WinchMultiMappingClass = core::RegisterObject("Compute position differences between two different mstates")
-#ifndef SOFA_FLOAT
-.add< WinchMultiMapping< Vec1dTypes, Vec1dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< WinchMultiMapping< Vec1fTypes, Vec1fTypes > >()
-#endif
+    .add< WinchMultiMapping< Vec1Types, Vec1Types > >()
 ;
 
-
-#ifndef SOFA_FLOAT
-template class SOFA_Compliant_API WinchMultiMapping< Vec1dTypes, Vec1dTypes >;
-#endif
-
-#ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API WinchMultiMapping< Vec1fTypes, Vec1fTypes >;
-#endif
-
-
+template class SOFA_Compliant_API WinchMultiMapping< Vec1Types, Vec1Types >;
 
 }
-}
+
 }
 
-
+}
