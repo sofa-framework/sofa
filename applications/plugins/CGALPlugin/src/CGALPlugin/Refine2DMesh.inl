@@ -112,6 +112,7 @@ namespace cgal
 		
 		typedef CGAL::Delaunay_mesh_size_criteria_2<CDT> Criteria;
 		
+        typedef CDT::Constraint_id Constraint_id;
 		typedef CDT::Vertex_iterator Vertex_iterator;
 		typedef CDT::Face_iterator Face_iterator;
 		typedef CDT::Vertex_handle Vertex_handle;
@@ -291,14 +292,21 @@ namespace cgal
 		//output edges
 		
 		std::set<PointID> bdPoints;
-#if 0
 		for (unsigned int i=0 ; i<edges.size() ; i++)
 		{
 			Edge e = edges[i];
             Vertex_handle va = mapPointVertexHandle[e[0]], vb = mapPointVertexHandle[e[1]];
+#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(5,0,0)
+            Constraint_id cid = cdt.insert(va, vb);
+
             for (typename CDT::Vertices_in_constraint_iterator it =
-                 cdt.vertices_in_constraint_begin(va,vb), succ = it, itend =
-                 cdt.vertices_in_constraint_end(va,vb); ++succ != itend; ++it)
+                cdt.vertices_in_constraint_begin(cid), succ = it, itend =
+                cdt.vertices_in_constraint_end(cid); ++succ != itend; ++it)
+#else
+            for (typename CDT::Vertices_in_constraint_iterator it =
+                cdt.vertices_in_constraint_begin(va, vb), succ = it, itend =
+                cdt.vertices_in_constraint_end(va, vb); ++succ != itend; ++it)
+#endif
             {
 				std::pair<Vertex_handle, Vertex_handle> edge(*it, *succ);
 				bool first = true;
@@ -351,7 +359,7 @@ namespace cgal
 				}
 			}
 		}
-#endif
+
 		/*
 		 for (typename CDT::Subconstraint_iterator scit = cdt.subconstraints_begin();
 		 scit != cdt.subconstraints_end(); ++scit)
