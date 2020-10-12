@@ -56,7 +56,7 @@ struct WinchMultiMappingTest : public MultiMapping_test<Mapping>
         Mapping* mapping = static_cast<Mapping*>(this->base::mapping);
 
         //parent positions
-        helper::vector< self::InVecCoord > incoords(2);
+        typename helper::vector< self::InVecCoord > incoords(2);
         for( int i=0; i<2; i++ )
         {
             incoords[i].resize(1);
