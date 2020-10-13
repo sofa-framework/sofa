@@ -40,7 +40,6 @@ protected:
     SphereLoader();
 
 public:
-    void init() override;
     void reinit() override;
 
     // Point coordinates in 3D in double.
@@ -50,6 +49,8 @@ public:
     Data< defaulttype::Vector3 > d_rotation; ///< Rotation of the DOFs
     Data< defaulttype::Vector3 > d_translation; ///< Translation applied to sphere positions
     bool load() override;
+
+    void applyTransform();
 };
 
 } //loader

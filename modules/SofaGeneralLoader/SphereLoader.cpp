@@ -61,19 +61,20 @@ SphereLoader::SphereLoader()
 
     addUpdateCallback("updateTransformPosition", { &d_translation, &d_rotation, &d_scale}, [this](const core::DataTracker&)
     {
-        reinit();
+        applyTransform();
         return sofa::core::objectmodel::ComponentState::Valid;
     }, { &d_positions });
 }
 
 
-void SphereLoader::init()
-{
-    this->reinit();
-}
-
 void SphereLoader::reinit()
 {    
+    applyTransform();
+}
+
+
+void SphereLoader::applyTransform()
+{
     const Vec3& scale = d_scale.getValue();
     const Vec3& rotation = d_rotation.getValue();
     const Vec3& translation = d_translation.getValue();
@@ -91,6 +92,8 @@ void SphereLoader::reinit()
         }
     }
 }
+
+
 bool SphereLoader::load()
 {
     d_radius.beginEdit()->clear();
