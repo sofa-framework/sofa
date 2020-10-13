@@ -48,15 +48,15 @@ struct WinchMultiMappingTest : public MultiMapping_test<Mapping>
 
     typedef WinchMultiMappingTest<Mapping> self;
     typedef MultiMapping_test<Mapping> base;
-
+    typedef typename self::InVecCoord InVecCoord;
+    typedef typename helper::vector < InVecCoord> VecOfInVecCoord;
 
     bool test()
     {
         this->setupScene(2);
         Mapping* mapping = static_cast<Mapping*>(this->base::mapping);
 
-        //parent positions
-        typename helper::vector< self::InVecCoord > incoords(2);
+        VecOfInVecCoord incoords(2);
         for( int i=0; i<2; i++ )
         {
             incoords[i].resize(1);
