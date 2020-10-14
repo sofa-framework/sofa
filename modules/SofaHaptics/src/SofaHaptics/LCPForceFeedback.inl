@@ -82,10 +82,10 @@ bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename D
             // rotations are taken into account to compute the violations
             sofa::defaulttype::Quat q= x0[i].getOrientation();
             getVOrientation(d[i]) = -x0[i].rotate( q.quatToRotationVector() );  // Use of quatToRotationVector instead of toEulerVector:
-            // this is done to keep the old behavior (before the
-            // correction of the toEulerVector  function). If the
-            // purpose was to obtain the Eulerian vector and not the
-            // rotation vector please use the following line instead
+                                                                                // this is done to keep the old behavior (before the
+                                                                                // correction of the toEulerVector  function). If the
+                                                                                // purpose was to obtain the Eulerian vector and not the
+                                                                                // rotation vector please use the following line instead
         }
         else
             getVOrientation(d[i]) *= 0;
@@ -192,13 +192,13 @@ static std::mutex s_mtx;
 
 template <class DataTypes>
 void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv& forces)
-{    
+{
     if (!this->d_activate.getValue())
     {
         return;
     }
     updateStats();
-    
+
     lockForce.lock(); // check if computation has not been locked using setLock method.
     updateConstraintProblem();
     doComputeForce(state, forces);
@@ -345,7 +345,7 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
         return;
 
     component::constraintset::ConstraintProblem* new_cp = constraintSolver->getConstraintProblem();
-    
+
     if (!new_cp)
         return;
 
@@ -361,7 +361,6 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
         if (buf_index == cbuf_index || buf_index == nbuf_index)
             buf_index++;
     }
-
 
     // Compute constraints, id_buf lcp and val for the current lcp.
 
@@ -417,8 +416,8 @@ void LCPForceFeedback<DataTypes>::computeForce(SReal , SReal, SReal, SReal, SRea
 
 template <typename DataTypes>
 void LCPForceFeedback<DataTypes>::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &,
-                                                const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &,
-                                                sofa::defaulttype::SolidTypes<SReal>::SpatialVector & )
+        const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &,
+        sofa::defaulttype::SolidTypes<SReal>::SpatialVector & )
 {
 
 }
@@ -430,8 +429,8 @@ void SOFA_SOFAHAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::co
 
 template <>
 void SOFA_SOFAHAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeWrench(const sofa::defaulttype::SolidTypes<double>::Transform &world_H_tool,
-                                                                                            const sofa::defaulttype::SolidTypes<double>::SpatialVector &/*V_tool_world*/,
-                                                                                            sofa::defaulttype::SolidTypes<double>::SpatialVector &W_tool_world );
+        const sofa::defaulttype::SolidTypes<double>::SpatialVector &/*V_tool_world*/,
+        sofa::defaulttype::SolidTypes<double>::SpatialVector &W_tool_world );
 
 
 
