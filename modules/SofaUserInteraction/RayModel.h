@@ -73,11 +73,11 @@ public:
     void init() override;
 
     // -- CollisionModel interface
-    void resize(size_type size) override;
+    void resize(Size size) override;
 
     void computeBoundingTree(int maxDepth) override;
 
-    void draw(const core::visual::VisualParams*, index_type index) override;
+    void draw(const core::visual::VisualParams*, Index index) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
     core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }

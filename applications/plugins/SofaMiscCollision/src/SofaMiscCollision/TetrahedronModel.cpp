@@ -60,7 +60,7 @@ TetrahedronCollisionModel::TetrahedronCollisionModel()
     enum_type = TETRAHEDRON_TYPE;
 }
 
-void TetrahedronCollisionModel::resize(size_type size)
+void TetrahedronCollisionModel::resize(Size size)
 {
     this->core::CollisionModel::resize(size);
     elems.resize(size);
@@ -155,7 +155,7 @@ void TetrahedronCollisionModel::addTetraToDraw(const Tetrahedron& t, std::vector
     normalVertices.push_back(p + n4*0.1);
 }
 
-void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams, index_type index)
+void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams, Index index)
 {
     vparams->drawTool()->saveLastState();
 

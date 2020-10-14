@@ -659,7 +659,7 @@ void MeshTopology::addPoint(SReal px, SReal py, SReal pz)
         nbPoints = (int)seqPoints.getValue().size();
 }
 
-void MeshTopology::addEdge( index_type a, index_type b )
+void MeshTopology::addEdge( Index a, Index b )
 {
     seqEdges.beginEdit()->push_back(Edge(a,b));
     seqEdges.endEdit();
@@ -667,7 +667,7 @@ void MeshTopology::addEdge( index_type a, index_type b )
     if (b >= nbPoints) nbPoints = b+1;
 }
 
-void MeshTopology::addTriangle( index_type a, index_type b, index_type c )
+void MeshTopology::addTriangle( Index a, Index b, Index c )
 {
     seqTriangles.beginEdit()->push_back( Triangle(a,b,c) );
     seqTriangles.endEdit();
@@ -676,7 +676,7 @@ void MeshTopology::addTriangle( index_type a, index_type b, index_type c )
     if (c >= nbPoints) nbPoints = c+1;
 }
 
-void MeshTopology::addQuad(index_type a, index_type b, index_type c, index_type d)
+void MeshTopology::addQuad(Index a, Index b, Index c, Index d)
 {
     seqQuads.beginEdit()->push_back(Quad(a,b,c,d));
     seqQuads.endEdit();
@@ -686,7 +686,7 @@ void MeshTopology::addQuad(index_type a, index_type b, index_type c, index_type 
     if (d >= nbPoints) nbPoints = d+1;
 }
 
-void MeshTopology::addTetra( index_type a, index_type b, index_type c, index_type d )
+void MeshTopology::addTetra( Index a, Index b, Index c, Index d )
 {
     seqTetrahedra.beginEdit()->push_back( Tetra(a,b,c,d) );
     seqTetrahedra.endEdit();
@@ -696,7 +696,7 @@ void MeshTopology::addTetra( index_type a, index_type b, index_type c, index_typ
     if (d >= nbPoints) nbPoints = d+1;
 }
 
-void MeshTopology::addHexa(index_type p1, index_type p2, index_type p3, index_type p4, index_type p5, index_type p6, index_type p7, index_type p8)
+void MeshTopology::addHexa(Index p1, Index p2, Index p3, Index p4, Index p5, Index p6, Index p7, Index p8)
 {
 
     seqHexahedra.beginEdit()->push_back(Hexa(p1,p2,p3,p4,p5,p6,p7,p8));
@@ -761,72 +761,72 @@ const MeshTopology::SeqUV& MeshTopology::getUVs()
     return seqUVs.getValue();
 }
 
-size_type MeshTopology::getNbPoints() const
+Size MeshTopology::getNbPoints() const
 {
     return nbPoints;
 }
 
-void MeshTopology::setNbPoints(size_type n)
+void MeshTopology::setNbPoints(Size n)
 {
     nbPoints = n;
 }
 
-size_type MeshTopology::getNbEdges()
+Size MeshTopology::getNbEdges()
 {
     return getEdges().size();
 }
 
-size_type MeshTopology::getNbTriangles()
+Size MeshTopology::getNbTriangles()
 {
     return getTriangles().size();
 }
 
-size_type MeshTopology::getNbQuads()
+Size MeshTopology::getNbQuads()
 {
     return getQuads().size();
 }
 
-size_type MeshTopology::getNbTetrahedra()
+Size MeshTopology::getNbTetrahedra()
 {
     return getTetrahedra().size();
 }
 
-size_type MeshTopology::getNbHexahedra()
+Size MeshTopology::getNbHexahedra()
 {
     return getHexahedra().size();
 }
 
-size_type MeshTopology::getNbUVs()
+Size MeshTopology::getNbUVs()
 {
     return getUVs().size();
 }
 
-const MeshTopology::Edge MeshTopology::getEdge(index_type i)
+const MeshTopology::Edge MeshTopology::getEdge(Index i)
 {
     return getEdges()[i];
 }
 
-const MeshTopology::Triangle MeshTopology::getTriangle(index_type i)
+const MeshTopology::Triangle MeshTopology::getTriangle(Index i)
 {
     return getTriangles()[i];
 }
 
-const MeshTopology::Quad MeshTopology::getQuad(index_type i)
+const MeshTopology::Quad MeshTopology::getQuad(Index i)
 {
     return getQuads()[i];
 }
 
-const MeshTopology::Tetra MeshTopology::getTetrahedron(index_type i)
+const MeshTopology::Tetra MeshTopology::getTetrahedron(Index i)
 {
     return getTetrahedra()[i];
 }
 
-const MeshTopology::Hexa MeshTopology::getHexahedron(index_type i)
+const MeshTopology::Hexa MeshTopology::getHexahedron(Index i)
 {
     return getHexahedra()[i];
 }
 
-const MeshTopology::UV MeshTopology::getUV(index_type i)
+const MeshTopology::UV MeshTopology::getUV(Index i)
 {
     return getUVs()[i];
 }
@@ -2241,7 +2241,7 @@ MeshTopology::Edge MeshTopology::getLocalEdgesInHexahedron (const HexahedronID i
 int MeshTopology::computeRelativeOrientationInTri(const PointID ind_p0, const PointID ind_p1, const PointID ind_t)
 {
     const Triangle& t = getTriangles()[ind_t];
-    size_type i = 0;
+    Size i = 0;
     while(i < t.size())
     {
         if(ind_p0 == t[i])
@@ -2263,7 +2263,7 @@ int MeshTopology::computeRelativeOrientationInTri(const PointID ind_p0, const Po
 int MeshTopology::computeRelativeOrientationInQuad(const PointID ind_p0, const PointID ind_p1, const PointID ind_q)
 {
     const Quad& q = getQuads()[ind_q];
-    size_type i = 0;
+    Size i = 0;
     while(i < q.size())
     {
         if(ind_p0 == q[i])
@@ -2303,17 +2303,17 @@ bool MeshTopology::hasPos() const
     return !seqPoints.getValue().empty();
 }
 
-SReal MeshTopology::getPX(index_type i) const
+SReal MeshTopology::getPX(Index i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][0]:0.0);
 }
 
-SReal MeshTopology::getPY(index_type i) const
+SReal MeshTopology::getPY(Index i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][1]:0.0);
 }
 
-SReal MeshTopology::getPZ(index_type i) const
+SReal MeshTopology::getPZ(Index i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][2]:0.0);
 }
@@ -2367,7 +2367,7 @@ void MeshTopology::updateTetrahedra()
 
 bool MeshTopology::checkConnexity()
 {
-    size_type nbr = 0;
+    Size nbr = 0;
 
     if (UpperTopology == core::topology::HEXAHEDRON)
         nbr = this->getNbHexahedra();
@@ -2398,9 +2398,9 @@ bool MeshTopology::checkConnexity()
 }
 
 
-size_type MeshTopology::getNumberOfConnectedComponent()
+Size MeshTopology::getNumberOfConnectedComponent()
 {
-    size_type nbr = 0;
+    Size nbr = 0;
 
     if (UpperTopology == core::topology::HEXAHEDRON)
         nbr = this->getNbHexahedra();
@@ -2425,9 +2425,9 @@ size_type MeshTopology::getNumberOfConnectedComponent()
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        index_type other_ID = elemAll.size();
+        Index other_ID = elemAll.size();
 
-        for (size_type i = 0; i<elemAll.size(); ++i)
+        for (Size i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)
             {
                 other_ID = i;
@@ -2444,9 +2444,9 @@ size_type MeshTopology::getNumberOfConnectedComponent()
 }
 
 
-const sofa::helper::vector <index_type> MeshTopology::getConnectedElement(index_type elem)
+const sofa::helper::vector <Index> MeshTopology::getConnectedElement(Index elem)
 {
-    size_type nbr = 0;
+    Size nbr = 0;
 
     if (UpperTopology == core::topology::HEXAHEDRON)
         nbr = this->getNbHexahedra();
@@ -2459,8 +2459,8 @@ const sofa::helper::vector <index_type> MeshTopology::getConnectedElement(index_
     else
         nbr = this->getNbEdges();
 
-    sofa::helper::vector <index_type> elemAll;
-    sofa::helper::vector <index_type> elemOnFront, elemPreviousFront, elemNextFront;
+    sofa::helper::vector <Index> elemAll;
+    sofa::helper::vector <Index> elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     unsigned int cpt = 0;
 
@@ -2513,9 +2513,9 @@ const sofa::helper::vector <index_type> MeshTopology::getConnectedElement(index_
 }
 
 
-const sofa::helper::vector <index_type> MeshTopology::getElementAroundElement(index_type elem)
+const sofa::helper::vector <Index> MeshTopology::getElementAroundElement(Index elem)
 {
-    sofa::helper::vector <index_type> elems;
+    sofa::helper::vector <Index> elems;
     unsigned int nbr = 0;
 
     if (UpperTopology == core::topology::HEXAHEDRON)
@@ -2554,7 +2554,7 @@ const sofa::helper::vector <index_type> MeshTopology::getElementAroundElement(in
 
     for(unsigned int i = 0; i<nbr; ++i) // for each node of the triangle
     {
-        sofa::helper::vector <index_type> elemAV;
+        sofa::helper::vector <Index> elemAV;
 
         if (UpperTopology == core::topology::HEXAHEDRON)
             elemAV = this->getHexahedraAroundVertex(getHexahedron(elem)[i]);
@@ -2592,10 +2592,10 @@ const sofa::helper::vector <index_type> MeshTopology::getElementAroundElement(in
 }
 
 
-const sofa::helper::vector <index_type> MeshTopology::getElementAroundElements(sofa::helper::vector <index_type> elems)
+const sofa::helper::vector <Index> MeshTopology::getElementAroundElements(sofa::helper::vector <Index> elems)
 {
-    sofa::helper::vector <index_type> elemAll;
-    sofa::helper::vector <index_type> elemTmp;
+    sofa::helper::vector <Index> elemAll;
+    sofa::helper::vector <Index> elemTmp;
 
     if (UpperTopology == core::topology::HEXAHEDRON)
     {
@@ -2626,7 +2626,7 @@ const sofa::helper::vector <index_type> MeshTopology::getElementAroundElements(s
 
     for (unsigned int i = 0; i <elems.size(); ++i) // for each elementID of input vector
     {
-        sofa::helper::vector <index_type> elemTmp2 = this->getElementAroundElement(elems[i]);
+        sofa::helper::vector <Index> elemTmp2 = this->getElementAroundElement(elems[i]);
 
         elemTmp.insert(elemTmp.end(), elemTmp2.begin(), elemTmp2.end());
     }
@@ -2663,17 +2663,17 @@ const sofa::helper::vector <index_type> MeshTopology::getElementAroundElements(s
 
 /// @}
 
-SReal MeshTopology::getPosX(index_type i) const
+SReal MeshTopology::getPosX(Index i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][0]:0.0);
 }
 
-SReal MeshTopology::getPosY(index_type i) const
+SReal MeshTopology::getPosY(Index i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][1]:0.0);
 }
 
-SReal MeshTopology::getPosZ(index_type i) const
+SReal MeshTopology::getPosZ(Index i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][2]:0.0);
 }

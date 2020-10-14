@@ -134,22 +134,22 @@ public:
         return p;
     }
 
-    index_type ix(const Coord& p) const
+    Index ix(const Coord& p) const
     {
         return helper::rfloor((p[0]-pmin[0])*invCellWidth[0]);
     }
 
-    index_type iy(const Coord& p) const
+    Index iy(const Coord& p) const
     {
         return helper::rfloor((p[1]-pmin[1])*invCellWidth[1]);
     }
 
-    index_type iz(const Coord& p) const
+    Index iz(const Coord& p) const
     {
         return helper::rfloor((p[2]-pmin[2])*invCellWidth[2]);
     }
 
-    index_type index(const Coord& p, Coord& coefs) const
+    Index index(const Coord& p, Coord& coefs) const
     {
         coefs[0] = (p[0]-pmin[0])*invCellWidth[0];
         coefs[1] = (p[1]-pmin[1])*invCellWidth[1];
@@ -166,13 +166,13 @@ public:
         return x+nx*(y+ny*(z));
     }
 
-    index_type index(const Coord& p) const
+    Index index(const Coord& p) const
     {
         Coord coefs;
         return index(p, coefs);
     }
 
-    index_type index(int x, int y, int z)
+    Index index(int x, int y, int z)
     {
         return x+nx*(y+ny*(z));
     }
@@ -182,15 +182,15 @@ public:
         return pmin+Coord(x*cellWidth[0], y*cellWidth[1], z*cellWidth[2]);
     }
 
-    Real operator[](index_type index) const { return dists[index]; }
-    Real& operator[](index_type index) { return dists[index]; }
+    Real operator[](Index index) const { return dists[index]; }
+    Real& operator[](Index index) { return dists[index]; }
 
     static Real interp(Real coef, Real a, Real b)
     {
         return a+coef*(b-a);
     }
 
-    Real interp(index_type index, const Coord& coefs) const
+    Real interp(Index index, const Coord& coefs) const
     {
         return interp(coefs[2],interp(coefs[1],interp(coefs[0],dists[index          ],dists[index+1        ]),
                 interp(coefs[0],dists[index  +nx     ],dists[index+1+nx     ])),
@@ -205,7 +205,7 @@ public:
         return interp(i, coefs);
     }
 
-    Coord grad(index_type index, const Coord& coefs) const
+    Coord grad(Index index, const Coord& coefs) const
     {
         // val = dist[0][0][0] * (1-x) * (1-y) * (1-z)
         //     + dist[1][0][0] * (  x) * (1-y) * (1-z)
@@ -236,7 +236,7 @@ public:
     Coord grad(const Coord& p) const
     {
         Coord coefs;
-        index_type i = index(p, coefs);
+        Index i = index(p, coefs);
         return grad(i, coefs);
     }
 
@@ -416,7 +416,7 @@ class CudaRigidDistanceGridCollisionModel;
 class CudaRigidDistanceGridCollisionElement : public core::TCollisionElementIterator<CudaRigidDistanceGridCollisionModel>
 {
 public:
-    CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, index_type index);
+    CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, Index index);
 
     explicit CudaRigidDistanceGridCollisionElement(const core::CollisionElementIterator& i);
 
@@ -499,44 +499,44 @@ public:
 
     void init() override;
 
-    CudaDistanceGrid* getGrid(index_type index=0)
+    CudaDistanceGrid* getGrid(Index index=0)
     {
         return elems[index].grid;
     }
-    bool isTransformed(index_type index=0)
+    bool isTransformed(Index index=0)
     {
         return elems[index].isTransformed;
     }
-    const Matrix3& getRotation(index_type index=0)
+    const Matrix3& getRotation(Index index=0)
     {
         return elems[index].rotation;
     }
-    const Vector3& getTranslation(index_type index=0)
+    const Vector3& getTranslation(Index index=0)
     {
         return elems[index].translation;
     }
 
-    void setGrid(CudaDistanceGrid* surf, index_type index=0);
+    void setGrid(CudaDistanceGrid* surf, Index index=0);
 
-    CudaDistanceGrid* getPrevGrid(index_type index=0)
+    CudaDistanceGrid* getPrevGrid(Index index=0)
     {
         return elems[index].prevGrid;
     }
-    const Matrix3& getPrevRotation(index_type index=0)
+    const Matrix3& getPrevRotation(Index index=0)
     {
         return elems[index].prevRotation;
     }
-    const Vector3& getPrevTranslation(index_type index=0)
+    const Vector3& getPrevTranslation(Index index=0)
     {
         return elems[index].prevTranslation;
     }
-    double getPrevDt(index_type index=0)
+    double getPrevDt(Index index=0)
     {
         return elems[index].prevDt;
     }
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(index_type index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
+    void setNewState(Index index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
 
     /// @}
 
@@ -545,17 +545,17 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(size_type size) override;
+    void resize(Size size) override;
 
     /// Create or update the bounding volume hierarchy.
     void computeBoundingTree(int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*, index_type index) override;
+    void draw(const core::visual::VisualParams*, Index index) override;
 
     void draw(const core::visual::VisualParams*) override;
 };
 
-inline CudaRigidDistanceGridCollisionElement::CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, index_type index)
+inline CudaRigidDistanceGridCollisionElement::CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, Index index)
     : core::TCollisionElementIterator<CudaRigidDistanceGridCollisionModel>(model, index)
 {}
 

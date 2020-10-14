@@ -98,7 +98,7 @@ public :
 protected:
     struct LineData
     {
-        index_type p[2];
+        Index p[2];
         // Triangles neighborhood
 //		int tRight, tLeft;
     };
@@ -124,7 +124,7 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(size_type size) override;
+    void resize(Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
@@ -134,17 +134,17 @@ public:
 
     void handleTopologyChange() override;
 
-    bool canCollideWithElement(index_type index, CollisionModel* model2, index_type index2) override;
+    bool canCollideWithElement(Index index, CollisionModel* model2, Index index2) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
-    Deriv velocity(index_type index)const;
+    Deriv velocity(Index index)const;
 
     LineLocalMinDistanceFilter *getFilter() const;
 
-    virtual index_type getElemEdgeIndex(index_type index) const { return index; }
+    virtual Index getElemEdgeIndex(Index index) const { return index; }
     
-    int getLineFlags(index_type i);
+    int getLineFlags(Index i);
 
     void setFilter(LineLocalMinDistanceFilter * /*lmdFilter*/);
 
@@ -243,7 +243,7 @@ template<class DataTypes>
 inline typename DataTypes::Deriv TLine<DataTypes>::n() const {return (this->model->mpoints->getNormal(this->i1()) + this->model->mpoints->getNormal( this->i2())).normalized();}
 
 template<class DataTypes>
-inline typename LineCollisionModel<DataTypes>::Deriv LineCollisionModel<DataTypes>::velocity(index_type index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[1]])/((Real)(2.0)); }
+inline typename LineCollisionModel<DataTypes>::Deriv LineCollisionModel<DataTypes>::velocity(Index index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[1]])/((Real)(2.0)); }
 
 template<class DataTypes>
 inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(this->index); }

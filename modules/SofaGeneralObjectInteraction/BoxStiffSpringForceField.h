@@ -56,7 +56,7 @@ public:
 
     typedef defaulttype::Vec<6,Real> Vec6;
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 
 protected:
 

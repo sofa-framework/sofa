@@ -76,7 +76,7 @@ public:
     SOFA_ABSTRACT_CLASS(BaseMechanicalState, BaseState);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseMechanicalState);
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 protected:
     BaseMechanicalState();
 
@@ -88,9 +88,9 @@ private:
 public:
     /// @name Methods allowing to have access to the geometry without a template class (generic but not efficient)
     /// @{
-    virtual SReal getPX(index_type /*i*/) const { return 0.0; }
-    virtual SReal getPY(index_type /*i*/) const { return 0.0; }
-    virtual SReal getPZ(index_type /*i*/) const { return 0.0; }
+    virtual SReal getPX(Index /*i*/) const { return 0.0; }
+    virtual SReal getPY(Index /*i*/) const { return 0.0; }
+    virtual SReal getPZ(Index /*i*/) const { return 0.0; }
 
     /// @}
 
@@ -175,7 +175,7 @@ public:
     virtual SReal vMax(const ExecParams* params, ConstVecId a) = 0;
 
     /// Get vector size
-    virtual size_type vSize( const ExecParams* params, ConstVecId v ) = 0;
+    virtual Size vSize( const ExecParams* params, ConstVecId v ) = 0;
 
 
     /// Apply a threshold (lower bound) to all entries
@@ -273,8 +273,8 @@ public:
     /// Write current state to the given output stream
     virtual void writeState( std::ostream& out );
 
-    virtual size_type getCoordDimension() const { return 0; }
-    virtual size_type getDerivDimension() const { return 0; }
+    virtual Size getCoordDimension() const { return 0; }
+    virtual Size getDerivDimension() const { return 0; }
 
     /// Translate the current state
     virtual void applyTranslation(const SReal dx, const SReal dy, const SReal dz)=0;
@@ -327,12 +327,12 @@ public:
     /// \brief Get the number of scalars per Deriv value, as necessary to build mechanical matrices and vectors.
     ///
     /// If not all Derivs have the same number of scalars, then return 1 here and overload the getMatrixSize() method.
-    virtual size_type getMatrixBlockSize() const { return getDerivDimension(); }
+    virtual Size getMatrixBlockSize() const { return getDerivDimension(); }
 
     /// \brief Get the number of rows necessary to build mechanical matrices and vectors.
     ///
     /// In most cases this is equivalent to getSize() * getMatrixBlockSize().
-    virtual size_type getMatrixSize() const { return getSize() * getMatrixBlockSize(); }
+    virtual Size getMatrixSize() const { return getSize() * getMatrixBlockSize(); }
 
     /// \brief Copy data to a global BaseVector from the state stored in a local vector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns

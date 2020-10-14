@@ -229,7 +229,7 @@ void SubsetMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /*mparams*/
     const std::size_t fromSize = in.size();
 
     out.resize(indices.size());
-    for(size_type i = 0; i < out.size(); ++i)
+    for(Size i = 0; i < out.size(); ++i)
     {
         if(indices[i] < fromSize)
             out[i] = in[ indices[i] ];

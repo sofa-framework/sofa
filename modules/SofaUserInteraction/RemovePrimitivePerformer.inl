@@ -107,7 +107,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
             picked.body->getContext()->get(topologyModifier);
 
             // Problem of type takeng by functions called: Converting selectedElem <unsigned int> in <int>
-            helper::vector<index_type> ElemList_int;
+            helper::vector<Index> ElemList_int;
             ElemList_int.resize(selectedElem.size());
             for (unsigned int i = 0; i<selectedElem.size(); ++i)
                 ElemList_int[i] = selectedElem[i];
@@ -203,8 +203,8 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
                     const sofa::core::topology::BaseMeshTopology::TrianglesInTetrahedron& tetraTri = topo_curr->getTrianglesInTetrahedron(selectedElem[0]);
 
                     int volTmp = -1;
-                    std::map<index_type, index_type> MappingMap = topoMap->getGlob2LocMap();
-                    std::map<index_type, index_type>::iterator it;
+                    std::map<Index, Index> MappingMap = topoMap->getGlob2LocMap();
+                    std::map<Index, Index>::iterator it;
 
                     for (unsigned int j = 0; j<4; ++j)
                     {

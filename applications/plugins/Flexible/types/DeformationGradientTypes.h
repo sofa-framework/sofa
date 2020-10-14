@@ -48,11 +48,11 @@ Order 1 corresponds to a traditional deformation gradient, while order 2 corresp
 In the names of the instanciated classes, the suffix corresponds to the parameters.
 For instance, F332d moves in 3 spatial dimensions, is attached to a  volumetric object (3 dimensions), represents the deformation using an elaston (order=2), and encodes floating point numbers at double precision.
 */
-template< size_type _spatial_dimensions,  size_type _material_dimensions, int _order, typename _Real>
+template< Size _spatial_dimensions,  Size _material_dimensions, int _order, typename _Real>
 struct DefGradientTypes
 {
-    static const size_type spatial_dimensions = _spatial_dimensions;   ///< Number of dimensions the frame is moving in, typically 3
-    static const size_type material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
+    static const Size spatial_dimensions = _spatial_dimensions;   ///< Number of dimensions the frame is moving in, typically 3
+    static const Size material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
     typedef _Real Real;
 
     typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
@@ -78,12 +78,12 @@ struct DefGradientTypes
         Deriv( const Basis& d):b(d) {}
         void clear() {  b.clear();}
 
-        typedef sofa::size_type size_type;
+        typedef sofa::Size Size;
 
-        static const  size_type total_size = VSize;
+        static const  Size total_size = VSize;
         typedef Real value_type;
 
-        static size_type size() { return VSize; }
+        static Size size() { return VSize; }
 
         /// seen as a vector
         Real* ptr() { return b.ptr(); }
@@ -92,8 +92,8 @@ struct DefGradientTypes
         BasisVec& getVec() { return b.getVec(); }
         const BasisVec& getVec() const { return b.getVec(); }
 
-        Real& operator[]( size_type i) { return getVec()[i]; }
-        const Real& operator[]( size_type i) const    { return getVec()[i]; }
+        Real& operator[]( Size i) { return getVec()[i]; }
+        const Real& operator[]( Size i) const    { return getVec()[i]; }
 
         /// basis
         Basis& getBasis() { return b; }
@@ -102,11 +102,11 @@ struct DefGradientTypes
         Frame& getF() { return *reinterpret_cast<Frame*>(&b.getVal()); }
         const Frame& getF() const { return *reinterpret_cast<const Frame*>(&b.getVal()); }
 
-        Frame& getGradientF( size_type i) { return *reinterpret_cast<Frame*>(&b.getGradient()[i]); }
-        const Frame& getGradientF( size_type i) const { return *reinterpret_cast<const Frame*>(&b.getGradient()[i]); }
+        Frame& getGradientF( Size i) { return *reinterpret_cast<Frame*>(&b.getGradient()[i]); }
+        const Frame& getGradientF( Size i) const { return *reinterpret_cast<const Frame*>(&b.getGradient()[i]); }
 
-        Frame& getHessianF( size_type i, size_type j) { return *reinterpret_cast<Frame*>(&b.getHessian()(i,j)); }
-        const Frame& getHessianF( size_type i, size_type j) const { return *reinterpret_cast<const Frame*>(&b.getHessian()(i,j)); }
+        Frame& getHessianF( Size i, Size j) { return *reinterpret_cast<Frame*>(&b.getHessian()(i,j)); }
+        const Frame& getHessianF( Size i, Size j) const { return *reinterpret_cast<const Frame*>(&b.getHessian()(i,j)); }
 
         Deriv operator +(const Deriv& a) const { return Deriv(getVec()+a.getVec()); }
         void operator +=(const Deriv& a) { getVec()+=a.getVec(); }
@@ -170,7 +170,7 @@ struct DefGradientTypes
     {
         assert ( ancestors.size() == coefs.size() );
         Deriv c;
-        for (  size_type i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
+        for (  Size i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
         return c;
     }
 
@@ -198,7 +198,7 @@ struct DefGradientTypes
     static Deriv randomDeriv( Real minMagnitude, Real maxMagnitude )
     {
         Deriv result;
-        for(  size_type i=0 ; i<VSize ; ++i )
+        for(  Size i=0 ; i<VSize ; ++i )
             result[i] = Real(helper::drand(minMagnitude,maxMagnitude));
         return result;
     }

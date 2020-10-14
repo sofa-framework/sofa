@@ -77,14 +77,14 @@ struct MapMapSparseMatrixToEigenSparseVec
 
 };
 
-template< sofa::size_type N, typename Real >
+template< sofa::Size N, typename Real >
 class MapMapSparseMatrixToEigenSparse< sofa::defaulttype::Vec<N,Real> >
     : public  MapMapSparseMatrixToEigenSparseVec< sofa::defaulttype::Vec<N, Real>, Real >
 {
 
 };
 
-template< sofa::size_type N, typename Real >
+template< sofa::Size N, typename Real >
 class MapMapSparseMatrixToEigenSparse< sofa::defaulttype::RigidDeriv<N, Real > >
     : public MapMapSparseMatrixToEigenSparseVec< sofa::defaulttype::RigidDeriv<N, Real>, Real >
 {
@@ -152,14 +152,14 @@ struct EigenSparseToMapMapSparseMatrixVec
     }
 };
 
-template< sofa::size_type N, typename Real>
+template< sofa::Size N, typename Real>
 class EigenSparseToMapMapSparseMatrix< sofa::defaulttype::Vec<N, Real> > :
     public EigenSparseToMapMapSparseMatrixVec<sofa::defaulttype::Vec<N, Real>, Real>
 {
 
 };
 
-template< sofa::size_type N, typename Real>
+template< sofa::Size N, typename Real>
 class EigenSparseToMapMapSparseMatrix< sofa::defaulttype::RigidDeriv<N, Real> > :
     public EigenSparseToMapMapSparseMatrixVec<sofa::defaulttype::RigidDeriv<N, Real>, Real>
 {

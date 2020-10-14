@@ -54,7 +54,7 @@ int SimpleTesselatedTetraTopologicalMappingClass = core::RegisterObject ( "Speci
 // Implementation
 SimpleTesselatedTetraTopologicalMapping::SimpleTesselatedTetraTopologicalMapping ()
     : tetrahedraMappedFromTetra( initData ( &tetrahedraMappedFromTetra, "tetrahedraMappedFromTetra", "Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided")),
-      tetraSource( initData ( &tetraSource, "tetraSource", "Which tetra from the input topology map to a given tetra in the output topology (InvalidID if none)")),
+      tetraSource( initData ( &tetraSource, "tetraSource", "Which tetra from the input topology map to a given tetra in the output topology (sofa::InvalidID if none)")),
       d_pointMappedFromPoint( initData ( &d_pointMappedFromPoint, "pointMappedFromPoint", "Each point of the input topology is mapped to the same point")),
       d_pointMappedFromEdge( initData ( &d_pointMappedFromEdge, "pointMappedFromEdge", "Each edge of the input topology is mapped to his midpoint")),
       d_pointSource( initData ( &d_pointSource, "pointSource", "Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1"))
@@ -70,12 +70,12 @@ void SimpleTesselatedTetraTopologicalMapping::init()
         if(toModel)
         {
 
-            helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointSourceData = d_pointSource;
-            helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointMappedFromPointData = d_pointMappedFromPoint;
-            helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
+            helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointSourceData = d_pointSource;
+            helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointMappedFromPointData = d_pointMappedFromPoint;
+            helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
 
-            sofa::helper::vector<helper::fixed_array<index_type, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
-            helper::vector<index_type>& tetraSourceData = *(tetraSource.beginEdit());
+            sofa::helper::vector<helper::fixed_array<Index, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
+            helper::vector<Index>& tetraSourceData = *(tetraSource.beginEdit());
 
             TetrahedronSetTopologyContainer *to_tstc;
             toModel->getContext()->get(to_tstc);
@@ -98,7 +98,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
                 pointSourceData[i] = i+1;
             }
 
-            index_type newPointIndex = to_tstc->getNbPoints();
+            Index newPointIndex = to_tstc->getNbPoints();
 
             for (unsigned int i=0; i<from_tstc->getNbEdges(); i++)
             {
@@ -115,7 +115,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
                 newPointIndex++;
             }
 
-            fixed_array <index_type, 8> newTetrahedraIndices;
+            fixed_array <Index, 8> newTetrahedraIndices;
             unsigned int newTetraIndex = (unsigned int)to_tstc->getNbTetrahedra();
 
             tetraSourceData.resize(8*from_tstc->getNbTetrahedra());
@@ -217,7 +217,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
             {
                 if (from_tstm != nullptr && !tetrahedraToRemove.empty())
                 {
-                    sofa::helper::vector<index_type> vitems;
+                    sofa::helper::vector<Index> vitems;
                     vitems.reserve(tetrahedraToRemove.size());
                     vitems.insert(vitems.end(), tetrahedraToRemove.rbegin(), tetrahedraToRemove.rend());
 
@@ -243,9 +243,9 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
     }
 }
 
-void SimpleTesselatedTetraTopologicalMapping::swapOutputPoints(index_type i1, index_type i2)
+void SimpleTesselatedTetraTopologicalMapping::swapOutputPoints(Index i1, Index i2)
 {
-    helper::ReadAccessor< Data< sofa::helper::vector<index_type> > > pointSourceData = d_pointSource;
+    helper::ReadAccessor< Data< sofa::helper::vector<Index> > > pointSourceData = d_pointSource;
 
     // first update pointSourceData
     int i1Source = pointSourceData[i1];
@@ -255,11 +255,11 @@ void SimpleTesselatedTetraTopologicalMapping::swapOutputPoints(index_type i1, in
     setPointSource(i2, i1Source);
 }
 
-void SimpleTesselatedTetraTopologicalMapping::removeOutputPoints( const sofa::helper::vector<index_type>& index )
+void SimpleTesselatedTetraTopologicalMapping::removeOutputPoints( const sofa::helper::vector<Index>& index )
 {
-    helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointSourceData = d_pointSource;
-    helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointMappedFromPointData = d_pointMappedFromPoint;
-    helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
+    helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointSourceData = d_pointSource;
+    helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointMappedFromPointData = d_pointMappedFromPoint;
+    helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
 
     int last = (int)pointSourceData.size() -1;
 
@@ -269,11 +269,11 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputPoints( const sofa::he
         int source = pointSourceData[last];
         if (source > 0)
         {
-            pointMappedFromPointData[source-1] = InvalidID;
+            pointMappedFromPointData[source-1] = sofa::InvalidID;
         }
         else if (source < 0)
         {
-            pointMappedFromEdgeData[-source-1] = InvalidID;
+            pointMappedFromEdgeData[-source-1] = sofa::InvalidID;
         }
         --last;
     }
@@ -282,9 +282,9 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputPoints( const sofa::he
 
 }
 
-void SimpleTesselatedTetraTopologicalMapping::renumberOutputPoints( const sofa::helper::vector<index_type>& index )
+void SimpleTesselatedTetraTopologicalMapping::renumberOutputPoints( const sofa::helper::vector<Index>& index )
 {
-    helper::ReadAccessor< Data< sofa::helper::vector<index_type> > > pointSourceData = d_pointSource;
+    helper::ReadAccessor< Data< sofa::helper::vector<Index> > > pointSourceData = d_pointSource;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
@@ -293,27 +293,27 @@ void SimpleTesselatedTetraTopologicalMapping::renumberOutputPoints( const sofa::
 }
 
 
-void SimpleTesselatedTetraTopologicalMapping::swapOutputTetrahedra(index_type i1, index_type i2)
+void SimpleTesselatedTetraTopologicalMapping::swapOutputTetrahedra(Index i1, Index i2)
 {
     // first update (*pointSourceData)
 
-    helper::vector<index_type>& tetraSourceData = *(tetraSource.beginEdit());
+    helper::vector<Index>& tetraSourceData = *(tetraSource.beginEdit());
 
-    index_type i1Source = tetraSourceData[i1];
-    index_type i2Source = tetraSourceData[i2];
+    Index i1Source = tetraSourceData[i1];
+    Index i2Source = tetraSourceData[i2];
     tetraSourceData[i1] = i2Source;
     tetraSourceData[i2] = i1Source;
 
-    helper::vector< fixed_array<index_type, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
+    helper::vector< fixed_array<Index, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
 
-    if (i1Source != InvalidID)
+    if (i1Source != sofa::InvalidID)
         for (int j=0; j<8; ++j)
             if (tetrahedraMappedFromTetraData[i1Source][j] == i1)
             {
                 tetrahedraMappedFromTetraData[i1Source][j] = i2;
                 break;
             }
-    if (i2Source != InvalidID)
+    if (i2Source != sofa::InvalidID)
         for (int j=0; j<8; ++j)
             if (tetrahedraMappedFromTetraData[i2Source][j] == i2)
             {
@@ -324,18 +324,18 @@ void SimpleTesselatedTetraTopologicalMapping::swapOutputTetrahedra(index_type i1
     tetraSource.endEdit();
 }
 
-void SimpleTesselatedTetraTopologicalMapping::removeOutputTetrahedra( const sofa::helper::vector<index_type>& index )
+void SimpleTesselatedTetraTopologicalMapping::removeOutputTetrahedra( const sofa::helper::vector<Index>& index )
 {
 
-    helper::vector< fixed_array<index_type, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
-    helper::vector<index_type>& tetraSourceData = *(tetraSource.beginEdit());
+    helper::vector< fixed_array<Index, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
+    helper::vector<Index>& tetraSourceData = *(tetraSource.beginEdit());
 
-    index_type last = tetraSourceData.size() -1;
+    Index last = tetraSourceData.size() -1;
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         swapOutputTetrahedra( index[i], last );
-        index_type source = tetraSourceData[last];
-        if (source != InvalidID)
+        Index source = tetraSourceData[last];
+        if (source != sofa::InvalidID)
         {
 			int nbt = 0;
 
@@ -343,9 +343,9 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputTetrahedra( const sofa
 			{
                 if (tetrahedraMappedFromTetraData[source][j] == last)
                 {
-                    tetrahedraMappedFromTetraData[source][j] = InvalidID;
+                    tetrahedraMappedFromTetraData[source][j] = sofa::InvalidID;
                 }
-                else if (tetrahedraMappedFromTetraData[source][j] != InvalidID)
+                else if (tetrahedraMappedFromTetraData[source][j] != sofa::InvalidID)
                     ++nbt;
 			}
             if (nbt == 0) // we need to remove the source tetra
@@ -447,32 +447,32 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
     }
 }
 
-void SimpleTesselatedTetraTopologicalMapping::swapInputPoints(index_type i1, index_type i2)
+void SimpleTesselatedTetraTopologicalMapping::swapInputPoints(Index i1, Index i2)
 {
-    helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointSourceData = d_pointSource;
-    helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointMappedFromPointData = d_pointMappedFromPoint;
+    helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointSourceData = d_pointSource;
+    helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointMappedFromPointData = d_pointMappedFromPoint;
 
-    index_type i1Map = pointMappedFromPointData[i1];
-    index_type i2Map = pointMappedFromPointData[i2];
+    Index i1Map = pointMappedFromPointData[i1];
+    Index i2Map = pointMappedFromPointData[i2];
     pointMappedFromPointData[i1] = i2Map;
-    if (i2Map != InvalidID) pointSourceData[i2Map] = i1+1;
+    if (i2Map != sofa::InvalidID) pointSourceData[i2Map] = i1+1;
     pointMappedFromPointData[i2] = i1Map;
-    if (i1Map != InvalidID) pointSourceData[i1Map] = i2+1;
+    if (i1Map != sofa::InvalidID) pointSourceData[i1Map] = i2+1;
 
 }
 
-void SimpleTesselatedTetraTopologicalMapping::removeInputPoints( const sofa::helper::vector<index_type>& index )
+void SimpleTesselatedTetraTopologicalMapping::removeInputPoints( const sofa::helper::vector<Index>& index )
 {
-    helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointSourceData = d_pointSource;
-    helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointMappedFromPointData = d_pointMappedFromPoint;
+    helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointSourceData = d_pointSource;
+    helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointMappedFromPointData = d_pointMappedFromPoint;
 
-    index_type last = pointMappedFromPointData.size() -1;
+    Index last = pointMappedFromPointData.size() -1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         swapInputPoints( index[i], last );
-        index_type map = pointMappedFromPointData[last];
-        if (map != InvalidID)
+        Index map = pointMappedFromPointData[last];
+        if (map != sofa::InvalidID)
             pointSourceData[map] = 0;
         --last;
     }
@@ -480,48 +480,48 @@ void SimpleTesselatedTetraTopologicalMapping::removeInputPoints( const sofa::hel
     pointMappedFromPointData.resize( last + 1 );
 }
 
-void SimpleTesselatedTetraTopologicalMapping::renumberInputPoints( const sofa::helper::vector<index_type>& index )
+void SimpleTesselatedTetraTopologicalMapping::renumberInputPoints( const sofa::helper::vector<Index>& index )
 {
-    helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointSourceData = d_pointSource;
-    helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointMappedFromPointData = d_pointMappedFromPoint;
+    helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointSourceData = d_pointSource;
+    helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointMappedFromPointData = d_pointMappedFromPoint;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
-        index_type map = pointMappedFromPointData[index[i]];
+        Index map = pointMappedFromPointData[index[i]];
         pointMappedFromPointData[i] = map;
-        if (map != InvalidID)
+        if (map != sofa::InvalidID)
             pointSourceData[map] = i+1;
     }
 
 }
 
-void SimpleTesselatedTetraTopologicalMapping::swapInputEdges(index_type i1, index_type i2)
+void SimpleTesselatedTetraTopologicalMapping::swapInputEdges(Index i1, Index i2)
 {
-    helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointSourceData = d_pointSource;
-    helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
+    helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointSourceData = d_pointSource;
+    helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
 
-    index_type i1Map = pointMappedFromEdgeData[i1];
-    index_type i2Map = pointMappedFromEdgeData[i2];
+    Index i1Map = pointMappedFromEdgeData[i1];
+    Index i2Map = pointMappedFromEdgeData[i2];
     pointMappedFromEdgeData[i1] = i2Map;
-    if (i2Map != InvalidID) pointSourceData[i2Map] = -1-i1;
+    if (i2Map != sofa::InvalidID) pointSourceData[i2Map] = -1-i1;
     pointMappedFromEdgeData[i2] = i1Map;
-    if (i1Map != InvalidID) pointSourceData[i1Map] = -1-i2;
+    if (i1Map != sofa::InvalidID) pointSourceData[i1Map] = -1-i2;
 
 }
 
-void SimpleTesselatedTetraTopologicalMapping::removeInputEdges( const sofa::helper::vector<index_type>& index )
+void SimpleTesselatedTetraTopologicalMapping::removeInputEdges( const sofa::helper::vector<Index>& index )
 {
 
-    helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointSourceData = d_pointSource;
-    helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
+    helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointSourceData = d_pointSource;
+    helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
 
-    index_type last = pointMappedFromEdgeData.size() -1;
+    Index last = pointMappedFromEdgeData.size() -1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         swapInputEdges( index[i], last );
-        index_type map = pointMappedFromEdgeData[last];
-        if (map != InvalidID)
+        Index map = pointMappedFromEdgeData[last];
+        if (map != sofa::InvalidID)
             pointSourceData[map] = 0;
         --last;
     }
@@ -531,39 +531,39 @@ void SimpleTesselatedTetraTopologicalMapping::removeInputEdges( const sofa::help
 }
 
 
-void SimpleTesselatedTetraTopologicalMapping::swapInputTetrahedra(index_type i1, index_type i2)
+void SimpleTesselatedTetraTopologicalMapping::swapInputTetrahedra(Index i1, Index i2)
 {
-    helper::vector< fixed_array<index_type, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
-    helper::vector<index_type>& tetraSourceData = *(tetraSource.beginEdit());
+    helper::vector< fixed_array<Index, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
+    helper::vector<Index>& tetraSourceData = *(tetraSource.beginEdit());
 
-    fixed_array<index_type, 8> i1Map = tetrahedraMappedFromTetraData[i1];
-    fixed_array<index_type, 8> i2Map = tetrahedraMappedFromTetraData[i2];
+    fixed_array<Index, 8> i1Map = tetrahedraMappedFromTetraData[i1];
+    fixed_array<Index, 8> i2Map = tetrahedraMappedFromTetraData[i2];
     tetrahedraMappedFromTetraData[i1] = i2Map;
     for (int j=0; j<8; ++j)
-        if (i2Map[j] != InvalidID) tetraSourceData[i2Map[j]] = i1;
+        if (i2Map[j] != sofa::InvalidID) tetraSourceData[i2Map[j]] = i1;
     tetrahedraMappedFromTetraData[i2] = i1Map;
     for (int j=0; j<8; ++j)
-        if (i1Map[j] != InvalidID) tetraSourceData[i1Map[j]] = i2;
+        if (i1Map[j] != sofa::InvalidID) tetraSourceData[i1Map[j]] = i2;
 
     tetrahedraMappedFromTetra.endEdit();
     tetraSource.endEdit();
 }
 
 
-void SimpleTesselatedTetraTopologicalMapping::removeInputTetrahedra( const sofa::helper::vector<index_type>& index )
+void SimpleTesselatedTetraTopologicalMapping::removeInputTetrahedra( const sofa::helper::vector<Index>& index )
 {
-    helper::vector< fixed_array<index_type, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
-    helper::vector<index_type>& tetraSourceData = *(tetraSource.beginEdit());
+    helper::vector< fixed_array<Index, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
+    helper::vector<Index>& tetraSourceData = *(tetraSource.beginEdit());
 
-    index_type last = (int)tetrahedraMappedFromTetraData.size() -1;
+    Index last = (int)tetrahedraMappedFromTetraData.size() -1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         swapInputTetrahedra( index[i], last );
-        const fixed_array<index_type, 8>& map = tetrahedraMappedFromTetraData[last];
+        const fixed_array<Index, 8>& map = tetrahedraMappedFromTetraData[last];
         for (int j=0; j<8; ++j)
-            if (map[j] != InvalidID)
-                tetraSourceData[map[j]] = InvalidID;
+            if (map[j] != sofa::InvalidID)
+                tetraSourceData[map[j]] = sofa::InvalidID;
         --last;
     }
 

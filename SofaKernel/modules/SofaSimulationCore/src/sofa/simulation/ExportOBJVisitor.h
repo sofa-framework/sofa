@@ -53,9 +53,9 @@ public:
 
 protected:
     int ID;
-    sofa::index_type vindex;
-    sofa::index_type nindex;
-    sofa::index_type tindex;
+    sofa::Index vindex;
+    sofa::Index nindex;
+    sofa::Index tindex;
     int count;
 };
 

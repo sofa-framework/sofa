@@ -53,7 +53,7 @@ HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
 }
 
 
-void HexahedronSetTopologyContainer::addHexa(index_type a, index_type b, index_type c, index_type d, index_type e, index_type f, index_type g, index_type h )
+void HexahedronSetTopologyContainer::addHexa(Index a, Index b, Index c, Index d, Index e, Index f, Index g, Index h )
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     m_hexahedron.push_back(Hexahedron(a,b,c,d,e,f,g,h));
@@ -416,7 +416,7 @@ void HexahedronSetTopologyContainer::createHexahedraAroundVertexArray()
     clearHexahedraAroundVertex();
 
     if (getNbPoints() == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
-        this->setNbPoints(size_type(d_initPoints.getValue().size()));
+        this->setNbPoints(Size(d_initPoints.getValue().size()));
 
     m_hexahedraAroundVertex.resize( getNbPoints() );
     helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
@@ -553,13 +553,13 @@ const HexahedronSetTopologyContainer::Hexahedron HexahedronSetTopologyContainer:
         return (d_hexahedron.getValue())[i];
 }
 
-size_type HexahedronSetTopologyContainer::getNumberOfHexahedra() const
+Size HexahedronSetTopologyContainer::getNumberOfHexahedra() const
 {
-    return size_type(d_hexahedron.getValue().size());
+    return Size(d_hexahedron.getValue().size());
 }
 
 
-size_type HexahedronSetTopologyContainer::getNumberOfElements() const
+Size HexahedronSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfHexahedra();
 }
@@ -929,7 +929,7 @@ bool HexahedronSetTopologyContainer::checkConnexity()
 }
 
 
-size_type HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
+Size HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
 {
     auto nbr = this->getNbHexahedra();
 
@@ -940,7 +940,7 @@ size_type HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
     }
 
     VecHexaID elemAll = this->getConnectedElement(0);
-    size_type cpt = 1;
+    Size cpt = 1;
 
     while (elemAll.size() < nbr)
     {

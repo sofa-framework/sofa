@@ -65,19 +65,19 @@ public:
 
     typedef typename Inherit1::ForceMask ForceMask;
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 
 public:
     void clear(std::size_t reserve=0) override;
     void resize( core::State<Out>* toModel ) override;
-    index_type addPointInLine(const index_type lineIndex, const SReal* baryCoords) override;
-    index_type createPointInLine(const typename Out::Coord& p, index_type lineIndex, const typename In::VecCoord* points) override;
-    index_type addPointInTriangle(const index_type triangleIndex, const SReal* baryCoords) override;
-    index_type createPointInTriangle(const typename Out::Coord& p, index_type triangleIndex, const typename In::VecCoord* points) override;
-    index_type addPointInQuad(const index_type quadIndex, const SReal* baryCoords) override;
-    index_type createPointInQuad(const typename Out::Coord& p, index_type quadIndex, const typename In::VecCoord* points) override;
-    index_type addPointInTetra(const index_type tetraIndex, const SReal* baryCoords) override;
-    index_type addPointInCube(const index_type cubeIndex, const SReal* baryCoords) override;
+    Index addPointInLine(const Index lineIndex, const SReal* baryCoords) override;
+    Index createPointInLine(const typename Out::Coord& p, Index lineIndex, const typename In::VecCoord* points) override;
+    Index addPointInTriangle(const Index triangleIndex, const SReal* baryCoords) override;
+    Index createPointInTriangle(const typename Out::Coord& p, Index triangleIndex, const typename In::VecCoord* points) override;
+    Index addPointInQuad(const Index quadIndex, const SReal* baryCoords) override;
+    Index createPointInQuad(const typename Out::Coord& p, Index quadIndex, const typename In::VecCoord* points) override;
+    Index addPointInTetra(const Index tetraIndex, const SReal* baryCoords) override;
+    Index addPointInCube(const Index cubeIndex, const SReal* baryCoords) override;
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;

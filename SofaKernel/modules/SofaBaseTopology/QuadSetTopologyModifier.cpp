@@ -151,7 +151,7 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
     {
         EdgeID edgeIndex = m_container->getEdgeIndex(t[(j+1)%4], t[(j+2)%4]);
 
-        if(edgeIndex == InvalidID)
+        if(edgeIndex == sofa::InvalidID)
         {
             // first create the edges
             sofa::helper::vector< Edge > v(1);
@@ -161,8 +161,8 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
             addEdgesProcess((const sofa::helper::vector< Edge > &) v);
 
             edgeIndex = m_container->getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
-            assert(edgeIndex != InvalidID);
-            if (edgeIndex == InvalidID)
+            assert(edgeIndex != sofa::InvalidID);
+            if (edgeIndex == sofa::InvalidID)
             {
                 msg_error() << "Edge creation: " << e1 << " failed in addQuadProcess. Edge will not be added in buffers.";
                 continue;

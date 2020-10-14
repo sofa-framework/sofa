@@ -45,7 +45,7 @@ class CollisionElementActiver
 public:
     CollisionElementActiver() {}
     virtual ~CollisionElementActiver() {}
-    virtual bool isCollElemActive(sofa::index_type /*index*/, core::CollisionModel * /*cm*/ = nullptr) { return true; }
+    virtual bool isCollElemActive(sofa::Index /*index*/, core::CollisionModel * /*cm*/ = nullptr) { return true; }
     static CollisionElementActiver* getDefaultActiver() { static CollisionElementActiver defaultActiver; return &defaultActiver; }
 };
 
@@ -95,8 +95,8 @@ public:
     typedef CollisionElementIterator Iterator;
     typedef topology::BaseMeshTopology Topology;
     typedef sofa::defaulttype::Vector3::value_type Real;
-    using index_type = sofa::index_type;
-    using size_type = sofa::size_type;
+    using Index = sofa::Index;
+    using Size = sofa::Size;
 
 protected:
     /// Constructor
@@ -139,7 +139,7 @@ public:
     }
 
     /// Get the number of elements.
-    size_type getSize() const
+    Size getSize() const
     {
         return size;
     }
@@ -157,19 +157,19 @@ public:
     }
 
     /// Get the number of contacts attached to the collision model
-    size_type getNumberOfContacts() const
+    Size getNumberOfContacts() const
     {
         return numberOfContacts;
     }
 
     /// Set the number of contacts attached to the collision model
-    void setNumberOfContacts(size_type i)
+    void setNumberOfContacts(Size i)
     {
         numberOfContacts = i;
     }
 
     /// Set the number of elements.
-    virtual void resize(size_type s)
+    virtual void resize(Size s)
     {
         size = s;
     }
@@ -248,7 +248,7 @@ public:
     /// intersection method.
     ///
     /// Default to empty (i.e. two identical iterators)
-    virtual std::pair<CollisionElementIterator,CollisionElementIterator> getInternalChildren(index_type /*index*/) const
+    virtual std::pair<CollisionElementIterator,CollisionElementIterator> getInternalChildren(Index /*index*/) const
     {
         return std::make_pair(CollisionElementIterator(),CollisionElementIterator());
     }
@@ -260,7 +260,7 @@ public:
     /// parent (often corresponding to the final elements).
     ///
     /// Default to empty (i.e. two identical iterators)
-    virtual std::pair<CollisionElementIterator,CollisionElementIterator> getExternalChildren(index_type /*index*/) const
+    virtual std::pair<CollisionElementIterator,CollisionElementIterator> getExternalChildren(Index /*index*/) const
     {
         return std::make_pair(CollisionElementIterator(),CollisionElementIterator());
     }
@@ -269,7 +269,7 @@ public:
     ///
     /// Default to true since triangle model, line model, etc. does not have this method implemented and they
     /// are themselves (normally) leaves and primitives
-    virtual bool isLeaf(index_type /*index*/ ) const
+    virtual bool isLeaf(Index /*index*/ ) const
     {
         return true;  //e.g. Triangle will return true
     }
@@ -294,10 +294,10 @@ public:
     ///
     /// Default to true. Note that this method assumes that canCollideWith(model2)
     /// was already used to test if the collision models can collide.
-    virtual bool canCollideWithElement(index_type /*index*/, CollisionModel* /*model2*/, index_type /*index2*/) { return true; }
+    virtual bool canCollideWithElement(Index /*index*/, CollisionModel* /*model2*/, Index /*index2*/) { return true; }
 
     /// Render an collision element.
-    virtual void draw(const core::visual::VisualParams* /*vparams*/, index_type /*index*/) {}
+    virtual void draw(const core::visual::VisualParams* /*vparams*/, Index /*index*/) {}
 
     /// Render the whole collision model.
     void draw(const core::visual::VisualParams* ) override {}
@@ -350,17 +350,17 @@ public:
     SReal getProximity() { return proximity.getValue(); }
 
     /// Get contact stiffness
-    SReal getContactStiffness(index_type /*index*/) { return contactStiffness.getValue(); }
+    SReal getContactStiffness(Index /*index*/) { return contactStiffness.getValue(); }
     /// Set contact stiffness
     void setContactStiffness(SReal stiffness) { contactStiffness.setValue(stiffness); }
 
     /// Get contact friction (damping) coefficient
-    SReal getContactFriction(index_type /*index*/) { return contactFriction.getValue(); }
+    SReal getContactFriction(Index /*index*/) { return contactFriction.getValue(); }
     /// Set contact friction (damping) coefficient
     void setContactFriction(SReal friction) { contactFriction.setValue(friction); }
 
     /// Get contact coefficient of restitution
-     SReal getContactRestitution(index_type /*index*/) { return contactRestitution.getValue(); }
+     SReal getContactRestitution(Index /*index*/) { return contactRestitution.getValue(); }
     /// Set contact coefficient of restitution
     void setContactRestitution(SReal restitution) { contactRestitution.setValue(restitution); }
 
@@ -436,10 +436,10 @@ protected:
     Data< std::set<int> > group;
 
     /// Number of collision elements
-    size_type size;
+    Size size;
 
     /// number of contacts attached to the collision model
-    size_type numberOfContacts;
+    Size numberOfContacts;
 
     /// Pointer to the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
     SingleLink<CollisionModel,CollisionModel,BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> previous;

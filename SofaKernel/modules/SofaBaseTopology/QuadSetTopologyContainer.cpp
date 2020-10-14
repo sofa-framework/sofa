@@ -47,7 +47,7 @@ QuadSetTopologyContainer::QuadSetTopologyContainer()
 }
 
 
-void QuadSetTopologyContainer::addQuad(index_type a, index_type b, index_type c, index_type d )
+void QuadSetTopologyContainer::addQuad(Index a, Index b, Index c, Index d )
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
     m_quad.push_back(Quad(a,b,c,d));
@@ -68,7 +68,7 @@ void QuadSetTopologyContainer::init()
         {
             for(PointID j=0; j<4; ++j)
             {
-                index_type a = m_quads[i][j];
+                Index a = m_quads[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }
@@ -311,14 +311,14 @@ QuadSetTopologyContainer::QuadID QuadSetTopologyContainer::getQuadIndex(PointID 
     return InvalidID;
 }
 
-size_type QuadSetTopologyContainer::getNumberOfQuads() const
+Size QuadSetTopologyContainer::getNumberOfQuads() const
 {
     helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
     return m_quad.size();
 }
 
 
-size_type QuadSetTopologyContainer::getNumberOfElements() const
+Size QuadSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfQuads();
 }
@@ -493,7 +493,7 @@ bool QuadSetTopologyContainer::checkConnexity()
 }
 
 
-size_type QuadSetTopologyContainer::getNumberOfConnectedComponent()
+Size QuadSetTopologyContainer::getNumberOfConnectedComponent()
 {
     auto nbr = this->getNbQuads();
 

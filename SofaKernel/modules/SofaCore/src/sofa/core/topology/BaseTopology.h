@@ -113,7 +113,7 @@ public:
     *
     * \param ancestorElems are the ancestors topology info used in the points modifications
     */
-    virtual void initPointsAdded(const helper::vector< sofa::index_type > &indices, const helper::vector< PointAncestorElem > &ancestorElems
+    virtual void initPointsAdded(const helper::vector< sofa::Index > &indices, const helper::vector< PointAncestorElem > &ancestorElems
         , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs );
 };
 
@@ -121,7 +121,7 @@ public:
 class SOFA_CORE_API TopologyModifier : public sofa::core::topology::BaseTopologyObject
 {
 public:
-    typedef sofa::index_type index_type;
+    typedef sofa::Index Index;
 
     SOFA_CLASS(TopologyModifier, BaseTopologyObject);
 
@@ -168,7 +168,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<index_type> & /*items*/);
+    virtual void removeItems(const sofa::helper::vector<Index> & /*items*/);
 
 protected:
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.

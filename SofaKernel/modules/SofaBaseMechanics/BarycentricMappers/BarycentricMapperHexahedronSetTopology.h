@@ -49,7 +49,7 @@ class BarycentricMapperHexahedronSetTopology : public BarycentricMapperTopologyC
 {
     typedef typename BarycentricMapper<In, Out>::MappingData3D MappingData;
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperHexahedronSetTopology,In,Out),
@@ -64,11 +64,11 @@ public:
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Hexahedron& element) override;
     void computeCenter(Vector3& center, const typename In::VecCoord& in, const Hexahedron& element) override;
     void computeDistance(double& d, const Vector3& v) override;
-    void addPointInElement(const index_type elementIndex, const SReal* baryCoords) override;
+    void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
 
-    index_type addPointInCube(const index_type index, const SReal* baryCoords) override;
-    index_type setPointInCube(const index_type pointIndex, const index_type cubeIndex, const SReal* baryCoords) override;
-    void applyOnePoint( const index_type& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    Index addPointInCube(const Index index, const SReal* baryCoords) override;
+    Index setPointInCube(const Index pointIndex, const Index cubeIndex, const SReal* baryCoords) override;
+    void applyOnePoint( const Index& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     void handleTopologyChange(core::topology::Topology* t) override;
 
 protected:
@@ -80,7 +80,7 @@ protected:
 
     topology::HexahedronSetTopologyContainer*		m_fromContainer {nullptr};
     topology::HexahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo  {nullptr};
-    std::set<index_type> m_invalidIndex;
+    std::set<Index> m_invalidIndex;
 
     using Inherit1::d_map;
     using Inherit1::m_matrixJ;

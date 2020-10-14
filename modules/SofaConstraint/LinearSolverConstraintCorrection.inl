@@ -590,7 +590,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
                 const auto dof = colIt.index();
                 Deriv disp;
 
-                for(size_type j = 0; j < derivDim; j++)
+                for(Size j = 0; j < derivDim; j++)
                 {
                     disp[j] = (Real)(systemLHVector_buf->element(dof * derivDim + j) * odesolver->getPositionIntegrationFactor());
                 }
@@ -642,7 +642,7 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
     for(; it_dof!=it_end; ++it_dof)
     {
         auto dof =(*it_dof) ;
-        for (size_type j=0; j<derivDim; j++)
+        for (Size j=0; j<derivDim; j++)
             systemRHVector_buf->set(dof * derivDim + j, constraint_force[dof][j]);
     }
 

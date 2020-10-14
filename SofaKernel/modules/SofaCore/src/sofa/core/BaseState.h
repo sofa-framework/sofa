@@ -53,10 +53,10 @@ private:
 	BaseState& operator=(const BaseState& n) ;
 public:
     /// Current size of all stored vectors
-    virtual size_type getSize() const = 0;
+    virtual Size getSize() const = 0;
 
     /// Resize all stored vector
-    virtual void resize(size_type vsize) = 0;
+    virtual void resize(Size vsize) = 0;
 
     /// @name BaseData vectors access API based on VecId
     /// @{

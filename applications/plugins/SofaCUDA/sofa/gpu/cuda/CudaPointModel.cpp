@@ -49,7 +49,7 @@ CudaPointCollisionModel::CudaPointCollisionModel()
 {
 }
 
-void CudaPointCollisionModel::resize(size_type size)
+void CudaPointCollisionModel::resize(Size size)
 {
     this->core::CollisionModel::resize(size);
 }
@@ -71,7 +71,7 @@ void CudaPointCollisionModel::init()
     resize(nelems);
 }
 
-void CudaPointCollisionModel::draw(const core::visual::VisualParams* , index_type index)
+void CudaPointCollisionModel::draw(const core::visual::VisualParams* , Index index)
 {
 #ifndef SOFA_NO_OPENGL
     const int gsize = groupSize.getValue();

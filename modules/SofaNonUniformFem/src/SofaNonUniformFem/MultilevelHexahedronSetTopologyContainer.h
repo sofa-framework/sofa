@@ -61,16 +61,16 @@ public:
 
     void clear() override;
 
-    void getHexaNeighbors(const index_type hexaId,
-            helper::vector<index_type> &neighbors);
+    void getHexaNeighbors(const Index hexaId,
+            helper::vector<Index> &neighbors);
 
-    void getHexaFaceNeighbors(const index_type hexaId,
-            const index_type faceId,
-            helper::vector<index_type> &neighbors);
+    void getHexaFaceNeighbors(const Index hexaId,
+            const Index faceId,
+            helper::vector<Index> &neighbors);
 
-    void getHexaVertexNeighbors(const index_type hexaId,
-            const index_type vertexId,
-            helper::vector<index_type> &neighbors);
+    void getHexaVertexNeighbors(const Index hexaId,
+            const Index vertexId,
+            helper::vector<Index> &neighbors);
 
     void addTopologyChangeFine(const core::topology::TopologyChange *topologyChange)
     {
@@ -108,32 +108,32 @@ public:
 
     const Vec3i& getCoarseResolution() const { return _coarseResolution; }
 
-    bool getHexaContainsPosition(const index_type hexaId, const defaulttype::Vector3& baryC) const;
+    bool getHexaContainsPosition(const Index hexaId, const defaulttype::Vector3& baryC) const;
 
-    const Vec3i& getHexaIdxInCoarseRegularGrid(const index_type hexaId) const;
-    int getHexaIdInCoarseRegularGrid(const index_type hexaId) const;
+    const Vec3i& getHexaIdxInCoarseRegularGrid(const Index hexaId) const;
+    int getHexaIdInCoarseRegularGrid(const Index hexaId) const;
 
-    const Vec3i& getHexaIdxInFineRegularGrid(const index_type hexaId) const;
-    index_type getHexaIdInFineRegularGrid(const index_type hexaId) const;
+    const Vec3i& getHexaIdxInFineRegularGrid(const Index hexaId) const;
+    Index getHexaIdInFineRegularGrid(const Index hexaId) const;
 
     // gets a vector of fine hexahedra inside a specified coarse hexa
-    index_type getHexaChildren(const index_type hexaId, helper::vector<index_type>& children) const;
+    Index getHexaChildren(const Index hexaId, helper::vector<Index>& children) const;
 
     // gets a coarse hexa for a specified fine hexa
-    index_type getHexaParent(const index_type hexaId) const;
+    Index getHexaParent(const Index hexaId) const;
 
-    index_type getHexaInFineRegularGrid(const Vec3i& id) const;
+    Index getHexaInFineRegularGrid(const Vec3i& id) const;
 
-    const std::set<Vec3i>& getHexaVoxels(const index_type hexaId) const;
+    const std::set<Vec3i>& getHexaVoxels(const Index hexaId) const;
 
     Data<int> _level; ///< Number of resolution levels between the fine and coarse mesh
     Data<Vec3i>	fineResolution;		///< width, height, depth (number of hexa in each direction)
-    Data<helper::vector<index_type> > hexaIndexInRegularGrid; ///< indices of the hexa in the grid.
+    Data<helper::vector<Index> > hexaIndexInRegularGrid; ///< indices of the hexa in the grid.
 
 private:
     void setCoarseResolution(const Vec3i& res) { _coarseResolution = res; }
 
-    void connectionToNodeAdjacency(const Vec3i& connection, std::map<index_type, index_type>& nodeMap) const;
+    void connectionToNodeAdjacency(const Vec3i& connection, std::map<Index, Index>& nodeMap) const;
 
     class SOFA_SOFANONUNIFORMFEM_API Component
     {
@@ -205,21 +205,21 @@ public:
     static const int MULTILEVEL_MODIFICATION = core::topology::TOPOLOGYCHANGE_LASTID + 1;
 
     typedef defaulttype::Vec<3,int>	Vec3i;
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 
-    MultilevelModification(const sofa::helper::vector<index_type>& _tArray,
-            const std::map<index_type, std::list<Vec3i> >& removedVoxels)
+    MultilevelModification(const sofa::helper::vector<Index>& _tArray,
+            const std::map<Index, std::list<Vec3i> >& removedVoxels)
         : core::topology::TopologyChange((core::topology::TopologyChangeType) MULTILEVEL_MODIFICATION)
         , _modifiedHexahedraArray(_tArray)
         , _removedFineVoxels(removedVoxels)
     {}
 
-    const sofa::helper::vector<index_type> &getArray() const
+    const sofa::helper::vector<Index> &getArray() const
     {
         return _modifiedHexahedraArray;
     }
 
-    const std::list<Vec3i> &getRemovedVoxels(const index_type hexaId) const
+    const std::list<Vec3i> &getRemovedVoxels(const Index hexaId) const
     {
         auto it = _removedFineVoxels.find(hexaId);
         if(it != _removedFineVoxels.end())
@@ -234,8 +234,8 @@ public:
     }
 
 private:
-    sofa::helper::vector<index_type>		_modifiedHexahedraArray;
-    std::map<index_type, std::list<Vec3i> > _removedFineVoxels;
+    sofa::helper::vector<Index>		_modifiedHexahedraArray;
+    std::map<Index, std::list<Vec3i> > _removedFineVoxels;
 
     const std::list<Vec3i>	__dummyList;
 };

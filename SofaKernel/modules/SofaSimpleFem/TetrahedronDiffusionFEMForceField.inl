@@ -276,7 +276,7 @@ typename TetrahedronDiffusionFEMForceField<DataTypes>::VectorReal TetrahedronDif
 
 
 template <class DataTypes>
-typename TetrahedronDiffusionFEMForceField<DataTypes>::Real TetrahedronDiffusionFEMForceField<DataTypes>::getTetraDiffusionCoefficient(index_type i)
+typename TetrahedronDiffusionFEMForceField<DataTypes>::Real TetrahedronDiffusionFEMForceField<DataTypes>::getTetraDiffusionCoefficient(Index i)
 {
     sofa::helper::vector<Real> tetraDiff = this->d_tetraDiffusionCoefficient.getValue();
     if(i <= m_topology->getNbTetrahedra())

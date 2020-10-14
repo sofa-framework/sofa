@@ -48,7 +48,7 @@ TriangleSetTopologyContainer::TriangleSetTopologyContainer()
 }
 
 
-void TriangleSetTopologyContainer::addTriangle(index_type a, index_type b, index_type c )
+void TriangleSetTopologyContainer::addTriangle(Index a, Index b, Index c )
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
     m_triangle.push_back(Triangle(a,b,c));
@@ -69,7 +69,7 @@ void TriangleSetTopologyContainer::init()
         {
             for(PointID j=0; j<3; ++j)
             {
-                index_type a = m_triangle[i][j];
+                Index a = m_triangle[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }
@@ -490,12 +490,12 @@ TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriang
     return InvalidID;
 }
 
-size_type TriangleSetTopologyContainer::getNumberOfTriangles() const
+Size TriangleSetTopologyContainer::getNumberOfTriangles() const
 {
     return d_triangle.getValue().size();
 }
 
-size_type TriangleSetTopologyContainer::getNumberOfElements() const
+Size TriangleSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfTriangles();
 }
@@ -750,7 +750,7 @@ bool TriangleSetTopologyContainer::checkConnexity()
 }
 
 
-size_type TriangleSetTopologyContainer::getNumberOfConnectedComponent()
+Size TriangleSetTopologyContainer::getNumberOfConnectedComponent()
 {
     auto nbr = this->getNbTriangles();
 

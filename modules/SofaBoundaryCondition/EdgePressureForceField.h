@@ -53,7 +53,7 @@ public:
     typedef Data<VecDeriv>                  DataVecDeriv;
     typedef sofa::defaulttype::Vec3d        Vec3d;
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 protected:
 
     class EdgePressureInformation
@@ -86,7 +86,7 @@ protected:
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
 
     Data<Deriv> pressure; ///< Pressure force per unit area
-    Data<helper::vector<index_type> > edgeIndices; ///< Indices of edges separated with commas where a pressure is applied
+    Data<helper::vector<Index> > edgeIndices; ///< Indices of edges separated with commas where a pressure is applied
     Data<helper::vector<sofa::core::topology::Edge> > edges; ///< List of edges where a pressure is applied
     Data<Deriv> normal; ///< the normal used to define the edge subjected to the pressure force
     Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
@@ -121,7 +121,7 @@ public:
 
 protected :
     void selectEdgesAlongPlane();
-    void selectEdgesFromIndices(const helper::vector<index_type>& inputIndices);
+    void selectEdgesFromIndices(const helper::vector<Index>& inputIndices);
     void selectEdgesFromString();
     void selectEdgesFromEdgeList();
     void updateEdgeInformation();

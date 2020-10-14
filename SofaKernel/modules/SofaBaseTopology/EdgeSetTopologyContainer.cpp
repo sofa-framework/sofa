@@ -91,7 +91,7 @@ void EdgeSetTopologyContainer::initTopology()
     createEdgesAroundVertexArray();
 }
 
-void EdgeSetTopologyContainer::addEdge(index_type a, index_type b)
+void EdgeSetTopologyContainer::addEdge(Index a, Index b)
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     m_edge.push_back(Edge(a,b));
@@ -288,7 +288,7 @@ bool EdgeSetTopologyContainer::checkConnexity()
 }
 
 
-size_type EdgeSetTopologyContainer::getNumberOfConnectedComponent()
+Size EdgeSetTopologyContainer::getNumberOfConnectedComponent()
 {
     auto nbr = this->getNbEdges();
 
@@ -482,13 +482,13 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 
 
 
-size_type EdgeSetTopologyContainer::getNumberOfEdges() const
+Size EdgeSetTopologyContainer::getNumberOfEdges() const
 {
     d_edge.updateIfDirty();
     return d_edge.getValue().size();
 }
 
-size_type EdgeSetTopologyContainer::getNumberOfElements() const
+Size EdgeSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfEdges();
 }

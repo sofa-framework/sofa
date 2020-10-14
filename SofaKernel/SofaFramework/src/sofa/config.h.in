@@ -28,6 +28,7 @@
 #include <sofa/config/build_option_bbox.h>
 
 #include <cstddef> // For nullptr
+#include <limits> // std::numeric_limits<>
 
 // fixes CGAL plugin build errors (default value: 5)
 #define BOOST_PARAMETER_MAX_ARITY 12
@@ -155,10 +156,10 @@ typedef unsigned __int64	uint64_t;
 namespace sofa
 {
 	
-using index_type = unsigned int;
-using size_type = unsigned int;
+using Index = unsigned int;
+using Size = unsigned int;
 
-constexpr index_type InvalidID = 4294967295; //UINT_MAX from limits.h
+constexpr Index InvalidID = (std::numeric_limits<Index>::max)(); 
 
 }
 

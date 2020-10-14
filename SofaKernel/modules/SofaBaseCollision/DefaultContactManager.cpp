@@ -127,7 +127,7 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
     using core::CollisionModel;
     using core::collision::Contact;
 
-    size_type nbContact = 0;
+    Size nbContact = 0;
 
     // First iterate on the collision detection outputs and look for existing or new contacts
     std::stringstream errorStream;

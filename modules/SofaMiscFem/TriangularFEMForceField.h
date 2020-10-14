@@ -73,14 +73,14 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    typedef sofa::core::topology::BaseMeshTopology::index_type Index;
+    typedef sofa::core::topology::BaseMeshTopology::Index Index;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Element;
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
     typedef sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
 
     typedef sofa::helper::Quater<Real> Quat;
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 
     enum {
         LARGE = 0,   ///< Symbol of small displacements triangle solver
@@ -214,9 +214,9 @@ public:
     public:
         TRQSTriangleHandler(TriangularFEMForceField<DataTypes>* _ff, topology::TriangleData<sofa::helper::vector<TriangleInformation> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, sofa::helper::vector<TriangleInformation> >(_data), ff(_ff) {}
 
-        void applyCreateFunction(index_type triangleIndex, TriangleInformation& ,
+        void applyCreateFunction(Index triangleIndex, TriangleInformation& ,
                 const core::topology::BaseMeshTopology::Triangle & t,
-                const sofa::helper::vector< index_type > &,
+                const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double > &);
 
     protected:
@@ -261,7 +261,7 @@ public:
     void computeStress(defaulttype::Vec<3,Real> &stress, Index elementIndex);
 
     // Getting the rotation of the vertex by averaing the rotation of neighboring elements
-    void getRotation(Transformation& R, index_type nodeIdx);
+    void getRotation(Transformation& R, Index nodeIdx);
     void getRotations();
 
 protected :

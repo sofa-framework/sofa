@@ -57,7 +57,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 
     class Mat3 : public sofa::helper::fixed_array<Deriv,3>
     {
@@ -114,17 +114,17 @@ protected:
         {
         }
 
-        void applyCreateFunction(index_type edgeIndex, EdgeRestInformation&,
+        void applyCreateFunction(Index edgeIndex, EdgeRestInformation&,
                 const core::topology::BaseMeshTopology::Edge& e,
-                const sofa::helper::vector<index_type> &,
+                const sofa::helper::vector<Index> &,
                 const sofa::helper::vector<double> &);
 
-        void applyTriangleCreation(const sofa::helper::vector<index_type> &triangleAdded,
+        void applyTriangleCreation(const sofa::helper::vector<Index> &triangleAdded,
                 const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> & ,
-                const sofa::helper::vector<sofa::helper::vector<index_type> > & ,
+                const sofa::helper::vector<sofa::helper::vector<Index> > & ,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
-        void applyTriangleDestruction(const sofa::helper::vector<index_type> &triangleRemoved);
+        void applyTriangleDestruction(const sofa::helper::vector<Index> &triangleRemoved);
 
         using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >::ApplyTopologyChange;
         /// Callback to add triangles elements.

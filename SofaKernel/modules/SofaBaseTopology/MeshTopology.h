@@ -101,9 +101,9 @@ public:
 
     void init() override;
 
-    size_type getNbPoints() const override;
+    Size getNbPoints() const override;
 
-    void setNbPoints(size_type  n) override;
+    void setNbPoints(Size  n) override;
 
     // Complete sequence accessors
 
@@ -115,11 +115,11 @@ public:
 
     // Random accessors
 
-    size_type getNbEdges() override;
-    size_type getNbTriangles() override;
-    size_type getNbQuads() override;
-    size_type getNbTetrahedra() override;
-    size_type getNbHexahedra() override;
+    Size getNbEdges() override;
+    Size getNbTriangles() override;
+    Size getNbQuads() override;
+    Size getNbTetrahedra() override;
+    Size getNbHexahedra() override;
 
     const Edge getEdge(EdgeID i) override;
     const Triangle getTriangle(TriangleID i) override;
@@ -128,11 +128,11 @@ public:
     const Hexa getHexahedron(HexaID i) override;
 
     // If using STEP loader, include also uv coordinates
-    typedef index_type					UVID;
+    typedef Index					UVID;
     typedef defaulttype::Vector2						UV;
     typedef helper::vector<UV>				SeqUV;
     virtual const SeqUV& getUVs();
-    virtual size_type getNbUVs();
+    virtual Size getNbUVs();
     virtual const UV getUV(UVID i);
     void addUV(SReal u, SReal v);
     //
@@ -245,37 +245,37 @@ public:
     bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    size_type getNumberOfConnectedComponent() override;
+    Size getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const helper::vector<index_type> getConnectedElement(index_type elem) override;
+    virtual const helper::vector<Index> getConnectedElement(Index elem) override;
 
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const helper::vector<index_type> getElementAroundElement(index_type elem) override;
+    virtual const helper::vector<Index> getElementAroundElement(Index elem) override;
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const helper::vector<index_type> getElementAroundElements(helper::vector<index_type> elems) override;
+    virtual const helper::vector<Index> getElementAroundElements(helper::vector<Index> elems) override;
     /// @}
 
     // Get point positions (same methods as points accessors but not inherited)
-    SReal getPosX(index_type i) const;
-    SReal getPosY(index_type i) const;
-    SReal getPosZ(index_type i) const;
+    SReal getPosX(Index i) const;
+    SReal getPosY(Index i) const;
+    SReal getPosZ(Index i) const;
 
     // Points accessors (not always available)
 
     bool hasPos() const override;
-    SReal getPX(index_type i) const override;
-    SReal getPY(index_type i) const override;
-    SReal getPZ(index_type i) const override;
+    SReal getPX(Index i) const override;
+    SReal getPY(Index i) const override;
+    SReal getPZ(Index i) const override;
 
     // for procedural creation without file loader
     void clear() override;
     void addPoint(SReal px, SReal py, SReal pz) override;
-    void addEdge( index_type a, index_type b ) override;
-    void addTriangle( index_type a, index_type b, index_type c ) override;
-    void addQuad( index_type a, index_type b, index_type c, index_type d ) override;
-    void addTetra( index_type a, index_type b, index_type c, index_type d ) override;
-    void addHexa( index_type a, index_type b, index_type c, index_type d, index_type e, index_type f, index_type g, index_type h ) override;
+    void addEdge( Index a, Index b ) override;
+    void addTriangle( Index a, Index b, Index c ) override;
+    void addQuad( Index a, Index b, Index c, Index d ) override;
+    void addTetra( Index a, Index b, Index c, Index d ) override;
+    void addHexa( Index a, Index b, Index c, Index d, Index e, Index f, Index g, Index h ) override;
 
     /// get the current revision of this mesh (use to detect changes)
     int getRevision() const override { return revision; }
@@ -338,7 +338,7 @@ public:
     Data<SeqUV>	seqUVs; ///< List of uv coordinates
 
 protected:
-    size_type  nbPoints;
+    Size  nbPoints;
 
     bool validTetrahedra;
     bool validHexahedra;

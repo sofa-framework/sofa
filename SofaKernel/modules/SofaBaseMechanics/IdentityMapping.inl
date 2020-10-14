@@ -75,7 +75,7 @@ void IdentityMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
     helper::WriteOnlyAccessor< Data<VecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
 
-    for(size_type i=0; i<out.size(); i++)
+    for(Size i=0; i<out.size(); i++)
     {
         helper::eq(out[i], in[i]);
     }

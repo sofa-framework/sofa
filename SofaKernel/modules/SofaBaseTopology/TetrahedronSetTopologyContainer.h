@@ -81,8 +81,8 @@ public:
     /// Procedural creation methods
     /// @{
     void clear() override;
-    void addTriangle(index_type, index_type, index_type) override {}
-    void addTetra(index_type a, index_type b, index_type c, index_type d ) override;
+    void addTriangle(Index, Index, Index) override {}
+    void addTetra(Index a, Index b, Index c, Index d ) override;
     /// @}
 
 
@@ -229,7 +229,7 @@ public:
     bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    size_type getNumberOfConnectedComponent() override;
+    Size getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     const VecTetraID getConnectedElement(TetraID elem) override;
@@ -248,12 +248,12 @@ public:
     /** \brief Returns the number of tetrahedra in this topology.
      *    The difference to getNbTetrahedra() is that this method does not generate the tetra array if it does not exist.
      */
-    size_type getNumberOfTetrahedra() const;
+    Size getNumberOfTetrahedra() const;
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    size_type getNumberOfElements() const override;
+    Size getNumberOfElements() const override;
 
 
     /** \brief Returns the Tetrahedron array. */

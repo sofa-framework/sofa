@@ -155,7 +155,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             {
                 Vector3 outPos = Out::getCPos(out[i]);
                 Vector3 coefs;
-                index_type index = sofa::InvalidID;
+                Index index = sofa::InvalidID;
                 double distance = 1e10;
                 for ( std::size_t t = 0; t < triangles.size(); t++ )
                 {
@@ -208,7 +208,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
         {
             Vector3 pos = Out::getCPos(out[i]);
             Vector3 coefs;
-            index_type index = sofa::InvalidID;
+            Index index = sofa::InvalidID;
             double distance = 1e10;
             for ( std::size_t t = 0; t < tetras.size(); t++ )
             {
@@ -271,8 +271,8 @@ void BarycentricMapperMeshTopology<In,Out>::clear ( std::size_t size )
 
 
 template <class In, class Out>
-typename BarycentricMapperMeshTopology<In, Out>::index_type 
-BarycentricMapperMeshTopology<In,Out>::addPointInLine ( const index_type lineIndex, const SReal* baryCoords )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::addPointInLine ( const Index lineIndex, const SReal* baryCoords )
 {
     m_map1d.resize ( m_map1d.size() +1 );
     MappingData1D& data = *m_map1d.rbegin();
@@ -283,8 +283,8 @@ BarycentricMapperMeshTopology<In,Out>::addPointInLine ( const index_type lineInd
 
 
 template <class In, class Out>
-typename BarycentricMapperMeshTopology<In, Out>::index_type 
-BarycentricMapperMeshTopology<In,Out>::addPointInTriangle ( const index_type triangleIndex, const SReal* baryCoords )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::addPointInTriangle ( const Index triangleIndex, const SReal* baryCoords )
 {
     m_map2d.resize ( m_map2d.size() +1 );
     MappingData2D& data = *m_map2d.rbegin();
@@ -296,8 +296,8 @@ BarycentricMapperMeshTopology<In,Out>::addPointInTriangle ( const index_type tri
 
 
 template <class In, class Out>
-typename BarycentricMapperMeshTopology<In, Out>::index_type
-BarycentricMapperMeshTopology<In,Out>::addPointInQuad ( const index_type quadIndex, const SReal* baryCoords )
+typename BarycentricMapperMeshTopology<In, Out>::Index
+BarycentricMapperMeshTopology<In,Out>::addPointInQuad ( const Index quadIndex, const SReal* baryCoords )
 {
     m_map2d.resize ( m_map2d.size() +1 );
     MappingData2D& data = *m_map2d.rbegin();
@@ -309,8 +309,8 @@ BarycentricMapperMeshTopology<In,Out>::addPointInQuad ( const index_type quadInd
 
 
 template <class In, class Out>
-typename BarycentricMapperMeshTopology<In, Out>::index_type 
-BarycentricMapperMeshTopology<In,Out>::addPointInTetra ( const index_type tetraIndex, const SReal* baryCoords )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::addPointInTetra ( const Index tetraIndex, const SReal* baryCoords )
 {
     m_map3d.resize ( m_map3d.size() +1 );
     MappingData3D& data = *m_map3d.rbegin();
@@ -323,8 +323,8 @@ BarycentricMapperMeshTopology<In,Out>::addPointInTetra ( const index_type tetraI
 
 
 template <class In, class Out>
-typename BarycentricMapperMeshTopology<In, Out>::index_type 
-BarycentricMapperMeshTopology<In,Out>::addPointInCube ( const index_type cubeIndex, const SReal* baryCoords )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::addPointInCube ( const Index cubeIndex, const SReal* baryCoords )
 {
     m_map3d.resize ( m_map3d.size() +1 );
     MappingData3D& data = *m_map3d.rbegin();
@@ -337,8 +337,8 @@ BarycentricMapperMeshTopology<In,Out>::addPointInCube ( const index_type cubeInd
 
 
 template <class In, class Out>
-typename BarycentricMapperMeshTopology<In, Out>::index_type 
-BarycentricMapperMeshTopology<In,Out>::createPointInLine ( const typename Out::Coord& p, index_type lineIndex, const typename In::VecCoord* points )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::createPointInLine ( const typename Out::Coord& p, Index lineIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[1];
     const Edge& elem = this->m_fromTopology->getLine ( lineIndex );
@@ -351,8 +351,8 @@ BarycentricMapperMeshTopology<In,Out>::createPointInLine ( const typename Out::C
 
 
 template <class In, class Out>
-typename BarycentricMapperMeshTopology<In, Out>::index_type 
-BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Out::Coord& p, index_type triangleIndex, const typename In::VecCoord* points )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Out::Coord& p, Index triangleIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[2];
     const Triangle& elem = this->m_fromTopology->getTriangle ( triangleIndex );
@@ -433,8 +433,8 @@ BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Ou
 
 
 template <class In, class Out>
-typename BarycentricMapperMeshTopology<In, Out>::index_type 
-BarycentricMapperMeshTopology<In,Out>::createPointInQuad ( const typename Out::Coord& p, index_type quadIndex, const typename In::VecCoord* points )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::createPointInQuad ( const typename Out::Coord& p, Index quadIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[2];
     const Quad& elem = this->m_fromTopology->getQuad ( quadIndex );
@@ -494,7 +494,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                 if ( indexIn < i1d )
                 {
                     const OutReal fx = ( OutReal ) m_map1d[indexIn].baryCoords[0];
-                    index_type index = m_map1d[indexIn].in_index;
+                    Index index = m_map1d[indexIn].in_index;
                     {
                         const Edge& line = lines[index];
                         o.addCol( line[0], data * ( 1-fx ) );
@@ -506,7 +506,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                 {
                     const OutReal fx = ( OutReal ) m_map2d[indexIn].baryCoords[0];
                     const OutReal fy = ( OutReal ) m_map2d[indexIn].baryCoords[1];
-                    index_type index = m_map2d[indexIn].in_index;
+                    Index index = m_map2d[indexIn].in_index;
                     if ( index < iTri ) // triangle
                     {
                         const Triangle& triangle = triangles[index];
@@ -575,11 +575,11 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
     std::vector< Vector3 > points;
     // 1D elements
     {
-        const index_type i0 = 0;
+        const Index i0 = 0;
         for ( std::size_t i=0; i<m_map1d.size(); i++ )
         {
             const Real fx = m_map1d[i].baryCoords[0];
-            index_type index = m_map1d[i].in_index;
+            Index index = m_map1d[i].in_index;
             {
                 const Edge& line = lines[index];
                 Real f[2];
@@ -604,7 +604,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
         {
             const Real fx = m_map2d[i].baryCoords[0];
             const Real fy = m_map2d[i].baryCoords[1];
-            index_type index = m_map2d[i].in_index;
+            Index index = m_map2d[i].in_index;
             if ( index<c0 )
             {
                 const Triangle& triangle = triangles[index];
@@ -649,7 +649,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
             const Real fx = m_map3d[i].baryCoords[0];
             const Real fy = m_map3d[i].baryCoords[1];
             const Real fz = m_map3d[i].baryCoords[2];
-            index_type index = m_map3d[i].in_index;
+            Index index = m_map3d[i].in_index;
             if ( index<c0 )
             {
                 const Tetra& tetra = tetrahedra[index];
@@ -950,7 +950,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
         if (i < idxStart1)
         {
             const Real fx = m_map1d[i].baryCoords[0];
-            index_type index = m_map1d[i].in_index;
+            Index index = m_map1d[i].in_index;
             {
                 const Edge& line = lines[index];
                 Out::setDPos(out[i] , in[line[0]] * ( 1-fx )
@@ -1042,7 +1042,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
         for ( std::size_t i=0; i<m_map1d.size(); i++ )
         {
             const Real fx = m_map1d[i].baryCoords[0];
-            index_type index = m_map1d[i].in_index;
+            Index index = m_map1d[i].in_index;
             {
                 const Edge& line = lines[index];
                 Out::setCPos(out[i] , in[line[0]] * ( 1-fx )
@@ -1058,7 +1058,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
         {
             const Real fx = m_map2d[i].baryCoords[0];
             const Real fy = m_map2d[i].baryCoords[1];
-            index_type index = m_map2d[i].in_index;
+            Index index = m_map2d[i].in_index;
             if ( index<c0 )
             {
                 const Triangle& triangle = triangles[index];
@@ -1088,7 +1088,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
             const Real fx = m_map3d[i].baryCoords[0];
             const Real fy = m_map3d[i].baryCoords[1];
             const Real fz = m_map3d[i].baryCoords[2];
-            index_type index = m_map3d[i].in_index;
+            Index index = m_map3d[i].in_index;
             if ( index<c0 )
             {
                 const Tetra& tetra = tetrahedra[index];

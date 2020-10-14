@@ -70,7 +70,7 @@ const float SparseGridTopology::WEIGHT27[8][27] =
     {0.0, 0.0, 0.0, 0.0, 0.0,  0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.125, 0.25, 0.0, 0.25, 0.5, 0.0, 0.0, 0.0, 0.0, 0.25, 0.5, 0.0, 0.5, 1.0}
 };
 
-const SparseGridTopology::index_type SparseGridTopology::cornerIndicesFromFineToCoarse[8][8]=
+const SparseGridTopology::Index SparseGridTopology::cornerIndicesFromFineToCoarse[8][8]=
 {
     // fine vertices forming the ith coarse cube (with XYZ order)
     {  0,  9,  3, 12,  1, 10,  4, 13},
@@ -276,7 +276,7 @@ void SparseGridTopology::buildAsFinest(  )
         _stiffnessCoefs.resize( this->getNbHexahedra());
         _massCoefs.resize( this->getNbHexahedra());
 
-        for(size_type i=0; i<this->getNbHexahedra(); ++i)
+        for(Size i=0; i<this->getNbHexahedra(); ++i)
         {
             if( getType(i)==BOUNDARY && _fillWeighted.getValue() )
             {
@@ -516,11 +516,11 @@ void SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)
     const auto nbCubesRG = _regularGrid->getNbHexahedra();
 
     _indicesOfRegularCubeInSparseGrid.resize(nbCubesRG, InvalidID); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
-    vector<Type> regularGridTypes(typename vector<Type>::size_type(nbCubesRG), OUTSIDE); // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
+    vector<Type> regularGridTypes(typename vector<Type>::Size(nbCubesRG), OUTSIDE); // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
 
-    vector<float> regularstiffnessCoef(typename vector<Type>::size_type(nbCubesRG), 0.0);
+    vector<float> regularstiffnessCoef(typename vector<Type>::Size(nbCubesRG), 0.0);
 
-    for(index_type i=0; i<nbCubesRG; ++i)
+    for(Index i=0; i<nbCubesRG; ++i)
     {
         const Vec3i& hexacoord = _regularGrid->getCubeCoordinate(i);
         const RegularGridTopology::Hexa& hexa = _regularGrid->getHexahedron( hexacoord[0],hexacoord[1], hexacoord[2] );
@@ -716,14 +716,14 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
 
     const helper::vector< Vector3 >& vertices = mesh->getVertices();
     const size_t vertexSize = vertices.size();
-    helper::vector< index_type > verticesHexa(vertexSize);
+    helper::vector< Index > verticesHexa(vertexSize);
     const Vector3 delta = (regularGrid->getDx() + regularGrid->getDy() + regularGrid->getDz()) / 2;
 
     // Compute the grid element for each mesh vertex
     for (size_t i = 0; i < vertexSize; ++i)
     {
         const Vector3& vertex = vertices[i];
-        index_type index = regularGrid->findHexa(vertex);
+        Index index = regularGrid->findHexa(vertex);
 
         if (index > 0)
             regularGridTypes[index] = BOUNDARY;
@@ -769,9 +769,9 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
         const auto& facet = facets[f][0];
         for (unsigned int j=2; j<facet.size(); j++) // Triangularize
         {
-            index_type c0 = verticesHexa[facet[0]];
-            index_type c1 = verticesHexa[facet[j-1]];
-            index_type c2 = verticesHexa[facet[j]];
+            Index c0 = verticesHexa[facet[0]];
+            Index c1 = verticesHexa[facet[j-1]];
+            Index c2 = verticesHexa[facet[j]];
             if((c0==c1)&&(c0==c2)&&(c0!=InvalidID)) // All vertices in same box discard now if possible
             {
                 if(regularGridTypes[c0]==BOUNDARY)
@@ -796,7 +796,7 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
                     for(unsigned int z=(unsigned int)iMin[2]; z<=(unsigned int)iMax[2]; ++z)
                     {
                         // if already inserted discard
-                        index_type index = regularGrid->getCubeIndex(x,y,z);
+                        Index index = regularGrid->getCubeIndex(x,y,z);
 
                         if(regularGridTypes[index]==BOUNDARY)
                             continue;
@@ -840,7 +840,7 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
 
 
     // TODO: regarder les cellules pleines, et les ajouter
-    vector<bool> alreadyTested(typename vector<bool>::size_type(regularGrid->getNbHexahedra()),false);
+    vector<bool> alreadyTested(typename vector<bool>::Size(regularGrid->getNbHexahedra()),false);
     std::stack< Vec3i > seed;
     // x==0 and x=nx-2
     for(int y=0; y<regularGrid->getNy()-1; ++y)
@@ -898,7 +898,7 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology::SPtr reg
     int cubeCntr = 0;
 
     // add BOUNDARY cubes to valid cells
-    for(index_type w=0; w<regularGrid->getNbHexahedra(); ++w)
+    for(Index w=0; w<regularGrid->getNbHexahedra(); ++w)
     {
         if( regularGridTypes[w] == BOUNDARY && !d_bOnlyInsideCells.getValue())
         {
@@ -919,7 +919,7 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology::SPtr reg
     }
 
     // add INSIDE cubes to valid cells
-    for(index_type w=0; w<regularGrid->getNbHexahedra(); ++w)
+    for(Index w=0; w<regularGrid->getNbHexahedra(); ++w)
     {
         if( regularGridTypes[w] == INSIDE )
         {
@@ -1038,7 +1038,7 @@ void SparseGridTopology::buildFromFiner()
                 int y = 2*j;
                 int z = 2*k;
 
-                fixed_array<index_type,8> fineIndices;
+                fixed_array<Index,8> fineIndices;
                 for(int idx=0; idx<8; ++idx)
                 {
                     const int idxX = x + (idx & 1);
@@ -1074,7 +1074,7 @@ void SparseGridTopology::buildFromFiner()
                 }
 
 
-                index_type coarseRegularIndice = _regularGrid->cube( i,j,k );
+                Index coarseRegularIndice = _regularGrid->cube( i,j,k );
                 Hexa c = _regularGrid->getHexaCopy( coarseRegularIndice );
 
                 CubeCorners corners;
@@ -1127,9 +1127,9 @@ void SparseGridTopology::buildFromFiner()
 
     for( unsigned w=0; w<seqHexahedra.getValue().size(); ++w)
     {
-        const fixed_array<index_type, 8>& child = _hierarchicalCubeMap[w];
+        const fixed_array<Index, 8>& child = _hierarchicalCubeMap[w];
 
-        helper::vector<index_type> fineCorners(27);
+        helper::vector<Index> fineCorners(27);
         fineCorners.fill(InvalidID);
         for(int fineCube=0; fineCube<8; ++fineCube)
         {
@@ -1153,8 +1153,8 @@ void SparseGridTopology::buildFromFiner()
             {
                 if( fineCorners[fineVertexLocalIndice] == InvalidID ) continue; // this fine vertex is not in any fine cube
 
-                index_type coarseCornerGlobalIndice = seqHexahedra.getValue()[w][coarseCornerLocalIndice];
-                index_type fineVertexGlobalIndice = fineCorners[fineVertexLocalIndice];
+                Index coarseCornerGlobalIndice = seqHexahedra.getValue()[w][coarseCornerLocalIndice];
+                Index fineVertexGlobalIndice = fineCorners[fineVertexLocalIndice];
 
                 if( WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice] )
                 {
@@ -1196,7 +1196,7 @@ void SparseGridTopology::buildFromFiner()
     _massCoefs.resize( this->getNbHexahedra() );
     for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
-        helper::fixed_array<index_type,8> finerChildren = this->_hierarchicalCubeMap[i];
+        helper::fixed_array<Index,8> finerChildren = this->_hierarchicalCubeMap[i];
         unsigned nbchildren = 0;
         for(int w=0; w<8; ++w)
         {
@@ -1268,9 +1268,9 @@ void SparseGridTopology::buildVirtualFinerLevels()
 
 /// return the cube containing the given point (or InvalidID if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-SparseGridTopology::index_type SparseGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
+SparseGridTopology::Index SparseGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
-    index_type indiceInRegularGrid = _regularGrid->findCube( pos,fx,fy,fz);
+    Index indiceInRegularGrid = _regularGrid->findCube( pos,fx,fy,fz);
     if( indiceInRegularGrid == InvalidID)
         return InvalidID;
     else
@@ -1280,10 +1280,10 @@ SparseGridTopology::index_type SparseGridTopology::findCube(const Vector3& pos, 
 
 /// return the cube containing the given point (or InvalidID if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-SparseGridTopology::index_type SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
+SparseGridTopology::Index SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
     if (seqHexahedra.getValue().size() == 0) return InvalidID;
-    index_type indice = 0;
+    Index indice = 0;
     float lgmin = 99999999.0f;
 
     for(unsigned w=0; w<seqHexahedra.getValue().size(); ++w)
@@ -1291,8 +1291,8 @@ SparseGridTopology::index_type SparseGridTopology::findNearestCube(const Vector3
         if(!_usingMC && _types[w]!=BOUNDARY )continue;
 
         const Hexa& c = getHexahedron( w );
-        index_type c0 = c[0];
-        index_type c7 = c[6];
+        Index c0 = c[0];
+        Index c7 = c[6];
 
         Vector3 p0((SReal)getPX(c0), (SReal)getPY(c0), (SReal)getPZ(c0));
         Vector3 p7((SReal)getPX(c7), (SReal)getPY(c7), (SReal)getPZ(c7));
@@ -1308,9 +1308,9 @@ SparseGridTopology::index_type SparseGridTopology::findNearestCube(const Vector3
     }
 
     const Hexa& c = getHexahedron( indice );
-    index_type c0 = c[0];
+    Index c0 = c[0];
 
-    index_type c7 = c[6];
+    Index c7 = c[6];
 
     Vector3 p0((SReal)getPX(c0), (SReal)getPY(c0), (SReal)getPZ(c0));
     Vector3 p7((SReal)getPX(c7), (SReal)getPY(c7), (SReal)getPZ(c7));
@@ -1326,11 +1326,11 @@ SparseGridTopology::index_type SparseGridTopology::findNearestCube(const Vector3
 }
 
 
-helper::fixed_array<index_type,6> SparseGridTopology::findneighboorCubes(index_type indice )
+helper::fixed_array<Index,6> SparseGridTopology::findneighboorCubes(Index indice )
 {
     dmsg_info()<<"SparseGridTopology::findneighboorCubes : "<<indice<<" -> "<<_indicesOfCubeinRegularGrid[indice];
     dmsg_info()<<_indicesOfRegularCubeInSparseGrid[ _indicesOfCubeinRegularGrid[indice] ] ;
-    helper::fixed_array<index_type,6> result;
+    helper::fixed_array<Index,6> result;
     Vector3 c = _regularGrid->getCubeCoordinate( _indicesOfCubeinRegularGrid[indice] );
     dmsg_info()<<c;
     result[0] = c[0]<=0 ? InvalidID : _indicesOfRegularCubeInSparseGrid[ _regularGrid->getCubeIndex( (int)c[0]-1,(int)c[1],(int)c[2] )];
@@ -1343,19 +1343,19 @@ helper::fixed_array<index_type,6> SparseGridTopology::findneighboorCubes(index_t
 }
 
 
-SparseGridTopology::Type SparseGridTopology::getType(index_type i )
+SparseGridTopology::Type SparseGridTopology::getType(Index i )
 {
     return _types[i];
 }
 
 
-float SparseGridTopology::getStiffnessCoef(index_type elementIdx)
+float SparseGridTopology::getStiffnessCoef(Index elementIdx)
 {
     return _stiffnessCoefs[ elementIdx ];
 }
 
 
-float SparseGridTopology::getMassCoef(index_type elementIdx)
+float SparseGridTopology::getMassCoef(Index elementIdx)
 {
     return _massCoefs[ elementIdx ];
 }
@@ -1363,7 +1363,7 @@ float SparseGridTopology::getMassCoef(index_type elementIdx)
 
 void SparseGridTopology::updateEdges()
 {
-    using IndexPair = pair<index_type, index_type>;
+    using IndexPair = pair<Index, Index>;
     std::map<IndexPair,bool> edgesMap;
     for(unsigned i=0; i<seqHexahedra.getValue().size(); ++i)
     {
@@ -1397,11 +1397,11 @@ void SparseGridTopology::updateEdges()
 
 void SparseGridTopology::updateQuads()
 {
-    std::map<fixed_array<index_type,4>,bool> quadsMap;
+    std::map<fixed_array<Index,4>,bool> quadsMap;
     for(unsigned i=0; i<seqHexahedra.getValue().size(); ++i)
     {
         Hexa c = seqHexahedra.getValue()[i];
-        fixed_array<index_type,4> v;
+        fixed_array<Index,4> v;
 
         v[0]=c[0]; v[1]=c[1]; v[2]=c[2]; v[3]=c[3];
         quadsMap[v]=0;
@@ -1436,7 +1436,7 @@ void SparseGridTopology::propagateFrom( const Vec3i &point,
     const int z=point[2];
     assert( x>=0 && x<=regularGrid->getNx()-2 && y>=0 && y<=regularGrid->getNy()-2 && z>=0 && z<=regularGrid->getNz()-2 );
 
-    index_type indice = regularGrid->cube( x, y, z );
+    Index indice = regularGrid->cube( x, y, z );
     if( alreadyTested[indice] || regularGridTypes[indice] == BOUNDARY ) return;
 
     alreadyTested[indice] = true;

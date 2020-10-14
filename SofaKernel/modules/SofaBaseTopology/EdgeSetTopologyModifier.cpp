@@ -80,7 +80,7 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 		// Important: getEdgeIndex creates the edge vertex shell array
 		if (m_container->hasEdgesAroundVertex())
 		{
-            if (m_container->getEdgeIndex(e[0], e[1]) != InvalidID)
+            if (m_container->getEdgeIndex(e[0], e[1]) != sofa::InvalidID)
 			{
 				msg_error() << "Edge " << e[0] << ", " << e[1] << " already exists.";
 				return;
@@ -89,7 +89,7 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 	}
 
     auto nbrP = m_container->getNbPoints();
-    for(size_type i=0; i<2; ++i)
+    for(Size i=0; i<2; ++i)
         if (e[i] + 1 > nbrP) // point not well init
         {
             nbrP = e[i] + 1;
@@ -796,7 +796,7 @@ void EdgeSetTopologyModifier::resortCuthillMckee(sofa::helper::vector<int>& inve
             property<vertex_color_t, default_color_type,
             property<vertex_degree_t,int> > > Graph;
     typedef graph_traits<Graph>::vertex_descriptor Vertex;
-    typedef graph_traits<Graph>::vertices_size_type size_type;
+    typedef graph_traits<Graph>::vertices_size_type Size;
 
     Graph G;
 
@@ -812,7 +812,7 @@ void EdgeSetTopologyModifier::resortCuthillMckee(sofa::helper::vector<int>& inve
     property_map<Graph, vertex_index_t>::type index_map = get(vertex_index, G);
 
     std::vector<Vertex> inv_perm(num_vertices(G));
-    std::vector<size_type> perm(num_vertices(G));
+    std::vector<Size> perm(num_vertices(G));
 
     //reverse cuthill_mckee_ordering
     cuthill_mckee_ordering(G, inv_perm.rbegin());
@@ -824,7 +824,7 @@ void EdgeSetTopologyModifier::resortCuthillMckee(sofa::helper::vector<int>& inve
         inverse_permutation[ind_i++] = (int)index_map[*it];
     }
 
-    for (size_type c=0; c!=inv_perm.size(); ++c)
+    for (Size c=0; c!=inv_perm.size(); ++c)
         perm[index_map[inv_perm[c]]] = c;
 
 	msg_info() << "  bandwidth: " << bandwidth(G, make_iterator_property_map(&perm[0], index_map, perm[0]));

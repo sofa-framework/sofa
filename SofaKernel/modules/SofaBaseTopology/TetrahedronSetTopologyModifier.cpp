@@ -148,7 +148,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
         Triangle e1 (t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][0]],t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][1]],t[sofa::core::topology::trianglesOrientationInTetrahedronArray[j][2]]);
         TriangleID triangleIndex = m_container->getTriangleIndex(e1[0], e1[1], e1[2]);
 
-        if(triangleIndex == InvalidID)
+        if(triangleIndex == sofa::InvalidID)
         {
             // first create the traingle
             sofa::helper::vector< Triangle > v;
@@ -156,8 +156,8 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
             addTrianglesProcess((const sofa::helper::vector< Triangle > &) v);
 
             triangleIndex = m_container->getTriangleIndex(e1[0], e1[1], e1[2]);
-            assert(triangleIndex != InvalidID);
-            if (triangleIndex == InvalidID)
+            assert(triangleIndex != sofa::InvalidID);
+            if (triangleIndex == sofa::InvalidID)
             {
                 msg_error() << "Triangle creation: " << e1 << " failed in addTetrahedronProcess. Triangle will not be added in buffers.";
                 continue;
@@ -204,7 +204,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
 
         EdgeID edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
         // we must create the edge
-        if (edgeIndex == InvalidID)
+        if (edgeIndex == sofa::InvalidID)
         {
             sofa::helper::vector< Edge > v;
             Edge e1(t[p0],t[p1]);
@@ -213,8 +213,8 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
             addEdgesProcess((const sofa::helper::vector< Edge > &) v);
 
             edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
-            assert(edgeIndex != InvalidID);
-            if (edgeIndex == InvalidID)
+            assert(edgeIndex != sofa::InvalidID);
+            if (edgeIndex == sofa::InvalidID)
             {
                 msg_error() << "Edge creation: " << e1 << " failed in addTetrahedronProcess. Edge will not be added in buffers.";
                 continue;

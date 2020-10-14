@@ -52,11 +52,11 @@ template<class T>
 class CudaVector : public helper::vector<T,CudaMemoryManager<T> >
 {
 public :
-    typedef size_t size_type;
+    typedef size_t Size;
 
     CudaVector() : helper::vector<T,CudaMemoryManager<T> >() {}
 
-    CudaVector(size_type n) : helper::vector<T,CudaMemoryManager<T> >(n) {}
+    CudaVector(Size n) : helper::vector<T,CudaMemoryManager<T> >(n) {}
 
     CudaVector(const helper::vector<T,CudaMemoryManager< T > >& v) : helper::vector<T,CudaMemoryManager<T> >(v) {}
 
@@ -710,7 +710,7 @@ class ReadAccessor< gpu::cuda::CudaVector<T> >
 {
 public:
     typedef gpu::cuda::CudaVector<T> container_type;
-    typedef typename container_type::size_type size_type;
+    typedef typename container_type::Size Size;
     typedef typename container_type::value_type value_type;
     typedef typename container_type::reference reference;
     typedef typename container_type::const_reference const_reference;
@@ -724,12 +724,12 @@ public:
     ReadAccessor(const container_type& container) : vref(container), data(container.hostRead()) {}
     ~ReadAccessor() {}
 
-    size_type size() const { return vref.size(); }
+    Size size() const { return vref.size(); }
     bool empty() const { return vref.empty(); }
 
     const container_type& ref() const { return vref; }
 
-    const_reference operator[](size_type i) const { return data[i]; }
+    const_reference operator[](Size i) const { return data[i]; }
 
     const_iterator begin() const { return data; }
     const_iterator end() const { return data+vref.size(); }
@@ -745,7 +745,7 @@ class WriteAccessor< gpu::cuda::CudaVector<T> >
 {
 public:
     typedef gpu::cuda::CudaVector<T> container_type;
-    typedef typename container_type::size_type size_type;
+    typedef typename container_type::Size Size;
     typedef typename container_type::value_type value_type;
     typedef typename container_type::reference reference;
     typedef typename container_type::const_reference const_reference;
@@ -760,11 +760,11 @@ public:
     WriteAccessor(container_type& container) : vref(container), data(container.hostWrite()) {}
     ~WriteAccessor() {}
 
-    size_type size() const { return vref.size(); }
+    Size size() const { return vref.size(); }
     bool empty() const { return vref.empty(); }
 
-    const_reference operator[](size_type i) const { return data[i]; }
-    reference operator[](size_type i) { return data[i]; }
+    const_reference operator[](Size i) const { return data[i]; }
+    reference operator[](Size i) { return data[i]; }
 
     const container_type& ref() const { return vref; }
     container_type& wref() { return vref; }
@@ -775,8 +775,8 @@ public:
     iterator end() { return data+vref.size(); }
 
     void clear() { vref.clear(); }
-    void resize(size_type s, bool init = true) { if (init) vref.resize(s); else vref.fastResize(s); data = vref.hostWrite(); }
-    void reserve(size_type s) { vref.reserve(s); data = vref.hostWrite(); }
+    void resize(Size s, bool init = true) { if (init) vref.resize(s); else vref.fastResize(s); data = vref.hostWrite(); }
+    void reserve(Size s) { vref.reserve(s); data = vref.hostWrite(); }
     void push_back(const_reference v) { vref.push_back(v); data = vref.hostWrite(); }
 
     inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<container_type>& vec )

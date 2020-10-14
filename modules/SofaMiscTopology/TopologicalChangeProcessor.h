@@ -57,10 +57,10 @@ class SOFA_MISC_TOPOLOGY_API TopologicalChangeProcessor: public core::objectmode
 public:
     SOFA_CLASS(TopologicalChangeProcessor,core::objectmodel::BaseObject);
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 
     sofa::core::objectmodel::DataFileName m_filename;
-    Data < helper::vector< helper::vector <index_type> > > m_listChanges; ///< 0 for adding, 1 for removing, 2 for cutting and associated indices.
+    Data < helper::vector< helper::vector <Index> > > m_listChanges; ///< 0 for adding, 1 for removing, 2 for cutting and associated indices.
 
     // Parameters for time
     Data < double > m_interval; ///< time duration between 2 actions
@@ -70,11 +70,11 @@ public:
     // Inputs for operations on Data
     Data <bool> m_useDataInputs; ///< If true, will perform operation using Data input lists rather than text file.
     Data <double> m_timeToRemove; ///< If using option useDataInputs, time at which will be done the operations. Possibility to use the interval Data also.
-    Data <sofa::helper::vector <index_type> > m_edgesToRemove; ///< List of edge IDs to be removed.
-    Data <sofa::helper::vector <index_type> > m_trianglesToRemove; ///< List of triangle IDs to be removed.
-    Data <sofa::helper::vector <index_type> > m_quadsToRemove; ///< List of quad IDs to be removed.
-    Data <sofa::helper::vector <index_type> > m_tetrahedraToRemove; ///< List of tetrahedron IDs to be removed.
-    Data <sofa::helper::vector <index_type> > m_hexahedraToRemove; ///< List of hexahedron IDs to be removed.
+    Data <sofa::helper::vector <Index> > m_edgesToRemove; ///< List of edge IDs to be removed.
+    Data <sofa::helper::vector <Index> > m_trianglesToRemove; ///< List of triangle IDs to be removed.
+    Data <sofa::helper::vector <Index> > m_quadsToRemove; ///< List of quad IDs to be removed.
+    Data <sofa::helper::vector <Index> > m_tetrahedraToRemove; ///< List of tetrahedron IDs to be removed.
+    Data <sofa::helper::vector <Index> > m_hexahedraToRemove; ///< List of hexahedron IDs to be removed.
 
     Data <bool> m_saveIndicesAtInit; ///< set to 'true' to save the incision to do in the init to incise even after a movement
 
@@ -105,7 +105,7 @@ protected:
     std::vector<std::string>    linesAboutIncision;
 
 
-    std::vector<index_type>    errorTrianglesIndices;
+    std::vector<Index>    errorTrianglesIndices;
 
 public:
     void init() override;
@@ -144,20 +144,20 @@ protected:
 
     std::vector<SReal> getValuesInLine(std::string line, size_t nbElements);
 
-    void findElementIndex(defaulttype::Vector3 coord, index_type& triangleIndex, index_type oldTriangleIndex);
+    void findElementIndex(defaulttype::Vector3 coord, Index& triangleIndex, Index oldTriangleIndex);
     void saveIndices();//only for incision
     void inciseWithSavedIndices();
 
-    index_type findIndexInListOfTime(SReal time);
+    Index findIndexInListOfTime(SReal time);
 };
 
 
 class TriangleIncisionInformation
 {
 public:
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 
-    std::vector<index_type>      triangleIndices;
+    std::vector<Index>      triangleIndices;
     std::vector<defaulttype::Vector3>                barycentricCoordinates;
     SReal                                           timeToIncise;
 
@@ -168,15 +168,15 @@ public:
         std::stringstream tmp ;
         tmp<< "Time to incise: " << timeToIncise << msgendl;
         tmp<< "Triangle indices : ";
-        for (index_type i = 0 ; i < triangleIndices.size() ; i++)
+        for (Index i = 0 ; i < triangleIndices.size() ; i++)
             tmp<< triangleIndices[i] << " ";
         tmp<<  msgendl;
         tmp<< "Barycentric coordinates : ";
-        for (index_type i = 0 ; i < barycentricCoordinates.size() ; i++)
+        for (Index i = 0 ; i < barycentricCoordinates.size() ; i++)
             tmp<< barycentricCoordinates[i] << " | " ;
         tmp<<  msgendl;
         tmp<< "Coordinates : ";
-        for (index_type i = 0 ; i < coordinates.size() ; i++)
+        for (Index i = 0 ; i < coordinates.size() ; i++)
             tmp<< coordinates[i] << " | " ;
         msg_info("TriangleIncisionInformation") << tmp.str() ;
     }
@@ -198,7 +198,7 @@ public:
         for (unsigned int i = 0 ; i < coordinates.size() ; i++)
         {
             defaulttype::Vec3Types::Coord coord[3];
-            index_type triIndex = triangleIndices[i];
+            Index triIndex = triangleIndices[i];
 
             if ( triIndex >= topology->getNbTriangles())
             {

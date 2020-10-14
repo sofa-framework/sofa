@@ -76,7 +76,7 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 
     Data<SReal> d_bendingStiffness;  ///< Material parameter
     Data<SReal> d_minDistValidity; ///< Minimal distance to consider a spring valid
@@ -158,9 +158,9 @@ protected:
         /// Compliant stiffness matrix assembly
         void getStiffness( StiffnessMatrix &K ) const;
         /// replace a vertex index with another one
-        void replaceIndex( index_type oldIndex, index_type newIndex );
+        void replaceIndex( Index oldIndex, Index newIndex );
         /// replace all the vertex indices with the given ones
-        void replaceIndices( const helper::vector<index_type> &newIndices );
+        void replaceIndices( const helper::vector<Index> &newIndices );
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgeSpring& /*ei*/ )
@@ -185,21 +185,21 @@ protected:
         TriangularBSEdgeHandler(FastTriangularBendingSprings<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeSpring> >* _data)
             : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeSpring> >(_data), ff(_ff) {}
 
-        void applyCreateFunction(index_type edgeIndex,
+        void applyCreateFunction(Index edgeIndex,
                 EdgeSpring &ei,
-                const core::topology::BaseMeshTopology::Edge& ,  const sofa::helper::vector< index_type > &,
+                const core::topology::BaseMeshTopology::Edge& ,  const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double >&);
 
-        void applyTriangleCreation(const sofa::helper::vector<index_type> &triangleAdded,
+        void applyTriangleCreation(const sofa::helper::vector<Index> &triangleAdded,
                 const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> & ,
-                const sofa::helper::vector<sofa::helper::vector<index_type> > & ,
+                const sofa::helper::vector<sofa::helper::vector<Index> > & ,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
-        void applyTriangleDestruction(const sofa::helper::vector<index_type> &triangleRemoved);
+        void applyTriangleDestruction(const sofa::helper::vector<Index> &triangleRemoved);
 
-        void applyPointDestruction(const sofa::helper::vector<index_type> &pointIndices);
+        void applyPointDestruction(const sofa::helper::vector<Index> &pointIndices);
 
-        void applyPointRenumbering(const sofa::helper::vector<index_type> &pointToRenumber);
+        void applyPointRenumbering(const sofa::helper::vector<Index> &pointToRenumber);
 
         using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeSpring> >::ApplyTopologyChange;
         /// Callback to add triangles elements.

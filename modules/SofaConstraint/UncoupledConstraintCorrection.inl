@@ -45,9 +45,9 @@ namespace
 { // helper methods
 
 /// Compute compliance between 2 constraint Jacobians for Vec types
-template<size_type N, typename Real, class VecReal>
+template<Size N, typename Real, class VecReal>
 inline double UncoupledConstraintCorrection_computeCompliance(
-    index_type index,
+    Index index,
     const sofa::defaulttype::Vec<N, Real>& n1, const sofa::defaulttype::Vec<N, Real>& n2,
     const Real comp0, const VecReal& comp)
 {
@@ -57,7 +57,7 @@ inline double UncoupledConstraintCorrection_computeCompliance(
 /// Compute compliance between 2 constraint Jacobians for Rigid types
 template<typename Real, class VecReal>
 inline double UncoupledConstraintCorrection_computeCompliance(
-    index_type index,
+    Index index,
     const sofa::defaulttype::RigidDeriv<3, Real>& n1, const sofa::defaulttype::RigidDeriv<3, Real>& n2,
     const Real comp0, const VecReal& comp)
 {
@@ -75,9 +75,9 @@ inline double UncoupledConstraintCorrection_computeCompliance(
 }
 
 /// Compute displacement from constraint force for Vec types
-template<size_type N, typename Real, class VecReal>
+template<Size N, typename Real, class VecReal>
 inline sofa::defaulttype::Vec<N, Real> UncoupledConstraintCorrection_computeDx(
-    index_type index,
+    Index index,
     const sofa::defaulttype::Vec<N, Real>& f,
     const Real comp0, const VecReal& comp)
 {
@@ -87,7 +87,7 @@ inline sofa::defaulttype::Vec<N, Real> UncoupledConstraintCorrection_computeDx(
 /// Compute displacement from constraint force for Rigid types
 template<typename Real, class VecReal>
 inline sofa::defaulttype::RigidDeriv<3, Real> UncoupledConstraintCorrection_computeDx(
-    index_type index,
+    Index index,
     const sofa::defaulttype::RigidDeriv<3, Real>& f,
     const Real comp0, const VecReal& comp)
 {
@@ -293,7 +293,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     }
 
     comp0 *= Real(factor);
-    for(size_type i=0;i<comp.size(); ++i)
+    for(Size i=0;i<comp.size(); ++i)
     {
         comp[i] *= Real(factor);
     }

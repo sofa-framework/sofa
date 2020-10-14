@@ -62,7 +62,7 @@ public:
     typedef typename HexahedralFEMForceFieldT::VecElement VecElement;
     typedef typename HexahedralFEMForceFieldT::VecElementStiffness VecElementMass;
     typedef typename HexahedralFEMForceFieldT::ElementStiffness ElementMass;
-    typedef core::topology::BaseMeshTopology::index_type Index;
+    typedef core::topology::BaseMeshTopology::Index Index;
     typedef typename HexahedralFEMForceFieldT::HexahedronInformation HexahedronInformation;
     typedef typename HexahedralFEMForceFieldT::ElementStiffness ElementStiffness;
     typedef typename HexahedralFEMForceFieldT::Element Element;
@@ -110,7 +110,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    SReal getElementMass(sofa::index_type index) const override;
+    SReal getElementMass(sofa::Index index) const override;
 
     void setDensity(Real d) {_density.setValue( d );}
     Real getDensity() {return _density.getValue();}

@@ -68,7 +68,7 @@ public:
     typedef typename Out::Coord       OutCoord;
     typedef typename Out::Deriv       OutDeriv;
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 protected:
 
     SimpleTesselatedTetraMechanicalMapping();

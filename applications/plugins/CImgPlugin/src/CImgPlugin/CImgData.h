@@ -589,32 +589,32 @@ struct ImageTypeInfo
 
     enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
 
-    static size_type size() { return 1; }
-    static size_type byteSize() { return 1; }
+    static sofa::Size size() { return 1; }
+    static sofa::Size byteSize() { return 1; }
 
-    static size_type size(const DataType& /*data*/) { return 1; }
+    static sofa::Size size(const DataType& /*data*/) { return 1; }
 
-    static bool setSize(DataType& /*data*/, size_type /*size*/) { return false; }
+    static bool setSize(DataType& /*data*/, sofa::Size /*size*/) { return false; }
 
     template <typename T>
-    static void getValue(const DataType &/*data*/, index_type /*index*/, T& /*value*/)
+    static void getValue(const DataType &/*data*/, Index /*index*/, T& /*value*/)
     {
         return;
     }
 
     template<typename T>
-    static void setValue(DataType &/*data*/, index_type /*index*/, const T& /*value*/ )
+    static void setValue(DataType &/*data*/, Index /*index*/, const T& /*value*/ )
     {
         return;
     }
 
-    static void getValueString(const DataType &data, index_type index, std::string& value)
+    static void getValueString(const DataType &data, Index index, std::string& value)
     {
         if (index != 0) return;
         std::ostringstream o; o << data; value = o.str();
     }
 
-    static void setValueString(DataType &data, index_type index, const std::string& value )
+    static void setValueString(DataType &data, Index index, const std::string& value )
     {
         if (index != 0) return;
         std::istringstream i(value); i >> data;

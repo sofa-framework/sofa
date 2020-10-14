@@ -41,7 +41,7 @@ using sofa::helper::vector;
 class SOFA_HELPER_API MarchingCubeUtility
 {
 public:
-    typedef sofa::index_type PointID;
+    typedef sofa::Index PointID;
     typedef Vec<3, int> Vec3i;
     typedef Vec<6, int> Vec6i;
 

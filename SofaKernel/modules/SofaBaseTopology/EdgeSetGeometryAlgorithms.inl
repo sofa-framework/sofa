@@ -767,7 +767,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
 
 template< class DataTypes>
-void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helper::vector<sofa::index_type>& numEdges, helper::vector<Edge>& vertexEdges, helper::vector<Vec3d>& weights ) const
+void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helper::vector<sofa::Index>& numEdges, helper::vector<Edge>& vertexEdges, helper::vector<Vec3d>& weights ) const
 {
     const VecCoord& pos =(this->object->read(core::ConstVecCoordId::position())->getValue()); // point positions
 
@@ -793,7 +793,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
         // todo: weight the edges according to their lengths
 
         // compute E.Et
-        for(size_type e=0; e<ve.size(); e++ )
+        for(Size e=0; e<ve.size(); e++ )
         {
             Edge edge = edges[ve[e]];
             vertexEdges.push_back(edge);              // concatenate

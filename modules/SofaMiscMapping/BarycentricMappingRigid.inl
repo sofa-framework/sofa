@@ -67,8 +67,8 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::clear (std::size_t re
 }
 
 template <class In, class Out>
-typename BarycentricMapperTetrahedronSetTopologyRigid<In, Out>::index_type
-BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointInTetra ( const index_type tetraIndex, const SReal* baryCoords )
+typename BarycentricMapperTetrahedronSetTopologyRigid<In, Out>::Index
+BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointInTetra ( const Index tetraIndex, const SReal* baryCoords )
 {
     helper::vector<MappingData>& vectorData = *(map.beginEdit());
     vectorData.resize ( map.getValue().size() +1 );
@@ -82,8 +82,8 @@ BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointInTetra ( const in
 }
 
 template<class In, class Out>
-typename BarycentricMapperTetrahedronSetTopologyRigid<In, Out>::index_type
-BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointOrientationInTetra( const index_type tetraIndex, const sofa::defaulttype::Matrix3 baryCoorsOrient )
+typename BarycentricMapperTetrahedronSetTopologyRigid<In, Out>::Index
+BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointOrientationInTetra( const Index tetraIndex, const sofa::defaulttype::Matrix3 baryCoorsOrient )
 {
     //storing the frame in 3 maps: one direction vector in one map  (3 coor. elements inside a map)
     // IPTR_BARCPP_ADDOR("addPointOrientation BEGIN" << endl);

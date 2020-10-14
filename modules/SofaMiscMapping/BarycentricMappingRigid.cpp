@@ -85,7 +85,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
                         iter != m_invalidIndex.cend(); ++iter )
                 {
                     const int j = *iter;
-                    if ( mapData[j].in_index == InvalidID ) // compute new mapping
+                    if ( mapData[j].in_index == sofa::InvalidID ) // compute new mapping
                     {
                         Vector3 coefs;
                         defaulttype::Vec3Types::Coord pos;
@@ -96,9 +96,9 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
                         // find nearest cell and barycentric coords
                         Real distance = 1e10;
 
-                        index_type index = m_fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
+                        Index index = m_fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
 
-                        if ( index != InvalidID )
+                        if ( index != sofa::InvalidID )
                         {
                             mapData[j].baryCoords[0] = ( Real ) coefs[0];
                             mapData[j].baryCoords[1] = ( Real ) coefs[1];
@@ -152,7 +152,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
                         defaulttype::Vec3Types::Coord restPos = m_fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
 
                         helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
-                        vectorData[j].in_index = InvalidID;
+                        vectorData[j].in_index = sofa::InvalidID;
                         vectorData[j].baryCoords[0] = restPos[0];
                         vectorData[j].baryCoords[1] = restPos[1];
                         vectorData[j].baryCoords[2] = restPos[2];
@@ -164,10 +164,10 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
             }
 
             // renumber
-            index_type lastCubeId = nbHexahedra-1;
+            Index lastCubeId = nbHexahedra-1;
             for ( std::size_t i=0; i<hexahedra.size(); ++i, --lastCubeId )
             {
-                index_type cubeId = hexahedra[i];
+                Index cubeId = hexahedra[i];
                 for ( std::size_t j=0; j<d_map.getValue().size(); ++j )
                 {
                     if ( d_map.getValue()[j].in_index == lastCubeId )

@@ -562,13 +562,13 @@ void CudaRigidDistanceGridCollisionModel::init()
     std::cout << "< CudaRigidDistanceGridCollisionModel::init()"<<std::endl;
 }
 
-void CudaRigidDistanceGridCollisionModel::resize(size_type s)
+void CudaRigidDistanceGridCollisionModel::resize(Size s)
 {
     this->core::CollisionModel::resize(s);
     elems.resize(s);
 }
 
-void CudaRigidDistanceGridCollisionModel::setGrid(CudaDistanceGrid* surf, index_type index)
+void CudaRigidDistanceGridCollisionModel::setGrid(CudaDistanceGrid* surf, Index index)
 {
     if (elems[index].grid == surf) return;
     if (elems[index].grid!=NULL) elems[index].grid->release();
@@ -576,7 +576,7 @@ void CudaRigidDistanceGridCollisionModel::setGrid(CudaDistanceGrid* surf, index_
     modified = true;
 }
 
-void CudaRigidDistanceGridCollisionModel::setNewState(index_type index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
+void CudaRigidDistanceGridCollisionModel::setNewState(Index index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
 {
     grid->addRef();
     if (elems[index].prevGrid!=NULL)
@@ -672,7 +672,7 @@ void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams*
         getPrevious()->draw(vparams);
 }
 
-void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* , index_type index)
+void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* , Index index)
 {
 #ifndef SOFA_NO_OPENGL
     if (elems[index].isTransformed)

@@ -61,7 +61,7 @@ class PartialLinearMovementConstraint : public core::behavior::ProjectiveConstra
 public:
     SOFA_CLASS(SOFA_TEMPLATE(PartialLinearMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -74,7 +74,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<index_type> SetIndexArray;
+    typedef helper::vector<Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 protected:
@@ -125,8 +125,8 @@ protected:
 public:
     ///methods to add/remove some indices, keyTimes, keyMovement
     void clearIndices();
-    void addIndex(index_type index);
-    void removeIndex(index_type index);
+    void addIndex(Index index);
+    void removeIndex(Index index);
     void clearKeyMovements();
 
     ///@brief Add a new key movement
@@ -158,9 +158,9 @@ public:
         FCPointHandler(PartialLinearMovementConstraint<DataTypes>* _lc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), lc(_lc) {}
 
-        void applyDestroyFunction(index_type /*index*/, value_type& /*T*/);
-        bool applyTestCreateFunction(index_type /*index*/,
-                const sofa::helper::vector< index_type > & /*ancestors*/,
+        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
+        bool applyTestCreateFunction(Index /*index*/,
+                const sofa::helper::vector< Index > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
         PartialLinearMovementConstraint<DataTypes> *lc;

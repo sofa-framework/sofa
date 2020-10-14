@@ -394,7 +394,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
     if (!topoMap)
         return;
 
-    const sofa::helper::vector< std::pair< Mesh2PointTopologicalMapping::Element, sofa::index_type> >& pointSource = topoMap->getPointSource();
+    const sofa::helper::vector< std::pair< Mesh2PointTopologicalMapping::Element, sofa::Index> >& pointSource = topoMap->getPointSource();
 
     if (pointSource.empty())
         return;
@@ -422,10 +422,10 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
 
             while (colIt != colItEnd)
             {
-                const index_type indexUIn = colIt.index();
+                const Index indexUIn = colIt.index();
                 const OutDeriv data = colIt.val();
                 std::pair< Mesh2PointTopologicalMapping::Element, int> source = pointSource[indexUIn];
-                index_type indexIn = indexUIn;
+                Index indexIn = indexUIn;
 
                 switch (source.first)
                 {
@@ -450,7 +450,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     {
                         const auto& edgeMap = topoMap->getPointsMappedFromEdge();
                         bool err = true;
-                        for(size_type i = 0; i < edgeMap[source.second].size(); ++i)
+                        for(Size i = 0; i < edgeMap[source.second].size(); ++i)
                         {
                             if (edgeMap[source.second][i] == indexIn)
                             {
@@ -487,7 +487,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     {
                         const auto& triangleMap = topoMap->getPointsMappedFromTriangle();
                         bool err = true;
-                        for(size_type i = 0; i < triangleMap[source.second].size(); ++i)
+                        for(Size i = 0; i < triangleMap[source.second].size(); ++i)
                         {
                             if (triangleMap[source.second][i] == indexIn)
                             {
@@ -526,7 +526,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     {
                         const auto& quadMap = topoMap->getPointsMappedFromQuad();
                         bool err = true;
-                        for(size_type i = 0; i < quadMap[source.second].size(); ++i)
+                        for(Size i = 0; i < quadMap[source.second].size(); ++i)
                         {
                             if (quadMap[source.second][i] == indexIn)
                             {
@@ -568,7 +568,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     {
                         const auto& tetraMap = topoMap->getPointsMappedFromTetra();
                         bool err = true;
-                        for(size_type i = 0; i < tetraMap[source.second].size(); ++i)
+                        for(Size i = 0; i < tetraMap[source.second].size(); ++i)
                         {
                             if (tetraMap[source.second][i] == indexIn)
                             {
@@ -610,7 +610,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     {
                         const auto& hexaMap = topoMap->getPointsMappedFromHexa();
                         bool err = true;
-                        for(size_type i = 0; i < hexaMap[source.second].size(); ++i)
+                        for(Size i = 0; i < hexaMap[source.second].size(); ++i)
                         {
                             if (hexaMap[source.second][i] == indexIn)
                             {

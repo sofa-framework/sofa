@@ -43,7 +43,7 @@ namespace projectiveconstraintset
 
 // Define TestFunction
 template< class DataTypes>
-bool AffineMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(index_type, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
+bool AffineMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     return fc != 0;
 }
@@ -51,7 +51,7 @@ bool AffineMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunctio
 
 // Define RemovalFunction
 template< class DataTypes>
-void AffineMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, core::objectmodel::Data<value_type>&)
+void AffineMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, core::objectmodel::Data<value_type>&)
 {
     if (fc)
     {
@@ -98,14 +98,14 @@ void AffineMovementConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void AffineMovementConstraint<DataTypes>::addConstraint(index_type index)
+void AffineMovementConstraint<DataTypes>::addConstraint(Index index)
 {
     m_indices.beginEdit()->push_back(index);
     m_indices.endEdit();
 }
 
 template <class DataTypes>
-void AffineMovementConstraint<DataTypes>::removeConstraint(index_type index)
+void AffineMovementConstraint<DataTypes>::removeConstraint(Index index)
 {
     removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();
@@ -144,9 +144,9 @@ void AffineMovementConstraint<DataTypes>::init()
     const SetIndexArray & indices = m_indices.getValue();
 
     auto maxIndex=this->mstate->getSize();
-    for (size_type i=0; i<indices.size(); ++i)
+    for (Size i=0; i<indices.size(); ++i)
     {
-        const index_type index=indices[i];
+        const Index index=indices[i];
         if (index >= maxIndex)
         {
             msg_error() << "Index " << index << " not valid!";

@@ -57,26 +57,26 @@ class SOFA_CORE_API Topology : public virtual core::objectmodel::BaseObject
 {
 public:
     /// Topology global typedefs
-    //typedef int index_type;
-    typedef sofa::index_type index_type;
+    //typedef int Index;
+    typedef sofa::Index Index;
     //enum { InvalidID = sofa::InvalidID };
-    static constexpr index_type InvalidID = sofa::InvalidID;
+    static constexpr Index InvalidID = sofa::InvalidID;
 
-    typedef index_type                 ElemID;
-    typedef index_type                 PointID;
-    typedef index_type                 EdgeID;
-    typedef index_type                 TriangleID;
-    typedef index_type                 QuadID;
-    typedef index_type                 TetraID;
-    typedef index_type                 TetrahedronID;
-    typedef index_type                 HexaID;
-    typedef index_type                 HexahedronID;
-    typedef index_type                 PentahedronID;
-    typedef index_type                 PentaID;
-    typedef index_type                 PyramidID;
+    typedef Index                 ElemID;
+    typedef Index                 PointID;
+    typedef Index                 EdgeID;
+    typedef Index                 TriangleID;
+    typedef Index                 QuadID;
+    typedef Index                 TetraID;
+    typedef Index                 TetrahedronID;
+    typedef Index                 HexaID;
+    typedef Index                 HexahedronID;
+    typedef Index                 PentahedronID;
+    typedef Index                 PentaID;
+    typedef Index                 PyramidID;
 
-    typedef sofa::helper::vector<index_type>                  SetIndex;
-    typedef sofa::helper::vector<index_type>                  SetIndices;
+    typedef sofa::helper::vector<Index>                  SetIndex;
+    typedef sofa::helper::vector<Index>                  SetIndices;
 
     typedef PointID                             Point;
     // in the following types, we use wrapper classes to have different types for each element, otherwise Quad and Tetrahedron would be the same
@@ -147,18 +147,18 @@ public:
     // This is not very clean and is quit slow but it should only be used during initialization
 
     virtual bool hasPos() const { return false; }
-    virtual size_type getNbPoints() const { return 0; }
-    virtual void setNbPoints(size_type /*n*/) {}
-    virtual SReal getPX(index_type /*i*/) const { return 0.0; }
-    virtual SReal getPY(index_type /*i*/) const { return 0.0; }
-    virtual SReal getPZ(index_type /*i*/) const { return 0.0; }
+    virtual Size getNbPoints() const { return 0; }
+    virtual void setNbPoints(Size /*n*/) {}
+    virtual SReal getPX(Index /*i*/) const { return 0.0; }
+    virtual SReal getPY(Index /*i*/) const { return 0.0; }
+    virtual SReal getPZ(Index /*i*/) const { return 0.0; }
 
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
     // Declare invalid topology structures filled with Topology::InvalidID
-    static const sofa::helper::vector<Topology::index_type> InvalidSet;
+    static const sofa::helper::vector<Topology::Index> InvalidSet;
     static const Edge                                       InvalidEdge;
     static const Triangle                                   InvalidTriangle;
     static const Quad                                       InvalidQuad;
@@ -246,43 +246,43 @@ namespace defaulttype
 {
 
 template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Edge > : public FixedArrayTypeInfo<sofa::helper::fixed_array<index_type,2> >
+struct DataTypeInfo< sofa::core::topology::Topology::Edge > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,2> >
 {
     static std::string name() { return "Edge"; }
 };
 
 template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Triangle > : public FixedArrayTypeInfo<sofa::helper::fixed_array<index_type,3> >
+struct DataTypeInfo< sofa::core::topology::Topology::Triangle > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,3> >
 {
     static std::string name() { return "Triangle"; }
 };
 
 template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Quad > : public FixedArrayTypeInfo<sofa::helper::fixed_array<index_type,4> >
+struct DataTypeInfo< sofa::core::topology::Topology::Quad > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,4> >
 {
     static std::string name() { return "Quad"; }
 };
 
 template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Tetrahedron > : public FixedArrayTypeInfo<sofa::helper::fixed_array<index_type,4> >
+struct DataTypeInfo< sofa::core::topology::Topology::Tetrahedron > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,4> >
 {
     static std::string name() { return "Tetrahedron"; }
 };
 
 template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Pyramid > : public FixedArrayTypeInfo<sofa::helper::fixed_array<index_type,5> >
+struct DataTypeInfo< sofa::core::topology::Topology::Pyramid > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,5> >
 {
     static std::string name() { return "Pyramid"; }
 };
 
 template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Pentahedron > : public FixedArrayTypeInfo<sofa::helper::fixed_array<index_type,6> >
+struct DataTypeInfo< sofa::core::topology::Topology::Pentahedron > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,6> >
 {
     static std::string name() { return "Pentahedron"; }
 };
 
 template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Hexahedron > : public FixedArrayTypeInfo<sofa::helper::fixed_array<index_type,8> >
+struct DataTypeInfo< sofa::core::topology::Topology::Hexahedron > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,8> >
 {
     static std::string name() { return "Hexahedron"; }
 };

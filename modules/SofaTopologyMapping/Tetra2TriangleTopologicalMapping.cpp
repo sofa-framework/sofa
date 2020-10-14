@@ -157,7 +157,7 @@ void Tetra2TriangleTopologicalMapping::init()
 }
 
 
-index_type Tetra2TriangleTopologicalMapping::getFromIndex(index_type ind)
+Index Tetra2TriangleTopologicalMapping::getFromIndex(Index ind)
 {
 
     if(fromModel->getTetrahedraAroundTriangle(ind).size()==1)
@@ -180,7 +180,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     auto itBegin=fromModel->beginChange();
     auto itEnd=fromModel->endChange();
 
-    sofa::helper::vector <index_type>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
     while( itBegin != itEnd )
     {
@@ -203,7 +203,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             const auto &triIDtoRemove = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
 
             // search for the list of triangles to remove in mapped topology
-            sofa::helper::vector< index_type > triangles_to_remove;
+            sofa::helper::vector< Index > triangles_to_remove;
 
             for (auto globTriId : triIDtoRemove)
             {
@@ -460,7 +460,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         {
             const auto pointRemoved = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-            sofa::helper::vector<index_type> indices;
+            sofa::helper::vector<Index> indices;
 
             for(unsigned int i = 0; i < pointRemoved.size(); ++i)
             {
@@ -532,7 +532,7 @@ bool Tetra2TriangleTopologicalMapping::checkTopologies()
     dmsg_info() << "Glob2LocMap.size(): " << Glob2LocMap.size();
     dmsg_info() << "Loc2GlobDataVec.size(): " << buffer.size();
 
-    std::map<index_type, index_type>::iterator itM;
+    std::map<Index, Index>::iterator itM;
     for (size_t i=0; i<triangleArray_top.size(); i++)
     {
         const auto & tri = triangleArray_top[i];

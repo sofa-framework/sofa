@@ -123,7 +123,7 @@ void ConstantForceField<DataTypes>::init()
             return;
         }
         // check each indice of the vector
-        for(size_type i=0; i<indicesSize; i++)
+        for(Size i=0; i<indicesSize; i++)
         {
             if( indices[i] > m_systemSize )
             {
@@ -236,7 +236,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
         }
 
         // check each indice of the vector
-        for(size_type i=0; i<indicesSize; i++)
+        for(Size i=0; i<indicesSize; i++)
         {
             if( indices[i] > m_systemSize )
             {
@@ -346,7 +346,7 @@ void ConstantForceField<DataTypes>::computeForceFromForceVector()
     }
     else
     {
-        for(size_type i=0; i<indicesSize; i++)
+        for(Size i=0; i<indicesSize; i++)
         {
             totalForce += forces[i];
         }
@@ -365,7 +365,7 @@ void ConstantForceField<DataTypes>::computeForceFromSingleForce()
     forces.clear();
     forces.resize(indicesSize);
 
-    for(size_type i=0; i<indicesSize; i++)
+    for(Size i=0; i<indicesSize; i++)
     {
         forces[i] = singleForce;
     }

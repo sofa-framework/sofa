@@ -57,8 +57,8 @@ public:
 
     Vec3State() ;
 
-    virtual void resize(size_type vsize) ;
-    virtual size_type getSize() const ;
+    virtual void resize(Size vsize) ;
+    virtual Size getSize() const ;
 
     //State API
     virtual       Data<VecCoord>* write(core::VecCoordId  v ) ;
@@ -88,7 +88,7 @@ public:
     typedef sofa::defaulttype::Vec<2, float> TexCoord;
     typedef helper::vector<TexCoord> VecTexCoord;
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
     
     //Indices must be unsigned int for drawing
     using visual_index_type = unsigned int;
@@ -403,7 +403,7 @@ public:
     /// Append this mesh to an OBJ format stream.
     /// The number of vertices position, normal, and texture coordinates already written is given as parameters
     /// This method should update them
-    void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, index_type& vindex, index_type& nindex, index_type& tindex, int& count) override;
+    void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, Index& vindex, Index& nindex, Index& tindex, int& count) override;
 
     /// Returns the sofa class name. By default the name of the c++ class is exposed...
     /// More details on the name customization infrastructure is in NameDecoder.h

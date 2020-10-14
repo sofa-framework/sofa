@@ -57,7 +57,7 @@ public:
     static defaulttype::Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real> getF(const typename OutDataTypes::Coord&)  { return defaulttype::Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real>(); }
 };
 
-template< size_type _spatial_dimensions,  size_type _material_dimensions, int _order, typename _Real>
+template< Size _spatial_dimensions,  Size _material_dimensions, int _order, typename _Real>
 class OutDataTypesInfo<defaulttype::DefGradientTypes<_spatial_dimensions, _material_dimensions, _order, _Real> >
 {
 public:
@@ -93,7 +93,7 @@ public:
 
 
 ///Abstract interface to allow forward/backward mapping of arbitrary points (no need to know exact in/output types)
-template < size_type spatial_dimensions,typename Real>
+template < Size spatial_dimensions,typename Real>
 class BasePointMapper : public virtual core::objectmodel::BaseObject
 {
 protected:

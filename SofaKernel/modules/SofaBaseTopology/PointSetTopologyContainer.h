@@ -52,7 +52,7 @@ public:
     typedef defaulttype::Vec3Types InitTypes;
 
 protected:
-    PointSetTopologyContainer(size_type nPoints = 0);
+    PointSetTopologyContainer(Size nPoints = 0);
 
     ~PointSetTopologyContainer() override {}
 public:
@@ -71,31 +71,31 @@ public:
     /// @{
 
     /** \brief Returns the number of vertices in this topology. */
-    size_type getNbPoints() const override { return nbPoints.getValue(); }
+    Size getNbPoints() const override { return nbPoints.getValue(); }
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual size_type getNumberOfElements() const;
+    virtual Size getNumberOfElements() const;
 
     /** \brief Returns a reference to the Data of points array container. */
     Data<InitTypes::VecCoord>& getPointDataArray() {return d_initPoints;}
 
     /** \brief Set the number of vertices in this topology. */
-    void setNbPoints(size_type n) override;
+    void setNbPoints(Size n) override;
 
 
     /** \brief check if vertices in this topology have positions. */
     bool hasPos() const override;
 
     /** \brief Returns the X coordinate of the ith DOF. */
-    SReal getPX(index_type i) const override;
+    SReal getPX(Index i) const override;
 
     /** \brief Returns the Y coordinate of the ith DOF. */
-    SReal getPY(index_type i) const override;
+    SReal getPY(Index i) const override;
 
     /** \brief Returns the Z coordinate of the ith DOF. */
-    SReal getPZ(index_type i) const override;
+    SReal getPZ(Index i) const override;
 
    	/** \brief Returns the type of the topology */
    	sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::POINT;}
@@ -122,7 +122,7 @@ public:
      *
      * @param The number of point to add.
      */
-    void addPoints(const size_type nPoints);
+    void addPoints(const Size nPoints);
 
 
     /** \brief remove one DOF in this topology (simply decrement the number of DOF)
@@ -135,7 +135,7 @@ public:
      *
      * @param The number of point to remove.
      */
-    void removePoints(const size_type nPoints);
+    void removePoints(const Size nPoints);
 
     /// @}
 
@@ -191,7 +191,7 @@ protected:
 
 private:
     
-    Data<size_type> nbPoints; ///< Number of points
+    Data<Size> nbPoints; ///< Number of points
 
     Data<sofa::helper::vector<PointID> > points; ///< List of point indices
 };

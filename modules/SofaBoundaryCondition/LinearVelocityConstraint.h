@@ -53,7 +53,7 @@ class LinearVelocityConstraint : public core::behavior::ProjectiveConstraintSet<
 public:
     SOFA_CLASS(SOFA_TEMPLATE(LinearVelocityConstraint,TDataTypes),SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,TDataTypes));
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -65,7 +65,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<index_type> SetIndexArray;
+    typedef helper::vector<Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 public :
@@ -97,8 +97,8 @@ protected:
 public:
     ///methods to add/remove some indices, keyTimes, keyVelocity
     void clearIndices();
-    void addIndex(index_type index);
-    void removeIndex(index_type index);
+    void addIndex(Index index);
+    void removeIndex(Index index);
     void clearKeyVelocities();
     /**add a new key movement
     @param time : the simulation time you want to set a movement (in sec)
@@ -128,11 +128,11 @@ public:
 
 
 
-        void applyDestroyFunction(index_type /*index*/, value_type& /*T*/);
+        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
 
 
-        bool applyTestCreateFunction(index_type /*index*/,
-                const sofa::helper::vector< index_type > & /*ancestors*/,
+        bool applyTestCreateFunction(Index /*index*/,
+                const sofa::helper::vector< Index > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
         LinearVelocityConstraint<DataTypes> *lc;

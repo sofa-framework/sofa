@@ -44,9 +44,9 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
-void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(index_type, Spring &t,
+void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(Index, Spring &t,
         const core::topology::BaseMeshTopology::Edge & e,
-        const sofa::helper::vector<index_type> & ancestors,
+        const sofa::helper::vector<Index> & ancestors,
         const sofa::helper::vector<double> & coefs)
 {
     if (ff)

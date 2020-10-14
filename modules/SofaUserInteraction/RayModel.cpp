@@ -49,7 +49,7 @@ RayCollisionModel::RayCollisionModel(SReal length)
     this->contactResponse.setValue("ray"); // use RayContact response class
 }
 
-void RayCollisionModel::resize(size_type size)
+void RayCollisionModel::resize(Size size)
 {
     this->core::CollisionModel::resize(size);
 
@@ -100,7 +100,7 @@ int RayCollisionModel::addRay(const Vector3& origin, const Vector3& direction, S
     return i;
 }
 
-void RayCollisionModel::draw(const core::visual::VisualParams* vparams, index_type index)
+void RayCollisionModel::draw(const core::visual::VisualParams* vparams, Index index)
 {
     if( !vparams->isSupported(core::visual::API_OpenGL) ) return;
 

@@ -56,12 +56,12 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 
     Data<Deriv> pressure; ///< pressure is a vector with specified direction
   	Data<MatSym3> cauchyStress; ///< the Cauchy stress applied on triangles
 
-    Data<sofa::helper::vector<index_type> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
+    Data<sofa::helper::vector<Index> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
 
     /// the normal used to define the edge subjected to the pressure force.
     Data<Deriv> normal;

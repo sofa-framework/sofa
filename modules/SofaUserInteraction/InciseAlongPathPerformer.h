@@ -59,7 +59,7 @@ protected:
 class SOFA_USER_INTERACTION_API InciseAlongPathPerformer: public InteractionPerformer, public InciseAlongPathPerformerConfiguration
 {
 public:
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
     InciseAlongPathPerformer(BaseMouseInteractor *i)
         : InteractionPerformer(i)
         , cpt(0)

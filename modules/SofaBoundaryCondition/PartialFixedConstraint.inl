@@ -190,7 +190,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
 
     if( this->d_fixAll.getValue() )
     {
-        for(size_type i=0; i<vect->size(); i++ )
+        for(Size i=0; i<vect->size(); i++ )
         {
             for (unsigned int c = 0; c < N; ++c)
             {

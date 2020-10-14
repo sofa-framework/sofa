@@ -173,7 +173,7 @@ public:
 
     typedef BaseMatrixLinearSolver<Matrix, Vector> Inherit;
     typedef NoThreadManager ThreadManager;
-    typedef std::list<index_type> ListIndex;
+    typedef std::list<Index> ListIndex;
     typedef typename Vector::Real Real;
     typedef typename MatrixLinearSolverInternalData<Vector>::JMatrixType JMatrixType;
     typedef typename MatrixLinearSolverInternalData<Vector>::ResMatrixType ResMatrixType;
@@ -185,7 +185,7 @@ public:
     void resetSystem() override;
 
     /// Reset the current linear system.
-    void resizeSystem(size_type n);
+    void resizeSystem(Size n);
 
     /// Set the linear system matrix, combining the mechanical M,B,K matrices using the given coefficients
     ///
@@ -200,7 +200,7 @@ public:
     /// Set the linear system matrix (only use for bench)
     void setSystemMatrix(Matrix* matrix);
 
-    size_type getSystemSize() {
+    Size getSystemSize() {
         return currentGroup->systemSize;
     }
 
@@ -330,7 +330,7 @@ protected:
     class GroupData
     {
     public:
-        size_type systemSize;
+        Size systemSize;
         bool needInvert;
         Matrix* systemMatrix;
         Vector* systemRHVector;
@@ -391,7 +391,7 @@ template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resetSystem();
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resizeSystem(size_type);
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resizeSystem(Size);
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemMBKMatrix(const core::MechanicalParams* mparams);

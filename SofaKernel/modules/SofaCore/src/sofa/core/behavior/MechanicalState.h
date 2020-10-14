@@ -77,16 +77,16 @@ public:
     /// Sparse matrix containing derivative values (constraints)
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 
 protected:
     ~MechanicalState() override {}
 public:
-    size_type getCoordDimension() const override { return defaulttype::DataTypeInfo<Coord>::size(); }
-    size_type getDerivDimension() const override { return defaulttype::DataTypeInfo<Deriv>::size(); }
+    Size getCoordDimension() const override { return defaulttype::DataTypeInfo<Coord>::size(); }
+    Size getDerivDimension() const override { return defaulttype::DataTypeInfo<Deriv>::size(); }
 
     /// Get the indices of the particles located in the given bounding box
-    virtual void getIndicesInSpace(sofa::helper::vector<index_type>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
+    virtual void getIndicesInSpace(sofa::helper::vector<Index>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
 
     template<class T>
     static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
@@ -106,8 +106,8 @@ public:
 			const auto dim = defaulttype::DataTypeInfo<Coord>::size();
 			assert( n == dim * size );
 			
-			for(size_type i = 0; i < size; ++i) {
-				for(size_type j = 0; j < dim; ++j) {
+			for(Size i = 0; i < size; ++i) {
+				for(Size j = 0; j < dim; ++j) {
 					defaulttype::DataTypeInfo<Coord>::getValue(vec[i], j, *(dst++));
 				}
 			}
@@ -118,8 +118,8 @@ public:
             const auto dim = defaulttype::DataTypeInfo<Deriv>::size();
             assert( n == dim * size );
 			
-            for(size_type i = 0; i < size; ++i) {
-                for(size_type j = 0; j < dim; ++j) {
+            for(Size i = 0; i < size; ++i) {
+                for(Size j = 0; j < dim; ++j) {
                     defaulttype::DataTypeInfo<Deriv>::getValue(vec[i], j, *(dst++));
                 }
             }
@@ -142,8 +142,8 @@ public:
 			const auto dim = defaulttype::DataTypeInfo<Coord>::size();
 			assert( n == dim * size );
 			
-			for(size_type i = 0; i < size; ++i) {
-				for(size_type j = 0; j < dim; ++j) {
+			for(Size i = 0; i < size; ++i) {
+				for(Size j = 0; j < dim; ++j) {
 					defaulttype::DataTypeInfo<Coord>::setValue(vec[i], j, *(src++));
 				}
 			}
@@ -154,8 +154,8 @@ public:
 			const auto dim = defaulttype::DataTypeInfo<Deriv>::size();
 			assert( n == dim * size );
 			
-			for(size_type i = 0; i < size; ++i) {
-				for(size_type j = 0; j < dim; ++j) {
+			for(Size i = 0; i < size; ++i) {
+				for(Size j = 0; j < dim; ++j) {
                     defaulttype::DataTypeInfo<Deriv>::setValue(vec[i], j, *(src++));
 				}
 			}
@@ -178,8 +178,8 @@ public:
             const auto dim = defaulttype::DataTypeInfo<Coord>::size();
             assert( n == dim * size );
 
-            for(size_type i = 0; i < size; ++i) {
-                for(size_type j = 0; j < dim; ++j) {
+            for(Size i = 0; i < size; ++i) {
+                for(Size j = 0; j < dim; ++j) {
                     typename Coord::value_type tmp;
                     defaulttype::DataTypeInfo<Coord>::getValue(vec[i], j, tmp);
                     tmp += (typename Coord::value_type) *(src++);
@@ -193,8 +193,8 @@ public:
             const auto dim = defaulttype::DataTypeInfo<Deriv>::size();
             assert( n == dim * size );
 
-            for(size_type i = 0; i < size; ++i) {
-                for(size_type j = 0; j < dim; ++j) {
+            for(Size i = 0; i < size; ++i) {
+                for(Size j = 0; j < dim; ++j) {
                     typename Deriv::value_type tmp;
                     defaulttype::DataTypeInfo<Deriv>::getValue(vec[i], j, tmp);
                     tmp += (typename Coord::value_type) *(src++);

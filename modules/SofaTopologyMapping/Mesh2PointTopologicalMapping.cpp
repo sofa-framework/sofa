@@ -77,7 +77,7 @@ void Mesh2PointTopologicalMapping::init()
     {
         if(toModel)
         {
-            index_type toModelLastPointIndex = 0;
+            Index toModelLastPointIndex = 0;
             toModel->clear();
 
             PointSetTopologyModifier *toPointMod = nullptr;
@@ -385,7 +385,7 @@ bool Mesh2PointTopologicalMapping::internalCheck(const char* step, const helper:
 }
 
 
-size_t Mesh2PointTopologicalMapping::addInputPoint(index_type i, PointSetTopologyModifier* toPointMod)
+size_t Mesh2PointTopologicalMapping::addInputPoint(Index i, PointSetTopologyModifier* toPointMod)
 {
     if( pointsMappedFrom[POINT].size() < i+1)
         pointsMappedFrom[POINT].resize(i+1);
@@ -414,7 +414,7 @@ size_t Mesh2PointTopologicalMapping::addInputPoint(index_type i, PointSetTopolog
     
     if (toPointMod)
     {  
-        helper::vector< helper::vector< index_type > > ancestors;
+        helper::vector< helper::vector< Index > > ancestors;
         helper::vector< helper::vector< double       > > coefs;
         toPointMod->addPointsWarning(pBaryCoords.size(), ancestors, coefs);
     }
@@ -423,7 +423,7 @@ size_t Mesh2PointTopologicalMapping::addInputPoint(index_type i, PointSetTopolog
 
 }
 
-void Mesh2PointTopologicalMapping::addInputEdge(index_type i, PointSetTopologyModifier* toPointMod)
+void Mesh2PointTopologicalMapping::addInputEdge(Index i, PointSetTopologyModifier* toPointMod)
 {
     if (pointsMappedFrom[EDGE].size() < i + 1)
         pointsMappedFrom[EDGE].resize(i + 1);
@@ -460,13 +460,13 @@ void Mesh2PointTopologicalMapping::addInputEdge(index_type i, PointSetTopologyMo
 
     if (toPointMod)
     {
-        helper::vector< helper::vector< index_type > > ancestors;
+        helper::vector< helper::vector< Index > > ancestors;
         helper::vector< helper::vector< double       > > coefs;
         toPointMod->addPointsWarning(eBaryCoords.size(), ancestors, coefs);
     }
 }
 
-void Mesh2PointTopologicalMapping::addInputTriangle(index_type i, PointSetTopologyModifier* toPointMod)
+void Mesh2PointTopologicalMapping::addInputTriangle(Index i, PointSetTopologyModifier* toPointMod)
 {
     if (pointsMappedFrom[TRIANGLE].size() < i+1)
         pointsMappedFrom[TRIANGLE].resize(i+1);
@@ -505,14 +505,14 @@ void Mesh2PointTopologicalMapping::addInputTriangle(index_type i, PointSetTopolo
 
     if (toPointMod)
     {
-        helper::vector< helper::vector< index_type > > ancestors;
+        helper::vector< helper::vector< Index > > ancestors;
         helper::vector< helper::vector< double       > > coefs;
         toPointMod->addPointsWarning(tBaryCoords.size(), ancestors, coefs);
     }
 }
 
 
-void Mesh2PointTopologicalMapping::addInputTetrahedron(index_type i, PointSetTopologyModifier* toPointMod)
+void Mesh2PointTopologicalMapping::addInputTetrahedron(Index i, PointSetTopologyModifier* toPointMod)
 {
     if (pointsMappedFrom[TETRA].size() < i+1)
         pointsMappedFrom[TETRA].resize(i+1);
@@ -553,7 +553,7 @@ void Mesh2PointTopologicalMapping::addInputTetrahedron(index_type i, PointSetTop
 
     if (toPointMod)
     {
-        helper::vector< helper::vector< index_type > > ancestors;
+        helper::vector< helper::vector< Index > > ancestors;
         helper::vector< helper::vector< double       > > coefs;
         toPointMod->addPointsWarning(tBaryCoords.size(), ancestors, coefs);
     }
@@ -606,7 +606,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::POINTSREMOVED:
             {
-                const sofa::helper::vector<index_type>& tab = ( static_cast< const PointsRemoved * >( *changeIt ) )->getArray();
+                const sofa::helper::vector<Index>& tab = ( static_cast< const PointsRemoved * >( *changeIt ) )->getArray();
 				 msg_info() << "INPUT REMOVE POINTS "<<tab;
                 removeInput(POINT, tab );
                 check = true;
@@ -615,7 +615,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::topology::POINTSRENUMBERING:
             {
-                const sofa::helper::vector<index_type>& tab = ( static_cast< const PointsRenumbering * >( *changeIt ) )->getinv_IndexArray();
+                const sofa::helper::vector<Index>& tab = ( static_cast< const PointsRenumbering * >( *changeIt ) )->getinv_IndexArray();
 				 msg_info() << "INPUT RENUMBER POINTS "<<tab;
                 renumberInput(POINT, tab );
                 check = true;
@@ -817,7 +817,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                     // signaled prior to adds! The indices will mix
                     // up.
 
-                    sofa::helper::vector<index_type> vitems;
+                    sofa::helper::vector<Index> vitems;
                     vitems.reserve(pointsToRemove.size());
                     vitems.insert(vitems.end(), pointsToRemove.rbegin(), pointsToRemove.rend());
 
@@ -850,11 +850,11 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
     }
 }
 
-void Mesh2PointTopologicalMapping::swapInput(Element elem, index_type i1, index_type i2)
+void Mesh2PointTopologicalMapping::swapInput(Element elem, Index i1, Index i2)
 {
     if (pointsMappedFrom[elem].empty()) return;
-    vector<index_type> i1Map = pointsMappedFrom[elem][i1];
-    vector<index_type> i2Map = pointsMappedFrom[elem][i2];
+    vector<Index> i1Map = pointsMappedFrom[elem][i1];
+    vector<Index> i2Map = pointsMappedFrom[elem][i2];
 
     pointsMappedFrom[elem][i1] = i2Map;
     for(unsigned int i = 0; i < i2Map.size(); ++i)
@@ -869,7 +869,7 @@ void Mesh2PointTopologicalMapping::swapInput(Element elem, index_type i1, index_
     }
 }
 
-void Mesh2PointTopologicalMapping::removeInput(Element elem,  const sofa::helper::vector<index_type>& index )
+void Mesh2PointTopologicalMapping::removeInput(Element elem,  const sofa::helper::vector<Index>& index )
 {
     if (pointsMappedFrom[elem].empty()) return;
     unsigned int last = (unsigned int)pointsMappedFrom[elem].size() -1;
@@ -882,7 +882,7 @@ void Mesh2PointTopologicalMapping::removeInput(Element elem,  const sofa::helper
         }
         for (unsigned int j = 0; j < pointsMappedFrom[elem][last].size(); ++j)
         {
-            index_type map = pointsMappedFrom[elem][last][j];
+            Index map = pointsMappedFrom[elem][last][j];
             if (map != sofa::InvalidID)
             {
                 pointsToRemove.insert(map);
@@ -895,33 +895,33 @@ void Mesh2PointTopologicalMapping::removeInput(Element elem,  const sofa::helper
     pointsMappedFrom[elem].resize( last + 1 );
 }
 
-void Mesh2PointTopologicalMapping::renumberInput(Element elem, const sofa::helper::vector<index_type>& index )
+void Mesh2PointTopologicalMapping::renumberInput(Element elem, const sofa::helper::vector<Index>& index )
 {
     if (pointsMappedFrom[elem].empty()) return;
-    helper::vector< vector<index_type> > copy = pointsMappedFrom[elem];
+    helper::vector< vector<Index> > copy = pointsMappedFrom[elem];
     for (unsigned int i = 0; i < index.size(); ++i)
     {
-        const vector<index_type>& map = copy[index[i]];
+        const vector<Index>& map = copy[index[i]];
         pointsMappedFrom[elem][i] = map;
         for (unsigned int j = 0; j < map.size(); ++j)
         {
-            index_type m = map[j];
+            Index m = map[j];
             if (m != sofa::InvalidID)
                 pointSource[m].second = i;
         }
     }
 }
 
-void Mesh2PointTopologicalMapping::swapOutputPoints(index_type i1, index_type i2, bool removeLast)
+void Mesh2PointTopologicalMapping::swapOutputPoints(Index i1, Index i2, bool removeLast)
 {
-    std::pair<Element, index_type> i1Source = pointSource[i1];
-    std::pair<Element, index_type> i2Source = pointSource[i2];
+    std::pair<Element, Index> i1Source = pointSource[i1];
+    std::pair<Element, Index> i2Source = pointSource[i2];
     pointSource[i1] = i2Source;
     pointSource[i2] = i1Source;
     if (i1Source.second != sofa::InvalidID)
     {
         // replace i1 by i2 in pointsMappedFrom[i1Source.first][i1Source.second]
-        vector<index_type> & pts = pointsMappedFrom[i1Source.first][i1Source.second];
+        vector<Index> & pts = pointsMappedFrom[i1Source.first][i1Source.second];
         for (unsigned int j = 0; j < pts.size(); ++j)
         {
             if (pts[j] == i1)
@@ -936,7 +936,7 @@ void Mesh2PointTopologicalMapping::swapOutputPoints(index_type i1, index_type i2
     if (i2Source.second != sofa::InvalidID)
     {
         // replace i2 by i1 in pointsMappedFrom[i2Source.first][i1Source.second]
-        vector<index_type> & pts = pointsMappedFrom[i2Source.first][i2Source.second];
+        vector<Index> & pts = pointsMappedFrom[i2Source.first][i2Source.second];
         for (unsigned int j = 0; j < pts.size(); ++j)
         {
             if (pts[j] == i2)
@@ -945,7 +945,7 @@ void Mesh2PointTopologicalMapping::swapOutputPoints(index_type i1, index_type i2
     }
 }
 
-void Mesh2PointTopologicalMapping::removeOutputPoints( const sofa::helper::vector<index_type>& index )
+void Mesh2PointTopologicalMapping::removeOutputPoints( const sofa::helper::vector<Index>& index )
 {
     unsigned int last = (unsigned int)pointSource.size() - 1;
 

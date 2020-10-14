@@ -68,7 +68,7 @@ public:
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 
 public:
 
@@ -83,7 +83,7 @@ public:
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) = 0;
-    virtual void applyOnePoint( const index_type& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void applyOnePoint( const Index& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in);
     virtual void clear( std::size_t reserve=0 ) =0;
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapper< In, Out > & ) {return in;}
@@ -97,7 +97,7 @@ protected:
     class MappingData
     {
     public:
-        index_type in_index;
+        Index in_index;
         Real baryCoords[NC];
 
         inline friend std::istream& operator >> ( std::istream& in, MappingData< NC, NP> &m )

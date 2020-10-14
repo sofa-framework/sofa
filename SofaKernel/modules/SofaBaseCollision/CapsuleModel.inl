@@ -60,7 +60,7 @@ CapsuleCollisionModel<DataTypes>::CapsuleCollisionModel(core::behavior::Mechanic
 }
 
 template<class DataTypes>
-void CapsuleCollisionModel<DataTypes>::resize(size_type size)
+void CapsuleCollisionModel<DataTypes>::resize(Size size)
 {
     this->core::CollisionModel::resize(size);
     _capsule_points.resize(size);
@@ -111,7 +111,7 @@ void CapsuleCollisionModel<DataTypes>::init()
     auto nbEdges = bmt->getNbEdges();
     resize( nbEdges );
 
-    for(size_type i = 0; i < nbEdges; ++i)
+    for(Size i = 0; i < nbEdges; ++i)
     {
         _capsule_points[i].first = bmt->getEdge(i)[0];
         _capsule_points[i].second= bmt->getEdge(i)[1];
@@ -119,7 +119,7 @@ void CapsuleCollisionModel<DataTypes>::init()
 }
 
 template <class DataTypes>
-size_type CapsuleCollisionModel<DataTypes>::nbCap()const
+Size CapsuleCollisionModel<DataTypes>::nbCap()const
 {
     return _capsule_radii.getValue().size();
 }
@@ -148,7 +148,7 @@ void CapsuleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         typename TCapsule<DataTypes>::Real r;
 
         //const typename TCapsule<DataTypes>::Real distance = (typename TCapsule<DataTypes>::Real)this->proximity.getValue();
-        for (size_type i=0; i<ncap; i++)
+        for (Size i=0; i<ncap; i++)
         {
             const Coord p1 = point1(i);
             const Coord p2 = point2(i);
@@ -177,7 +177,7 @@ void CapsuleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 
 
 template<class DataTypes>
-void CapsuleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, index_type index)
+void CapsuleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, Index index)
 {
     sofa::defaulttype::Vec<4,float> col4f(getColor4f());
     vparams->drawTool()->drawCapsule(point1(index),point2(index),(float)radius(index),col4f);
@@ -195,7 +195,7 @@ void CapsuleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vp
         // Check topological modifications
         //const int npoints = _mstate->getSize()/2;
 
-        for (size_type i=0; i<size; i++){
+        for (Size i=0; i<size; i++){
             vparams->drawTool()->drawCapsule(point1(i),point2(i),(float)radius(i),col4f);
         }
 
@@ -216,36 +216,36 @@ typename CapsuleCollisionModel<DataTypes>::Real CapsuleCollisionModel<DataTypes>
 }
 
 template <class DataTypes>
-inline const typename CapsuleCollisionModel<DataTypes>::Coord & CapsuleCollisionModel<DataTypes>::point(index_type i)const{
+inline const typename CapsuleCollisionModel<DataTypes>::Coord & CapsuleCollisionModel<DataTypes>::point(Index i)const{
     return this->_mstate->read(core::ConstVecCoordId::position())->getValue()[i];
 }
 
 template <class DataTypes>
-typename CapsuleCollisionModel<DataTypes>::Real CapsuleCollisionModel<DataTypes>::radius(index_type i) const
+typename CapsuleCollisionModel<DataTypes>::Real CapsuleCollisionModel<DataTypes>::radius(Index i) const
 {
     return this->_capsule_radii.getValue()[i];
 }
 
 template <class DataTypes>
-const typename CapsuleCollisionModel<DataTypes>::Coord & CapsuleCollisionModel<DataTypes>::point1(index_type i) const
+const typename CapsuleCollisionModel<DataTypes>::Coord & CapsuleCollisionModel<DataTypes>::point1(Index i) const
 {
     return  point(_capsule_points[i].first);
 }
 
 template <class DataTypes>
-const typename CapsuleCollisionModel<DataTypes>::Coord & CapsuleCollisionModel<DataTypes>::point2(index_type i) const
+const typename CapsuleCollisionModel<DataTypes>::Coord & CapsuleCollisionModel<DataTypes>::point2(Index i) const
 {
     return  point(_capsule_points[i].second);
 }
 
 template <class DataTypes>
-sofa::index_type CapsuleCollisionModel<DataTypes>::point1Index(index_type i) const
+sofa::Index CapsuleCollisionModel<DataTypes>::point1Index(Index i) const
 {
     return  _capsule_points[i].first;
 }
 
 template <class DataTypes>
-sofa::index_type CapsuleCollisionModel<DataTypes>::point2Index(index_type i) const
+sofa::Index CapsuleCollisionModel<DataTypes>::point2Index(Index i) const
 {
     return  _capsule_points[i].second;
 }
@@ -270,21 +270,21 @@ typename TCapsule<DataTypes>::Real TCapsule<DataTypes>::radius() const
 
 
 template<class DataTypes>
-typename CapsuleCollisionModel<DataTypes>::Deriv CapsuleCollisionModel<DataTypes>::velocity(index_type index) const { return ((_mstate->read(core::ConstVecDerivId::velocity())->getValue())[_capsule_points[index].first] +
+typename CapsuleCollisionModel<DataTypes>::Deriv CapsuleCollisionModel<DataTypes>::velocity(Index index) const { return ((_mstate->read(core::ConstVecDerivId::velocity())->getValue())[_capsule_points[index].first] +
                                                                                        (_mstate->read(core::ConstVecDerivId::velocity())->getValue())[_capsule_points[index].second])/2.0;}
 
 template<class DataTypes>
 typename TCapsule<DataTypes>::Coord TCapsule<DataTypes>::v() const {return this->model->velocity(this->index);}
 
 template<class DataTypes>
-typename CapsuleCollisionModel<DataTypes>::Coord CapsuleCollisionModel<DataTypes>::axis(index_type index) const {
+typename CapsuleCollisionModel<DataTypes>::Coord CapsuleCollisionModel<DataTypes>::axis(Index index) const {
     Coord ax(point2(index) - point1(index));
     ax.normalize();
     return ax;
 }
 
 template<class DataTypes>
-bool CapsuleCollisionModel<DataTypes>::shareSameVertex(index_type i1, index_type i2)const{
+bool CapsuleCollisionModel<DataTypes>::shareSameVertex(Index i1, Index i2)const{
     return _capsule_points[i1].first == _capsule_points[i2].first || _capsule_points[i1].first == _capsule_points[i2].second ||
             _capsule_points[i1].second == _capsule_points[i2].first || _capsule_points[i1].second == _capsule_points[i2].second;
 }
@@ -295,7 +295,7 @@ bool TCapsule<DataTypes>::shareSameVertex(const TCapsule<DataTypes> & other)cons
 }
 
 template<class DataTypes>
-sofa::defaulttype::Quaternion CapsuleCollisionModel<DataTypes>::orientation(index_type index) const {
+sofa::defaulttype::Quaternion CapsuleCollisionModel<DataTypes>::orientation(Index index) const {
     Coord ax(point2(index) - point1(index));
     ax.normalize();
 
@@ -317,12 +317,12 @@ sofa::defaulttype::Quaternion CapsuleCollisionModel<DataTypes>::orientation(inde
 }
 
 template<class DataTypes>
-typename CapsuleCollisionModel<DataTypes>::Coord CapsuleCollisionModel<DataTypes>::center(index_type index) const {
+typename CapsuleCollisionModel<DataTypes>::Coord CapsuleCollisionModel<DataTypes>::center(Index index) const {
     return (point2(index) + point1(index))/2;
 }
 
 template<class DataTypes>
-typename CapsuleCollisionModel<DataTypes>::Real CapsuleCollisionModel<DataTypes>::height(index_type index) const {
+typename CapsuleCollisionModel<DataTypes>::Real CapsuleCollisionModel<DataTypes>::height(Index index) const {
     return (point2(index) - point1(index)).norm();
 }
 

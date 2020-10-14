@@ -35,7 +35,7 @@ namespace component
 namespace linearsolver
 {
 
-template<size_type TN, typename T> class bloc_index_func
+template<Size TN, typename T> class bloc_index_func
 {
 public:
     enum { N = TN };
@@ -101,7 +101,7 @@ public:
     static const char* Name();
 };
 
-template <size_type L, size_type C, class real, typename IndexType>
+template <Size L, Size C, class real, typename IndexType>
 class matrix_bloc_traits < defaulttype::Mat<L,C,real>, IndexType>
 {
 public:
@@ -109,13 +109,13 @@ public:
     typedef real Real;
     enum { NL = L };
     enum { NC = C };
-    static Real& v(Bloc& b, index_type row, index_type col) { return b[row][col]; }
-    static const Real& v(const Bloc& b, index_type row, index_type col) { return b[row][col]; }
+    static Real& v(Bloc& b, Index row, Index col) { return b[row][col]; }
+    static const Real& v(const Bloc& b, Index row, Index col) { return b[row][col]; }
     static void clear(Bloc& b) { b.clear(); }
     static bool empty(const Bloc& b)
     {
-        for (index_type i=0; i<NL; ++i)
-            for (index_type j=0; j<NC; ++j)
+        for (Index i=0; i<NL; ++i)
+            for (Index j=0; j<NC; ++j)
                 if (b[i][j] != 0) return false;
         return true;
     }
@@ -145,22 +145,22 @@ template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,double>, i
 template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,float >, int >::Name() { return "12f"; }
 template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,double>, int >::Name() { return "12d"; }
 
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,float >, size_type >::Name() { return "1f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,double>, size_type >::Name() { return "1d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,float >, size_type >::Name() { return "2f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,double>, size_type >::Name() { return "2d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,float >, size_type >::Name() { return "3f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,double>, size_type >::Name() { return "3d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,float >, size_type >::Name() { return "4f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,double>, size_type >::Name() { return "4d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,float >, size_type >::Name() { return "6f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,double>, size_type >::Name() { return "6d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,float >, size_type >::Name() { return "8f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,double>, size_type >::Name() { return "8d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,float >, size_type >::Name() { return "9f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,double>, size_type >::Name() { return "9d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,float >, size_type >::Name() { return "12f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,double>, size_type >::Name() { return "12d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,float >, Size >::Name() { return "1f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,double>, Size >::Name() { return "1d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,float >, Size >::Name() { return "2f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,double>, Size >::Name() { return "2d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,float >, Size >::Name() { return "3f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,double>, Size >::Name() { return "3d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,float >, Size >::Name() { return "4f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,double>, Size >::Name() { return "4d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,float >, Size >::Name() { return "6f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,double>, Size >::Name() { return "6d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,float >, Size >::Name() { return "8f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,double>, Size >::Name() { return "8d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,float >, Size >::Name() { return "9f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,double>, Size >::Name() { return "9d"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,float >, Size >::Name() { return "12f"; }
+template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,double>, Size >::Name() { return "12d"; }
 
 template <typename IndexType>
 class matrix_bloc_traits < float, IndexType >

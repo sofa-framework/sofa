@@ -316,8 +316,8 @@ public:
     void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
 
-    SReal getElementMass(sofa::index_type index) const override;
-    void getElementMass(sofa::index_type, defaulttype::BaseMatrix *m) const override;
+    SReal getElementMass(sofa::Index index) const override;
+    void getElementMass(sofa::Index, defaulttype::BaseMatrix *m) const override;
 
     bool isDiagonal() override {return true;}
 

@@ -53,8 +53,8 @@ public:
     typedef VecT container_type;
     typedef typename container_type::value_type value_type;
 
-    /// size_type
-    typedef typename container_type::size_type size_type;
+    /// Size
+    typedef typename container_type::Size Size;
     /// reference to a value (read-write)
     typedef typename container_type::reference reference;
     /// const reference to a value (read only)
@@ -62,7 +62,7 @@ public:
     /// const iterator
     typedef typename container_type::const_iterator const_iterator;
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
 
 
     /// Constructor
@@ -109,12 +109,12 @@ public:
     void linkToTetrahedronDataArray();
     void linkToHexahedronDataArray();
 
-    void setMap2Elements(const sofa::helper::vector<index_type> _map2Elements)
+    void setMap2Elements(const sofa::helper::vector<Index> _map2Elements)
     {
         m_map2Elements = _map2Elements;
     }
 
-    sofa::helper::vector<index_type>& getMap2Elements() {return m_map2Elements;}
+    sofa::helper::vector<Index>& getMap2Elements() {return m_map2Elements;}
 
     bool getSparseDataStatus() {return m_isConcerned;}
 
@@ -123,7 +123,7 @@ public:
 
     size_t size() {return m_map2Elements.size();}
 
-    index_type indexOfElement(index_type index)
+    Index indexOfElement(Index index)
     {
         for (unsigned int i=0; i<m_map2Elements.size(); ++i)
             if (index == m_map2Elements[i])
@@ -138,7 +138,7 @@ protected:
     virtual void createTopologyHandler() {}
 
     // same size as SparseData but contain id of element link to each data[]
-    sofa::helper::vector<index_type> m_map2Elements;
+    sofa::helper::vector<Index> m_map2Elements;
 
     typename sofa::component::topology::TopologyEngineImpl<VecT>::SPtr m_topologicalEngine;
     sofa::core::topology::BaseMeshTopology* m_topology;

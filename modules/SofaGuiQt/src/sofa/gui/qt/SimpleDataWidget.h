@@ -404,25 +404,25 @@ public:
     enum { NDIM = 0 };
     enum { SIZE = 1 };
     /// Get the number of rows
-    static size_type size(const data_type&) { return SIZE; }
+    static Size size(const data_type&) { return SIZE; }
     /// Get the name of a row, or nullptr if the index should be used instead
-    static const char* header(const data_type& /*d*/, size_type /*i*/ = 0)
+    static const char* header(const data_type& /*d*/, Size /*i*/ = 0)
     {
         return nullptr;
     }
     /// Get a row
-    static const value_type* get(const data_type& d, size_type i = 0)
+    static const value_type* get(const data_type& d, Size i = 0)
     {
         return (i == 0) ? &d : nullptr;
     }
     /// Set a row
-    static void set( const value_type& v, data_type& d, size_type i = 0)
+    static void set( const value_type& v, data_type& d, Size i = 0)
     {
         if (i == 0)
             d = v;
     }
     /// Resize
-    static void resize( size_type /*s*/, data_type& /*d*/)
+    static void resize( Size /*s*/, data_type& /*d*/)
     {
     }
 };
@@ -676,30 +676,30 @@ class vector_data_trait < sofa::defaulttype::Vec<N, T> >
 public:
     typedef sofa::defaulttype::Vec<N, T> data_type;
     typedef T value_type;
-    typedef typename data_type::size_type size_type;
+    typedef typename data_type::Size Size;
     enum { NDIM = 1 };
     enum { SIZE = N };
-    static size_type size(const data_type&) { return SIZE; }
-    static const char* header(const data_type& /*d*/, size_type /*i*/ = 0)
+    static Size size(const data_type&) { return SIZE; }
+    static const char* header(const data_type& /*d*/, Size /*i*/ = 0)
     {
         return nullptr;
     }
-    static const value_type* get(const data_type& d, size_type i = 0)
+    static const value_type* get(const data_type& d, Size i = 0)
     {
         return (i < size(d)) ? &(d[i]) : nullptr;
     }
-    static void set( const value_type& v, data_type& d, size_type i = 0)
+    static void set( const value_type& v, data_type& d, Size i = 0)
     {
         if (i < size(d))
             d[i] = v;
     }
-    static void resize( size_type /*s*/, data_type& /*d*/)
+    static void resize( Size /*s*/, data_type& /*d*/)
     {
     }
 };
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<2, float> >::header(const data_type& /*d*/, size_type i)
+inline const char* vector_data_trait < sofa::defaulttype::Vec<2, float> >::header(const data_type& /*d*/, Size i)
 {
     switch(i)
     {
@@ -710,7 +710,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<2, float> >::heade
 }
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<2, double> >::header(const data_type& /*d*/, size_type i)
+inline const char* vector_data_trait < sofa::defaulttype::Vec<2, double> >::header(const data_type& /*d*/, Size i)
 {
     switch(i)
     {
@@ -721,7 +721,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<2, double> >::head
 }
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<3, float> >::header(const data_type& /*d*/, size_type i)
+inline const char* vector_data_trait < sofa::defaulttype::Vec<3, float> >::header(const data_type& /*d*/, Size i)
 {
     switch(i)
     {
@@ -733,7 +733,7 @@ inline const char* vector_data_trait < sofa::defaulttype::Vec<3, float> >::heade
 }
 
 template<>
-inline const char* vector_data_trait < sofa::defaulttype::Vec<3, double> >::header(const data_type& /*d*/, size_type i)
+inline const char* vector_data_trait < sofa::defaulttype::Vec<3, double> >::header(const data_type& /*d*/, Size i)
 {
     switch(i)
     {

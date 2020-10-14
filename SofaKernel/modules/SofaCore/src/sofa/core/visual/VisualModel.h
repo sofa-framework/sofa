@@ -169,7 +169,7 @@ public:
      *  This method should update them.
      */
     virtual void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, 
-        sofa::index_type& /*vindex*/, sofa::index_type& /*nindex*/, sofa::index_type& /*tindex*/, int& /*count*/)
+        sofa::Index& /*vindex*/, sofa::Index& /*nindex*/, sofa::Index& /*tindex*/, int& /*count*/)
     {
     }
 

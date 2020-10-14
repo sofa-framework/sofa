@@ -971,7 +971,7 @@ void HexahedronFEMForceField<DataTypes>::getNodeRotation(Transformation& R, unsi
 
     std::size_t numHexa=liste_hexa.size();
 
-    for (index_type ti=0; ti<numHexa; ti++)
+    for (Index ti=0; ti<numHexa; ti++)
     {
         Transformation R0t;
         R0t.transpose(_initialrotations[liste_hexa[ti]]);

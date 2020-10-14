@@ -50,7 +50,7 @@ class FixedTranslationConstraint : public core::behavior::ProjectiveConstraintSe
 public:
     SOFA_CLASS(SOFA_TEMPLATE(FixedTranslationConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
-    using index_type = sofa::index_type;
+    using Index = sofa::Index;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
@@ -61,7 +61,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<index_type> SetIndexArray;
+    typedef helper::vector<Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 protected:
     FixedTranslationConstraintInternalData<DataTypes> data;
@@ -82,8 +82,8 @@ protected:
 public:
     // methods to add/remove some indices
     void clearIndices();
-    void addIndex(index_type index);
-    void removeIndex(index_type index);
+    void addIndex(Index index);
+    void removeIndex(Index index);
 
     // -- Constraint interface
     void init() override;
@@ -106,11 +106,11 @@ public:
 
 
 
-        void applyDestroyFunction(index_type /*index*/, value_type& /*T*/);
+        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
 
 
-        bool applyTestCreateFunction(index_type /*index*/,
-                const sofa::helper::vector< index_type > & /*ancestors*/,
+        bool applyTestCreateFunction(Index /*index*/,
+                const sofa::helper::vector< Index > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
         FixedTranslationConstraint<DataTypes> *fc;

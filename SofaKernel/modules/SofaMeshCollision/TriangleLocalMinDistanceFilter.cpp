@@ -43,7 +43,7 @@ TriangleInfo::TriangleInfo(LocalMinDistanceFilter *lmdFilters)
 {
 }
 
-void TriangleInfo::buildFilter(index_type tri_index)
+void TriangleInfo::buildFilter(Index tri_index)
 {
 
 
@@ -62,7 +62,7 @@ void TriangleInfo::buildFilter(index_type tri_index)
 
 
 
-bool TriangleInfo::validate(const index_type tri_index, const defaulttype::Vector3 &PQ)
+bool TriangleInfo::validate(const Index tri_index, const defaulttype::Vector3 &PQ)
 {
     if (isValid())
     {
@@ -125,7 +125,7 @@ void TriangleLocalMinDistanceFilter::init()
 
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
-        for (size_type i=0; i<bmt->getNbPoints(); i++)
+        for (Size i=0; i<bmt->getNbPoints(); i++)
         {
             pInfo[i].setLMDFilters(this);
             pInfo[i].setBaseMeshTopology(bmt);
@@ -210,7 +210,7 @@ void TriangleLocalMinDistanceFilter::handleTopologyChange()
 
 
 
-void TriangleLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(index_type /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector< index_type > &, const sofa::helper::vector< double >&)
+void TriangleLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(Index /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector< Index > &, const sofa::helper::vector< double >&)
 {
     const TriangleLocalMinDistanceFilter *tLMDFilter = this->f;
     pInfo.setLMDFilters(tLMDFilter);
@@ -240,7 +240,7 @@ void TriangleLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(index
 
 
 
-void TriangleLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(index_type /*edgeIndex*/, LineInfo &lInfo, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector< index_type > &, const sofa::helper::vector< double >&)
+void TriangleLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(Index /*edgeIndex*/, LineInfo &lInfo, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector< Index > &, const sofa::helper::vector< double >&)
 {
     const TriangleLocalMinDistanceFilter *tLMDFilter = this->f;
     lInfo.setLMDFilters(tLMDFilter);
@@ -269,7 +269,7 @@ void TriangleLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(index_
 
 
 
-void TriangleLocalMinDistanceFilter::TriangleInfoHandler::applyCreateFunction(index_type /*edgeIndex*/, TriangleInfo &tInfo, const core::topology::BaseMeshTopology::Triangle&, const sofa::helper::vector< index_type > &, const sofa::helper::vector< double >&)
+void TriangleLocalMinDistanceFilter::TriangleInfoHandler::applyCreateFunction(Index /*edgeIndex*/, TriangleInfo &tInfo, const core::topology::BaseMeshTopology::Triangle&, const sofa::helper::vector< Index > &, const sofa::helper::vector< double >&)
 {
     const TriangleLocalMinDistanceFilter *tLMDFilter = this->f;
     tInfo.setLMDFilters(tLMDFilter);
