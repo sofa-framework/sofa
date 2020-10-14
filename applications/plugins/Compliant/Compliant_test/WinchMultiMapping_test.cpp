@@ -61,19 +61,17 @@ struct WinchMultiMappingTest : public MultiMapping_test<Mapping>
         for( int i=0; i<2; i++ )
         {
             incoords[i].resize(1);
-            incoords[i][0] = OutVecCoord(i+1.0) ;
-        }
-
+            incoords[i][0] = typename self::OutCoord(i + 1.0);
+        }            
+        
         // error
         mapping->factor.setValue(0.25);
-        OutVecCoord outcoords(1);
-        outcoords[0] = OutVecCoord(-0.5);
+        typename self::OutVecCoord outcoords(1);
+        outcoords[0] = typename self::OutCoord(-0.5);
 
         return this->runTest(incoords, outcoords);
 
     }
-
-
 };
 
 

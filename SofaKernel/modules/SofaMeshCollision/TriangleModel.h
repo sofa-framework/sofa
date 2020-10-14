@@ -160,7 +160,7 @@ protected:
      */
     const sofa::core::topology::BaseMeshTopology::SeqTriangles* m_triangles;
 
-    sofa::core::topology::BaseMeshTopology::SeqTriangles m_internalTriangles; ///< Internal Buffer of triangles to combine quads splitted and other triangles.    
+    sofa::core::topology::BaseMeshTopology::SeqTriangles m_internalTriangles; ///< Internal Buffer of triangles to combine quads splitted and other triangles.
 
     bool m_needsUpdate; ///< parameter storing the info boundingTree has to be recomputed.
     int m_topologyRevision; ///< internal revision number to check if topology has changed.
