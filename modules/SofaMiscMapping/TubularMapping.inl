@@ -127,8 +127,6 @@ void TubularMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams
 
             rotatedPoints[i*N+j] = (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) radius_rho);
             Vec x = curPos + rotatedPoints[i*N+j];
-            //sout << "INFO_print : TubularMapping  DO move point - j = " << j << " , curPos = " << curPos <<  " , x = " << x << sendl;
-
             out[i*N+j] = x;
         }
     }
@@ -161,9 +159,7 @@ void TubularMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams
 
         for(unsigned int j=0; j<N; ++j)
         {
-
             out[i*N+j] = v - cross(rotatedPoints[i*N+j],omega);
-            //sout << "INFO_print : TubularMapping  DO moveJ point - j = " << j << " , curPos = " << v <<  " , x = " << out[i*N+j] << sendl;
         }
     }
 
@@ -199,7 +195,6 @@ void TubularMapping<TIn, TOut>::applyJT( const core::MechanicalParams* /* mparam
 
         getVCenter(out[i]) += v;
         getVOrientation(out[i]) += omega;
-        //sout << "INFO_print : TubularMapping  DO moveJT point - i = " << i << sendl;
     }
 
     dOut.endEdit();

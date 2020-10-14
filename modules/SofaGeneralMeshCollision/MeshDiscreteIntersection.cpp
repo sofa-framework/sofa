@@ -82,7 +82,6 @@ int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, Output
         M[i][2] = -PQ[i];
         right[i] = P[i]-A[i];
     }
-    //sout << "M="<<M<<sendl;
     if (!Minv.invert(M))
         return 0;
     Vector3 baryCoords = Minv * right;

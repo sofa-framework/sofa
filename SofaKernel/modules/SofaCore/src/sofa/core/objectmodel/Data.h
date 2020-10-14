@@ -26,6 +26,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/accessor.h>
+#include <sofa/core/objectmodel/DataContentValue.h>
 namespace sofa
 {
 
@@ -42,11 +43,12 @@ class TData : public BaseData
 public:
     typedef T value_type;
 
+
     explicit TData(const BaseInitData& init) : BaseData(init)
     {
     }
 
-    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped. 
+    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped.
     //[[deprecated("Replaced with one with std::string instead of char* version")]]
     TData( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false) :
         TData( sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly) {}
@@ -109,129 +111,9 @@ public:
 
 protected:
 
-    BaseLink::InitLink<TData<T> > initLink(const char* name, const char* help);
-
     bool updateFromParentValue(const BaseData* parent) override;
 };
 
-
-/// To handle the Data link:
-/// - CopyOnWrite==false: an independent copy (duplicated memory)
-/// - CopyOnWrite==true: shared memory while the Data is not modified (in that case the memory is duplicated to get an independent copy)
-template <class T, bool CopyOnWrite>
-class DataValue;
-
-template <class T>
-class DataValue<T, false>
-{
-    T data;
-public:
-
-    DataValue()
-        : data(T())// BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
-    {
-    }
-
-    explicit DataValue(const T &value)
-        : data(value)
-    {
-    }
-
-    DataValue(const DataValue& dc)
-        : data(dc.getValue())
-    {
-    }
-
-    DataValue& operator=(const DataValue& dc )
-    {
-        data = dc.getValue(); // copy
-        return *this;
-    }
-
-    T* beginEdit() { return &data; }
-    void endEdit() {}
-    const T& getValue() const { return data; }
-    void setValue(const T& value)
-    {
-        data = value;
-    }
-    void release()
-    {
-    }
-};
-
-
-template <class T>
-class DataValue<T, true>
-{
-    std::shared_ptr<T> ptr;
-public:
-
-    DataValue()
-        : ptr(new T(T())) // BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
-    {
-    }
-
-    explicit DataValue(const T& value)
-        : ptr(new T(value))
-    {
-    }
-
-    DataValue(const DataValue& dc)
-        : ptr(dc.ptr) // start with shared memory
-    {
-    }
-
-    ~DataValue()
-    {
-    }
-
-    DataValue& operator=(const DataValue& dc )
-    {
-        //avoid self reference
-        if(&dc != this)
-        {
-            ptr = dc.ptr;
-        }
-
-        return *this;
-    }
-
-    T* beginEdit()
-    {
-        if(!ptr.unique())
-        {
-            ptr.reset(new T(*ptr)); // a priori the Data will be modified -> copy
-        }
-        return ptr.get();
-    }
-
-    void endEdit()
-    {
-    }
-
-    const T& getValue() const
-    {
-        return *ptr;
-    }
-
-    void setValue(const T& value)
-    {
-        if(!ptr.unique())
-        {
-            ptr.reset(new T(value)); // the Data is modified -> copy
-        }
-        else
-        {
-            *ptr = value;
-        }
-    }
-
-    void release()
-    {
-        ptr.reset();
-    }
-};
 
 /** \brief Container that holds a variable for a component.
  *
@@ -278,12 +160,6 @@ public:
     using TData<T>::updateIfDirty;
     using TData<T>::notifyEndEdit;
 
-    static std::string templateName(const TData<T>* = nullptr)
-    {
-        T* ptr = nullptr;
-        return BaseData::typeName(ptr);
-    }
-
     /// @name Construction / destruction
     /// @{
 
@@ -297,6 +173,11 @@ public:
 
         T value;
     };
+
+    static std::string templateName()
+    {
+        return sofa::core::objectmodel::BaseData::typeName<Data<T>>();
+    }
 
     // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
     virtual BaseData* getNewInstance() { return new Data();}
@@ -466,7 +347,7 @@ public:
 
 protected:
 
-    typedef DataValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
+    typedef DataContentValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
 
     /// Value
     ValueType m_value;
@@ -559,11 +440,6 @@ bool TData<T>::validParent(BaseData* parent)
     return BaseData::validParent(parent);
 }
 
-template <class T>
-BaseLink::InitLink<TData<T> > TData<T>::initLink(const char* name, const char* help)
-{
-    return BaseLink::InitLink<TData<T> >(this, name, help);
-}
 
 template <class T>
 bool TData<T>::updateFromParentValue(const BaseData* parent)

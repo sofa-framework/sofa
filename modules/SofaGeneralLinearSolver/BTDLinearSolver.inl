@@ -634,10 +634,7 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
     SubMatrix A, C;
     //Index ndiag = 0;
     M.getAlignedSubMatrix(0,0,bsize,bsize,A);
-    //if (verbose) sout << "A[0] = " << A << sendl;
     M.getAlignedSubMatrix(0,1,bsize,bsize,C);
-    //if (verbose) sout << "C[0] = " << C << sendl;
-    //alpha[0] = A;
     invert(alpha_inv[0],A);
     msg_info_when(this->f_verbose.getValue()) << "alpha_inv[0] = " << alpha_inv[0] ;
     lambda[0] = alpha_inv[0]*C;
@@ -646,23 +643,11 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
     for (Index i=1; i<nb; ++i)
     {
         M.getAlignedSubMatrix((i  ),(i  ),bsize,bsize,A);
-        //if (verbose) sout << "A["<<i<<"] = " << A << sendl;
         M.getAlignedSubMatrix((i  ),(i-1),bsize,bsize,B[i]);
-        //if (verbose) sout << "B["<<i<<"] = " << B[i] << sendl;
-        //alpha[i] = (A - B[i]*lambda[i-1]);
-
 
         BlocType Temp1= B[i]*lambda[i-1];
         BlocType Temp2= A - Temp1;
         invert(alpha_inv[i], Temp2);
-
-
-        //if(subpartSolve.getValue() ) {
-        //	helper::vector<SubMatrix> nHn_1; // bizarre: pb compilation avec SubMatrix nHn_1 = B[i] *alpha_inv[i];
-        //	nHn_1.resize(1);
-        //	nHn_1[0] = B[i] *alpha_inv[i-1];
-        //	H.insert(make_pair(IndexPair(i,i-1),nHn_1[0])); //IndexPair(i+1,i) ??
-        //}
 
         msg_info_when(this->f_verbose.getValue()) << "alpha_inv["<<i<<"] = " << alpha_inv[i] ;
         if (i<nb-1)
@@ -1296,36 +1281,36 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
     }
 
 
-    const bool verbose  = this->f_verbose.getValue();
+    //const bool verbose  = this->f_verbose.getValue();
 
-    if (verbose)
+    if (this->notMuted())
     {
-// debug christian: print of the inverse matrix:
-        sout<< "C = ["<<sendl;
+        std::stringstream tmpStr;
+        tmpStr<< "C = ["<<msgendl;
         for  (Index mr=0; mr<Minv.rowSize(); mr++)
         {
-            sout<<" "<<sendl;
+            tmpStr<<" "<<msgendl;
             for (Index mc=0; mc<Minv.colSize(); mc++)
             {
-                sout<<" "<< getMinvElement(mr,mc);
+                tmpStr<<" "<< getMinvElement(mr,mc);
             }
         }
-        sout<< "];"<<sendl;
+        tmpStr << "];"<<msgendl;
 
-// debug christian: print of matrix J:
-        sout<< "J = ["<<sendl;
+        tmpStr<< "J = ["<<msgendl;
         for  (Index jr=0; jr<J.rowSize(); jr++)
         {
-            sout<<" "<<sendl;
+            tmpStr<<" "<<msgendl;
             for (Index jc=0; jc<J.colSize(); jc++)
             {
-                sout<<" "<< J.element(jr, jc) ;
+                tmpStr<<" "<< J.element(jr, jc) ;
             }
         }
-        sout<< "];"<<sendl;
+        tmpStr << "];";
+        msg_info() << tmpStr.str();
     }
 
-
+    std::stringstream tmpStr2;
     const typename JMatrix::LineConstIterator jitend = J.end();
     for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != jitend; ++jit1)
     {
@@ -1346,9 +1331,9 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
                 }
             }
 
-            if (verbose)
+            if (this->notMuted())
             {
-                sout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<sendl;
+                tmpStr2 << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<msgendl;
             }
 
             acc *= fact;
@@ -1357,6 +1342,7 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
                 result.add(row2,row1,acc);
         }
     }
+
     return true;
 }
 

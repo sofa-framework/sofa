@@ -97,25 +97,26 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     // constraint jacobian, free positions, free velocity vectors
     sofa::core::ConstraintParams cparams(*params); 
 
+    std::stringstream tmpStr;
     for (int c = 0; c < ncollis; ++c)
     {
         // First we reset the constraints
         sofa::simulation::MechanicalResetConstraintVisitor(&cparams).execute(this->getContext());
         // Then do collision detection and response creation
-        sout << "collision" << sendl;
+        tmpStr << "collision" ;
+
         computeCollision(params);
         for (int i = 0; i < ninteg; ++i)
         {
             // Then integrate the time step
-            sout << "integration at time = " << startTime+i*stepDt << sendl;
+            tmpStr << "integration at time = " << startTime+i*stepDt << msgendl;
             integrate(params, stepDt);
 
             this->gnode->setTime ( startTime + (i+1)*stepDt );
             this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
         }
     }
-
-
+    msg_info() << tmpStr.str();
     {
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( params, &ev );

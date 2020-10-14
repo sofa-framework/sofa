@@ -19,56 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationTree/GNodeMultiMappingElement.h>
-#include <sofa/core/BaseMapping.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/helper/Factory.h>
+#define SOFA_CORE_OBJECTMODEL_DATA_CPP
 
-#include <SofaSimulationCommon/xml/Element.h>
+#include <sofa/core/objectmodel/DataContentValue.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace tree
-{
-GNodeMultiMappingElement::GNodeMultiMappingElement(const std::string &name,
-        const std::string &type, BaseElement *parent /*= 0*/)
-    :BaseMultiMappingElement(name,type,parent)
-{
-
-}
-
-void GNodeMultiMappingElement::updateSceneGraph(
-    sofa::core::BaseMapping* multiMapping,
-    const helper::vector<simulation::Node*>& /*ancestorInputs*/,
-    helper::vector<simulation::Node*>& otherInputs,
-    helper::vector<simulation::Node*>& /*outputs*/)
-{
-
-    helper::vector<simulation::Node*>::const_iterator it;
-    std::stringstream tmpStr;
-    for( it = otherInputs.begin(); it != otherInputs.end(); ++it)
-    {
-        tmpStr << "Node " << (*it)->getName() << " does not belong to "
-                << multiMapping->getContext()->getName() << " ancestors";
-    }
-    msg_info("GnodeMultiMapping") << tmpStr.str();
-}
-
-
-helper::Creator<sofa::simulation::xml::BaseElement::NodeFactory, GNodeMultiMappingElement> GNodeMultiMappingClass("GNodeMultiMapping");
-
-const char* GNodeMultiMappingElement::getClass() const
-{
-    return GNodeMultiMappingClass.c_str();
-}
-
-
-} // namespace tree
-
-} // namespace simulation
-
-} // namespace sofa
+/// Everything is in the .h file.

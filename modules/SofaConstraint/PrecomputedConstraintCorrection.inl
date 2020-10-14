@@ -323,11 +323,12 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         Deriv unitary_force;
 
+        std::stringstream tmpStr;
         for (unsigned int f = 0; f < nbNodes; f++)
         {
             std::streamsize prevPrecision = sout.precision();
-            sout.precision(2);
-            sout << "Precomputing constraint correction : " << std::fixed << (float)f / (float)nbNodes * 100.0f << " %   " << '\xd';
+            tmpStr.precision(2);
+            tmpStr << "Precomputing constraint correction : " << std::fixed << (float)f / (float)nbNodes * 100.0f << " %   " << '\xd';
             sout.precision(prevPrecision);
 
             for (unsigned int i = 0; i < dof_on_node; i++)
@@ -372,6 +373,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             unitary_force.clear();
             force[f] = unitary_force;
         }
+        msg_info() << tmpStr.str();
 
         // Do not recompute the matrix for the rest of the precomputation
         if (linearSolver)

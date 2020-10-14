@@ -3,6 +3,8 @@ project(image VERSION 0.1)
 
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
+
+sofa_find_package(OpenGL QUIET)
 sofa_find_package(SofaGui QUIET)
 sofa_find_package(CImgPlugin REQUIRED)
 sofa_find_package(Newmat REQUIRED)
@@ -20,7 +22,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(SOURCE_FILES
     CollisionToCarvingEngine.cpp
-    DepthMapToMeshEngine.cpp
     ImageAccumulator.cpp
     ImageContainer.cpp
     GenerateImage.cpp
@@ -46,7 +47,6 @@ set(HEADER_FILES
     config.h.in
     CollisionToCarvingEngine.h
     Containers.h
-    DepthMapToMeshEngine.h
     ImageAccumulator.h
     ImageAlgorithms.h
     ImageContainer.h
@@ -72,6 +72,15 @@ set(HEADER_FILES
 set(README_FILES
     image.txt
     )
+
+
+if(OpenGL_FOUND)
+    list(APPEND SOURCE_FILES DepthMapToMeshEngine.cpp)
+    list(APPEND HEADER_FILES DepthMapToMeshEngine.h)
+else()
+    message(STATUS "image: could not find OpenGL library, won't build the DepthMapToMeshEngine")
+endif()
+
 
 if(SofaPython_FOUND)
     set(PYTHON_FILES

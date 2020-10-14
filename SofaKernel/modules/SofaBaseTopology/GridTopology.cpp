@@ -327,16 +327,10 @@ void GridTopology::computeHexaList()
 
 void GridTopology::computeQuadList()
 {
-//    updateQuads();
-//    const SeqQuads seq_quads= this->getQuads();
-//    sout<<"Init: Number of Quads ="<<seq_quads.size()<<sendl;
 }
 
 void GridTopology::computeEdgeList()
 {
-    //updateEdges();
-//    const SeqLines seq_l=this->getLines();
-//    sout<<"Init: Number of Lines ="<<seq_l.size()<<sendl;
 }
 
 void GridTopology::computePointList()

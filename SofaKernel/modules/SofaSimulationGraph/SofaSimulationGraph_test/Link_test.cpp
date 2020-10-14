@@ -45,6 +45,28 @@ struct Link_test : public BaseSimulationTest
         ASSERT_NE(nodeLink.getLinkedBase(), aBasePtr);
     }
 
+    void read_multilink_test()
+    {
+        SceneInstance si("root") ;
+        BaseObject::SPtr A = sofa::core::objectmodel::New<BaseObject>();
+        BaseObject::SPtr B = sofa::core::objectmodel::New<BaseObject>();
+        BaseObject::SPtr C = sofa::core::objectmodel::New<BaseObject>();
+        si.root->addObject(A);
+        si.root->addObject(B);
+
+        BaseLink::InitLink<BaseObject> il1(B.get(), "l1", "");
+        MultiLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > withOwner(il1) ;
+
+        // 1. test with valid link & owner
+        ASSERT_TRUE(withOwner.read("@/B"));
+
+        // 2. setting C's context
+        si.root->addObject(B);
+
+        ASSERT_TRUE(withOwner.read("@/C"));
+        ASSERT_TRUE(withOwner.read("@/B @/C"));
+    }
+
     void read_test()
     {
         SceneInstance si("root") ;
@@ -88,6 +110,11 @@ TEST_F( Link_test, setLinkedBase_test)
 TEST_F( Link_test, read_test)
 {
     this->read_test() ;
+}
+
+TEST_F( Link_test, read_multilink_test)
+{
+    this->read_multilink_test();
 }
 
 }// namespace sofa

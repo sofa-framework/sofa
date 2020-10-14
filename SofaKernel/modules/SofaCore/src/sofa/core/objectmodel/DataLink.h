@@ -41,15 +41,14 @@ public:
     DataLink(T& owner) : m_owner{owner} { }
     virtual ~DataLink() {}
 
-    T* getTarget()
+    T* getTarget() const
     {
-        if(m_target==nullptr && !m_path.empty())
-            resolvePathAndSetData();
         return m_target;
     }
 
     void unSet(){ m_target=nullptr; m_path = ""; }
-    bool isSet() const { return m_target != nullptr; }
+    bool isSet() const { return hasPath() || hasTarget(); }
+
     void setTarget(T* target)
     {
         m_path = "";
@@ -66,13 +65,13 @@ protected:
     }
 
     /// Returns the typed data to its abstract one
-    BaseData* _doGetTarget_() override
+    BaseData* _doGetTarget_() const override
     {
         return DataLink::getTarget();
     }
 
     /// Returns the typed data to its abstract one.
-    const BaseData& _doGetOwner_() override
+    const BaseData& _doGetOwner_() const override
     {
         return DataLink::getOwner();
     }

@@ -333,11 +333,6 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
             W->add(indexCurRowConst, indexCurRowConst, w);
         }
 
-        if (verbose)
-        {
-            sout << sendl;
-        }
-
         // Then the compliance with the remaining constraints
         MatrixDerivRowConstIterator rowIt2 = rowIt;
         ++rowIt2;

@@ -100,7 +100,7 @@ void SkinningMapping<TIn, TOut>::reinit()
     sofa::helper::WriteAccessor<Data<helper::vector<sofa::helper::SVector<InReal> > > > m_weights  ( weight );
     sofa::helper::ReadAccessor<Data<helper::vector<sofa::helper::SVector<unsigned int> > > > index ( this->f_index );
 
-    sout << "reinit : use nbRef with size = " << nbRef.getValue().size() << " - initpos size = " << xto.size() << sendl;
+    msg_info() << "reinit : use nbRef with size = " << nbRef.getValue().size() << " - initpos size = " << xto.size();
 
     // normalize weights
     for (unsigned int i=0; i<xto.size(); i++ )
@@ -140,7 +140,7 @@ void SkinningMapping<TIn, TOut>::reinit()
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::updateWeights ()
 {
-    sout << "UPDATE WEIGHTS" << sendl;
+    msg_info() << "UPDATE WEIGHTS";
 
     sofa::helper::ReadAccessor<Data<OutVecCoord> > xto (this->f_initPos);
     sofa::helper::ReadAccessor<Data<InVecCoord> > xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());

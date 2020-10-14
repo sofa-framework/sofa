@@ -170,7 +170,7 @@ void TaitSurfacePressureForceField<DataTypes>::handleEvent(core::objectmodel::Ev
                 curInj -= maxInj;
             else if (inj > curInj)
                 curInj += maxInj;
-            sout << "Current Injected Volume = " << curInj << sendl;
+            msg_info() << "Current Injected Volume = " << curInj;
             m_currentInjectedVolume.setValue(curInj);
             updateFromTopology();
         }
