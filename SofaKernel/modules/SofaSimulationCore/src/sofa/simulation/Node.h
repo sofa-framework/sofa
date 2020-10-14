@@ -32,7 +32,6 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/objectmodel/ContextObject.h>
-#include <sofa/core/CollisionModel.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/visual/Shader.h>
@@ -59,6 +58,12 @@
 
 #include <type_traits>
 
+//#include <sofa/core/CollisionModel.h>
+namespace sofa::core
+{
+    class CollisionModel;
+}
+
 namespace sofa
 {
 namespace simulation
@@ -84,6 +89,9 @@ class VisualParams;
 
 namespace simulation
 {
+
+/// This is a design to hide internally the details of the object.
+class PrivateInternals;
 
 /**
    Implements the object (component) management of the core::Context.
@@ -245,46 +253,49 @@ public:
         }
     };
 
-    Sequence<Node,true> child;
+    PrivateInternals* m_internals;
+
+    Sequence<Node,true>& child;
     typedef Sequence<Node,true>::iterator ChildIterator;
 
-    Sequence<sofa::core::objectmodel::BaseObject,true> object;
+    Sequence<sofa::core::objectmodel::BaseObject,true>& object;
     typedef Sequence<sofa::core::objectmodel::BaseObject,true>::iterator ObjectIterator;
     typedef Sequence<sofa::core::objectmodel::BaseObject,true>::reverse_iterator ObjectReverseIterator;
 
-    Single<sofa::core::behavior::BaseAnimationLoop> animationManager;
-    Single<sofa::core::visual::VisualLoop> visualLoop;
+    Single<sofa::core::behavior::BaseAnimationLoop>& animationManager;
+    Single<sofa::core::visual::VisualLoop>& visualLoop;
 
-    Sequence<sofa::core::BehaviorModel> behaviorModel;
-    Sequence<sofa::core::BaseMapping> mapping;
+    Sequence<sofa::core::BehaviorModel>& behaviorModel;
+    Sequence<sofa::core::BaseMapping>& mapping;
 
-    Sequence<sofa::core::behavior::OdeSolver> solver;
-    Sequence<sofa::core::behavior::ConstraintSolver> constraintSolver;
-    Sequence<sofa::core::behavior::BaseLinearSolver> linearSolver;
+    Sequence<sofa::core::behavior::OdeSolver>& solver;
+    Sequence<sofa::core::behavior::ConstraintSolver>& constraintSolver;
+    Sequence<sofa::core::behavior::BaseLinearSolver>& linearSolver;
 
-    Single<sofa::core::topology::Topology> topology;
-    Single<sofa::core::topology::BaseMeshTopology> meshTopology;
-    Sequence<sofa::core::topology::BaseTopologyObject> topologyObject;
+    Single<sofa::core::topology::Topology>& topology;
+    Single<sofa::core::topology::BaseMeshTopology>& meshTopology;
+    Sequence<sofa::core::topology::BaseTopologyObject>& topologyObject;
 
-    Single<sofa::core::BaseState> state;
-    Single<sofa::core::behavior::BaseMechanicalState> mechanicalState;
-    Single<sofa::core::BaseMapping> mechanicalMapping;
-    Single<sofa::core::behavior::BaseMass> mass;
-    Sequence<sofa::core::behavior::BaseForceField> forceField;
-    Sequence<sofa::core::behavior::BaseInteractionForceField> interactionForceField;
-    Sequence<sofa::core::behavior::BaseProjectiveConstraintSet> projectiveConstraintSet;
-    Sequence<sofa::core::behavior::BaseConstraintSet> constraintSet;
-    Sequence<sofa::core::objectmodel::ContextObject> contextObject;
-    Sequence<sofa::core::objectmodel::ConfigurationSetting> configurationSetting;
+    Single<sofa::core::BaseState>& state;
+    Single<sofa::core::behavior::BaseMechanicalState>& mechanicalState;
+    Single<sofa::core::BaseMapping>& mechanicalMapping;
+    Single<sofa::core::behavior::BaseMass>& mass;
+    Sequence<sofa::core::behavior::BaseForceField>& forceField;
+    Sequence<sofa::core::behavior::BaseInteractionForceField>& interactionForceField;
+    Sequence<sofa::core::behavior::BaseProjectiveConstraintSet>& projectiveConstraintSet;
+    Sequence<sofa::core::behavior::BaseConstraintSet>& constraintSet;
+    Sequence<sofa::core::objectmodel::ContextObject>& contextObject;
+    Sequence<sofa::core::objectmodel::ConfigurationSetting>& configurationSetting;
 
-    Sequence<sofa::core::visual::Shader> shaders;
-    Sequence<sofa::core::visual::VisualModel> visualModel;
-    Sequence<sofa::core::visual::VisualManager> visualManager;
+    Sequence<sofa::core::visual::Shader>& shaders;
+    Sequence<sofa::core::visual::VisualModel>& visualModel;
+    Sequence<sofa::core::visual::VisualManager>& visualManager;
 
-    Sequence<sofa::core::CollisionModel> collisionModel;
-    Single<sofa::core::collision::Pipeline> collisionPipeline;
+    Sequence<sofa::core::CollisionModel>& collisionModel;
+    Single<sofa::core::collision::Pipeline>& collisionPipeline;
 
-    Sequence<sofa::core::objectmodel::BaseObject> unsorted;
+    Sequence<sofa::core::objectmodel::BaseObject>& unsorted;
+
 
     /// @}
 
@@ -606,45 +617,44 @@ public:
     /// @name virtual functions to add/remove some special components direclty in the right Sequence
     /// @{
 
-#define NODE_ADD_IN_SEQUENCE( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
-    virtual void add##FUNCTIONNAME( CLASSNAME* obj ) override { SEQUENCENAME.add(obj); } \
-    virtual void remove##FUNCTIONNAME( CLASSNAME* obj ) override { SEQUENCENAME.remove(obj); }
-
-    // WARNINGS subtilities:
-    // an InteractioFF is NOT in the FF Sequence
-    // a MechanicalMapping is NOT in the Mapping Sequence
-    // a Mass is in the FF Sequence
-    // a MeshTopology is in the topology Sequence
-
+    /// WARNINGS subtilities:
+    /// an InteractioFF is NOT in the FF Sequence
+    /// a MechanicalMapping is NOT in the Mapping Sequence
+    /// a Mass is in the FF Sequence
+    /// a MeshTopology is in the topology Sequence
 public:
 
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
-    NODE_ADD_IN_SEQUENCE( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
-    NODE_ADD_IN_SEQUENCE( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
-    NODE_ADD_IN_SEQUENCE( sofa::core::BaseMapping, Mapping, mapping )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::OdeSolver, OdeSolver, solver )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
-    NODE_ADD_IN_SEQUENCE( sofa::core::topology::Topology, Topology, topology )
-    NODE_ADD_IN_SEQUENCE( sofa::core::topology::BaseMeshTopology, MeshTopology, meshTopology )
-    NODE_ADD_IN_SEQUENCE( sofa::core::topology::BaseTopologyObject, TopologyObject, topologyObject )
-    NODE_ADD_IN_SEQUENCE( sofa::core::BaseState, State, state )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
-    NODE_ADD_IN_SEQUENCE( sofa::core::BaseMapping, MechanicalMapping, mechanicalMapping )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseMass, Mass, mass )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseForceField, ForceField, forceField )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseInteractionForceField, InteractionForceField, interactionForceField )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseProjectiveConstraintSet, ProjectiveConstraintSet, projectiveConstraintSet )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseConstraintSet, ConstraintSet, constraintSet )
-    NODE_ADD_IN_SEQUENCE( sofa::core::objectmodel::ContextObject, ContextObject, contextObject )
-    NODE_ADD_IN_SEQUENCE( sofa::core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
-    NODE_ADD_IN_SEQUENCE( sofa::core::visual::Shader, Shader, shaders )
-    NODE_ADD_IN_SEQUENCE( sofa::core::visual::VisualModel, VisualModel, visualModel )
-    NODE_ADD_IN_SEQUENCE( sofa::core::visual::VisualManager, VisualManager, visualManager )
-    NODE_ADD_IN_SEQUENCE( sofa::core::CollisionModel, CollisionModel, collisionModel )
-    NODE_ADD_IN_SEQUENCE( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
+#define DECLARE_NODE_SEQUENCE_METHOD( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
+    virtual void add##FUNCTIONNAME( CLASSNAME* obj ) override; \
+    virtual void remove##FUNCTIONNAME( CLASSNAME* obj ) override;
 
-#undef NODE_ADD_IN_SEQUENCE
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::BaseMapping, Mapping, mapping )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::behavior::OdeSolver, OdeSolver, solver )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::topology::Topology, Topology, topology )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::topology::BaseMeshTopology, MeshTopology, meshTopology )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::topology::BaseTopologyObject, TopologyObject, topologyObject )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::BaseState, State, state )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::BaseMapping, MechanicalMapping, mechanicalMapping )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::behavior::BaseMass, Mass, mass )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::behavior::BaseForceField, ForceField, forceField )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::behavior::BaseInteractionForceField, InteractionForceField, interactionForceField )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::behavior::BaseProjectiveConstraintSet, ProjectiveConstraintSet, projectiveConstraintSet )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::behavior::BaseConstraintSet, ConstraintSet, constraintSet )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::objectmodel::ContextObject, ContextObject, contextObject )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::visual::Shader, Shader, shaders )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::visual::VisualModel, VisualModel, visualModel )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::visual::VisualManager, VisualManager, visualManager )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::CollisionModel, CollisionModel, collisionModel )
+    DECLARE_NODE_SEQUENCE_METHOD( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
+
+#undef DECLARE_NODE_SEQUENCE_METHOD
 
     /// @}
 
