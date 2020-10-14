@@ -96,10 +96,6 @@ public:
 	TTriangle& shape() { return *this; }
     const TTriangle& shape() const { return *this; }
 
-    void setCcdIgnore(bool x);
-
-    bool ccdIgnore() const;
-
     Coord interpX(defaulttype::Vec<2,Real> bary) const
     {
 		return (p1()*(1-bary[0]-bary[1])) + (p2()*bary[0]) + (p3()*bary[1]);
@@ -146,10 +142,10 @@ public:
 
     Data<bool> d_bothSide; ///< to activate collision on both side of the triangle model
     Data<bool> d_computeNormals; ///< set to false to disable computation of triangles normal
+    Data<bool> useCurvature; ///< use the curvature of the mesh to avoid some self-intersection test
     
     /// Link to be set to the topology container in the component graph.
     SingleLink<TriangleCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-    std::vector<bool> toIgnore;
 
 protected:
     core::behavior::MechanicalState<DataTypes>* m_mstate; ///< Pointer to the corresponding MechanicalState
@@ -164,9 +160,7 @@ protected:
      */
     const sofa::core::topology::BaseMeshTopology::SeqTriangles* m_triangles;
 
-    sofa::core::topology::BaseMeshTopology::SeqTriangles m_internalTriangles; ///< Internal Buffer of triangles to combine quads splitted and other triangles.
-    Data<bool> triangulateQuads;
-    Data<bool> useCurvature;
+    sofa::core::topology::BaseMeshTopology::SeqTriangles m_internalTriangles; ///< Internal Buffer of triangles to combine quads splitted and other triangles.    
 
     bool m_needsUpdate; ///< parameter storing the info boundingTree has to be recomputed.
     int m_topologyRevision; ///< internal revision number to check if topology has changed.
@@ -212,7 +206,6 @@ public:
     void setFilter(TriangleLocalMinDistanceFilter * /*lmdFilter*/);
 
     Deriv velocity(index_type index)const;
-
 
 
     /// Pre-construction check method called by ObjectFactory.
@@ -302,16 +295,6 @@ inline int TTriangle<DataTypes>::flags() const { return this->model->getTriangle
 
 template<class DataTypes>
 inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->m_mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
-
-template<class DataTypes>
-inline void TTriangle<DataTypes>::setCcdIgnore(bool x) {
-    this->model->toIgnore[p1Index()] = this->model->toIgnore[p2Index()] = this->model->toIgnore[p3Index()] = x;
-}
-
-template<class DataTypes>
-inline bool TTriangle<DataTypes>::ccdIgnore() const {
-    return this->model->toIgnore[p1Index()] || this->model->toIgnore[p2Index()] || this->model->toIgnore[p3Index()];
-}
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TriangleCollisionModel<DataTypes>::velocity(index_type index) const { return (m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][0]] + m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][1]] +

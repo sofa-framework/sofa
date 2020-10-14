@@ -51,11 +51,10 @@ template<class DataTypes>
 TriangleCollisionModel<DataTypes>::TriangleCollisionModel()
     : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
     , d_computeNormals(initData(&d_computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
+    , useCurvature(initData(&useCurvature, false, "useCurvature", "use the curvature of the mesh to avoid some self-intersection test"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_mstate(nullptr)
     , m_topology(nullptr)
-    , triangulateQuads(initData(&triangulateQuads, true, "triangulateQuads", "split quads into triangles for collision detection"))
-    , useCurvature(initData(&useCurvature, false, "useCurvature", "use the curvature of the mesh to avoid some self-intersection test"))
     , m_needsUpdate(true)
     , m_topologyRevision(-1)
     , m_pointModels(nullptr)
@@ -70,7 +69,6 @@ void TriangleCollisionModel<DataTypes>::resize(std::size_t size)
 {
     this->core::CollisionModel::resize(size);
     m_normals.resize(size);
-    toIgnore.resize(this->getContext()->getMeshTopology()->getNbPoints(), false);
 }
 
 template<class DataTypes>
@@ -154,27 +152,20 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
     int revision = m_topology->getRevision();
     if (revision == m_topologyRevision)
         return;
-    
+
+    m_topologyRevision = revision;
+
     const unsigned nquads = m_topology->getNbQuads();
     const unsigned ntris = m_topology->getNbTriangles();
-    unsigned newsize = ntris;
-    if(triangulateQuads.getValue())
-        newsize += 2*nquads;
-
-    //meshRevision = revision;
-    m_topologyRevision = revision;
-    m_needsUpdate =true;
-
-    resize(newsize);
 
     if (nquads == 0) // only triangles
     {
         resize(ntris);
-        m_triangles = & m_topology->getTriangles();
+        m_triangles = &m_topology->getTriangles();
     }
     else
     {
-        const unsigned newsize = ntris+2*nquads;
+        const unsigned newsize = ntris + 2 * nquads;
         const unsigned npoints = m_mstate->getSize();
 
         m_triangles = &m_internalTriangles;
@@ -182,41 +173,38 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
         resize(newsize);
 
         int index = 0;
-        for (unsigned i=0; i<ntris; i++)
+        for (unsigned i = 0; i < ntris; i++)
         {
             core::topology::BaseMeshTopology::Triangle idx = m_topology->getTriangle(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
             {
-                msg_error() << "Vertex index out of range in triangle " << i << ": " << idx[0] << " " << idx[1] << " " << idx[2] <<" ( total points=" << npoints << ")";
-                if (idx[0] >= npoints) idx[0] = npoints-1;
-                if (idx[1] >= npoints) idx[1] = npoints-1;
-                if (idx[2] >= npoints) idx[2] = npoints-1;
+                msg_error() << "Vertex index out of range in triangle " << i << ": " << idx[0] << " " << idx[1] << " " << idx[2] << " ( total points=" << npoints << ")";
+                if (idx[0] >= npoints) idx[0] = npoints - 1;
+                if (idx[1] >= npoints) idx[1] = npoints - 1;
+                if (idx[2] >= npoints) idx[2] = npoints - 1;
             }
             m_internalTriangles[index] = idx;
             ++index;
         }
-        if(triangulateQuads.getValue())
+        for (unsigned i = 0; i < nquads; i++)
         {
-            for (unsigned i=0; i<nquads; i++)
-            {
             core::topology::BaseMeshTopology::Quad idx = m_topology->getQuad(i);
-                if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
-                {
+            if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
+            {
                 msg_error() << "Vertex index out of range in quad " << i << ": " << idx[0] << " " << idx[1] << " " << idx[2] << " " << idx[3] << " ( total points=" << npoints << ")";
-                    if (idx[0] >= npoints) idx[0] = npoints-1;
-                    if (idx[1] >= npoints) idx[1] = npoints-1;
-                    if (idx[2] >= npoints) idx[2] = npoints-1;
-                    if (idx[3] >= npoints) idx[3] = npoints-1;
-                }
+                if (idx[0] >= npoints) idx[0] = npoints - 1;
+                if (idx[1] >= npoints) idx[1] = npoints - 1;
+                if (idx[2] >= npoints) idx[2] = npoints - 1;
+                if (idx[3] >= npoints) idx[3] = npoints - 1;
+            }
             m_internalTriangles[index][0] = idx[1];
             m_internalTriangles[index][1] = idx[2];
             m_internalTriangles[index][2] = idx[0];
-                ++index;
+            ++index;
             m_internalTriangles[index][0] = idx[3];
             m_internalTriangles[index][1] = idx[0];
             m_internalTriangles[index][2] = idx[2];
-                ++index;
-            }
+            ++index;
         }
     }
     updateNormals();

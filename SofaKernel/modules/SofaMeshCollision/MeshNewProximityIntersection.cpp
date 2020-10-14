@@ -26,7 +26,6 @@
 #include <iostream>
 #include <algorithm>
 #include <sofa/core/collision/IntersectorFactory.h>
-#include <sofa/helper/AdvancedTimer.h>
 
 
 namespace sofa
@@ -198,7 +197,6 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Ou
 
 int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, OutputVector* contacts)
 {
-    
     if (e1.getIndex() >= e1.getCollisionModel()->getSize())
     {
         msg_error(intersection) << "computeIntersection(Triangle, Triangle): ERROR invalid e1 index "
