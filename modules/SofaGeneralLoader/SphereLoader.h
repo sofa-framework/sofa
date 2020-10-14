@@ -40,8 +40,6 @@ protected:
     SphereLoader();
 
 public:
-    void reinit() override;
-
     // Point coordinates in 3D in double.
     Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_positions; ///< Sphere centers
     Data< helper::vector<SReal> > d_radius; ///< Radius of each sphere

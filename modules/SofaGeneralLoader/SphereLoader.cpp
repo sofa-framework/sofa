@@ -67,12 +67,6 @@ SphereLoader::SphereLoader()
 }
 
 
-void SphereLoader::reinit()
-{    
-    applyTransform();
-}
-
-
 void SphereLoader::applyTransform()
 {
     const Vec3& scale = d_scale.getValue();
