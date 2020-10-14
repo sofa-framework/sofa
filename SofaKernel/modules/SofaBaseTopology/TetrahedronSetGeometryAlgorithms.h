@@ -133,13 +133,13 @@ public:
     void writeMSHfile(const char *filename) const;
 
     /// finds the intersection point with plane which is defined by c and normal
-    void getIntersectionPointWithPlane(const TetraID ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, sofa::helper::vector< sofa::defaulttype::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge);
+    void getIntersectionPointWithPlane(const TetraID ind_ta, const sofa::defaulttype::Vec<3,Real>& planP0, const sofa::defaulttype::Vec<3,Real>& normal, sofa::helper::vector< sofa::defaulttype::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge);
 
     /// finds the intersection point between edge and plane
-    bool computeIntersectionEdgeWithPlane(sofa::defaulttype::Vec<3,Real>& p1,
-                                          sofa::defaulttype::Vec<3,Real>& p2,
-                                          sofa::defaulttype::Vec<3,Real>& c,
-                                          sofa::defaulttype::Vec<3,Real>& normal,
+    bool computeIntersectionEdgeWithPlane(const sofa::defaulttype::Vec<3,Real>& edgeP1,
+                                          const sofa::defaulttype::Vec<3,Real>& edgeP2,
+                                          const sofa::defaulttype::Vec<3,Real>& planP0,
+                                          const sofa::defaulttype::Vec<3,Real>& normal,
                                           sofa::defaulttype::Vec<3,Real>& intersection);
     
     /// Method to check if points stored inside the Tetrahedron, given by the tetrahedron id, are in the right order (by checking the cross products between edges).
