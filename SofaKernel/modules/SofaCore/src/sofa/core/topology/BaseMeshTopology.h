@@ -41,6 +41,8 @@ public:
     SOFA_ABSTRACT_CLASS(BaseMeshTopology, core::topology::Topology);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseMeshTopology)
 
+    using index_type [[deprecated("PR#1515 (2020-10-14) BaseMeshTopology::index_type is a deprecated typedef. From now on, please sofa::Index instead of sofa::core::topology::BaseMeshTopology::index_type.")]] = sofa::Index;
+
     typedef sofa::helper::vector<Edge> 		        SeqEdges;
     typedef sofa::helper::vector<Triangle>		    SeqTriangles;
     typedef sofa::helper::vector<Quad>		        SeqQuads;
