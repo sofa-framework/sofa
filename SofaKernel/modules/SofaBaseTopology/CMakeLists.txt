@@ -13,8 +13,6 @@ set(HEADER_FILES
     GridTopology.h
     HexahedronSetGeometryAlgorithms.h
     HexahedronSetGeometryAlgorithms.inl
-    HexahedronSetTopologyAlgorithms.h
-    HexahedronSetTopologyAlgorithms.inl
     HexahedronSetTopologyContainer.h
     HexahedronSetTopologyModifier.h
     MeshTopology.h
@@ -71,7 +69,6 @@ set(SOURCE_FILES
     EdgeSetTopologyModifier.cpp
     GridTopology.cpp
     HexahedronSetGeometryAlgorithms.cpp
-    HexahedronSetTopologyAlgorithms.cpp
     HexahedronSetTopologyContainer.cpp
     HexahedronSetTopologyModifier.cpp
     MeshTopology.cpp
