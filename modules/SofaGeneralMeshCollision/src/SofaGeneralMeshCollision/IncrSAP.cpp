@@ -22,13 +22,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <SofaGeneralMeshCollision/IncrSAP.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 inline EndPointID & ISAPBox::min(int dim){return *(_min[dim]);}
@@ -878,10 +872,4 @@ int IncrSAPClassSofaVector = core::RegisterObject("Collision detection using inc
         .add< IncrSAP >( true )
         ;
 
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::collision

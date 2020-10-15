@@ -19,16 +19,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGENERALMESHCOLLISION_CONFIG_H
-#define SOFAGENERALMESHCOLLISION_CONFIG_H
+#include <SofaGeneralMeshCollision/initSofaGeneralMeshCollision.h>
 
-#include <SofaGeneral/config.h>
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-#ifdef SOFA_BUILD_GENERAL_MESH_COLLISION
-#  define SOFA_TARGET SofaGeneralMeshCollision
-#  define SOFA_GENERAL_MESH_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_GENERAL_MESH_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa::component
+{
 
-#endif
+extern "C" {
+    SOFA_SOFAGENERALMESHCOLLISION_API void initExternalModule();
+    SOFA_SOFAGENERALMESHCOLLISION_API const char* getModuleName();
+    SOFA_SOFAGENERALMESHCOLLISION_API const char* getModuleVersion();
+    SOFA_SOFAGENERALMESHCOLLISION_API const char* getModuleLicense();
+    SOFA_SOFAGENERALMESHCOLLISION_API const char* getModuleDescription();
+    SOFA_SOFAGENERALMESHCOLLISION_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
+
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAGENERALMESHCOLLISION_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about General Mesh Collision.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

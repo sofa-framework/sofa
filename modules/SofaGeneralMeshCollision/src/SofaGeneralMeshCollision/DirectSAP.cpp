@@ -32,18 +32,9 @@
 #include <queue>
 #include <stack>
 
-#include <sofa/helper/system/gl.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
-
-namespace component
-{
-
-namespace collision
-{
-
-
 
 inline void DSAPBox::update(int axis, double alarmDist){
     min->value = (cube.minVect())[axis] - alarmDist;
@@ -351,10 +342,5 @@ int DirectSAPClass = core::RegisterObject("Collision detection using sweep and p
         .add< DirectSAP >()
         ;
 
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision
 

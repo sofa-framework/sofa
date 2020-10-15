@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_MESHMINPROXIMITYINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_MESHMINPROXIMITYINTERSECTION_H
-#include "config.h"
+#pragma once
+
+#include <SofaGeneralMeshCollision/config.h>
 
 #include <SofaBaseCollision/MinProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
@@ -34,16 +34,10 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaBaseCollision/IntrUtility3.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
-
-namespace collision
-{
-
-class SOFA_GENERAL_MESH_COLLISION_API MeshMinProximityIntersection : public core::collision::BaseIntersector
+class SOFA_SOFAGENERALMESHCOLLISION_API MeshMinProximityIntersection : public core::collision::BaseIntersector
 {
     typedef MinProximityIntersection::OutputVector OutputVector;
 
@@ -322,12 +316,4 @@ int MeshMinProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2,
     return 1;
 }
 
-
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

@@ -28,7 +28,6 @@
 #include <SofaGeneralImplicitOdeSolver/initGeneralImplicitODESolver.h>
 #include <SofaGeneralLinearSolver/initGeneralLinearSolver.h>
 #include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaGeneralMeshCollision/initGeneralMeshCollision.h>
 #include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
 #include <SofaGeneralRigid/initGeneralRigid.h>
 #include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
@@ -62,7 +61,6 @@ void initSofaGeneral()
     initGeneralImplicitODESolver();
     initGeneralLinearSolver();
     initGeneralLoader();
-    initGeneralMeshCollision();
     initGeneralObjectInteraction();
     initGeneralRigid();
     initGeneralSimpleFEM();

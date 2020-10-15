@@ -12,7 +12,6 @@ set(SOFAGENERAL_TARGETS
     SofaGeneralImplicitOdeSolver
     SofaGeneralLinearSolver
     SofaGeneralLoader
-    SofaGeneralMeshCollision
     SofaGeneralObjectInteraction
     SofaGeneralRigid
     SofaGeneralSimpleFem
@@ -30,6 +29,7 @@ endforeach()
 
 # Modules
 set(SOFAGENERAL_MODULES
+    SofaGeneralMeshCollision
     SofaGeneralVisual
     SofaGraphComponent
 )
