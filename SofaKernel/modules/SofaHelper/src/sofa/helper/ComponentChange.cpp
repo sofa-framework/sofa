@@ -140,6 +140,12 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"SparseGridMultipleTopology", Pluginized("v20.06", "SofaNonUniformFem")},
     {"SparseGridRamificationTopology", Pluginized("v20.06", "SofaNonUniformFem")},
 
+
+    /***********************/
+    // REMOVED SINCE v20.12
+    { "DynamicSparseGridTopologyAlgorithms", Deprecated("v20.12", "v21.06") },
+
+
     /***********************/
     // REMOVED SINCE v20.06
 
