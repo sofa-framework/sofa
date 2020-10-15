@@ -29,6 +29,7 @@
 #include <sofa/helper/MarchingCubeUtility.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <stack>
+#include <sofa/helper/rmath.h>
 
 #define PRECISION 16384.0
 

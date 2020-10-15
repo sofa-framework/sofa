@@ -26,6 +26,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/TemplatesAliases.h
     ${SRC_ROOT}/TopologyTypes.h
     ${SRC_ROOT}/Vec.h
+    ${SRC_ROOT}/Vec.inl
     ${SRC_ROOT}/Ray.h
     ${SRC_ROOT}/Vec3Types.h
     ${SRC_ROOT}/VecTypes.h
@@ -39,6 +40,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/BaseMatrix.cpp
     ${SRC_ROOT}/BoundingBox.cpp
     ${SRC_ROOT}/Frame.cpp
+    ${SRC_ROOT}/Vec.cpp
     ${SRC_ROOT}/SolidTypes.cpp
     ${SRC_ROOT}/TemplatesAliases.cpp
     ${SRC_ROOT}/init.cpp

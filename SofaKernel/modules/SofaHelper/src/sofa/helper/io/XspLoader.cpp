@@ -26,6 +26,7 @@
 using sofa::defaulttype::Vector3;
 
 #include <sofa/core/objectmodel/Base.h>
+#include <sofa/helper/rmath.h>
 #include <cstdio>
 #include <iostream>
 #include <fstream>

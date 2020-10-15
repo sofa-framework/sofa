@@ -19,34 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_DEFAULTTYPE_VEC_CPP
+#pragma once
 
-#include <sofa/defaulttype/Vec.inl>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/rmath.h>
+
+#define EQUALITY_THRESHOLD 1e-6
+
 namespace sofa::defaulttype
 {
-template class Vec<1,float>;
-template class Vec<1,int>;
-template class Vec<1,double>;
-template class Vec<1,unsigned>;
 
-template class Vec<2,float>;
-template class Vec<2,int>;
-template class Vec<2,double>;
-template class Vec<2,unsigned>;
+/// Euclidean norm.
+template<std::size_t N, typename real>
+real Vec<N,real>::norm() const
+{
+    return helper::rsqrt(norm2());
+}
 
-template class Vec<3,float>;
-template class Vec<3,int>;
-template class Vec<3,double>;
-template class Vec<3,unsigned>;
+/// l-norm of the vector
+/// The type of norm is set by parameter l.
+/// Use l<0 for the infinite norm.
+template<std::size_t N, typename real>
+real Vec<N,real>::lNorm( int l ) const
+{
+    if( l==2 ) return norm(); // euclidian norm
+    else if( l<0 ) // infinite norm
+    {
+        real n=0;
+        for( std::size_t i=0; i<N; i++ )
+        {
+            real a = helper::rabs( this->elems[i] );
+            if( a>n ) n=a;
+        }
+        return n;
+    }
+    else if( l==1 ) // Manhattan norm
+    {
+        real n=0;
+        for( std::size_t i=0; i<N; i++ )
+        {
+            n += helper::rabs( this->elems[i] );
+        }
+        return n;
+    }
+    else if( l==0 ) // counting not null
+    {
+        real n=0;
+        for( std::size_t i=0; i<N; i++ )
+            if( this->elems[i] ) n+=1;
+        return n;
+    }
+    else // generic implementation
+    {
+        real n = 0;
+        for( std::size_t i=0; i<N; i++ )
+            n += pow( helper::rabs( this->elems[i] ), l );
+        return pow( n, real(1.0)/(real)l );
+    }
+}
 
-template class Vec<4,float>;
-template class Vec<4,int>;
-template class Vec<4,double>;
-template class Vec<4,unsigned>;
-
-template class Vec<6,float>;
-template class Vec<6,int>;
-template class Vec<6,double>;
-template class Vec<6,unsigned>;
-} // namespace sofa
-
+} /// namespace sofa::defaulttype
