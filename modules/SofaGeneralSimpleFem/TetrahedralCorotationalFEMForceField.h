@@ -138,7 +138,6 @@ protected:
     typedef std::pair<int,Real> Col_Value;
     typedef helper::vector< Col_Value > CompressedValue;
     typedef helper::vector< CompressedValue > CompressedMatrix;
-    typedef Index Index;
 
     CompressedMatrix _stiffnesses;
     /// @}

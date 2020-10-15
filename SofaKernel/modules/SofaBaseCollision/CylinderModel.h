@@ -58,8 +58,6 @@ public:
 
     typedef CylinderCollisionModel<DataTypes> ParentModel;
 
-    using Index = sofa::Index;
-
     TCylinder(ParentModel* model, Index index);
 
     explicit TCylinder(const core::CollisionElementIterator& i);

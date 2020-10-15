@@ -80,8 +80,6 @@ public:
 
     typedef sofa::helper::Quater<Real> Quat;
 
-    using Index = sofa::Index;
-
     enum {
         LARGE = 0,   ///< Symbol of small displacements triangle solver
         SMALL = 1,   ///< Symbol of large displacements triangle solver

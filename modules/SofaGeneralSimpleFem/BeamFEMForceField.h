@@ -78,7 +78,6 @@ public:
 
     using Index = sofa::Index;
 
-    typedef Index Index;
     typedef BaseMeshTopology::Edge Element;
     typedef helper::vector<BaseMeshTopology::Edge> VecElement;
     typedef Vec<3, Real> Vec3;

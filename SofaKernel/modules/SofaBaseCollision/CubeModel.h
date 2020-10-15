@@ -57,8 +57,6 @@ class SOFA_BASE_COLLISION_API CubeCollisionModel : public core::CollisionModel
 public:
     SOFA_CLASS(CubeCollisionModel,sofa::core::CollisionModel);
 
-    using Index = sofa::Index;
-
     struct CubeData
     {
         sofa::defaulttype::Vector3 minBBox, maxBBox;

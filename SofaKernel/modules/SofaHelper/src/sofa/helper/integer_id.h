@@ -40,7 +40,6 @@ class integer_id
 {
 public:
     typedef integer_id<Name, Index, DefaultId> Id;
-    typedef Index Index;
     typedef int sindex_type;
 protected:
     Index index;

@@ -112,8 +112,6 @@ protected:
     typedef helper::vector< Col_Value > CompressedValue;
     typedef helper::vector< CompressedValue > CompressedMatrix;
 
-    using Index = sofa::Index;
-
     /// the information stored for each hexahedron
     class HexahedronInformation
     {

@@ -70,8 +70,6 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef core::behavior::MechanicalState<DataTypes> MMechanicalState;
 
-    using Index = sofa::Index;
-
     virtual ~BaseContactMapper() {}
     virtual MMechanicalState* createMapping(const char* name = "contactPoints") = 0;
     virtual void cleanup() = 0;

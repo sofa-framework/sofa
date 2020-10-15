@@ -180,7 +180,7 @@ void CarvingManager::doCarve()
         }
 
         int nbelems = 0;
-        helper::vector<sofa::index_type> elemsToRemove;
+        helper::vector<Index> elemsToRemove;
 
         for (size_t j = 0; j < ncontacts; ++j)
         {

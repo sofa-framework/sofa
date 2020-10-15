@@ -56,8 +56,6 @@ public:
 
     typedef CapsuleCollisionModel<DataTypes> ParentModel;
 
-    using Index = sofa::Index;
-
     TCapsule(ParentModel* model, Index index);
 
     explicit TCapsule(const core::CollisionElementIterator& i);
