@@ -145,6 +145,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     // REMOVED SINCE v20.12
     { "DynamicSparseGridTopologyAlgorithms", Deprecated("v20.12", "v21.06") },
     { "HexahedronSetTopologyAlgorithms", Deprecated("v20.12", "v21.06") },
+    { "QuadSetTopologyAlgorithms", Deprecated("v20.12", "v21.06") },
 
 
     /***********************/

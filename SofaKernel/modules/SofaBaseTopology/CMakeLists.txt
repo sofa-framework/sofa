@@ -26,8 +26,6 @@ set(HEADER_FILES
     PointSetTopologyModifier.h
     QuadSetGeometryAlgorithms.h
     QuadSetGeometryAlgorithms.inl
-    QuadSetTopologyAlgorithms.h
-    QuadSetTopologyAlgorithms.inl
     QuadSetTopologyContainer.h
     QuadSetTopologyModifier.h
     RegularGridTopology.h
@@ -78,7 +76,6 @@ set(SOURCE_FILES
     PointSetTopologyContainer.cpp
     PointSetTopologyModifier.cpp
     QuadSetGeometryAlgorithms.cpp
-    QuadSetTopologyAlgorithms.cpp
     QuadSetTopologyContainer.cpp
     QuadSetTopologyModifier.cpp
     RegularGridTopology.cpp
