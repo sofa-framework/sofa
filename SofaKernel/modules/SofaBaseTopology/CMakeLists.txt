@@ -18,8 +18,6 @@ set(HEADER_FILES
     NumericalIntegrationDescriptor.inl
     PointSetGeometryAlgorithms.h
     PointSetGeometryAlgorithms.inl
-    PointSetTopologyAlgorithms.h
-    PointSetTopologyAlgorithms.inl
     PointSetTopologyContainer.h
     PointSetTopologyModifier.h
     QuadSetGeometryAlgorithms.h
@@ -65,7 +63,6 @@ set(SOURCE_FILES
     MeshTopology.cpp
     NumericalIntegrationDescriptor.cpp
     PointSetGeometryAlgorithms.cpp
-    PointSetTopologyAlgorithms.cpp
     PointSetTopologyContainer.cpp
     PointSetTopologyModifier.cpp
     QuadSetGeometryAlgorithms.cpp
