@@ -156,8 +156,8 @@ typedef unsigned __int64	uint64_t;
 namespace sofa
 {
 	
-using Index = unsigned int;
-using Size = unsigned int;
+using Index = uint32_t;
+using Size = uint32_t;
 
 constexpr Index InvalidID = (std::numeric_limits<Index>::max)(); 
 
