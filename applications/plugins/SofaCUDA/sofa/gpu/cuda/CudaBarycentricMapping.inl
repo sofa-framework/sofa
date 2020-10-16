@@ -344,7 +344,7 @@ void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,
 
 
 template <typename VecIn, typename VecOut>
-void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::resizeMap(index_type size2, index_type maxNIn2)
+void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::resizeMap(std::size_t size2, std::size_t maxNIn2)
 {
     if (maxNIn2 < maxNIn) maxNIn2 = maxNIn;
     map.resize(((size2+BSIZE-1)/BSIZE)*maxNIn2);

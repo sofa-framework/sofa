@@ -460,7 +460,7 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
 
 
 template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams , std::size_t index)
+void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams , index_type index)
 {
     Element t(this,index);
 
