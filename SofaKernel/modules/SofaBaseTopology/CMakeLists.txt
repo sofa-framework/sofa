@@ -32,8 +32,6 @@ set(HEADER_FILES
     SparseGridTopology.h
     TetrahedronSetGeometryAlgorithms.h
     TetrahedronSetGeometryAlgorithms.inl
-    TetrahedronSetTopologyAlgorithms.h
-    TetrahedronSetTopologyAlgorithms.inl
     TetrahedronSetTopologyContainer.h
     TetrahedronSetTopologyModifier.h
     TopologyData.h
@@ -81,7 +79,6 @@ set(SOURCE_FILES
     RegularGridTopology.cpp
     SparseGridTopology.cpp
     TetrahedronSetGeometryAlgorithms.cpp
-    TetrahedronSetTopologyAlgorithms.cpp
     TetrahedronSetTopologyContainer.cpp
     TetrahedronSetTopologyModifier.cpp
     TriangleSetGeometryAlgorithms.cpp
