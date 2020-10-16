@@ -148,7 +148,8 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "TetrahedronSetTopologyAlgorithms", Deprecated("v20.12", "v21.06") },
     { "QuadSetTopologyAlgorithms", Deprecated("v20.12", "v21.06") },
     { "TriangleSetTopologyAlgorithms", Deprecated("v20.12", "v21.06") },
-
+    { "EdgeSetTopologyAlgorithms", Deprecated("v20.12", "v21.06") },
+        
 
     /***********************/
     // REMOVED SINCE v20.06

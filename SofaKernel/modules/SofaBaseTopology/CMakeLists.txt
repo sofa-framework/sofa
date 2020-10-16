@@ -6,8 +6,6 @@ set(HEADER_FILES
     CommonAlgorithms.h
     EdgeSetGeometryAlgorithms.h
     EdgeSetGeometryAlgorithms.inl
-    EdgeSetTopologyAlgorithms.h
-    EdgeSetTopologyAlgorithms.inl
     EdgeSetTopologyContainer.h
     EdgeSetTopologyModifier.h
     GridTopology.h
@@ -58,7 +56,6 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     EdgeSetGeometryAlgorithms.cpp
-    EdgeSetTopologyAlgorithms.cpp
     EdgeSetTopologyContainer.cpp
     EdgeSetTopologyModifier.cpp
     GridTopology.cpp
