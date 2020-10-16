@@ -50,8 +50,6 @@ set(HEADER_FILES
     TopologySubsetDataHandler.inl
     TriangleSetGeometryAlgorithms.h
     TriangleSetGeometryAlgorithms.inl
-    TriangleSetTopologyAlgorithms.h
-    TriangleSetTopologyAlgorithms.inl
     TriangleSetTopologyContainer.h
     TriangleSetTopologyModifier.h
     config.h
@@ -82,7 +80,6 @@ set(SOURCE_FILES
     TetrahedronSetTopologyContainer.cpp
     TetrahedronSetTopologyModifier.cpp
     TriangleSetGeometryAlgorithms.cpp
-    TriangleSetTopologyAlgorithms.cpp
     TriangleSetTopologyContainer.cpp
     TriangleSetTopologyModifier.cpp
     initBaseTopology.cpp

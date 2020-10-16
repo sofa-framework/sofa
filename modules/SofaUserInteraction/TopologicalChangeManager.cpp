@@ -33,7 +33,6 @@
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
-#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/QuadSetTopologyContainer.h>
@@ -510,9 +509,6 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
 
         sofa::component::topology::TriangleSetTopologyModifier* triangleModifier;
         currentTopology->getContext()->get(triangleModifier);
-
-        sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlgorithm;
-        currentTopology->getContext()->get(triangleAlgorithm);
 
         sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeometry;
         currentTopology->getContext()->get(triangleGeometry);

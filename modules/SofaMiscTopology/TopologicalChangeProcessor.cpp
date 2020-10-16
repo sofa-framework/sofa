@@ -29,7 +29,6 @@
 
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
 #include <SofaBaseTopology/QuadSetTopologyModifier.h>
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
@@ -630,9 +629,6 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             sofa::component::topology::TriangleSetTopologyModifier* triangleMod;
             m_topology->getContext()->get(triangleMod);
 
-            sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlg;
-            m_topology->getContext()->get(triangleAlg);
-
             sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
             m_topology->getContext()->get(triangleGeo);
 
@@ -1044,13 +1040,6 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, index_type& tr
     //get the number of triangle in the topology
     size_t nbTriangle = m_topology->getNbTriangles();
 
-    sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlg;
-    m_topology->getContext()->get(triangleAlg);
-    if (!triangleAlg)
-    {
-        msg_error() <<"TopologicalChangeProcessor needs a TriangleSetTopologyAlgorithms component." ;
-    }
-
     sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
     if (!triangleGeo)
@@ -1197,9 +1186,6 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
 {
     sofa::component::topology::TriangleSetTopologyModifier* triangleMod;
     m_topology->getContext()->get(triangleMod);
-
-    sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlg;
-    m_topology->getContext()->get(triangleAlg);
 
     sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
