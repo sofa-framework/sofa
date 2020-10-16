@@ -40,18 +40,6 @@ void GeometryAlgorithms::initPointsAdded(const helper::vector< sofa::defaulttype
 {
 }
 
-// TopologyAlgorithms implementation
-
-void TopologyAlgorithms::init()
-{
-    this->getContext()->get(m_topologyContainer);
-}
-
-void TopologyAlgorithms::addTopologyChange(const TopologyChange *topologyChange)
-{
-    m_topologyContainer->addTopologyChange(topologyChange);
-}
-
 // TopologyModifier implementation
 
 void TopologyModifier::init()
