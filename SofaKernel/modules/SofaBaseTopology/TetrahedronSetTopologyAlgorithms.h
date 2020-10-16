@@ -73,15 +73,6 @@ public:
 
     void removeTetra(sofa::helper::vector<TetraID>& ind_ta);
 
-    void subDivideTetrahedronsWithPlane(sofa::helper::vector< sofa::helper::vector<double> >& coefs, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal);
-    void subDivideTetrahedronsWithPlane(sofa::helper::vector<Coord>& intersectedPoints, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord planePos, Coord planeNormal);
-    int subDivideTetrahedronWithPlane(TetraID tetraIdx, sofa::helper::vector<EdgeID>& intersectedEdgeID, sofa::helper::vector<PointID>& intersectedPointID, Coord planeNormal, sofa::helper::vector<Tetra>& toBeAddedTetra);
-
-    void subDivideRestTetrahedronsWithPlane(sofa::helper::vector< sofa::helper::vector<double> >& coefs, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal);
-    void subDivideRestTetrahedronsWithPlane(sofa::helper::vector<Coord>& intersectedPoints, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord planePos, Coord planeNormal);
-    int subDivideRestTetrahedronWithPlane(TetraID tetraIdx, sofa::helper::vector<EdgeID>& intersectedEdgeID, sofa::helper::vector<PointID>& intersectedPointID, Coord planeNormal, sofa::helper::vector<Tetra>& toBeAddedTetra);
-
-
 protected:
     TetrahedronSetTopologyContainer*					m_container;
     TetrahedronSetTopologyModifier*						m_modifier;

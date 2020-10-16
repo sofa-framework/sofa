@@ -35,6 +35,8 @@ namespace component
 namespace topology
 {
 
+class TetrahedronSetTopologyContainer;
+class TetrahedronSetTopologyModifier;
 
 /**
 * A class that provides geometry information on an TetrahedronSet.
@@ -84,6 +86,8 @@ protected:
 
     ~TetrahedronSetGeometryAlgorithms() override {}
 public:
+    void init() override;
+
     void draw(const core::visual::VisualParams* vparams) override;
 
     void computeTetrahedronAABB(const TetraID i, Coord& minCoord, Coord& maxCoord) const;
@@ -161,6 +165,14 @@ public:
     /// return a pointer to the container of cubature points
     NumericalIntegrationDescriptor<Real,4> &getTetrahedronNumericalIntegrationDescriptor();
 
+    void subDivideTetrahedronsWithPlane(sofa::helper::vector< sofa::helper::vector<double> >& coefs, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal);
+    void subDivideTetrahedronsWithPlane(sofa::helper::vector<Coord>& intersectedPoints, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord planePos, Coord planeNormal);
+    int subDivideTetrahedronWithPlane(TetraID tetraIdx, sofa::helper::vector<EdgeID>& intersectedEdgeID, sofa::helper::vector<PointID>& intersectedPointID, Coord planeNormal, sofa::helper::vector<Tetra>& toBeAddedTetra);
+
+    void subDivideRestTetrahedronsWithPlane(sofa::helper::vector< sofa::helper::vector<double> >& coefs, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal);
+    void subDivideRestTetrahedronsWithPlane(sofa::helper::vector<Coord>& intersectedPoints, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord planePos, Coord planeNormal);
+    int subDivideRestTetrahedronWithPlane(TetraID tetraIdx, sofa::helper::vector<EdgeID>& intersectedEdgeID, sofa::helper::vector<PointID>& intersectedPointID, Coord planeNormal, sofa::helper::vector<Tetra>& toBeAddedTetra);
+
 protected:
     Data<bool> d_showTetrahedraIndices; ///< Debug : view Tetrahedrons indices
     Data<bool> d_drawTetrahedra; ///< if true, draw the tetrahedra in the topology
@@ -171,6 +183,10 @@ protected:
 
     /// vector of Tetrahedron ID which do not respect @sa checkTetrahedronValidity . buffer updated only by method @sa computeBadTetrahedron
     sofa::helper::vector <TetraID> m_badTetraIds;
+
+    TetrahedronSetTopologyContainer*					m_container;
+    TetrahedronSetTopologyModifier*						m_modifier;
+    unsigned int	m_intialNbPoints;
 };
 
 #if !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)
