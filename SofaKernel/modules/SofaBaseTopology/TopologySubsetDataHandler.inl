@@ -47,7 +47,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::swap( Index i1, Inde
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::add(std::size_t nbElements,
+void TopologySubsetDataHandler <TopologyElementType, VecT>::add(sofa::Size nbElements,
         const sofa::helper::vector<sofa::helper::vector<Index> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
@@ -75,7 +75,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(std::size_t nbEl
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::add(std::size_t nbElements,
+void TopologySubsetDataHandler <TopologyElementType, VecT>::add(sofa::Size nbElements,
         const sofa::helper::vector< TopologyElementType >& ,
         const sofa::helper::vector<sofa::helper::vector<Index> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
