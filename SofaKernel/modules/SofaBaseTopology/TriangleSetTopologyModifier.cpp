@@ -703,6 +703,231 @@ void TriangleSetTopologyModifier::movePointsProcess (const sofa::helper::vector 
 
 
 
+// Duplicate the given edge. Only works of at least one of its points is adjacent to a border.
+int TriangleSetTopologyModifier::InciseAlongEdge(EdgeID ind_edge, int* createdPoints)
+{
+    const Edge & edge0 = m_container->getEdge(ind_edge);
+    PointID ind_pa = edge0[0];
+    PointID ind_pb = edge0[1];
+
+    const helper::vector<TriangleID>& triangles0 = m_container->getTrianglesAroundEdge(ind_edge);
+    if (triangles0.size() != 2)
+    {
+        msg_error() << "InciseAlongEdge: ERROR edge " << ind_edge << " is not attached to 2 triangles.";
+        return -1;
+    }
+
+    // choose one triangle
+    TriangleID ind_tri0 = triangles0[0];
+
+    PointID ind_tria = ind_tri0;
+    PointID ind_trib = ind_tri0;
+    EdgeID ind_edgea = ind_edge;
+    EdgeID ind_edgeb = ind_edge;
+
+    helper::vector<TriangleID> list_tria;
+    helper::vector<TriangleID> list_trib;
+
+    for (;;)
+    {
+        const EdgesInTriangle& te = m_container->getEdgesInTriangle(ind_tria);
+
+        // find the edge adjacent to a that is not ind_edgea
+        int j = 0;
+        for (j = 0; j < 3; ++j)
+        {
+            if (te[j] != ind_edgea && (m_container->getEdge(te[j])[0] == ind_pa || m_container->getEdge(te[j])[1] == ind_pa))
+                break;
+        }
+        if (j == 3)
+        {
+            msg_error() << "InciseAlongEdge: ERROR in triangle " << ind_tria;
+            return -1;
+        }
+
+        ind_edgea = te[j];
+        if (ind_edgea == ind_edge)
+            break; // full loop
+
+        const auto& tes = m_container->getTrianglesAroundEdge(ind_edgea);
+        if (tes.size() < 2)
+            break; // border edge
+
+        if (tes[0] == ind_tria)
+            ind_tria = tes[1];
+        else
+            ind_tria = tes[0];
+        list_tria.push_back(ind_tria);
+    }
+
+    for (;;)
+    {
+        const EdgesInTriangle& te = m_container->getEdgesInTriangle(ind_trib);
+
+        // find the edge adjacent to b that is not ind_edgeb
+        int j = 0;
+        for (j = 0; j < 3; ++j)
+        {
+            if (te[j] != ind_edgeb && (m_container->getEdge(te[j])[0] == ind_pb || m_container->getEdge(te[j])[1] == ind_pb))
+                break;
+        }
+        if (j == 3)
+        {
+            msg_error() << "InciseAlongEdge: ERROR in triangle " << ind_trib;
+            return -1;
+        }
+
+        ind_edgeb = te[j];
+        if (ind_edgeb == ind_edge)
+            break; // full loop
+
+        const auto& tes = m_container->getTrianglesAroundEdge(ind_edgeb);
+        if (tes.size() < 2)
+            break; // border edge
+
+        if (tes[0] == ind_trib)
+            ind_trib = tes[1];
+        else
+            ind_trib = tes[0];
+        list_trib.push_back(ind_trib);
+    }
+
+    bool pa_is_on_border = (ind_edgea != ind_edge);
+    bool pb_is_on_border = (ind_edgeb != ind_edge);
+
+    if (!pa_is_on_border && !pb_is_on_border)
+    {
+        msg_error() << "InciseAlongEdge: ERROR edge " << ind_edge << " is not on border.";
+        return -1;
+    }
+
+    // now we can split the edge
+
+    /// force the creation of TrianglesAroundEdgeArray
+    m_container->getTrianglesAroundEdgeArray();
+    /// force the creation of TrianglesAroundVertexArray
+    m_container->getTrianglesAroundVertexArray();
+
+    //const typename DataTypes::VecCoord& vect_c =topology->getDOF()->read(core::ConstVecCoordId::position())->getValue();
+    const size_t nb_points = m_container->getTrianglesAroundVertexArray().size(); //vect_c.size();
+    const sofa::helper::vector<Triangle> &vect_t = m_container->getTriangleArray();
+    const size_t nb_triangles = vect_t.size();
+
+    // Variables to accumulate the number of elements registered to be created (so as to remember their indices)
+    PointID acc_nb_points = (PointID)nb_points;
+    TriangleID acc_nb_triangles = (TriangleID)nb_triangles;
+
+    // Variables to accumulate the elements registered to be created or to be removed
+    sofa::helper::vector< sofa::helper::vector< PointID > > p_ancestors;
+    sofa::helper::vector< sofa::helper::vector< double > > p_baryCoefs;
+    sofa::helper::vector< Triangle > triangles_to_create;
+    sofa::helper::vector< TriangleID > trianglesIndexList;
+    sofa::helper::vector< TriangleID > triangles_to_remove;
+
+    sofa::helper::vector<double> defaultCoefs; defaultCoefs.push_back(1.0);
+
+    unsigned new_pa, new_pb;
+
+    if (pa_is_on_border)
+    {
+        sofa::helper::vector<PointID> ancestors;
+        new_pa = acc_nb_points++;
+        ancestors.push_back(ind_pa);
+        p_ancestors.push_back(ancestors);
+        p_baryCoefs.push_back(defaultCoefs);
+        if (createdPoints) *(createdPoints++) = new_pa;
+    }
+    else
+        new_pa = ind_pa;
+
+    sofa::helper::vector<PointID> ancestors(1);
+
+    if (pb_is_on_border)
+    {
+        new_pb = acc_nb_points++;
+        ancestors[0] = ind_pb;
+        p_ancestors.push_back(ancestors);
+        p_baryCoefs.push_back(defaultCoefs);
+        if (createdPoints) *(createdPoints++) = new_pb;
+    }
+    else
+        new_pb = ind_pb;
+
+    // we need to recreate at least tri0
+    Triangle new_tri0 = m_container->getTriangle(ind_tri0);
+    for (unsigned i = 0; i < 3; i++)
+    {
+        if (new_tri0[i] == ind_pa)
+            new_tri0[i] = new_pa;
+        else if (new_tri0[i] == ind_pb)
+            new_tri0[i] = new_pb;
+    }
+
+    triangles_to_remove.push_back(ind_tri0);
+    ancestors[0] = ind_tri0;
+    triangles_to_create.push_back(new_tri0);
+
+    trianglesIndexList.push_back(acc_nb_triangles);
+    acc_nb_triangles += 1;
+
+    // recreate list_tria iff pa is new
+    if (new_pa != ind_pa)
+    {
+        for (unsigned j = 0; j < list_tria.size(); j++)
+        {
+            unsigned ind_tri = list_tria[j];
+            Triangle new_tri = m_container->getTriangle(ind_tri);
+            for (unsigned i = 0; i < 3; i++)
+                if (new_tri[i] == ind_pa) new_tri[i] = new_pa;
+            triangles_to_remove.push_back(ind_tri);
+            ancestors[0] = ind_tri;
+            triangles_to_create.push_back(new_tri);
+
+            trianglesIndexList.push_back(acc_nb_triangles);
+            acc_nb_triangles += 1;
+        }
+    }
+
+    // recreate list_trib iff pb is new
+    if (new_pb != ind_pb)
+    {
+        for (unsigned j = 0; j < list_trib.size(); j++)
+        {
+            unsigned ind_tri = list_trib[j];
+            Triangle new_tri = m_container->getTriangle(ind_tri);
+            for (unsigned i = 0; i < 3; i++)
+                if (new_tri[i] == ind_pb) new_tri[i] = new_pb;
+            triangles_to_remove.push_back(ind_tri);
+            ancestors[0] = ind_tri;
+            triangles_to_create.push_back(new_tri);
+
+            trianglesIndexList.push_back(acc_nb_triangles);
+            acc_nb_triangles += 1;
+        }
+    }
+
+    // Create all the points registered to be created
+    addPointsProcess(acc_nb_points - nb_points);
+
+    // Warn for the creation of all the points registered to be created
+    addPointsWarning(acc_nb_points - nb_points, p_ancestors, p_baryCoefs);
+
+    // Create all the triangles registered to be created
+    addTrianglesProcess((const sofa::helper::vector< Triangle > &) triangles_to_create); // WARNING called after the creation process by the method "addTrianglesProcess"
+
+    // Warn for the creation of all the triangles registered to be created
+    addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList);
+
+    // Propagate the topological changes *** not necessary
+    //propagateTopologicalChanges();
+
+    // Remove all the triangles registered to be removed
+    removeTriangles(triangles_to_remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
+
+    return (pb_is_on_border ? 1 : 0) + (pa_is_on_border ? 1 : 0); // todo: get new edge indice
+}
+
+
 
 bool TriangleSetTopologyModifier::removeTrianglesPreconditions(const sofa::helper::vector< TriangleID >& items)
 {

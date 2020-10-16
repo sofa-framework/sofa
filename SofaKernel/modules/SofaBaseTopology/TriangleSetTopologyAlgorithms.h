@@ -95,10 +95,6 @@ public:
     void InciseAlongLinesList(const sofa::helper::vector< sofa::defaulttype::Vec<3,double> >& input_points,
             const sofa::helper::vector< TriangleID > &input_triangles);
 
-    /** \brief Duplicates the given edge. Only works if at least one of its points is adjacent to a border.
-     * @returns the number of newly created points, or -1 if the incision failed.
-     */
-    virtual int InciseAlongEdge(EdgeID edge, int* createdPoints = nullptr);
 
 
     /** \brief Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
@@ -135,12 +131,7 @@ public:
      */
     virtual bool InciseAlongEdgeList(const sofa::helper::vector<EdgeID>& edges, sofa::helper::vector<PointID>& new_points, sofa::helper::vector<PointID>& end_points, bool& reachBorder);
 
-    PointID getOtherPointInTriangle(const Triangle& t, PointID p1, PointID p2) const
-    {
-        if (t[0] != p1 && t[0] != p2) return t[0];
-        else if (t[1] != p1 && t[1] != p2) return t[1];
-        else return t[2];
-    }
+    
 
 
 protected:
