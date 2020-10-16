@@ -723,7 +723,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 sofa::helper::vector<index_type> new_edges;
 
                 //Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
-                triangleAlg->SplitAlongPath(a_last, a, b_last, b,
+                triangleGeo->SplitAlongPath(a_last, a, b_last, b,
                         topoPath_list, indices_list, coords2_list,
                         new_edges, 0.1, 0.25);
 
@@ -732,7 +732,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 bool reachBorder = false;
 
                 //Duplicates the given edges
-                triangleAlg->InciseAlongEdgeList(new_edges,
+                triangleGeo->InciseAlongEdgeList(new_edges,
                         new_points, end_points, reachBorder);
 
                 if (!end_points.empty())
@@ -1305,14 +1305,14 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         sofa::helper::vector< index_type > new_edges;
 
         //Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
-        triangleAlg->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, m_epsilonSnapPath.getValue(), m_epsilonSnapBorder.getValue());
+        triangleGeo->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, m_epsilonSnapPath.getValue(), m_epsilonSnapBorder.getValue());
 
         sofa::helper::vector<index_type> new_points;
         sofa::helper::vector<index_type> end_points;
         bool reachBorder = false;
 
         //Duplicates the given edges
-        triangleAlg->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
+        triangleGeo->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
 
         msg_info_when(reachBorder) << "Incision has reached a border.";
 
