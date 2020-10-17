@@ -61,10 +61,8 @@ SPHFluidForceField<DataTypes>::SPHFluidForceField()
 }
 
 template<class DataTypes>
-void SPHFluidForceField<DataTypes>::init()
+void SPHFluidForceField<DataTypes>::doInit()
 {
-    this->Inherit::init();
-
     SPHKernel<SPH_KERNEL_CUBIC,Deriv> Kcubic(4);
     if (!Kcubic.CheckAll(2, sout.ostringstream(), serr.ostringstream())) serr << sendl;
     SPHKernel<SPH_KERNEL_DEFAULT_DENSITY,Deriv> Kd(4);

@@ -77,9 +77,7 @@ protected:
     
 public:
 
-    void init() override {
-		this->core::behavior::Mass<DataTypes>::init();
-
+    void doInit() override {
         typedef std::runtime_error error;
 
         try{ 

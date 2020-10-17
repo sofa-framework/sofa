@@ -16,7 +16,7 @@ LinearDiagonalCompliance<DataTypes>::LinearDiagonalCompliance( core::behavior::M
 {}
 
 template<class DataTypes>
-void LinearDiagonalCompliance<DataTypes>::init()
+void LinearDiagonalCompliance<DataTypes>::doInit()
 {
     Real complianceMin = d_complianceMin.getValue();
     {
@@ -25,7 +25,6 @@ void LinearDiagonalCompliance<DataTypes>::init()
         for (std::size_t i=0; i<diag.size(); ++i)
             diag[i].fill(complianceMin);
     }
-    Inherit::init();
 }
 
 

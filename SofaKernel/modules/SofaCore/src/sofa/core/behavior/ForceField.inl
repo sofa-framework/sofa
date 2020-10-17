@@ -54,6 +54,8 @@ void ForceField<DataTypes>::init()
 
     if (!mstate.get())
         mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
+
+    doInit();
 }
 
 

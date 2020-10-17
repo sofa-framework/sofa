@@ -71,7 +71,7 @@ public:
 protected:
     HexahedralFEMForceFieldAndMass();
 public:
-    void init( ) override;
+    void doInit( ) override;
     void reinit( ) override;
 
     // -- Mass interface

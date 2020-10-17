@@ -180,7 +180,7 @@ public:
 
   //  virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
-    void init() override;
+    void doInit() override;
     //Used for CUDA implementation
     void initNeighbourhoodPoints();
     void initNeighbourhoodEdges();

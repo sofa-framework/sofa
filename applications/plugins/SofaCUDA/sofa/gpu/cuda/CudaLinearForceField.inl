@@ -145,10 +145,9 @@ void LinearForceFieldInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addForc
 }// LinearForceFieldInternalData::addForce
 
 template<>
-void LinearForceField<sofa::gpu::cuda::CudaRigid3fTypes>::init()
+void LinearForceField<sofa::gpu::cuda::CudaRigid3fTypes>::doInit()
 {
     data->init(this);
-	Inherit::init();
 }// LinearForceFieldInternalData::init
 
 template<>

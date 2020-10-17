@@ -22,9 +22,8 @@ UniformStiffness<DataTypes>::UniformStiffness( core::behavior::MechanicalState<D
 }
 
 template<class DataTypes>
-void UniformStiffness<DataTypes>::init()
+void UniformStiffness<DataTypes>::doInit()
 {
-    Inherit::init();
     if( this->getMState()==NULL ) serr<<"UniformStiffness<DataTypes>::init(), no mstate !" << sendl;
     reinit();
 }

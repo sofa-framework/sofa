@@ -106,7 +106,7 @@ public:
     void addKeyForce(Real time, Deriv force);
     void clearKeyForces();
 
-    void init() override;
+    void doInit() override;
 
     // ForceField methods
     /// Add the forces
@@ -133,7 +133,7 @@ private :
 
 
 template <>
-void SOFA_BOUNDARY_CONDITION_API LinearForceField<defaulttype::Rigid3Types>::init();
+void SOFA_BOUNDARY_CONDITION_API LinearForceField<defaulttype::Rigid3Types>::doInit();
 
 template <>
 SReal SOFA_BOUNDARY_CONDITION_API LinearForceField<defaulttype::Rigid3Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;

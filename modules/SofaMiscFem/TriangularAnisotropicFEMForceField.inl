@@ -90,7 +90,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleHandler::applyCr
 }
 
 template< class DataTypes>
-void TriangularAnisotropicFEMForceField<DataTypes>::init()
+void TriangularAnisotropicFEMForceField<DataTypes>::doInit()
 {
     if (l_topology.empty())
     {
@@ -112,7 +112,6 @@ void TriangularAnisotropicFEMForceField<DataTypes>::init()
     localFiberDirection.createTopologicalEngine(m_topology, triangleHandler);
     localFiberDirection.registerTopologicalData();
 
-    Inherited::init();
     reinit();
 }
 

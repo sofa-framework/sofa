@@ -104,7 +104,7 @@ public:
 
     CudaHexahedronTLEDForceField();
     virtual ~CudaHexahedronTLEDForceField();
-    void init() override;
+    void doInit() override;
     void reinit() override;
 //    void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
     virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& dataF, const DataVecCoord& dataX, const DataVecDeriv& /*dataV*/ ) override;

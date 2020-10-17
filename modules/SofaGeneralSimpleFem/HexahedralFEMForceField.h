@@ -152,7 +152,7 @@ public:
 
     void setMethod(int val) { method = val; }
 
-    void init() override;
+    void doInit() override;
     void reinit() override;
 
     void addForce (const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;

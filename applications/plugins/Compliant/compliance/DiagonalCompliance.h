@@ -40,7 +40,7 @@ public:
 
     Data< helper::vector<SReal> > damping; ///< diagonal damping
 
-    virtual void init() override;
+    virtual void doInit() override;
 
     /// Compute the compliance matrix
     virtual void reinit() override;

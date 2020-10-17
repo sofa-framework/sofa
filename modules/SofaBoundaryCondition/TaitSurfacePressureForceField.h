@@ -105,7 +105,7 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<TaitSurfacePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    void init() override;
+    void doInit() override;
     void storeResetState() override;
     void reset() override;
     void handleEvent(core::objectmodel::Event *event) override;

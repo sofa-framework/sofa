@@ -25,9 +25,8 @@ DiagonalStiffness<DataTypes>::DiagonalStiffness( core::behavior::MechanicalState
 }
 
 template<class DataTypes>
-void DiagonalStiffness<DataTypes>::init()
+void DiagonalStiffness<DataTypes>::doInit()
 {
-    Inherit::init();
     if( this->getMState()==NULL ) serr<<"init(), no mstate !" << sendl;
     reinit();
 }

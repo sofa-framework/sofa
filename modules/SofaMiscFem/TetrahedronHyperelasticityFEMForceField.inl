@@ -129,12 +129,10 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::~
     if(m_tetrahedronHandler) delete m_tetrahedronHandler;
 }
 
-template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataTypes>::init()
+template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataTypes>::doInit()
 {
     if (this->f_printLog.getValue())
         msg_info() << "initializing TetrahedronHyperelasticityFEMForceField";
-
-    this->Inherited::init();
 
     /** parse the parameter set */
     SetParameterArray paramSet=d_parameterSet.getValue();

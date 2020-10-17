@@ -172,7 +172,7 @@ protected:
 
 public:
 
-    void init() override;
+    void doInit() override;
 
 
     void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;

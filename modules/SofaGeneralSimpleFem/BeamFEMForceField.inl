@@ -118,10 +118,8 @@ void BeamFEMForceField<DataTypes>::bwdInit()
 
 
 template <class DataTypes>
-void BeamFEMForceField<DataTypes>::init()
+void BeamFEMForceField<DataTypes>::doInit()
 {
-    Inherit1::init();
-    
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";

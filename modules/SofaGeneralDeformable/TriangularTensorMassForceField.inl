@@ -282,11 +282,8 @@ template <class DataTypes> TriangularTensorMassForceField<DataTypes>::~Triangula
     if(edgeHandler) delete edgeHandler;
 }
 
-template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init()
+template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::doInit()
 {
-    msg_info() << "initializing TriangularTensorMassForceField";
-    this->Inherited::init();
-
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";

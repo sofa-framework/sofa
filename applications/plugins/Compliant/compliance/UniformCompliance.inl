@@ -28,9 +28,8 @@ UniformCompliance<DataTypes>::UniformCompliance( core::behavior::MechanicalState
 }
 
 template<class DataTypes>
-void UniformCompliance<DataTypes>::init()
+void UniformCompliance<DataTypes>::doInit()
 {
-    Inherit::init();
     if( this->getMState()==NULL ) serr<<"UniformCompliance<DataTypes>::init(), no mstate !" << sendl;
     reinit();
 }

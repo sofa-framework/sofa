@@ -43,11 +43,8 @@ namespace forcefield
 
 
 template<class DataTypes>
-void DistanceGridForceField<DataTypes>::init()
+void DistanceGridForceField<DataTypes>::doInit()
 {
-    Inherit::init();
-
-
     if (fileDistanceGrid.getValue().empty())
     {
         if (grid==NULL)

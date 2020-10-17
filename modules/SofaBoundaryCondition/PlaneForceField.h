@@ -110,7 +110,7 @@ public:
     void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)
 
     /// Inherited from ForceField.
-    void init() override;
+    void doInit() override;
     void addForce(const core::MechanicalParams* mparams,
                           DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams,

@@ -166,7 +166,7 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
 
     if (!d_fileMass.getValue().empty())
         load(d_fileMass.getFullPath().c_str());
-    Inherited::init();
+
     initTopologyHandlers();
 
     // Initialize the f_mass vector. The f_mass vector is enlarged to contains
@@ -269,13 +269,13 @@ void DiagonalMass<Rigid2Types, Rigid2Mass>::reinit()
 }
 
 template <>
-void DiagonalMass<Rigid3Types, Rigid3Mass>::init()
+void DiagonalMass<Rigid3Types, Rigid3Mass>::doInit()
 {
     initRigidImpl<Rigid3Types>() ;
 }
 
 template <>
-void DiagonalMass<Rigid2Types, Rigid2Mass>::init()
+void DiagonalMass<Rigid2Types, Rigid2Mass>::doInit()
 {
     initRigidImpl<Rigid2Types>() ;
 }

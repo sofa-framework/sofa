@@ -68,7 +68,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::Triangle Element;
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
 
-    void init() override;
+    void doInit() override;
     void reinit() override;
     void draw(const core::visual::VisualParams* vparams) override;
 protected:

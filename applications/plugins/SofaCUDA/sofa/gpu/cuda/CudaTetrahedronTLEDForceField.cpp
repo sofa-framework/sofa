@@ -82,9 +82,8 @@ CudaTetrahedronTLEDForceField::~CudaTetrahedronTLEDForceField()
     }
 }
 
-void CudaTetrahedronTLEDForceField::init()
+void CudaTetrahedronTLEDForceField::doInit()
 {
-    core::behavior::ForceField<CudaVec3fTypes>::init();
     reinit();
 }
 

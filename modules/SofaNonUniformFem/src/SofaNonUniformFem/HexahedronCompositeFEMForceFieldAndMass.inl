@@ -429,11 +429,10 @@ const float HexahedronCompositeFEMForceFieldAndMass<DataTypes>::RIGID_STIFFNESS[
 };
 
 template <class DataTypes>
-void HexahedronCompositeFEMForceFieldAndMass<DataTypes>::init()
+void HexahedronCompositeFEMForceFieldAndMass<DataTypes>::doInit()
 {
-
     // init topology, virtual levels, calls computeMechanicalMatricesByCondensation, handles masses
-    NonUniformHexahedronFEMForceFieldAndMassT::init();
+    NonUniformHexahedronFEMForceFieldAndMassT::doInit();
 
 
     if(d_drawSize.getValue()==-1)

@@ -94,7 +94,7 @@ public:
 protected:
     NonUniformHexahedralFEMForceFieldAndMass();
 public:
-    void init() override;
+    void doInit() override;
     void reinit() override;
 
     // handle topological changes

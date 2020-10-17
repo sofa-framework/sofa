@@ -52,10 +52,8 @@ HexahedralFEMForceFieldAndMass<DataTypes>::HexahedralFEMForceFieldAndMass()
 
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::init( )
+void HexahedralFEMForceFieldAndMass<DataTypes>::doInit( )
 {
-    this->core::behavior::ForceField<DataTypes>::init();
-
     this->getContext()->get(this->_topology);
 
     if(this->_topology == nullptr)

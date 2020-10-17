@@ -64,8 +64,6 @@ protected:
 
     ~Mass() override;
 public:
-    void init() override;
-
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState() { return this->mstate.get(); }
 
