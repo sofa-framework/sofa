@@ -177,7 +177,7 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
     else
         newchild = sofa::core::objectmodel::New<DAGNode>(nodeName);
     this->addChild(newchild); newchild->updateSimulationContext();
-    return std::move(newchild);
+    return newchild;
 }
 
 

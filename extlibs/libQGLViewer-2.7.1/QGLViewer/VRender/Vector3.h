@@ -191,5 +191,12 @@ namespace vrender
 			double _xyz[3];  //!< The 3 vector components
 
 	}; // interface of Vector3
+
+    extern double operator*(const NVector3 &u,const Vector3  &v);
+
+    extern double operator*(const Vector3  &u,const NVector3 &v);
+
+    extern Vector3 operator* (double r,const Vector3& u);
+
 }
 #endif // _VECTOR3_H

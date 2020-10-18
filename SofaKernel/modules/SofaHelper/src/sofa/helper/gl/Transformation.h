@@ -45,6 +45,7 @@ public:
     Transformation();	// constructor
     ~Transformation();	// destructor
     Transformation&	operator=(const Transformation& transform);
+    Transformation(const Transformation & r) { this->operator=(r); }
 
     void Apply();
     void ApplyWithCentring();
