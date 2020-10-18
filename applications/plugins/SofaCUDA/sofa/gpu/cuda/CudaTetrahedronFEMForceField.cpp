@@ -26,24 +26,6 @@
 namespace sofa
 {
 
-namespace component
-{
-
-namespace forcefield
-{
-using namespace sofa::gpu::cuda;
-
-template class SOFA_GPU_CUDA_API TetrahedronFEMForceField<CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API TetrahedronFEMForceField<CudaVec3f1Types>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API TetrahedronFEMForceField<CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API TetrahedronFEMForceField<CudaVec3d1Types>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-}
-
-}
-
 namespace gpu
 {
 

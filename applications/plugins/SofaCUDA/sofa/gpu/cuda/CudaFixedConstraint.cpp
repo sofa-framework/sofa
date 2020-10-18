@@ -35,17 +35,9 @@ namespace component
 namespace projectiveconstraintset
 {
 
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec1fTypes>;
-
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec3f1Types>;
 template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec6fTypes>;
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec3d1Types>;
 template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec6dTypes>;
-template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace projectiveconstraintset

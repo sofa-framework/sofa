@@ -28,18 +28,6 @@
 namespace sofa
 {
 
-namespace component
-{
-
-namespace forcefield
-{
-
-template class SOFA_GPU_CUDA_API TriangularFEMForceFieldOptim<sofa::gpu::cuda::CudaVec3fTypes>;
-}
-
-}
-
-
 namespace gpu
 {
 

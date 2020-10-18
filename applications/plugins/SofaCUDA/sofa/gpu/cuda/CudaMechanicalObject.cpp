@@ -32,30 +32,6 @@
 namespace sofa
 {
 
-namespace component
-{
-
-namespace container
-{
-// template specialization must be in the same namespace as original namespace for GCC 4.1
-// g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
-template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec1fTypes>;
-template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec2fTypes>;
-template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec3f1Types>;
-template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec6fTypes>;
-template class SOFA_GPU_CUDA_API MechanicalObject<CudaRigid3fTypes>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec3d1Types>;
-template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec6dTypes>;
-template class SOFA_GPU_CUDA_API MechanicalObject<CudaRigid3dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-}
-
-} // namespace component
-
 namespace gpu
 {
 

@@ -293,15 +293,6 @@ template<> inline const char* CudaBaseVectord::Name() { return "CudaBaseVectord"
 #endif
 
 
-#if  !defined(SOFA_BUILD_GPU_CUDA)
-
-extern template class SOFA_GPU_CUDA_API CudaBaseVector< float >;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-extern template class SOFA_GPU_CUDA_API CudaBaseVector< double >;
-#endif
-
-#endif
-
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa

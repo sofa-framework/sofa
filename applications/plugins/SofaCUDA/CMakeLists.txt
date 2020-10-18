@@ -86,7 +86,6 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaBarycentricMapping-f.cpp
     sofa/gpu/cuda/CudaBarycentricMapping.cpp
     sofa/gpu/cuda/CudaBarycentricMappingRigid.cpp
-    sofa/gpu/cuda/CudaBaseVector.cpp
     sofa/gpu/cuda/CudaBeamLinearMapping.cpp
     sofa/gpu/cuda/CudaBoxROI.cpp
     sofa/gpu/cuda/CudaCollision.cpp

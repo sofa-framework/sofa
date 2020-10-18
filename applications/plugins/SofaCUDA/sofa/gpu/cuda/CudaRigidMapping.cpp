@@ -29,42 +29,6 @@
 namespace sofa
 {
 
-namespace component
-{
-
-namespace mapping
-{
-
-using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-using namespace sofa::gpu::cuda;
-
-template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API RigidMapping< Rigid3fTypes, CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API RigidMapping< Rigid3Types, CudaVec3Types>;
-template class SOFA_GPU_CUDA_API RigidMapping< Rigid3Types, CudaVec3f1Types>;
-
-//template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, Vec3dTypes>;
-//template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, Vec3fTypes>;
-template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, CudaVec3f1Types>;
-template class SOFA_GPU_CUDA_API RigidMapping< Rigid3fTypes, CudaVec3f1Types>;
-
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API RigidMapping< Rigid3fTypes, CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API RigidMapping< Rigid3dTypes, CudaVec3dTypes>;
-//template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, Vec3dTypes>;
-//template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, Vec3fTypes>;
-template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, CudaVec3d1Types>;
-template class SOFA_GPU_CUDA_API RigidMapping< Rigid3fTypes, CudaVec3d1Types>;
-template class SOFA_GPU_CUDA_API RigidMapping< Rigid3dTypes, CudaVec3d1Types>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-} // namespace mapping
-
-} // namespace component
-
 namespace gpu
 {
 

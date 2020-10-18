@@ -46,10 +46,4 @@ int StandardTetrahedralFEMForceFieldCudaClass = core::RegisterObject("Supports G
 
 } // namespace gpu
 
-
-template class SOFA_GPU_CUDA_API component::forcefield::StandardTetrahedralFEMForceField<sofa::gpu::cuda::CudaVec3fTypes>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API component::forcefield::StandardTetrahedralFEMForceField<sofa::gpu::cuda::CudaVec3dTypes>;
-#endif
-
 } // namespace sofa

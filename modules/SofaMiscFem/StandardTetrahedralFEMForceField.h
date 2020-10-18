@@ -123,7 +123,7 @@ public :
       /// Input stream
       inline friend std::istream& operator>> ( std::istream& in, TetrahedronRestInformation& /*eri*/ ) { return in; }
 
-      TetrahedronRestInformation() : restVolume(0), volScale(0), fiberDirection(), strainEnergy(0) {}
+      TetrahedronRestInformation() : restVolume(0), volScale(0), fiberDirection(), strainEnergy(0), tetraIndices{0.0,0.0,0.0,0.0}, tetraEdges{0.0,0.0,0.0,0.0,0.0,0.0} {}
 
     };
     typedef typename VecCoord::template rebind<TetrahedronRestInformation>::other tetrahedronRestInfoVector;

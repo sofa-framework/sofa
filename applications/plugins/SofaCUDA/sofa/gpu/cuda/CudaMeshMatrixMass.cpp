@@ -40,27 +40,6 @@
 namespace sofa
 {
 
-namespace component
-{
-
-namespace mass
-{
-
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3dTypes, double>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes, double>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-
-} // namespace mass
-
-} // namespace component
-
 namespace gpu
 {
 

@@ -35,10 +35,8 @@ namespace forcefield
 
 template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6fTypes>;
 template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6dTypes>;
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 }// namespace forcefield

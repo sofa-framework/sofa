@@ -36,23 +36,6 @@
 namespace sofa
 {
 
-namespace component
-{
-
-namespace mass
-{
-
-template class SOFA_GPU_CUDA_API DiagonalMass<sofa::gpu::cuda::CudaVec3fTypes, float>;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API DiagonalMass<sofa::gpu::cuda::CudaVec3dTypes, double>;
-#endif
-
-} // namespace mass
-
-} // namespace component
-
-
 namespace gpu
 {
 
