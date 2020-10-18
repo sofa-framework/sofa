@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_INL
-#define SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_INL
+#pragma once
 
-#include <ManifoldTopologies/ManifoldTriangleSetTopologyAlgorithms.h>
+#include <ManifoldTopologies/ManifoldTriangleSetGeometryAlgorithms.h>
 #include <ManifoldTopologies/ManifoldTriangleSetTopologyContainer.h>
 #include <ManifoldTopologies/ManifoldTriangleSetTopologyModifier.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
@@ -40,9 +39,9 @@ using namespace sofa::core::behavior;
 
 
 template<class DataTypes>
-void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::init()
+void ManifoldTriangleSetGeometryAlgorithms< DataTypes >::init()
 {
-    TriangleSetTopologyAlgorithms< DataTypes >::init();
+    TriangleSetGeometryAlgorithms< DataTypes >::init();
     this->getContext()->get(m_container);
     this->getContext()->get(m_modifier);
     this->getContext()->get(m_geometryAlgorithms);
@@ -50,7 +49,7 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::init()
 
 
 template<class DataTypes>
-void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::reinit()
+void ManifoldTriangleSetGeometryAlgorithms< DataTypes >::reinit()
 {
     if(!(m_triSwap.getValue()).empty() && this->getContext()->getAnimate()) //temporarly test for the funciton edgeSwap
     {
@@ -67,7 +66,7 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::reinit()
 
 
 template<class DataTypes>
-void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwapProcess (const sofa::helper::vector <EdgeID>& listEdges)
+void ManifoldTriangleSetGeometryAlgorithms< DataTypes >::edgeSwapProcess (const sofa::helper::vector <EdgeID>& listEdges)
 {
 
     for (unsigned int i = 0; i<listEdges.size(); i++)
@@ -80,7 +79,7 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwapProcess (const 
 
 
 template<class DataTypes>
-void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwapProcess (const TriangleID& indexTri1, const TriangleID& indexTri2)
+void ManifoldTriangleSetGeometryAlgorithms< DataTypes >::edgeSwapProcess (const TriangleID& indexTri1, const TriangleID& indexTri2)
 {
     sofa::helper::vector < unsigned int > listVertex;
     unsigned int cpt = 0;
@@ -132,7 +131,7 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwapProcess (const 
 
 
 template<class DataTypes>
-bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwap(const EdgeID& edgeIndex)
+bool ManifoldTriangleSetGeometryAlgorithms< DataTypes >::edgeSwap(const EdgeID& edgeIndex)
 {
 
     sofa::helper::vector< Triangle > triToAdd; triToAdd.resize (2);
@@ -201,7 +200,7 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwap(const EdgeID& 
 
 
 template<class DataTypes>
-void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::swapRemeshing()
+void ManifoldTriangleSetGeometryAlgorithms< DataTypes >::swapRemeshing()
 {
     // All the mesh is about to be remeshed by swaping edges. So passing a simple list.
     sofa::helper::vector <EdgeID> listEdges;
@@ -214,7 +213,7 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::swapRemeshing()
 
 
 template<class DataTypes>
-void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::swapRemeshing(sofa::helper::vector <EdgeID>& listEdges)
+void ManifoldTriangleSetGeometryAlgorithms< DataTypes >::swapRemeshing(sofa::helper::vector <EdgeID>& listEdges)
 {
     //sofa::helper::vector <EdgeID> edgeToSwap;
     bool allDone = false;
@@ -305,7 +304,7 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::swapRemeshing(sofa::hel
 
 
 template<class DataTypes>
-int ManifoldTriangleSetTopologyAlgorithms< DataTypes >::SplitAlongPath(index_type pa, Coord& a, index_type pb, Coord& b,
+int ManifoldTriangleSetGeometryAlgorithms< DataTypes >::SplitAlongPath(index_type pa, Coord& a, index_type pb, Coord& b,
         sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
         sofa::helper::vector<index_type>& indices_list,
         sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
@@ -317,7 +316,7 @@ int ManifoldTriangleSetTopologyAlgorithms< DataTypes >::SplitAlongPath(index_typ
     /// force the creation of TrianglesAroundVertexArray
     m_container->getTrianglesAroundVertexArray();
 
-    int result = TriangleSetTopologyAlgorithms< DataTypes >::SplitAlongPath (pa, a, pb, b, topoPath_list, indices_list, coords_list, new_edges, epsilonSnapPath, epsilonSnapBorder);
+    int result = TriangleSetGeometryAlgorithms< DataTypes >::SplitAlongPath (pa, a, pb, b, topoPath_list, indices_list, coords_list, new_edges, epsilonSnapPath, epsilonSnapBorder);
 
     return result;
 }
@@ -328,10 +327,10 @@ int ManifoldTriangleSetTopologyAlgorithms< DataTypes >::SplitAlongPath(index_typ
 
 
 template<class DataTypes>
-bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (const sofa::helper::vector<index_type>& edges, sofa::helper::vector<index_type>& new_points, sofa::helper::vector<index_type>& end_points, bool& reachBorder)
+bool ManifoldTriangleSetGeometryAlgorithms< DataTypes >::InciseAlongEdgeList (const sofa::helper::vector<index_type>& edges, sofa::helper::vector<index_type>& new_points, sofa::helper::vector<index_type>& end_points, bool& reachBorder)
 {
-    //// STEP 1 - Incise with the TriangleSetTopologyAlgorithms function. Addremovetriangles() automatically reorder the mesh
-    bool ok = TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (edges, new_points, end_points, reachBorder);
+    //// STEP 1 - Incise with the TriangleSetGeometryAlgorithms function. Addremovetriangles() automatically reorder the mesh
+    bool ok = TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongEdgeList (edges, new_points, end_points, reachBorder);
 
     //// STEP 2 - Create a ROI of edges (without double) around the incision
     sofa::helper::vector< PointID > listVertex;
@@ -430,5 +429,3 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (co
 } // namespace component
 
 } // namespace sofa
-
-#endif // SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_INL

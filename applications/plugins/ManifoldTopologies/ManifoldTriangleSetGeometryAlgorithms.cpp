@@ -19,13 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_MANIFOLD_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_INL
-#define SOFA_MANIFOLD_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_INL
+#define SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP
 
-#include <ManifoldTopologies/ManifoldEdgeSetTopologyAlgorithms.h>
-#include <ManifoldTopologies/ManifoldEdgeSetTopologyContainer.h>
-#include <ManifoldTopologies/ManifoldEdgeSetTopologyModifier.h>
-#include <ManifoldTopologies/ManifoldEdgeSetGeometryAlgorithms.h>
+#include <ManifoldTopologies/ManifoldTriangleSetGeometryAlgorithms.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -35,17 +32,17 @@ namespace component
 
 namespace topology
 {
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
 
-template<class DataTypes>
-void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::init()
-{
-    EdgeSetTopologyAlgorithms< DataTypes >::init();
-    this->getContext()->get(m_container);
-    this->getContext()->get(m_modifier);
-    this->getContext()->get(m_geometryAlgorithms);
-}
+using namespace sofa::defaulttype;
+int ManifoldTriangleSetGeometryAlgorithmsClass = core::RegisterObject("ManifoldTriangle set topology algorithms")
+        .add< ManifoldTriangleSetGeometryAlgorithms<Vec3Types> >(true) // default template
+        .add< ManifoldTriangleSetGeometryAlgorithms<Vec2Types> >()
+        .add< ManifoldTriangleSetGeometryAlgorithms<Vec1Types> >()
+        ;
+
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<Vec1Types>;
 
 } // namespace topology
 
@@ -53,4 +50,3 @@ void ManifoldEdgeSetTopologyAlgorithms< DataTypes >::init()
 
 } // namespace sofa
 
-#endif // SOFA_MANIFOLD_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_INL

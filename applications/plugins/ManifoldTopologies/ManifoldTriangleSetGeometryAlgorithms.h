@@ -19,11 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_H
-#define SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_H
+#pragma once
 
 #include <ManifoldTopologies/config.h>
-#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 
 namespace sofa
 {
@@ -44,10 +43,10 @@ class TriangleSetGeometryAlgorithms;
  * A class that performs topology algorithms on an ManifoldTriangleSet.
  */
 template < class DataTypes >
-class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms : public TriangleSetTopologyAlgorithms<DataTypes>
+class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms : public TriangleSetGeometryAlgorithms<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ManifoldTriangleSetTopologyAlgorithms,DataTypes), SOFA_TEMPLATE(TriangleSetTopologyAlgorithms,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(ManifoldTriangleSetGeometryAlgorithms,DataTypes), SOFA_TEMPLATE(TriangleSetGeometryAlgorithms,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
@@ -55,14 +54,14 @@ public:
 
     using index_type = sofa::defaulttype::index_type;
 
-    ManifoldTriangleSetTopologyAlgorithms()
-        : TriangleSetTopologyAlgorithms<DataTypes>()
+    ManifoldTriangleSetGeometryAlgorithms()
+        : TriangleSetGeometryAlgorithms<DataTypes>()
         , m_triSwap(initData(&m_triSwap,  "swap 2 triangles by their index", "Debug : Test swap function (only while animate)."))
         , m_swapMesh(initData(&m_swapMesh, false, "Mesh Optimization", "If true, optimize the mesh only by swapping edges"))
     {
     }
 
-    virtual ~ManifoldTriangleSetTopologyAlgorithms()
+    virtual ~ManifoldTriangleSetGeometryAlgorithms()
     {}
 
     virtual void init() override;
@@ -133,9 +132,9 @@ private:
 };
 
 #if  !defined(SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP)
-extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<sofa::defaulttype::Vec1Types>;
 #endif
 
 } // namespace topology
@@ -143,5 +142,3 @@ extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAl
 } // namespace component
 
 } // namespace sofa
-
-#endif // SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_H
