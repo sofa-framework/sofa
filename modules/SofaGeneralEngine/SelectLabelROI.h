@@ -62,7 +62,10 @@ public:
     /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
     /// so we need to override that by implementing GetCustomTemplateName() function
     /// More details on the name customization infrastructure is in NameDecoder.h
-    static const std::string GetCustomTemplateName(){  return sofa::defaulttype::DataTypeName<T>::name();    }
+    static const std::string GetCustomTemplateName()
+    {
+        return sofa::defaulttype::DataTypeInfoRegistry::Get(typeid(T))->name();
+    }
 
     void init() override
     {

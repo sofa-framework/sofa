@@ -101,16 +101,16 @@ struct DefaultDataTypeInfo
        \{
      */
     enum { ValidInfo       = 0 /**< 1 if this type has valid infos*/ };
-    enum { FixedSize       = 0 /**< 1 if this type has a fixed size*/ };
-    enum { ZeroConstructor = 0 /**< 1 if the constructor is equivalent to setting memory to 0*/ };
-    enum { SimpleCopy      = 0 /**< 1 if copying the data can be done with a memcpy*/ };
-    enum { SimpleLayout    = 0 /**< 1 if the layout in memory is simply N values of the same base type*/ };
-    enum { Integer         = 0 /**< 1 if this type uses integer values*/ };
-    enum { Scalar          = 0 /**< 1 if this type uses scalar values*/ };
-    enum { Text            = 0 /**< 1 if this type uses text values*/ };
-    enum { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
-    enum { Container       = 0 /**< 1 if this type is a container*/ };
-    enum { Size = 1 /**< largest known fixed size for this type, as returned by size() */ };
+    //enum { FixedSize       = 0 /**< 1 if this type has a fixed size*/ };
+    //enum { ZeroConstructor = 0 /**< 1 if the constructor is equivalent to setting memory to 0*/ };
+    //enum { SimpleCopy      = 0 /**< 1 if copying the data can be done with a memcpy*/ };
+    //enum { SimpleLayout    = 0 /**< 1 if the layout in memory is simply N values of the same base type*/ };
+    //enum { Integer         = 0 /**< 1 if this type uses integer values*/ };
+    //enum { Scalar          = 0 /**< 1 if this type uses scalar values*/ };
+    //enum { Text            = 0 /**< 1 if this type uses text values*/ };
+    //enum { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
+    //enum { Container       = 0 /**< 1 if this type is a container*/ };
+    //enum { Size = 1 /**< largest known fixed size for this type, as returned by size() */ };
 
     // \}
 

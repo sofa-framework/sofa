@@ -25,6 +25,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/list.h>
 #include <sofa/defaulttype/TopologyTypes.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Integer.h>
 #include <climits>
 
 namespace sofa

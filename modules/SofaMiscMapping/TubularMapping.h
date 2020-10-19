@@ -26,6 +26,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
 #include <SofaGeneralSimpleFem/RadiusContainer.h>
 #include <vector>
 

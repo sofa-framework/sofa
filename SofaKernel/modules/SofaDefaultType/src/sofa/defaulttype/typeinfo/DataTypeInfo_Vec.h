@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/defaulttype/typeinfo/models/VectorTypeInfo.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
 #include <sofa/defaulttype/Vec.h>
 
 namespace sofa::defaulttype

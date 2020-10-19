@@ -21,6 +21,7 @@
 ******************************************************************************/
 
 #include "CategoryLibrary.h"
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Integer.h>
 
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
@@ -48,6 +49,7 @@
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/core/loader/BaseLoader.h>
+
 
 namespace sofa
 {

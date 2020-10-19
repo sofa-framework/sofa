@@ -22,7 +22,6 @@
 #include "init.h"
 
 #include <sofa/helper/init.h>
-#include <iostream>
 namespace sofa
 {
 
@@ -34,7 +33,6 @@ static bool s_cleanedUp = false;
 
 SOFA_DEFAULTTYPE_API void init()
 {
-    std::cout << "HELLO WORLD" << std::endl;
     if (!s_initialized)
     {
         sofa::helper::init();

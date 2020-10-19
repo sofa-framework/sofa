@@ -76,7 +76,7 @@ public:
     /// More details on the name customization infrastructure is in NameDecoder.h
     static const std::string GetCustomTemplateName()
     {
-        return sofa::defaulttype::DataTypeName<T>::name();
+        return sofa::defaulttype::DataTypeInfoRegistry::Get(typeid(T))->name();
     }
 };
 

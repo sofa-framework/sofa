@@ -23,6 +23,10 @@
 #define SOFA_DEFAULTTYPE_MAT_H
 
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Integer.h>
+
 #include <iostream>
 #include <sofa/helper/logging/Messaging.h>
 

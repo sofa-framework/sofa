@@ -26,7 +26,6 @@
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
 
-
 namespace sofa::defaulttype
 {
 

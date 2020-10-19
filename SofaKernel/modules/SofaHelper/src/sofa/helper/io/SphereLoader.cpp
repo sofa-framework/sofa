@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>

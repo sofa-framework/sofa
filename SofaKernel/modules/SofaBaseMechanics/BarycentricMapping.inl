@@ -491,7 +491,7 @@ const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::
     const auto * mat = dynamic_cast<const mat_type*>(matJ);
     assert( mat );
 
-    //eigen.copyFrom( *mat );   // woot
+    eigen.copyFrom( *mat );   // woot
 
     js.resize( 1 );
     js[0] = &eigen;

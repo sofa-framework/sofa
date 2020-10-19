@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
 #include <sofa/defaulttype/DataTypeInfoRegistry.h>
 #include <typeindex>
 #include <map>
@@ -34,7 +32,6 @@ std::map<const std::type_index, const AbstractTypeInfo*> typeinfos;
 const AbstractTypeInfo* DataTypeInfoRegistry::Get(const std::type_info& id)
 {
     auto index = std::type_index(id);
-    std::cout << " GET GET REGISTER... "  << id.name() << "=>" << std::endl;
     if( typeinfos.find(index) != typeinfos.end() )
         return typeinfos[index];
     return nullptr;
