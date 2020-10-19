@@ -2407,7 +2407,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::Suture2Points(TriangleID ind_ta
     x_created.push_back((double)point_created[1]);
     x_created.push_back((double)point_created[2]);
 
-    core::behavior::MechanicalState<DataTypes>* state = getDOF();
+    core::behavior::MechanicalState<DataTypes>* state = this->getDOF();
 
     sofa::helper::WriteAccessor< Data<VecCoord> > x_wA = *state->write(core::VecCoordId::position());
     sofa::helper::WriteAccessor< Data<VecDeriv> > v_wA = *state->write(core::VecDerivId::velocity());
@@ -3392,15 +3392,15 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                 {
                     vertexOrder[1] = p1; vertexOrder[4] = p2;
                     posOrder[0] = pos1; posOrder[3] = pos2;
-                    posOrder[1] = getPointPosition(tri[(vertxInTriangle + 1) % 3]);
-                    posOrder[2] = getPointPosition(tri[(vertxInTriangle + 2) % 3]);
+                    posOrder[1] = this->getPointPosition(tri[(vertxInTriangle + 1) % 3]);
+                    posOrder[2] = this->getPointPosition(tri[(vertxInTriangle + 2) % 3]);
                 }
                 else
                 {
                     vertexOrder[1] = p2; vertexOrder[4] = p1;
                     posOrder[0] = pos2; posOrder[3] = pos1;
-                    posOrder[1] = getPointPosition(tri[(vertxInTriangle + 2) % 3]);
-                    posOrder[2] = getPointPosition(tri[(vertxInTriangle + 1) % 3]);
+                    posOrder[1] = this->getPointPosition(tri[(vertxInTriangle + 2) % 3]);
+                    posOrder[2] = this->getPointPosition(tri[(vertxInTriangle + 1) % 3]);
                 }
 
                 // Create the triangle around corner
@@ -3672,7 +3672,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                 new_triangles_id.push_back(next_triangle++);
 
                 // Triangularize the remaining quad according to the delaunay criteria
-                const typename DataTypes::VecCoord& coords = (getDOF()->read(core::ConstVecCoordId::position())->getValue());
+                const typename DataTypes::VecCoord& coords = (this->getDOF()->read(core::ConstVecCoordId::position())->getValue());
                 for (unsigned int j = 0; j < 2; j++)
                 {
                     //Vec<3,double> pos[4];
@@ -3846,7 +3846,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                 ancestors2Snap[i].push_back((PointID)points2Snap[i][6]);
             }
             else
-                coefs2Snap[i] = compute2PointsBarycoefs(SnapedCoord, firstAncestor, secondAncestor);
+                coefs2Snap[i] = this->compute2PointsBarycoefs(SnapedCoord, firstAncestor, secondAncestor);
         }
         m_modifier->movePointsProcess(id2Snap, ancestors2Snap, coefs2Snap);
     }
@@ -3953,7 +3953,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::helper::vecto
         return;
     }
 
-    const typename DataTypes::VecCoord& coords = (getDOF()->read(core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& coords = (this->getDOF()->read(core::ConstVecCoordId::position())->getValue());
 
 
     //// STEP 3 - Second loop necessary to find object on the neighborhood of a snaped point
@@ -4200,7 +4200,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                 {
                     sofa::defaulttype::Vec<3, double> thePoint; DataTypes::get(thePoint[0], thePoint[1], thePoint[2], a);
 
-                    sofa::helper::vector< double > new_coord = computePointProjectionOnEdge(theEdge, thePoint, intersected);
+                    sofa::helper::vector< double > new_coord = this->computePointProjectionOnEdge(theEdge, thePoint, intersected);
 
                     if (!intersected)
                         msg_error() << "Orthogonal projection failed";
@@ -4303,7 +4303,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                 else
                 {
                     sofa::defaulttype::Vec<3, double> thePoint; DataTypes::get(thePoint[0], thePoint[1], thePoint[2], b);
-                    sofa::helper::vector< double > new_coord = computePointProjectionOnEdge(theEdge, thePoint, intersected);
+                    sofa::helper::vector< double > new_coord = this->computePointProjectionOnEdge(theEdge, thePoint, intersected);
 
                     if (!intersected)
                         msg_error() << "Orthogonal projection failed";

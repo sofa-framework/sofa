@@ -1178,7 +1178,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronsWithPlane
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
         sofa::defaulttype::Vec<3,double> p;
         p[0]=intersectedPoints[i][0]; p[1]=intersectedPoints[i][1]; p[2]=intersectedPoints[i][2];
-        sofa::helper::vector< double > coef = compute2PointsBarycoefs(p, theEdge[0], theEdge[1]);
+        sofa::helper::vector< double > coef = this->compute2PointsBarycoefs(p, theEdge[0], theEdge[1]);
 
         sofa::helper::vector< EdgeID > ancestor;
         ancestor.push_back(theEdge[0]); ancestor.push_back(theEdge[1]);
@@ -2289,7 +2289,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithP
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
         sofa::defaulttype::Vec<3,double> p;
         p[0]=intersectedPoints[i][0]; p[1]=intersectedPoints[i][1]; p[2]=intersectedPoints[i][2];
-        sofa::helper::vector< double > coef = computeRest2PointsBarycoefs(p, theEdge[0], theEdge[1]);
+        sofa::helper::vector< double > coef = this->computeRest2PointsBarycoefs(p, theEdge[0], theEdge[1]);
 
         sofa::helper::vector< EdgeID > ancestor;
         ancestor.push_back(theEdge[0]); ancestor.push_back(theEdge[1]);
