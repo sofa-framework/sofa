@@ -19,59 +19,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#pragma once
 
-#include <sofa/helper/init.h>
-#include <iostream>
-namespace sofa
+#include <sofa/defaulttype/typeinfo/models/VectorTypeInfo.h>
+#include <sofa/defaulttype/Vec.h>
+
+namespace sofa::defaulttype
 {
 
-namespace defaulttype
+template<std::size_t N, typename real>
+struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,real> >
 {
+    static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeInfo<real>::name() << ">"; return o.str(); }
+};
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-SOFA_DEFAULTTYPE_API void init()
+template<std::size_t N, typename real>
+struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
 {
-    std::cout << "HELLO WORLD" << std::endl;
-    if (!s_initialized)
-    {
-        sofa::helper::init();
-        s_initialized = true;
-    }
-}
+    static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeInfo<real>::name() << ">"; return o.str(); }
+};
 
-SOFA_DEFAULTTYPE_API bool isInitialized()
-{
-    return s_initialized;
-}
 
-SOFA_DEFAULTTYPE_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        sofa::helper::cleanup();
-        s_cleanedUp = true;
-    }
-}
 
-SOFA_DEFAULTTYPE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
 
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (defaulttype::isInitialized() && !defaulttype::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaDefaultType", "sofa::defaulttype::cleanup()");
-    }
-} check;
+#define DataTypeInfoName(type,suffix)\
+template<std::size_t N>\
+struct DataTypeInfo< sofa::defaulttype::Vec<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,type> >\
+{\
+    static std::string name() { std::ostringstream o; o << "Vec" << N << suffix; return o.str(); }\
+};\
+template<std::size_t N>\
+struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,type> >\
+{\
+    static std::string name() { std::ostringstream o; o << "VecNoInit" << N << suffix; return o.str(); }\
+};
 
-} // namespace defaulttype
+DataTypeInfoName( float, "f" )
+DataTypeInfoName( double, "d" )
+DataTypeInfoName( int, "i" )
+DataTypeInfoName( unsigned, "u" )
 
-} // namespace sofa
+#undef DataTypeInfoName
+
+/// \endcond
+
+} /// namespace sofa::defaulttype
+

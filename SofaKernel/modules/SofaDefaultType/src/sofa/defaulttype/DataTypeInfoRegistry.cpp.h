@@ -19,59 +19,52 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#pragma once
+#include <string>
 
-#include <sofa/helper/init.h>
-#include <iostream>
-namespace sofa
+namespace sofa::defaulttype
 {
 
-namespace defaulttype
+class DataTypeInfoRegistry
 {
+public:
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-SOFA_DEFAULTTYPE_API void init()
-{
-    std::cout << "HELLO WORLD" << std::endl;
-    if (!s_initialized)
+    template<class T>
+    static const AbstractTypeInfo* Get(const T& o)
     {
-        sofa::helper::init();
-        s_initialized = true;
+        return Get(typeid(T));
     }
-}
 
-SOFA_DEFAULTTYPE_API bool isInitialized()
-{
-    return s_initialized;
-}
 
-SOFA_DEFAULTTYPE_API void cleanup()
-{
-    if (!s_cleanedUp)
+    static const AbstractTypeInfo* Get(const std::type_info& id)
     {
-        sofa::helper::cleanup();
-        s_cleanedUp = true;
+        auto index = std::type_index(id);
+        if( typeinfos.find(index) != typeinfos.end() )
+            return typeinfos[index];
+        return nullptr;
     }
-}
 
-SOFA_DEFAULTTYPE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
+    static void registerTypeInfo(const std::type_info& id, AbstractTypeInfo* info)
     {
-        if (defaulttype::isInitialized() && !defaulttype::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaDefaultType", "sofa::defaulttype::cleanup()");
+        auto index = std::type_index(id);
+        std::cout << "Adding in the map" << id.name() << std::endl;
+        if( typeinfos.find(index) != typeinfos.end() )
+        {
+            if( typeinfos[index] != info )
+            {
+                std::cout << "Trying to register type with a different abstract type info" << std::endl;
+            }
+            return;
+        }
+        typeinfos[index] = info;
+        return;
     }
-} check;
 
-} // namespace defaulttype
+private:
+    static std::map<const std::type_index, const AbstractTypeInfo*> typeinfos;
+};
 
-} // namespace sofa
+std::map<const std::type_index, const AbstractTypeInfo*> DataTypeInfo::typeinfos;
+
+
+}

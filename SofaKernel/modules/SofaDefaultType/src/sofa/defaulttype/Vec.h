@@ -24,7 +24,7 @@
 
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
 #include <functional>
 #include <limits>
 
@@ -476,7 +476,7 @@ public:
     template<class real2>
     Vec<N,real> mulscalar(real2 f) const
     {
-        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
+        //static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         Vec<N,real> r(NOINIT);
         for (size_type i=0; i<N; i++)
             r[i] = this->elems[i]*(real)f;
@@ -496,7 +496,7 @@ public:
     template<class real2>
     void eqmulscalar(real2 f)
     {
-        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
+        //static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         for (size_type i=0; i<N; i++)
             this->elems[i]*=(real)f;
     }
@@ -514,7 +514,7 @@ public:
     template<class real2>
     Vec<N,real> divscalar(real2 f) const
     {
-        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
+        //static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         Vec<N,real> r(NOINIT);
         for (size_type i=0; i<N; i++)
             r[i] = this->elems[i]/(real)f;
@@ -534,7 +534,7 @@ public:
     template<class real2>
     void eqdivscalar(real2 f)
     {
-        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
+        //static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         for (size_type i=0; i<N; i++)
             this->elems[i]/=(real)f;
     }
@@ -892,56 +892,6 @@ typedef Vec6d Vector6; ///< alias
 } // namespace sofa
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
-
-namespace sofa
-{
-
-namespace defaulttype
-{
-
-template<std::size_t N, typename real>
-struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,real> >
-{
-    static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
-};
-
-template<std::size_t N, typename real>
-struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
-{
-    static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
-};
-
-
-
-// The next line hides all those methods from the doxygen documentation
-/// \cond TEMPLATE_OVERRIDES
-
-#define DataTypeInfoName(type,suffix)\
-template<std::size_t N>\
-struct DataTypeInfo< sofa::defaulttype::Vec<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,type> >\
-{\
-    static std::string name() { std::ostringstream o; o << "Vec" << N << suffix; return o.str(); }\
-};\
-template<std::size_t N>\
-struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,type> >\
-{\
-    static std::string name() { std::ostringstream o; o << "VecNoInit" << N << suffix; return o.str(); }\
-};
-
-DataTypeInfoName( float, "f" )
-DataTypeInfoName( double, "d" )
-DataTypeInfoName( int, "i" )
-DataTypeInfoName( unsigned, "u" )
-
-#undef DataTypeInfoName
-
-
-
-/// \endcond
-
-} // namespace defaulttype
-
-} // namespace sofa
 
 // Specialization of the std comparison function, to use Vec as std::map key
 namespace std

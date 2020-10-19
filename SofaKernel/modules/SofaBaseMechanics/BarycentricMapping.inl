@@ -49,6 +49,8 @@
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
 
+#include <Eigen/Core>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/helper/vector.h>
 
 #include <sofa/simulation/Simulation.h>
@@ -489,7 +491,7 @@ const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::
     const auto * mat = dynamic_cast<const mat_type*>(matJ);
     assert( mat );
 
-    eigen.copyFrom( *mat );   // woot
+    //eigen.copyFrom( *mat );   // woot
 
     js.resize( 1 );
     js[0] = &eigen;

@@ -19,59 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#pragma once
 
-#include <sofa/helper/init.h>
-#include <iostream>
-namespace sofa
+#include <sofa/defaulttype/typeinfo/models/ScalarTypeInfo.h>
+
+namespace sofa::defaulttype
 {
 
-namespace defaulttype
+template<>
+struct DataTypeInfo<float> : public ScalarTypeInfo<float>
 {
+    static const char* name() { return "float"; }
+};
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-SOFA_DEFAULTTYPE_API void init()
+template<>
+struct DataTypeInfo<double> : public ScalarTypeInfo<double>
 {
-    std::cout << "HELLO WORLD" << std::endl;
-    if (!s_initialized)
-    {
-        sofa::helper::init();
-        s_initialized = true;
-    }
-}
+    static const char* name() { return "double"; }
+};
 
-SOFA_DEFAULTTYPE_API bool isInitialized()
-{
-    return s_initialized;
-}
+} /// namespace sofa::defaulttype
 
-SOFA_DEFAULTTYPE_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        sofa::helper::cleanup();
-        s_cleanedUp = true;
-    }
-}
-
-SOFA_DEFAULTTYPE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (defaulttype::isInitialized() && !defaulttype::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaDefaultType", "sofa::defaulttype::cleanup()");
-    }
-} check;
-
-} // namespace defaulttype
-
-} // namespace sofa

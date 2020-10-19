@@ -19,59 +19,73 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#pragma once
 
-#include <sofa/helper/init.h>
-#include <iostream>
-namespace sofa
+#include <sofa/defaulttype/typeinfo/models/IntegerTypeInfo.h>
+
+namespace sofa::defaulttype
 {
 
-namespace defaulttype
+template<>
+struct DataTypeInfo<char> : public IntegerTypeInfo<char>
 {
+    static const char* name() { return "char"; }
+};
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-SOFA_DEFAULTTYPE_API void init()
+template<>
+struct DataTypeInfo<unsigned char> : public IntegerTypeInfo<unsigned char>
 {
-    std::cout << "HELLO WORLD" << std::endl;
-    if (!s_initialized)
-    {
-        sofa::helper::init();
-        s_initialized = true;
-    }
-}
+    static const char* name() { return "unsigned char"; }
+};
 
-SOFA_DEFAULTTYPE_API bool isInitialized()
+template<>
+struct DataTypeInfo<short> : public IntegerTypeInfo<short>
 {
-    return s_initialized;
-}
+    static const char* name() { return "short"; }
+};
 
-SOFA_DEFAULTTYPE_API void cleanup()
+template<>
+struct DataTypeInfo<unsigned short> : public IntegerTypeInfo<unsigned short>
 {
-    if (!s_cleanedUp)
-    {
-        sofa::helper::cleanup();
-        s_cleanedUp = true;
-    }
-}
+    static const char* name() { return "unsigned short"; }
+};
 
-SOFA_DEFAULTTYPE_API bool isCleanedUp()
+template<>
+struct DataTypeInfo<int> : public IntegerTypeInfo<int>
 {
-    return s_cleanedUp;
-}
+    static const char* name() { return "int"; }
+};
 
-// Detect missing cleanup() call.
-static const struct CleanupCheck
+template<>
+struct DataTypeInfo<unsigned int> : public IntegerTypeInfo<unsigned int>
 {
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (defaulttype::isInitialized() && !defaulttype::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaDefaultType", "sofa::defaulttype::cleanup()");
-    }
-} check;
+    static const char* name() { return "unsigned int"; }
+};
 
-} // namespace defaulttype
+template<>
+struct DataTypeInfo<long> : public IntegerTypeInfo<long>
+{
+    static const char* name() { return "long"; }
+};
 
-} // namespace sofa
+template<>
+struct DataTypeInfo<unsigned long> : public IntegerTypeInfo<unsigned long>
+{
+    static const char* name() { return "unsigned long"; }
+};
+
+template<>
+struct DataTypeInfo<long long> : public IntegerTypeInfo<long long>
+{
+    static const char* name() { return "long long"; }
+};
+
+template<>
+struct DataTypeInfo<unsigned long long> : public IntegerTypeInfo<unsigned long long>
+{
+    static const char* name() { return "unsigned long long"; }
+};
+
+
+} /// namespace sofa::defaulttype
+

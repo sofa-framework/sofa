@@ -19,59 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#pragma once
+#include <string>
+#include <sofa/helper/SVector.h>
 
-#include <sofa/helper/init.h>
-#include <iostream>
-namespace sofa
+namespace sofa::defaulttype
 {
 
-namespace defaulttype
+template<>
+struct DataTypeName< sofa::helper::SVector<std::string> >
 {
+    static std::string name() { return "SVector<string>"; }
+};
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
+} /// namespace sofa::defaulttype
 
-SOFA_DEFAULTTYPE_API void init()
-{
-    std::cout << "HELLO WORLD" << std::endl;
-    if (!s_initialized)
-    {
-        sofa::helper::init();
-        s_initialized = true;
-    }
-}
 
-SOFA_DEFAULTTYPE_API bool isInitialized()
-{
-    return s_initialized;
-}
-
-SOFA_DEFAULTTYPE_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        sofa::helper::cleanup();
-        s_cleanedUp = true;
-    }
-}
-
-SOFA_DEFAULTTYPE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (defaulttype::isInitialized() && !defaulttype::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaDefaultType", "sofa::defaulttype::cleanup()");
-    }
-} check;
-
-} // namespace defaulttype
-
-} // namespace sofa

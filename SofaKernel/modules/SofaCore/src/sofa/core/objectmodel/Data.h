@@ -27,6 +27,8 @@
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/core/objectmodel/DataContentValue.h>
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
+
 namespace sofa
 {
 
@@ -69,7 +71,11 @@ public:
     /// Get info about the value type of the associated variable
     const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
     {
-        return sofa::defaulttype::VirtualTypeInfo<T>::get();
+        /// If the typeinfo is in the registry we load it.
+        auto type = sofa::defaulttype::DataTypeInfoRegistry::Get(typeid(T));
+        //if(!type)
+        //    return sofa::defaulttype::VirtualTypeInfo<T>::get();
+        return type;
     }
 
     virtual const T& virtualGetValue() const = 0;
@@ -347,7 +353,7 @@ public:
 
 protected:
 
-    typedef DataContentValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
+    typedef DataContentValue<T, true> ValueType;
 
     /// Value
     ValueType m_value;

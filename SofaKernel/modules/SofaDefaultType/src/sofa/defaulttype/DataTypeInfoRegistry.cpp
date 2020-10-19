@@ -19,59 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#pragma once
 
-#include <sofa/helper/init.h>
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
+#include <typeindex>
+#include <map>
 #include <iostream>
-namespace sofa
+#include <sofa/defaulttype/AbstractTypeInfo.h>
+namespace sofa::defaulttype
 {
 
-namespace defaulttype
-{
+std::map<const std::type_index, const AbstractTypeInfo*> typeinfos;
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-SOFA_DEFAULTTYPE_API void init()
+const AbstractTypeInfo* DataTypeInfoRegistry::Get(const std::type_info& id)
 {
-    std::cout << "HELLO WORLD" << std::endl;
-    if (!s_initialized)
+    auto index = std::type_index(id);
+    std::cout << " GET GET REGISTER... "  << id.name() << "=>" << std::endl;
+    if( typeinfos.find(index) != typeinfos.end() )
+        return typeinfos[index];
+    return nullptr;
+}
+
+int DataTypeInfoRegistry::RegisterTypeInfo(const std::type_info& id, AbstractTypeInfo* info)
+{
+    auto index = std::type_index(id);
+    std::cout << " REGISTER A NEW TYPE FOR "  << id.name() << "=>" << info->name() <<std::endl;
+    if( typeinfos.find(index) != typeinfos.end() )
     {
-        sofa::helper::init();
-        s_initialized = true;
+        if( typeinfos[index] != info )
+        {
+            return 2;
+        }
+        return -1;
     }
+    typeinfos[index] = info;
+    return 1;
 }
 
-SOFA_DEFAULTTYPE_API bool isInitialized()
-{
-    return s_initialized;
+
 }
-
-SOFA_DEFAULTTYPE_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        sofa::helper::cleanup();
-        s_cleanedUp = true;
-    }
-}
-
-SOFA_DEFAULTTYPE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (defaulttype::isInitialized() && !defaulttype::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaDefaultType", "sofa::defaulttype::cleanup()");
-    }
-} check;
-
-} // namespace defaulttype
-
-} // namespace sofa

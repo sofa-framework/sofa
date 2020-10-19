@@ -19,59 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Integer.h>
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
-#include <sofa/helper/init.h>
-#include <iostream>
-namespace sofa
+namespace sofa::defaulttype
 {
 
-namespace defaulttype
-{
+static int CharTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(char), VirtualTypeInfoA< DataTypeInfo<char> >::get());
+static int UCharTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(unsigned char), VirtualTypeInfoA< DataTypeInfo<unsigned char> >::get());
+static int ShortTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(short), VirtualTypeInfoA< DataTypeInfo<short> >::get());
+static int UShortTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(unsigned short), VirtualTypeInfoA< DataTypeInfo<unsigned short> >::get());
+static int IntTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(int), VirtualTypeInfoA< DataTypeInfo<int> >::get());
+static int UIntTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(unsigned int), VirtualTypeInfoA< DataTypeInfo<unsigned int> >::get());
+static int LongTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(long), VirtualTypeInfoA< DataTypeInfo<long> >::get());
+static int ULongTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(unsigned long), VirtualTypeInfoA< DataTypeInfo<unsigned long> >::get());
+static int LongLongTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(long long), VirtualTypeInfoA< DataTypeInfo<long long> >::get());
+static int ULongLongTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(unsigned long long), VirtualTypeInfoA< DataTypeInfo<unsigned long long> >::get());
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
+} /// namespace sofa::defaulttype
 
-SOFA_DEFAULTTYPE_API void init()
-{
-    std::cout << "HELLO WORLD" << std::endl;
-    if (!s_initialized)
-    {
-        sofa::helper::init();
-        s_initialized = true;
-    }
-}
-
-SOFA_DEFAULTTYPE_API bool isInitialized()
-{
-    return s_initialized;
-}
-
-SOFA_DEFAULTTYPE_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        sofa::helper::cleanup();
-        s_cleanedUp = true;
-    }
-}
-
-SOFA_DEFAULTTYPE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (defaulttype::isInitialized() && !defaulttype::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaDefaultType", "sofa::defaulttype::cleanup()");
-    }
-} check;
-
-} // namespace defaulttype
-
-} // namespace sofa

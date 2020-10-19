@@ -40,6 +40,7 @@ public:
     void checkEquality() ;
     void checkGetSet() ;
     void checkColorDataField() ;
+    void checkColorDataTypeInfoField() ;
     void checkConstructors() ;
     void checkStreamingOperator(const std::vector<std::string>&) ;
     void checkDoubleStreamingOperator(const std::vector<std::string>&) ;
@@ -224,6 +225,14 @@ void Color_Test::checkColorDataField()
     EXPECT_EQ(color.getValue(), RGBAColor(0.0,0.0,1.0,1.0));
 }
 
+void Color_Test::checkColorDataTypeInfoField()
+{
+    Data<RGBAColor> color ;
+
+    EXPECT_NE(color.getValueTypeInfo(),nullptr);
+    EXPECT_EQ(color.getValueTypeInfo()->name(), "RGBAColor");
+}
+
 void Color_Test::checkEquality()
 {
     EXPECT_EQ(RGBAColor(), RGBAColor());
@@ -234,6 +243,12 @@ void Color_Test::checkEquality()
     EXPECT_NE(RGBAColor(0.1,1.1,2.1,3.0), RGBAColor(0.1,1.1,2.0,3.0));
     EXPECT_NE(RGBAColor(0.1,1.1,2.1,3.1), RGBAColor(0.1,1.1,2.1,3.0));
 }
+
+TEST_F(Color_Test, checkColorDataTypeInfoField)
+{
+    this->checkColorDataTypeInfoField();
+}
+
 
 TEST_F(Color_Test, checkColorDataField)
 {

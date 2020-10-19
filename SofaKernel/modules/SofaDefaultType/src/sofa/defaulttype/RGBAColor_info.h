@@ -19,59 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#ifndef SOFA_DEFAULTTYPE_COLOR_H
+#define SOFA_DEFAULTTYPE_COLOR_H
+#include <string>
 
-#include <sofa/helper/init.h>
-#include <iostream>
-namespace sofa
+#include <sofa/helper/types/RGBAColor_fwd.h>
+
+namespace sofa::defaulttype
 {
+[[deprecated("sofa::helper::types::RGBAColor is now part in sofa::helper::types::RGBAColor. Please update your code.")]]
+typedef sofa::helper::types::RGBAColor RGBAColor;
 
-namespace defaulttype
+template<>
+struct DataTypeInfo< sofa::helper::types::RGBAColor > : public FixedArrayTypeInfo<sofa::helper::fixed_array<float,4>>
 {
+    static std::string name() { return "RGBAColor"; }
+};
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
+} /// namespace sofa::defaulttype
 
-SOFA_DEFAULTTYPE_API void init()
-{
-    std::cout << "HELLO WORLD" << std::endl;
-    if (!s_initialized)
-    {
-        sofa::helper::init();
-        s_initialized = true;
-    }
-}
+#endif
 
-SOFA_DEFAULTTYPE_API bool isInitialized()
-{
-    return s_initialized;
-}
-
-SOFA_DEFAULTTYPE_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        sofa::helper::cleanup();
-        s_cleanedUp = true;
-    }
-}
-
-SOFA_DEFAULTTYPE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (defaulttype::isInitialized() && !defaulttype::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaDefaultType", "sofa::defaulttype::cleanup()");
-    }
-} check;
-
-} // namespace defaulttype
-
-} // namespace sofa

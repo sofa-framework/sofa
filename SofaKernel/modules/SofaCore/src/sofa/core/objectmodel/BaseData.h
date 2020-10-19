@@ -23,6 +23,8 @@
 #define SOFA_CORE_OBJECTMODEL_BASEDATA_H
 
 #include <sofa/core/config.h>
+#include <sofa/defaulttype/AbstractTypeInfo.h>
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/DataLink.h>
@@ -330,10 +332,11 @@ public:
     template<class T>
     static std::string typeName(const T* = nullptr)
     {
-        if (defaulttype::DataTypeInfo<T>::ValidInfo)
-            return defaulttype::DataTypeName<T>::name();
-        else
-            return decodeTypeName(typeid(T));
+        return sofa::defaulttype::DataTypeInfoRegistry::Get(typeid(T))->name();
+        //if (defaulttype::DataTypeInfo<T>::ValidInfo)
+        //    return defaulttype::DataTypeName<T>::name();
+        //else
+        //    return decodeTypeName(typeid(T));
     }
 };
 

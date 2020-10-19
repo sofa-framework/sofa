@@ -4,10 +4,12 @@ project(SofaDefaultType)
 set(SRC_ROOT "src/sofa/defaulttype")
 
 set(HEADER_FILES
+    ${SRC_ROOT}/AbstractTypeInfo.h
     ${SRC_ROOT}/BaseMatrix.h
     ${SRC_ROOT}/BaseVector.h
     ${SRC_ROOT}/BoundingBox.h
     ${SRC_ROOT}/DataTypeInfo.h
+    ${SRC_ROOT}/DataTypeInfoRegistry.h
     ${SRC_ROOT}/Frame.h
     ${SRC_ROOT}/MapMapSparseMatrix.h
     ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h
@@ -33,7 +35,26 @@ set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/Color.h
-)
+
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Bool.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_BoundingBox.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_FixedArray.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Integer.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_RGBAColor.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Set.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Scalar.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Text.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Vector.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Vec.h
+
+    ${SRC_ROOT}/typeinfo/models/BoolTypeInfo.h
+    ${SRC_ROOT}/typeinfo/models/IntegerTypeInfo.h
+    ${SRC_ROOT}/typeinfo/models/FixedArrayTypeInfo.h
+    ${SRC_ROOT}/typeinfo/models/SetTypeInfo.h
+    ${SRC_ROOT}/typeinfo/models/ScalarTypeInfo.h
+    ${SRC_ROOT}/typeinfo/models/TextTypeInfo.h
+    ${SRC_ROOT}/typeinfo/models/VectorTypeInfo.h
+    )
 
 set(SOURCE_FILES
     ${SRC_ROOT}/BaseMatrix.cpp
@@ -42,6 +63,20 @@ set(SOURCE_FILES
     ${SRC_ROOT}/SolidTypes.cpp
     ${SRC_ROOT}/TemplatesAliases.cpp
     ${SRC_ROOT}/init.cpp
+
+    ${SRC_ROOT}/DataTypeInfoRegistry.cpp
+
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Bool.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_BoundingBox.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_FixedArray.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Integer.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_RGBAColor.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Set.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Scalar.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Text.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Vector.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Vec.cpp
+
 )
 
 find_package(Eigen3 REQUIRED)

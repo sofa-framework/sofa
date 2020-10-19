@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_COLOR_H
-#define SOFA_DEFAULTTYPE_COLOR_H
-#include <string>
+#pragma once
 
 #include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
-{
-namespace defaulttype
+namespace sofa::defaulttype
 {
     [[deprecated("sofa::helper::types::RGBAColor is now part in sofa::helper::types::RGBAColor. Please update your code.")]]
     typedef sofa::helper::types::RGBAColor RGBAColor;
-} // namespace defaulttype
-} // namespace sofa
-
-
-#endif
+}
 

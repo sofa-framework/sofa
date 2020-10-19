@@ -19,59 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#pragma once
 
-#include <sofa/helper/init.h>
-#include <iostream>
-namespace sofa
+#include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
+#include <sofa/helper/fixed_array.h>
+
+namespace sofa::defaulttype
 {
 
-namespace defaulttype
+template<class T, std::size_t N>
+struct DataTypeInfo< sofa::helper::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::helper::fixed_array<T,N> >
 {
+    static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::name() << "," << N << ">"; return o.str(); }
+};
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
+} /// namespace sofa::defaulttype
 
-SOFA_DEFAULTTYPE_API void init()
-{
-    std::cout << "HELLO WORLD" << std::endl;
-    if (!s_initialized)
-    {
-        sofa::helper::init();
-        s_initialized = true;
-    }
-}
-
-SOFA_DEFAULTTYPE_API bool isInitialized()
-{
-    return s_initialized;
-}
-
-SOFA_DEFAULTTYPE_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        sofa::helper::cleanup();
-        s_cleanedUp = true;
-    }
-}
-
-SOFA_DEFAULTTYPE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (defaulttype::isInitialized() && !defaulttype::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaDefaultType", "sofa::defaulttype::cleanup()");
-    }
-} check;
-
-} // namespace defaulttype
-
-} // namespace sofa
