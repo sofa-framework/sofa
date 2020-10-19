@@ -112,7 +112,7 @@ namespace cgal
 		
 		typedef CGAL::Delaunay_mesh_size_criteria_2<CDT> Criteria;
 		
-        typedef CDT::Constraint_id Constraint_id;
+		typedef CDT::Constraint_id Constraint_id;
 		typedef CDT::Vertex_iterator Vertex_iterator;
 		typedef CDT::Face_iterator Face_iterator;
 		typedef CDT::Vertex_handle Vertex_handle;
