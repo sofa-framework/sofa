@@ -97,12 +97,12 @@ protected:
     using core::topology::TopologyElementHandler< TopologyElementType >::add;
 
     /// Add some values. Values are added at the end of the vector.
-    virtual void add( index_type nbElements,
+    virtual void add(std::size_t nbElements,
             const sofa::helper::vector< TopologyElementType >& ,
             const sofa::helper::vector< sofa::helper::vector< index_type > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
 
-    virtual void add( index_type nbElements,
+    virtual void add(std::size_t nbElements,
             const sofa::helper::vector< sofa::helper::vector< index_type > > &ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
 
