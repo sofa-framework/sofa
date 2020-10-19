@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_VEC_H
-#define SOFA_DEFAULTTYPE_VEC_H
+#pragma once
 
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/logging/Messaging.h>
@@ -31,13 +30,12 @@
 
 #define EQUALITY_THRESHOLD 1e-6
 
-namespace sofa
+namespace sofa::types
 {
 
-namespace defaulttype
-{
-
-enum NoInit { NOINIT }; ///< use when calling Vec or Mat constructor to skip initialization of values to 0
+//enum NoInit { NOINIT }; ///< use when calling Vec or Mat constructor to skip initialization of values to 0
+struct NoInit {};
+constexpr NoInit NOINIT;
 
 template < sofa::Size N, typename ValueType=float>
 class Vec : public helper::fixed_array<ValueType,size_t(N)>
@@ -818,7 +816,7 @@ inline Vec<3,real1> cross(const Vec<3,real1>& a, const Vec<3,real2>& b)
 
 /// Cross product for 2-elements vectors.
 template <typename real1, typename real2>
-real1 cross(const defaulttype::Vec<2,real1>& a, const defaulttype::Vec<2,real2>& b )
+real1 cross(const types::Vec<2,real1>& a, const types::Vec<2,real2>& b )
 {
     return (real1)(a[0]*b[1] - a[1]*b[0]);
 }
@@ -880,21 +878,16 @@ typedef Vec3d Vector3; ///< alias
 typedef Vec4d Vector4; ///< alias
 typedef Vec6d Vector6; ///< alias
 
-} // namespace defaulttype
-
-} // namespace sofa
-
-// Specialization of the defaulttype::DataTypeInfo type traits template
+} // namespace sofa::types
 
 // Specialization of the std comparison function, to use Vec as std::map key
 namespace std
 {
 
-// template <>
 template<sofa::Size N, class T>
-struct less< sofa::defaulttype::Vec<N,T> >
+struct less< sofa::types::Vec<N,T> >
 {
-    bool operator()(const  sofa::defaulttype::Vec<N,T>& x, const  sofa::defaulttype::Vec<N,T>& y) const
+    bool operator()(const  sofa::types::Vec<N,T>& x, const  sofa::types::Vec<N,T>& y) const
     {
         //msg_info()<<"specialized std::less, x = "<<x<<", y = "<<y<<std::endl;
         for(sofa::Size i=0; i<N; ++i )
@@ -910,5 +903,4 @@ struct less< sofa::defaulttype::Vec<N,T> >
 
 } // namespace std
 
-#endif
 
