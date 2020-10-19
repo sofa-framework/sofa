@@ -21,11 +21,9 @@
 ******************************************************************************/
 #define SOFA_DEFAULTTYPE_VEC_CPP
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/types/Vec.h>
 
-namespace sofa
-{
-namespace defaulttype
+namespace sofa::types
 {
 
  template class Vec<2,float>;
@@ -49,6 +47,4 @@ namespace defaulttype
  template class Vec<6,unsigned>;
 
 
-} // namespace defaulttype
-} // namespace sofa
-
+} // namespace sofa::types
