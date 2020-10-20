@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_VecTypes.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.inl>
 #include <sofa/helper/Quater.h>
 #include <sofa/core/ObjectFactory.h>

@@ -83,9 +83,15 @@ namespace sofa::defaulttype
 template<class TDataType>
 struct DataTypeInfo;
 
+
 template<class TDataType>
 struct DefaultDataTypeInfo
 {
+    template<class T>
+    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    constexpr static int
+    MissingDataTypeInfo() {return 0;}
+
     /// Template parameter.
     typedef TDataType DataType;
     /// If the type is a container, this the type of the values inside this
@@ -97,59 +103,61 @@ struct DefaultDataTypeInfo
     typedef DataTypeInfo<BaseType> BaseTypeInfo;
     /// TypeInfo for ValueType
     typedef DataTypeInfo<ValueType> ValueTypeInfo;
+
     /**
        \{
      */
-    enum { ValidInfo       = 0 /**< 1 if this type has valid infos*/ };
-    //enum { FixedSize       = 0 /**< 1 if this type has a fixed size*/ };
-    //enum { ZeroConstructor = 0 /**< 1 if the constructor is equivalent to setting memory to 0*/ };
-    //enum { SimpleCopy      = 0 /**< 1 if copying the data can be done with a memcpy*/ };
-    //enum { SimpleLayout    = 0 /**< 1 if the layout in memory is simply N values of the same base type*/ };
-    //enum { Integer         = 0 /**< 1 if this type uses integer values*/ };
-    //enum { Scalar          = 0 /**< 1 if this type uses scalar values*/ };
-    //enum { Text            = 0 /**< 1 if this type uses text values*/ };
-    //enum { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
-    //enum { Container       = 0 /**< 1 if this type is a container*/ };
-    //enum { Size = 1 /**< largest known fixed size for this type, as returned by size() */ };
+    enum { ValidInfo       = MissingDataTypeInfo<TDataType>() /**< 1 if this type has valid infos*/ };
 
-    // \}
+//    enum { FixedSize       = MissingDataTypeInfo<TDataType>() /**< 1 if this type has a fixed size*/ };
+//    enum { ZeroConstructor = MissingDataTypeInfo<TDataType>() /**< 1 if the constructor is equivalent to setting memory to 0*/ };
+//    enum { SimpleCopy      = MissingDataTypeInfo<TDataType>() /**< 1 if copying the data can be done with a memcpy*/ };
+//    enum { SimpleLayout    = MissingDataTypeInfo<TDataType>() /**< 1 if the layout in memory is simply N values of the same base type*/ };
+//    enum { Integer         = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses integer values*/ };
+//    enum { Scalar          = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses scalar values*/ };
+//    enum { Text            = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses text values*/ };
+//    enum { CopyOnWrite     = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
+//    enum { Container       = MissingDataTypeInfo<TDataType>() /**< 1 if this type is a container*/ };
+//    enum { Size = MissingDataTypeInfo<TDataType>() /**< largest known fixed size for this type, as returned by size() */ };
 
-    static size_t size() { return 1; }
-    static size_t byteSize() { return 1; }
+//    // \}
 
-    static size_t size(const DataType& /*data*/) { return 1; }
+//    static size_t size() { return 1; }
+//    static size_t byteSize() { return 1; }
 
-    template <typename T>
-    static void getValue(const DataType& /*data*/, size_t /*index*/, T& /*value*/)
-    {
-    }
+//    static size_t size(const DataType& /*data*/) { return 1; }
 
-    static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
+//    template <typename T>
+//    static void getValue(const DataType& /*data*/, size_t /*index*/, T& /*value*/)
+//    {
+//    }
 
-    template<typename T>
-    static void setValue(DataType& /*data*/, size_t /*index*/, const T& /*value*/)
-    {
-    }
+//    static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
 
-    static void getValueString(const DataType& /*data*/, size_t /*index*/, std::string& /*value*/)
-    {
-    }
+//    template<typename T>
+//    static void setValue(DataType& /*data*/, size_t /*index*/, const T& /*value*/)
+//    {
+//    }
 
-    static void setValueString(DataType& /*data*/, size_t /*index*/, const std::string& /*value*/)
-    {
-    }
+//    static void getValueString(const DataType& /*data*/, size_t /*index*/, std::string& /*value*/)
+//    {
+//    }
 
-    // mtournier: wtf is this supposed to do?
-    // mtournier: wtf is this not returning &type?
-    static const void* getValuePtr(const DataType& /*type*/)
-    {
-        return nullptr;
-    }
+//    static void setValueString(DataType& /*data*/, size_t /*index*/, const std::string& /*value*/)
+//    {
+//    }
 
-    static void* getValuePtr(DataType& /*type*/)
-    {
-        return nullptr;
-    }
+//    // mtournier: wtf is this supposed to do?
+//    // mtournier: wtf is this not returning &type?
+//    static const void* getValuePtr(const DataType& /*type*/)
+//    {
+//        return nullptr;
+//    }
+
+//    static void* getValuePtr(DataType& /*type*/)
+//    {
+//        return nullptr;
+//    }
 
     //static const char* name() { return "unknown"; }
 

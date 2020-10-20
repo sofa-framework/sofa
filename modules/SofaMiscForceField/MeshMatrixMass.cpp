@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP
 
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_VecTypes.h>
 #include <SofaMiscForceField/MeshMatrixMass.inl>
 #include <sofa/core/ObjectFactory.h>
 

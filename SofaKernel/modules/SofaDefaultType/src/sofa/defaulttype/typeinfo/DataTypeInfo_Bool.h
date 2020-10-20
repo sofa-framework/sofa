@@ -30,6 +30,7 @@ template<>
 struct DataTypeInfo<bool> : public BoolTypeInfo
 {
     static const char* name() { return "bool"; }
+    static const char* shortName() { return "b"; }
 };
 
 

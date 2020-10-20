@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_TYPEINFO_DATATYPEINFO_VEC_H
-#define SOFA_DEFAULTTYPE_TYPEINFO_DATATYPEINFO_VEC_H
+#pragma once
 
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_Integer.h>
@@ -34,40 +33,15 @@ template<std::size_t N, typename real>
 struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,real> >
 {
     static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeInfo<real>::name() << ">"; return o.str(); }
+    static std::string shortName() { std::ostringstream o; o << "Vec" << N << "" << DataTypeInfo<real>::shortName() ; return o.str(); }
 };
 
 template<std::size_t N, typename real>
 struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
 {
     static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeInfo<real>::name() << ">"; return o.str(); }
+    static std::string shortName() { std::ostringstream o; o << "VecNoInit" << N << "" << DataTypeInfo<real>::shortName() ; return o.str(); }
 };
-
-
-
-// The next line hides all those methods from the doxygen documentation
-/// \cond TEMPLATE_OVERRIDES
-
-#define DataTypeInfoName(type,suffix)\
-template<std::size_t N>\
-struct DataTypeInfo< sofa::defaulttype::Vec<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,type> >\
-{\
-    static std::string name() { std::ostringstream o; o << "Vec" << N << suffix; return o.str(); }\
-};\
-template<std::size_t N>\
-struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,type> >\
-{\
-    static std::string name() { std::ostringstream o; o << "VecNoInit" << N << suffix; return o.str(); }\
-};
-
-DataTypeInfoName( float, "f" )
-DataTypeInfoName( double, "d" )
-DataTypeInfoName( int, "i" )
-DataTypeInfoName( unsigned, "u" )
-
-#undef DataTypeInfoName
-
-/// \endcond
 
 } /// namespace sofa::defaulttype
 
-#endif /// SOFA_DEFAULTTYPE_TYPEINFO_DATATYPEINFO_VECTYPES_H

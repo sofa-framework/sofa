@@ -25,6 +25,7 @@ using sofa::helper::testing::NumericTest ;
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types ;
 
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
 

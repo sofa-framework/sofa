@@ -25,8 +25,8 @@
 namespace sofa::defaulttype
 {
 
-static int QuatdDataTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(sofa::defaulttype::Quatd), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Quatd> >::get());
-static int QuatfDataTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(sofa::defaulttype::Quatf), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Quatf> >::get());
+static int QuatdDataTypeInfo = DataTypeInfoRegistry::Set(typeid(sofa::defaulttype::Quatd), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Quatd> >::get());
+static int QuatfDataTypeInfo = DataTypeInfoRegistry::Set(typeid(sofa::defaulttype::Quatf), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Quatf> >::get());
 
 } /// namespace sofa::defaulttype
 

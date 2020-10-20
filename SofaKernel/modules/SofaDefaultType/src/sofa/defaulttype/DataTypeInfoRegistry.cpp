@@ -34,10 +34,12 @@ const AbstractTypeInfo* DataTypeInfoRegistry::Get(const std::type_info& id)
     auto index = std::type_index(id);
     if( typeinfos.find(index) != typeinfos.end() )
         return typeinfos[index];
+
+    std::cout << "WARNING WARNING... the type is not there...what can we do" << std::endl;
     return nullptr;
 }
 
-int DataTypeInfoRegistry::RegisterTypeInfo(const std::type_info& id, AbstractTypeInfo* info)
+int DataTypeInfoRegistry::Set(const std::type_info& id, AbstractTypeInfo* info)
 {
     auto index = std::type_index(id);
     std::cout << " REGISTER A NEW TYPE FOR "  << id.name() << "=>" << info->name() <<std::endl;

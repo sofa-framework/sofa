@@ -22,6 +22,10 @@
 #define SOFA_CORE_BEHAVIOR_MECHANICALSTATE_CPP
 #include <sofa/core/behavior/MechanicalState.h>
 
+/// These two are needed as we instanciates the templates.
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_VecTypes.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
+
 namespace sofa
 {
 

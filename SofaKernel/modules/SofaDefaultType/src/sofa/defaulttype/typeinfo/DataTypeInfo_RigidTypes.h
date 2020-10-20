@@ -32,24 +32,47 @@ template<std::size_t N, typename real>
 struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidDeriv<N,real>, sofa::defaulttype::RigidDeriv<N,real>::total_size >
 {
     static std::string name() { std::ostringstream o; o << "RigidDeriv<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+    static std::string shortName()
+    {
+        std::ostringstream o;
+        o << "RigidDeriv" << N << DataTypeInfo<real>::shortName();
+        return o.str();
+    }
 };
 
 template<std::size_t N, typename real>
 struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidCoord<N,real>, sofa::defaulttype::RigidCoord<N,real>::total_size >
 {
     static std::string name() { std::ostringstream o; o << "RigidCoord<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+    static std::string shortName()
+    {
+        std::ostringstream o;
+        o << "RigidCoord" << N << DataTypeInfo<real>::shortName() ;
+        return o.str();
+    }
 };
 
-// The next line hides all those methods from the doxygen documentation
-/// \cond TEMPLATE_OVERRIDES
+template<std::size_t N, typename real>
+struct DataTypeInfo< sofa::defaulttype::RigidMass<N,real> >
+{
+    static std::string name() { std::ostringstream o; o << "RigidMass<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+    static std::string shortName()
+    {
+        std::ostringstream o;
+        o << "RigidMass" << N << DataTypeInfo<real>::name();
+        return o.str();
+    }
+};
 
 
-template<> struct DataTypeName< defaulttype::Rigid2Types::Coord > { static const char* name() { return "Rigid2Types::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid2Types::Deriv > { static const char* name() { return "Rigid2Types::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid3Types::Coord > { static const char* name() { return "Rigid3Types::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid3Types::Deriv > { static const char* name() { return "Rigid3Types::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid2Mass > { static const char* name() { return "Rigid2Mass"; } };
-template<> struct DataTypeName< defaulttype::Rigid3Mass > { static const char* name() { return "Rigid3Mass"; } };
+// not needed anymore since shortName
+//template<> struct DataTypeInfo< defaulttype::Rigid2Types::Coord > { static const char* name() { return "Rigid2Types::Coord"; } };
+//template<> struct DataTypeInfo< defaulttype::Rigid2Types::Deriv > { static const char* name() { return "Rigid2Types::Deriv"; } };
+//template<> struct DataTypeInfo< defaulttype::Rigid3Types::Coord > { static const char* name() { return "Rigid3Types::Coord"; } };
+//template<> struct DataTypeInfo< defaulttype::Rigid3Types::Deriv > { static const char* name() { return "Rigid3Types::Deriv"; } };
+
+//template<> struct DataTypeInfo< defaulttype::Rigid2Mass > { static const char* name() { return "Rigid2Mass"; } };
+//template<> struct DataTypeInfo< defaulttype::Rigid3Mass > { static const char* name() { return "Rigid3Mass"; } };
 
 } /// namespace sofa::defaulttype
 

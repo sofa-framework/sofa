@@ -29,13 +29,16 @@ namespace sofa::defaulttype
 template<>
 struct DataTypeInfo<float> : public ScalarTypeInfo<float>
 {
-    static const char* name() { return "float"; }
+    static const std::string name() { return "float"; }
+    static const std::string shortName(){ return "f"; }
 };
+
 
 template<>
 struct DataTypeInfo<double> : public ScalarTypeInfo<double>
 {
-    static const char* name() { return "double"; }
+    static const std::string name() { return "double"; }
+    static const std::string shortName(){ return "d"; }
 };
 
 } /// namespace sofa::defaulttype

@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP
-
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_VecTypes.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
 #include "UncoupledConstraintCorrection.inl"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>

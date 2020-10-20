@@ -32,7 +32,7 @@ public:
     template<class T>
     static const AbstractTypeInfo* Get(const T&){ return Get(typeid(T)); }
     static const AbstractTypeInfo* Get(const std::type_info& id);
-    static int RegisterTypeInfo(const std::type_info& id, AbstractTypeInfo* info);
+    static int Set(const std::type_info& id, AbstractTypeInfo* info);
 };
 
 }

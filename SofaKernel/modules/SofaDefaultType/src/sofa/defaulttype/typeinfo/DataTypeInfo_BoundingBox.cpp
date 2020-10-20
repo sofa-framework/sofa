@@ -25,7 +25,7 @@
 namespace sofa::defaulttype
 {
 
-static int BoundingBoxDataTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(sofa::defaulttype::BoundingBox),
+static int BoundingBoxDataTypeInfo = DataTypeInfoRegistry::Set(typeid(sofa::defaulttype::BoundingBox),
                                                                             VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::BoundingBox> >::get());
 
 } /// namespace sofa::defaulttype

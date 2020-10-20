@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP
 
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_VecTypes.h>
 #include "TetrahedronDiffusionFEMForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
