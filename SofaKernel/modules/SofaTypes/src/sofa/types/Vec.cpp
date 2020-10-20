@@ -26,25 +26,25 @@
 namespace sofa::types
 {
 
- template class Vec<2,float>;
- template class Vec<2,int>;
- template class Vec<2,double>;
- template class Vec<2,unsigned>;
+ template class SOFA_SOFATYPES_API Vec<2,float>;
+ template class SOFA_SOFATYPES_API Vec<2,int>;
+ template class SOFA_SOFATYPES_API Vec<2,double>;
+ template class SOFA_SOFATYPES_API Vec<2,unsigned>;
 
- template class Vec<3,float>;
- template class Vec<3,int>;
- template class Vec<3,double>;
- template class Vec<3,unsigned>;
+ template class SOFA_SOFATYPES_API Vec<3,float>;
+ template class SOFA_SOFATYPES_API Vec<3,int>;
+ template class SOFA_SOFATYPES_API Vec<3,double>;
+ template class SOFA_SOFATYPES_API Vec<3,unsigned>;
 
- template class Vec<4,float>;
- template class Vec<4,int>;
- template class Vec<4,double>;
- template class Vec<4,unsigned>;
+ template class SOFA_SOFATYPES_API Vec<4,float>;
+ template class SOFA_SOFATYPES_API Vec<4,int>;
+ template class SOFA_SOFATYPES_API Vec<4,double>;
+ template class SOFA_SOFATYPES_API Vec<4,unsigned>;
 
- template class Vec<6,float>;
- template class Vec<6,int>;
- template class Vec<6,double>;
- template class Vec<6,unsigned>;
+ template class SOFA_SOFATYPES_API Vec<6,float>;
+ template class SOFA_SOFATYPES_API Vec<6,int>;
+ template class SOFA_SOFATYPES_API Vec<6,double>;
+ template class SOFA_SOFATYPES_API Vec<6,unsigned>;
 
 
 } // namespace sofa::types
