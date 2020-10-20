@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/types/config.h>
+
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/rmath.h>
