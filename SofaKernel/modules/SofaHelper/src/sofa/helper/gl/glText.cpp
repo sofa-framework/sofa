@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/vector.h>
 #include <sofa/helper/gl/glText.inl>
 
 namespace sofa

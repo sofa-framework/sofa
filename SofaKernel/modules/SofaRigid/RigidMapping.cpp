@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
+
 #include <SofaRigid/RigidMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 

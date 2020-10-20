@@ -23,6 +23,7 @@
 
 #include "SquareDistanceMapping.inl"
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
 
 namespace sofa
 {

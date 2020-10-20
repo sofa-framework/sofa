@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_INL
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_INL
 
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>

@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_INL
 #define SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_INL
 
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
 #include <SofaMeshCollision/IdentityContactMapper.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>

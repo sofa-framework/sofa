@@ -40,12 +40,16 @@ set(HEADER_FILES
     ${SRC_ROOT}/typeinfo/DataTypeInfo_BoundingBox.h
     ${SRC_ROOT}/typeinfo/DataTypeInfo_FixedArray.h
     ${SRC_ROOT}/typeinfo/DataTypeInfo_Integer.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Mat.h
     ${SRC_ROOT}/typeinfo/DataTypeInfo_RGBAColor.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Quat.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_RigidTypes.h
     ${SRC_ROOT}/typeinfo/DataTypeInfo_Set.h
     ${SRC_ROOT}/typeinfo/DataTypeInfo_Scalar.h
     ${SRC_ROOT}/typeinfo/DataTypeInfo_Text.h
     ${SRC_ROOT}/typeinfo/DataTypeInfo_Vector.h
     ${SRC_ROOT}/typeinfo/DataTypeInfo_Vec.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_VecTypes.h
 
     ${SRC_ROOT}/typeinfo/models/BoolTypeInfo.h
     ${SRC_ROOT}/typeinfo/models/IntegerTypeInfo.h
@@ -70,12 +74,16 @@ set(SOURCE_FILES
     ${SRC_ROOT}/typeinfo/DataTypeInfo_BoundingBox.cpp
     ${SRC_ROOT}/typeinfo/DataTypeInfo_FixedArray.cpp
     ${SRC_ROOT}/typeinfo/DataTypeInfo_Integer.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Mat.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_Quat.cpp
     ${SRC_ROOT}/typeinfo/DataTypeInfo_RGBAColor.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_RigidTypes.cpp
     ${SRC_ROOT}/typeinfo/DataTypeInfo_Set.cpp
     ${SRC_ROOT}/typeinfo/DataTypeInfo_Scalar.cpp
     ${SRC_ROOT}/typeinfo/DataTypeInfo_Text.cpp
     ${SRC_ROOT}/typeinfo/DataTypeInfo_Vector.cpp
     ${SRC_ROOT}/typeinfo/DataTypeInfo_Vec.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo_VecTypes.cpp
 
 )
 

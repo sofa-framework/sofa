@@ -22,7 +22,7 @@
 
 #include <SofaTest/Mapping_test.h>
 #include <SofaMiscMapping/DistanceMapping.h>
-
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
 
 namespace sofa {
 namespace {

@@ -21,8 +21,10 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_DistanceMapping_CPP
 
+
 #include "DistanceMapping.inl"
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
 
 namespace sofa
 {

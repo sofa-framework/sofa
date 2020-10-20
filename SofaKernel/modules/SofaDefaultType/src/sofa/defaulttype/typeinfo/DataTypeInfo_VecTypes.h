@@ -19,37 +19,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_DEFAULTTYPE_TYPEINFO_DATATYPEINFO_VECTYPES_H
+#define SOFA_DEFAULTTYPE_TYPEINFO_DATATYPEINFO_VECTYPES_H
+
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
-#include "BaseProjectiveConstraintSet.h"
-#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/defaulttype/Vec.h>
 
-namespace sofa
+namespace sofa::defaulttype
 {
 
-namespace core
+template<std::size_t N, typename real>
+struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,real> >
 {
+    static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeInfo<real>::name() << ">"; return o.str(); }
+};
 
-namespace behavior
+template<std::size_t N, typename real>
+struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
 {
-
-bool BaseProjectiveConstraintSet::insertInNode( objectmodel::BaseNode* node )
-{
-    node->addProjectiveConstraintSet(this);
-    Inherit1::insertInNode(node);
-    return true;
-}
-
-bool BaseProjectiveConstraintSet::removeInNode( objectmodel::BaseNode* node )
-{
-    node->removeProjectiveConstraintSet(this);
-    Inherit1::removeInNode(node);
-    return true;
-}
+    static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeInfo<real>::name() << ">"; return o.str(); }
+};
 
 
-} // namespace behavior
 
-} // namespace core
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
 
-} // namespace sofa
+#define DataTypeInfoName(type,suffix)\
+template<std::size_t N>\
+struct DataTypeInfo< sofa::defaulttype::Vec<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,type> >\
+{\
+    static std::string name() { std::ostringstream o; o << "Vec" << N << suffix; return o.str(); }\
+};\
+template<std::size_t N>\
+struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,type> >\
+{\
+    static std::string name() { std::ostringstream o; o << "VecNoInit" << N << suffix; return o.str(); }\
+};
 
+DataTypeInfoName( float, "f" )
+DataTypeInfoName( double, "d" )
+DataTypeInfoName( int, "i" )
+DataTypeInfoName( unsigned, "u" )
+
+#undef DataTypeInfoName
+
+/// \endcond
+
+} /// namespace sofa::defaulttype
+
+#endif /// ENDIT SOFA_DEFAULTTYPE_TYPEINFO_DATATYPEINFO_VECTYPES_H

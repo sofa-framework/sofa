@@ -22,8 +22,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_INL
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_INL
 
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
 #include <sofa/core/visual/VisualParams.h>
-
 #include "BarycentricMapperRegularGridTopology.h"
 
 namespace sofa

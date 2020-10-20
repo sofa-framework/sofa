@@ -20,11 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
+
 #include <SofaMeshCollision/LocalMinDistanceFilter.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <SofaRigid/RigidMapping.h>
 #include <limits>
+
 
 
 namespace sofa

@@ -19,37 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
-#include <SofaBaseMechanics/BarycentricMapping.inl>
+#pragma once
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
 
-namespace sofa
+namespace sofa::defaulttype
 {
 
-namespace component
+template<std::size_t L, std::size_t C, typename real>
+struct DataTypeInfo< sofa::defaulttype::Mat<L,C,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Mat<L,C,real> >
 {
+    static std::string name() { std::ostringstream o; o << "Mat<" << L << "," << C << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+};
 
-namespace mapping
-{
+template<> struct DataTypeName<defaulttype::Mat1x1f> { static const char* name() { return "Mat1x1f"; } };
+template<> struct DataTypeName<defaulttype::Mat1x1d> { static const char* name() { return "Mat1x1d"; } };
+template<> struct DataTypeName<defaulttype::Mat2x2f> { static const char* name() { return "Mat2x2f"; } };
+template<> struct DataTypeName<defaulttype::Mat2x2d> { static const char* name() { return "Mat2x2d"; } };
+template<> struct DataTypeName<defaulttype::Mat3x3f> { static const char* name() { return "Mat3x3f"; } };
+template<> struct DataTypeName<defaulttype::Mat3x3d> { static const char* name() { return "Mat3x3d"; } };
+template<> struct DataTypeName<defaulttype::Mat3x4f> { static const char* name() { return "Mat3x4f"; } };
+template<> struct DataTypeName<defaulttype::Mat3x4d> { static const char* name() { return "Mat3x4d"; } };
+template<> struct DataTypeName<defaulttype::Mat4x4f> { static const char* name() { return "Mat4x4f"; } };
+template<> struct DataTypeName<defaulttype::Mat4x4d> { static const char* name() { return "Mat4x4d"; } };
 
-using namespace sofa::defaulttype;
+} /// namespace sofa::defaulttype
 
-// Register in the Factory
-int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
-        .add< BarycentricMapping< Vec3dTypes, Vec3dTypes > >(true)
-
-
-        ;
-
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa

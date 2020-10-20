@@ -19,37 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
-#include <SofaBaseMechanics/BarycentricMapping.inl>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
-
-namespace sofa
+namespace sofa::defaulttype
 {
 
-namespace component
-{
+} /// namespace sofa::defaulttype
 
-namespace mapping
-{
-
-using namespace sofa::defaulttype;
-
-// Register in the Factory
-int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
-        .add< BarycentricMapping< Vec3dTypes, Vec3dTypes > >(true)
-
-
-        ;
-
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa

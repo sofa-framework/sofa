@@ -27,6 +27,10 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
+
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_VecTypes.h>
+
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 #include <vector>

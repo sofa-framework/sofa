@@ -19,37 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP
+#pragma once
+
+#include <sofa/defaulttype/Quat.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
-#include <SofaBaseMechanics/BarycentricMapping.inl>
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
-
-namespace sofa
+namespace sofa::defaulttype
 {
 
-namespace component
+template<class T>
+struct DataTypeInfo< sofa::helper::Quater<T> > : public FixedArrayTypeInfo< sofa::helper::Quater<T> >
 {
+    static std::string name() { std::ostringstream o; o << "Quater<" << DataTypeName<T>::name() << ">"; return o.str(); }
+};
 
-namespace mapping
-{
+template<> struct DataTypeName<defaulttype::Quatf> { static const char* name() { return "Quatf"; } };
+template<> struct DataTypeName<defaulttype::Quatd> { static const char* name() { return "Quatd"; } };
 
-using namespace sofa::defaulttype;
+} /// namespace sofa::defaulttype
 
-// Register in the Factory
-int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
-        .add< BarycentricMapping< Vec3dTypes, Vec3dTypes > >(true)
-
-
-        ;
-
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa

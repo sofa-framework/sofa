@@ -19,37 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Mat.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
-#include <SofaBaseMechanics/BarycentricMapping.inl>
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
-
-namespace sofa
+namespace sofa::defaulttype
 {
 
-namespace component
-{
+static int Mat1x1fDataTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(sofa::defaulttype::Mat1x1f), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat1x1f> >::get());
+static int Mat1x1dDataTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(sofa::defaulttype::Mat1x1d), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat1x1d> >::get());
+static int Mat2x2fDataTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(sofa::defaulttype::Mat2x2f), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat2x2f> >::get());
+static int Mat2x2dDataTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(sofa::defaulttype::Mat2x2d), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat2x2d> >::get());
+static int Mat3x3fDataTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(sofa::defaulttype::Mat3x3f), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat3x3f> >::get());
+static int Mat3x3dDataTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(sofa::defaulttype::Mat3x3d), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat3x3d> >::get());
+static int Mat4x4fDataTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(sofa::defaulttype::Mat4x4f), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat4x4f> >::get());
+static int Mat4x4dDataTypeInfo = DataTypeInfoRegistry::RegisterTypeInfo(typeid(sofa::defaulttype::Mat4x4d), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat4x4d> >::get());
 
-namespace mapping
-{
+} /// namespace sofa::defaulttype
 
-using namespace sofa::defaulttype;
-
-// Register in the Factory
-int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
-        .add< BarycentricMapping< Vec3dTypes, Vec3dTypes > >(true)
-
-
-        ;
-
-template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa

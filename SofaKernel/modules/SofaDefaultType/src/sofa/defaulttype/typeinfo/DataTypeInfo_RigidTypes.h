@@ -19,55 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_TYPEINFO_DATATYPEINFO_VEC_H
-#define SOFA_DEFAULTTYPE_TYPEINFO_DATATYPEINFO_VEC_H
+#pragma once
 
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Integer.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa::defaulttype
 {
 
 template<std::size_t N, typename real>
-struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,real> >
+struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidDeriv<N,real>, sofa::defaulttype::RigidDeriv<N,real>::total_size >
 {
-    static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeInfo<real>::name() << ">"; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "RigidDeriv<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
 };
 
 template<std::size_t N, typename real>
-struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
+struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidCoord<N,real>, sofa::defaulttype::RigidCoord<N,real>::total_size >
 {
-    static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeInfo<real>::name() << ">"; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "RigidCoord<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
 };
-
-
 
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
-#define DataTypeInfoName(type,suffix)\
-template<std::size_t N>\
-struct DataTypeInfo< sofa::defaulttype::Vec<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,type> >\
-{\
-    static std::string name() { std::ostringstream o; o << "Vec" << N << suffix; return o.str(); }\
-};\
-template<std::size_t N>\
-struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,type> >\
-{\
-    static std::string name() { std::ostringstream o; o << "VecNoInit" << N << suffix; return o.str(); }\
-};
 
-DataTypeInfoName( float, "f" )
-DataTypeInfoName( double, "d" )
-DataTypeInfoName( int, "i" )
-DataTypeInfoName( unsigned, "u" )
-
-#undef DataTypeInfoName
-
-/// \endcond
+template<> struct DataTypeName< defaulttype::Rigid2Types::Coord > { static const char* name() { return "Rigid2Types::Coord"; } };
+template<> struct DataTypeName< defaulttype::Rigid2Types::Deriv > { static const char* name() { return "Rigid2Types::Deriv"; } };
+template<> struct DataTypeName< defaulttype::Rigid3Types::Coord > { static const char* name() { return "Rigid3Types::Coord"; } };
+template<> struct DataTypeName< defaulttype::Rigid3Types::Deriv > { static const char* name() { return "Rigid3Types::Deriv"; } };
+template<> struct DataTypeName< defaulttype::Rigid2Mass > { static const char* name() { return "Rigid2Mass"; } };
+template<> struct DataTypeName< defaulttype::Rigid3Mass > { static const char* name() { return "Rigid3Mass"; } };
 
 } /// namespace sofa::defaulttype
 
-#endif /// SOFA_DEFAULTTYPE_TYPEINFO_DATATYPEINFO_VECTYPES_H

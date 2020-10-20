@@ -27,6 +27,8 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Mat.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
 
 namespace sofa
 {
