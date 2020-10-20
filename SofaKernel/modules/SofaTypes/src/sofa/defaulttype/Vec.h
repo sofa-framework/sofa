@@ -56,7 +56,7 @@ namespace sofa::defaulttype
         }
         else
         {
-            static_assert(false, "Cannot called cross on those types");
+            static_assert(TVec1::spatial_dimensions == 0, "Cannot call cross with the given types (needs to be Vec2 or Vec3)");
         }
     }
 
