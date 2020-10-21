@@ -23,6 +23,7 @@
 
 #include <CGALPlugin/CylinderMesh.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #define MAX(a,b) ( (a)>(b) ? (a):(b))
 #define MIN(a,b) ( (a)<(b) ? (a):(b))
@@ -493,7 +494,7 @@ void CylinderMesh<DataTypes>::orientate()
 }
 
 template <class DataTypes>
-void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams* vparams) override
+void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams* vparams)
 {
     vparams->drawTool()->saveLastState();
 
@@ -507,21 +508,21 @@ void CylinderMesh<DataTypes>::draw(const sofa::core::visual::VisualParams* vpara
         // Vertices
         points.resize(m_nbVertices);
         for (int i = 0; i < m_nbVertices; ++i)
-            points = coords[i];
+            points[i] = coords[i];
         vparams->drawTool()->drawPoints(points,8,defaulttype::Vec4f(0.0, 0.0, 1.0,1));
         points.clear();
 
         // Centers
         points.resize(m_nbCenters);
         for (int i = 0; i < m_nbCenters; ++i)
-            points = coords[m_nbVertices+i];
+            points[i] = coords[m_nbVertices+i];
         vparams->drawTool()->drawPoints(points,8,defaulttype::Vec4f(1.0, 0.0, 0.0,1));
         points.clear();
         // Boundary centers
         int size = (int)points.size()-(m_nbCenters+m_nbVertices);
         points.resize(size);
         for (int i = 0; i < size; ++i)
-            points = coords[m_nbCenters+m_nbVertices+i];
+            points[i] = coords[m_nbCenters+m_nbVertices+i];
         vparams->drawTool()->drawPoints(points,8,defaulttype::Vec4f(0.0, 1.0, 0.0,1));
 
         vparams->drawTool()->enableLighting();
