@@ -34,7 +34,7 @@
 #ifndef SOFA_GPU_CUDA_CUDASPATIALGRIDCONTAINER_H
 #define SOFA_GPU_CUDA_CUDASPATIALGRIDCONTAINER_H
 
-#include <SofaSphFluid/src/SofaSphFluid/SpatialGridContainer.h>
+#include <SofaSphFluid/SofaSphFluid/SpatialGridContainer.h>
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/defaulttype/Vec.h>
 
