@@ -158,13 +158,6 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "SofaDefaultPathSetting", Pluginized("v20.12", "SofaGraphComponent") },
     { "StatsSetting", Pluginized("v20.12", "SofaGraphComponent") },
     { "ViewerSetting", Pluginized("v20.12", "SofaGraphComponent") },
-    { "SceneCheck", Pluginized("v20.12", "SofaGraphComponent") },
-    { "SceneCheckDuplicatedName", Pluginized("v20.12", "SofaGraphComponent") },
-    { "SceneCheckMissingRequiredPlugin", Pluginized("v20.12", "SofaGraphComponent") },
-    { "SceneCheckAPIChange", Pluginized("v20.12", "SofaGraphComponent") },
-    { "SceneCheckUsingAlias", Pluginized("v20.12", "SofaGraphComponent") },
-    { "SceneCheckerVisitor", Pluginized("v20.12", "SofaGraphComponent") },
-    { "SceneCheckerListener", Pluginized("v20.12", "SofaGraphComponent") },
     { "APIVersion", Pluginized("v20.12", "SofaGraphComponent") },
 
     /***********************/
