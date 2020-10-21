@@ -52,7 +52,7 @@ void PointSetTopologyModifier::init()
 }
 
 
-void PointSetTopologyModifier::swapPoints(const int i1, const int i2)
+void PointSetTopologyModifier::swapPoints(const index_type i1, const index_type i2)
 {
     PointsIndicesSwap *e2 = new PointsIndicesSwap( i1, i2 );
     addStateChange(e2);

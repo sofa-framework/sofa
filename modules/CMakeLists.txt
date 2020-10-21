@@ -20,6 +20,14 @@ else()
     sofa_add_module(SofaOpenglVisual SofaOpenglVisual ON)
 endif()
 
+# Misc
+sofa_add_module(SofaMiscTopology SofaMiscTopology ON)
+sofa_add_module(SofaMiscExtra SofaMiscExtra ON)
+sofa_add_module(SofaMiscForceField SofaMiscForceField ON)
+sofa_add_module(SofaMiscEngine SofaMiscEngine ON)
+sofa_add_module(SofaMiscSolver SofaMiscSolver ON)
+sofa_add_module(SofaMiscFem SofaMiscFem ON)
+sofa_add_module(SofaMiscMapping SofaMiscMapping ON)
 
 # All the other targets visible in "modules" are not real module
-# and are contained in packages (SofaGeneral, SofaAdvanced, SofaMisc, SofaGui).
+# and are contained in packages (SofaGeneral, SofaAdvanced, SofaGui).

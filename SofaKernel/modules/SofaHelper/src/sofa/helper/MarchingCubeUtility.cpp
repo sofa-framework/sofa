@@ -746,7 +746,7 @@ void MarchingCubeUtility::run ( unsigned char *data, const float isolevel,
     //Do the Marching Cube
     run ( data, isolevel, triangles, vertices );
 
-    const size_t numTriangles = triangles.size() /3;
+    const auto numTriangles = triangles.size() /3;
     facets.resize ( numTriangles, vector< vector < PointID > > ( 3, vector<PointID> ( 3, 0 ) ) );
     for ( size_t i=0; i<triangles.size(); /*i+=3*/ )
     {

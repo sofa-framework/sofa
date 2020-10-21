@@ -77,7 +77,7 @@ public:
     /// Sparse matrix containing derivative values (constraints)
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
 
-    using index_type = std::size_t;
+    using index_type = sofa::defaulttype::index_type;
 
 protected:
     ~MechanicalState() override {}

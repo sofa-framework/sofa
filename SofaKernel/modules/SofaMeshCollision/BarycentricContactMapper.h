@@ -84,7 +84,7 @@ public:
 
     MMechanicalState* createMapping(const char* name="contactPoints");
 
-    void resize(index_type size)
+    void resize(std::size_t size)
     {
         if (mapping != nullptr)
         {
