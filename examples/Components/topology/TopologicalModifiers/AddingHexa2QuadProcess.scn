@@ -2,6 +2,7 @@
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 0 0">
     <RequiredPlugin name="SofaMiscCollision" />
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name='SofaMiscTopology'/>
 
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline verbose="0" />

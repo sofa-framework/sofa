@@ -1,0 +1,12 @@
+# CMake package configuration file for the SofaMiscEngine module
+@PACKAGE_INIT@
+
+find_package(SofaNonUniformFem REQUIRED)
+
+### Is the target existing ?
+if(NOT TARGET SofaMiscEngine)
+    ### If not we are building out of tree.
+    include("${CMAKE_CURRENT_LIST_DIR}/SofaMiscEngine.cmake")
+endif()
+
+check_required_components(SofaMiscEngine)
