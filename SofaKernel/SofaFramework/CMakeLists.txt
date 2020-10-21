@@ -27,7 +27,7 @@ sofa_set_01(SOFA_WITH_DEPRECATED_COMPONENTS_ VALUE ${SOFA_WITH_DEPRECATED_COMPON
 sofa_set_01(SOFA_NO_UPDATE_BBOX_ VALUE ${SOFA_NO_UPDATE_BBOX}) # build_option_bbox.h.in
 
 # Package install include directory
-set(SOFAFRAMEWORK_TARGETS SofaHelper SofaTypes SofaDefaultType SofaCore SofaSimulationCore)
+set(SOFAFRAMEWORK_TARGETS SofaTypes SofaHelper SofaDefaultType SofaCore SofaSimulationCore)
 foreach(TARGET ${SOFAFRAMEWORK_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
     if(SOFA_BUILD_TESTS)
