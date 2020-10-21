@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_H
-#include "config.h"
+#pragma once
+#include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -35,13 +34,7 @@
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <set>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -155,20 +148,13 @@ protected :
 };
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec6Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid2Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API FixedConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API FixedConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API FixedConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API FixedConstraint<defaulttype::Vec6Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API FixedConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API FixedConstraint<defaulttype::Rigid2Types>;
 
 #endif
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif
+} // namespace sofa::component::projectiveconstraintset

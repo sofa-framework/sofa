@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_H
-#include "config.h"
+#pragma once
+#include <SofaBoundaryCondition/config.h>
 
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
@@ -36,14 +35,7 @@
 #include <type_traits>
 #include <set>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 template<class DataTypes>
@@ -186,18 +178,9 @@ private:
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API PatchTestMovementConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3Types>;
 
 #endif
 
-
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif
-
+} // namespace sofa::component::projectiveconstraintset

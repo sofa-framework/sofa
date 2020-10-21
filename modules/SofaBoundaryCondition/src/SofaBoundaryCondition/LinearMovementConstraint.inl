@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_INL
+#pragma once
 
 #include <SofaBoundaryCondition/LinearMovementConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -32,14 +31,7 @@
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 // Define TestNewPointFunction
@@ -478,11 +470,4 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component::projectiveconstraintset

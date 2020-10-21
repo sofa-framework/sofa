@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_INL
+#pragma once
 
 #include "LinearForceField.h"
 #include <sofa/helper/vector.h>
@@ -30,13 +29,7 @@
 
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template<class DataTypes>
@@ -223,10 +216,4 @@ void LinearForceField<DataTypes>::draw(const core::visual::VisualParams* /*vpara
 
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_INL
+} // namespace sofa::component::forcefield

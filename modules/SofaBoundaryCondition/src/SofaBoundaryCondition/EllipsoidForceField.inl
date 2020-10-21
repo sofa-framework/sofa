@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_INL
+#pragma once
 
 #include <SofaBoundaryCondition/EllipsoidForceField.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -29,13 +28,7 @@
 #include <cassert>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 // v = sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2)-1
@@ -194,11 +187,4 @@ void EllipsoidForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
 
 }
 
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_INL
+} // namespace sofa::component::forcefield

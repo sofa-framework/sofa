@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARABOLICCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARABOLICCONSTRAINT_INL
+#pragma once
 
 #include <SofaBoundaryCondition/ParabolicConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 template <class DataTypes>
@@ -275,11 +268,4 @@ void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vpar
 
 }
 
-
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::projectiveconstraintset

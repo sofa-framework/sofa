@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_H
-#include "config.h"
+#pragma once
+#include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -36,15 +35,8 @@
 #include <type_traits>
 #include <set>
 
-namespace sofa
+namespace sofa::component::projectiveconstraintset
 {
-
-namespace component
-{
-
-namespace projectiveconstraintset
-{
-
 
 template<class DataTypes>
 class PartialLinearMovementConstraintInternalData
@@ -192,20 +184,11 @@ private:
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3Types>;
 #endif
 
-
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif
-
+} // namespace sofa::component::projectiveconstraintset

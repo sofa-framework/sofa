@@ -19,22 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_BOUNDARY_CONDITION_INIT_H
-#define SOFA_COMPONENT_BOUNDARY_CONDITION_INIT_H
-#include "config.h"
+#pragma once
+#include <SofaBoundaryCondition/config.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+void SOFA_SOFABOUNDARYCONDITION_API initBoundaryCondition();
 
-
-void SOFA_BOUNDARY_CONDITION_API initBoundaryCondition();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component

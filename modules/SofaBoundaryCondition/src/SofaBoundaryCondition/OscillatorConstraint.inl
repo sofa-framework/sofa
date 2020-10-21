@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_OSCILLATORCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_OSCILLATORCONSTRAINT_INL
+#pragma once
 
 #include <SofaBoundaryCondition/OscillatorConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <cmath>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 template <class TDataTypes>
@@ -135,10 +128,4 @@ OscillatorConstraint<TDataTypes>::Oscillator::Oscillator(unsigned int i, const C
 {
 }
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::projectiveconstraintset

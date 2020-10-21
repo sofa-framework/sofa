@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_H
-#include "config.h"
+#pragma once
+#include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -35,13 +34,7 @@
 #include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
 #include <set>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -154,18 +147,11 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<defaulttype::Vec6Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API ProjectToPointConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API ProjectToPointConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API ProjectToPointConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API ProjectToPointConstraint<defaulttype::Vec6Types>;
 
 #endif
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif
+} // namespace sofa::component::projectiveconstraintset

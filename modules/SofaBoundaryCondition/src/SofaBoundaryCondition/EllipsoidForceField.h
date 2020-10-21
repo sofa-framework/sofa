@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -119,17 +112,11 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API EllipsoidForceField<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API EllipsoidForceField<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API EllipsoidForceField<sofa::defaulttype::Vec1Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP)
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_H
+} // namespace sofa::component::forcefield

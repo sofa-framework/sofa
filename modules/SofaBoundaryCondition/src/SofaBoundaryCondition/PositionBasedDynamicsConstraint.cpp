@@ -27,13 +27,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 using namespace sofa::defaulttype;
@@ -51,12 +45,12 @@ int PositionBasedDynamicsConstraintClass = core::RegisterObject("Position-based 
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Rigid3Types>;
-//template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Rigid2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PositionBasedDynamicsConstraint<Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PositionBasedDynamicsConstraint<Vec2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PositionBasedDynamicsConstraint<Vec1Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PositionBasedDynamicsConstraint<Vec6Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PositionBasedDynamicsConstraint<Rigid3Types>;
+//template class SOFA_SOFABOUNDARYCONDITION_API PositionBasedDynamicsConstraint<Rigid2Types>;
 
 
 
@@ -101,11 +95,4 @@ void PositionBasedDynamicsConstraint<Rigid3Types>::projectPosition(const core::M
     }
 }
 
-
-
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::projectiveconstraintset

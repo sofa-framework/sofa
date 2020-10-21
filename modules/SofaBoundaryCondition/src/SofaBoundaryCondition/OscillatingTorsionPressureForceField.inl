@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_INL
+#pragma once
 
 #include <SofaBoundaryCondition/OscillatingTorsionPressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
@@ -30,13 +29,7 @@
 #include <vector>
 #include <set>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template <class DataTypes>
@@ -364,10 +357,4 @@ typename OscillatingTorsionPressureForceField<DataTypes>::Real OscillatingTorsio
     return angle;
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_INL
+} // namespace sofa::component::forcefield

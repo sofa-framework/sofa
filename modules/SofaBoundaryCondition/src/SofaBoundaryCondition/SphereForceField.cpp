@@ -24,13 +24,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -42,13 +36,8 @@ int SphereForceFieldClass = core::RegisterObject("Repulsion applied by a sphere 
         .add< SphereForceField<Vec1Types> >()
 
         ;
-template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API SphereForceField<Vec1Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API SphereForceField<Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API SphereForceField<Vec2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API SphereForceField<Vec1Types>;
 
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

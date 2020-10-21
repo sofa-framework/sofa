@@ -25,13 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -42,12 +36,6 @@ int OscillatingTorsionPressureForceFieldClass = core::RegisterObject("Oscillatin
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API OscillatingTorsionPressureForceField<Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API OscillatingTorsionPressureForceField<Vec3Types>;
 
-
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

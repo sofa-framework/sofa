@@ -27,16 +27,10 @@
 
 #include <sofa/simulation/Node.h>
 
-namespace sofa
+namespace sofa::component::projectiveconstraintset
 {
 
-namespace component
-{
-
-namespace projectiveconstraintset
-{
-
-template <> SOFA_BOUNDARY_CONDITION_API
+template <> SOFA_SOFABOUNDARYCONDITION_API
 void LinearMovementConstraint<defaulttype::Rigid3Types>::init()
 {    
     this->core::behavior::ProjectiveConstraintSet<defaulttype::Rigid3Types>::init();
@@ -58,15 +52,10 @@ int LinearMovementConstraintClass = core::RegisterObject("translate given partic
         .add< LinearMovementConstraint<defaulttype::Rigid3Types> >();
 
 
-template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearMovementConstraint<defaulttype::Rigid3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API LinearMovementConstraint<defaulttype::Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API LinearMovementConstraint<defaulttype::Vec2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API LinearMovementConstraint<defaulttype::Vec1Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API LinearMovementConstraint<defaulttype::Vec6Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API LinearMovementConstraint<defaulttype::Rigid3Types>;
 
-
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::projectiveconstraintset

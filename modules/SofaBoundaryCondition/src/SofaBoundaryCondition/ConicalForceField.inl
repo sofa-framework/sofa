@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_INL
+#pragma once
 
 #include <SofaBoundaryCondition/ConicalForceField.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -30,13 +29,7 @@
 #include <cassert>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template<class DataTypes>
@@ -237,10 +230,4 @@ void ConicalForceField<DataTypes>::setDamping(Real damp)
     damping.setValue( damp );
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_INL
+} // namespace sofa::component::forcefield

@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_INL
+#pragma once
 
 #include <SofaBoundaryCondition/SurfacePressureForceField.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -30,13 +29,7 @@
 #include <set>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template <class DataTypes>
@@ -717,8 +710,4 @@ void SurfacePressureForceField<defaulttype::Rigid3Types>::verifyDerivative(VecDe
 {
 }
 
-} // namespace forcefield
-} // namespace component
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_INL
+} // namespace sofa::component::forcefield

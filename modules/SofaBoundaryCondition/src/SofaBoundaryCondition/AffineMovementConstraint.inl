@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_INL
+#pragma once
 
 
 #include <sofa/core/visual/VisualParams.h>
@@ -31,15 +30,8 @@
 
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 
-namespace sofa
+namespace sofa::component::projectiveconstraintset
 {
-
-namespace component
-{
-
-namespace projectiveconstraintset
-{
-
 
 // Define TestFunction
 template< class DataTypes>
@@ -340,12 +332,4 @@ void AffineMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
     }
 }
 
-
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component::projectiveconstraintset

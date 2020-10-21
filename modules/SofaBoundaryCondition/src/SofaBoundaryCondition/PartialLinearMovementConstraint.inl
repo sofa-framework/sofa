@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_INL
+#pragma once
 
 #include <SofaBoundaryCondition/PartialLinearMovementConstraint.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -32,14 +31,7 @@
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 
@@ -522,12 +514,4 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
 
     vparams->drawTool()->restoreLastState();
 }
-
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component::projectiveconstraintset

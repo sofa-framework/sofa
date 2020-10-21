@@ -26,13 +26,7 @@
 
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 //declaration of the class, for the factory
@@ -41,11 +35,6 @@ int SkeletalMotionConstraintClass = core::RegisterObject("animate a skeleton")
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3Types>;
 
-
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::projectiveconstraintset

@@ -26,13 +26,7 @@
 
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 using namespace sofa::defaulttype;
@@ -49,19 +43,11 @@ int PartialFixedConstraintClass = core::RegisterObject("Attach given particles t
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Rigid3Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<Rigid2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PartialFixedConstraint<Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PartialFixedConstraint<Vec2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PartialFixedConstraint<Vec1Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PartialFixedConstraint<Vec6Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PartialFixedConstraint<Rigid3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PartialFixedConstraint<Rigid2Types>;
 
-
-
-
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::projectiveconstraintset

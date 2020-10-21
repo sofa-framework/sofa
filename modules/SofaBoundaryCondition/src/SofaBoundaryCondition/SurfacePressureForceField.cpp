@@ -24,14 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -42,13 +35,7 @@ int SurfacePressureForceFieldClass = core::RegisterObject("SurfacePressure")
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<Rigid3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API SurfacePressureForceField<Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API SurfacePressureForceField<Rigid3Types>;
 
-
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

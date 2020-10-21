@@ -19,23 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_H
-#include "config.h"
+#pragma once
+#include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 /**
@@ -129,19 +121,13 @@ protected:
 };
 
 template <>
-void SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>::init();
+void SOFA_SOFABOUNDARYCONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>::init();
 
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API HermiteSplineConstraint<defaulttype::Vec3Types>;
 
 #endif
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::projectiveconstraintset

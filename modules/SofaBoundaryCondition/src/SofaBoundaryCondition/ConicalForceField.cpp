@@ -24,13 +24,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -43,10 +37,4 @@ int ConicalForceFieldClass = core::RegisterObject("Repulsion applied by a cone t
 
 template class ConicalForceField<Vec3Types>;
 
-
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

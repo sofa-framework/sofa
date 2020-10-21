@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_UNIFORMVELOCITYDAMPINGFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_UNIFORMVELOCITYDAMPINGFORCEFIELD_INL
+#pragma once
 
 #include "UniformVelocityDampingForceField.h"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 
@@ -92,14 +85,4 @@ SReal UniformVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core
 }
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
-
-
-
+} // namespace sofa::component::forcefield

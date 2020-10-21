@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 int ParabolicConstraintClass = core::RegisterObject("Apply a parabolic trajectory to given points")
@@ -41,9 +35,4 @@ int ParabolicConstraintClass = core::RegisterObject("Apply a parabolic trajector
 template class ParabolicConstraint<defaulttype::Rigid3Types>;
 template class ParabolicConstraint<defaulttype::Vec3Types>;
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::projectiveconstraintset

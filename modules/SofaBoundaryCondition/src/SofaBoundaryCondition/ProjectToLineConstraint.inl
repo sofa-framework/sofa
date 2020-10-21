@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToLineConstraint_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToLineConstraint_INL
+#pragma once
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/ProjectToLineConstraint.h>
@@ -30,13 +29,7 @@
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 template< class DataTypes>
@@ -309,13 +302,4 @@ void ProjectToLineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
 
 }
 
-
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
-
+} // namespace sofa::component::projectiveconstraintset

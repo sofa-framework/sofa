@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_INL
+#pragma once
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/ProjectDirectionConstraint.h>
@@ -31,13 +30,7 @@
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 template< class DataTypes>
@@ -315,12 +308,4 @@ void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParam
 
 }
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_INL
-
-
+} // namespace sofa::component::projectiveconstraintset

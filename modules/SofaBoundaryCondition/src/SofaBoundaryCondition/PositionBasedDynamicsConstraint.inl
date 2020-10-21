@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POSITIONBASEDDYNAMICSCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POSITIONBASEDDYNAMICSCONSTRAINT_INL
+#pragma once
 
 #include <SofaBoundaryCondition/PositionBasedDynamicsConstraint.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 
@@ -142,17 +135,4 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::Mec
 template <>
 void PositionBasedDynamicsConstraint<defaulttype::Rigid3Types >::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
 
-
-
-
-
-
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
-
+} // namespace sofa::component::projectiveconstraintset

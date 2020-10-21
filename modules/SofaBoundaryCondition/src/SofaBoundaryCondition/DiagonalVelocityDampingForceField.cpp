@@ -26,37 +26,26 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
+namespace sofa::component::forcefield
 {
 
-    namespace component
-    {
+using namespace sofa::defaulttype;
 
-        namespace forcefield
-        {
+int DiagonalVelocityDampingForceFieldClass = core::RegisterObject("Diagonal velocity damping")
+.add< DiagonalVelocityDampingForceField<Vec3Types> >()
+.add< DiagonalVelocityDampingForceField<Vec2Types> >()
+.add< DiagonalVelocityDampingForceField<Vec1Types> >()
+.add< DiagonalVelocityDampingForceField<Vec6Types> >()
+.add< DiagonalVelocityDampingForceField<Rigid3Types> >()
+.add< DiagonalVelocityDampingForceField<Rigid2Types> >()
 
-            using namespace sofa::defaulttype;
+;
 
-                int DiagonalVelocityDampingForceFieldClass = core::RegisterObject("Diagonal velocity damping")
-                .add< DiagonalVelocityDampingForceField<Vec3Types> >()
-                .add< DiagonalVelocityDampingForceField<Vec2Types> >()
-                .add< DiagonalVelocityDampingForceField<Vec1Types> >()
-                .add< DiagonalVelocityDampingForceField<Vec6Types> >()
-                .add< DiagonalVelocityDampingForceField<Rigid3Types> >()
-                .add< DiagonalVelocityDampingForceField<Rigid2Types> >()
+template class SOFA_SOFABOUNDARYCONDITION_API DiagonalVelocityDampingForceField<Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API DiagonalVelocityDampingForceField<Vec2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API DiagonalVelocityDampingForceField<Vec1Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API DiagonalVelocityDampingForceField<Vec6Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API DiagonalVelocityDampingForceField<Rigid3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API DiagonalVelocityDampingForceField<Rigid2Types>;
 
-                ;
-
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Rigid3Types>;
-template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Rigid2Types>;
-
-
-        } // namespace forcefield
-
-    } // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_INL
+#pragma once
 
 #include <SofaBoundaryCondition/EdgePressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
@@ -29,13 +28,7 @@
 #include <vector>
 #include <set>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template <class DataTypes>
@@ -455,10 +448,4 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_INL
+} // namespace sofa::component::forcefield

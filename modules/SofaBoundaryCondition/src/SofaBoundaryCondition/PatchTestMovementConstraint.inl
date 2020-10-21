@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_INL
+#pragma once
 
 #include "PatchTestMovementConstraint.h"
 #include <sofa/core/visual/VisualParams.h>
@@ -30,14 +29,7 @@
 #include <iostream>
 #include <sofa/helper/cast.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 // Define TestFunction
@@ -475,12 +467,4 @@ void PatchTestMovementConstraint<DataTypes>::draw(const core::visual::VisualPara
     }
 }
 
-
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component::projectiveconstraintset

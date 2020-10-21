@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_TAITSURFACEPRESSUREFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_TAITSURFACEPRESSUREFORCEFIELD_INL
+#pragma once
 
 #include <SofaBoundaryCondition/TaitSurfacePressureForceField.h>
 #include <SofaBaseLinearSolver/BlocMatrixWriter.h>
@@ -31,13 +30,7 @@
 #include <map>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template <class DataTypes>
@@ -511,10 +504,4 @@ void TaitSurfacePressureForceField<DataTypes>::computePressureAndStiffness(Real&
     }
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_TAITSURFACEPRESSUREFORCEFIELD_INL
+} // namespace sofa::component::forcefield

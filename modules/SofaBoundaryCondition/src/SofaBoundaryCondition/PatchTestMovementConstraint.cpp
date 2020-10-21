@@ -27,13 +27,7 @@
 
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 //declaration of the class, for the factory
@@ -43,12 +37,8 @@ int PatchTestMovementConstraintClass = core::RegisterObject("bilinear constraint
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PatchTestMovementConstraint<defaulttype::Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PatchTestMovementConstraint<defaulttype::Rigid3Types>;
 
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::projectiveconstraintset

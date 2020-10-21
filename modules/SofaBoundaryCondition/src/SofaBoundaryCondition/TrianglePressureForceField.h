@@ -19,10 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaBoundaryCondition/config.h>
 
 
 #include <sofa/core/behavior/ForceField.h>
@@ -30,13 +28,7 @@
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/defaulttype/MatSym.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template<class DataTypes>
@@ -139,16 +131,10 @@ protected :
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TrianglePressureForceField_CPP)
 
-extern template class SOFA_BOUNDARY_CONDITION_API TrianglePressureForceField<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API TrianglePressureForceField<sofa::defaulttype::Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TrianglePressureForceField_CPP)
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_TrianglePressureForceField_H
+} // namespace sofa::component::forcefield

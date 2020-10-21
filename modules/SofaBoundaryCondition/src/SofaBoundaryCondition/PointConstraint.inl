@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PointConstraint_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PointConstraint_INL
+#pragma once
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/PointConstraint.h>
@@ -31,15 +30,8 @@
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
-namespace sofa
+namespace sofa::component::projectiveconstraintset
 {
-
-namespace component
-{
-
-namespace projectiveconstraintset
-{
-
 
 
 template <class DataTypes>
@@ -212,13 +204,4 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
 }
 
-
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
-
+} // namespace sofa::component::projectiveconstraintset

@@ -25,13 +25,7 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 using namespace sofa::defaulttype;
@@ -43,9 +37,4 @@ int FixedRotationConstraintClass = core::RegisterObject("Prevents rotation aroun
 
 template class FixedRotationConstraint<Rigid3Types>;
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::projectiveconstraintset

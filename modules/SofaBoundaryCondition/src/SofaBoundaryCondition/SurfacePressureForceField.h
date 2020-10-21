@@ -19,25 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa { namespace core { namespace topology { class BaseMeshTopology; } } }
-
-
-namespace sofa
+namespace sofa::core::topology
 {
+    class BaseMeshTopology;
+} // namespace sofa::core::topology
 
-namespace component
+
+namespace sofa::component::forcefield
 {
-
-namespace forcefield
-{
-
 
 /**
  * @brief SurfacePressureForceField Class
@@ -173,16 +168,9 @@ void SurfacePressureForceField<defaulttype::Rigid3Types>::verifyDerivative(VecDe
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
 
-extern template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<defaulttype::Vec3Types>;
-extern template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API SurfacePressureForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API SurfacePressureForceField<defaulttype::Rigid3Types>;
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
 
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_H
+} // namespace sofa::component::forcefield

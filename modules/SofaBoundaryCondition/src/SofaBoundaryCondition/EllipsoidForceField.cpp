@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -43,13 +37,8 @@ int EllipsoidForceFieldClass = core::RegisterObject("Repulsion applied by an ell
         .add< EllipsoidForceField<Vec1Types> >()
 
         ;
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<Vec1Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API EllipsoidForceField<Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API EllipsoidForceField<Vec2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API EllipsoidForceField<Vec1Types>;
 
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

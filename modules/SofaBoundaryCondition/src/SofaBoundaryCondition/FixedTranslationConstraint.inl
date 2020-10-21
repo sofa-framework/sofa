@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDTRANSLATIONCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDTRANSLATIONCONSTRAINT_INL
+#pragma once
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/FixedTranslationConstraint.h>
@@ -28,13 +27,7 @@
 #include <sofa/helper/types/RGBAColor.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 // Define TestNewPointFunction
@@ -244,12 +237,4 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
 
 }
 
-
-
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::projectiveconstraintset

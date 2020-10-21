@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_INL
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_INL
+#pragma once
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
@@ -32,14 +31,7 @@
 #include <sofa/defaulttype/BoundingBox.h>
 #include <limits>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using sofa::core::objectmodel::ComponentState ;
@@ -404,10 +396,4 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::forcefield

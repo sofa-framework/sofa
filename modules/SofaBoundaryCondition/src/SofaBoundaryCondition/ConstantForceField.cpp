@@ -32,9 +32,9 @@ namespace sofa::component::forcefield
 
 using namespace sofa::defaulttype;
 
-template <> SOFA_BOUNDARY_CONDITION_API
+template <> SOFA_SOFABOUNDARYCONDITION_API
 SReal ConstantForceField<defaulttype::Rigid3Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
-template <> SOFA_BOUNDARY_CONDITION_API
+template <> SOFA_SOFABOUNDARYCONDITION_API
 SReal ConstantForceField<defaulttype::Rigid2Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
 
 
@@ -48,12 +48,12 @@ int ConstantForceFieldClass = core::RegisterObject("Constant forces applied to g
         .add< ConstantForceField<Rigid2Types> >()
 
         ;
-template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Rigid3Types>;
-template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<Rigid2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<Vec2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<Vec1Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<Vec6Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<Rigid3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<Rigid2Types>;
 
 
 } // namespace sofa::component::forcefield

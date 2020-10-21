@@ -26,13 +26,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 using namespace sofa::defaulttype;
@@ -45,9 +39,4 @@ int OscillatorConstraintClass = core::RegisterObject("Apply a sinusoidal traject
 template class OscillatorConstraint<Rigid3Types>;
 template class OscillatorConstraint<Vec3Types>;
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::projectiveconstraintset
