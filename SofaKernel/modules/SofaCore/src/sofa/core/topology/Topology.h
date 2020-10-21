@@ -58,7 +58,7 @@ class SOFA_CORE_API Topology : public virtual core::objectmodel::BaseObject
 public:
     /// Topology global typedefs
     //typedef int index_type;
-    typedef std::size_t index_type;
+    typedef sofa::defaulttype::index_type index_type;
     //enum { InvalidID = sofa::defaulttype::InvalidID };
     static constexpr index_type InvalidID = sofa::defaulttype::InvalidID;
 

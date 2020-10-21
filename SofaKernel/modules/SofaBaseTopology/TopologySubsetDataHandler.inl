@@ -75,7 +75,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(std::size_t nbEl
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::add(index_type nbElements,
+void TopologySubsetDataHandler <TopologyElementType, VecT>::add(std::size_t nbElements,
         const sofa::helper::vector< TopologyElementType >& ,
         const sofa::helper::vector<sofa::helper::vector<index_type> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)

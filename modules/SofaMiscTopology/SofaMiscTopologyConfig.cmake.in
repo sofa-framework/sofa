@@ -1,0 +1,18 @@
+# CMake package configuration file for the SofaMiscTopology module
+@PACKAGE_INIT@
+
+set(SOFAMISCTOPOLOGY_HAVE_ZLIB @ZLIB_FOUND@)
+
+find_package(SofaBase REQUIRED)
+
+if(SOFAMISCTOPOLOGY_HAVE_ZLIB)
+	find_package(ZLIB REQUIRED)
+endif()
+
+### Is the target existing ?
+if(NOT TARGET SofaMiscTopology)
+    ### If not we are building out of tree.
+    include("${CMAKE_CURRENT_LIST_DIR}/SofaMiscTopology.cmake")
+endif()
+
+check_required_components(SofaMiscTopology)

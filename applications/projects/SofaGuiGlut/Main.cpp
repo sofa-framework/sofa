@@ -46,7 +46,6 @@ using sofa::simulation::Node;
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 
 #include <SofaGeneralLoader/ReadState.h>
 #include <SofaValidation/CompareState.h>
@@ -183,8 +182,7 @@ int main(int argc, char** argv)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
-
+    
     glutInit(&argc, argv);
 
     sofa::simulation::setSimulation(new DAGSimulation());

@@ -74,7 +74,9 @@ class SOFA_CORE_API BaseMechanicalState : public virtual BaseState
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMechanicalState, BaseState);
-    SOFA_BASE_CAST_IMPLEMENTATION(BaseMechanicalState)
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseMechanicalState);
+
+    using index_type = sofa::defaulttype::index_type;
 protected:
     BaseMechanicalState();
 
@@ -86,9 +88,9 @@ private:
 public:
     /// @name Methods allowing to have access to the geometry without a template class (generic but not efficient)
     /// @{
-    virtual SReal getPX(size_t /*i*/) const { return 0.0; }
-    virtual SReal getPY(size_t /*i*/) const { return 0.0; }
-    virtual SReal getPZ(size_t /*i*/) const { return 0.0; }
+    virtual SReal getPX(index_type /*i*/) const { return 0.0; }
+    virtual SReal getPY(index_type /*i*/) const { return 0.0; }
+    virtual SReal getPZ(index_type /*i*/) const { return 0.0; }
 
     /// @}
 
