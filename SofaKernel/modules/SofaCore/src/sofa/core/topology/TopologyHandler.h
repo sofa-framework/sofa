@@ -48,6 +48,8 @@ typedef Topology::Hexahedron       Hexahedron;
 class SOFA_CORE_API TopologyHandler
 {
 public:
+    using index_type = sofa::defaulttype::index_type;
+
     TopologyHandler() : lastElementIndex(0) {}
 
     virtual ~TopologyHandler() {}
@@ -151,17 +153,17 @@ public:
     virtual bool isTopologyDataRegistered() {return false;}
 
     /// Swaps values at indices i1 and i2.
-    virtual void swap(std::size_t /*i1*/, std::size_t /*i2*/ ) {}
+    virtual void swap(index_type /*i1*/, index_type /*i2*/ ) {}
 
     /// Reorder the values.
-    virtual void renumber( const sofa::helper::vector<std::size_t> &/*index*/ ) {}
+    virtual void renumber( const sofa::helper::vector<index_type> &/*index*/ ) {}
 
 protected:
     /// to handle PointSubsetData
-    void setDataSetArraySize(const std::size_t s) { lastElementIndex = s-1; }
+    void setDataSetArraySize(const index_type s) { lastElementIndex = s-1; }
 
     /// to handle properly the removal of items, the container must know the index of the last element
-    std::size_t lastElementIndex;
+    index_type lastElementIndex;
 };
 
 

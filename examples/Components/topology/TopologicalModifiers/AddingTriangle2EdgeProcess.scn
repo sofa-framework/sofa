@@ -2,6 +2,8 @@
 <!-- Automatic Triangle adding example: Element added are define in: ./AddingTrianglesProcess.txt -->
 <Node name="root" gravity="0 0 -9" dt="0.01">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name='SofaMiscFem'/>
+    
     <VisualStyle displayFlags="showVisual showBehaviorModels showForcefields" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
