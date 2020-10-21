@@ -21,10 +21,6 @@
 ******************************************************************************/
 #include <sofa/types/init.h>
 
-#include <sofa/helper/system/console.h>
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/logging/MessageDispatcher.h>
-
 #include <iostream>
 
 namespace sofa::types
@@ -62,15 +58,17 @@ SOFA_SOFATYPES_API bool isCleanedUp()
 SOFA_SOFATYPES_API void printUninitializedLibraryWarning(const std::string& library,
                                                       const std::string& initFunction)
 {
-    msg_warning(library) << "the library has not been initialized ("
-              << initFunction << " has never been called, see sofa/types/init.h)";
+    std::cerr << "WARNING: " << library << " : the library has not been initialized ("
+              << initFunction << " has never been called, see sofa/types/init.h)"
+              << std::endl;
 }
 
 SOFA_SOFATYPES_API void printLibraryNotCleanedUpWarning(const std::string& library,
                                                      const std::string& cleanupFunction)
 {
-    msg_warning(library) << "the library has not been cleaned up ("
-              << cleanupFunction << " has never been called, see sofa/types/init.h)";
+    std::cerr << "WARNING: " << library << " : the library has not been cleaned up ("
+              << cleanupFunction << " has never been called, see sofa/types/init.h)"
+              << std::endl;
 }
 
 // Detect missing cleanup() call.
@@ -78,10 +76,7 @@ static const struct CleanupCheck
 {
     CleanupCheck()
     {
-        // to make sure the static variable is created before this
-        // and so will be deleted after (at least in c++11)
-        // such as an eventual message is possible during this' destructor
-        helper::logging::MessageDispatcher::getHandlers();
+
     }
     ~CleanupCheck()
     {
