@@ -16,7 +16,6 @@ set(SOFAGENERAL_TARGETS
     SofaGeneralRigid
     SofaGeneralSimpleFem
     SofaGeneralTopology
-    SofaBoundaryCondition
     SofaConstraint
     SofaGeneralEngine
     SofaTopologyMapping
@@ -29,6 +28,7 @@ endforeach()
 
 # Modules
 set(SOFAGENERAL_MODULES
+    SofaBoundaryCondition
     SofaGeneralMeshCollision
     SofaGeneralVisual
     SofaGraphComponent
