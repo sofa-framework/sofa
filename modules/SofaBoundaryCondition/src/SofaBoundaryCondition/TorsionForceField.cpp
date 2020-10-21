@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -42,10 +36,7 @@ int TorsionForceFieldClass = core::RegisterObject("Applies a torque to specified
 
 ;
 
-template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Rigid3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API TorsionForceField<Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API TorsionForceField<Rigid3Types>;
 
-
-} // namespace forcefield
-} // namespace component
-} // namespace sofa
+} // namespace sofa::component::forcefield

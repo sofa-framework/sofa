@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_DIAGONALVELOCITYDAMPINGFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_DIAGONALVELOCITYDAMPINGFORCEFIELD_INL
+#pragma once
 
 #include "DiagonalVelocityDampingForceField.h"
 
 
-namespace sofa
+namespace sofa::component::forcefield
 {
-
-namespace component
-{
-
-namespace forcefield
-{
-
 
 template<class DataTypes>
 DiagonalVelocityDampingForceField<DataTypes>::DiagonalVelocityDampingForceField()
@@ -79,14 +71,4 @@ SReal DiagonalVelocityDampingForceField<DataTypes>::getPotentialEnergy(const cor
     return 0;
 }
 
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_AIRDRAGFORCEFIELD_INL
-
-
-
+} // namespace sofa::component::forcefield

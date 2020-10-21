@@ -25,14 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 int HermiteSplineConstraintClass = core::RegisterObject("Apply a hermite cubic spline trajectory to given points")
@@ -46,15 +39,7 @@ void HermiteSplineConstraint<defaulttype::Rigid3Types>::init()
     this->core::behavior::ProjectiveConstraintSet<defaulttype::Rigid3Types>::init();
 }
 
-template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>;
-template class SOFA_BOUNDARY_CONDITION_API HermiteSplineConstraint<defaulttype::Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API HermiteSplineConstraint<defaulttype::Rigid3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API HermiteSplineConstraint<defaulttype::Vec3Types>;
 
-
-
-
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::projectiveconstraintset

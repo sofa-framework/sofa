@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_INL
+#pragma once
 
 #include <SofaBoundaryCondition/FixedPlaneConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -30,13 +29,7 @@
 
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 using sofa::helper::WriteAccessor;
@@ -345,10 +338,4 @@ void FixedPlaneConstraint<DataTypes>::projectResponseImpl(const MechanicalParams
     }
 }
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::projectiveconstraintset

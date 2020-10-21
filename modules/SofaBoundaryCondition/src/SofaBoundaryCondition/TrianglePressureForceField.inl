@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_TrianglePressureForceField_INL
-#define SOFA_COMPONENT_FORCEFIELD_TrianglePressureForceField_INL
+#pragma once
 
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
@@ -31,13 +30,7 @@
 #include <vector>
 #include <set>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template <class DataTypes> TrianglePressureForceField<DataTypes>::~TrianglePressureForceField()
@@ -291,10 +284,4 @@ SReal TrianglePressureForceField<DataTypes>::getPotentialEnergy(const core::Mech
     return 0.0;
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_TrianglePressureForceField_INL
+} // namespace sofa::component::forcefield

@@ -19,18 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
 #include <SofaBoundaryCondition/TorsionForceField.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
-namespace sofa
+namespace sofa::component::forcefield
 {
 
-namespace component
-{
-
-namespace forcefield
-{
 using sofa::defaulttype::Rigid3Types;
 using sofa::component::linearsolver::CompressedRowSparseMatrix;
 
@@ -200,10 +197,4 @@ void TorsionForceField<Rigid3Types>::addDForce(const core::MechanicalParams *mpa
 	}
 }
 
-
-
-
-
-} // namespace forcefield
-} // namespace component
-} // namespace sofa
+} // namespace sofa::component::forcefield

@@ -19,17 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBoundaryCondition/initBoundaryCondition.h>
+#include <SofaBoundaryCondition/initSofaBoundaryCondition.h>
 
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFABOUNDARYCONDITION_API void initExternalModule();
+    SOFA_SOFABOUNDARYCONDITION_API const char* getModuleName();
+    SOFA_SOFABOUNDARYCONDITION_API const char* getModuleVersion();
+    SOFA_SOFABOUNDARYCONDITION_API const char* getModuleLicense();
+    SOFA_SOFABOUNDARYCONDITION_API const char* getModuleDescription();
+    SOFA_SOFABOUNDARYCONDITION_API const char* getModuleComponentList();
+}
 
-
-void initBoundaryCondition()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -38,6 +45,31 @@ void initBoundaryCondition()
     }
 }
 
-} // namespace component
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace sofa
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFABOUNDARYCONDITION_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Boundary Condition.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

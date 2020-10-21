@@ -27,13 +27,7 @@
 
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 //declaration of the class, for the factory
@@ -46,15 +40,10 @@ int PartialLinearMovementConstraintClass = core::RegisterObject("translate given
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3Types>;
 
-
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::projectiveconstraintset

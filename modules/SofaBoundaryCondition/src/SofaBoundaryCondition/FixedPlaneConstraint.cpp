@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 using namespace sofa::defaulttype;
@@ -45,14 +39,8 @@ int FixedPlaneConstraintClass = core::RegisterObject("Project particles on a giv
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Rigid3Types>;
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<defaulttype::Vec6Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API FixedPlaneConstraint<defaulttype::Rigid3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API FixedPlaneConstraint<defaulttype::Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API FixedPlaneConstraint<defaulttype::Vec6Types>;
 
-
-} /// namespace projectiveconstraintset
-
-} /// namespace component
-
-} /// namespace sofa
-
+} // namespace sofa::component::projectiveconstraintset

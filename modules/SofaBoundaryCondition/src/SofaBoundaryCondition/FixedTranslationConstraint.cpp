@@ -25,13 +25,7 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 using namespace sofa::defaulttype;
@@ -44,14 +38,9 @@ int FixedTranslationConstraintClass = core::RegisterObject("Attach given rigids 
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid3Types>;
-template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Rigid2Types>;
-template class SOFA_BOUNDARY_CONDITION_API FixedTranslationConstraint<Vec6Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API FixedTranslationConstraint<Rigid3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API FixedTranslationConstraint<Rigid2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API FixedTranslationConstraint<Vec6Types>;
 
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::projectiveconstraintset

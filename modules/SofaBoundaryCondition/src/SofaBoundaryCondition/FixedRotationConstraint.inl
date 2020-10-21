@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FixedRotationConstraint_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FixedRotationConstraint_INL
+#pragma once
 
 #include <SofaBoundaryCondition/FixedRotationConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <utility>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 
@@ -146,14 +139,4 @@ void FixedRotationConstraint<DataTypes>::draw(const core::visual::VisualParams* 
 {
 }
 
-
-
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
-
+} // namespace sofa::component::projectiveconstraintset

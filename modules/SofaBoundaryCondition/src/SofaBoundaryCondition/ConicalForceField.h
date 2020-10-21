@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -29,13 +28,7 @@
 
 #include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -126,14 +119,8 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_CPP)
-extern template class SOFA_BOUNDARY_CONDITION_API ConicalForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFABOUNDARYCONDITION_API ConicalForceField<defaulttype::Vec3Types>;
 
 #endif
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_CONICALFORCEFIELD_H
+} // namespace sofa::component::forcefield

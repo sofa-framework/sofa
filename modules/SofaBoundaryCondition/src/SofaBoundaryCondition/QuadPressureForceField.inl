@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_INL
+#pragma once
 
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
@@ -30,14 +29,7 @@
 #include <vector>
 #include <set>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 
@@ -269,10 +261,4 @@ void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
     vparams->drawTool()->saveLastState();
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_INL
+} // namespace sofa::component::forcefield

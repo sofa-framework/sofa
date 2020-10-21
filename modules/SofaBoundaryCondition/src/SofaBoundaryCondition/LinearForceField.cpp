@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include "LinearForceField.inl"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -44,12 +38,12 @@ int LinearForceFieldClass = core::RegisterObject("Linearly interpolated force ap
 // .add< LinearForceField<Rigid2Types> >()
 
         ;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid3Types>;
-// template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API LinearForceField<Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API LinearForceField<Vec2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API LinearForceField<Vec1Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API LinearForceField<Vec6Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API LinearForceField<Rigid3Types>;
+// template class SOFA_SOFABOUNDARYCONDITION_API LinearForceField<Rigid2Types>;
 
 
 template <>
@@ -71,9 +65,4 @@ SReal LinearForceField<Rigid2Types>::getPotentialEnergy(const core::MechanicalPa
     return 0;
 }
 
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

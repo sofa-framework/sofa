@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_INL
+#pragma once
 
 #include <SofaBoundaryCondition/SkeletalMotionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -31,13 +30,7 @@
 
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 template <class DataTypes>
@@ -442,10 +435,4 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
     }
 }
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::projectiveconstraintset

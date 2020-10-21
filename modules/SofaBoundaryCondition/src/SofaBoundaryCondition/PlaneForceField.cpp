@@ -26,13 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <limits>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -45,15 +39,10 @@ int PlaneForceFieldClass = core::RegisterObject("Repulsion applied by a plane to
 .add< PlaneForceField<Rigid3Types> >()
 
 ;
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec6Types>;
-template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Rigid3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PlaneForceField<Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PlaneForceField<Vec2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PlaneForceField<Vec1Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PlaneForceField<Vec6Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API PlaneForceField<Rigid3Types>;
 
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

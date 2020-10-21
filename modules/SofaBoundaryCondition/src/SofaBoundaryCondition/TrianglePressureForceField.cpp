@@ -25,16 +25,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
+namespace sofa::component::forcefield
 {
-
-namespace component
-{
-
-namespace forcefield
-{
-
-using namespace sofa::defaulttype;
 
 using namespace sofa::defaulttype;
 
@@ -43,12 +35,6 @@ int TrianglePressureForceFieldClass = core::RegisterObject("TrianglePressure")
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API TrianglePressureForceField<Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API TrianglePressureForceField<Vec3Types>;
 
-
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

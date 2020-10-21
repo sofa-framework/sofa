@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_INL
+#pragma once
 
 #include "SphereForceField.h"
 #include <sofa/core/visual/VisualParams.h>
@@ -28,13 +27,7 @@
 #include <cassert>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 // f  = -stiffness * (x -c ) * (|x-c|-r)/|x-c|
@@ -228,10 +221,4 @@ void SphereForceField<DataTypes>::setDamping(Real damp)
     damping.setValue( damp );
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_INL
+} // namespace sofa::component::forcefield

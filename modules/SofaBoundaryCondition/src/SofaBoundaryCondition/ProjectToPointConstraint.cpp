@@ -25,13 +25,7 @@
 
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 using namespace sofa::defaulttype;
@@ -46,16 +40,9 @@ int ProjectToPointConstraintClass = core::RegisterObject("Project particles to a
 
         ;
 
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec3Types>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec2Types>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec1Types>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec6Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API ProjectToPointConstraint<Vec3Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API ProjectToPointConstraint<Vec2Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API ProjectToPointConstraint<Vec1Types>;
+template class SOFA_SOFABOUNDARYCONDITION_API ProjectToPointConstraint<Vec6Types>;
 
-
-
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::projectiveconstraintset
