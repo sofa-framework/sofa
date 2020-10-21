@@ -1,23 +1,25 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaMiscTopology)
+project(SofaMiscTopology VERSION 1.0 LANGUAGES CXX)
 
 find_package(SofaBase REQUIRED) # SofaBaseTopology
 sofa_find_package(ZLIB BOTH_SCOPES)
 
+set(SOFAMISCTOPOLOGY_SRC "src/${PROJECT_NAME}")
+
 set(HEADER_FILES
-config.h.in
-initMiscTopology.h
+	${SOFAMISCTOPOLOGY_SRC}/config.h.in
+	${SOFAMISCTOPOLOGY_SRC}/initSofaMiscTopology.h
 )
 
 set(SOURCE_FILES
-initMiscTopology.cpp
+	${SOFAMISCTOPOLOGY_SRC}/initSofaMiscTopology.cpp
 )
 
 list(APPEND HEADER_FILES
-TopologicalChangeProcessor.h
+	${SOFAMISCTOPOLOGY_SRC}/TopologicalChangeProcessor.h
 )
 list(APPEND SOURCE_FILES
-TopologicalChangeProcessor.cpp
+	${SOFAMISCTOPOLOGY_SRC}/TopologicalChangeProcessor.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
@@ -29,7 +31,19 @@ if(ZLIB_FOUND)
     endif()
 endif()
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaMisc
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
     )
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFAMISCTOPOLOGY_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFAMISCTOPOLOGY_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(SofaMiscTopology_test)
+endif()

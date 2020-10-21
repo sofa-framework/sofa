@@ -41,7 +41,6 @@
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
@@ -249,7 +248,6 @@ int main(int argc, char** argv)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
     sofa::gui::initMain();
 
     if (int err = sofa::gui::GUIManager::Init(argv[0],"")) return err;

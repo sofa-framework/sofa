@@ -253,7 +253,7 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
             d_active.setValue(false);
         }
     }
-    else if (simulation::CollisionEndEvent::checkEventType(event))
+    else if (sofa::simulation::AnimateEndEvent::checkEventType(event))
     {
         if (d_active.getValue()) {
             doCarve();
