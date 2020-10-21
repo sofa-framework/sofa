@@ -5,8 +5,7 @@
 
 find_package(PythonLibs 2.7 REQUIRED)
 find_package(SofaGui REQUIRED)
-find_package(SofaGeneral REQUIRED)
-find_package(SofaMisc REQUIRED)
+find_package(SofaMiscMapping REQUIRED)
 find_package(Eigen3 QUIET REQUIRED)
 
 if(NOT TARGET SofaPython)
