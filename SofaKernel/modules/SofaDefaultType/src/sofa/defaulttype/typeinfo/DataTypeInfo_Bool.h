@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/defaulttype/typeinfo/models/BoolTypeInfo.h>
-
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
 namespace sofa::defaulttype
 {
 

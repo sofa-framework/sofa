@@ -35,7 +35,7 @@ const AbstractTypeInfo* DataTypeInfoRegistry::Get(const std::type_info& id)
     if( typeinfos.find(index) != typeinfos.end() )
         return typeinfos[index];
 
-    std::cout << "WARNING WARNING... the type is not there...what can we do" << std::endl;
+    std::cout << "WARNING WARNING... searching for type '"<< id.name() << "' the type is not there...what can we do" << std::endl;
     return nullptr;
 }
 

@@ -25,5 +25,24 @@
 namespace sofa::defaulttype
 {
 
+static int Vec1dRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec1d), VirtualTypeInfoA< DataTypeInfo<Vec1d> >::get());
+static int Vec2dRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec2d), VirtualTypeInfoA< DataTypeInfo<Vec2d> >::get());
+static int Vec3dRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec3d), VirtualTypeInfoA< DataTypeInfo<Vec3d> >::get());
+static int Vec4dRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec4d), VirtualTypeInfoA< DataTypeInfo<Vec4d> >::get());
+static int Vec6dRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec6d), VirtualTypeInfoA< DataTypeInfo<Vec6d> >::get());
+
+static int Vec1fRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec1f), VirtualTypeInfoA< DataTypeInfo<Vec1f> >::get());
+static int Vec2fRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec2f), VirtualTypeInfoA< DataTypeInfo<Vec2f> >::get());
+static int Vec3fRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec3f), VirtualTypeInfoA< DataTypeInfo<Vec3f> >::get());
+static int Vec4fRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec4f), VirtualTypeInfoA< DataTypeInfo<Vec4f> >::get());
+static int Vec6fRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec6f), VirtualTypeInfoA< DataTypeInfo<Vec6f> >::get());
+
+static int Vec1iRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec1i), VirtualTypeInfoA< DataTypeInfo<Vec1i> >::get());
+static int Vec2iRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec2i), VirtualTypeInfoA< DataTypeInfo<Vec2i> >::get());
+static int Vec3iRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec3i), VirtualTypeInfoA< DataTypeInfo<Vec3i> >::get());
+static int Vec4iRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec4i), VirtualTypeInfoA< DataTypeInfo<Vec4i> >::get());
+static int Vec6iRegistryIndex = DataTypeInfoRegistry::Set(typeid(Vec6i), VirtualTypeInfoA< DataTypeInfo<Vec6i> >::get());
+
+
 } /// namespace sofa::defaulttype
 

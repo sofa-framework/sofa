@@ -265,14 +265,12 @@ template<typename Info>
 class VirtualTypeInfoA : public AbstractTypeInfo
 {
 public:
-    typedef typename Info::DataType DataType;
-    static VirtualTypeInfoA<Info>* get() { static VirtualTypeInfoA<Info> t; return &t; }
-    
-    //typedef typename Info::BaseType BaseType;
-    //typedef typename Info::ValueType ValueType;
+    typedef typename Info::DataType DataType;    
 
-    const AbstractTypeInfo* BaseType() const override  { return VirtualTypeInfo<typename Info::BaseType>::get(); }
-    const AbstractTypeInfo* ValueType() const override { return VirtualTypeInfo<typename Info::ValueType>::get(); }
+    static VirtualTypeInfoA* get() { static VirtualTypeInfoA<Info> t; return &t; }
+
+    const AbstractTypeInfo* BaseType() const override  { return VirtualTypeInfoA<DataTypeInfo<typename Info::BaseType>>::get(); }
+    const AbstractTypeInfo* ValueType() const override { return VirtualTypeInfoA<DataTypeInfo<typename Info::ValueType>>::get(); }
 
     virtual std::string name() const override { return Info::name(); }
 

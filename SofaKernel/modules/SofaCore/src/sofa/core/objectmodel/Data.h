@@ -182,7 +182,7 @@ public:
 
     static std::string templateName()
     {
-        return sofa::core::objectmodel::BaseData::typeName<Data<T>>();
+        return sofa::core::objectmodel::BaseData::typeName<T>();
     }
 
     // It's used for getting a new instance from an existing instance. This function is used by the communication plugin

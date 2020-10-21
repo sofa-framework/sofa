@@ -332,7 +332,10 @@ public:
     template<class T>
     static std::string typeName(const T* = nullptr)
     {
-        return sofa::defaulttype::DataTypeInfoRegistry::Get(typeid(T))->name();
+        auto tmp = sofa::defaulttype::DataTypeInfoRegistry::Get(typeid(T));
+        if(tmp)
+            return tmp->name();
+        return "unknow";
         //if (defaulttype::DataTypeInfo<T>::ValidInfo)
         //    return defaulttype::DataTypeName<T>::name();
         //else

@@ -19,11 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_VecTypes.h>
 #include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
 namespace sofa::defaulttype
 {
+
+
 
 } /// namespace sofa::defaulttype
 

@@ -22,20 +22,52 @@
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_Integer.h>
 #include <sofa/defaulttype/DataTypeInfoRegistry.h>
-
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Bool.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Text.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_RGBAColor.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_BoundingBox.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Integer.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vector.h>
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
 namespace sofa::defaulttype
 {
 
-static int CharTypeInfo = DataTypeInfoRegistry::Set(typeid(char), VirtualTypeInfoA< DataTypeInfo<char> >::get());
-static int UCharTypeInfo = DataTypeInfoRegistry::Set(typeid(unsigned char), VirtualTypeInfoA< DataTypeInfo<unsigned char> >::get());
-static int ShortTypeInfo = DataTypeInfoRegistry::Set(typeid(short), VirtualTypeInfoA< DataTypeInfo<short> >::get());
-static int UShortTypeInfo = DataTypeInfoRegistry::Set(typeid(unsigned short), VirtualTypeInfoA< DataTypeInfo<unsigned short> >::get());
-static int IntTypeInfo = DataTypeInfoRegistry::Set(typeid(int), VirtualTypeInfoA< DataTypeInfo<int> >::get());
-static int UIntTypeInfo = DataTypeInfoRegistry::Set(typeid(unsigned int), VirtualTypeInfoA< DataTypeInfo<unsigned int> >::get());
-static int LongTypeInfo = DataTypeInfoRegistry::Set(typeid(long), VirtualTypeInfoA< DataTypeInfo<long> >::get());
-static int ULongTypeInfo = DataTypeInfoRegistry::Set(typeid(unsigned long), VirtualTypeInfoA< DataTypeInfo<unsigned long> >::get());
-static int LongLongTypeInfo = DataTypeInfoRegistry::Set(typeid(long long), VirtualTypeInfoA< DataTypeInfo<long long> >::get());
-static int ULongLongTypeInfo = DataTypeInfoRegistry::Set(typeid(unsigned long long), VirtualTypeInfoA< DataTypeInfo<unsigned long long> >::get());
+template <typename... Ts, typename F>
+constexpr void for_types(F&& f)
+{
+    (f.template operator()<Ts>(), ...);
+}
+
+template<typename TT>
+int mince()
+{
+    DataTypeInfoRegistry::Set(typeid(TT), VirtualTypeInfoA< DataTypeInfo<TT>>::get());
+    return 0;
+}
+
+int fixedPreLoad()
+{
+    for_types<
+            char, unsigned char, int, unsigned int, long, unsigned long, long long, unsigned long long,
+            float, double,
+            std::string>([]<typename T>()
+                         {
+                             mince<sofa::helper::fixed_array<T, 1>>();
+                             mince<sofa::helper::fixed_array<T, 2>>();
+                             mince<sofa::helper::fixed_array<T, 3>>();
+                             mince<sofa::helper::fixed_array<T, 4>>();
+                             mince<sofa::helper::fixed_array<T, 5>>();
+                             mince<sofa::helper::fixed_array<T, 6>>();
+                             mince<sofa::helper::fixed_array<T, 7>>();
+                             mince<sofa::helper::fixed_array<T, 8>>();
+                             mince<sofa::helper::fixed_array<T, 9>>();
+                         });
+    return 0;
+}
+
+static int allFixed = fixedPreLoad();
 
 } /// namespace sofa::defaulttype
 

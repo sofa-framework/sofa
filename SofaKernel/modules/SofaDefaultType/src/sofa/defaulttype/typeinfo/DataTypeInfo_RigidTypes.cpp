@@ -19,11 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
 namespace sofa::defaulttype
 {
 
+
+template<typename TT>
+int mince2()
+{
+    DataTypeInfoRegistry::Set(typeid(TT), VirtualTypeInfoA< DataTypeInfo<TT>>::get());
+    return 0;
+}
+
+int fixedPreLoad2()
+{
+    mince2<sofa::defaulttype::RigidCoord<2, double>>();
+    mince2<sofa::defaulttype::RigidDeriv<2, double>>();
+    mince2<sofa::defaulttype::RigidCoord<2, float>>();
+    mince2<sofa::defaulttype::RigidDeriv<2, float>>();
+
+    mince2<sofa::defaulttype::RigidCoord<3, double>>();
+    mince2<sofa::defaulttype::RigidDeriv<3, double>>();
+    mince2<sofa::defaulttype::RigidCoord<3, float>>();
+    mince2<sofa::defaulttype::RigidDeriv<3, float>>();
+    return 0;
+}
+
+static int allFixed = fixedPreLoad2();
 } /// namespace sofa::defaulttype
 

@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/defaulttype/typeinfo/models/ScalarTypeInfo.h>
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
 namespace sofa::defaulttype
 {

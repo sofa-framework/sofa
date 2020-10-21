@@ -25,5 +25,8 @@
 namespace sofa::defaulttype
 {
 
+static int FloatTypeInfo = DataTypeInfoRegistry::Set(typeid(float), VirtualTypeInfoA< DataTypeInfo<float> >::get());
+static int DoubleTypeInfo = DataTypeInfoRegistry::Set(typeid(double), VirtualTypeInfoA< DataTypeInfo<double> >::get());
+
 } /// namespace sofa::defaulttype
 
