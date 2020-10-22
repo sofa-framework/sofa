@@ -50,6 +50,10 @@ public:
     const sofa::defaulttype::Vector3& maxVect() const;
 
     const std::pair<Cube,Cube>& subcells() const;
+
+    SReal getConeAngle() const;
+    
+    const sofa::defaulttype::Vector3& getConeAxis() const;
 };
 
 class SOFA_BASE_COLLISION_API CubeCollisionModel : public core::CollisionModel
@@ -64,6 +68,10 @@ public:
         sofa::defaulttype::Vector3 minBBox, maxBBox;
         std::pair<Cube,Cube> subcells;
         std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children; ///< Note that children is only meaningfull if subcells in empty
+
+        // additional datas for implementing Volino's method for efficient cloth self collision 
+        sofa::defaulttype::Vector3 coneAxis;
+        SReal coneAngle;
     };
 
     class CubeSortPredicate
@@ -94,6 +102,7 @@ public:
     void resize(std::size_t size) override;
 
     void setParentOf(index_type childIndex, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
+    void setParentOf(int childIndex, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max, const sofa::defaulttype::Vector3& normal, const SReal angle=0);
     void setLeafCube(index_type cubeIndex, index_type childIndex);
     void setLeafCube(index_type cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
 
@@ -170,6 +179,18 @@ inline const sofa::defaulttype::Vector3& Cube::maxVect() const
 inline const std::pair<Cube,Cube>& Cube::subcells() const
 {
     return model->elems[index].subcells;
+}
+
+
+inline SReal Cube::getConeAngle() const
+{
+    return model->elems[index].coneAngle;
+}
+
+
+inline const sofa::defaulttype::Vector3& Cube::getConeAxis() const
+{
+    return model->elems[index].coneAxis;
 }
 
 using CubeModel [[deprecated("The CubeModel is now deprecated, please use CubeCollisionModel instead. Compatibility stops at v20.06")]] = CubeCollisionModel;
