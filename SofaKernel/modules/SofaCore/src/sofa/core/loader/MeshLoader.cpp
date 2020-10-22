@@ -799,20 +799,6 @@ void MeshLoader::addTriangle(helper::vector<Triangle >* pTriangles, const Triang
     }
 }
 
-void MeshLoader::addTriangle(helper::WriteOnlyAccessor<Data<helper::vector<Triangle>>>& pTriangles, const Triangle& p)
-{
-    if (d_flipNormals.getValue())
-    {
-        Triangle revertP;
-        std::reverse_copy(p.begin(), p.end(), revertP.begin());
-        pTriangles.push_back(revertP);
-    }
-    else
-    {
-        pTriangles.push_back(p);
-    }
-}
-
 void MeshLoader::addTriangle(helper::vector<Triangle >* pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2)
 {
     addTriangle(pTriangles, Triangle(p0, p1, p2));
