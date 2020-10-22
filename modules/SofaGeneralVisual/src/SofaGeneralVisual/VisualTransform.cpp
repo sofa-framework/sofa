@@ -20,18 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaGeneralVisual/VisualTransform.h>
+
 #include <sofa/core/visual/VisualParams.h>
-//#include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/ObjectFactory.h>
-//#include <sofa/simulation/UpdateContextVisitor.h>
 
 #include <sofa/core/visual/DrawTool.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+namespace sofa::component::visualmodel
 {
 
 int VisualTransformClass = sofa::core::RegisterObject("TODO")
@@ -95,7 +90,4 @@ void VisualTransform::bwdDraw(sofa::core::visual::VisualParams* vparams)
     pop(vparams);
 }
 
-}
-}
-}
-
+} // namespace sofa::component::visualmodel

@@ -19,65 +19,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_3DTEXT_H
-#define SOFA_COMPONENT_VISUALMODEL_3DTEXT_H
+#include <SofaGeneralVisual/initSofaGeneralVisual.h>
 
-#include "config.h"
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/helper/types/RGBAColor.h>
-namespace sofa
+namespace sofa::component
 {
-namespace core
-{
-namespace topology
-{
-class BaseMeshTopology;
-}
-namespace behavior
-{
-class BaseMechanicalState;
-}
+
+extern "C" {
+    SOFA_SOFAGENERALVISUAL_API void initExternalModule();
+    SOFA_SOFAGENERALVISUAL_API const char* getModuleName();
+    SOFA_SOFAGENERALVISUAL_API const char* getModuleVersion();
+    SOFA_SOFAGENERALVISUAL_API const char* getModuleLicense();
+    SOFA_SOFAGENERALVISUAL_API const char* getModuleDescription();
+    SOFA_SOFAGENERALVISUAL_API const char* getModuleComponentList();
 }
 
-namespace component
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-namespace visualmodel
+const char* getModuleName()
 {
+    return sofa_tostring(SOFA_TARGET);
+}
 
-
-/// Draw camera-oriented (billboard) 3D text
-class SOFA_GENERAL_VISUAL_API Visual3DText : public core::visual::VisualModel
+const char* getModuleVersion()
 {
+    return sofa_tostring(SOFAGENERALVISUAL_VERSION);
+}
 
-public:
-    SOFA_CLASS(Visual3DText,core::visual::VisualModel);
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-protected:
-    Visual3DText();
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about General Visual.";
+}
 
-public:
-    void init() override;
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
 
-    void reinit() override;
-
-    void drawTransparent(const core::visual::VisualParams* vparams) override;
-
-public:
-    Data<std::string> d_text; ///< Test to display
-    Data<defaulttype::Vec3f> d_position; ///< 3d position
-    Data<float> d_scale; ///< text scale
-    Data<sofa::helper::types::RGBAColor> d_color; ///< text color. (default=[1.0,1.0,1.0,1.0])
-    Data<bool> d_depthTest; ///< perform depth test
-
-
-};
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component

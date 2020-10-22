@@ -19,25 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralVisual/initGeneralVisual.h>
+#pragma once
+#include <SofaGeneralVisual/config.h>
 
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
+namespace sofa::core::topology
+{
+    class BaseMeshTopology;
+} // namespace sofa::core::topology
+
+namespace sofa::core::behavior
+{
+    class BaseMechanicalState;
+} // namespace sofa::core::behavior
+
+namespace sofa::component::visualmodel
 {
 
-namespace component
+/// Draw camera-oriented (billboard) 3D text
+class SOFA_SOFAGENERALVISUAL_API Visual3DText : public core::visual::VisualModel
 {
 
+public:
+    SOFA_CLASS(Visual3DText,core::visual::VisualModel);
 
-void initGeneralVisual()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+protected:
+    Visual3DText();
 
-} // namespace component
+public:
+    void init() override;
 
-} // namespace sofa
+    void reinit() override;
+
+    void drawTransparent(const core::visual::VisualParams* vparams) override;
+
+public:
+    Data<std::string> d_text; ///< Test to display
+    Data<defaulttype::Vec3f> d_position; ///< 3d position
+    Data<float> d_scale; ///< text scale
+    Data<sofa::helper::types::RGBAColor> d_color; ///< text color. (default=[1.0,1.0,1.0,1.0])
+    Data<bool> d_depthTest; ///< perform depth test
+
+
+};
+
+} // namespace sofa::component::visualmodel

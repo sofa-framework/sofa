@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaGeneralVisual/RecordedCamera.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
@@ -29,13 +30,7 @@
 
 #include <cmath>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::component::visualmodel
 {
 
 int RecordedCameraClass = core::RegisterObject("A camera that is moving along a predetermined path.")
@@ -626,8 +621,4 @@ void RecordedCamera::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::visualmodel

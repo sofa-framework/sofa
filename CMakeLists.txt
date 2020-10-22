@@ -237,6 +237,9 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
 endif()
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
+
+# Temporary compatibility while modularizing SofaGeneral
+sofa_add_module(modules/SofaGeneralVisual SofaGeneralVisual ON)
 add_subdirectory(SofaGeneral)
 
 ## Modules

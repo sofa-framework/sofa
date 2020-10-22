@@ -19,82 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <SofaGeneralVisual/config.h>
 
-#include <sofa/core/ObjectFactory.h>
-#include "Visual3DText.h"
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-
-namespace sofa
+namespace sofa::component::visualmodel
 {
 
-namespace component
+/// Visually apply a (translation,rotation) transformation to visual elements rendering within a node or a sub-graph.
+/// This can be used to change where elements are rendered, but has no effect on the actual simulation.
+/// It can be used for example to correctly render forcefields applied to a mesh that is then transformed by a rigid DOF using DeformableOnRigidFrameMapping.
+
+class SOFA_SOFAGENERALVISUAL_API VisualTransform : public sofa::core::visual::VisualModel
 {
+public:
+    SOFA_CLASS(VisualTransform,sofa::core::visual::VisualModel);
 
-namespace visualmodel
-{
+    typedef defaulttype::Rigid3Types::Coord Coord;
 
-int Visual3DTextClass = core::RegisterObject("Display 3D camera-oriented text")
-        .add< Visual3DText >()
-        ;
+protected:
+    VisualTransform();
+    ~VisualTransform() override;
+public:
+    void fwdDraw(sofa::core::visual::VisualParams* vparams) override;
+    void bwdDraw(sofa::core::visual::VisualParams* vparams) override;
 
+    void draw(const sofa::core::visual::VisualParams* vparams) override;
+    void drawVisual(const sofa::core::visual::VisualParams* vparams) override;
+    void drawTransparent(const sofa::core::visual::VisualParams* vparams) override;
 
+    Data<Coord> transform; ///< Transformation to apply
+    Data<bool> recursive; ///< True to apply transform to all nodes below
 
-Visual3DText::Visual3DText()
-    : d_text(initData(&d_text, "text", "Test to display"))
-    , d_position(initData(&d_position, defaulttype::Vec3f(), "position", "3d position"))
-    , d_scale(initData(&d_scale, 1.f, "scale", "text scale"))
-    , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1.0,1.0,1.0,1.0), "color", "text color. (default=[1.0,1.0,1.0,1.0])"))
-    , d_depthTest(initData(&d_depthTest, true, "depthTest", "perform depth test"))
-{
-}
+    void push(const sofa::core::visual::VisualParams* vparams);
+    void pop(const sofa::core::visual::VisualParams* vparams);
 
-
-void Visual3DText::init()
-{
-    VisualModel::init();
-
-    reinit();
-
-    updateVisual();
-}
-
-void Visual3DText::reinit()
-{
-}
-
-void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
-{
-#ifndef SOFA_NO_OPENGL
-    if(!vparams->displayFlags().getShowVisualModels()) return;
-
-    const defaulttype::Vec3f& pos = d_position.getValue();
-    float scale = d_scale.getValue();
-
-    const bool& depthTest = d_depthTest.getValue();
-    if( !depthTest )
-    {
-        glPushAttrib(GL_ENABLE_BIT);
-        glDisable(GL_DEPTH_TEST);
-    }
-
-    vparams->drawTool()->setLightingEnabled(true);
+protected:
+    int nbpush;
+};
 
 
-    vparams->drawTool()->draw3DText(pos,scale,d_color.getValue(),d_text.getValue().c_str());
-
-
-    if( !depthTest )
-        glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
-}
-
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::visualmodel

@@ -127,7 +127,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     //{"NewMatCholeskySolver", Pluginized("v20.06", "SofaDenseSolver")},
     //{"NewMatCGLinearSolver", Pluginized("v20.06", "SofaDenseSolver")},
 
-    // SofaDenseSolver was pluginized in #1344
+    // SofaNonUniformFem was pluginized in #1344
     {"DynamicSparseGridGeometryAlgorithms", Pluginized("v20.06", "SofaNonUniformFem")},
     {"DynamicSparseGridTopologyAlgorithms", Pluginized("v20.06", "SofaNonUniformFem")},
     {"DynamicSparseGridTopologyContainer", Pluginized("v20.06", "SofaNonUniformFem")},
@@ -183,6 +183,11 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
 
     // SofaMiscTopology was pluginized in #1520
     { "TopologicalChangeProcessor", Pluginized("v20.12", "SofaMiscTopology") },
+
+    // SofaGeneralVisual was pluginized in #1530
+    { "RecordedCamera", Pluginized("v20.12", "SofaGeneralVisual") },
+    { "VisualTransform", Pluginized("v20.12", "SofaGeneralVisual") },
+    { "Visual3DText", Pluginized("v20.12", "SofaGeneralVisual") },
 
     /***********************/
     // REMOVED SINCE v20.06
