@@ -279,7 +279,8 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
 // Each fixed point received a null velocity vector.
 // When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
-// But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
+// But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null or 
+// to set the projectVelocity option to True. If not, the fixed point is going to drift.
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
@@ -289,16 +290,25 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* m
     const SetIndexArray & indices = this->d_indices.getValue();
     helper::WriteAccessor<DataVecDeriv> res (vData );
 
-    if( d_fixAll.getValue() )    // fix everyting
+    const VecDeriv &freeV = (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState()))->read(core::ConstVecDerivId::freeVelocity())->getValue();
+    size_t freeVsize = freeV.size();
+    if (d_fixAll.getValue() == true)    // fix everyting
     {
         for( unsigned i=0; i<res.size(); i++ )
-            res[i] = Deriv();
+            if (freeVsize > i)
+                res[i] = freeV[i];
+            else
+                res[i] = Deriv();
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        unsigned i = 0;
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i < res.size(); ++it, ++i)
         {
-            res[*it] = Deriv();
+            if (freeVsize > *it)
+                res[*it] = freeV[*it];
+            else
+                res[*it] = Deriv();
         }
     }
 }
