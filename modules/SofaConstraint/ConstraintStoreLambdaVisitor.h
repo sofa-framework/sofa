@@ -1,7 +1,6 @@
 #ifndef SOFA_CONSTRAINT_CONSTRAINTSTORELAMBDAVISITOR_H
 #define SOFA_CONSTRAINT_CONSTRAINTSTORELAMBDAVISITOR_H
 #include "config.h"
-
 #include <sofa/simulation/MechanicalVisitor.h>
 
 

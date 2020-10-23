@@ -343,6 +343,7 @@ void LCPConstraintSolver::build_LCP()
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        cc->computeComplianceInConstraintSpace(&cparams, _W);
         cc->addComplianceInConstraintSpace(&cparams, _W);
     }
 
@@ -885,6 +886,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         if(notMuted())
         {
             core::ConstraintParams cparams;
+            cc->computeComplianceInConstraintSpace(&cparams, _W);
             cc->addComplianceInConstraintSpace(&cparams, _W);
         }
     }
