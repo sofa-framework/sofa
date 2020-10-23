@@ -17,8 +17,8 @@
   - [All] Standardize index type for Vector/Matrix templates [#1453](https://github.com/sofa-framework/sofa/pull/1453)
 - Ongoing [cleaning of the Link implementation](https://github.com/sofa-framework/sofa/issues/1526)
   - [SofaKernel] Refactor BaseData to use DataLink [#1491](https://github.com/sofa-framework/sofa/pull/1491)
-  - remove traits code from Link.h and BaseLink.h (#1503 )(https://github.com/sofa-framework/sofa/pull/1503)
-  - remove reflection code in BaseData (#1541)(https://github.com/sofa-framework/sofa/pull/1541)
+  - remove traits code from Link.h and BaseLink.h [#1503](https://github.com/sofa-framework/sofa/pull/1503)
+  - remove reflection code in BaseData [#1541](https://github.com/sofa-framework/sofa/pull/1541)
 
 - [SofaKernel] FIX & CLEANUP BoxROI [#1482](https://github.com/sofa-framework/sofa/pull/1482), breaking because of the removal of aliases & deprecated datafields
 - [SofaMacros] Refactor for better target and package management [#1433](https://github.com/sofa-framework/sofa/pull/1433): the *sofa_create_package_with_targets* replaces the legacy *sofa_add_targets_to_package* in CMakeLists.txt of plugins
