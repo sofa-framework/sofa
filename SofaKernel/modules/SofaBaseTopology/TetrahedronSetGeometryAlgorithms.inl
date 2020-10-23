@@ -852,7 +852,7 @@ bool TetrahedronSetGeometryAlgorithms<DataTypes>::computeIntersectionEdgeWithPla
     //compute intersection between line and plane equation
     Real t = (d - planNorm * edgeP1) / (planNorm*(edgeP2 - edgeP1));
 
-    if((t<1) && (t>0))
+    if((t<=1) && (t>=0))
     {
         intersection = edgeP1 + (edgeP2 - edgeP1)*t;
         return true;
