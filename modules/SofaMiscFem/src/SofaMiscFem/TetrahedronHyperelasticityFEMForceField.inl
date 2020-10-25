@@ -62,7 +62,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::app
 {
 
   if (ff) {
-      const vector< Tetrahedron > &tetrahedronArray=ff->m_topology->getTetrahedra() ;
+      const helper::vector< Tetrahedron > &tetrahedronArray=ff->m_topology->getTetrahedra() ;
       const std::vector< Edge> &edgeArray=ff->m_topology->getEdges() ;
       unsigned int j;
 //      int k;
@@ -167,7 +167,7 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
 
 
     /** parse the input material name */
-    string material = d_materialName.getValue();
+    std::string material = d_materialName.getValue();
     if (material=="ArrudaBoyce")
     {
         fem::BoyceAndArruda<DataTypes> *BoyceAndArrudaMaterial = new fem::BoyceAndArruda<DataTypes>;
@@ -255,8 +255,8 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     for (Topology::TetrahedronID i=0;i<m_topology->getNbTetrahedra();++i)
     {
         m_tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
-                                                m_topology->getTetrahedron(i),  (const vector< Index > )0,
-                                                (const vector< double >)0);
+                                                m_topology->getTetrahedron(i),  (const helper::vector< Index > )0,
+                                                (const helper::vector< double >)0);
     }
 
     /// set the call back function upon creation of a tetrahedron
@@ -363,7 +363,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
 {
     unsigned int i=0,j=0,k=0,l=0;
     unsigned int nbEdges=m_topology->getNbEdges();
-    const vector< Edge> &edgeArray=m_topology->getEdges() ;
+    const helper::vector< Edge> &edgeArray=m_topology->getEdges() ;
 
     helper::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
     helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
@@ -402,7 +402,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
             Matrix3  M, N;
             MatrixSym outputTensor;
             N.clear();
-            vector<MatrixSym> inputTensor;
+            helper::vector<MatrixSym> inputTensor;
             inputTensor.resize(3);
             //	MatrixSym input1,input2,input3,outputTensor;
             for(int m=0; m<3;m++){
@@ -452,7 +452,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addDForce(const core::M
 
     unsigned int l=0;
     unsigned int nbEdges=m_topology->getNbEdges();
-    const vector< Edge> &edgeArray=m_topology->getEdges() ;
+    const helper::vector< Edge> &edgeArray=m_topology->getEdges() ;
 
     helper::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
 
@@ -509,7 +509,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::defa
     }
 
     unsigned int nbEdges=m_topology->getNbEdges();
-    const vector< Edge> &edgeArray=m_topology->getEdges() ;
+    const helper::vector< Edge> &edgeArray=m_topology->getEdges() ;
     helper::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
     EdgeInformation *einfo;
     unsigned int i,j,N0, N1, l;
