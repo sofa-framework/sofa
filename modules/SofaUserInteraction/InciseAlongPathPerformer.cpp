@@ -235,7 +235,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 
     // Output declarations
     sofa::helper::vector< sofa::core::topology::TopologyObjectType> topoPath_list;
-    sofa::helper::vector<index_type> indices_list;
+    sofa::helper::vector<Index> indices_list;
     sofa::helper::vector< sofa::defaulttype::Vec<3, double> > coords2_list;
     sofa::defaulttype::Vec<3,double> pointA = firstBody.point;
     sofa::defaulttype::Vec<3,double> pointB = currentBody.point;

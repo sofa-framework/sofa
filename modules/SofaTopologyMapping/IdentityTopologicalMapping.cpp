@@ -83,7 +83,7 @@ void IdentityTopologicalMapping::init()
     }
 }
 
-index_type IdentityTopologicalMapping::getFromIndex(index_type ind)
+Index IdentityTopologicalMapping::getFromIndex(Index ind)
 {
     return ind;
 }

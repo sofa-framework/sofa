@@ -1,0 +1,133 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
+    <RequiredPlugin name='Geomagic'/>
+    <RequiredPlugin name='SofaOpenglVisual'/>
+    <RequiredPlugin name='SofaHaptics'/>
+    <RequiredPlugin name='SofaSparseSolver'/>
+    <!--<RequiredPlugin name='SofaExporter'/>-->
+    
+    <VisualStyle displayFlags="showVisualModels showBehaviorModels hideCollisionModels" />
+    
+    <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
+    <BruteForceDetection name="detection" />
+    <DefaultContactManager name="response" response="FrictionContact" />
+    <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.1" />
+    <FreeMotionAnimationLoop/>
+    
+    <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
+    
+	<GeomagicDriver name="GeomagicDevice" deviceName="Default Device" scale="1" positionBase="0 0 0" orientationBase="0 0.707 0 -0.707"
+    drawDevice="0" drawDeviceFrame="1" forceFeedBack="@Instrument/LCPFF1" manualStart="false"/>	
+    
+    <RegularGridTopology name="grid" n="7 10 3" min="-6 -9.5 7" max="2 2.5 9" />
+    <Node name="CubeFEM1">
+        <EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.1" /> 
+		<SparseLDLSolver />
+        
+        <MechanicalObject src="@../grid" name="Volume1" />
+        
+        <BoxROI name="boxRoi1" box="-7 -10 6 3 -9 10" drawBoxes="1"/>
+        <FixedConstraint indices="@boxRoi1.indices" />
+        
+        <TetrahedronSetTopologyContainer name="Tetra_topo1" />
+        <TetrahedronSetTopologyModifier />
+        <TetrahedronSetTopologyAlgorithms template="Vec3d" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3d" />
+        
+        <Hexa2TetraTopologicalMapping input="@../grid" output="@Tetra_topo1" />
+        
+        <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3" method="large" topology="@Tetra_topo2"/>
+        <UniformMass totalMass="0.1" />
+        <LinearSolverConstraintCorrection />
+        
+        <Node name="Surface1">
+            <TriangleSetTopologyContainer  name="Container1" />
+            <TriangleSetTopologyModifier   />
+            <TriangleSetTopologyAlgorithms template="Vec3d" />
+            <TriangleSetGeometryAlgorithms template="Vec3d" />
+            <Tetra2TriangleTopologicalMapping input="@../Tetra_topo1" output="@Container1" />
+
+            <TriangleCollisionModel group="1"/>
+            <LineCollisionModel group="1"/>
+            <PointCollisionModel group="1"/>
+            
+            <Node name="VisuSurface1">
+                <OglModel name="Visual1" />
+                <BarycentricMapping input="@.." output="@Visual1" />
+            </Node>
+        </Node>
+    </Node>
+    
+    <Node name="CubeFEM2">
+        <EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.1" /> 
+		<SparseLDLSolver />
+
+        <MechanicalObject src="@../grid" name="Volume2" translation="0 0 4"/>
+        
+        <BoxROI name="boxRoi2" box="-7 -10 10 3 -9 14" drawBoxes="1"/>
+        <FixedConstraint indices="@boxRoi2.indices" />
+        
+        <TetrahedronSetTopologyContainer name="Tetra_topo2" />
+        <TetrahedronSetTopologyModifier />
+        <TetrahedronSetTopologyAlgorithms template="Vec3d" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3d" drawEdges="0" drawScaleTetrahedra="0.8"/>
+        
+        <Hexa2TetraTopologicalMapping input="@../grid" output="@Tetra_topo2" />
+        
+        <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" method="large" topology="@Tetra_topo2"/>
+        <UniformMass totalMass="0.1" />
+        <LinearSolverConstraintCorrection />
+        <Node name="Surface2">
+            <TriangleSetTopologyContainer  name="Container2" />
+            <TriangleSetTopologyModifier   />
+            <TriangleSetTopologyAlgorithms template="Vec3d" />
+            <TriangleSetGeometryAlgorithms template="Vec3d" />
+            <Tetra2TriangleTopologicalMapping input="@../Tetra_topo2" output="@Container2" />
+
+            <TriangleCollisionModel group=""/>
+            <LineCollisionModel group=""/>
+            <PointCollisionModel group=""/>
+            
+            <Node name="VisuSurface2">
+                <OglModel name="Visual2" />
+                <BarycentricMapping input="@.." output="@Visual2" />
+            </Node>
+        </Node>
+    </Node>
+    
+	
+    <Node name="Omni">
+        <MechanicalObject template="Rigid3" name="DOFs" position="@GeomagicDevice.positionDevice"/>
+        <!--<WriteState name="StateWriter_2" filename="DOFs.data" period="0.01" writeX="1" writeV="0" writeF="0" time="0"/>-->
+        <MechanicalStateController template="Rigid3" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
+    </Node>
+	
+	<Node name="Instrument" >
+        <EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.1" />
+		<SparseLDLSolver />
+        
+		<MechanicalObject name="instrumentState" template="Rigid3" tags="GeomagicDevice" position="@../GeomagicDevice.positionBase"/>
+		<UniformMass name="mass" totalMass="1" />
+		
+		<RestShapeSpringsForceField stiffness='100000000' angularStiffness='100000000' external_rest_shape='@../Omni/DOFs' points='0' external_points='0'/>
+        <LCPForceFeedback name="LCPFF1" activate="true" forceCoef="0.2"/> 
+        <LinearSolverConstraintCorrection />
+		
+        <Node name="VisuTool" >
+            <MeshObjLoader name="meshLoader_1" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />
+            <OglModel name="InstrumentVisualModel" src="@meshLoader_1" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
+            <RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
+        </Node>
+		
+        
+        <Node name="CollisionModel" >
+            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+            <MeshTopology src="@loader" name="InstrumentCollisionModel" />
+            <MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
+            <LineCollisionModel contactStiffness="100"/>			
+            <PointCollisionModel contactStiffness="100"/>
+            <RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />		
+        </Node>
+    </Node> 
+
+</Node>

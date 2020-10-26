@@ -150,7 +150,7 @@ void DirectSAP::endBroadPhase()
     int cur_boxID = _boxes.size();
     for(unsigned int i = 0 ; i < cube_models.size() ; ++i){
         CubeCollisionModel * cm = cube_models[i];
-        for(std::size_t j = 0 ; j < cm->getSize() ; ++j){
+        for(Size j = 0 ; j < cm->getSize() ; ++j){
             EndPoint * min = &end_pts[cur_EndPtID];
             ++cur_EndPtID;
             EndPoint * max = &end_pts[cur_EndPtID];

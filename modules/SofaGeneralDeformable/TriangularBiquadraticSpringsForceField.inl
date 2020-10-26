@@ -43,10 +43,10 @@ typedef core::topology::BaseMeshTopology::Triangle			Triangle;
 typedef core::topology::BaseMeshTopology::EdgesInTriangle		EdgesInTriangle;
 
 template< class DataTypes >
-void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::applyCreateFunction(index_type triangleIndex,
+void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::applyCreateFunction(Index triangleIndex,
         TriangleRestInformation &tinfo,
         const Triangle &,
-        const sofa::helper::vector<index_type> &,
+        const sofa::helper::vector<Index> &,
         const sofa::helper::vector<double> &)
 {
     using namespace sofa::defaulttype;
@@ -106,7 +106,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
 }
 
 template< class DataTypes >
-void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::applyDestroyFunction(index_type triangleIndex,
+void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::applyDestroyFunction(Index triangleIndex,
         TriangleRestInformation  &tinfo)
 {
     using namespace	sofa::component::topology;
@@ -133,10 +133,10 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
 }
 
 template< class DataTypes >
-void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeHandler::applyCreateFunction(index_type edgeIndex,
+void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeHandler::applyCreateFunction(Index edgeIndex,
         EdgeRestInformation &ei,
         const core::topology::Edge &,
-        const sofa::helper::vector<index_type> &,
+        const sofa::helper::vector<Index> &,
         const sofa::helper::vector<double> &)
 
 {
@@ -227,13 +227,13 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     unsigned int i;
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
-        edgeHandler->applyCreateFunction(i,edgeInf[i], m_topology->getEdge(i),  (const sofa::helper::vector< index_type > )0,
+        edgeHandler->applyCreateFunction(i,edgeInf[i], m_topology->getEdge(i),  (const sofa::helper::vector< Index > )0,
                 (const sofa::helper::vector< double >)0 );
     }
     for (i=0; i<m_topology->getNbTriangles(); ++i)
     {
         triangleHandler->applyCreateFunction(i, triangleInf[i],
-                m_topology->getTriangle(i),  (const sofa::helper::vector< index_type > )0,
+                m_topology->getTriangle(i),  (const sofa::helper::vector< Index > )0,
                 (const sofa::helper::vector< double >)0);
     }
 
@@ -353,16 +353,17 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
             }
         }
         /// Prints the flipped triangles in a single message to avoid flooding the user.
-        /// Only the 50 first indices are showned.
-        if(flippedTriangles.size()!=0){
+        /// Only the 50 first indices are shown.
+        const Size flippedTrianglesNb = flippedTriangles.size();
+        if(flippedTrianglesNb != 0){
             std::stringstream tmp ;
             tmp << "[" ;
-            for(size_t i=0;i<std::min((size_t)50, flippedTriangles.size());i++)
+            for(Size i=0 ; i<std::min(Size(50), flippedTrianglesNb) ; i++)
             {
                 tmp << ", " << flippedTriangles[i] ;
             }
-            if(flippedTriangles.size()>=50){
-                tmp << ", ..." << flippedTriangles.size()-50 << " more]" ;
+            if(flippedTrianglesNb >=50){
+                tmp << ", ..." << flippedTrianglesNb -50 << " more]" ;
             }
             else{
                 tmp << "]" ;

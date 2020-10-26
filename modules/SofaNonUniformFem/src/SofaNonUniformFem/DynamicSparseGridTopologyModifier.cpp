@@ -77,7 +77,7 @@ void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper
 }
 
 
-void DynamicSparseGridTopologyModifier::removeHexahedraProcess( const sofa::helper::vector<index_type> &indices, const bool removeIsolatedItems)
+void DynamicSparseGridTopologyModifier::removeHexahedraProcess( const sofa::helper::vector<Index> &indices, const bool removeIsolatedItems)
 {
     if( !everRenumbered) renumberAttributes( indices);
     everRenumbered = false;
@@ -86,7 +86,7 @@ void DynamicSparseGridTopologyModifier::removeHexahedraProcess( const sofa::help
 }
 
 
-void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::helper::vector<index_type> &hexahedra )
+void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::helper::vector<Index> &hexahedra )
 {
     helper::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
 

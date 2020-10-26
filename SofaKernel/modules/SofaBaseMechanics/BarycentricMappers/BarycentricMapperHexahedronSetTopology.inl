@@ -61,8 +61,8 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::setTopology(topology::Hexah
 
 
 template <class In, class Out>
-typename BarycentricMapperHexahedronSetTopology<In, Out>::index_type 
-BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube ( const index_type cubeIndex, const SReal* baryCoords )
+typename BarycentricMapperHexahedronSetTopology<In, Out>::Index 
+BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube ( const Index cubeIndex, const SReal* baryCoords )
 {
     helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
     vectorData.resize ( d_map.getValue().size() +1 );
@@ -77,11 +77,11 @@ BarycentricMapperHexahedronSetTopology<In,Out>::addPointInCube ( const index_typ
 
 
 template <class In, class Out>
-typename BarycentricMapperHexahedronSetTopology<In, Out>::index_type 
-BarycentricMapperHexahedronSetTopology<In,Out>::setPointInCube ( const index_type pointIndex, const index_type cubeIndex, const SReal* baryCoords )
+typename BarycentricMapperHexahedronSetTopology<In, Out>::Index 
+BarycentricMapperHexahedronSetTopology<In,Out>::setPointInCube ( const Index pointIndex, const Index cubeIndex, const SReal* baryCoords )
 {
     if ( pointIndex >= d_map.getValue().size() )
-        return sofa::defaulttype::InvalidID;
+        return sofa::InvalidID;
 
     helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
     MappingData& data = vectorData[pointIndex];
@@ -91,7 +91,7 @@ BarycentricMapperHexahedronSetTopology<In,Out>::setPointInCube ( const index_typ
     data.baryCoords[2] = ( Real ) baryCoords[2];
     d_map.endEdit();
 
-    if(cubeIndex == sofa::defaulttype::InvalidID)
+    if(cubeIndex == sofa::InvalidID)
         m_invalidIndex.insert(pointIndex);
     else
         m_invalidIndex.erase(pointIndex);
@@ -157,7 +157,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::computeDistance(double& d, 
 
 
 template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::addPointInElement(const index_type elementIndex, const SReal* baryCoords)
+void BarycentricMapperHexahedronSetTopology<In,Out>::addPointInElement(const Index elementIndex, const SReal* baryCoords)
 {
     addPointInCube(elementIndex,baryCoords);
 }
@@ -194,7 +194,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                         iter != m_invalidIndex.cend(); ++iter )
                 {
                     const auto j = *iter;
-                    if ( mapData[j].in_index == sofa::defaulttype::InvalidID ) // compute new mapping
+                    if ( mapData[j].in_index == sofa::InvalidID ) // compute new mapping
                     {
                         Vector3 coefs;
                         typename In::Coord pos;
@@ -205,7 +205,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                         // find nearest cell and barycentric coords
                         Real distance = 1e10;
 
-                        index_type index = sofa::defaulttype::InvalidID;
+                        Index index = sofa::InvalidID;
                         // When smoothing a mesh, the element has to be found using the rest position of the point. Then, its position is set using this element.
                         if( this->m_toTopology)
                         {
@@ -228,7 +228,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                             index = m_fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
                         }
 
-                        if ( index != sofa::defaulttype::InvalidID )
+                        if ( index != sofa::InvalidID )
                         {
                             mapData[j].baryCoords[0] = ( Real ) coefs[0];
                             mapData[j].baryCoords[1] = ( Real ) coefs[1];
@@ -270,7 +270,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
             for ( std::size_t i=0; i<hexahedra.size(); ++i )
             {
                 // remove all references to the removed cubes from the mapping data
-                index_type cubeId = hexahedra[i];
+                Index cubeId = hexahedra[i];
                 for ( std::size_t j=0; j<d_map.getValue().size(); ++j )
                 {
                     if ( d_map.getValue()[j].in_index == cubeId ) // invalidate mapping
@@ -283,23 +283,23 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                         typename In::Coord restPos = m_fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
 
                         helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
-                        vectorData[j].in_index = -1;
+                        vectorData[j].in_index = sofa::InvalidID;
                         vectorData[j].baryCoords[0] = restPos[0];
                         vectorData[j].baryCoords[1] = restPos[1];
                         vectorData[j].baryCoords[2] = restPos[2];
                         d_map.endEdit();
 
-                        m_invalidIndex.insert(j);
+                        m_invalidIndex.insert(Size(j));
                     }
                 }
             }
 
             // renumber
-            index_type lastCubeId = nbHexahedra-1;
+            Index lastCubeId = nbHexahedra-1;
             for ( std::size_t i=0; i<hexahedra.size(); ++i, --lastCubeId )
             {
-                index_type cubeId = hexahedra[i];
-                for (index_type j=0; j<d_map.getValue().size(); ++j )
+                Index cubeId = hexahedra[i];
+                for (Index j=0; j<d_map.getValue().size(); ++j )
                 {
                     if ( d_map.getValue()[j].in_index == lastCubeId )
                     {
@@ -320,13 +320,13 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
 }
 
 template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::applyOnePoint( const index_type& hexaPointId,typename Out::VecCoord& out, const typename In::VecCoord& in )
+void BarycentricMapperHexahedronSetTopology<In,Out>::applyOnePoint( const Index& hexaPointId,typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     const helper::vector<Hexahedron>& cubes = this->m_fromTopology->getHexahedra();
     const Real fx = d_map.getValue()[hexaPointId].baryCoords[0];
     const Real fy = d_map.getValue()[hexaPointId].baryCoords[1];
     const Real fz = d_map.getValue()[hexaPointId].baryCoords[2];
-    index_type index = d_map.getValue()[hexaPointId].in_index;
+    Index index = d_map.getValue()[hexaPointId].in_index;
     const Hexahedron& cube = cubes[index];
     Out::setCPos(out[hexaPointId] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
             + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )

@@ -62,7 +62,7 @@ class ProjectToPlaneConstraint : public core::behavior::ProjectiveConstraintSet<
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ProjectToPlaneConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
@@ -74,7 +74,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<index_type> Indices;
+    typedef helper::vector<Index> Indices;
     typedef sofa::component::topology::PointSubsetData< Indices > IndexSubsetData;
     typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
@@ -103,8 +103,8 @@ protected:
 
 public:
     void clearConstraints();
-    void addConstraint(index_type index);
-    void removeConstraint(index_type index);
+    void addConstraint(Index index);
+    void removeConstraint(Index index);
 
     // -- Constraint interface
     void init() override;
@@ -138,11 +138,11 @@ public:
 
 
         using component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, Indices >::applyDestroyFunction;
-        void applyDestroyFunction(index_type /*index*/, core::objectmodel::Data<value_type>& /*T*/);
+        void applyDestroyFunction(Index /*index*/, core::objectmodel::Data<value_type>& /*T*/);
 
 
-        bool applyTestCreateFunction(index_type /*index*/,
-                const sofa::helper::vector< index_type > & /*ancestors*/,
+        bool applyTestCreateFunction(Index /*index*/,
+                const sofa::helper::vector< Index > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
         ProjectToPlaneConstraint<DataTypes> *fc;

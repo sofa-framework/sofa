@@ -51,7 +51,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(ComplementaryROI, DataTypes), core::DataEngine);
 
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef core::topology::BaseMeshTopology::index_type index_type;
+    typedef core::topology::BaseMeshTopology::Index Index;
     typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
 
 
