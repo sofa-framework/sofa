@@ -27,13 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
@@ -50,11 +44,4 @@ int QuadBendingSpringsClass = core::RegisterObject("Springs added to a quad mesh
 template class SOFA_SOFAGENERALDEFORMABLE_API QuadBendingSprings<Vec3Types>;
 template class SOFA_SOFAGENERALDEFORMABLE_API QuadBendingSprings<Vec2Types>;
 
-
-
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::interactionforcefield

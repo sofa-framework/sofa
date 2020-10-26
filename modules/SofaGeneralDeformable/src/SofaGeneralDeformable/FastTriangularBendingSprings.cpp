@@ -24,22 +24,10 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-// #define DEBUG_TRIANGLEBS
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
-
-
-
-
 
 // Register in the Factory
 int FastTriangularBendingSpringsClass = core::RegisterObject("Springs added to a triangular mesh to prevent bending")
@@ -51,9 +39,5 @@ template class SOFA_SOFAGENERALDEFORMABLE_API FastTriangularBendingSprings<Vec3T
 
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield
 

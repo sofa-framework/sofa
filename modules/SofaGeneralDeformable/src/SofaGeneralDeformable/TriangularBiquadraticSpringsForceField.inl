@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_INL
+#pragma once
 
 #include <SofaGeneralDeformable/TriangularBiquadraticSpringsForceField.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -30,13 +29,7 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 typedef core::topology::BaseMeshTopology::Triangle			Triangle;
@@ -590,10 +583,4 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual:
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_INL
+} // namespace sofa::component::interactionforcefield

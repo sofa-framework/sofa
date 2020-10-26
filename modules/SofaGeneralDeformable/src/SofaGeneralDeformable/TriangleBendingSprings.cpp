@@ -26,18 +26,10 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
-
-
 
 // Register in the Factory
 int TriangleBendingSpringsClass = core::RegisterObject("Springs added to a traingular mesh to prevent bending")
@@ -50,9 +42,5 @@ template class SOFA_SOFAGENERALDEFORMABLE_API TriangleBendingSprings<Vec3Types>;
 template class SOFA_SOFAGENERALDEFORMABLE_API TriangleBendingSprings<Vec2Types>;
 
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::interactionforcefield
 

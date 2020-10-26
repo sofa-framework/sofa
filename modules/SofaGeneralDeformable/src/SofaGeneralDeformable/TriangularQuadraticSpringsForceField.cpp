@@ -30,21 +30,10 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
-
-
-using namespace sofa::defaulttype;
-
-
 
 // Register in the Factory
 int TriangularQuadraticSpringsForceFieldClass = core::RegisterObject("Quadratic Springs on a Triangular Mesh")
@@ -57,9 +46,4 @@ template class SOFA_SOFAGENERALDEFORMABLE_API TriangularQuadraticSpringsForceFie
 
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::forcefield

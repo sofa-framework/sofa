@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_H
-#define SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_H
-#include "config.h"
+#pragma once
 
-
+#include <SofaGeneralDeformable/config.h>
 
 #include <map>
 
@@ -38,15 +36,8 @@
 
 #define LOCAL_OPTIM
 
-namespace sofa
+namespace sofa::component::forcefield
 {
-
-namespace component
-{
-
-namespace forcefield
-{
-
 /**
 Bending elastic force added between vertices of triangles sharing a common edge.
 
@@ -236,10 +227,4 @@ extern template class SOFA_SOFAGENERALDEFORMABLE_API FastTriangularBendingSpring
 #endif // !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_H
+} // namespace sofa::component::forcefield

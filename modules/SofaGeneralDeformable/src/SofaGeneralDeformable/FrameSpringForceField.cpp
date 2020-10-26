@@ -26,13 +26,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
@@ -48,8 +42,4 @@ int FrameSpringForceFieldClass = core::RegisterObject ( "Springs for Flexibles" 
 template class SOFA_SOFAGENERALDEFORMABLE_API FrameSpringForceField<Rigid3Types>;
 
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::interactionforcefield

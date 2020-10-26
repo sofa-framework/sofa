@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
@@ -51,9 +45,4 @@ template class SOFA_SOFAGENERALDEFORMABLE_API RegularGridSpringForceField<Vec1Ty
 template class SOFA_SOFAGENERALDEFORMABLE_API RegularGridSpringForceField<Vec6Types>;
 
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::interactionforcefield

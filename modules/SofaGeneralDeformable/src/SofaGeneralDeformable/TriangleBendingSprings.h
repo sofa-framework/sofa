@@ -19,20 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_H
-#include "config.h"
+#pragma once
+
+#include <SofaGeneralDeformable/config.h>
 
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <map>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 /**
@@ -78,10 +72,4 @@ extern template class SOFA_SOFAGENERALDEFORMABLE_API TriangleBendingSprings<defa
 
 #endif
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_H */
+} // namespace sofa::component::interactionforcefield

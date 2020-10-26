@@ -25,19 +25,10 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
-
-using namespace sofa::defaulttype;
-
 
 // Register in the Factory
 int TriangularBiquadraticSpringsForceFieldClass = core::RegisterObject("Biquadratic Springs on a Triangular Mesh")
@@ -47,12 +38,4 @@ int TriangularBiquadraticSpringsForceFieldClass = core::RegisterObject("Biquadra
 
 template class SOFA_SOFAGENERALDEFORMABLE_API TriangularBiquadraticSpringsForceField<Vec3Types>;
 
-
-
-
-} // namespace forcefield
-
-} // namespace Components
-
-} // namespace Sofa
-
+} // namespace sofa::component::forcefield

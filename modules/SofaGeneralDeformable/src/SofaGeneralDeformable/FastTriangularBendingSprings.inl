@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_INL
-#define SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_INL
+#pragma once
 
 #include <SofaGeneralDeformable/FastTriangularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -30,14 +29,9 @@
 #include <sofa/helper/types/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
-namespace sofa
+namespace sofa::component::forcefield
 {
 
-namespace component
-{
-
-namespace forcefield
-{
 typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
@@ -577,11 +571,4 @@ void FastTriangularBendingSprings<_DataTypes>::EdgeSpring::replaceIndices( const
 }
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //#ifndef SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_INL
-
+} // namespace sofa::component::forcefield

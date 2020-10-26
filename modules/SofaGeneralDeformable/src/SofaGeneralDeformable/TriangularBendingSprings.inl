@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_INL
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_INL
+#pragma once
 
 #include <SofaGeneralDeformable/TriangularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -31,13 +30,7 @@
 
 #include <SofaBaseTopology/TopologyData.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
@@ -766,11 +759,4 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
 }
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_INL
-
+} // namespace sofa::component::forcefield

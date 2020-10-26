@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_INL
-#define SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_INL
+#pragma once
 
 #include <SofaGeneralDeformable/QuadularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -30,13 +29,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 typedef core::topology::BaseMeshTopology::Quad				Quad;
@@ -816,10 +809,4 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
 }
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_INL
+} // namespace sofa::component::forcefield

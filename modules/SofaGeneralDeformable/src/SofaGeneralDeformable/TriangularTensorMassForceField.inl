@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_INL
+#pragma once
 
 #include <SofaGeneralDeformable/TriangularTensorMassForceField.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -29,13 +28,7 @@
 #include <sofa/helper/types/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
@@ -465,10 +458,4 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_INL
+} // sofa::component::forcefield
