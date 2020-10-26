@@ -80,17 +80,17 @@ MeshMatrixMass<DataTypes, MassType>::~MeshMatrixMass()
 }
 
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyCreateFunction(index_type, MassType & VertexMass,
-        const sofa::helper::vector< index_type > &,
+void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyCreateFunction(Index, MassType & VertexMass,
+        const sofa::helper::vector< Index > &,
         const sofa::helper::vector< double >&)
 {
     VertexMass = 0;
 }
 
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyCreateFunction(index_type, MassType & EdgeMass,
+void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyCreateFunction(Index, MassType & EdgeMass,
         const core::topology::BaseMeshTopology::Edge&,
-        const sofa::helper::vector< index_type > &,
+        const sofa::helper::vector< Index > &,
         const sofa::helper::vector< double >&)
 {
     EdgeMass = 0;
@@ -104,9 +104,9 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyCreateFunction(i
 
 /// Creation fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreation(const sofa::helper::vector< index_type >& triangleAdded,
+void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreation(const sofa::helper::vector< Index >& triangleAdded,
         const sofa::helper::vector< core::topology::BaseMeshTopology::Triangle >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< index_type > >& /*ancestors*/,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
@@ -145,9 +145,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreati
 
 /// Creation fonction for mass stored on edges
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation(const sofa::helper::vector< index_type >& triangleAdded,
+void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation(const sofa::helper::vector< Index >& triangleAdded,
         const sofa::helper::vector< core::topology::BaseMeshTopology::Triangle >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< index_type > >& /*ancestors*/,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
@@ -186,7 +186,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation
 
 /// Destruction fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestruction(const sofa::helper::vector< index_type >& triangleRemoved)
+void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestruction(const sofa::helper::vector< Index >& triangleRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
@@ -223,7 +223,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestru
 
 /// Destruction fonction for mass stored on edges
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleDestruction(const sofa::helper::vector< index_type >& triangleRemoved)
+void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleDestruction(const sofa::helper::vector< Index >& triangleRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
@@ -305,9 +305,9 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(c
 
 /// Creation fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(const sofa::helper::vector< index_type >& quadAdded,
+void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(const sofa::helper::vector< Index >& quadAdded,
         const sofa::helper::vector< core::topology::BaseMeshTopology::Quad >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< index_type > >& /*ancestors*/,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
@@ -346,9 +346,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(c
 
 /// Creation fonction for mass stored on edges
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(const sofa::helper::vector< index_type >& quadAdded,
+void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(const sofa::helper::vector< Index >& quadAdded,
         const sofa::helper::vector< core::topology::BaseMeshTopology::Quad >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< index_type > >& /*ancestors*/,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
@@ -387,7 +387,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(con
 
 /// Destruction fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestruction(const sofa::helper::vector< index_type >& quadRemoved)
+void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestruction(const sofa::helper::vector< Index >& quadRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_QUADSET)
@@ -424,7 +424,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestructio
 
 /// Destruction fonction for mass stored on edges
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadDestruction(const sofa::helper::vector< index_type >& quadRemoved)
+void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadDestruction(const sofa::helper::vector< Index >& quadRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_QUADSET)
@@ -508,9 +508,9 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(c
 
 /// Creation fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCreation(const sofa::helper::vector< index_type >& tetrahedronAdded,
+void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCreation(const sofa::helper::vector< Index >& tetrahedronAdded,
         const sofa::helper::vector< core::topology::BaseMeshTopology::Tetrahedron >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< index_type > >& /*ancestors*/,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
@@ -549,9 +549,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCre
 
 /// Creation fonction for mass stored on edges
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreation(const sofa::helper::vector< index_type >& tetrahedronAdded,
+void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreation(const sofa::helper::vector< Index >& tetrahedronAdded,
         const sofa::helper::vector< core::topology::BaseMeshTopology::Tetrahedron >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< index_type > >& /*ancestors*/,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
@@ -590,7 +590,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreat
 
 /// Destruction fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDestruction(const sofa::helper::vector< index_type >& tetrahedronRemoved)
+void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDestruction(const sofa::helper::vector< Index >& tetrahedronRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
@@ -627,7 +627,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDes
 
 /// Destruction fonction for mass stored on edges
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronDestruction(const sofa::helper::vector< index_type >& tetrahedronRemoved)
+void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronDestruction(const sofa::helper::vector< Index >& tetrahedronRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
@@ -710,9 +710,9 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(c
 
 /// Creation fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCreation(const sofa::helper::vector< index_type >& hexahedronAdded,
+void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCreation(const sofa::helper::vector< Index >& hexahedronAdded,
         const sofa::helper::vector< core::topology::BaseMeshTopology::Hexahedron >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< index_type > >& /*ancestors*/,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
@@ -751,9 +751,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCrea
 
 /// Creation fonction for mass stored on edges
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreation(const sofa::helper::vector< index_type >& hexahedronAdded,
+void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreation(const sofa::helper::vector< Index >& hexahedronAdded,
         const sofa::helper::vector< core::topology::BaseMeshTopology::Hexahedron >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< index_type > >& /*ancestors*/,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
@@ -792,7 +792,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreati
 
 /// Destruction fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDestruction(const sofa::helper::vector< index_type >& hexahedronRemoved)
+void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDestruction(const sofa::helper::vector< Index >& hexahedronRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
@@ -829,7 +829,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDest
 
 /// Destruction fonction for mass stored on edges
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronDestruction(const sofa::helper::vector< index_type >& hexahedronRemoved)
+void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronDestruction(const sofa::helper::vector< Index >& hexahedronRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
@@ -1239,27 +1239,27 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
     my_vertexMassInfo.resize(ndof);
     my_edgeMassInfo.resize(nbEdges);
 
-    const helper::vector< index_type > emptyAncestor;
+    const helper::vector< Index > emptyAncestor;
     const helper::vector< double > emptyCoefficient;
-    const helper::vector< helper::vector< index_type > > emptyAncestors;
+    const helper::vector< helper::vector< Index > > emptyAncestors;
     const helper::vector< helper::vector< double > > emptyCoefficients;
 
     // set vertex tensor to 0
-    for (index_type i = 0; i<ndof; ++i)
+    for (Index i = 0; i<ndof; ++i)
         m_vertexMassHandler->applyCreateFunction(i, my_vertexMassInfo[i], emptyAncestor, emptyCoefficient);
 
     // set edge tensor to 0
-    for (index_type i = 0; i<nbEdges; ++i)
+    for (Index i = 0; i<nbEdges; ++i)
         m_edgeMassHandler->applyCreateFunction(i, my_edgeMassInfo[i], edges[i], emptyAncestor, emptyCoefficient);
 
     // Create mass matrix depending on current Topology:
     if (m_topology->getNbHexahedra()>0 && hexaGeo)  // Hexahedron topology
     {
         // create vector tensor by calling the hexahedron creation function on the entire mesh
-        sofa::helper::vector<index_type> hexahedraAdded;
+        sofa::helper::vector<Index> hexahedraAdded;
         setMassTopologyType(TOPOLOGY_HEXAHEDRONSET);
         size_t n = m_topology->getNbHexahedra();
-        for (index_type i = 0; i<n; ++i)
+        for (Index i = 0; i<n; ++i)
             hexahedraAdded.push_back(i);
 
         m_vertexMassHandler->applyHexahedronCreation(hexahedraAdded, m_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
@@ -1269,11 +1269,11 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
     else if (m_topology->getNbTetrahedra()>0 && tetraGeo)  // Tetrahedron topology
     {
         // create vector tensor by calling the tetrahedron creation function on the entire mesh
-        sofa::helper::vector<index_type> tetrahedraAdded;
+        sofa::helper::vector<Index> tetrahedraAdded;
         setMassTopologyType(TOPOLOGY_TETRAHEDRONSET);
 
         size_t n = m_topology->getNbTetrahedra();
-        for (index_type i = 0; i<n; ++i)
+        for (Index i = 0; i<n; ++i)
             tetrahedraAdded.push_back(i);
 
         m_vertexMassHandler->applyTetrahedronCreation(tetrahedraAdded, m_topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
@@ -1283,11 +1283,11 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
     else if (m_topology->getNbQuads()>0 && quadGeo)  // Quad topology
     {
         // create vector tensor by calling the quad creation function on the entire mesh
-        sofa::helper::vector<index_type> quadsAdded;
+        sofa::helper::vector<Index> quadsAdded;
         setMassTopologyType(TOPOLOGY_QUADSET);
 
         size_t n = m_topology->getNbQuads();
-        for (index_type i = 0; i<n; ++i)
+        for (Index i = 0; i<n; ++i)
             quadsAdded.push_back(i);
 
         m_vertexMassHandler->applyQuadCreation(quadsAdded, m_topology->getQuads(), emptyAncestors, emptyCoefficients);
@@ -1297,11 +1297,11 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
     else if (m_topology->getNbTriangles()>0 && triangleGeo) // Triangle topology
     {
         // create vector tensor by calling the triangle creation function on the entire mesh
-        sofa::helper::vector<index_type> trianglesAdded;
+        sofa::helper::vector<Index> trianglesAdded;
         setMassTopologyType(TOPOLOGY_TRIANGLESET);
 
         size_t n = m_topology->getNbTriangles();
-        for (index_type i = 0; i<n; ++i)
+        for (Index i = 0; i<n; ++i)
             trianglesAdded.push_back(i);
 
         m_vertexMassHandler->applyTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
@@ -2062,7 +2062,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 
 
 template <class DataTypes, class MassType>
-SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(index_type index) const
+SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(Index index) const
 {
     const MassVector &vertexMass= d_vertexMassInfo.getValue();
     SReal mass = vertexMass[index] * m_massLumpingCoeff;
@@ -2073,7 +2073,7 @@ SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(index_type index) cons
 
 //TODO: special case for Rigid Mass
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::getElementMass(index_type index, defaulttype::BaseMatrix *m) const
+void MeshMatrixMass<DataTypes, MassType>::getElementMass(Index index, defaulttype::BaseMatrix *m) const
 {
     static const defaulttype::BaseMatrix::Index dimension = defaulttype::BaseMatrix::Index(defaulttype::DataTypeInfo<Deriv>::size());
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);

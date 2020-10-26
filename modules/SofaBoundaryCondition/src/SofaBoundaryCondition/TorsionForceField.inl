@@ -62,9 +62,9 @@ void TorsionForceField<DataTypes>::addForce(const MechanicalParams* /*params*/, 
 	const Pos& o = m_origin.getValue();
 	VecDeriv& fq = *f.beginEdit();
 
-	const std::size_t nNodes = indices.size();
+	const auto nNodes = indices.size();
 
-	for(size_t n = 0 ; n < nNodes ; ++n)
+	for(Size n = 0 ; n < nNodes ; ++n)
 	{
 		PointId id = indices[n];
 		const Pos lever = tau*m_u;
@@ -82,7 +82,7 @@ void TorsionForceField<DataTypes>::addDForce(const MechanicalParams* params, Dat
 	const Real& tau = m_torque.getValue();
 	VecDeriv& dfq = *df.beginEdit();
 
-	const std::size_t nNodes = indices.size();
+	const auto nNodes = indices.size();
 	const Real& kfact = params->kFactor();
 
 	Mat3 D;
@@ -91,7 +91,7 @@ void TorsionForceField<DataTypes>::addDForce(const MechanicalParams* params, Dat
 	D(2,0) = -m_u(0)*m_u(2) ;		D(2,1) = -m_u(1)*m_u(2) ;		D(2,2) = 1 - m_u(3)*m_u(3);
 	D *= (tau * kfact);
 
-	for(size_t n = 0 ; n < nNodes ; ++n)
+	for(Size n = 0 ; n < nNodes ; ++n)
 	{
 		PointId id = indices[n];
 		dfq[id] += D * dq[id];
@@ -104,7 +104,7 @@ void TorsionForceField<DataTypes>::addKToMatrix(defaulttype::BaseMatrix* matrix,
 	const VecId& indices = m_indices.getValue();
 	const Real& tau = m_torque.getValue();
 
-	const std::size_t nNodes = indices.size();
+	const auto nNodes = indices.size();
 
 	MatrixBlock D;
 	D(0,0) = 1 - m_u(0)*m_u(0) ;	D(0,1) = -m_u(1)*m_u(0) ;		D(0,2) = -m_u(2)*m_u(0);
@@ -115,7 +115,7 @@ void TorsionForceField<DataTypes>::addKToMatrix(defaulttype::BaseMatrix* matrix,
 	if( CompressedRowSparseMatrix<MatrixBlock>* m = dynamic_cast<CompressedRowSparseMatrix<MatrixBlock>*>(matrix) )
 	{
 
-		for(size_t n = 0 ; n < nNodes ; ++n)
+		for(Size n = 0 ; n < nNodes ; ++n)
 		{
 			PointId id = indices[n];
 			*m->wbloc(id, id, true) += D;
@@ -123,7 +123,7 @@ void TorsionForceField<DataTypes>::addKToMatrix(defaulttype::BaseMatrix* matrix,
 	}
 	else
 	{
-		for(size_t n = 0 ; n < nNodes ; ++n)
+		for(Size n = 0 ; n < nNodes ; ++n)
 		{
 			PointId id = indices[n];
 			unsigned int c = offset + Deriv::total_size*id;
@@ -160,9 +160,9 @@ void TorsionForceField<Rigid3Types>::addForce(const core::MechanicalParams *, Da
 	const Pos& o = m_origin.getValue();
 	VecDeriv& fq = *f.beginEdit();
 
-	const std::size_t nNodes = indices.size();
+	const auto nNodes = indices.size();
 
-	for(size_t n = 0 ; n < nNodes ; ++n)
+	for(Size n = 0 ; n < nNodes ; ++n)
 	{
 		PointId id = indices[n];
 		const Pos t = tau*m_u;
@@ -181,7 +181,7 @@ void TorsionForceField<Rigid3Types>::addDForce(const core::MechanicalParams *mpa
 	const Real& tau = m_torque.getValue();
 	VecDeriv& dfq = *df.beginEdit();
 
-	const std::size_t nNodes = indices.size();
+	const auto nNodes = indices.size();
 	const Real& kfact = mparams->kFactor();
 
 	Mat3 D;
@@ -190,7 +190,7 @@ void TorsionForceField<Rigid3Types>::addDForce(const core::MechanicalParams *mpa
 	D(2,0) = -m_u(0)*m_u(2) ;		D(2,1) = -m_u(1)*m_u(2) ;		D(2,2) = 1 - m_u(3)*m_u(3);
 	D *= (tau * kfact);
 
-	for(size_t n = 0 ; n < nNodes ; ++n)
+	for(Size n = 0 ; n < nNodes ; ++n)
 	{
 		PointId id = indices[n];
 		dfq[id].getVCenter() += D * dq[id].getVCenter();

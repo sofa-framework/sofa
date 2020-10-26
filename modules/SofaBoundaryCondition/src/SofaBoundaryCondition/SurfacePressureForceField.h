@@ -62,7 +62,7 @@ public:
 
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
-    typedef sofa::core::topology::BaseMeshTopology::index_type Index;
+    typedef sofa::core::topology::BaseMeshTopology::Index Index;
     typedef sofa::helper::vector< Index > VecIndex;
 
     enum State { INCREASE, DECREASE };

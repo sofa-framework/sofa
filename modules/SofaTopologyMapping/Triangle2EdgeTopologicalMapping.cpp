@@ -63,7 +63,7 @@ Triangle2EdgeTopologicalMapping::Triangle2EdgeTopologicalMapping()
 
 Triangle2EdgeTopologicalMapping::~Triangle2EdgeTopologicalMapping()
 {
-    sofa::helper::vector <index_type>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
     Loc2GlobDataVec.endEdit();
@@ -109,7 +109,7 @@ void Triangle2EdgeTopologicalMapping::init()
 
     // create topology maps and add edge into output topology
     const sofa::helper::vector<core::topology::BaseMeshTopology::Edge> &edgeArray = fromModel->getEdges();
-    sofa::helper::vector <index_type>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
 
@@ -134,7 +134,7 @@ void Triangle2EdgeTopologicalMapping::init()
 }
 
 
-index_type Triangle2EdgeTopologicalMapping::getFromIndex(index_type ind)
+Index Triangle2EdgeTopologicalMapping::getFromIndex(Index ind)
 {
     if (fromModel->getTrianglesAroundEdge(ind).size()==1)
     {
@@ -156,7 +156,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
     std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
-    sofa::helper::vector <index_type>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
     while( itBegin != itEnd )
     {
@@ -231,7 +231,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                     Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[Loc2GlobVec.size() - 1]));
                     Loc2GlobVec.resize( Loc2GlobVec.size() - 1 );
 
-                    sofa::helper::vector< index_type > edges_to_remove;
+                    sofa::helper::vector< Index > edges_to_remove;
                     edges_to_remove.push_back(ind_k);
                     m_outTopoModifier->removeEdges(edges_to_remove, false);
 
@@ -253,7 +253,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
             const sofa::helper::vector<Topology::TriangleID> &tri2Remove = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
 
             sofa::helper::vector< core::topology::BaseMeshTopology::Edge > edges_to_create;
-            sofa::helper::vector< index_type > edgesIndexList;
+            sofa::helper::vector< Index > edgesIndexList;
             size_t nb_elems = toModel->getNbEdges();
 
             // For each triangle removed inside the tri2Remove array. Will look if it has only one neighbour.
@@ -327,7 +327,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         {
             const auto& tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-            sofa::helper::vector<index_type> indices;
+            sofa::helper::vector<Index> indices;
 
             for(unsigned int i = 0; i < tab.size(); ++i)
             {
@@ -348,8 +348,8 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
             const auto &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
             const auto &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
-            sofa::helper::vector<index_type> indices;
-            sofa::helper::vector<index_type> inv_indices;
+            sofa::helper::vector<Index> indices;
+            sofa::helper::vector<Index> inv_indices;
 
             for(unsigned int i = 0; i < tab.size(); ++i)
             {

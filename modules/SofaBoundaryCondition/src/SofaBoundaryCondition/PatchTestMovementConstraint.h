@@ -52,7 +52,7 @@ class PatchTestMovementConstraint : public core::behavior::ProjectiveConstraintS
 public:
     SOFA_CLASS(SOFA_TEMPLATE(PatchTestMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -61,7 +61,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
-    typedef helper::vector<index_type> SetIndexArray;
+    typedef helper::vector<Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
     static const unsigned int CoordSize = Coord::total_size;
@@ -110,8 +110,8 @@ protected:
 public:
     //Add or clear constraints
     void clearConstraints();
-    void addConstraint(index_type index);
-    void removeConstraint(index_type index);
+    void addConstraint(Index index);
+    void removeConstraint(Index index);
    
     /// -- Constraint interface
     void init() override;
@@ -144,10 +144,10 @@ public:
         FCPointHandler(PatchTestMovementConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
-        void applyDestroyFunction(index_type /*index*/, value_type& /*T*/);
+        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
 
-        bool applyTestCreateFunction(index_type /*index*/,
-                const sofa::helper::vector< index_type > & /*ancestors*/,
+        bool applyTestCreateFunction(Index /*index*/,
+                const sofa::helper::vector< Index > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
         PatchTestMovementConstraint<DataTypes> *fc;

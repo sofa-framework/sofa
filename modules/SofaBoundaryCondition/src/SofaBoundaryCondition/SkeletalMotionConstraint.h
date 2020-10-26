@@ -171,7 +171,7 @@ struct SkeletonJoint
         in >> tmp >> numChannel;
         skeletonJoint.mChannels.resize(numChannel);
         Coord channel;
-        for(size_t i = 0; i < numChannel; ++i)
+        for(Size i = 0; i < numChannel; ++i)
         {
             in >> channel;
             skeletonJoint.mChannels[i] = channel;
@@ -181,7 +181,7 @@ struct SkeletonJoint
         in >> tmp >> numTime;
         skeletonJoint.mTimes.resize(numTime);
         double time;
-        for(size_t i = 0; i < numTime; ++i)
+        for(Size i = 0; i < numTime; ++i)
         {
             in >> time;
             skeletonJoint.mTimes[i] = time;

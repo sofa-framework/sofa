@@ -490,7 +490,7 @@ void MechanicalOperations::m_print( std::ostream& out )
 
 
 // BaseMatrix & BaseVector Computations
-void MechanicalOperations::getMatrixDimension(std::size_t*  const nbRow, std::size_t* const nbCol, sofa::core::behavior::MultiMatrixAccessor* matrix)
+void MechanicalOperations::getMatrixDimension(sofa::Size*  const nbRow, sofa::Size* const nbCol, sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     executeVisitor( MechanicalGetMatrixDimensionVisitor(&mparams, nbRow, nbCol, matrix) );
 }

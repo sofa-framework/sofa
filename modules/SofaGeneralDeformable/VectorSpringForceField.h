@@ -51,7 +51,7 @@ class VectorSpringForceField: public core::behavior::PairInteractionForceField<D
 public:
     SOFA_CLASS(SOFA_TEMPLATE(VectorSpringForceField, DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionForceField, DataTypes));
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
     typedef typename core::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -118,9 +118,9 @@ public:
 
         }
 
-        void applyCreateFunction(index_type, Spring &t,
+        void applyCreateFunction(Index, Spring &t,
                 const core::topology::BaseMeshTopology::Edge &,
-                const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &);
+                const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &);
     protected:
         VectorSpringForceField<DataTypes>* ff;
 

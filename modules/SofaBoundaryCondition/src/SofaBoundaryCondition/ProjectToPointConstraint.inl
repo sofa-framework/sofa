@@ -34,7 +34,7 @@ namespace sofa::component::projectiveconstraintset
 {
 
 template< class DataTypes>
-bool ProjectToPointConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(index_type, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
+bool ProjectToPointConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     if (fc)
     {
@@ -47,11 +47,11 @@ bool ProjectToPointConstraint<DataTypes>::FCPointHandler::applyTestCreateFunctio
 }
 
 template< class DataTypes>
-void ProjectToPointConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, core::objectmodel::Data<value_type> &)
+void ProjectToPointConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, core::objectmodel::Data<value_type> &)
 {
     if (fc)
     {
-        fc->removeConstraint((index_type) pointIndex);
+        fc->removeConstraint((Index) pointIndex);
     }
 }
 
@@ -88,14 +88,14 @@ void ProjectToPointConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void ProjectToPointConstraint<DataTypes>::addConstraint(index_type index)
+void ProjectToPointConstraint<DataTypes>::addConstraint(Index index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void ProjectToPointConstraint<DataTypes>::removeConstraint(index_type index)
+void ProjectToPointConstraint<DataTypes>::removeConstraint(Index index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -134,10 +134,10 @@ void ProjectToPointConstraint<DataTypes>::init()
     const SetIndexArray & indices = f_indices.getValue();
 
     std::stringstream sstream;
-    index_type maxIndex=this->mstate->getSize();
+    Index maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
     {
-        const index_type index=indices[i];
+        const Index index=indices[i];
         if (index >= maxIndex)
         {
             sstream << "Index " << index << " not valid!\n";

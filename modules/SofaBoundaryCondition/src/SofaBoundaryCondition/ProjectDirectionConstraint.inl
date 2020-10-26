@@ -34,7 +34,7 @@ namespace sofa::component::projectiveconstraintset
 {
 
 template< class DataTypes>
-bool ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(index_type, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
+bool ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     if (fc)
     {
@@ -47,11 +47,11 @@ bool ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyTestCreateFunct
 }
 
 template< class DataTypes>
-void ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, core::objectmodel::Data<value_type> &)
+void ProjectDirectionConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, core::objectmodel::Data<value_type> &)
 {
     if (fc)
     {
-        fc->removeConstraint((index_type) pointIndex);
+        fc->removeConstraint((Index) pointIndex);
     }
 }
 
@@ -87,14 +87,14 @@ void ProjectDirectionConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void ProjectDirectionConstraint<DataTypes>::addConstraint(index_type index)
+void ProjectDirectionConstraint<DataTypes>::addConstraint(Index index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void ProjectDirectionConstraint<DataTypes>::removeConstraint(index_type index)
+void ProjectDirectionConstraint<DataTypes>::removeConstraint(Index index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -133,10 +133,10 @@ void ProjectDirectionConstraint<DataTypes>::init()
 
     const Indices & indices = f_indices.getValue();
 
-    index_type maxIndex=this->mstate->getSize();
+    Index maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
     {
-        const index_type index=indices[i];
+        const Index index=indices[i];
         if (index >= maxIndex)
         {
             msg_error() << "Index " << index << " not valid!";

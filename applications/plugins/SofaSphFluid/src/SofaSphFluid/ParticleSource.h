@@ -43,7 +43,7 @@ class ParticleSource : public core::behavior::ProjectiveConstraintSet<DataTypes>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ParticleSource,DataTypes), SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,DataTypes));
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -57,7 +57,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     //int lastparticle;
-    typedef typename VecCoord::template rebind<index_type>::other VecIndex;
+    typedef typename VecCoord::template rebind<Index>::other VecIndex;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
 
@@ -85,17 +85,17 @@ public:
         PSPointHandler(ParticleSource<DataTypes>* _ps, sofa::component::topology::PointSubsetData<VecIndex >* _data)
             : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, VecIndex >(_data), ps(_ps) {}
 
-        void applyDestroyFunction(index_type index, value_type& /*T*/)
+        void applyDestroyFunction(Index index, value_type& /*T*/)
         {
             dmsg_info("ParticleSource") << "PSRemovalFunction";
             if(ps)
             {
-                /*topology::PointSubset::const_iterator it = std::find(ps->lastparticles.begin(),ps->lastparticles.end(), (index_type)index);
+                /*topology::PointSubset::const_iterator it = std::find(ps->lastparticles.begin(),ps->lastparticles.end(), (Index)index);
                  if (it != ps->lastparticles.end())
                  {
                     ps->lastpos.erase( ps->lastpos.begin()+(it-ps->lastparticles.begin()) );
                     //ps->lastparticles.getArray().erase(it);
-                     helper::removeValue(ps->lastparticles,(index_type)index);
+                     helper::removeValue(ps->lastparticles,(Index)index);
                  }*/
                 VecIndex& _lastparticles = *ps->m_lastparticles.beginEdit();
 
@@ -119,8 +119,8 @@ public:
         }
 
 
-        bool applyTestCreateFunction(index_type /*index*/,
-                const sofa::helper::vector< index_type > & /*ancestors*/,
+        bool applyTestCreateFunction(Index /*index*/,
+                const sofa::helper::vector< Index > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/) {return false;}
 
     protected:

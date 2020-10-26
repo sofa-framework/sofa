@@ -34,7 +34,7 @@ namespace sofa::component::projectiveconstraintset
 
 // Define TestFunction
 template< class DataTypes>
-bool PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(index_type, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
+bool PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     return fc != 0;
 }
@@ -42,11 +42,11 @@ bool PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunc
 
 // Define RemovalFunction
 template< class DataTypes>
-void PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, value_type &)
+void PatchTestMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
 {
     if (fc)
     {
-        fc->removeConstraint((index_type) pointIndex);
+        fc->removeConstraint((Index) pointIndex);
     }
 }
 
@@ -89,14 +89,14 @@ void PatchTestMovementConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void PatchTestMovementConstraint<DataTypes>::addConstraint(index_type index)
+void PatchTestMovementConstraint<DataTypes>::addConstraint(Index index)
 {
     d_indices.beginEdit()->push_back(index);
     d_indices.endEdit();
 }
 
 template <class DataTypes>
-void PatchTestMovementConstraint<DataTypes>::removeConstraint(index_type index)
+void PatchTestMovementConstraint<DataTypes>::removeConstraint(Index index)
 {
     removeValue(*d_indices.beginEdit(),index);
     d_indices.endEdit();
@@ -134,10 +134,10 @@ void PatchTestMovementConstraint<DataTypes>::init()
 
     const SetIndexArray & indices = d_indices.getValue();
 
-    index_type maxIndex=this->mstate->getSize();
+    Index maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
     {
-        const index_type index=indices[i];
+        const Index index=indices[i];
         if (index >= maxIndex)
         {
             msg_error() <<"Index " << index << " not valid!";
@@ -160,7 +160,7 @@ void PatchTestMovementConstraint<DataTypes>::findCornerPoints()
     point = constrainedPoints[0];
 
     // Search if the constrained points are in the same plane
-    for(size_t i = 0; i < constrainedPoints.size() ; i++)
+    for(Size i = 0; i < constrainedPoints.size() ; i++)
     {
         if(CoordSize > 2 && constrainedPoints[i][2]!=point[2])
         {

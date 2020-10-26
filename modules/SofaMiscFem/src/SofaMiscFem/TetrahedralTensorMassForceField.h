@@ -55,7 +55,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
     class Mat3 : public helper::fixed_array<Deriv,3>
     {
@@ -151,17 +151,17 @@ public:
         typedef typename TetrahedralTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
         TetrahedralTMEdgeHandler(TetrahedralTensorMassForceField<DataTypes>* _ff, topology::EdgeData<edgeRestInfoVector >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, edgeRestInfoVector >(_data), ff(_ff) {}
 
-        void applyCreateFunction(index_type edgeIndex, EdgeRestInformation& ei,
+        void applyCreateFunction(Index edgeIndex, EdgeRestInformation& ei,
                 const core::topology::BaseMeshTopology::Edge &,
-                const sofa::helper::vector< index_type > &,
+                const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double > &);
 
-        void applyTetrahedronCreation(const sofa::helper::vector<index_type> &edgeAdded,
+        void applyTetrahedronCreation(const sofa::helper::vector<Index> &edgeAdded,
                 const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron> &,
-                const sofa::helper::vector<sofa::helper::vector<index_type> > &,
+                const sofa::helper::vector<sofa::helper::vector<Index> > &,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
-        void applyTetrahedronDestruction(const sofa::helper::vector<index_type> &edgeRemoved);
+        void applyTetrahedronDestruction(const sofa::helper::vector<Index> &edgeRemoved);
 
         using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,edgeRestInfoVector >::ApplyTopologyChange;
         /// Callback to add tetrahedron elements.

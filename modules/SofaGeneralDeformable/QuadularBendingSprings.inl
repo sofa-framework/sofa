@@ -43,8 +43,8 @@ typedef core::topology::BaseMeshTopology::Quad				Quad;
 typedef core::topology::BaseMeshTopology::EdgesInQuad			EdgesInQuad;
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyCreateFunction(index_type /*edgeIndex*/, EdgeInformation &ei, const core::topology::Edge &,
-        const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyCreateFunction(Index /*edgeIndex*/, EdgeInformation &ei, const core::topology::Edge &,
+        const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -67,9 +67,9 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyCreateFunction(index
 
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const sofa::helper::vector<index_type> &quadAdded,
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const sofa::helper::vector<Index> &quadAdded,
         const sofa::helper::vector<Quad> &,
-        const sofa::helper::vector<sofa::helper::vector<index_type> > &,
+        const sofa::helper::vector<sofa::helper::vector<Index> > &,
         const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
 
@@ -179,7 +179,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const s
 }
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(const sofa::helper::vector<index_type> &quadRemoved)
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(const sofa::helper::vector<Index> &quadRemoved)
 {
     if (ff)
     {
@@ -318,7 +318,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::ApplyTopologyChange(const
 
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(const sofa::helper::vector<index_type> &tab)
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(const sofa::helper::vector<Index> &tab)
 {
     if(ff)
     {
@@ -329,7 +329,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
 
         helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
 
-        sofa::helper::vector<index_type> lastIndexVec;
+        sofa::helper::vector<Index> lastIndexVec;
         for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
         {
 
@@ -443,7 +443,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(con
 
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointRenumbering(const sofa::helper::vector<index_type> &tab)
+void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointRenumbering(const sofa::helper::vector<Index> &tab)
 {
     if(ff)
     {
@@ -535,21 +535,21 @@ void QuadularBendingSprings<DataTypes>::init()
     edgeInf.resize(m_topology->getNbEdges());
 
     // set edge tensor to 0
-    for (index_type i=0; i<m_topology->getNbEdges(); ++i)
+    for (Index i=0; i<m_topology->getNbEdges(); ++i)
     {
         edgeHandler->applyCreateFunction(i, edgeInf[i],
-                m_topology->getEdge(i),  (const sofa::helper::vector< index_type > )0,
+                m_topology->getEdge(i),  (const sofa::helper::vector< Index > )0,
                 (const sofa::helper::vector< double >)0);
     }
 
     // create edge tensor by calling the quad creation function
-    sofa::helper::vector<index_type> quadAdded;
+    sofa::helper::vector<Index> quadAdded;
     for (unsigned int i=0; i<m_topology->getNbQuads(); ++i)
         quadAdded.push_back(i);
 
     edgeHandler->applyQuadCreation(quadAdded,
             (const sofa::helper::vector<Quad>)0,
-            (const sofa::helper::vector<sofa::helper::vector<index_type> >)0,
+            (const sofa::helper::vector<sofa::helper::vector<Index> >)0,
             (const sofa::helper::vector<sofa::helper::vector<double> >)0);
 
 

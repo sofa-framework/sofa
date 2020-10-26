@@ -121,7 +121,7 @@ void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
     Deriv force;
 
     //edgePressureMap.activateSubsetData();
-    const sofa::helper::vector <index_type>& my_map = edgePressureMap.getMap2Elements();
+    const sofa::helper::vector <Index>& my_map = edgePressureMap.getMap2Elements();
     const sofa::helper::vector<EdgePressureInformation>& my_subset = edgePressureMap.getValue();
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
@@ -177,7 +177,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
     const helper::vector<Real>& intensities = p_intensity.getValue();
 
-    const sofa::helper::vector <index_type>& my_map = edgePressureMap.getMap2Elements();
+    const sofa::helper::vector <Index>& my_map = edgePressureMap.getMap2Elements();
 
     sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
@@ -293,7 +293,7 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
         return;
     }
 
-    const sofa::helper::vector <index_type>& my_map = edgePressureMap.getMap2Elements();
+    const sofa::helper::vector <Index>& my_map = edgePressureMap.getMap2Elements();
     sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
@@ -339,7 +339,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
     }
 
     sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
-    helper::vector<index_type> inputEdges;
+    helper::vector<Index> inputEdges;
 
 
     for (size_t n=0; n<m_topology->getNbEdges(); ++n)
@@ -359,7 +359,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 }
 
 template <class DataTypes>
-void EdgePressureForceField<DataTypes>::selectEdgesFromIndices(const helper::vector<index_type>& inputIndices)
+void EdgePressureForceField<DataTypes>::selectEdgesFromIndices(const helper::vector<Index>& inputIndices)
 {
     edgePressureMap.setMap2Elements(inputIndices);
 
@@ -383,7 +383,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromIndices(const helper::vec
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesFromString()
 {
-    const helper::vector<index_type>& inputString = edgeIndices.getValue();
+    const helper::vector<Index>& inputString = edgeIndices.getValue();
     selectEdgesFromIndices(inputString);
 }
 
@@ -393,7 +393,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromEdgeList()
     const helper::vector<core::topology::BaseMeshTopology::Edge>& inputEdges = edges.getValue();
     const helper::vector<core::topology::BaseMeshTopology::Edge>& topologyEdges = m_topology->getEdges();
 
-    helper::vector<index_type> indices(inputEdges.size());
+    helper::vector<Index> indices(inputEdges.size());
 
     for(unsigned int i=0; i<inputEdges.size(); i++)
     {
@@ -429,7 +429,7 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
     std::vector<sofa::defaulttype::Vector3> vertices;
 
-    const sofa::helper::vector <index_type>& my_map = edgePressureMap.getMap2Elements();
+    const sofa::helper::vector <Index>& my_map = edgePressureMap.getMap2Elements();
     const sofa::helper::vector<EdgePressureInformation>& my_subset = edgePressureMap.getValue();
 
     for (unsigned int i=0; i<my_map.size(); ++i)

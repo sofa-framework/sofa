@@ -58,13 +58,14 @@
 #include <cassert>
 #include <iostream>
 
+
 namespace sofa
 {
 
 namespace helper
 {
 
-template<class T, std::size_t N>
+template<class T, sofa::Size N>
 class fixed_array
 {
 public:
@@ -79,7 +80,7 @@ public:
     typedef const T*       const_iterator;
     typedef T&             reference;
     typedef const T&       const_reference;
-    typedef std::size_t    size_type;
+    typedef sofa::Size    Size;
     typedef std::ptrdiff_t difference_type;
 
     fixed_array()
@@ -88,7 +89,7 @@ public:
 
 
     /// Specific constructor for 1-element vectors.
-    template<size_type NN = N, typename std::enable_if<NN==1,int>::type = 0>
+    template<Size NN = N, typename std::enable_if<NN==1,int>::type = 0>
     explicit fixed_array(value_type r1)
     {
         static_assert(N==1, "");
@@ -96,7 +97,7 @@ public:
     }
 
     /// Specific constructor for 2-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==2,int>::type = 0>
+    template<Size NN = N, typename std::enable_if<NN==2,int>::type = 0>
     fixed_array(value_type r1, value_type r2)
     {
         static_assert(N == 2, "");
@@ -105,7 +106,7 @@ public:
     }
 
     /// Specific constructor for 3-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==3,int>::type = 0>
+    template<Size NN = N, typename std::enable_if<NN==3,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3)
     {
         static_assert(N == 3, "");
@@ -115,7 +116,7 @@ public:
     }
 
     /// Specific constructor for 4-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==4,int>::type = 0>
+    template<Size NN = N, typename std::enable_if<NN==4,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4)
     {
         static_assert(N == 4, "");
@@ -126,7 +127,7 @@ public:
     }
 
     /// Specific constructor for 5-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==5,int>::type = 0>
+    template<Size NN = N, typename std::enable_if<NN==5,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5)
     {
         static_assert(N == 5, "");
@@ -138,7 +139,7 @@ public:
     }
 
     /// Specific constructor for 6-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==6,int>::type = 0>
+    template<Size NN = N, typename std::enable_if<NN==6,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6)
     {
         static_assert(N == 6, "");
@@ -151,7 +152,7 @@ public:
     }
 
     /// Specific constructor for 7-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==7,int>::type = 0>
+    template<Size NN = N, typename std::enable_if<NN==7,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7)
     {
         static_assert(N == 7, "");
@@ -165,7 +166,7 @@ public:
     }
 
     /// Specific constructor for 8-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==8,int>::type = 0>
+    template<Size NN = N, typename std::enable_if<NN==8,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8)
     {
         static_assert(N == 8, "");
@@ -180,7 +181,7 @@ public:
     }
 
     /// Specific constructor for 9-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==9,int>::type = 0>
+    template<Size NN = N, typename std::enable_if<NN==9,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9)
     {
         static_assert(N == 9, "");
@@ -196,7 +197,7 @@ public:
     }
 
     /// Specific constructor for 10-elements vectors.
-    template<size_type NN = N, typename std::enable_if<NN==10,int>::type = 0>
+    template<Size NN = N, typename std::enable_if<NN==10,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9, value_type r10)
     {
         static_assert(N == 10, "");
@@ -232,14 +233,14 @@ public:
     }
 
     // operator[]
-    reference operator[](size_type i)
+    reference operator[](Size i)
     {
 #ifndef NDEBUG
         assert(i<N && "index in fixed_array must be smaller than size");
 #endif
         return elems[i];
     }
-    const_reference operator[](size_type i) const
+    const_reference operator[](Size i) const
     {
 #ifndef NDEBUG
         assert(i<N && "index in fixed_array must be smaller than size");
@@ -248,12 +249,12 @@ public:
     }
 
     // at() with range check
-    reference at(size_type i)
+    reference at(Size i)
     {
         rangecheck(i);
         return elems[i];
     }
-    const_reference at(size_type i) const
+    const_reference at(Size i) const
     {
         rangecheck(i);
         return elems[i];
@@ -278,7 +279,7 @@ public:
     }
 
     // size is constant
-    static size_type size()
+    static Size size()
     {
         return N;
     }
@@ -286,7 +287,7 @@ public:
     {
         return false;
     }
-    static size_type max_size()
+    static Size max_size()
     {
         return N;
     }
@@ -321,7 +322,7 @@ public:
     fixed_array<T,N>& operator= (const fixed_array<T2,N>& rhs)
     {
         //std::copy(rhs.begin(),rhs.end(), begin());
-        for (size_type i=0; i<N; i++)
+        for (Size i=0; i<N; i++)
             elems[i] = rhs[i];
         return *this;
     }
@@ -330,7 +331,7 @@ public:
     inline void assign (const T& value)
     {
         //std::fill_n(begin(),size(),value);
-        for (size_type i=0; i<N; i++)
+        for (Size i=0; i<N; i++)
             elems[i] = value;
     }
 
@@ -338,7 +339,7 @@ public:
     inline friend std::ostream& operator << (std::ostream& out, const fixed_array<T,N>& a)
     {
         static_assert(N>0, "Cannot create a zero size arrays") ;
-        for( size_type i=0; i<N-1; i++ )
+        for( Size i=0; i<N-1; i++ )
             out << a.elems[i]<<" ";
         out << a.elems[N-1];
         return out;
@@ -346,14 +347,14 @@ public:
 
     inline friend std::istream& operator >> (std::istream& in, fixed_array<T,N>& a)
     {
-        for( size_type i=0; i<N; i++ )
+        for( Size i=0; i<N; i++ )
             in>>a.elems[i];
         return in;
     }
 
     inline bool operator < (const fixed_array& v ) const
     {
-        for( size_type i=0; i<N; i++ )
+        for( Size i=0; i<N; i++ )
         {
             if( elems[i]<v[i] )
                 return true;  // (*this)<v
@@ -366,7 +367,7 @@ public:
 private:
 
     // check range (may be private because it is static)
-    static void rangecheck (size_type i)
+    static void rangecheck (Size i)
     {
         if (i >= size())
         {

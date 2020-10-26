@@ -507,7 +507,7 @@ void SpatialGrid<DataTypes>::end()
 ///
 /// Fill the old2new and new2old arrays giving the permutation to apply
 template<class DataTypes>
-void SpatialGrid<DataTypes>::reorderIndices(helper::vector<index_type>* old2new, helper::vector<index_type>* new2old)
+void SpatialGrid<DataTypes>::reorderIndices(helper::vector<Index>* old2new, helper::vector<Index>* new2old)
 {
     unsigned int next = 0;
     for (typename Map::iterator itg = map.begin(); itg != map.end(); itg++)
@@ -705,7 +705,7 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
 
     msg_info() << "sortPoints(): sorting...";
 
-    helper::vector<index_type> old2new, new2old;
+    helper::vector<Index> old2new, new2old;
     grid->reorderIndices(&old2new, &new2old);
     // check if the mapping actually changed something
     bool identity = true;

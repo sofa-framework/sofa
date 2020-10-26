@@ -32,18 +32,18 @@ namespace sofa::component::projectiveconstraintset
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedTranslationConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(index_type, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
+bool FixedTranslationConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     return fc != 0;
 }
 
 // Define RemovalFunction
 template< class DataTypes>
-void FixedTranslationConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, value_type &)
+void FixedTranslationConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
 {
     if (fc)
     {
-        fc->removeIndex((index_type) pointIndex);
+        fc->removeIndex((Index) pointIndex);
     }
 }
 
@@ -78,14 +78,14 @@ void FixedTranslationConstraint<DataTypes>::clearIndices()
 }
 
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::addIndex(index_type index)
+void FixedTranslationConstraint<DataTypes>::addIndex(Index index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::removeIndex(index_type index)
+void FixedTranslationConstraint<DataTypes>::removeIndex(Index index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -124,7 +124,7 @@ void FixedTranslationConstraint<DataTypes>::init()
 }
 
 
-template<std::size_t N, class T>
+template<Size N, class T>
 static inline void clearPos(defaulttype::RigidDeriv<N,T>& v)
 {
     getVCenter(v).clear();
@@ -144,7 +144,7 @@ void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::Mechani
 
     if (f_fixAll.getValue() == true)
     {
-        for (std::size_t i = 0; i < l_topology.get()->getNbPoints(); ++i)
+        for (Size i = 0; i < l_topology.get()->getNbPoints(); ++i)
         {
             clearPos(res[i]);
         }
@@ -214,7 +214,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
         {
             sofa::defaulttype::Vector3 v;
             const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[i]);
-            for(std::size_t j=0 ; j<cpos.size() && j<3; j++)
+            for(Size j=0 ; j<cpos.size() && j<3; j++)
                 v[j] = cpos[j];
 
             vertices.push_back(v);
@@ -226,7 +226,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
         {
             sofa::defaulttype::Vector3 v;
             const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[*it]);
-            for(std::size_t j=0 ; j<cpos.size() && j<3; j++)
+            for(Size j=0 ; j<cpos.size() && j<3; j++)
                 v[j] = cpos[j];
 
             vertices.push_back(v);

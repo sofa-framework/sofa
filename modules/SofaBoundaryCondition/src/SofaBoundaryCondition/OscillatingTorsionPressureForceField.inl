@@ -198,7 +198,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
     int idx[3];
     Real d[10];
 
-    const sofa::helper::vector <index_type>& my_map = trianglePressureMap.getMap2Elements();
+    const sofa::helper::vector <Index>& my_map = trianglePressureMap.getMap2Elements();
     sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
@@ -252,7 +252,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesAlongPlane(
     }
 
     sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
-    helper::vector<index_type> inputTriangles;
+    helper::vector<Index> inputTriangles;
 
     for (size_t n=0; n<m_topology->getNbTriangles(); ++n)
     {
@@ -276,7 +276,7 @@ template <class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesFromString()
 {
     sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
-    helper::vector<index_type> _triangleList = triangleList.getValue();
+    helper::vector<Index> _triangleList = triangleList.getValue();
 
     trianglePressureMap.setMap2Elements(_triangleList);
 
@@ -310,7 +310,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
     sofa::helper::types::RGBAColor color = sofa::helper::types::RGBAColor::green();
     std::vector<sofa::defaulttype::Vector3> vertices;
 
-    const sofa::helper::vector <index_type>& my_map = trianglePressureMap.getMap2Elements();
+    const sofa::helper::vector <Index>& my_map = trianglePressureMap.getMap2Elements();
 
     for (unsigned int i = 0; i < my_map.size(); ++i)
     {

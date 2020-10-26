@@ -41,12 +41,12 @@ public:
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    index_type findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz) override;
+    Index findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz) override;
 // 				virtual int findCube(const Vector3 &pos);
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    index_type findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) override;
+    Index findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) override;
 // 				virtual int findNearestCube(const Vector3& pos);
 
 
@@ -55,7 +55,7 @@ public:
 
 
     /// when linking similar particules between neighbors, propagate changes to all the sames particles
-    void changeIndices(index_type oldidx, index_type newidx);
+    void changeIndices(Index oldidx, Index newidx);
 
 
     /// surcharge of functions defined in SparseGridTopology
@@ -68,7 +68,7 @@ public:
     /// Once the finest connectivity is computed, some nodes can be dobled
     void buildRamifiedFinestLevel();
     /// do 2 neighbors cubes share triangles ?
-    bool sharingTriangle(helper::io::Mesh* mesh, index_type cubeIdx, index_type neighborIdx, unsigned where);
+    bool sharingTriangle(helper::io::Mesh* mesh, Index cubeIdx, Index neighborIdx, unsigned where);
 
     /// debug printings
     void printNeighborhood();
@@ -97,8 +97,8 @@ public:
 
         unsigned int _coarsestParent; //in order to compute findCube by beginning by the finnest, by going up and give the coarsest parent
 
-        index_type _hexaIdx; // idx of the corresponding hexa in the resulting Topology::seqHexahedra
-        index_type _nonRamifiedHexaIdx; // idx of the corresponding hexa in the initial, regular list SparseGrid::hexahedra
+        Index _hexaIdx; // idx of the corresponding hexa in the resulting Topology::seqHexahedra
+        Index _nonRamifiedHexaIdx; // idx of the corresponding hexa in the initial, regular list SparseGrid::hexahedra
 
         int _tmp; // warning: useful to several algos (as a temporary variable) but it is not an identification number
 
@@ -129,7 +129,7 @@ public :
     helper::vector<helper::vector<Connexion*> >* getConnexions() {return &_connexions;}
 
 
-    typedef std::vector<helper::fixed_array<helper::vector<index_type>,8> > HierarchicalCubeMapRamification; ///< a cube indice -> corresponding child indices (possible more than 8 for Ramification)
+    typedef std::vector<helper::fixed_array<helper::vector<Index>,8> > HierarchicalCubeMapRamification; ///< a cube indice -> corresponding child indices (possible more than 8 for Ramification)
     HierarchicalCubeMapRamification _hierarchicalCubeMapRamification;
 
 

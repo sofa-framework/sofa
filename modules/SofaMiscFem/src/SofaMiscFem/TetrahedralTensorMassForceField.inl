@@ -40,7 +40,7 @@ typedef EdgesInTetrahedron		EdgesInTetrahedron;
 
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyCreateFunction(index_type, EdgeRestInformation &ei, const core::topology::BaseMeshTopology::Edge &edge, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyCreateFunction(Index, EdgeRestInformation &ei, const core::topology::BaseMeshTopology::Edge &edge, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -61,9 +61,9 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
 }
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyTetrahedronCreation(const sofa::helper::vector<index_type> &tetrahedronAdded,
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyTetrahedronCreation(const sofa::helper::vector<Index> &tetrahedronAdded,
         const sofa::helper::vector<Tetrahedron> &,
-        const sofa::helper::vector<sofa::helper::vector<index_type> > &,
+        const sofa::helper::vector<sofa::helper::vector<Index> > &,
         const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
     if (ff)
@@ -150,7 +150,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
 }
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyTetrahedronDestruction(const sofa::helper::vector<index_type> &tetrahedronRemoved)
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyTetrahedronDestruction(const sofa::helper::vector<Index> &tetrahedronRemoved)
 {
     if (ff)
     {
@@ -319,22 +319,22 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
         _initialPoints=p;
     }
 
-    index_type i;
+    Index i;
     // set edge tensor to 0
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
         edgeHandler->applyCreateFunction(i, edgeInf[i],
-                m_topology->getEdge(i),  (const sofa::helper::vector< index_type > )0,
+                m_topology->getEdge(i),  (const sofa::helper::vector< Index > )0,
                 (const sofa::helper::vector< double >)0);
     }
     // create edge tensor by calling the tetrahedron creation function
-    sofa::helper::vector<index_type> tetrahedronAdded;
+    sofa::helper::vector<Index> tetrahedronAdded;
     for (i=0; i<m_topology->getNbTetrahedra(); ++i)
         tetrahedronAdded.push_back(i);
 
     edgeHandler->applyTetrahedronCreation(tetrahedronAdded,
             (const sofa::helper::vector<Tetrahedron>)0,
-            (const sofa::helper::vector<sofa::helper::vector<index_type> >)0,
+            (const sofa::helper::vector<sofa::helper::vector<Index> >)0,
             (const sofa::helper::vector<sofa::helper::vector<double> >)0);
 
     edgeInfo.endEdit();

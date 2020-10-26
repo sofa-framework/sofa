@@ -81,7 +81,7 @@ public:
     */
     void updateTopologicalMappingTopDown() override;
 
-    index_type getFromIndex(index_type ind) override;
+    Index getFromIndex(Index ind) override;
 
 };
 

@@ -43,12 +43,12 @@ namespace defaulttype
 
 /** DOF types associated with deformable frames. Each deformable frame generates an affine displacement field, with 12 independent degrees of freedom.
  */
-template<std::size_t _spatial_dimensions, typename _Real>
+template<Size _spatial_dimensions, typename _Real>
 class StdAffineTypes
 {
 public:
-    static const std::size_t spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
-    static const std::size_t VSize = spatial_dimensions +  spatial_dimensions * spatial_dimensions;  // number of entries
+    static const Size spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
+    static const Size VSize = spatial_dimensions +  spatial_dimensions * spatial_dimensions;  // number of entries
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
     typedef _Real Real;
@@ -164,10 +164,10 @@ public:
         }
 
 
-        template< std::size_t N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
-        template< std::size_t N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        template< Size N, class Real2 > // N <= VSize
+        void operator+=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        template< Size N, class Real2 > // N <= VSize
+        void operator=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
     };
 
     typedef helper::vector<Coord> VecCoord;
@@ -247,13 +247,13 @@ public:
             }
 
             // translation -> identity
-            for(std::size_t i=0; i<spatial_dimensions; ++i)
-                for(std::size_t j=0; j<spatial_dimensions; ++j)
+            for(Size i=0; i<spatial_dimensions; ++i)
+                for(Size j=0; j<spatial_dimensions; ++j)
                     J(i,j)=(i==j)?1.:0;
 
             // affine part
-            for(std::size_t i=0; i<MSize; ++i)
-                for(std::size_t j=0; j<MSize; ++j)
+            for(Size i=0; i<MSize; ++i)
+                for(Size j=0; j<MSize; ++j)
                     J(i+spatial_dimensions,j+spatial_dimensions)=dQOverdM(i,j);
         }
 
@@ -285,8 +285,8 @@ public:
                     Frame W = getVAffine() * Ainv;
 
                     // make it skew-symmetric
-                    for(std::size_t i=0; i<spatial_dimensions; i++) W[i][i] = 0.0;
-                    for(std::size_t i=0; i<spatial_dimensions; i++)
+                    for(Size i=0; i<spatial_dimensions; i++) W[i][i] = 0.0;
+                    for(Size i=0; i<spatial_dimensions; i++)
                     {
                         for(unsigned j=i+1; j<spatial_dimensions; j++)
                         {
@@ -316,10 +316,10 @@ public:
 
 
 
-        template< std::size_t N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
-        template< std::size_t N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        template< Size N, class Real2 > // N <= VSize
+        void operator+=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        template< Size N, class Real2 > // N <= VSize
+        void operator=( const Vec<N,Real2>& p ) { for(Size i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
 
     };
 

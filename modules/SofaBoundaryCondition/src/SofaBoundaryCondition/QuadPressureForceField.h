@@ -50,11 +50,11 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
     Data<Deriv> pressure; ///< Pressure force per unit area
 
-    Data<sofa::helper::vector<index_type> > quadList; ///< Indices of quads separated with commas where a pressure is applied
+    Data<sofa::helper::vector<Index> > quadList; ///< Indices of quads separated with commas where a pressure is applied
 
     /// the normal used to define the edge subjected to the pressure force.
     Data<Deriv> normal;
