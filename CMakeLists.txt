@@ -240,6 +240,7 @@ sofa_add_module(modules/SofaGeneralVisual SofaGeneralVisual ON)
 sofa_add_module(modules/SofaGraphComponent SofaGraphComponent ON)
 sofa_add_module(modules/SofaGeneralMeshCollision SofaGeneralMeshCollision ON)
 sofa_add_module(modules/SofaBoundaryCondition SofaBoundaryCondition ON)
+sofa_add_module(modules/SofaGeneralAnimationLoop SofaGeneralAnimationLoop ON)
     
 add_subdirectory(SofaGeneral)
 
