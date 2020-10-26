@@ -19,9 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_GENERALDEFORMABLE_INIT_H
-#define SOFA_COMPONENT_GENERALDEFORMABLE_INIT_H
-#include "config.h"
+#define SOFA_COMPONENT_FORCEFIELD_VECTORSPRINGFORCEFIELD_CPP
+#include <SofaGeneralDeformable/VectorSpringForceField.inl>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -29,12 +31,22 @@ namespace sofa
 namespace component
 {
 
+namespace interactionforcefield
+{
 
-void SOFA_GENERAL_DEFORMABLE_API initGeneralDeformable();
+using namespace sofa::defaulttype;
+
+int VectorSpringForceFieldClass = core::RegisterObject("Spring force field acting along the edges of a mesh")
+        .add< VectorSpringForceField<Vec3Types> >()
+
+        ;
+
+template class SOFA_SOFAGENERALDEFORMABLE_API VectorSpringForceField<Vec3Types>;
+
+
+
+} // namespace interactionforcefield
 
 } // namespace component
 
 } // namespace sofa
-
-#endif
-

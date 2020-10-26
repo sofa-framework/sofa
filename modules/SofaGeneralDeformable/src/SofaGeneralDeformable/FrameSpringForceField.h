@@ -212,7 +212,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FRAMESPRINGFORCEFIELD_CPP)
-extern template class SOFA_GENERAL_DEFORMABLE_API FrameSpringForceField<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAGENERALDEFORMABLE_API FrameSpringForceField<defaulttype::Rigid3Types>;
 
 #endif
 

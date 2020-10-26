@@ -19,16 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGENERAL_DEFORMABLE_CONFIG_H
-#define SOFAGENERAL_DEFORMABLE_CONFIG_H
+#define SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_CPP
+#include <SofaGeneralDeformable/RegularGridSpringForceField.inl>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-#include <SofaGeneral/config.h>
+namespace sofa
+{
 
-#ifdef SOFA_BUILD_GENERAL_DEFORMABLE
-#  define SOFA_TARGET SofaGeneralDeformable
-#  define SOFA_GENERAL_DEFORMABLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_GENERAL_DEFORMABLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace component
+{
 
-#endif
+namespace interactionforcefield
+{
+
+using namespace sofa::defaulttype;
+
+
+// Register in the Factory
+int RegularGridSpringForceFieldClass = core::RegisterObject("Spring acting on the edges and faces of a regular grid")
+        .add< RegularGridSpringForceField<Vec3Types> >(true) // default template
+        .add< RegularGridSpringForceField<Vec2Types> >()
+        .add< RegularGridSpringForceField<Vec1Types> >()
+        .add< RegularGridSpringForceField<Vec6Types> >()
+
+        ;
+template class SOFA_SOFAGENERALDEFORMABLE_API RegularGridSpringForceField<Vec3Types>;
+template class SOFA_SOFAGENERALDEFORMABLE_API RegularGridSpringForceField<Vec2Types>;
+template class SOFA_SOFAGENERALDEFORMABLE_API RegularGridSpringForceField<Vec1Types>;
+template class SOFA_SOFAGENERALDEFORMABLE_API RegularGridSpringForceField<Vec6Types>;
+
+
+} // namespace interactionforcefield
+
+} // namespace component
+
+} // namespace sofa
+

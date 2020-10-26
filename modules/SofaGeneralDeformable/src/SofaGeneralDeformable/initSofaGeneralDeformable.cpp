@@ -19,41 +19,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP
-#include <SofaGeneralDeformable/TriangularBendingSprings.inl>
-#include <sofa/defaulttype/VecTypes.h>
+#include <SofaGeneralDeformable/initSofaGeneralDeformable.h>
+
 #include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-// #define DEBUG_TRIANGLEBS
-
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
+extern "C" {
+    SOFA_SOFAGENERALDEFORMABLE_API void initExternalModule();
+    SOFA_SOFAGENERALDEFORMABLE_API const char* getModuleName();
+    SOFA_SOFAGENERALDEFORMABLE_API const char* getModuleVersion();
+    SOFA_SOFAGENERALDEFORMABLE_API const char* getModuleLicense();
+    SOFA_SOFAGENERALDEFORMABLE_API const char* getModuleDescription();
+    SOFA_SOFAGENERALDEFORMABLE_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-namespace forcefield
+const char* getModuleName()
 {
+    return sofa_tostring(SOFA_TARGET);
+}
 
-using namespace sofa::defaulttype;
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAGENERALDEFORMABLE_VERSION);
+}
 
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about General Deformable.";
+}
 
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
 
-
-// Register in the Factory
-int TriangularBendingSpringsClass = core::RegisterObject("Springs added to a triangular mesh to prevent bending")
-        .add< TriangularBendingSprings<Vec3Types> >()
-
-        ;
-
-template class SOFA_GENERAL_DEFORMABLE_API TriangularBendingSprings<Vec3Types>;
-
-
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component

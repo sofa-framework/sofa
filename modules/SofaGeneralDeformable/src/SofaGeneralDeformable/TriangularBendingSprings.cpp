@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_CPP
-#include <SofaGeneralDeformable/TriangleBendingSprings.inl>
-#include <SofaDeformable/StiffSpringForceField.inl>
-#include <sofa/core/behavior/PairInteractionForceField.inl>
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP
+#include <SofaGeneralDeformable/TriangularBendingSprings.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
+
+// #define DEBUG_TRIANGLEBS
 
 namespace sofa
 {
@@ -32,25 +32,26 @@ namespace sofa
 namespace component
 {
 
-namespace interactionforcefield
+namespace forcefield
 {
 
 using namespace sofa::defaulttype;
 
 
 
+
+
 // Register in the Factory
-int TriangleBendingSpringsClass = core::RegisterObject("Springs added to a traingular mesh to prevent bending")
-        .add< TriangleBendingSprings<Vec3Types> >()
-        .add< TriangleBendingSprings<Vec2Types> >()
+int TriangularBendingSpringsClass = core::RegisterObject("Springs added to a triangular mesh to prevent bending")
+        .add< TriangularBendingSprings<Vec3Types> >()
 
         ;
 
-template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<Vec3Types>;
-template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<Vec2Types>;
+template class SOFA_SOFAGENERALDEFORMABLE_API TriangularBendingSprings<Vec3Types>;
 
 
-} // namespace interactionforcefield
+
+} // namespace forcefield
 
 } // namespace component
 

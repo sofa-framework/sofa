@@ -19,11 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_CPP
-#include <SofaGeneralDeformable/RegularGridSpringForceField.inl>
-#include <sofa/core/behavior/PairInteractionForceField.inl>
+#define SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP
+#include <SofaGeneralDeformable/FastTriangularBendingSprings.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
+
+// #define DEBUG_TRIANGLEBS
 
 namespace sofa
 {
@@ -31,27 +32,26 @@ namespace sofa
 namespace component
 {
 
-namespace interactionforcefield
+namespace forcefield
 {
 
 using namespace sofa::defaulttype;
 
 
+
+
+
 // Register in the Factory
-int RegularGridSpringForceFieldClass = core::RegisterObject("Spring acting on the edges and faces of a regular grid")
-        .add< RegularGridSpringForceField<Vec3Types> >(true) // default template
-        .add< RegularGridSpringForceField<Vec2Types> >()
-        .add< RegularGridSpringForceField<Vec1Types> >()
-        .add< RegularGridSpringForceField<Vec6Types> >()
+int FastTriangularBendingSpringsClass = core::RegisterObject("Springs added to a triangular mesh to prevent bending")
+        .add< FastTriangularBendingSprings<Vec3Types> >()
 
         ;
-template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<Vec3Types>;
-template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<Vec2Types>;
-template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<Vec1Types>;
-template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<Vec6Types>;
+
+template class SOFA_SOFAGENERALDEFORMABLE_API FastTriangularBendingSprings<Vec3Types>;
 
 
-} // namespace interactionforcefield
+
+} // namespace forcefield
 
 } // namespace component
 

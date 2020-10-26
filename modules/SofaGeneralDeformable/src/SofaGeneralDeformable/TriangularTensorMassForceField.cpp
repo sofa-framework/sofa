@@ -19,11 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_CPP
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP
 
-#include <SofaGeneralDeformable/TriangularBiquadraticSpringsForceField.inl>
+#include <SofaGeneralDeformable/TriangularTensorMassForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
+
 
 namespace sofa
 {
@@ -36,23 +37,22 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
+
 using namespace sofa::defaulttype;
 
 
 // Register in the Factory
-int TriangularBiquadraticSpringsForceFieldClass = core::RegisterObject("Biquadratic Springs on a Triangular Mesh")
-        .add< TriangularBiquadraticSpringsForceField<Vec3Types> >()
+int TriangularTensorMassForceFieldClass = core::RegisterObject("Linear Elastic Membrane on a Triangular Mesh")
+        .add< TriangularTensorMassForceField<Vec3Types> >()
 
         ;
 
-template class SOFA_GENERAL_DEFORMABLE_API TriangularBiquadraticSpringsForceField<Vec3Types>;
-
-
+template class SOFA_SOFAGENERALDEFORMABLE_API TriangularTensorMassForceField<Vec3Types>;
 
 
 } // namespace forcefield
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 

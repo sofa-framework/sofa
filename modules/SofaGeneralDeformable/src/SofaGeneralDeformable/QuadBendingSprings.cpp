@@ -47,8 +47,8 @@ int QuadBendingSpringsClass = core::RegisterObject("Springs added to a quad mesh
         ;
 
 
-template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<Vec3Types>;
-template class SOFA_GENERAL_DEFORMABLE_API QuadBendingSprings<Vec2Types>;
+template class SOFA_SOFAGENERALDEFORMABLE_API QuadBendingSprings<Vec3Types>;
+template class SOFA_SOFAGENERALDEFORMABLE_API QuadBendingSprings<Vec2Types>;
 
 
 
