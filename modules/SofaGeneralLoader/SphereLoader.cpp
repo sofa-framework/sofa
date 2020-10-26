@@ -57,7 +57,7 @@ SphereLoader::SphereLoader()
             return sofa::core::objectmodel::ComponentState::Valid;
         }
         return sofa::core::objectmodel::ComponentState::Invalid;
-    }, { &d_positions });
+    }, { &d_positions, &d_radius });
 
     addUpdateCallback("updateTransformPosition", { &d_translation, &d_rotation, &d_scale}, [this](const core::DataTracker&)
     {
@@ -90,8 +90,10 @@ void SphereLoader::applyTransform()
 
 bool SphereLoader::load()
 {
-    d_radius.beginEdit()->clear();
-    d_radius.endEdit();
+    auto my_radius = getWriteOnlyAccessor(d_radius);
+    auto my_positions = getWriteOnlyAccessor(d_positions);
+    my_radius.clear();
+    my_positions.clear();
 
     // Make sure that fscanf() uses a dot '.' as the decimal separator.
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
@@ -111,9 +113,6 @@ bool SphereLoader::load()
         msg_error("SphereLoader") << "cannot read file '" << filename << "'. ";
         return false;
     }
-
-    helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_positions = *d_positions.beginEdit();
-    helper::vector<SReal>& my_radius = *d_radius.beginEdit();
 
     int totalNumSpheres=0;
 
@@ -193,8 +192,7 @@ bool SphereLoader::load()
         }
     }
 
-    d_positions.endEdit();
-    d_radius.endEdit();
+    applyTransform();
 
     return true;
 }
