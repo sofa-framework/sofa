@@ -79,9 +79,9 @@ void ScalarField::getHessianByCentralFiniteDifference(const Vec3d& x, const doub
     /// Centrale Finite difference using only function's value
     /// implemented from https://v8doc.sas.com/sashtml/ormp/chap5/sect28.htm
     /// Second-order derivatives based on function calls only (Abramowitz and Stegun 1972, p. 884):
-    std::array<Vec3d, 3> e = {Vec3d{dx,0.0,0.0},
-                             Vec3d{0.0,dx,0.0},
-                             Vec3d{0.0,0.0,dx}};
+    Vec3d e[3] = {Vec3d{dx,0.0,0.0},
+                  Vec3d{0.0,dx,0.0},
+                  Vec3d{0.0,0.0,dx}};
     double invTerm = 1.0 / (4.0 * dx * dx);
     Vec3d tmpX;
     for(unsigned int i=0;i<3;i++)

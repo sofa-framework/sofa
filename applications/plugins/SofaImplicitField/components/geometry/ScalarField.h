@@ -31,7 +31,6 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
