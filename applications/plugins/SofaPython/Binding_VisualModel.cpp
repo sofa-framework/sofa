@@ -73,9 +73,9 @@ static PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
 
     std::ofstream outfile(filename);
 
-    sofa::defaulttype::index_type vindex = 0;
-    sofa::defaulttype::index_type nindex = 0;
-    sofa::defaulttype::index_type tindex = 0;
+    sofa::Index vindex = 0;
+    sofa::Index nindex = 0;
+    sofa::Index tindex = 0;
     int count = 0;
 
     obj->exportOBJ(obj->getName(),&outfile,NULL,vindex,nindex,tindex,count);

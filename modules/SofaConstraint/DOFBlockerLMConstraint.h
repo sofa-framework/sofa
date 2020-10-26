@@ -56,7 +56,7 @@ class DOFBlockerLMConstraint :  public core::behavior::LMConstraint<DataTypes,Da
 public:
     SOFA_CLASS(SOFA_TEMPLATE(DOFBlockerLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::behavior::LMConstraint, DataTypes, DataTypes));
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -66,8 +66,8 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
-    typedef sofa::component::topology::PointSubsetData< helper::vector<index_type> > SetIndex;
-    typedef helper::vector<index_type> SetIndexArray;
+    typedef sofa::component::topology::PointSubsetData< helper::vector<Index> > SetIndex;
+    typedef helper::vector<Index> SetIndexArray;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;
 
@@ -97,8 +97,8 @@ protected:
 
 public:
     void clearConstraints();
-    void addConstraint(index_type index);
-    void removeConstraint(index_type index);
+    void addConstraint(Index index);
+    void removeConstraint(Index index);
 
 
     void init() override;
@@ -124,19 +124,19 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<DOFBlockerLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<index_type> >
+    class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<Index> >
     {
     public:
-        FCTPointHandler(DOFBlockerLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<helper::vector<index_type> >* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, sofa::helper::vector<index_type> >(_data), fc(_fc) {}
+        FCTPointHandler(DOFBlockerLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<helper::vector<Index> >* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, sofa::helper::vector<Index> >(_data), fc(_fc) {}
 
 
 
-        void applyDestroyFunction(index_type /*index*/, value_type& /*T*/);
+        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
 
 
-        bool applyTestCreateFunction(index_type /*index*/,
-                const sofa::helper::vector< index_type > & /*ancestors*/,
+        bool applyTestCreateFunction(Index /*index*/,
+                const sofa::helper::vector< Index > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
         DOFBlockerLMConstraint<DataTypes> *fc;

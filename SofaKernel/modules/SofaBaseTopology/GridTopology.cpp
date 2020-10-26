@@ -335,12 +335,12 @@ void GridTopology::computeEdgeList()
 
 void GridTopology::computePointList()
 {
-    std::size_t nbPoints= this->getNbPoints();
+    auto nbPoints= this->getNbPoints();
     // put the result in seqPoints
     SeqPoints& seq_P= *(seqPoints.beginWriteOnly());
     seq_P.resize(nbPoints);
 
-    for (std::size_t i=0; i<nbPoints; i++)
+    for (Size i=0; i<nbPoints; i++)
     {
         seq_P[i] = this->getPoint(i);
     }
@@ -348,13 +348,13 @@ void GridTopology::computePointList()
     seqPoints.endEdit();
 }
 
-GridTopology::index_type GridTopology::getIndex( int i, int j, int k ) const
+GridTopology::Index GridTopology::getIndex( int i, int j, int k ) const
 {
-    return index_type(d_n.getValue()[0]* ( d_n.getValue()[1]*k + j ) + i);
+    return Index(d_n.getValue()[0]* ( d_n.getValue()[1]*k + j ) + i);
 }
 
 
-sofa::defaulttype::Vector3 GridTopology::getPoint(index_type i) const
+sofa::defaulttype::Vector3 GridTopology::getPoint(Index i) const
 {
     int x = i%d_n.getValue()[0]; i/=d_n.getValue()[0];
     int y = i%d_n.getValue()[1]; i/=d_n.getValue()[1];
@@ -365,7 +365,7 @@ sofa::defaulttype::Vector3 GridTopology::getPoint(index_type i) const
 
 sofa::defaulttype::Vector3 GridTopology::getPointInGrid(int i, int j, int k) const
 {
-    index_type id = this->getIndex(i, j, k);
+    Index id = this->getIndex(i, j, k);
     if (id < seqPoints.getValue().size())
         return seqPoints.getValue()[id];
     else
@@ -373,7 +373,7 @@ sofa::defaulttype::Vector3 GridTopology::getPointInGrid(int i, int j, int k) con
 }
 
 
-GridTopology::Hexa GridTopology::getHexaCopy(index_type i)
+GridTopology::Hexa GridTopology::getHexaCopy(Index i)
 {
     int x = i%(d_n.getValue()[0]-1); i/=(d_n.getValue()[0]-1);
     int y = i%(d_n.getValue()[1]-1); i/=(d_n.getValue()[1]-1);
@@ -390,7 +390,7 @@ GridTopology::Hexa GridTopology::getHexahedron(int x, int y, int z)
             point(x+1,y+1,z+1),point(x  ,y+1,z+1));
 }
 
-GridTopology::Quad GridTopology::getQuadCopy(index_type i)
+GridTopology::Quad GridTopology::getQuadCopy(Index i)
 {
     if (d_n.getValue()[0] == 1)
     {

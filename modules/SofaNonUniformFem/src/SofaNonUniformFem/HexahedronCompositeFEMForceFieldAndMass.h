@@ -69,7 +69,7 @@ public:
 
     typedef defaulttype::Mat<8*3, 8*3, Real> Weight;
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
 
 
@@ -103,14 +103,14 @@ public:
     Data<float> d_drawSize;
 
 
-    void findFinestChildren( helper::vector<index_type>& finestChildren, const index_type elementIndice,  int level=0);
-    void computeMechanicalMatricesDirectlyFromTheFinestToCoarse( ElementStiffness &K, ElementMass &M, const index_type elementIndice);
-    void computeMechanicalMatricesRecursively( ElementStiffness &K, ElementMass &M, const index_type elementIndice,  int level);
-    void computeMechanicalMatricesRecursivelyWithRamifications( ElementStiffness &K, ElementMass &M, const index_type elementIndice,  int level);
+    void findFinestChildren( helper::vector<Index>& finestChildren, const Index elementIndice,  int level=0);
+    void computeMechanicalMatricesDirectlyFromTheFinestToCoarse( ElementStiffness &K, ElementMass &M, const Index elementIndice);
+    void computeMechanicalMatricesRecursively( ElementStiffness &K, ElementMass &M, const Index elementIndice,  int level);
+    void computeMechanicalMatricesRecursivelyWithRamifications( ElementStiffness &K, ElementMass &M, const Index elementIndice,  int level);
 
     /// multiply all weights for all levels and go to the finest level to obtain the final weights from the coarsest to the finest directly
-    void computeFinalWeights( const Weight &W, const index_type coarseElementIndice, const index_type elementIndice,  int level);
-    void computeFinalWeightsRamification( const Weight &W, const index_type coarseElementIndice, const index_type elementIndice,  int level);
+    void computeFinalWeights( const Weight &W, const Index coarseElementIndice, const Index elementIndice,  int level);
+    void computeFinalWeightsRamification( const Weight &W, const Index coarseElementIndice, const Index elementIndice,  int level);
 
 
     // surcharge NonUniformHexahedronFEMForceFieldAndMass::computeMechanicalMatricesByCondensation
@@ -119,7 +119,7 @@ public:
 
 
     helper::vector< helper::vector<Weight> > _weights;
-    helper::vector< std::pair<index_type, Weight> > _finalWeights; // for each fine element -> the coarse element idx and corresponding Weight
+    helper::vector< std::pair<Index, Weight> > _finalWeights; // for each fine element -> the coarse element idx and corresponding Weight
 
 protected:
 

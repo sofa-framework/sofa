@@ -94,8 +94,8 @@ public:
     typedef helper::vector<ID> VecID;
     typedef helper::vector<VecID> VecVecID;
 
-    typedef core::topology::BaseMeshTopology::index_type index_type;
-    typedef helper::vector< index_type > VecIndex;
+    typedef core::topology::BaseMeshTopology::Index Index;
+    typedef helper::vector< Index > VecIndex;
 
     typedef defaulttype::Mat<3,3,Real> Mat3x3;
 

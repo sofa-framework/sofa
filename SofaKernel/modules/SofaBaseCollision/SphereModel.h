@@ -52,9 +52,9 @@ public:
 
     typedef SphereCollisionModel<DataTypes> ParentModel;
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
-    TSphere(ParentModel* model, index_type index);
+    TSphere(ParentModel* model, Index index);
 
     explicit TSphere(const core::CollisionElementIterator& i);
 
@@ -111,13 +111,13 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(std::size_t size) override;
+    void resize(Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
     void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*, index_type index) override;
+    void draw(const core::visual::VisualParams*, Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -126,9 +126,9 @@ public:
 
     const VecReal& getR() const { return this->radius.getValue(); }
 
-    Real getRadius(const index_type i) const;
+    Real getRadius(const Index i) const;
 
-    const Coord & velocity(index_type index)const;
+    const Coord & velocity(Index index)const;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -181,7 +181,7 @@ protected:
 };
 
 template<class DataTypes>
-inline TSphere<DataTypes>::TSphere(ParentModel* model, index_type index)
+inline TSphere<DataTypes>::TSphere(ParentModel* model, Index index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 
@@ -204,7 +204,7 @@ template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->read(core::ConstVecCoordId::freePosition())).getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(index_type index) const { return DataTypes::getDPos(mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]);}
+inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(Index index) const { return DataTypes::getDPos(mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]);}
 
 template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::v() const { return DataTypes::getDPos(this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]); }

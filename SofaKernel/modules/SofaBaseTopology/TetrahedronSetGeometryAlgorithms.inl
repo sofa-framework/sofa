@@ -569,12 +569,12 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms<DataTypes>::computeDih
     unsigned int idA = edge[0];
     unsigned int idB = edge[1];
 
-    unsigned int idC = sofa::defaulttype::InvalidID, idD = sofa::defaulttype::InvalidID;
+    unsigned int idC = sofa::InvalidID, idD = sofa::InvalidID;
     for (unsigned int i = 0; i < 4; i++)
     {
         if (tetra[i] != idA && tetra[i] != idB)
         {
-            if (idC == sofa::defaulttype::InvalidID)
+            if (idC == sofa::InvalidID)
                 idC = tetra[i];
             else
                 idD = tetra[i];

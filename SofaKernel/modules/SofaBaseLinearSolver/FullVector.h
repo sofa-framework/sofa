@@ -49,7 +49,7 @@ public:
     typedef const T* ConstIterator;
 
     typedef Real value_type;
-    typedef Index size_type;
+    typedef Index Size;
     typedef Iterator iterator;
     typedef ConstIterator const_iterator;
 

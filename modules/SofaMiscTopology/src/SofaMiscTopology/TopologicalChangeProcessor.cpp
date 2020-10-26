@@ -220,17 +220,17 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             return;
 
         // process topological changes
-        helper::ReadAccessor< Data<helper::vector<index_type> > > edges = m_edgesToRemove;
-        helper::ReadAccessor< Data<helper::vector<index_type> > > triangles = m_trianglesToRemove;
-        helper::ReadAccessor< Data<helper::vector<index_type> > > quads = m_quadsToRemove;
-        helper::ReadAccessor< Data<helper::vector<index_type> > > tetrahedra = m_tetrahedraToRemove;
-        helper::ReadAccessor< Data<helper::vector<index_type> > > hexahedra = m_hexahedraToRemove;
+        helper::ReadAccessor< Data<helper::vector<Index> > > edges = m_edgesToRemove;
+        helper::ReadAccessor< Data<helper::vector<Index> > > triangles = m_trianglesToRemove;
+        helper::ReadAccessor< Data<helper::vector<Index> > > quads = m_quadsToRemove;
+        helper::ReadAccessor< Data<helper::vector<Index> > > tetrahedra = m_tetrahedraToRemove;
+        helper::ReadAccessor< Data<helper::vector<Index> > > hexahedra = m_hexahedraToRemove;
 
         if (!hexahedra.empty())
         {
             sofa::component::topology::HexahedronSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
-            helper::vector <index_type> vitems;
+            helper::vector <Index> vitems;
             vitems.assign(hexahedra.begin(), hexahedra.end());
 
             if (topoMod)
@@ -243,7 +243,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
         {
             sofa::component::topology::TetrahedronSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
-            helper::vector <index_type> vitems;
+            helper::vector <Index> vitems;
             vitems.assign(tetrahedra.begin(), tetrahedra.end());
 
             if (topoMod)
@@ -256,7 +256,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
         {
             sofa::component::topology::QuadSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
-            helper::vector <index_type> vitems;
+            helper::vector <Index> vitems;
             vitems.assign(quads.begin(), quads.end());
 
             if (topoMod)
@@ -269,7 +269,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
         {
             sofa::component::topology::TriangleSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
-            sofa::helper::vector <index_type> vitems;
+            sofa::helper::vector <Index> vitems;
             vitems.assign(triangles.begin(), triangles.end());
 
             if (topoMod)
@@ -282,7 +282,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
         {
             sofa::component::topology::EdgeSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
-            helper::vector <index_type> vitems;
+            helper::vector <Index> vitems;
             vitems.assign(edges.begin(), edges.end());
 
             if (topoMod)
@@ -296,7 +296,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
         if (m_interval.getValue() != 0.0)
             newTime += m_interval.getValue();
         else
-            newTime = (index_type)-1;
+            newTime = (Index)-1;
         m_timeToRemove.endEdit();
     }
 }
@@ -425,7 +425,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 helper::vector< Vector2 > baryCoords;
                 baryCoords.resize(nbElements);
-                helper::vector < index_type > triangles;
+                helper::vector < Index > triangles;
                 triangles.resize(nbElements);
 
                 for(size_t i=0;i<nbElements;++i)
@@ -436,7 +436,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 }
 
 
-                helper::vector< helper::vector< index_type > > p_ancestors(nbElements);
+                helper::vector< helper::vector< Index > > p_ancestors(nbElements);
                 sofa::helper::vector< helper::vector< double > > p_baryCoefs(nbElements);
                 for(size_t i=0; i<nbElements; ++i)
                 {
@@ -478,7 +478,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             else if ( EleType == "Triangle" || EleType == "Triangles")
             {
 
-                helper::vector<helper::vector<index_type> >  p_ancestors(nbElements);
+                helper::vector<helper::vector<Index> >  p_ancestors(nbElements);
                 helper::vector<helper::vector<double> >        p_baryCoefs(nbElements);
 
                 if(!str.eof() )
@@ -489,7 +489,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     {
                         for(size_t i = 0; i<nbElements; ++i)
                         {
-                            helper::vector<index_type>& ancestor = p_ancestors[i];
+                            helper::vector<Index>& ancestor = p_ancestors[i];
                             ancestor.resize(1);
                             str >> ancestor[0];
                         }
@@ -598,7 +598,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             sofa::core::topology::TopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
 
-            helper::vector <index_type> vitems;
+            helper::vector <Index> vitems;
             vitems.resize (nbElements);
 
             for (size_t i = 0; i<nbElements; ++i)
@@ -632,10 +632,10 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
             Vector3 a;
             Vector3 b;
-            index_type ind_ta;
-            index_type ind_tb;
-            index_type a_last = core::topology::BaseMeshTopology::InvalidID;
-            index_type b_last = core::topology::BaseMeshTopology::InvalidID;
+            Index ind_ta;
+            Index ind_tb;
+            Index a_last = core::topology::BaseMeshTopology::InvalidID;
+            Index b_last = core::topology::BaseMeshTopology::InvalidID;
             bool firstCut = true;
 
             //get the number of element
@@ -658,7 +658,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 nbElements = values.size() / 3;
             }
 
-            for (index_type j = 0; j < 3; ++j)
+            for (Index j = 0; j < 3; ++j)
                 Sin >> a[j];
 
             if (onlyCoordinates)
@@ -673,7 +673,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 {
                     Sin >> ind_tb;//get the second index of triangle
                 }
-                for (index_type j = 0; j < 3; ++j)
+                for (Index j = 0; j < 3; ++j)
                     Sin >> b[j];
 
                 if (onlyCoordinates)
@@ -683,7 +683,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 // Output declarations
                 sofa::helper::vector<sofa::core::topology::TopologyObjectType>       topoPath_list;
-                sofa::helper::vector<index_type> indices_list;
+                sofa::helper::vector<Index> indices_list;
                 sofa::helper::vector<Vec<3, double> > coords2_list;
 
                 if (firstCut)
@@ -699,8 +699,8 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 }
 
                 //Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
-                index_type uInd_ta = (index_type) ind_ta;
-                index_type uInd_tb = (index_type) ind_tb;
+                Index uInd_ta = (Index) ind_ta;
+                Index uInd_tb = (Index) ind_tb;
 
                 bool isPathOk =
                     triangleGeo->computeIntersectedObjectsList(
@@ -714,15 +714,15 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     break;
                 }
 
-                sofa::helper::vector<index_type> new_edges;
+                sofa::helper::vector<Index> new_edges;
 
                 //Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
                 triangleAlg->SplitAlongPath(a_last, a, b_last, b,
                         topoPath_list, indices_list, coords2_list,
                         new_edges, 0.1, 0.25);
 
-                sofa::helper::vector<index_type> new_points;
-                sofa::helper::vector<index_type> end_points;
+                sofa::helper::vector<Index> new_points;
+                sofa::helper::vector<Index> end_points;
                 bool reachBorder = false;
 
                 //Duplicates the given edges
@@ -835,7 +835,7 @@ void TopologicalChangeProcessor::saveIndices()
         ++it;
         std::istringstream str2(*it);
 
-        index_type nbElements = 0;
+        Index nbElements = 0;
         str2 >> buff;
         if (buff == "INCISE=")
         {
@@ -862,7 +862,7 @@ void TopologicalChangeProcessor::saveIndices()
         for (size_t i = 0 ; i < values.size() ; i+=increment)
         {
             Vector3 coord;
-            index_type triangleIndex;
+            Index triangleIndex;
             if (onlyCoordinates)
             {
                 coord = Vector3(values[i], values[i+1], values[i+2]);
@@ -871,7 +871,7 @@ void TopologicalChangeProcessor::saveIndices()
             else
             {
                 coord = Vector3(values[i+1], values[i+2], values[i+3]);
-                triangleIndex = (index_type)values[i];
+                triangleIndex = (Index)values[i];
             }
 
             incisionInfo.triangleIndices.push_back(triangleIndex);
@@ -935,10 +935,10 @@ void TopologicalChangeProcessor::saveIndices()
                 sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
                 m_topology->getContext()->get(triangleGeo);
 
-                index_type triIndex;
+                Index triIndex;
                 findElementIndex(Vector3(newPosition), triIndex, -1);
 
-                msg_error_when( (triIndex==InvalidID) ) << "Error while searching triangle index." ;
+                msg_error_when( (triIndex==sofa::InvalidID) ) << "Error while searching triangle index." ;
 
                 triangleIncisionInformation[i].triangleIndices[0] = triIndex;
 
@@ -954,7 +954,7 @@ void TopologicalChangeProcessor::saveIndices()
     }
 }
 
-TopologicalChangeProcessor::index_type TopologicalChangeProcessor::findIndexInListOfTime(SReal time)
+TopologicalChangeProcessor::Index TopologicalChangeProcessor::findIndexInListOfTime(SReal time)
 {
     double epsilon = 1e-10;
     for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
@@ -964,7 +964,7 @@ TopologicalChangeProcessor::index_type TopologicalChangeProcessor::findIndexInLi
             return i;
         }
     }
-    return InvalidID;
+    return sofa::InvalidID;
 }
 
 std::vector<SReal> TopologicalChangeProcessor::getValuesInLine(std::string line, size_t nbElements)
@@ -1030,7 +1030,7 @@ std::vector<SReal> TopologicalChangeProcessor::getValuesInLine(std::string line,
  * NOTE : the need of oldTriangleIndex comes to avoid some cases when the old triangle is overlapping another. It keeps the same
  * index instead of taking the new one.
  */
-void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, index_type& triangleIndex, index_type oldTriangleIndex)
+void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, Index& triangleIndex, Index oldTriangleIndex)
 {
     if (!m_topology)
         return;
@@ -1079,13 +1079,13 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, index_type& tr
         }
     }
 
-    std::vector<index_type> finalTriIndices;
+    std::vector<Index> finalTriIndices;
     finalTriIndices.clear();
 
     for (size_t i = 0 ; i < triIndices.size() ; i++)
     {
         const bool is_tested = false;
-        index_type indTest = 0;
+        Index indTest = 0;
         const bool isPointInTriangle = triangleGeo->isPointInsideTriangle(triIndices[i], is_tested, coord, indTest);
 
         if (isPointInTriangle)
@@ -1137,7 +1137,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, index_type& tr
         projectedPoint[2] = (- a * c * x - b * c * y + (a * a + b * b) * z - d * c) /*/normalNorm*/;
 
         const bool is_tested = false;
-        index_type indTest = 0;
+        Index indTest = 0;
         //test if the projected point is inside the current triangle
         const bool isPointInTriangle = triangleGeo->isPointInsideTriangle(i, is_tested, projectedPoint, indTest);
 
@@ -1229,7 +1229,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
             triangleIncisionInformation[i].computeCoordinates(m_topology);
     }
 
-    index_type ind_ta = 0;
+    Index ind_ta = 0;
     if (indexOfTime < (int)triangleIncisionInformation.size())
     {
         if (triangleIncisionInformation[indexOfTime].triangleIndices.empty())
@@ -1250,7 +1250,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     a.clear();
     a = coordinates[0];
 
-    index_type ind_tb = 0;
+    Index ind_tb = 0;
     for (size_t i =1; i < triangleIncisionInformation[indexOfTime].triangleIndices.size(); ++i)
     {
         ind_tb = triangleIncisionInformation[indexOfTime].triangleIndices[i];
@@ -1261,7 +1261,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
 
         // Output declarations
         sofa::helper::vector< sofa::core::topology::TopologyObjectType> topoPath_list;
-        sofa::helper::vector<index_type> indices_list;
+        sofa::helper::vector<Index> indices_list;
         sofa::helper::vector< Vec<3, double> > coords2_list;
 
         if(firstCut)
@@ -1296,13 +1296,13 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
             errorTrianglesIndices.pop_back();
         }
 
-        sofa::helper::vector< index_type > new_edges;
+        sofa::helper::vector< Index > new_edges;
 
         //Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
         triangleAlg->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, m_epsilonSnapPath.getValue(), m_epsilonSnapBorder.getValue());
 
-        sofa::helper::vector<index_type> new_points;
-        sofa::helper::vector<index_type> end_points;
+        sofa::helper::vector<Index> new_points;
+        sofa::helper::vector<Index> end_points;
         bool reachBorder = false;
 
         //Duplicates the given edges
@@ -1343,8 +1343,8 @@ void TopologicalChangeProcessor::updateTriangleIncisionInformation()
         for (unsigned int j = 0 ; j < triangleIncisionInformation[i].triangleIndices.size() ; j++ )
         {
             //update the triangle index corresponding to the current coordinates
-            index_type newTriangleIndexb;
-            index_type currentTriangleIndex = triangleIncisionInformation[i].triangleIndices[j];
+            Index newTriangleIndexb;
+            Index currentTriangleIndex = triangleIncisionInformation[i].triangleIndices[j];
 
             if ( j >= triangleIncisionInformation[i].coordinates.size() || triangleIncisionInformation[i].coordinates.empty())
             {
@@ -1354,7 +1354,7 @@ void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 
             findElementIndex(triangleIncisionInformation[i].coordinates[j], newTriangleIndexb, currentTriangleIndex);
 
-            if ( newTriangleIndexb == InvalidID)
+            if ( newTriangleIndexb == sofa::InvalidID)
             {
                 msg_warning() << "(updateTriangleIncisionInformation): error while finding the point " << triangleIncisionInformation[i].coordinates[j] << " in a new triangle. Current triangle index = " << currentTriangleIndex ;
                 break;

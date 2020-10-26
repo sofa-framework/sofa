@@ -44,9 +44,9 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
-void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(index_type, Spring &t,
+void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(Index, Spring &t,
         const core::topology::BaseMeshTopology::Edge & e,
-        const sofa::helper::vector<index_type> & ancestors,
+        const sofa::helper::vector<Index> & ancestors,
         const sofa::helper::vector<double> & coefs)
 {
     if (ff)
@@ -120,7 +120,7 @@ void VectorSpringForceField<DataTypes>::addSpring(int m1, int m2, SReal ks, SRea
     if (useTopology && m_topology)
     {
         topology::EdgeSetTopologyContainer::EdgeID e = m_topology->getEdgeIndex(unsigned(m1),unsigned(m2));
-        if (e != sofa::defaulttype::InvalidID)
+        if (e != sofa::InvalidID)
             springArrayData[e]=Spring(Real(ks),Real(kd),restVector);
     }
     else

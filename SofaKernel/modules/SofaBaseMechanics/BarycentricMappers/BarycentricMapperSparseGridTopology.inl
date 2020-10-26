@@ -78,8 +78,8 @@ void BarycentricMapperSparseGridTopology<In,Out>::resize( core::State<Out>* toMo
 
 
 template <class In, class Out>
-typename BarycentricMapperSparseGridTopology<In, Out>::index_type
-BarycentricMapperSparseGridTopology<In,Out>::addPointInCube ( const index_type cubeIndex, const SReal* baryCoords )
+typename BarycentricMapperSparseGridTopology<In, Out>::Index
+BarycentricMapperSparseGridTopology<In,Out>::addPointInCube ( const Index cubeIndex, const SReal* baryCoords )
 {
     m_map.resize ( m_map.size() +1 );
     CubeData& data = *m_map.rbegin();
@@ -103,8 +103,8 @@ void BarycentricMapperSparseGridTopology<In,Out>::init ( const typename Out::Vec
         for ( unsigned int i=0; i<out.size(); i++ )
         {
             Vector3 coefs;
-            index_type cube = m_fromTopology->findCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
-            if ( cube==sofa::defaulttype::InvalidID )
+            Index cube = m_fromTopology->findCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
+            if ( cube==sofa::InvalidID )
             {
                 cube = m_fromTopology->findNearestCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
             }
@@ -169,7 +169,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>
 
     for ( size_t i=0; i<m_map.size(); i++ )
     {
-        const index_type out = i;
+        const Index out = i;
 
         const topology::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( this->m_map[i].in_index );
 

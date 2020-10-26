@@ -68,7 +68,8 @@ public:
     typename MMapping::SPtr mapping;
     typename MMapper::SPtr mapper;
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
+    using Size = sofa::Index;
 
     BarycentricContactMapper()
         : model(nullptr), mapping(nullptr), mapper(nullptr)
@@ -84,7 +85,7 @@ public:
 
     MMechanicalState* createMapping(const char* name="contactPoints");
 
-    void resize(std::size_t size)
+    void resize(Size size)
     {
         if (mapping != nullptr)
         {
@@ -130,18 +131,18 @@ class ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
-    index_type addPoint(const Coord& P, index_type index, Real&)
+    Index addPoint(const Coord& P, Index index, Real&)
     {
         return this->mapper->createPointInLine(P, this->model->getElemEdgeIndex(index), &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
     }
-    index_type addPointB(const Coord& /*P*/, index_type index, Real& /*r*/, const defaulttype::Vector3& baryP)
+    Index addPointB(const Coord& /*P*/, Index index, Real& /*r*/, const defaulttype::Vector3& baryP)
     {
         return this->mapper->addPointInLine(this->model->getElemEdgeIndex(index), baryP.ptr());
     }
 
-    inline index_type addPointB(const Coord& P, index_type index, Real& r ){return addPoint(P,index,r);}
+    inline Index addPointB(const Coord& P, Index index, Real& r ){return addPoint(P,index,r);}
 };
 
 /// Mapper for TriangleModel
@@ -151,50 +152,50 @@ class ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, DataTy
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
-    index_type addPoint(const Coord& P, index_type index, Real&)
+    Index addPoint(const Coord& P, Index index, Real&)
     {
-        std::size_t nbt = this->model->getCollisionTopology()->getNbTriangles();
+        auto nbt = this->model->getCollisionTopology()->getNbTriangles();
         if (index < nbt)
             return this->mapper->createPointInTriangle(P, index, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
         else
         {
-            index_type qindex = (index - nbt)/2;
-            std::size_t nbq = this->model->getCollisionTopology()->getNbQuads();
+            Index qindex = (index - nbt)/2;
+            auto nbq = this->model->getCollisionTopology()->getNbQuads();
             if (qindex < nbq)
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else
             {
                 msg_error("ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
                                                               << "model="<<this->model->getName()<<" size="<<this->model->getSize() ;
-                return sofa::defaulttype::InvalidID;
+                return sofa::InvalidID;
             }
         }
     }
-    index_type addPointB(const Coord& P, index_type index, Real& /*r*/, const defaulttype::Vector3& baryP)
+    Index addPointB(const Coord& P, Index index, Real& /*r*/, const defaulttype::Vector3& baryP)
     {
 
-        std::size_t nbt = this->model->getCollisionTopology()->getNbTriangles();
+        auto nbt = this->model->getCollisionTopology()->getNbTriangles();
         if (index < nbt)
             return this->mapper->addPointInTriangle(index, baryP.ptr());
         else
         {
             // TODO: barycentric coordinates usage for quads
-            index_type qindex = (index - nbt)/2;
-            std::size_t nbq = this->model->getCollisionTopology()->getNbQuads();
+            Index qindex = (index - nbt)/2;
+            auto nbq = this->model->getCollisionTopology()->getNbQuads();
             if (qindex < nbq)
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else
             {
                 msg_error("ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
                             << "model="<<this->model->getName()<<" size="<<this->model->getSize() ;
-                return sofa::defaulttype::InvalidID;
+                return sofa::InvalidID;
             }
         }
     }
 
-    inline index_type addPointB(const Coord& P, index_type index, Real& r ){return addPoint(P,index,r);}
+    inline Index addPointB(const Coord& P, Index index, Real& r ){return addPoint(P,index,r);}
 
 };
 
@@ -203,10 +204,10 @@ template <class DataTypes>
 class ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public BarycentricContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>{
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
 public:
-    index_type addPoint(const Coord& P, index_type index, Real& r){
+    Index addPoint(const Coord& P, Index index, Real& r){
         r = this->model->radius(index);
 
         SReal baryCoords[1];

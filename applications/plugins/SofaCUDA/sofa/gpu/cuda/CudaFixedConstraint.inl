@@ -102,7 +102,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addConstraint(Main* m, index_type index)
+void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addConstraint(Main* m, Index index)
 {
     Data& data = *m->data;
     //std::cout << "CudaFixedConstraint::addConstraint("<<index<<")\n";
@@ -149,7 +149,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::removeConstraint(Main* m, index_type index)
+void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::removeConstraint(Main* m, Index index)
 {
     Data& data = *m->data;
     removeValue(*m->d_indices.beginEdit(),index);
@@ -230,7 +230,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Mai
 }
 
 template<int N, class real>
-void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConstraint(Main* m, index_type index)
+void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConstraint(Main* m, Index index)
 {
     Data& data = *m->data;
     //std::cout << "CudaFixedConstraint::addConstraint("<<index<<")\n";
@@ -277,7 +277,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConst
 }
 
 template<int N, class real>
-void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeConstraint(Main* m, index_type index)
+void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeConstraint(Main* m, Index index)
 {
     Data& data = *m->data;
     removeValue(*m->d_indices.beginEdit(),index);
@@ -433,9 +433,9 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3dTypes>::projectResponse(M
 #define CudaFixedConstraint_ImplMethods(T) \
     template<> void FixedConstraint< T >::init() \
     { data->init(this); } \
-    template<> void FixedConstraint< T >::addConstraint(index_type index) \
+    template<> void FixedConstraint< T >::addConstraint(Index index) \
     { data->addConstraint(this, index); } \
-    template<> void FixedConstraint< T >::removeConstraint(index_type index) \
+    template<> void FixedConstraint< T >::removeConstraint(Index index) \
     { data->removeConstraint(this, index); } \
     template<> void FixedConstraint< T >::projectResponse(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_resData) \
     {  \

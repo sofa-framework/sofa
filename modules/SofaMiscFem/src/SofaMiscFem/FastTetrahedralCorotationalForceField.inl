@@ -32,10 +32,10 @@ namespace sofa::component::forcefield
 {
 
 template< class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::applyCreateFunction(index_type tetrahedronIndex,
+void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::applyCreateFunction(Index tetrahedronIndex,
         TetrahedronRestInformation &my_tinfo,
         const core::topology::BaseMeshTopology::Tetrahedron &,
-        const sofa::helper::vector<index_type> &,
+        const sofa::helper::vector<Index> &,
         const sofa::helper::vector<double> &)
 {
     if (ff)

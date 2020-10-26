@@ -42,8 +42,8 @@ BarycentricMapperTetrahedronSetTopology<In,Out>::BarycentricMapperTetrahedronSet
 
 
 template <class In, class Out>
-typename BarycentricMapperTetrahedronSetTopology<In, Out>::index_type
-BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInTetra ( const index_type tetraIndex, const SReal* baryCoords )
+typename BarycentricMapperTetrahedronSetTopology<In, Out>::Index
+BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInTetra ( const Index tetraIndex, const SReal* baryCoords )
 {
     helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
     vectorData.resize ( d_map.getValue().size() +1 );
@@ -99,7 +99,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::computeDistance(double& d,
 }
 
 template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInElement(const index_type elementIndex, const SReal* baryCoords)
+void BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInElement(const Index elementIndex, const SReal* baryCoords)
 {
     addPointInTetra(elementIndex,baryCoords);
 }
