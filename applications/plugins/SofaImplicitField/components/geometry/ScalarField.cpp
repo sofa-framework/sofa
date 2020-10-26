@@ -43,6 +43,7 @@ namespace _scalarfield_
 Vec3d ScalarField::getGradientByFinitDifference(Vec3d& pos, int& i)
 {
     Vec3d Result;
+    double epsilon = d_epsilon.getValue();
     pos[0] += epsilon;
     Result[0] = getValue(pos, i);
     pos[0] -= epsilon;
@@ -106,7 +107,7 @@ void ScalarField::getHessianByCentralFiniteDifference(const Vec3d& x, const doub
 
 void ScalarField::getHessian(Vec3d &Pos, Mat3x3& h)
 {
-    getHessianByCentralFiniteDifference(Pos, epsilon, h);
+    getHessianByCentralFiniteDifference(Pos, d_epsilon.getValue(), h);
 }
 
 bool ScalarField::computeSegIntersection(Vec3d& posInside, Vec3d& posOutside, Vec3d& intersecPos, int i)

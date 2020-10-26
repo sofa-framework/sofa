@@ -22,14 +22,14 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::RegisterObject ;
 
-#include "bottleField.h"
+#include "BottleField.h"
 
-namespace sofa::component::geometry::_bottleField_
+namespace sofa::component::geometry::_BottleField_
 {
 
 using sofa::defaulttype::Vec2;
 
-bottleField::bottleField()
+BottleField::BottleField()
     : d_inside(initData(&d_inside, false, "inside", "If true the field is oriented inside (resp. outside) the bottle-shaped object. (default = false)"))
     , d_radiusSphere(initData(&d_radiusSphere, 1.0, "radius", "Radius of Sphere emitting the field. (default = 1)"))
     , d_centerSphere(initData(&d_centerSphere, Vec3d(0.0,0.0,0.0), "center", "Position of the Sphere Surface. (default=0 0 0)" ))
@@ -46,7 +46,7 @@ bottleField::bottleField()
     }, {});
 }
 
-void bottleField::init()
+void BottleField::init()
 {
     m_inside = d_inside.getValue();
     m_center = d_centerSphere.getValue();
@@ -56,26 +56,26 @@ void bottleField::init()
     m_excentricity = d_excentricity.getValue();
 }
 
-void bottleField::reinit()
+void BottleField::reinit()
 {
     init();
 }
 
-double bottleField::outerLength(Vec3d& Pos)
+double BottleField::outerLength(Vec3d& Pos)
 {
     return sqrt((Pos[0] - m_center[0])*(Pos[0] - m_center[0]) +
                 (Pos[1] - m_center[1])*(Pos[1] - m_center[1]) +
                 (Pos[2] - m_center[2])*(Pos[2] - m_center[2]));
 }
 
-double bottleField::innerLength(Vec3d& Pos)
+double BottleField::innerLength(Vec3d& Pos)
 {
     return sqrt(m_excentricity*(Pos[0] - m_center[0])*(Pos[0] - m_center[0]) +
             (Pos[1] - (m_center[1]+m_shift))*(Pos[1] - (m_center[1]+m_shift)) +
             m_excentricity*(Pos[2] - m_center[2])*(Pos[2] - m_center[2]));
 }
 
-double bottleField::getValue(Vec3d& Pos, int& domain)
+double BottleField::getValue(Vec3d& Pos, int& domain)
 {
     SOFA_UNUSED(domain) ;
     double resultSphereOuter = this->outerLength(Pos) - m_radius ;
@@ -89,7 +89,7 @@ double bottleField::getValue(Vec3d& Pos, int& domain)
     return result;
 }
 
-Vec3d bottleField::getGradient(Vec3d &Pos, int &domain)
+Vec3d BottleField::getGradient(Vec3d &Pos, int &domain)
 {
     SOFA_UNUSED(domain);
     Vec3d g;
@@ -120,7 +120,7 @@ Vec3d bottleField::getGradient(Vec3d &Pos, int &domain)
     return g;
 }
 
-void bottleField::getHessian(Vec3d &Pos, Mat3x3& h)
+void BottleField::getHessian(Vec3d &Pos, Mat3x3& h)
 {
     double LsphereOuter = this->outerLength(Pos)  ;
     double LEllipsoidInner = this->innerLength(Pos) ;
@@ -162,8 +162,8 @@ void bottleField::getHessian(Vec3d &Pos, Mat3x3& h)
 
 
 // Register in the Factory
-int bottleFieldClass = core::RegisterObject("A spherical implicit field.")
-        .add< bottleField >()
+int BottleFieldClass = core::RegisterObject("A spherical implicit field.")
+        .add< BottleField >()
         ;
 
-} // namespace sofa::component::geometry::_bottleField_
+} // namespace sofa::component::geometry::_BottleField_

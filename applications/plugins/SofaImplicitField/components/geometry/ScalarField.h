@@ -124,9 +124,12 @@ public:
 
 
 protected:
-    ScalarField( ) { }
+    Data< double > d_epsilon;
+    ScalarField( )
+        : d_epsilon(initData(&d_epsilon,0.00001,"epsilon","Tolerance when evaluating the gradient and/or the hessian of the implicit surface numerically"))
+    {
+    }
     ~ScalarField() override { }
-    double epsilon=0.0001;
 
 private:
     ScalarField(const ScalarField& n) ;

@@ -23,7 +23,7 @@
 
 #include "ScalarField.h"
 #include <sofa/defaulttype/Mat.h>
-namespace sofa::component::geometry::_bottleField_
+namespace sofa::component::geometry::_BottleField_
 {
 
 
@@ -34,14 +34,14 @@ using sofa::defaulttype::Mat3x3;
  * This component emulates an implicit field shaped by a sphere with a hole made by an ellispsoid. The result may look like some kind of bottle or vase.
 */
 
-class  SOFA_SOFAIMPLICITFIELD_API bottleField  : public ScalarField
+class  SOFA_SOFAIMPLICITFIELD_API BottleField  : public ScalarField
 {
 public:
-    SOFA_CLASS(bottleField, ScalarField);
+    SOFA_CLASS(BottleField, ScalarField);
 
 public:
-    bottleField() ;
-    ~bottleField() override { }
+    BottleField() ;
+    ~BottleField() override { }
 
     /// Inherited from BaseObject
     void init() override ;
@@ -75,5 +75,5 @@ protected:
 };
 
 
-} //namespace sofa::component::geometry::_bottleField_
+} //namespace sofa::component::geometry::_BottleField_
 
