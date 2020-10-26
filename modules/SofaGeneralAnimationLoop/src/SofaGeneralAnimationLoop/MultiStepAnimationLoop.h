@@ -19,23 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ANIMATIONLOOP_MULTISTEPANIMATIONLOOP_H
-#define SOFA_COMPONENT_ANIMATIONLOOP_MULTISTEPANIMATIONLOOP_H
-#include "config.h"
+#pragma once
+
+#include <SofaGeneralAnimationLoop/config.h>
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/simulation/CollisionAnimationLoop.h>
 
-namespace sofa
+namespace sofa::component::animationloop
 {
 
-namespace component
-{
-
-namespace animationloop
-{
-
-class SOFA_GENERAL_ANIMATION_LOOP_API MultiStepAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+class SOFA_SOFAGENERALANIMATIONLOOP_API MultiStepAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;
@@ -62,10 +56,4 @@ public:
     Data<int> integrationSteps; ///< number of integration steps between each collision detection
 };
 
-} // namespace animationloop
-
-} // namespace component
-
-} // namespace sofa
-
-#endif /* SOFA_COMPONENT_ANIMATIONLOOP_MULTISTEPANIMATIONLOOP_H */
+} // namespace sofa::component::animationloop

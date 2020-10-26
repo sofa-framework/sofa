@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_H
-#define SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_H
+#pragma once
 
 #include <SofaGeneralAnimationLoop/config.h>
 
@@ -41,17 +40,10 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <Eigen/Sparse>
 
-namespace sofa
+namespace sofa::component::interactionforcefield
 {
 
-namespace component
-{
-
-namespace interactionforcefield
-{
-
-
-class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalAccumulateJacobian : public simulation::BaseMechanicalVisitor
+class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalAccumulateJacobian : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalAccumulateJacobian(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res)
@@ -275,16 +267,10 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_CPP)
-extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<defaulttype::Vec3Types, defaulttype::Rigid3Types>;
-extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<defaulttype::Vec3Types, defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Rigid3Types>;
-extern template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Vec1Types>;
+extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec3Types, defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec3Types, defaulttype::Vec3Types>;
+extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Vec1Types>;
 #endif
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_H
+} // namespace sofa::component::interactionforcefield

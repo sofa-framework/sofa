@@ -38,13 +38,7 @@
 
 using namespace sofa::simulation;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace animationloop
+namespace sofa::component::animationloop
 {
 
 int MultiTagAnimationLoopClass = core::RegisterObject("Simple animation loop that given a list of tags, animate the graph one tag after another.")
@@ -162,9 +156,4 @@ void MultiTagAnimationLoop::clear()
 
 
 
-} // namespace animationloop
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::animationloop

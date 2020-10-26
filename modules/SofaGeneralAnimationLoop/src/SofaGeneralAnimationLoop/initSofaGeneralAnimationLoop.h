@@ -19,21 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_GENERAL_ANIMATION_LOOP_INIT_H
-#define SOFA_COMPONENT_GENERAL_ANIMATION_LOOP_INIT_H
-#include "config.h"
+#pragma once
 
-namespace sofa
+#include <SofaGeneralAnimationLoop/config.h>
+
+namespace sofa::component
 {
 
-namespace component
-{
 
-void SOFA_GENERAL_ANIMATION_LOOP_API initGeneralAnimationLoop();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component

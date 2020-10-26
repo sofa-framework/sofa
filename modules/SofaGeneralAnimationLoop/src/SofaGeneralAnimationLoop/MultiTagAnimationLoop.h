@@ -19,25 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ANIMATIONLOOP_MULTITAGANIMATIONLOOP_H
-#define SOFA_COMPONENT_ANIMATIONLOOP_MULTITAGANIMATIONLOOP_H
-#include "config.h"
+#pragma once
+
+#include <SofaGeneralAnimationLoop/config.h>
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/simulation/CollisionAnimationLoop.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace animationloop
+namespace sofa::component::animationloop
 {
 
 /** Simple animation loop that given a list of tags, animate the graph one tag after another.
 */
-class SOFA_GENERAL_ANIMATION_LOOP_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+class SOFA_SOFAGENERALANIMATIONLOOP_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;
@@ -68,10 +62,4 @@ private:
     sofa::core::objectmodel::TagSet tagList;
 };
 
-} // namespace animationloop
-
-} // namespace component
-
-} // namespace sofa
-
-#endif /* SOFA_COMPONENT_ANIMATIONLOOP_MULTITAGANIMATIONLOOP_H */
+} // namespace sofa::component::animationloop

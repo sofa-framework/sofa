@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_INL
-#define SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_INL
+#pragma once
 
 #include "MechanicalMatrixMapper.h"
 #include <sofa/core/visual/VisualParams.h>
@@ -39,13 +38,7 @@
 //  Eigen Sparse Matrix
 #include <Eigen/Sparse>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 template<class DataTypes1, class DataTypes2>
@@ -552,10 +545,4 @@ double MechanicalMatrixMapper<DataTypes1, DataTypes2>::getPotentialEnergy(const 
     return 0.0;
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace namespace sofa::component::interactionforcefield
