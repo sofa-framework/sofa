@@ -7,14 +7,14 @@ set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/Vec.h
-    ${SRC_ROOT}/std/fixed_array.h
-    ${SRC_ROOT}/std/fixed_array_algorithms.h
+    ${SRC_ROOT}/stdtypes/fixed_array.h
+    ${SRC_ROOT}/stdtypes/fixed_array_algorithms.h
 )
 
 set(SOURCE_FILES
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/Vec.cpp
-    ${SRC_ROOT}/std/fixed_array.cpp
+    ${SRC_ROOT}/stdtypes/fixed_array.cpp
 )
 
 set(COMPAT_HEADER_FILES

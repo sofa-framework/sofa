@@ -21,9 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/types/std/fixed_array.h>
+#include <sofa/types/stdtypes/fixed_array.h>
 
-SOFA_DEPRECATED_HEADER(v21.06, "sofa/types/std/fixed_array.h")
+SOFA_DEPRECATED_HEADER(v21.06, "sofa/types/stdtypes/fixed_array.h")
 
 namespace sofa::helper
 {

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define FIXED_ARRAY_CPP
 
-#include <sofa/types/std/fixed_array.h>
+#include <sofa/types/stdtypes/fixed_array.h>
 
 namespace sofa::types::stdtypes
 {
