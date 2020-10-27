@@ -188,6 +188,21 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "RecordedCamera", Pluginized("v20.12", "SofaGeneralVisual") },
     { "VisualTransform", Pluginized("v20.12", "SofaGeneralVisual") },
     { "Visual3DText", Pluginized("v20.12", "SofaGeneralVisual") },
+        
+    // SofaGraphComponent was pluginized in #1531
+    { "AddFrameButtonSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "AddRecordedCameraButtonSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "AttachBodyButtonSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "FixPickedParticleButtonSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "Gravity", Pluginized("v20.12", "SofaGraphComponent") },
+    { "InteractingBehaviorModel", Pluginized("v20.12", "SofaGraphComponent") },
+    { "MouseButtonSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "PauseAnimation", Pluginized("v20.12", "SofaGraphComponent") },
+    { "PauseAnimationOnEvent", Pluginized("v20.12", "SofaGraphComponent") },
+    { "SofaDefaultPathSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "StatsSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "ViewerSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "APIVersion", Pluginized("v20.12", "SofaGraphComponent") },
 
     /***********************/
     // REMOVED SINCE v20.06
