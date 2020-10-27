@@ -1,5 +1,7 @@
 <Node name="root" dt="0.03333">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="SofaGeneralMeshCollision"/>
+    
     <DefaultPipeline verbose="0" depth="10" draw="0" />
     <RayTraceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7" />

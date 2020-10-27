@@ -1,4 +1,6 @@
 <Node name="TorusFEM" processor="0">
+    <RequiredPlugin name="SofaGeneralMeshCollision"/>
+    
 	<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0" />
   <ParallelCGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
 	<MeshObjLoader name="meshLoader" filename="mesh/torus_low_res.msh"/>

@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_MESHDISCRETEINTERSECTION_INL
-#define SOFA_COMPONENT_COLLISION_MESHDISCRETEINTERSECTION_INL
+#pragma once
+
 #include <SofaGeneralMeshCollision/MeshDiscreteIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
@@ -29,13 +29,7 @@
 #include <algorithm>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 
@@ -160,11 +154,4 @@ inline int MeshDiscreteIntersection::computeIntersection(Capsule & cap,Line & li
     return MeshIntTool::computeIntersection(cap,lin,intersection->getAlarmDistance(),intersection->getContactDistance(),contacts);
 }
 
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

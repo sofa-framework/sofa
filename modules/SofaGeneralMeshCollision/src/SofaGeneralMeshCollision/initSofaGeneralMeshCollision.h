@@ -19,61 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_MESHDISCRETEINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_MESHDISCRETEINTERSECTION_H
-#include "config.h"
+#pragma once
 
-#include <sofa/core/collision/Intersection.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/DiscreteIntersection.h>
-#include <SofaMeshCollision/MeshIntTool.h>
+#include <SofaGeneralMeshCollision/config.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+void SOFA_SOFAGENERALMESHCOLLISION_API initSofaGeneralMeshCollision();
 
-namespace collision
-{
-class SOFA_GENERAL_MESH_COLLISION_API MeshDiscreteIntersection : public core::collision::BaseIntersector
-{
-
-    typedef DiscreteIntersection::OutputVector OutputVector;
-
-public:
-    MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
-
-    bool testIntersection(Triangle&, Line&);
-    template<class T> bool testIntersection(TSphere<T>&, Triangle&);
-
-    int computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts);
-    template<class T> int computeIntersection(TSphere<T>&, Triangle&, OutputVector*);
-
-    int computeIntersection(Triangle & e1,Capsule & e2, OutputVector* contacts);
-
-    inline int computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts);
-    inline int computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts);
-
-    bool testIntersection(Capsule&,Triangle&);
-    bool testIntersection(Capsule&,Line&);
-
-protected:
-
-    DiscreteIntersection* intersection;
-
-};
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component

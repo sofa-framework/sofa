@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_DIRECTSAP_H
-#define SOFA_COMPONENT_COLLISION_DIRECTSAP_H
-#include "config.h"
+#pragma once
+
+#include <SofaGeneralMeshCollision/config.h>
 
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
@@ -35,13 +35,7 @@
 #include <deque>
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 class EndPoint;
@@ -53,7 +47,7 @@ class EndPoint;
   *min and max are updated with the method update(int i), so min and max have
   *min/max values on the i-th axis after the method update(int i).
   */
-class SOFA_GENERAL_MESH_COLLISION_API DSAPBox{
+class SOFA_SOFAGENERALMESHCOLLISION_API DSAPBox{
 public:
     DSAPBox(Cube c,EndPoint * mi = nullptr,EndPoint * ma = nullptr) : cube(c),min(mi),max(ma){}
 
@@ -81,7 +75,7 @@ public:
   *it sorts all the primitives along an axis (not checking the moving ones) and computes overlaping pairs without
   *saving it. But the memory used to save these primitives is created just once, the first time we add CollisionModels.
   */
-class SOFA_GENERAL_MESH_COLLISION_API DirectSAP :
+class SOFA_SOFAGENERALMESHCOLLISION_API DirectSAP :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {
@@ -157,11 +151,4 @@ public:
     inline bool needsDeepBoundingTree()const override {return false;}
 };
 
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_COLLISION_DIRECTSAP_H
+} // namespace sofa::component::collision

@@ -29,13 +29,7 @@
 #include <sofa/core/collision/IntersectorFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -514,9 +508,4 @@ bool MeshMinProximityIntersection::testIntersection(Capsule&,Line&){
     return true;
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::collision

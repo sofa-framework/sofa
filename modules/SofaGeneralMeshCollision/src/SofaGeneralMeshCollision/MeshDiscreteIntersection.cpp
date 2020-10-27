@@ -27,14 +27,7 @@
 #include <algorithm>
 #include <sofa/core/collision/IntersectorFactory.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -104,10 +97,4 @@ int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, Output
     return 1;
 }
 
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::collision

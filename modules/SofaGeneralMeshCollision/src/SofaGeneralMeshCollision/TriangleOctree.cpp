@@ -33,16 +33,9 @@
 #include <sofa/helper/system/thread/CTime.h>
 
 #include <cmath>
-#include <sofa/helper/system/gl.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using sofa::helper::system::thread::CTime;
@@ -62,17 +55,16 @@ TriangleOctree::~TriangleOctree()
 
 void TriangleOctree::draw (const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     defaulttype::Vector3 center;
     if ( objects.size ())
     {
         center =
             (defaulttype::Vector3 (x, y, z) + defaulttype::Vector3 (size / 2, size / 2, size / 2));
-        glPushMatrix ();
-        glTranslatef ((float)center[0], (float)center[1], (float)center[2]);
+        vparams->drawTool()->pushMatrix();
+        vparams->drawTool()->translate((float)center[0], (float)center[1], (float)center[2]);
         vparams->drawTool()->setPolygonMode(0, false);
-        vparams->drawTool()->drawCube(size, sofa::defaulttype::Vec4f(0.5, 0.5, 0.5, 1.0));
-        glPopMatrix ();
+        vparams->drawTool()->drawCube(size, sofa::defaulttype::Vec4f(0.5, 0.5, 0.5, 1.0)); 
+        vparams->drawTool()->popMatrix();
 
         vparams->drawTool()->setPolygonMode(0, true);
     }
@@ -81,7 +73,6 @@ void TriangleOctree::draw (const core::visual::VisualParams* vparams)
         if (childVec[i])
             childVec[i]->draw(vparams);
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 void TriangleOctree::insert (double _x, double _y, double _z,
@@ -920,8 +911,4 @@ void TriangleOctreeRoot::calcTriangleAABB(int tId, double* bb, double& size)
             fabs (bb[5] - bb[4]));
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision

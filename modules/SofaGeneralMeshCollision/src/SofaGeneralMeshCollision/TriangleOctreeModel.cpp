@@ -30,20 +30,14 @@
 #include <sofa/helper/system/thread/CTime.h>
 
 #include <cmath>
-#include <sofa/helper/system/gl.h>
 
-namespace sofa
+namespace sofa::component::topology
 {
 
-namespace component
-{
-
-namespace topology
-{
 typedef core::topology::BaseMeshTopology::Triangle	Triangle;
-}
+} // namespace sofa::component::topology
 
-namespace collision
+namespace sofa::component::collision
 {
 
 using sofa::helper::system::thread::CTime;
@@ -154,8 +148,4 @@ void TriangleOctreeModel::buildOctree()
     TriangleOctreeRoot::buildOctree();
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision
