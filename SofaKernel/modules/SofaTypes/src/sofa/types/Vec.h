@@ -23,9 +23,9 @@
 
 #include <sofa/types/config.h>
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/rmath.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
+
+#include <sofa/types/std/fixed_array.h>
+#include <cstdlib>
 #include <functional>
 #include <limits>
 
@@ -39,13 +39,13 @@ struct NoInit {};
 constexpr NoInit NOINIT;
 
 template < sofa::Size N, typename real=float>
-class Vec : public helper::fixed_array<real,N>
+class Vec : public sofa::types::stdtypes::fixed_array<real,N>
 {
 
     static_assert( N > 0, "" );
 
 public:
-    typedef typename helper::fixed_array<real, N>::Size Size;
+    typedef typename sofa::types::stdtypes::fixed_array<real, N>::Size Size;
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to static_size and size() method)
     enum { total_size = N };
@@ -294,7 +294,7 @@ public:
         set( v, r1 );
     }
 
-    Vec(const helper::fixed_array<real, N>& p)
+    Vec(const sofa::types::stdtypes::fixed_array<real, N>& p)
     {
         for(Size i=0; i<N; i++)
             this->elems[i] = p[i];
