@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGENERALEXPLICITODESOLVER_CONFIG_H
-#define SOFAGENERALEXPLICITODESOLVER_CONFIG_H
+#pragma once
 
-#include <SofaGeneral/config.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_GENERAL_EXPLICIT_ODE_SOLVER
-#  define SOFA_TARGET SofaGeneralExplicitOdeSolver
-#  define SOFA_GENERAL_EXPLICIT_ODE_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFAGENERALEXPLICITODESOLVER_VERSION @PROJECT_VERSION@
+
+#ifdef SOFA_BUILD_SOFAGENERALEXPLICITODESOLVER
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAGENERALEXPLICITODESOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_GENERAL_EXPLICIT_ODE_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
+#  define SOFA_SOFAGENERALEXPLICITODESOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
