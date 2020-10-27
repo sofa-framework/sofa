@@ -27,10 +27,7 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-
-
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <fstream>
 
 namespace sofa

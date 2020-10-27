@@ -23,15 +23,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
-#include <SofaBaseTopology/QuadSetTopologyModifier.h>
-#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
-#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
-#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/simulation/Simulation.h>
 
 namespace sofa
@@ -96,12 +87,15 @@ void TopologyChecker::reinit()
 
 bool TopologyChecker::checkContainer()
 {
+    bool result = false;
     if (m_topology->getTopologyType() == TopologyObjectType::TETRAHEDRON)
-        checkTetrahedronTopology();
+        result = checkTetrahedronTopology();
     else if (m_topology->getTopologyType() == TopologyObjectType::TRIANGLE)
-        checkTriangleTopology();
+        result = checkTriangleTopology();
     else if (m_topology->getTopologyType() == TopologyObjectType::TRIANGLE)
-        checkEdgeTopology();
+        result = checkEdgeTopology();
+
+    return result;
 }
 
 
@@ -123,52 +117,55 @@ bool TopologyChecker::checkTriangleTopology()
 
 bool TopologyChecker::checkEdgeTopology()
 {
+    bool ret = true;
     int nbE = m_topology->getNbEdges();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
     
     if (nbE != my_edges.size())
+    {
+        msg_error() << "CheckEdgeTopology failed: not the good number of edges, getNbEdges returns " << nbE << " whereas edge array size is: " << my_edges.size();
         return false;
+    }
+        
 
     // check edge buffer
-    for (auto edge : my_edges)
+    for (std::size_t i = 0; i < nbE; ++i)
     {
+        const auto& edge = my_edges[i];
         if (edge[0] == edge[1]) {
-            return false;
-        }
-    }
-
-    // check cross element
-    auto EdgesAV = m_topology->getEdgesAroundVertex();
-    if (!EdgesAV.empty())
-    {
-        helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-        std::set<int> edgeSet;
-
-        // loop on all edges around vertex
-        for (size_t i = 0; i < m_edgesAroundVertex.size(); ++i)
-        {
-            const sofa::helper::vector<EdgeID> &es = m_edgesAroundVertex[i];
-            for (size_t j = 0; j < es.size(); ++j)
-            {
-                const Edge& edge = m_edge[es[j]];
-                if (!(edge[0] == i || edge[1] == i))
-                {
-                    msg_error() << "EdgeSetTopologyContainer::checkTopology() failed: edge " << es[j] << ": [" << edge << "] not around vertex: " << i;
-                    ret = false;
-                }
-
-                // count number of edge
-                edgeSet.insert(es[j]);
-            }
-        }
-
-        if (edgeSet.size() != m_edge.size())
-        {
-            msg_error() << "EdgeSetTopologyContainer::checkTopology() failed: found " << edgeSet.size() << " edges in m_edgesAroundVertex out of " << m_edge.size();
+            msg_error() << "CheckEdgeTopology failed: edge " << i << " has 2 identical vertices: " << edge;
             ret = false;
         }
     }
 
+    // check cross element
+    std::size_t nbP = m_topology->getNbPoints();    
+    
+    std::set<int> edgeSet;
+    for (std::size_t i = 0; i < nbP; ++i)
+    {
+        const auto& EdgesAV = m_topology->getEdgesAroundVertex(i);
+        for (size_t j = 0; j < EdgesAV.size(); ++j)
+        {
+            const Topology::Edge& edge = my_edges[EdgesAV[j]];
+            if (!(edge[0] == i || edge[1] == i))
+            {
+                msg_error() << "CheckEdgeTopology failed: edge " << EdgesAV[j] << ": [" << edge << "] not around vertex: " << i;
+                ret = false;
+            }
+
+            // count number of edge
+            edgeSet.insert(EdgesAV[j]);
+        }
+    }
+
+    if (edgeSet.size() != nbE)
+    {
+        msg_error() << "CheckEdgeTopology failed: found " << edgeSet.size() << " edges in m_edgesAroundVertex out of " << nbE;
+        ret = false;
+    }
+
+    return ret;
 }
 
 
@@ -206,8 +203,8 @@ void TopologyChecker::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
-    m_topology->getContext()->get(triangleGeo);
+    //sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
+    //m_topology->getContext()->get(triangleGeo);
 
     //if (!triangleGeo)
     //    return;
