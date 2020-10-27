@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ODESOLVER_CENTRALDIFFERENCESOLVER_H
-#define SOFA_COMPONENT_ODESOLVER_CENTRALDIFFERENCESOLVER_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralExplicitOdeSolver/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace odesolver
+namespace sofa::component::odesolver
 {
 
 /** Explicit time integrator using central difference (also known as Verlet of Leap-frop).
@@ -40,7 +33,7 @@ namespace odesolver
  * @see http://en.wikipedia.org/wiki/Leapfrog_method
  *
  */
-class SOFA_GENERAL_EXPLICIT_ODE_SOLVER_API CentralDifferenceSolver : public sofa::core::behavior::OdeSolver
+class SOFA_SOFAGENERALEXPLICITODESOLVER_API CentralDifferenceSolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(CentralDifferenceSolver, sofa::core::behavior::OdeSolver);
@@ -83,10 +76,4 @@ public:
     }
 };
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::odesolver

@@ -29,13 +29,7 @@
 #include <iostream>
 #include <sofa/helper/system/thread/CTime.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace odesolver
+namespace sofa::component::odesolver
 {
 
 using core::VecId;
@@ -171,9 +165,4 @@ int CentralDifferenceSolverClass = core::RegisterObject("Explicit time integrato
         .addAlias("CentralDifference");
 ;
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::odesolver

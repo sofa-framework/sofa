@@ -31,13 +31,7 @@
 
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace odesolver
+namespace sofa::component::odesolver
 {
 using core::VecId;
 using namespace core::behavior;
@@ -126,9 +120,4 @@ void RungeKutta2Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
 
 
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::odesolver
