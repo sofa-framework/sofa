@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 using namespace sofa::defaulttype;
 
@@ -40,13 +34,8 @@ int GenerateCylinderClass = core::RegisterObject("Generate a Cylindrical Tetrahe
         ;
 
 
-template class SOFA_GENERAL_ENGINE_API GenerateCylinder<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API GenerateCylinder<Vec3Types>;
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

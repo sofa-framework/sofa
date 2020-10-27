@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -45,16 +39,12 @@ int HausdorffDistanceClass = core::RegisterObject("Compute the Hausdorff distanc
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Vec1Types>;
-template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Vec2Types>;
-template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Rigid2Types>;
-template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Rigid3Types>;
+template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<Vec1Types>;
+template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<Vec2Types>;
+template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<Rigid2Types>;
+template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<Rigid3Types>;
  
 
 
-} //
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

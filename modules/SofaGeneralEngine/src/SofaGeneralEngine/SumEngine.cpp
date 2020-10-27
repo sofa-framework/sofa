@@ -23,13 +23,7 @@
 #include "SumEngine.inl"
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -40,14 +34,8 @@ int SumEngineClass = core::RegisterObject("Computing the Sum between two vector 
 
         ;
 
-template class SOFA_GENERAL_ENGINE_API SumEngine<Vec1d>;
-template class SOFA_GENERAL_ENGINE_API SumEngine<Vec3d>;
+template class SOFA_SOFAGENERALENGINE_API SumEngine<Vec1d>;
+template class SOFA_SOFAGENERALENGINE_API SumEngine<Vec3d>;
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-
+} //namespace sofa::component::engine

@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_SHAPEMATCHING_INL
-#define SOFA_COMPONENT_ENGINE_SHAPEMATCHING_INL
-
+#pragma once
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaGeneralEngine/ShapeMatching.h>
 #include <sofa/helper/decompose.h>
@@ -32,13 +30,7 @@
     #include <omp.h>
 #endif
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 template<class Real>
 inline const defaulttype::Vec<3,Real>& center(const defaulttype::Vec<3,Real>& c)
@@ -220,10 +212,4 @@ void ShapeMatching<DataTypes>::draw(const core::visual::VisualParams* /*vparams*
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

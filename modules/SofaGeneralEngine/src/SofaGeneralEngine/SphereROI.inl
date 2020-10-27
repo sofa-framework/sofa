@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_SPHEREROI_INL
-#define SOFA_COMPONENT_ENGINE_SPHEREROI_INL
-
+#pragma once
 #include <SofaGeneralEngine/SphereROI.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -847,10 +839,4 @@ void SphereROI<defaulttype::Rigid3Types>::doUpdate()
 ////////////////////////////////////////////////////////////////////////////////////////
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

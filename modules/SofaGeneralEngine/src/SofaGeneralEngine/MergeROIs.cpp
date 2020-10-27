@@ -25,13 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa;
@@ -83,8 +77,4 @@ int MergeROIsClass = core::RegisterObject("Merge a list of ROIs (vector<Indices>
         ;
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::engine

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_H
-#define SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -30,13 +29,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 /**
@@ -79,27 +72,21 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<std::string>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<int>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<unsigned int>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 2> >;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 3> >;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 4> >;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 8> >;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<double>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec2d>;
-extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec3d>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<std::string>;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<int>;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<unsigned int>;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 2> >;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 3> >;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 4> >;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< helper::fixed_array<unsigned int, 8> >;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<double>;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Vec2d>;
+extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Vec3d>;
+// extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Coord>;
+// extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
+// extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Coord>;
+// extern template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
  
 #endif
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

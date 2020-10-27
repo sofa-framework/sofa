@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MERGEPOINTS_INL
-#define SOFA_COMPONENT_ENGINE_MERGEPOINTS_INL
-
+#pragma once
 #include <SofaGeneralEngine/MergePoints.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -140,10 +132,4 @@ void MergePoints<DataTypes>::doUpdate()
     initDone=true;
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

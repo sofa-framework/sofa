@@ -19,22 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_SumEngine_INL
-#define SOFA_COMPONENT_ENGINE_SumEngine_INL
-
-
+#pragma once
 #include "SumEngine.h"
 #include <sofa/helper/logging/Messaging.h>
 #include <numeric>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -68,11 +59,4 @@ void SumEngine<DataType>::doUpdate()
     out.wref() = std::accumulate(in.begin(), in.end(), DataType() );
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif
+} //namespace sofa::component::engine

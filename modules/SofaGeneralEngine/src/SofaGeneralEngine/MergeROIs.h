@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef MergeROIs_H_
-#define MergeROIs_H_
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 
 
@@ -32,18 +31,14 @@
 #include <sofa/helper/SVector.h>
 
 
-namespace sofa
-{
-namespace component
-{
-namespace engine
+namespace sofa::component::engine
 {
 
 /**
  * This class merges a list of ROIs (vector<Indices>) into a single Data (vector<svector<Indices>>)
  */
 
-class SOFA_GENERAL_ENGINE_API MergeROIs : public sofa::core::DataEngine
+class SOFA_SOFAGENERALENGINE_API MergeROIs : public sofa::core::DataEngine
 {
 public:
     typedef core::DataEngine Inherited;
@@ -83,8 +78,4 @@ protected:
 };
 
 
-} // namespace engine
-} // namespace component
-} // namespace sofa
-
-#endif /* MergeROIs_H_ */
+} //namespace sofa::component::engine

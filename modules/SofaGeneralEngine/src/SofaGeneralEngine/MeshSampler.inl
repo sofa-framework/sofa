@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MESHSAMPLER_INL
-#define SOFA_COMPONENT_ENGINE_MESHSAMPLER_INL
-
+#pragma once
 #include <SofaGeneralEngine/MeshSampler.h>
 #include <iostream>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 
@@ -231,10 +223,4 @@ void MeshSampler<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
 
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

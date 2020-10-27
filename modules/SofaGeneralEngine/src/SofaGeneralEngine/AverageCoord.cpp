@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -45,15 +39,11 @@ int AverageCoordClass = core::RegisterObject("Compute the average of coordinates
         ;
 
 
-template class SOFA_GENERAL_ENGINE_API AverageCoord<Vec2Types>;
-template class SOFA_GENERAL_ENGINE_API AverageCoord<Rigid2Types>;
-template class SOFA_GENERAL_ENGINE_API AverageCoord<Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API AverageCoord<Rigid3Types>;
+template class SOFA_SOFAGENERALENGINE_API AverageCoord<Vec2Types>;
+template class SOFA_SOFAGENERALENGINE_API AverageCoord<Rigid2Types>;
+template class SOFA_SOFAGENERALENGINE_API AverageCoord<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API AverageCoord<Rigid3Types>;
  
 
 
-} //
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

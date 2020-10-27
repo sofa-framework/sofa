@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_INL
-#define SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_INL
-
+#pragma once
 #include <sofa/core/objectmodel/Base.h>
 #include <SofaGeneralEngine/TransformEngine.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -29,13 +27,7 @@
 
 #include <cassert>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -315,10 +307,4 @@ void TransformEngine<DataTypes>::doUpdate()
 
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

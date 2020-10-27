@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -42,14 +36,9 @@ int PointsFromIndicesClass = core::RegisterObject("Find the points given a list 
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API PointsFromIndices<Vec3Types>;
-// template class SOFA_GENERAL_ENGINE_API PointsFromIndices<Rigid3Types>;
+template class SOFA_SOFAGENERALENGINE_API PointsFromIndices<Vec3Types>;
+// template class SOFA_SOFAGENERALENGINE_API PointsFromIndices<Rigid3Types>;
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

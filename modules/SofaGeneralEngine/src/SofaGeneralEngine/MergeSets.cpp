@@ -23,13 +23,7 @@
 #include <SofaGeneralEngine/MergeSets.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 int MergeSetsClass = core::RegisterObject("Merge two sets of indices using specified boolean operation")
@@ -39,13 +33,9 @@ int MergeSetsClass = core::RegisterObject("Merge two sets of indices using speci
 //.add< MergeSets<unsigned long long> >()
         ;
 
-template class SOFA_GENERAL_ENGINE_API MergeSets<int>;
-template class SOFA_GENERAL_ENGINE_API MergeSets<unsigned int>;
-//template class SOFA_GENERAL_ENGINE_API MergeSets<long long>;
-//template class SOFA_GENERAL_ENGINE_API MergeSets<unsigned long long>;
+template class SOFA_SOFAGENERALENGINE_API MergeSets<int>;
+template class SOFA_SOFAGENERALENGINE_API MergeSets<unsigned int>;
+//template class SOFA_SOFAGENERALENGINE_API MergeSets<long long>;
+//template class SOFA_SOFAGENERALENGINE_API MergeSets<unsigned long long>;
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::engine

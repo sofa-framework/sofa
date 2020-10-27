@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MESHROI_INL
-#define SOFA_COMPONENT_ENGINE_MESHROI_INL
-
+#pragma once
 #include <SofaGeneralEngine/MeshROI.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using sofa::core::objectmodel::BaseData;
@@ -751,10 +743,4 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

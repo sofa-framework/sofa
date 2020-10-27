@@ -23,13 +23,7 @@
 #include <SofaGeneralEngine/MergeVectors.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine several inputs")
@@ -48,25 +42,20 @@ int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<int> >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<bool> >;
-//template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<std::string> >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2u> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<int> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<bool> >;
+//template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<std::string> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<defaulttype::Vec2u> >;
 
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<double> >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2d> >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec3d> >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec4d> >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2Types::VecCoord >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;
-template class SOFA_GENERAL_ENGINE_API MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<double> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<defaulttype::Vec2d> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<defaulttype::Vec3d> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<defaulttype::Vec4d> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid2Types::VecCoord >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

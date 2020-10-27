@@ -23,21 +23,10 @@
 #include <SofaGeneralEngine/MeshBoundaryROI.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 int MeshBoundaryROIClass = core::RegisterObject("Outputs indices of boundary vertices of a triangle/quad mesh")
         .add< MeshBoundaryROI >(true);
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

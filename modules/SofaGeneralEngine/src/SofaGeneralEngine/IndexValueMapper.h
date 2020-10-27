@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INDEXVALUEMAPPER_H_
-#define INDEXVALUEMAPPER_H_
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 
 
@@ -29,13 +28,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -72,14 +65,8 @@ public:
 };
 
 #if  !defined(INDEXVALUEMAPPER_CPP_)
-extern template class SOFA_GENERAL_ENGINE_API IndexValueMapper<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_SOFAGENERALENGINE_API IndexValueMapper<sofa::defaulttype::Vec3Types>;
  
 #endif
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif /* INDEXVALUEMAPPER_H_ */
+} //namespace sofa::component::engine

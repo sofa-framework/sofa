@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 int MeshSamplerClass = core::RegisterObject("Select uniformly distributed points on a mesh based on Euclidean or Geodesic distance measure")
@@ -38,13 +32,9 @@ int MeshSamplerClass = core::RegisterObject("Select uniformly distributed points
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API MeshSampler<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API MeshSampler<Vec3Types>;
  
 
 
 
-} //
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

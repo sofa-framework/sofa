@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_H
-#define SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -29,13 +28,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 /**
@@ -80,13 +73,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP)
-extern template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAGENERALENGINE_API SmoothMeshEngine<defaulttype::Vec3Types>;
 #endif
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

@@ -24,13 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -186,9 +180,4 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
     f_youngModulus.endEdit();
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

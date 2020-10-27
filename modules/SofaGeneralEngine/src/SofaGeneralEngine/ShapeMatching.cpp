@@ -27,13 +27,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace defaulttype;
@@ -44,8 +38,8 @@ int ShapeMatchingClass = core::RegisterObject("Compute target positions using sh
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API ShapeMatching<Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API ShapeMatching<Rigid3Types>;
+template class SOFA_SOFAGENERALENGINE_API ShapeMatching<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API ShapeMatching<Rigid3Types>;
  
 
 
@@ -60,8 +54,4 @@ void ShapeMatching<Rigid3Types>::doUpdate()
 
 
 
-} //
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

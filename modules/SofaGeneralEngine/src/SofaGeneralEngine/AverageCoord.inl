@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_AverageCoord_INL
-#define SOFA_COMPONENT_ENGINE_AverageCoord_INL
-
+#pragma once
 #include "AverageCoord.h"
 #include <iostream>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -100,10 +92,4 @@ void AverageCoord<DataTypes>::onBeginAnimationStep(const double dt)
     update();
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

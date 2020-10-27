@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef ROIValueMapper_H_
-#define ROIValueMapper_H_
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 
 
@@ -31,11 +30,7 @@
 #include <sofa/helper/vectorData.h>
 
 
-namespace sofa
-{
-namespace component
-{
-namespace engine
+namespace sofa::component::engine
 {
 
 /**
@@ -142,8 +137,4 @@ protected:
 };
 
 
-} // namespace engine
-} // namespace component
-} // namespace sofa
-
-#endif /* ROIValueMapper_H_ */
+} //namespace sofa::component::engine

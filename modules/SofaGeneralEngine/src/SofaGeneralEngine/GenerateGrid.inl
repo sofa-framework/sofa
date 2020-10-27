@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_GENERATEGRID_INL
-#define SOFA_COMPONENT_ENGINE_GENERATEGRID_INL
-
+#pragma once
 #include "GenerateGrid.h"
 #include <SofaBaseMechanics/IdentityMapping.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -188,10 +180,4 @@ void GenerateGrid<DataTypes>::doUpdate()
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

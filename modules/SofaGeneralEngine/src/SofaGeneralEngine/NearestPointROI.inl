@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_NearestPointROI_INL
-#define SOFA_COMPONENT_ENGINE_NearestPointROI_INL
-
+#pragma once
 #include <SofaGeneralEngine/NearestPointROI.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
@@ -30,13 +28,7 @@
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using sofa::simulation::Node ;
@@ -124,10 +116,4 @@ void NearestPointROI<DataTypes>::doUpdate()
     }
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

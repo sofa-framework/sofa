@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INDEXVALUEMAPPER_INL_
-#define INDEXVALUEMAPPER_INL_
-
+#pragma once
 #include "IndexValueMapper.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -98,10 +90,4 @@ void IndexValueMapper<DataTypes>::doUpdate()
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //INDEXVALUEMAPPER_INL_
+} //namespace sofa::component::engine

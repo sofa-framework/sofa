@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_INL
-#define SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_INL
-
+#pragma once
 #include <SofaGeneralEngine/RandomPointDistributionInSurface.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
@@ -29,13 +27,7 @@
 #include <ctime>
 #include <climits>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -285,10 +277,4 @@ void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::Visua
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_H
+} //namespace sofa::component::engine

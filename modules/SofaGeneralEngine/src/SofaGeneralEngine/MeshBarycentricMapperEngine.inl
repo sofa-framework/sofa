@@ -413,4 +413,4 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInCube(const Index /*cubeIn
     msg_error() << "addPointInCube not implemented";
 }
 
-} // sofa::component::engine
+} //namespace sofa::component::engine

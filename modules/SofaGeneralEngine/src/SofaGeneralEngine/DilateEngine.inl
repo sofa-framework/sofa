@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_DILATEENGINE_INL
-#define SOFA_COMPONENT_ENGINE_DILATEENGINE_INL
-
+#pragma once
 #include <SofaGeneralEngine/DilateEngine.h>
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
 #include <SofaMeshCollision/RayTriangleIntersection.h>
 #include <sofa/helper/rmath.h> //M_PI
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using helper::ReadAccessor;
@@ -175,10 +167,4 @@ void DilateEngine<DataTypes>::doUpdate()
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

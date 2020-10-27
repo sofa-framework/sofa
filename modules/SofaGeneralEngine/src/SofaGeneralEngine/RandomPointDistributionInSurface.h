@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_H
-#define SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 
 
@@ -34,13 +33,7 @@
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
 #include <sofa/helper/RandomGenerator.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 /**
@@ -98,13 +91,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_CPP)
-extern template class SOFA_GENERAL_ENGINE_API RandomPointDistributionInSurface<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAGENERALENGINE_API RandomPointDistributionInSurface<defaulttype::Vec3Types>;
 #endif
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_H
+} //namespace sofa::component::engine

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SelectLabelROI_H_
-#define SelectLabelROI_H_
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 
 
@@ -31,11 +30,7 @@
 #include <sofa/helper/SVector.h>
 
 
-namespace sofa
-{
-namespace component
-{
-namespace engine
+namespace sofa::component::engine
 {
 
 /**
@@ -113,8 +108,4 @@ protected:
 };
 
 
-} // namespace engine
-} // namespace component
-} // namespace sofa
-
-#endif /* SelectLabelROI_H_ */
+} //namespace sofa::component::engine

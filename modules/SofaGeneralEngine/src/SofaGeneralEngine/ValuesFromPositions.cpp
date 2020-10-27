@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -41,14 +35,9 @@ int ValuesFromPositionsClass = core::RegisterObject("Assign values to primitives
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API ValuesFromPositions<Rigid3Types>;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromPositions<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromPositions<Rigid3Types>;
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

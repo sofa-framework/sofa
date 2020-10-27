@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_INL
-#define SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_INL
-
+#pragma once
 #include <SofaGeneralEngine/IndicesFromValues.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class T>
@@ -122,10 +114,4 @@ void IndicesFromValues<T>::doUpdate()
     }
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

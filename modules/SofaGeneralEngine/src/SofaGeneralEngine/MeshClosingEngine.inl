@@ -19,18 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MeshClosingEngine_INL
-#define SOFA_COMPONENT_ENGINE_MeshClosingEngine_INL
-
+#pragma once
 #include "MeshClosingEngine.h"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -130,10 +122,4 @@ void MeshClosingEngine<DataTypes>::doUpdate()
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

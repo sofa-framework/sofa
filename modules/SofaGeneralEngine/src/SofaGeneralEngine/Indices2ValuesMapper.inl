@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INDECES2VALUESMAPPER_INL_
-#define INDECES2VALUESMAPPER_INL_
-
+#pragma once
 #include "Indices2ValuesMapper.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/system/FileRepository.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa;
@@ -100,10 +92,4 @@ void Indices2ValuesMapper<DataTypes>::doUpdate()
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //INDECES2VALUESMAPPER_INL_
+} //namespace sofa::component::engine

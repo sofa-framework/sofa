@@ -19,18 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MATHOP_INL
-#define SOFA_COMPONENT_ENGINE_MATHOP_INL
-
+#pragma once
 #include <SofaGeneralEngine/MathOp.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template<typename T>
@@ -477,10 +469,4 @@ void MathOp<VecT>::doUpdate()
         msg_error() << "Operation " << op << " FAILED";
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

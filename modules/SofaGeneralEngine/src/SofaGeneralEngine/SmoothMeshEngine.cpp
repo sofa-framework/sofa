@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -40,12 +34,8 @@ int SmoothMeshEngineClass = core::RegisterObject("Compute the laplacian smoothin
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API SmoothMeshEngine<Vec3Types>;
  
 
 
-} //
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

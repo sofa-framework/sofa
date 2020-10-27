@@ -25,13 +25,7 @@
 
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -45,9 +39,4 @@ int NearestPointROIClass = core::RegisterObject("Attach given pair of particles,
         .add< NearestPointROI<Rigid2Types> >()
         ;
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_NormalsFromPoints_INL
-#define SOFA_COMPONENT_ENGINE_NormalsFromPoints_INL
-
+#pragma once
 #include "NormalsFromPoints.h"
 #include <iostream>
 #include <cmath>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -139,10 +131,4 @@ void NormalsFromPoints<DataTypes>::doUpdate()
         waNormals[i].normalize();
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

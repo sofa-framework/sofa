@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -41,13 +35,8 @@ int GroupFilterYoungModulusClass = core::RegisterObject("This class gives a vect
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API GroupFilterYoungModulus<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API GroupFilterYoungModulus<Vec3Types>;
  
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_H
-#define SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 
 
@@ -31,13 +30,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 /**
@@ -73,14 +66,8 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP)
-extern template class SOFA_GENERAL_ENGINE_API PointsFromIndices<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAGENERALENGINE_API PointsFromIndices<defaulttype::Vec3Types>;
  
 #endif
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

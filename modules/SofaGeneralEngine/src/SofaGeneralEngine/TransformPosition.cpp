@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -40,13 +34,8 @@ int TransformPositionClass = core::RegisterObject("Transform position of 3d poin
         .add< TransformPosition<Vec3Types> >(true)
         ;
 
-template class SOFA_GENERAL_ENGINE_API TransformPosition<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API TransformPosition<Vec3Types>;
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

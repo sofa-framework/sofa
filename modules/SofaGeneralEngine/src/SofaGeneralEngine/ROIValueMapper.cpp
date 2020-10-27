@@ -25,13 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa;
@@ -41,8 +35,4 @@ int ROIValueMapperClass = core::RegisterObject("Generate a list of values from v
         ;
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::engine

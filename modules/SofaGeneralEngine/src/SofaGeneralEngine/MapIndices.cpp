@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 int MapIndicesClass = core::RegisterObject("Apply a permutation to a set of indices")
@@ -43,16 +37,11 @@ int MapIndicesClass = core::RegisterObject("Apply a permutation to a set of indi
         .add< MapIndices< helper::fixed_array<unsigned int, 8> > >()
         ;
 
-template class SOFA_GENERAL_ENGINE_API MapIndices<int>;
-template class SOFA_GENERAL_ENGINE_API MapIndices<unsigned int>;
-template class SOFA_GENERAL_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 2> >;
-template class SOFA_GENERAL_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 3> >;
-template class SOFA_GENERAL_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 4> >;
-template class SOFA_GENERAL_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 8> >;
+template class SOFA_SOFAGENERALENGINE_API MapIndices<int>;
+template class SOFA_SOFAGENERALENGINE_API MapIndices<unsigned int>;
+template class SOFA_SOFAGENERALENGINE_API MapIndices< helper::fixed_array<unsigned int, 2> >;
+template class SOFA_SOFAGENERALENGINE_API MapIndices< helper::fixed_array<unsigned int, 3> >;
+template class SOFA_SOFAGENERALENGINE_API MapIndices< helper::fixed_array<unsigned int, 4> >;
+template class SOFA_SOFAGENERALENGINE_API MapIndices< helper::fixed_array<unsigned int, 8> >;
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

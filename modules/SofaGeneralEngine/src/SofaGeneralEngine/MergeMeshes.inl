@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MERGEMESHES_INL
-#define SOFA_COMPONENT_ENGINE_MERGEMESHES_INL
-
+#pragma once
 #include <SofaGeneralEngine/MergeMeshes.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -168,10 +160,4 @@ void MergeMeshes<DataTypes>::doUpdate()
     msg_info() << " from " << nb << " input meshes.";
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

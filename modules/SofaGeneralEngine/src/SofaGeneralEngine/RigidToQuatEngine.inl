@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_RIGIDTOQUATENGINE_INL
-#define SOFA_COMPONENT_ENGINE_RIGIDTOQUATENGINE_INL
-
+#pragma once
 #include <SofaGeneralEngine/RigidToQuatEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 template <class DataTypes>
 RigidToQuatEngine<DataTypes>::RigidToQuatEngine()
@@ -91,10 +83,4 @@ void RigidToQuatEngine<DataTypes>::doUpdate()
     }
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_ENGINE_RIGIDTOQUATENGINE_INL
+} //namespace sofa::component::engine

@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_SPIRAL_INL
-#define SOFA_COMPONENT_ENGINE_SPIRAL_INL
-
+#pragma once
 #include <SofaGeneralEngine/Spiral.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #ifndef M_PI_2
 #define M_PI_2 1.570796326794897f
 #endif
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -119,10 +111,4 @@ void Spiral<DataTypes>::draw(const core::visual::VisualParams* vparams)
         return;
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

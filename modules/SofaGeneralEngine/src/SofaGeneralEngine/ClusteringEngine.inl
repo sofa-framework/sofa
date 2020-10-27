@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_CLUSTERING_INL
-#define SOFA_COMPONENT_ENGINE_CLUSTERING_INL
-
+#pragma once
 #include <SofaGeneralEngine/ClusteringEngine.h>
 #include <iostream>
 #include <sofa/core/visual/VisualParams.h>
@@ -31,13 +29,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/FileRepository.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using std::pair;
@@ -413,10 +405,4 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_JOINPOINTS_H
-#define SOFA_COMPONENT_ENGINE_JOINPOINTS_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 
 
@@ -29,13 +28,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 /*
@@ -80,14 +73,8 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_JOINPOINTS_CPP)
-extern template class SOFA_GENERAL_ENGINE_API JoinPoints<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_SOFAGENERALENGINE_API JoinPoints<sofa::defaulttype::Vec3Types>;
  
 #endif
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_ENGINE_JOINPOINTS_H
+} //namespace sofa::component::engine

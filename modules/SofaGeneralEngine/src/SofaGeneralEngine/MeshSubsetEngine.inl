@@ -19,18 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MeshSubsetEngine_INL
-#define SOFA_COMPONENT_ENGINE_MeshSubsetEngine_INL
-
+#pragma once
 #include "MeshSubsetEngine.h"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -101,10 +93,4 @@ void MeshSubsetEngine<DataTypes>::doUpdate()
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

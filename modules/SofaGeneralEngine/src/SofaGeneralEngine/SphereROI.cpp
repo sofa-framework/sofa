@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -42,14 +36,9 @@ int SphereROIClass = core::RegisterObject("Find the primitives (vertex/edge/tria
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API SphereROI<Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API SphereROI<Rigid3Types>;
+template class SOFA_SOFAGENERALENGINE_API SphereROI<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API SphereROI<Rigid3Types>;
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

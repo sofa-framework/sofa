@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_SPHEREROI_H
-#define SOFA_COMPONENT_ENGINE_SPHEREROI_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 
 
@@ -32,13 +31,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 
@@ -172,14 +165,8 @@ template<> void SphereROI<defaulttype::Rigid3Types>::doUpdate();
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SPHEREROI_CPP)
-extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API SphereROI<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAGENERALENGINE_API SphereROI<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAGENERALENGINE_API SphereROI<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_ENGINE_SphereROI_H
+} //namespace sofa::component::engine

@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_EXTRUDESURFACE_INL
-#define SOFA_COMPONENT_ENGINE_EXTRUDESURFACE_INL
-
+#pragma once
 #include <SofaGeneralEngine/ExtrudeSurface.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -275,10 +267,4 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

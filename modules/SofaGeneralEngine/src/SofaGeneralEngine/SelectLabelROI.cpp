@@ -25,13 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 int SelectLabelROIClass = core::RegisterObject("Select a subset of labeled points or cells stored in (vector<svector<label>>) given certain labels")
@@ -41,13 +35,9 @@ int SelectLabelROIClass = core::RegisterObject("Select a subset of labeled point
         .add< SelectLabelROI<int> >()
         ;
 
-template class SOFA_GENERAL_ENGINE_API SelectLabelROI<unsigned int>;
-template class SOFA_GENERAL_ENGINE_API SelectLabelROI<unsigned char>;
-template class SOFA_GENERAL_ENGINE_API SelectLabelROI<unsigned short>;
-template class SOFA_GENERAL_ENGINE_API SelectLabelROI<int>;
+template class SOFA_SOFAGENERALENGINE_API SelectLabelROI<unsigned int>;
+template class SOFA_SOFAGENERALENGINE_API SelectLabelROI<unsigned char>;
+template class SOFA_SOFAGENERALENGINE_API SelectLabelROI<unsigned short>;
+template class SOFA_SOFAGENERALENGINE_API SelectLabelROI<int>;
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::engine

@@ -24,13 +24,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -40,11 +34,7 @@ int GenerateRigidMassClass = core::RegisterObject("An engine computing the Rigid
 
         ;
 
-template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<Rigid3Types, Rigid3Mass>;
+template class SOFA_SOFAGENERALENGINE_API GenerateRigidMass<Rigid3Types, Rigid3Mass>;
 
 
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::engine

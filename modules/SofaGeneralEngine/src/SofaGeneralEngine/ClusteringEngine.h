@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_CLUSTERING_H
-#define SOFA_COMPONENT_ENGINE_CLUSTERING_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 
 
@@ -36,13 +35,7 @@
 #include <sofa/helper/SVector.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 /**
@@ -122,14 +115,8 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_CLUSTERINGENGINE_CPP)
-extern template class SOFA_GENERAL_ENGINE_API ClusteringEngine<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAGENERALENGINE_API ClusteringEngine<defaulttype::Vec3Types>;
  
 #endif
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

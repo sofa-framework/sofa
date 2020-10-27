@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_PROXIMITYROI_INL
-#define SOFA_COMPONENT_ENGINE_PROXIMITYROI_INL
-
+#pragma once
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -31,13 +29,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -297,10 +289,4 @@ void ProximityROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

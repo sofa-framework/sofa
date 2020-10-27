@@ -25,13 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 int SelectConnectedLabelsROIClass = core::RegisterObject("Select a subset of points or cells labeled from different sources, that are connected given a list of connection pairs")
@@ -41,13 +35,9 @@ int SelectConnectedLabelsROIClass = core::RegisterObject("Select a subset of poi
         .add< SelectConnectedLabelsROI<int> >()
         ;
 
-template class SOFA_GENERAL_ENGINE_API SelectConnectedLabelsROI<unsigned int>;
-template class SOFA_GENERAL_ENGINE_API SelectConnectedLabelsROI<unsigned char>;
-template class SOFA_GENERAL_ENGINE_API SelectConnectedLabelsROI<unsigned short>;
-template class SOFA_GENERAL_ENGINE_API SelectConnectedLabelsROI<int>;
+template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<unsigned int>;
+template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<unsigned char>;
+template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<unsigned short>;
+template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<int>;
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::engine

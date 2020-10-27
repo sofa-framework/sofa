@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_SPIRAL_H
-#define SOFA_COMPONENT_ENGINE_SPIRAL_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 
 
@@ -32,13 +31,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 /**
@@ -73,13 +66,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SPIRAL_CPP)
-extern template class SOFA_GENERAL_ENGINE_API Spiral<defaulttype::Vec3Types>; 
+extern template class SOFA_SOFAGENERALENGINE_API Spiral<defaulttype::Vec3Types>; 
 #endif
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_EXTRUDEEDGESANDGENERATEQUADS_INL
-#define SOFA_COMPONENT_ENGINE_EXTRUDEEDGESANDGENERATEQUADS_INL
-
+#pragma once
 #include <SofaGeneralEngine/ExtrudeEdgesAndGenerateQuads.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using helper::vector;
@@ -181,10 +173,4 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::doUpdate()
 
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

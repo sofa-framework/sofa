@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_INL
-#define SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_INL
-
+#pragma once
 #include <SofaGeneralEngine/TransformPosition.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <cmath>
@@ -32,13 +30,7 @@
 #include <fstream>
 #include <algorithm>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -503,10 +495,4 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

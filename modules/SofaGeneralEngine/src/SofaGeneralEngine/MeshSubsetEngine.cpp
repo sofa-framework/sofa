@@ -23,26 +23,15 @@
 #include <SofaGeneralEngine/MeshSubsetEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 int MeshSubsetEngineClass = core::RegisterObject("Extract a mesh subset based on selected vertices")
         .add< MeshSubsetEngine<defaulttype::Vec3Types> >(true) // default template
         ;
 
-template class SOFA_GENERAL_ENGINE_API MeshSubsetEngine<defaulttype::Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API MeshSubsetEngine<defaulttype::Vec3Types>;
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

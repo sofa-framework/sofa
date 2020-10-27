@@ -19,18 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MeshSplittingEngine_INL
-#define SOFA_COMPONENT_ENGINE_MeshSplittingEngine_INL
-
+#pragma once
 #include "MeshSplittingEngine.h"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class container>
@@ -113,10 +105,4 @@ void MeshSplittingEngine<DataTypes>::doUpdate()
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_NearestPointROI_H
-#define SOFA_COMPONENT_ENGINE_NearestPointROI_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -40,13 +39,7 @@
 
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 /** Attach given pair of particles, projecting the positions of the second particles to the first ones.
 */
@@ -89,18 +82,11 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_NearestPointROI_CPP)
-extern template class SOFA_GENERAL_ENGINE_API NearestPointROI<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API NearestPointROI<defaulttype::Vec2Types>;
-extern template class SOFA_GENERAL_ENGINE_API NearestPointROI<defaulttype::Vec1Types>;
-extern template class SOFA_GENERAL_ENGINE_API NearestPointROI<defaulttype::Rigid3Types>;
-extern template class SOFA_GENERAL_ENGINE_API NearestPointROI<defaulttype::Rigid2Types>;
+extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec2Types>;
+extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec1Types>;
+extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Rigid2Types>;
 #endif
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif
+} //namespace sofa::component::engine

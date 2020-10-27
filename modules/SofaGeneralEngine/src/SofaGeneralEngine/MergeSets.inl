@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MERGESETS_INL
-#define SOFA_COMPONENT_ENGINE_MERGESETS_INL
-
+#pragma once
 #include <SofaGeneralEngine/MergeSets.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <algorithm>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class T>
@@ -107,10 +99,4 @@ void MergeSets<T>::doUpdate()
         out.push_back(*it);
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

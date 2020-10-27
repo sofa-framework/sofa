@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_INL
-#define SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_INL
-
+#pragma once
 #include <SofaGeneralEngine/ValuesFromPositions.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
@@ -29,13 +27,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -450,10 +442,4 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vpar
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

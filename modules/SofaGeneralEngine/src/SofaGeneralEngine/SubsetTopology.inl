@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_INL
-#define SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_INL
-
+#pragma once
 #include <SofaGeneralEngine/SubsetTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <limits>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -904,10 +896,4 @@ void SubsetTopology<DataTypes>::computeBBox(const core::ExecParams*  params , bo
     this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

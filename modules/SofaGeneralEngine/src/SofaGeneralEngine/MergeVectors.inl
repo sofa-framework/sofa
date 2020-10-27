@@ -19,18 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MERGEVECTORS_INL
-#define SOFA_COMPONENT_ENGINE_MERGEVECTORS_INL
-
+#pragma once
 #include <SofaGeneralEngine/MergeVectors.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class VecT>
@@ -87,10 +79,4 @@ void MergeVectors<VecT>::doUpdate()
     helper::vectorData<VecValue>::merge( f_output, vf_inputs );
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

@@ -23,13 +23,7 @@
 #include "DifferenceEngine.inl"
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -40,14 +34,8 @@ int DifferenceEngineClass = core::RegisterObject("Computing the difference betwe
 
         ;
 
-template class SOFA_GENERAL_ENGINE_API DifferenceEngine<Vec1d>;
-template class SOFA_GENERAL_ENGINE_API DifferenceEngine<Vec3d>;
+template class SOFA_SOFAGENERALENGINE_API DifferenceEngine<Vec1d>;
+template class SOFA_SOFAGENERALENGINE_API DifferenceEngine<Vec3d>;
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-
+} //namespace sofa::component::engine

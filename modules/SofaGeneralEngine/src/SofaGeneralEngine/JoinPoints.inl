@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_JOINPOINTS_INL_
-#define SOFA_COMPONENT_ENGINE_JOINPOINTS_INL_
-
+#pragma once
 #include "JoinPoints.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <list>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -153,10 +145,4 @@ void JoinPoints<DataTypes>::doUpdate()
     f_mergedPoints.endEdit();
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_ENGINE_JOINPOINTS_INL_
+} //namespace sofa::component::engine

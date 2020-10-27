@@ -19,21 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_DifferenceEngine_INL
-#define SOFA_COMPONENT_ENGINE_DifferenceEngine_INL
-
-
+#pragma once
 #include "DifferenceEngine.h"
 #include <sofa/helper/logging/Messaging.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -80,11 +71,4 @@ void DifferenceEngine<DataType>::doUpdate()
         out[i] = in[i] - sub[i];
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif
+} //namespace sofa::component::engine

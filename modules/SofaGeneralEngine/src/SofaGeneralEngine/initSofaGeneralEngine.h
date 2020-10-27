@@ -19,22 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_GENERAL_ENGINE_INIT_H
-#define SOFA_COMPONENT_GENERAL_ENGINE_INIT_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
-namespace sofa
-{
-
-namespace component
+namespace sofa::component
 {
 
 
-void SOFA_GENERAL_ENGINE_API initGeneralEngine();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} //namespace sofa::component::engine

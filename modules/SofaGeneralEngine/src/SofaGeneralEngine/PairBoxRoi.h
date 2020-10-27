@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_PAIRBOXROI_H
-#define SOFA_COMPONENT_ENGINE_PAIRBOXROI_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 
 
@@ -35,13 +34,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 /**
@@ -129,16 +122,10 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP)
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Rigid3Types>;
-extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec6Types>; //Phuoc
+extern template class SOFA_SOFAGENERALENGINE_API PairBoxROI<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAGENERALENGINE_API PairBoxROI<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAGENERALENGINE_API PairBoxROI<defaulttype::Vec6Types>; //Phuoc
  
 #endif
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

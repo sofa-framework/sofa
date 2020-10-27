@@ -23,13 +23,7 @@
 #include <SofaGeneralEngine/MathOp.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 int MathOpClass = core::RegisterObject("Apply a math operation to combine several inputs")
@@ -45,22 +39,17 @@ int MathOpClass = core::RegisterObject("Apply a math operation to combine severa
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<int> >;
-template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<bool> >;
+template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<int> >;
+template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<bool> >;
 
-template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<double> >;
-template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<defaulttype::Vec2d> >;
-template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<defaulttype::Vec3d> >;
-template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2Types::VecCoord >;
-template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
-template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3Types::VecCoord >;
-template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3Types::VecDeriv >;
+template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<double> >;
+template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<defaulttype::Vec2d> >;
+template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<defaulttype::Vec3d> >;
+template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid2Types::VecCoord >;
+template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
+template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid3Types::VecCoord >;
+template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid3Types::VecDeriv >;
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

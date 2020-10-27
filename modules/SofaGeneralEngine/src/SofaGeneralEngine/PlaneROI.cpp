@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -41,14 +35,9 @@ int PlaneROIClass = core::RegisterObject("Find the primitives inside a given pla
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API PlaneROI<Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API PlaneROI<Rigid3Types>;
+template class SOFA_SOFAGENERALENGINE_API PlaneROI<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API PlaneROI<Rigid3Types>;
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

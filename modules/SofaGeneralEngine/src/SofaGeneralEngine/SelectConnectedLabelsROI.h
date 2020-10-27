@@ -19,11 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SelectConnectedLabelsROI_H_
-#define SelectConnectedLabelsROI_H_
-#include "config.h"
-
-
+#pragma once
+#include <SofaGeneralEngine/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -32,11 +29,7 @@
 #include <sofa/helper/vectorData.h>
 
 
-namespace sofa
-{
-namespace component
-{
-namespace engine
+namespace sofa::component::engine
 {
 
 /**
@@ -155,8 +148,4 @@ protected:
 };
 
 
-} // namespace engine
-} // namespace component
-} // namespace sofa
-
-#endif /* SelectConnectedLabelsROI_H_ */
+} //namespace sofa::component::engine

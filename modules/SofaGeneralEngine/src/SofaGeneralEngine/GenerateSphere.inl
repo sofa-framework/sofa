@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_GENERATESPHERE_INL
-#define SOFA_COMPONENT_ENGINE_GENERATESPHERE_INL
-
+#pragma once
 #include "GenerateSphere.h"
 #include <sofa/helper/rmath.h> //M_PI
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 
@@ -814,10 +806,4 @@ void GenerateSphere<DataTypes>::doUpdate()
 
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -42,15 +36,10 @@ int MeshROIClass = core::RegisterObject("Find the primitives (vertex/edge/triang
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API MeshROI<Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API MeshROI<Rigid3Types>;
-template class SOFA_GENERAL_ENGINE_API MeshROI<Vec6Types>;
+template class SOFA_SOFAGENERALENGINE_API MeshROI<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API MeshROI<Rigid3Types>;
+template class SOFA_SOFAGENERALENGINE_API MeshROI<Vec6Types>;
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

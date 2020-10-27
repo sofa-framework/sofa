@@ -25,13 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa;
@@ -42,12 +36,8 @@ int IndexValueMapperClass = core::RegisterObject("Input values to output values 
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API IndexValueMapper<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API IndexValueMapper<Vec3Types>;
  
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::engine

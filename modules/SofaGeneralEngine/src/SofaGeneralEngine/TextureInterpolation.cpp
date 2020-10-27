@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -42,15 +36,10 @@ int TextureInterpolationClass = core::RegisterObject("Create texture coordinate 
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec1Types>;
-template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec2Types>;
-template class SOFA_GENERAL_ENGINE_API TextureInterpolation <Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API TextureInterpolation <Vec1Types>;
+template class SOFA_SOFAGENERALENGINE_API TextureInterpolation <Vec2Types>;
+template class SOFA_SOFAGENERALENGINE_API TextureInterpolation <Vec3Types>;
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

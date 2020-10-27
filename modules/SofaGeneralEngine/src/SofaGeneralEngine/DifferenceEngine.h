@@ -20,20 +20,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_DifferenceEngine_H
-#define SOFA_COMPONENT_ENGINE_DifferenceEngine_H
-
-#include "config.h"
+#pragma once
+#include <SofaGeneralEngine/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/Vec.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 /// Computing the difference between two vector of dofs
@@ -68,15 +60,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_DifferenceEngine_CPP)
-extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec1d>;
-extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec3d>;
+extern template class SOFA_SOFAGENERALENGINE_API DifferenceEngine<defaulttype::Vec1d>;
+extern template class SOFA_SOFAGENERALENGINE_API DifferenceEngine<defaulttype::Vec3d>;
 
 #endif
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

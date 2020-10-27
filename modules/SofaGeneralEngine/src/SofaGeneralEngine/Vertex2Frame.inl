@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_VERTEX2FRAME_INL
-#define SOFA_COMPONENT_ENGINE_VERTEX2FRAME_INL
-
+#pragma once
 #include <SofaGeneralEngine/Vertex2Frame.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Quat.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -177,10 +169,4 @@ defaulttype::Quat  Vertex2Frame<DataTypes>::computeOrientation(const CPos &xAxis
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

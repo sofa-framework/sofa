@@ -26,13 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 int QuatToRigidEngineClass = core::RegisterObject("Transform a vector of Rigids into two independant vectors for positions (Vec3) and orientations (Quat).")
@@ -40,12 +34,8 @@ int QuatToRigidEngineClass = core::RegisterObject("Transform a vector of Rigids 
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API QuatToRigidEngine<sofa::defaulttype::Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API QuatToRigidEngine<sofa::defaulttype::Vec3Types>;
  
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::engine

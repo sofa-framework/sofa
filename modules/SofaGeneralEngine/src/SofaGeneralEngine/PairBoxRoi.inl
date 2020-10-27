@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_PAIRBOXROI_INL
-#define SOFA_COMPONENT_ENGINE_PAIRBOXROI_INL
-
+#pragma once
 #include <SofaGeneralEngine/PairBoxRoi.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <limits>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -241,10 +233,4 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::engine

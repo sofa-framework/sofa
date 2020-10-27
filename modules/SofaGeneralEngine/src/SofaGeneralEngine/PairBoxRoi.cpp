@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -42,15 +36,10 @@ int PairBoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/tri
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API PairBoxROI<Rigid3Types>;
-template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec6Types>; //Phuoc
+template class SOFA_SOFAGENERALENGINE_API PairBoxROI<Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API PairBoxROI<Rigid3Types>;
+template class SOFA_SOFAGENERALENGINE_API PairBoxROI<Vec6Types>; //Phuoc
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

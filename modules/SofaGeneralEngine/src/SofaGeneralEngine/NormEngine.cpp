@@ -23,13 +23,7 @@
 #include <SofaGeneralEngine/NormEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 int NormEngineClass = core::RegisterObject("Convert Vec in Real")
@@ -37,13 +31,7 @@ int NormEngineClass = core::RegisterObject("Convert Vec in Real")
 
         ;
 
-template class SOFA_GENERAL_ENGINE_API NormEngine<defaulttype::Vec3d>;
+template class SOFA_SOFAGENERALENGINE_API NormEngine<defaulttype::Vec3d>;
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-
+} //namespace sofa::component::engine

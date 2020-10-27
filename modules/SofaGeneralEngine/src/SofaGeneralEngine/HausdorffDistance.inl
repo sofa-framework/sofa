@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_INL
-#define SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_INL
-
+#pragma once
 #include "HausdorffDistance.h"
 #include <iostream>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 template <class DataTypes>
@@ -136,10 +128,4 @@ void HausdorffDistance<DataTypes>::onBeginAnimationStep(const double /*dt*/)
         update();
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_INL
+} //namespace sofa::component::engine

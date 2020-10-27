@@ -23,13 +23,7 @@
 #include <SofaGeneralEngine/MergePoints.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 int MergePointsClass = core::RegisterObject("Merge 2 cordinate vectors")
@@ -41,17 +35,12 @@ int MergePointsClass = core::RegisterObject("Merge 2 cordinate vectors")
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec1Types>;
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec2Types>;
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Vec3Types>;
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid2Types>;
-template class SOFA_GENERAL_ENGINE_API MergePoints<defaulttype::Rigid3Types>;
+template class SOFA_SOFAGENERALENGINE_API MergePoints<defaulttype::Vec1Types>;
+template class SOFA_SOFAGENERALENGINE_API MergePoints<defaulttype::Vec2Types>;
+template class SOFA_SOFAGENERALENGINE_API MergePoints<defaulttype::Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API MergePoints<defaulttype::Rigid2Types>;
+template class SOFA_SOFAGENERALENGINE_API MergePoints<defaulttype::Rigid3Types>;
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine

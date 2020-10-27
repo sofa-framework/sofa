@@ -25,13 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -41,13 +35,8 @@ int Vertex2FrameClass = core::RegisterObject("")
  
         ;
 
-template class SOFA_GENERAL_ENGINE_API Vertex2Frame<Rigid3Types>;
+template class SOFA_SOFAGENERALENGINE_API Vertex2Frame<Rigid3Types>;
  
 
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::engine
