@@ -1,16 +1,31 @@
-#ifndef SOFA_HELPER_FIXED_ARRAY_ALGORITHMS_H
-#define SOFA_HELPER_FIXED_ARRAY_ALGORITHMS_H
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#pragma once
 
-#include <sofa/helper/config.h>
-#include <sofa/helper/rmath.h>
-#include <sofa/helper/fixed_array.h>
-namespace sofa
-{
+#include <sofa/types/config.h>
 
-namespace helper
-{
+#include <sofa/types/std/fixed_array.h>
 
-namespace pairwise
+namespace sofa::types::stdtypes::pairwise
 {
 
 /// @brief clamp a single value. This function should be removed when std::clamp will be available
@@ -82,10 +97,5 @@ T operator/(const T& r, const typename T::value_type& f)
 }
 
 
-} /// namespace pairwise
+} /// namespace sofa::types::stdtypes::pairwise
 
-} /// namespace helper
-
-} /// namespace sofa
-
-#endif
