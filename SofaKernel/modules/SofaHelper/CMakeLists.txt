@@ -73,8 +73,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/decompose.h
     ${SRC_ROOT}/decompose.inl
     ${SRC_ROOT}/deque.h
-    ${SRC_ROOT}/fixed_array.h
-    ${SRC_ROOT}/fixed_array_algorithms.h
     ${SRC_ROOT}/hash.h
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/integer_id.h
@@ -208,7 +206,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/system/thread/debug.cpp
     ${SRC_ROOT}/system/FileRepository.cpp
     ${SRC_ROOT}/vector.cpp
-    ${SRC_ROOT}/types/fixed_array.cpp
     ${SRC_ROOT}/types/RGBAColor.cpp
     ${SRC_ROOT}/types/Material.cpp
     ${SRC_ROOT}/types/PrimitiveGroup.cpp

@@ -23,9 +23,8 @@
 
 #include <sofa/types/config.h>
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/rmath.h>
+#include <sofa/types/std/fixed_array.h>
+#include <cstdlib>
 #include <functional>
 #include <limits>
 #include <type_traits>
@@ -40,7 +39,7 @@ struct NoInit {};
 constexpr NoInit NOINIT;
 
 template < sofa::Size N, typename ValueType=float>
-class Vec : public helper::fixed_array<ValueType,size_t(N)>
+class Vec : public sofa::types::stdtypes::fixed_array<ValueType,size_t(N)>
 {
 
     static_assert( N > 0, "" );
@@ -284,7 +283,7 @@ public:
         set( v, r1 );
     }
 
-    Vec(const helper::fixed_array<ValueType, N>& p)
+    Vec(const sofa::types::stdtypes::fixed_array<ValueType, N>& p)
     {
         for(Size i=0; i<N; i++)
             this->elems[i] = p[i];
