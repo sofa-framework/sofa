@@ -21,9 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/types/std/fixed_array_algorithms.h>
+#include <sofa/types/stdtypes/fixed_array_algorithms.h>
 
-SOFA_DEPRECATED_HEADER(v21.06, "sofa/types/std/fixed_array_algorithms.h")
+SOFA_DEPRECATED_HEADER(v21.06, "sofa/types/stdtypes/fixed_array_algorithms.h")
 
 namespace sofa::helper::pairwise
 {

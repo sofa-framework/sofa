@@ -23,7 +23,7 @@
 
 #include <sofa/types/config.h>
 
-#include <sofa/types/std/fixed_array.h>
+#include <sofa/types/stdtypes/fixed_array.h>
 #include <cstdlib>
 #include <functional>
 #include <limits>
