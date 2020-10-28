@@ -110,6 +110,105 @@ bool TopologyChecker::checkTetrahedronTopology()
 bool TopologyChecker::checkTriangleTopology()
 {
     bool ret = true;
+    int nbT = m_topology->getNbTriangles();
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles& my_triangles = m_topology->getTriangles();
+
+    if (nbT != my_triangles.size())
+    {
+        msg_error() << "CheckTriangleTopology failed: not the good number of triangles, getNbTriangles returns " << nbT << " whereas triangle array size is: " << my_triangles.size();
+        return false;
+    }
+
+    // check edge buffer
+    for (std::size_t i = 0; i < nbT; ++i)
+    {
+        const auto& triangle = my_triangles[i];
+        if (triangle[0] == triangle[1] || triangle[0] == triangle[2] || triangle[1] == triangle[2]) {
+            msg_error() << "CheckTriangleTopology failed: triangle " << i << " has 2 identical vertices: " << triangle;
+            ret = false;
+        }
+    }
+
+    // check cross element
+    std::size_t nbP = m_topology->getNbPoints();
+
+    // check triangles around vertex
+    std::set <int> triangleSet;
+    for (std::size_t i = 0; i < nbP; ++i)
+    {
+        const auto& triAV = m_topology->getTrianglesAroundVertex(i);
+        for (size_t j = 0; j < triAV.size(); ++j)
+        {
+            const Topology::Triangle& triangle = my_triangles[triAV[j]];
+            bool check_triangle_vertex_shell = (triangle[0] == i) || (triangle[1] == i) || (triangle[2] == i);
+            if (!check_triangle_vertex_shell)
+            {
+                msg_error() << "CheckTriangleTopology failed: triangle " << triAV[j] << ": [" << triangle << "] not around vertex: " << i;
+                ret = false;
+            }
+
+            triangleSet.insert(triAV[j]);
+        }
+    }
+
+    if (triangleSet.size() != my_triangles.size())
+    {
+        msg_error() << "CheckTriangleTopology failed: found " << triangleSet.size() << " triangles in trianglesAroundVertex out of " << my_triangles.size();
+        ret = false;
+    }
+
+
+    int nbE = m_topology->getNbEdges();
+    const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
+    // check edges in triangles
+    for (std::size_t i = 0; i < nbT; ++i)
+    {
+        const Topology::Triangle& triangle = my_triangles[i];
+        const auto& eInTri = m_topology->getEdgesInTriangle(i);
+
+        for (unsigned int j = 0; j < 3; j++)
+        {
+            const Topology::Edge& edge = my_edges[eInTri[j]];
+            int cptFound = 0;
+            for (unsigned int k = 0; k < 3; k++)
+                if (edge[0] == triangle[k] || edge[1] == triangle[k])
+                    cptFound++;
+
+            if (cptFound != 2)
+            {
+                msg_error() << "CheckTriangleTopology failed: edge: " << eInTri[j] << ": [" << edge << "] not found in triangle: " << i << ": " << triangle;
+                ret = false;
+            }
+        }
+    }
+
+    // check triangles around edges
+    // check m_trianglesAroundEdge using checked m_edgesInTriangle
+    std::set <int> triangleSet;
+    for (size_t i = 0; i < nbE; ++i)
+    {
+        const auto &tes = m_topology->getTrianglesAroundEdge(i);        
+        for (size_t j = 0; j < tes.size(); ++j)
+        {
+            const auto& eInTri = m_topology->getEdgesInTriangle(i);
+            bool check_triangle_edge_shell = (eInTri[0] == i)
+                || (eInTri[1] == i)
+                || (eInTri[2] == i);
+            if (!check_triangle_edge_shell)
+            {
+                msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: triangle: " << tes[j] << " with edges: [" << eInTri << "] not found around edge: " << i;
+                ret = false;
+            }
+
+            triangleSet.insert(tes[j]);
+        }
+    }
+
+    if (triangleSet.size() != my_triangles.size())
+    {
+        msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: found " << triangleSet.size() << " triangles in m_trianglesAroundEdge out of " << m_triangle.size();
+        ret = false;
+    }
 
     return ret && checkEdgeTopology();
 }
