@@ -23,9 +23,11 @@
 
 #include "ScalarField.h"
 #include <sofa/defaulttype/Mat.h>
-namespace sofa::component::geometry::_BottleField_
+namespace sofa::component::geometry
 {
 
+namespace _BottleField_
+{
 
 using sofa::defaulttype::Vec3d;
 using sofa::defaulttype::Mat3x3;
@@ -74,6 +76,9 @@ protected:
     double m_excentricity;
 };
 
+} //namespace _BottleField_
 
-} //namespace sofa::component::geometry::_BottleField_
+using sofa::component::geometry::_BottleField_::BottleField;
+
+} //namespace sofa::component::geometry
 

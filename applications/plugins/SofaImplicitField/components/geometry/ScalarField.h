@@ -32,13 +32,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Mat.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace geometry
+namespace sofa::component::geometry
 {
 
 namespace _scalarfield_
@@ -141,11 +135,7 @@ private:
 
 using _scalarfield_::ScalarField ;
 
-} /// namespace geometry
-
-} /// namespace component
-
-} /// namespace sofa
+} /// namespace sofa::component::geometry
 
 #endif
 
