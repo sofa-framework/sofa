@@ -6,8 +6,8 @@
 set(SOFABASE_TARGETS @SOFABASE_TARGETS@)
 set(SOFAEIGEN2SOLVER_HAVE_OPENMP @SOFAEIGEN2SOLVER_HAVE_OPENMP@)
 
-find_package(SofaFramework REQUIRED)
-find_package(SofaSimulation REQUIRED)
+find_package(SofaFramework QUIET REQUIRED)
+find_package(SofaSimulation QUIET REQUIRED)
 
 # Eigen3 is required by SofaBaseTopology and SofaEigen2Solver
 find_package(Eigen3 QUIET REQUIRED)

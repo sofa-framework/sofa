@@ -4,7 +4,7 @@
 
 set(SOFASIMULATION_TARGETS @SOFASIMULATION_TARGETS@)
 
-find_package(SofaFramework REQUIRED)
+find_package(SofaFramework QUIET REQUIRED)
 
 foreach(target ${SOFASIMULATION_TARGETS})
     if(NOT TARGET ${target})

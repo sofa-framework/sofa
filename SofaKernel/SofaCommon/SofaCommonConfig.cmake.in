@@ -5,7 +5,7 @@
 
 set(SOFACOMMON_TARGETS @SOFACOMMON_TARGETS@)
 
-find_package(SofaBase REQUIRED)
+find_package(SofaBase QUIET REQUIRED)
 
 # Eigen3 is required by SofaRigid
 find_package(Eigen3 QUIET REQUIRED)
