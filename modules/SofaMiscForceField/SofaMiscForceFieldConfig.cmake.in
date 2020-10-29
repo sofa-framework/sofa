@@ -1,15 +1,13 @@
 # CMake package configuration file for the SofaMiscForceField module
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaFramework REQUIRED) # SofaHelper
-find_package(SofaCommon REQUIRED) # SofaDeformable
-find_package(SofaGeneral REQUIRED) # SofaBoundaryCondition SofaGeneralTopology
-find_package(SofaMiscTopology REQUIRED)
+find_package(SofaFramework QUIET REQUIRED) # SofaHelper
+find_package(SofaCommon QUIET REQUIRED) # SofaDeformable
+find_package(SofaGeneral QUIET REQUIRED) # SofaBoundaryCondition, SofaGeneralTopology
+find_package(SofaMiscTopology QUIET REQUIRED)
 
-### Is the target existing ?
-if(NOT TARGET SofaMiscForceField)
-    ### If not we are building out of tree.
-    include("${CMAKE_CURRENT_LIST_DIR}/SofaMiscForceFieldTargets.cmake")
+if(NOT TARGET @PROJECT_NAME@)
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 endif()
-
-check_required_components(SofaMiscForceField)
+check_required_components(@PROJECT_NAME@)
