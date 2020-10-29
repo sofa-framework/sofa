@@ -244,6 +244,7 @@ sofa_add_module(modules/SofaGeneralAnimationLoop SofaGeneralAnimationLoop ON)
 sofa_add_module(modules/SofaGeneralDeformable SofaGeneralDeformable ON)
 sofa_add_module(modules/SofaGeneralEngine SofaGeneralEngine ON)
 sofa_add_module(modules/SofaGeneralExplicitOdeSolver SofaGeneralExplicitOdeSolver ON)
+sofa_add_module(modules/SofaGeneralImplicitOdeSolver SofaGeneralImplicitOdeSolver ON)
     
     
     

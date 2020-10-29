@@ -324,6 +324,9 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "RungeKutta2Solver", Pluginized("v20.12", "SofaGeneralExplicitOdeSolver") },
     { "RungeKutta4Solver", Pluginized("v20.12", "SofaGeneralExplicitOdeSolver") },
 
+    // SofaGeneralExplicitOdeSolver was pluginized in #15XX
+    { "VariationalSymplecticSolver", Pluginized("v20.12", "SofaGeneralImplicitOdeSolver") },
+
     /***********************/
     // REMOVED SINCE v20.06
 

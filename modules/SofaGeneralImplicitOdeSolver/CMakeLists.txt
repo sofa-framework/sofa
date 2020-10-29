@@ -1,26 +1,42 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaGeneralImplicitOdeSolver)
+project(SofaGeneralImplicitOdeSolver VERSION 1.0 LANGUAGES CXX)
+
+set(SOFAGENERALIMPLICITODESOLVER_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-    config.h
-    initGeneralImplicitODESolver.h
+    ${SOFAGENERALIMPLICITODESOLVER_SRC}/config.h.in
+    ${SOFAGENERALIMPLICITODESOLVER_SRC}/initSofaGeneralImplicitODESolver.h
     )
 
 set(SOURCE_FILES
-    initGeneralImplicitODESolver.cpp
+    ${SOFAGENERALIMPLICITODESOLVER_SRC}/initSofaGeneralImplicitODESolver.cpp
     )
 
 list(APPEND HEADER_FILES
-    VariationalSymplecticSolver.h
+    ${SOFAGENERALIMPLICITODESOLVER_SRC}/VariationalSymplecticSolver.h
     )
 list(APPEND SOURCE_FILES
-    VariationalSymplecticSolver.cpp
+    ${SOFAGENERALIMPLICITODESOLVER_SRC}/VariationalSymplecticSolver.cpp
     )
+
+find_package(SofaSimulation REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaGeneral
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
-    )
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFAGENERALIMPLICITODESOLVER_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFAGENERALIMPLICITODESOLVER_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(${PROJECT_NAME}_test)
+endif()
+
