@@ -389,7 +389,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
 template< class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::init()
 {
-    TetrahedronSetGeometryAlgorithms< DataTypes >::init();
+    TriangleSetGeometryAlgorithms<DataTypes>::init();
     this->getContext()->get(m_container);
     this->getContext()->get(m_modifier);
     m_intialNbPoints = m_container->getNbPoints();
