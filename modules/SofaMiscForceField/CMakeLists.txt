@@ -4,6 +4,7 @@ project(SofaMiscForceField VERSION 1.0 LANGUAGES CXX)
 find_package(SofaFramework REQUIRED) # SofaHelper
 find_package(SofaCommon REQUIRED) # SofaDeformable
 find_package(SofaGeneral REQUIRED) # SofaBoundaryCondition SofaGeneralTopology
+find_package(SofaMiscTopology REQUIRED)
 
 set(SOFAMISCFORCEFIELD_SRC "src/${PROJECT_NAME}")
 
@@ -36,6 +37,7 @@ if(SOFA_WITH_DEPRECATED_COMPONENTS)
         ${SOFAMISCFORCEFIELD_SRC}/LennardJonesForceField.cpp
         )
 endif()
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDeformable SofaBoundaryCondition SofaMiscTopology SofaGeneralTopology)
