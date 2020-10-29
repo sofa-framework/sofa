@@ -2,10 +2,10 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-set(SOFAMISC_TARGETS @SOFAMISC_TARGETS@)
+set(SOFAMISC_MODULES @SOFAMISC_MODULES@)
 
-foreach(target ${SOFAMISC_TARGETS})
-    find_package(${target} QUIET REQUIRED)
+foreach(module ${SOFAMISC_MODULES})
+    find_package(${module} QUIET REQUIRED)
 endforeach()
 
 if(NOT TARGET @PROJECT_NAME@)
