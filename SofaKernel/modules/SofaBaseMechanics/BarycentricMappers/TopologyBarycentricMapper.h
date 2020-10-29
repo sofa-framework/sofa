@@ -24,13 +24,7 @@
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapper.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 namespace _topologybarycentricmapper_
@@ -110,7 +104,7 @@ extern template class SOFA_BASE_MECHANICS_API TopologyBarycentricMapper< Vec3dTy
 
 using _topologybarycentricmapper_::TopologyBarycentricMapper;
 
-}}}
+}
 
 
 #endif

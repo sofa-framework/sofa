@@ -24,13 +24,7 @@
 
 #include "TopologyBarycentricMapper.h"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 namespace _topologybarycentricmapper_
@@ -173,7 +167,8 @@ TopologyBarycentricMapper<In,Out>::createPointInCube(const typename Out::Coord& 
     return 0;
 }
 
-}}}}
+} // namespace _topologybarycentricmapper_
 
+} // namespace sofa::component::mapping
 
 #endif
