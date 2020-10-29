@@ -343,4 +343,4 @@ int VariationalSymplecticSolverClass = core::RegisterObject("Implicit time integ
         .addAlias("VariationalSolver")
         ;
 
-}namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver
