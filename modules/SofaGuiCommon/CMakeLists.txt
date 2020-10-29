@@ -4,6 +4,8 @@ project(SofaGuiCommon)
 find_package(SofaBase REQUIRED)
 find_package(SofaCommon REQUIRED)
 find_package(SofaGeneral REQUIRED)
+find_package(SofaGraphComponent REQUIRED)
+
 
 set(SRC_ROOT src/sofa/gui)
 

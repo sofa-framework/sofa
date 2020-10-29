@@ -12,7 +12,6 @@ set(SOFAGENERAL_TARGETS
     SofaGeneralImplicitOdeSolver
     SofaGeneralLinearSolver
     SofaGeneralLoader
-    SofaGeneralMeshCollision
     SofaGeneralObjectInteraction
     SofaGeneralRigid
     SofaGeneralSimpleFem
@@ -20,7 +19,6 @@ set(SOFAGENERAL_TARGETS
     SofaBoundaryCondition
     SofaConstraint
     SofaGeneralEngine
-    SofaGraphComponent
     SofaTopologyMapping
     SofaUserInteraction
 )
@@ -31,7 +29,9 @@ endforeach()
 
 # Modules
 set(SOFAGENERAL_MODULES
+    SofaGeneralMeshCollision
     SofaGeneralVisual
+    SofaGraphComponent
 )
 foreach(MODULE ${SOFAGENERAL_MODULES})
     find_package(${MODULE} REQUIRED)
