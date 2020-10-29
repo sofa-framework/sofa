@@ -4,19 +4,11 @@
 
 set(SOFAADVANCED_TARGETS @SOFAADVANCED_TARGETS@)
 
-set(SOFANONUNIFORMFEM_HAVE_SOFADENSESOLVER @SOFANONUNIFORMFEM_HAVE_SOFADENSESOLVER@)
-
-find_package(SofaGeneral REQUIRED)
-
-if(SOFANONUNIFORMFEM_HAVE_SOFADENSESOLVER)
-    find_package(SofaDenseSolver QUIET REQUIRED)
-endif()
-
 foreach(target ${SOFAADVANCED_TARGETS})
-    if(NOT TARGET ${target})
-        include("${CMAKE_CURRENT_LIST_DIR}/SofaAdvancedTargets.cmake")
-        break()
-    endif()
+    find_package(${target} QUIET REQUIRED)
 endforeach()
 
+if(NOT TARGET @PROJECT_NAME@)
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+endif()
 check_required_components(${SOFAADVANCED_TARGETS})
