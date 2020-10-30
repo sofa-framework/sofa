@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaHaptics VERSION 1.0 LANGUAGES CXX)
+project(SofaHaptics LANGUAGES CXX)
 
 find_package(SofaGeneral REQUIRED) # To have SofaConstraint
 
@@ -31,7 +31,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaConstraint)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
-    PACKAGE_VERSION ${PROJECT_VERSION}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaHaptics"

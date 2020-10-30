@@ -183,21 +183,23 @@ macro(sofa_auto_set_target_properties)
     string(TOUPPER "${ARG_PACKAGE_NAME}" SOFA_PACKAGE_NAME_UPPER)
 
     foreach(target ${ARG_TARGETS}) # Most of the time there is only one target
+        string(TOUPPER "${target}" sofa_target_name_upper)
+
         # Set target properties
         if(NOT "${target}" STREQUAL "${ARG_PACKAGE_NAME}") # Target is inside a package
             set_target_properties(${target} PROPERTIES FOLDER ${ARG_PACKAGE_NAME}) # IDE folder
         endif()
         set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")
-        set(version ${${target}_VERSION})
-        if(version VERSION_GREATER "0.0")
-            set_target_properties(${target} PROPERTIES VERSION "${version}")
-        elseif(target MATCHES "^Sofa" AND NOT PLUGIN_${SOFA_PACKAGE_NAME_UPPER} AND Sofa_VERSION)
+        set(version "")
+        if(${target}_VERSION VERSION_GREATER "0.0")
+            set(version ${${target}_VERSION})
+        elseif(ARG_PACKAGE_VERSION VERSION_GREATER "0.0")
+            set(version ${ARG_PACKAGE_VERSION})
+        elseif(Sofa_VERSION VERSION_GREATER "0.0")
             # Default to Sofa_VERSION for all SOFA modules
-            set_target_properties(${target} PROPERTIES VERSION "${Sofa_VERSION}")
+            set(version ${Sofa_VERSION})
         endif()
-        set(SOFA_TARGET_VERSION ${${target}_VERSION})
-        set(SOFA_TARGET_NAME "${target}")
-        string(TOUPPER "${target}" SOFA_TARGET_NAME_UPPER)
+        set_target_properties(${target} PROPERTIES VERSION "${version}")
 
         if(target MATCHES "^Sofa")
             # TODO: Deprecate this backward compatibility and replace all the macros
@@ -208,7 +210,7 @@ macro(sofa_auto_set_target_properties)
             string(TOUPPER "${sofa_target_oldname}" sofa_target_oldname_upper)
             target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD${sofa_target_oldname_upper}")
         endif()
-        target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD_${SOFA_TARGET_NAME_UPPER}")
+        target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD_${sofa_target_name_upper}")
 
         # Set target include directories (if not already set manually)
         set(include_source_root "${CMAKE_CURRENT_SOURCE_DIR}/..") # default but bad practice
