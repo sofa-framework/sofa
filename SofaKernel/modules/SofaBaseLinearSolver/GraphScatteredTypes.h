@@ -68,9 +68,9 @@ public:
 
 
     // compatibility with baseMatrix
-    unsigned int rowSize(); /// provides the number of rows of the Graph Scattered Matrix
+    sofa::Size rowSize(); /// provides the number of rows of the Graph Scattered Matrix
 
-    unsigned int colSize();  /// provides the number of columns of the Graph Scattered Matrix
+    sofa::Size colSize();  /// provides the number of columns of the Graph Scattered Matrix
 
     static const char* Name() { return "GraphScattered"; }
 };

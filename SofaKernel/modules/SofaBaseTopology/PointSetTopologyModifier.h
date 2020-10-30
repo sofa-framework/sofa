@@ -61,7 +61,7 @@ public:
     /** \brief Swap points i1 and i2.
     *
     */
-    virtual void swapPoints(const int i1,const int i2);
+    virtual void swapPoints(const Index i1,const Index i2);
 
     /** \brief Sends a message to warn that some points were added in this topology.
     *

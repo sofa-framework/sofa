@@ -60,6 +60,7 @@ class PatchTestMovementConstraint : public core::behavior::ProjectiveConstraintS
 public:
     SOFA_CLASS(SOFA_TEMPLATE(PatchTestMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
 
+    using Index = sofa::Index;
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -68,7 +69,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
-    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef helper::vector<Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
     static const unsigned int CoordSize = Coord::total_size;
@@ -117,8 +118,8 @@ protected:
 public:
     //Add or clear constraints
     void clearConstraints();
-    void addConstraint(unsigned int index);
-    void removeConstraint(unsigned int index);
+    void addConstraint(Index index);
+    void removeConstraint(Index index);
    
     /// -- Constraint interface
     void init() override;
@@ -151,10 +152,10 @@ public:
         FCPointHandler(PatchTestMovementConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
-        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
 
-        bool applyTestCreateFunction(unsigned int /*index*/,
-                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+        bool applyTestCreateFunction(Index /*index*/,
+                const sofa::helper::vector< Index > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
         PatchTestMovementConstraint<DataTypes> *fc;

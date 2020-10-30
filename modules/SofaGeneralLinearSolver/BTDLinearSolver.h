@@ -40,7 +40,7 @@ namespace linearsolver
 {
 
 /// Simple bloc full matrix container (used for InvMatrixType)
-template<int N, typename T>
+template< std::size_t N, typename T>
 class BlocFullMatrix : public defaulttype::BaseMatrix
 {
 public:
@@ -211,7 +211,7 @@ public:
     static const char* Name();
 };
 
-template<int N, typename T>
+template< std::size_t N, typename T>
 class BlockVector : public FullVector<T>
 {
 public:
@@ -220,7 +220,7 @@ public:
     typedef typename Inherit::Index Index;
 
     typedef typename Inherit::value_type value_type;
-    typedef typename Inherit::size_type size_type;
+    typedef typename Inherit::Size Size;
     typedef typename Inherit::iterator iterator;
     typedef typename Inherit::const_iterator const_iterator;
 
@@ -270,7 +270,7 @@ public:
 };
 
 /// Simple BTD matrix container
-template<int N, typename T>
+template< std::size_t N, typename T>
 class BTDMatrix : public defaulttype::BaseMatrix
 {
 public:

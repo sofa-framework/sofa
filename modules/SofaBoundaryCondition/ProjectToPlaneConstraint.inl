@@ -41,7 +41,7 @@ namespace projectiveconstraintset
 {
 
 template< class DataTypes>
-bool ProjectToPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+bool ProjectToPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     if (fc)
     {
@@ -54,11 +54,11 @@ bool ProjectToPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunctio
 }
 
 template< class DataTypes>
-void ProjectToPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, core::objectmodel::Data<value_type> &)
+void ProjectToPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, core::objectmodel::Data<value_type> &)
 {
     if (fc)
     {
-        fc->removeConstraint((unsigned int) pointIndex);
+        fc->removeConstraint((Index) pointIndex);
     }
 }
 
@@ -95,14 +95,14 @@ void ProjectToPlaneConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void ProjectToPlaneConstraint<DataTypes>::addConstraint(unsigned int index)
+void ProjectToPlaneConstraint<DataTypes>::addConstraint(Index index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void ProjectToPlaneConstraint<DataTypes>::removeConstraint(unsigned int index)
+void ProjectToPlaneConstraint<DataTypes>::removeConstraint(Index index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -140,10 +140,10 @@ void ProjectToPlaneConstraint<DataTypes>::init()
 
     const Indices & indices = f_indices.getValue();
 
-    unsigned int maxIndex=this->mstate->getSize();
+    Index maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
     {
-        const unsigned int index=indices[i];
+        const Index index=indices[i];
         if (index >= maxIndex)
         {
             msg_error() << "Index " << index << " not valid!";

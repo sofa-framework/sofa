@@ -355,12 +355,12 @@ void SubsetTopologicalMapping::init()
     }
 }
 
-unsigned int SubsetTopologicalMapping::getFromIndex(unsigned int ind)
+Index SubsetTopologicalMapping::getFromIndex(Index ind)
 {
     return ind;
 }
 
-unsigned int SubsetTopologicalMapping::getGlobIndex(unsigned int ind)
+Index SubsetTopologicalMapping::getGlobIndex(Index ind)
 {
     if (handleHexahedra.getValue())
     {
@@ -555,7 +555,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::POINTSREMOVED:
         {
             const PointsRemoved *pRem = static_cast< const PointsRemoved * >( topoChange );
-            sofa::helper::vector<unsigned int> tab = pRem->getArray();
+            sofa::helper::vector<Index> tab = pRem->getArray();
             if (samePoints.getValue())
             {
                 msg_info() << "[" << count << "]POINTSREMOVED : " << tab.size() << " : " << tab;
@@ -565,7 +565,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             }
             else
             {
-                sofa::helper::vector<unsigned int> tab2;
+                sofa::helper::vector<Index> tab2;
                 tab2.reserve(tab.size());
                 for (unsigned int pi=0; pi<tab.size(); ++pi)
                 {
@@ -622,8 +622,8 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::POINTSRENUMBERING:
         {
             const PointsRenumbering *pRenumber = static_cast< const PointsRenumbering * >( topoChange );
-            const sofa::helper::vector<unsigned int> &tab = pRenumber->getIndexArray();
-            const sofa::helper::vector<unsigned int> &inv_tab = pRenumber->getinv_IndexArray();
+            const sofa::helper::vector<Index> &tab = pRenumber->getIndexArray();
+            const sofa::helper::vector<Index> &inv_tab = pRenumber->getinv_IndexArray();
             if (samePoints.getValue())
             {
                 msg_info() << "[" << count << "]POINTSRENUMBERING : " << tab.size() << " : " << tab;
@@ -633,8 +633,8 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             }
             else
             {
-                sofa::helper::vector<unsigned int> tab2;
-                sofa::helper::vector<unsigned int> inv_tab2;
+                sofa::helper::vector<Index> tab2;
+                sofa::helper::vector<Index> inv_tab2;
                 tab2.resize(pD2S.size());
                 inv_tab2.resize(pD2S.size());
                 for (Index pd = 0; pd < pD2S.size(); ++pd)
@@ -745,11 +745,11 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toEdgeMod) toModel->getContext()->get(toEdgeMod);
             if (!toEdgeMod) break;
             const EdgesRemoved *eRem = static_cast< const EdgesRemoved * >( topoChange );
-            sofa::helper::vector<unsigned int> tab = eRem->getArray();
+            sofa::helper::vector<Index> tab = eRem->getArray();
             //toEdgeMod->removeEdgesWarning(tab);
             //toEdgeMod->propagateTopologicalChanges();
             //toEdgeMod->removeEdgesProcess(tab, false);
-            sofa::helper::vector<unsigned int> tab2;
+            sofa::helper::vector<Index> tab2;
             tab2.reserve(tab.size());
             for (unsigned int ei=0; ei<tab.size(); ++ei)
             {
@@ -893,11 +893,11 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toTriangleMod) toModel->getContext()->get(toTriangleMod);
             if (!toTriangleMod) break;
             const TrianglesRemoved *tRem = static_cast< const TrianglesRemoved * >( topoChange );
-            sofa::helper::vector<unsigned int> tab = tRem->getArray();
+            sofa::helper::vector<Index> tab = tRem->getArray();
             //toTriangleMod->removeTrianglesWarning(tab);
             //toTriangleMod->propagateTopologicalChanges();
             //toTriangleMod->removeTrianglesProcess(tab, false);
-            sofa::helper::vector<unsigned int> tab2;
+            sofa::helper::vector<Index> tab2;
             tab2.reserve(tab.size());
             for (unsigned int ti=0; ti<tab.size(); ++ti)
             {

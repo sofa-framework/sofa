@@ -93,9 +93,9 @@ void MeshGmsh::init (std::string filename)
 }
 
 
-void MeshGmsh::addInGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group, int tag, int /*eid*/) 
+void MeshGmsh::addInGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group, int tag, std::size_t /*eid*/)
 {
-    for (unsigned i = 0; i<group.size(); i++) {
+    for (std::size_t i = 0; i<group.size(); i++) {
         if (tag == group[i].p0) {
             group[i].nbp++;
             return;
@@ -278,9 +278,9 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
             {
                 HighOrderEdgePosition hoep;
                 for (j = 0; j<3; ++j) {
-                    size_t v0 = std::min(nodes[edgesInQuadraticTriangle[j][0]],
+                    auto v0 = std::min(nodes[edgesInQuadraticTriangle[j][0]],
                         nodes[edgesInQuadraticTriangle[j][1]]);
-                    size_t v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
+                    auto v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
                         nodes[edgesInQuadraticTriangle[j][1]]);
                     Topology::Edge e(v0, v1);
                     if (edgeSet.find(e) == edgeSet.end()) {
@@ -302,9 +302,9 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
             {
                 HighOrderEdgePosition hoep;
                 for (j = 0; j<6; ++j) {
-                    size_t v0 = std::min(nodes[edgesInQuadraticTetrahedron[j][0]],
+                    auto v0 = std::min(nodes[edgesInQuadraticTetrahedron[j][0]],
                         nodes[edgesInQuadraticTetrahedron[j][1]]);
-                    size_t v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
+                    auto v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
                         nodes[edgesInQuadraticTetrahedron[j][1]]);
                     Topology::Edge e(v0, v1);
                     if (edgeSet.find(e) == edgeSet.end()) {

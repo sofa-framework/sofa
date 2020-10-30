@@ -56,6 +56,8 @@ class SOFA_OPENGL_VISUAL_API OglCylinderModel : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS2(OglCylinderModel,core::visual::VisualModel,Vec3State);
+
+    using Index = sofa::Index;
 protected:
     OglCylinderModel();
     ~OglCylinderModel() override;
@@ -66,7 +68,7 @@ public:
 
     void drawVisual(const core::visual::VisualParams* vparams) override;
 
-    void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, int& /*vindex*/, int& /*nindex*/, int& /*tindex*/, int& /*count*/) override;
+    void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, Index& /*vindex*/, Index& /*nindex*/, Index& /*tindex*/, int& /*count*/) override;
 
 private:
     void setColor(float r, float g, float b, float a);

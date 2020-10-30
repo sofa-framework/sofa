@@ -41,10 +41,10 @@ namespace forcefield
 typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes >
-void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyCreateFunction(unsigned int /*edgeIndex*/,
+void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyCreateFunction(Index /*edgeIndex*/,
         EdgeRestInformation & ei,
         const core::topology::Edge &/*e*/,
-        const sofa::helper::vector<unsigned int> &,
+        const sofa::helper::vector<Index> &,
         const sofa::helper::vector<double> &)
 {
     if(ff)
@@ -62,9 +62,9 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyCr
 }
 
 template< class DataTypes >
-void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded,
+void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleCreation(const sofa::helper::vector<Index> &triangleAdded,
         const sofa::helper::vector<core::topology::Triangle> &,
-        const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
+        const sofa::helper::vector<sofa::helper::vector<Index> > &,
         const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
     using namespace core::topology;
@@ -154,7 +154,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
 }
 
 template< class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved)
+void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleDestruction(const sofa::helper::vector<Index> &triangleRemoved)
 {
     using namespace core::topology;
     if (ff)
@@ -246,9 +246,9 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
 template<class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
 {
-    const sofa::helper::vector<unsigned int> &triangleAdded = e->getIndexArray();
+    const auto &triangleAdded = e->getIndexArray();
     const sofa::helper::vector<core::topology::Triangle> &elems = e->getElementArray();
-    const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ancestors = e->ancestorsList;
+    const auto & ancestors = e->ancestorsList;
     const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
 
     applyTriangleCreation(triangleAdded, elems, ancestors, coefs);
@@ -257,7 +257,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::ApplyTo
 template<class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
 {
-    const sofa::helper::vector<unsigned int> &triangleRemoved = e->getArray();
+    const auto &triangleRemoved = e->getArray();
 
     applyTriangleDestruction(triangleRemoved);
 }
@@ -323,23 +323,23 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
         _initialPoints=p;
     }
 
-    unsigned int i;
+    Index i;
     // set edge tensor to 0
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
         edgeHandler->applyCreateFunction(i,edgeInf[i],m_topology->getEdge(i),
-                (const sofa::helper::vector<unsigned int>)0,
+                (const sofa::helper::vector<Index>)0,
                 (const sofa::helper::vector<double>)0
                                         );
     }
     // create edge tensor by calling the triangle creation function
-    sofa::helper::vector<unsigned int> triangleAdded;
+    sofa::helper::vector<Index> triangleAdded;
     for (i=0; i<m_topology->getNbTriangles(); ++i)
         triangleAdded.push_back(i);
 
     edgeHandler->applyTriangleCreation(triangleAdded,
             (const sofa::helper::vector<core::topology::Triangle>)0,
-            (const sofa::helper::vector<sofa::helper::vector<unsigned int> >)0,
+            (const sofa::helper::vector<sofa::helper::vector<Index> >)0,
             (const sofa::helper::vector<sofa::helper::vector<double> >)0
                                       );
 

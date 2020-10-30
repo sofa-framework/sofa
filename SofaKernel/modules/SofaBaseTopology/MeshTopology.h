@@ -101,9 +101,9 @@ public:
 
     void init() override;
 
-    int getNbPoints() const override;
+    Size getNbPoints() const override;
 
-    void setNbPoints(int n) override;
+    void setNbPoints(Size  n) override;
 
     // Complete sequence accessors
 
@@ -115,11 +115,11 @@ public:
 
     // Random accessors
 
-    size_t getNbEdges() override;
-    size_t getNbTriangles() override;
-    size_t getNbQuads() override;
-    size_t getNbTetrahedra() override;
-    size_t getNbHexahedra() override;
+    Size getNbEdges() override;
+    Size getNbTriangles() override;
+    Size getNbQuads() override;
+    Size getNbTetrahedra() override;
+    Size getNbHexahedra() override;
 
     const Edge getEdge(EdgeID i) override;
     const Triangle getTriangle(TriangleID i) override;
@@ -128,11 +128,11 @@ public:
     const Hexa getHexahedron(HexaID i) override;
 
     // If using STEP loader, include also uv coordinates
-    typedef index_type					UVID;
+    typedef Index					UVID;
     typedef defaulttype::Vector2						UV;
     typedef helper::vector<UV>				SeqUV;
     virtual const SeqUV& getUVs();
-    virtual size_t getNbUVs();
+    virtual Size getNbUVs();
     virtual const UV getUV(UVID i);
     void addUV(SReal u, SReal v);
     //
@@ -245,37 +245,37 @@ public:
     bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    size_t getNumberOfConnectedComponent() override;
+    Size getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const helper::vector<unsigned int> getConnectedElement(unsigned int elem) override;
+    virtual const helper::vector<Index> getConnectedElement(Index elem) override;
 
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const helper::vector<unsigned int> getElementAroundElement(unsigned int elem) override;
+    virtual const helper::vector<Index> getElementAroundElement(Index elem) override;
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const helper::vector<unsigned int> getElementAroundElements(helper::vector<unsigned int> elems) override;
+    virtual const helper::vector<Index> getElementAroundElements(helper::vector<Index> elems) override;
     /// @}
 
     // Get point positions (same methods as points accessors but not inherited)
-    SReal getPosX(int i) const;
-    SReal getPosY(int i) const;
-    SReal getPosZ(int i) const;
+    SReal getPosX(Index i) const;
+    SReal getPosY(Index i) const;
+    SReal getPosZ(Index i) const;
 
     // Points accessors (not always available)
 
     bool hasPos() const override;
-    SReal getPX(int i) const override;
-    SReal getPY(int i) const override;
-    SReal getPZ(int i) const override;
+    SReal getPX(Index i) const override;
+    SReal getPY(Index i) const override;
+    SReal getPZ(Index i) const override;
 
     // for procedural creation without file loader
     void clear() override;
     void addPoint(SReal px, SReal py, SReal pz) override;
-    void addEdge( int a, int b ) override;
-    void addTriangle( int a, int b, int c ) override;
-    void addQuad( int a, int b, int c, int d ) override;
-    void addTetra( int a, int b, int c, int d ) override;
-    void addHexa( int a, int b, int c, int d, int e, int f, int g, int h ) override;
+    void addEdge( Index a, Index b ) override;
+    void addTriangle( Index a, Index b, Index c ) override;
+    void addQuad( Index a, Index b, Index c, Index d ) override;
+    void addTetra( Index a, Index b, Index c, Index d ) override;
+    void addHexa( Index a, Index b, Index c, Index d, Index e, Index f, Index g, Index h ) override;
 
     /// get the current revision of this mesh (use to detect changes)
     int getRevision() const override { return revision; }
@@ -306,13 +306,13 @@ public:
     // opposite dirction: return -1
     // same direction: return 1
     // otherwise: return 0
-    int computeRelativeOrientationInTri(const unsigned int ind_p0, const unsigned int ind_p1, const unsigned int ind_t);
+    int computeRelativeOrientationInTri(const PointID ind_p0, const PointID ind_p1, const PointID ind_t);
 
     // test whether p0p1 has the same orientation as triangle t
     // opposite dirction: return -1
     // same direction: return 1
     // otherwise: return 0
-    int computeRelativeOrientationInQuad(const unsigned int ind_p0, const unsigned int ind_p1, const unsigned int ind_q);
+    int computeRelativeOrientationInQuad(const PointID ind_p0, const PointID ind_p1, const PointID ind_q);
 
     /// Will change order of vertices in triangle: t[1] <=> t[2]
     void reOrientateTriangle(TriangleID id) override;
@@ -338,7 +338,7 @@ public:
     Data<SeqUV>	seqUVs; ///< List of uv coordinates
 
 protected:
-    int  nbPoints;
+    Size  nbPoints;
 
     bool validTetrahedra;
     bool validHexahedra;
@@ -620,10 +620,10 @@ public:
     /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge
     *
     */
-    Edge getLocalEdgesInTetrahedron (const unsigned int i) const override;
+    Edge getLocalEdgesInTetrahedron (const HexahedronID i) const override;
 
     /** \brief Returns for each index (between 0 and 12) the two vertex indices that are adjacent to that edge */
-    Edge getLocalEdgesInHexahedron (const unsigned int i) const override;
+    Edge getLocalEdgesInHexahedron (const HexahedronID i) const override;
 
   	/** \ brief returns the topologyType */
 	  sofa::core::topology::TopologyObjectType getTopologyType() const override {return UpperTopology;}

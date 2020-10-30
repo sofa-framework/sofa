@@ -45,9 +45,9 @@ namespace
 { // helper methods
 
 /// Compute compliance between 2 constraint Jacobians for Vec types
-template<int N, typename Real, class VecReal>
+template<Size N, typename Real, class VecReal>
 inline double UncoupledConstraintCorrection_computeCompliance(
-    unsigned int index,
+    Index index,
     const sofa::defaulttype::Vec<N, Real>& n1, const sofa::defaulttype::Vec<N, Real>& n2,
     const Real comp0, const VecReal& comp)
 {
@@ -57,7 +57,7 @@ inline double UncoupledConstraintCorrection_computeCompliance(
 /// Compute compliance between 2 constraint Jacobians for Rigid types
 template<typename Real, class VecReal>
 inline double UncoupledConstraintCorrection_computeCompliance(
-    unsigned int index,
+    Index index,
     const sofa::defaulttype::RigidDeriv<3, Real>& n1, const sofa::defaulttype::RigidDeriv<3, Real>& n2,
     const Real comp0, const VecReal& comp)
 {
@@ -75,9 +75,9 @@ inline double UncoupledConstraintCorrection_computeCompliance(
 }
 
 /// Compute displacement from constraint force for Vec types
-template<int N, typename Real, class VecReal>
+template<Size N, typename Real, class VecReal>
 inline sofa::defaulttype::Vec<N, Real> UncoupledConstraintCorrection_computeDx(
-    unsigned int index,
+    Index index,
     const sofa::defaulttype::Vec<N, Real>& f,
     const Real comp0, const VecReal& comp)
 {
@@ -87,7 +87,7 @@ inline sofa::defaulttype::Vec<N, Real> UncoupledConstraintCorrection_computeDx(
 /// Compute displacement from constraint force for Rigid types
 template<typename Real, class VecReal>
 inline sofa::defaulttype::RigidDeriv<3, Real> UncoupledConstraintCorrection_computeDx(
-    unsigned int index,
+    Index index,
     const sofa::defaulttype::RigidDeriv<3, Real>& f,
     const Real comp0, const VecReal& comp)
 {
@@ -293,7 +293,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     }
 
     comp0 *= Real(factor);
-    for(std::size_t i=0;i<comp.size(); ++i)
+    for(Size i=0;i<comp.size(); ++i)
     {
         comp[i] *= Real(factor);
     }
@@ -318,7 +318,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
             
             for (MatrixDerivColConstIterator colIt = colItBegin; colIt != colItEnd; ++colIt)
             {
-                unsigned int dof = colIt.index();
+                auto dof = colIt.index();
                 Deriv n = colIt.val();
 
                 if (verbose)
@@ -331,11 +331,6 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
             }
             
             W->add(indexCurRowConst, indexCurRowConst, w);
-        }
-
-        if (verbose)
-        {
-            sout << sendl;
         }
 
         // Then the compliance with the remaining constraints
@@ -368,7 +363,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
                 }
                 else // colIt and colIt2 are at the same index
                 {
-                    unsigned int dof = colIt.index();
+                    auto dof = colIt.index();
                     const Deriv& n1 = colIt.val();
                     const Deriv& n2 = colIt2.val();
                     //w += (n1 * n2) * (dof < comp.size() ? comp[dof] : comp0);
@@ -558,7 +553,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
     // Euler integration... will be done in the "integrator" as soon as it exists !
     dx.resize(v.size());
 
-    for (unsigned int i = 0; i < dx.size(); i++)
+    for (std::size_t i = 0; i < dx.size(); i++)
     {
 
         // compliance * force

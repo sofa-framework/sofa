@@ -2100,7 +2100,7 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { std::string name= "MechanicalComputeContactForceVisitor["+res.getName()+"]"; return name.c_str(); }
+    const char* getClassName() const override { static std::string name= "MechanicalComputeContactForceVisitor["+res.getName()+"]"; return name.c_str(); }
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override
@@ -2179,7 +2179,7 @@ public:
 #endif
 
     /// get the closest pickable particle
-    void getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
+    void getClosestParticle( core::behavior::BaseMechanicalState*& mstate, sofa::Index& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
 
 
 };

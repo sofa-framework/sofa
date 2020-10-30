@@ -146,7 +146,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
 
     // Initial point could have move due to gravity: looking for new coordinates of first incision point and triangle index.
     bool findTri = false;
-    sofa::helper::vector <unsigned int> triAroundVertex = startBody.body->getCollisionTopology()->getTrianglesAroundVertex(initialNbPoints);
+    const auto& triAroundVertex = startBody.body->getCollisionTopology()->getTrianglesAroundVertex(initialNbPoints);
 
     // Check if point index and triangle index are consistent.
     for (unsigned int j = 0; j<triAroundVertex.size(); ++j)
@@ -235,7 +235,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 
     // Output declarations
     sofa::helper::vector< sofa::core::topology::TopologyObjectType> topoPath_list;
-    sofa::helper::vector<unsigned int> indices_list;
+    sofa::helper::vector<Index> indices_list;
     sofa::helper::vector< sofa::defaulttype::Vec<3, double> > coords2_list;
     sofa::defaulttype::Vec<3,double> pointA = firstBody.point;
     sofa::defaulttype::Vec<3,double> pointB = currentBody.point;

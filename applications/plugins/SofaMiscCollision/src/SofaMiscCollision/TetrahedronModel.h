@@ -45,7 +45,7 @@ class TetrahedronCollisionModel;
 class Tetrahedron : public core::TCollisionElementIterator<TetrahedronCollisionModel>
 {
 public:
-    Tetrahedron(TetrahedronCollisionModel* model, int index);
+    Tetrahedron(TetrahedronCollisionModel* model, Index index);
     Tetrahedron() {};
     explicit Tetrahedron(const core::CollisionElementIterator& i);
 
@@ -118,13 +118,13 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(int size) override;
+    void resize(Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
     //virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
 
-    void draw(const core::visual::VisualParams*,int index) override;
+    void draw(const core::visual::VisualParams*, Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -135,7 +135,7 @@ public:
 
 };
 
-inline Tetrahedron::Tetrahedron(TetrahedronCollisionModel* model, int index)
+inline Tetrahedron::Tetrahedron(TetrahedronCollisionModel* model, Index index)
     : core::TCollisionElementIterator<TetrahedronCollisionModel>(model, index)
 {}
 
@@ -173,9 +173,10 @@ template<class DataTypes>
 class ContactMapper<TetrahedronCollisionModel, DataTypes> : public BarycentricContactMapper<TetrahedronCollisionModel, DataTypes>
 {
 public:
+    using Index = sofa::Index;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    int addPoint(const Coord& P, int index, Real&)
+    Index addPoint(const Coord& P, Index index, Real&)
     {
         Tetrahedron t(this->model, index);
         defaulttype::Vector3 b = t.getBary(P);

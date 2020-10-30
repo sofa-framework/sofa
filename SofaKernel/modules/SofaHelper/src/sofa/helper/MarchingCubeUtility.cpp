@@ -739,19 +739,19 @@ void MarchingCubeUtility::run ( unsigned char *data, const float isolevel,
 
     msg_info() << "Creating Mesh using Marching Cubes\n";
     vector<Vector3> &vertices                 = m.getVertices();
-    vector< vector < vector <int> > > &facets = m.getFacets();
+    auto &facets = m.getFacets();
 
     vector< PointID >       triangles;
 
     //Do the Marching Cube
     run ( data, isolevel, triangles, vertices );
 
-    const size_t numTriangles = triangles.size() /3;
-    facets.resize ( numTriangles, vector< vector < int > > ( 3, vector<int> ( 3, 0 ) ) );
+    const auto numTriangles = triangles.size() /3;
+    facets.resize ( numTriangles, vector< vector < PointID > > ( 3, vector<PointID> ( 3, 0 ) ) );
     for ( size_t i=0; i<triangles.size(); /*i+=3*/ )
     {
-        vector< vector< int > > &vertNormTexIndices = facets[i/3];
-        vector<int> &vIndices = vertNormTexIndices[0];
+        auto &vertNormTexIndices = facets[i/3];
+        auto &vIndices = vertNormTexIndices[0];
 
         vIndices[0] = triangles[i++];
         vIndices[1] = triangles[i++];

@@ -180,7 +180,7 @@ void CarvingManager::doCarve()
         }
 
         int nbelems = 0;
-        helper::vector<int> elemsToRemove;
+        helper::vector<Index> elemsToRemove;
 
         for (size_t j = 0; j < ncontacts; ++j)
         {
@@ -188,7 +188,7 @@ void CarvingManager::doCarve()
 
             if (c.value < d_carvingDistance.getValue())
             {
-                int triangleIdx = (c.elem.first.getCollisionModel() == m_toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
+                auto triangleIdx = (c.elem.first.getCollisionModel() == m_toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
                 elemsToRemove.push_back(triangleIdx);
             }
         }
@@ -253,7 +253,7 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
             d_active.setValue(false);
         }
     }
-    else if (simulation::CollisionEndEvent::checkEventType(event))
+    else if (sofa::simulation::AnimateEndEvent::checkEventType(event))
     {
         if (d_active.getValue()) {
             doCarve();

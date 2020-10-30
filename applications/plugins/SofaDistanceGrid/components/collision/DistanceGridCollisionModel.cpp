@@ -131,13 +131,13 @@ void RigidDistanceGridCollisionModel::init()
     sout << "< RigidDistanceGridCollisionModel::init()"<<sendl;
 }
 
-void RigidDistanceGridCollisionModel::resize(int s)
+void RigidDistanceGridCollisionModel::resize(Size s)
 {
     this->core::CollisionModel::resize(s);
     elems.resize(s);
 }
 
-void RigidDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
+void RigidDistanceGridCollisionModel::setGrid(DistanceGrid* surf, Index index)
 {
     if (elems[index].grid == surf) return;
     if (elems[index].grid!=NULL) elems[index].grid->release();
@@ -145,7 +145,7 @@ void RigidDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
     modified = true;
 }
 
-void RigidDistanceGridCollisionModel::setNewState(int index, double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
+void RigidDistanceGridCollisionModel::setNewState(Index index, double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
 {
     grid->addRef();
     if (elems[index].prevGrid!=NULL)
@@ -174,7 +174,7 @@ void RigidDistanceGridCollisionModel::updateState()
     bool useInitTranslation = (initTranslation != DistanceGrid::Coord());
     bool useInitRotation = (initRotation != Vector3(0,0,0));
 
-    for (int i=0; i<size; i++)
+    for (Size i=0; i<size; i++)
     {
         //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
         Vector3 emin, emax;
@@ -217,7 +217,7 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 
     const bool flipped = isFlipped();
     cubeModel->resize(size);
-    for (int i=0; i<size; i++)
+    for (Size i=0; i<size; i++)
     {
         //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
         Vector3 emin, emax;
@@ -278,7 +278,7 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpa
 #endif /* SOFA_NO_OPENGL */
 }
 
-void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,int index)
+void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,Index index)
 {
 #ifndef SOFA_NO_OPENGL
     const bool flipped = isFlipped();
@@ -501,9 +501,9 @@ void FFDDistanceGridCollisionModel::init()
     {
         Vec3Types::Coord p0 = grid->meshPts[i];
         Vector3 bary;
-        int elem = (ffdRGrid ? ffdRGrid->findCube(p0,bary[0],bary[1],bary[2]) : ffdSGrid->findCube(p0,bary[0],bary[1],bary[2]));
-        if (elem == -1) continue;
-        if ((unsigned)elem >= elems.size())
+        Index elem = (ffdRGrid ? ffdRGrid->findCube(p0,bary[0],bary[1],bary[2]) : ffdSGrid->findCube(p0,bary[0],bary[1],bary[2]));
+        if (elem == sofa::InvalidID) continue;
+        if (elem >= elems.size())
         {
             serr << "ERROR (FFDDistanceGridCollisionModel): point "<<i<<" "<<p0<<" in invalid cube "<<elem<<sendl;
         }
@@ -521,8 +521,8 @@ void FFDDistanceGridCollisionModel::init()
     /// fill other data and remove inactive elements
 
     sout << "FFDDistanceGridCollisionModel: initializing "<<ffdMesh->getNbHexahedra()<<" cubes."<<sendl;
-    size_t c=0;
-    for (size_t e=0; e<ffdMesh->getNbHexahedra(); e++)
+    Size c=0;
+    for (Size e=0; e<ffdMesh->getNbHexahedra(); e++)
     {
         if (c != e)
             elems[c].points.swap(elems[e].points); // move the list of points to the new
@@ -571,13 +571,13 @@ void FFDDistanceGridCollisionModel::init()
     sout << "FFDDistanceGridCollisionModel: "<<c<<" active cubes."<<sendl;
 }
 
-void FFDDistanceGridCollisionModel::resize(int s)
+void FFDDistanceGridCollisionModel::resize(Size s)
 {
     this->core::CollisionModel::resize(s);
     elems.resize(s);
 }
 
-bool FFDDistanceGridCollisionModel::canCollideWithElement(int index, CollisionModel* model2, int index2)
+bool FFDDistanceGridCollisionModel::canCollideWithElement(Index index, CollisionModel* model2, Index index2)
 {
     if (model2 != this) return true;
     if (!this->bSelfCollision.getValue()) return true;
@@ -587,7 +587,7 @@ bool FFDDistanceGridCollisionModel::canCollideWithElement(int index, CollisionMo
     return true;
 }
 
-void FFDDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
+void FFDDistanceGridCollisionModel::setGrid(DistanceGrid* surf, Index index)
 {
     elems[index].grid = surf;
 }
@@ -602,7 +602,7 @@ void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
     updateGrid();
 
     cubeModel->resize(size);
-    for (int i=0; i<size; i++)
+    for (Size i=0; i<size; i++)
     {
         Vector3 emin, emax;
         const DeformedCube& cube = getDeformCube(i);
@@ -624,7 +624,7 @@ void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 
 void FFDDistanceGridCollisionModel::updateGrid()
 {
-    for (int index=0; index<size; index++)
+    for (Size index=0; index<size; index++)
     {
         DeformedCube& cube = getDeformCube( index );
         const sofa::helper::vector<core::topology::BaseMeshTopology::Hexa>& cubeCorners = ffdMesh->getHexahedra();
@@ -728,7 +728,7 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
 #endif /* SOFA_NO_OPENGL */
 }
 
-void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams,int index)
+void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vparams, Index index)
 {
 #ifndef SOFA_NO_OPENGL
     //DistanceGrid* grid = getGrid(index);

@@ -59,7 +59,9 @@ public:
 
     typedef CapsuleCollisionModel<DataTypes> ParentModel;
 
-    TCapsule(ParentModel* model, int index);
+    using Index = sofa::Index;
+
+    TCapsule(ParentModel* model, Index index);
 
     explicit TCapsule(const core::CollisionElementIterator& i);
 
@@ -123,39 +125,39 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(int size) override;
+    void resize(Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
     //virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
 
-    void draw(const core::visual::VisualParams* vparams,int index) override;
+    void draw(const core::visual::VisualParams* vparams, Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return _mstate; }
 
-    Real radius(int index) const;
+    Real radius(Index index) const;
 
-    const Coord & center(int i)const;
+    const Coord & center(Index i)const;
 
-    Coord point1(int index)const;
+    Coord point1(Index index)const;
 
-    Coord point2(int index)const;
+    Coord point2(Index index)const;
 
     //Returns the point1-point2 normalized vector
-    Coord axis(int index)const;
+    Coord axis(Index index)const;
 
-    const sofa::defaulttype::Quaternion orientation(int index)const;
+    const sofa::defaulttype::Quaternion orientation(Index index)const;
 
-    Real height(int index)const;
+    Real height(Index index)const;
 
-    inline unsigned int nbCap()const;
+    inline Size nbCap()const;
 
     Real defaultRadius()const;
 
-    const Coord & velocity(int index)const;
+    const Coord & velocity(Index index)const;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -179,7 +181,7 @@ protected:
 
 
 template<class MyReal>
-inline TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsule(ParentModel* model, int index)
+inline TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsule(ParentModel* model, Index index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 

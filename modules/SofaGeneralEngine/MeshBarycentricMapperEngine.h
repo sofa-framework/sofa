@@ -44,7 +44,8 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef defaulttype::Vec<3,Real> Vec3;
-    typedef typename sofa::helper::vector<unsigned int>  VecIndices;
+    using Index = sofa::Index;
+    typedef typename sofa::helper::vector<Index>  VecIndices;
 
 protected:
     MeshBarycentricMapperEngine();
@@ -57,11 +58,11 @@ public:
     void doUpdate() override;
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void addPointInLine(const int lineIndex, const SReal* baryCoords);
-    void addPointInTriangle(const int triangleIndex, const SReal* baryCoords, const unsigned int pointIndex);
-    void addPointInQuad(const int quadIndex, const SReal* baryCoords);
-    void addPointInTetra(const int tetraIndex, const SReal* baryCoords, const unsigned int pointIndex);
-    void addPointInCube(const int cubeIndex, const SReal* baryCoords);
+    void addPointInLine(const Index lineIndex, const SReal* baryCoords);
+    void addPointInTriangle(const Index triangleIndex, const SReal* baryCoords, const Index pointIndex);
+    void addPointInQuad(const Index quadIndex, const SReal* baryCoords);
+    void addPointInTetra(const Index tetraIndex, const SReal* baryCoords, const Index pointIndex);
+    void addPointInCube(const Index cubeIndex, const SReal* baryCoords);
 
 
     Data<VecCoord> d_inputPositions; ///< Initial positions of the master points
@@ -70,7 +71,7 @@ public:
     Data< VecIndices> d_tableElements; ///< Output : Table that provides the element index to which each input point belongs
     Data<bool> d_bComputeLinearInterpolation; ///< if true, computes a linear interpolation (debug)
 
-    Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > d_interpolationIndices; ///< Indices of a linear interpolation
+    Data< sofa::helper::vector<sofa::helper::vector< Index > > > d_interpolationIndices; ///< Indices of a linear interpolation
     Data< sofa::helper::vector<sofa::helper::vector< Real > > > d_interpolationValues; ///< Values of a linear interpolation
     
     SingleLink<MeshBarycentricMapperEngine<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology; ///< Name and path of Input mesh Topology
@@ -82,11 +83,11 @@ public:
         {
             msg_warning() << "input data 'InputMeshName' changed for 'topology', please update your scene (see PR#1487)";
         }
-        MeshBarycentricMapperEngine::parse(arg);
+        core::DataEngine::parse(arg);
     }
 
 private:
-    sofa::helper::vector<sofa::helper::vector< unsigned int > >* linearInterpolIndices;
+    sofa::helper::vector<sofa::helper::vector< Index > >* linearInterpolIndices;
     sofa::helper::vector<sofa::helper::vector< Real > >* linearInterpolValues;
 };
 

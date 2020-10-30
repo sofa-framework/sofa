@@ -190,7 +190,7 @@ const BaseMeshTopology::VerticesAroundVertex BaseMeshTopology::getVerticesAround
     const EdgesAroundVertex& shell = getEdgesAroundVertex(i);
     VerticesAroundVertex adjacentVertices;
 
-    for (std::size_t j = 0; j<shell.size(); j++)
+    for (Size j = 0; j<shell.size(); j++)
     {
         Edge theEdge = edges[ shell[j] ];
         if ( theEdge[0] == i )
@@ -204,20 +204,20 @@ const BaseMeshTopology::VerticesAroundVertex BaseMeshTopology::getVerticesAround
 
 
 /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-const vector<BaseMeshTopology::index_type> BaseMeshTopology::getElementAroundElement(index_type)
+const vector<BaseMeshTopology::Index> BaseMeshTopology::getElementAroundElement(Index)
 {
     return InvalidSet;
 }
 
 
 /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-const vector<BaseMeshTopology::index_type> BaseMeshTopology::getElementAroundElements(vector<index_type>)
+const vector<BaseMeshTopology::Index> BaseMeshTopology::getElementAroundElements(vector<Index>)
 {
     return InvalidSet;
 }
 
 /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-const vector<BaseMeshTopology::index_type> BaseMeshTopology::getConnectedElement(index_type)
+const vector<BaseMeshTopology::Index> BaseMeshTopology::getConnectedElement(Index)
 {
     return InvalidSet;
 }
@@ -262,23 +262,23 @@ public:
     {
         dest->addPoint(px,py,pz);
     }
-    void addLine(int p1, int p2) override
+    void addLine(Index p1, Index p2) override
     {
         dest->addEdge(p1,p2);
     }
-    void addTriangle(int p1, int p2, int p3) override
+    void addTriangle(Index p1, Index p2, Index p3) override
     {
         dest->addTriangle(p1,p2,p3);
     }
-    void addQuad(int p1, int p2, int p3, int p4) override
+    void addQuad(Index p1, Index p2, Index p3, Index p4) override
     {
         dest->addQuad(p1,p2,p3,p4);
     }
-    void addTetra(int p1, int p2, int p3, int p4) override
+    void addTetra(Index p1, Index p2, Index p3, Index p4) override
     {
         dest->addTetra(p1,p2,p3,p4);
     }
-    void addCube(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8) override
+    void addCube(Index p1, Index p2, Index p3, Index p4, Index p5, Index p6, Index p7, Index p8) override
     {
         dest->addHexa(p1,p2,p3,p4,p5,p6,p7,p8);
     }
@@ -314,27 +314,27 @@ void BaseMeshTopology::addPoint(SReal, SReal, SReal)
     msg_error() << "addPoint() not supported.";
 }
 
-void BaseMeshTopology::addEdge(int, int)
+void BaseMeshTopology::addEdge(Index, Index)
 {
     msg_error() << "addEdge() not supported.";
 }
 
-void BaseMeshTopology::addTriangle(int, int, int)
+void BaseMeshTopology::addTriangle(Index, Index, Index)
 {
     msg_error() << "addTriangle() not supported.";
 }
 
-void BaseMeshTopology::addQuad(int, int, int, int)
+void BaseMeshTopology::addQuad(Index, Index, Index, Index)
 {
     msg_error() << "addQuad() not supported.";
 }
 
-void BaseMeshTopology::addTetra(int, int, int, int)
+void BaseMeshTopology::addTetra(Index, Index, Index, Index)
 {
     msg_error() << "addTetra() not supported.";
 }
 
-void BaseMeshTopology::addHexa(int, int, int, int, int, int, int, int)
+void BaseMeshTopology::addHexa(Index, Index, Index, Index, Index, Index, Index, Index)
 {
     msg_error() << "addHexa() not supported.";
 }

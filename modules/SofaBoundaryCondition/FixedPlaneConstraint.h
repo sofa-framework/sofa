@@ -58,6 +58,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(FixedPlaneConstraint,DataTypes),
                SOFA_TEMPLATE(ProjectiveConstraintSet, DataTypes));
 
+    using Index = sofa::Index;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
@@ -69,7 +70,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef helper::vector<Index> SetIndexArray;
     typedef component::topology::PointSubsetData< SetIndexArray > SetIndex;
 public:
     Data<Coord> d_direction; ///< direction on which the constraint applied
@@ -105,8 +106,8 @@ public:
     void selectVerticesAlongPlane();
     void setDminAndDmax(const Real _dmin,const Real _dmax);
 
-    void addConstraint(int index);
-    void removeConstraint(int index);
+    void addConstraint(Index index);
+    void removeConstraint(Index index);
 
 protected:
     FixedPlaneConstraint();

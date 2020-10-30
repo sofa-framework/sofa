@@ -63,7 +63,7 @@ Triangle2EdgeTopologicalMapping::Triangle2EdgeTopologicalMapping()
 
 Triangle2EdgeTopologicalMapping::~Triangle2EdgeTopologicalMapping()
 {
-    sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
     Loc2GlobDataVec.endEdit();
@@ -109,7 +109,7 @@ void Triangle2EdgeTopologicalMapping::init()
 
     // create topology maps and add edge into output topology
     const sofa::helper::vector<core::topology::BaseMeshTopology::Edge> &edgeArray = fromModel->getEdges();
-    sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
 
@@ -134,7 +134,7 @@ void Triangle2EdgeTopologicalMapping::init()
 }
 
 
-unsigned int Triangle2EdgeTopologicalMapping::getFromIndex(unsigned int ind)
+Index Triangle2EdgeTopologicalMapping::getFromIndex(Index ind)
 {
     if (fromModel->getTrianglesAroundEdge(ind).size()==1)
     {
@@ -156,7 +156,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
     std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
-    sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
     while( itBegin != itEnd )
     {
@@ -177,7 +177,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
             unsigned int last = (unsigned int)fromModel->getNbEdges() - 1;
             unsigned int ind_last = (unsigned int)toModel->getNbEdges();
 
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const EdgesRemoved *>( *itBegin ) )->getArray();
+            const auto &tab = ( static_cast< const EdgesRemoved *>( *itBegin ) )->getArray();
 
             unsigned int ind_tmp;
             unsigned int ind_real_last;
@@ -186,14 +186,14 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
             {
                 unsigned int k = tab[i];
 
-                std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                auto iter_1 = Glob2LocMap.find(k);
                 if(iter_1 != Glob2LocMap.end())
                 {
                     ind_last = ind_last - 1;
 
                     unsigned int ind_k = Glob2LocMap[k];
 
-                    std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
+                    auto iter_2 = Glob2LocMap.find(last);
                     if(iter_2 != Glob2LocMap.end())
                     {
                         ind_real_last = Glob2LocMap[last];
@@ -231,7 +231,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                     Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[Loc2GlobVec.size() - 1]));
                     Loc2GlobVec.resize( Loc2GlobVec.size() - 1 );
 
-                    sofa::helper::vector< unsigned int > edges_to_remove;
+                    sofa::helper::vector< Index > edges_to_remove;
                     edges_to_remove.push_back(ind_k);
                     m_outTopoModifier->removeEdges(edges_to_remove, false);
 
@@ -253,7 +253,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
             const sofa::helper::vector<Topology::TriangleID> &tri2Remove = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
 
             sofa::helper::vector< core::topology::BaseMeshTopology::Edge > edges_to_create;
-            sofa::helper::vector< unsigned int > edgesIndexList;
+            sofa::helper::vector< Index > edgesIndexList;
             size_t nb_elems = toModel->getNbEdges();
 
             // For each triangle removed inside the tri2Remove array. Will look if it has only one neighbour.
@@ -308,7 +308,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                     // update topology maps
                     Loc2GlobVec.push_back(edgeId);
                     // check if edge already exist
-                    std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(edgeId);
+                    auto iter_1 = Glob2LocMap.find(edgeId);
                     if(iter_1 != Glob2LocMap.end() )
                     {
                         dmsg_error() << "Fail to add edge " << edgeId << "which already exists with value: " << (*iter_1).second;
@@ -325,9 +325,9 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         }
         case core::topology::POINTSREMOVED:
         {
-            const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+            const auto& tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-            sofa::helper::vector<unsigned int> indices;
+            sofa::helper::vector<Index> indices;
 
             for(unsigned int i = 0; i < tab.size(); ++i)
             {
@@ -335,7 +335,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                 indices.push_back(tab[i]);
             }
 
-            sofa::helper::vector<unsigned int>& tab_indices = indices;
+            auto& tab_indices = indices;
 
             m_outTopoModifier->removePointsWarning(tab_indices, false);
             m_outTopoModifier->propagateTopologicalChanges();
@@ -345,11 +345,11 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         }
         case core::topology::POINTSRENUMBERING:
         {
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
-            const sofa::helper::vector<unsigned int> &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+            const auto &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
+            const auto &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
-            sofa::helper::vector<unsigned int> indices;
-            sofa::helper::vector<unsigned int> inv_indices;
+            sofa::helper::vector<Index> indices;
+            sofa::helper::vector<Index> inv_indices;
 
             for(unsigned int i = 0; i < tab.size(); ++i)
             {
@@ -357,8 +357,8 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                 inv_indices.push_back(inv_tab[i]);
             }
 
-            sofa::helper::vector<unsigned int>& tab_indices = indices;
-            sofa::helper::vector<unsigned int>& inv_tab_indices = inv_indices;
+            auto& tab_indices = indices;
+            auto& inv_tab_indices = inv_indices;
 
             m_outTopoModifier->renumberPointsWarning(tab_indices, inv_tab_indices, false);
             m_outTopoModifier->propagateTopologicalChanges();
@@ -386,7 +386,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                 const BaseMeshTopology::EdgesInTriangle& edgeInTri = fromModel->getEdgesInTriangle(triId);
                 for (auto edgeGlobId : edgeInTri)
                 {
-                    std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(edgeGlobId);
+                   auto iter_1 = Glob2LocMap.find(edgeGlobId);
                     const BaseMeshTopology::TrianglesAroundEdge& triAEdge = fromModel->getTrianglesAroundEdge(edgeGlobId);
                     if (iter_1 != Glob2LocMap.end()) // in the map
                     {
@@ -421,7 +421,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
             for (auto edgeGlobId : edgeId_to_remove)
             {
 
-                std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(edgeGlobId);
+                auto iter_1 = Glob2LocMap.find(edgeGlobId);
                 if (iter_1 == Glob2LocMap.end())
                 {
                     msg_error() << " in TRIANGLESADDED process, edge id " << edgeGlobId << " not found in Glob2LocMap";

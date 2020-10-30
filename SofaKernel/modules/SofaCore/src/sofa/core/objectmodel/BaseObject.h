@@ -24,7 +24,6 @@
 
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/DataTracker.h>
-
 namespace sofa
 {
 
@@ -139,7 +138,7 @@ public:
     BaseObject* getMaster();
 
 
-    typedef MultiLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> LinkSlaves;
+    typedef sofa::core::objectmodel::MultiLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK> LinkSlaves;
     typedef LinkSlaves::Container VecSlaves;
 
     const VecSlaves& getSlaves() const;
@@ -470,7 +469,7 @@ protected:
     void changeContextLink(BaseContext* before, BaseContext*& after);
 
     /// This method insures that slaves objects have master and context links set correctly
-    void changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, bool add);
+    void changeSlavesLink(BaseObject::SPtr ptr, std::size_t /*index*/, bool add);
 
     /// BaseNode can set the context of its own objects
     friend class BaseNode;

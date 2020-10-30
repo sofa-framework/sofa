@@ -458,7 +458,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 #ifndef DN_USE_J
                         k = J_1t*k*J_1;
 #endif
-                        if (verbose) sout << "K"<<i<<j<<" += "<<k<<" * "<<detJ<<""<<sendl;
+                        dmsg_info_when(verbose) << "K"<<i<<j<<" += "<<k<<" * "<<detJ<<"";
                         k *= detJ;
                         for(int m=0; m<3; ++m)
                             for(int l=0; l<3; ++l)
@@ -969,9 +969,9 @@ void HexahedronFEMForceField<DataTypes>::getNodeRotation(Transformation& R, unsi
     R[0][0] = R[1][1] = R[2][2] = 1.0 ;
     R[0][1] = R[0][2] = R[1][0] = R[1][2] = R[2][0] = R[2][1] = 0.0 ;
 
-    unsigned int numHexa=liste_hexa.size();
+    std::size_t numHexa=liste_hexa.size();
 
-    for (unsigned int ti=0; ti<numHexa; ti++)
+    for (Index ti=0; ti<numHexa; ti++)
     {
         Transformation R0t;
         R0t.transpose(_initialrotations[liste_hexa[ti]]);
@@ -1001,7 +1001,7 @@ SReal HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const core::Mechani
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix * rotations,int offset)
 {
-    unsigned int nbdof = this->mstate->getSize();
+    std::size_t nbdof = this->mstate->getSize();
 
     if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
     {

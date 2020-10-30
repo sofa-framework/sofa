@@ -3,6 +3,8 @@ project(Registration VERSION 0.1)
 
 find_package(SofaGui REQUIRED)
 sofa_find_package(SofaMiscCollision REQUIRED)
+sofa_find_package(SofaOpenglVisual REQUIRED)
+sofa_find_package(SofaExporter REQUIRED)
 sofa_find_package(SofaDistanceGrid QUIET)
 sofa_find_package(image QUIET)
 find_package(Eigen3 REQUIRED)

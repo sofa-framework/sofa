@@ -369,7 +369,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
                 {
                     WriteAccessor<Data<vector<int> > > indices = d_indices;
                     size_t sizeIndices = indices.size();
-                    const sofa::helper::vector< unsigned int >& pointsAdded = ( static_cast< const sofa::core::topology::PointsAdded * >( *it ) )->getIndexArray();
+                    const auto& pointsAdded = ( static_cast< const sofa::core::topology::PointsAdded * >( *it ) )->getIndexArray();
                     size_t nbPointsAdded = pointsAdded.size();
 
                     for(size_t i=0; i<nbPointsAdded; i++)
@@ -398,7 +398,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
                 {
                     WriteAccessor<Data<vector<int> > > indices = d_indices;
                     size_t sizeIndices = indices.size();
-                    const sofa::helper::vector< unsigned int >& pointsRemoved = ( static_cast< const sofa::core::topology::PointsRemoved * >( *it ) )->getArray();
+                    const auto& pointsRemoved = ( static_cast< const sofa::core::topology::PointsRemoved * >( *it ) )->getArray();
                     size_t nbPointsRemoved = pointsRemoved.size();
 
                     size_t count=0;
@@ -635,14 +635,14 @@ void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mpa
 
 
 template <class DataTypes, class MassType>
-SReal UniformMass<DataTypes, MassType>::getElementMass ( unsigned int ) const
+SReal UniformMass<DataTypes, MassType>::getElementMass (sofa::Index ) const
 {
     return (SReal ( d_vertexMass.getValue() ));
 }
 
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::getElementMass ( unsigned int  index ,
+void UniformMass<DataTypes, MassType>::getElementMass (sofa::Index  index ,
                                                         BaseMatrix *m ) const
 {
     SOFA_UNUSED(index);

@@ -50,7 +50,8 @@ BarycentricMapperTriangleSetTopology<In,Out>::BarycentricMapperTriangleSetTopolo
 
 
 template <class In, class Out>
-int BarycentricMapperTriangleSetTopology<In,Out>::addPointInTriangle ( const int triangleIndex, const SReal* baryCoords )
+typename BarycentricMapperTriangleSetTopology<In, Out>::Index 
+BarycentricMapperTriangleSetTopology<In,Out>::addPointInTriangle ( const Index triangleIndex, const SReal* baryCoords )
 {
     helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
     vectorData.resize ( d_map.getValue().size() +1 );
@@ -63,7 +64,8 @@ int BarycentricMapperTriangleSetTopology<In,Out>::addPointInTriangle ( const int
 }
 
 template <class In, class Out>
-int BarycentricMapperTriangleSetTopology<In,Out>::createPointInTriangle ( const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points )
+typename BarycentricMapperTriangleSetTopology<In, Out>::Index 
+BarycentricMapperTriangleSetTopology<In,Out>::createPointInTriangle ( const typename Out::Coord& p, Index triangleIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[2];
     const Triangle& elem = this->m_fromTopology->getTriangle ( triangleIndex );
@@ -124,7 +126,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::computeDistance(double& d, co
 }
 
 template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::addPointInElement(const int elementIndex, const SReal* baryCoords)
+void BarycentricMapperTriangleSetTopology<In,Out>::addPointInElement(const Index elementIndex, const SReal* baryCoords)
 {
     addPointInTriangle(elementIndex,baryCoords);
 }

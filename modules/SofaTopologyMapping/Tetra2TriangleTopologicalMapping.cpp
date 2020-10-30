@@ -157,7 +157,7 @@ void Tetra2TriangleTopologicalMapping::init()
 }
 
 
-unsigned int Tetra2TriangleTopologicalMapping::getFromIndex(unsigned int ind)
+Index Tetra2TriangleTopologicalMapping::getFromIndex(Index ind)
 {
 
     if(fromModel->getTetrahedraAroundTriangle(ind).size()==1)
@@ -180,7 +180,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     auto itBegin=fromModel->beginChange();
     auto itEnd=fromModel->endChange();
 
-    sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
     while( itBegin != itEnd )
     {
@@ -200,10 +200,10 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::TRIANGLESREMOVED:
         {
-            const sofa::helper::vector<unsigned int> &triIDtoRemove = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
+            const auto &triIDtoRemove = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
 
             // search for the list of triangles to remove in mapped topology
-            sofa::helper::vector< unsigned int > triangles_to_remove;
+            sofa::helper::vector< Index > triangles_to_remove;
 
             for (auto globTriId : triIDtoRemove)
             {
@@ -460,7 +460,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         {
             const auto pointRemoved = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-            sofa::helper::vector<unsigned int> indices;
+            sofa::helper::vector<Index> indices;
 
             for(unsigned int i = 0; i < pointRemoved.size(); ++i)
             {
@@ -532,7 +532,7 @@ bool Tetra2TriangleTopologicalMapping::checkTopologies()
     dmsg_info() << "Glob2LocMap.size(): " << Glob2LocMap.size();
     dmsg_info() << "Loc2GlobDataVec.size(): " << buffer.size();
 
-    std::map<unsigned int, unsigned int>::iterator itM;
+    std::map<Index, Index>::iterator itM;
     for (size_t i=0; i<triangleArray_top.size(); i++)
     {
         const auto & tri = triangleArray_top[i];

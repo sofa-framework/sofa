@@ -53,6 +53,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
+    using Index = sofa::Index;
 
     ManifoldTriangleSetTopologyAlgorithms()
         : TriangleSetTopologyAlgorithms<DataTypes>()
@@ -73,9 +74,9 @@ public:
      * Each end of the path is given either by an existing point or a point inside the first/last triangle. If the first/last triangle is (TriangleID)-1, it means that to path crosses the boundary of the surface.
      * @returns the indice of the end point, or -1 if the incision failed.
      */
-    virtual int SplitAlongPath(unsigned int pa, Coord& a, unsigned int pb, Coord& b,
+    virtual int SplitAlongPath(Index pa, Coord& a, Index pb, Coord& b,
             sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
-            sofa::helper::vector<unsigned int>& indices_list,
+            sofa::helper::vector<Index>& indices_list,
             sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
             sofa::helper::vector<core::topology::BaseMeshTopology::EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0) override;
 
@@ -83,7 +84,7 @@ public:
     /** \brief Duplicates the given edges. Only works if at least the first or last point is adjacent to a border.
      * @returns true if the incision succeeded.
      */
-    virtual bool InciseAlongEdgeList(const sofa::helper::vector<unsigned int>& edges, sofa::helper::vector<unsigned int>& new_points, sofa::helper::vector<unsigned int>& end_points, bool& reachBorder) override;
+    virtual bool InciseAlongEdgeList(const sofa::helper::vector<Index>& edges, sofa::helper::vector<Index>& new_points, sofa::helper::vector<Index>& end_points, bool& reachBorder) override;
 
 
     /** \brief: Swap a list of edges.
@@ -105,13 +106,13 @@ public:
 
     /** \brief: Reorder the whole mesh by swaping a all edges.
      * For each edge, check if topology will be better before swaping it.
-     * @see swapRemeshing (const sofa::helper::vector <unsigned int>& listedges)
+     * @see swapRemeshing (const sofa::helper::vector <Index>& listedges)
      */
     void swapRemeshing ();
 
 protected:
 
-    Data< sofa::helper::vector< unsigned int> > m_triSwap; ///< Debug : Test swap function (only while animate).
+    Data< sofa::helper::vector< Index> > m_triSwap; ///< Debug : Test swap function (only while animate).
     Data< bool > m_swapMesh; ///< If true, optimize the mesh only by swapping edges
 
     /**\brief Function swaping edge between two adjacents triangles. Create two new triangles and remove the two old one.

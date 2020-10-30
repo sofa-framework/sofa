@@ -136,7 +136,7 @@ public:
 
 };
 
-template <int N, int M, class Real>
+template <Size N, Size M, class Real>
 struct IdentityMappingMatrixHelper;
 
 #if  !defined(SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP)
@@ -195,29 +195,29 @@ namespace helper
 
     // Vec <-> Vec
 
-    template<int N1, int N2, class T1, class T2>
+    template<Size N1, Size N2, class T1, class T2>
     static inline void eq(defaulttype::Vec<N1,T1>& dest, const defaulttype::Vec<N2,T2>& src)
     {
         dest = src;
     }
 
-    template<int N1, int N2, class T1, class T2>
+    template<Size N1, Size N2, class T1, class T2>
     static inline void peq(defaulttype::Vec<N1,T1>& dest, const defaulttype::Vec<N2,T2>& src)
     {
-        for (unsigned int i=0; i<(N1>N2?N2:N1); i++)
+        for (Size i=0; i<(N1>N2?N2:N1); i++)
             dest[i] += (T1)src[i];
     }
 
     // RigidDeriv <-> RigidDeriv
 
-    template<int N, class T1, class T2>
+    template<Size N, class T1, class T2>
     static inline void eq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
     {
         dest.getVCenter() = src.getVCenter();
         dest.getVOrientation() = (typename defaulttype::RigidDeriv<N,T1>::Rot)src.getVOrientation();
     }
 
-    template<int N, class T1, class T2>
+    template<Size N, class T1, class T2>
     static inline void peq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
     {
         dest.getVCenter() += src.getVCenter();
@@ -226,14 +226,14 @@ namespace helper
 
     // RigidCoord <-> RigidCoord
 
-    template<int N, class T1, class T2>
+    template<Size N, class T1, class T2>
     static inline void eq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src)
     {
         dest.getCenter() = src.getCenter();
         dest.getOrientation() = (typename defaulttype::RigidCoord<N,T1>::Rot)src.getOrientation();
     }
 
-    template<int N, class T1, class T2>
+    template<Size N, class T1, class T2>
     static inline void peq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src)
     {
         dest.getCenter() += src.getCenter();
@@ -242,50 +242,50 @@ namespace helper
 
     // RigidDeriv <-> Vec
 
-    template<int N, class T1, class T2>
+    template<Size N, class T1, class T2>
     static inline void eq(defaulttype::Vec<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
     {
         dest = src.getVCenter();
     }
 
-    template<int N, class T1, class T2>
+    template<Size N, class T1, class T2>
     static inline void peq(defaulttype::Vec<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
     {
         dest += src.getVCenter();
     }
 
-    template<int N, class T1, class T2>
+    template<Size N, class T1, class T2>
     static inline void eq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::Vec<N,T2>& src)
     {
         dest.getVCenter() = src;
     }
 
-    template<int N, class T1, class T2>
+    template<Size N, class T1, class T2>
     static inline void peq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::Vec<N,T2>& src)
     {
         dest.getVCenter() += src;
     }
 
     // RigidCoord <-> Vec
-    template<int N, class T1, class T2>
+    template<Size N, class T1, class T2>
     static inline void eq(defaulttype::Vec<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src)
     {
         dest = src.getCenter();
     }
 
-    template<int N, class T1, class T2>
+    template<Size N, class T1, class T2>
     static inline void peq(defaulttype::Vec<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src)
     {
         dest += src.getCenter();
     }
 
-    template<int N, class T1, class T2>
+    template<Size N, class T1, class T2>
     static inline void eq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::Vec<N,T2>& src)
     {
         dest.getCenter() = src;
     }
 
-    template<int N, class T1, class T2>
+    template<Size N, class T1, class T2>
     static inline void peq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::Vec<N,T2>& src)
     {
         dest.getCenter() += src;

@@ -66,7 +66,7 @@ public:
     /// Procedural creation methods
     /// @{
     void clear() override;
-    void addQuad( int a, int b, int c, int d ) override;
+    void addQuad(Index a, Index b, Index c, Index d ) override;
     /// @}
 
 
@@ -174,7 +174,7 @@ public:
     bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    size_t getNumberOfConnectedComponent() override;
+    Size getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     const VecQuadID getConnectedElement(QuadID elem) override;
@@ -189,13 +189,13 @@ public:
     /** \brief Returns the number of quads in this topology.
      * The difference to getNbQuads() is that this method does not generate the quad array if it does not exist.
      */
-    size_t getNumberOfQuads() const;
+    Size getNumberOfQuads() const;
 
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    size_t getNumberOfElements() const override;
+    Size getNumberOfElements() const override;
 
 
     /** \brief Returns the Quad array. */

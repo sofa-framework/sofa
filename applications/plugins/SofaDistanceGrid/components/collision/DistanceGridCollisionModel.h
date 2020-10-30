@@ -58,7 +58,7 @@ class SOFA_SOFADISTANCEGRID_API RigidDistanceGridCollisionElement : public core:
 {
 public:
 
-    RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, int index);
+    RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, Index index);
 
     explicit RigidDistanceGridCollisionElement(const core::CollisionElementIterator& i);
 
@@ -150,19 +150,19 @@ public:
 
     void init() override;
 
-    DistanceGrid* getGrid(int index=0)
+    DistanceGrid* getGrid(Index index=0)
     {
         return elems[index].grid;
     }
-    bool isTransformed(int index=0) const
+    bool isTransformed(Index index=0) const
     {
         return elems[index].isTransformed;
     }
-    const defaulttype::Matrix3& getRotation(int index=0) const
+    const defaulttype::Matrix3& getRotation(Index index=0) const
     {
         return elems[index].rotation;
     }
-    const defaulttype::Vector3& getTranslation(int index=0) const
+    const defaulttype::Vector3& getTranslation(Index index=0) const
     {
         return elems[index].translation;
     }
@@ -190,27 +190,27 @@ public:
         return flipNormals.getValue();
     }
 
-    void setGrid(DistanceGrid* surf, int index=0);
+    void setGrid(DistanceGrid* surf, Index index=0);
 
-    DistanceGrid* getPrevGrid(int index=0)
+    DistanceGrid* getPrevGrid(Index index=0)
     {
         return elems[index].prevGrid;
     }
-    const defaulttype::Matrix3& getPrevRotation(int index=0) const
+    const defaulttype::Matrix3& getPrevRotation(Index index=0) const
     {
         return elems[index].prevRotation;
     }
-    const defaulttype::Vector3& getPrevTranslation(int index=0) const
+    const defaulttype::Vector3& getPrevTranslation(Index index=0) const
     {
         return elems[index].prevTranslation;
     }
-    double getPrevDt(int index=0) const
+    double getPrevDt(Index index=0) const
     {
         return elems[index].prevDt;
     }
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(int index, double dt, DistanceGrid* grid, const defaulttype::Matrix3& rotation, const defaulttype::Vector3& translation);
+    void setNewState(Index index, double dt, DistanceGrid* grid, const defaulttype::Matrix3& rotation, const defaulttype::Vector3& translation);
 
     /// @}
 
@@ -222,17 +222,17 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(int size) override;
+    void resize(Size size) override;
 
     /// Create or update the bounding volume hierarchy.
     void computeBoundingTree(int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*, int index) override;
+    void draw(const core::visual::VisualParams*, Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, int index)
+inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, Index index)
     : core::TCollisionElementIterator<RigidDistanceGridCollisionModel>(model, index)
 {}
 
@@ -269,7 +269,7 @@ class FFDDistanceGridCollisionElement : public core::TCollisionElementIterator<F
 {
 public:
 
-    FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, int index);
+    FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, Index index);
 
     explicit FFDDistanceGridCollisionElement(const core::CollisionElementIterator& i);
 
@@ -295,7 +295,7 @@ public:
         struct Point
         {
             GCoord bary; ///< Barycentric coordinates
-            int index; ///< Index of corresponding point in DistanceGrid
+            Index index; ///< Index of corresponding point in DistanceGrid
         };
         helper::vector<Point> points; ///< barycentric coordinates of included points
         helper::vector<GCoord> normals; ///< normals in barycentric coordinates of included points
@@ -468,32 +468,32 @@ public:
 
     void init() override;
 
-    DistanceGrid* getGrid(int index=0)
+    DistanceGrid* getGrid(Index index=0)
     {
         return elems[index].grid;
     }
 
-    DeformedCube& getDeformCube(int index=0)
+    DeformedCube& getDeformCube(Index index=0)
     {
         return elems[index];
     }
 
-    void setGrid(DistanceGrid* surf, int index=0);
+    void setGrid(DistanceGrid* surf, Index index=0);
 
     /// CollisionModel interface
-    void resize(int size) override;
+    void resize(Size size) override;
 
     /// Create or update the bounding volume hierarchy.
     void computeBoundingTree(int maxDepth=0) override;
 
-    bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
+    bool canCollideWithElement(Index index, CollisionModel* model2, Index index2) override;
 
-    void draw(const core::visual::VisualParams*,int index) override;
+    void draw(const core::visual::VisualParams*, Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, int index)
+inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, Index index)
     : core::TCollisionElementIterator<FFDDistanceGridCollisionModel>(model, index)
 {}
 
@@ -512,10 +512,12 @@ class ContactMapper<FFDDistanceGridCollisionModel,DataTypes> : public Barycentri
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    int addPoint(const Coord& P, int index, Real&)
+    using Index = sofa::Index;
+
+    Index addPoint(const Coord& P, Index index, Real&)
     {
         defaulttype::Vector3 bary;
-        int elem = this->model->getDeformCube(index).elem;
+        Index elem = this->model->getDeformCube(index).elem;
         bary = this->model->getDeformCube(index).baryCoords(P);
         return this->mapper->addPointInCube(elem,bary.ptr());
     }
@@ -535,6 +537,7 @@ public:
     typedef RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
+    using Index = sofa::Index;
 
     MMechanicalState* createMapping(const char* name="contactPoints")
     {
@@ -557,7 +560,7 @@ public:
         return outmodel;
     }
 
-    int addPoint(const Coord& P, int index, Real& r)
+    Index addPoint(const Coord& P, Index index, Real& r)
     {
         Coord trans = this->model->getInitRotation() * this->model->getInitTranslation();
         int i = Inherit::addPoint(P+trans, index, r);

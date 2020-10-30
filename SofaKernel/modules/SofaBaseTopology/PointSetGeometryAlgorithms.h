@@ -109,7 +109,7 @@ public:
     /** \brief Called by the MechanicalObject state change callback to initialize added
      * points according to the topology (topology element & local coordinates) 
      */
-    void initPointsAdded(const helper::vector< unsigned int > &indices, const helper::vector< core::topology::PointAncestorElem > &ancestorElems
+    void initPointsAdded(const helper::vector< sofa::Index > &indices, const helper::vector< core::topology::PointAncestorElem > &ancestorElems
         , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs ) override;
 
     /** \brief Process the added point initialization according to the topology and local coordinates.

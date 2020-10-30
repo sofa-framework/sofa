@@ -98,7 +98,7 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::setCollisionModel(MCollisio
 }
 
 template < class TCollisionModel, class DataTypes >
-void SubsetContactMapper<TCollisionModel,DataTypes>::resize(int size)
+void SubsetContactMapper<TCollisionModel,DataTypes>::resize(Size size)
 {
     if (mapping!=nullptr)
         mapping->clear(size);
@@ -108,7 +108,7 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::resize(int size)
 }
 
 template < class TCollisionModel, class DataTypes >
-int SubsetContactMapper<TCollisionModel,DataTypes>::addPoint(const Coord& P, int index, Real&)
+typename SubsetContactMapper<TCollisionModel, DataTypes>::Index SubsetContactMapper<TCollisionModel,DataTypes>::addPoint(const Coord& P, Index index, Real&)
 {
     int i = nbp++;
     if ((int)outmodel->getSize() <= i)

@@ -56,6 +56,8 @@ public:
 
     typedef defaulttype::Vec<6,Real> Vec6;
 
+    using Index = sofa::Index;
+
 protected:
 
     //float Xmin,Xmax,Ymin,Ymax,Zmin,Zmax;

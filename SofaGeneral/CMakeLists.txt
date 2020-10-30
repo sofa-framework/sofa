@@ -12,22 +12,29 @@ set(SOFAGENERAL_TARGETS
     SofaGeneralImplicitOdeSolver
     SofaGeneralLinearSolver
     SofaGeneralLoader
-    SofaGeneralMeshCollision
     SofaGeneralObjectInteraction
     SofaGeneralRigid
     SofaGeneralSimpleFem
     SofaGeneralTopology
-    SofaGeneralVisual
     SofaBoundaryCondition
     SofaConstraint
     SofaGeneralEngine
-    SofaGraphComponent
     SofaTopologyMapping
     SofaUserInteraction
 )
 
 foreach(TARGET ${SOFAGENERAL_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+endforeach()
+
+# Modules
+set(SOFAGENERAL_MODULES
+    SofaGeneralMeshCollision
+    SofaGeneralVisual
+    SofaGraphComponent
+)
+foreach(MODULE ${SOFAGENERAL_MODULES})
+    find_package(${MODULE} REQUIRED)
 endforeach()
 
 set(SOFAGENERAL_SRC src/${PROJECT_NAME})
@@ -42,7 +49,7 @@ set(SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGENERAL_TARGETS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGENERAL_TARGETS} ${SOFAGENERAL_MODULES})
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

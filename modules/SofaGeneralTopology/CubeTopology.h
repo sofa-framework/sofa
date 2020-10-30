@@ -87,9 +87,9 @@ public:
     Vector3 getPoint(int i) const;
     virtual Vector3 getPoint(int x, int y, int z) const;
     bool hasPos()  const override { return true; }
-    SReal getPX(int i)  const override { return getPoint(i)[0]; }
-    SReal getPY(int i) const override { return getPoint(i)[1]; }
-    SReal getPZ(int i) const override { return getPoint(i)[2]; }
+    SReal getPX(Index i)  const override { return getPoint(i)[0]; }
+    SReal getPY(Index i) const override { return getPoint(i)[1]; }
+    SReal getPZ(Index i) const override { return getPoint(i)[2]; }
 
     void setSplitNormals(bool b) {splitNormals.setValue(b);}
 

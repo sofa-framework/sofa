@@ -21,6 +21,7 @@ install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ 
 ###################################
 
 find_package(SofaValidation QUIET)
+find_package(SofaGraphComponent REQUIRED)
 
 set(HEADER_FILES
     runSofaValidation.h
@@ -55,9 +56,10 @@ endif()
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC "CONFIG_PLUGIN_FILENAME=${_configPluginFileName}")
 target_compile_definitions(${PROJECT_NAME} PUBLIC "DEFAULT_CONFIG_PLUGIN_FILENAME=${_defaultConfigPluginFileName}")
-target_link_libraries(${PROJECT_NAME} SofaMisc)
+
 target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
 target_link_libraries(${PROJECT_NAME} SofaGuiMain)
+target_link_libraries(${PROJECT_NAME} SofaGraphComponent)
 
 if(SofaValidation_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaValidation)

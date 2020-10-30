@@ -188,7 +188,7 @@ void BeamFEMForceField<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
+void BeamFEMForceField<DataTypes>::reinitBeam(Index i)
 {
     double stiffness, length, radius, poisson, radiusInner;
     Index a = (*m_indexedElements)[i][0];
@@ -215,9 +215,9 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
 }
 
 template< class DataTypes>
-void BeamFEMForceField<DataTypes>::BeamFFEdgeHandler::applyCreateFunction(unsigned int edgeIndex, BeamInfo &ei,
+void BeamFEMForceField<DataTypes>::BeamFFEdgeHandler::applyCreateFunction(Index edgeIndex, BeamInfo &ei,
                                                                           const core::topology::BaseMeshTopology::Edge &,
-                                                                          const sofa::helper::vector<unsigned int> &,
+                                                                          const sofa::helper::vector<Index> &,
                                                                           const sofa::helper::vector<double> &)
 {
     if(ff)
@@ -760,7 +760,7 @@ void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::initBeams(unsigned int size)
+void BeamFEMForceField<DataTypes>::initBeams(std::size_t size)
 {
     helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     bd.resize(size);
@@ -780,7 +780,7 @@ void BeamFEMForceField<DataTypes>::setComputeGlobalMatrix(bool val)
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::setBeam(unsigned int i, double E, double L, double nu, double r, double rInner)
+void BeamFEMForceField<DataTypes>::setBeam(Index i, double E, double L, double nu, double r, double rInner)
 {
     helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     bd[i].init(E,L,nu,r,rInner);

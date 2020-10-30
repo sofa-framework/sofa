@@ -133,7 +133,7 @@ bool GIDMeshLoader::readGID(std::ifstream &file)
                 if( element == "Hexahedra" )
                     m_eltType = HEXAHEDRA;
 
-                sout << "Elemtype = " << element << sendl;
+                msg_info() << "Elemtype = " << element;
 
                 if( element == "Prism" )
                 {
@@ -175,7 +175,7 @@ bool GIDMeshLoader::readGID(std::ifstream &file)
                         return false;
                     }
 
-                    sout << "Nnodes = " << m_nNode << sendl;
+                    msg_info() << "Nnodes = " << m_nNode;
 
                     if( (m_eltType == LINEAR) && ( m_nNode != 2 && m_nNode != 3 ) )
                     {

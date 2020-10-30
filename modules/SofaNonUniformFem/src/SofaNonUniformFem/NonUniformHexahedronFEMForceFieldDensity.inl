@@ -290,7 +290,6 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
             {
                 grayScale = 1+10*exp(1-256/((float)(voxels[(int)(factor[2]*coordinates[2])][(int)(factor[0]*coordinates[0])][(int)(factor[1]*coordinates[1])])));
             }
-            //       sout << grayScale << " "<<sendl;
         }
         computeMaterialStiffness(mat,  this->f_youngModulus.getValue()*grayScale,this->f_poissonRatio.getValue());
 
@@ -311,7 +310,6 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
             finerChildren = this->_sparseGrid->_virtualFinerLevels[this->_nbVirtualFinerLevels.getValue()-level]->_hierarchicalCubeMap[elementIndice];
         }
 
-        //     serr<<finerChildren<<""<<sendl;
         //Get the 8 points of the coarser Hexa
         for ( int i=0; i<8; ++i)
         {

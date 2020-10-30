@@ -57,17 +57,19 @@ public:
     typedef typename MatrixType::Index MatrixTypeIndex;
     typedef typename Inherit1::ForceMask ForceMask;
 
+    using Index = sofa::Index;
+
     enum { NIn = Inherit1::NIn };
     enum { NOut = Inherit1::NOut };
 
 public:
     ~BarycentricMapperRegularGridTopology() override;
-    void clear(int reserve=0) override;
+    void clear(std::size_t reserve=0) override;
     void resize( core::State<Out>* toModel ) override;
     virtual bool isEmpty() {return this->m_map.size() == 0;}
     virtual void setTopology(topology::RegularGridTopology* _topology) {this->m_fromTopology = _topology;}
     RegularGridTopology *getTopology() {return dynamic_cast<topology::RegularGridTopology *>(this->m_fromTopology);}
-    int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
+    Index addPointInCube(const Index cubeIndex, const SReal* baryCoords) override;
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;

@@ -48,7 +48,7 @@ LineInfo::LineInfo(LocalMinDistanceFilter *lmdFilters)
 {
 }
 
-void LineInfo::buildFilter(unsigned int edge_index)
+void LineInfo::buildFilter(Index edge_index)
 {
     using sofa::helper::vector;
     using sofa::core::topology::BaseMeshTopology;
@@ -71,7 +71,7 @@ void LineInfo::buildFilter(unsigned int edge_index)
     m_lineVector = pt2 - pt1;
     m_lineVector.normalize();
 
-    const sofa::helper::vector<unsigned int>& trianglesAroundEdge = bmt->getTrianglesAroundEdge(edge_index);
+    const auto& trianglesAroundEdge = bmt->getTrianglesAroundEdge(edge_index);
 
     if (debug)
         std::cout<<"trianglesAroundEdge: "<<trianglesAroundEdge<<"  -";
@@ -143,7 +143,7 @@ void LineInfo::buildFilter(unsigned int edge_index)
     setValid();
 }
 
-bool LineInfo::validate(const unsigned int edge_index, const defaulttype::Vector3& PQ)
+bool LineInfo::validate(const Index edge_index, const defaulttype::Vector3& PQ)
 {
     bool debug=false;
 
@@ -236,7 +236,7 @@ void LineLocalMinDistanceFilter::init()
 
 
 
-void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned int /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(Index /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector<Index> &, const sofa::helper::vector< double >&)
 {
     const LineLocalMinDistanceFilter *lLMDFilter = this->f;
     pInfo.setLMDFilters(lLMDFilter);
@@ -253,7 +253,7 @@ void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned 
 
 
 
-void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsigned int /*edgeIndex*/, LineInfo &lInfo, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(Index /*edgeIndex*/, LineInfo &lInfo, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector<Index> &, const sofa::helper::vector< double >&)
 {
     const LineLocalMinDistanceFilter *lLMDFilter = this->f;
     lInfo.setLMDFilters(lLMDFilter);

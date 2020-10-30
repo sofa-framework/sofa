@@ -1,5 +1,7 @@
 <Node name="Scene" gravity="0 0 0" dt="0.1" >
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="SofaGraphComponent"/>
+
     <VisualStyle displayFlags="showBehavior" />
     <BackgroundSetting color="1 1 1"/>
 

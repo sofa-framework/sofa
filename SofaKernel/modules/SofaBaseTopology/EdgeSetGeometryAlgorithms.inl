@@ -767,7 +767,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
 
 template< class DataTypes>
-void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helper::vector<unsigned>& numEdges, helper::vector<Edge>& vertexEdges, helper::vector<Vec3d>& weights ) const
+void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helper::vector<sofa::Index>& numEdges, helper::vector<Edge>& vertexEdges, helper::vector<Vec3d>& weights ) const
 {
     const VecCoord& pos =(this->object->read(core::ConstVecCoordId::position())->getValue()); // point positions
 
@@ -779,11 +779,11 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
 
     const SeqEdges& edges = this->m_topology->getEdges();
 
-    for(unsigned pointId=0; pointId<pos.size(); pointId++ )
+    for(PointID pointId=0; pointId<pos.size(); pointId++ )
     {
         EdgesAroundVertex ve = this->m_topology->getEdgesAroundVertex(pointId);
         edgeVec.resize(ve.size());
-        numEdges.push_back((unsigned)ve.size());            // number of edges attached to this point
+        numEdges.push_back(ve.size());            // number of edges attached to this point
         sofa::defaulttype::Matrix3 EEt,L;
 
         // Solve E.W = I , where each column of E is an adjacent edge vector, W are the desired weights, and I is the 3x3 identity
@@ -793,7 +793,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
         // todo: weight the edges according to their lengths
 
         // compute E.Et
-        for(unsigned e=0; e<ve.size(); e++ )
+        for(Size e=0; e<ve.size(); e++ )
         {
             Edge edge = edges[ve[e]];
             vertexEdges.push_back(edge);              // concatenate

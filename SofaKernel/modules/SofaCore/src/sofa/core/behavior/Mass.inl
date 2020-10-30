@@ -240,14 +240,14 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, SReal time)
 }
 
 template <class DataTypes>
-SReal Mass<DataTypes>::getElementMass(unsigned int ) const
+SReal Mass<DataTypes>::getElementMass(sofa::Index ) const
 {
     msg_warning() << "Method getElementMass with Scalar not implemented";
     return 0.0;
 }
 
 template <class DataTypes>
-void Mass<DataTypes>::getElementMass(unsigned int , defaulttype::BaseMatrix *m) const
+void Mass<DataTypes>::getElementMass(sofa::Index, defaulttype::BaseMatrix *m) const
 {
     static const defaulttype::BaseMatrix::Index dimension = (defaulttype::BaseMatrix::Index) defaulttype::DataTypeInfo<Coord>::size();
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);

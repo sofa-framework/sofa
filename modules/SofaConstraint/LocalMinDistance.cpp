@@ -216,8 +216,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
         // several possibilities :
         // -one point in common (auto-collision) => return false !
         // -no point in common but line are // => we can continue to test
-
-        sout<<"WARNING det is null"<<sendl;
+        msg_warning() <<"Determinant is null";
     }
 
     Vector3 P,Q,PQ;
@@ -1236,14 +1235,14 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
     BaseMeshTopology* topology = p.getCollisionModel()->getCollisionTopology();
     const helper::vector<Vector3>& x =(p.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
 
-    const helper::vector <unsigned int>& trianglesAroundVertex = topology->getTrianglesAroundVertex(p.getIndex());
-    const helper::vector <unsigned int>& edgesAroundVertex = topology->getEdgesAroundVertex(p.getIndex());
+    const auto& trianglesAroundVertex = topology->getTrianglesAroundVertex(p.getIndex());
+    const auto& edgesAroundVertex = topology->getEdgesAroundVertex(p.getIndex());
     Vector3 nMean;
 
     for (unsigned int i=0; i<trianglesAroundVertex.size(); i++)
     {
         unsigned int t = trianglesAroundVertex[i];
-        const fixed_array<unsigned int,3>& ptr = topology->getTriangle(t);
+        const auto& ptr = topology->getTriangle(t);
         Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
         nCur.normalize();
         nMean += nCur;
@@ -1254,7 +1253,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
         for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
         {
             unsigned int e = edgesAroundVertex[i];
-            const fixed_array<unsigned int,2>& ped = topology->getEdge(e);
+            const auto& ped = topology->getEdge(e);
             Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
             l.normalize();
             nMean += l;
@@ -1278,7 +1277,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
     for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
     {
         unsigned int e = edgesAroundVertex[i];
-        const fixed_array<unsigned int,2>& ped = topology->getEdge(e);
+        const auto& ped = topology->getEdge(e);
         Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
         l.normalize();
         double computedAngleCone = dot(nMean , l) * coneFactor.getValue();
@@ -1314,7 +1313,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
 
     BaseMeshTopology* topology = l.getCollisionModel()->getCollisionTopology();
     const helper::vector<Vector3>& x =(l.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
-    const sofa::helper::vector<unsigned int>& trianglesAroundEdge = topology->getTrianglesAroundEdge(l.getIndex());
+    const auto& trianglesAroundEdge = topology->getTrianglesAroundEdge(l.getIndex());
 
     if ( trianglesAroundEdge.size() == 2)
     {

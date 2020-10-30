@@ -92,11 +92,11 @@ bool MeshTopologyLoader::loadObj(const char *filename)
                 (SReal)m_mesh->getVertices()[i][2]);
     }
 
-    const vector< vector < vector <int> > > & facets = m_mesh->getFacets();
+    const auto & facets = m_mesh->getFacets();
     std::set< std::pair<int,int> > edges;
     for (size_t i=0; i<facets.size(); i++)
     {
-        const vector<int>& facet = facets[i][0];
+        const auto& facet = facets[i][0];
         if (facet.size()==2)
         {
             // Line

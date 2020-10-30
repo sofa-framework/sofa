@@ -41,6 +41,8 @@ namespace behavior
 class SOFA_CORE_API MultiMatrixAccessor
 {
 public:
+    using Index = defaulttype::BaseMatrix::Index;
+
     virtual ~MultiMatrixAccessor();
 
     /// Simple structure holding a reference to the submatrix related to one MechanicalState
@@ -73,7 +75,7 @@ public:
     virtual void addMechanicalMapping(BaseMapping* mapping);
     virtual void addMappedMechanicalState(const BaseMechanicalState* mstate);
 
-    virtual int getGlobalDimension() const = 0;
+    virtual Index getGlobalDimension() const = 0;
     virtual int getGlobalOffset(const BaseMechanicalState* mstate) const = 0;
 
     virtual MatrixRef getMatrix(const BaseMechanicalState* mstate) const = 0;

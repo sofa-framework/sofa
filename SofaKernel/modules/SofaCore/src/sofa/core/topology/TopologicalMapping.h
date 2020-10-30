@@ -54,6 +54,9 @@ public:
     typedef BaseMeshTopology In;
     /// Output Topology
     typedef BaseMeshTopology Out;
+
+    using Index = sofa::Index;
+
 protected:
     TopologicalMapping()
         : fromModel(initLink("input", "Input topology to map"))
@@ -95,12 +98,12 @@ public:
     virtual bool isTheOutputTopologySubdividingTheInputOne() { return true; }
 
     /// Accessor to index maps :
-    const std::map<unsigned int, unsigned int>& getGlob2LocMap() { return Glob2LocMap;}
-    //const sofa::helper::vector<unsigned int>& getLoc2GlobVec(){ return Loc2GlobVec.getValue();}
+    const std::map<Index, Index>& getGlob2LocMap() { return Glob2LocMap;}
+    //const sofa::helper::vector<Index>& getLoc2GlobVec(){ return Loc2GlobVec.getValue();}
 
-    Data <sofa::helper::vector<unsigned int> >& getLoc2GlobVec() {return Loc2GlobDataVec;}
+    Data <sofa::helper::vector<Index> >& getLoc2GlobVec() {return Loc2GlobDataVec;}
 
-    virtual unsigned int getGlobIndex(unsigned int ind)
+    virtual Index getGlobIndex(Index ind)
     {
         if(ind< (Loc2GlobDataVec.getValue()).size())
         {
@@ -112,14 +115,14 @@ public:
         }
     }
 
-    virtual unsigned int getFromIndex(unsigned int /*ind*/)
+    virtual Index getFromIndex(Index /*ind*/)
     {
         return 0;
     }
 
     void dumpGlob2LocMap()
     {
-        std::map<unsigned int, unsigned int>::iterator itM;
+        std::map<Index, Index>::iterator itM;
         msg_info() << "## Log Glob2LocMap - size: " << Glob2LocMap.size() << " ##";
         for (itM = Glob2LocMap.begin(); itM != Glob2LocMap.end(); ++itM)
             msg_info() << (*itM).first << " - " << (*itM).second;
@@ -129,9 +132,9 @@ public:
 
     void dumpLoc2GlobVec()
     {
-        const sofa::helper::vector <unsigned int>& buffer = Loc2GlobDataVec.getValue();
+        const sofa::helper::vector <Index>& buffer = Loc2GlobDataVec.getValue();
         msg_info() << "## Log Loc2GlobDataVec - size: " << buffer.size() << " ##";
-        for (unsigned int i=0; i<buffer.size(); ++i)
+        for (Index i=0; i<buffer.size(); ++i)
             msg_info() << i << " - " << buffer[i];
 
         msg_info() << "#################";
@@ -143,9 +146,9 @@ public:
     /** return all the from indices in the 'In' topology corresponding to the index in the 'Out' topology.
     *   This function is used instead of  the previous one when the function isTheOutputTopologySubdividingTheInputOne() returns false.
     */
-    virtual void getFromIndex( helper::vector<unsigned int>& /*fromIndices*/, const unsigned int /*toIndex*/) const {}
+    virtual void getFromIndex( helper::vector<Index>& /*fromIndices*/, const Index /*toIndex*/) const {}
 
-    const std::map<unsigned int, sofa::helper::vector<unsigned int> >& getIn2OutMap() { return In2OutMap;}
+    const std::map<Index, sofa::helper::vector<Index> >& getIn2OutMap() { return In2OutMap;}
 
     /// Pre-construction check method called by ObjectFactory.
     ///
@@ -241,13 +244,13 @@ protected:
 
     // Array which gives for each index (local index) of an element in the OUTPUT topology
     // the corresponding index (global index) of the same element in the INPUT topology :
-    Data <sofa::helper::vector <unsigned int> > Loc2GlobDataVec;
+    Data <sofa::helper::vector <Index> > Loc2GlobDataVec;
 
     // Map which gives for each index (global index) of an element in the INPUT topology
     // the corresponding index (local index) of the same element in the OUTPUT topology :
-    std::map<unsigned int, unsigned int> Glob2LocMap;   //TODO put it in Data => Data allow map
+    std::map<Index, Index> Glob2LocMap;   //TODO put it in Data => Data allow map
 
-    std::map<unsigned int, sofa::helper::vector<unsigned int> > In2OutMap;
+    std::map<Index, sofa::helper::vector<Index> > In2OutMap;
 };
 
 } // namespace topology

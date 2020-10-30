@@ -29,9 +29,10 @@ namespace sofa
 namespace defaulttype
 {
 
-typedef unsigned int index_type;
-constexpr index_type InvalidID = UINT_MAX;
+using index_type [[deprecated("PR#1515 (2020-10-14) index_type has been moved and renamed. From now on, please sofa::Index instead of sofa::defaulttype::index_type.")]] = sofa::Index;
 
+[[deprecated("PR#1515 (2020-10-14) InvalidID has been moved. From now on, please sofa::InvalidID instead of sofa::defaulttype::InvalidID. ")]]
+constexpr sofa::Index InvalidID = sofa::InvalidID;
 
 } // namespace defaulttype
 

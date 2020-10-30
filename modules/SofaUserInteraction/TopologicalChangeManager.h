@@ -56,13 +56,15 @@ class TetrahedronModel;
 class SOFA_USER_INTERACTION_API TopologicalChangeManager
 {
 public:
+    using Index = sofa::Index;
+
     TopologicalChangeManager();
     ~TopologicalChangeManager();
 
     /// Handles Removing of topological element (from any type of topology)
-    int removeItemsFromCollisionModel(sofa::core::CollisionElementIterator) const;
-    int removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const int& index) const;
-    int removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const helper::vector<int>& indices) const;
+    Index removeItemsFromCollisionModel(sofa::core::CollisionElementIterator) const;
+    Index removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const Index& index) const;
+    Index removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const helper::vector<Index>& indices) const;
 
 
     /** Handles Cutting (activated only for a triangular topology)
@@ -104,10 +106,10 @@ public:
      * @return bool - true if incision has been performed.
      */
     bool incisionCollisionModel(sofa::core::CollisionModel* model1,
-                                unsigned int idx1,
+                                Index idx1,
                                 const defaulttype::Vector3& firstPoint,
                                 sofa::core::CollisionModel *model2,
-                                unsigned int idx2,
+                                Index idx2,
                                 const defaulttype::Vector3& secondPoint,
                                 int snapingValue = 0,
                                 int snapingBorderValue = 0);
@@ -138,18 +140,18 @@ private:
      * @return bool - true if incision has been performed.
      */
     bool incisionTriangleModel(TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model1,
-                               unsigned int idx1,
+                               Index idx1,
                                const defaulttype::Vector3& firstPoint,
                                TriangleCollisionModel<sofa::defaulttype::Vec3Types> *model2,
-                               unsigned int idx2,
+                               Index idx2,
                                const defaulttype::Vector3& secondPoint,
                                int snapingValue = 0,
                                int snapingBorderValue = 0);
 
 
-    int removeItemsFromTriangleModel(sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<int>& indices) const;
-    int removeItemsFromPointModel(sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<int>& indices) const;
-    int removeItemsFromSphereModel(sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<int>& indices) const;
+    Index removeItemsFromTriangleModel(sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<Index>& indices) const;
+    Index removeItemsFromPointModel(sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<Index>& indices) const;
+    Index removeItemsFromSphereModel(sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<Index>& indices) const;
 
 
 private:

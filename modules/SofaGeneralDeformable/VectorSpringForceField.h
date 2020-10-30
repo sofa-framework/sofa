@@ -51,6 +51,7 @@ class VectorSpringForceField: public core::behavior::PairInteractionForceField<D
 public:
     SOFA_CLASS(SOFA_TEMPLATE(VectorSpringForceField, DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionForceField, DataTypes));
 
+    using Index = sofa::Index;
     typedef typename core::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -98,7 +99,7 @@ protected:
     sofa::helper::vector<core::topology::BaseMeshTopology::Edge> edgeArray;
 
 
-    void resizeArray(unsigned int n);
+    void resizeArray(std::size_t n);
 
 
 public:
@@ -117,9 +118,9 @@ public:
 
         }
 
-        void applyCreateFunction(unsigned int, Spring &t,
+        void applyCreateFunction(Index, Spring &t,
                 const core::topology::BaseMeshTopology::Edge &,
-                const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
+                const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &);
     protected:
         VectorSpringForceField<DataTypes>* ff;
 
@@ -161,8 +162,6 @@ public:
     void bwdInit() override;
 
     void createDefaultSprings();
-
-    void handleEvent( core::objectmodel::Event* e ) override;
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
 

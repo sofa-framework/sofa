@@ -71,6 +71,8 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
+    using Index = sofa::Index;
+
     enum { SMALL = 0, ///< Symbol of small displacements tetrahedron solver
             LARGE = 1, ///< Symbol of large displacements tetrahedron solver
             POLAR = 2  ///< Symbol of polar displacements tetrahedron solver
@@ -136,7 +138,6 @@ protected:
     typedef std::pair<int,Real> Col_Value;
     typedef helper::vector< Col_Value > CompressedValue;
     typedef helper::vector< CompressedValue > CompressedMatrix;
-    typedef unsigned int Index;
 
     CompressedMatrix _stiffnesses;
     /// @}
@@ -149,6 +150,7 @@ public:
     {
     public :
         typedef typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation TetrahedronInformation;
+        using Index = sofa::Index;
         TetrahedronHandler(TetrahedralCorotationalFEMForceField<DataTypes>* ff,
                            topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation> >* data)
             :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >(data)
@@ -157,8 +159,8 @@ public:
 
         }
 
-        void applyCreateFunction(unsigned int, TetrahedronInformation &t, const core::topology::BaseMeshTopology::Tetrahedron &,
-                const sofa::helper::vector<unsigned int> &,
+        void applyCreateFunction(Index, TetrahedronInformation &t, const core::topology::BaseMeshTopology::Tetrahedron &,
+                const sofa::helper::vector<Index> &,
                 const sofa::helper::vector<double> &);
 
     protected:
@@ -215,12 +217,12 @@ public:
     void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
 
     // Getting the rotation of the vertex by averaing the rotation of neighboring elements
-    void getRotation(Transformation& R, unsigned int nodeIdx);
+    void getRotation(Transformation& R, Index nodeIdx);
     void getRotations() {}
-    void getElementRotation(Transformation& R, unsigned int elementIdx);
+    void getElementRotation(Transformation& R, Index elementIdx);
 
     // Getting the stiffness matrix of index i
-    void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
+    void getElementStiffnessMatrix(Real* stiffness, Index nodeIdx);
     void getElementStiffnessMatrix(Real* stiffness, core::topology::BaseMeshTopology::Tetrahedron& te);
 
 

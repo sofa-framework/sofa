@@ -47,6 +47,7 @@ template<class In, class Out>
 class BarycentricMapperTetrahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData3D,Tetrahedron>
 {
     typedef typename BarycentricMapper<In,Out>::MappingData3D MappingData;
+    using Index = sofa::Index;
 
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Tetrahedron));
@@ -54,7 +55,7 @@ public:
     typedef typename In::VecCoord VecCoord;
     using Inherit1::m_toTopology;
 
-    int addPointInTetra(const int index, const SReal* baryCoords) override ;
+    Index addPointInTetra(const Index index, const SReal* baryCoords) override ;
 
 protected:
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology,
@@ -67,7 +68,7 @@ protected:
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Tetrahedron& element) override;
     void computeCenter(Vector3& center, const typename In::VecCoord& in, const Tetrahedron& element) override;
     void computeDistance(double& d, const Vector3& v) override;
-    void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
+    void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
 
     //handle topology changes depending on the topology
     void processTopologicalChanges(const typename Out::VecCoord& out, const typename In::VecCoord& in, core::topology::Topology* t);

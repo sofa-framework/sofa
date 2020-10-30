@@ -49,7 +49,7 @@ class PrincipalStretchesJacobianBlock : public BaseJacobianBlock<TIn,TOut>
 //////////////////////////////////////////////////////////////////////////////////
 
 /** Template class used to implement one jacobian block for PrincipalStretchesMapping*/
-template<class InReal, class OutReal, int MaterialDimension>
+template<class InReal, class OutReal, Size MaterialDimension>
 class PrincipalStretchesJacobianBlock< DefGradientTypes<3,MaterialDimension,0,InReal>, PrincipalStretchesStrainTypes<3,MaterialDimension,0,OutReal> >
            : public BaseJacobianBlock< DefGradientTypes<3,MaterialDimension,0,InReal>, PrincipalStretchesStrainTypes<3,MaterialDimension,0,OutReal> >
 {
@@ -119,12 +119,12 @@ public:
 
         if( _asStrain )
         {
-            for( int i=0 ; i<material_dimensions ; ++i )
+            for( Size i=0 ; i<material_dimensions ; ++i )
                 result.getStrain()[i] += S[i] - (Real)1; // principal stretches - 1 = diagonalized lagrangian strain
         }
         else
         {
-            for( int i=0 ; i<material_dimensions ; ++i )
+            for( Size i=0 ; i<material_dimensions ; ++i )
             {
                 if( S[i]<_threshold) S[i]=_threshold; // common hack to ensure stability (J=detF=S[0]*S[1]*S[2] not too small)
                 result.getStrain()[i] += S[i];
@@ -136,25 +136,25 @@ public:
 
     void addmult( OutDeriv& result, const InDeriv& data )
     {
-        for( int i=0 ; i<spatial_dimensions ; ++i )
-            for( int j=0 ; j<material_dimensions ; ++j )
-                for( int k=0 ; k<material_dimensions ; ++k )
+        for( Size i=0 ; i<spatial_dimensions ; ++i )
+            for( Size j=0 ; j<material_dimensions ; ++j )
+                for( Size k=0 ; k<material_dimensions ; ++k )
                     result.getStrain()[k] += _J[k][i*material_dimensions+j] * data.getF()[i][j];
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        for( int i=0 ; i<spatial_dimensions ; ++i )
-            for( int j=0 ; j<material_dimensions ; ++j )
-                for( int k=0 ; k<material_dimensions ; ++k )
+        for( Size i=0 ; i<spatial_dimensions ; ++i )
+            for( Size j=0 ; j<material_dimensions ; ++j )
+                for( Size k=0 ; k<material_dimensions ; ++k )
                     result.getF()[i][j] += _J[k][i*material_dimensions+j] * data.getStrain()[k];
     }
 
     void computeJ()
     {
-        for( int i=0 ; i<spatial_dimensions ; ++i )
-            for( int j=0 ; j<material_dimensions ; ++j )
-                for( int k=0 ; k<material_dimensions ; ++k )
+        for( Size i=0 ; i<spatial_dimensions ; ++i )
+            for( Size j=0 ; j<material_dimensions ; ++j )
+                for( Size k=0 ; k<material_dimensions ; ++k )
                     _J[k][i*material_dimensions+j] = _U[i][k]*_V[j][k];
     }
 
@@ -190,14 +190,14 @@ public:
             SpatialMaterialMat dU;
             MaterialMaterialMat dV;
 
-            for( int k=0 ; k<spatial_dimensions ; ++k ) // line of df
-                for( int l=0 ; l<material_dimensions ; ++l ) // col of df
-                    for( int j=0 ; j<material_dimensions ; ++j ) // col of dU & dV
+            for( Size k=0 ; k<spatial_dimensions ; ++k ) // line of df
+                for( Size l=0 ; l<material_dimensions ; ++l ) // col of df
+                    for( Size j=0 ; j<material_dimensions ; ++j ) // col of dU & dV
                     {
-                        for( int i=0 ; i<spatial_dimensions ; ++i ) // line of dU
+                        for( Size i=0 ; i<spatial_dimensions ; ++i ) // line of dU
                             dU[i][j] += _dUOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
 
-                        for( int i=0 ; i<material_dimensions ; ++i ) // line of dV
+                        for( Size i=0 ; i<material_dimensions ; ++i ) // line of dV
                             dV[i][j] += _dVOverdF[i*material_dimensions+j][k*material_dimensions+l] * dx.getF()[k][l];
                     }
 

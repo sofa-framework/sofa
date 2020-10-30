@@ -39,16 +39,16 @@ namespace sofa
 namespace defaulttype
 {
 
-template<int N, typename real>
+template<sofa::Size N, typename real>
 class RigidDeriv;
 
-template<int N, typename real>
+template<sofa::Size N, typename real>
 class RigidCoord;
 
-template<int N, typename real>
+template<sofa::Size N, typename real>
 class RigidMass;
 
-template<int N, typename real>
+template<sofa::Size N, typename real>
 class StdRigidTypes;
 
 //=============================================================================
@@ -62,7 +62,7 @@ class RigidDeriv<3, real>
 {
 public:
     typedef real value_type;
-    typedef int size_type;
+    typedef sofa::Size Size;
     typedef real Real;
     typedef Vec<3,Real> Pos;
     typedef Vec<3,Real> Rot;
@@ -233,10 +233,10 @@ public:
     real* ptr() { return vCenter.ptr(); }
     const real* ptr() const { return vCenter.ptr(); }
 
-    static unsigned int size() {return 6;}
+    static Size size() {return 6;}
 
     /// Access to i-th element.
-    real& operator[](int i)
+    real& operator[](Size i)
     {
         if (i<3)
             return this->vCenter(i);
@@ -245,7 +245,7 @@ public:
     }
 
     /// Const access to i-th element.
-    const real& operator[](int i) const
+    const real& operator[](Size i) const
     {
         if (i<3)
             return this->vCenter(i);
@@ -284,49 +284,49 @@ inline RigidDeriv<3,real> operator/(RigidDeriv<3, real> r,real2 a)
     return r;
 }
 
-template<int N,typename T>
+template<sofa::Size N,typename T>
 typename RigidDeriv<N,T>::Pos& getLinear(RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
-template<int N, typename T>
+template<sofa::Size N, typename T>
 const typename RigidDeriv<N,T>::Pos& getLinear(const RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
-template<int N, typename T>
+template<sofa::Size N, typename T>
 typename RigidDeriv<N,T>::Rot& getAngular(RigidDeriv<N,T>& v)
 {
     return v.getAngular();
 }
 
-template<int N, typename T>
+template<sofa::Size N, typename T>
 const typename RigidDeriv<N,T>::Rot& getAngular(const RigidDeriv<N,T>& v)
 {
     return v.getAngular();
 }
 
-template<int N,typename T>
+template<sofa::Size N,typename T>
 typename RigidDeriv<N,T>::Pos& getVCenter(RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
-template<int N, typename T>
+template<sofa::Size N, typename T>
 const typename RigidDeriv<N,T>::Pos& getVCenter(const RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
-template<int N, typename T>
+template<sofa::Size N, typename T>
 typename RigidDeriv<N,T>::Rot& getVOrientation(RigidDeriv<N,T>& v)
 {
     return v.getAngular();
 }
 
-template<int N, typename T>
+template<sofa::Size N, typename T>
 const typename RigidDeriv<N,T>::Rot& getVOrientation(const RigidDeriv<N,T>& v)
 {
     return v.getAngular();
@@ -344,7 +344,7 @@ class RigidCoord<3,real>
 {
 public:
     typedef real value_type;
-    typedef int size_type;
+    typedef sofa::Size Size;
     typedef real Real;
     typedef Vec<3,Real> Pos;
     typedef helper::Quater<Real> Rot;
@@ -656,7 +656,7 @@ public:
 #endif // NDEBUG
         return in;
     }
-    static int max_size()
+    static Size max_size()
     {
         return 3;
     }
@@ -669,10 +669,10 @@ public:
     real* ptr() { return center.ptr(); }
     const real* ptr() const { return center.ptr(); }
 
-    static unsigned int size() {return 7;}
+    static Size size() {return 7;}
 
     /// Access to i-th element.
-    real& operator[](int i)
+    real& operator[](Size i)
     {
         if (i<3)
             return this->center(i);
@@ -681,7 +681,7 @@ public:
     }
 
     /// Const access to i-th element.
-    const real& operator[](int i) const
+    const real& operator[](Size i) const
     {
         if (i<3)
             return this->center(i);
@@ -932,7 +932,7 @@ public:
 
         Coord c;
 
-        for (unsigned int i = 0; i < ancestors.size(); i++)
+        for (sofa::Size i = 0; i < ancestors.size(); i++)
         {
             // Position interpolation.
             c.getCenter() += ancestors[i].getCenter() * coefs[i];
@@ -970,7 +970,7 @@ public:
 
         Deriv d;
 
-        for (unsigned int i = 0; i < ancestors.size(); i++)
+        for (sofa::Size i = 0; i < ancestors.size(); i++)
         {
             d += ancestors[i] * coefs[i];
         }
@@ -1025,7 +1025,7 @@ class RigidDeriv<2,real>
 {
 public:
     typedef real value_type;
-    typedef int size_type;
+    typedef sofa::Size Size;
     typedef real Real;
     typedef Vec<2,Real> Pos;
     typedef Real Rot;
@@ -1184,10 +1184,10 @@ public:
     real* ptr() { return vCenter.ptr(); }
     const real* ptr() const { return vCenter.ptr(); }
 
-    static unsigned int size() {return 3;}
+    static Size size() {return 3;}
 
     /// Access to i-th element.
-    real& operator[](int i)
+    real& operator[](Size i)
     {
         if (i<2)
             return this->vCenter(i);
@@ -1196,7 +1196,7 @@ public:
     }
 
     /// Const access to i-th element.
-    const real& operator[](int i) const
+    const real& operator[](Size i) const
     {
         if (i<2)
             return this->vCenter(i);
@@ -1249,7 +1249,7 @@ class RigidCoord<2,real>
 {
 public:
     typedef real value_type;
-    typedef int size_type;
+    typedef sofa::Size Size;
     typedef real Real;
     typedef Vec<2,Real> Pos;
     typedef Real Rot;
@@ -1522,7 +1522,7 @@ public:
         in>>v.center>>v.orientation;
         return in;
     }
-    static int max_size()
+    static Size max_size()
     {
         return 3;
     }
@@ -1535,10 +1535,10 @@ public:
     real* ptr() { return center.ptr(); }
     const real* ptr() const { return center.ptr(); }
 
-    static unsigned int size() {return 3;}
+    static Size size() {return 3;}
 
     /// Access to i-th element.
-    real& operator[](int i)
+    real& operator[](Size i)
     {
         if (i<2)
             return this->center(i);
@@ -1547,7 +1547,7 @@ public:
     }
 
     /// Const access to i-th element.
-    const real& operator[](int i) const
+    const real& operator[](Size i) const
     {
         if (i<2)
             return this->center(i);
@@ -1786,7 +1786,7 @@ public:
 
         Coord c;
 
-        for (unsigned int i = 0; i < ancestors.size(); i++)
+        for (sofa::Size i = 0; i < ancestors.size(); i++)
         {
             c += ancestors[i] * coefs[i];
         }
@@ -1800,7 +1800,7 @@ public:
 
         Deriv d;
 
-        for (unsigned int i = 0; i < ancestors.size(); i++)
+        for (sofa::Size i = 0; i < ancestors.size(); i++)
         {
             d += ancestors[i] * coefs[i];
         }
@@ -1839,13 +1839,13 @@ template<> inline const char* Rigid2fTypes::Name() { return "Rigid2f"; }
 typedef StdRigidTypes<2,SReal> Rigid2Types;
 typedef RigidMass<2,SReal> Rigid2Mass;
 
-template<int N, typename real>
+template<sofa::Size N, typename real>
 struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidDeriv<N,real>, sofa::defaulttype::RigidDeriv<N,real>::total_size >
 {
     static std::string name() { std::ostringstream o; o << "RigidDeriv<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
 };
 
-template<int N, typename real>
+template<sofa::Size N, typename real>
 struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidCoord<N,real>, sofa::defaulttype::RigidCoord<N,real>::total_size >
 {
     static std::string name() { std::ostringstream o; o << "RigidCoord<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
@@ -1887,7 +1887,7 @@ static Vec3 rigidVelocity( const Vec3& omega, const Vec3& v, const Vec3& pv, con
 template<class V1, class Vec, class Rot>
 static void displace( V1& v, Vec translation, Rot rotation )
 {
-    for(std::size_t i=0; i<v.size(); i++)
+    for(sofa::Size i=0; i<v.size(); i++)
         v[i] = translation + rotation.rotate(v[i]);
 }
 
@@ -1895,7 +1895,7 @@ static void displace( V1& v, Vec translation, Rot rotation )
 template<class V1, class Rot>
 static void rotate( V1& v, Rot rotation )
 {
-    for(std::size_t i=0; i<v.size(); i++)
+    for(sofa::Size i=0; i<v.size(); i++)
         v[i] = rotation.rotate(v[i]);
 }
 

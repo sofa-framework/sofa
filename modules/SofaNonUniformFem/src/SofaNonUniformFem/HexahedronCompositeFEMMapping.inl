@@ -36,6 +36,8 @@ namespace sofa::component::mapping
 template <class BasicMapping>
 void HexahedronCompositeFEMMapping<BasicMapping>::init()
 {
+    using namespace sofa::defaulttype;
+
     if(_alreadyInit) return;
     _alreadyInit=true;
 
@@ -67,7 +69,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
     InCoord translation0 = this->fromModel->read(core::ConstVecCoordId::position())->getValue()[0] - _sparseGrid->getPointPos(0);
 
-    for(int i=0; i<_finestSparseGrid->getNbPoints(); ++i)
+    for(Size i=0; i<_finestSparseGrid->getNbPoints(); ++i)
         _qFine0.push_back( _finestSparseGrid->getPointPos(i)+translation0 );
 
     _qFine = _qFine0;
@@ -111,13 +113,13 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
 
             // find barycentric coordinate in the finest element
-            int elementIdx = _finestSparseGrid->findCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
-            if (elementIdx==-1)
+            auto elementIdx = _finestSparseGrid->findCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
+            if (elementIdx== sofa::InvalidID)
             {
                 elementIdx = _finestSparseGrid->findNearestCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
             }
 
-            if (elementIdx != -1)
+            if (elementIdx != sofa::InvalidID)
             {
                 helper::fixed_array<Real, 8> baryCoefs;
                 baryCoefs[0] = (Real)((1 - coefs[0]) * (1 - coefs[1]) * (1 - coefs[2]));
@@ -129,7 +131,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
                 baryCoefs[6] = (Real)((coefs[0]) * (coefs[1]) * (coefs[2]));
                 baryCoefs[7] = (Real)((1 - coefs[0]) * (coefs[1]) * (coefs[2]));
 
-                _finestBarycentricCoord[i] = std::pair<int, helper::fixed_array<Real, 8> >(elementIdx, baryCoefs);
+                _finestBarycentricCoord[i] = std::pair<Index, helper::fixed_array<Real, 8> >(elementIdx, baryCoefs);
             }
             else
                 msg_error() << "HexahedronCompositeFEMMapping::init()   error finding the corresponding finest cube of vertex " << _p0[i];

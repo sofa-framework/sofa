@@ -62,7 +62,7 @@ PointCollisionModel<DataTypes>::PointCollisionModel()
 }
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::resize(int size)
+void PointCollisionModel<DataTypes>::resize(Size size)
 {
     this->core::CollisionModel::resize(size);
 }
@@ -98,7 +98,7 @@ void PointCollisionModel<DataTypes>::init()
 
 
 template<class DataTypes>
-bool PointCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
+bool PointCollisionModel<DataTypes>::canCollideWithElement(Index index, CollisionModel* model2, Index index2)
 {
 
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
@@ -113,18 +113,18 @@ bool PointCollisionModel<DataTypes>::canCollideWithElement(int index, CollisionM
         sofa::core::topology::BaseMeshTopology* topology = l_topology.get();
 
         // in the neighborhood, if we find a point in common, we cancel the collision
-        const helper::vector <unsigned int>& verticesAroundVertex1 =topology->getVerticesAroundVertex(index);
-        const helper::vector <unsigned int>& verticesAroundVertex2 =topology->getVerticesAroundVertex(index2);
+        const auto& verticesAroundVertex1 =topology->getVerticesAroundVertex(index);
+        const auto& verticesAroundVertex2 =topology->getVerticesAroundVertex(index2);
 
         for (unsigned int i1=0; i1<verticesAroundVertex1.size(); i1++)
         {
 
-            unsigned int v1 = verticesAroundVertex1[i1];
+            Index v1 = verticesAroundVertex1[i1];
 
             for (unsigned int i2=0; i2<verticesAroundVertex2.size(); i2++)
             {
 
-                if (v1 == verticesAroundVertex2[i2] || v1 == (unsigned int)index2 || index == (int)verticesAroundVertex2[i2])
+                if (v1 == verticesAroundVertex2[i2] || v1 == index2 || index == verticesAroundVertex2[i2])
                 {
                     return false;
                 }
@@ -140,7 +140,7 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const int npoints = mstate->getSize();
+    const auto npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -157,7 +157,7 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     {
         //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
         const SReal distance = this->proximity.getValue();
-        for (int i=0; i<size; i++)
+        for (Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
             const defaulttype::Vector3& pt = p.p();
@@ -176,7 +176,7 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const int npoints = mstate->getSize();
+    const auto npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -195,7 +195,7 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, in
         //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
         //VecDeriv& v = mstate->read(core::ConstVecDerivId::velocity())->getValue();
         const SReal distance = (SReal)this->proximity.getValue();
-        for (int i=0; i<size; i++)
+        for (Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
             const defaulttype::Vector3& pt = p.p();
@@ -336,7 +336,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
     for (unsigned int i=0; i<trianglesAroundVertex.size(); i++)
     {
         unsigned int t = trianglesAroundVertex[i];
-        const helper::fixed_array<unsigned int,3>& ptr = mesh->getTriangle(t);
+        const auto& ptr = mesh->getTriangle(t);
         defaulttype::Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
         nCur.normalize();
         nMean += nCur;
@@ -347,7 +347,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
         for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
         {
             unsigned int e = edgesAroundVertex[i];
-            const helper::fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
+            const auto& ped = mesh->getEdge(e);
             defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
             l.normalize();
             nMean += l;
@@ -361,7 +361,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
     for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
     {
         unsigned int e = edgesAroundVertex[i];
-        const helper::fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
+        const auto& ped = mesh->getEdge(e);
         defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
         l.normalize();
         double computedAngleCone = dot(nMean , l) * coneFactor;
@@ -396,7 +396,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
 
     if( !onlyVisible ) return;
 
-    const int npoints = mstate->getSize();
+    const auto npoints = mstate->getSize();
     if (npoints != size)
         return;
 
@@ -405,7 +405,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    for (int i=0; i<size; i++)
+    for (Size i=0; i<size; i++)
     {
         Element e(this,i);
         const defaulttype::Vector3& p = e.p();
@@ -423,7 +423,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
 
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams*, int index)
+void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams*, Index index)
 {
     SOFA_UNUSED(index);
     //TODO(fred roy 2018-06-21)...please implement.
@@ -439,13 +439,13 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
             vparams->drawTool()->setPolygonMode(0, true);
 
         // Check topological modifications
-        const int npoints = mstate->getSize();
+        const auto npoints = mstate->getSize();
         if (npoints != size)
             return;
 
         std::vector< defaulttype::Vector3 > pointsP;
         std::vector< defaulttype::Vector3 > pointsL;
-        for (int i = 0; i < size; i++)
+        for (Size i = 0; i < size; i++)
         {
             TPoint<DataTypes> p(this, i);
             if (p.isActive())
@@ -466,7 +466,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
         {
             std::vector< defaulttype::Vector3 > pointsPFree;
 
-            for (int i = 0; i < size; i++)
+            for (Size i = 0; i < size; i++)
             {
                 TPoint<DataTypes> p(this, i);
                 if (p.isActive())

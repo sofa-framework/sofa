@@ -78,7 +78,7 @@ public:
     */
     void updateTopologicalMappingTopDown() override;
 
-    unsigned int getFromIndex(unsigned int ind) override;
+    Index getFromIndex(Index ind) override;
 
 protected:
     Data<bool> flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)

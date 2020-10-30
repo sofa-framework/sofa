@@ -81,8 +81,8 @@ public:
     /// Procedural creation methods
     /// @{
     void clear() override;
-    void addTriangle( int, int, int ) override {}
-    void addTetra( int a, int b, int c, int d ) override;
+    void addTriangle(Index, Index, Index) override {}
+    void addTetra(Index a, Index b, Index c, Index d ) override;
     /// @}
 
 
@@ -229,7 +229,7 @@ public:
     bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    size_t getNumberOfConnectedComponent() override;
+    Size getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     const VecTetraID getConnectedElement(TetraID elem) override;
@@ -248,12 +248,12 @@ public:
     /** \brief Returns the number of tetrahedra in this topology.
      *    The difference to getNbTetrahedra() is that this method does not generate the tetra array if it does not exist.
      */
-    size_t getNumberOfTetrahedra() const;
+    Size getNumberOfTetrahedra() const;
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    size_t getNumberOfElements() const override;
+    Size getNumberOfElements() const override;
 
 
     /** \brief Returns the Tetrahedron array. */
@@ -325,7 +325,7 @@ public:
     inline friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t)
     {
         unsigned int s=0;
-        sofa::helper::vector< unsigned int > value;
+        sofa::helper::vector< HexahedronID > value;
         helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
 
         in >> m_tetrahedron >> t.m_edgesInTetrahedron >> t.m_trianglesInTetrahedron;
@@ -488,7 +488,7 @@ protected:
     sofa::helper::vector< TetrahedraAroundEdge > m_tetrahedraAroundEdge;
 
     /// removed tetrahedron index
-    sofa::helper::vector<unsigned int> m_removedTetraIndex;
+    sofa::helper::vector<TetrahedronID> m_removedTetraIndex;
 
     /// for each triangle provides the set of tetrahedra adjacent to that triangle.
     sofa::helper::vector< TetrahedraAroundTriangle > m_tetrahedraAroundTriangle;

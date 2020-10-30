@@ -58,7 +58,7 @@ public:
 
     typedef CylinderCollisionModel<DataTypes> ParentModel;
 
-    TCylinder(ParentModel* model, int index);
+    TCylinder(ParentModel* model, Index index);
 
     explicit TCylinder(const core::CollisionElementIterator& i);
 
@@ -111,37 +111,37 @@ public:
     void init() override;
 
     // -- CollisionModel interface
-    void resize(int size) override;
+    void resize(Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams* vparams,int index) override;
+    void draw(const core::visual::VisualParams* vparams,Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return m_mstate; }
 
-    Real radius(int index) const;
+    Real radius(Index index) const;
 
-    const Coord & center(int i)const;
+    const Coord & center(Index i)const;
 
     //Returns the direction of the cylinder at index index
-    Coord axis(int index)const;
+    Coord axis(Index index)const;
     //Returns the direction of the cylinder at index in local coordinates
-    Coord local_axis(int index) const;
+    Coord local_axis(Index index) const;
 
-    const sofa::defaulttype::Quaternion orientation(int index)const;
+    const sofa::defaulttype::Quaternion orientation(Index index)const;
 
-    Real height(int index)const;
+    Real height(Index index)const;
 
-    Coord point1(int i) const;
+    Coord point1(Index i) const;
 
-    Coord point2(int i) const;
+    Coord point2(Index i) const;
 
     Real defaultRadius()const;
 
-    const Coord & velocity(int index)const;
+    const Coord & velocity(Index index)const;
 
     Data<VecReal>& writeRadii();
     Data<VecReal>& writeHeights();
@@ -153,7 +153,7 @@ protected:
 
 
 template<class DataTypes>
-inline TCylinder<DataTypes>::TCylinder(ParentModel* model, int index)
+inline TCylinder<DataTypes>::TCylinder(ParentModel* model, Index index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 

@@ -46,7 +46,7 @@ namespace projectiveconstraintset
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+bool FixedConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     if (fc)
     {
@@ -60,11 +60,11 @@ bool FixedConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigne
 
 // Define RemovalFunction
 template< class DataTypes>
-void FixedConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void FixedConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
 {
     if (fc)
     {
-        fc->removeConstraint((unsigned int) pointIndex);
+        fc->removeConstraint((Index) pointIndex);
     }
 }
 
@@ -103,14 +103,14 @@ void FixedConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::addConstraint(unsigned int index)
+void FixedConstraint<DataTypes>::addConstraint(Index index)
 {
     d_indices.beginEdit()->push_back(index);
     d_indices.endEdit();
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::removeConstraint(unsigned int index)
+void FixedConstraint<DataTypes>::removeConstraint(Index index)
 {
     removeValue(*d_indices.beginEdit(),index);
     d_indices.endEdit();
@@ -167,13 +167,13 @@ template <class DataTypes>
 void  FixedConstraint<DataTypes>::checkIndices()
 {
     // Check value of given indices
-    unsigned int maxIndex=this->mstate->getSize();
+    Index maxIndex=this->mstate->getSize();
 
     const SetIndexArray & indices = d_indices.getValue();
     SetIndexArray invalidIndices;
     for (unsigned int i=0; i<indices.size(); ++i)
     {
-        const unsigned int index=indices[i];
+        const Index index=indices[i];
         if (index >= maxIndex)
         {
             msg_warning() << "Index " << index << " not valid, should be [0,"<< maxIndex <<"]. Constraint will be removed.";
@@ -184,7 +184,7 @@ void  FixedConstraint<DataTypes>::checkIndices()
     // if invalid indices, sort them and remove in decreasing order as removeConstraint perform a swap and pop_back.
     if (!invalidIndices.empty())
     {
-        std::sort( invalidIndices.begin(), invalidIndices.end(), std::greater<unsigned int>() );
+        std::sort( invalidIndices.begin(), invalidIndices.end(), std::greater<Index>() );
         int max = invalidIndices.size()-1;
         for (int i=max; i>= 0; i--)
         {
@@ -360,7 +360,7 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 
         if( d_fixAll.getValue() )
         {
-            for( int i=0; i<vect->size(); i++ )
+            for(Size i=0; i<vect->size(); i++ )
             {
                 for (unsigned int c=0; c<N; ++c)
                     vect->clear(offset + N * i + c);

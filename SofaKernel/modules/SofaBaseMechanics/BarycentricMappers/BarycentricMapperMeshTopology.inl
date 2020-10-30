@@ -96,12 +96,12 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             const SeqEdges& edges = this->m_fromTopology->getEdges();
             if ( edges.empty() ) return;
 
-            clearMap1dAndReserve ( (int)out.size() );
+            clearMap1dAndReserve ( out.size() );
 
             helper::vector< SReal >   lengthEdges;
             helper::vector< Vector3 > unitaryVectors;
 
-            unsigned int e;
+            std::size_t e;
             for ( e=0; e<edges.size(); e++ )
             {
                 lengthEdges.push_back ( ( in[edges[e][1]]-in[edges[e][0]] ).norm() );
@@ -110,7 +110,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
                 unitaryVectors.push_back ( V12 );
             }
 
-            for ( unsigned int i=0; i<out.size(); i++ )
+            for ( std::size_t i=0; i<out.size(); i++ )
             {
                 SReal coef=0;
                 for ( e=0; e<edges.size(); e++ )
@@ -122,16 +122,16 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
                     if ( coef >= 0 && coef <= 1 ) {addPointInLine ( e,&coef );  break; }
                 }
                 //If no good coefficient has been found, we add to the last element
-                if ( e == edges.size() ) addPointInLine ( (int)edges.size()-1,&coef );
+                if ( e == edges.size() ) addPointInLine ( edges.size()-1,&coef );
             }
         }
         else
         {
-            clearMap2dAndReserve ( int(out.size()) );
+            clearMap2dAndReserve ( (out.size()) );
             size_t nbTriangles = triangles.size();
             bases.resize ( triangles.size() +quads.size() );
             centers.resize ( triangles.size() +quads.size() );
-            for ( unsigned int t = 0; t < triangles.size(); t++ )
+            for ( std::size_t t = 0; t < triangles.size(); t++ )
             {
                 Mat3x3d m,mt;
                 m[0] = in[triangles[t][1]]-in[triangles[t][0]];
@@ -141,7 +141,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
                 bases[t].invert ( mt );
                 centers[t] = ( in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]] ) /3;
             }
-            for ( unsigned int q = 0; q < quads.size(); q++ )
+            for ( std::size_t q = 0; q < quads.size(); q++ )
             {
                 Mat3x3d m,mt;
                 m[0] = in[quads[q][1]]-in[quads[q][0]];
@@ -151,27 +151,27 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
                 bases[nbTriangles+q].invert ( mt );
                 centers[nbTriangles+q] = ( in[quads[q][0]]+in[quads[q][1]]+in[quads[q][2]]+in[quads[q][3]] ) *0.25;
             }
-            for ( unsigned int i=0; i<out.size(); i++ )
+            for ( std::size_t i=0; i<out.size(); i++ )
             {
                 Vector3 outPos = Out::getCPos(out[i]);
                 Vector3 coefs;
-                int index = -1;
+                Index index = sofa::InvalidID;
                 double distance = 1e10;
-                for ( unsigned int t = 0; t < triangles.size(); t++ )
+                for ( std::size_t t = 0; t < triangles.size(); t++ )
                 {
                     Vec3d v = bases[t] * ( outPos - in[triangles[t][0]] );
                     double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01,v[0]+v[1]-1 ) );
                     if ( d>0 ) d = ( outPos-centers[t] ).norm2();
-                    if ( d<distance ) { coefs = v; distance = d; index = int(t); }
+                    if ( d<distance ) { coefs = v; distance = d; index = (t); }
                 }
-                for ( unsigned int q = 0; q < quads.size(); q++ )
+                for ( std::size_t q = 0; q < quads.size(); q++ )
                 {
                     Vec3d v = bases[nbTriangles+q] * ( outPos - in[quads[q][0]] );
                     double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( v[1]-1,v[0]-1 ),std::max ( v[2]-0.01,-v[2]-0.01 ) ) );
                     if ( d>0 ) d = ( outPos-centers[nbTriangles+q] ).norm2();
                     if ( d<distance ) { coefs = v; distance = d; index = nbTriangles+q; }
                 }
-                if ( index < int(nbTriangles) )
+                if ( index < (nbTriangles) )
                     addPointInTriangle ( index, coefs.ptr() );
                 else
                     addPointInQuad ( index-nbTriangles, coefs.ptr() );
@@ -181,10 +181,10 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
     else
     {
         clearMap3dAndReserve ( out.size() );
-        unsigned int nbTetras = tetras.size();
+        std::size_t nbTetras = tetras.size();
         bases.resize ( tetras.size() + hexas.size() );
         centers.resize ( tetras.size() + hexas.size() );
-        for ( unsigned int t = 0; t < tetras.size(); t++ )
+        for ( std::size_t t = 0; t < tetras.size(); t++ )
         {
             Mat3x3d m,mt;
             m[0] = in[tetras[t][1]]-in[tetras[t][0]];
@@ -194,7 +194,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             bases[t].invert ( mt );
             centers[t] = ( in[tetras[t][0]]+in[tetras[t][1]]+in[tetras[t][2]]+in[tetras[t][3]] ) *0.25;
         }
-        for ( unsigned int h = 0; h < hexas.size(); h++ )
+        for ( std::size_t h = 0; h < hexas.size(); h++ )
         {
             Mat3x3d m,mt;
             m[0] = in[hexas[h][1]]-in[hexas[h][0]];
@@ -204,27 +204,27 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             bases[nbTetras+h].invert ( mt );
             centers[nbTetras+h] = ( in[hexas[h][0]]+in[hexas[h][1]]+in[hexas[h][2]]+in[hexas[h][3]]+in[hexas[h][4]]+in[hexas[h][5]]+in[hexas[h][6]]+in[hexas[h][7]] ) *0.125;
         }
-        for ( unsigned int i=0; i<out.size(); i++ )
+        for ( std::size_t i=0; i<out.size(); i++ )
         {
             Vector3 pos = Out::getCPos(out[i]);
             Vector3 coefs;
-            int index = -1;
+            Index index = sofa::InvalidID;
             double distance = 1e10;
-            for ( unsigned int t = 0; t < tetras.size(); t++ )
+            for ( std::size_t t = 0; t < tetras.size(); t++ )
             {
                 Vector3 v = bases[t] * ( pos - in[tetras[t][0]] );
                 double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
                 if ( d>0 ) d = ( pos-centers[t] ).norm2();
-                if ( d<distance ) { coefs = v; distance = d; index = int(t); }
+                if ( d<distance ) { coefs = v; distance = d; index = (t); }
             }
-            for ( unsigned int h = 0; h < hexas.size(); h++ )
+            for ( std::size_t h = 0; h < hexas.size(); h++ )
             {
                 Vector3 v = bases[nbTetras+h] * ( pos - in[hexas[h][0]] );
                 double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( -v[2],v[0]-1 ),std::max ( v[1]-1,v[2]-1 ) ) );
                 if ( d>0 ) d = ( pos-centers[nbTetras+h] ).norm2();
-                if ( d<distance ) { coefs = v; distance = d; index = int(nbTetras+h); }
+                if ( d<distance ) { coefs = v; distance = d; index = (nbTetras+h); }
             }
-            if ( index < int(nbTetras) )
+            if ( index < (nbTetras) )
                 addPointInTetra ( index, coefs.ptr() );
             else
                 addPointInCube ( index-nbTetras, coefs.ptr() );
@@ -234,7 +234,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
 
 
 template <class In, class Out>
-void BarycentricMapperMeshTopology<In,Out>::clearMap1dAndReserve ( int size )
+void BarycentricMapperMeshTopology<In,Out>::clearMap1dAndReserve ( std::size_t size )
 {
     m_updateJ = true;
     m_map1d.clear();
@@ -243,7 +243,7 @@ void BarycentricMapperMeshTopology<In,Out>::clearMap1dAndReserve ( int size )
 
 
 template <class In, class Out>
-void BarycentricMapperMeshTopology<In,Out>::clearMap2dAndReserve ( int size )
+void BarycentricMapperMeshTopology<In,Out>::clearMap2dAndReserve ( std::size_t size )
 {
     m_updateJ = true;
     m_map2d.clear();
@@ -252,7 +252,7 @@ void BarycentricMapperMeshTopology<In,Out>::clearMap2dAndReserve ( int size )
 
 
 template <class In, class Out>
-void BarycentricMapperMeshTopology<In,Out>::clearMap3dAndReserve ( int size )
+void BarycentricMapperMeshTopology<In,Out>::clearMap3dAndReserve ( std::size_t size )
 {
     m_updateJ = true;
     m_map3d.clear();
@@ -261,7 +261,7 @@ void BarycentricMapperMeshTopology<In,Out>::clearMap3dAndReserve ( int size )
 
 
 template <class In, class Out>
-void BarycentricMapperMeshTopology<In,Out>::clear ( int size )
+void BarycentricMapperMeshTopology<In,Out>::clear ( std::size_t size )
 {
     m_updateJ = true;
     clearMap1dAndReserve(size);
@@ -271,42 +271,46 @@ void BarycentricMapperMeshTopology<In,Out>::clear ( int size )
 
 
 template <class In, class Out>
-int BarycentricMapperMeshTopology<In,Out>::addPointInLine ( const int lineIndex, const SReal* baryCoords )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::addPointInLine ( const Index lineIndex, const SReal* baryCoords )
 {
     m_map1d.resize ( m_map1d.size() +1 );
     MappingData1D& data = *m_map1d.rbegin();
     data.in_index = lineIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
-    return (int)m_map1d.size()-1;
+    return m_map1d.size()-1;
 }
 
 
 template <class In, class Out>
-int BarycentricMapperMeshTopology<In,Out>::addPointInTriangle ( const int triangleIndex, const SReal* baryCoords )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::addPointInTriangle ( const Index triangleIndex, const SReal* baryCoords )
 {
     m_map2d.resize ( m_map2d.size() +1 );
     MappingData2D& data = *m_map2d.rbegin();
     data.in_index = triangleIndex;
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
-    return (int)m_map2d.size()-1;
+    return m_map2d.size()-1;
 }
 
 
 template <class In, class Out>
-int BarycentricMapperMeshTopology<In,Out>::addPointInQuad ( const int quadIndex, const SReal* baryCoords )
+typename BarycentricMapperMeshTopology<In, Out>::Index
+BarycentricMapperMeshTopology<In,Out>::addPointInQuad ( const Index quadIndex, const SReal* baryCoords )
 {
     m_map2d.resize ( m_map2d.size() +1 );
     MappingData2D& data = *m_map2d.rbegin();
     data.in_index = quadIndex + this->m_fromTopology->getNbTriangles();
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
-    return (int)m_map2d.size()-1;
+    return m_map2d.size()-1;
 }
 
 
 template <class In, class Out>
-int BarycentricMapperMeshTopology<In,Out>::addPointInTetra ( const int tetraIndex, const SReal* baryCoords )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::addPointInTetra ( const Index tetraIndex, const SReal* baryCoords )
 {
     m_map3d.resize ( m_map3d.size() +1 );
     MappingData3D& data = *m_map3d.rbegin();
@@ -314,12 +318,13 @@ int BarycentricMapperMeshTopology<In,Out>::addPointInTetra ( const int tetraInde
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
     data.baryCoords[2] = ( Real ) baryCoords[2];
-    return (int)m_map3d.size()-1;
+    return m_map3d.size()-1;
 }
 
 
 template <class In, class Out>
-int BarycentricMapperMeshTopology<In,Out>::addPointInCube ( const int cubeIndex, const SReal* baryCoords )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::addPointInCube ( const Index cubeIndex, const SReal* baryCoords )
 {
     m_map3d.resize ( m_map3d.size() +1 );
     MappingData3D& data = *m_map3d.rbegin();
@@ -327,12 +332,13 @@ int BarycentricMapperMeshTopology<In,Out>::addPointInCube ( const int cubeIndex,
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
     data.baryCoords[2] = ( Real ) baryCoords[2];
-    return (int)m_map3d.size()-1;
+    return m_map3d.size()-1;
 }
 
 
 template <class In, class Out>
-int BarycentricMapperMeshTopology<In,Out>::createPointInLine ( const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::createPointInLine ( const typename Out::Coord& p, Index lineIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[1];
     const Edge& elem = this->m_fromTopology->getLine ( lineIndex );
@@ -345,7 +351,8 @@ int BarycentricMapperMeshTopology<In,Out>::createPointInLine ( const typename Ou
 
 
 template <class In, class Out>
-int BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Out::Coord& p, Index triangleIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[2];
     const Triangle& elem = this->m_fromTopology->getTriangle ( triangleIndex );
@@ -426,7 +433,8 @@ int BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typenam
 
 
 template <class In, class Out>
-int BarycentricMapperMeshTopology<In,Out>::createPointInQuad ( const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points )
+typename BarycentricMapperMeshTopology<In, Out>::Index 
+BarycentricMapperMeshTopology<In,Out>::createPointInQuad ( const typename Out::Coord& p, Index quadIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[2];
     const Quad& elem = this->m_fromTopology->getQuad ( quadIndex );
@@ -486,7 +494,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                 if ( indexIn < i1d )
                 {
                     const OutReal fx = ( OutReal ) m_map1d[indexIn].baryCoords[0];
-                    size_t index = m_map1d[indexIn].in_index;
+                    Index index = m_map1d[indexIn].in_index;
                     {
                         const Edge& line = lines[index];
                         o.addCol( line[0], data * ( 1-fx ) );
@@ -498,7 +506,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                 {
                     const OutReal fx = ( OutReal ) m_map2d[indexIn].baryCoords[0];
                     const OutReal fy = ( OutReal ) m_map2d[indexIn].baryCoords[1];
-                    size_t index = m_map2d[indexIn].in_index;
+                    Index index = m_map2d[indexIn].in_index;
                     if ( index < iTri ) // triangle
                     {
                         const Triangle& triangle = triangles[index];
@@ -567,11 +575,11 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
     std::vector< Vector3 > points;
     // 1D elements
     {
-        const int i0 = 0;
-        for ( unsigned int i=0; i<m_map1d.size(); i++ )
+        const Index i0 = 0;
+        for ( std::size_t i=0; i<m_map1d.size(); i++ )
         {
             const Real fx = m_map1d[i].baryCoords[0];
-            int index = m_map1d[i].in_index;
+            Index index = m_map1d[i].in_index;
             {
                 const Edge& line = lines[index];
                 Real f[2];
@@ -590,13 +598,13 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
     }
     // 2D elements
     {
-        const int i0 = m_map1d.size();
-        const int c0 = triangles.size();
-        for ( unsigned int i=0; i<m_map2d.size(); i++ )
+        const auto i0 = m_map1d.size();
+        const auto c0 = triangles.size();
+        for ( std::size_t i=0; i<m_map2d.size(); i++ )
         {
             const Real fx = m_map2d[i].baryCoords[0];
             const Real fy = m_map2d[i].baryCoords[1];
-            int index = m_map2d[i].in_index;
+            Index index = m_map2d[i].in_index;
             if ( index<c0 )
             {
                 const Triangle& triangle = triangles[index];
@@ -634,14 +642,14 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
     }
     // 3D elements
     {
-        const int i0 = m_map1d.size() +m_map2d.size();
-        const int c0 = tetrahedra.size();
-        for ( unsigned int i=0; i<m_map3d.size(); i++ )
+        const auto i0 = m_map1d.size() +m_map2d.size();
+        const auto c0 = tetrahedra.size();
+        for ( std::size_t i=0; i<m_map3d.size(); i++ )
         {
             const Real fx = m_map3d[i].baryCoords[0];
             const Real fy = m_map3d[i].baryCoords[1];
             const Real fz = m_map3d[i].baryCoords[2];
-            int index = m_map3d[i].in_index;
+            Index index = m_map3d[i].in_index;
             if ( index<c0 )
             {
                 const Tetra& tetra = tetrahedra[index];
@@ -942,7 +950,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
         if (i < idxStart1)
         {
             const Real fx = m_map1d[i].baryCoords[0];
-            int index = m_map1d[i].in_index;
+            Index index = m_map1d[i].in_index;
             {
                 const Edge& line = lines[index];
                 Out::setDPos(out[i] , in[line[0]] * ( 1-fx )
@@ -1031,10 +1039,10 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
 
     // 1D elements
     {
-        for ( unsigned int i=0; i<m_map1d.size(); i++ )
+        for ( std::size_t i=0; i<m_map1d.size(); i++ )
         {
             const Real fx = m_map1d[i].baryCoords[0];
-            int index = m_map1d[i].in_index;
+            Index index = m_map1d[i].in_index;
             {
                 const Edge& line = lines[index];
                 Out::setCPos(out[i] , in[line[0]] * ( 1-fx )
@@ -1044,13 +1052,13 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
     }
     // 2D elements
     {
-        const int i0 = m_map1d.size();
-        const int c0 = triangles.size();
-        for ( unsigned int i=0; i<m_map2d.size(); i++ )
+        const std::size_t i0 = m_map1d.size();
+        const std::size_t c0 = triangles.size();
+        for ( std::size_t i=0; i<m_map2d.size(); i++ )
         {
             const Real fx = m_map2d[i].baryCoords[0];
             const Real fy = m_map2d[i].baryCoords[1];
-            int index = m_map2d[i].in_index;
+            Index index = m_map2d[i].in_index;
             if ( index<c0 )
             {
                 const Triangle& triangle = triangles[index];
@@ -1073,14 +1081,14 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
     }
     // 3D elements
     {
-        const int i0 = m_map1d.size() + m_map2d.size();
-        const int c0 = tetrahedra.size();
-        for ( unsigned int i=0; i<m_map3d.size(); i++ )
+        const std::size_t i0 = m_map1d.size() + m_map2d.size();
+        const std::size_t c0 = tetrahedra.size();
+        for ( std::size_t i=0; i<m_map3d.size(); i++ )
         {
             const Real fx = m_map3d[i].baryCoords[0];
             const Real fy = m_map3d[i].baryCoords[1];
             const Real fz = m_map3d[i].baryCoords[2];
-            int index = m_map3d[i].in_index;
+            Index index = m_map3d[i].in_index;
             if ( index<c0 )
             {
                 const Tetra& tetra = tetrahedra[index];
@@ -1109,11 +1117,11 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
 template <class In, class Out>
 std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b )
 {
-    unsigned int size_vec;
+    std::size_t size_vec;
     in >> size_vec;
     b.m_map1d.clear();
     typename BarycentricMapperMeshTopology<In, Out>::MappingData1D value1d;
-    for (unsigned int i=0; i<size_vec; i++)
+    for (std::size_t i=0; i<size_vec; i++)
     {
         in >> value1d;
         b.m_map1d.push_back(value1d);
@@ -1122,7 +1130,7 @@ std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, 
     in >> size_vec;
     b.m_map2d.clear();
     typename BarycentricMapperMeshTopology<In, Out>::MappingData2D value2d;
-    for (unsigned int i=0; i<size_vec; i++)
+    for (std::size_t i=0; i<size_vec; i++)
     {
         in >> value2d;
         b.m_map2d.push_back(value2d);
@@ -1131,7 +1139,7 @@ std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, 
     in >> size_vec;
     b.m_map3d.clear();
     typename BarycentricMapperMeshTopology<In, Out>::MappingData3D value3d;
-    for (unsigned int i=0; i<size_vec; i++)
+    for (std::size_t i=0; i<size_vec; i++)
     {
         in >> value3d;
         b.m_map3d.push_back(value3d);

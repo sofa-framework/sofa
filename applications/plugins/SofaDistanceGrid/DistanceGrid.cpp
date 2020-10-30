@@ -608,15 +608,15 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
     std::fill(m_fmm_status.begin(), m_fmm_status.end(), FMM_FAR);
     std::fill(m_dists.begin(), m_dists.end(), maxDist());
 
-    const helper::vector<Vector3> & vertices = mesh->getVertices();
-    const helper::vector<helper::vector<helper::vector<int> > > & facets = mesh->getFacets();
+    const auto& vertices = mesh->getVertices();
+    const auto& facets = mesh->getFacets();
 
     // Initialize distance of edges crossing triangles
     dmsg_info("DistanceGrid")<< "FMM: Initialize distance of edges crossing triangles.";
 
     for (unsigned int i=0; i<facets.size(); i++)
     {
-        const helper::vector<int>& pts = facets[i][0];
+        const auto& pts = facets[i][0];
         const int pt0 = 0;
         const Coord p0 = vertices[pts[pt0]]*scale;
         for (unsigned int pt2=2; pt2<pts.size(); pt2++)

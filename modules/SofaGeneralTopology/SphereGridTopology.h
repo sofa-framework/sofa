@@ -54,7 +54,7 @@ public:
     /** \brief Overload method of @sa GridTopology::getPoint.
      * Get Point in grid @return Vector3 given its @param id i. Will call @sa getPointInGrid.
      * */
-    Vector3 getPoint(int i) const override;
+    Vector3 getPoint(Index i) const override;
 
     /** \brief Overload method of @sa GridTopology::getPointInGrid.
      * Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k

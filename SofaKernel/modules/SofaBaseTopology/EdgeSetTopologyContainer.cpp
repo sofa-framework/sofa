@@ -72,7 +72,7 @@ void EdgeSetTopologyContainer::init()
         {
             for(size_t j=0; j<2; ++j)
             {
-                int a = m_edge[i][j];
+                EdgeID a = m_edge[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }
@@ -91,7 +91,7 @@ void EdgeSetTopologyContainer::initTopology()
     createEdgesAroundVertexArray();
 }
 
-void EdgeSetTopologyContainer::addEdge(int a, int b)
+void EdgeSetTopologyContainer::addEdge(Index a, Index b)
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     m_edge.push_back(Edge(a,b));
@@ -118,7 +118,7 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
         return;
     }
 
-    int nbPoints = getNbPoints();
+    std::size_t nbPoints = getNbPoints();
     if (nbPoints == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
         this->setNbPoints(d_initPoints.getValue().size());
 
@@ -288,9 +288,9 @@ bool EdgeSetTopologyContainer::checkConnexity()
 }
 
 
-size_t EdgeSetTopologyContainer::getNumberOfConnectedComponent()
+Size EdgeSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    size_t nbr = this->getNbEdges();
+    auto nbr = this->getNbEdges();
 
     if (nbr == 0)
     {
@@ -482,13 +482,13 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 
 
 
-size_t EdgeSetTopologyContainer::getNumberOfEdges() const
+Size EdgeSetTopologyContainer::getNumberOfEdges() const
 {
     d_edge.updateIfDirty();
     return d_edge.getValue().size();
 }
 
-size_t EdgeSetTopologyContainer::getNumberOfElements() const
+Size EdgeSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfEdges();
 }

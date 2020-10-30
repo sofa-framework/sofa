@@ -55,6 +55,8 @@ public:
     enum { coord_total_size = Coord::total_size };
     enum { deriv_total_size = Deriv::total_size };
 
+    typedef typename TCoord::Size Size;
+
     typedef Coord CPos;
     static const CPos& getCPos(const Coord& c) { return c; }
     static void setCPos(Coord& c, const CPos& v) { c = v; }
@@ -70,75 +72,76 @@ protected:
     /// @internal size dependant specializations
     /// @{
 
-    /// default implementation for size >= 3
-    template<int N, class T>
+    template<Size N, class T>
     struct Impl
     {
         static void set( Coord& c, T x, T y, T z )
         {
-            c[0] = (Real)x;
-            c[1] = (Real)y;
-            c[2] = (Real)z;
+            if constexpr (N > 2)
+            {
+                c[0] = Real(x);
+                c[1] = Real(y);
+                c[2] = Real(z);
+            }
+            if constexpr (N == 2)
+            {
+                SOFA_UNUSED(z);
+                c[0] = Real(x);
+                c[1] = Real(y);
+            }
+            if constexpr (N == 1)
+            {
+                SOFA_UNUSED(y);
+                SOFA_UNUSED(z);
+                c[0] = Real(x);
+            }
         }
 
         static void get( T& x, T& y, T& z, const Coord& c )
         {
-            x = (T) c[0];
-            y = (T) c[1];
-            z = (T) c[2];
+            if constexpr(N > 2)
+            {
+                x = T(c[0]);
+                y = T(c[1]);
+                z = T(c[2]);
+            }
+            if constexpr (N == 2)
+            {
+                SOFA_UNUSED(z);
+                x = T(c[0]);
+                y = T(c[1]);
+                z = T(0);
+            }
+            if constexpr (N == 1)
+            {
+                SOFA_UNUSED(y);
+                SOFA_UNUSED(z);
+                x = T(c[0]);
+                y = T(0);
+                z = T(0);
+            }
         }
 
         static void add( Coord& c, T x, T y, T z )
         {
-            c[0] += (Real)x;
-            c[1] += (Real)y;
-            c[2] += (Real)z;
-        }
-    };
-
-    /// specialization for size == 2
-    template<class T>
-    struct Impl<2,T>
-    {
-        static void set( Coord& c, T x, T y, T )
-        {
-            c[0] = (Real)x;
-            c[1] = (Real)y;
-        }
-
-        static void get( T& x, T& y, T& z, const Coord& c )
-        {
-            x = (T) c[0];
-            y = (T) c[1];
-            z = (T) 0;
-        }
-
-        static void add( Coord& c, T x, T y, T )
-        {
-            c[0] += (Real)x;
-            c[1] += (Real)y;
-        }
-    };
-
-    /// specialization for size == 1
-    template<class T>
-    struct Impl<1,T>
-    {
-        static void set( Coord& c, T x, T, T )
-        {
-            c[0] = (Real)x;
-        }
-
-        static void get( T& x, T& y, T& z, const Coord& c )
-        {
-            x = (T) c[0];
-            y = (T) 0;
-            z = (T) 0;
-        }
-
-        static void add( Coord& c, T x, T, T )
-        {
-            c[0] += (Real)x;
+            if constexpr (N > 2)
+            {
+                c[0] += Real(x);
+                c[1] += Real(y);
+                c[2] += Real(z);
+            }
+            if constexpr (N == 2)
+            {
+                SOFA_UNUSED(z);
+                c[0] += Real(x);
+                c[1] += Real(y);
+            }
+            if constexpr (N == 1)
+            {
+                SOFA_UNUSED(y);
+                SOFA_UNUSED(z);
+                c[0] += Real(x);
+            }
         }
     };
 

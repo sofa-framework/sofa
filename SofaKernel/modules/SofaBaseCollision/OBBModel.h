@@ -61,7 +61,9 @@ public:
 
     typedef OBBCollisionModel<DataTypes> ParentModel;
 
-    TOBB(ParentModel* model, int index);
+    using Index = sofa::Index;
+
+    TOBB(ParentModel* model, Index index);
 
     explicit TOBB(const core::CollisionElementIterator& i);
 
@@ -153,13 +155,13 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(int size) override;
+    void resize(Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
     //virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
 
-    void draw(const core::visual::VisualParams* vparams,int index) override;
+    void draw(const core::visual::VisualParams* vparams,Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -183,24 +185,24 @@ public:
     /**
       *Returns the axis of the local frame at i-th dimension of the OBB at index index.
       */
-    Coord axis(int index,int dim)const;
+    Coord axis(Index index, int dim)const;
 
     /**
       *Returns the 3 extents.
       */
-    Real extent(int index,int dim)const;
+    Real extent(Index index,int dim)const;
 
     /**
       *Returns the extent at i-th dimension of the OBB at index index.
       */
-    const Coord & extents(int index)const;
+    const Coord & extents(Index index)const;
 
-    const Coord & center(int index)const;
+    const Coord & center(Index index)const;
 
     /**
       *Returns the quaterion representing the rotation of the local frame of the OBB at index index.
       */
-    const Quaternion & orientation(int index)const;
+    const Quaternion & orientation(Index index)const;
 
     //num is the vertex number
     //vertex indexation below :
@@ -213,7 +215,7 @@ public:
     //                                       |/       |/
     //                                       0--------1
     //
-    Coord vertex(int index,int num)const;
+    Coord vertex(Index index,int num)const;
 
     /**
       *Returns the 8 vertices in vs in general coordinate system of the OBB at index index.
@@ -228,27 +230,27 @@ public:
       *                                       0--------1
       *
       */
-    void vertices(int index,std::vector<Coord> & vs)const;
+    void vertices(Index index,std::vector<Coord> & vs)const;
 
     /**
       *Fills v_axes of size 3 with the local frame of the OBB at index index.
       */
-    void axes(int index,Coord * v_axes)const;
+    void axes(Index index,Coord * v_axes)const;
 
     /**
       *Returns linear velocity.
       */
-    const Coord & lvelocity(int index)const;
+    const Coord & lvelocity(Index index)const;
 
     /**
       *Returns the coordinates of c (in general coordinate system) in the local frame of the OBB at index index.
       */
-    Coord localCoordinates(const Coord & c,int index)const;
+    Coord localCoordinates(const Coord & c,Index index)const;
 
     /**
       *Returns the coordinates of c (in the local frame) in the general coordinate system of the OBB at index index.
       */
-    Coord generalCoordinates(const Coord & c,int index)const;
+    Coord generalCoordinates(const Coord & c,Index index)const;
 
     Data<VecCoord> & writeExtents();
 
@@ -260,7 +262,7 @@ protected:
 };
 
 template<class DataTypes>
-inline TOBB<DataTypes>::TOBB(ParentModel* model, int index)
+inline TOBB<DataTypes>::TOBB(ParentModel* model, Index index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 

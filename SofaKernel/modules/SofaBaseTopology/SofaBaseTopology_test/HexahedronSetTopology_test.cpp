@@ -136,7 +136,7 @@ bool HexahedronSetTopology_test::testHexahedronBuffers()
 
     const HexahedronSetTopologyContainer::Hexahedron& elem2 = topoCon->getHexahedron(100000);
     for (int i = 0; i<elemSize; ++i)
-        EXPECT_EQ(elem2[i], -1);
+        EXPECT_EQ(elem2[i], sofa::InvalidID);
 
 
     if(scene != nullptr)

@@ -72,6 +72,7 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
+    using Index = sofa::Index;
 
     Data<double> f_ks; ///< uniform stiffness for the all springs
     Data<double> f_kd; ///< uniform damping for the all springs
@@ -126,21 +127,21 @@ protected:
         TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, topology::EdgeData<helper::vector<EdgeInformation> >* _data)
             : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeInformation> >(_data), ff(_ff) {}
 
-        void applyCreateFunction(unsigned int edgeIndex,
+        void applyCreateFunction(Index edgeIndex,
                 EdgeInformation &ei,
-                const core::topology::BaseMeshTopology::Edge& ,  const sofa::helper::vector< unsigned int > &,
+                const core::topology::BaseMeshTopology::Edge& ,  const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double >&);
 
-        void applyTriangleCreation(const helper::vector<unsigned int> &triangleAdded,
+        void applyTriangleCreation(const helper::vector<Index> &triangleAdded,
                 const helper::vector<core::topology::BaseMeshTopology::Triangle> & ,
-                const helper::vector<helper::vector<unsigned int> > & ,
+                const helper::vector<helper::vector<Index> > & ,
                 const helper::vector<helper::vector<double> > &);
 
-        void applyTriangleDestruction(const helper::vector<unsigned int> &triangleRemoved);
+        void applyTriangleDestruction(const helper::vector<Index> &triangleRemoved);
 
-        void applyPointDestruction(const helper::vector<unsigned int> &pointIndices);
+        void applyPointDestruction(const helper::vector<Index> &pointIndices);
 
-        void applyPointRenumbering(const helper::vector<unsigned int> &pointToRenumber);
+        void applyPointRenumbering(const helper::vector<Index> &pointToRenumber);
 
         using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeInformation> >::ApplyTopologyChange;
         /// Callback to add triangles elements.

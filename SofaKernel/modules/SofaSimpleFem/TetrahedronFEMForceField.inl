@@ -640,7 +640,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
         //erase the stiffness matrix at each time step
         if(elementIndex==0)
         {
-            for(unsigned int i=0; i<_stiffnesses.size(); ++i)
+            for(Size i=0; i<_stiffnesses.size(); ++i)
             {
                 _stiffnesses[i].resize(0);
             }
@@ -648,13 +648,13 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
 
         for(int i=0; i<12; ++i)
         {
-            int row = index[i/3]*3+i%3;
+            Index row = index[i/3]*3+i%3;
 
             for(int j=0; j<12; ++j)
             {
                 if(JKJt[i][j]!=0)
                 {
-                    int col = index[j/3]*3+j%3;
+                    Index col = index[j/3]*3+j%3;
                     // search if the vertex is already take into account by another element
                     typename CompressedValue::iterator result = _stiffnesses[row].end();
                     for(typename CompressedValue::iterator it=_stiffnesses[row].begin(); it!=_stiffnesses[row].end()&&result==_stiffnesses[row].end(); ++it)
@@ -871,7 +871,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, 
     R[1][0] = 0.0 ; R[1][1] = 0.0 ;  R[1][2] = 0.0 ;
     R[2][0] = 0.0 ; R[2][1] = 0.0 ; R[2][2] = 0.0 ;
 
-    unsigned int numTetra=liste_tetra.size();
+    std::size_t numTetra=liste_tetra.size();
     if (numTetra==0)
     {
         if (!_rotationIdx.empty())
@@ -1022,10 +1022,10 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
 
         for(int i=0; i<12; ++i)
         {
-            int row = index[i/3]*3+i%3;
+            Index row = index[i/3]*3+i%3;
             for(int j=0; j<12; ++j)
             {
-                int col = index[j/3]*3+j%3;
+                Index col = index[j/3]*3+j%3;
 
                 // search if the vertex is already take into account by another element
                 typename CompressedValue::iterator result = _stiffnesses[row].end();
@@ -1392,7 +1392,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     else
     {
         core::topology::BaseMeshTopology::SeqTetrahedra* tetrahedra = new core::topology::BaseMeshTopology::SeqTetrahedra;
-        int nbcubes = m_topology->getNbHexahedra();
+        std::size_t nbcubes = m_topology->getNbHexahedra();
 
         // These values are only correct if the mesh is a grid topology
         int nx = 2;
@@ -1408,7 +1408,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
 
         // Tesselation of each cube into 6 tetrahedra
         tetrahedra->reserve(nbcubes*6);
-        for (int i=0; i<nbcubes; i++)
+        for (std::size_t i=0; i<nbcubes; i++)
         {
             core::topology::BaseMeshTopology::Hexa c = m_topology->getHexahedron(i);
             if (!((i%nx)&1))
@@ -2306,8 +2306,8 @@ void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::getRotations(VecReal& vecR)
 {
-    unsigned int nbdof = this->mstate->getSize();
-    for (unsigned int i=0; i<nbdof; ++i)
+    std::size_t nbdof = this->mstate->getSize();
+    for (Index i=0; i<nbdof; ++i)
     {
 
         getRotation(*(Transformation*)&(vecR[i*9]),i);
@@ -2317,7 +2317,7 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(VecReal& vecR)
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix * rotations,int offset)
 {
-    unsigned int nbdof = this->mstate->getSize();
+    std::size_t nbdof = this->mstate->getSize();
 
     if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
     {

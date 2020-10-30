@@ -49,7 +49,7 @@ namespace
 {
 
 template<class V>
-void renumber(V* v, V* tmp, const sofa::helper::vector< unsigned int > &index )
+void renumber(V* v, V* tmp, const sofa::helper::vector< sofa::Index > &index )
 {
     if (v == nullptr)
         return;
@@ -58,7 +58,7 @@ void renumber(V* v, V* tmp, const sofa::helper::vector< unsigned int > &index )
         return;
 
     *tmp = *v;
-    for (unsigned int i = 0; i < v->size(); ++i)
+    for (std::size_t i = 0; i < v->size(); ++i)
         (*v)[i] = (*tmp)[index[i]];
 }
 
@@ -436,7 +436,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
                 }
             }
 
-            vector< vector< unsigned int > > ancestors = pointsAdded.ancestorsList;
+            const auto& ancestors = pointsAdded.ancestorsList;
             vector< vector< double       > > coefs     = pointsAdded.coefs;
 
             resize(prevSizeMechObj + nbPoints);
@@ -504,7 +504,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
         }
         case core::topology::POINTSREMOVED:
         {
-            const sofa::helper::vector<unsigned int> tab = ( static_cast< const PointsRemoved * >( *itBegin ) )->getArray();
+            const auto& tab = ( static_cast< const PointsRemoved * >( *itBegin ) )->getArray();
 
             unsigned int prevSizeMechObj   = getSize();
             unsigned int lastIndexMech = prevSizeMechObj - 1;
@@ -521,9 +521,9 @@ void MechanicalObject<DataTypes>::handleStateChange()
         {
             using sofa::helper::vector;
 
-            const vector< unsigned int > indicesList = ( static_cast <const PointsMoved *> (*itBegin))->indicesList;
-            const vector< vector< unsigned int > > ancestors = ( static_cast< const PointsMoved * >( *itBegin ) )->ancestorsList;
-            const vector< vector< double > > coefs = ( static_cast< const PointsMoved * >( *itBegin ) )->baryCoefsList;
+            const auto& indicesList = ( static_cast <const PointsMoved *> (*itBegin))->indicesList;
+            const auto& ancestors = ( static_cast< const PointsMoved * >( *itBegin ) )->ancestorsList;
+            const vector< vector< double > >& coefs = ( static_cast< const PointsMoved * >( *itBegin ) )->baryCoefsList;
 
             if (ancestors.size() != indicesList.size() || ancestors.empty())
             {
@@ -557,7 +557,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
         }
         case core::topology::POINTSRENUMBERING:
         {
-            const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
+            const auto &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
 
             renumberValues( tab );
             break;
@@ -573,7 +573,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int outputIndex)
+void MechanicalObject<DataTypes>::replaceValue (const Index inputIndex, const Index outputIndex)
 {
     //const unsigned int maxIndex = std::max(inputIndex, outputIndex);
     const unsigned int maxIndex = inputIndex<outputIndex ? outputIndex : inputIndex;
@@ -607,7 +607,7 @@ void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int 
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
+void MechanicalObject<DataTypes>::swapValues (const Index idx1, const Index idx2)
 {
     //const unsigned int maxIndex = std::max(idx1, idx2);
     const unsigned int maxIndex = idx1<idx2 ? idx2 : idx1;
@@ -646,7 +646,7 @@ void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< unsigned int > &index )
+void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< Index > &index )
 {
     VecDeriv dtmp;
     VecCoord ctmp;
@@ -671,7 +671,7 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< un
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::resize(const size_t size)
+void MechanicalObject<DataTypes>::resize(const Size size)
 {
 
 
@@ -679,7 +679,7 @@ void MechanicalObject<DataTypes>::resize(const size_t size)
     {
         //if (size!=d_size.getValue())
         {
-            if ((size_t)d_size.getValue() != size)
+            if (d_size.getValue() != size)
                 d_size.setValue( size );
             for (unsigned int i = 0; i < vectorsCoord.size(); i++)
             {
@@ -726,7 +726,7 @@ void MechanicalObject<DataTypes>::resize(const size_t size)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::reserve(const size_t size)
+void MechanicalObject<DataTypes>::reserve(const Size size)
 {
     if (size == 0) return;
 
@@ -798,7 +798,7 @@ void MechanicalObject<DataTypes>::applyScale(const SReal sx,const SReal sy,const
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const
+void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<Index>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const
 {
     helper::ReadAccessor< Data<VecCoord> > x_rA = this->readPositions();
 
@@ -814,7 +814,7 @@ void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<unsigne
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, const sofa::helper::vector< unsigned int >& ancestors, const sofa::helper::vector< double >& coefs)
+void MechanicalObject<DataTypes>::computeWeightedValue( const Index i, const sofa::helper::vector< Index >& ancestors, const sofa::helper::vector< double >& coefs)
 {
     // HD interpolate position, speed,force,...
     // assume all coef sum to 1.0
@@ -871,7 +871,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 
 // Force the position of a point (and force its velocity to zero value)
 template <class DataTypes>
-void MechanicalObject<DataTypes>::forcePointPosition(const unsigned int i, const sofa::helper::vector< double >& m_x)
+void MechanicalObject<DataTypes>::forcePointPosition(const Index i, const sofa::helper::vector< double >& m_x)
 {
     helper::WriteAccessor< Data<VecCoord> > x_wA = this->writePositions();
     helper::WriteAccessor< Data<VecDeriv> > v_wA = this->writeVelocities();
@@ -1091,7 +1091,7 @@ void MechanicalObject<DataTypes>::init()
     }
   
     // Make sure the sizes of the vectors and the arguments of the scene matches
-    const std::vector<std::pair<const std::string, const size_t>> vector_sizes = {
+    const std::vector<std::pair<const std::string, const Size>> vector_sizes = {
             {x.getName(),                x.getValue().size()},
             {v.getName(),                v.getValue().size()},
             {f.getName(),                f.getValue().size()},
@@ -1106,12 +1106,12 @@ void MechanicalObject<DataTypes>::init()
 
     // Get the maximum size of all argument's vectors
     auto maxElement = std::max_element(vector_sizes.begin(), vector_sizes.end(),
-       [] (const std::pair<const std::string, const size_t> &a, const std::pair<const std::string, const size_t> &b) {
+       [] (const std::pair<const std::string, const Size> &a, const std::pair<const std::string, const Size> &b) {
             return a.second < b.second;
     });
 
     if (maxElement != vector_sizes.end()) {
-        size_t maxSize = (*maxElement).second;
+        Size maxSize = (*maxElement).second;
 
         // Resize the mechanical object size to match the maximum size of argument's vectors
         if (getSize() < maxSize)
@@ -1119,8 +1119,8 @@ void MechanicalObject<DataTypes>::init()
 
         // Print a warning if one or more vector don't match the maximum size
         bool allSizeAreEqual = true;
-        for (const std::pair<const std::string, const size_t> vector_size : vector_sizes) {
-            const size_t & size = vector_size.second;
+        for (const std::pair<const std::string, const Size> vector_size : vector_sizes) {
+            const Size& size = vector_size.second;
             if (size > 1 && size != maxSize) {
                 allSizeAreEqual = false;
                 break;
@@ -1129,9 +1129,9 @@ void MechanicalObject<DataTypes>::init()
 
         if (!allSizeAreEqual) {
             std::string message_warning = "One or more of the state vectors passed as argument don't match the size of the others : ";
-            for (const std::pair<const std::string, const size_t> vector_size : vector_sizes) {
+            for (const std::pair<const std::string, const Size> vector_size : vector_sizes) {
                 const std::string & name = vector_size.first;
-                const size_t & size = vector_size.second;
+                const Size& size = vector_size.second;
                 if (size <= 1) continue;
                 message_warning += name + "(size " + std::to_string(size) + ") ";
             }
@@ -1182,7 +1182,7 @@ void MechanicalObject<DataTypes>::init()
             resize(0);
         }
     }
-    else if (x_wA.size() != (size_t)d_size.getValue() || v_wA.size() != (size_t)d_size.getValue())
+    else if (x_wA.size() != d_size.getValue() || v_wA.size() != d_size.getValue())
     {
         // X and/or V were user-specified
         // copy the last specified velocity to all points
@@ -1343,7 +1343,7 @@ void MechanicalObject<DataTypes>::writeVec(core::ConstVecId v, std::ostream &out
 template <class DataTypes>
 void MechanicalObject<DataTypes>::readVec(core::VecId v, std::istream &in)
 {
-    size_t i = 0;
+    Size i = 0;
 
     switch (v.type)
     {
@@ -1495,7 +1495,7 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
             vectorsCoord[v.index]->beginWriteOnly()->reserve(f_reserve.getValue());
             vectorsCoord[v.index]->endEdit();
         }
-        if (vectorsCoord[v.index]->getValue().size() != (size_t)getSize())
+        if (vectorsCoord[v.index]->getValue().size() != getSize())
         {
             vectorsCoord[v.index]->beginWriteOnly()->resize( getSize() );
             vectorsCoord[v.index]->endEdit();
@@ -1561,7 +1561,7 @@ Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes
             vectorsDeriv[v.index]->beginWriteOnly()->reserve(f_reserve.getValue());
             vectorsDeriv[v.index]->endEdit();
         }
-        if (vectorsDeriv[v.index]->getValue().size() != (size_t)getSize())
+        if (vectorsDeriv[v.index]->getValue().size() != getSize())
         {
             vectorsDeriv[v.index]->beginWriteOnly()->resize( getSize() );
             vectorsDeriv[v.index]->endEdit();
@@ -2423,7 +2423,7 @@ SReal MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::Co
 }
 
 template <class DataTypes>
-size_t MechanicalObject<DataTypes>::vSize(const core::ExecParams* params, core::ConstVecId v)
+Size MechanicalObject<DataTypes>::vSize(const core::ExecParams* params, core::ConstVecId v)
 {
     SOFA_UNUSED(params);
 
@@ -2571,7 +2571,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ConstraintParams* cParams, sofa::defaulttype::BaseMatrix* J,unsigned int & off)
 {
     // Compute J
-    const size_t N = Deriv::size();
+    const auto N = Deriv::size();
     const MatrixDeriv& c = cParams->readJ(this)->getValue();
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
@@ -2598,7 +2598,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ConstraintPa
 template <class DataTypes>
 void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID)
 {
-    const size_t N = Deriv::size();
+    const auto N = Deriv::size();
     Data<MatrixDeriv>* cMatrix= this->write(mID);
 
     unsigned int columnIndex = 0;
@@ -2732,15 +2732,13 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 template <class DataTypes>
 inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualParams* vparams)
 {
-    defaulttype::Vec4f color(1.0, 1.0, 1.0, 1.0);
-
     float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
     std::vector<defaulttype::Vector3> positions;
-    for (size_t i = 0; i <(size_t)d_size.getValue(); ++i)
+    for (Size i = 0; i <d_size.getValue(); ++i)
         positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
 
-    vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+    vparams->drawTool()->draw3DText_Indices(positions, scale, d_color.getValue());
 }
 
 template <class DataTypes>
@@ -2750,7 +2748,7 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
     sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
     helper::vector<Vector3> points;
     points.resize(2);
-    for( unsigned i=0; i<v_rA.size(); ++i )
+    for(Size i=0; i<v_rA.size(); ++i )
     {
         Real vx=0.0,vy=0.0,vz=0.0;
         DataTypes::get(vx,vy,vz,v_rA[i]);
@@ -2798,7 +2796,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     {
         const float& scale = showObjectScale.getValue();
         helper::vector<Vector3> positions(d_size.getValue());
-        for (size_t i = 0; i < (size_t)d_size.getValue(); ++i)
+        for (Size i = 0; i < d_size.getValue(); ++i)
             positions[i] = Vector3(getPX(i), getPY(i), getPZ(i));
 
         switch (drawMode.getValue())
@@ -2847,7 +2845,7 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
 
         defaulttype::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
         defaulttype::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
-        for (size_t i=0; i< (size_t)d_size.getValue(); ++i)
+        for (Size i=0; i< d_size.getValue(); ++i)
         {
             defaulttype::Vec<3,Real> pos;
             DataTypes::get(pos[0],pos[1],pos[2],x[i]);
@@ -2880,7 +2878,7 @@ bool MechanicalObject<DataTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
     static const unsigned spatial_dimensions = std::min( (unsigned)DataTypes::spatial_dimensions, 3u );
 
     const VecCoord& x = read(core::ConstVecCoordId::position())->getValue();
-    for( std::size_t i=0; i<x.size(); i++ )
+    for(Size i=0; i<x.size(); i++ )
     {
         defaulttype::Vec<3,Real> p;
         DataTypes::get( p[0], p[1], p[2], x[i] );

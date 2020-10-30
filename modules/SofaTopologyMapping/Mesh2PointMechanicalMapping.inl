@@ -66,15 +66,17 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams 
 {
     if (!topoMap) return;
 
+    using sofa::InvalidID;
+
     helper::WriteAccessor< Data<OutVecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
 
-    const sofa::helper::vector< sofa::helper::vector<int> >& pointMap = topoMap->getPointsMappedFromPoint();
-    const sofa::helper::vector< sofa::helper::vector<int> >& edgeMap = topoMap->getPointsMappedFromEdge();
-    const sofa::helper::vector< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
-    const sofa::helper::vector< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
-    const sofa::helper::vector< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
-    const sofa::helper::vector< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
+    const auto& pointMap = topoMap->getPointsMappedFromPoint();
+    const auto& edgeMap = topoMap->getPointsMappedFromEdge();
+    const auto& triangleMap = topoMap->getPointsMappedFromTriangle();
+    const auto& quadMap = topoMap->getPointsMappedFromQuad();
+    const auto& tetraMap = topoMap->getPointsMappedFromTetra();
+    const auto& hexaMap = topoMap->getPointsMappedFromHexa();
 
     if (pointMap.empty() && edgeMap.empty() && triangleMap.empty() && quadMap.empty() && tetraMap.empty() && hexaMap.empty()) return;
 
@@ -89,7 +91,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams 
     {
         for(unsigned int j = 0; j < pointMap[i].size(); ++j)
         {
-            if (pointMap[i][j] == -1) continue;
+            if (pointMap[i][j] == InvalidID) continue;
             out[pointMap[i][j]] = in[i]+topoMap->getPointBaryCoords()[j];
         }
     }
@@ -98,7 +100,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams 
     {
         for(unsigned int j = 0; j < edgeMap[i].size(); ++j)
         {
-            if (edgeMap[i][j] == -1) continue;
+            if (edgeMap[i][j] == InvalidID) continue;
             double fx = topoMap->getEdgeBaryCoords()[j][0];
             out[edgeMap[i][j]] = in[ edges[i][0] ] * (1-fx)
                     +in[ edges[i][1] ] * fx;
@@ -109,7 +111,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams 
     {
         for(unsigned int j = 0; j < triangleMap[i].size(); ++j)
         {
-            if (triangleMap[i][j] == -1) continue;
+            if (triangleMap[i][j] == InvalidID) continue;
             double fx = topoMap->getTriangleBaryCoords()[j][0];
             double fy = topoMap->getTriangleBaryCoords()[j][1];
             out[triangleMap[i][j]] = in[ triangles[i][0] ] * (1-fx-fy)
@@ -122,7 +124,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams 
     {
         for(unsigned int j = 0; j < quadMap[i].size(); ++j)
         {
-            if (quadMap[i][j] == -1) continue;
+            if (quadMap[i][j] == InvalidID) continue;
             double fx = topoMap->getQuadBaryCoords()[j][0];
             double fy = topoMap->getQuadBaryCoords()[j][1];
             out[quadMap[i][j]] = in[ quads[i][0] ] * ((1-fx) * (1-fy))
@@ -136,7 +138,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams 
     {
         for(unsigned int j = 0; j < tetraMap[i].size(); ++j)
         {
-            if (tetraMap[i][j] == -1) continue;
+            if (tetraMap[i][j] == InvalidID) continue;
             double fx = topoMap->getTetraBaryCoords()[j][0];
             double fy = topoMap->getTetraBaryCoords()[j][1];
             double fz = topoMap->getTetraBaryCoords()[j][2];
@@ -151,7 +153,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams 
     {
         for(unsigned int j = 0; j < hexaMap[i].size(); ++j)
         {
-            if (hexaMap[i][j] == -1) continue;
+            if (hexaMap[i][j] == InvalidID) continue;
             double fx = topoMap->getHexaBaryCoords()[j][0];
             double fy = topoMap->getHexaBaryCoords()[j][1];
             double fz = topoMap->getHexaBaryCoords()[j][2];
@@ -172,15 +174,17 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams
 {
     if (!topoMap) return;
 
+    using sofa::InvalidID;
+
     helper::WriteAccessor< Data<OutVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
 
-    const sofa::helper::vector< sofa::helper::vector<int> >& pointMap = topoMap->getPointsMappedFromPoint();
-    const sofa::helper::vector< sofa::helper::vector<int> >& edgeMap = topoMap->getPointsMappedFromEdge();
-    const sofa::helper::vector< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
-    const sofa::helper::vector< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
-    const sofa::helper::vector< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
-    const sofa::helper::vector< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
+    const auto& pointMap = topoMap->getPointsMappedFromPoint();
+    const auto& edgeMap = topoMap->getPointsMappedFromEdge();
+    const auto& triangleMap = topoMap->getPointsMappedFromTriangle();
+    const auto& quadMap = topoMap->getPointsMappedFromQuad();
+    const auto& tetraMap = topoMap->getPointsMappedFromTetra();
+    const auto& hexaMap = topoMap->getPointsMappedFromHexa();
 
     if (pointMap.empty() && edgeMap.empty() && triangleMap.empty() && quadMap.empty() && tetraMap.empty() && hexaMap.empty()) return;
 
@@ -195,7 +199,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams
     {
         for(unsigned int j = 0; j < pointMap[i].size(); ++j)
         {
-            if (pointMap[i][j] == -1) continue;
+            if (pointMap[i][j] == InvalidID) continue;
             out[pointMap[i][j]] = in[i];
         }
     }
@@ -204,7 +208,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams
     {
         for(unsigned int j = 0; j < edgeMap[i].size(); ++j)
         {
-            if (edgeMap[i][j] == -1) continue;
+            if (edgeMap[i][j] == InvalidID) continue;
             double fx = topoMap->getEdgeBaryCoords()[j][0];
             out[edgeMap[i][j]] = in[ edges[i][0] ] * (1-fx)
                     +in[ edges[i][1] ] * fx;
@@ -215,7 +219,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams
     {
         for(unsigned int j = 0; j < triangleMap[i].size(); ++j)
         {
-            if (triangleMap[i][j] == -1) continue;
+            if (triangleMap[i][j] == InvalidID) continue;
             double fx = topoMap->getTriangleBaryCoords()[j][0];
             double fy = topoMap->getTriangleBaryCoords()[j][1];
             out[triangleMap[i][j]] = in[ triangles[i][0] ] * (1-fx-fy)
@@ -228,7 +232,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams
     {
         for(unsigned int j = 0; j < quadMap[i].size(); ++j)
         {
-            if (quadMap[i][j] == -1) continue;
+            if (quadMap[i][j] == InvalidID) continue;
             double fx = topoMap->getQuadBaryCoords()[j][0];
             double fy = topoMap->getQuadBaryCoords()[j][1];
             out[quadMap[i][j]] = in[ quads[i][0] ] * ((1-fx) * (1-fy))
@@ -242,7 +246,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams
     {
         for(unsigned int j = 0; j < tetraMap[i].size(); ++j)
         {
-            if (tetraMap[i][j] == -1) continue;
+            if (tetraMap[i][j] == InvalidID) continue;
             double fx = topoMap->getTetraBaryCoords()[j][0];
             double fy = topoMap->getTetraBaryCoords()[j][1];
             double fz = topoMap->getTetraBaryCoords()[j][2];
@@ -257,7 +261,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams
     {
         for(unsigned int j = 0; j < hexaMap[i].size(); ++j)
         {
-            if (hexaMap[i][j] == -1) continue;
+            if (hexaMap[i][j] == InvalidID) continue;
             double fx = topoMap->getHexaBaryCoords()[j][0];
             double fy = topoMap->getHexaBaryCoords()[j][1];
             double fz = topoMap->getHexaBaryCoords()[j][2];
@@ -278,15 +282,17 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParam
 {
     if (!topoMap) return;
 
+    using sofa::InvalidID;
+
     helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<OutVecDeriv> > in = dIn;
 
-    const sofa::helper::vector< sofa::helper::vector<int> >& pointMap = topoMap->getPointsMappedFromPoint();
-    const sofa::helper::vector< sofa::helper::vector<int> >& edgeMap = topoMap->getPointsMappedFromEdge();
-    const sofa::helper::vector< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
-    const sofa::helper::vector< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
-    const sofa::helper::vector< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
-    const sofa::helper::vector< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
+    const auto& pointMap = topoMap->getPointsMappedFromPoint();
+    const auto& edgeMap = topoMap->getPointsMappedFromEdge();
+    const auto& triangleMap = topoMap->getPointsMappedFromTriangle();
+    const auto& quadMap = topoMap->getPointsMappedFromQuad();
+    const auto& tetraMap = topoMap->getPointsMappedFromTetra();
+    const auto& hexaMap = topoMap->getPointsMappedFromHexa();
 
     if (pointMap.empty() && edgeMap.empty() && triangleMap.empty() && quadMap.empty() && tetraMap.empty() && hexaMap.empty()) return;
 
@@ -301,7 +307,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParam
     {
         for(unsigned int j = 0; j < pointMap[i].size(); ++j)
         {
-            if (pointMap[i][j] == -1) continue;
+            if (pointMap[i][j] == InvalidID) continue;
             out[i] += in[pointMap[i][j]];
         }
     }
@@ -310,7 +316,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParam
     {
         for(unsigned int j = 0; j < edgeMap[i].size(); ++j)
         {
-            if (edgeMap[i][j] == -1) continue;
+            if (edgeMap[i][j] == InvalidID) continue;
             double fx = topoMap->getEdgeBaryCoords()[j][0];
             out[edges[i][0]] += in[ edgeMap[i][j] ] * (1-fx);
             out[edges[i][1]] += in[ edgeMap[i][j] ] * fx;
@@ -321,7 +327,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParam
     {
         for(unsigned int j = 0; j < triangleMap[i].size(); ++j)
         {
-            if (triangleMap[i][j] == -1) continue;
+            if (triangleMap[i][j] == InvalidID) continue;
             double fx = topoMap->getTriangleBaryCoords()[j][0];
             double fy = topoMap->getTriangleBaryCoords()[j][1];
             out[ triangles[i][0] ] += in[triangleMap[i][j]] * (1-fx-fy);
@@ -334,7 +340,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParam
     {
         for(unsigned int j = 0; j < quadMap[i].size(); ++j)
         {
-            if (quadMap[i][j] == -1) continue;
+            if (quadMap[i][j] == InvalidID) continue;
             double fx = topoMap->getQuadBaryCoords()[j][0];
             double fy = topoMap->getQuadBaryCoords()[j][1];
             out[ quads[i][0] ] += in[quadMap[i][j]] * ((1-fx) * (1-fy));
@@ -348,7 +354,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParam
     {
         for(unsigned int j = 0; j < tetraMap[i].size(); ++j)
         {
-            if (tetraMap[i][j] == -1) continue;
+            if (tetraMap[i][j] == InvalidID) continue;
             double fx = topoMap->getTetraBaryCoords()[j][0];
             double fy = topoMap->getTetraBaryCoords()[j][1];
             double fz = topoMap->getTetraBaryCoords()[j][2];
@@ -363,7 +369,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParam
     {
         for(unsigned int j = 0; j < hexaMap[i].size(); ++j)
         {
-            if (hexaMap[i][j] == -1) continue;
+            if (hexaMap[i][j] == InvalidID) continue;
             double fx = topoMap->getHexaBaryCoords()[j][0];
             double fy = topoMap->getHexaBaryCoords()[j][1];
             double fz = topoMap->getHexaBaryCoords()[j][2];
@@ -388,7 +394,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
     if (!topoMap)
         return;
 
-    const sofa::helper::vector< std::pair< Mesh2PointTopologicalMapping::Element, int> >& pointSource = topoMap->getPointSource();
+    const sofa::helper::vector< std::pair< Mesh2PointTopologicalMapping::Element, sofa::Index> >& pointSource = topoMap->getPointSource();
 
     if (pointSource.empty())
         return;
@@ -416,10 +422,10 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
 
             while (colIt != colItEnd)
             {
-                const unsigned int indexUIn = colIt.index();
+                const Index indexUIn = colIt.index();
                 const OutDeriv data = colIt.val();
                 std::pair< Mesh2PointTopologicalMapping::Element, int> source = pointSource[indexUIn];
-                int indexIn = (int)indexUIn;
+                Index indexIn = indexUIn;
 
                 switch (source.first)
                 {
@@ -442,9 +448,9 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     }
                     else
                     {
-                        const sofa::helper::vector< sofa::helper::vector<int> >& edgeMap = topoMap->getPointsMappedFromEdge();
+                        const auto& edgeMap = topoMap->getPointsMappedFromEdge();
                         bool err = true;
-                        for(unsigned int i = 0; i < edgeMap[source.second].size(); ++i)
+                        for(Size i = 0; i < edgeMap[source.second].size(); ++i)
                         {
                             if (edgeMap[source.second][i] == indexIn)
                             {
@@ -479,9 +485,9 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     }
                     else
                     {
-                        const sofa::helper::vector< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
+                        const auto& triangleMap = topoMap->getPointsMappedFromTriangle();
                         bool err = true;
-                        for(unsigned int i = 0; i < triangleMap[source.second].size(); ++i)
+                        for(Size i = 0; i < triangleMap[source.second].size(); ++i)
                         {
                             if (triangleMap[source.second][i] == indexIn)
                             {
@@ -518,9 +524,9 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     }
                     else
                     {
-                        const sofa::helper::vector< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
+                        const auto& quadMap = topoMap->getPointsMappedFromQuad();
                         bool err = true;
-                        for(unsigned int i = 0; i < quadMap[source.second].size(); ++i)
+                        for(Size i = 0; i < quadMap[source.second].size(); ++i)
                         {
                             if (quadMap[source.second][i] == indexIn)
                             {
@@ -560,9 +566,9 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     }
                     else
                     {
-                        const sofa::helper::vector< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
+                        const auto& tetraMap = topoMap->getPointsMappedFromTetra();
                         bool err = true;
-                        for(unsigned int i = 0; i < tetraMap[source.second].size(); ++i)
+                        for(Size i = 0; i < tetraMap[source.second].size(); ++i)
                         {
                             if (tetraMap[source.second][i] == indexIn)
                             {
@@ -602,9 +608,9 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                     }
                     else
                     {
-                        const sofa::helper::vector< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
+                        const auto& hexaMap = topoMap->getPointsMappedFromHexa();
                         bool err = true;
-                        for(unsigned int i = 0; i < hexaMap[source.second].size(); ++i)
+                        for(Size i = 0; i < hexaMap[source.second].size(); ++i)
                         {
                             if (hexaMap[source.second][i] == indexIn)
                             {

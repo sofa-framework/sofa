@@ -291,7 +291,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyVelocityCorrection(cons
 {
     if (mstate)
     {
-        const unsigned int numDOFs = mstate->getSize();
+        const auto numDOFs = mstate->getSize();
 
         auto v  = sofa::helper::write(v_d,cparams);
         auto dv = sofa::helper::write(dv_d, cparams); 
@@ -376,7 +376,6 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
 
     for (unsigned int i=0; i< numDOFs; i++)
     {
-        //sout << "dx("<<i<<")="<<dx[i]<<sendl;
         Deriv dxi = dx[i]*positionFactor;
         Deriv dvi = dx[i]*velocityFactor;
         x[i] = x_free[i] + dxi;
@@ -568,7 +567,7 @@ template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, int begin, int end)
 {
     const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-    const unsigned int derivDim = Deriv::size();
+    const auto derivDim = Deriv::size();
 
     last_disp = begin;
 
@@ -588,10 +587,10 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowEnd; ++colIt)
             {
-                const unsigned int dof = colIt.index();
+                const auto dof = colIt.index();
                 Deriv disp;
 
-                for(unsigned int j = 0; j < derivDim; j++)
+                for(Size j = 0; j < derivDim; j++)
                 {
                     disp[j] = (Real)(systemLHVector_buf->element(dof * derivDim + j) * odesolver->getPositionIntegrationFactor());
                 }
@@ -639,11 +638,11 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
     }
 
     // course on indices of the dofs involved invoved in the bloc //
-    std::list<int>::const_iterator it_dof(Vec_I_list_dof[last_force].begin()), it_end(Vec_I_list_dof[last_force].end());
+    auto it_dof(Vec_I_list_dof[last_force].cbegin()), it_end(Vec_I_list_dof[last_force].cend());
     for(; it_dof!=it_end; ++it_dof)
     {
-        int dof =(*it_dof) ;
-        for  (unsigned int j=0; j<derivDim; j++)
+        auto dof =(*it_dof) ;
+        for (Size j=0; j<derivDim; j++)
             systemRHVector_buf->set(dof * derivDim + j, constraint_force[dof][j]);
     }
 
@@ -693,7 +692,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
                 {
                     int test = dof_buf - dof;
                     if (test>2 || test< -2)
-                        sout << "YES !!!! for constraint id1 dof1 = " << dof_buf << " dof2 = " << dof << sendl;
+                        dmsg_info() << "For constraint id1 dof1 = " << dof_buf << " dof2 = " << dof;
                 }
 
                 dof_buf = dof;

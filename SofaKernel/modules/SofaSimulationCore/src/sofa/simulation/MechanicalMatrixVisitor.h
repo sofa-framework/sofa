@@ -53,12 +53,12 @@ namespace simulation
 class SOFA_SIMULATION_CORE_API MechanicalGetMatrixDimensionVisitor : public BaseMechanicalVisitor
 {
 public:
-    unsigned int * const nbRow;
-    unsigned int * const nbCol;
+    sofa::Size* const nbRow;
+    sofa::Size* const nbCol;
     sofa::core::behavior::MultiMatrixAccessor* matrix;
 
     MechanicalGetMatrixDimensionVisitor(
-        const core::ExecParams* params, unsigned int * const _nbRow, unsigned int * const _nbCol,
+        const core::ExecParams* params, sofa::Size* const _nbRow, sofa::Size* const _nbCol,
         sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr )
         : BaseMechanicalVisitor(params) , nbRow(_nbRow), nbCol(_nbCol), matrix(_matrix)
     {}
@@ -66,7 +66,7 @@ public:
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms) override
     {
         //ms->contributeToMatrixDimension(nbRow, nbCol);
-        size_t n = ms->getMatrixSize();
+        auto n = ms->getMatrixSize();
         if (nbRow) *nbRow += n;
         if (nbCol) *nbCol += n;
         if (matrix) matrix->addMechanicalState(ms);

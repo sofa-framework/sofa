@@ -110,14 +110,14 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
 		assert(t[6] != t[7]);
 
 		// check if there already exists a hexahedron with the same indices
-        assert(m_container->getHexahedronIndex(t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7]) == InvalidID);
+        assert(m_container->getHexahedronIndex(t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7]) == sofa::InvalidID);
 	}
     const HexahedronID hexahedronIndex = (HexahedronID)m_container->getNumberOfHexahedra();
     helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
 
     // update nbr point if needed
-    unsigned int nbrP = m_container->getNbPoints();
-    for(unsigned int i=0; i<8; ++i)
+    auto nbrP = m_container->getNbPoints();
+    for(Size i=0; i<8; ++i)
         if (t[i] + 1 > nbrP) // point not well init
         {
             nbrP = t[i] + 1;
@@ -143,7 +143,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
         Quad q1(t[quadsOrientationInHexahedronArray[i][0]],t[quadsOrientationInHexahedronArray[i][1]],t[quadsOrientationInHexahedronArray[i][2]], t[quadsOrientationInHexahedronArray[i][3]]);
         QuadID quadIndex = m_container->getQuadIndex(q1[0], q1[1], q1[2], q1[3]);
 
-        if(quadIndex == InvalidID)
+        if(quadIndex == sofa::InvalidID)
         {
             // first create the quad
             sofa::helper::vector< Quad > v;
@@ -151,8 +151,8 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
             addQuadsProcess((const sofa::helper::vector< Quad > &) v);
 
             quadIndex=m_container->getQuadIndex(q1[0], q1[1], q1[2], q1[3]);
-            assert(quadIndex != InvalidID);
-            if (quadIndex == InvalidID)
+            assert(quadIndex != sofa::InvalidID);
+            if (quadIndex == sofa::InvalidID)
             {
                 msg_error() << "Quad creation: " << q1 << " failed in addHexahedronProcess. Quad will not be added in buffers.";
                 continue;
@@ -186,7 +186,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
         EdgeID edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
 
         // we must create the edge
-        if (edgeIndex == InvalidID)
+        if (edgeIndex == sofa::InvalidID)
         {
             sofa::helper::vector< Edge > v;
             Edge e1(t[p0],t[p1]);
@@ -195,8 +195,8 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
             addEdgesProcess((const sofa::helper::vector< Edge > &) v);
 
             edgeIndex = m_container->getEdgeIndex(t[p0],t[p1]);
-            assert(edgeIndex != InvalidID);
-            if (edgeIndex == InvalidID)
+            assert(edgeIndex != sofa::InvalidID);
+            if (edgeIndex == sofa::InvalidID)
             {
                 msg_error() << "Edge creation: " << e1 << " failed in addHexahedronProcess. Edge will not be added in buffers.";
                 continue;

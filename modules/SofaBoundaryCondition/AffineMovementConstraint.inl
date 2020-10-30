@@ -43,7 +43,7 @@ namespace projectiveconstraintset
 
 // Define TestFunction
 template< class DataTypes>
-bool AffineMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+bool AffineMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     return fc != 0;
 }
@@ -51,11 +51,11 @@ bool AffineMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunctio
 
 // Define RemovalFunction
 template< class DataTypes>
-void AffineMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, core::objectmodel::Data<value_type>&)
+void AffineMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, core::objectmodel::Data<value_type>&)
 {
     if (fc)
     {
-        fc->removeConstraint((unsigned int) pointIndex);
+        fc->removeConstraint(pointIndex);
     }
 }
 
@@ -98,14 +98,14 @@ void AffineMovementConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void AffineMovementConstraint<DataTypes>::addConstraint(unsigned int index)
+void AffineMovementConstraint<DataTypes>::addConstraint(Index index)
 {
     m_indices.beginEdit()->push_back(index);
     m_indices.endEdit();
 }
 
 template <class DataTypes>
-void AffineMovementConstraint<DataTypes>::removeConstraint(unsigned int index)
+void AffineMovementConstraint<DataTypes>::removeConstraint(Index index)
 {
     removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();
@@ -143,10 +143,10 @@ void AffineMovementConstraint<DataTypes>::init()
 
     const SetIndexArray & indices = m_indices.getValue();
 
-    unsigned int maxIndex=this->mstate->getSize();
-    for (unsigned int i=0; i<indices.size(); ++i)
+    auto maxIndex=this->mstate->getSize();
+    for (Size i=0; i<indices.size(); ++i)
     {
-        const unsigned int index=indices[i];
+        const Index index=indices[i];
         if (index >= maxIndex)
         {
             msg_error() << "Index " << index << " not valid!";

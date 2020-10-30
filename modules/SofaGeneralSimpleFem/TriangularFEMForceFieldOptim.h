@@ -87,7 +87,7 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    typedef sofa::core::topology::BaseMeshTopology::index_type Index;
+    typedef sofa::core::topology::BaseMeshTopology::Index Index;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Element;
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
@@ -115,7 +115,7 @@ public:
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
-    void getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection);
+    void getTrianglePrincipalStress(Index i, Real& stressValue, Deriv& stressDirection);
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -242,16 +242,16 @@ public:
     public:
         TFEMFFOTriangleInfoHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<VecTriangleInfo >* _data) : topology::TopologyDataHandler<Triangle, VecTriangleInfo >(_data), ff(_ff) {}
 
-        void applyCreateFunction(unsigned int triangleIndex, TriangleInfo& ,
+        void applyCreateFunction(Index triangleIndex, TriangleInfo& ,
                 const Triangle & t,
-                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double > &);
 
     protected:
         TriangularFEMForceFieldOptim<DataTypes>* ff;
     };
-    void initTriangleInfo(unsigned int triangleIndex, TriangleInfo& ti, const Triangle t, const VecCoord& x0);
-    void initTriangleState(unsigned int triangleIndex, TriangleState& ti, const Triangle t, const VecCoord& x);
+    void initTriangleInfo(Index triangleIndex, TriangleInfo& ti, const Triangle t, const VecCoord& x0);
+    void initTriangleState(Index triangleIndex, TriangleState& ti, const Triangle t, const VecCoord& x);
 
     void computeTriangleRotation(Transformation& result, Coord eab, Coord eac);
     void computeTriangleRotation(Transformation& result, Coord a, Coord b, Coord c)
@@ -268,9 +268,9 @@ public:
     public:
         TFEMFFOTriangleStateHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<VecTriangleState >* _data) : topology::TopologyDataHandler<Triangle, VecTriangleState >(_data), ff(_ff) {}
 
-        void applyCreateFunction(unsigned int triangleIndex, TriangleState& ,
+        void applyCreateFunction(Index triangleIndex, TriangleState& ,
                 const Triangle & t,
-                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double > &);
 
     protected:
@@ -280,8 +280,8 @@ public:
     template<class MatrixWriter>
     void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter m);
 
-    void getTriangleVonMisesStress(unsigned int i, Real& stressValue);
-    void getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection, Real& stressValue2, Deriv& stressDirection2);
+    void getTriangleVonMisesStress(Index i, Real& stressValue);
+    void getTrianglePrincipalStress(Index i, Real& stressValue, Deriv& stressDirection, Real& stressValue2, Deriv& stressDirection2);
 
 public:
 

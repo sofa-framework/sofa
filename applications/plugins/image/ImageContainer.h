@@ -197,43 +197,12 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
             }
             else wimage->getCImgList().push_back(cimg_library::CImg<T>().load(fname.c_str()));
 
-        if(!wimage->isEmpty()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
+        if(!wimage->isEmpty())
+            msg_info(container) << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")";
         else return false;
 
         return true;
     }
-
-    //    static bool load( ImageContainerT* container, std::FILE* const file, std::string fname)
-    //    {
-    //        typedef typename ImageContainerT::Real Real;
-
-    //        typename ImageContainerT::waImage wimage(container->image);
-    //        typename ImageContainerT::waTransform wtransform(container->transform);
-
-    //        if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
-    //            wimage->getCImgList().load_cimg(file);
-    //        else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
-    //        {
-    //            float voxsize[3];
-    //            wimage->getCImgList().push_back(CImg<T>().load_analyze(file,voxsize));
-    //            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-    //        }
-    //        else if (fname.find(".inr")!=std::string::npos)
-    //        {
-    //            float voxsize[3];
-    //            wimage->getCImgList().push_back(CImg<T>().load_inr(file,voxsize));
-    //            for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
-    //        }
-    //        else
-    //        {
-    //            container->serr << "Error (ImageContainer): Compression is not supported for container filetype: " << fname << container->sendl;
-    //        }
-
-    //        if(wimage->getCImg()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
-    //        else return false;
-
-    //        return true;
-    //    }
 
     static bool loadCamera( ImageContainerT* container )
     {
@@ -400,9 +369,9 @@ public:
         if (!this->transformIsSet) this->transform.unset();
 
         if (this->transformIsSet)
-            sout << "Transform is set" << sendl;
+            msg_info() << "Transform is set";
         else
-            sout << "Transform is NOT set" << sendl;
+            msg_info() << "Transform is NOT set";
 
         ImageContainerSpecialization<ImageTypes>::parse( this, arg );
     }
@@ -547,36 +516,25 @@ protected:
 
     void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
         // draw bounding box
-
         if (!vparams->displayFlags().getShowVisualModels()) return;
         if (!drawBB.getValue()) return;
 
-        glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT );
-        glPushMatrix();
+        vparams->drawTool()->saveLastState();
 
-        const float color[]={1.,0.5,0.5,0.}, specular[]={0.,0.,0.,0.};
-        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-        glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
-        glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
-        glColor4fv(color);
-        glLineWidth(2.0);
+        const sofa::defaulttype::Vec4f color(1.,0.5,0.5,0.5);
+        vparams->drawTool()->setMaterial(color);
 
+        std::vector<defaulttype::Vector3> corners;
         defaulttype::Vec<8,defaulttype::Vector3> c;
+        corners.resize(8);
         getCorners(c);
+        for(unsigned int i=0;i<8;i++)
+            corners[i]=c[i];
 
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[0][0],c[0][1],c[0][2]); glVertex3d(c[1][0],c[1][1],c[1][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[2][0],c[2][1],c[2][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);  glVertex3d(c[0][0],c[0][1],c[0][2]); glVertex3d(c[4][0],c[4][1],c[4][2]); glVertex3d(c[6][0],c[6][1],c[6][2]); glVertex3d(c[2][0],c[2][1],c[2][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[0][0],c[0][1],c[0][2]); glVertex3d(c[1][0],c[1][1],c[1][2]); glVertex3d(c[5][0],c[5][1],c[5][2]); glVertex3d(c[4][0],c[4][1],c[4][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[1][0],c[1][1],c[1][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[7][0],c[7][1],c[7][2]); glVertex3d(c[5][0],c[5][1],c[5][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[7][0],c[7][1],c[7][2]); glVertex3d(c[5][0],c[5][1],c[5][2]); glVertex3d(c[4][0],c[4][1],c[4][2]); glVertex3d(c[6][0],c[6][1],c[6][2]);	glEnd ();
-        glBegin(GL_LINE_LOOP);	glVertex3d(c[2][0],c[2][1],c[2][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[7][0],c[7][1],c[7][2]); glVertex3d(c[6][0],c[6][1],c[6][2]);	glEnd ();
+        vparams->drawTool()->drawLineLoop(corners,2.0,color);
 
-
-        glPopMatrix ();
-        glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->restoreLastState();
     }
 
     /*

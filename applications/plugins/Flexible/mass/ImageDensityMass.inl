@@ -51,7 +51,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
     if( !m_shapeFunction )  this->getContext()->get( m_shapeFunction, core::objectmodel::BaseContext::SearchUp );
     if( !m_shapeFunction )
     {
-        serr << "ShapeFunction<"<<ShapeFunctionTypes::Name()<<"> component not found" << sendl;
+        msg_error() << "ShapeFunction<"<<ShapeFunctionTypes::Name()<<"> component not found";
         return;
     }
 
@@ -59,9 +59,9 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::init()
 
     if( f_printMassMatrix.getValue() )
     {
-        sout<<m_massMatrix<<sendl;
-        sout<<"Total Volume = "<<m_totalVolume<<" ("<<pow((double)m_totalVolume,1.0/3.0)<<")"<<sendl;
-        sout<<"Total Mass = "<<m_totalMass<<sendl;
+        msg_info()<<m_massMatrix<<msgendl
+                 <<"Total Volume = "<<m_totalVolume<<" ("<<pow((double)m_totalVolume,1.0/3.0)<<")"<<msgendl
+                 <<"Total Mass = "<<m_totalMass;
     }
 }
 
@@ -427,7 +427,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(c
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass( unsigned int index, defaulttype::BaseMatrix *m ) const
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass(sofa::Index index, defaulttype::BaseMatrix *m ) const
 {
     // warning the mass needs to be diagonal-lumped per dof
 
@@ -442,11 +442,11 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass
     //    for( unsigned i=0 ; i<dimension; ++i )
     //        m->set( i,i,1);
 
-    int i = index;
-    int bi = 0;
+    BaseMatrix::Index i = index;
+    BaseMatrix::Index bi = 0;
     m_massMatrix.split_row_index( i, bi );
 
-    int rowId = i * m_massMatrix.getRowIndex().size() / m_massMatrix.rowBSize();
+    BaseMatrix::Index rowId = i * m_massMatrix.getRowIndex().size() / m_massMatrix.rowBSize();
     if( m_massMatrix.sortedFind( m_massMatrix.getRowIndex(), i, rowId ) )
     {
         typename MassMatrix::Range rowRange( m_massMatrix.getRowBegin()[rowId], m_massMatrix.getRowBegin()[rowId+1] );

@@ -453,7 +453,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addDForce(const core::Mechanical
 
 
 template<class DataTypes>
-SReal HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/) const
+SReal HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass(sofa::Index /*index*/) const
 {
     msg_error() << "HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented";
     return 0.0;

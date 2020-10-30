@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(Flexible VERSION 0.1)
 
-find_package(SofaMisc REQUIRED)
+find_package(SofaMiscMapping REQUIRED)
 find_package(SofaValidation REQUIRED)
 sofa_find_package(SofaPython REQUIRED)
 sofa_find_package(image QUIET)
@@ -225,7 +225,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES} ${README_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaMisc SofaValidation SofaBaseVisual)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMiscMapping SofaValidation SofaBaseVisual)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)

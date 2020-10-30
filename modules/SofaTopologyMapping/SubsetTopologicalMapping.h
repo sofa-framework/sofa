@@ -50,7 +50,7 @@ public:
     SOFA_CLASS(SubsetTopologicalMapping,sofa::core::topology::TopologicalMapping);
 
     typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
-    typedef core::topology::BaseMeshTopology::index_type Index;
+    typedef core::topology::BaseMeshTopology::Index Index;
 
 protected:
     SubsetTopologicalMapping();
@@ -87,8 +87,8 @@ public:
     void updateTopologicalMappingTopDown() override;
 
     bool isTheOutputTopologySubdividingTheInputOne() override { return true; }
-    unsigned int getGlobIndex(unsigned int ind) override;
-    unsigned int getFromIndex(unsigned int ind) override;
+    Index getGlobIndex(Index ind) override;
+    Index getFromIndex(Index ind) override;
 
 };
 

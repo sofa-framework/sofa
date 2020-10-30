@@ -57,6 +57,8 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
+    using Index = sofa::Index;
+
     class Mat3 : public sofa::helper::fixed_array<Deriv,3>
     {
     public:
@@ -181,12 +183,12 @@ public:
         typedef typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation TriangleRestInformation;
         TRQSTriangleHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, sofa::helper::vector<TriangleRestInformation> >(_data), ff(_ff) {}
 
-        void applyCreateFunction(unsigned int triangleIndex, TriangleRestInformation& ,
+        void applyCreateFunction(Index triangleIndex, TriangleRestInformation& ,
                 const core::topology::BaseMeshTopology::Triangle & t,
-                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double > &);
 
-        void applyDestroyFunction(unsigned int, TriangleRestInformation &);
+        void applyDestroyFunction(Index, TriangleRestInformation &);
 
     protected:
         TriangularQuadraticSpringsForceField<DataTypes>* ff;
@@ -198,9 +200,9 @@ public:
         typedef typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
         TRQSEdgeHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeRestInformation> >(_data), ff(_ff) {}
 
-        void applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation& ,
+        void applyCreateFunction(Index edgeIndex, EdgeRestInformation& ,
                 const core::topology::BaseMeshTopology::Edge & t,
-                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double > &);
 
     protected:

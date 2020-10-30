@@ -97,7 +97,7 @@ public:
     /// Procedural creation methods
     /// @{
     void clear() override;
-    void addHexa( int a, int b, int c, int d, int e, int f, int g, int h ) override;
+    void addHexa(Index a, Index b, Index c, Index d, Index e, Index f, Index g, Index h ) override;
     /// @}
 
 
@@ -257,7 +257,7 @@ public:
     bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    size_t getNumberOfConnectedComponent() override;
+    Size getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     const VecHexaID getConnectedElement(HexaID elem) override;
@@ -272,13 +272,13 @@ public:
     /** \brief Returns the number of hexahedra in this topology.
      *	The difference to getNbHexahedra() is that this method does not generate the hexa array if it does not exist.
      */
-    size_t getNumberOfHexahedra() const;
+    Size getNumberOfHexahedra() const;
 
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    size_t getNumberOfElements() const override;
+    Size getNumberOfElements() const override;
 
 
     /** \brief Returns the Hexahedron array. */

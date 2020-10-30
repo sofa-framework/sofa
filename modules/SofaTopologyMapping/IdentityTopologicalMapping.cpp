@@ -83,7 +83,7 @@ void IdentityTopologicalMapping::init()
     }
 }
 
-unsigned int IdentityTopologicalMapping::getFromIndex(unsigned int ind)
+Index IdentityTopologicalMapping::getFromIndex(Index ind)
 {
     return ind;
 }
@@ -152,7 +152,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::POINTSREMOVED:
         {
             const PointsRemoved *pRem = static_cast< const PointsRemoved * >( topoChange );
-            sofa::helper::vector<unsigned int> tab = pRem->getArray();
+            auto tab = pRem->getArray();
             dmsg_info() << "POINTSREMOVED : " << tab.size() ;
             toPointMod->removePointsWarning(tab, true);
             toPointMod->propagateTopologicalChanges();
@@ -162,8 +162,8 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::POINTSRENUMBERING:
         {
             const PointsRenumbering *pRenumber = static_cast< const PointsRenumbering * >( topoChange );
-            const sofa::helper::vector<unsigned int> &tab = pRenumber->getIndexArray();
-            const sofa::helper::vector<unsigned int> &inv_tab = pRenumber->getinv_IndexArray();
+            const auto &tab = pRenumber->getIndexArray();
+            const auto &inv_tab = pRenumber->getinv_IndexArray();
             dmsg_info() << "POINTSRENUMBERING : " << tab.size() ;
             toPointMod->renumberPointsWarning(tab, inv_tab, true);
             toPointMod->propagateTopologicalChanges();
@@ -188,7 +188,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toEdgeMod) toModel->getContext()->get(toEdgeMod);
             if (!toEdgeMod) break;
             const EdgesRemoved *eRem = static_cast< const EdgesRemoved * >( topoChange );
-            sofa::helper::vector<unsigned int> tab = eRem->getArray();
+            auto tab = eRem->getArray();
             dmsg_info() << "EDGESREMOVED : " ;
             toEdgeMod->removeEdgesWarning(tab);
             toEdgeMod->propagateTopologicalChanges();
@@ -213,7 +213,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toTriangleMod) toModel->getContext()->get(toTriangleMod);
             if (!toTriangleMod) break;
             const TrianglesRemoved *tRem = static_cast< const TrianglesRemoved * >( topoChange );
-            sofa::helper::vector<unsigned int> tab = tRem->getArray();
+            auto tab = tRem->getArray();
             dmsg_info() << "TRIANGLESREMOVED : " << tab.size() ;
             toTriangleMod->removeTrianglesWarning(tab);
             toTriangleMod->propagateTopologicalChanges();

@@ -33,7 +33,6 @@
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -134,7 +133,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         sofa::component::initSofaBase();
         sofa::component::initSofaCommon();
         sofa::component::initSofaGeneral();
-        sofa::component::initSofaMisc();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Parent node
@@ -153,7 +151,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         sofa::component::initSofaBase();
         sofa::component::initSofaCommon();
         sofa::component::initSofaGeneral();
-        sofa::component::initSofaMisc();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene
@@ -238,7 +235,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
         mparams.setSymmetricMatrix(false);
-
         inDofs->resize(parentInit.size());
         WriteInVecCoord xin = inDofs->writePositions();
         copyToData(xin,parentInit); // xin = parentInit
@@ -317,7 +313,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         ReadOutVecDeriv vout = outDofs->readVelocities();
         copyFromData( vc, vout);
         //          cout<<"child velocity vc = " << vc << endl;
-
 
         // apply geometric stiffness
         inDofs->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
@@ -490,8 +485,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                 break;
             }
         }
-
-
 
         if(!succeed)
         { ADD_FAILURE() << "Failed Seed number = " << BaseSofa_test::seed << std::endl;}

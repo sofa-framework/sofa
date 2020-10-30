@@ -54,7 +54,7 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
 
 
 
-void TetrahedronSetTopologyContainer::addTetra( int a, int b, int c, int d )
+void TetrahedronSetTopologyContainer::addTetra(Index a, Index b, Index c, Index d )
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     m_tetrahedron.push_back(Tetra(a,b,c,d));
@@ -76,7 +76,7 @@ void TetrahedronSetTopologyContainer::init()
         {
             for(PointID j=0; j<4; ++j)
             {
-                int a = m_tetrahedron[i][j];
+                Index a = m_tetrahedron[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }
@@ -486,13 +486,13 @@ TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::
     return InvalidID;
 }
 
-size_t TetrahedronSetTopologyContainer::getNumberOfTetrahedra() const
+Size TetrahedronSetTopologyContainer::getNumberOfTetrahedra() const
 {
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     return m_tetrahedron.size();
 }
 
-size_t TetrahedronSetTopologyContainer::getNumberOfElements() const
+Size TetrahedronSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfTetrahedra();
 }
@@ -864,9 +864,9 @@ bool TetrahedronSetTopologyContainer::checkConnexity()
 }
 
 
-size_t TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
+Size TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    size_t nbr = this->getNbTetrahedra();
+    auto nbr = this->getNbTetrahedra();
 
     if (nbr == 0)
     {

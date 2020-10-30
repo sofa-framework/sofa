@@ -63,7 +63,7 @@ public:
      */
     void updateTopologicalMappingTopDown() override;
 
-    unsigned int getFromIndex(unsigned int ind) override;
+    Index getFromIndex(Index ind) override;
 
 };
 

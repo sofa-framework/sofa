@@ -65,17 +65,19 @@ public:
 
     typedef typename Inherit1::ForceMask ForceMask;
 
+    using Index = sofa::Index;
+
 public:
-    void clear(int reserve=0) override;
+    void clear(std::size_t reserve=0) override;
     void resize( core::State<Out>* toModel ) override;
-    int addPointInLine(const int lineIndex, const SReal* baryCoords) override;
-    int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points) override;
-    int addPointInTriangle(const int triangleIndex, const SReal* baryCoords) override;
-    int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) override;
-    int addPointInQuad(const int quadIndex, const SReal* baryCoords) override;
-    int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points) override;
-    int addPointInTetra(const int tetraIndex, const SReal* baryCoords) override;
-    int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
+    Index addPointInLine(const Index lineIndex, const SReal* baryCoords) override;
+    Index createPointInLine(const typename Out::Coord& p, Index lineIndex, const typename In::VecCoord* points) override;
+    Index addPointInTriangle(const Index triangleIndex, const SReal* baryCoords) override;
+    Index createPointInTriangle(const typename Out::Coord& p, Index triangleIndex, const typename In::VecCoord* points) override;
+    Index addPointInQuad(const Index quadIndex, const SReal* baryCoords) override;
+    Index createPointInQuad(const typename Out::Coord& p, Index quadIndex, const typename In::VecCoord* points) override;
+    Index addPointInTetra(const Index tetraIndex, const SReal* baryCoords) override;
+    Index addPointInCube(const Index cubeIndex, const SReal* baryCoords) override;
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
@@ -108,9 +110,9 @@ protected:
     MatrixType* m_matrixJ {nullptr};
     bool        m_updateJ {false};
 private:
-    void clearMap1dAndReserve(int size=0);
-    void clearMap2dAndReserve(int size=0);
-    void clearMap3dAndReserve(int size=0);
+    void clearMap1dAndReserve(std::size_t size=0);
+    void clearMap2dAndReserve(std::size_t size=0);
+    void clearMap3dAndReserve(std::size_t size=0);
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERMESHTOPOLOGY_CPP)

@@ -71,8 +71,8 @@ public:
     /// Procedural creation methods
     /// @{
     void clear() override;
-    void addEdge( int, int ) override {}
-    void addTriangle( int a, int b, int c ) override;
+    void addEdge(Index, Index) override {}
+    void addTriangle(Index a, Index b, Index c ) override;
     /// @}
 
     /// BaseMeshTopology API
@@ -170,12 +170,12 @@ public:
     /** \brief Returns the number of triangles in this topology.
      *    The difference to getNbTriangles() is that this method does not generate the triangle array if it does not exist.
      */
-    size_t getNumberOfTriangles() const;
+    Size getNumberOfTriangles() const;
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    size_t getNumberOfElements() const override;
+    Size getNumberOfElements() const override;
 
     /** \brief Returns the Triangle array. */
     const sofa::helper::vector<Triangle> &getTriangleArray();
@@ -220,7 +220,7 @@ public:
     bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    size_t getNumberOfConnectedComponent() override;
+    Size getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     const VecTriangleID getConnectedElement(TriangleID elem) override;

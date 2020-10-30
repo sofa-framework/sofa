@@ -1452,7 +1452,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
         {
             Edge e(t[tpi],t[(tpi+1)%3]);
             if (e[0] > e[1]) { PointID tmp = e[0]; e[0] = e[1]; e[1] = tmp; }
-            if (e[0] < newP0 && e[1] < newP0 && m_container->getEdgeIndex(e[0], e[1]) != sofa::defaulttype::InvalidID)
+            if (e[0] < newP0 && e[1] < newP0 && m_container->getEdgeIndex(e[0], e[1]) != sofa::InvalidID)
                 continue; // existing edge
             if (!edges_processed.insert(e).second)
                 continue; // this edge was already processed
@@ -1554,10 +1554,10 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
     {
         EdgeID e = m_container->getEdgeIndex(new_edge_points[i], new_edge_points[i+1]);
 
-        if (e == sofa::defaulttype::InvalidID)
+        if (e == sofa::InvalidID)
             e = m_container->getEdgeIndex(new_edge_points[i+1], new_edge_points[i]);
 
-        if (e == sofa::defaulttype::InvalidID)
+        if (e == sofa::InvalidID)
             msg_error() << "Edge " << new_edge_points[i] << " - " << new_edge_points[i+1] << " NOT FOUND.";
         else
             new_edges.push_back(e);
@@ -2244,10 +2244,10 @@ template<class DataTypes>
 int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(EdgeID ind_edge, int* createdPoints)
 {
     const Edge & edge0=m_container->getEdge(ind_edge);
-    unsigned ind_pa = edge0[0];
-    unsigned ind_pb = edge0[1];
+    PointID ind_pa = edge0[0];
+    PointID ind_pb = edge0[1];
 
-    const helper::vector<unsigned>& triangles0 = m_container->getTrianglesAroundEdge(ind_edge);
+    const helper::vector<TriangleID>& triangles0 = m_container->getTrianglesAroundEdge(ind_edge);
     if (triangles0.size() != 2)
     {
         msg_error() << "InciseAlongEdge: ERROR edge "<<ind_edge<<" is not attached to 2 triangles.";
@@ -2255,15 +2255,15 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(EdgeID ind_edge, i
     }
 
     // choose one triangle
-    unsigned ind_tri0 = triangles0[0];
+    TriangleID ind_tri0 = triangles0[0];
 
-    unsigned ind_tria = ind_tri0;
-    unsigned ind_trib = ind_tri0;
-    unsigned ind_edgea = ind_edge;
-    unsigned ind_edgeb = ind_edge;
+    PointID ind_tria = ind_tri0;
+    PointID ind_trib = ind_tri0;
+    EdgeID ind_edgea = ind_edge;
+    EdgeID ind_edgeb = ind_edge;
 
-    helper::vector<unsigned> list_tria;
-    helper::vector<unsigned> list_trib;
+    helper::vector<TriangleID> list_tria;
+    helper::vector<TriangleID> list_trib;
 
     for (;;)
     {
@@ -2286,7 +2286,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(EdgeID ind_edge, i
         if (ind_edgea == ind_edge)
             break; // full loop
 
-        const helper::vector<unsigned>& tes = m_container->getTrianglesAroundEdge(ind_edgea);
+        const auto& tes = m_container->getTrianglesAroundEdge(ind_edgea);
         if(tes.size() < 2)
             break; // border edge
 
@@ -2318,7 +2318,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(EdgeID ind_edge, i
         if (ind_edgeb == ind_edge)
             break; // full loop
 
-        const helper::vector<unsigned>& tes = m_container->getTrianglesAroundEdge(ind_edgeb);
+        const auto& tes = m_container->getTrianglesAroundEdge(ind_edgeb);
         if(tes.size() < 2)
             break; // border edge
 

@@ -569,12 +569,12 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms<DataTypes>::computeDih
     unsigned int idA = edge[0];
     unsigned int idB = edge[1];
 
-    unsigned int idC = sofa::defaulttype::InvalidID, idD = sofa::defaulttype::InvalidID;
+    unsigned int idC = sofa::InvalidID, idD = sofa::InvalidID;
     for (unsigned int i = 0; i < 4; i++)
     {
         if (tetra[i] != idA && tetra[i] != idB)
         {
-            if (idC == sofa::defaulttype::InvalidID)
+            if (idC == sofa::InvalidID)
                 idC = tetra[i];
             else
                 idD = tetra[i];
@@ -840,7 +840,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(
         for(int i=0; i<4; i++)
         {
             p1=vect_c[ta[i]];
-            fprintf(f1,"%d %f %f %f\n",ta[i],p1[0],p1[1],p1[2]);
+            fprintf(f1,"%lu %f %f %f\n",ta[i],p1[0],p1[1],p1[2]);
         }
         for(size_t i=0; i<intersectedPoint.size(); i++)
         {

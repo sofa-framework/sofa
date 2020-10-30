@@ -85,7 +85,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
     int ldim = (1<<lscale);
     int nleaf = Grid::GRIDDIM/ldim;
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const int npoints = mstate->getSize();
+    const std::size_t npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {

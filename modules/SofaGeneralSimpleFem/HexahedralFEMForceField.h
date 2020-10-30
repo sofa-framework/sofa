@@ -83,7 +83,7 @@ public:
     typedef helper::ReadAccessor< DataVecCoord > RDataRefVecCoord;
     typedef helper::WriteAccessor< DataVecDeriv > WDataRefVecDeriv;
 
-    typedef core::topology::BaseMeshTopology::index_type Index;
+    typedef core::topology::BaseMeshTopology::Index Index;
     typedef core::topology::BaseMeshTopology::Hexa Element;
     typedef core::topology::BaseMeshTopology::SeqHexahedra VecElement;
 
@@ -104,9 +104,6 @@ public:
     };
 
 protected:
-
-
-
 
     typedef defaulttype::Mat<3, 3, Real> Mat33;
     typedef Mat33 Transformation; ///< matrix for rigid transformations like rotations
@@ -210,8 +207,8 @@ public:
         {
         }
 
-        void applyCreateFunction(unsigned int, HexahedronInformation &t, const core::topology::BaseMeshTopology::Hexahedron &,
-                const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
+        void applyCreateFunction(Index, HexahedronInformation &t, const core::topology::BaseMeshTopology::Hexahedron &,
+                const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &);
     protected:
         HexahedralFEMForceField<DataTypes>* ff;
     };

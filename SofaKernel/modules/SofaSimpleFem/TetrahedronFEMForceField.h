@@ -98,7 +98,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
-    typedef core::topology::BaseMeshTopology::index_type Index;
+    typedef core::topology::BaseMeshTopology::Index Index;
     typedef core::topology::BaseMeshTopology::Tetra Element;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
     typedef core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
@@ -155,7 +155,7 @@ protected:
     /// @name Full system matrix assembly support
     /// @{
 
-    typedef std::pair<int,Real> Col_Value;
+    typedef std::pair<Index,Real> Col_Value;
     typedef helper::vector< Col_Value > CompressedValue;
     typedef helper::vector< CompressedValue > CompressedMatrix;
 

@@ -53,7 +53,7 @@ HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
 }
 
 
-void HexahedronSetTopologyContainer::addHexa( int a, int b, int c, int d, int e, int f, int g, int h )
+void HexahedronSetTopologyContainer::addHexa(Index a, Index b, Index c, Index d, Index e, Index f, Index g, Index h )
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     m_hexahedron.push_back(Hexahedron(a,b,c,d,e,f,g,h));
@@ -80,7 +80,7 @@ void HexahedronSetTopologyContainer::init()
         {
             for(PointID j=0; j<8; ++j)
             {
-                int a = m_hexahedron[i][j];
+                HexahedronID a = m_hexahedron[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }
@@ -200,7 +200,7 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
     {
         const Hexahedron &h = m_hexahedron[i];
 
-        unsigned int v[4], val;
+        PointID v[4], val;
 
         // Quad 0 :
         v[0]=h[0];
@@ -416,7 +416,7 @@ void HexahedronSetTopologyContainer::createHexahedraAroundVertexArray()
     clearHexahedraAroundVertex();
 
     if (getNbPoints() == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
-        this->setNbPoints(d_initPoints.getValue().size());
+        this->setNbPoints(Size(d_initPoints.getValue().size()));
 
     m_hexahedraAroundVertex.resize( getNbPoints() );
     helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
@@ -547,19 +547,19 @@ core::topology::Topology::HexahedronID HexahedronSetTopologyContainer::getHexahe
 
 const HexahedronSetTopologyContainer::Hexahedron HexahedronSetTopologyContainer::getHexahedron(HexaID i)
 {
-    if ((size_t)i >= getNbHexahedra())
+    if (i >= getNbHexahedra())
         return Hexahedron(InvalidID, InvalidID, InvalidID, InvalidID, InvalidID, InvalidID, InvalidID, InvalidID);
     else
         return (d_hexahedron.getValue())[i];
 }
 
-size_t HexahedronSetTopologyContainer::getNumberOfHexahedra() const
+Size HexahedronSetTopologyContainer::getNumberOfHexahedra() const
 {
-    return d_hexahedron.getValue().size();
+    return Size(d_hexahedron.getValue().size());
 }
 
 
-size_t HexahedronSetTopologyContainer::getNumberOfElements() const
+Size HexahedronSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfHexahedra();
 }
@@ -929,9 +929,9 @@ bool HexahedronSetTopologyContainer::checkConnexity()
 }
 
 
-size_t HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
+Size HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    size_t nbr = this->getNbHexahedra();
+    auto nbr = this->getNbHexahedra();
 
     if (nbr == 0)
     {
@@ -940,7 +940,7 @@ size_t HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
     }
 
     VecHexaID elemAll = this->getConnectedElement(0);
-    size_t cpt = 1;
+    Size cpt = 1;
 
     while (elemAll.size() < nbr)
     {

@@ -53,7 +53,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef PointCollisionModel<DataTypes> ParentModel;
 
-    TPoint(ParentModel* model, int index);
+    TPoint(ParentModel* model, sofa::Index index);
     TPoint() {}
 
     explicit TPoint(const core::CollisionElementIterator& i);
@@ -83,7 +83,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef TPoint<DataTypes> Element;
-    typedef helper::vector<unsigned int> VecIndex;
+    typedef helper::vector<Index> VecIndex;
 
     friend class TPoint<DataTypes>;
 protected:
@@ -93,26 +93,26 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(int size) override;
+    void resize(Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
     void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*,int index) override;
+    void draw(const core::visual::VisualParams*, Index index) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
-    bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
+    bool canCollideWithElement(Index index, CollisionModel* model2, Index index2) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
-    Deriv getNormal(int index){ return (normals.size()) ? normals[index] : Deriv();}
+    Deriv getNormal(Index index){ return (normals.size()) ? normals[index] : Deriv();}
 
     PointLocalMinDistanceFilter *getFilter() const;
 
     void setFilter(PointLocalMinDistanceFilter * /*lmdFilter*/);
 
-    const Deriv& velocity(int index) const;
+    const Deriv& velocity(Index index) const;
 
     Data<bool> bothSide; ///< to activate collision on both side of the point model (when surface normals are defined on these points)
 
@@ -158,7 +158,7 @@ protected:
 
 
 template<class DataTypes>
-inline TPoint<DataTypes>::TPoint(ParentModel* model, int index)
+inline TPoint<DataTypes>::TPoint(ParentModel* model, sofa::Index index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {
 
@@ -187,7 +187,7 @@ template<class DataTypes>
 inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(int index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
+inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(Index index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->normals.size()) ? this->model->normals[this->index] : Deriv(); }

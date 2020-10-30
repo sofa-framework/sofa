@@ -140,8 +140,8 @@ public:
 
     void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override; /// Add Mass contribution to global Matrix assembling
 
-    SReal getElementMass(unsigned int index) const override;
-    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
+    SReal getElementMass(sofa::Index index) const override;
+    void getElementMass(sofa::Index index, defaulttype::BaseMatrix *m) const override;
 
     bool isDiagonal() override {return true;}
 

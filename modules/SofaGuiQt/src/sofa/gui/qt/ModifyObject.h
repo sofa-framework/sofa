@@ -59,7 +59,7 @@ namespace qt
 {
 
 class QTransformationWidget;
-#if SOFAGUIQT_HAVE_QWT
+#if SOFAGUIQT_HAVE_QT5_CHARTS
 class QEnergyStatWidget;
 class QMomentumStatWidget;
 #endif
@@ -185,7 +185,7 @@ protected:
     //Widget specific to Node:
     //Transformation widget: translation, rotation, scale ( only experimental and deactivated)
     QTransformationWidget* transformation;
-#if SOFAGUIQT_HAVE_QWT
+#if SOFAGUIQT_HAVE_QT5_CHARTS
     //Energy widget: plot the kinetic & potential energy
     QEnergyStatWidget* energy;
     //Momentum widget: plot the linear & angular momentum

@@ -187,7 +187,7 @@ void CubeTopology::updatePoints()
 {
     SeqPoints& points = *seqPoints.beginEdit();
     points.resize(nbPoints) ;
-    for(int i=0;i<nbPoints;i++)
+    for(Size i=0;i<nbPoints;i++)
     {
         points[i] = getPoint(i);
     }

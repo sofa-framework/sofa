@@ -146,43 +146,43 @@ public:
     int getNz() const { return d_n.getValue()[2]; }
 
     /// Get the one-dimensional index of a grid point given its @param i @param j @param k indices
-    unsigned getIndex( int i, int j, int k ) const;
+    Index getIndex( int i, int j, int k ) const;
 
     /// Overwrite from @sa MeshTopology::hasPos always @return bool true
     bool hasPos()  const override { return true; }
 
     /// Get Point in grid @return Vector3 given its @param id i. Will call @sa getPointInGrid. This method should be overwritten by children.
-    virtual Vector3 getPoint(int i) const;
+    virtual Vector3 getPoint(Index i) const;
 
     /// Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
     virtual Vector3 getPointInGrid(int i, int j, int k) const;
 
     /// get X from Point index @param i, will call @sa getPoint
-    SReal getPX(int i)  const override { return getPoint(i)[0]; }
+    SReal getPX(Index i)  const override { return getPoint(i)[0]; }
     /// get Y from Point index @param i, will call @sa getPoint
-    SReal getPY(int i) const override { return getPoint(i)[1]; }
+    SReal getPY(Index i) const override { return getPoint(i)[1]; }
     /// get Z from Point index @param i, will call @sa getPoint
-    SReal getPZ(int i) const override { return getPoint(i)[2]; }
+    SReal getPZ(Index i) const override { return getPoint(i)[2]; }
 
     /// Overload method from \sa BaseObject::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse(core::objectmodel::BaseObjectDescription* arg) override ;
 
     /// Overload Method from @sa MeshTopology::getNbHexahedra
-    size_t getNbHexahedra() override { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
+    Size getNbHexahedra() override { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
     /// Overload Method from @sa MeshTopology::getQuad
     Quad getQuad(int x, int y, int z);
 
 
     Hexa getHexahedron(int x, int y, int z);
-    Hexa getHexaCopy(int i);
-    Quad getQuadCopy(int i);
+    Hexa getHexaCopy(Index i);
+    Quad getQuadCopy(Index i);
 
     /// Get Point index in Grid, will call method @sa getIndex
-    int point(int x, int y, int z) const { return getIndex(x,y,z); }
+    Index point(int x, int y, int z) const { return getIndex(x,y,z); }
     /// Get Hexa index in Grid
-    int hexa(int x, int y, int z) const { return x+(d_n.getValue()[0]-1)*(y+(d_n.getValue()[1]-1)*z); }
+    Index hexa(int x, int y, int z) const { return x+(d_n.getValue()[0]-1)*(y+(d_n.getValue()[1]-1)*z); }
     /// Get Cube index, similar to \sa hexa method
-    int cube(int x, int y, int z) const { return hexa(x,y,z); }
+    Index cube(int x, int y, int z) const { return hexa(x,y,z); }
 
     /// Get the actual dimension of this grid using Enum @sa Grid_dimension
     Grid_dimension getDimensions() const;

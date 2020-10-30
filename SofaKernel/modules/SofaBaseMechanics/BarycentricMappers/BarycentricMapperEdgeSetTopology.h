@@ -47,6 +47,8 @@ class BarycentricMapperEdgeSetTopology : public BarycentricMapperTopologyContain
 {
     typedef typename BarycentricMapper<In,Out>::MappingData1D MappingData;
 
+    using Index = sofa::Index;
+
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperEdgeSetTopology,In,Out),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Edge));
     typedef typename Inherit1::Real Real;
@@ -59,8 +61,8 @@ public:
         SOFA_UNUSED(in);
         msg_warning() << "BarycentricMapping not implemented for EdgeSetTopologyContainer.";
     }
-    int addPointInLine(const int edgeIndex, const SReal* baryCoords) override;
-    int createPointInLine(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points) override;
+    Index addPointInLine(const Index edgeIndex, const SReal* baryCoords) override;
+    Index createPointInLine(const typename Out::Coord& p, Index edgeIndex, const typename In::VecCoord* points) override;
 
 
 protected:
@@ -75,7 +77,7 @@ protected:
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Edge& element) override;
     void computeCenter(Vector3& center, const typename In::VecCoord& in, const Edge& element) override;
     void computeDistance(double& d, const Vector3& v) override;
-    void addPointInElement(const int elementIndex, const SReal* baryCoords) override;
+    void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
 
     topology::EdgeSetTopologyContainer*	m_fromContainer;
     topology::EdgeSetGeometryAlgorithms<In>* m_fromGeomAlgo;

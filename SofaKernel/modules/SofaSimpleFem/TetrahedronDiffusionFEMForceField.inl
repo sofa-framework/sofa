@@ -276,7 +276,7 @@ typename TetrahedronDiffusionFEMForceField<DataTypes>::VectorReal TetrahedronDif
 
 
 template <class DataTypes>
-typename TetrahedronDiffusionFEMForceField<DataTypes>::Real TetrahedronDiffusionFEMForceField<DataTypes>::getTetraDiffusionCoefficient(unsigned int i)
+typename TetrahedronDiffusionFEMForceField<DataTypes>::Real TetrahedronDiffusionFEMForceField<DataTypes>::getTetraDiffusionCoefficient(Index i)
 {
     sofa::helper::vector<Real> tetraDiff = this->d_tetraDiffusionCoefficient.getValue();
     if(i <= m_topology->getNbTetrahedra())
@@ -286,7 +286,7 @@ typename TetrahedronDiffusionFEMForceField<DataTypes>::Real TetrahedronDiffusion
     else
     {
         msg_error() << "Tetra i is larger than m_topology->getNbTetrahedra() " ;
-        return -1;
+        return Real(-1);
     }
 }
 
@@ -415,7 +415,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addKToMatrix(const core::Mech
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = r.matrix;
 
-    if((int)(mat->colSize()) != (m_topology->getNbPoints()*N) || (int)(mat->rowSize()) != (m_topology->getNbPoints()*N))
+    if((mat->colSize()) != (m_topology->getNbPoints()*N) || (mat->rowSize()) != (m_topology->getNbPoints()*N))
     {
         msg_error()<<"Wrong size of the input Matrix: need resize in addKToMatrix function.";
         mat->resize(m_topology->getNbPoints()*N,m_topology->getNbPoints()*N);

@@ -51,10 +51,7 @@ bool DataFileName::read(const std::string& s )
 
 void DataFileName::updatePath()
 {
-    DataFileName* parentDataFileName = nullptr;
-    if (parentData)
-        parentDataFileName = dynamic_cast<DataFileName*>(parentData.get());
-
+    DataFileName* parentDataFileName = dynamic_cast<DataFileName*>(parentData.getTarget());
     if (parentDataFileName)
     {
         std::string fullpath = parentDataFileName->getFullPath();
@@ -108,10 +105,9 @@ void DataFileName::updatePath()
 
 void DataFileNameVector::updatePath()
 {
-    DataFileNameVector* parentDataFileNameVector = nullptr;
-    if (parentData)
+    DataFileNameVector* parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.getTarget());;
+    if (parentDataFileNameVector)
     {
-        parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.get());
         if (getPathType() != PathType::BOTH && getPathType() != parentDataFileNameVector->getPathType())
         {
             msg_error(this->getName()) << "Cannot retrieve DataFileNames from Parent value: this DataFileName only accepts " << (getPathType() == PathType::DIRECTORY ? "directories" : "files");

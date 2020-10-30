@@ -54,6 +54,7 @@ class FixedLMConstraint :  public core::behavior::LMConstraint<DataTypes,DataTyp
 public:
     SOFA_CLASS(SOFA_TEMPLATE(FixedLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::behavior::LMConstraint, DataTypes, DataTypes));
 
+    using Index = sofa::Index;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -63,7 +64,7 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
-    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef helper::vector<Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;
@@ -82,8 +83,8 @@ protected:
 
 public:
     void clearConstraints();
-    void addConstraint(unsigned int index);
-    void removeConstraint(unsigned int index);
+    void addConstraint(Index index);
+    void removeConstraint(Index index);
 
     void init() override;
     void draw(const core::visual::VisualParams* vparams) override;
@@ -116,11 +117,11 @@ public:
 
 
 
-        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
 
 
-        bool applyTestCreateFunction(unsigned int /*index*/,
-                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+        bool applyTestCreateFunction(Index /*index*/,
+                const sofa::helper::vector< Index > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
         FixedLMConstraint<DataTypes> *fc;
@@ -130,7 +131,7 @@ protected :
 
     Deriv X,Y,Z;
     SetIndexArray idxX, idxY, idxZ;
-    std::map< unsigned int, Coord> restPosition;
+    std::map< Index, Coord> restPosition;
 
 
     FCPointHandler* m_pointHandler;

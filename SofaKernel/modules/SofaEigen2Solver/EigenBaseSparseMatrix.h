@@ -71,7 +71,7 @@ class EigenBaseSparseMatrix : public defaulttype::BaseMatrix
     {
         for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
         {
-            if(it.index()==j) // diagonal entry
+            if(Index(it.index()) == j) // diagonal entry
                 it.valueRef()=0.0;
         }
 
@@ -154,7 +154,7 @@ public:
     {
         resize(m.rowSize(),nbCol);
         const CompressedMatrix& im = m.compressedMatrix;
-        for(Index i=0; i<im.rows(); i++)
+        for(Index i=0; i<Index(im.rows()); i++)
         {
             for(typename CompressedMatrix::InnerIterator j(im,i); j; ++j)
                 add(i,shift+j.col(),j.value());
@@ -246,10 +246,10 @@ public:
     void clearCol(Index col) override
     {
         compress();
-        for(Index i=0; i<compressedMatrix.rows(); i++ )
+        for(Index i=0; i<Index(compressedMatrix.rows()); i++ )
             for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
             {
-                if( it.col()==col)
+                if( Index(it.col())==col)
                 {
                     it.valueRef() = 0;
                 }
@@ -260,10 +260,10 @@ public:
     void clearCols(Index imin, Index imax) override
     {
         compress();
-        for(Index i=0; i<compressedMatrix.rows(); i++ )
-            for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it && it.col()<imax; ++it)
+        for(Index i=0; i< Index(compressedMatrix.rows()); i++ )
+            for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it && Index(it.col())<imax; ++it)
             {
-                if( imin<=it.col() )
+                if( imin<=Index(it.col()) )
                     it.valueRef() = 0;
             }
     }
@@ -375,7 +375,7 @@ public:
         const ThisMatrix* getMatrix() const { return matrix; }
 
 
-        int getGlobalDimension() const override { return matrix->rowSize(); }
+        Index getGlobalDimension() const override { return matrix->rowSize(); }
         int getGlobalOffset(const core::behavior::BaseMechanicalState*) const override { return 0; }
         MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const override
         {
@@ -403,7 +403,7 @@ public:
     /// add this EigenBaseSparseMatrix to a BaseMatrix at the offset and multiplied by factor
     void addToBaseMatrix( BaseMatrix *matrix, SReal factor, Index offset ) const
     {
-        for( Index j=0 ; j<compressedMatrix.outerSize() ; ++j )
+        for( Index j=0 ; j<Index(compressedMatrix.outerSize()) ; ++j )
             for( typename CompressedMatrix::InnerIterator it(compressedMatrix,j) ; it ; ++it )
             {
                 matrix->add( offset+it.row(), offset+it.col(), factor*it.value() );

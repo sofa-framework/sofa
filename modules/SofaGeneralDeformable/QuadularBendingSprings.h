@@ -70,6 +70,8 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
+    using Index = sofa::Index;
+
     QuadularBendingSprings();
 
     ~QuadularBendingSprings();
@@ -154,17 +156,17 @@ public:
         {
         }
 
-        void applyCreateFunction(unsigned int edgeIndex, EdgeInformation& ei,
+        void applyCreateFunction(Index edgeIndex, EdgeInformation& ei,
                 const core::topology::BaseMeshTopology::Edge &,
-                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double > &);
 
-        void applyQuadCreation(const sofa::helper::vector<unsigned int> & quadAdded,
+        void applyQuadCreation(const sofa::helper::vector<Index> & quadAdded,
                 const sofa::helper::vector<core::topology::BaseMeshTopology::Quad> &,
-                const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
+                const sofa::helper::vector<sofa::helper::vector<Index> > &,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
-        void applyQuadDestruction(const sofa::helper::vector<unsigned int> & quadRemoved);
+        void applyQuadDestruction(const sofa::helper::vector<Index> & quadRemoved);
 
         using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeInformation> >::ApplyTopologyChange;
 
@@ -173,9 +175,9 @@ public:
         /// Callback to remove quads elements.
         void ApplyTopologyChange(const core::topology::QuadsRemoved* /*event*/);
 
-        void applyPointDestruction(const sofa::helper::vector<unsigned int> &pointIndices);
+        void applyPointDestruction(const sofa::helper::vector<Index> &pointIndices);
 
-        void applyPointRenumbering(const sofa::helper::vector<unsigned int> &pointToRenumber);
+        void applyPointRenumbering(const sofa::helper::vector<Index> &pointToRenumber);
 
         /// Callback to remove points elements.
         void ApplyTopologyChange(const core::topology::PointsRemoved* /*event*/);
