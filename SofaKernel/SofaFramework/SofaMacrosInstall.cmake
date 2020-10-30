@@ -184,6 +184,7 @@ macro(sofa_auto_set_target_properties)
 
     foreach(target ${ARG_TARGETS}) # Most of the time there is only one target
         string(TOUPPER "${target}" sofa_target_name_upper)
+        set(${sofa_target_name_upper}_TARGET "${sofa_target_name_upper}")
 
         # Set target properties
         if(NOT "${target}" STREQUAL "${ARG_PACKAGE_NAME}") # Target is inside a package
@@ -200,6 +201,8 @@ macro(sofa_auto_set_target_properties)
             set(version ${Sofa_VERSION})
         endif()
         set_target_properties(${target} PROPERTIES VERSION "${version}")
+        set(${sofa_target_name_upper}_VERSION "${version}")
+        set(PROJECT_VERSION "${version}") # warning: dangerous to touch this variable?
 
         if(target MATCHES "^Sofa")
             # TODO: Deprecate this backward compatibility and replace all the macros
