@@ -25,13 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 using namespace sofa::defaulttype;
@@ -52,20 +46,15 @@ int MinResLinearSolverClass = core::RegisterObject("Linear system solver using t
         .addAlias("MinResSolver")
         ;
 
-template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
-template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< FullMatrix<double>, FullVector<double> >;
-template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< SparseMatrix<double>, FullVector<double> >;
-template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> >;
-template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<2,2,double> >, FullVector<double> >;
-template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<3,3,double> >, FullVector<double> >;
-template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<4,4,double> >, FullVector<double> >;
-template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<6,6,double> >, FullVector<double> >;
-template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<8,8,double> >, FullVector<double> >;
+template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
+template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< FullMatrix<double>, FullVector<double> >;
+template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< SparseMatrix<double>, FullVector<double> >;
+template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> >;
+template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<2,2,double> >, FullVector<double> >;
+template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<3,3,double> >, FullVector<double> >;
+template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<4,4,double> >, FullVector<double> >;
+template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<6,6,double> >, FullVector<double> >;
+template class SOFA_SOFAGENERALLINEARSOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<8,8,double> >, FullVector<double> >;
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::linearsolver

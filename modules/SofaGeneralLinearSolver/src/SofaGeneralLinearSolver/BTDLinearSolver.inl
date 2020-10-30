@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_INL
-#define SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_INL
-
+#pragma once
 #include "BTDLinearSolver.h"
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 
@@ -1354,10 +1346,4 @@ template<> const char* BTDMatrix<5,double>::Name() { return "BTDMatrix5d"; }
 template<> const char* BTDMatrix<6,double>::Name() { return "BTDMatrix6d"; }
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::linearsolver
