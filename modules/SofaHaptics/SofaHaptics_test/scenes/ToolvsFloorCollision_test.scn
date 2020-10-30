@@ -32,7 +32,7 @@
 		<MechanicalObject name="instrumentState" template="Rigid3" />
 		<UniformMass name="mass" totalMass="0.5" />
 		
-        <LCPForceFeedback name="LCPFF1" activate="true" forceCoef="0.0001"/> 
+        <LCPForceFeedback name="LCPFF1" activate="true" forceCoef="1.0"/> 
         <LinearSolverConstraintCorrection />
 		
 		<Node name="VisuTool" >
