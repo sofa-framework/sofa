@@ -34,6 +34,13 @@ sofa_create_package_with_targets(
     PACKAGE_VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaHaptics"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     RELOCATABLE "plugins"
     )
+    
+# Tests
+cmake_dependent_option(SOFAHAPTICS_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFAHAPTICS_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(SofaHaptics_test)
+endif()
