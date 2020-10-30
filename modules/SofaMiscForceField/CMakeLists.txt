@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaMiscForceField VERSION 1.0 LANGUAGES CXX)
+project(SofaMiscForceField LANGUAGES CXX)
 
 find_package(SofaFramework REQUIRED) # SofaHelper
 find_package(SofaCommon REQUIRED) # SofaDeformable
@@ -44,7 +44,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDeformable SofaBound
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
-    PACKAGE_VERSION ${PROJECT_VERSION}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
