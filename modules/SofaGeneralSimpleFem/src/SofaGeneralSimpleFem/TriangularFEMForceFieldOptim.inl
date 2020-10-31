@@ -20,9 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_INL
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_INL
-
+#pragma once
 #include "TriangularFEMForceFieldOptim.h"
 
 #include <SofaBaseLinearSolver/BlocMatrixWriter.h>
@@ -34,13 +32,7 @@
 #include <limits>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 // --------------------------------------------------------------------------------------
@@ -695,11 +687,4 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     }
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif //SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_INL
+} // namespace sofa::component::forcefield

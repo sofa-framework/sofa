@@ -19,17 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef LENGTHCONTAINER_H_
-#define LENGTHCONTAINER_H_
-#include "config.h"
+#pragma once
+#include <SofaGeneralSimpleFem/config.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 
 class LengthContainer : public virtual sofa::core::objectmodel::BaseObject
@@ -37,12 +30,7 @@ class LengthContainer : public virtual sofa::core::objectmodel::BaseObject
 public:
     SOFA_CLASS(LengthContainer,core::objectmodel::BaseObject);
 
-    virtual double getLength(unsigned int index) = 0;
+    virtual double getLength(sofa::Index index) = 0;
 };
 
-}
-
-}
-
-}
-#endif /*LENGTHCONTAINER_H_*/
+} // namespace sofa::component::container

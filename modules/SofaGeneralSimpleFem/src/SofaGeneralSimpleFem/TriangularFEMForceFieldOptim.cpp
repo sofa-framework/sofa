@@ -21,17 +21,11 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP
 
-#include "TriangularFEMForceFieldOptim.inl"
+#include <SofaGeneralSimpleFem/TriangularFEMForceFieldOptim.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -42,12 +36,8 @@ int TriangularFEMForceFieldOptimClass = core::RegisterObject("Corotational Trian
 
         ;
 
-template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<Vec3Types>;
+template class SOFA_SOFAGENERALSIMPLEFEM_API TriangularFEMForceFieldOptim<Vec3Types>;
 
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // sofa::component::forcefield

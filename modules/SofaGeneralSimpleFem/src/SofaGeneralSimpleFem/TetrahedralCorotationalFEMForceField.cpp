@@ -21,20 +21,13 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP
 
-#include "TetrahedralCorotationalFEMForceField.inl"
+#include <SofaGeneralSimpleFem/TetrahedralCorotationalFEMForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
-//#include <typeinfo>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -46,12 +39,8 @@ int TetrahedralCorotationalFEMForceFieldClass = core::RegisterObject("Corotation
 
         ;
 
-template class SOFA_GENERAL_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<Vec3Types>;
+template class SOFA_SOFAGENERALSIMPLEFEM_API TetrahedralCorotationalFEMForceField<Vec3Types>;
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield
 

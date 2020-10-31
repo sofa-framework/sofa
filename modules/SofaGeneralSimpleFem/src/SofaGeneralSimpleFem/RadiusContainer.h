@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef RADIUSCONTAINER_H_
-#define RADIUSCONTAINER_H_
-#include "config.h"
+#pragma once
+#include <SofaGeneralSimpleFem/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 
 class RadiusContainer : public virtual sofa::core::objectmodel::BaseObject
@@ -40,16 +33,11 @@ public:
     SOFA_ABSTRACT_CLASS(RadiusContainer,sofa::core::objectmodel::BaseObject);
 
     /// Get the radius around a given point
-    virtual double getPointRadius(unsigned int index) = 0;
+    virtual double getPointRadius(sofa::Index index) = 0;
     /// Get the radius around a given edge
-    virtual double getEdgeRadius(unsigned int index) = 0;
+    virtual double getEdgeRadius(sofa::Index index) = 0;
     /// Deprecated alias for getEdgeRadius
-    double getRadius(unsigned int index) { return getEdgeRadius(index); }
+    double getRadius(sofa::Index index) { return getEdgeRadius(index); }
 };
 
-}
-
-}
-
-}
-#endif /*RADIUSCONTAINER_H_*/
+} // namespace sofa::component::container

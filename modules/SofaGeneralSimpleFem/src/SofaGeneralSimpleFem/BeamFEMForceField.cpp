@@ -20,21 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP
-#include "BeamFEMForceField.inl"
+#include <SofaGeneralSimpleFem/BeamFEMForceField.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
-{
-
-namespace _beamfemforcefield_
+namespace sofa::component::forcefield::_beamfemforcefield_
 {
 
 using namespace sofa::defaulttype;
@@ -44,14 +35,7 @@ int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements")
         .add< BeamFEMForceField<Rigid3Types> >()
         ;
 
-template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<Rigid3Types>;
+template class SOFA_SOFAGENERALSIMPLEFEM_API BeamFEMForceField<Rigid3Types>;
 
 
-} // namespace _beamfemforcefield_
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::forcefield::_beamfemforcefield_

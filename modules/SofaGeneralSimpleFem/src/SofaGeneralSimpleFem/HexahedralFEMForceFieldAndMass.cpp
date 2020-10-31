@@ -20,18 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP
-#include "HexahedralFEMForceFieldAndMass.inl"
+#include <SofaGeneralSimpleFem/HexahedralFEMForceFieldAndMass.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -43,12 +37,7 @@ int HexahedralFEMForceFieldAndMassClass = core::RegisterObject("Hexahedral finit
 
         ;
 
-template class SOFA_GENERAL_SIMPLE_FEM_API HexahedralFEMForceFieldAndMass<Vec3Types>;
+template class SOFA_SOFAGENERALSIMPLEFEM_API HexahedralFEMForceFieldAndMass<Vec3Types>;
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::forcefield

@@ -19,17 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef POISSONCONTAINER_
-#define POISSONCONTAINER_
-#include "config.h"
+#pragma once
+#include <SofaGeneralSimpleFem/config.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 
 class PoissonContainer : public virtual sofa::core::objectmodel::BaseObject
@@ -37,14 +30,7 @@ class PoissonContainer : public virtual sofa::core::objectmodel::BaseObject
 public:
     SOFA_CLASS(PoissonContainer,sofa::core::objectmodel::BaseObject);
 
-    virtual double getPoisson(unsigned int index) = 0;
+    virtual double getPoisson(sofa::Index index) = 0;
 };
 
-}
-
-}
-
-}
-
-
-#endif /*POISSONCONTAINER_*/
+} // namespace sofa::component::container
