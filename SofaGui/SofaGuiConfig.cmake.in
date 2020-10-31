@@ -15,7 +15,11 @@ set(SOFAGUIQT_HAVE_NODEEDITOR @SOFAGUIQT_HAVE_NODEEDITOR@)
 set(SOFAGUIQT_HAVE_TINYXML @SOFAGUIQT_HAVE_TINYXML@)
 
 # Find dependencies
-find_package(SofaGeneral REQUIRED)
+find_package(SofaBase QUIET REQUIRED)
+find_package(SofaCommon QUIET REQUIRED)
+find_package(SofaGeneral QUIET REQUIRED)
+find_package(SofaGraphComponent QUIET REQUIRED)
+find_package(SofaMiscForceField QUIET REQUIRED) # SofaGuiQt
 
 if(SOFAGUI_HAVE_SOFAGUIQT)
     if(SOFAGUIQT_HAVE_QTVIEWER)
@@ -44,5 +48,7 @@ foreach(target ${SOFAGUI_TARGETS})
         break()
     endif()
 endforeach()
-
-check_required_components(${SOFAGUI_TARGETS})
+if(NOT TARGET @PROJECT_NAME@)
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+endif()
+check_required_components(@PROJECT_NAME@)
