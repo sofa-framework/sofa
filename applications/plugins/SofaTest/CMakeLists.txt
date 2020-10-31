@@ -29,6 +29,8 @@ list(APPEND HEADER_FILES
 list(APPEND SOURCE_FILES
     Elasticity_test.cpp
     PrimitiveCreation.cpp
+    LinearElasticity_test.cpp
+    AffinePatch_test.cpp
     )
 
 if(SOFA_WITH_DEPRECATED_COMPONENTS)

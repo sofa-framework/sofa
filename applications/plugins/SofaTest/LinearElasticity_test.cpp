@@ -35,7 +35,6 @@
 #include <SofaGeneralEngine/PairBoxRoi.h>
 #include <SofaImplicitOdeSolver/StaticSolver.h>
 #include <SofaBoundaryCondition/ProjectToLineConstraint.h>
-#include <SofaMiscForceField/MeshMatrixMass.h>
 
 namespace sofa {
 
@@ -67,7 +66,6 @@ struct LinearElasticity_test : public Elasticity_test<_DataTypes>
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
     typedef typename container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef typename sofa::component::mass::MeshMatrixMass<DataTypes,Real>  MeshMatrixMass;
     typedef typename sofa::component::forcefield::TetrahedralTensorMassForceField<DataTypes> TetrahedralTensorMassForceField;
     typedef typename sofa::core::behavior::ForceField<DataTypes>::SPtr ForceFieldSPtr;
     typedef ForceFieldSPtr (LinearElasticity_test<_DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
