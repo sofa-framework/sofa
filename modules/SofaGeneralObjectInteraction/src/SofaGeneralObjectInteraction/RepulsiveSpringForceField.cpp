@@ -24,13 +24,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
@@ -43,14 +37,9 @@ int RepulsiveSpringForceFieldClass = core::RegisterObject("Springs which only re
 
         ;
 
-template class RepulsiveSpringForceField<Vec3Types>;
-template class RepulsiveSpringForceField<Vec2Types>;
-template class RepulsiveSpringForceField<Vec1Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API RepulsiveSpringForceField<Vec3Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API RepulsiveSpringForceField<Vec2Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API RepulsiveSpringForceField<Vec1Types>;
 
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::interactionforcefield

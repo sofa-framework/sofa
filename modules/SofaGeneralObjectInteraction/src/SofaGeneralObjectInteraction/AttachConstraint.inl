@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_INL
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_INL
-
+#pragma once
 #include <SofaGeneralObjectInteraction/AttachConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -29,13 +27,7 @@
 #include <sofa/simulation/Node.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 using sofa::simulation::Node ;
@@ -648,10 +640,4 @@ void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::projectiveconstraintset

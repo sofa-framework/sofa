@@ -25,39 +25,15 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
 
-//template class InteractionEllipsoidForceField<Vec3fTypes, Rigid3fTypes>;
-//template class InteractionEllipsoidForceField<Vec3dTypes, Vec3dTypes>;
-//template class InteractionEllipsoidForceField<Vec3fTypes, Vec3fTypes>;
-//template class InteractionEllipsoidForceField<Vec2dTypes, Rigid2dTypes>;
-//template class InteractionEllipsoidForceField<Vec2fTypes, Rigid2dTypes>;
-
 int EllipsoidForceFieldClass = core::RegisterObject("Repulsion applied by an ellipsoid toward the exterior or the interior")
         .add< InteractionEllipsoidForceField<Vec3Types, Rigid3Types> >()
-
-
-//.add< InteractionEllipsoidForceField<Vec3fTypes, Rigid3fTypes> >()
-//.add< InteractionEllipsoidForceField<Vec3dTypes, Vec3dTypes> >()
-//.add< InteractionEllipsoidForceField<Vec3fTypes, Vec3fTypes> >()
         ;
 
-template class InteractionEllipsoidForceField<Vec3Types, Rigid3Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API InteractionEllipsoidForceField<Vec3Types, Rigid3Types>;
 
-
-
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::interactionforcefield

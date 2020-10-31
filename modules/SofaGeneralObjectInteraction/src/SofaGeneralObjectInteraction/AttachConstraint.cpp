@@ -23,13 +23,7 @@
 #include <SofaGeneralObjectInteraction/AttachConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 using namespace sofa::defaulttype;
@@ -43,7 +37,7 @@ int AttachConstraintClass = core::RegisterObject("Attach given pair of particles
         .add< AttachConstraint<Rigid2Types> >()
         ;
 
-template <> SOFA_GENERAL_OBJECT_INTERACTION_API
+template <> SOFA_SOFAGENERALOBJECTINTERACTION_API
 void AttachConstraint<Rigid3Types>::calcRestRotations()
 {
     const SetIndexArray & indices2 = f_indices2.getValue();
@@ -66,17 +60,12 @@ void AttachConstraint<Rigid3Types>::calcRestRotations()
     }
 }
 
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec3Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec2Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Vec1Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Rigid3Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<Rigid2Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API AttachConstraint<Vec3Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API AttachConstraint<Vec2Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API AttachConstraint<Vec1Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API AttachConstraint<Rigid3Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API AttachConstraint<Rigid2Types>;
 
 
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::projectiveconstraintset

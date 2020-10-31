@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_H
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralObjectInteraction/config.h>
 
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::projectiveconstraintset
 {
 
 /** Attach given pair of particles, projecting the positions of the second particles to the first ones.
@@ -121,18 +114,11 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_CPP)
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Rigid3Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API AttachConstraint<defaulttype::Rigid2Types>;
+extern template class SOFA_SOFAGENERALOBJECTINTERACTION_API AttachConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAGENERALOBJECTINTERACTION_API AttachConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_SOFAGENERALOBJECTINTERACTION_API AttachConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_SOFAGENERALOBJECTINTERACTION_API AttachConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAGENERALOBJECTINTERACTION_API AttachConstraint<defaulttype::Rigid2Types>;
 #endif
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif
+} // namespace sofa::component::projectiveconstraintset

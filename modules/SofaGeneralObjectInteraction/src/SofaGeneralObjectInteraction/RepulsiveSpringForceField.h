@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralObjectInteraction/config.h>
 
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <sofa/core/MechanicalParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 template<class DataTypes>
@@ -81,10 +74,4 @@ extern template class RepulsiveSpringForceField<defaulttype::Vec1Types>;
 
 #endif
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::interactionforcefield

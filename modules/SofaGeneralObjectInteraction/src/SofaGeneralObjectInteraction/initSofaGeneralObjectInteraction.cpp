@@ -19,17 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
+#include <SofaGeneralObjectInteraction/initSofaGeneralObjectInteraction.h>
 
 
-namespace sofa
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
+
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFAGENERALOBJECTINTERACTION_API void initExternalModule();
+    SOFA_SOFAGENERALOBJECTINTERACTION_API const char* getModuleName();
+    SOFA_SOFAGENERALOBJECTINTERACTION_API const char* getModuleVersion();
+    SOFA_SOFAGENERALOBJECTINTERACTION_API const char* getModuleLicense();
+    SOFA_SOFAGENERALOBJECTINTERACTION_API const char* getModuleDescription();
+    SOFA_SOFAGENERALOBJECTINTERACTION_API const char* getModuleComponentList();
+}
 
-
-void initGeneralObjectInteraction()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -38,7 +46,31 @@ void initGeneralObjectInteraction()
     }
 }
 
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace component
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAGENERALOBJECTINTERACTION_VERSION);
+}
 
-} // namespace sofa
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about General Object Interaction.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

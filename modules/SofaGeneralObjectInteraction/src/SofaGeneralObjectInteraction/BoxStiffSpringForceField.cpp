@@ -27,13 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 int BoxStiffSpringForceFieldClass = core::RegisterObject("Set Spring between the points inside a given box")
@@ -44,15 +38,10 @@ int BoxStiffSpringForceFieldClass = core::RegisterObject("Set Spring between the
 
         ;
 
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec3Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec2Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec1Types>;
-template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec6Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec3Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec2Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec1Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec6Types>;
 
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::interactionforcefield
