@@ -1,47 +1,63 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaGeneralSimpleFem)
+project(SofaGeneralSimpleFem LANGUAGES CXX)
+
+set(SOFAGENERALSIMPLEFEM_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-    config.h
-    initGeneralSimpleFEM.h
+    ${SOFAGENERALSIMPLEFEM_SRC}/config.h.in
+    ${SOFAGENERALSIMPLEFEM_SRC}/initSofaGeneralSimpleFem.h
     )
 
 set(SOURCE_FILES
-    initGeneralSimpleFEM.cpp
+    ${SOFAGENERALSIMPLEFEM_SRC}/initSofaGeneralSimpleFem.cpp
     )
 
 list(APPEND HEADER_FILES
-    BeamFEMForceField.h
-    BeamFEMForceField.inl
-    HexahedralFEMForceField.h
-    HexahedralFEMForceField.inl
-    HexahedralFEMForceFieldAndMass.h
-    HexahedralFEMForceFieldAndMass.inl
-    HexahedronFEMForceFieldAndMass.h
-    HexahedronFEMForceFieldAndMass.inl
-    LengthContainer.h
-    PoissonContainer.h
-    RadiusContainer.h
-    StiffnessContainer.h
-    TetrahedralCorotationalFEMForceField.h
-    TetrahedralCorotationalFEMForceField.inl
-    TriangularFEMForceFieldOptim.h
-    TriangularFEMForceFieldOptim.inl
+    ${SOFAGENERALSIMPLEFEM_SRC}/BeamFEMForceField.h
+    ${SOFAGENERALSIMPLEFEM_SRC}/BeamFEMForceField.inl
+    ${SOFAGENERALSIMPLEFEM_SRC}/HexahedralFEMForceField.h
+    ${SOFAGENERALSIMPLEFEM_SRC}/HexahedralFEMForceField.inl
+    ${SOFAGENERALSIMPLEFEM_SRC}/HexahedralFEMForceFieldAndMass.h
+    ${SOFAGENERALSIMPLEFEM_SRC}/HexahedralFEMForceFieldAndMass.inl
+    ${SOFAGENERALSIMPLEFEM_SRC}/HexahedronFEMForceFieldAndMass.h
+    ${SOFAGENERALSIMPLEFEM_SRC}/HexahedronFEMForceFieldAndMass.inl
+    ${SOFAGENERALSIMPLEFEM_SRC}/LengthContainer.h
+    ${SOFAGENERALSIMPLEFEM_SRC}/PoissonContainer.h
+    ${SOFAGENERALSIMPLEFEM_SRC}/RadiusContainer.h
+    ${SOFAGENERALSIMPLEFEM_SRC}/StiffnessContainer.h
+    ${SOFAGENERALSIMPLEFEM_SRC}/TetrahedralCorotationalFEMForceField.h
+    ${SOFAGENERALSIMPLEFEM_SRC}/TetrahedralCorotationalFEMForceField.inl
+    ${SOFAGENERALSIMPLEFEM_SRC}/TriangularFEMForceFieldOptim.h
+    ${SOFAGENERALSIMPLEFEM_SRC}/TriangularFEMForceFieldOptim.inl
     )
 list(APPEND SOURCE_FILES
-    BeamFEMForceField.cpp
-    HexahedralFEMForceField.cpp
-    HexahedralFEMForceFieldAndMass.cpp
-    HexahedronFEMForceFieldAndMass.cpp
-    TetrahedralCorotationalFEMForceField.cpp
-    TriangularFEMForceFieldOptim.cpp
+    ${SOFAGENERALSIMPLEFEM_SRC}/BeamFEMForceField.cpp
+    ${SOFAGENERALSIMPLEFEM_SRC}/HexahedralFEMForceField.cpp
+    ${SOFAGENERALSIMPLEFEM_SRC}/HexahedralFEMForceFieldAndMass.cpp
+    ${SOFAGENERALSIMPLEFEM_SRC}/HexahedronFEMForceFieldAndMass.cpp
+    ${SOFAGENERALSIMPLEFEM_SRC}/TetrahedralCorotationalFEMForceField.cpp
+    ${SOFAGENERALSIMPLEFEM_SRC}/TriangularFEMForceFieldOptim.cpp
 
     )
+
+find_package(SofaBase REQUIRED) # SofaBaseTopology 
+find_package(SofaCommon REQUIRED) # SofaSimpleFem
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaSimpleFem)
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaGeneral
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
-    )
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFAGENERALSIMPLEFEM_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFAGENERALSIMPLEFEM_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(${PROJECT_NAME}_test)
+endif()
