@@ -31,7 +31,6 @@
         
         <TetrahedronSetTopologyContainer name="Tetra_topo1" />
         <TetrahedronSetTopologyModifier />
-        <TetrahedronSetTopologyAlgorithms template="Vec3d" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" />
         
         <Hexa2TetraTopologicalMapping input="@../grid" output="@Tetra_topo1" />
@@ -68,7 +67,6 @@
         
         <TetrahedronSetTopologyContainer name="Tetra_topo2" />
         <TetrahedronSetTopologyModifier />
-        <TetrahedronSetTopologyAlgorithms template="Vec3d" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" drawEdges="0" drawScaleTetrahedra="0.8"/>
         
         <Hexa2TetraTopologicalMapping input="@../grid" output="@Tetra_topo2" />

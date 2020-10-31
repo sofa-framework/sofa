@@ -35,7 +35,6 @@
 			<Node name="Tetra1">
 				<TetrahedronSetTopologyContainer name="Container"/>
 				<TetrahedronSetTopologyModifier name="Modifier"/>
-				<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 				<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 				<Hexa2TetraTopologicalMapping input="@../grid" output="@Container"/>
 				<Node name="Visu1">
@@ -72,7 +71,6 @@
 			<Node name="Tetra2">
 				<TetrahedronSetTopologyContainer name="Container"/>
 				<TetrahedronSetTopologyModifier name="Modifier"/>
-				<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 				<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 				<Hexa2TetraTopologicalMapping input="@../grid" output="@Container"/>
 				<Node name="Visu2">
@@ -109,7 +107,6 @@
 			<Node name="Tetra3">
 				<TetrahedronSetTopologyContainer name="Container"/>
 				<TetrahedronSetTopologyModifier name="Modifier"/>
-				<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 				<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 				<Hexa2TetraTopologicalMapping input="@../grid" output="@Container"/>
 				<Node name="Visu3">

@@ -18,7 +18,6 @@
         <MechanicalObject src="@../loader" name="Volume" translation="4 0 0"/>
         <TetrahedronSetTopologyContainer name="Tetra_topo" tetrahedra="@../loader.tetrahedra" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         
         <DiagonalMass massDensity="1.0" />
@@ -55,7 +54,6 @@
         <MechanicalObject src="@../loader" name="Volume" translation="-4 0 0"/>
         <TetrahedronSetTopologyContainer name="Tetra_topo" tetrahedra="@../loader.tetrahedra" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         
         <DiagonalMass massDensity="1.0" />

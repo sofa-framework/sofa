@@ -10,7 +10,6 @@
     <Node name="Tetra" gravity="0 0 0" >
         <TetrahedronSetTopologyContainer name="Container" tags="meca"/>
         <TetrahedronSetTopologyModifier name="Modifier" tags="meca"/>
-        <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" tags="meca"/>
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  tags="meca"/>
         <Hexa2TetraTopologicalMapping name="default28" swapping="0" tags="meca"/>
         <TriangleCollisionModel name="collisionmodel" />

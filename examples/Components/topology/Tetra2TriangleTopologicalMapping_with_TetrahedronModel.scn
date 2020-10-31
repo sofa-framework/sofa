@@ -14,7 +14,6 @@
         <MechanicalObject src="@loader" template="Vec3d" name="Volume" restScale="1" />
         <TetrahedronSetTopologyContainer src="@loader" name="Container" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <DiagonalMass template="Vec3d" name="default3" massDensity="0.5" />
         <FixedPlaneConstraint template="Vec3d" name="default4" direction="0 0 1" dmin="-0.1" dmax="0.1" />

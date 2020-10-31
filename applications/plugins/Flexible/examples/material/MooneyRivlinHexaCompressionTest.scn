@@ -35,7 +35,6 @@
     <Node name="Tetra" >
       <TetrahedronSetTopologyContainer name="TetraContainer" />
       <TetrahedronSetTopologyModifier />
-      <TetrahedronSetTopologyAlgorithms template="Vec3d" />
       <TetrahedronSetGeometryAlgorithms template="Vec3d" />
       <Hexa2TetraTopologicalMapping name="default28" input="@../hexahedra" output="@TetraContainer" />
       

@@ -30,7 +30,6 @@
             <Node name="MappedTetrahedronA">
                 <TetrahedronSetTopologyContainer name="tetraContainer" position="2.1 0.1 0.1 2.1 0.9 0.1 2.1 0.9 0.9 2.9 0.1 0.1" tetrahedra="0 1 2 3" />
                 <TetrahedronSetTopologyModifier name="tetraModifier" />
-                <TetrahedronSetTopologyAlgorithms template="Vec3d" name="tetraAlgo" />
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS2" />
                 <BarycentricMapping template="Vec3d,Vec3d" name="mapping12" mapMatrices="true" input="@../MS1" output="@MS2" />
@@ -57,7 +56,6 @@
             <Node name="MappedTetrahedronA">
                 <TetrahedronSetTopologyContainer name="tetraContainer" position="2.1 0.1 0.1 2.1 0.9 0.1 2.1 0.9 0.9 2.9 0.1 0.1" tetrahedra="0 1 2 3" />
                 <TetrahedronSetTopologyModifier name="tetraModifier" />
-                <TetrahedronSetTopologyAlgorithms template="Vec3d" name="tetraAlgo" />
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS2" />
                 <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="200" poissonRatio="0.3" method="large" drawing="1" />

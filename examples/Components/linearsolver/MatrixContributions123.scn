@@ -29,7 +29,6 @@
             <Node name="MappedTetrahedronA">
                 <TetrahedronSetTopologyContainer name="tetraContainer" position="3.0 0.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.8 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.2 0.8" tetrahedra="0 1 2 3" />
                 <TetrahedronSetTopologyModifier name="tetraModifier" />
-                <TetrahedronSetTopologyAlgorithms template="Vec3d" name="tetraAlgo" />
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS3" />
                 <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large" drawing="1" />
@@ -52,7 +51,6 @@
             <Node name="MappedTetrahedronB">
                 <TetrahedronSetTopologyContainer name="tetraContainer" position="3.0 4.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 4.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 4.8 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 4.2 0.8" tetrahedra="0 1 2 3" />
                 <TetrahedronSetTopologyModifier name="tetraModifier" />
-                <TetrahedronSetTopologyAlgorithms template="Vec3d" name="tetraAlgo" />
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS4" />
                 <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large" drawing="1" />
@@ -81,7 +79,6 @@
             <Node name="MappedTetrahedronA">
                 <TetrahedronSetTopologyContainer name="tetraContainer" position="3.0 0.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.8 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.2 0.8" tetrahedra="0 1 2 3" />
                 <TetrahedronSetTopologyModifier name="tetraModifier" />
-                <TetrahedronSetTopologyAlgorithms template="Vec3d" name="tetraAlgo" />
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS3" />
                 <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large" drawing="1" />
@@ -104,7 +101,6 @@
             <Node name="MappedTetrahedronB">
                 <TetrahedronSetTopologyContainer name="tetraContainer" position="3.0 4.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 4.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 4.8 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 4.2 0.8" tetrahedra="0 1 2 3" />
                 <TetrahedronSetTopologyModifier name="tetraModifier" />
-                <TetrahedronSetTopologyAlgorithms template="Vec3d" name="tetraAlgo" />
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS4" />
                 <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large" drawing="1" />

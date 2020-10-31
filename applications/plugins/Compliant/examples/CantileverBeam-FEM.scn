@@ -17,7 +17,6 @@
         <Node name="Tetra" >
             <TetrahedronSetTopologyContainer name="TetraContainer" />
             <TetrahedronSetTopologyModifier />
-            <TetrahedronSetTopologyAlgorithms template="Vec3d" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" />
             <Hexa2TetraTopologicalMapping name="default28" input="@grid" output="@TetraContainer" />
             <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="polar" poissonRatio="0" youngModulus="1000" />
