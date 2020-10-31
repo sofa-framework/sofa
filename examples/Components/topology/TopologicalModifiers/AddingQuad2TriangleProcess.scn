@@ -16,7 +16,6 @@
         <MechanicalObject template="Vec3d" src="@loader" name="Quads" showObject="1" />
         <QuadSetTopologyContainer src="@loader" name="Quad_topo" listening="1" />
         <QuadSetTopologyModifier name="Modifier" />
-        <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <QuadSetGeometryAlgorithms />
         <TopologicalChangeProcessor listening="1" filename="AddingQuadsProcess.txt" />
         <!--		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/> -->

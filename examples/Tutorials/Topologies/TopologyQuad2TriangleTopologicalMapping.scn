@@ -16,7 +16,6 @@
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="40" tolerance="1e-09" threshold="1e-09" />
         <QuadSetTopologyContainer src="@loader" name="Container" />
         <QuadSetTopologyModifier name="Topology Modifier" />
-        <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <!--<QuadularBendingSprings name="FEM-Bend" template="Vec3d" stiffness="3000" damping="1"/>-->
         <DiagonalMass name="Mass" template="Vec3d" massDensity="0.5" />

@@ -17,7 +17,6 @@
         <Node name="Quad Mesh">
             <QuadSetTopologyContainer name="Container" />
             <QuadSetTopologyModifier name="Modifier" />
-            <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
             <Hexa2QuadTopologicalMapping name="default6" input="@../grid" output="@Container" />
             <Node name="Triangles Mesh" gravity="0 -9.81 0">
