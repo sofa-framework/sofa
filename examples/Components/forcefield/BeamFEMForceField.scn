@@ -4,6 +4,7 @@
 <Node name="root" dt="0.01">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaMiscMapping'/> 
+    <RequiredPlugin name='SofaGeneralLinearSolver'/>
     
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
