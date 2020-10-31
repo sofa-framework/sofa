@@ -29,7 +29,6 @@
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" drawNormals="1" drawNormalLength="1.0"/>
             <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Triangle_topo" printLog="1"/>
 
@@ -63,7 +62,6 @@
         <Node name="T_2">
             <TriangleSetTopologyContainer name="Triangle_topo" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" drawNormals="1" drawNormalLength="1.0"/>
             <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Triangle_topo" printLog="1"/>
 

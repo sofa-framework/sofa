@@ -43,7 +43,6 @@
         <Node name="Surface1">
             <TriangleSetTopologyContainer  name="Container1" />
             <TriangleSetTopologyModifier   />
-            <TriangleSetTopologyAlgorithms template="Vec3d" />
             <TriangleSetGeometryAlgorithms template="Vec3d" />
             <Tetra2TriangleTopologicalMapping input="@../Tetra_topo1" output="@Container1" />
 
@@ -80,7 +79,6 @@
         <Node name="Surface2">
             <TriangleSetTopologyContainer  name="Container2" />
             <TriangleSetTopologyModifier   />
-            <TriangleSetTopologyAlgorithms template="Vec3d" />
             <TriangleSetGeometryAlgorithms template="Vec3d" />
             <Tetra2TriangleTopologicalMapping input="@../Tetra_topo2" output="@Container2" />
 

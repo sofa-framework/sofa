@@ -16,7 +16,6 @@
         <MechanicalObject src="@loader" template="Vec3d" name="default4" scale3d="10 10 10" restScale="1" />
         <TriangleSetTopologyContainer src="@loader" name="Triangle_topo" />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <DiagonalMass template="Vec3d" name="default5" massDensity="1.5" />
         <BoxROI template="Vec3d" name="box_roi1" box="0 9.5 -0.5 10 10.5 0.5"/>

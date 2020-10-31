@@ -25,7 +25,6 @@
         <Node name="Triangles Mesh">
             <TriangleSetTopologyContainer name="Container" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
             <Tetra2TriangleTopologicalMapping name="Mapping" input="@../Container" output="@Container" />
             <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />

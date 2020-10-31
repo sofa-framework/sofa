@@ -12,7 +12,6 @@
 		<MechanicalObject src="@loader" template="Vec3d" name="mechanical" scale="10" restScale="1"/>
 		<ManifoldTriangleSetTopologyContainer src="@loader" name="Container"/>
 		<ManifoldTriangleSetTopologyModifier name="Modifier"/>
-		<ManifoldTriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 		<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 		<DiagonalMass template="Vec3d" name="default146" massDensity="0.15"/>
 		<FixedConstraint template="Vec3d" name="default147" indices="0 1"/>

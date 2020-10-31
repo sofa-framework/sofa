@@ -28,7 +28,6 @@
         <Node name="Triangles Mesh">
             <TriangleSetTopologyContainer name="Container" />
             <TriangleSetTopologyModifier name="Topology Modifier" />
-            <TriangleSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
             <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawEdges="1" drawColorEdges="1.0 1.0 0.3" />
             <Quad2TriangleTopologicalMapping name="Topological Mapping" input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="1000" />

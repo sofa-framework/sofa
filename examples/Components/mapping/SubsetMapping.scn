@@ -41,7 +41,6 @@
 				<Node name="Visu1">
 					<TriangleSetTopologyContainer name="Container"/>
 					<TriangleSetTopologyModifier name="Modifier"/>
-					<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 					<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 					<Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="1" />
 <!-- 					<OglModel name="Visual" filename="mesh/suture.obj" putOnlyTexCoords="true"  dx="-0.055" material="texture Ambient 1 0.2 0.2 0.2 0.0 Diffuse 1 1.0 0.8 0.7 1.0 Specular 1 0.1 0.1 0.1 1.0 Emissive 0 0.15 0.05 0.05 0.0 Shininess 1 20" />
@@ -79,7 +78,6 @@
 				<Node name="Visu2">
 					<TriangleSetTopologyContainer name="Container"/>
 					<TriangleSetTopologyModifier name="Modifier"/>
-					<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 					<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 					<Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="1" />
 <!-- 					<OglModel name="Visual" filename="mesh/suture.obj" putOnlyTexCoords="true"  dx="0.00" material="texture Ambient 1 0.2 0.2 0.2 0.0 Diffuse 1 1.0 0.8 0.7 1.0 Specular 1 0.1 0.1 0.1 1.0 Emissive 0 0.15 0.05 0.05 0.0 Shininess 1 20" />
@@ -117,7 +115,6 @@
 				<Node name="Visu3">
 					<TriangleSetTopologyContainer name="Container"/>
 					<TriangleSetTopologyModifier name="Modifier"/>
-					<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 					<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 					<Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="1" />
 					<OglModel name="Visual3" color="1 0.3 0.1 1"/>

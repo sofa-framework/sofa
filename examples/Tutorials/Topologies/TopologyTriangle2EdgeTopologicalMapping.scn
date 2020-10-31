@@ -15,7 +15,6 @@
         <MechanicalObject src="@loader" template="Vec3d" name="mechanical" scale="10" restScale="1" />
         <TriangleSetTopologyContainer src="@loader" name="Container" />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
         <DiagonalMass template="Vec3d" name="mass" massDensity="0.15" />

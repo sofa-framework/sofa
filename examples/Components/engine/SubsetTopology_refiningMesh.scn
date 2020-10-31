@@ -23,7 +23,6 @@
             <Node>
                 <TriangleSetTopologyContainer name="ContainerTri" />
                 <TriangleSetTopologyModifier name="Modifier" />
-                <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                 <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
                 <Tetra2TriangleTopologicalMapping name="Mapping" input="@../Container" output="@ContainerTri" />
                 <OglModel name="Visual" color="red" dx="60" />
@@ -45,7 +44,6 @@
                 <Node>
                     <TriangleSetTopologyContainer name="ContainerTri" />
                     <TriangleSetTopologyModifier name="Modifier" />
-                    <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                     <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
                     <Tetra2TriangleTopologicalMapping name="Mapping" input="@../Container" output="@ContainerTri" />
                     <TriangleCollisionModel template="Vec3d" name="default7" />

@@ -17,7 +17,6 @@
         <MechanicalObject name="dofs" src="@loader" template="Vec3" />
         <TriangleSetTopologyContainer src="@loader" name="Triangle_topo" />
         <TriangleSetTopologyModifier name="Triangle_mod" />
-        <TriangleSetTopologyAlgorithms template="Vec3" name="TopoAlgo" />
         <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
         <DiagonalMass template="Vec3" name="mass" massDensity="1.0" />
         <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />

@@ -24,7 +24,6 @@
         <Node name="T" gravity="0 -9.81 0">
             <TriangleSetTopologyContainer name="Container" tags="meca" />
             <TriangleSetTopologyModifier name="Modifier" tags="meca" />
-            <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" tags="meca" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" tags="meca" />
             <Tetra2TriangleTopologicalMapping name="default6" input="@../Container" output="@Container" />
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />

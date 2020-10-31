@@ -30,7 +30,6 @@
             <Node name="T">
                 <TriangleSetTopologyContainer  name="Container" />
                 <TriangleSetTopologyModifier   name="Modifier" />
-                <TriangleSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
                 <TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
                 <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
                 <TriangularFEMForceField name="FEM" youngModulus="10" poissonRatio="0.3" method="large" />

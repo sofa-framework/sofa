@@ -32,7 +32,6 @@
                 <VisualStyle displayFlags="hideWireframe" />
                 <TriangleSetTopologyContainer name="container" />
                 <TriangleSetGeometryAlgorithms template="Vec3d" />
-                <TriangleSetTopologyAlgorithms template="Vec3d" />
                 <TriangleSetTopologyModifier />
                 <Tetra2TriangleTopologicalMapping input="@../container" output="@container" />
                 <TriangleCollisionModel template="Vec3d" />

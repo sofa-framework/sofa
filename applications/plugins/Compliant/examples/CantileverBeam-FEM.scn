@@ -26,7 +26,6 @@
             <Node name="Triangles" >
                 <TriangleSetTopologyContainer name="TriangleContainer" />
                 <TriangleSetTopologyModifier />
-                <TriangleSetTopologyAlgorithms template="Vec3d" />
                 <TriangleSetGeometryAlgorithms template="Vec3d" />
                 <Tetra2TriangleTopologicalMapping input="@TetraContainer" output="@TriangleContainer" />
 

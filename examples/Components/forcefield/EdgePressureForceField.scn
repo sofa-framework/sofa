@@ -13,7 +13,6 @@
 		<MechanicalObject template="Vec3d" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="@loader.translation"  rotation="@loader.rotation"  scale3d="@loader.scale3d" />
 		<TriangleSetTopologyContainer name="Container"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles" />
 		<TriangleSetTopologyModifier name="Modifier" />
-		<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 		<DiagonalMass template="Vec3d" name="diagonalMass1"  massDensity="0.15" />
 
