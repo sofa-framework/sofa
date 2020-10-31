@@ -123,10 +123,6 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     createObject(nodeVolume, "TetrahedronSetTopologyModifier", {
         { "name","Modifier" }
         });
-    createObject(nodeVolume, "TetrahedronSetTopologyAlgorithms", {
-        { "name","TopoAlgo" },
-        { "template", "Vec3" }
-        });
     createObject(nodeVolume, "TetrahedronSetGeometryAlgorithms", {
         { "name","GeomAlgo" },
         { "template", "Vec3" }
@@ -163,10 +159,6 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
         });
     createObject(nodeSurface, "TriangleSetTopologyModifier", {
         { "name","Modifier" }
-        });
-    createObject(nodeSurface, "TriangleSetTopologyAlgorithms", {
-        { "name","TopoAlgo" },
-        { "template", "Vec3" }
         });
     createObject(nodeSurface, "TriangleSetGeometryAlgorithms", {
         { "name","GeomAlgo" },
