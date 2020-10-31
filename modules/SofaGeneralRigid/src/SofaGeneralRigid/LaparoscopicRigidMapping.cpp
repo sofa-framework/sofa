@@ -28,13 +28,7 @@
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
@@ -46,9 +40,4 @@ int LaparoscopicRigidMappingClass = core::RegisterObject("TODO-LaparoscopicRigid
 
 template class SOFA_GENERAL_RIGID_API LaparoscopicRigidMapping< LaparoscopicRigidTypes, RigidTypes >;
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::mapping

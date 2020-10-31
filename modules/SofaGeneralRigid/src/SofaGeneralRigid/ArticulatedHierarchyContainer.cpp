@@ -23,13 +23,7 @@
 #include <SofaGeneralRigid/ArticulatedHierarchyContainer.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 
 // Register in the Factory
@@ -47,8 +41,4 @@ int ArticulationClass = core::RegisterObject("This class defines an articulation
         .add< Articulation >()
         ;
 
-} // namespace container
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::container

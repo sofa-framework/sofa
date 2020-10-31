@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_H
-#define SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralRigid/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -31,13 +30,7 @@
 
 #include <vector>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
@@ -188,15 +181,9 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)
-extern template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+extern template class SOFA_SOFAGENERALRIGID_API LineSetSkinningMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 
 
 #endif
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::mapping

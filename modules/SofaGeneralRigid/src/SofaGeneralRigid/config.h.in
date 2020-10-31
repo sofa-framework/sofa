@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGENERALRIGID_CONFIG_H
-#define SOFAGENERALRIGID_CONFIG_H
+#pragma once
 
-#include <SofaGeneral/config.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_GENERAL_RIGID
-#  define SOFA_TARGET SofaGeneralRigid
-#  define SOFA_GENERAL_RIGID_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFAGENERALRIGID_VERSION @PROJECT_VERSION@
+
+#ifdef SOFA_BUILD_SOFAGENERALRIGID
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAGENERALRIGID_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_GENERAL_RIGID_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
+#  define SOFA_SOFAGENERALRIGID_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif

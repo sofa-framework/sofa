@@ -25,13 +25,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
@@ -40,11 +34,7 @@ using namespace sofa::defaulttype;
 int ArticulatedSystemMappingClass = core::RegisterObject("Mapping between a set of 6D DOF's and a set of angles (µ) using an articulated hierarchy container. ")
         .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types > >();
 
-template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types >;
+template class SOFA_SOFAGENERALRIGID_API ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types >;
 
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::mapping

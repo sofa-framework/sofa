@@ -20,9 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_INL
-
+#pragma once
 #include <SofaGeneralRigid/ArticulatedSystemMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -31,13 +29,7 @@
 
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TInRoot, class TOut>
@@ -578,10 +570,4 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_INL
+} //namespace sofa::component::mapping

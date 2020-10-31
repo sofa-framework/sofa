@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_INL
-
+#pragma once
 #include <SofaGeneralRigid/SkinningMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
@@ -35,13 +33,7 @@
 #include <string>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
@@ -450,10 +442,4 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 
 
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::mapping
