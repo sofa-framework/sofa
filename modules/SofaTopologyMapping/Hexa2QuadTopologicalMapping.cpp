@@ -113,7 +113,7 @@ void Hexa2QuadTopologicalMapping::init()
     toModel->setNbPoints(fromModel->getNbPoints());
 
     const sofa::helper::vector<core::topology::BaseMeshTopology::Quad> &quadArray=fromModel->getQuads();
-    sofa::helper::vector <index_type>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
 
@@ -144,7 +144,7 @@ void Hexa2QuadTopologicalMapping::init()
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-index_type Hexa2QuadTopologicalMapping::getFromIndex(index_type ind)
+Index Hexa2QuadTopologicalMapping::getFromIndex(Index ind)
 {
 
     if(fromModel->getHexahedraAroundQuad(ind).size()==1)
@@ -251,7 +251,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[Loc2GlobVec.size() - 1]));
                     Loc2GlobVec.resize( Loc2GlobVec.size() - 1 );
 
-                    sofa::helper::vector< index_type > quads_to_remove;
+                    sofa::helper::vector< Index > quads_to_remove;
                     quads_to_remove.push_back(ind_k);
 
                     to_tstm->removeQuads(quads_to_remove, true, false);
@@ -274,7 +274,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
             const Topology::SetIndices & tab = ( static_cast< const HexahedraRemoved *>( *itBegin ) )->getArray();
 
             sofa::helper::vector< core::topology::BaseMeshTopology::Quad > quads_to_create;
-            sofa::helper::vector< index_type > quadsIndexList;
+            sofa::helper::vector< Index > quadsIndexList;
             auto nb_elems = toModel->getNbQuads();
             const bool flipN = flipNormals.getValue();
 
@@ -387,8 +387,8 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
             const Topology::SetIndices & tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
             const Topology::SetIndices & inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
-            sofa::helper::vector<index_type> indices;
-            sofa::helper::vector<index_type> inv_indices;
+            sofa::helper::vector<Index> indices;
+            sofa::helper::vector<Index> inv_indices;
 
             for(unsigned int i = 0; i < tab.size(); ++i)
             {

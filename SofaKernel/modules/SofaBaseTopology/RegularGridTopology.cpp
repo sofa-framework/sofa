@@ -171,7 +171,7 @@ Vector3 RegularGridTopology::getPointInGrid(int i, int j, int k) const
     return d_p0.getValue()+dx*i+dy*j+dz*k;
 }
 
-RegularGridTopology::index_type RegularGridTopology::findPoint(const Vector3& position) const
+RegularGridTopology::Index RegularGridTopology::findPoint(const Vector3& position) const
 {
     const Vector3 p0 = d_p0.getValue();
     const Vec3i   n  = d_n.getValue();
@@ -197,7 +197,7 @@ RegularGridTopology::index_type RegularGridTopology::findPoint(const Vector3& po
     return getIndex(ix, iy, iz);
 }
 
-RegularGridTopology::index_type RegularGridTopology::findPoint(const Vector3& position, const SReal epsilon) const
+RegularGridTopology::Index RegularGridTopology::findPoint(const Vector3& position, const SReal epsilon) const
 {
     const Vector3 p0 = d_p0.getValue();
     const Vec3i   n  = d_n.getValue();
@@ -234,7 +234,7 @@ RegularGridTopology::index_type RegularGridTopology::findPoint(const Vector3& po
 }
 
 /// return the cube containing the given point (or -1 if not found).
-RegularGridTopology::index_type RegularGridTopology::findCube(const Vector3& pos)
+RegularGridTopology::Index RegularGridTopology::findCube(const Vector3& pos)
 {
     if (d_n.getValue()[0]<2 || d_n.getValue()[1]<2 || d_n.getValue()[2]<2)
         return InvalidID;
@@ -258,7 +258,7 @@ RegularGridTopology::index_type RegularGridTopology::findCube(const Vector3& pos
 }
 
 /// return the nearest cube (or -1 if not found).
-RegularGridTopology::index_type RegularGridTopology::findNearestCube(const Vector3& pos)
+RegularGridTopology::Index RegularGridTopology::findNearestCube(const Vector3& pos)
 {
     if (d_n.getValue()[0]<2 || d_n.getValue()[1]<2 || d_n.getValue()[2]<2) return InvalidID;
     Vector3 p = pos-d_p0.getValue();
@@ -276,7 +276,7 @@ RegularGridTopology::index_type RegularGridTopology::findNearestCube(const Vecto
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-RegularGridTopology::index_type RegularGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
+RegularGridTopology::Index RegularGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
     if (d_n.getValue()[0]<2 || d_n.getValue()[1]<2 || d_n.getValue()[2]<2) return InvalidID;
     Vector3 p = pos-d_p0.getValue();
@@ -303,7 +303,7 @@ RegularGridTopology::index_type RegularGridTopology::findCube(const Vector3& pos
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-RegularGridTopology::index_type RegularGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
+RegularGridTopology::Index RegularGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
     if (d_n.getValue()[0]<2 || d_n.getValue()[1]<2 || d_n.getValue()[2]<2) return InvalidID;
     Vector3 p = pos-d_p0.getValue();
@@ -323,12 +323,12 @@ RegularGridTopology::index_type RegularGridTopology::findNearestCube(const Vecto
 }
 
 
-RegularGridTopology::index_type RegularGridTopology::getCubeIndex( int i, int j, int k ) const
+RegularGridTopology::Index RegularGridTopology::getCubeIndex( int i, int j, int k ) const
 {
     return (d_n.getValue()[0]-1)* ( (d_n.getValue()[1]-1)*k + j ) + i;
 }
 
-Vector3 RegularGridTopology::getCubeCoordinate(RegularGridTopology::index_type i) const
+Vector3 RegularGridTopology::getCubeCoordinate(RegularGridTopology::Index i) const
 {
     Vector3 result;
     result[0] = (SReal)(i%(d_n.getValue()[0]-1)); i/=(d_n.getValue()[0]-1);

@@ -134,7 +134,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const index_type /*elementIndice*/, SReal stiffnessFactor)
+void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const Index /*elementIndice*/, SReal stiffnessFactor)
 {
     Real vol = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
@@ -310,7 +310,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(const core::Mechanical
 
 
 template<class DataTypes>
-SReal HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(sofa::defaulttype::index_type /*index*/) const
+SReal HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(sofa::Index /*index*/) const
 {
     msg_warning()<<"HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented"<<msgendl; return 0.0;
 }

@@ -77,10 +77,9 @@ bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
 {
     msg_info() << "MeshOffLoader::readOFF" ;
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
-
-    helper::vector<Triangle>& my_triangles = *(d_triangles.beginEdit());
-    helper::vector<Quad>& my_quads = *(d_quads.beginEdit());
+    auto my_positions = getWriteOnlyAccessor(d_positions);
+    auto my_triangles = getWriteOnlyAccessor(d_triangles);
+    auto my_quads = getWriteOnlyAccessor(d_quads);
 
     size_t numberOfVertices = 0, numberOfFaces = 0, numberOfEdges = 0;
     size_t currentNumberOfVertices = 0, currentNumberOfFaces = 0;
@@ -139,19 +138,15 @@ bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
         if (numberOfVerticesPerFace == 3)
         {
             values >> triangle[0] >> triangle[1] >> triangle[2];
-            addTriangle(&my_triangles, triangle);
+            addTriangle(&my_triangles.wref(), triangle);
         }
         if (numberOfVerticesPerFace == 4)
         {
             values >> quad[0] >> quad[1] >> quad[2] >> quad[3];
-            addQuad(&my_quads, quad);
+            addQuad(&my_quads.wref(), quad);
         }
         currentNumberOfFaces++;
     }
-
-    d_positions.endEdit();
-    d_triangles.endEdit();
-    d_quads.endEdit();
 
     return true;
 }

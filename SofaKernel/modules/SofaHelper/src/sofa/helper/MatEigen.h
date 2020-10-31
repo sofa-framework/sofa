@@ -35,40 +35,40 @@ namespace sofa
 namespace helper
 {
 
-template <std::size_t NumRows, std::size_t NumCols, class Real>
+template <Size NumRows, Size NumCols, class Real>
 Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const defaulttype::Mat< NumRows, NumCols, Real>& mat )
 {
     Eigen::Matrix<Real, NumRows, NumCols> emat;
-    for(std::size_t i=0; i<NumRows; i++)
-        for(std::size_t j=0; j<NumCols; j++)
+    for(Size i=0; i<NumRows; i++)
+        for(Size j=0; j<NumCols; j++)
             emat(i,j) = mat[i][j];
     return emat;
 }
 
-template <std::size_t NumRows, std::size_t NumCols, class Real>
+template <Size NumRows, Size NumCols, class Real>
 defaulttype::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, NumCols>& emat )
 {
     defaulttype::Mat<NumRows, NumCols, Real> mat;
-    for(std::size_t i=0; i<NumRows; i++)
-        for(std::size_t j=0; j<NumCols; j++)
+    for(Size i=0; i<NumRows; i++)
+        for(Size j=0; j<NumCols; j++)
             mat[i][j] = emat(i,j);
     return mat;
 }
 
-template <std::size_t NumRows, class Real>
+template <Size NumRows, class Real>
 defaulttype::Vec<NumRows, Real>  sofaVec( const Eigen::Matrix<Real, NumRows, 1>& evec )
 {
     defaulttype::Vec<NumRows, Real> vec;
-    for(std::size_t i=0; i<NumRows; i++)
+    for(Size i=0; i<NumRows; i++)
         vec[i] = evec(i);
     return vec;
 }
 
-template <std::size_t NumRows, class Real>
+template <Size NumRows, class Real>
 Eigen::Matrix<Real, NumRows, 1>  eigenVec( const defaulttype::Vec<NumRows, Real>& vec )
 {
     Eigen::Matrix<Real, NumRows, 1> evec;
-    for(std::size_t i=0; i<NumRows; i++)
+    for(Size i=0; i<NumRows; i++)
         evec(i)  = vec[i];
     return evec;
 }

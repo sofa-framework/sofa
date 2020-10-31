@@ -48,7 +48,7 @@ TriangleSetTopologyContainer::TriangleSetTopologyContainer()
 }
 
 
-void TriangleSetTopologyContainer::addTriangle(index_type a, index_type b, index_type c )
+void TriangleSetTopologyContainer::addTriangle(Index a, Index b, Index c )
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
     m_triangle.push_back(Triangle(a,b,c));
@@ -69,7 +69,7 @@ void TriangleSetTopologyContainer::init()
         {
             for(PointID j=0; j<3; ++j)
             {
-                index_type a = m_triangle[i][j];
+                Index a = m_triangle[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }
@@ -145,7 +145,7 @@ void TriangleSetTopologyContainer::createTrianglesAroundEdgeArray ()
     if (hasTrianglesAroundEdge()) // created by upper topology
         return;
 
-    const size_t numTriangles = getNumberOfTriangles();
+    const auto numTriangles = getNumberOfTriangles();
     if (numTriangles == 0)
     {
         msg_warning() << "TrianglesAroundEdge buffer can't be created as no triangles are present in this topology.";
@@ -155,7 +155,7 @@ void TriangleSetTopologyContainer::createTrianglesAroundEdgeArray ()
     if(!hasEdges()) // this method should only be called when edges exist
         createEdgeSetArray();
 
-    const size_t numEdges = getNumberOfEdges();
+    const auto numEdges = getNumberOfEdges();
     if (numEdges == 0)
     {
         msg_warning() << "TrianglesAroundEdge buffer can't be created as no edges are present in this topology.";
@@ -490,12 +490,12 @@ TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriang
     return InvalidID;
 }
 
-size_t TriangleSetTopologyContainer::getNumberOfTriangles() const
+Size TriangleSetTopologyContainer::getNumberOfTriangles() const
 {
     return d_triangle.getValue().size();
 }
 
-size_t TriangleSetTopologyContainer::getNumberOfElements() const
+Size TriangleSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfTriangles();
 }
@@ -758,9 +758,9 @@ bool TriangleSetTopologyContainer::checkConnexity()
 }
 
 
-size_t TriangleSetTopologyContainer::getNumberOfConnectedComponent()
+Size TriangleSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    size_t nbr = this->getNbTriangles();
+    auto nbr = this->getNbTriangles();
 
     if (nbr == 0)
     {

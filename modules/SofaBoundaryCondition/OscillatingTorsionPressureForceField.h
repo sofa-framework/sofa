@@ -55,7 +55,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
 protected:
 
@@ -88,7 +88,7 @@ public:
     sofa::component::topology::TriangleSparseData<sofa::helper::vector <TrianglePressureInformation> > trianglePressureMap; ///< map between edge indices and their pressure    
 
     Data<Real> moment;   ///< total moment/torque applied
-    Data<sofa::helper::vector<index_type> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
+    Data<sofa::helper::vector<Index> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
     Data<Deriv> axis;    ///< axis of rotation and normal used to define the edge subjected to the pressure force
     Data<Coord> center;  ///< center of rotation
     Data<Real> penalty;  ///< strength of penalty force

@@ -45,18 +45,18 @@ namespace projectiveconstraintset
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(index_type, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
+bool PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     return lc != 0;
 }
 
 // Define RemovalFunction
 template< class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, value_type &)
+void PartialLinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
 {
     if (lc)
     {
-        lc->removeIndex((index_type) pointIndex);
+        lc->removeIndex((Index) pointIndex);
     }
 }
 
@@ -111,14 +111,14 @@ void PartialLinearMovementConstraint<DataTypes>::clearIndices()
 }
 
 template <class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::addIndex(index_type index)
+void PartialLinearMovementConstraint<DataTypes>::addIndex(Index index)
 {
     m_indices.beginEdit()->push_back(index);
     m_indices.endEdit();
 }
 
 template <class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::removeIndex(index_type index)
+void PartialLinearMovementConstraint<DataTypes>::removeIndex(Index index)
 {
     removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();

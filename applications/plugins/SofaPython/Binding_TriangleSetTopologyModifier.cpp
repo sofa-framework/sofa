@@ -138,7 +138,7 @@ static PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObj
         {
             if(ancestorsArgs && coefsArgs )
             {
-                const auto& ancestors = parseVectorOfVector<sofa::defaulttype::index_type>( ancestorsArgs );
+                const auto& ancestors = parseVectorOfVector<sofa::Index>( ancestorsArgs );
                 const auto& coefs     = parseVectorOfVector<double>(coefsArgs);
                 obj->addTriangles(triangles, ancestors, coefs );
             }
@@ -162,7 +162,7 @@ static PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, Py
 
     if (PyArg_UnpackTuple(args, "removeTriangles", 1, 3, &triangleIndicesArg, &removeIsolatedEdgesArg, &removeIsolatedPointsArg))
     {
-        vector< sofa::defaulttype::index_type > triangleIndices;
+        vector< sofa::Index > triangleIndices;
         bool removeIsolatedEdges=true;
         bool removeIsolatedPoints=true;
 
@@ -213,9 +213,9 @@ static PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *self,
     {
         auto triangles = parseTriangleList( trianglesArg );
         auto triangleIndices    = parseVector<Topology::TriangleID>( triangleIndicesArg );
-        auto ancestors = parseVectorOfVector<sofa::defaulttype::index_type>( ancestorsArg );
+        auto ancestors = parseVectorOfVector<sofa::Index>( ancestorsArg );
         auto coefs     = parseVectorOfVector<double>(coefsArg);
-        auto triangles2remove = parseVector<sofa::defaulttype::index_type>(triangles2RemoveArg);
+        auto triangles2remove = parseVector<sofa::Index>(triangles2RemoveArg);
 
         obj->addRemoveTriangles(triangles.size(),triangles,triangleIndices,ancestors,coefs, triangles2remove );
 

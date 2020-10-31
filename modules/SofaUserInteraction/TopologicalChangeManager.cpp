@@ -65,7 +65,7 @@ TopologicalChangeManager::~TopologicalChangeManager()
 {
 }
 
-index_type TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<index_type>& indices) const
+Index TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<Index>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getCollisionTopology();
@@ -137,7 +137,7 @@ index_type TopologicalChangeManager::removeItemsFromTriangleModel(sofa::componen
                 {
                     for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
                     {
-                        vector<index_type> indices;
+                        vector<Index> indices;
                         topoMap->getFromIndex( indices, *it);
                         for( auto itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
@@ -153,11 +153,11 @@ index_type TopologicalChangeManager::removeItemsFromTriangleModel(sofa::componen
         }
     }
 
-    sofa::helper::vector<index_type> vitems;
+    sofa::helper::vector<Index> vitems;
     vitems.reserve(items.size());
     vitems.insert(vitems.end(), items.rbegin(), items.rend());
 
-    index_type res = vitems.size();
+    Index res = vitems.size();
 
     sofa::core::topology::TopologyModifier* topoMod;
     topo_curr->getContext()->get(topoMod);
@@ -173,7 +173,7 @@ index_type TopologicalChangeManager::removeItemsFromTriangleModel(sofa::componen
 }
 
 
-index_type TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<index_type>& indices) const
+Index TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<Index>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getCollisionTopology();
@@ -264,7 +264,7 @@ index_type TopologicalChangeManager::removeItemsFromPointModel(sofa::component::
                 {
                     for (auto it = loc_items.begin(); it != loc_items.end(); ++it)
                     {
-                        vector<index_type> indices;
+                        vector<Index> indices;
                         topoMap->getFromIndex(indices, *it);
                         for (auto itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
@@ -279,11 +279,11 @@ index_type TopologicalChangeManager::removeItemsFromPointModel(sofa::component::
         }
     }
 
-    sofa::helper::vector<index_type> vitems;
+    sofa::helper::vector<Index> vitems;
     vitems.reserve(items.size());
     vitems.insert(vitems.end(), items.rbegin(), items.rend());
 
-    index_type res = vitems.size();
+    Index res = vitems.size();
     
 
     sofa::core::topology::TopologyModifier* topoMod;
@@ -297,7 +297,7 @@ index_type TopologicalChangeManager::removeItemsFromPointModel(sofa::component::
 }
 
 
-index_type TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<index_type>& indices) const
+Index TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<Index>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getCollisionTopology();
@@ -341,7 +341,7 @@ index_type TopologicalChangeManager::removeItemsFromSphereModel(sofa::component:
                 {
                     for (auto it=loc_items.begin(); it != loc_items.end(); ++it)
                     {
-                        vector<index_type> indices;
+                        vector<Index> indices;
                         topoMap->getFromIndex( indices, *it);
                         for(auto itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
@@ -357,11 +357,11 @@ index_type TopologicalChangeManager::removeItemsFromSphereModel(sofa::component:
         }
     }
 
-    sofa::helper::vector<index_type> vitems;
+    sofa::helper::vector<Index> vitems;
     vitems.reserve(items.size());
     vitems.insert(vitems.end(), items.rbegin(), items.rend());
 
-    index_type res = vitems.size();
+    Index res = vitems.size();
 
     sofa::core::topology::TopologyModifier* topoMod;
     topo_curr->getContext()->get(topoMod);
@@ -376,22 +376,22 @@ index_type TopologicalChangeManager::removeItemsFromSphereModel(sofa::component:
 }
 
 // Handle Removing of topological element (from any type of topology)
-index_type TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionElementIterator elem2) const
+Index TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionElementIterator elem2) const
 {
-    helper::vector<index_type> id;
+    helper::vector<Index> id;
     id.push_back(elem2.getIndex());
     return removeItemsFromCollisionModel(elem2.getCollisionModel(), id);
 }
 
-index_type TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const index_type& indices) const
+Index TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const Index& indices) const
 {
-    helper::vector<index_type> id;
+    helper::vector<Index> id;
     id.push_back(indices);
     return removeItemsFromCollisionModel(model, id);
 }
 
 
-index_type TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const helper::vector<index_type>& indices) const
+Index TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const helper::vector<Index>& indices) const
 {
     if(dynamic_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(model)!= nullptr)
     {
@@ -456,8 +456,8 @@ void TopologicalChangeManager::setIncisionFirstCut(bool b)
 }
 
 // Handle Cutting for general model (only Triangle for the moment)
-bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel *firstModel , index_type idxA, const Vector3& firstPoint,
-        sofa::core::CollisionModel *secondModel, index_type idxB, const Vector3& secondPoint,
+bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel *firstModel , Index idxA, const Vector3& firstPoint,
+        sofa::core::CollisionModel *secondModel, Index idxB, const Vector3& secondPoint,
         int snapingValue, int snapingBorderValue)
 {
 
@@ -534,7 +534,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
 
         // Output declarations
         sofa::helper::vector< sofa::core::topology::TopologyObjectType> topoPath_list;
-        sofa::helper::vector<index_type> indices_list;
+        sofa::helper::vector<Index> indices_list;
         sofa::helper::vector< Vec<3, double> > coords2_list;
 
         // Snaping value: input are percentages, we need to transform it as real epsilon value;
@@ -553,7 +553,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
 
 
         // -- STEP 5: Splitting elements along path (incision path is stored inside "new_edges")
-        sofa::helper::vector< index_type > new_edges;
+        sofa::helper::vector< Index > new_edges;
         int result = triangleGeometry->SplitAlongPath(last_indexPoint, coord_a, core::topology::BaseMeshTopology::InvalidID, coord_b, topoPath_list, indices_list, coords2_list, new_edges, epsilonSnap, epsilonBorderSnap);
 
         if (result == -1)
@@ -563,8 +563,8 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
         }
 
         // -- STEP 6: Incise along new_edges path (i.e duplicating edges to create an incision)
-        sofa::helper::vector<index_type> new_points;
-        sofa::helper::vector<index_type> end_points;
+        sofa::helper::vector<Index> new_points;
+        sofa::helper::vector<Index> end_points;
         bool reachBorder = false;
         bool incision_ok = triangleGeometry->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
 

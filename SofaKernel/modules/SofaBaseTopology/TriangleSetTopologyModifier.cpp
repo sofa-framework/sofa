@@ -181,7 +181,7 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 		if (m_container->hasTrianglesAroundVertex())
 		{
             TriangleID previd = m_container->getTriangleIndex(t[0], t[1], t[2]);
-            if (previd != InvalidID)
+            if (previd != sofa::InvalidID)
 			{
 				msg_error() << "Triangle " << t[0] << ", " << t[1] << ", " << t[2] << " already exists with index " << previd << ".";
 			}
@@ -219,7 +219,7 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
     {
         EdgeID edgeIndex = m_container->getEdgeIndex(t[(j+1)%3], t[(j+2)%3]);
 
-        if(edgeIndex == InvalidID)
+        if(edgeIndex == sofa::InvalidID)
         {
             // first create the edges
             sofa::helper::vector< Edge > v(1);
@@ -229,8 +229,8 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
             addEdgesProcess((const sofa::helper::vector< Edge > &) v);
 
             edgeIndex = m_container->getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
-            assert (edgeIndex != InvalidID);
-            if (edgeIndex == InvalidID)
+            assert (edgeIndex != sofa::InvalidID);
+            if (edgeIndex == sofa::InvalidID)
             {
                 msg_error() << "Edge creation: " << e1 << " failed in addTriangleProcess. Edge will not be added in buffers.";
                 continue;

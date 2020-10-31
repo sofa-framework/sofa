@@ -50,6 +50,7 @@ public :
 
 public :
     bool doLoad() override;
+
 protected :
 	enum ElementType{ LINEAR, TRIANGLE, QUADRILATERAL, TETRAHEDRA, HEXAHEDRA, PRISM, PYRAMID, SPHERE, CIRCLE };
 
@@ -58,7 +59,8 @@ protected :
 
 	bool readGID(std::ifstream& file);
 
-        void doClearBuffers() override;
+    void doClearBuffers() override;
+
 private :
 
 	bool readLinearElements(std::ifstream& file);
@@ -67,20 +69,10 @@ private :
 	bool readTetrahedralElements(std::ifstream& file);
 	bool readHexahedralElements(std::ifstream& file);
 
-
-protected :
-//	Data<helper::vector<Coord> > m_vertices;
-//	Data<helper::vector<Edge> > m_edges;
-//	Data<helper::vector<Triangle> > m_triangles;
-//	Data<helper::vector<Quad> > m_quads;
-//	Data<helper::vector<Tetrahedron> > m_tetrahedra;
-//	Data<helper::vector<Hexahedron> > m_hexahedra;
-
 private :
 	unsigned short m_dimensions;
 	ElementType m_eltType;
 	unsigned short m_nNode;
-
 
 };
 
