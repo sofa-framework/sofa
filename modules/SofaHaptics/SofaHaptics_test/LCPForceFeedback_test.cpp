@@ -29,6 +29,7 @@
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaHaptics/LCPForceFeedback.h>
+#include <thread>
 
 
 namespace sofa 
@@ -94,7 +95,6 @@ void LCPForceFeedback_test::HapticsThread(std::atomic<bool>& terminate, void * p
     LCPForceFeedback_test* driverTest = static_cast<LCPForceFeedback_test*>(p_this);
 
     // Loop Timer
-    HANDLE h_timer;
     long targetSpeedLoop = 1; // Target loop speed: 1ms
 
     ctime_t refTicksPerMs = CTime::getRefTicksPerSec() / 1000;
@@ -256,10 +256,10 @@ bool LCPForceFeedback_test::test_Collision()
     simulation::Node::SPtr instruNode = m_root->getChild("Instrument");
     EXPECT_NE(instruNode, nullptr);
     MecaRig::SPtr meca = instruNode->get<MecaRig>(instruNode->SearchDown);
-    LCPRig::SPtr lcp = instruNode->get<LCPRig>(instruNode->SearchDown);
+    m_LCPFFBack = instruNode->get<LCPRig>(instruNode->SearchDown);
     
     // Force only 2 iteration max for ci tests
-    lcp->d_solverMaxIt.setValue(2);
+    m_LCPFFBack->d_solverMaxIt.setValue(2);
 
     // Check components access
     EXPECT_NE(meca, nullptr);
@@ -293,7 +293,7 @@ bool LCPForceFeedback_test::test_Collision()
     
     
     // check position in contact
-    lcp->computeForce(coords[0][0], coords[0][1], coords[0][2], 0, 0, 0, 0, force[0], force[1], force[2]);
+    m_LCPFFBack->computeForce(coords[0][0], coords[0][1], coords[0][2], 0, 0, 0, 0, force[0], force[1], force[2]);
 
     // test with groundtruth, do it index by index for better log
     Coord coordT = Coord(sofa::defaulttype::Vec3d(0.1083095508, -9.45640795, 0.01134330546), sofa::defaulttype::Quatd(0.01623300333, -0.006386979003, -0.408876291, 0.9124230788));
@@ -316,7 +316,7 @@ bool LCPForceFeedback_test::test_Collision()
 
     // check position inside collision
     Coord inside = Coord(sofa::defaulttype::Vec3d(coords[0][0], coords[0][1] - 1.0, coords[0][2]), sofa::defaulttype::Quatd(0.01623300333, -0.006386979003, -0.408876291, 0.9124230788));
-    lcp->computeForce(inside[0], inside[1], inside[2], 0, 0, 0, 0, force[0], force[1], force[2]);
+    m_LCPFFBack->computeForce(inside[0], inside[1], inside[2], 0, 0, 0, 0, force[0], force[1], force[2]);
 
     // test with groundtruth, do it index by index for better log
     coordT = Coord(sofa::defaulttype::Vec3d(0.1083095508, -10.45640795, 0.01134330546), sofa::defaulttype::Quatd(0.01623300333, -0.006386979003, -0.408876291, 0.9124230788));
@@ -339,7 +339,7 @@ bool LCPForceFeedback_test::test_Collision()
 
     // check rigidTypes computeForce method
     VecDeriv forces;
-    lcp->computeForce(coords, forces);
+    m_LCPFFBack->computeForce(coords, forces);
          
     EXPECT_EQ(forces.size(), 1);
     EXPECT_FLOAT_EQ(forces[0][0], -0.00164953925);
