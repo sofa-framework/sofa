@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralSimpleFem/initSofaGeneralSimpleFEM.h>
+#include <SofaGeneralSimpleFem/initSofaGeneralSimpleFem.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
