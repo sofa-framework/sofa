@@ -130,9 +130,6 @@ endif()
 
 ### Windows config
 if(MSVC)
-    #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
-    add_definitions(-DBOOST_ALL_DYN_LINK)
-
     # WinDepPack
     set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack")
     if(NOT EXISTS ${SOFA_DEPENDENCY_PACK_DIR})
