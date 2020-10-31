@@ -17,7 +17,6 @@
         <UniformMass template="Vec3d" name="Mass" vertexMass="0.25" />
         <HexahedronSetTopologyContainer src="@loader" name="Container" />
         <HexahedronSetTopologyModifier name="Modifier" />
-        <HexahedronSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
         <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawHexa="1" drawColorHexahedra="1.0 1.0 0.3" />
         <!--    <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" 
       p0="-10 -10 -10"/>-->

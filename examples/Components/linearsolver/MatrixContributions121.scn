@@ -21,7 +21,6 @@
             <MeshGmshLoader name="loader" filename="mesh/SimpleBeamHexa.msh" />
             <HexahedronSetTopologyContainer name="hexaContainer1" src="@loader" />
             <HexahedronSetTopologyModifier name="hexaModifier1" />
-            <HexahedronSetTopologyAlgorithms name="hexaAlgo1" template="Vec3d" />
             <HexahedronSetGeometryAlgorithms name="hexaGeomAlgo1" template="Vec3d" />
             <MechanicalObject name="MS1" />
             <DiagonalMass massDensity="0.02" name="massA" />
@@ -47,7 +46,6 @@
         <Node name="HexahedraA">
             <HexahedronSetTopologyContainer name="hexaContainer1" filename="mesh/SimpleBeamHexa.msh" />
             <HexahedronSetTopologyModifier name="hexaModifier1" />
-            <HexahedronSetTopologyAlgorithms name="hexaAlgo1" template="Vec3d" />
             <HexahedronSetGeometryAlgorithms name="hexaGeomAlgo1" template="Vec3d" />
             <MechanicalObject name="MS1" />
             <DiagonalMass massDensity="0.02" name="massA" />

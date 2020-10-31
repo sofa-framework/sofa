@@ -20,7 +20,6 @@
         <Node name="HexahedraA">
             <HexahedronSetTopologyContainer name="hexaContainer1" position="0. 0. 0. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        5. 0. 0. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        5. 1. 0. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        0. 1. 0.  &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        0. 0. 1. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        5. 0. 1. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                                5. 1. 1. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                                0. 1. 1." hexahedra="0 1 2 3 4 5 6 7" />
             <HexahedronSetTopologyModifier name="hexaModifier1" />
-            <HexahedronSetTopologyAlgorithms name="hexaAlgo1" template="Vec3d" />
             <HexahedronSetGeometryAlgorithms name="hexaGeomAlgo1" template="Vec3d" />
             <MechanicalObject name="MS1" />
             <DiagonalMass massDensity="0.02" name="massA" />
@@ -52,7 +51,6 @@
         <Node name="HexahedraA">
             <HexahedronSetTopologyContainer name="hexaContainer1" position="0. 0. 0. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        5. 0. 0. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        5. 1. 0. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        0. 1. 0.  &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        0. 0. 1. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        5. 0. 1. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                                5. 1. 1. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                                0. 1. 1." hexahedra="0 1 2 3 4 5 6 7" />
             <HexahedronSetTopologyModifier name="hexaModifier1" />
-            <HexahedronSetTopologyAlgorithms name="hexaAlgo1" template="Vec3d" />
             <HexahedronSetGeometryAlgorithms name="hexaGeomAlgo1" template="Vec3d" />
             <MechanicalObject name="MS1" />
             <DiagonalMass massDensity="0.02" name="massA" />

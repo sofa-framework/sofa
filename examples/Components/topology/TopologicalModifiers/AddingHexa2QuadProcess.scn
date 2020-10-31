@@ -17,7 +17,6 @@
         <MechanicalObject src="@loader" name="Hexa" />
         <HexahedronSetTopologyContainer src="@loader" name="Hexa_topo" listening="1" />
         <HexahedronSetTopologyModifier name="Modifier" />
-        <HexahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <HexahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawHexa="1" />
         <TopologicalChangeProcessor listening="1" filename="AddingHexahedraProcess.txt" />
         <!--		<HexahedralFEMForceField" name="FEM" youngModulus="100" poissonRatio="0.3"  method="large" />-->
