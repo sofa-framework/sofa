@@ -184,7 +184,7 @@ bool TopologyChecker::checkTriangleTopology()
 
     // check triangles around edges
     // check m_trianglesAroundEdge using checked m_edgesInTriangle
-    std::set <int> triangleSet;
+    triangleSet.clear();
     for (size_t i = 0; i < nbE; ++i)
     {
         const auto &tes = m_topology->getTrianglesAroundEdge(i);        
@@ -206,7 +206,7 @@ bool TopologyChecker::checkTriangleTopology()
 
     if (triangleSet.size() != my_triangles.size())
     {
-        msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: found " << triangleSet.size() << " triangles in m_trianglesAroundEdge out of " << m_triangle.size();
+        msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: found " << triangleSet.size() << " triangles in m_trianglesAroundEdge out of " << my_triangles.size();
         ret = false;
     }
 

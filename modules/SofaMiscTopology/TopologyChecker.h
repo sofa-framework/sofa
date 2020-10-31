@@ -23,12 +23,10 @@
 
 #include <SofaMiscTopology/config.h>
 
-
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <fstream>
 
 namespace sofa
 {
@@ -42,7 +40,7 @@ namespace misc
 /** 
 *
 */
-class SOFA_MISC_TOPOLOGY_API TopologyChecker: public core::objectmodel::BaseObject
+class SOFA_SOFAMISCTOPOLOGY_API TopologyChecker: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(TopologyChecker, core::objectmodel::BaseObject);
