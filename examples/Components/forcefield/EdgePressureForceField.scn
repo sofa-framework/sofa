@@ -27,7 +27,6 @@
 		<Node 	name="Edge Mesh"  >
 			<EdgeSetTopologyContainer name="Container" />
 			<EdgeSetTopologyModifier name="Modifier" />
-			<EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 			<EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  drawEdges="1" />
 			<Triangle2EdgeTopologicalMapping name="Mapping"  input="@../Container"  output="@Container" />
 			<EdgePressureForceField template="Vec3d" name="edgePressureFF0"  edges="@Container.edges" pressure="0 0 -0.1" normal="0 0 1"  p_intensity="1" arrowSizeCoef="10"/>

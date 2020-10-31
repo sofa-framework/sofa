@@ -17,7 +17,6 @@
                 <Node 	name="Boundary Edges"  >
 			<EdgeSetTopologyContainer name="Container" />
                         <EdgeSetTopologyModifier name="Modifier" />
-			<EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                         <EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  drawEdges="1" />
 			<Triangle2EdgeTopologicalMapping name="Mapping"  input="@../Container"  output="@Container" />
                         <BoxROI box="0.95 -0.05 -0.05    1.05 1.05 0.05" drawBoxes="1" position="@../mObject1.rest_position" drawEdges="1" edges="@Container.edges" name="pressureBox" />

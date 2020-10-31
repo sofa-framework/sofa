@@ -21,7 +21,6 @@
 		<Node 	name="Edge Mesh" gravity="0 -9.81 0"  >
 			<ManifoldEdgeSetTopologyContainer name="Container"/>
 			<ManifoldEdgeSetTopologyModifier name="Modifier"/>
-			<ManifoldEdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 			<ManifoldEdgeSetGeometryAlgorithms template="Vec3d" name="TopoGeo"/>
 			<Triangle2EdgeTopologicalMapping name="Mapping" input="@../Container" output="@Container"/>
 			<Node 	name="Visu" gravity="0 -9.81 0"  >

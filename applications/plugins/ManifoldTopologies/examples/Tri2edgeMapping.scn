@@ -20,7 +20,6 @@
 		<TriangleCollisionModel name="default7"/>
 		<Node 	name="Edge Mesh" gravity="0 -9.81 0"  >
 			<EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
-			<EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
 			<EdgeSetTopologyContainer name="Container"/>
 			<EdgeSetTopologyModifier name="Modifier"/>
 			<Triangle2EdgeTopologicalMapping name="Mapping"/>
