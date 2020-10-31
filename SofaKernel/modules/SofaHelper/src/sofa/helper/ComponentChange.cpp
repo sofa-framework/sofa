@@ -346,6 +346,17 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "InteractionEllipsoidForceField", Pluginized("v20.12", "SofaGeneralObjectInteraction") },
     { "RepulsiveSpringForceField", Pluginized("v20.12", "SofaGeneralObjectInteraction") },
 
+    // SofaGeneralSimpleFem was pluginized in #1582
+    { "BeamFEMForceField", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "HexahedralFEMForceField", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "HexahedralFEMForceFieldAndMass", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "LengthContainer", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "PoissonContainer", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "RadiusContainer", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "StiffnessContainer", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "TetrahedralCorotationalFEMForceField", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "TriangularFEMForceFieldOptim", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+
     /***********************/
     // REMOVED SINCE v20.06
 
