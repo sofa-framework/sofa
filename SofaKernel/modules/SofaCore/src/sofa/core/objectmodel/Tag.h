@@ -25,6 +25,7 @@
 #include <sofa/core/config.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_Set.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_Text.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Integer.h>
 
 namespace sofa
 {

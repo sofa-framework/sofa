@@ -31,11 +31,11 @@ namespace sofa::defaulttype
 template<std::size_t N, typename real>
 struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidDeriv<N,real>, sofa::defaulttype::RigidDeriv<N,real>::total_size >
 {
-    static std::string name() { std::ostringstream o; o << "RigidDeriv<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
-    static std::string shortName()
+    static std::string GetTypeName() { std::ostringstream o; o << "RigidDeriv<" << N << "," << DataTypeName<real>::GetTypeName() << ">"; return o.str(); }
+    static std::string GetName()
     {
         std::ostringstream o;
-        o << "RigidDeriv" << N << DataTypeInfo<real>::shortName();
+        o << "RigidDeriv" << N << DataTypeInfo<real>::GetName();
         return o.str();
     }
 };
@@ -43,36 +43,26 @@ struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArray
 template<std::size_t N, typename real>
 struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidCoord<N,real>, sofa::defaulttype::RigidCoord<N,real>::total_size >
 {
-    static std::string name() { std::ostringstream o; o << "RigidCoord<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
-    static std::string shortName()
+    static std::string GetTypeName() { std::ostringstream o; o << "RigidCoord<" << N << "," << DataTypeName<real>::GetTypeName() << ">"; return o.str(); }
+    static std::string ()
     {
         std::ostringstream o;
-        o << "RigidCoord" << N << DataTypeInfo<real>::shortName() ;
+        o << "RigidCoord" << N << DataTypeInfo<real>::() ;
         return o.str();
     }
 };
 
 template<std::size_t N, typename real>
-struct DataTypeInfo< sofa::defaulttype::RigidMass<N,real> >
+struct DataTypeInfo< sofa::defaulttype::RigidMass<N,real> > : public DefaultDataTypeInfo<RigidMass<N,real>>
 {
-    static std::string name() { std::ostringstream o; o << "RigidMass<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
-    static std::string shortName()
+    static std::string GetTypeName() { std::ostringstream o; o << "RigidMass<" << N << "," << DataTypeName<real>::GetTypeName() << ">"; return o.str(); }
+    static std::string ()
     {
         std::ostringstream o;
-        o << "RigidMass" << N << DataTypeInfo<real>::name();
+        o << "RigidMass" << N << DataTypeInfo<real>::();
         return o.str();
     }
 };
-
-
-// not needed anymore since shortName
-//template<> struct DataTypeInfo< defaulttype::Rigid2Types::Coord > { static const char* name() { return "Rigid2Types::Coord"; } };
-//template<> struct DataTypeInfo< defaulttype::Rigid2Types::Deriv > { static const char* name() { return "Rigid2Types::Deriv"; } };
-//template<> struct DataTypeInfo< defaulttype::Rigid3Types::Coord > { static const char* name() { return "Rigid3Types::Coord"; } };
-//template<> struct DataTypeInfo< defaulttype::Rigid3Types::Deriv > { static const char* name() { return "Rigid3Types::Deriv"; } };
-
-//template<> struct DataTypeInfo< defaulttype::Rigid2Mass > { static const char* name() { return "Rigid2Mass"; } };
-//template<> struct DataTypeInfo< defaulttype::Rigid3Mass > { static const char* name() { return "Rigid3Mass"; } };
 
 } /// namespace sofa::defaulttype
 

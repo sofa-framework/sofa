@@ -73,7 +73,7 @@ public:
     typedef TClass<BaseData> MyClass;
     static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
     const BaseClass* getClass() const
-    { return GetClass(); }    
+    { return GetClass(); }
     template<class T>
     static void dynamicCast(T*& ptr, Base* /*b*/)
     {
@@ -326,21 +326,19 @@ protected:
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);
 
+    static int getNewId()
+    {
+        static int m_typeId=0;
+        return m_typeId++;
+    }
+
+
+    int getDataTypeId(){ return _doGetDataTypeId_(); }
+    virtual int _doGetDataTypeId_() const = 0;
+
 public:
 
-    /// Helper method to get the type name of type T
-    template<class T>
-    static std::string typeName(const T* = nullptr)
-    {
-        auto tmp = sofa::defaulttype::DataTypeInfoRegistry::Get(typeid(T));
-        if(tmp)
-            return tmp->name();
-        return "unknow";
-        //if (defaulttype::DataTypeInfo<T>::ValidInfo)
-        //    return defaulttype::DataTypeName<T>::name();
-        //else
-        //    return decodeTypeName(typeid(T));
-    }
+
 };
 
 /** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container

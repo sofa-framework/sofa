@@ -32,15 +32,15 @@ namespace sofa::defaulttype
 template<std::size_t N, typename real>
 struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,real> >
 {
-    static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeInfo<real>::name() << ">"; return o.str(); }
-    static std::string shortName() { std::ostringstream o; o << "Vec" << N << "" << DataTypeInfo<real>::shortName() ; return o.str(); }
+    static std::string typNname() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeInfo<real>::name() << ">"; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "Vec" << N << DataTypeInfo<real>::name() ; return o.str(); }
 };
 
 template<std::size_t N, typename real>
 struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
 {
-    static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeInfo<real>::name() << ">"; return o.str(); }
-    static std::string shortName() { std::ostringstream o; o << "VecNoInit" << N << "" << DataTypeInfo<real>::shortName() ; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "VecNoInit" << N << DataTypeInfo<real>::name(); return o.str(); }
+    static std::string typeName() { std::ostringstream o; o << "VecNoInit" << N << "" << DataTypeInfo<real>::typeName() ; return o.str(); }
 };
 
 } /// namespace sofa::defaulttype

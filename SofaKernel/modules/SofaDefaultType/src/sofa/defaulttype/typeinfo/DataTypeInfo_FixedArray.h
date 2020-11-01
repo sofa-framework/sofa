@@ -30,8 +30,8 @@ namespace sofa::defaulttype
 template<class T, std::size_t N>
 struct DataTypeInfo< sofa::helper::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::helper::fixed_array<T,N> >
 {
-    static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::name() << "," << N << ">"; return o.str(); }
-    static std::string shortName() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::shortName() << "," << N << ">"; return o.str(); }
+    static std::string GetName() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::name() << "," << N << ">"; return o.str(); }
+    static std::string GetTypeName() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::typeName() << "," << N << ">"; return o.str(); }
 };
 
 } /// namespace sofa::defaulttype

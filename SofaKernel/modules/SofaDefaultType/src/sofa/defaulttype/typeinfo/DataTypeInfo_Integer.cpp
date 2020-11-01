@@ -25,16 +25,16 @@
 namespace sofa::defaulttype
 {
 
-static int CharTypeInfo = DataTypeInfoRegistry::Set(typeid(char), VirtualTypeInfoA< DataTypeInfo<char> >::get());
-static int UCharTypeInfo = DataTypeInfoRegistry::Set(typeid(unsigned char), VirtualTypeInfoA< DataTypeInfo<unsigned char> >::get());
-static int ShortTypeInfo = DataTypeInfoRegistry::Set(typeid(short), VirtualTypeInfoA< DataTypeInfo<short> >::get());
-static int UShortTypeInfo = DataTypeInfoRegistry::Set(typeid(unsigned short), VirtualTypeInfoA< DataTypeInfo<unsigned short> >::get());
-static int IntTypeInfo = DataTypeInfoRegistry::Set(typeid(int), VirtualTypeInfoA< DataTypeInfo<int> >::get());
-static int UIntTypeInfo = DataTypeInfoRegistry::Set(typeid(unsigned int), VirtualTypeInfoA< DataTypeInfo<unsigned int> >::get());
-static int LongTypeInfo = DataTypeInfoRegistry::Set(typeid(long), VirtualTypeInfoA< DataTypeInfo<long> >::get());
-static int ULongTypeInfo = DataTypeInfoRegistry::Set(typeid(unsigned long), VirtualTypeInfoA< DataTypeInfo<unsigned long> >::get());
-static int LongLongTypeInfo = DataTypeInfoRegistry::Set(typeid(long long), VirtualTypeInfoA< DataTypeInfo<long long> >::get());
-static int ULongLongTypeInfo = DataTypeInfoRegistry::Set(typeid(unsigned long long), VirtualTypeInfoA< DataTypeInfo<unsigned long long> >::get());
+REGISTER_TYPE_INFO_CREATOR(char)
+REGISTER_TYPE_INFO_CREATOR(unsigned char)
+REGISTER_TYPE_INFO_CREATOR(short)
+REGISTER_TYPE_INFO_CREATOR(unsigned short)
+REGISTER_TYPE_INFO_CREATOR(int)
+REGISTER_TYPE_INFO_CREATOR(unsigned int)
+REGISTER_TYPE_INFO_CREATOR(long)
+REGISTER_TYPE_INFO_CREATOR(unsigned long)
+REGISTER_TYPE_INFO_CREATOR(long long)
+REGISTER_TYPE_INFO_CREATOR(unsigned long long)
 
 } /// namespace sofa::defaulttype
 

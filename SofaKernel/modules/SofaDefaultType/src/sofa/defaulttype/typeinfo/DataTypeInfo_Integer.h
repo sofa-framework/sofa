@@ -29,73 +29,73 @@ namespace sofa::defaulttype
 template<>
 struct DataTypeInfo<char> : public IntegerTypeInfo<char>
 {
-    static const char* name() { return "char"; }
-    static const char* shortName() { return "c"; }
+    static const char* GetTypeName() { return "c"; }
+    static const char* getName() { return "c"; }
 };
 
 template<>
 struct DataTypeInfo<unsigned char> : public IntegerTypeInfo<unsigned char>
 {
-    static const char* name() { return "unsigned char"; }
-    static const char* shortName() { return "C"; }
+    static const char* GetTypeName() { return "unsigned char"; }
+    static const char* getName() { return "C"; }
 };
 
 template<>
 struct DataTypeInfo<short> : public IntegerTypeInfo<short>
 {
-    static const char* name() { return "short"; }
-    static const char* shortName() { return "s"; }
+    static const char* GetTypeName() { return "short"; }
+    static const char* getName() { return "s"; }
 };
 
 template<>
 struct DataTypeInfo<unsigned short> : public IntegerTypeInfo<unsigned short>
 {
-    static const char* name() { return "unsigned short"; }
-    static const char* shortName() { return "S"; }
+    static const char* GetTypeName() { return "unsigned short"; }
+    static const char* getName() { return "S"; }
 };
 
 template<>
 struct DataTypeInfo<int> : public IntegerTypeInfo<int>
 {
-    static const char* name() { return "int"; }
-    static const char* shortName() { return "i"; }
+    static const char* GetTypeName() { return "int"; }
+    static const char* getName() { return "i"; }
 };
 
 template<>
 struct DataTypeInfo<unsigned int> : public IntegerTypeInfo<unsigned int>
 {
-    static const char* name() { return "unsigned int"; }
-    static const char* shortName() { return "I"; }
+    static const char* GetTypeName() { return "unsigned int"; }
+    static const char* getName() { return "I"; }
 };
 
 template<>
 struct DataTypeInfo<long> : public IntegerTypeInfo<long>
 {
-    static const char* name() { return "long"; }
-    static const char* shortName() { return "l"; }
+    static const char* GetTypeName() { return "long"; }
+    static const char* getName() { return "l"; }
 };
 
 template<>
 struct DataTypeInfo<unsigned long> : public IntegerTypeInfo<unsigned long>
 {
-    static const char* name() { return "unsigned long"; }
-    static const char* shortName() { return "L"; }
+    static const char* GetTypeName() { return "unsigned long"; }
+    static const char* getName() { return "L"; }
 };
 
 template<>
 struct DataTypeInfo<long long> : public IntegerTypeInfo<long long>
 {
-    static const char* name() { return "long long"; }
-    static const char* shortName() { return "x"; }
+    static const char* GetTypeName() { return "long long"; }
+    static const char* getName() { return "x"; }
 };
 
 template<>
 struct DataTypeInfo<unsigned long long> : public IntegerTypeInfo<unsigned long long>
 {
-    static const char* name() { return "unsigned long long"; }
-    static const char* shortName() { return "X"; }
+    static const char* GetTypeName() { return "unsigned long long"; }
+    static const char* getName() { return "X"; }
 };
 
 
-} /// namespace sofa::defaulttype
+} /// typeNamespace sofa::defaulttype
 

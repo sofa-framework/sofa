@@ -25,8 +25,7 @@
 namespace sofa::defaulttype
 {
 
-static int RGBADataTypeInfo = DataTypeInfoRegistry::Set(typeid(sofa::helper::types::RGBAColor),
-                                                                     VirtualTypeInfoA< DataTypeInfo<sofa::helper::types::RGBAColor> >::get());
+REGISTER_TYPE_INFO_CREATOR(sofa::helper::types::RGBAColor)
 
 } /// namespace sofa::defaulttype
 

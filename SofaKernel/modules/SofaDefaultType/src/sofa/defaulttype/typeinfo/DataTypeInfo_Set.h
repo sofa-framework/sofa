@@ -29,8 +29,8 @@ namespace sofa::defaulttype
 template<class T, class Compare, class Alloc>
 struct DataTypeInfo< std::set<T,Compare,Alloc> > : public SetTypeInfo<std::set<T,Compare,Alloc> >
 {
-    static std::string name() { std::ostringstream o; o << "std::set<" << DataTypeInfo<T>::name() << ">"; return o.str(); }
-    static std::string shortName() { std::ostringstream o; o << "std::set<" << DataTypeInfo<T>::shortName() << ">"; return o.str(); }
+    static std::string GetName() { std::ostringstream o; o << "set<" << DataTypeInfo<T>::GetName() << ">"; return o.str(); }
+    static std::string GetTypeName() { std::ostringstream o; o << "std::set<" << DataTypeInfo<T>::GetTypeName() << ">"; return o.str(); }
 };
 
 

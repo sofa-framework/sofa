@@ -79,6 +79,12 @@ public:
     /// \brief Returns the name of this type.
     virtual std::string name() const = 0;
 
+    /// \brief Returns the name of this type.
+    virtual std::string getName() const = 0;
+
+    /// \brief Returns the name of this type.
+    virtual std::string getTypeName() const = 0;
+
     /// True iff the TypeInfo for this type contains valid information.
     /// A Type is considered "Valid" if there's at least one specialization of the ValueType
     virtual bool ValidInfo() const = 0;

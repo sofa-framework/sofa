@@ -32,8 +32,8 @@ template<>
 class DataTypeInfo< sofa::helper::types::RGBAColor > : public FixedArrayTypeInfo<sofa::helper::fixed_array<float,4>>
 {
     public:
-        static std::string name() { return "RGBAColor"; }
-        static std::string shortName() { return "RGBAColor"; }
+        static std::string GetName() { return "RGBAColor"; }
+        static std::string GetTypeName() { return "RGBAColor"; }
 };
 
 } /// namespace sofa::defaulttype

@@ -66,17 +66,7 @@ public:
 
     inline void printValue(std::ostream& out) const override;
     inline std::string getValueString() const override;
-    inline std::string getValueTypeString() const override;
 
-    /// Get info about the value type of the associated variable
-    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
-    {
-        /// If the typeinfo is in the registry we load it.
-        auto type = sofa::defaulttype::DataTypeInfoRegistry::Get(typeid(T));
-        //if(!type)
-        //    return sofa::defaulttype::VirtualTypeInfo<T>::get();
-        return type;
-    }
 
     virtual const T& virtualGetValue() const = 0;
     virtual void virtualSetValue(const T& v) = 0;
@@ -180,13 +170,16 @@ public:
         T value;
     };
 
+
+    inline std::string getValueTypeString() const override;
+
     static std::string templateName()
     {
-        return sofa::core::objectmodel::BaseData::typeName<T>();
+        return TypeName();
     }
 
     // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
-    virtual BaseData* getNewInstance() { return new Data();}
+    BaseData* getNewInstance() override { return new Data();}
 
     /** \copydoc BaseData(const BaseData::BaseInitData& init) */
     explicit Data(const BaseData::BaseInitData& init)
@@ -310,10 +303,10 @@ public:
     /// @name Virtual edition and retrieval API (for generic TData parent API, deprecated)
     /// @{
 
-    virtual const T& virtualGetValue() const { return getValue(); }
-    virtual void virtualSetValue(const T& v) { setValue(v); }
+    virtual const T& virtualGetValue() const override{ return getValue(); }
+    virtual void virtualSetValue(const T& v) override { setValue(v); }
 
-    virtual void virtualSetLink(const BaseData& bd)
+    virtual void virtualSetLink(const BaseData& bd) override
     {
         const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
         if (d)
@@ -325,8 +318,8 @@ public:
         }
     }
 
-    virtual T* virtualBeginEdit() { return beginEdit(); }
-    virtual void virtualEndEdit() { endEdit(); }
+    virtual T* virtualBeginEdit() override { return beginEdit(); }
+    virtual void virtualEndEdit() override { endEdit(); }
 
     /// @}
 
@@ -351,6 +344,60 @@ public:
         this->setValue(value);
     }
 
+    int _doGetDataTypeId_() const override
+    {
+        return sofa::defaulttype::DataTypeId<T>::getTypeId();
+    }
+
+    static const sofa::defaulttype::AbstractTypeInfo* GetDataTypeInfo()
+    {
+        static int a = Data<T>::m_register;
+        SOFA_UNUSED(a);
+        static const sofa::defaulttype::AbstractTypeInfo* typeinfo {nullptr};
+        if(typeinfo==nullptr)
+        {
+            /// We don't cache valid info;
+            auto tmpinfo = sofa::defaulttype::DataTypeInfoRegistry::Get(sofa::defaulttype::DataTypeId<T>::getTypeId());
+            if(!tmpinfo->ValidInfo())
+                return tmpinfo;
+            typeinfo = tmpinfo;
+        }
+        return typeinfo;
+    }
+
+    /// Get info about the value type of the associated variable
+    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
+    {
+        return GetDataTypeInfo();
+    }
+
+    template<class TT>
+    static int doRegister()
+    {
+        sofa::defaulttype::DataTypeInfoRegistry::Set(sofa::defaulttype::DataTypeId<T>::getTypeId(),
+                                                     sofa::defaulttype::AbstractTypeInfoCreator<T>::get());
+        return 0;
+    }
+
+    /// Helper method to get the type name of type T
+    static std::string GetTypeName()
+    {
+        auto tmp = sofa::defaulttype::DataTypeInfoRegistry::Get(sofa::defaulttype::DataTypeId<T>::getTypeId());
+        if(tmp)
+            return tmp->getTypeName();
+        return "unknow";
+    }
+
+    /// Helper method to get the type name of type T
+    static std::string GetName()
+    {
+        auto tmp = sofa::defaulttype::DataTypeInfoRegistry::Get(sofa::defaulttype::DataTypeId<T>::getTypeId());
+        if(tmp)
+            return tmp->getName();
+        return "unknow";
+    }
+
+
 protected:
 
     typedef DataContentValue<T, true> ValueType;
@@ -361,7 +408,12 @@ protected:
 private:
     Data(const Data& );
     Data& operator=(const Data& );
+
+    static int m_register;
 };
+
+template<class T>
+int Data<T>::m_register= sofa::defaulttype::DataTypeId<T>::getTypeId() + Data<T>::doRegister<T>();
 
 class EmptyData : public Data<void*> {};
 
@@ -395,10 +447,26 @@ std::string TData<T>::getValueString() const
 
 template<class T>
 inline
-std::string TData<T>::getValueTypeString() const
+std::string Data<T>::getValueTypeString() const
 {
-    return BaseData::typeName(&virtualGetValue());
+    return TypeName();
 }
+
+template<class T>
+inline
+std::string Data<T>::getValueTypeName() const
+{
+    return TypeName();
+}
+
+
+template<class T>
+inline
+std::string Data<T>::getValueName() const
+{
+    return Name();
+}
+
 
 template <class T>
 bool TData<T>::read(const std::string& s)

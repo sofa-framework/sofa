@@ -98,6 +98,9 @@ BaseData::~BaseData()
 
 bool BaseData::validParent(BaseData* parent)
 {
+
+    std::cout << this->getValueTypeInfo()->name() << " && " << parent->getValueTypeInfo()->name() << std::endl;
+    std::cout << this->getValueTypeInfo()->name() << " && " << parent->getValueTypeInfo()->name() << std::endl;
     // Check if automatic conversion is possible
     if (this->getValueTypeInfo()->ValidInfo() && parent->getValueTypeInfo()->ValidInfo())
         return true;

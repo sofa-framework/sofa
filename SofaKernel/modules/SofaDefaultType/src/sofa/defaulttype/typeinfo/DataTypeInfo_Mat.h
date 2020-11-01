@@ -31,33 +31,20 @@ namespace sofa::defaulttype
 template<std::size_t L, std::size_t C, typename real>
 struct DataTypeInfo< sofa::defaulttype::Mat<L,C,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Mat<L,C,real> >
 {
-    static std::string name()
+    static std::string GetTypeName()
     {
         std::ostringstream o;
-        o << "Mat<" << L << "," << C << "," <<  DataTypeInfo<real>::shortName() << ">";
+        o << "Mat<" << L << "," << C << "," <<  DataTypeInfo<real>::typeName() << ">";
         return o.str();
     }
 
-    static std::string shortName()
+    static std::string GetName()
     {
         std::ostringstream o;
-        o << "Mat" << L << "x" << C << DataTypeInfo<real>::shortName();
+        o << "Mat" << L << "x" << C << DataTypeInfo<real>::name();
         return o.str();
     }
 };
-
-/* The constexpr code is producing all that in a consistant way.
-template<> struct DataTypeName<defaulttype::Mat1x1f> { static const char* name() { return "Mat1x1f"; } };
-template<> struct DataTypeName<defaulttype::Mat1x1d> { static const char* name() { return "Mat1x1d"; } };
-template<> struct DataTypeName<defaulttype::Mat2x2f> { static const char* name() { return "Mat2x2f"; } };
-template<> struct DataTypeName<defaulttype::Mat2x2d> { static const char* name() { return "Mat2x2d"; } };
-template<> struct DataTypeName<defaulttype::Mat3x3f> { static const char* name() { return "Mat3x3f"; } };
-template<> struct DataTypeName<defaulttype::Mat3x3d> { static const char* name() { return "Mat3x3d"; } };
-template<> struct DataTypeName<defaulttype::Mat3x4f> { static const char* name() { return "Mat3x4f"; } };
-template<> struct DataTypeName<defaulttype::Mat3x4d> { static const char* name() { return "Mat3x4d"; } };
-template<> struct DataTypeName<defaulttype::Mat4x4f> { static const char* name() { return "Mat4x4f"; } };
-template<> struct DataTypeName<defaulttype::Mat4x4d> { static const char* name() { return "Mat4x4d"; } };
-*/
 
 } /// namespace sofa::defaulttype
 

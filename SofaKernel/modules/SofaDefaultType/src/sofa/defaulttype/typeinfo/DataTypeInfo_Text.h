@@ -30,7 +30,7 @@ template<>
 struct DataTypeInfo<std::string> : public TextTypeInfo<std::string>
 {
     static const char* name() { return "string"; }
-    static const std::string shortName(){ return "t"; }
+    static const std::string typeName(){ return "std::string"; }
 
     static const void* getValuePtr(const std::string& data) { return &data[0]; }
     static void* getValuePtr(std::string& data) { return &data[0]; }

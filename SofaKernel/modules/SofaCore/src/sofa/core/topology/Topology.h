@@ -27,6 +27,7 @@
 #include <sofa/defaulttype/TopologyTypes.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_Integer.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
 #include <climits>
 
 namespace sofa

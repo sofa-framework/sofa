@@ -109,55 +109,55 @@ struct DefaultDataTypeInfo
      */
     enum { ValidInfo       = MissingDataTypeInfo<TDataType>() /**< 1 if this type has valid infos*/ };
 
-//    enum { FixedSize       = MissingDataTypeInfo<TDataType>() /**< 1 if this type has a fixed size*/ };
-//    enum { ZeroConstructor = MissingDataTypeInfo<TDataType>() /**< 1 if the constructor is equivalent to setting memory to 0*/ };
-//    enum { SimpleCopy      = MissingDataTypeInfo<TDataType>() /**< 1 if copying the data can be done with a memcpy*/ };
-//    enum { SimpleLayout    = MissingDataTypeInfo<TDataType>() /**< 1 if the layout in memory is simply N values of the same base type*/ };
-//    enum { Integer         = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses integer values*/ };
-//    enum { Scalar          = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses scalar values*/ };
-//    enum { Text            = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses text values*/ };
-//    enum { CopyOnWrite     = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
-//    enum { Container       = MissingDataTypeInfo<TDataType>() /**< 1 if this type is a container*/ };
-//    enum { Size = MissingDataTypeInfo<TDataType>() /**< largest known fixed size for this type, as returned by size() */ };
+    //    enum { FixedSize       = MissingDataTypeInfo<TDataType>() /**< 1 if this type has a fixed size*/ };
+    //    enum { ZeroConstructor = MissingDataTypeInfo<TDataType>() /**< 1 if the constructor is equivalent to setting memory to 0*/ };
+    //    enum { SimpleCopy      = MissingDataTypeInfo<TDataType>() /**< 1 if copying the data can be done with a memcpy*/ };
+    //    enum { SimpleLayout    = MissingDataTypeInfo<TDataType>() /**< 1 if the layout in memory is simply N values of the same base type*/ };
+    //    enum { Integer         = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses integer values*/ };
+    //    enum { Scalar          = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses scalar values*/ };
+    //    enum { Text            = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses text values*/ };
+    //    enum { CopyOnWrite     = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
+    //    enum { Container       = MissingDataTypeInfo<TDataType>() /**< 1 if this type is a container*/ };
+    //    enum { Size = MissingDataTypeInfo<TDataType>() /**< largest known fixed size for this type, as returned by size() */ };
 
-//    // \}
+    //    // \}
 
-//    static size_t size() { return 1; }
-//    static size_t byteSize() { return 1; }
+    //    static size_t size() { return 1; }
+    //    static size_t byteSize() { return 1; }
 
-//    static size_t size(const DataType& /*data*/) { return 1; }
+    //    static size_t size(const DataType& /*data*/) { return 1; }
 
-//    template <typename T>
-//    static void getValue(const DataType& /*data*/, size_t /*index*/, T& /*value*/)
-//    {
-//    }
+    //    template <typename T>
+    //    static void getValue(const DataType& /*data*/, size_t /*index*/, T& /*value*/)
+    //    {
+    //    }
 
-//    static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
+    //    static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
 
-//    template<typename T>
-//    static void setValue(DataType& /*data*/, size_t /*index*/, const T& /*value*/)
-//    {
-//    }
+    //    template<typename T>
+    //    static void setValue(DataType& /*data*/, size_t /*index*/, const T& /*value*/)
+    //    {
+    //    }
 
-//    static void getValueString(const DataType& /*data*/, size_t /*index*/, std::string& /*value*/)
-//    {
-//    }
+    //    static void getValueString(const DataType& /*data*/, size_t /*index*/, std::string& /*value*/)
+    //    {
+    //    }
 
-//    static void setValueString(DataType& /*data*/, size_t /*index*/, const std::string& /*value*/)
-//    {
-//    }
+    //    static void setValueString(DataType& /*data*/, size_t /*index*/, const std::string& /*value*/)
+    //    {
+    //    }
 
-//    // mtournier: wtf is this supposed to do?
-//    // mtournier: wtf is this not returning &type?
-//    static const void* getValuePtr(const DataType& /*type*/)
-//    {
-//        return nullptr;
-//    }
+    //    // mtournier: wtf is this supposed to do?
+    //    // mtournier: wtf is this not returning &type?
+    //    static const void* getValuePtr(const DataType& /*type*/)
+    //    {
+    //        return nullptr;
+    //    }
 
-//    static void* getValuePtr(DataType& /*type*/)
-//    {
-//        return nullptr;
-//    }
+    //    static void* getValuePtr(DataType& /*type*/)
+    //    {
+    //        return nullptr;
+    //    }
 
     //static const char* name() { return "unknown"; }
 
@@ -265,7 +265,7 @@ template<typename Info>
 class VirtualTypeInfoA : public AbstractTypeInfo
 {
 public:
-    typedef typename Info::DataType DataType;    
+    typedef typename Info::DataType DataType;
 
     static VirtualTypeInfoA* get() { static VirtualTypeInfoA<Info> t; return &t; }
 
@@ -273,6 +273,8 @@ public:
     const AbstractTypeInfo* ValueType() const override { return VirtualTypeInfoA<DataTypeInfo<typename Info::ValueType>>::get(); }
 
     virtual std::string name() const override { return Info::name(); }
+    virtual std::string getName() const override { return Info::getName(); }
+    virtual std::string getTypeName() const override { return Info::getTypeName(); }
 
     bool ValidInfo() const override       { return Info::ValidInfo; }
     bool FixedSize() const override       { return Info::FixedSize; }
@@ -353,9 +355,163 @@ protected: // only derived types can instantiate this class
     VirtualTypeInfoA() {}
 };
 
+/// Abstract type traits class
+template<class T>
+class IncompleteTypeInfo : public AbstractTypeInfo
+{
+public:
+    const AbstractTypeInfo* BaseType() const override  { return nullptr; }
+    const AbstractTypeInfo* ValueType() const override { return nullptr; }
+
+    virtual std::string name() const override { return typeid(T).name(); }
+    virtual std::string getTypeName() const override { return typeid(T).name(); }
+    virtual std::string getName() const override { return typeid(T).name(); }
+
+    bool ValidInfo() const override       { return 0; }
+    bool FixedSize() const override       { return 0; }
+    bool ZeroConstructor() const override { return 0; }
+    bool SimpleCopy() const override      { return 0; }
+    bool SimpleLayout() const override    { return 0; }
+    bool Integer() const override         { return 0; }
+    bool Scalar() const override          { return 0; }
+    bool Text() const override            { return 0; }
+    bool CopyOnWrite() const override     { return 0; }
+    bool Container() const override       { return 0; }
+
+    size_t size() const override
+    {
+        return 0;
+    }
+    size_t byteSize() const override
+    {
+        return 0;
+    }
+    size_t size(const void* data) const override
+    {
+        SOFA_UNUSED(data);
+        return 0;
+    }
+    bool setSize(void* data, size_t size) const override
+    {
+        SOFA_UNUSED(data);
+        SOFA_UNUSED(size);
+        return 0;
+    }
+
+    long long getIntegerValue(const void* data, size_t index) const override
+    {
+        SOFA_UNUSED(data);
+        SOFA_UNUSED(index);
+        return 0;
+    }
+
+    double    getScalarValue (const void* data, size_t index) const override
+    {
+
+        SOFA_UNUSED(data);
+        SOFA_UNUSED(index);
+        return 0;
+    }
+
+    virtual std::string getTextValue   (const void* data, size_t index) const override
+    {
+        SOFA_UNUSED(data);
+        SOFA_UNUSED(index);
+        return "";
+    }
+
+    void setIntegerValue(void* data, size_t index, long long value) const override
+    {
+        SOFA_UNUSED(data);
+        SOFA_UNUSED(index);
+        SOFA_UNUSED(value);
+    }
+
+    void setScalarValue (void* data, size_t index, double value) const override
+    {
+        SOFA_UNUSED(data);
+        SOFA_UNUSED(index);
+        SOFA_UNUSED(value);
+    }
+
+    virtual void setTextValue(void* data, size_t index, const std::string& value) const override
+    {
+        SOFA_UNUSED(data);
+        SOFA_UNUSED(index);
+        SOFA_UNUSED(value);
+    }
+    const void* getValuePtr(const void* data) const override
+    {
+        SOFA_UNUSED(data);
+        return nullptr;
+    }
+    void* getValuePtr(void* data) const override
+    {
+        SOFA_UNUSED(data);
+        return nullptr;
+    }
+
+    virtual const std::type_info* type_info() const override { return &typeid(T); }
+};
+
+class BaseDataTypeId
+{
+public:
+    static int getNewId()
+    {
+        static int value = 0;
+        return value++;
+    }
+};
+
+template<class T>
+class DataTypeId : public BaseDataTypeId
+{
+public:
+    static int getTypeId()
+    {
+        static int value = BaseDataTypeId::getNewId();
+        return value;
+    }
+};
+
+template<class T>
+class AbstractTypeInfoCreator
+{
+public:
+
+    static AbstractTypeInfo* get()
+    {
+        if constexpr( DataTypeInfo<T>::ValidInfo )
+        {
+            return VirtualTypeInfoA< DataTypeInfo<T> >::get();
+        }
+        else
+        {
+            static IncompleteTypeInfo<T> t;
+            return &t;
+        }
+    }
+};
+
+template<class T>
+class BaseDataTypeInfo
+{
+public:
+    static int m_id;
+
+};
+
+template<class T>
+int BaseDataTypeInfo<T>::m_id;
+
 
 template<class TDataType>
-struct DataTypeInfo : DefaultDataTypeInfo<TDataType> { };
+struct DataTypeInfo : public BaseDataTypeInfo<TDataType>, public DefaultDataTypeInfo<TDataType>
+{
+public:
+    static AbstractTypeInfo* get();
+};
 
 
 
@@ -364,5 +520,10 @@ template<class TDataType>
 struct DataTypeName : public DataTypeInfo<TDataType>
 {
 };
+
+#define REGISTER_MSG_PASTER(x,y) x ## _ ## y
+#define REGISTER_UNIQUE_NAME_GENERATOR(x,y)  REGISTER_MSG_PASTER(x,y)
+#define REGISTER_TYPE_INFO_CREATOR(theTypeName) static int REGISTER_UNIQUE_NAME_GENERATOR(_theTypeName_ , __LINE__) = DataTypeInfoRegistry::Set(DataTypeId<theTypeName>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<theTypeName>>::get());
+#define REGISTER_TYPE_INFO_CREATOR2(theTypeName, ext) template<> AbstractTypeInfo* AbstractTypeInfoCreator< theTypeName ext >::get() {return VirtualTypeInfoA< DataTypeInfo<theTypeName ext> >::get();}
 
 }/// namespace sofa::defaulttype

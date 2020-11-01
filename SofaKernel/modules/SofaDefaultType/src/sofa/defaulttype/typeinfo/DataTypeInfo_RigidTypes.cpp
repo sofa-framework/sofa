@@ -25,28 +25,18 @@
 namespace sofa::defaulttype
 {
 
+#define REGISTER_RIGIDCOORD(theInnerType, size) template<> AbstractTypeInfo* AbstractTypeInfoCreator< sofa::defaulttype::RigidCoord<size, theInnerType> >::get() {return VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::RigidCoord<size, theInnerType>> >::get();}
+#define REGISTER_RIGIDDERIV(theInnerType, size) template<> AbstractTypeInfo* AbstractTypeInfoCreator< sofa::defaulttype::RigidDeriv<size, theInnerType> >::get() {return VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::RigidDeriv<size, theInnerType>> >::get();}
 
-template<typename TT>
-int mince2()
-{
-    DataTypeInfoRegistry::Set(typeid(TT), VirtualTypeInfoA< DataTypeInfo<TT>>::get());
-    return 0;
-}
+REGISTER_RIGIDCOORD(double, 2)
+REGISTER_RIGIDCOORD(float, 2)
+REGISTER_RIGIDCOORD(double, 3)
+REGISTER_RIGIDCOORD(float, 3)
 
-int fixedPreLoad2()
-{
-    mince2<sofa::defaulttype::RigidCoord<2, double>>();
-    mince2<sofa::defaulttype::RigidDeriv<2, double>>();
-    mince2<sofa::defaulttype::RigidCoord<2, float>>();
-    mince2<sofa::defaulttype::RigidDeriv<2, float>>();
+REGISTER_RIGIDDERIV(double, 2)
+REGISTER_RIGIDDERIV(float, 2)
+REGISTER_RIGIDDERIV(double, 3)
+REGISTER_RIGIDDERIV(float, 3)
 
-    mince2<sofa::defaulttype::RigidCoord<3, double>>();
-    mince2<sofa::defaulttype::RigidDeriv<3, double>>();
-    mince2<sofa::defaulttype::RigidCoord<3, float>>();
-    mince2<sofa::defaulttype::RigidDeriv<3, float>>();
-    return 0;
-}
-
-static int allFixed = fixedPreLoad2();
 } /// namespace sofa::defaulttype
 

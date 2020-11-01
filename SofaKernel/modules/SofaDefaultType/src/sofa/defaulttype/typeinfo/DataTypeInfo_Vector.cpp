@@ -50,26 +50,26 @@ int vectorPreLoad()
             Vec4f, Vec4d, Vec4i, Vec4u,
             sofa::helper::types::RGBAColor, BoundingBox>([]<typename T>()
                                                          {
-                                                             DataTypeInfoRegistry::Set(typeid(T), VirtualTypeInfoA< DataTypeInfo<T> >::get());
-                                                             DataTypeInfoRegistry::Set(typeid(std::vector<T>), VirtualTypeInfoA< DataTypeInfo<std::vector<T>> >::get());
-                                                             DataTypeInfoRegistry::Set(typeid(sofa::helper::vector<T>), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<T>> >::get());
+//                                                             DataTypeInfoRegistry::Set(DataTypeId<T>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<T> >::get());
+                                                             DataTypeInfoRegistry::Set(DataTypeId<std::vector<T>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<std::vector<T>> >::get());
+                                                             DataTypeInfoRegistry::Set(DataTypeId<sofa::helper::vector<T>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<T>> >::get());
 
                                                              typedef sofa::helper::fixed_array<float, 1> r;
-                                                             DataTypeInfoRegistry::Set(typeid(std::vector<r>), VirtualTypeInfoA< DataTypeInfo<std::vector<r>> >::get());
-                                                             DataTypeInfoRegistry::Set(typeid(sofa::helper::vector<r>), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<r>> >::get());
+                                                             DataTypeInfoRegistry::Set(DataTypeId<std::vector<r>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<std::vector<r>> >::get());
+                                                             DataTypeInfoRegistry::Set(DataTypeId<sofa::helper::vector<r>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<r>> >::get());
 
                                                              typedef sofa::helper::fixed_array<float, 2> rr;
-                                                             DataTypeInfoRegistry::Set(typeid(std::vector<rr>), VirtualTypeInfoA< DataTypeInfo<std::vector<rr>> >::get());
-                                                             DataTypeInfoRegistry::Set(typeid(sofa::helper::vector<rr>), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<rr>> >::get());
+                                                             DataTypeInfoRegistry::Set(DataTypeId<std::vector<rr>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<std::vector<rr>> >::get());
+                                                             DataTypeInfoRegistry::Set(DataTypeId<sofa::helper::vector<rr>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<rr>> >::get());
 
 
                                                              typedef sofa::helper::fixed_array<int, 1> r1;
-                                                             DataTypeInfoRegistry::Set(typeid(std::vector<r1>), VirtualTypeInfoA< DataTypeInfo<std::vector<r>> >::get());
-                                                             DataTypeInfoRegistry::Set(typeid(sofa::helper::vector<r1>), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<r>> >::get());
+                                                             DataTypeInfoRegistry::Set(DataTypeId<std::vector<r1>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<std::vector<r>> >::get());
+                                                             DataTypeInfoRegistry::Set(DataTypeId<sofa::helper::vector<r1>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<r>> >::get());
 
                                                              typedef sofa::helper::fixed_array<int, 2> r2;
-                                                             DataTypeInfoRegistry::Set(typeid(std::vector<r2>), VirtualTypeInfoA< DataTypeInfo<std::vector<rr>> >::get());
-                                                             DataTypeInfoRegistry::Set(typeid(sofa::helper::vector<r2>), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<rr>> >::get());
+                                                             DataTypeInfoRegistry::Set(DataTypeId<std::vector<r2>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<std::vector<rr>> >::get());
+                                                             DataTypeInfoRegistry::Set(DataTypeId<sofa::helper::vector<r2>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<rr>> >::get());
                                                          });
     return 0;
 }

@@ -27,31 +27,37 @@
 namespace sofa::defaulttype
 {
 
-std::map<const std::type_index, const AbstractTypeInfo*> typeinfos;
-
-const AbstractTypeInfo* DataTypeInfoRegistry::Get(const std::type_info& id)
+static std::map<const int, const AbstractTypeInfo*>& getMap()
 {
-    auto index = std::type_index(id);
-    if( typeinfos.find(index) != typeinfos.end() )
-        return typeinfos[index];
+    static std::map<const int, const AbstractTypeInfo*> typeinfos;
+    return typeinfos;
+}
 
-    std::cout << "WARNING WARNING... searching for type '"<< id.name() << "' the type is not there...what can we do" << std::endl;
+const AbstractTypeInfo* DataTypeInfoRegistry::Get(const int id)
+{
+    auto& typeinfos = getMap();
+    if( typeinfos.find(id) != typeinfos.end() )
+        return typeinfos[id];
+
+    std::cout << "WARNING WARNING... searching for type '"<< id << "' the type is not there...what can we do" << std::endl;
     return nullptr;
 }
 
-int DataTypeInfoRegistry::Set(const std::type_info& id, AbstractTypeInfo* info)
+int DataTypeInfoRegistry::Set(const int id, AbstractTypeInfo* info)
 {
-    auto index = std::type_index(id);
-    std::cout << " REGISTER A NEW TYPE FOR "  << id.name() << "=>" << info->name() <<std::endl;
-    if( typeinfos.find(index) != typeinfos.end() )
+    auto& typeinfos = getMap();
+    if( typeinfos.find(id) != typeinfos.end() )
     {
-        if( typeinfos[index] != info )
+        if( typeinfos[id] != info && info->ValidInfo())
         {
+            std::cout << " Promoting typeinfo "<< id << " from " << typeinfos[id]->name() << " to " << info->name() << std::endl;
+            typeinfos[id] = info;
             return 2;
         }
         return -1;
     }
-    typeinfos[index] = info;
+    std::cout << " Registering a new type info at "  << id << " => " << info->name() <<std::endl;
+    typeinfos[id] = info;
     return 1;
 }
 

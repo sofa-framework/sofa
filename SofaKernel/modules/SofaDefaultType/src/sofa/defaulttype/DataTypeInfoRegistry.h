@@ -29,10 +29,10 @@ class AbstractTypeInfo;
 class DataTypeInfoRegistry
 {
 public:
-    template<class T>
-    static const AbstractTypeInfo* Get(const T&){ return Get(typeid(T)); }
-    static const AbstractTypeInfo* Get(const std::type_info& id);
-    static int Set(const std::type_info& id, AbstractTypeInfo* info);
+    //template<class T>
+    //static const AbstractTypeInfo* Get(const T&){ return Get(typeid(T)); }
+    static const AbstractTypeInfo* Get(const int id);
+    static int Set(const int id, AbstractTypeInfo* info);
 };
 
 }

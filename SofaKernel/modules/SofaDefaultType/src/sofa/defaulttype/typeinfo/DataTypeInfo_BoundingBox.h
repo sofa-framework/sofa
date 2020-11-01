@@ -26,6 +26,7 @@
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
 
+
 namespace sofa::defaulttype
 {
 
@@ -141,8 +142,8 @@ struct BoundingBoxTypeInfo
 template <>
 struct DataTypeInfo<BoundingBox> : public BoundingBoxTypeInfo
 {
-    static std::string name() { return "BoundingBox"; }
-    static std::string shortName() { return name(); }
+    static std::string GetName() { return "BoundingBox"; }
+    static std::string GetTypeName() { return name(); }
 };
 } /// namespace sofa::defaulttype
 

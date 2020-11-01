@@ -25,7 +25,7 @@
 namespace sofa::defaulttype
 {
 
-static int BoolTypeInfo = DataTypeInfoRegistry::Set(typeid(bool), VirtualTypeInfoA< DataTypeInfo<bool> >::get());
+REGISTER_TYPE_INFO_CREATOR(bool)
 
 } /// namespace sofa::defaulttype
 
