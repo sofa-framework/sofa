@@ -52,7 +52,7 @@ const char* getModuleName()
 
 const char* getModuleVersion()
 {
-    return sofa_tostring(SOFABOUNDARYCONDITION_VERSION);
+    return sofa_tostring(SOFAGENERALTOPOLOGY_VERSION);
 }
 
 const char* getModuleLicense()
@@ -62,7 +62,7 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "This plugin contains contains features about Boundary Condition.";
+    return "This plugin contains contains features about General Topology.";
 }
 
 const char* getModuleComponentList()
