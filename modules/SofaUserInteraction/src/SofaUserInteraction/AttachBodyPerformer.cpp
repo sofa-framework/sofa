@@ -29,62 +29,18 @@
 #include <SofaDeformable/SpringForceField.inl>
 #include <SofaDeformable/StiffSpringForceField.inl>
 
-
 using namespace sofa::component::interactionforcefield;
 using namespace sofa::core::objectmodel;
-namespace sofa
+
+namespace sofa::component::collision
 {
 
-namespace component
-{
-
-namespace collision
-{
-
-template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec2Types>;
-template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3Types>;
-template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3Types>;
+template class SOFA_SOFAUSERINTERACTION_API  AttachBodyPerformer<defaulttype::Vec2Types>;
+template class SOFA_SOFAUSERINTERACTION_API  AttachBodyPerformer<defaulttype::Vec3Types>;
+template class SOFA_SOFAUSERINTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3Types>;
 
 static helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec2Types> >  AttachBodyPerformerVec2dClass("AttachBody",true);
 static helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3Types> >  AttachBodyPerformerVec3dClass("AttachBody",true);
 static helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Rigid3Types> >  AttachBodyPerformerRigid3dClass("AttachBody",true);
 
-/*
-template <>
-bool AttachBodyPerformer<defaulttype::Rigid3Types>::start_partial(const BodyPicked& picked)
-{
-    core::behavior::MechanicalState<defaulttype::Rigid3Types>* mstateCollision=nullptr;
-
-    double restLength = picked.dist;
-    mstateCollision = static_cast< core::behavior::MechanicalState<defaulttype::Rigid3Types>*  >(picked.mstate);
-
-    if( !mstateCollision ) mstateCollision = static_cast< core::behavior::MechanicalState<defaulttype::Rigid3Types>* >( picked.body->getContext()->getMechanicalState() );
-
-    if( !mstateCollision ) return false;
-
-    m_forcefield = sofa::core::objectmodel::New< JointSpringForceField< defaulttype::Rigid3Types > >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
-    JointSpringForceField<defaulttype::Rigid3Types>* jointspringforcefield = static_cast<JointSpringForceField<defaulttype::Rigid3Types>*>(m_forcefield.get());
-    sofa::component::interactionforcefield::JointSpring<defaulttype::Rigid3Types> spring(0,picked.indexCollisionElement);
-    jointspringforcefield->setName("Spring-Mouse-Contact");
-
-
-    spring.setInitLength(this->interactor->getMouseRayModel()->getRay(0).direction()*restLength);
-    spring.setSoftStiffnessTranslation(stiffness);
-    jointspringforcefield->addSpring(spring);
-    jointspringforcefield->d_showFactorSize.setValue(showFactorSize);
-
-    const core::objectmodel::TagSet &tags=mstateCollision->getTags();
-    for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
-        jointspringforcefield->addTag(*it);
-
-    mstateCollision->getContext()->addObject(jointspringforcefield);
-
-    return true;
-}
-*/
-
-
-
-}
-}
-}
+} // namespace sofa::component::collision

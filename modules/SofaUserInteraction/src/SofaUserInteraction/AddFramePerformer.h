@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_H
-#define SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <../applications/plugins/frame/Blending.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 using sofa::defaulttype::StdRigidTypes;
 

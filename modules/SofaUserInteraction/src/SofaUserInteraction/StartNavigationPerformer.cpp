@@ -31,34 +31,26 @@
 #include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/helper/cast.h>
 
-
 using namespace sofa::component::interactionforcefield;
 using namespace sofa::core::objectmodel;
-namespace sofa
+
+namespace sofa::component::collision
 {
+    helper::Creator<InteractionPerformer::InteractionPerformerFactory, StartNavigationPerformer> StartNavigationPerformerClass("StartNavigation");
 
-    namespace component
+    void StartNavigationPerformer::start()
     {
-
-        namespace collision
+        sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( interactor->getContext()->getRootContext() );
+        if(root)
         {
-            helper::Creator<InteractionPerformer::InteractionPerformerFactory, StartNavigationPerformer> StartNavigationPerformerClass("StartNavigation");
+            sofa::component::visualmodel::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visualmodel::RecordedCamera>();
 
-            void StartNavigationPerformer::start()
+            if(currentCamera)
             {
-                sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( interactor->getContext()->getRootContext() );
-                if(root)
-                {
-                    sofa::component::visualmodel::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visualmodel::RecordedCamera>();
-
-                    if(currentCamera)
-                    {
-                        // The navigation mode of Recorded Camera is set to true
-                        currentCamera->m_navigationMode.setValue(!currentCamera->m_navigationMode.getValue());
-                    }
-                }
+                // The navigation mode of Recorded Camera is set to true
+                currentCamera->m_navigationMode.setValue(!currentCamera->m_navigationMode.getValue());
             }
+        }
+    }
 
-        }// namespace collision
-    }// namespace component
-}// namespace sofa
+} // namespace sofa::component::collision

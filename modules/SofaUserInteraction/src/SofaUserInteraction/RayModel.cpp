@@ -25,13 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 int RayCollisionModelClass = core::RegisterObject("Collision model representing a ray in space, e.g. a mouse click")
@@ -177,9 +171,4 @@ void RayCollisionModel::applyTranslation(double dx, double dy, double dz)
     }
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::collision

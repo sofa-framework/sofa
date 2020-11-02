@@ -5,7 +5,6 @@
 
 find_package(SofaCommon QUIET REQUIRED)
 find_package(SofaGeneralMeshCollision QUIET REQUIRED)
-find_package(SofaGeneralRigid QUIET REQUIRED)
 find_package(SofaGeneralVisual QUIET REQUIRED)
 find_package(SofaTopologyMapping QUIET REQUIRED)
 find_package(SofaBoundaryCondition QUIET REQUIRED)

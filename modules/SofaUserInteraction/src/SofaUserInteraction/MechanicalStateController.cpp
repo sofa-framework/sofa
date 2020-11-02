@@ -27,32 +27,19 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 using namespace sofa::defaulttype;
 
 // Register in the Factory
 int MechanicalStateControllerClass = core::RegisterObject("Provides a Mouse & Keyboard user control on a Mechanical State.")
-//.add< MechanicalStateController<Vec3Types> >()
-//.add< MechanicalStateController<Vec2Types> >()
         .add< MechanicalStateController<Vec1Types> >()
         .add< MechanicalStateController<Rigid3Types> >()
-//.add< MechanicalStateController<Rigid2Types> >()
-
         ;
 
-//template class SOFA_USER_INTERACTION_API MechanicalStateController<Vec3Types>;
-//template class SOFA_USER_INTERACTION_API MechanicalStateController<Vec2Types>;
-template class SOFA_USER_INTERACTION_API MechanicalStateController<Vec1Types>;
-template class SOFA_USER_INTERACTION_API MechanicalStateController<Rigid3Types>;
-//template class SOFA_USER_INTERACTION_API MechanicalStateController<Rigid2Types>;
+template class SOFA_SOFAUSERINTERACTION_API MechanicalStateController<Vec1Types>;
+template class SOFA_SOFAUSERINTERACTION_API MechanicalStateController<Rigid3Types>;
 
 
 template <>
@@ -208,9 +195,4 @@ void MechanicalStateController<Rigid3Types>::onMouseEvent(core::objectmodel::Mou
     }
 }
 
-
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::controller

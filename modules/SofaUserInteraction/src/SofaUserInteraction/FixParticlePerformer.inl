@@ -35,13 +35,7 @@
 #include <SofaBaseCollision/CapsuleModel.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template <class DataTypes>
@@ -165,6 +159,4 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
     return collisionState;
 }
 
-}
-}
-}
+} // namespace sofa::component::collision

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TOPOLOGICALCHANGEMANAGER_H
-#define SOFA_COMPONENT_COLLISION_TOPOLOGICALCHANGEMANAGER_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
 #include <sofa/core/CollisionElement.h>
 
@@ -38,22 +37,11 @@
 #include <sofa/simulation/Node.h>
 
 
-namespace sofa
+namespace sofa::component::collision
 {
-
-namespace component
-{
-
-namespace collision
-{
-
-#if 0
-class TetrahedronModel;
-#endif
-
 
 /// a class to manage the handling of topological changes which have been requested from the Collision Model
-class SOFA_USER_INTERACTION_API TopologicalChangeManager
+class SOFA_SOFAUSERINTERACTION_API TopologicalChangeManager
 {
 public:
     using Index = sofa::Index;
@@ -173,10 +161,4 @@ private:
     }	incision;
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

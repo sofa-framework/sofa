@@ -19,25 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_RAYCONTACT_H
-#define SOFA_COMPONENT_COLLISION_RAYCONTACT_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/helper/Factory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 class RayCollisionModel;
 
-class SOFA_USER_INTERACTION_API BaseRayContact : public core::collision::Contact
+class SOFA_SOFAUSERINTERACTION_API BaseRayContact : public core::collision::Contact
 {
 public:
     typedef RayCollisionModel CollisionModel1;
@@ -92,10 +85,4 @@ public:
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() override { return std::make_pair(model1,model2); }
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

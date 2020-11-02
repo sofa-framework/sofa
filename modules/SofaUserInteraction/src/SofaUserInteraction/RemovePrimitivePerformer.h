@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_H
-#define SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <SofaUserInteraction/TopologicalChangeManager.h>
@@ -30,13 +29,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/CollisionElement.h>
 */
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 /** Class to configure primitive removal. Several parameters:
@@ -67,7 +60,7 @@ protected:
 /** Class to perform removing of topological elements (either one element or a an area) and handling topological mapping
   */
 template <class DataTypes>
-class SOFA_USER_INTERACTION_API RemovePrimitivePerformer: public       TInteractionPerformer<DataTypes>, public RemovePrimitivePerformerConfiguration
+class SOFA_SOFAUSERINTERACTION_API RemovePrimitivePerformer: public       TInteractionPerformer<DataTypes>, public RemovePrimitivePerformerConfiguration
 {
     using Index = sofa::Index;
 
@@ -144,12 +137,8 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
-extern template class SOFA_USER_INTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAUSERINTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
 
 #endif
 
-}
-}
-}
-
-#endif
+} // namespace sofa::component::collision

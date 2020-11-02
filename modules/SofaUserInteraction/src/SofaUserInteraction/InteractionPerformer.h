@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_H
-#define SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
 #include <SofaGraphComponent/MouseButtonSetting.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 class BaseMouseInteractor;
@@ -42,7 +35,7 @@ template <class DataTypes>
 class MouseInteractor;
 
 
-class SOFA_USER_INTERACTION_API InteractionPerformer
+class SOFA_SOFAUSERINTERACTION_API InteractionPerformer
 {
 public:
     typedef helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*> InteractionPerformerFactory;
@@ -86,17 +79,4 @@ public:
 
 };
 
-} // namespace collision
-} // namespace component
-
-#if  !defined(SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_CPP)
-namespace helper
-{
-//delay load of the specialized Factory class. unique definition reside in the cpp file.
-extern template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
-}
-#endif
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

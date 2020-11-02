@@ -19,27 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_CPP
-#define SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_CPP
-
 #include <SofaUserInteraction/FixParticlePerformer.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa
+namespace sofa::component::collision
 {
-
-namespace component
-{
-
-namespace collision
-{
-template class SOFA_USER_INTERACTION_API FixParticlePerformer<defaulttype::Vec3Types>;
+template class SOFA_SOFAUSERINTERACTION_API FixParticlePerformer<defaulttype::Vec3Types>;
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3Types> >  FixParticlePerformerVec3dClass("FixParticle",true);
 
-}
-}
-}
-
-#endif
+} // namespace sofa::component::collision

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_H
-#define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
@@ -29,21 +28,11 @@
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <sofa/core/Mapping.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-class Node;
-}
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 
-class SOFA_USER_INTERACTION_API ComponentMouseInteraction
+class SOFA_SOFAUSERINTERACTION_API ComponentMouseInteraction
 {
 public:
     ComponentMouseInteraction();
@@ -97,21 +86,18 @@ protected :
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec2Types>;
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Vec3Types>;
-extern template class SOFA_USER_INTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAUSERINTERACTION_API TComponentMouseInteraction<defaulttype::Vec2Types>;
+extern template class SOFA_SOFAUSERINTERACTION_API TComponentMouseInteraction<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAUSERINTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3Types>;
 
 #endif
-}
-}
+} // namespace sofa::component::collision
+
+
 
 #if  !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
-namespace helper
+namespace sofa::helper
 {
-extern template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
-}
-#endif
-
-}
-
+extern template class SOFA_SOFAUSERINTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+} // namespace sofa::helper
 #endif

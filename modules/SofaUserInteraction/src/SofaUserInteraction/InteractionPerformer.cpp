@@ -25,11 +25,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa
-{
-namespace helper
+namespace sofa::helper
 {
 //explicit instanciation of our factory class.
-template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
-} // namespace helper
-} // namespace sofa
+template class SOFA_SOFAUSERINTERACTION_API Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
+} //namespace sofa::helper

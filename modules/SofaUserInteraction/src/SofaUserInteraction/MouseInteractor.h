@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_H
-#define SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <SofaUserInteraction/RayModel.h>
@@ -29,13 +28,7 @@
 #include <sofa/simulation/Node.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 /** @brief Represents a point on an object.
@@ -54,7 +47,7 @@ struct BodyPicked
     operator bool() { return mstate != nullptr; }
 };
 
-class SOFA_USER_INTERACTION_API BaseMouseInteractor : public core::BehaviorModel
+class SOFA_SOFAUSERINTERACTION_API BaseMouseInteractor : public core::BehaviorModel
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMouseInteractor, core::BehaviorModel);
@@ -127,18 +120,12 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP)
-extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec2Types>;
-extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3Types>;
-extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAUSERINTERACTION_API MouseInteractor<defaulttype::Vec2Types>;
+extern template class SOFA_SOFAUSERINTERACTION_API MouseInteractor<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAUSERINTERACTION_API MouseInteractor<defaulttype::Rigid3Types>;
 
 #endif
 
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

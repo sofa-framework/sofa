@@ -70,14 +70,13 @@ list(APPEND SOURCE_FILES
 
 find_package(SofaCommon REQUIRED) # SofaMeshCollision SofaDeformable
 find_package(SofaGeneralMeshCollision REQUIRED)
-find_package(SofaGeneralRigid REQUIRED)
 find_package(SofaGeneralVisual REQUIRED)
 find_package(SofaTopologyMapping REQUIRED)
 find_package(SofaBoundaryCondition REQUIRED)
 find_package(SofaGraphComponent REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision SofaGeneralRigid SofaGeneralVisual SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision SofaGeneralVisual SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

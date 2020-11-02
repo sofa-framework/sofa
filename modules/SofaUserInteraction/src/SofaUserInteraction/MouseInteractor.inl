@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_INL
-#define SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_INL
-
+#pragma once
 #include <SofaUserInteraction/MouseInteractor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/gl.h>
 
 #include <map>
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template <class DataTypes>
@@ -44,7 +36,4 @@ void MouseInteractor<DataTypes>::init()
     assert(mouseInSofa);
 }
 
-}
-}
-}
-#endif
+} // namespace sofa::component::collision

@@ -43,13 +43,7 @@
 
 #include <SofaTopologyMapping/Hexa2TetraTopologicalMapping.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -604,8 +598,4 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
 }
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

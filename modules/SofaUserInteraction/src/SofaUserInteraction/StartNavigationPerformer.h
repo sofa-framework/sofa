@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_STARTNAVIGATIONPERFORMER_H
-#define SOFA_COMPONENT_COLLISION_STARTNAVIGATIONPERFORMER_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
 #include <SofaUserInteraction/MouseInteractor.h>
 #include <SofaUserInteraction/InteractionPerformer.h>
@@ -32,30 +31,21 @@
 #include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
-namespace sofa
-{
-namespace component
+namespace sofa::component::collision
 {
 
-namespace collision
+class SOFA_SOFAUSERINTERACTION_API StartNavigationPerformer: public InteractionPerformer
 {
+public:
+    StartNavigationPerformer(BaseMouseInteractor *i)
+        : InteractionPerformer(i) {};
 
-    class SOFA_USER_INTERACTION_API StartNavigationPerformer: public InteractionPerformer
-    {
-    public:
-        StartNavigationPerformer(BaseMouseInteractor *i)
-            : InteractionPerformer(i) {};
+    ~StartNavigationPerformer() override{};
 
-        ~StartNavigationPerformer() override{};
+    // Save the current camera's position and orientation in the appropriated Data of Recorded Camera for navigation. 
+    void start() override;
+    void execute() override{};
 
-        // Save the current camera's position and orientation in the appropriated Data of Recorded Camera for navigation. 
-        void start() override;
-        void execute() override{};
+};
 
-    };
-
-}
-}
-}
-
-#endif
+} // namespace sofa::component::collision

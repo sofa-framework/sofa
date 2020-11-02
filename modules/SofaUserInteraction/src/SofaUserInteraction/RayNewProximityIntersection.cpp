@@ -30,13 +30,7 @@
 
 #include <SofaUserInteraction/RayContact.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -252,8 +246,4 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
 }
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

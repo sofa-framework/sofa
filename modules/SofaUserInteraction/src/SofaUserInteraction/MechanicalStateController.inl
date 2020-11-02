@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_INL
-#define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_INL
-
+#pragma once
 #include <SofaUserInteraction/MechanicalStateController.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -35,13 +33,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 template <class DataTypes>
@@ -262,20 +254,14 @@ void MechanicalStateController<DataTypes>::onMouseEvent(core::objectmodel::Mouse
 
 
 template <>
-SOFA_USER_INTERACTION_API void MechanicalStateController<defaulttype::Vec1Types>::applyController();
+SOFA_SOFAUSERINTERACTION_API void MechanicalStateController<defaulttype::Vec1Types>::applyController();
 
 template <>
-SOFA_USER_INTERACTION_API void MechanicalStateController<defaulttype::Vec1Types>::onMouseEvent(core::objectmodel::MouseEvent *mev);
+SOFA_SOFAUSERINTERACTION_API void MechanicalStateController<defaulttype::Vec1Types>::onMouseEvent(core::objectmodel::MouseEvent *mev);
 
 template <>
-SOFA_USER_INTERACTION_API void MechanicalStateController<defaulttype::Rigid3Types>::onMouseEvent(core::objectmodel::MouseEvent *mev);
+SOFA_SOFAUSERINTERACTION_API void MechanicalStateController<defaulttype::Rigid3Types>::onMouseEvent(core::objectmodel::MouseEvent *mev);
 
 
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_H
+} //namespace sofa::component::collision

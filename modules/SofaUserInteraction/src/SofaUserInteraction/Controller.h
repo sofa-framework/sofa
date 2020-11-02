@@ -19,38 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_CONTROLLER_H
-#define SOFA_COMPONENT_CONTROLLER_CONTROLLER_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
 #include <sofa/core/behavior/BaseController.h>
 
-namespace sofa
+namespace sofa::core::objectmodel
 {
-namespace core
-{
-namespace objectmodel
-{
-
-class Event;
-class MouseEvent;
-class HapticDeviceEvent;
-class KeypressedEvent;
-class KeyreleasedEvent;
-class JoystickEvent;
-class XitactEvent;
-class GUIEvent;
-}
-}
+    class Event;
+    class MouseEvent;
+    class HapticDeviceEvent;
+    class KeypressedEvent;
+    class KeyreleasedEvent;
+    class JoystickEvent;
+    class XitactEvent;
+    class GUIEvent;
 }
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 /**
@@ -59,7 +45,7 @@ namespace controller
  * Provides also an interface for BeginAnimation and EndAnimation events
  * launched at the beginning and the end of a time step.
  */
-class SOFA_USER_INTERACTION_API Controller : public core::behavior::BaseController
+class SOFA_SOFAUSERINTERACTION_API Controller : public core::behavior::BaseController
 {
 
 public:
@@ -130,10 +116,4 @@ public:
     void handleEvent(core::objectmodel::Event *) override;
 };
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_CONTROLLER_CONTROLLER_H
+} //namespace sofa::component::collision

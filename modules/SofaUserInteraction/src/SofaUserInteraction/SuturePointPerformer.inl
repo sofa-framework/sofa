@@ -27,13 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template <class DataTypes>
@@ -203,7 +197,4 @@ SuturePointPerformer<DataTypes>::~SuturePointPerformer()
         FixObject->removeConstraint(fixedIndex);
 }
 
-}
-}
-}
-
+} // namespace sofa::component::collision

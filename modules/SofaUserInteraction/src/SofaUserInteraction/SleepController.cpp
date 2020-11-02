@@ -29,13 +29,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/CollisionEndEvent.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 template <class DataTypes>
@@ -427,8 +421,4 @@ simulation::Visitor::Result UpdateAllSleepStates::processNodeTopDown(simulation:
 int SleepControllerClass = core::RegisterObject("A controller that puts node into sleep when the objects are not moving, and wake them up again when there are in collision with a moving object")
 .add< SleepController >();
 
-} // namespace controller
-
-} // namepace component
-
-} // namespace sofa
+} //namespace sofa::component::controller

@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_INL
-#define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_INL
-
+#pragma once
 #include <SofaUserInteraction/ComponentMouseInteraction.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -36,13 +34,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using sofa::component::collision::BodyPicked;
@@ -82,8 +74,5 @@ bool TComponentMouseInteraction<DataTypes>::isCompatible( core::objectmodel::Bas
 {
     return (dynamic_cast<MouseContainer*>(context->getMechanicalState()) != nullptr);
 }
-}
-}
-}
 
-#endif
+} // namespace sofa::component::collision

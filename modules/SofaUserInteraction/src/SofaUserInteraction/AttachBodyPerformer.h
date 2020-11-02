@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_H
-#define SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
@@ -31,12 +30,7 @@
 #include <SofaGraphComponent/AttachBodyButtonSetting.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
-namespace sofa
-{
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 struct BodyPicked;
@@ -91,13 +85,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP)
-extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec2Types>;
-extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Vec3Types>;
-extern template class SOFA_USER_INTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAUSERINTERACTION_API  AttachBodyPerformer<defaulttype::Vec2Types>;
+extern template class SOFA_SOFAUSERINTERACTION_API  AttachBodyPerformer<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAUSERINTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3Types>;
 #endif
 
-}
-}
-}
-
-#endif
+} // namespace sofa::component::collision

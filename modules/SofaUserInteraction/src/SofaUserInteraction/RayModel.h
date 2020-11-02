@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_RAYCOLLISIONMODEL_H
-#define SOFA_COMPONENT_COLLISION_RAYCOLLISIONMODEL_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -29,13 +28,7 @@
 #include <set>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 class RayCollisionModel;
@@ -58,7 +51,7 @@ public:
 
 class BaseRayContact;
 
-class SOFA_USER_INTERACTION_API RayCollisionModel : public core::CollisionModel
+class SOFA_SOFAUSERINTERACTION_API RayCollisionModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(RayCollisionModel, core::CollisionModel);
@@ -155,10 +148,4 @@ inline void Ray::setL(SReal newL)
 
 using RayModel [[deprecated("The RayModel is now deprecated, please use RayCollisionModel instead. Compatibility stops at v20.06")]] = RayCollisionModel;
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

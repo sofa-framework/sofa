@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_INL
-#define SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_INL
-
+#pragma once
 #include <SofaUserInteraction/AttachBodyPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaUserInteraction/MouseInteractor.h>
 
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template <class DataTypes>
@@ -194,8 +186,4 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
     return true;
 }
 
-}
-}
-}
-
-#endif
+} // namespace sofa::component::collision

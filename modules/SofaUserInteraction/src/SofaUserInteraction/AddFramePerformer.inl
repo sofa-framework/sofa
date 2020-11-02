@@ -26,13 +26,7 @@
 #include <SofaRigid/SkinningMapping.inl>
 #include <sofa/helper/Quater.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 template <class DataTypes>
 void AddFramePerformer<DataTypes>::start()

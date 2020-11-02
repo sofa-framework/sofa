@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_H
-#define SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <SofaDeformable/StiffSpringForceField.h>
@@ -30,13 +29,7 @@
 
 #include <SofaUserInteraction/MouseInteractor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 class SuturePointPerformerConfiguration
@@ -52,7 +45,7 @@ protected:
 
 
 template <class DataTypes>
-class SOFA_USER_INTERACTION_API SuturePointPerformer: public TInteractionPerformer<DataTypes>, public SuturePointPerformerConfiguration
+class SOFA_SOFAUSERINTERACTION_API SuturePointPerformer: public TInteractionPerformer<DataTypes>, public SuturePointPerformerConfiguration
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -78,12 +71,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_CPP)
-extern template class SOFA_USER_INTERACTION_API  SuturePointPerformer<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAUSERINTERACTION_API  SuturePointPerformer<defaulttype::Vec3Types>;
 
 #endif
 
-}
-}
-}
-
-#endif
+} // namespace sofa::component::collision

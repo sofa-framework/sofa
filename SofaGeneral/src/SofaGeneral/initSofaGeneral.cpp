@@ -23,7 +23,6 @@
 
 #include <SofaGeneral/initSofaGeneral.h>
 #include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaUserInteraction/initUserInteraction.h>
 #include <SofaConstraint/initConstraint.h>
 
 namespace sofa
@@ -42,7 +41,6 @@ void initSofaGeneral()
     }
 
     initGeneralLoader();
-    initUserInteraction();
     initConstraint();
 }
 

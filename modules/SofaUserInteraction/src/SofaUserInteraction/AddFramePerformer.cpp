@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_CPP
-#define SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_CPP
+#pragma once
 #include <SofaUserInteraction/AddFramePerformer.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3Types>;

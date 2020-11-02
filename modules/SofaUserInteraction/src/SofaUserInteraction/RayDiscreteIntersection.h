@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_RAYDISCRETEINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_RAYDISCRETEINTERSECTION_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
@@ -34,15 +33,9 @@
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/DiscreteIntersection.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
-
-namespace component
-{
-
-namespace collision
-{
-class SOFA_USER_INTERACTION_API RayDiscreteIntersection : public core::collision::BaseIntersector
+class SOFA_SOFAUSERINTERACTION_API RayDiscreteIntersection : public core::collision::BaseIntersector
 {
 
     typedef DiscreteIntersection::OutputVector OutputVector;
@@ -65,10 +58,4 @@ protected:
 
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

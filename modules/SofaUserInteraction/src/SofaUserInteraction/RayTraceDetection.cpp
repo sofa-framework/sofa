@@ -40,13 +40,7 @@
 
 #include <sofa/helper/system/thread/CTime.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -335,8 +329,4 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
     vparams->drawTool()->restoreLastState();
 }
 
-}				// namespace collision
-
-}				// namespace component
-
-}				// namespace sofa
+} // namespace sofa::component::collision

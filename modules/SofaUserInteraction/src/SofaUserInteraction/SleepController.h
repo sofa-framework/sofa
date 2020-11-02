@@ -19,32 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_SLEEPCONTROLLER_H
-#define SOFA_COMPONENT_CONTROLLER_SLEEPCONTROLLER_H
-#include "config.h"
+#pragma once
+#include <SofaUserInteraction/config.h>
 
-#include <SofaUserInteraction/initUserInteraction.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/Visitor.h>
 
-namespace sofa
-{
-
-	
-namespace core
-{
-
-namespace behavior
-{
-class BaseMechanicalState;
-} // namespace behavior
-
-} // namespace core
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 /**
@@ -74,7 +55,7 @@ public:
  *			objects with no initial velocity aren't put to sleep right away.
  *			If a sleeping object is in contact with another object, it's woken up.
  */
-class SOFA_USER_INTERACTION_API SleepController : public core::objectmodel::BaseObject
+class SOFA_SOFAUSERINTERACTION_API SleepController : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(SleepController, core::objectmodel::BaseObject);
@@ -123,7 +104,7 @@ protected:
 /**
  * @brief A visitor that gets a list of all base mechanical state that can sleep
  */
-class SOFA_USER_INTERACTION_API GetStatesThatCanSleep : public simulation::Visitor
+class SOFA_SOFAUSERINTERACTION_API GetStatesThatCanSleep : public simulation::Visitor
 {
 public:
 	GetStatesThatCanSleep(const core::ExecParams* params, std::vector<core::behavior::BaseMechanicalState*>& states);
@@ -137,7 +118,7 @@ protected:
 /**
  * @brief A visitor that sets the sleep state of all nodes based on their parents being asleep.
  */
-class SOFA_USER_INTERACTION_API UpdateAllSleepStates : public simulation::Visitor
+class SOFA_SOFAUSERINTERACTION_API UpdateAllSleepStates : public simulation::Visitor
 {
 public:
 	UpdateAllSleepStates(const core::ExecParams* params);
@@ -145,10 +126,4 @@ public:
 	Visitor::Result processNodeTopDown(simulation::Node* node) override;
 };
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_CONTROLLER_SLEEPCONTROLLER_H
+} //namespace sofa::component::collision

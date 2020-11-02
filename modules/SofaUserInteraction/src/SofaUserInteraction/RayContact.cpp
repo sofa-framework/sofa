@@ -26,13 +26,7 @@
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/OBBModel.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -58,8 +52,4 @@ BaseRayContact::~BaseRayContact()
 }
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

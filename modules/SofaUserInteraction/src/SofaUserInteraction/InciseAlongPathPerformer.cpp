@@ -26,13 +26,7 @@
 
 #include <sofa/helper/Factory.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, InciseAlongPathPerformer>  InciseAlongPathPerformerClass("InciseAlongPath");
 
@@ -290,6 +284,4 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 }
 
 
-}
-}
-}
+} // namespace sofa::component::collision
