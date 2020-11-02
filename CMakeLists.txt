@@ -249,8 +249,7 @@ sofa_add_module(modules/SofaGeneralLinearSolver SofaGeneralLinearSolver ON)
 sofa_add_module(modules/SofaGeneralRigid SofaGeneralRigid ON)
 sofa_add_module(modules/SofaGeneralObjectInteraction SofaGeneralObjectInteraction ON)
 sofa_add_module(modules/SofaGeneralSimpleFem SofaGeneralSimpleFem ON)
-    
-    
+sofa_add_module(modules/SofaGeneralTopology SofaGeneralTopology ON)
     
 add_subdirectory(SofaGeneral)
 
