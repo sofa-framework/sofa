@@ -39,4 +39,4 @@ int LennardJonesForceFieldClass = core::RegisterObject("Lennard-Jones forces for
 template class SOFA_SOFAMISCFORCEFIELD_API LennardJonesForceField<Vec3Types>;
 
 
-} // namespace namespace sofa::component::forcefield
+} // namespace sofa::component::forcefield
