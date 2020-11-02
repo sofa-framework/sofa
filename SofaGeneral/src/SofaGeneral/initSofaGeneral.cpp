@@ -34,10 +34,8 @@
 #include <SofaGeneralTopology/initGeneralTopology.h>
 #include <SofaGeneralEngine/initGeneralEngine.h>
 #include <SofaTopologyMapping/initTopologyMapping.h>
-#include <SofaBoundaryCondition/initBoundaryCondition.h>
 #include <SofaUserInteraction/initUserInteraction.h>
 #include <SofaConstraint/initConstraint.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
 
 namespace sofa
 {
@@ -67,7 +65,6 @@ void initSofaGeneral()
     initGeneralTopology();
     initGeneralEngine();
     initTopologyMapping();
-    initBoundaryCondition();
     initUserInteraction();
     initConstraint();
 }
