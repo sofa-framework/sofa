@@ -36,13 +36,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 using namespace sofa::defaulttype;
@@ -469,9 +463,4 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
     sofa::helper::AdvancedTimer::stepEnd("Update Triangle2EdgeTopologicalMapping");
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

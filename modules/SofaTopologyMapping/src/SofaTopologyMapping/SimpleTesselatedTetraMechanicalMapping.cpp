@@ -25,13 +25,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
@@ -57,8 +51,4 @@ template class SimpleTesselatedTetraMechanicalMapping< Vec3dTypes, Vec3dTypes >;
 
 // Mech -> ExtMapped
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::mapping

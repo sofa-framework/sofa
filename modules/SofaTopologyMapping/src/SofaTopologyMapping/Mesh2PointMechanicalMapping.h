@@ -19,25 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_MESH2POINTMAPPING_H
-#define SOFA_COMPONENT_MAPPING_MESH2POINTMAPPING_H
-#include "config.h"
+#pragma once
+#include <SofaTopologyMapping/config.h>
 
 #include <sofa/core/Mapping.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/TopologyTypes.h>
 
-namespace sofa { namespace core { namespace topology { class BaseMeshTopology; } } }
-namespace sofa { namespace component { namespace topology { class Mesh2PointTopologicalMapping; } } }
+namespace sofa::core::topology { class BaseMeshTopology; }
+namespace sofa::component::topology { class Mesh2PointTopologicalMapping; }
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
@@ -91,15 +84,9 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_MESH2POINTMECHANICALMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
-extern template class SOFA_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
+extern template class SOFA_SOFATOPOLOGYMAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
 
 
 #endif
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::mapping

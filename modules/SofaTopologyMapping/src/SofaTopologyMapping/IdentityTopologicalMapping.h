@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_IDENTITYTOPOLOGICALMAPPING_H
-#define SOFA_COMPONENT_TOPOLOGY_IDENTITYTOPOLOGICALMAPPING_H
-#include "config.h"
+#pragma once
+#include <SofaTopologyMapping/config.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
@@ -30,13 +29,7 @@
 
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 /**
@@ -44,7 +37,7 @@ namespace topology
  * The implementation currently assumes that both topology have been initialized identically.
  */
 
-class SOFA_TOPOLOGY_MAPPING_API IdentityTopologicalMapping : public sofa::core::topology::TopologicalMapping
+class SOFA_SOFATOPOLOGYMAPPING_API IdentityTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
     SOFA_CLASS(IdentityTopologicalMapping,sofa::core::topology::TopologicalMapping);
@@ -67,10 +60,4 @@ public:
 
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_TOPOLOGY_TETRA2TRIANGLETOPOLOGICALMAPPING_H
+} //namespace sofa::component::topology

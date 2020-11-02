@@ -363,6 +363,22 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "SphereGridTopology", Pluginized("v20.12", "SofaGeneralTopology") },
     { "SphereQuadTopology", Pluginized("v20.12", "SofaGeneralTopology") },
 
+    // SofaGeneralTopology was pluginized in #1586
+    { "CenterPointTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Edge2QuadTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Hexa2QuadTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Hexa2TetraTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "IdentityTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Mesh2PointMechanicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Mesh2PointTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Quad2TriangleTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "SimpleTesselatedHexaTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "SimpleTesselatedTetraMechanicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "SimpleTesselatedTetraTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "SubsetTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Tetra2TriangleTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Triangle2EdgeTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+
     /***********************/
     // REMOVED SINCE v20.06
 

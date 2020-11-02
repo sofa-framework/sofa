@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_INL
-
+#pragma once
 #include <SofaTopologyMapping/SimpleTesselatedTetraMechanicalMapping.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
@@ -192,10 +184,4 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::Con
     dOut.endEdit();
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::mapping

@@ -19,23 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MAPPING_INIT_H
-#define SOFA_COMPONENT_TOPOLOGY_MAPPING_INIT_H
-#include "config.h"
+#pragma once
+#include <SofaTopologyMapping/config.h>
 
 
-namespace sofa
-{
-
-namespace component
+namespace sofa::component
 {
 
 
-void SOFA_TOPOLOGY_MAPPING_API initTopologyMapping();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} //namespace sofa::component

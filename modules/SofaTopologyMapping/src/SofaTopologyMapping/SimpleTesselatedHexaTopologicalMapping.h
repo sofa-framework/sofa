@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_SIMPLETESSELATEDHEXATOPOLOGICALMAPPING_H
-#define SOFA_COMPONENT_TOPOLOGY_SIMPLETESSELATEDHEXATOPOLOGICALMAPPING_H
-#include "config.h"
+#pragma once
+#include <SofaTopologyMapping/config.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
@@ -32,11 +31,7 @@
 #include <sofa/core/BaseMapping.h>
 #include <SofaBaseTopology/TopologyData.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+namespace sofa::component::topology
 {
 
 /**
@@ -92,8 +87,4 @@ protected:
     helper::vector<int> pointMappedFromHexa;
 };
 
-} // namespace topology
-} // namespace component
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_TOPOLOGY_SIMPLETESSELATEDHEXATOPOLOGICALMAPPING_H
+} //namespace sofa::component::topology

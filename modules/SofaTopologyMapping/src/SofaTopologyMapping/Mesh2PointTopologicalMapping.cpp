@@ -33,11 +33,7 @@
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+namespace sofa::component::topology
 {
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
@@ -958,9 +954,4 @@ void Mesh2PointTopologicalMapping::removeOutputPoints( const sofa::helper::vecto
     pointSource.resize(last + 1);
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

@@ -42,13 +42,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 using namespace sofa::defaulttype;
@@ -559,9 +553,4 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     return;
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

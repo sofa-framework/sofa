@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_MESH2POINTMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_MESH2POINTMAPPING_INL
-
+#pragma once
 #include "Mesh2PointMechanicalMapping.h"
 
 #include <SofaTopologyMapping/Mesh2PointTopologicalMapping.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 
@@ -655,10 +647,4 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
     dOut.endEdit();
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::mapping

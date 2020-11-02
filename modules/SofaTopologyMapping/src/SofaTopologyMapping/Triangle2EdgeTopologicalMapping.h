@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_TRIANGLE2EDGETOPOLOGICALMAPPING_H
-#define SOFA_COMPONENT_TOPOLOGY_TRIANGLE2EDGETOPOLOGICALMAPPING_H
-#include "config.h"
+#pragma once
+#include <SofaTopologyMapping/config.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
@@ -30,13 +29,7 @@
 
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 class EdgeSetTopologyModifier;
@@ -51,7 +44,7 @@ class EdgeSetTopologyModifier;
 * Triangle2EdgeTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
 *
 */
-class SOFA_TOPOLOGY_MAPPING_API Triangle2EdgeTopologicalMapping : public sofa::core::topology::TopologicalMapping
+class SOFA_SOFATOPOLOGYMAPPING_API Triangle2EdgeTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
     SOFA_CLASS(Triangle2EdgeTopologicalMapping,sofa::core::topology::TopologicalMapping);
@@ -87,10 +80,4 @@ private:
     EdgeSetTopologyModifier* m_outTopoModifier;
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_TOPOLOGY_TETRA2TRIANGLETOPOLOGICALMAPPING_H
+} //namespace sofa::component::topology

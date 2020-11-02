@@ -38,13 +38,7 @@
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 using namespace sofa::defaulttype;
@@ -215,8 +209,4 @@ void Hexa2TetraTopologicalMapping::updateTopologicalMappingTopDown()
 }
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::topology

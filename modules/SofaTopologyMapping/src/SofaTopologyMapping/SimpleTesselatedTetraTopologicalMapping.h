@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_SIMPLETESELATEDTETRATOPOLOGICALMAPPING_H
-#define SOFA_COMPONENT_TOPOLOGY_SIMPLETESELATEDTETRATOPOLOGICALMAPPING_H
-#include "config.h"
+#pragma once
+#include <SofaTopologyMapping/config.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
@@ -32,11 +31,7 @@
 #include <sofa/core/BaseMapping.h>
 #include <SofaBaseTopology/TopologyData.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+namespace sofa::component::topology
 {
 /**
  * This class, called SimpleTesselatedTetraTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
@@ -141,8 +136,4 @@ protected:
 
 };
 
-} // namespace topology
-} // namespace component
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_TOPOLOGY_TETRA2TRIANGLETOPOLOGICALMAPPING_H
+} //namespace sofa::component::topology

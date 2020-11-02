@@ -33,11 +33,7 @@
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+namespace sofa::component::topology
 {
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
@@ -332,7 +328,4 @@ void SimpleTesselatedHexaTopologicalMapping::init()
     }
 }
 
-} // namespace topology
-} // namespace component
-} // namespace sofa
-
+} //namespace sofa::component::topology

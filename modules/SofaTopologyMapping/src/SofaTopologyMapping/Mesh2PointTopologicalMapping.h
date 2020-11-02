@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MESH2POINTTOPOLOGICALMAPPING_H
-#define SOFA_COMPONENT_TOPOLOGY_MESH2POINTTOPOLOGICALMAPPING_H
-#include "config.h"
+#pragma once
+#include <SofaTopologyMapping/config.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
@@ -34,11 +33,7 @@
 #include <SofaBaseTopology/TopologyData.h>
 
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+namespace sofa::component::topology
 {
 /**
  * This class, called Mesh2PointTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
@@ -52,7 +47,7 @@ namespace topology
  *
 */
 
-class SOFA_TOPOLOGY_MAPPING_API Mesh2PointTopologicalMapping : public sofa::core::topology::TopologicalMapping
+class SOFA_SOFATOPOLOGYMAPPING_API Mesh2PointTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
     SOFA_CLASS(Mesh2PointTopologicalMapping,sofa::core::topology::TopologicalMapping);
@@ -164,8 +159,4 @@ protected:
     bool initDone;
 };
 
-} // namespace topology
-} // namespace component
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_TOPOLOGY_MESH2POINTTOPOLOGICALMAPPING_H
+} //namespace sofa::component::topology

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_QUAD2TRIANGLETOPOLOGICALMAPPING_H
-#define SOFA_COMPONENT_TOPOLOGY_QUAD2TRIANGLETOPOLOGICALMAPPING_H
-#include "config.h"
+#pragma once
+#include <SofaTopologyMapping/config.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
@@ -30,13 +29,7 @@
 
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 
@@ -51,7 +44,7 @@ namespace topology
 *
 */
 
-class SOFA_TOPOLOGY_MAPPING_API Quad2TriangleTopologicalMapping : public sofa::core::topology::TopologicalMapping
+class SOFA_SOFATOPOLOGYMAPPING_API Quad2TriangleTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 
 public:
@@ -85,10 +78,4 @@ public:
 
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_TOPOLOGY_QUAD2TRIANGLETOPOLOGICALMAPPING_H
+} //namespace sofa::component::topology

@@ -37,13 +37,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 using namespace sofa::defaulttype;
@@ -420,9 +414,4 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     sofa::helper::AdvancedTimer::stepEnd("Update Hexa2QuadTopologicalMapping");
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology
