@@ -23,18 +23,10 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 using namespace sofa::defaulttype;
-
-
 
 void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 {
@@ -374,8 +366,4 @@ Vector3 CubeTopology::getPoint(int x, int y, int z) const
     return p0+dx*x+dy*y+dz*z;
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::topology

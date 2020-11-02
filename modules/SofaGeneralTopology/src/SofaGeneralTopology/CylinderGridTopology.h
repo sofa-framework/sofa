@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_CYLINDERGRIDTOPOLOGY_H
-#define SOFA_COMPONENT_TOPOLOGY_CYLINDERGRIDTOPOLOGY_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralTopology/config.h>
 
 #include <SofaBaseTopology/GridTopology.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 /** \brief Define a cylinder grid topology
@@ -39,7 +32,7 @@ namespace topology
  * Position and direction are set by @sa d_center and @sa d_axis
  * nz discretisation is along the cylinder axis
   */
-class SOFA_GENERAL_TOPOLOGY_API CylinderGridTopology : public GridTopology
+class SOFA_SOFAGENERALTOPOLOGY_API CylinderGridTopology : public GridTopology
 {
 public:
     SOFA_CLASS(CylinderGridTopology,GridTopology);
@@ -76,10 +69,4 @@ public:
     Data< SReal > d_length;
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace namespace sofa::component::topology

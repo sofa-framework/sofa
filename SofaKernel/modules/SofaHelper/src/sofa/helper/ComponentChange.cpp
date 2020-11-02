@@ -357,6 +357,12 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "TetrahedralCorotationalFEMForceField", Pluginized("v20.12", "SofaGeneralSimpleFem") },
     { "TriangularFEMForceFieldOptim", Pluginized("v20.12", "SofaGeneralSimpleFem") },
 
+    // SofaGeneralTopology was pluginized in #15XX
+    { "CubeTopology", Pluginized("v20.12", "SofaGeneralTopology") },
+    { "CylinderGridTopology", Pluginized("v20.12", "SofaGeneralTopology") },
+    { "SphereGridTopology", Pluginized("v20.12", "SofaGeneralTopology") },
+    { "SphereQuadTopology", Pluginized("v20.12", "SofaGeneralTopology") },
+
     /***********************/
     // REMOVED SINCE v20.06
 

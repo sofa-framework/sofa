@@ -24,18 +24,10 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/rmath.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 using namespace sofa::defaulttype;
-
-
 
 int SphereQuadTopologyClass = core::RegisterObject("Sphere topology constructed with deformed quads")
         .addAlias("SphereQuad")
@@ -62,9 +54,4 @@ Vector3 SphereQuadTopology::getPoint(int x, int y, int z) const
     return center.getValue()+p*radius.getValue();
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::topology
