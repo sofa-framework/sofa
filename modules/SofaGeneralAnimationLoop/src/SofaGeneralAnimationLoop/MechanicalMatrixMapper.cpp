@@ -52,4 +52,4 @@ template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Rigid3Ty
 
 
 
-} // namespace namespace sofa::component::interactionforcefield
+} // namespace sofa::component::interactionforcefield

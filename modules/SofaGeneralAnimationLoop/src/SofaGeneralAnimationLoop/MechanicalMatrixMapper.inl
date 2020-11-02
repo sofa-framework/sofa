@@ -545,4 +545,4 @@ double MechanicalMatrixMapper<DataTypes1, DataTypes2>::getPotentialEnergy(const 
     return 0.0;
 }
 
-} // namespace namespace sofa::component::interactionforcefield
+} // namespace sofa::component::interactionforcefield

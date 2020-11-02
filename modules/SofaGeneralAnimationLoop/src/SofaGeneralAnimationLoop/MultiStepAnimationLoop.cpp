@@ -141,5 +141,5 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
-} // namespace namespace sofa::component::animationloop
+} // namespace sofa::component::animationloop
 
