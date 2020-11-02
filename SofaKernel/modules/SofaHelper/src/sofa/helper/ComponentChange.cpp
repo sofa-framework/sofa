@@ -246,6 +246,19 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "MultiStepAnimationLoop", Pluginized("v20.12", "SofaGeneralAnimationLoop") },
     { "MultiTagAnimationLoop", Pluginized("v20.12", "SofaGeneralAnimationLoop") },
 
+    // SofaGeneralDeformable was pluginized in #1564
+    { "FastTriangularBendingSprings", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "FrameSpringForceField", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "QuadBendingSprings", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "RegularGridSpringForceField", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "QuadularBendingSprings", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "TriangleBendingSprings", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "TriangularBendingSprings", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "TriangularBiquadraticSpringsForceField", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "TriangularQuadraticSpringsForceField", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "TriangularTensorMassForceField", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "VectorSpringForceField", Pluginized("v20.12", "SofaGeneralDeformable") },
+
     /***********************/
     // REMOVED SINCE v20.06
 

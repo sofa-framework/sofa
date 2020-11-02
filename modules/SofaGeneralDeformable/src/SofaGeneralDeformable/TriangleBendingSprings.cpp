@@ -19,52 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_CPP
+#include <SofaGeneralDeformable/TriangleBendingSprings.inl>
+#include <SofaDeformable/StiffSpringForceField.inl>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralExplicitOdeSolver/initGeneralExplicitODESolver.h>
-#include <SofaGeneralImplicitOdeSolver/initGeneralImplicitODESolver.h>
-#include <SofaGeneralLinearSolver/initGeneralLinearSolver.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
-#include <SofaGeneralRigid/initGeneralRigid.h>
-#include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
-#include <SofaGeneralTopology/initGeneralTopology.h>
-#include <SofaGeneralEngine/initGeneralEngine.h>
-#include <SofaTopologyMapping/initTopologyMapping.h>
-#include <SofaUserInteraction/initUserInteraction.h>
-#include <SofaConstraint/initConstraint.h>
-
-namespace sofa
+namespace sofa::component::interactionforcefield
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
+
+// Register in the Factory
+int TriangleBendingSpringsClass = core::RegisterObject("Springs added to a traingular mesh to prevent bending")
+        .add< TriangleBendingSprings<Vec3Types> >()
+        .add< TriangleBendingSprings<Vec2Types> >()
+
+        ;
+
+template class SOFA_SOFAGENERALDEFORMABLE_API TriangleBendingSprings<Vec3Types>;
+template class SOFA_SOFAGENERALDEFORMABLE_API TriangleBendingSprings<Vec2Types>;
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+} // namespace sofa::component::interactionforcefield
 
-    initGeneralExplicitODESolver();
-    initGeneralImplicitODESolver();
-    initGeneralLinearSolver();
-    initGeneralLoader();
-    initGeneralObjectInteraction();
-    initGeneralRigid();
-    initGeneralSimpleFEM();
-    initGeneralTopology();
-    initGeneralEngine();
-    initTopologyMapping();
-    initUserInteraction();
-    initConstraint();
-}
-
-
-} // namespace component
-
-} // namespace sofa
