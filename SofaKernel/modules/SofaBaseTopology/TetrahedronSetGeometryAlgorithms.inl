@@ -812,63 +812,49 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
 
 /// Compute intersection point with plane which is defined by c and normal
 template <typename DataTypes>
-void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(const TetraID ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, sofa::helper::vector< sofa::defaulttype::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge)
+void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(const TetraID ind_ta, const sofa::defaulttype::Vec<3,Real>& planP0, const sofa::defaulttype::Vec<3,Real>& normal, 
+    sofa::helper::vector< sofa::defaulttype::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge)
 {
-    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
-    const Tetrahedron ta=this->m_topology->getTetrahedron(ind_ta);
-    const EdgesInTetrahedron edgesInTetra=this->m_topology->getEdgesInTetrahedron(ind_ta);
-    const SeqEdges edges=this->m_topology->getEdges();
+    const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::position())->getValue());
+    const Tetrahedron& ta = this->m_topology->getTetrahedron(ind_ta);
+    const EdgesInTetrahedron& edgesInTetra = this->m_topology->getEdgesInTetrahedron(ind_ta);
+    const SeqEdges& edges = this->m_topology->getEdges();
 
     sofa::defaulttype::Vec<3,Real> p1,p2;
     sofa::defaulttype::Vec<3,Real> intersection;
 
     //intersection with edge
-    for(size_t i=0; i<edgesInTetra.size(); i++)
+    for(auto edgeId : edgesInTetra)
     {
-        p1=vect_c[edges[edgesInTetra[i]][0]]; p2=vect_c[edges[edgesInTetra[i]][1]];
-        if(computeIntersectionEdgeWithPlane(p1,p2,c,normal,intersection))
+        const Edge& edge = edges[edgeId];
+        p1 = vect_c[edge[0]];
+        p2 = vect_c[edge[1]];
+
+        if(computeIntersectionEdgeWithPlane(p1, p2, planP0, normal, intersection))
         {
             intersectedPoint.push_back(intersection);
-            intersectedEdge.push_back(edges[edgesInTetra[i]]);
-        }
-    }
-
-    static FILE* f1=fopen("tetra.txt","w");
-    static FILE* f2=fopen("inter.txt","w");
-    if(intersectedPoint.size()==3)
-    {
-        for(int i=0; i<4; i++)
-        {
-            p1=vect_c[ta[i]];
-            fprintf(f1,"%lu %f %f %f\n",ta[i],p1[0],p1[1],p1[2]);
-        }
-        for(size_t i=0; i<intersectedPoint.size(); i++)
-        {
-            fprintf(f2,"%f %f %f\n",intersectedPoint[i][0],intersectedPoint[i][1],intersectedPoint[i][2]);
+            intersectedEdge.push_back(edge);
         }
     }
 }
 
 template <typename DataTypes>
-bool TetrahedronSetGeometryAlgorithms<DataTypes>::computeIntersectionEdgeWithPlane(sofa::defaulttype::Vec<3,Real>& p1,
-                                                                                   sofa::defaulttype::Vec<3,Real>& p2,
-                                                                                   sofa::defaulttype::Vec<3,Real>& c,
-                                                                                   sofa::defaulttype::Vec<3,Real>& normal,
-                                                                                   sofa::defaulttype::Vec<3,Real>& intersection)
+bool TetrahedronSetGeometryAlgorithms<DataTypes>::computeIntersectionEdgeWithPlane(const sofa::defaulttype::Vec<3, Real>& edgeP1,
+    const sofa::defaulttype::Vec<3, Real>& edgeP2,
+    const sofa::defaulttype::Vec<3, Real>& planP0,
+    const sofa::defaulttype::Vec<3, Real>& normal,
+    sofa::defaulttype::Vec<3,Real>& intersection)
 {
     //plane equation
-    normal.normalize();
-    double d=normal*c;
+    sofa::defaulttype::Vec<3, Real> planNorm = normal.normalized();
+    Real d = planNorm * planP0;
 
-    //line equation
-    double t;
+    //compute intersection between line and plane equation
+    Real t = (d - planNorm * edgeP1) / (planNorm*(edgeP2 - edgeP1));
 
-    //compute intersection
-    t=(d-normal*p1)/(normal*(p2-p1));
-
-    if((t<1)&&(t>0))
+    if((t<=1) && (t>=0))
     {
-        intersection=p1+(p2-p1)*t;
+        intersection = edgeP1 + (edgeP2 - edgeP1)*t;
         return true;
     }
     else
