@@ -25,10 +25,10 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALTOPOLOGY_SRC}/SphereQuadTopology.cpp
     )
 
-find_package(SofaBase REQUIRED)
+find_package(SofaBase REQUIRED) # SofaBaseTopology
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaBaseTopology)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
