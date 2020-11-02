@@ -19,25 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
+#pragma once
 
+#include <SofaGeneralAnimationLoop/config.h>
 
-namespace sofa
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/simulation/CollisionAnimationLoop.h>
+
+namespace sofa::component::animationloop
 {
 
-namespace component
+class SOFA_SOFAGENERALANIMATIONLOOP_API MultiStepAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
+public:
+    typedef sofa::simulation::CollisionAnimationLoop Inherit;
+    SOFA_CLASS(MultiStepAnimationLoop, sofa::simulation::CollisionAnimationLoop);
+protected:
+    MultiStepAnimationLoop(simulation::Node* gnode);
 
+    ~MultiStepAnimationLoop() override;
+public:
+    void step (const sofa::core::ExecParams* params, SReal dt) override;
 
-void initGeneralAnimationLoop()
-{
-    static bool first = true;
-    if (first)
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
-        first = false;
+        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+        return obj;
     }
-}
 
-} // namespace component
+    Data<int> collisionSteps; ///< number of collision steps between each frame rendering
+    Data<int> integrationSteps; ///< number of integration steps between each collision detection
+};
 
-} // namespace sofa
+} // namespace sofa::component::animationloop

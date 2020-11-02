@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
@@ -49,17 +43,13 @@ int MechanicalMatrixMapperClass = core::RegisterObject("This component allows to
         ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Rigid3Types, Rigid3Types>;
-template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3Types, Rigid3Types>;
-template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec3Types, Vec3Types>;
-template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1Types, Rigid3Types>;
-template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Vec1Types, Vec1Types>;
-template class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper<Rigid3Types, Vec1Types> ;
+template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Rigid3Types, Rigid3Types>;
+template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec3Types, Rigid3Types>;
+template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec3Types, Vec3Types>;
+template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec1Types, Rigid3Types>;
+template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec1Types, Vec1Types>;
+template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Rigid3Types, Vec1Types> ;
 
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::interactionforcefield

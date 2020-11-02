@@ -38,13 +38,7 @@
 
 using namespace sofa::simulation;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace animationloop
+namespace sofa::component::animationloop
 {
 
 int MultiStepAnimationLoopClass = core::RegisterObject("Multi steps animation loop, multi integration steps in a single animation step are managed.")
@@ -147,9 +141,5 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
-} // namespace animationloop
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::animationloop
 

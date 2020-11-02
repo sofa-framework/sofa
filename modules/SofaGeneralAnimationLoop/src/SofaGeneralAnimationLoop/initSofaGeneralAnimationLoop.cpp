@@ -19,59 +19,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ANIMATIONLOOP_MULTITAGANIMATIONLOOP_H
-#define SOFA_COMPONENT_ANIMATIONLOOP_MULTITAGANIMATIONLOOP_H
-#include "config.h"
+#include <SofaGeneralAnimationLoop/initSofaGeneralAnimationLoop.h>
 
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/simulation/CollisionAnimationLoop.h>
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
+extern "C" {
+    SOFA_SOFAGENERALANIMATIONLOOP_API void initExternalModule();
+    SOFA_SOFAGENERALANIMATIONLOOP_API const char* getModuleName();
+    SOFA_SOFAGENERALANIMATIONLOOP_API const char* getModuleVersion();
+    SOFA_SOFAGENERALANIMATIONLOOP_API const char* getModuleLicense();
+    SOFA_SOFAGENERALANIMATIONLOOP_API const char* getModuleDescription();
+    SOFA_SOFAGENERALANIMATIONLOOP_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
-
-namespace animationloop
-{
-
-/** Simple animation loop that given a list of tags, animate the graph one tag after another.
-*/
-class SOFA_GENERAL_ANIMATION_LOOP_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
-{
-public:
-    typedef sofa::simulation::CollisionAnimationLoop Inherit;
-    SOFA_CLASS(MultiTagAnimationLoop,sofa::simulation::CollisionAnimationLoop);
-
-    MultiTagAnimationLoop(simulation::Node* gnode);
-
-    void init() override;
-
-    virtual void clear();
-
-    ~MultiTagAnimationLoop() override;
-
-    void step (const sofa::core::ExecParams* params, SReal dt) override;
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
+    static bool first = true;
+    if (first)
     {
-        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
+        first = false;
     }
+}
 
-private:
-    sofa::core::objectmodel::TagSet tagList;
-};
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace animationloop
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAGENERALANIMATIONLOOP_VERSION);
+}
 
-} // namespace component
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-} // namespace sofa
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about General Animation Loop.";
+}
 
-#endif /* SOFA_COMPONENT_ANIMATIONLOOP_MULTITAGANIMATIONLOOP_H */
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

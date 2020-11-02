@@ -204,7 +204,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "ViewerSetting", Pluginized("v20.12", "SofaGraphComponent") },
     { "APIVersion", Pluginized("v20.12", "SofaGraphComponent") },
 
-    // SofaBoundaryCondition was pluginized in #15XX
+    // SofaBoundaryCondition was pluginized in #1556
     { "AffineMovementConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
     { "ConicalForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
     { "ConstantForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
@@ -240,6 +240,11 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "ProjectToPlaneConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
     { "ProjectToPointConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
     { "ProjectDirectionConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+
+    // SofaGeneralAnimationLoop was pluginized in #1563
+    { "MechanicalMatrixMapper", Pluginized("v20.12", "SofaGeneralAnimationLoop") },
+    { "MultiStepAnimationLoop", Pluginized("v20.12", "SofaGeneralAnimationLoop") },
+    { "MultiTagAnimationLoop", Pluginized("v20.12", "SofaGeneralAnimationLoop") },
 
     /***********************/
     // REMOVED SINCE v20.06

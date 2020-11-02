@@ -19,21 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_GENERAL_ANIMATION_LOOP_INIT_H
-#define SOFA_COMPONENT_GENERAL_ANIMATION_LOOP_INIT_H
-#include "config.h"
+#pragma once
 
-namespace sofa
+#include <SofaGeneralAnimationLoop/config.h>
+
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/simulation/CollisionAnimationLoop.h>
+
+namespace sofa::component::animationloop
 {
 
-namespace component
+/** Simple animation loop that given a list of tags, animate the graph one tag after another.
+*/
+class SOFA_SOFAGENERALANIMATIONLOOP_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
+public:
+    typedef sofa::simulation::CollisionAnimationLoop Inherit;
+    SOFA_CLASS(MultiTagAnimationLoop,sofa::simulation::CollisionAnimationLoop);
 
-void SOFA_GENERAL_ANIMATION_LOOP_API initGeneralAnimationLoop();
+    MultiTagAnimationLoop(simulation::Node* gnode);
 
-} // namespace component
+    void init() override;
 
-} // namespace sofa
+    virtual void clear();
 
-#endif
+    ~MultiTagAnimationLoop() override;
 
+    void step (const sofa::core::ExecParams* params, SReal dt) override;
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
+    {
+        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+        return obj;
+    }
+
+private:
+    sofa::core::objectmodel::TagSet tagList;
+};
+
+} // namespace sofa::component::animationloop

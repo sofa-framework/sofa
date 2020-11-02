@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGENERALANIMATIONLOOP_CONFIG_H
-#define SOFAGENERALANIMATIONLOOP_CONFIG_H
+#pragma once
 
-#include <SofaGeneral/config.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_GENERAL_ANIMATION_LOOP
-#  define SOFA_TARGET SofaGeneralAnimationLoop
-#  define SOFA_GENERAL_ANIMATION_LOOP_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFAGENERALANIMATIONLOOP_VERSION @PROJECT_VERSION@
+
+#ifdef SOFA_BUILD_SOFAGENERALANIMATIONLOOP
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAGENERALANIMATIONLOOP_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_GENERAL_ANIMATION_LOOP_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
+#  define SOFA_SOFAGENERALANIMATIONLOOP_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
