@@ -30,13 +30,7 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 // Register in the Factory
@@ -275,8 +269,4 @@ void InputEventReader::handleEvent(core::objectmodel::Event *event)
     }
 }
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::misc

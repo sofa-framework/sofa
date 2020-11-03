@@ -27,7 +27,7 @@ namespace sofa::component::loader
 {
 
 // Format doc: http://en.wikipedia.org/wiki/STL_(file_format)
-class SOFA_GENERAL_LOADER_API MeshSTLLoader : public sofa::core::loader::MeshLoader
+class SOFA_SOFAGENERALLOADER_API MeshSTLLoader : public sofa::core::loader::MeshLoader
 {
 public:
     SOFA_CLASS(MeshSTLLoader,sofa::core::loader::MeshLoader);
@@ -54,5 +54,4 @@ public:
 
 };
 
-} // namespace sofa::component::loader
-
+} //namespace sofa::component::loader

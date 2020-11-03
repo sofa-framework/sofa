@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_READTOPOLOGY_INL
-#define SOFA_COMPONENT_MISC_READTOPOLOGY_INL
-
+#pragma once
 #include <SofaGeneralLoader/ReadTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
@@ -30,13 +28,7 @@
 #include <cstring>
 #include <sstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 ReadTopology::ReadTopology()
@@ -380,10 +372,4 @@ void ReadTopology::processReadTopology()
 
 }
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::misc

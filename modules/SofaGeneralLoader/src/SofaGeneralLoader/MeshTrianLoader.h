@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_MESHTRIANLOADER_H
-#define SOFA_COMPONENT_LOADER_MESHTRIANLOADER_H
+#pragma once
 #include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 /// Cette classe permet la fabrication d'un visuel pour un fichier de type trian
@@ -41,7 +34,7 @@ namespace loader
 /// nombre de faces
 ///liste de toutes les faces ex 1 2 3 0 0 0 les 3 derniers chiffres ne sont pas utilises pour le moment
 
-class SOFA_GENERAL_LOADER_API MeshTrianLoader : public sofa::core::loader::MeshLoader
+class SOFA_SOFAGENERALLOADER_API MeshTrianLoader : public sofa::core::loader::MeshLoader
 {
 public:
     SOFA_CLASS(MeshTrianLoader,sofa::core::loader::MeshLoader);
@@ -67,10 +60,4 @@ public:
 };
 
 
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::loader

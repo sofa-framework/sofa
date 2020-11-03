@@ -26,13 +26,7 @@
 #include <iostream>
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 using namespace sofa::defaulttype;
@@ -238,9 +232,4 @@ bool MeshTrianLoader::readTrian2 (const char* filename)
 
 
 
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::loader

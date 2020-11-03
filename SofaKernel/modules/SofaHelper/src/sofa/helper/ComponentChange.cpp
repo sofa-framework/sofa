@@ -410,6 +410,22 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "UniformConstraint", Pluginized("v20.12", "SofaConstraint") },
     { "UnilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
 
+    // SofaGeneralLoader was pluginized in #15XX
+    { "GIDMeshLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "GridMeshCreator", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "InputEventReader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshGmshLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshOffLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshSTLLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshTrianLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshXspLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "OffSequenceLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "ReadState", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "ReadTopology", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "SphereLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "StringMeshCreator", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "VoxelGridLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+
     /***********************/
     // REMOVED SINCE v20.12
     { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },

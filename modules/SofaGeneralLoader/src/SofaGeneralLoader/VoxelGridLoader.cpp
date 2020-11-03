@@ -30,13 +30,7 @@
 #include <map>
 #include <algorithm>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 using namespace sofa::defaulttype;
@@ -455,9 +449,4 @@ helper::vector<unsigned int> VoxelGridLoader::getHexaIndicesInGrid() const
     return idxInRegularGrid.getValue();
 }
 
-}
-
-} // namespace core
-
-} // namespace sofa
-
+} //namespace sofa::component::loader

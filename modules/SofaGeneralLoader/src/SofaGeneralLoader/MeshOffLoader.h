@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_MESHOFFLOADER_H
-#define SOFA_COMPONENT_LOADER_MESHOFFLOADER_H
+#pragma once
 #include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa
+namespace sofa::component::loader
 {
 
-namespace component
-{
-
-namespace loader
-{
-
-class SOFA_GENERAL_LOADER_API MeshOffLoader : public sofa::core::loader::MeshLoader
+class SOFA_SOFAGENERALLOADER_API MeshOffLoader : public sofa::core::loader::MeshLoader
 {
 public:
     SOFA_CLASS(MeshOffLoader,sofa::core::loader::MeshLoader);
@@ -56,10 +49,4 @@ public:
 
 
 
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_LOADER_MESHOFFLOADER_H
+} //namespace sofa::component::loader

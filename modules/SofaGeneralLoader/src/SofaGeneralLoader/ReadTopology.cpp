@@ -22,13 +22,7 @@
 #include <SofaGeneralLoader/ReadTopology.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 using namespace defaulttype;
@@ -128,8 +122,4 @@ simulation::Visitor::Result ReadTopologyModifier::processNodeTopDown( simulation
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::misc

@@ -27,13 +27,7 @@
 #include <sofa/helper/io/Mesh.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 using namespace sofa::defaulttype;
@@ -398,9 +392,4 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 }
 
 
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::loader

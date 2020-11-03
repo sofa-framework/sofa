@@ -22,13 +22,7 @@
 #include <SofaGeneralLoader/ReadState.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 using namespace defaulttype;
@@ -131,8 +125,4 @@ simulation::Visitor::Result ReadStateModifier::processNodeTopDown( simulation::N
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::misc

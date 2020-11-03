@@ -19,17 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_SPHERELOADER_H
-#define SOFA_COMPONENT_LOADER_SPHERELOADER_H
+#pragma once
 #include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/BaseLoader.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace loader
+namespace sofa::component::loader
 {
 
 class SphereLoader : public sofa::core::loader::BaseLoader
@@ -48,8 +43,4 @@ public:
     bool load() override;
 };
 
-} //loader
-} //component
-} //sofa
-
-#endif // SOFA_COMPONENT_LOADER_SPHERELOADER_H
+} //namespace sofa::component::loader

@@ -19,17 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <SofaGeneralLoader/initSofaGeneralLoader.h>
 
 
-namespace sofa
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
+
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFAGENERALLOADER_API void initExternalModule();
+    SOFA_SOFAGENERALLOADER_API const char* getModuleName();
+    SOFA_SOFAGENERALLOADER_API const char* getModuleVersion();
+    SOFA_SOFAGENERALLOADER_API const char* getModuleLicense();
+    SOFA_SOFAGENERALLOADER_API const char* getModuleDescription();
+    SOFA_SOFAGENERALLOADER_API const char* getModuleComponentList();
+}
 
-
-void initGeneralLoader()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -38,6 +46,31 @@ void initGeneralLoader()
     }
 }
 
-} // namespace component
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace sofa
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAGENERALLOADER_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about General Loader.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

@@ -25,13 +25,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 using namespace sofa::defaulttype;
@@ -150,9 +144,4 @@ bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
 
     return true;
 }
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::loader

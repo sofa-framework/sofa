@@ -27,11 +27,8 @@
 
 using namespace sofa::core::loader;
 using namespace sofa::defaulttype;
-namespace sofa
-{
-namespace component
-{
-namespace loader
+
+namespace sofa::component::loader
 {
 
 int SphereLoaderClass = core::RegisterObject("Loader for sphere model description files")
@@ -159,8 +156,4 @@ bool SphereLoader::load()
     return true;
 }
 
-}//loader
-
-}//component
-
-}//sofa
+} // namespace sofa::component::loader

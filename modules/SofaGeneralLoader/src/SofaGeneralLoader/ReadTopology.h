@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_READTOPOLOGY_H
-#define SOFA_COMPONENT_MISC_READTOPOLOGY_H
+#pragma once
 #include <SofaGeneralLoader/config.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -33,18 +32,12 @@
 
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 /** Read Topology containers informations from file at each timestep
 */
-class SOFA_GENERAL_LOADER_API ReadTopology: public core::objectmodel::BaseObject
+class SOFA_SOFAGENERALLOADER_API ReadTopology: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(ReadTopology,core::objectmodel::BaseObject);
@@ -114,7 +107,7 @@ public:
 
 
 ///Create ReadTopology component in the graph each time needed
-class SOFA_GENERAL_LOADER_API ReadTopologyCreator: public simulation::Visitor
+class SOFA_SOFAGENERALLOADER_API ReadTopologyCreator: public simulation::Visitor
 {
 public:
     ReadTopologyCreator(const core::ExecParams* params);
@@ -136,7 +129,7 @@ protected:
 
 };
 
-class SOFA_GENERAL_LOADER_API ReadTopologyActivator: public simulation::Visitor
+class SOFA_SOFAGENERALLOADER_API ReadTopologyActivator: public simulation::Visitor
 {
 public:
     ReadTopologyActivator(const core::ExecParams* params, bool active)
@@ -152,7 +145,7 @@ protected:
     bool state;
 };
 
-class SOFA_GENERAL_LOADER_API ReadTopologyModifier: public simulation::Visitor
+class SOFA_SOFAGENERALLOADER_API ReadTopologyModifier: public simulation::Visitor
 {
 public:
     ReadTopologyModifier(const core::ExecParams* params, double _time)
@@ -169,10 +162,4 @@ protected:
     double time;
 };
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::misc

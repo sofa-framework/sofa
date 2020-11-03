@@ -321,6 +321,4 @@ void MeshSTLLoader::doClearBuffers()
     /// Nothing to do if no output is added to the "filename" dataTrackerEngine.
 }
 
-} /// namespace sofa::component::loader
-
-
+} //namespace sofa::component::loader

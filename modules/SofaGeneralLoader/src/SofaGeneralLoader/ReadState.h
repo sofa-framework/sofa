@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_READSTATE_H
-#define SOFA_COMPONENT_MISC_READSTATE_H
+#pragma once
 #include <SofaGeneralLoader/config.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -33,18 +32,12 @@
 
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 /** Read State vectors from file at each timestep
 */
-class SOFA_GENERAL_LOADER_API ReadState: public core::objectmodel::BaseObject
+class SOFA_SOFAGENERALLOADER_API ReadState: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(ReadState,core::objectmodel::BaseObject);
@@ -100,7 +93,7 @@ public:
 
 
 ///Create ReadState component in the graph each time needed
-class SOFA_GENERAL_LOADER_API ReadStateCreator: public simulation::Visitor
+class SOFA_SOFAGENERALLOADER_API ReadStateCreator: public simulation::Visitor
 {
 public:
     ReadStateCreator(const core::ExecParams* params);
@@ -120,7 +113,7 @@ protected:
     int counterReadState; //avoid to have two same files if two mechanical objects has the same name
 };
 
-class SOFA_GENERAL_LOADER_API ReadStateActivator: public simulation::Visitor
+class SOFA_SOFAGENERALLOADER_API ReadStateActivator: public simulation::Visitor
 {
 public:
     ReadStateActivator(const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
@@ -135,7 +128,7 @@ protected:
     bool state;
 };
 
-class SOFA_GENERAL_LOADER_API ReadStateModifier: public simulation::Visitor
+class SOFA_SOFAGENERALLOADER_API ReadStateModifier: public simulation::Visitor
 {
 public:
     ReadStateModifier(const core::ExecParams* params, double _time) : Visitor(params), time(_time) {}
@@ -150,10 +143,4 @@ protected:
     double time;
 };
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::misc

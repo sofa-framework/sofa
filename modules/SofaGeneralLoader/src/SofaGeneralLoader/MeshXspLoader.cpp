@@ -34,13 +34,7 @@ using sofa::defaulttype::Vec3;
 #include <sofa/core/topology/Topology.h>
 using sofa::core::topology::Topology;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 class MeshXspLoadDataHook : public XspLoaderDataHook
@@ -106,9 +100,4 @@ void MeshXspLoader::doClearBuffers()
 
 int MeshXspLoaderClass = core::RegisterObject("Specific mesh loader for Xsp file format.")
         .add< MeshXspLoader >();
-} /// namespace loader
-
-} /// namespace component
-
-} /// namespace sofa
-
+} //namespace sofa::component::loader

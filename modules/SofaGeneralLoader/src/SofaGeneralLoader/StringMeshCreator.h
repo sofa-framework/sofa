@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_StringMeshCreator_H
-#define SOFA_COMPONENT_LOADER_StringMeshCreator_H
+#pragma once
 #include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 
@@ -40,7 +33,7 @@ namespace loader
 
   @author François Faure, 2012
   */
-class SOFA_GENERAL_LOADER_API StringMeshCreator : public sofa::core::loader::MeshLoader
+class SOFA_SOFAGENERALLOADER_API StringMeshCreator : public sofa::core::loader::MeshLoader
 {
 public:
 
@@ -60,10 +53,4 @@ protected:
 
 
 
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::loader

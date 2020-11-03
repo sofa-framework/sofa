@@ -19,23 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_GENERAL_LOADER_INIT_H
-#define SOFA_COMPONENT_GENERAL_LOADER_INIT_H
+#pragma once
 #include <SofaGeneralLoader/config.h>
 
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
-
-
-void SOFA_GENERAL_LOADER_API initGeneralLoader();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} //namespace sofa::component

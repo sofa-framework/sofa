@@ -24,13 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 using namespace sofa::defaulttype;
@@ -76,7 +70,4 @@ bool StringMeshCreator::doLoad()
 }
 
 
-}
-}
-}
-
+} // namespace sofa::component::loader

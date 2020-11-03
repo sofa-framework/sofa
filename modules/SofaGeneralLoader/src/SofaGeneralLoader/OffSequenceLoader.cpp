@@ -28,13 +28,7 @@
 #include <sstream>
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
+namespace sofa::component::loader
 {
 
 using namespace sofa::defaulttype;
@@ -175,8 +169,4 @@ bool OffSequenceLoader::load(const char * filename)
 }
 
 
-}
-
-}
-
-}
+} // namespace sofa::component::loader

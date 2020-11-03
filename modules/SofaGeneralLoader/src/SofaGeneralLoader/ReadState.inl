@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_READSTATE_INL
-#define SOFA_COMPONENT_MISC_READSTATE_INL
-
+#pragma once
 #include <SofaGeneralLoader/ReadState.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
@@ -30,13 +28,7 @@
 #include <cstring>
 #include <sstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 ReadState::ReadState()
@@ -255,10 +247,4 @@ void ReadState::processReadState()
     }
 }
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::misc

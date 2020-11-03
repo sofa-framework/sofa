@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_INPUTEVENTREADER_H
-#define SOFA_COMPONENT_MISC_INPUTEVENTREADER_H
+#pragma once
 #include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -33,13 +32,7 @@
 #include <poll.h>
 #endif
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 #ifndef __linux__
@@ -109,10 +102,4 @@ private:
     void manageEvent(const input_event &ev);
 };
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::misc

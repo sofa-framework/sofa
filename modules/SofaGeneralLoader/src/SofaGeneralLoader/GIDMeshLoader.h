@@ -19,23 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef GIDMESHLOADER_H
-#define GIDMESHLOADER_H
+#pragma once
 #include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/MeshLoader.h>
 
 
-namespace sofa
+namespace sofa::component::loader
 {
 
-namespace component
-{
-
-namespace loader
-{
-
-class SOFA_GENERAL_LOADER_API GIDMeshLoader : public sofa::core::loader::MeshLoader
+class SOFA_SOFAGENERALLOADER_API GIDMeshLoader : public sofa::core::loader::MeshLoader
 {
 public :
 	SOFA_CLASS(GIDMeshLoader, sofa::core::loader::MeshLoader);
@@ -76,10 +69,4 @@ private :
 
 };
 
-} //namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // GIDMESHLOADER_H
+} //namespace sofa::component::loader
