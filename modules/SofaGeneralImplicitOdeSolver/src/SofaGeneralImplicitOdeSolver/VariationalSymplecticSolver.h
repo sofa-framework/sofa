@@ -19,23 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef VariationalSymplecticSolver_H
-#define VariationalSymplecticSolver_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralImplicitOdeSolver/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 #include <fstream>
 
-namespace sofa
+namespace sofa::component::odesolver
 {
-
-namespace component
-{
-
-namespace odesolver
-{
-
-using namespace sofa::defaulttype;
 
 /** Implicit and Explicit time integrator using the Variational Symplectic Integrator as defined in :
  * Kharevych, L et al. “Geometric, Variational Integrators for Computer Animation.” ACM SIGGRAPH Symposium on Computer Animation 4 (2006): 43–51.
@@ -44,7 +35,7 @@ using namespace sofa::defaulttype;
  * several Newton steps to estimate the velocity
  *
 */
-class SOFA_GENERAL_IMPLICIT_ODE_SOLVER_API VariationalSymplecticSolver : public sofa::core::behavior::OdeSolver
+class SOFA_SOFAGENERALIMPLICITODESOLVER_API VariationalSymplecticSolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver);
@@ -105,10 +96,4 @@ protected:
     double m_incrementalPotentialEnergy;
 };
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::odesolver

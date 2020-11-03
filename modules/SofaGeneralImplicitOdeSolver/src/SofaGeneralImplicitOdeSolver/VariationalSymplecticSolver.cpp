@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "VariationalSymplecticSolver.h"
+#include <SofaGeneralImplicitOdeSolver/VariationalSymplecticSolver.h>
+
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
@@ -30,14 +31,9 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 
-namespace sofa
+namespace sofa::component::odesolver
 {
 
-namespace component
-{
-
-namespace odesolver
-{
 using core::VecId;
 using namespace sofa::defaulttype;
 using namespace core::behavior;
@@ -347,10 +343,4 @@ int VariationalSymplecticSolverClass = core::RegisterObject("Implicit time integ
         .addAlias("VariationalSolver")
         ;
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
-
+} // namespace sofa::component::odesolver

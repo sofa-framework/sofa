@@ -6,7 +6,6 @@ option(CMAKE_WARN_DEPRECATED "Send warning when deprecated projects are found" O
 
 # Subdirectories
 set(SOFAGENERAL_TARGETS
-    SofaGeneralImplicitOdeSolver
     SofaGeneralLinearSolver
     SofaGeneralLoader
     SofaGeneralObjectInteraction
@@ -32,6 +31,7 @@ set(SOFAGENERAL_MODULES
     SofaGeneralDeformable
     SofaGeneralEngine
     SofaGeneralExplicitOdeSolver
+    SofaGeneralImplicitOdeSolver
 )
 foreach(MODULE ${SOFAGENERAL_MODULES})
     find_package(${MODULE} REQUIRED)
