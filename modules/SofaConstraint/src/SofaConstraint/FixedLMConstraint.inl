@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_FIXEDLMCONSTRAINT_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_FIXEDLMCONSTRAINT_INL
-
+#pragma once
 #include <SofaConstraint/FixedLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 
@@ -259,12 +251,4 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     }
 }
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
-
+} //namespace sofa::component::constraintset

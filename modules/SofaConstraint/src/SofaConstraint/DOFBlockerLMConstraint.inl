@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_INL
-
+#pragma once
 #include <SofaConstraint/DOFBlockerLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
@@ -29,13 +27,7 @@
 #include <sofa/helper/types/RGBAColor.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 // Define TestNewPointFunction
@@ -220,12 +212,4 @@ void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* v
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
-
+} //namespace sofa::component::constraintset

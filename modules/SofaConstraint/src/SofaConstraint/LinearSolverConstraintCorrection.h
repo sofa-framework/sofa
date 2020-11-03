@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_H
-#define SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
 
@@ -34,13 +33,7 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 /**
@@ -155,17 +148,11 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec1Types>;
-extern template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Rigid3Types>;
+extern template class SOFA_SOFACONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_SOFACONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_SOFACONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_SOFACONSTRAINT_API LinearSolverConstraintCorrection<sofa::defaulttype::Rigid3Types>;
 
 #endif
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

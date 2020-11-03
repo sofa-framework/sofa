@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_INL
-
+#pragma once
 #include <SofaConstraint/StopperConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/defaulttype/Vec.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 template<class DataTypes>
@@ -86,10 +78,4 @@ void StopperConstraint<DataTypes>::getConstraintResolution(const core::Constrain
         resTab[offset++] = new StopperConstraintResolution1Dof(min.getValue(), max.getValue());
 }
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

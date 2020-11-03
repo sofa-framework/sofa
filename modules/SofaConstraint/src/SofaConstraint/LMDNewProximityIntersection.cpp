@@ -40,13 +40,7 @@
 
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -635,9 +629,4 @@ int LMDNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, Outp
 }
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::collision

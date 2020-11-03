@@ -28,13 +28,7 @@
 #include <Eigen/SVD>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 LMConstraintDirectSolver::LMConstraintDirectSolver()
@@ -314,8 +308,4 @@ void LMConstraintDirectSolver::buildLeftRectangularMatrix(const DofToMatrix& inv
 int LMConstraintDirectSolverClass = core::RegisterObject("A Direct Constraint Solver working specifically with LMConstraint based components")
         .add< LMConstraintDirectSolver >();
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::constraintset

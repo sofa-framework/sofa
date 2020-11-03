@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_STICKCONTACTCONSTRAINT_H
-#define SOFA_COMPONENT_COLLISION_STICKCONTACTCONSTRAINT_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
@@ -33,13 +32,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template <class TCollisionModel1, class TCollisionModel2>
@@ -99,10 +92,4 @@ public:
 };
 
 
-} // collision
-
-} // component
-
-} // sofa
-
-#endif // SOFA_COMPONENT_COLLISION_STICKCONTACTCONSTRAINT_H
+} //namespace sofa::component::collision

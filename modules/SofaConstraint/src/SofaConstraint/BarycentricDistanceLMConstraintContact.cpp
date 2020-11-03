@@ -19,19 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BarycentricDistanceLMConstraintContact.inl"
+#include <SofaConstraint/BarycentricDistanceLMConstraintContact.inl>
+
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using simulation::Node;
@@ -79,9 +74,4 @@ Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderCollisi
 Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, RigidSphereModel> > CylinderRigidSphereLMConstraintContactClassClass("distanceLMConstraint",true);
 Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > CylinderOBBLMConstraintContactClassClass("distanceLMConstraint",true);
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::collision

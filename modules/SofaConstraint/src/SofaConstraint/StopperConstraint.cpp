@@ -26,13 +26,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using namespace sofa::defaulttype;
@@ -46,9 +40,4 @@ int StopperConstraintClass = core::RegisterObject("TODO-StopperConstraint")
 template class StopperConstraint<Vec1Types>;
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::constraintset

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LMConstraint.h>
@@ -29,13 +28,7 @@
 #include <sofa/simulation/Node.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 
@@ -154,10 +147,4 @@ extern template class DOFBlockerLMConstraint<defaulttype::Vec3Types>;
 
 #endif
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

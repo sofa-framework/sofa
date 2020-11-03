@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_LCPCONSTRAINTSOLVER_H
-#define SOFA_COMPONENT_CONSTRAINTSET_LCPCONSTRAINTSOLVER_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <SofaConstraint/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
@@ -36,13 +35,7 @@
 #include <sofa/helper/map.h>
 #include <sofa/helper/LCPcalc.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 /// Christian : WARNING: this class is already defined in sofa::helper
@@ -113,7 +106,7 @@ private:
     const core::ConstraintParams* _cparams;
 };
 
-class SOFA_CONSTRAINT_API LCPConstraintSolver : public ConstraintSolverImpl
+class SOFA_SOFACONSTRAINT_API LCPConstraintSolver : public ConstraintSolverImpl
 {
 public:
     SOFA_CLASS(LCPConstraintSolver, ConstraintSolverImpl);
@@ -262,10 +255,4 @@ public:
     bool isActive;
 };
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

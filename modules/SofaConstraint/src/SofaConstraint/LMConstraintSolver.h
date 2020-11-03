@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_LMCONSTRAINTSOLVER_H
-#define SOFA_COMPONENT_CONSTRAINTSET_LMCONSTRAINTSOLVER_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseLMConstraint.h>
@@ -33,16 +32,10 @@
 #include <SofaEigen2Solver/EigenMatrixManipulator.h>
 
 
-namespace sofa
+namespace sofa::component::constraintset
 {
 
-namespace component
-{
-
-namespace constraintset
-{
-
-class SOFA_CONSTRAINT_API LMConstraintSolver : public sofa::core::behavior::ConstraintSolver
+class SOFA_SOFACONSTRAINT_API LMConstraintSolver : public sofa::core::behavior::ConstraintSolver
 {
 protected:
     typedef sofa::core::VecId VecId;
@@ -171,10 +164,4 @@ protected:
 
 };
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

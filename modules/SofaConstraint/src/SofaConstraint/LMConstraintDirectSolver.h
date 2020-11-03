@@ -19,23 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_LMCONSTRAINTDIRECTSOLVER_H
-#define SOFA_COMPONENT_CONSTRAINTSET_LMCONSTRAINTDIRECTSOLVER_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <SofaConstraint/LMConstraintSolver.h>
 #include <sofa/helper/OptionsGroup.h>
 
-namespace sofa
+namespace sofa::component::constraintset
 {
 
-namespace component
-{
-
-namespace constraintset
-{
-
-class SOFA_CONSTRAINT_API LMConstraintDirectSolver : public LMConstraintSolver
+class SOFA_SOFACONSTRAINT_API LMConstraintDirectSolver : public LMConstraintSolver
 {
     typedef Eigen::SparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
     typedef helper::vector<linearsolver::LLineManipulator> JacobianRows;
@@ -60,10 +53,4 @@ protected:
     Data<sofa::helper::OptionsGroup> solverAlgorithm; ///< Algorithm used to solve the system W.Lambda=c
 };
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

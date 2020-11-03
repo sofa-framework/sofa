@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -31,13 +30,7 @@
 #include <deque>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 class UnilateralConstraintResolution : public core::behavior::ConstraintResolution
 {
@@ -88,7 +81,7 @@ protected:
     bool resetFlag; // We delete all forces that were not read
 };
 
-class SOFA_CONSTRAINT_API UnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
+class SOFA_SOFACONSTRAINT_API UnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
 {
 public:
     UnilateralConstraintResolutionWithFriction(double mu, PreviousForcesContainer* prev = nullptr, bool* active = nullptr)
@@ -219,14 +212,8 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP)
-extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_SOFACONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3Types>;
 
 #endif
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_H
+} //namespace sofa::component::constraintset

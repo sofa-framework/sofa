@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/behavior/Constraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 class StopperConstraintResolution1Dof : public core::behavior::ConstraintResolution
@@ -116,10 +109,4 @@ extern template class StopperConstraint<defaulttype::Vec1Types>;
 
 #endif
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_H
+} //namespace sofa::component::constraintset

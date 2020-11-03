@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_FRICTIONCONTACT_INL
-#define SOFA_COMPONENT_COLLISION_FRICTIONCONTACT_INL
-
+#pragma once
 #include <SofaConstraint/FrictionContact.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/DefaultContactManager.h>
@@ -31,13 +29,7 @@
 #include <sofa/simulation/Node.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
@@ -277,10 +269,4 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setIn
         m_constraint->addTag(*it);
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

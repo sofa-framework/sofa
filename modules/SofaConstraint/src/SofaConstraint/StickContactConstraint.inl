@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_STICKCONTACTCONSTRAINT_INL
-#define SOFA_COMPONENT_COLLISION_STICKCONTACTCONSTRAINT_INL
-
+#pragma once
 #include <SofaConstraint/StickContactConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/DefaultContactManager.h>
@@ -31,13 +29,7 @@
 #include <sofa/simulation/Node.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template < class TCollisionModel1, class TCollisionModel2 >
@@ -241,10 +233,4 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::removeResponse()
     }
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

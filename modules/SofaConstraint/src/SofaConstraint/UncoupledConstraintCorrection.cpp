@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP
 
-#include "UncoupledConstraintCorrection.inl"
+#include <SofaConstraint/UncoupledConstraintCorrection.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -31,19 +31,13 @@
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseMechanics/UniformMass.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using namespace sofa::defaulttype;
 
 template<>
-SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init()
+SOFA_SOFACONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init()
 {
     Inherit::init();
 
@@ -127,7 +121,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 
 
 template<>
-SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(defaulttype::BaseMatrix *m) const
+SOFA_SOFACONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(defaulttype::BaseMatrix *m) const
 {
     const VecReal& comp = compliance.getValue();
     const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();
@@ -171,14 +165,10 @@ int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computi
         .add< UncoupledConstraintCorrection< Rigid3Types > >()
     ;
 
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec1Types >;
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec2Types >;
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec3Types >;
-template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3Types >;
+template class SOFA_SOFACONSTRAINT_API UncoupledConstraintCorrection< Vec1Types >;
+template class SOFA_SOFACONSTRAINT_API UncoupledConstraintCorrection< Vec2Types >;
+template class SOFA_SOFACONSTRAINT_API UncoupledConstraintCorrection< Vec3Types >;
+template class SOFA_SOFACONSTRAINT_API UncoupledConstraintCorrection< Rigid3Types >;
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::constraintset

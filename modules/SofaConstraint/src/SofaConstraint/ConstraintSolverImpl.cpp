@@ -23,13 +23,7 @@
 #include <SofaConstraint/ConstraintSolverImpl.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 ConstraintProblem::ConstraintProblem()
@@ -58,8 +52,4 @@ unsigned int ConstraintProblem::getProblemId()
     return problemId;
 }
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::constraintset

@@ -19,26 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_GENERICCONSTRAINTSOLVER_H
-#define SOFA_COMPONENT_CONSTRAINTSET_GENERICCONSTRAINTSOLVER_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <SofaConstraint/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 class GenericConstraintSolver;
 
-class SOFA_CONSTRAINT_API GenericConstraintProblem : public ConstraintProblem
+class SOFA_SOFACONSTRAINT_API GenericConstraintProblem : public ConstraintProblem
 {
 public:
     sofa::component::linearsolver::FullVector<double> _d;
@@ -76,7 +69,7 @@ public:
     int getNumConstraintGroups();
 };
 
-class SOFA_CONSTRAINT_API GenericConstraintSolver : public ConstraintSolverImpl
+class SOFA_SOFACONSTRAINT_API GenericConstraintSolver : public ConstraintSolverImpl
 {
     typedef std::vector<core::behavior::BaseConstraintCorrection*> list_cc;
     typedef std::vector<list_cc> VecListcc;
@@ -153,7 +146,7 @@ protected:
 };
 
 
-class SOFA_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
+class SOFA_SOFACONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res);
@@ -179,10 +172,4 @@ private:
     unsigned int _offset;
 };
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

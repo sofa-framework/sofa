@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_LMDNEWPROXIMITYINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_LMDNEWPROXIMITYINTERSECTION_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <SofaBaseCollision/BaseProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
@@ -32,20 +31,12 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaUserInteraction/RayModel.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
-
-namespace component
-{
-
-namespace collision
-{
-
-
 /// I guess LMD is for Local Min Distance?
 /// What is the specificity of this approach?
 /// What are exactly doing the filters?
-class SOFA_CONSTRAINT_API LMDNewProximityIntersection : public BaseProximityIntersection
+class SOFA_SOFACONSTRAINT_API LMDNewProximityIntersection : public BaseProximityIntersection
 {
 public:
     SOFA_CLASS(LMDNewProximityIntersection,BaseProximityIntersection);
@@ -106,10 +97,4 @@ public:
 protected:
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_COLLISION_LMDNEWPROXIMITYINTERSECTION_H
+} // namespace sofa::component::collision

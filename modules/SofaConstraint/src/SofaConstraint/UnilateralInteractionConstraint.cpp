@@ -25,13 +25,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using namespace sofa::defaulttype;
@@ -44,7 +38,7 @@ int UnilateralInteractionConstraintClass = core::RegisterObject("TODO-Unilateral
         ;
 
 
-template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<Vec3Types>;
+template class SOFA_SOFACONSTRAINT_API UnilateralInteractionConstraint<Vec3Types>;
 
 
 
@@ -114,9 +108,4 @@ void UnilateralConstraintResolutionWithFriction::store(int line, double* force, 
 }
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::constraintset

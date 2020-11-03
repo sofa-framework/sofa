@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINT_DistanceLMContactConstraint_H
-#define SOFA_COMPONENT_CONSTRAINT_DistanceLMContactConstraint_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/VecId.h>
 #include <sofa/core/ConstraintParams.h>
@@ -32,13 +31,7 @@
 #include <sofa/simulation/Node.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -147,14 +140,8 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DistanceLMContactConstraint_CPP)
-extern template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_SOFACONSTRAINT_API DistanceLMContactConstraint<defaulttype::Vec3Types>;
 
 #endif
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

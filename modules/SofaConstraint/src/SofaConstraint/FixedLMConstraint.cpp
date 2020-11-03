@@ -26,13 +26,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using namespace sofa::defaulttype;
@@ -44,14 +38,9 @@ int FixedLMConstraintClass = core::RegisterObject("Maintain a set of particle to
 
         ;
 
-template class SOFA_CONSTRAINT_API FixedLMConstraint<Vec3Types>;
-template class SOFA_CONSTRAINT_API FixedLMConstraint<Rigid3Types>;
+template class SOFA_SOFACONSTRAINT_API FixedLMConstraint<Vec3Types>;
+template class SOFA_SOFACONSTRAINT_API FixedLMConstraint<Rigid3Types>;
 
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::constraintset

@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_LMDNEWPROXIMITYINTERSECTION_INL
-#define SOFA_COMPONENT_COLLISION_LMDNEWPROXIMITYINTERSECTION_INL
-
+#pragma once
 #include <SofaConstraint/LMDNewProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/proximity.h>
@@ -31,14 +29,7 @@
 #include <iostream>
 #include <algorithm>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template< class TFilter1, class TFilter2 >
@@ -523,10 +514,4 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e
     return n;
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_COLLISION_LMDNEWPROXIMITYINTERSECTION_INL
+} //namespace sofa::component::collision

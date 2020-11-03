@@ -19,25 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_H
-#define SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 
-namespace sofa
+namespace sofa::component::constraintset
 {
 
-namespace core { namespace behavior { class OdeSolver; class LinearSolver; } }
-
-
-namespace component
-{
-
-namespace constraintset
-{
-
-class SOFA_CONSTRAINT_API GenericConstraintCorrection : public core::behavior::BaseConstraintCorrection
+class SOFA_SOFACONSTRAINT_API GenericConstraintCorrection : public core::behavior::BaseConstraintCorrection
 {
 public:
     SOFA_CLASS(GenericConstraintCorrection, core::behavior::BaseConstraintCorrection);
@@ -86,10 +76,4 @@ protected:
     std::vector< core::behavior::LinearSolver* > m_linearSolvers;
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_H
+} //namespace sofa::component::constraintset

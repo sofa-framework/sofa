@@ -19,10 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_CONTACTCORRECTION_INL
-#define SOFA_CORE_COLLISION_CONTACTCORRECTION_INL
-
-#include "PrecomputedConstraintCorrection.h"
+#pragma once
+#include <SofaConstraint/PrecomputedConstraintCorrection.h>
 
 #include <sofa/core/visual/VisualParams.h>
 
@@ -51,13 +49,7 @@
 
 //#define NEW_METHOD_UNBUILT
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 template<class DataTypes>
@@ -1451,10 +1443,4 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
 
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

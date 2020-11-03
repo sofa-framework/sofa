@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_INL
-
+#pragma once
 #include <SofaConstraint/SlidingConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <SofaConstraint/UnilateralInteractionConstraint.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/defaulttype/Vec.h>
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 template<class DataTypes>
@@ -232,10 +224,4 @@ void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

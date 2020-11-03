@@ -27,13 +27,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 namespace bilateralinteractionconstraint
@@ -338,15 +332,10 @@ int BilateralInteractionConstraintClass = core::RegisterObject("TODO-BilateralIn
         
         ;
 
-template class SOFA_CONSTRAINT_API BilateralInteractionConstraint<Vec3Types>;
-template class SOFA_CONSTRAINT_API BilateralInteractionConstraint<Rigid3Types>;
+template class SOFA_SOFACONSTRAINT_API BilateralInteractionConstraint<Vec3Types>;
+template class SOFA_SOFACONSTRAINT_API BilateralInteractionConstraint<Rigid3Types>;
 
 
 }
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::constraintset

@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_CONTACTDESCRIPTION_H
-#define SOFA_COMPONENT_CONSTRAINTSET_CONTACTDESCRIPTION_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/behavior/BaseLMConstraint.h>
 #include <sofa/helper/vector.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 enum ContactState {VANISHING, STICKING, SLIDING};
@@ -70,10 +63,4 @@ protected:
     InternalData infos;
 };
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

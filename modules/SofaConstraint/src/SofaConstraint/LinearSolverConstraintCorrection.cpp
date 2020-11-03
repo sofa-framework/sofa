@@ -20,15 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP
-#include "LinearSolverConstraintCorrection.inl"
+#include <SofaConstraint/LinearSolverConstraintCorrection.inl>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace constraintset
+namespace sofa::component::constraintset
 {
 using namespace sofa::defaulttype;
 
@@ -39,15 +36,11 @@ int LinearSolverContactCorrectionClass = core::RegisterObject("")
         .add< LinearSolverConstraintCorrection<Rigid3Types> >()
 
         ;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec3Types>;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec2Types>;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec1Types>;
-template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Rigid3Types>;
+template class SOFA_SOFACONSTRAINT_API LinearSolverConstraintCorrection<Vec3Types>;
+template class SOFA_SOFACONSTRAINT_API LinearSolverConstraintCorrection<Vec2Types>;
+template class SOFA_SOFACONSTRAINT_API LinearSolverConstraintCorrection<Vec1Types>;
+template class SOFA_SOFACONSTRAINT_API LinearSolverConstraintCorrection<Rigid3Types>;
 
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::constraintset

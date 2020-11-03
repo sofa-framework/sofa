@@ -19,10 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_BILATERALCONSTRAINTRESOLUTION_H
-#define SOFA_COMPONENT_CONSTRAINTSET_BILATERALCONSTRAINTRESOLUTION_H
-#include "config.h"
-
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/behavior/BaseConstraint.h>
@@ -30,20 +28,10 @@
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
-{
-
-namespace bilateralconstraintresolution
+namespace sofa::component::constraintset::bilateralconstraintresolution
 {
 
 using sofa::core::behavior::ConstraintResolution ;
-
 
 class BilateralConstraintResolution : public ConstraintResolution
 {
@@ -170,19 +158,15 @@ protected:
     Eigen::LDLT< Eigen::MatrixXd > wBlockInv;
 };
 
-} // namespace bilateralconstraintresolution
+} // namespace sofa::component::constraintset::bilateralconstraintresolution
 
-/// Import the following into the constraintset namespace to preserve
+namespace sofa::component::constraintset
+{
+
+    /// Import the following into the constraintset namespace to preserve
 /// compatibility with the existing sofa source code.
-using bilateralconstraintresolution::BilateralConstraintResolution ;
-using bilateralconstraintresolution::BilateralConstraintResolution3Dof ;
-using bilateralconstraintresolution::BilateralConstraintResolutionNDof ;
+using bilateralconstraintresolution::BilateralConstraintResolution;
+using bilateralconstraintresolution::BilateralConstraintResolution3Dof;
+using bilateralconstraintresolution::BilateralConstraintResolutionNDof;
 
-
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_CONSTRAINTSET_BILATERALCONSTRAINTRESOLUTION_H
+} //namespace sofa::component::constraintset

@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_INL
-#define SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_INL
+#pragma once
+#include <SofaConstraint/LinearSolverConstraintCorrection.h>
 
-#include "LinearSolverConstraintCorrection.h"
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
@@ -31,13 +30,7 @@
 #include <sstream>
 #include <list>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using sofa::core::objectmodel::ComponentState ;
@@ -733,10 +726,4 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
     }
 }
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

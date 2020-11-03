@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_INL
-#define SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_INL
-
+#pragma once
 #include <SofaConstraint/LocalMinDistance.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -41,22 +39,7 @@
 
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
-
-namespace collision
-{
-
-typedef BaseMeshTopology::PointID			PointID;
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif /* SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_INL */
+} //namespace sofa::component::collision

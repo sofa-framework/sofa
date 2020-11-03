@@ -35,13 +35,7 @@
 #include <Eigen/LU>
 #include <Eigen/QR>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using linearsolver::FullVector;
@@ -930,8 +924,4 @@ void LMConstraintSolver::handleEvent(core::objectmodel::Event *e)
 int LMConstraintSolverClass = core::RegisterObject("A Constraint Solver working specifically with LMConstraint based components")
         .add< LMConstraintSolver >();
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::constraintset

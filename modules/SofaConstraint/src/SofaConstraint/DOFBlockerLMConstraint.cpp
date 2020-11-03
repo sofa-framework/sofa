@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using namespace sofa::defaulttype;
@@ -49,9 +43,4 @@ template class DOFBlockerLMConstraint<Vec3Types>;
 
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::constraintset

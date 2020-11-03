@@ -30,21 +30,13 @@
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 #define EMIT_EXTRA_DEBUG_MESSAGE false
 
-namespace sofa
+namespace sofa::core::collision
 {
+    template class SOFA_SOFACONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
 
-namespace core
-{
-    namespace collision
-    {
-        template class SOFA_CONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
-    }
-}
+} // namespace sofa::core::collision
 
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::core::collision;
@@ -1420,9 +1412,4 @@ void LocalMinDistance::draw(const core::visual::VisualParams* vparams)
         return;
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::collision

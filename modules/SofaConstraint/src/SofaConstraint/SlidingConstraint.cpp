@@ -27,13 +27,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using namespace sofa::defaulttype;
@@ -42,12 +36,7 @@ using namespace sofa::helper;
 int SlidingConstraintClass = core::RegisterObject("TODO-SlidingConstraint")
         .add< SlidingConstraint<Vec3Types> >(true);
 
-template class SOFA_CONSTRAINT_API SlidingConstraint<Vec3Types>;
+template class SOFA_SOFACONSTRAINT_API SlidingConstraint<Vec3Types>;
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::constraintset

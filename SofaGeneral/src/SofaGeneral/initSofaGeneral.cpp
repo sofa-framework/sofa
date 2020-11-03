@@ -23,7 +23,6 @@
 
 #include <SofaGeneral/initSofaGeneral.h>
 #include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
 
 namespace sofa
 {
@@ -41,7 +40,6 @@ void initSofaGeneral()
     }
 
     initGeneralLoader();
-    initConstraint();
 }
 
 

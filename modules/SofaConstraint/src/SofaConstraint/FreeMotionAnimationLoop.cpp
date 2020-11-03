@@ -42,14 +42,7 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <SofaConstraint/LCPConstraintSolver.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace animationloop
+namespace sofa::component::animationloop
 {
 
 using namespace core::behavior;
@@ -311,8 +304,4 @@ You must add this loop at the beginning of the scene if you are using constraint
         .add< FreeMotionAnimationLoop >()
         .addAlias("FreeMotionMasterSolver");
 
-} // namespace animationloop
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::animationloop

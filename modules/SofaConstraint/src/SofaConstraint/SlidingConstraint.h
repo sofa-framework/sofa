@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using sofa::core::ConstraintParams;
@@ -102,14 +95,8 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP)
-extern template class SOFA_CONSTRAINT_API SlidingConstraint< defaulttype::Vec3Types >;
+extern template class SOFA_SOFACONSTRAINT_API SlidingConstraint< defaulttype::Vec3Types >;
 
 #endif
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_H
+} //namespace sofa::component::constraintset

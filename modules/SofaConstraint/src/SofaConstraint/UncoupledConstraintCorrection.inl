@@ -19,10 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_INL
-
-#include "UncoupledConstraintCorrection.h"
+#pragma once
+#include <SofaConstraint/UncoupledConstraintCorrection.h>
 
 #include <sofa/simulation/MechanicalVisitor.h>
 
@@ -32,13 +30,7 @@
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 namespace
@@ -780,10 +772,4 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaul
     }
 }
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

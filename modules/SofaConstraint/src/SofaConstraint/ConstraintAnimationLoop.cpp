@@ -59,19 +59,10 @@
 /// You can eventually link that to an object attribute.
 #define EMIT_EXTRA_DEBUG_MESSAGE false
 
-using namespace sofa::defaulttype;
+namespace sofa::component::animationloop
+{
+
 using namespace sofa::component::linearsolver;
-using namespace sofa::helper::system::thread;
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace animationloop
-{
-
 using namespace sofa::defaulttype;
 using namespace helper::system::thread;
 using namespace core::behavior;
@@ -1021,8 +1012,4 @@ int ConstraintAnimationLoopClass = core::RegisterObject ( "Constraint animation 
         .add< ConstraintAnimationLoop >()
         .addAlias("MasterConstraintSolver");
 
-} // namespace animationloop
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::animationloop

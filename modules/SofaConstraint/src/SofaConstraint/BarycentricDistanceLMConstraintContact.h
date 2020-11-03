@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_BarycentricDistanceLMConstraintContact_H
-#define SOFA_COMPONENT_COLLISION_BarycentricDistanceLMConstraintContact_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
@@ -39,16 +38,8 @@
 #endif
 
 
-namespace sofa
+namespace sofa::component::collision
 {
-
-namespace component
-{
-
-namespace collision
-{
-
-
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
 class BarycentricDistanceLMConstraintContact : public core::collision::Contact
@@ -108,10 +99,4 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_FRICTIONCONTACT_H
-#define SOFA_COMPONENT_COLLISION_FRICTIONCONTACT_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
@@ -33,17 +32,8 @@
 #include <sofa/core/BaseMapping.h>
 
 #include <SofaConstraint/ContactIdentifier.h>
-namespace sofa
+namespace sofa::component::collision
 {
-
-namespace component
-{
-
-namespace collision
-{
-
-
-
 template <class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
 class FrictionContact : public core::collision::Contact, public ContactIdentifier
 {
@@ -100,10 +90,4 @@ public:
     void removeResponse() override;
 };
 
-} // collision
-
-} // component
-
-} // sofa
-
-#endif // SOFA_COMPONENT_COLLISION_FRICTIONCONTACT_H
+} // namespace sofa::component::collision

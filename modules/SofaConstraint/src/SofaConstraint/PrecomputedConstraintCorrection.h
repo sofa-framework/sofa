@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_CONTACTCORRECTION_H
-#define SOFA_CORE_COLLISION_CONTACTCORRECTION_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -31,13 +30,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 /**
@@ -223,17 +216,11 @@ void PrecomputedConstraintCorrection<defaulttype::Vec1Types>::draw(const core::v
 
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_PRECOMPUTEDCONSTRAINTCORRECTION_CPP)
-extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec3Types>;
-extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec1Types>;
-extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFACONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec3Types>;
+extern template class SOFA_SOFACONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec1Types>;
+extern template class SOFA_SOFACONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Rigid3Types>;
 
 #endif
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

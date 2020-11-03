@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_DistanceLMContactConstraint_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_DistanceLMContactConstraint_INL
-
+#pragma once
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/BaseLMConstraint.h>
 #include <sofa/core/collision/Intersection.h>
@@ -36,13 +34,7 @@
 #include <iostream>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 
@@ -389,12 +381,4 @@ void DistanceLMContactConstraint<DataTypes>::draw(const core::visual::VisualPara
     }
 }
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
-
+} //namespace sofa::component::constraintset

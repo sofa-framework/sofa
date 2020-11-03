@@ -19,13 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_H
-#define SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
-//#include <sofa/core/behavior/BaseForceField.h>
 #include <SofaDeformable/SpringForceField.h>
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaGraphComponent/AttachBodyButtonSetting.h>
@@ -33,12 +31,7 @@
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <SofaGraphComponent/AttachBodyButtonSetting.h>
 
-namespace sofa
-{
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 class ConstraintAttachBodyButtonSetting : public sofa::component::configurationsetting::AttachBodyButtonSetting
@@ -55,7 +48,7 @@ public:
 struct BodyPicked;
 
 template <class DataTypes>
-class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer: public TInteractionPerformer<DataTypes>
+class SOFA_SOFACONSTRAINT_API ConstraintAttachBodyPerformer: public TInteractionPerformer<DataTypes>
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -104,11 +97,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP)
-extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
+extern template class SOFA_SOFACONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
 #endif
 
-}
-}
-}
-
-#endif
+} // namespace sofa::component::collision

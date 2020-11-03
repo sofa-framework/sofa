@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -41,18 +40,9 @@
 
 #include <SofaConstraint/BilateralConstraintResolution.h>
 
-namespace sofa
+namespace sofa::component::constraintset::bilateralinteractionconstraint
 {
 
-namespace component
-{
-
-namespace constraintset
-{
-
-
-namespace bilateralinteractionconstraint
-{
 /// These 'using' are in a per-file namespace so they will not leak
 /// and polluate the standard namespace.
 using sofa::core::behavior::BaseConstraint ;
@@ -200,21 +190,17 @@ void BilateralInteractionConstraint<Rigid3Types>::addContact(Deriv /*norm*/,
 
 
 #if !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP)
-extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< Vec3Types >;
-extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< Rigid3Types >;
+extern template class SOFA_SOFACONSTRAINT_API BilateralInteractionConstraint< Vec3Types >;
+extern template class SOFA_SOFACONSTRAINT_API BilateralInteractionConstraint< Rigid3Types >;
 #endif
 
-} // namespace bilateralinteractionconstraint
+} // namespace sofa::component::constraintset::bilateralinteractionconstraint
 
+namespace sofa::component::constraintset
+{
 /// Import the following into the constraintset namespace to preserve
 /// compatibility with the existing sofa source code.
-using bilateralinteractionconstraint::BilateralInteractionConstraint ;
-using bilateralinteractionconstraint::BilateralInteractionConstraintSpecialization ;
+using bilateralinteractionconstraint::BilateralInteractionConstraint;
+using bilateralinteractionconstraint::BilateralInteractionConstraintSpecialization;
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_H
+} //namespace sofa::component::constraintset

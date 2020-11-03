@@ -37,13 +37,7 @@
 
 using sofa::core::VecId;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 void LCPConstraintProblem::solveTimed(double tolerance, int maxIt, double timeout)
@@ -1418,8 +1412,4 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
 int LCPConstraintSolverClass = core::RegisterObject("A Constraint Solver using the Linear Complementarity Problem formulation to solve BaseConstraint based components")
         .add< LCPConstraintSolver >();
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::constraintset

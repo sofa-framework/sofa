@@ -19,26 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_INL
-
+#pragma once
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/defaulttype/Vec.h>
 #include <algorithm> // for std::min
 
-namespace sofa
+namespace sofa::component::constraintset::bilateralinteractionconstraint
 {
 
-namespace component
-{
-
-namespace constraintset
-{
-
-namespace bilateralinteractionconstraint
-{
 using sofa::core::objectmodel::KeypressedEvent ;
 using sofa::core::objectmodel::Event ;
 using sofa::helper::WriteAccessor ;
@@ -570,12 +560,4 @@ void BilateralInteractionConstraint<DataTypes>::handleEvent(Event *event)
 }
 
 
-} // namespace bilateralinteractionconstraint
-
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_INL
+} //namespace sofa::component::constraintset::bilateralinteractionconstraint

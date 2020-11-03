@@ -19,21 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_BarycentricDistanceLMConstraintContact_INL
-#define SOFA_COMPONENT_COLLISION_BarycentricDistanceLMConstraintContact_INL
-
+#pragma once
 #include <SofaConstraint/BarycentricDistanceLMConstraintContact.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
-
-namespace component
-{
-
-namespace collision
-{
-
 
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
@@ -238,10 +229,4 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
 }
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

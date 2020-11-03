@@ -19,23 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ANIMATIONLOOP_FREEMOTIONANIMATIONLOOP_H
-#define SOFA_COMPONENT_ANIMATIONLOOP_FREEMOTIONANIMATIONLOOP_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/simulation/CollisionAnimationLoop.h>
 #include <SofaConstraint/LCPConstraintSolver.h>
 
-namespace sofa
+namespace sofa::component::animationloop
 {
 
-namespace component
-{
-
-namespace animationloop
-{
-
-class SOFA_CONSTRAINT_API FreeMotionAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+class SOFA_SOFACONSTRAINT_API FreeMotionAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
     SOFA_CLASS(FreeMotionAnimationLoop, sofa::simulation::CollisionAnimationLoop);
@@ -69,10 +62,4 @@ protected:
     component::constraintset::LCPConstraintSolver::SPtr defaultSolver;
 };
 
-} // namespace animationloop
-
-} // namespace component
-
-} // namespace sofa
-
-#endif /* SOFA_COMPONENT_ANIMATIONLOOP_FREEMOTIONANIMATIONLOOP_H */
+} // namespace sofa::component::animationloop

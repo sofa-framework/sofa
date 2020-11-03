@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_H
-#define SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <SofaBaseCollision/BaseProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
@@ -32,16 +31,10 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaUserInteraction/RayModel.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
-
-namespace collision
-{
-
-class SOFA_CONSTRAINT_API LocalMinDistance : public BaseProximityIntersection
+class SOFA_SOFACONSTRAINT_API LocalMinDistance : public BaseProximityIntersection
 {
 public:
     SOFA_CLASS(LocalMinDistance,BaseProximityIntersection);
@@ -108,20 +101,4 @@ private:
     double mainContactDistance;
 };
 
-} // namespace collision
-
-} // namespace component
-
-namespace core
-{
-namespace collision
-{
-#if  !defined(SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_CPP)
-extern template class SOFA_CONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
-#endif
-}
-}
-
-} // namespace sofa
-
-#endif /* SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_H */
+} // namespace sofa::component::collision

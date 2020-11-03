@@ -27,13 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using namespace sofa::defaulttype;
@@ -47,8 +41,8 @@ int DistanceLMConstraintClass = core::RegisterObject("Maintain constant the leng
 
         ;
 
-template class SOFA_CONSTRAINT_API DistanceLMConstraint<Vec3Types>;
-template class SOFA_CONSTRAINT_API DistanceLMConstraint<Rigid3Types>;
+template class SOFA_SOFACONSTRAINT_API DistanceLMConstraint<Vec3Types>;
+template class SOFA_SOFACONSTRAINT_API DistanceLMConstraint<Rigid3Types>;
 
 
 
@@ -82,9 +76,4 @@ void DistanceLMConstraint<Rigid3Types>::draw(const core::visual::VisualParams* v
 }
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::constraintset

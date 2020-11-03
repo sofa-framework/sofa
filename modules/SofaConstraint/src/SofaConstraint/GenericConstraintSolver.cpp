@@ -25,16 +25,10 @@
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
-#include "ConstraintStoreLambdaVisitor.h"
+#include <SofaConstraint/ConstraintStoreLambdaVisitor.h>
 #include <algorithm>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 namespace
@@ -1149,8 +1143,4 @@ bool MechanicalGetConstraintResolutionVisitor::stopAtMechanicalMapping(simulatio
 int GenericConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
         .add< GenericConstraintSolver >();
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::constraintset

@@ -21,7 +21,8 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINT_GENERICCONSTRAINTCORRECTION_CPP
 
-#include "GenericConstraintCorrection.h"
+#include <SofaConstraint/GenericConstraintCorrection.h>
+
 #include <sofa/simulation/MechanicalMatrixVisitor.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -29,13 +30,7 @@
 #include <sofa/core/behavior/ConstraintSolver.h>
 
 
-namespace sofa 
-{
-
-namespace component 
-{
-
-namespace constraintset 
+namespace sofa::component::constraintset 
 {
 
 using sofa::helper::vector;
@@ -296,8 +291,4 @@ void GenericConstraintCorrection::resetContactForce(){}
 int GenericConstraintCorrectionClass = RegisterObject("")
     .add< GenericConstraintCorrection >();
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::constraintset

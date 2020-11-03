@@ -19,27 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CONTACTIDENTIFIER_H
-#define SOFA_COMPONENT_COLLISION_CONTACTIDENTIFIER_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/collision/DetectionOutput.h>
-
-#include <SofaConstraint/initConstraint.h>
-
 #include <list>
 
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
-
-namespace collision
-{
-
-class SOFA_CONSTRAINT_API ContactIdentifier
+class SOFA_SOFACONSTRAINT_API ContactIdentifier
 {
 public:
     ContactIdentifier()
@@ -70,10 +60,4 @@ inline long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x,
     return (long)(((x+y)*(x+y)+3*x+y)/2);
 }
 
-} // collision
-
-} // component
-
-} // sofa
-
-#endif // SOFA_COMPONENT_COLLISION_CONTACTIDENTIFIER_H
+} // namespace sofa::component::collision

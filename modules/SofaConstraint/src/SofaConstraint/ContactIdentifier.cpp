@@ -21,20 +21,10 @@
 ******************************************************************************/
 #include <SofaConstraint/ContactIdentifier.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 sofa::core::collision::DetectionOutput::ContactId ContactIdentifier::cpt = 0;
 std::list<sofa::core::collision::DetectionOutput::ContactId> ContactIdentifier::availableId;
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

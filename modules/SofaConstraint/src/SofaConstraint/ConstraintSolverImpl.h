@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_CONSTRAINTSOLVERIMPL_H
-#define SOFA_COMPONENT_CONSTRAINTSET_CONSTRAINTSOLVERIMPL_H
-#include "config.h"
+#pragma once
+#include <SofaConstraint/config.h>
 
 #include <sofa/core/behavior/ConstraintSolver.h>
 
@@ -29,17 +28,11 @@
 
 #include <SofaBaseLinearSolver/FullMatrix.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 
-class SOFA_CONSTRAINT_API ConstraintProblem
+class SOFA_SOFACONSTRAINT_API ConstraintProblem
 {
 public:
     sofa::component::linearsolver::LPtrFullMatrix<double> W;
@@ -67,7 +60,7 @@ protected:
 };
 
 
-class SOFA_CONSTRAINT_API ConstraintSolverImpl : public sofa::core::behavior::ConstraintSolver
+class SOFA_SOFACONSTRAINT_API ConstraintSolverImpl : public sofa::core::behavior::ConstraintSolver
 {
 public:
     SOFA_CLASS(ConstraintSolverImpl, sofa::core::behavior::ConstraintSolver);
@@ -128,10 +121,4 @@ private:
     sofa::defaulttype::BaseVector* m_v;
 };
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::constraintset

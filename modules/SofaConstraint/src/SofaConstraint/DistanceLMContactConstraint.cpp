@@ -26,13 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using namespace sofa::defaulttype;
@@ -43,15 +37,10 @@ int DistanceLMContactConstraintClass = core::RegisterObject("Maintain a minimum 
 
         ;
 
-template class SOFA_CONSTRAINT_API DistanceLMContactConstraint<Vec3Types>;
+template class SOFA_SOFACONSTRAINT_API DistanceLMContactConstraint<Vec3Types>;
 
 
 
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::constraintset
