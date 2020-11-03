@@ -170,6 +170,7 @@ protected:
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMass , BaseLink::FLAG_NONE > l_mappedMass;
     MultiLink  < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseForceField, BaseLink::FLAG_NONE > l_forceField;
 
+    unsigned int nbColsJ1 = 0, nbColsJ2 = 0;
 
     size_t m_nbInteractionForceFields;
 

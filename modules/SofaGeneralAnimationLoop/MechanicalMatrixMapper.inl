@@ -388,17 +388,19 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     sofa::core::MultiMatrixDerivId c = sofa::core::MatrixDerivId::mappingJacobian();
     const MatrixDeriv1 &J1 = c[ms1].read()->getValue();
     const MatrixDeriv2 &J2 = c[ms2].read()->getValue();
-
+    if (this->getContext()->getTime() == 0)
+        nbColsJ1 = J1.begin().row().size()*DerivSize1;
     Eigen::SparseMatrix<double> J1eig;
     Eigen::SparseMatrix<double> J2eig;
-    J1eig.resize(K->nRow, J1.begin().row().size()*DerivSize1);
-    unsigned int nbColsJ1 = 0, nbColsJ2 = 0;
+    J1eig.resize(K->nRow, nbColsJ1);
 
     optimizeAndCopyMappingJacobianToEigenFormat1(J1, J1eig);
     if (bms1 != bms2)
     {
         double startTime2= (double)timer->getTime();
-        J2eig.resize(K->nRow, J2.begin().row().size()*DerivSize2);
+        if (this->getContext()->getTime() == 0)
+            nbColsJ2 = J2.begin().row().size()*DerivSize2;
+        J2eig.resize(K->nRow, nbColsJ2);
         optimizeAndCopyMappingJacobianToEigenFormat2(J2, J2eig);
         msg_info()<<" time set J2eig alone : "<<( (double)timer->getTime() - startTime2)*timeScale<<" ms";
     }
