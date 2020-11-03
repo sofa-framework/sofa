@@ -235,29 +235,6 @@ endif()
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 
-# Temporary compatibility while modularizing SofaGeneral
-sofa_add_module(modules/SofaGeneralVisual SofaGeneralVisual ON)
-sofa_add_module(modules/SofaGraphComponent SofaGraphComponent ON)
-sofa_add_module(modules/SofaGeneralMeshCollision SofaGeneralMeshCollision ON)
-sofa_add_module(modules/SofaBoundaryCondition SofaBoundaryCondition ON)
-sofa_add_module(modules/SofaGeneralAnimationLoop SofaGeneralAnimationLoop ON)
-sofa_add_module(modules/SofaGeneralDeformable SofaGeneralDeformable ON)
-sofa_add_module(modules/SofaGeneralEngine SofaGeneralEngine ON)
-sofa_add_module(modules/SofaGeneralExplicitOdeSolver SofaGeneralExplicitOdeSolver ON)
-sofa_add_module(modules/SofaGeneralImplicitOdeSolver SofaGeneralImplicitOdeSolver ON)
-sofa_add_module(modules/SofaGeneralLinearSolver SofaGeneralLinearSolver ON)
-sofa_add_module(modules/SofaGeneralRigid SofaGeneralRigid ON)
-sofa_add_module(modules/SofaGeneralObjectInteraction SofaGeneralObjectInteraction ON)
-sofa_add_module(modules/SofaGeneralSimpleFem SofaGeneralSimpleFem ON)
-sofa_add_module(modules/SofaGeneralTopology SofaGeneralTopology ON)
-sofa_add_module(modules/SofaTopologyMapping SofaTopologyMapping ON)
-sofa_add_module(modules/SofaUserInteraction SofaUserInteraction ON)
-sofa_add_module(modules/SofaConstraint SofaConstraint ON)
-sofa_add_module(modules/SofaGeneralLoader SofaGeneralLoader ON)
-    
-    
-add_subdirectory(SofaGeneral)
-
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that
 ## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
@@ -277,7 +254,7 @@ endif()
 ## Collections
 ## A collection is a "meta module" and containing several modules (usable at find level [find_package] and include/link level [add_library])
 # SofaAdvanced is legacy and deprecated since 20.06
-set(SOFA_LIST_OF_DEPRECATED_COLLECTIONS SofaAdvanced SofaMisc)
+set(SOFA_LIST_OF_DEPRECATED_COLLECTIONS SofaGeneral SofaAdvanced SofaMisc)
 option(SOFA_BUILD_DEPRECATED_COLLECTIONS "Build legacy collections (${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})." ON)
 if(SOFA_BUILD_DEPRECATED_COLLECTIONS)
     foreach(deprecated_collection ${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})

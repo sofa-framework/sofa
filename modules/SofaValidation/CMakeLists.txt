@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaValidation LANGUAGES CXX)
 
-find_package(SofaBase REQUIRED)
-find_package(SofaCommon REQUIRED)
-find_package(SofaGeneral REQUIRED)
-
 set(SOFAVALIDATION_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES

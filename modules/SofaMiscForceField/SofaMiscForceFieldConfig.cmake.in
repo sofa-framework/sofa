@@ -4,7 +4,8 @@
 
 find_package(SofaFramework QUIET REQUIRED) # SofaHelper
 find_package(SofaCommon QUIET REQUIRED) # SofaDeformable
-find_package(SofaGeneral QUIET REQUIRED) # SofaBoundaryCondition, SofaGeneralTopology
+find_package(SofaBoundaryCondition QUIET REQUIRED)
+find_package(SofaGeneralTopology QUIET REQUIRED) 
 find_package(SofaMiscTopology QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
