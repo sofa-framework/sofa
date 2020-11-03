@@ -130,9 +130,6 @@ endif()
 
 ### Windows config
 if(MSVC)
-    #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
-    add_definitions(-DBOOST_ALL_DYN_LINK)
-
     # WinDepPack
     set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack")
     if(NOT EXISTS ${SOFA_DEPENDENCY_PACK_DIR})
@@ -242,6 +239,13 @@ add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 sofa_add_module(modules/SofaGeneralVisual SofaGeneralVisual ON)
 sofa_add_module(modules/SofaGraphComponent SofaGraphComponent ON)
 sofa_add_module(modules/SofaGeneralMeshCollision SofaGeneralMeshCollision ON)
+sofa_add_module(modules/SofaBoundaryCondition SofaBoundaryCondition ON)
+sofa_add_module(modules/SofaGeneralAnimationLoop SofaGeneralAnimationLoop ON)
+sofa_add_module(modules/SofaGeneralDeformable SofaGeneralDeformable ON)
+sofa_add_module(modules/SofaGeneralEngine SofaGeneralEngine ON)
+sofa_add_module(modules/SofaGeneralExplicitOdeSolver SofaGeneralExplicitOdeSolver ON)
+    
+    
     
 add_subdirectory(SofaGeneral)
 
