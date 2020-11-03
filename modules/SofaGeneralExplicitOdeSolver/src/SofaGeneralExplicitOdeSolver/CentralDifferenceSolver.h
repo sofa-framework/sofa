@@ -19,28 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ODESOLVER_RUNGEKUTTA2SOLVER_H
-#define SOFA_COMPONENT_ODESOLVER_RUNGEKUTTA2SOLVER_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralExplicitOdeSolver/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa
+namespace sofa::component::odesolver
 {
 
-namespace component
-{
-
-namespace odesolver
-{
-
-/** A popular time integration method, much more precise than the EulerSolver */
-class SOFA_GENERAL_EXPLICIT_ODE_SOLVER_API RungeKutta2Solver : public sofa::core::behavior::OdeSolver
+/** Explicit time integrator using central difference (also known as Verlet of Leap-frop).
+ *
+ * @see http://www.dynasupport.com/support/tutorial/users.guide/time.integration
+ * @see http://en.wikipedia.org/wiki/Leapfrog_method
+ *
+ */
+class SOFA_SOFAGENERALEXPLICITODESOLVER_API CentralDifferenceSolver : public sofa::core::behavior::OdeSolver
 {
 public:
-    SOFA_CLASS(RungeKutta2Solver, sofa::core::behavior::OdeSolver);
-
+    SOFA_CLASS(CentralDifferenceSolver, sofa::core::behavior::OdeSolver);
+protected:
+    CentralDifferenceSolver();
+public:
     void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+
+    Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass
+    Data<bool> d_threadSafeVisitor;
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
@@ -49,8 +52,8 @@ public:
         const SReal dt = getContext()->getDt();
         double matrix[3][3] =
         {
-            { 1, dt/2, 0},
-            { 0, 1, dt/2},
+            { 1, dt, dt*dt},
+            { 0, 1, dt},
             { 0, 0, 0}
         };
         if (inputDerivative >= 3 || outputDerivative >= 3)
@@ -65,7 +68,7 @@ public:
     double getSolutionIntegrationFactor(int outputDerivative) const override
     {
         const SReal dt = getContext()->getDt();
-        double vect[3] = { 0.0, dt/2, 1};
+        double vect[3] = { dt*dt, dt, 1};
         if (outputDerivative >= 3)
             return 0;
         else
@@ -73,10 +76,4 @@ public:
     }
 };
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::odesolver
