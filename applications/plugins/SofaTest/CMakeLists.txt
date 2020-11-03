@@ -42,7 +42,8 @@ if(SOFA_WITH_DEPRECATED_COMPONENTS)
 endif()
 
 find_package(SofaFramework REQUIRED)
-find_package(SofaMisc REQUIRED)
+find_package(SofaMiscForceField REQUIRED)
+find_package(SofaMiscMapping REQUIRED)
 find_package(SceneCreator REQUIRED)
 
 find_package(SofaPython QUIET)
@@ -65,7 +66,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILE
 if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
-target_link_libraries(${PROJECT_NAME} SceneCreator SofaBase SofaCommon SofaGeneral SofaMisc)
+target_link_libraries(${PROJECT_NAME} SceneCreator SofaBase SofaCommon SofaGeneral SofaMiscForceField SofaMiscMapping)
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package_with_targets(

@@ -36,19 +36,19 @@ namespace topology
 
 ///////////////////// Private functions on TopologySparseDataHandler changes /////////////////////////////
 template <typename TopologyElementType, typename VecT>
-void TopologySparseDataHandler <TopologyElementType, VecT>::swap( index_type i1, index_type i2 )
+void TopologySparseDataHandler <TopologyElementType, VecT>::swap( Index i1, Index i2 )
 {
     // get access to data and its map
     sofa::component::topology::TopologySparseDataImpl<TopologyElementType, VecT>* _topologyData = dynamic_cast<sofa::component::topology::TopologySparseDataImpl<TopologyElementType, VecT>* >(m_topologyData);    
     container_type& data = *(_topologyData->beginEdit());
-    sofa::helper::vector <index_type>& keys = _topologyData->getMap2Elements();
+    sofa::helper::vector <Index>& keys = _topologyData->getMap2Elements();
 
     value_type tmp = data[i1];
     data[i1] = data[i2];
     data[i2] = tmp;
 
     //apply same change to map:
-    index_type tmp2 = keys[i1];
+    Index tmp2 = keys[i1];
     keys[i1] = keys[i2];
     keys[i2] = tmp2;
 
@@ -57,8 +57,8 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::swap( index_type i1,
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseDataHandler <TopologyElementType, VecT>::add(std::size_t nbElements,
-        const sofa::helper::vector<sofa::helper::vector<index_type> > &ancestors,
+void TopologySparseDataHandler <TopologyElementType, VecT>::add(sofa::Size nbElements,
+        const sofa::helper::vector<sofa::helper::vector<Index> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
     // get access to data and its map
@@ -67,9 +67,9 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::add(std::size_t nbEl
         return;
 
     container_type& data = *(_topologyData->beginEdit());
-    sofa::helper::vector <index_type>& keys = _topologyData->getMap2Elements();
+    sofa::helper::vector <Index>& keys = _topologyData->getMap2Elements();
 
-    size_type size = data.size();
+    Size size = data.size();
     data.resize(size+nbElements);
 
     for (unsigned int i = 0; i < nbElements; ++i)
@@ -77,12 +77,12 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::add(std::size_t nbEl
         value_type t;
         if (ancestors.empty() || coefs.empty())
         {
-            const sofa::helper::vector< index_type > empty_vecint;
+            const sofa::helper::vector< Index > empty_vecint;
             const sofa::helper::vector< double > empty_vecdouble;
-            this->applyCreateFunction( size+i, t, empty_vecint, empty_vecdouble);
+            this->applyCreateFunction(Index(size+i), t, empty_vecint, empty_vecdouble);
         }
         else
-            this->applyCreateFunction( size+i, t, ancestors[i], coefs[i] );
+            this->applyCreateFunction(Index(size+i), t, ancestors[i], coefs[i] );
 
         // Incremente the total number of edges in topology
         this->lastElementIndex++;
@@ -95,9 +95,9 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::add(std::size_t nbEl
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseDataHandler <TopologyElementType, VecT>::add(std::size_t nbElements,
+void TopologySparseDataHandler <TopologyElementType, VecT>::add(sofa::Size nbElements,
         const sofa::helper::vector< TopologyElementType >& ,
-        const sofa::helper::vector<sofa::helper::vector<index_type> > &ancestors,
+        const sofa::helper::vector<sofa::helper::vector<Index> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
     this->add(nbElements, ancestors, coefs);
@@ -105,8 +105,8 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::add(std::size_t nbEl
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseDataHandler <TopologyElementType, VecT>::move( const sofa::helper::vector<index_type> &,
-        const sofa::helper::vector< sofa::helper::vector< index_type > >& ,
+void TopologySparseDataHandler <TopologyElementType, VecT>::move( const sofa::helper::vector<Index> &,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& ,
         const sofa::helper::vector< sofa::helper::vector< double > >& )
 {
     msg_warning("TopologySparseDataHandler") << "Move event on topology SparseData is not yet handled." ;
@@ -114,18 +114,18 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::move( const sofa::he
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseDataHandler <TopologyElementType, VecT>::remove( const sofa::helper::vector<index_type> &index )
+void TopologySparseDataHandler <TopologyElementType, VecT>::remove( const sofa::helper::vector<Index> &index )
 {
     sofa::component::topology::TopologySparseDataImpl<TopologyElementType, VecT>* _topologyData = dynamic_cast<sofa::component::topology::TopologySparseDataImpl<TopologyElementType, VecT>* >(m_topologyData);
 
     // get the sparseData map
-    sofa::helper::vector <index_type>& keys = _topologyData->getMap2Elements();
+    sofa::helper::vector <Index>& keys = _topologyData->getMap2Elements();
     container_type& data = *(_topologyData->beginEdit());
-    size_type last = data.size() -1;
+    Size last = data.size() -1;
 
     // check for each element remove if it concern this sparseData
     unsigned int cptDone = 0;
-    for (size_type i = 0; i < index.size(); ++i)
+    for (Size i = 0; i < index.size(); ++i)
     {
         unsigned int elemId = index[i];
         unsigned int id = _topologyData->indexOfElement(elemId);
@@ -148,14 +148,14 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::remove( const sofa::
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseDataHandler <TopologyElementType, VecT>::renumber( const sofa::helper::vector<index_type>& )
+void TopologySparseDataHandler <TopologyElementType, VecT>::renumber( const sofa::helper::vector<Index>& )
 {
     msg_warning("TopologySparseDataHandler") << "renumber event on topology SparseData is not yet handled" ;
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<index_type> &,
+void TopologySparseDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<Index> &,
         const sofa::helper::vector<TopologyElementType> &)
 {
     msg_warning("TopologySparseDataHandler") << "addOnMovedPosition event on topology SparseData is not yet handled" ;
@@ -164,7 +164,7 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::addOnMovedPosition(c
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySparseDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<index_type> &)
+void TopologySparseDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<Index> &)
 {
     msg_warning("TopologySparseDataHandler") << "removeOnMovedPosition event on topology SparseData is not yet handled" ;
 }

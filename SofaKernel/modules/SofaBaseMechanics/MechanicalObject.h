@@ -86,7 +86,7 @@ public:
     typedef typename core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
 
     typedef sofa::defaulttype::Vector3 Vector3;
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
 protected:
     MechanicalObject();
@@ -186,45 +186,45 @@ public:
     void initGnuplot(const std::string path) override;
     void exportGnuplot(SReal time) override;
 
-    void resize( size_t vsize) override;
-    virtual void reserve(size_t vsize);
+    void resize( Size vsize) override;
+    virtual void reserve(Size vsize);
 
-    size_t getSize() const override { return d_size.getValue(); }
+    Size getSize() const override { return d_size.getValue(); }
 
-    SReal getPX(index_type i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
-    SReal getPY(index_type i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }
-    SReal getPZ(index_type i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)z; }
+    SReal getPX(Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
+    SReal getPY(Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }
+    SReal getPZ(Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)z; }
 
-    SReal getVX(index_type i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)x; }
-    SReal getVY(index_type i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)y; }
-    SReal getVZ(index_type i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)z; }
+    SReal getVX(Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)x; }
+    SReal getVY(Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)y; }
+    SReal getVZ(Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)z; }
 
 
     /** \brief Overwrite values at index outputIndex by the ones at inputIndex.
      *
      */
-    void replaceValue (const index_type inputIndex, const index_type outputIndex);
+    void replaceValue (const Index inputIndex, const Index outputIndex);
 
     /** \brief Exchange values at indices idx1 and idx2.
      *
      */
-    void swapValues (const index_type idx1, const index_type idx2);
+    void swapValues (const Index idx1, const Index idx2);
 
     /** \brief Reorder values according to parameter.
      *
      * Result of this method is :
      * newValue[ i ] = oldValue[ index[i] ];
      */
-    void renumberValues( const sofa::helper::vector<index_type> &index );
+    void renumberValues( const sofa::helper::vector<Index> &index );
 
     /** \brief Replace the value at index by the sum of the ancestors values weithed by the coefs.
      *
      * Sum of the coefs should usually equal to 1.0
      */
-    void computeWeightedValue( const index_type i, const sofa::helper::vector< sofa::defaulttype::index_type >& ancestors, const sofa::helper::vector< double >& coefs);
+    void computeWeightedValue( const Index i, const sofa::helper::vector< sofa::Index >& ancestors, const sofa::helper::vector< double >& coefs);
 
     /// Force the position of a point (and force its velocity to zero value)
-    void forcePointPosition( const index_type i, const sofa::helper::vector< double >& m_x);
+    void forcePointPosition( const Index i, const sofa::helper::vector< double >& m_x);
 
     /// @name Initial transformations application methods.
     /// @{
@@ -242,7 +242,7 @@ public:
     /// @}
 
     /// Get the indices of the particles located in the given bounding box
-    void getIndicesInSpace(sofa::helper::vector<index_type>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const override;
+    void getIndicesInSpace(sofa::helper::vector<Index>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const override;
 
     /// update the given bounding box, to include this
     bool addBBox(SReal* minBBox, SReal* maxBBox) override;
@@ -351,7 +351,7 @@ public:
     /// Maximum of the absolute values of the entries of state vector a. This is used to compute the infinite-norm of the vector.
     SReal vMax(const core::ExecParams* params, core::ConstVecId a) override;
 
-    size_t vSize( const core::ExecParams* params, core::ConstVecId v ) override;
+    Size vSize( const core::ExecParams* params, core::ConstVecId v ) override;
 
     void resetForce(const core::ExecParams* params, core::VecDerivId f = core::VecDerivId::force()) override;
 

@@ -80,40 +80,40 @@ public:
      */
     virtual void addRemoveTriangles (const size_t nTri2Add,
             const sofa::helper::vector< Triangle >& triangles2Add,
-            const sofa::helper::vector< index_type >& trianglesIndex2Add,
-            const sofa::helper::vector< sofa::helper::vector< index_type > > & ancestors,
+            const sofa::helper::vector< Index >& trianglesIndex2Add,
+            const sofa::helper::vector< sofa::helper::vector< Index > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
-            sofa::helper::vector< index_type >& trianglesIndex2remove) override;
+            sofa::helper::vector< Index >& trianglesIndex2remove) override;
 
 
     /** \brief: Reorder the vertex in the array of a given edge. In order to be in the oriented in the right direction
      * regarding the first triangle of m_trianglesAroundEdgeArray[ edgeIndex ].
      *
      */
-    void reorderingEdge(const index_type edgeIndex);
+    void reorderingEdge(const Index edgeIndex);
 
 
     /** \brief: Reorder the triangle vertex array around a given vertex.
      *
      */
-    void reorderingTrianglesAroundVertex (const index_type vertexIndex);
+    void reorderingTrianglesAroundVertex (const Index vertexIndex);
 
 
     /** \brief: Reorder the edge vertex array around a given vertex.
      *
      */
-    void reorderingEdgesAroundVertex (const index_type vertexIndex);
+    void reorderingEdgesAroundVertex (const Index vertexIndex);
 
 
     /** \brief: Reorder the three shell arrays around a list of given vertices.
      *
      */
-    void reorderingTopologyOnROI (const sofa::helper::vector <index_type>& listVertex);
+    void reorderingTopologyOnROI (const sofa::helper::vector <Index>& listVertex);
 
 
 protected:
 
-    Data< sofa::helper::vector< index_type> > m_triSwap; ///< Debug : Test swap function (only while animate).
+    Data< sofa::helper::vector< Index> > m_triSwap; ///< Debug : Test swap function (only while animate).
     Data< bool > m_swapMesh; ///< If true, optimize the mesh only by swapping edges
 
     /**\brief Preconditions to fulfill before removing triangles. In this class topology should stay manifold.
@@ -122,7 +122,7 @@ protected:
     * @see createRemovingEdgesFutureModifications()
     * @see testRemovingModifications().
     */
-    virtual bool removeTrianglesPreconditions(const sofa::helper::vector< index_type >& items) override;
+    virtual bool removeTrianglesPreconditions(const sofa::helper::vector< Index >& items) override;
 
     /**\brief Postprocessing to apply to the triangle topology. In this class topology should stay manifold.
     * These functions reorder the triangles around each vertex where triangles have been deleted.
@@ -132,7 +132,7 @@ protected:
     * @see updateRemovingModifications()
     * @see reorderEdgeForRemoving()
     */
-    virtual void removeTrianglesPostProcessing(const sofa::helper::vector< index_type >& edgeToBeRemoved, const sofa::helper::vector< index_type >& vertexToBeRemoved ) override;
+    virtual void removeTrianglesPostProcessing(const sofa::helper::vector< Index >& edgeToBeRemoved, const sofa::helper::vector< Index >& vertexToBeRemoved ) override;
 
 
     /**\brief Preconditions to fulfill before adding triangles. In this class topology should stay manifold.
@@ -154,30 +154,30 @@ private:
 
     /** \brief iterator for the map.
      */
-    std::map< index_type, sofa::helper::vector<index_type> >::iterator it_modif;
-    std::map< index_type, sofa::helper::vector<int> >::iterator it_add;
+    std::map< Index, sofa::helper::vector<Index> >::iterator it_modif;
+    std::map< Index, sofa::helper::vector<int> >::iterator it_add;
 
 
     /** \brief This map store all the modifications (for the triangles) to apply to the topology.
      */
-    std::map< index_type, sofa::helper::vector <index_type> > m_modifications;
+    std::map< Index, sofa::helper::vector <Index> > m_modifications;
 
 
     /** \brief This vector store all the modifications (for the edges) to apply to the topology.
      */
-    sofa::helper::vector< index_type> m_modificationsEdge;
+    sofa::helper::vector< Index> m_modificationsEdge;
 
 
     /** \brief This map store all the modifications (for the triangles) to apply to the topology.
      */
-    std::map< index_type, sofa::helper::vector <int> > m_Addmodifications;
+    std::map< Index, sofa::helper::vector <int> > m_Addmodifications;
 
 
     /** Fill the vector m_modificationEdge with the 3 edges of each triangle to be removed (without duplications).
      * This is needed,if orientations of edges have to be changed (always oriented in the right direction regarding the
      * first or the only one triangle of m_TrianglesAroundEdgeArray[ the_edge ]);
      */
-    void createRemovingEdgesFutureModifications (const sofa::helper::vector <index_type> items);
+    void createRemovingEdgesFutureModifications (const sofa::helper::vector <Index> items);
 
 
     /** Create the vector m_modifications which store the modifications to apply to the topology.
@@ -185,7 +185,7 @@ private:
      * m_modifications[0] = vertex index number.
      * m_modifications[i>0] = 0 (no change) or 1 (remove m_trianglesAroundVertex[ m_modifications[0] ][i+1])
      */
-    void createRemovingTrianglesFutureModifications(const sofa::helper::vector< index_type >& items);
+    void createRemovingTrianglesFutureModifications(const sofa::helper::vector< Index >& items);
 
 
     /** Test the modifications to apply around one vertex. After removing triangles, only one connexe composante
@@ -210,7 +210,7 @@ private:
      * m_modification and m_modificationEdge
      *
      */
-    void updateRemovingModifications (const sofa::helper::vector< index_type >& edgeToBeRemoved, const sofa::helper::vector< index_type >& vertexToBeRemoved);
+    void updateRemovingModifications (const sofa::helper::vector< Index >& edgeToBeRemoved, const sofa::helper::vector< Index >& vertexToBeRemoved);
 
 
     /** For each edge of m_modificationEdge, this function call ManifoldTriangleSetTopologyContainer::reorderingEdge() to

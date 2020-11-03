@@ -271,7 +271,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
 
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatrices( ElementStiffness &K, ElementMass &M, const index_type elementIndice, int level)
+void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatrices( ElementStiffness &K, ElementMass &M, const Index elementIndice, int level)
 {
     //Get the 8 indices of the coarser Hexa
     const auto& points = this->_sparseGrid->_virtualFinerLevels[level]->getHexahedra()[elementIndice];
@@ -299,7 +299,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatr
 
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::addFineToCoarse( ElementStiffness& coarse, const ElementStiffness& fine, index_type indice )
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addFineToCoarse( ElementStiffness& coarse, const ElementStiffness& fine, Index indice )
 {
     ElementStiffness A;
     for(int i=0; i<24; i++)

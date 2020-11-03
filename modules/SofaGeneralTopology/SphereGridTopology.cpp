@@ -74,7 +74,7 @@ void SphereGridTopology::setRadius(SReal radius)
 }
 
 
-Vector3 SphereGridTopology::getPoint(index_type i) const
+Vector3 SphereGridTopology::getPoint(Index i) const
 {
     int x = i%d_n.getValue()[0]; i/=d_n.getValue()[0];
     int y = i%d_n.getValue()[1]; i/=d_n.getValue()[1];

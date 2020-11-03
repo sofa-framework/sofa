@@ -1452,7 +1452,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
         {
             Edge e(t[tpi],t[(tpi+1)%3]);
             if (e[0] > e[1]) { PointID tmp = e[0]; e[0] = e[1]; e[1] = tmp; }
-            if (e[0] < newP0 && e[1] < newP0 && m_container->getEdgeIndex(e[0], e[1]) != sofa::defaulttype::InvalidID)
+            if (e[0] < newP0 && e[1] < newP0 && m_container->getEdgeIndex(e[0], e[1]) != sofa::InvalidID)
                 continue; // existing edge
             if (!edges_processed.insert(e).second)
                 continue; // this edge was already processed
@@ -1554,10 +1554,10 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
     {
         EdgeID e = m_container->getEdgeIndex(new_edge_points[i], new_edge_points[i+1]);
 
-        if (e == sofa::defaulttype::InvalidID)
+        if (e == sofa::InvalidID)
             e = m_container->getEdgeIndex(new_edge_points[i+1], new_edge_points[i]);
 
-        if (e == sofa::defaulttype::InvalidID)
+        if (e == sofa::InvalidID)
             msg_error() << "Edge " << new_edge_points[i] << " - " << new_edge_points[i+1] << " NOT FOUND.";
         else
             new_edges.push_back(e);

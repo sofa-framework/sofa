@@ -68,12 +68,12 @@ public:
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
     void updateTopologicalMappingTopDown() override;
 
-    index_type getGlobIndex(index_type ind) override
+    Index getGlobIndex(Index ind) override
     {
         return ind;
     }
 
-    index_type getFromIndex(index_type ind) override
+    Index getFromIndex(Index ind) override
     {
         return ind;
     }

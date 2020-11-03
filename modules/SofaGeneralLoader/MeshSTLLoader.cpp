@@ -123,8 +123,8 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     auto my_normals = getWriteOnlyAccessor(d_normals);
     auto my_triangles = getWriteOnlyAccessor(this->d_triangles);
 
-    std::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
-    core::topology::Topology::index_type positionCounter = 0;
+    std::map< sofa::defaulttype::Vec3f, core::topology::Topology::Index > my_map;
+    core::topology::Topology::Index positionCounter = 0;
     bool useMap = d_mergePositionUsingMap.getValue();
 
     std::ifstream dataFile(filename, std::ios::in | std::ifstream::binary);
@@ -212,7 +212,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
             }
         }
 
-        this->addTriangle(my_triangles, the_tri);
+        this->addTriangle(&my_triangles.wref(), the_tri);
 
         // Attribute byte count
         uint16_t count;
@@ -239,8 +239,8 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
     auto my_normals = getWriteOnlyAccessor(d_normals);
     auto my_triangles = getWriteOnlyAccessor(d_triangles);
 
-    std::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
-    core::topology::Topology::index_type positionCounter = 0, vertexCounter = 0;
+    std::map< sofa::defaulttype::Vec3f, core::topology::Topology::Index > my_map;
+    core::topology::Topology::Index positionCounter = 0, vertexCounter = 0;
     bool useMap = d_mergePositionUsingMap.getValue();
 
     Triangle the_tri;
@@ -300,7 +300,7 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
         }
         else if (bufferWord == "endfacet")
         {
-            this->addTriangle(my_triangles, the_tri);
+            this->addTriangle(&my_triangles.wref(), the_tri);
             vertexCounter = 0;
         }
         else if (bufferWord == "endsolid" || bufferWord == "end")

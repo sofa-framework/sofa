@@ -212,8 +212,6 @@ bool MeshVTKLoader::setInputsMesh()
         return false;
     }
 
-    d_positions.endEdit();
-
     auto my_normals = getWriteOnlyAccessor(d_normals);
     if(reader->inputNormals)
     {

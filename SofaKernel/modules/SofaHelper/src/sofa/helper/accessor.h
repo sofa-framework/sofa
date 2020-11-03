@@ -169,7 +169,7 @@ class ReadAccessorVector
 {
 public:
     typedef T container_type;
-    typedef typename container_type::size_type size_type;
+    typedef typename container_type::Size Size;
     typedef typename container_type::value_type value_type;
     typedef typename container_type::reference reference;
     typedef typename container_type::const_reference const_reference;
@@ -185,8 +185,8 @@ public:
     const container_type& ref() const { return *vref; }
 
     bool empty() const { return vref->empty(); }
-    size_type size() const { return vref->size(); }
-	const_reference operator[](size_type i) const { return (*vref)[i]; }
+    Size size() const { return vref->size(); }
+	const_reference operator[](Size i) const { return (*vref)[i]; }
 
     const_iterator begin() const { return vref->begin(); }
     const_iterator end() const { return vref->end(); }
@@ -204,7 +204,7 @@ class WriteAccessorVector
 {
 public:
     typedef T container_type;
-    typedef typename container_type::size_type size_type;
+    typedef typename container_type::Size Size;
     typedef typename container_type::value_type value_type;
     typedef typename container_type::reference reference;
     typedef typename container_type::const_reference const_reference;
@@ -221,10 +221,10 @@ public:
     container_type& wref() { return *vref; }
 
     bool empty() const { return vref->empty(); }
-    size_type size() const { return vref->size(); }
+    Size size() const { return vref->size(); }
 
-	const_reference operator[](size_type i) const { return (*vref)[i]; }
-	reference operator[](size_type i) { return (*vref)[i]; }
+	const_reference operator[](Size i) const { return (*vref)[i]; }
+	reference operator[](Size i) { return (*vref)[i]; }
 
     const_iterator begin() const { return vref->begin(); }
     iterator begin() { return vref->begin(); }
@@ -232,8 +232,8 @@ public:
     iterator end() { return vref->end(); }
 
     void clear() { vref->clear(); }
-    void resize(size_type s, bool /*init*/ = true) { vref->resize(s); }
-    void reserve(size_type s) { vref->reserve(s); }
+    void resize(Size s, bool /*init*/ = true) { vref->resize(s); }
+    void reserve(Size s) { vref->reserve(s); }
     void push_back(const value_type& v) { vref->push_back(v); }
 
     inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessorVector<T>& vec )

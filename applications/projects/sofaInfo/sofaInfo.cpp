@@ -24,7 +24,6 @@
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 #include <sofa/core/ObjectFactory.h>
 
 // ---------------------------------------------------------------------
@@ -36,7 +35,6 @@ int main(int /*argc*/, char** argv)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
 
     if (argv[1] == NULL)
     {

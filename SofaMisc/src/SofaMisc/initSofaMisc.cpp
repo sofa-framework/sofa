@@ -21,13 +21,6 @@
 ******************************************************************************/
 
 #include <SofaMisc/initSofaMisc.h>
-#include <SofaMiscTopology/initMiscTopology.h>
-#include <SofaMiscMapping/initMiscMapping.h>
-#include <SofaMiscForceField/initMiscForcefield.h>
-#include <SofaMiscFem/initMiscFEM.h>
-#include <SofaMiscEngine/initMiscEngine.h>
-#include <SofaMiscSolver/initMiscSolver.h>
-#include <SofaMiscExtra/initMiscExtra.h>
 
 namespace sofa
 {
@@ -43,14 +36,6 @@ void initSofaMisc()
     {
         first = false;
     }
-
-    initMiscTopology();
-    initMiscMapping();
-    initMiscForcefield();
-    initMiscFEM();
-    initMiscEngine();
-    initMiscSolver();
-    initMiscExtra();
 }
 
 } // namespace component

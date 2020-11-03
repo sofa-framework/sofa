@@ -108,7 +108,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
     // --- Loading Vertices positions ---
     dataFile >> nbVertices; //Loading number of Vertex
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
+    auto my_positions = getWriteOnlyAccessor(d_positions);
     for (unsigned int i=0; i<nbVertices; ++i)
     {
         SReal x,y,z;
@@ -117,15 +117,14 @@ bool MeshTrianLoader::readTrian (const char* filename)
 
         my_positions.push_back (Vector3(x, y, z));
     }
-    d_positions.endEdit();
 
     // --- Loading Triangles array ---
     dataFile >> nbTriangles; //Loading number of Triangle
 
-    helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
-    helper::vector<helper::fixed_array <int,3> >& my_neighborTable = *(neighborTable.beginEdit());
-    helper::vector<helper::vector <unsigned int> >& my_edgesOnBorder = *(edgesOnBorder.beginEdit());
-    helper::vector<unsigned int>& my_trianglesOnBorderList = *(trianglesOnBorderList.beginEdit());
+    auto my_triangles = getWriteOnlyAccessor(d_triangles);
+    auto my_neighborTable = getWriteOnlyAccessor(neighborTable);
+    auto my_edgesOnBorder = getWriteOnlyAccessor(edgesOnBorder);
+    auto my_trianglesOnBorderList = getWriteOnlyAccessor(trianglesOnBorderList);
 
     for (unsigned int i=0; i<nbTriangles; ++i)
     {
@@ -136,7 +135,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
 
         // set 3 triangle vertices  ==>> Dans le MeshLoader?
 
-        addTriangle(&my_triangles, nodes);
+        addTriangle(&my_triangles.wref(), nodes);
         my_neighborTable.push_back (ngh);
 
         // if we have a boundary edge store it in the m_edgeOnBorder array:
@@ -172,63 +171,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
                 my_trianglesOnBorderList.push_back (i);
                 break;
             }
-
-
-
-        /*
-        if ((v0<v1)|| (ngh2== -1))
-        {
-        msg_info() << " ((v0<v1)|| (ngh2== -1)) ";
-
-        e=new E(trian,vertexTable[v0],vertexTable[v1],t,0);
-        t->setEdge(2,e);
-        // if we have a boundary edge store it in the vertex
-        if (ngh2== -1)
-        {
-          t->getVertex(1)->setEdge(e);
-          t->getVertex(1)->setOrientation(1);
-        }
-             }
-             if ((v1<v2) | (ngh0== -1))
-             {
-        msg_info() << " ((v1<v2) | (ngh0== -1)) ";
-        e=new E(trian,vertexTable[v1],vertexTable[v2],
-            t,0);
-        t->setEdge(0,e);
-        // if we have a boundary edge store it in the vertex
-        if (ngh0== -1)
-        {
-          t->getVertex(2)->setEdge(e);
-          t->getVertex(2)->setOrientation(1);
-        }
-
-             }
-             if ((v2<v0)| (ngh1== -1))
-             {
-        msg_info() << " ((v2<v0)| (ngh1== -1)) ";
-        e=new E(trian,vertexTable[v2],vertexTable[v0],
-            t,0);
-        t->setEdge(1,e);
-        // if we have a boundary edge store it in the vertex
-        if (ngh1== -1)
-        {
-          t->getVertex(0)->setEdge(e);
-          t->getVertex(0)->setOrientation(1);
-        }
-
-             }
-             */
-
     }
-
-    d_triangles.endEdit();
-    neighborTable.endEdit();
-    trianglesOnBorderList.endEdit();
-    edgesOnBorder.endEdit();
-
-    //MeshLoader job now
-    //trian->computeCenter();
-    //createVirtualVertices(vv,ee,tt,zz,trian);
 
     return true;
 }
@@ -253,7 +196,7 @@ bool MeshTrianLoader::readTrian2 (const char* filename)
     // --- Loading Vertices positions ---
     dataFile >> buffer >> nbVertices; //Loading number of Vertex
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
+    auto my_positions = getWriteOnlyAccessor(d_positions);
     for (unsigned int i=0; i<nbVertices; ++i)
     {
         SReal x,y,z;
@@ -261,13 +204,12 @@ bool MeshTrianLoader::readTrian2 (const char* filename)
         dataFile >> x >> y >> z;
         my_positions.push_back (Vector3(x, y, z));
     }
-    d_positions.endEdit();
 
 
     // --- Loading Normals positions ---
     dataFile >> buffer >> nbNormals; //Loading number of Vertex
 
-    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(d_normals.beginEdit());
+    auto my_normals = getWriteOnlyAccessor(d_normals);
     for (unsigned int i=0; i<nbNormals; ++i)
     {
         SReal x,y,z;
@@ -275,13 +217,12 @@ bool MeshTrianLoader::readTrian2 (const char* filename)
         dataFile >> x >> y >> z;
         my_normals.push_back (Vector3(x, y, z));
     }
-    d_normals.endEdit();
 
 
     // --- Loading Triangles array ---
     dataFile >> buffer >> nbTriangles; //Loading number of Triangle
 
-    helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
+    auto my_triangles = getWriteOnlyAccessor(d_triangles);
 
     for (unsigned int i=0; i<nbTriangles; ++i)
     {
@@ -289,10 +230,8 @@ bool MeshTrianLoader::readTrian2 (const char* filename)
 
         dataFile >>  nodes[0] >> nodes[1] >> nodes[2] ;
 
-        addTriangle(&my_triangles, nodes);
+        addTriangle(&my_triangles.wref(), nodes);
     }
-
-    d_triangles.endEdit();
 
     return true;
 }

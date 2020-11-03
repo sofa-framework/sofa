@@ -37,24 +37,24 @@ namespace io
 class SOFA_HELPER_API MeshTopologyLoader
 {
 public:
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
     MeshTopologyLoader():m_mesh(nullptr) {}
     virtual ~MeshTopologyLoader() {}
     bool load(const char *filename);
-    virtual void setNbPoints(index_type /*n*/) {}
-    virtual void setNbLines(index_type /*n*/) {}
-    virtual void setNbEdges(index_type /*n*/) {}
-    virtual void setNbTriangles(index_type /*n*/) {}
-    virtual void setNbQuads(index_type /*n*/) {}
-    virtual void setNbTetrahedra(index_type /*n*/) {}
-    virtual void setNbCubes(index_type /*n*/) {}
+    virtual void setNbPoints(Index /*n*/) {}
+    virtual void setNbLines(Index /*n*/) {}
+    virtual void setNbEdges(Index /*n*/) {}
+    virtual void setNbTriangles(Index /*n*/) {}
+    virtual void setNbQuads(Index /*n*/) {}
+    virtual void setNbTetrahedra(Index /*n*/) {}
+    virtual void setNbCubes(Index /*n*/) {}
     virtual void addPoint(SReal /*px*/, SReal /*py*/, SReal /*pz*/) {}
-    virtual void addLine(index_type /*p1*/, index_type /*p2*/) {}
-    virtual void addTriangle(index_type /*p1*/, index_type /*p2*/, index_type /*p3*/) {}
-    virtual void addQuad(index_type /*p1*/, index_type /*p2*/, index_type /*p3*/, index_type /*p4*/) {}
-    virtual void addTetra(index_type /*p1*/, index_type /*p2*/, index_type /*p3*/, index_type /*p4*/) {}
-    virtual void addCube(index_type /*p1*/, index_type /*p2*/, index_type /*p3*/, index_type /*p4*/, index_type /*p5*/, index_type /*p6*/, index_type /*p7*/, index_type /*p8*/) {}
+    virtual void addLine(Index /*p1*/, Index /*p2*/) {}
+    virtual void addTriangle(Index /*p1*/, Index /*p2*/, Index /*p3*/) {}
+    virtual void addQuad(Index /*p1*/, Index /*p2*/, Index /*p3*/, Index /*p4*/) {}
+    virtual void addTetra(Index /*p1*/, Index /*p2*/, Index /*p3*/, Index /*p4*/) {}
+    virtual void addCube(Index /*p1*/, Index /*p2*/, Index /*p3*/, Index /*p4*/, Index /*p5*/, Index /*p6*/, Index /*p7*/, Index /*p8*/) {}
 private:
     /// method will create a MeshObj which will parse the file. Then data are loaded into the current topology
     bool loadObj(const char *filename);

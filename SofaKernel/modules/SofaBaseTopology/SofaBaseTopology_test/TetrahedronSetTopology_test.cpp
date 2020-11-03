@@ -138,7 +138,7 @@ bool TetrahedronSetTopology_test::testTetrahedronBuffers()
 
     const TetrahedronSetTopologyContainer::Tetrahedron& elem2 = topoCon->getTetrahedron(100000);
     for (int i = 0; i<elemSize; ++i)
-        EXPECT_EQ(elem2[i], sofa::defaulttype::InvalidID);
+        EXPECT_EQ(elem2[i], sofa::InvalidID);
 
 
     if(scene != nullptr)

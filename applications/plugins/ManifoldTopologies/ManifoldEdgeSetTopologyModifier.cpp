@@ -60,7 +60,7 @@ void ManifoldEdgeSetTopologyModifier::addEdgesProcess(const sofa::helper::vector
     EdgeSetTopologyModifier::addEdgesProcess(edges);
 }
 
-void ManifoldEdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<index_type> &indices,
+void ManifoldEdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<Index> &indices,
         const bool removeIsolatedItems)
 {
     m_container->resetConnectedComponent(); // invalidate the connected components by default
@@ -68,7 +68,7 @@ void ManifoldEdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vec
     EdgeSetTopologyModifier::removeEdgesProcess(indices, removeIsolatedItems);
 }
 
-void ManifoldEdgeSetTopologyModifier::removeEdges(sofa::helper::vector< index_type >& edges,
+void ManifoldEdgeSetTopologyModifier::removeEdges(sofa::helper::vector< Index >& edges,
         const bool removeIsolatedPoints)
 {
     /// add the topological changes in the queue
@@ -86,8 +86,8 @@ void ManifoldEdgeSetTopologyModifier::removeItems(sofa::helper::vector< EdgeID >
     removeEdges(items);
 }
 
-void ManifoldEdgeSetTopologyModifier::renumberPoints( const sofa::helper::vector<index_type> &index,
-        const sofa::helper::vector<index_type> &inv_index)
+void ManifoldEdgeSetTopologyModifier::renumberPoints( const sofa::helper::vector<Index> &index,
+        const sofa::helper::vector<Index> &inv_index)
 {
     /// add the topological changes in the queue
     renumberPointsWarning(index, inv_index);
@@ -122,7 +122,7 @@ void ManifoldEdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge 
 }
 
 void ManifoldEdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges,
-        const sofa::helper::vector< sofa::helper::vector< index_type > > & ancestors ,
+        const sofa::helper::vector< sofa::helper::vector< Index > > & ancestors ,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
     const size_t nEdges = m_container->getNumberOfEdges();
@@ -144,27 +144,27 @@ void ManifoldEdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge 
     propagateTopologicalChanges();
 }
 
-void ManifoldEdgeSetTopologyModifier::swapEdges(const sofa::helper::vector< sofa::helper::vector< index_type > >& edgesPairs)
+void ManifoldEdgeSetTopologyModifier::swapEdges(const sofa::helper::vector< sofa::helper::vector< Index > >& edgesPairs)
 {
     swapEdgesProcess(edgesPairs);
     m_container->checkTopology();
 }
 
 
-void ManifoldEdgeSetTopologyModifier::fuseEdges(const sofa::helper::vector< sofa::helper::vector< index_type > >& edgesPairs, const bool removeIsolatedPoints)
+void ManifoldEdgeSetTopologyModifier::fuseEdges(const sofa::helper::vector< sofa::helper::vector< Index > >& edgesPairs, const bool removeIsolatedPoints)
 {
     fuseEdgesProcess(edgesPairs, removeIsolatedPoints);
     m_container->checkTopology();
 }
 
-void ManifoldEdgeSetTopologyModifier::splitEdges( sofa::helper::vector<index_type> &indices,
+void ManifoldEdgeSetTopologyModifier::splitEdges( sofa::helper::vector<Index> &indices,
         const bool removeIsolatedPoints)
 {
     splitEdgesProcess(indices, removeIsolatedPoints);
     m_container->checkTopology();
 }
 
-void ManifoldEdgeSetTopologyModifier::splitEdges( sofa::helper::vector<index_type> &indices,
+void ManifoldEdgeSetTopologyModifier::splitEdges( sofa::helper::vector<Index> &indices,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
         const bool removeIsolatedPoints)
 {

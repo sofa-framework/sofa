@@ -21,7 +21,6 @@
 ******************************************************************************/
 
 #include<SofaDeformable/initDeformable.h>
-#include<SofaMiscSolver/initMiscSolver.h>
 
 // some basic RAII stuff to automatically add a TestMessageHandler to every tests
 namespace {
@@ -29,7 +28,6 @@ namespace {
       raii()
       {
         sofa::component::initDeformable() ;
-        sofa::component::initMiscSolver() ;
       }
     } singleton;
 }

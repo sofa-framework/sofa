@@ -145,7 +145,7 @@ set(PYTHON_FILES
 find_package(PythonLibs 2.7 REQUIRED)
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
-find_package(SofaMisc REQUIRED)
+find_package(SofaMiscMapping REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 GET_FILENAME_COMPONENT(LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX} NAME_WE)
@@ -176,7 +176,7 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC "$<INSTALL_INTERFACE:include>"
     )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaMisc SofaGeneral ${PYTHON_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaMiscMapping SofaGeneral ${PYTHON_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)

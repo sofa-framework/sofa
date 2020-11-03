@@ -62,7 +62,7 @@ public:
      * @brief Returns the validity of a detected contact according to this PointInfo.
      */
     //virtual bool validate(const Point & /*p*/, const defaulttype::Vector3 & /*PQ*/);
-    bool validate(const index_type /*p*/, const defaulttype::Vector3 & /*PQ*/) override;
+    bool validate(const Index /*p*/, const defaulttype::Vector3 & /*PQ*/) override;
     /**
      * @brief Output stream.
      */
@@ -83,7 +83,7 @@ public:
      * @brief Computes the region of interest cone of the Point primitive.
      */
     //virtual void buildFilter(const Point & /*p*/);
-    void buildFilter(index_type /*p*/) override;
+    void buildFilter(Index /*p*/) override;
 
 protected:
 
@@ -142,7 +142,7 @@ public:
     public:
         PointInfoHandler(PointLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >(_data), f(_f) {}
 
-        void applyCreateFunction(index_type pointIndex, PointInfo& m, const sofa::helper::vector< index_type > &,
+        void applyCreateFunction(Index pointIndex, PointInfo& m, const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double > &);
     protected:
         PointLocalMinDistanceFilter* f;

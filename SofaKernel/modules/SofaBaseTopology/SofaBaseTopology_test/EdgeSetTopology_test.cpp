@@ -114,7 +114,7 @@ bool EdgeSetTopology_test::testEdgeBuffers()
 
     const EdgeSetTopologyContainer::Edge& edge2 = topoCon->getEdge(1000);
     for (int i = 0; i<2; ++i)
-        EXPECT_EQ(edge2[i], sofa::defaulttype::InvalidID);
+        EXPECT_EQ(edge2[i], sofa::InvalidID);
 
 
     if(scene != nullptr)

@@ -2,7 +2,7 @@
 
 @PACKAGE_INIT@
 
-find_package(SofaGeneral REQUIRED)
+find_package(SofaGeneral QUIET REQUIRED)
 find_package(TinyXML REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)

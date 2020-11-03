@@ -75,7 +75,7 @@ public:
     }
 
     virtual QLineSeries* copy() const { return new QDataSeries<T>(*this); }
-    virtual size_t size() const
+    virtual sofa::Size size() const
     {
         if (data0 == NULL)
             return 0;
@@ -106,7 +106,7 @@ public:
         }
     }
 
-    virtual QPointF sample (size_t i) const
+    virtual QPointF sample (sofa::Index i) const
     {
         if (i >= size())
             return QPointF();
@@ -199,8 +199,8 @@ public:
         double maxY = -1000000000.0;
         currentData=d0;
         const data_type& d = currentData;
-        int nbCurves = m_curves.size();
-        int nbData = trait::size(d);
+        auto nbCurves = m_curves.size();
+        auto nbData = trait::size(d);
 
         for (int i = 0; i < nbData; ++i)
         {

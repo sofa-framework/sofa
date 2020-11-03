@@ -68,7 +68,7 @@ SphereCollisionModel<DataTypes>::SphereCollisionModel(core::behavior::Mechanical
 
 
 template<class DataTypes>
-void SphereCollisionModel<DataTypes>::resize(std::size_t size)
+void SphereCollisionModel<DataTypes>::resize(Size size)
 {
     this->core::CollisionModel::resize(size);
 
@@ -110,7 +110,7 @@ void SphereCollisionModel<DataTypes>::init()
         return;
     }
 
-    const std::size_t npoints = mstate->getSize();
+    const auto npoints = mstate->getSize();
     resize(npoints);
 
     d_componentState.setValue(ComponentState::Valid) ;
@@ -118,7 +118,7 @@ void SphereCollisionModel<DataTypes>::init()
 
 
 template<class DataTypes>
-void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, index_type index)
+void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, Index index)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
@@ -145,11 +145,11 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
         vparams->drawTool()->setPolygonMode(0,false);
 
         // Check topological modifications
-        const std::size_t npoints = mstate->getSize();
+        const auto npoints = mstate->getSize();
 
         std::vector<Vector3> points;
         std::vector<float> radius;
-        for (std::size_t i=0; i<npoints; i++)
+        for (Size i=0; i<npoints; i++)
         {
             TSphere<DataTypes> t(this,i);
             if (t.isActive())
@@ -183,7 +183,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         return ;
 
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const std::size_t npoints = mstate->getSize();
+    const auto npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -199,7 +199,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!empty())
     {
         const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
-        for (std::size_t i=0; i<size; i++)
+        for (Size i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
             const typename TSphere<DataTypes>::Real r = p.r() + distance;
@@ -223,7 +223,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
         return ;
 
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const std::size_t npoints = mstate->getSize();
+    const auto npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -241,7 +241,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
     if (!empty())
     {
         const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
-        for (std::size_t i=0; i<size; i++)
+        for (Size i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
             const Vector3& pt = p.p();
@@ -263,7 +263,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
 }
 
 template <class DataTypes>
-typename SphereCollisionModel<DataTypes>::Real SphereCollisionModel<DataTypes>::getRadius(const index_type i) const
+typename SphereCollisionModel<DataTypes>::Real SphereCollisionModel<DataTypes>::getRadius(const Index i) const
 {
     if(i < this->radius.getValue().size())
         return radius.getValue()[i];
@@ -286,9 +286,9 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
     Real maxBBox[3] = {-max_real,-max_real,-max_real}; //Warning: minimum of float/double is 0, not -inf
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    const std::size_t npoints = mstate->getSize();
+    const auto npoints = mstate->getSize();
 
-    for(std::size_t i = 0 ; i < npoints ; ++i )
+    for(Size i = 0 ; i < npoints ; ++i )
     {
         TSphere<DataTypes> t(this,i);
         const Coord& p = t.p();

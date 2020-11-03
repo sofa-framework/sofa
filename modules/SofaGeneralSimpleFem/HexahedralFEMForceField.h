@@ -83,7 +83,7 @@ public:
     typedef helper::ReadAccessor< DataVecCoord > RDataRefVecCoord;
     typedef helper::WriteAccessor< DataVecDeriv > WDataRefVecDeriv;
 
-    typedef core::topology::BaseMeshTopology::index_type Index;
+    typedef core::topology::BaseMeshTopology::Index Index;
     typedef core::topology::BaseMeshTopology::Hexa Element;
     typedef core::topology::BaseMeshTopology::SeqHexahedra VecElement;
 
@@ -111,8 +111,6 @@ protected:
     typedef std::pair<int,Real> Col_Value;
     typedef helper::vector< Col_Value > CompressedValue;
     typedef helper::vector< CompressedValue > CompressedMatrix;
-
-    using index_type = sofa::defaulttype::index_type;
 
     /// the information stored for each hexahedron
     class HexahedronInformation
@@ -209,8 +207,8 @@ public:
         {
         }
 
-        void applyCreateFunction(index_type, HexahedronInformation &t, const core::topology::BaseMeshTopology::Hexahedron &,
-                const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &);
+        void applyCreateFunction(Index, HexahedronInformation &t, const core::topology::BaseMeshTopology::Hexahedron &,
+                const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &);
     protected:
         HexahedralFEMForceField<DataTypes>* ff;
     };

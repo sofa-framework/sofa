@@ -25,6 +25,8 @@ list(APPEND SOURCE_FILES
     RandomPointDistributionInSurface_test.cpp
     )
 
+find_package(SofaGeneralEngine REQUIRED)
+
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaGeneralEngine)
 

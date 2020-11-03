@@ -61,7 +61,7 @@ SReal norm( const V& v )
 template<class V1, class Scalar, class V2, class V3>
 void axpy( V1& result, Scalar a, const V2& x, const V3& y )
 {
-    std::size_t n = x.size();
+    auto n = x.size();
     assert(n==y.size());
     result.resize(n);
     for(std::size_t i=0; i<n; i++)

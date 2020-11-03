@@ -40,7 +40,6 @@
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 
 using namespace sofa::simulation::tree;
 typedef sofa::component::odesolver::EulerSolver Solver;
@@ -55,7 +54,7 @@ int main(int, char** argv)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
+    
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
     //=========================== Build the scene

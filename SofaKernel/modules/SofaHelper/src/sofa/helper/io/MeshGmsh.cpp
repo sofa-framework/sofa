@@ -278,9 +278,9 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
             {
                 HighOrderEdgePosition hoep;
                 for (j = 0; j<3; ++j) {
-                    size_t v0 = std::min(nodes[edgesInQuadraticTriangle[j][0]],
+                    auto v0 = std::min(nodes[edgesInQuadraticTriangle[j][0]],
                         nodes[edgesInQuadraticTriangle[j][1]]);
-                    size_t v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
+                    auto v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
                         nodes[edgesInQuadraticTriangle[j][1]]);
                     Topology::Edge e(v0, v1);
                     if (edgeSet.find(e) == edgeSet.end()) {
@@ -302,9 +302,9 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
             {
                 HighOrderEdgePosition hoep;
                 for (j = 0; j<6; ++j) {
-                    size_t v0 = std::min(nodes[edgesInQuadraticTetrahedron[j][0]],
+                    auto v0 = std::min(nodes[edgesInQuadraticTetrahedron[j][0]],
                         nodes[edgesInQuadraticTetrahedron[j][1]]);
-                    size_t v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
+                    auto v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
                         nodes[edgesInQuadraticTetrahedron[j][1]]);
                     Topology::Edge e(v0, v1);
                     if (edgeSet.find(e) == edgeSet.end()) {

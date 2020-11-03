@@ -1,6 +1,8 @@
 <!-- Automatic Tetrahedron removing with Tetra2Triangle mapping example: Element removed are define in: ./RemovingTetra2TriangleProcess_performanceTest.txt -->
 <Node name="root" dt="0.01" showBoundingTree="0" gravity="0 0 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name='SofaMiscTopology'/>
+    
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />

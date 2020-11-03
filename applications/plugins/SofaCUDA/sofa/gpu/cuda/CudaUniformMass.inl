@@ -211,7 +211,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,flo
 }
 
 template <>
-SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,float> >::getElementMass(sofa::defaulttype::index_type) const
+SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,float> >::getElementMass(sofa::Index) const
 {
     return (SReal)(d_vertexMass.getValue().mass);
 }
@@ -380,7 +380,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,dou
 }
 
 template <>
-SReal UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,double> >::getElementMass(sofa::defaulttype::index_type) const
+SReal UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,double> >::getElementMass(sofa::Index) const
 {
     return (SReal)(d_vertexMass.getValue().mass);
 }

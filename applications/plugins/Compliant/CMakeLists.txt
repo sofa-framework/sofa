@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(Compliant VERSION 0.1)
 
-find_package(SofaMisc REQUIRED)
+find_package(SofaMiscMapping REQUIRED)
 find_package(SofaMiscCollision REQUIRED)
 find_package(SofaGui QUIET)
 sofa_find_package(SofaPython QUIET)
@@ -260,7 +260,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_${PROJECT_NAME}")
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver SofaUserInteraction SofaMisc SofaSimulationGraph SofaMiscCollision)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver SofaUserInteraction SofaMiscMapping SofaSimulationGraph SofaMiscCollision)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 # linking explicitly with rt looks necessary on some posix (e.g. CentOS)

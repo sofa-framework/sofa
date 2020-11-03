@@ -4,7 +4,8 @@
 @PACKAGE_INIT@
 
 find_package(SofaFramework REQUIRED)
-find_package(SofaMisc REQUIRED)
+find_package(SofaMiscForceField REQUIRED)
+find_package(SofaMiscMapping REQUIRED)
 find_package(SceneCreator REQUIRED)
 
 set(SOFATEST_HAVE_SOFAPYTHON @SofaPython_FOUND@)

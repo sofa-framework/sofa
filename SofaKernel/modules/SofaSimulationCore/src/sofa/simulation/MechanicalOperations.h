@@ -126,7 +126,7 @@ public:
     /// @{
 
     // BaseMatrix & BaseVector Computations
-    void getMatrixDimension(std::size_t* const, std::size_t* const, sofa::core::behavior::MultiMatrixAccessor* matrix = nullptr);
+    void getMatrixDimension(sofa::Size* const, sofa::Size* const, sofa::core::behavior::MultiMatrixAccessor* matrix = nullptr);
     void getMatrixDimension(sofa::core::behavior::MultiMatrixAccessor* matrix)
     {
         getMatrixDimension(nullptr, nullptr, matrix);

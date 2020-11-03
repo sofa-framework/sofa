@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <SofaMiscForceField/MeshMatrixMass.h>
 
-#include <SofaMiscForceField/initMiscForcefield.h>
 using sofa::core::ExecParams ;
 
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -88,7 +87,6 @@ public:
 
     virtual void SetUp()
     {
-        component::initMiscForcefield();
         simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
     }

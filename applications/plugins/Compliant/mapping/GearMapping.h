@@ -74,8 +74,8 @@ namespace mapping
             (void) in;
         }
 
-        typedef defaulttype::Vec<2, unsigned> index_type;
-        typedef defaulttype::Vec<2, index_type> index_pair;
+        typedef defaulttype::Vec<2, unsigned> Index;
+        typedef defaulttype::Vec<2, Index> index_pair;
         typedef helper::vector< index_pair > pairs_type;
 
         Data< pairs_type > d_pairs; ///< index pairs for computing deltas, 4 values per pair (dofindex0,kinematicdofindex0,dofindex1,kinematicdofindex1) 
@@ -106,7 +106,7 @@ namespace mapping
 
                 for(unsigned k = 0, n = p.size(); k < n; ++k) {
 
-                    const index_type& index = p[k][i];
+                    const Index& index = p[k][i];
 
                     unsigned c = index[0] * Nin + index[1];
 

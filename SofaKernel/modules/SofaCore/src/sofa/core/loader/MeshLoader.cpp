@@ -262,10 +262,10 @@ template<class Vec>
 static inline Vec uniqueOrder(Vec v)
 {
     // simple insertion sort
-    for (size_t j = 1; j < v.size(); ++j)
+    for (Size j = 1; j < v.size(); ++j)
     {
         typename Vec::value_type key = v[j];
-        size_t i = j;
+        Size i = j;
         while (i > 0 && v[i - 1] > key)
         {
             v[i] = v[i - 1];
@@ -283,7 +283,7 @@ void MeshLoader::updateElements()
         helper::WriteAccessor<Data<helper::vector< Quad > > > waQuads = d_quads;
         helper::WriteAccessor<Data<helper::vector< Triangle > > > waTriangles = d_triangles;
 
-        for (size_t i = 0; i < waQuads.size() ; i++)
+        for (Size i = 0; i < waQuads.size() ; i++)
         {
             const Quad& q = waQuads[i];
             addTriangle(&waTriangles.wref(), q[0], q[1], q[2]);
@@ -296,12 +296,12 @@ void MeshLoader::updateElements()
         helper::ReadAccessor<Data<helper::vector< Hexahedron > > > hexahedra = this->d_hexahedra;
         helper::WriteAccessor<Data<helper::vector< Quad > > > quads = this->d_quads;
         std::set<Quad > eSet;
-        for (size_t i = 0; i < quads.size(); ++i)
+        for (Size i = 0; i < quads.size(); ++i)
         {
             eSet.insert(uniqueOrder(quads[i]));
         }
         int nbnew = 0;
-        for (size_t i = 0; i < hexahedra.size(); ++i)
+        for (Size i = 0; i < hexahedra.size(); ++i)
         {
             Hexahedron h = hexahedra[i];
             helper::fixed_array< Quad, 6 > e;
@@ -311,7 +311,7 @@ void MeshLoader::updateElements()
             e[3] = Quad(h[1], h[2], h[6], h[5]);
             e[4] = Quad(h[2], h[3], h[7], h[6]);
             e[5] = Quad(h[3], h[0], h[4], h[7]);
-            for (size_t j = 0; j < e.size(); ++j)
+            for (Size j = 0; j < e.size(); ++j)
             {
                 if (eSet.insert(uniqueOrder(e[j])).second) // the element was inserted
                 {
@@ -332,20 +332,20 @@ void MeshLoader::updateElements()
         helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->d_triangles;
 
         std::set<Quad > eSetQuad;
-        for (size_t i = 0; i < quads.size(); ++i)
+        for (Size i = 0; i < quads.size(); ++i)
         {
             eSetQuad.insert(uniqueOrder(quads[i]));
         }
         int nbnewQuad = 0;
 
         std::set<Triangle > eSetTri;
-        for (size_t i = 0; i < triangles.size(); ++i)
+        for (Size i = 0; i < triangles.size(); ++i)
         {
             eSetTri.insert(uniqueOrder(triangles[i]));
         }
         int nbnewTri = 0;
 
-        for (size_t i = 0; i < pentahedra.size(); ++i)
+        for (Size i = 0; i < pentahedra.size(); ++i)
         {
             Pentahedron p = pentahedra[i];
             //vtk ordering http://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf
@@ -395,20 +395,20 @@ void MeshLoader::updateElements()
         helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->d_triangles;
 
         std::set<Quad > eSetQuad;
-        for (size_t i = 0; i < quads.size(); ++i)
+        for (Size i = 0; i < quads.size(); ++i)
         {
             eSetQuad.insert(uniqueOrder(quads[i]));
         }
         int nbnewQuad = 0;
 
         std::set<Triangle > eSetTri;
-        for (size_t i = 0; i < triangles.size(); ++i)
+        for (Size i = 0; i < triangles.size(); ++i)
         {
             eSetTri.insert(uniqueOrder(triangles[i]));
         }
         int nbnewTri = 0;
 
-        for (size_t i = 0; i < pyramids.size(); ++i)
+        for (Size i = 0; i < pyramids.size(); ++i)
         {
             Pyramid p = pyramids[i];
             Quad quad = Quad(p[0], p[3], p[2], p[1]);
@@ -454,12 +454,12 @@ void MeshLoader::updateElements()
         helper::ReadAccessor<Data<helper::vector< Tetrahedron > > > tetrahedra = this->d_tetrahedra;
         helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->d_triangles;
         std::set<Triangle > eSet;
-        for (size_t i = 0; i < triangles.size(); ++i)
+        for (Size i = 0; i < triangles.size(); ++i)
         {
             eSet.insert(uniqueOrder(triangles[i]));
         }
         int nbnew = 0;
-        for (size_t i = 0; i < tetrahedra.size(); ++i)
+        for (Size i = 0; i < tetrahedra.size(); ++i)
         {
             Tetrahedron t = tetrahedra[i];
             Triangle e1(t[0], t[2], t[1]);
@@ -497,15 +497,15 @@ void MeshLoader::updateElements()
         helper::ReadAccessor<Data<helper::vector< Quad > > > quads = this->d_quads;
         helper::WriteAccessor<Data<helper::vector< Edge > > > edges = this->d_edges;
         std::set<Edge > eSet;
-        for (size_t i = 0; i < edges.size(); ++i)
+        for (Size i = 0; i < edges.size(); ++i)
         {
             eSet.insert(uniqueOrder(edges[i]));
         }
         int nbnew = 0;
-        for (size_t i = 0; i < quads.size(); ++i)
+        for (Size i = 0; i < quads.size(); ++i)
         {
             Quad t = quads[i];
-            for (size_t j = 0; j < t.size(); ++j)
+            for (Size j = 0; j < t.size(); ++j)
             {
                 Edge e(t[(j + 1) % t.size()], t[(j + 2) % t.size()]);
                 if (eSet.insert(uniqueOrder(e)).second) // the element was inserted
@@ -525,15 +525,15 @@ void MeshLoader::updateElements()
         helper::ReadAccessor<Data<helper::vector< Triangle > > > triangles = this->d_triangles;
         helper::WriteAccessor<Data<helper::vector< Edge > > > edges = this->d_edges;
         std::set<Edge > eSet;
-        for (size_t i = 0; i < edges.size(); ++i)
+        for (Size i = 0; i < edges.size(); ++i)
         {
             eSet.insert(uniqueOrder(edges[i]));
         }
         int nbnew = 0;
-        for (size_t i = 0; i < triangles.size(); ++i)
+        for (Size i = 0; i < triangles.size(); ++i)
         {
             Triangle t = triangles[i];
-            for (size_t j = 0; j < t.size(); ++j)
+            for (Size j = 0; j < t.size(); ++j)
             {
                 Edge e(t[(j + 1) % t.size()], t[(j + 2) % t.size()]);
                 if (eSet.insert(uniqueOrder(e)).second) // the element was inserted
@@ -557,61 +557,61 @@ void MeshLoader::updatePoints()
         std::set<Topology::ElemID> attachedPoints;
         {
             helper::ReadAccessor<Data< helper::vector< Edge > > > elems = d_edges;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     attachedPoints.insert(elems[i][j]);
                 }
         }
         {
             helper::ReadAccessor<Data< helper::vector< Triangle > > > elems = d_triangles;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     attachedPoints.insert(elems[i][j]);
                 }
         }
         {
             helper::ReadAccessor<Data< helper::vector< Quad > > > elems = d_quads;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     attachedPoints.insert(elems[i][j]);
                 }
         }
         {
             helper::ReadAccessor<Data< helper::vector< Tetrahedron > > > elems = d_tetrahedra;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     attachedPoints.insert(elems[i][j]);
                 }
         }
         {
             helper::ReadAccessor<Data< helper::vector< Pentahedron > > > elems = d_pentahedra;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     attachedPoints.insert(elems[i][j]);
                 }
         }
         {
             helper::ReadAccessor<Data< helper::vector< Pyramid > > > elems = d_pyramids;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     attachedPoints.insert(elems[i][j]);
                 }
         }
         {
             helper::ReadAccessor<Data< helper::vector< Hexahedron > > > elems = d_hexahedra;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     attachedPoints.insert(elems[i][j]);
                 }
         }
-        const size_t newsize = attachedPoints.size();
+        const Size newsize = Size(attachedPoints.size());
         if (newsize == d_positions.getValue().size())
         {
             return;    // all points are attached
@@ -633,56 +633,56 @@ void MeshLoader::updatePoints()
         waPositions.resize(newsize);
         {
             helper::WriteAccessor<Data< helper::vector< Edge > > > elems = d_edges;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     elems[i][j] = old2new[elems[i][j]];
                 }
         }
         {
             helper::WriteAccessor<Data< helper::vector< Triangle > > > elems = d_triangles;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     elems[i][j] = old2new[elems[i][j]];
                 }
         }
         {
             helper::WriteAccessor<Data< helper::vector< Quad > > > elems = d_quads;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     elems[i][j] = old2new[elems[i][j]];
                 }
         }
         {
             helper::WriteAccessor<Data< helper::vector< Tetrahedron > > > elems = d_tetrahedra;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     elems[i][j] = old2new[elems[i][j]];
                 }
         }
         {
             helper::WriteAccessor<Data< helper::vector< Pentahedron > > > elems = d_pentahedra;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     elems[i][j] = old2new[elems[i][j]];
                 }
         }
         {
             helper::WriteAccessor<Data< helper::vector< Pyramid > > > elems = d_pyramids;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     elems[i][j] = old2new[elems[i][j]];
                 }
         }
         {
             helper::WriteAccessor<Data< helper::vector< Hexahedron > > > elems = d_hexahedra;
-            for (size_t i = 0; i < elems.size(); ++i)
-                for (size_t j = 0; j < elems[i].size(); ++j)
+            for (Size i = 0; i < elems.size(); ++i)
+                for (Size j = 0; j < elems[i].size(); ++j)
                 {
                     elems[i][j] = old2new[elems[i][j]];
                 }
@@ -706,7 +706,7 @@ void MeshLoader::updateNormals()
 
     waNormals.resize(raPositions.size());
 
-    for (size_t i = 0; i < raTriangles.size() ; i++)
+    for (Size i = 0; i < raTriangles.size() ; i++)
     {
         const sofa::defaulttype::Vec<3, SReal>  v1 = raPositions[raTriangles[i][0]];
         const sofa::defaulttype::Vec<3, SReal>  v2 = raPositions[raTriangles[i][1]];
@@ -719,7 +719,7 @@ void MeshLoader::updateNormals()
         waNormals[raTriangles[i][2]] += n;
 
     }
-    for (size_t i = 0; i < raQuads.size() ; i++)
+    for (Size i = 0; i < raQuads.size() ; i++)
     {
         const sofa::defaulttype::Vec<3, SReal>& v1 = raPositions[raQuads[i][0]];
         const sofa::defaulttype::Vec<3, SReal>& v2 = raPositions[raQuads[i][1]];
@@ -739,7 +739,7 @@ void MeshLoader::updateNormals()
         waNormals[raQuads[i][3]] += n4;
     }
 
-    for (size_t i = 0; i < waNormals.size(); i++)
+    for (Size i = 0; i < waNormals.size(); i++)
     {
         waNormals[i].normalize();
     }
@@ -754,7 +754,7 @@ void MeshLoader::applyTransformation(Matrix4 const& T)
         return;
     }
     sofa::helper::WriteAccessor <Data< helper::vector<sofa::defaulttype::Vec<3, SReal> > > > my_positions = d_positions;
-    for (size_t i = 0; i < my_positions.size(); i++)
+    for (Size i = 0; i < my_positions.size(); i++)
     {
         my_positions[i] = T.transform(my_positions[i]);
     }
@@ -796,20 +796,6 @@ void MeshLoader::addTriangle(helper::vector<Triangle >* pTriangles, const Triang
     else
     {
         pTriangles->push_back(p);
-    }
-}
-
-void MeshLoader::addTriangle(helper::WriteOnlyAccessor<Data<helper::vector<Triangle>>>& pTriangles, const Triangle& p)
-{
-    if (d_flipNormals.getValue())
-    {
-        Triangle revertP;
-        std::reverse_copy(p.begin(), p.end(), revertP.begin());
-        pTriangles.push_back(revertP);
-    }
-    else
-    {
-        pTriangles.push_back(p);
     }
 }
 

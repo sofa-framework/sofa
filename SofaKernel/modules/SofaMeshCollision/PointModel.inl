@@ -62,7 +62,7 @@ PointCollisionModel<DataTypes>::PointCollisionModel()
 }
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::resize(std::size_t size)
+void PointCollisionModel<DataTypes>::resize(Size size)
 {
     this->core::CollisionModel::resize(size);
 }
@@ -98,7 +98,7 @@ void PointCollisionModel<DataTypes>::init()
 
 
 template<class DataTypes>
-bool PointCollisionModel<DataTypes>::canCollideWithElement(index_type index, CollisionModel* model2, index_type index2)
+bool PointCollisionModel<DataTypes>::canCollideWithElement(Index index, CollisionModel* model2, Index index2)
 {
 
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
@@ -119,7 +119,7 @@ bool PointCollisionModel<DataTypes>::canCollideWithElement(index_type index, Col
         for (unsigned int i1=0; i1<verticesAroundVertex1.size(); i1++)
         {
 
-            index_type v1 = verticesAroundVertex1[i1];
+            Index v1 = verticesAroundVertex1[i1];
 
             for (unsigned int i2=0; i2<verticesAroundVertex2.size(); i2++)
             {
@@ -140,7 +140,7 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const std::size_t npoints = mstate->getSize();
+    const auto npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -157,7 +157,7 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     {
         //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
         const SReal distance = this->proximity.getValue();
-        for (std::size_t i=0; i<size; i++)
+        for (Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
             const defaulttype::Vector3& pt = p.p();
@@ -176,7 +176,7 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const std::size_t npoints = mstate->getSize();
+    const auto npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -195,7 +195,7 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, in
         //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
         //VecDeriv& v = mstate->read(core::ConstVecDerivId::velocity())->getValue();
         const SReal distance = (SReal)this->proximity.getValue();
-        for (std::size_t i=0; i<size; i++)
+        for (Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
             const defaulttype::Vector3& pt = p.p();
@@ -396,7 +396,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
 
     if( !onlyVisible ) return;
 
-    const std::size_t npoints = mstate->getSize();
+    const auto npoints = mstate->getSize();
     if (npoints != size)
         return;
 
@@ -405,7 +405,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    for (std::size_t i=0; i<size; i++)
+    for (Size i=0; i<size; i++)
     {
         Element e(this,i);
         const defaulttype::Vector3& p = e.p();
@@ -423,7 +423,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
 
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams*, index_type index)
+void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams*, Index index)
 {
     SOFA_UNUSED(index);
     //TODO(fred roy 2018-06-21)...please implement.
@@ -439,13 +439,13 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
             vparams->drawTool()->setPolygonMode(0, true);
 
         // Check topological modifications
-        const std::size_t npoints = mstate->getSize();
+        const auto npoints = mstate->getSize();
         if (npoints != size)
             return;
 
         std::vector< defaulttype::Vector3 > pointsP;
         std::vector< defaulttype::Vector3 > pointsL;
-        for (std::size_t i = 0; i < size; i++)
+        for (Size i = 0; i < size; i++)
         {
             TPoint<DataTypes> p(this, i);
             if (p.isActive())
@@ -466,7 +466,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
         {
             std::vector< defaulttype::Vector3 > pointsPFree;
 
-            for (std::size_t i = 0; i < size; i++)
+            for (Size i = 0; i < size; i++)
             {
                 TPoint<DataTypes> p(this, i);
                 if (p.isActive())

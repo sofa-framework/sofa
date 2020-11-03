@@ -35,7 +35,7 @@ namespace topology
 
 ///////////////////// Private functions on TopologySubsetDataHandler changes /////////////////////////////
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::swap( index_type i1, index_type i2 )
+void TopologySubsetDataHandler <TopologyElementType, VecT>::swap( Index i1, Index i2 )
 {
     container_type& data = *(m_topologyData->beginEdit());
 
@@ -47,8 +47,8 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::swap( index_type i1,
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::add(std::size_t nbElements,
-        const sofa::helper::vector<sofa::helper::vector<index_type> > &ancestors,
+void TopologySubsetDataHandler <TopologyElementType, VecT>::add(sofa::Size nbElements,
+        const sofa::helper::vector<sofa::helper::vector<Index> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
     // Using default values
@@ -60,12 +60,12 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(std::size_t nbEl
     {
         if (ancestors.empty() || coefs.empty())
         {
-            const sofa::helper::vector< index_type > empty_vecint;
+            const sofa::helper::vector< Index > empty_vecint;
             const sofa::helper::vector< double > empty_vecdouble;
-            test = this->applyTestCreateFunction(size + i, empty_vecint, empty_vecdouble);
+            test = this->applyTestCreateFunction(Index(size + i), empty_vecint, empty_vecdouble);
         }
         else
-            test = this->applyTestCreateFunction(size + i, ancestors[i], coefs[i]);
+            test = this->applyTestCreateFunction(Index(size + i), ancestors[i], coefs[i]);
 
         if (test)
             data.push_back( size+i );
@@ -75,9 +75,9 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(std::size_t nbEl
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::add(std::size_t nbElements,
+void TopologySubsetDataHandler <TopologyElementType, VecT>::add(sofa::Size nbElements,
         const sofa::helper::vector< TopologyElementType >& ,
-        const sofa::helper::vector<sofa::helper::vector<index_type> > &ancestors,
+        const sofa::helper::vector<sofa::helper::vector<Index> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
     this->add(nbElements, ancestors, coefs);
@@ -85,8 +85,8 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(std::size_t nbEl
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::move( const sofa::helper::vector<index_type> &,
-        const sofa::helper::vector< sofa::helper::vector< index_type > >& ,
+void TopologySubsetDataHandler <TopologyElementType, VecT>::move( const sofa::helper::vector<Index> &,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& ,
         const sofa::helper::vector< sofa::helper::vector< double > >& )
 {
 
@@ -94,7 +94,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::move( const sofa::he
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::helper::vector<index_type> &index )
+void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::helper::vector<Index> &index )
 {
     container_type& data = *(m_topologyData->beginEdit());
     std::size_t it1;
@@ -160,7 +160,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::renumber( const sofa::helper::vector<index_type> &index )
+void TopologySubsetDataHandler <TopologyElementType, VecT>::renumber( const sofa::helper::vector<Index> &index )
 {
     container_type& data = *(m_topologyData->beginEdit());
     container_type copy = m_topologyData->getValue(); // not very efficient memory-wise, but I can see no better solution...
@@ -174,7 +174,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::renumber( const sofa
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<index_type> &,
+void TopologySubsetDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<Index> &,
         const sofa::helper::vector<TopologyElementType> &)
 {
     dmsg_error("TopologySubsetDataHandler") << "addOnMovedPosition event on topology subsetData is not yet handled." ;
@@ -182,7 +182,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::addOnMovedPosition(c
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<index_type> &)
+void TopologySubsetDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<Index> &)
 {
     dmsg_error("TopologySubsetDataHandler") << "removeOnMovedPosition event on topology subsetData is not yet handled" ;
 }

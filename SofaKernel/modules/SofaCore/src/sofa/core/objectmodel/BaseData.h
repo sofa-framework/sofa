@@ -23,8 +23,8 @@
 #define SOFA_CORE_OBJECTMODEL_BASEDATA_H
 
 #include <sofa/core/config.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/DDGNode.h>
-#include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/DataLink.h>
 
 namespace sofa
@@ -65,18 +65,6 @@ public:
 
     /// Default value used for flags.
     enum { FLAG_DEFAULT = FLAG_DISPLAYED | FLAG_PERSISTENT | FLAG_AUTOLINK };
-
-    /// @name Class reflection system
-    /// @{
-    typedef TClass<BaseData> MyClass;
-    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
-    const BaseClass* getClass() const
-    { return GetClass(); }    
-    template<class T>
-    static void dynamicCast(T*& ptr, Base* /*b*/)
-    {
-        ptr = nullptr; // BaseData does not derive from Base
-    }/// @}
 
     /// This internal class is used by the initData() methods to store initialization parameters of a Data
     class BaseInitData

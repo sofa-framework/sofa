@@ -25,7 +25,7 @@ void UniformConstraint<DataTypes>::buildConstraintMatrix(const sofa::core::Const
 {
     SOFA_UNUSED(cParams);
 
-    const std::size_t N = Deriv::size(); // MatrixDeriv is a container of Deriv types.
+    const auto N = Deriv::size(); // MatrixDeriv is a container of Deriv types.
 
     auto& jacobian = sofa::helper::write(c).wref();
     auto  xVec     = sofa::helper::read(x);

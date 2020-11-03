@@ -158,19 +158,19 @@ bool RegularGridTopology_test::regularGridFindPoint()
                 );
     grid->init();
 
-    EXPECT_EQ(grid->findPoint(Coordinates{ .4, .4, .4 }), sofa::defaulttype::InvalidID);
+    EXPECT_EQ(grid->findPoint(Coordinates{ .4, .4, .4 }), sofa::InvalidID);
     // No margin set means anything position rounded to a valid
     // node will be returned
     EXPECT_EQ(grid->findPoint(Coordinates{ .51, .51, .51 }), 0);
-    EXPECT_EQ(grid->findPoint(Coordinates{ .51, .51, .51 }, Epsilon(0.01)), sofa::defaulttype::InvalidID);
+    EXPECT_EQ(grid->findPoint(Coordinates{ .51, .51, .51 }, Epsilon(0.01)), sofa::InvalidID);
     // Margin set means anything within a radius of 0.01*cell_size
     // will be returned
     EXPECT_EQ(grid->findPoint(Coordinates{ 1., 1., 1. }), 0); // First node of the grid
     EXPECT_EQ(grid->findPoint(Coordinates{ 4., 4., 4. }), 63); // Last node of the grid
     EXPECT_EQ(grid->findPoint(Coordinates{ 4.49, 4.49, 4.49 }), 63);
-    EXPECT_EQ(grid->findPoint(Coordinates{ 4.51, 4, 4 }), sofa::defaulttype::InvalidID);
-    EXPECT_EQ(grid->findPoint(Coordinates{ 4., 4.51, 4 }),sofa::defaulttype::InvalidID);
-    EXPECT_EQ(grid->findPoint(Coordinates{ 4., 4, 4.51 }),sofa::defaulttype::InvalidID);
+    EXPECT_EQ(grid->findPoint(Coordinates{ 4.51, 4, 4 }), sofa::InvalidID);
+    EXPECT_EQ(grid->findPoint(Coordinates{ 4., 4.51, 4 }),sofa::InvalidID);
+    EXPECT_EQ(grid->findPoint(Coordinates{ 4., 4, 4.51 }),sofa::InvalidID);
     return true;
 }
 

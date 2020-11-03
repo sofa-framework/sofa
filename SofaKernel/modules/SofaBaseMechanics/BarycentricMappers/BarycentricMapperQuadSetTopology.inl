@@ -48,8 +48,8 @@ BarycentricMapperQuadSetTopology<In,Out>::~BarycentricMapperQuadSetTopology()
 
 
 template <class In, class Out>
-typename BarycentricMapperQuadSetTopology<In, Out>::index_type  
-BarycentricMapperQuadSetTopology<In,Out>::addPointInQuad ( const index_type quadIndex, const SReal* baryCoords )
+typename BarycentricMapperQuadSetTopology<In, Out>::Index  
+BarycentricMapperQuadSetTopology<In,Out>::addPointInQuad ( const Index quadIndex, const SReal* baryCoords )
 {
     helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
     vectorData.resize ( d_map.getValue().size() +1 );
@@ -62,8 +62,8 @@ BarycentricMapperQuadSetTopology<In,Out>::addPointInQuad ( const index_type quad
 }
 
 template <class In, class Out>
-typename BarycentricMapperQuadSetTopology<In, Out>::index_type 
-BarycentricMapperQuadSetTopology<In,Out>::createPointInQuad ( const typename Out::Coord& p, index_type quadIndex, const typename In::VecCoord* points )
+typename BarycentricMapperQuadSetTopology<In, Out>::Index 
+BarycentricMapperQuadSetTopology<In,Out>::createPointInQuad ( const typename Out::Coord& p, Index quadIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[2];
     const Quad& elem = this->m_fromTopology->getQuad ( quadIndex );
@@ -130,7 +130,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::computeDistance(double& d, const 
 }
 
 template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::addPointInElement(const index_type elementIndex, const SReal* baryCoords)
+void BarycentricMapperQuadSetTopology<In,Out>::addPointInElement(const Index elementIndex, const SReal* baryCoords)
 {
     addPointInQuad(elementIndex,baryCoords);
 }

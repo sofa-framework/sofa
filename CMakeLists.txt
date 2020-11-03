@@ -130,9 +130,6 @@ endif()
 
 ### Windows config
 if(MSVC)
-    #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
-    add_definitions(-DBOOST_ALL_DYN_LINK)
-
     # WinDepPack
     set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack")
     if(NOT EXISTS ${SOFA_DEPENDENCY_PACK_DIR})
@@ -237,15 +234,25 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
 endif()
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
+
+# Temporary compatibility while modularizing SofaGeneral
+sofa_add_module(modules/SofaGeneralVisual SofaGeneralVisual ON)
+sofa_add_module(modules/SofaGraphComponent SofaGraphComponent ON)
+sofa_add_module(modules/SofaGeneralMeshCollision SofaGeneralMeshCollision ON)
+sofa_add_module(modules/SofaBoundaryCondition SofaBoundaryCondition ON)
+sofa_add_module(modules/SofaGeneralAnimationLoop SofaGeneralAnimationLoop ON)
+sofa_add_module(modules/SofaGeneralDeformable SofaGeneralDeformable ON)
+sofa_add_module(modules/SofaGeneralEngine SofaGeneralEngine ON)
+sofa_add_module(modules/SofaGeneralExplicitOdeSolver SofaGeneralExplicitOdeSolver ON)
+    
+    
+    
 add_subdirectory(SofaGeneral)
 
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that
 ## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
 add_subdirectory(modules)
-
-# Sofa misc requires some targets defined in modules
-add_subdirectory(SofaMisc)
 
 # This is all the applications GUI stuff. As there is a dependency to this one
 # In scene creator and SofaPython...it is located here.
@@ -261,7 +268,7 @@ endif()
 ## Collections
 ## A collection is a "meta module" and containing several modules (usable at find level [find_package] and include/link level [add_library])
 # SofaAdvanced is legacy and deprecated since 20.06
-set(SOFA_LIST_OF_DEPRECATED_COLLECTIONS SofaAdvanced)
+set(SOFA_LIST_OF_DEPRECATED_COLLECTIONS SofaAdvanced SofaMisc)
 option(SOFA_BUILD_DEPRECATED_COLLECTIONS "Build legacy collections (${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})." ON)
 if(SOFA_BUILD_DEPRECATED_COLLECTIONS)
     foreach(deprecated_collection ${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})

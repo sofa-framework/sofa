@@ -26,7 +26,6 @@
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 #include <SofaSimulationCommon/init.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
@@ -199,7 +198,6 @@ int GUIManager::Init(const char* argv0, const char* name)
         sofa::component::initSofaBase();
         sofa::component::initSofaCommon();
         sofa::component::initSofaGeneral();
-        sofa::component::initSofaMisc();
 
         first = false;
     }

@@ -33,7 +33,6 @@
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -134,7 +133,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         sofa::component::initSofaBase();
         sofa::component::initSofaCommon();
         sofa::component::initSofaGeneral();
-        sofa::component::initSofaMisc();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Parent node
@@ -153,7 +151,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         sofa::component::initSofaBase();
         sofa::component::initSofaCommon();
         sofa::component::initSofaGeneral();
-        sofa::component::initSofaMisc();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene

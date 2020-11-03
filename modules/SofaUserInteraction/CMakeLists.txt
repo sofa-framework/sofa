@@ -66,6 +66,8 @@ list(APPEND SOURCE_FILES
     SuturePointPerformer.cpp
     )
 
+find_package(SofaGeneralVisual REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision SofaGeneralRigid SofaGeneralVisual SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent SofaBaseVisual)
 

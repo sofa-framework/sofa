@@ -5,17 +5,14 @@
 
 set(SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER @SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER@)
 
-find_package(SofaCommon REQUIRED)
-find_package(SofaGeneral REQUIRED)
+find_package(SofaCommon QUIET REQUIRED)
+find_package(SofaGeneral QUIET REQUIRED)
 
 if(SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER)
     find_package(SofaSparseSolver QUIET REQUIRED)
 endif()
 
-### Is the target existing ?
-if(NOT TARGET SofaPreconditioner)
-    ### If not we are building out of tree.
-    include("${CMAKE_CURRENT_LIST_DIR}/SofaPreconditionerTargets.cmake")
+if(NOT TARGET @PROJECT_NAME@)
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 endif()
-
 check_required_components(SofaSparseSolver)

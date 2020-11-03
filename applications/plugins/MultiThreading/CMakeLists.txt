@@ -23,7 +23,7 @@ set(SOURCE_FILES
     src/MultiThreading/MeanComputation.cpp
     )
 
-find_package(SofaMisc REQUIRED)
+find_package(SofaMiscMapping REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping SofaConstraint)

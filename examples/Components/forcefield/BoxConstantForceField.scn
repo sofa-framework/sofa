@@ -1,6 +1,8 @@
 <!-- Mechanical BoxConstantForceField Example -->
 <Node name="root" dt="0.05" gravity="0 0 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="SofaBoundaryCondition"/>
+    
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <Node name="M0">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

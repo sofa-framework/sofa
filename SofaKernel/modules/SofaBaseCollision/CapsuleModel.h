@@ -56,9 +56,7 @@ public:
 
     typedef CapsuleCollisionModel<DataTypes> ParentModel;
 
-    using index_type = sofa::defaulttype::index_type;
-
-    TCapsule(ParentModel* model, index_type index);
+    TCapsule(ParentModel* model, Index index);
 
     explicit TCapsule(const core::CollisionElementIterator& i);
 
@@ -101,11 +99,11 @@ public:
     typedef TCapsule<DataTypes> Element;
     friend class TCapsule<DataTypes>;
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 protected:
     Data<VecReal > _capsule_radii; ///< Radius of each capsule
     Data<Real> _default_radius; ///< The default radius
-    sofa::helper::vector<std::pair<index_type, index_type> > _capsule_points;
+    sofa::helper::vector<std::pair<Index, Index> > _capsule_points;
 
     CapsuleCollisionModel();
     CapsuleCollisionModel(core::behavior::MechanicalState<TDataTypes>* mstate );
@@ -114,45 +112,45 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(std::size_t size) override;
+    void resize(Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
     //virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
 
-    void draw(const core::visual::VisualParams* vparams, index_type index) override;
+    void draw(const core::visual::VisualParams* vparams, Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return _mstate; }
 
-    Real radius(index_type index) const;
+    Real radius(Index index) const;
 
-    inline const Coord & point(index_type i)const;
+    inline const Coord & point(Index i)const;
 
-    const Coord & point1(index_type index)const;
+    const Coord & point1(Index index)const;
 
-    const Coord & point2(index_type index)const;
+    const Coord & point2(Index index)const;
 
     //Returns the point1-point2 normalized vector
-    Coord axis(index_type index)const;
+    Coord axis(Index index)const;
 
-    sofa::defaulttype::Quaternion orientation(index_type index)const;
+    sofa::defaulttype::Quaternion orientation(Index index)const;
 
-    index_type point1Index(index_type index)const;
+    Index point1Index(Index index)const;
 
-    index_type point2Index(index_type index)const;
+    Index point2Index(Index index)const;
 
-    Coord center(index_type index)const;
+    Coord center(Index index)const;
 
-    Real height(index_type index)const;
+    Real height(Index index)const;
 
-    inline std::size_t nbCap()const;
+    inline Size nbCap()const;
 
     Real defaultRadius()const;
 
-    Deriv velocity(index_type index)const;
+    Deriv velocity(Index index)const;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -177,7 +175,7 @@ public:
     /**
       *Returns true if capsules at indexes i1 and i2 share the same vertex.
       */
-    bool shareSameVertex(index_type i1, index_type i2)const;
+    bool shareSameVertex(Index i1, Index i2)const;
 
     Data<VecReal > & writeRadii();
 
@@ -189,7 +187,7 @@ protected:
 };
 
 template<class DataTypes>
-inline TCapsule<DataTypes>::TCapsule(ParentModel* model, index_type index)
+inline TCapsule<DataTypes>::TCapsule(ParentModel* model, Index index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 

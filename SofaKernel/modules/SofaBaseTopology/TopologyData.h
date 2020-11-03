@@ -57,8 +57,8 @@ public:
     typedef VecT container_type;
     typedef typename container_type::value_type value_type;
 
-    /// size_type
-    typedef typename container_type::size_type size_type;
+    /// Size
+    typedef typename container_type::Size Size;
     /// reference to a value (read-write)
     typedef typename container_type::reference reference;
     /// const reference to a value (read only)

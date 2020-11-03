@@ -70,7 +70,7 @@ bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename D
             getVOrientation(d[i]) = x0[i].rotate(q.angularDisplacement(x1[i].getOrientation(), x0[i].getOrientation() ) ); // angularDisplacement compute the rotation vector btw the two quaternions
         }
         else
-            getVOrientation(d[i]) *= 0; 
+            getVOrientation(d[i]) *= 0;
     }
 
     for(size_t i=szmin; i<sz0; ++i) // not sure in what case this is applicable..
@@ -192,16 +192,16 @@ static std::mutex s_mtx;
 
 template <class DataTypes>
 void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv& forces)
-{    
+{
     if (!this->d_activate.getValue())
     {
         return;
     }
     updateStats();
-    
+
     lockForce.lock(); // check if computation has not been locked using setLock method.
     updateConstraintProblem();
-    doComputeForce(state, forces);    
+    doComputeForce(state, forces);
     lockForce.unlock();
 }
 template <class DataTypes>
@@ -295,8 +295,6 @@ void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeri
         // Solving constraints
         cp->solveTimed(cp->tolerance * 0.001, 100, solverTimeout.getValue());	// tol, maxIt, timeout
 
-        s_mtx.unlock();
-
         // Restore Dfree
         for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
         {
@@ -307,6 +305,8 @@ void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeri
                 cp->getDfree()[rowIt.index()] -= computeDot<DataTypes>(colIt.val(), dx[localHapticConstraintAllFrames ? 0 : colIt.index()]);
             }
         }
+
+        s_mtx.unlock();
 
         VecDeriv tempForces;
         tempForces.resize(val.size());
@@ -335,7 +335,7 @@ void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeri
 template <typename DataTypes>
 void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *event)
 {
-    if (sofa::simulation::AnimateEndEvent::checkEventType(event))
+    if (!sofa::simulation::AnimateEndEvent::checkEventType(event))
         return;
 
     if (!constraintSolver)
@@ -345,7 +345,7 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
         return;
 
     component::constraintset::ConstraintProblem* new_cp = constraintSolver->getConstraintProblem();
-    
+
     if (!new_cp)
         return;
 
@@ -356,10 +356,11 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
     unsigned char nbuf_index=mNextBufferId;
 
     if (buf_index == cbuf_index || buf_index == nbuf_index)
+    {
         buf_index++;
-
-    if (buf_index == cbuf_index || buf_index == nbuf_index)
-        buf_index++;
+        if (buf_index == cbuf_index || buf_index == nbuf_index)
+            buf_index++;
+    }
 
     // Compute constraints, id_buf lcp and val for the current lcp.
 
@@ -431,7 +432,7 @@ void SOFA_SOFAHAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::co
         const sofa::defaulttype::SolidTypes<double>::SpatialVector &/*V_tool_world*/,
         sofa::defaulttype::SolidTypes<double>::SpatialVector &W_tool_world );
 
- 
+
 
 
 } // namespace controller

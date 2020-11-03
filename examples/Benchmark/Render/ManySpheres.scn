@@ -1,12 +1,14 @@
 <Node name="root" gravity="0 0 0" dt="0.01" >
-		<VisualStyle name="visualStyle1"  displayFlags="hideVisual 	hideBehaviorModels showCollisionModels" />
-		<BackgroundSetting color="0.5 0.5 0.5" />
+    <RequiredPlugin name="SofaGraphComponent"/>
+    
+	<VisualStyle name="visualStyle1"  displayFlags="hideVisual 	hideBehaviorModels showCollisionModels" />
+	<BackgroundSetting color="0.5 0.5 0.5" />
 
-		<Node name="Example">
-			<RegularGridTopology n="50 50 50"  min="0 0 0" max="10 10 10" />
-            <MechanicalObject name="DOFs" template="Vec3d" />
-            <SphereCollisionModel radius="0.1" />
-        </Node >
+	<Node name="Example">
+		<RegularGridTopology n="50 50 50"  min="0 0 0" max="10 10 10" />
+        <MechanicalObject name="DOFs" template="Vec3d" />
+        <SphereCollisionModel radius="0.1" />
+    </Node >
 		
 </Node>
 

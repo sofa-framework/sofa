@@ -7,18 +7,32 @@
 [Full log](https://github.com/sofa-framework/sofa/compare/v20.06...HEAD)
 
 
+### Breaking
+
+- Ongoing [SOFA-NG project](https://github.com/sofa-framework/sofa/issues/1527) generate several breaking changes due to modularization. It currently targets SOFA packages (SofaMisc, [SofaGeneral](https://github.com/sofa-framework/sofa/issues/1529) and soon SofaCommon), as well as SofaKernel (SofaBase\*, SofaCore, SofaHelper, SofaSimulation). Follow the [progress of the project online](https://github.com/sofa-framework/sofa/projects/9#card-47075575).
+  - [Modularization] SofaMisc* (Revival) [#1520](https://github.com/sofa-framework/sofa/pull/1520)
+- Ongoing [Uniform type for indices and sizes](https://github.com/sofa-framework/sofa/issues/1539). Following PR have been performed and update the *size_type* and *index_type* in SOFA:
+  - [All] Uniform size type [#1515](https://github.com/sofa-framework/sofa/pull/1515)
+  - [All] Change index_type from size_t to uint [#1514](https://github.com/sofa-framework/sofa/pull/1514)
+  - [All] Standardize index type for Vector/Matrix templates [#1453](https://github.com/sofa-framework/sofa/pull/1453)
+- Ongoing [cleaning of the Link implementation](https://github.com/sofa-framework/sofa/issues/1526)
+  - [SofaKernel] Refactor BaseData to use DataLink [#1491](https://github.com/sofa-framework/sofa/pull/1491)
+  - remove traits code from Link.h and BaseLink.h [#1503](https://github.com/sofa-framework/sofa/pull/1503)
+  - remove reflection code in BaseData [#1541](https://github.com/sofa-framework/sofa/pull/1541)
+
+- [SofaKernel] FIX & CLEANUP BoxROI [#1482](https://github.com/sofa-framework/sofa/pull/1482), breaking because of the removal of aliases & deprecated datafields
+- [SofaMacros] Refactor for better target and package management [#1433](https://github.com/sofa-framework/sofa/pull/1433): the *sofa_create_package_with_targets* replaces the legacy *sofa_add_targets_to_package* in CMakeLists.txt of plugins
+- [SofaKernel][SofaCore][SofaLoader][SofaGeneralLoader] SOFA with callbacks [#1408](https://github.com/sofa-framework/sofa/pull/1408): this PR might break component updates / internal update process, it also removed *isPersistent* flag from datafields in MeshLoaders (based on [#1407](https://github.com/sofa-framework/sofa/pull/1407) and [#1406](https://github.com/sofa-framework/sofa/pull/1406))
+- [SofaGeneralEngine] Refresh MeshBarycentricMapperEngine [#1404](https://github.com/sofa-framework/sofa/pull/1404), breaking because of the change in the fields name (following the naming convention d\_\* ), but this engine is not used anywhere
+- [plugins] Remove plugins to be deleted [#1439](https://github.com/sofa-framework/sofa/pull/1439)
+
+
+
 ### Deprecated
 
 
 
-
-### Breaking
-
-
-
-
 ### Improvements
-
 
 
 

@@ -35,7 +35,7 @@ void ReplaceSubstring(std::basic_string<charType>& subject,
     const std::basic_string<charType>& replace)
 {
     if (search.empty()) { return; }
-    typename std::basic_string<charType>::size_type pos = 0;
+    typename std::basic_string<charType>::Size pos = 0;
     while((pos = subject.find(search, pos)) != std::basic_string<charType>::npos) {
          subject.replace(pos, search.length(), replace);
          pos += replace.length();

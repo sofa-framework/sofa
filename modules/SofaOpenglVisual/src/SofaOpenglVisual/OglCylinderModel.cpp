@@ -160,7 +160,7 @@ void OglCylinderModel::setColor(std::string color)
     setColor(r,g,b,a);
 }
 
-void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, index_type& vindex, index_type& /*nindex*/, index_type& /*tindex*/, int& /*count*/)
+void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, Index& vindex, Index& /*nindex*/, Index& /*tindex*/, int& /*count*/)
 {
     const VecCoord& x = this->read( core::ConstVecCoordId::position() )->getValue();
     const SeqEdges& edges = d_edges.getValue();

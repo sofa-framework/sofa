@@ -68,9 +68,9 @@ public:
 
 
     // compatibility with baseMatrix
-    std::size_t rowSize(); /// provides the number of rows of the Graph Scattered Matrix
+    sofa::Size rowSize(); /// provides the number of rows of the Graph Scattered Matrix
 
-    std::size_t colSize();  /// provides the number of columns of the Graph Scattered Matrix
+    sofa::Size colSize();  /// provides the number of columns of the Graph Scattered Matrix
 
     static const char* Name() { return "GraphScattered"; }
 };

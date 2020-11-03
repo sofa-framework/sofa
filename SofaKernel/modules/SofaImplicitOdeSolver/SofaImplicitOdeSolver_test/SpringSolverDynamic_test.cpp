@@ -137,11 +137,4 @@ TYPED_TEST( SpringSolverDynamic_test , EulerImplicitSolverDynamicTest )
    ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(0.01));
 }
 
-// Test case NewmarkImplicit Solver
-TYPED_TEST( SpringSolverDynamic_test , NewmarkImplicitSolverDynamicTest )
-{
-   this->loadScene("NewmarkSpringDynamicTest.xml");
-   ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(0.004));
-}
-
 } // namespace sofa

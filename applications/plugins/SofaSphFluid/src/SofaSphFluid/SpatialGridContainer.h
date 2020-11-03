@@ -134,7 +134,7 @@ public:
     typedef typename DataTypes::GridData GridData;
     //typedef typename DataTypes::NeighborListener NeighborListener;
     typedef typename DataTypes::ParticleField ParticleField;
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
 public:
     SpatialGrid(Real cellWidth);
@@ -165,7 +165,7 @@ public:
     /// Change particles ordering inside a given cell have contiguous indices
     ///
     /// Fill the old2new and new2old arrays giving the permutation to apply
-    void reorderIndices(helper::vector<index_type>* old2new, helper::vector<index_type>* new2old);
+    void reorderIndices(helper::vector<Index>* old2new, helper::vector<Index>* new2old);
 
     enum { GRIDDIM_LOG2 = DataTypes::GRIDDIM_LOG2, GRIDDIM = 1<<GRIDDIM_LOG2 };
     enum { NCELL = GRIDDIM*GRIDDIM*GRIDDIM };
@@ -316,7 +316,7 @@ public:
     typedef SpatialGridTypes<DataTypes> GridTypes;
     typedef SpatialGrid< GridTypes > Grid;
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
     Grid* grid;
     Data<Real> d_cellWidth; ///< Width each cell in the grid. If it is used to compute neighboors, it should be greater that the max radius considered.

@@ -48,7 +48,7 @@ PointInfo::PointInfo(LocalMinDistanceFilter *lmdFilters)
 {
 }
 
-void PointInfo::buildFilter(index_type p_index)
+void PointInfo::buildFilter(Index p_index)
 {
     using sofa::simulation::Node;
     using sofa::helper::vector;
@@ -159,7 +159,7 @@ void PointInfo::buildFilter(index_type p_index)
 
 
 
-bool PointInfo::validate(const index_type p, const defaulttype::Vector3 &PQ)
+bool PointInfo::validate(const Index p, const defaulttype::Vector3 &PQ)
 {
 
     bool debug=false;
@@ -264,7 +264,7 @@ void PointLocalMinDistanceFilter::handleTopologyChange()
 
 
 
-void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(index_type /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector<index_type> &, const sofa::helper::vector< double >&)
+void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(Index /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector<Index> &, const sofa::helper::vector< double >&)
 {
     const PointLocalMinDistanceFilter *pLMDFilter = this->f;
     pInfo.setLMDFilters(pLMDFilter);

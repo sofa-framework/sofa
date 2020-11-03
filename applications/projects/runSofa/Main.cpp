@@ -51,7 +51,6 @@ using sofa::simulation::scenechecking::SceneCheckerListener;
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 
 #include <SofaGeneralLoader/ReadState.h>
 #include <sofa/helper/Factory.h>
@@ -358,7 +357,6 @@ int main(int argc, char** argv)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
 
 #ifdef SOFA_HAVE_DAG
     if (simulationType == "tree")

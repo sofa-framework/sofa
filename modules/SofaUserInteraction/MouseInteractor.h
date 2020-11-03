@@ -47,7 +47,7 @@ struct BodyPicked
     BodyPicked():body(nullptr), mstate(nullptr), dist(0) {}
     sofa::core::CollisionModel *body;
     sofa::core::behavior::BaseMechanicalState *mstate;
-    sofa::defaulttype::index_type indexCollisionElement;
+    sofa::Index indexCollisionElement;
     defaulttype::Vector3 point;
     SReal dist;
     SReal rayLength;

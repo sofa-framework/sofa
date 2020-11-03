@@ -126,7 +126,7 @@ void Quad2TriangleTopologicalMapping::init()
 
 
     const sofa::helper::vector<core::topology::BaseMeshTopology::Quad> &quadArray=fromModel->getQuads();
-    sofa::helper::vector <index_type>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
     Loc2GlobVec.clear();
     In2OutMap.clear();
@@ -176,9 +176,9 @@ void Quad2TriangleTopologicalMapping::init()
 
         Loc2GlobVec.push_back(i);
         Loc2GlobVec.push_back(i);
-        sofa::helper::vector<index_type> out_info;
-        out_info.push_back((index_type)Loc2GlobVec.size()-2);
-        out_info.push_back((index_type)Loc2GlobVec.size()-1);
+        sofa::helper::vector<Index> out_info;
+        out_info.push_back((Index)Loc2GlobVec.size()-2);
+        out_info.push_back((Index)Loc2GlobVec.size()-1);
         In2OutMap[i]=out_info;
     }
 
@@ -191,7 +191,7 @@ void Quad2TriangleTopologicalMapping::init()
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-index_type Quad2TriangleTopologicalMapping::getFromIndex(index_type ind)
+Index Quad2TriangleTopologicalMapping::getFromIndex(Index ind)
 {
     return ind; // identity
 }
@@ -210,7 +210,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     auto itBegin=fromModel->beginChange();
     auto itEnd=fromModel->endChange();
 
-    sofa::helper::vector <index_type>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    sofa::helper::vector <Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
     while( itBegin != itEnd )
     {
@@ -236,7 +236,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             const Topology::SetIndices & tab = ( static_cast< const QuadsAdded *>( *itBegin ) )->getArray();
 
             sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
-            sofa::helper::vector< index_type > trianglesIndexList;
+            sofa::helper::vector< Index > trianglesIndexList;
             auto nb_elems = toModel->getNbTriangles();
 
             for (unsigned int i = 0; i < tab.size(); ++i)
@@ -258,9 +258,9 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 Loc2GlobVec.push_back(k);
                 Loc2GlobVec.push_back(k);
-                sofa::helper::vector<index_type> out_info;
-                out_info.push_back((index_type)Loc2GlobVec.size()-2);
-                out_info.push_back((index_type)Loc2GlobVec.size()-1);
+                sofa::helper::vector<Index> out_info;
+                out_info.push_back((Index)Loc2GlobVec.size()-2);
+                out_info.push_back((Index)Loc2GlobVec.size()-1);
                 In2OutMap[k]=out_info;
 
             }
@@ -278,13 +278,13 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
             int ind_tmp;
 
-            sofa::helper::vector<index_type> ind_real_last;
+            sofa::helper::vector<Index> ind_real_last;
             auto ind_last = toModel->getNbTriangles();
 
             for (unsigned int i = 0; i < tab.size(); ++i)
             {
                 unsigned int k = tab[i];
-                sofa::helper::vector<index_type> ind_k;
+                sofa::helper::vector<Index> ind_k;
 
                 auto iter_1 = In2OutMap.find(k);
                 if(iter_1 != In2OutMap.end())
@@ -333,7 +333,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                         In2OutMap.erase(In2OutMap.find(Loc2GlobVec[ind_last]));
                         In2OutMap[Loc2GlobVec[ind_last]] = ind_k;
 
-                        sofa::helper::vector<index_type> out_info;
+                        sofa::helper::vector<Index> out_info;
                         out_info.push_back(ind_last);
                         out_info.push_back(ind_last-1);
 
@@ -361,7 +361,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                     Loc2GlobVec.resize( Loc2GlobVec.size() - 2 );
 
-                    sofa::helper::vector< index_type > triangles_to_remove;
+                    sofa::helper::vector< Index > triangles_to_remove;
                     triangles_to_remove.push_back(t1);
                     triangles_to_remove.push_back(t2);
 
@@ -383,14 +383,14 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         {
             const Topology::SetIndices & tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-            sofa::helper::vector<index_type> indices;
+            sofa::helper::vector<Index> indices;
 
             for(unsigned int i = 0; i < tab.size(); ++i)
             {
                 indices.push_back(tab[i]);
             }
 
-            sofa::helper::vector<index_type>& tab_indices = indices;
+            sofa::helper::vector<Index>& tab_indices = indices;
 
             to_tstm->removePointsWarning(tab_indices, false);
             to_tstm->propagateTopologicalChanges();
@@ -405,8 +405,8 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
             const Topology::SetIndices & tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
             const Topology::SetIndices & inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
-            sofa::helper::vector<index_type> indices;
-            sofa::helper::vector<index_type> inv_indices;
+            sofa::helper::vector<Index> indices;
+            sofa::helper::vector<Index> inv_indices;
 
             for(unsigned int i = 0; i < tab.size(); ++i)
             {

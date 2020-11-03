@@ -29,12 +29,11 @@ set(SOURCE_FILES
     initSimpleGUI.cpp
 )
 
-
-find_package(SofaMisc REQUIRED)
+find_package(SofaGeneral REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationGraph SofaBase SofaCommon SofaGeneral SofaMisc)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationGraph SofaBase SofaCommon SofaGeneral)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFASIMPLEGUI_VERSION})

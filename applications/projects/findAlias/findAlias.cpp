@@ -24,7 +24,6 @@
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace;
@@ -44,7 +43,6 @@ int main(int /*argc*/, char** /*argv*/)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
 
     std::cout << "Before" << std::endl ;
     std::vector<ObjectFactory::ClassEntry::SPtr> result;

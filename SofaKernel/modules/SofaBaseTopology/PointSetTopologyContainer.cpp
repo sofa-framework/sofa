@@ -61,17 +61,17 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
         .add< PointSetTopologyContainer >()
         ;
 
-PointSetTopologyContainer::PointSetTopologyContainer( std::size_t npoints)
+PointSetTopologyContainer::PointSetTopologyContainer(Size npoints)
     : d_initPoints (initData(&d_initPoints, "position", "Initial position of points",true,true))
     , d_checkTopology (initData(&d_checkTopology, false, "checkTopology", "Parameter to activate internal topology checks (might slow down the simulation)"))
     , m_pointTopologyDirty(false)
-    , nbPoints (initData(&nbPoints, std::size_t(npoints), "nbPoints", "Number of points"))
+    , nbPoints (initData(&nbPoints, npoints, "nbPoints", "Number of points"))
     , points(initData(&points, "points","List of point indices"))
 {
     addAlias(&d_initPoints,"points");
 }
 
-void PointSetTopologyContainer::setNbPoints(std::size_t n)
+void PointSetTopologyContainer::setNbPoints(Size n)
 {
 
     int diffSize = n - nbPoints.getValue();
@@ -87,7 +87,7 @@ void PointSetTopologyContainer::setNbPoints(std::size_t n)
     nbPoints.setValue(n);  
 }
 
-size_t PointSetTopologyContainer::getNumberOfElements() const
+Size PointSetTopologyContainer::getNumberOfElements() const
 {
     return nbPoints.getValue();
 }
@@ -126,7 +126,7 @@ bool PointSetTopologyContainer::hasPos() const
     return !initPoints.empty();
 }
 
-SReal PointSetTopologyContainer::getPX(index_type i) const
+SReal PointSetTopologyContainer::getPX(Index i) const
 {
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
@@ -135,7 +135,7 @@ SReal PointSetTopologyContainer::getPX(index_type i) const
         return 0.0;
 }
 
-SReal PointSetTopologyContainer::getPY(index_type i) const
+SReal PointSetTopologyContainer::getPY(Index i) const
 {
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
@@ -144,7 +144,7 @@ SReal PointSetTopologyContainer::getPY(index_type i) const
         return 0.0;
 }
 
-SReal PointSetTopologyContainer::getPZ(index_type i) const
+SReal PointSetTopologyContainer::getPZ(Index i) const
 {
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
@@ -165,13 +165,13 @@ void PointSetTopologyContainer::init()
 
 }
 
-void PointSetTopologyContainer::addPoints(const std::size_t nPoints)
+void PointSetTopologyContainer::addPoints(const Size nPoints)
 {
     //nbPoints.setValue( nbPoints.getValue() + nPoints);
     setNbPoints( nbPoints.getValue() + nPoints );
 }
 
-void PointSetTopologyContainer::removePoints(const std::size_t nPoints)
+void PointSetTopologyContainer::removePoints(const Size nPoints)
 {
     //nbPoints.setValue(nbPoints.getValue() - nPoints);
     setNbPoints( nbPoints.getValue() - nPoints );

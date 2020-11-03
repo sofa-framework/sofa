@@ -179,24 +179,24 @@ protected:
 
 
 
-template<class Real1, class Real2,  size_t Dim1, size_t Dim2>
+template<class Real1, class Real2,  Size Dim1, Size Dim2>
 inline Mat<Dim1, Dim2, Real2> covMN(const Vec<Dim1,Real1>& v1, const Vec<Dim2,Real2>& v2)
 {
     Mat<Dim1, Dim2, Real2> res;
-    for (size_t i = 0; i < Dim1; ++i)
-        for ( size_t j = 0; j < Dim2; ++j)
+    for (Size i = 0; i < Dim1; ++i)
+        for ( Size j = 0; j < Dim2; ++j)
         {
             res[i][j] = (Real2)v1[i] * v2[j];
         }
     return res;
 }
 
-template<class Real,  size_t Dim>
+template<class Real,  Size Dim>
 inline MatSym<Dim, Real> covN(const Vec<Dim,Real>& v)
 {
     MatSym<Dim, Real> res;
-    for (size_t i = 0; i < Dim; ++i)
-        for (size_t j = i; j < Dim; ++j)
+    for (Size i = 0; i < Dim; ++i)
+        for (Size j = i; j < Dim; ++j)
         {
             res(i,j) = v[i] * v[j];
         }

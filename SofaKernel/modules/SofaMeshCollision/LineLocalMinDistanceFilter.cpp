@@ -48,7 +48,7 @@ LineInfo::LineInfo(LocalMinDistanceFilter *lmdFilters)
 {
 }
 
-void LineInfo::buildFilter(index_type edge_index)
+void LineInfo::buildFilter(Index edge_index)
 {
     using sofa::helper::vector;
     using sofa::core::topology::BaseMeshTopology;
@@ -143,7 +143,7 @@ void LineInfo::buildFilter(index_type edge_index)
     setValid();
 }
 
-bool LineInfo::validate(const index_type edge_index, const defaulttype::Vector3& PQ)
+bool LineInfo::validate(const Index edge_index, const defaulttype::Vector3& PQ)
 {
     bool debug=false;
 
@@ -236,7 +236,7 @@ void LineLocalMinDistanceFilter::init()
 
 
 
-void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(index_type /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector<index_type> &, const sofa::helper::vector< double >&)
+void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(Index /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector<Index> &, const sofa::helper::vector< double >&)
 {
     const LineLocalMinDistanceFilter *lLMDFilter = this->f;
     pInfo.setLMDFilters(lLMDFilter);
@@ -253,7 +253,7 @@ void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(index_typ
 
 
 
-void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(index_type /*edgeIndex*/, LineInfo &lInfo, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector<index_type> &, const sofa::helper::vector< double >&)
+void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(Index /*edgeIndex*/, LineInfo &lInfo, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector<Index> &, const sofa::helper::vector< double >&)
 {
     const LineLocalMinDistanceFilter *lLMDFilter = this->f;
     lInfo.setLMDFilters(lLMDFilter);

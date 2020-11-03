@@ -26,6 +26,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/DataTracker.h>
+#include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <list>

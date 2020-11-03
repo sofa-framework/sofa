@@ -57,7 +57,7 @@ public:
     typedef typename MatrixType::Index MatrixTypeIndex;
     typedef typename Inherit1::ForceMask ForceMask;
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
     enum { NIn = Inherit1::NIn };
     enum { NOut = Inherit1::NOut };
@@ -69,7 +69,7 @@ public:
     virtual bool isEmpty() {return this->m_map.size() == 0;}
     virtual void setTopology(topology::RegularGridTopology* _topology) {this->m_fromTopology = _topology;}
     RegularGridTopology *getTopology() {return dynamic_cast<topology::RegularGridTopology *>(this->m_fromTopology);}
-    index_type addPointInCube(const index_type cubeIndex, const SReal* baryCoords) override;
+    Index addPointInCube(const Index cubeIndex, const SReal* baryCoords) override;
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;

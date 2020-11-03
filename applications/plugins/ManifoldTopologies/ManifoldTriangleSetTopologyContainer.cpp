@@ -954,7 +954,7 @@ int ManifoldTriangleSetTopologyContainer::getEdgeTriangleOrientation(const Trian
     return 0;
 }
 
-sofa::helper::vector< TriangleID > &ManifoldTriangleSetTopologyContainer::getTrianglesAroundEdgeForModification(const index_type i)
+sofa::helper::vector< TriangleID > &ManifoldTriangleSetTopologyContainer::getTrianglesAroundEdgeForModification(const Index i)
 {
 
     if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
@@ -972,7 +972,7 @@ sofa::helper::vector< TriangleID > &ManifoldTriangleSetTopologyContainer::getTri
 
 
 
-sofa::helper::vector< TriangleID > &ManifoldTriangleSetTopologyContainer::getTrianglesAroundVertexForModification(const index_type i)
+sofa::helper::vector< TriangleID > &ManifoldTriangleSetTopologyContainer::getTrianglesAroundVertexForModification(const Index i)
 {
 
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
@@ -990,7 +990,7 @@ sofa::helper::vector< TriangleID > &ManifoldTriangleSetTopologyContainer::getTri
 
 
 
-sofa::helper::vector< EdgeID > &ManifoldTriangleSetTopologyContainer::getEdgesAroundVertexForModification(const index_type i)
+sofa::helper::vector< EdgeID > &ManifoldTriangleSetTopologyContainer::getEdgesAroundVertexForModification(const Index i)
 {
 
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists

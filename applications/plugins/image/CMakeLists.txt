@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(image VERSION 0.1)
 
 find_package(SofaBase REQUIRED)
-find_package(SofaGeneral REQUIRED)
+find_package(SofaGeneralVisual REQUIRED)
 
 sofa_find_package(OpenGL QUIET)
 sofa_find_package(SofaGui QUIET)

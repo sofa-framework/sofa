@@ -37,7 +37,6 @@
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 
 #include <SofaBaseCollision/MinProximityIntersection.h>
 #include <SofaConstraint/LMConstraintSolver.h>
@@ -191,7 +190,6 @@ int main(int argc, char** argv)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
     sofa::gui::initMain();
 
     unsigned int sizeHouseOfCards=4;

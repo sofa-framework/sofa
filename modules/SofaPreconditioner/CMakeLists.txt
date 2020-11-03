@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaPreconditioner VERSION 1.0)
+project(SofaPreconditioner)
 
 # Dependencies
 find_package(SofaCommon REQUIRED) # SofaImplicitOdeSolver SofaSimpleFem
@@ -47,7 +47,7 @@ endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME SofaPreconditioner
-    PACKAGE_VERSION ${PROJECT_VERSION}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS SofaPreconditioner AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaPreconditioner"

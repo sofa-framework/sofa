@@ -87,7 +87,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
                         iter != m_invalidIndex.cend(); ++iter )
                 {
                     const int j = *iter;
-                    if ( mapData[j].in_index == InvalidID ) // compute new mapping
+                    if ( mapData[j].in_index == sofa::InvalidID ) // compute new mapping
                     {
                         Vector3 coefs;
                         defaulttype::Vec3Types::Coord pos;
@@ -153,7 +153,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
                         defaulttype::Vec3Types::Coord restPos = m_fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
 
                         helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
-                        vectorData[j].in_index = InvalidID;
+                        vectorData[j].in_index = sofa::InvalidID;
                         vectorData[j].baryCoords[0] = restPos[0];
                         vectorData[j].baryCoords[1] = restPos[1];
                         vectorData[j].baryCoords[2] = restPos[2];

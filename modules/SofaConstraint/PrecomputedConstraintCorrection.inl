@@ -1182,7 +1182,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
 template<class DataTypes>
 bool PrecomputedConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 {
-    return ((std::size_t)index) < id_to_localIndex.size() && id_to_localIndex[index] >= 0;
+    return ((Size)index) < id_to_localIndex.size() && id_to_localIndex[index] >= 0;
 }
 
 
