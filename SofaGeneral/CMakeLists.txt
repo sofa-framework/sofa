@@ -15,7 +15,6 @@ set(SOFAGENERAL_TARGETS
     SofaGeneralSimpleFem
     SofaGeneralTopology
     SofaConstraint
-    SofaGeneralEngine
     SofaTopologyMapping
     SofaUserInteraction
 )
@@ -32,6 +31,7 @@ set(SOFAGENERAL_MODULES
     SofaGraphComponent
     SofaGeneralAnimationLoop
     SofaGeneralDeformable
+    SofaGeneralEngine
 )
 foreach(MODULE ${SOFAGENERAL_MODULES})
     find_package(${MODULE} REQUIRED)
