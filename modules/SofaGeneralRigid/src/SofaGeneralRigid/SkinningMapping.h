@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_H
-#define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralRigid/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -32,13 +31,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
@@ -132,16 +125,10 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
-extern template class SOFA_GENERAL_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_SOFAGENERALRIGID_API SkinningMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3dTypes >;
 
 #endif // !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 
 
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::mapping

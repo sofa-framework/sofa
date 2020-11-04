@@ -19,36 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_CPP
-#include <SofaGeneralRigid/LaparoscopicRigidMapping.inl>
+#define SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP
+#include <SofaGeneralRigid/LineSetSkinningMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
-
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
 
 // Register in the Factory
-int LaparoscopicRigidMappingClass = core::RegisterObject("TODO-LaparoscopicRigidMappingClass")
-        .add< LaparoscopicRigidMapping< LaparoscopicRigidTypes, RigidTypes > >()
+int HandMappingClass = core::RegisterObject("skin a model from a set of rigid lines")
+        .add< LineSetSkinningMapping< Rigid3Types, Vec3Types > >()
+
+
         ;
 
-template class SOFA_GENERAL_RIGID_API LaparoscopicRigidMapping< LaparoscopicRigidTypes, RigidTypes >;
 
-} // namespace mapping
+template class SOFA_SOFAGENERALRIGID_API LineSetSkinningMapping< Rigid3Types, Vec3Types >;
 
-} // namespace component
 
-} // namespace sofa
 
+
+} //namespace sofa::component::mapping

@@ -332,6 +332,14 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "CholeskySolver", Pluginized("v20.12", "SofaGeneralLinearSolver") },
     { "MinResLinearSolver", Pluginized("v20.12", "SofaGeneralLinearSolver") },
 
+    // SofaGeneralRigid was pluginized in #1579
+    { "ArticulatedHierarchyContainer", Pluginized("v20.12", "SofaGeneralRigid") },
+    { "ArticulationCenter", Pluginized("v20.12", "SofaGeneralRigid") },
+    { "Articulation", Pluginized("v20.12", "SofaGeneralRigid") },
+    { "ArticulatedSystemMapping", Pluginized("v20.12", "SofaGeneralRigid") },
+    { "LineSetSkinningMapping", Pluginized("v20.12", "SofaGeneralRigid") },
+    { "SkinningMapping", Pluginized("v20.12", "SofaGeneralRigid") },
+
     /***********************/
     // REMOVED SINCE v20.06
 

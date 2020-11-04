@@ -19,36 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP
 
-#include <SofaGeneralRigid/ArticulatedHierarchyContainer.inl>
+#include <SofaGeneralRigid/ArticulatedSystemMapping.inl>
+
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::mapping
 {
 
-namespace component
-{
-
-namespace container
-{
+using namespace sofa::defaulttype;
 
 // Register in the Factory
-int ArticulatedHierarchyContainerClass = core::RegisterObject("This class allow to store and retrieve all the articulation centers from an articulated rigid object")
-        .add< ArticulatedHierarchyContainer >()
-        ;
+int ArticulatedSystemMappingClass = core::RegisterObject("Mapping between a set of 6D DOF's and a set of angles (µ) using an articulated hierarchy container. ")
+        .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types > >();
 
-// Register in the Factory
-int ArticulationCenterClass = core::RegisterObject("This class defines an articulation center. This contains a set of articulations.")
-        .add< ArticulationCenter >()
-        ;
+template class SOFA_SOFAGENERALRIGID_API ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types >;
 
-// Register in the Factory
-int ArticulationClass = core::RegisterObject("This class defines an articulation by an axis, an orientation and an index.")
-        .add< Articulation >()
-        ;
 
-} // namespace container
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::mapping

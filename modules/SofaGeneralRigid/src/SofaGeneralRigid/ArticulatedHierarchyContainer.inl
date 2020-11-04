@@ -20,21 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_CONTAINER_ARTICULATEDHIERARCHYCONTAINER_INL
-#define SOFA_COMPONENT_CONTAINER_ARTICULATEDHIERARCHYCONTAINER_INL
-
+#pragma once
 #include <SofaGeneralRigid/ArticulatedHierarchyContainer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 
 Articulation::Articulation():
@@ -264,12 +256,4 @@ void ArticulatedHierarchyContainer::init ()
 }
 
 
-
-
-} // namespace container
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::container

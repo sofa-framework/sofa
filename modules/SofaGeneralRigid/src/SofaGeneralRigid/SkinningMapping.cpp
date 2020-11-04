@@ -19,37 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP
-#include <SofaGeneralRigid/LineSetSkinningMapping.inl>
+#define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP
 
+#include <SofaGeneralRigid/SkinningMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::mapping
 {
 
-namespace component
-{
+using namespace defaulttype;
+using namespace core;
 
-namespace mapping
-{
-
-using namespace sofa::defaulttype;
 
 // Register in the Factory
-int HandMappingClass = core::RegisterObject("skin a model from a set of rigid lines")
-        .add< LineSetSkinningMapping< Rigid3Types, Vec3Types > >()
+int SkinningMappingClass = core::RegisterObject("skin a model from a set of rigid dofs")
+
+// Rigid Types
+        .add< SkinningMapping< Rigid3Types, Vec3dTypes > >()
+
 
 
         ;
 
-
-template class SOFA_GENERAL_RIGID_API LineSetSkinningMapping< Rigid3Types, Vec3Types >;
-
+template class SOFA_SOFAGENERALRIGID_API SkinningMapping< Rigid3Types, Vec3dTypes >;
 
 
 
-} // namespace mapping
 
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::mapping

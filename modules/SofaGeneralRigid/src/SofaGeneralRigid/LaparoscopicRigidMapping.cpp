@@ -19,16 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGENERALRIGID_CONFIG_H
-#define SOFAGENERALRIGID_CONFIG_H
+#define SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_CPP
+#include <SofaGeneralRigid/LaparoscopicRigidMapping.inl>
 
-#include <SofaGeneral/config.h>
+#include <sofa/core/ObjectFactory.h>
 
-#ifdef SOFA_BUILD_GENERAL_RIGID
-#  define SOFA_TARGET SofaGeneralRigid
-#  define SOFA_GENERAL_RIGID_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_GENERAL_RIGID_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 
-#endif
+
+namespace sofa::component::mapping
+{
+
+using namespace sofa::defaulttype;
+
+// Register in the Factory
+int LaparoscopicRigidMappingClass = core::RegisterObject("TODO-LaparoscopicRigidMappingClass")
+        .add< LaparoscopicRigidMapping< LaparoscopicRigidTypes, RigidTypes > >()
+        ;
+
+template class SOFA_GENERAL_RIGID_API LaparoscopicRigidMapping< LaparoscopicRigidTypes, RigidTypes >;
+
+} //namespace sofa::component::mapping

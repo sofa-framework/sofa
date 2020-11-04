@@ -19,42 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP
 
-#include <SofaGeneralRigid/SkinningMapping.inl>
+#include <SofaGeneralRigid/ArticulatedHierarchyContainer.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::container
 {
-
-namespace component
-{
-
-namespace mapping
-{
-
-using namespace defaulttype;
-using namespace core;
-
 
 // Register in the Factory
-int SkinningMappingClass = core::RegisterObject("skin a model from a set of rigid dofs")
-
-// Rigid Types
-        .add< SkinningMapping< Rigid3Types, Vec3dTypes > >()
-
-
-
+int ArticulatedHierarchyContainerClass = core::RegisterObject("This class allow to store and retrieve all the articulation centers from an articulated rigid object")
+        .add< ArticulatedHierarchyContainer >()
         ;
 
-template class SOFA_GENERAL_RIGID_API SkinningMapping< Rigid3Types, Vec3dTypes >;
+// Register in the Factory
+int ArticulationCenterClass = core::RegisterObject("This class defines an articulation center. This contains a set of articulations.")
+        .add< ArticulationCenter >()
+        ;
 
+// Register in the Factory
+int ArticulationClass = core::RegisterObject("This class defines an articulation by an axis, an orientation and an index.")
+        .add< Articulation >()
+        ;
 
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::container

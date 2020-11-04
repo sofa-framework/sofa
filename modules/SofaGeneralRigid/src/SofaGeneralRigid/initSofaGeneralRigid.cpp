@@ -19,32 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP
+#include <SofaGeneralRigid/initSofaGeneralRigid.h>
 
-#include <SofaGeneralRigid/ArticulatedSystemMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
+extern "C" {
+    SOFA_SOFAGENERALRIGID_API void initExternalModule();
+    SOFA_SOFAGENERALRIGID_API const char* getModuleName();
+    SOFA_SOFAGENERALRIGID_API const char* getModuleVersion();
+    SOFA_SOFAGENERALRIGID_API const char* getModuleLicense();
+    SOFA_SOFAGENERALRIGID_API const char* getModuleDescription();
+    SOFA_SOFAGENERALRIGID_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-namespace mapping
+const char* getModuleName()
 {
+    return sofa_tostring(SOFA_TARGET);
+}
 
-using namespace sofa::defaulttype;
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAGENERALRIGID_VERSION);
+}
 
-// Register in the Factory
-int ArticulatedSystemMappingClass = core::RegisterObject("Mapping between a set of 6D DOF's and a set of angles (µ) using an articulated hierarchy container. ")
-        .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types > >();
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-template class SOFA_GENERAL_RIGID_API ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types >;
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about General Rigid.";
+}
 
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component

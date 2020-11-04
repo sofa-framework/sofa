@@ -20,20 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_INL
-
+#pragma once
 #include <SofaGeneralRigid/LineSetSkinningMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
@@ -363,10 +355,4 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::ConstraintPar
     outData.endEdit();
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::mapping
