@@ -107,6 +107,9 @@ public:
     {
         if(dataVecOutPos.empty() || dataVecInPos.empty())
             return;
+            
+        if(dataVecOutPos[0] == nullptr || dataVecInPos[0] == nullptr)
+			return;      
 
         const InRootVecCoord* inroot = nullptr;
 
@@ -131,6 +134,9 @@ public:
     {
         if(dataVecOutVel.empty() || dataVecInVel.empty())
             return;
+            
+        if(dataVecOutVel[0] == nullptr || dataVecInVel[0] == nullptr)
+			return;        
 
         const InRootVecDeriv* inroot = nullptr;
 
@@ -155,6 +161,9 @@ public:
     {
         if(dataVecOutForce.empty() || dataVecInForce.empty())
             return;
+            
+        if(dataVecOutForce[0] == nullptr || dataVecInForce[0] == nullptr)
+			return;    
 
         InRootVecDeriv* outroot = nullptr;
 
@@ -188,6 +197,9 @@ public:
     {
         if(dataMatOutConst.empty() || dataMatInConst.empty())
             return;
+            
+        if(dataMatOutConst[0] == nullptr || dataMatInConst[0] == nullptr)
+			return;      
 
         InRootMatrixDeriv* outroot = nullptr;
 
