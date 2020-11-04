@@ -22,7 +22,6 @@
 #include <SofaGeneral/config.h>
 
 #include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLinearSolver/initGeneralLinearSolver.h>
 #include <SofaGeneralLoader/initGeneralLoader.h>
 #include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
 #include <SofaGeneralRigid/initGeneralRigid.h>
@@ -47,7 +46,6 @@ void initSofaGeneral()
         first = false;
     }
 
-    initGeneralLinearSolver();
     initGeneralLoader();
     initGeneralObjectInteraction();
     initGeneralRigid();

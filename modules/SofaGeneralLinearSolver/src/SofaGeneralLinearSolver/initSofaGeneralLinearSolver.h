@@ -19,16 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGENERALLINEARSOLVER_CONFIG_H
-#define SOFAGENERALLINEARSOLVER_CONFIG_H
+#pragma once
+#include <SofaGeneralLinearSolver/config.h>
 
-#include <SofaGeneral/config.h>
+namespace sofa::component
+{
 
-#ifdef SOFA_BUILD_GENERAL_LINEAR_SOLVER
-#  define SOFA_TARGET SofaGeneralLinearSolver
-#  define SOFA_GENERAL_LINEAR_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_GENERAL_LINEAR_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
 
-#endif
+} //namespace sofa::component

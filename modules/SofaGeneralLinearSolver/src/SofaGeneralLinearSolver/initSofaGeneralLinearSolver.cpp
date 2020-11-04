@@ -19,32 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_CHOLESKYSOLVER_CPP
-#include <SofaGeneralLinearSolver/CholeskySolver.inl>
+#include <SofaGeneralLinearSolver/initSofaGeneralLinearSolver.h>
+
 
 #include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
+extern "C" {
+    SOFA_SOFAGENERALLINEARSOLVER_API void initExternalModule();
+    SOFA_SOFAGENERALLINEARSOLVER_API const char* getModuleName();
+    SOFA_SOFAGENERALLINEARSOLVER_API const char* getModuleVersion();
+    SOFA_SOFAGENERALLINEARSOLVER_API const char* getModuleLicense();
+    SOFA_SOFAGENERALLINEARSOLVER_API const char* getModuleDescription();
+    SOFA_SOFAGENERALLINEARSOLVER_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-namespace linearsolver
+const char* getModuleName()
 {
+    return sofa_tostring(SOFA_TARGET);
+}
 
-using namespace sofa::defaulttype;
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAGENERALLINEARSOLVER_VERSION);
+}
 
-int CholeskySolverClass = core::RegisterObject("Direct linear solver based on Cholesky factorization, for dense matrices")
-        .add< CholeskySolver< SparseMatrix<double>, FullVector<double> > >(true)
-        .add< CholeskySolver< FullMatrix<double>, FullVector<double> > >();
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< SparseMatrix<double>, FullVector<double> >;
-template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< FullMatrix<double>, FullVector<double> >;
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about General Linear Solver.";
+}
 
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component

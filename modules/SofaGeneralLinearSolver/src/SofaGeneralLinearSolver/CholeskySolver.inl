@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_CholeskySolver_INL
-#define SOFA_COMPONENT_LINEARSOLVER_CholeskySolver_INL
-
+#pragma once
 #include <SofaGeneralLinearSolver/CholeskySolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
@@ -33,13 +31,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <cmath>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 template<class TMatrix, class TVector>
@@ -118,10 +110,4 @@ void CholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     }
 }
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::linearsolver

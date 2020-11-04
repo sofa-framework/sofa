@@ -19,25 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralLinearSolver/initGeneralLinearSolver.h>
+#define SOFA_COMPONENT_LINEARSOLVER_CHOLESKYSOLVER_CPP
+#include <SofaGeneralLinearSolver/CholeskySolver.inl>
 
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::linearsolver
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
+
+int CholeskySolverClass = core::RegisterObject("Direct linear solver based on Cholesky factorization, for dense matrices")
+        .add< CholeskySolver< SparseMatrix<double>, FullVector<double> > >(true)
+        .add< CholeskySolver< FullMatrix<double>, FullVector<double> > >();
+
+template class SOFA_SOFAGENERALLINEARSOLVER_API CholeskySolver< SparseMatrix<double>, FullVector<double> >;
+template class SOFA_SOFAGENERALLINEARSOLVER_API CholeskySolver< FullMatrix<double>, FullVector<double> >;
 
 
-void initGeneralLinearSolver()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::linearsolver

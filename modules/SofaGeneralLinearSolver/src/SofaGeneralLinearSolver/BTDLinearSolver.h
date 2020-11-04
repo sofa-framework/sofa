@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_H
-#define SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralLinearSolver/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
@@ -30,13 +29,7 @@
 #include <cmath>
 #include <sofa/defaulttype/Mat.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 /// Simple bloc full matrix container (used for InvMatrixType)
@@ -601,16 +594,10 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP)
-extern template class SOFA_GENERAL_LINEAR_SOLVER_API BTDLinearSolver< BTDMatrix<6, double>, BlockVector<6, double> >;
+extern template class SOFA_SOFAGENERALLINEARSOLVER_API BTDLinearSolver< BTDMatrix<6, double>, BlockVector<6, double> >;
 
 
 
 #endif
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::linearsolver
