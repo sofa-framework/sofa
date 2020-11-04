@@ -54,6 +54,8 @@ public:
 
     bool test_InitScene();
 
+    bool test_SimpleCollision();
+
     bool test_Collision();
 
 protected:
@@ -111,6 +113,74 @@ bool LCPForceFeedback_test::test_InitScene()
 
     return true;
 }
+
+
+bool LCPForceFeedback_test::test_SimpleCollision()
+{
+    loadTestScene("ToolvsFloorCollision_test.scn");
+    simulation::Node::SPtr instruNode = m_root->getChild("Instrument");
+    EXPECT_NE(instruNode, nullptr);
+    MecaRig::SPtr meca = instruNode->get<MecaRig>(instruNode->SearchDown);
+    LCPRig::SPtr lcp = instruNode->get<LCPRig>(instruNode->SearchDown);
+
+
+    // Check components access
+    EXPECT_NE(meca, nullptr);
+    EXPECT_NE(lcp, nullptr);
+
+    // Check meca size and init position
+    EXPECT_EQ(meca->getSize(), 1);
+
+    simulation::Simulation* simu = sofa::simulation::getSimulation();
+
+    VecCoord truthCoords;
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(0, -0.002498750625, 0), sofa::defaulttype::Quatd(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(0, -0.1646431247, 0), sofa::defaulttype::Quatd(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(0, -0.5752928747, 0), sofa::defaulttype::Quatd(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(0, -1.233208884, 0), sofa::defaulttype::Quatd(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(0, -2.137158214, 0), sofa::defaulttype::Quatd(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(0, -3.285914075, 0), sofa::defaulttype::Quatd(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(0, -4.678255793, 0), sofa::defaulttype::Quatd(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(0, -6.312968782, 0), sofa::defaulttype::Quatd(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(0, -8.188844511, 0), sofa::defaulttype::Quatd(0, 0, 0, 1)));
+
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(0.06312707665, -9.252446766, 0.01034522507), sofa::defaulttype::Quatd(0.01791466055, -0.001121278545, -0.1466133921, 0.989031001)));
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(0.1068031131, -9.480637263, 0.01138742455), sofa::defaulttype::Quatd(0.01596551667, -0.006985361948, -0.4382452548, 0.8986864879)));
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(-0.003396912202, -9.692178925, 0.01301318567), sofa::defaulttype::Quatd(0.01059102598, -0.01374254084, -0.7148386272, 0.6990741805)));
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(-0.1668556563, -9.577363026, 0.03455744119), sofa::defaulttype::Quatd(-0.02439727795, -0.04585925265, -0.9016493065, 0.4293369653)));
+    truthCoords.push_back(Coord(sofa::defaulttype::Vec3d(-0.230611987, -9.409244076, 0.05034655108), sofa::defaulttype::Quatd(-0.06676044546, -0.08462859852, -0.9839281746, 0.1423600732)));
+    
+    int pctTru = 0; 
+    for (int step = 0; step < 140; step++)
+    {
+        simu->animate(m_root.get());
+
+        if (step % 10 == 0) 
+        {
+            const VecCoord& coords = meca->x.getValue();
+            const Coord& truthC = truthCoords[pctTru];
+
+            // test with groundtruth, do it index by index for better log
+            // position
+            EXPECT_FLOAT_EQ(coords[0][0], truthC[0]);
+            EXPECT_FLOAT_EQ(coords[0][1], truthC[1]);
+            EXPECT_FLOAT_EQ(coords[0][2], truthC[2]);
+
+            // orientation
+            EXPECT_FLOAT_EQ(coords[0][3], truthC[3]);
+            EXPECT_FLOAT_EQ(coords[0][4], truthC[4]);
+            EXPECT_FLOAT_EQ(coords[0][5], truthC[5]);
+            EXPECT_FLOAT_EQ(coords[0][6], truthC[6]);
+
+
+            std::cout << std::setprecision(10) << coords[0][3] << " " << coords[0][4] << " " << coords[0][5] << " " << coords[0][6] << std::endl;
+            pctTru++;
+        }
+    }
+
+    return true;
+}
+
 
 bool LCPForceFeedback_test::test_Collision()
 {
@@ -184,6 +254,12 @@ TEST_F(LCPForceFeedback_test, test_InitScene)
 {
     ASSERT_TRUE(test_InitScene());
 }
+
+TEST_F(LCPForceFeedback_test, test_SimpleCollision)
+{
+    ASSERT_TRUE(test_SimpleCollision());
+}
+
 
 TEST_F(LCPForceFeedback_test, test_Collision)
 {
