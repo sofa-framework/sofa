@@ -221,19 +221,60 @@ bool LCPForceFeedback_test::test_Collision()
     trueForce = sofa::defaulttype::Vec3(0.0, 0.0, 0.0);
     EXPECT_EQ(force, trueForce);
     
+    
     // check position in contact
     lcp->computeForce(coords[0][0], coords[0][1], coords[0][2], 0, 0, 0, 0, force[0], force[1], force[2]);
-    trueForce = sofa::defaulttype::Vec3(-0.0016560039, 0.00276001, -2.5219651e-06);
+
+    // test with groundtruth, do it index by index for better log
+    Coord coordT = Coord(sofa::defaulttype::Vec3d(0.1083095508, -9.45640795, 0.01134330546), sofa::defaulttype::Quatd(0.01623300333, -0.006386979003, -0.408876291, 0.9124230788));
+
+    std::cout << std::setprecision(10) << "coords: " << coords[0] << std::endl;
+    std::cout << std::setprecision(10) << "force: " << force << std::endl;
+    //// position
+    EXPECT_FLOAT_EQ(coords[0][0], coordT[0]);
+    EXPECT_FLOAT_EQ(coords[0][1], coordT[1]);
+    EXPECT_FLOAT_EQ(coords[0][2], coordT[2]);
+
+    //// orientation
+    EXPECT_FLOAT_EQ(coords[0][3], coordT[3]);
+    EXPECT_FLOAT_EQ(coords[0][4], coordT[4]);
+    EXPECT_FLOAT_EQ(coords[0][5], coordT[5]);
+    EXPECT_FLOAT_EQ(coords[0][6], coordT[6]);
+
+    //// force
+    trueForce = sofa::defaulttype::Vec3(-0.00165600391, 0.002760009733, -2.52196513e-06);
     EXPECT_FLOAT_EQ(force[0], trueForce[0]);
     EXPECT_FLOAT_EQ(force[1], trueForce[1]);
     EXPECT_FLOAT_EQ(force[2], trueForce[2]);
 
+    std::cout << std::setprecision(10) << "trueForce: " << trueForce << std::endl;
+
     // check position inside collision
-    lcp->computeForce(coords[0][0], coords[0][1] - 1.0, coords[0][2], 0, 0, 0, 0, force[0], force[1], force[2]);
-    trueForce = sofa::defaulttype::Vec3(-0.1261571, 8.76024, -0.00076634827);
+    Coord inside = Coord(sofa::defaulttype::Vec3d(coords[0][0], coords[0][1] - 1.0, coords[0][2]), sofa::defaulttype::Quatd(0.01623300333, -0.006386979003, -0.408876291, 0.9124230788));
+    lcp->computeForce(inside[0], inside[1], inside[2], 0, 0, 0, 0, force[0], force[1], force[2]);
+
+    // test with groundtruth, do it index by index for better log
+    coordT = Coord(sofa::defaulttype::Vec3d(0.1083095508, -10.45640795, 0.01134330546), sofa::defaulttype::Quatd(0.01623300333, -0.006386979003, -0.408876291, 0.9124230788));
+    std::cout << std::setprecision(10) << "coords 2: " << inside << std::endl;
+    std::cout << std::setprecision(10) << "force 2: " << force << std::endl;
+
+    //// position
+    EXPECT_FLOAT_EQ(inside[0], coordT[0]);
+    EXPECT_FLOAT_EQ(inside[1], coordT[1]);
+    EXPECT_FLOAT_EQ(inside[2], coordT[2]);
+
+    //// orientation
+    EXPECT_FLOAT_EQ(inside[3], coordT[3]);
+    EXPECT_FLOAT_EQ(inside[4], coordT[4]);
+    EXPECT_FLOAT_EQ(inside[5], coordT[5]);
+    EXPECT_FLOAT_EQ(inside[6], coordT[6]);
+
+    //// force
+    trueForce = sofa::defaulttype::Vec3(-0.1261571029, 8.760242635, -0.00076634827);
     EXPECT_FLOAT_EQ(force[0], trueForce[0]);
     EXPECT_FLOAT_EQ(force[1], trueForce[1]);
     EXPECT_FLOAT_EQ(force[2], trueForce[2]);
+    std::cout << std::setprecision(10) << "trueForce 2: " << trueForce << std::endl;
 
     // check rigidTypes computeForce method
     VecDeriv forces;
