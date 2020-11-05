@@ -248,7 +248,7 @@ public:
 
     /** \brief Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
      *
-     * @return List of object intersect (type enum @see core::topology::TopologyObjectType)
+     * @return List of object intersect (type enum @see core::topology::TopologyElementType)
      * @return List of indices of these objetcs
      * @return List of barycentric coordinate defining the position of the intersection in each object
      * (i.e 0 coord for a point, 1 for and edge and 3 for a triangle).
@@ -256,7 +256,7 @@ public:
     bool computeIntersectedObjectsList (const PointID last_point,
             const sofa::defaulttype::Vec<3,double>& a, const sofa::defaulttype::Vec<3,double>& b,
             TriangleID& ind_ta, TriangleID& ind_tb,
-            sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
+            sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
             sofa::helper::vector<ElemID>& indices_list,
             sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list) const;
 

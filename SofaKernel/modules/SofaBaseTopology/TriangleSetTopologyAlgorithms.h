@@ -106,7 +106,7 @@ public:
      * @returns the indice of the end point, or -1 if the incision failed.
      */
     virtual int SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
-            sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
+            sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
             sofa::helper::vector<ElemID>& indices_list,
             sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
             sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0);
@@ -116,13 +116,13 @@ public:
     /* void SnapAlongPath (sofa::helper::vector<TriangleID>& triangles_list, sofa::helper::vector<EdgeID>& edges_list,
       sofa::helper::vector<double>& coords_list, sofa::helper::vector<double>& points2Snap);*/
 
-    void SnapAlongPath (sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
+    void SnapAlongPath (sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
             sofa::helper::vector<ElemID>& indices_list, sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
             sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,
             double epsilonSnapPath);
 
     void SnapBorderPath (PointID pa, Coord& a, PointID pb, Coord& b,
-            sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
+            sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
             sofa::helper::vector<ElemID>& indices_list,
             sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
             sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,

@@ -184,7 +184,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
     if (!volumicMesh) // Surfacique case
     {
         volumeOnSurface = false;
-        sofa::core::topology::TopologyObjectType topoTypeTmp = topoType;
+        sofa::core::topology::TopologyElementType topoTypeTmp = topoType;
 
         // - STEP 3: Looking for tricky case
         if (topoType == sofa::core::topology::TETRAHEDRON || topoType == sofa::core::topology::HEXAHEDRON) // special case: removing a surface volume on the mesh (tetra only for the moment)

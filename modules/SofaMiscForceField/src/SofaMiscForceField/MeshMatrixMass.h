@@ -138,8 +138,8 @@ protected:
     MeshMatrixMass();
     ~MeshMatrixMass() override;
 
-    sofa::core::topology::TopologyObjectType checkTopology();
-    void initTopologyHandlers(sofa::core::topology::TopologyObjectType topologyType);
+    sofa::core::topology::TopologyElementType checkTopology();
+    void initTopologyHandlers(sofa::core::topology::TopologyElementType topologyType);
     void massInitialization();
 
     /// Internal data required for Cuda computation (copy of vertex mass for deviceRead)

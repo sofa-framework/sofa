@@ -1976,7 +1976,7 @@ template <typename DataTypes>
 bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (const PointID last_point,
         const sofa::defaulttype::Vec<3,double>& a, const sofa::defaulttype::Vec<3,double>& b,
         TriangleID& ind_ta, TriangleID& ind_tb,// A verifier pourquoi la ref!
-        sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
+        sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
         sofa::helper::vector<ElemID>& indices_list,
         sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list) const
 {

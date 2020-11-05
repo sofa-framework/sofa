@@ -133,12 +133,12 @@ struct TopologyElemID
 {
     TopologyElemID() : type(POINT), index((Topology::ElemID)-1) {}
 
-    TopologyElemID(TopologyObjectType _type, Topology::ElemID _index)
+    TopologyElemID(TopologyElementType _type, Topology::ElemID _index)
         : type(_type)
         , index(_index)
     {}
 
-    TopologyObjectType type;
+    TopologyElementType type;
     Topology::ElemID index;
 };
 
@@ -152,13 +152,13 @@ struct PointAncestorElem
 
     PointAncestorElem() : type(POINT), index((Topology::ElemID)-1) {}
 
-    PointAncestorElem(TopologyObjectType _type, Topology::ElemID _index, const LocalCoords& _localCoords)
+    PointAncestorElem(TopologyElementType _type, Topology::ElemID _index, const LocalCoords& _localCoords)
         : type(_type)
         , index(_index)
         , localCoords(_localCoords)
     {}
     
-    TopologyObjectType type;
+    TopologyElementType type;
     Topology::ElemID index;
     LocalCoords localCoords;
 };

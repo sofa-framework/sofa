@@ -723,7 +723,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(
 
 template<class DataTypes>
 int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
-        sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
+        sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
         sofa::helper::vector<ElemID>& indices_list,
         sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
         sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder)
@@ -1568,7 +1568,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
 
 template<class DataTypes>
-void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
+void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
         sofa::helper::vector<ElemID>& indices_list, sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
         sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,
         double epsilonSnapPath)
@@ -1795,7 +1795,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
 
 template<class DataTypes>
 void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (PointID pa, Coord& a, PointID pb, Coord& b,
-        sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
+        sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
         sofa::helper::vector<ElemID>& indices_list,
         sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
         sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,
