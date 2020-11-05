@@ -60,7 +60,7 @@ MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
     , d_printMass( initData(&d_printMass, false, "printMass","boolean if you want to check the mass conservation") )
     , f_graph( initData(&f_graph,"graph","Graph of the controlled potential") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_topologyType(TOPOLOGY_UNKNOWN)
+    , m_massTopologyType(TopologyElementType::UNKNOWN)
     , m_vertexMassHandler(nullptr)
     , m_edgeMassHandler(nullptr)
     , m_topology(nullptr)
@@ -111,7 +111,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreati
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
 
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
@@ -152,7 +152,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
 
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
@@ -189,7 +189,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestruction(const sofa::helper::vector< Index >& triangleRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
@@ -226,7 +226,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleDestruction(const sofa::helper::vector< Index >& triangleRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
@@ -312,7 +312,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(c
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
 
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_QUADSET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::QUAD)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
@@ -353,7 +353,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(con
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
 
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_QUADSET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::QUAD)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
@@ -390,7 +390,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestruction(const sofa::helper::vector< Index >& quadRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_QUADSET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::QUAD)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
@@ -427,7 +427,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadDestruction(const sofa::helper::vector< Index >& quadRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_QUADSET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::QUAD)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
@@ -515,7 +515,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCre
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
 
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
@@ -556,7 +556,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreat
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
 
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
@@ -593,7 +593,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDestruction(const sofa::helper::vector< Index >& tetrahedronRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
@@ -630,7 +630,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronDestruction(const sofa::helper::vector< Index >& tetrahedronRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
@@ -717,7 +717,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCrea
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
 
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
@@ -758,7 +758,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreati
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
 
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
@@ -795,7 +795,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDestruction(const sofa::helper::vector< Index >& hexahedronRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
@@ -832,7 +832,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronDestruction(const sofa::helper::vector< Index >& hexahedronRemoved)
 {
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
-    if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
+    if (MMM && MMM->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
@@ -1257,7 +1257,7 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
     {
         // create vector tensor by calling the hexahedron creation function on the entire mesh
         sofa::helper::vector<Index> hexahedraAdded;
-        setMassTopologyType(TOPOLOGY_HEXAHEDRONSET);
+        setMassTopologyType(TopologyElementType::HEXAHEDRON);
         size_t n = m_topology->getNbHexahedra();
         for (Index i = 0; i<n; ++i)
             hexahedraAdded.push_back(i);
@@ -1270,7 +1270,7 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
     {
         // create vector tensor by calling the tetrahedron creation function on the entire mesh
         sofa::helper::vector<Index> tetrahedraAdded;
-        setMassTopologyType(TOPOLOGY_TETRAHEDRONSET);
+        setMassTopologyType(TopologyElementType::TETRAHEDRON);
 
         size_t n = m_topology->getNbTetrahedra();
         for (Index i = 0; i<n; ++i)
@@ -1284,7 +1284,7 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
     {
         // create vector tensor by calling the quad creation function on the entire mesh
         sofa::helper::vector<Index> quadsAdded;
-        setMassTopologyType(TOPOLOGY_QUADSET);
+        setMassTopologyType(TopologyElementType::QUAD);
 
         size_t n = m_topology->getNbQuads();
         for (Index i = 0; i<n; ++i)
@@ -1298,7 +1298,7 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
     {
         // create vector tensor by calling the triangle creation function on the entire mesh
         sofa::helper::vector<Index> trianglesAdded;
-        setMassTopologyType(TOPOLOGY_TRIANGLESET);
+        setMassTopologyType(TopologyElementType::TRIANGLE);
 
         size_t n = m_topology->getNbTriangles();
         for (Index i = 0; i<n; ++i)

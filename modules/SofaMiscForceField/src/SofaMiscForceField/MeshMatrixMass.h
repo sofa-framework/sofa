@@ -82,17 +82,6 @@ public:
 
     using Index = sofa::Index;
 
-    /// Topological enum to classify encounter meshes
-    typedef enum
-    {
-        TOPOLOGY_UNKNOWN=0,
-        TOPOLOGY_EDGESET=1,
-        TOPOLOGY_TRIANGLESET=2,
-        TOPOLOGY_TETRAHEDRONSET=3,
-        TOPOLOGY_QUADSET=4,
-        TOPOLOGY_HEXAHEDRONSET=5
-    } TopologyType;
-
     typedef typename MeshMatrixMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
 
     /// @name Data of mass information
@@ -132,7 +121,7 @@ public:
 protected:
 
     /// The type of topology to build the mass from the topology
-    TopologyType m_topologyType;
+    sofa::core::topology::TopologyElementType m_massTopologyType;
     Real m_massLumpingCoeff;
 
     MeshMatrixMass();
@@ -162,14 +151,14 @@ public:
     void handleEvent(sofa::core::objectmodel::Event *event) override;
     void doUpdateInternal() override;
 
-    TopologyType getMassTopologyType() const
+    sofa::core::topology::TopologyElementType getMassTopologyType() const
     {
-        return m_topologyType;
+        return m_massTopologyType;
     }
 
-    void setMassTopologyType(TopologyType t)
+    void setMassTopologyType(sofa::core::topology::TopologyElementType t)
     {
-        m_topologyType = t;
+        m_massTopologyType = t;
     }
 
     int getMassCount() {
