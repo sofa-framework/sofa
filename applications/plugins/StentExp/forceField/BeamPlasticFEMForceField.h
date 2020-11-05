@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, v17.06                  *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_H
 
 #include <StentExp/config.h>
 #include <StentExp/initStentExp.h>
@@ -53,15 +53,27 @@ class PoissonContainer;
 namespace forcefield
 {
 
-/** Compute Finite Element forces based on 6D beam elements.
+namespace _beamplasticfemforcefield_
+{
+
+/** \class BeamPlasticFEMForceField
+ *  \brief Compute Finite Element forces based on 6D plastic beam elements.
+ * 
+ *  This class extends the BeamFEMForceField component to nonlinear plastic
+ *  behaviours. The main difference with the linear elastic scenario is that
+ *  the stiffness matrix used in the force computations is no longer constant
+ *  and has to be recomputed at each time step (as soon as plastic deformation
+ *  occurs).
+ *  This type of mechanical behaviour allows to simulate irreversible
+ *  deformation, which typically occurs in metals.
 */
 template<class DataTypes>
-class SOFA_StentExp_API MultiBeamForceField : public core::behavior::ForceField<DataTypes>
+class SOFA_StentExp_API BeamPlasticFEMForceField : public core::behavior::ForceField<DataTypes>
 {
 
 public:
 
-    SOFA_CLASS(SOFA_TEMPLATE(MultiBeamForceField,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(BeamPlasticFEMForceField,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
 
     typedef typename DataTypes::Real        Real        ;
     typedef typename DataTypes::Coord       Coord       ;
@@ -73,14 +85,18 @@ public:
     typedef Data<VecDeriv>                  DataVecDeriv;
     typedef VecCoord Vector;
 
-
     typedef unsigned int Index;
     typedef core::topology::BaseMeshTopology::Edge Element;
     typedef sofa::helper::vector<core::topology::BaseMeshTopology::Edge> VecElement;
     typedef helper::vector<unsigned int> VecIndex;
     typedef defaulttype::Vec<3, Real> Vec3;
 
-    //Types of mechanical state in which the (Gauss) integration points can be
+    /** \enum MechanicalState
+     *  \brief Types of mechanical state associated with the (Gauss) integration
+     *  points. The POSTPLASTIC state corresponds to points which underwent plastic
+     *  deformation, but on which constraints were released so that the plasticity
+     *  process stopped.
+     */
     enum MechanicalState {
         ELASTIC = 0,
         PLASTIC = 1,
@@ -206,13 +222,13 @@ protected:
         }
     };
 
-    topology::EdgeData< sofa::helper::vector<BeamInfo> > beamsData;
+    topology::EdgeData< sofa::helper::vector<BeamInfo> > m_beamsData;
 
     class BeamFFEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >
     {
     public:
-        typedef typename MultiBeamForceField<DataTypes>::BeamInfo BeamInfo;
-        BeamFFEdgeHandler(MultiBeamForceField<DataTypes>* ff, topology::EdgeData<sofa::helper::vector<BeamInfo> >* data)
+        typedef typename BeamPlasticFEMForceField<DataTypes>::BeamInfo BeamInfo;
+        BeamFFEdgeHandler(BeamPlasticFEMForceField<DataTypes>* ff, topology::EdgeData<sofa::helper::vector<BeamInfo> >* data)
             :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >(data),ff(ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex, BeamInfo&,
@@ -221,7 +237,7 @@ protected:
                                  const sofa::helper::vector< double > &);
 
     protected:
-        MultiBeamForceField<DataTypes>* ff;
+        BeamPlasticFEMForceField<DataTypes>* ff;
 
     };
 
@@ -255,7 +271,7 @@ protected:
     // instead of _Ke_loc, saving the time of one Gaussian integration per beam
     // element. For purely elastic beam elements, the BeamFEMForceField component
     // should be used.
-    Data<bool> _usePrecomputedStiffness;
+    Data<bool> d_usePrecomputedStiffness;
 
     // In the elasto-plastic model, the tangent operator can be computed either
     // in a straightforward way, or in a way consistent with the radial return
@@ -264,32 +280,32 @@ protected:
     // reading the following publications :
     //   - Consistent tangent operators for rate-independent elastoplasticity, Simo and Taylor, 1985
     //   - Studies in anisotropic plasticity with reference to the Hill criterion, De Borst and Feenstra, 1990
-    Data<bool> _useConsistentTangentOperator;
+    Data<bool> d_useConsistentTangentOperator;
 
     void computeVDStiffness(int i, Index a, Index b);
     void computeMaterialBehaviour(int i, Index a, Index b);
 
     typedef helper::fixed_array<VoigtTensor2, 27>  gaussPointStresses; ///< one 6x1 strain tensor for each of the 27 points of integration
-    helper::vector<gaussPointStresses> _prevStresses;
-    helper::vector<gaussPointStresses> _elasticPredictors;
+    helper::vector<gaussPointStresses> m_prevStresses;
+    helper::vector<gaussPointStresses> m_elasticPredictors;
 
     //Position at the last time step, to handle increments for the plasticity resolution
-    VecCoord _lastPos;
+    VecCoord m_lastPos;
 
     /************** Plasticity elements ***********************/
 
     //Newton-Raphson parameters
-    double _NRThreshold;
-    unsigned int _NRMaxIterations;
+    double m_NRThreshold;
+    unsigned int m_NRMaxIterations;
 
     // Indicates if the plasticity model is perfect plasticity, or if hardening
     // is represented. The only hardening model we implement is a linear
     // combination of isotropic and kinematic hardening, as described in :
     // Theoretical foundation for large scale computations for nonlinear material
     // behaviour, Hugues(et al) 1984
-    Data<bool> _isPerfectlyPlastic;
+    Data<bool> d_isPerfectlyPlastic;
 
-    MultiBeamForceField<DataTypes>* ff;
+    BeamPlasticFEMForceField<DataTypes>* ff;
 
     // 1D Contitutive law model, which is in charge of computing the
     // tangent modulus during plastic deformation
@@ -364,34 +380,31 @@ protected:
     /**********************************************************/
 
 
-    const VecElement *_indexedElements;
+    const VecElement *m_indexedElements;
 
-    Data<Real> _poissonRatio;
-    Data<Real> _youngModulus;
-    Data<Real> _yieldStress;
-    Data<Real> _zSection;
-    Data<Real> _ySection;
-    Data< bool> _useSymmetricAssembly;
-    Data<bool> _isTimoshenko;
+    Data<Real> d_poissonRatio;
+    Data<Real> d_youngModulus;
+    Data<Real> d_yieldStress;
+    Data<Real> d_zSection;
+    Data<Real> d_ySection;
+    Data<bool> d_useSymmetricAssembly;
+    Data<bool> d_isTimoshenko;
 
-    double lastUpdatedStep;
+    double m_lastUpdatedStep;
 
-    container::StiffnessContainer* stiffnessContainer;
-    container::PoissonContainer* poissonContainer;
+    container::StiffnessContainer* m_stiffnessContainer;
+    container::PoissonContainer* m_poissonContainer;
 
-    defaulttype::Quat& beamQuat(int i)
-    {
-        helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-        return bd[i].quat;
-    }
-    sofa::core::topology::BaseMeshTopology* _topology;
-    BeamFFEdgeHandler* edgeHandler;
+    defaulttype::Quat& beamQuat(int i);
 
-    MultiBeamForceField();
-    MultiBeamForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection, Real ySection, bool useVD,
+    sofa::core::topology::BaseMeshTopology* m_topology;
+    BeamFFEdgeHandler* m_edgeHandler;
+
+    BeamPlasticFEMForceField();
+    BeamPlasticFEMForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection, Real ySection, bool useVD,
                         bool isPlasticMuller, bool isTimoshenko, bool isPlasticKrabbenhoft, bool isPerfectlyPlastic,
                         helper::vector<defaulttype::Quat> localOrientations);
-    virtual ~MultiBeamForceField();
+    virtual ~BeamPlasticFEMForceField();
 
 public:
 
@@ -426,9 +439,11 @@ protected:
 
 };
 
-#if !defined(SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_CPP)
-extern template class SOFA_StentExp_API MultiBeamForceField<defaulttype::Rigid3Types>;
+#if !defined(SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_CPP)
+extern template class SOFA_StentExp_API BeamPlasticFEMForceField<defaulttype::Rigid3Types>;
 #endif
+
+} // namespace _beamplasticfemforcefield_
 
 } // namespace forcefield
 
@@ -436,4 +451,4 @@ extern template class SOFA_StentExp_API MultiBeamForceField<defaulttype::Rigid3T
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_H
+#endif // SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_H

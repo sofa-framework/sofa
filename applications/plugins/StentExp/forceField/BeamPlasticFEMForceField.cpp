@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, v17.06                  *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_CPP
-#include "MultiBeamForceField.inl"
+#define SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_CPP
+#include "BeamPlasticFEMForceField.inl"
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -34,15 +34,20 @@ namespace component
 namespace forcefield
 {
 
+namespace _beamplasticfemforcefield_
+{
+
 using namespace sofa::defaulttype;
 
 
 // Register in the Factory
-int MultiBeamForceFieldClass = core::RegisterObject("Stent adaptated beam finite elements")
-        .add< MultiBeamForceField<Rigid3Types> >()
+int BeamPlasticFEMForceFieldClass = core::RegisterObject("Stent adaptated beam finite elements")
+        .add< BeamPlasticFEMForceField<Rigid3Types> >()
         ;
 
-template class SOFA_StentExp_API MultiBeamForceField<Rigid3Types>;
+template class SOFA_StentExp_API BeamPlasticFEMForceField<Rigid3Types>;
+
+} // namespace _beamplasticfemforcefield_
 
 } // namespace forcefield
 

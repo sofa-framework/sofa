@@ -8,12 +8,10 @@ set(STENTEXP_VERSION ${STENTEXP_MAJOR_VERSION}.${STENTEXP_MINOR_VERSION})
 set(HEADER_FILES
 	initStentExp.h
 	config.h
-	forceField/MultiBeamForceField.h
-	forceField/MultiBeamForceField.inl
+	forceField/BeamPlasticFEMForceField.h
+	forceField/BeamPlasticFEMForceField.inl
     forceField/PlasticConstitutiveLaw.h
     forceField/RambergOsgood.h
-    mass/MultiBeamMass.h
-    mass/MultiBeamMass.inl
 	quadrature/Gaussian.h
 	quadrature/quadrature.h
 	PoissonContainer.h
@@ -22,7 +20,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 	initStentExp.cpp
-	forceField/MultiBeamForceField.cpp
+	forceField/BeamPlasticFEMForceField.cpp
 )
 
 find_package(SofaFramework REQUIRED)

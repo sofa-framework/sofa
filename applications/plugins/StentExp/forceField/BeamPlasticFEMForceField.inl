@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, v17.06                  *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,20 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_INL
 
 #include <SofaBaseTopology/TopologyData.inl>
-#include "MultiBeamForceField.h"
-#include "RambergOsgood.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/rmath.h>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <set>
 #include <sofa/helper/system/gl.h>
@@ -41,9 +37,10 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/Node.h>
 
+#include "BeamPlasticFEMForceField.h"
 #include "../StiffnessContainer.h"
 #include "../PoissonContainer.h"
-
+#include "RambergOsgood.h"
 
 namespace sofa
 {
@@ -54,64 +51,66 @@ namespace component
 namespace forcefield
 {
 
+namespace _beamplasticfemforcefield_
+{
 
 template<class DataTypes>
-MultiBeamForceField<DataTypes>::MultiBeamForceField()
-    : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
-    , _indexedElements(NULL)
-    , _poissonRatio(initData(&_poissonRatio,(Real)0.3f,"poissonRatio","Potion Ratio"))
-    , _youngModulus(initData(&_youngModulus, (Real)5000, "youngModulus", "Young Modulus"))
-    , _yieldStress(initData(&_yieldStress,(Real)6.0e8,"yieldStress","yield stress"))
-    , _usePrecomputedStiffness(initData(&_usePrecomputedStiffness, true, "usePrecomputedStiffness",
+BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField()
+    : m_beamsData(initData(&m_beamsData, "beamsData", "Internal element data"))
+    , m_indexedElements(NULL)
+    , d_poissonRatio(initData(&d_poissonRatio,(Real)0.3f,"poissonRatio","Potion Ratio"))
+    , d_youngModulus(initData(&d_youngModulus, (Real)5000, "youngModulus", "Young Modulus"))
+    , d_yieldStress(initData(&d_yieldStress,(Real)6.0e8,"yieldStress","yield stress"))
+    , d_usePrecomputedStiffness(initData(&d_usePrecomputedStiffness, true, "usePrecomputedStiffness",
                                         "indicates if a precomputed elastic stiffness matrix is used, instead of being computed by reduced integration"))
-    , _useConsistentTangentOperator(initData(&_useConsistentTangentOperator, false, "useConsistentTangentOperator",
+    , d_useConsistentTangentOperator(initData(&d_useConsistentTangentOperator, false, "useConsistentTangentOperator",
         "indicates wether to use a consistent tangent operator in the computation of the plastic stiffness matrix"))
-    , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
+    , d_isPerfectlyPlastic(initData(&d_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
-    , _zSection(initData(&_zSection, (Real)0.2, "zSection", "length of the section in the z direction for rectangular beams"))
-    , _ySection(initData(&_ySection, (Real)0.2, "ySection", "length of the section in the y direction for rectangular beams"))
-    , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
-    , _isTimoshenko(initData(&_isTimoshenko,false,"isTimoshenko","implements a Timoshenko beam model"))
-    , edgeHandler(NULL)
+    , d_zSection(initData(&d_zSection, (Real)0.2, "zSection", "length of the section in the z direction for rectangular beams"))
+    , d_ySection(initData(&d_ySection, (Real)0.2, "ySection", "length of the section in the y direction for rectangular beams"))
+    , d_useSymmetricAssembly(initData(&d_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
+    , d_isTimoshenko(initData(&d_isTimoshenko,false,"isTimoshenko","implements a Timoshenko beam model"))
+    , m_edgeHandler(NULL)
 {
-    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
+    m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);
 
-    _poissonRatio.setRequired(true);
-    _youngModulus.setReadOnly(true);
+    d_poissonRatio.setRequired(true);
+    d_youngModulus.setReadOnly(true);
 }
 
 template<class DataTypes>
-MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection,
+BeamPlasticFEMForceField<DataTypes>::BeamPlasticFEMForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection,
                                                     Real ySection, bool useVD, bool isPlasticMuller, bool isTimoshenko,
                                                     bool isPlasticKrabbenhoft, bool isPerfectlyPlastic,
                                                     helper::vector<defaulttype::Quat> localOrientations)
-    : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
-    , _indexedElements(NULL)
-    , _poissonRatio(initData(&_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
-    , _youngModulus(initData(&_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
-    , _yieldStress(initData(&_yieldStress, (Real)yieldStress, "yieldStress", "yield stress"))
-    , _usePrecomputedStiffness(initData(&_usePrecomputedStiffness, true, "usePrecomputedStiffness",
+    : m_beamsData(initData(&m_beamsData, "beamsData", "Internal element data"))
+    , m_indexedElements(NULL)
+    , d_poissonRatio(initData(&d_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
+    , d_youngModulus(initData(&d_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
+    , d_yieldStress(initData(&d_yieldStress, (Real)yieldStress, "yieldStress", "yield stress"))
+    , d_usePrecomputedStiffness(initData(&d_usePrecomputedStiffness, true, "usePrecomputedStiffness",
                                         "indicates if a precomputed elastic stiffness matrix is used, instead of being computed by reduced integration"))
-    , _useConsistentTangentOperator(initData(&_useConsistentTangentOperator, false, "useConsistentTangentOperator", 
+    , d_useConsistentTangentOperator(initData(&d_useConsistentTangentOperator, false, "useConsistentTangentOperator", 
                                              "indicates wether to use a consistent tangent operator in the computation of the plastic stiffness matrix"))
-    , _isPerfectlyPlastic(initData(&_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
+    , d_isPerfectlyPlastic(initData(&d_isPerfectlyPlastic, false, "isPerfectlyPlastic", "indicates wether the behaviour model is perfectly plastic"))
     , d_modelName(initData(&d_modelName, std::string("RambergOsgood"), "modelName", "the name of the 1D contitutive law model to be used in plastic deformation"))
-    , _zSection(initData(&_zSection, (Real)zSection, "zSection", "length of the section in the z direction for rectangular beams"))
-    , _ySection(initData(&_ySection, (Real)ySection, "ySection", "length of the section in the y direction for rectangular beams"))
-    , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
-    , _isTimoshenko(initData(&_isTimoshenko, isTimoshenko, "isTimoshenko", "implements a Timoshenko beam model"))
-    , edgeHandler(NULL)
+    , d_zSection(initData(&d_zSection, (Real)zSection, "zSection", "length of the section in the z direction for rectangular beams"))
+    , d_ySection(initData(&d_ySection, (Real)ySection, "ySection", "length of the section in the y direction for rectangular beams"))
+    , d_useSymmetricAssembly(initData(&d_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
+    , d_isTimoshenko(initData(&d_isTimoshenko, isTimoshenko, "isTimoshenko", "implements a Timoshenko beam model"))
+    , m_edgeHandler(NULL)
 {
-    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
+    m_edgeHandler = new BeamFFEdgeHandler(this, &m_beamsData);
 
-    _poissonRatio.setRequired(true);
-    _youngModulus.setReadOnly(true);
+    d_poissonRatio.setRequired(true);
+    d_youngModulus.setReadOnly(true);
 }
 
 template<class DataTypes>
-MultiBeamForceField<DataTypes>::~MultiBeamForceField()
+BeamPlasticFEMForceField<DataTypes>::~BeamPlasticFEMForceField()
 {
-    if(edgeHandler) delete edgeHandler;
+    if (m_edgeHandler) delete m_edgeHandler;
 }
 
 
@@ -121,30 +120,30 @@ MultiBeamForceField<DataTypes>::~MultiBeamForceField()
 
 
 template <class DataTypes>
-void MultiBeamForceField<DataTypes>::bwdInit()
+void BeamPlasticFEMForceField<DataTypes>::bwdInit()
 {
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
-    lastUpdatedStep=-1.0;
+    m_lastUpdatedStep=-1.0;
 }
 
 template <class DataTypes>
-void MultiBeamForceField<DataTypes>::init()
+void BeamPlasticFEMForceField<DataTypes>::init()
 {
     this->core::behavior::ForceField<DataTypes>::init();
     sofa::core::objectmodel::BaseContext* context = this->getContext();
 
-    _topology = context->getMeshTopology();
+    m_topology = context->getMeshTopology();
 
-    stiffnessContainer = context->core::objectmodel::BaseContext::get<container::StiffnessContainer>();
-    poissonContainer = context->core::objectmodel::BaseContext::get<container::PoissonContainer>();
+    m_stiffnessContainer = context->core::objectmodel::BaseContext::get<container::StiffnessContainer>();
+    m_poissonContainer = context->core::objectmodel::BaseContext::get<container::PoissonContainer>();
 
     // Retrieving the 1D plastic constitutive law model
     std::string constitutiveModel = d_modelName.getValue();
     if (constitutiveModel == "RambergOsgood")
     {
-        Real youngModulus = _youngModulus.getValue();
-        Real yieldStress = _yieldStress.getValue();
+        Real youngModulus = d_youngModulus.getValue();
+        Real yieldStress = d_yieldStress.getValue();
         fem::RambergOsgood<DataTypes> *RambergOsgoodModel = new (fem::RambergOsgood<DataTypes>)(youngModulus, yieldStress);
         m_ConstitutiveLaw = RambergOsgoodModel;
         if (this->f_printLog.getValue())
@@ -156,52 +155,52 @@ void MultiBeamForceField<DataTypes>::init()
     }
 
 
-    if (_topology==NULL)
+    if (m_topology==NULL)
     {
-        serr << "ERROR(MultiBeamForceField): object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)."<<sendl;
+        serr << "ERROR(BeamPlasticFEMForceField): object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)."<<sendl;
         return;
     }
     else
     {
-        if(_topology->getNbEdges()==0)
+        if (m_topology->getNbEdges()==0)
         {
-            serr << "ERROR(MultiBeamForceField): topology is empty."<<sendl;
+            serr << "ERROR(BeamPlasticFEMForceField): topology is empty."<<sendl;
             return;
         }
-        _indexedElements = &_topology->getEdges();
+        m_indexedElements = &m_topology->getEdges();
     }
 
-    beamsData.createTopologicalEngine(_topology,edgeHandler);
-    beamsData.registerTopologicalData();
+    m_beamsData.createTopologicalEngine(m_topology,m_edgeHandler);
+    m_beamsData.registerTopologicalData();
 
     reinit();
 }
 
 template <class DataTypes>
-void MultiBeamForceField<DataTypes>::reinit()
+void BeamPlasticFEMForceField<DataTypes>::reinit()
 {
-    size_t n = _indexedElements->size();
+    size_t n = m_indexedElements->size();
 
     //Initialises the lastPos field with the rest position
-    _lastPos = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    m_lastPos = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     /***** Krabbenhoft plasticity *****/
-    _NRThreshold = 0.0; //to be changed during iterations
-    _NRMaxIterations = 25;
+    m_NRThreshold = 0.0; //to be changed during iterations
+    m_NRMaxIterations = 25;
 
-    _prevStresses.resize(n);
+    m_prevStresses.resize(n);
     for (int i = 0; i < n; i++)
         for (int j = 0; j < 27; j++)
-            _prevStresses[i][j] = VoigtTensor2::Zero();
+            m_prevStresses[i][j] = VoigtTensor2::Zero();
 
-    if (_useConsistentTangentOperator.getValue())
+    if (d_useConsistentTangentOperator.getValue())
     {
         // No need to store elastic predictors at each iteration if the consistent
         // tangent operator is not used.
-        _elasticPredictors.resize(n);
+        m_elasticPredictors.resize(n);
         for (int i = 0; i < n; i++)
             for (int j = 0; j < 27; j++)
-                _elasticPredictors[i][j] = VoigtTensor2::Zero();
+                m_elasticPredictors[i][j] = VoigtTensor2::Zero();
     }
 
     initBeams( n );
@@ -211,66 +210,66 @@ void MultiBeamForceField<DataTypes>::reinit()
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::initBeams(size_t size)
+void BeamPlasticFEMForceField<DataTypes>::initBeams(size_t size)
 {
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     bd.resize(size);
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 }
 
 template <class DataTypes>
-void MultiBeamForceField<DataTypes>::reinitBeam(unsigned int i)
+void BeamPlasticFEMForceField<DataTypes>::reinitBeam(unsigned int i)
 {
     double stiffness, yieldStress, length, poisson, zSection, ySection;
-    Index a = (*_indexedElements)[i][0];
-    Index b = (*_indexedElements)[i][1];
+    Index a = (*m_indexedElements)[i][0];
+    Index b = (*m_indexedElements)[i][1];
 
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    if (stiffnessContainer)
-        stiffness = stiffnessContainer->getStiffness(i) ;
+    if (m_stiffnessContainer)
+        stiffness = m_stiffnessContainer->getStiffness(i) ;
     else
-        stiffness =  _youngModulus.getValue() ;
+        stiffness =  d_youngModulus.getValue() ;
 
-    yieldStress = _yieldStress.getValue();
+    yieldStress = d_yieldStress.getValue();
     length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
 
-    zSection = _zSection.getValue();
-    ySection = _ySection.getValue();
-    poisson = _poissonRatio.getValue();
+    zSection = d_zSection.getValue();
+    ySection = d_ySection.getValue();
+    poisson = d_poissonRatio.getValue();
 
     setBeam(i, stiffness, yieldStress, length, poisson, zSection, ySection);
 
     computeMaterialBehaviour(i, a, b);
 
     // Initialisation of the elastic stiffness matrix
-    if (_usePrecomputedStiffness.getValue())
+    if (d_usePrecomputedStiffness.getValue())
         computeStiffness(i, a, b);
     else
         computeVDStiffness(i, a, b);
     // Initialisation of the tangent stiffness matrix
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     StiffnessMatrix& Kt_loc = bd[i]._Kt_loc;
     Kt_loc.clear();
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 
     // Initialisation of the beam element orientation
     //TO DO: is necessary ?
     beamQuat(i) = x0[a].getOrientation();
     beamQuat(i).normalize();
-    beamsData.endEdit(); // consecutive to beamQuat
+    m_beamsData.endEdit(); // consecutive to beamQuat
 
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::setBeam(unsigned int i, double E, double yS, double L, double nu, double zSection, double ySection)
+void BeamPlasticFEMForceField<DataTypes>::setBeam(unsigned int i, double E, double yS, double L, double nu, double zSection, double ySection)
 {
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-    bd[i].init(E, yS, L, nu, zSection, ySection, _isTimoshenko.getValue());
-    beamsData.endEdit();
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
+    bd[i].init(E, yS, L, nu, zSection, ySection, d_isTimoshenko.getValue());
+    m_beamsData.endEdit();
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double L, double nu, double zSection, double ySection, bool isTimoshenko)
+void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, double L, double nu, double zSection, double ySection, bool isTimoshenko)
 {
     _E = E;
     _E0 = E;
@@ -663,19 +662,19 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
 }
 
 template <class DataTypes>
-void MultiBeamForceField<DataTypes>::reset()
+void BeamPlasticFEMForceField<DataTypes>::reset()
 {
-    //serr<<"MultiBeamForceField<DataTypes>::reset"<<sendl;
+    //serr<<"BeamPlasticFEMForceField<DataTypes>::reset"<<sendl;
 
-    for (unsigned i = 0; i < _prevStresses.size(); ++i)
+    for (unsigned i = 0; i < m_prevStresses.size(); ++i)
         for (unsigned j = 0; j < 27; ++j)
-            _prevStresses[i][j] = VoigtTensor2::Zero();
+            m_prevStresses[i][j] = VoigtTensor2::Zero();
 
-    if (_useConsistentTangentOperator.getValue())
+    if (d_useConsistentTangentOperator.getValue())
     {
-        for (unsigned i = 0; i < _elasticPredictors.size(); ++i)
+        for (unsigned i = 0; i < m_elasticPredictors.size(); ++i)
             for (unsigned j = 0; j < 27; ++j)
-                _elasticPredictors[i][j] = VoigtTensor2::Zero();
+                m_elasticPredictors[i][j] = VoigtTensor2::Zero();
 
     }
 
@@ -683,19 +682,19 @@ void MultiBeamForceField<DataTypes>::reset()
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::computeStiffness(int i, Index, Index)
+void BeamPlasticFEMForceField<DataTypes>::computeStiffness(int i, Index, Index)
 {
     Real   phiy, phiz;
-    Real _L = (Real)beamsData.getValue()[i]._L;
-    Real _A = (Real)beamsData.getValue()[i]._A;
-    Real _nu = (Real)beamsData.getValue()[i]._nu;
-    Real _E = (Real)beamsData.getValue()[i]._E;
-    Real _Iy = (Real)beamsData.getValue()[i]._Iy;
-    Real _Iz = (Real)beamsData.getValue()[i]._Iz;
-    Real _Asy = (Real)beamsData.getValue()[i]._Asy;
-    Real _Asz = (Real)beamsData.getValue()[i]._Asz;
-    Real _G = (Real)beamsData.getValue()[i]._G;
-    Real _J = (Real)beamsData.getValue()[i]._J;
+    Real _L = (Real)m_beamsData.getValue()[i]._L;
+    Real _A = (Real)m_beamsData.getValue()[i]._A;
+    Real _nu = (Real)m_beamsData.getValue()[i]._nu;
+    Real _E = (Real)m_beamsData.getValue()[i]._E;
+    Real _Iy = (Real)m_beamsData.getValue()[i]._Iy;
+    Real _Iz = (Real)m_beamsData.getValue()[i]._Iz;
+    Real _Asy = (Real)m_beamsData.getValue()[i]._Asy;
+    Real _Asz = (Real)m_beamsData.getValue()[i]._Asz;
+    Real _G = (Real)m_beamsData.getValue()[i]._G;
+    Real _J = (Real)m_beamsData.getValue()[i]._J;
     Real L2 = (Real)(_L * _L);
     Real L3 = (Real)(L2 * _L);
     Real EIy = (Real)(_E * _Iy);
@@ -711,7 +710,7 @@ void MultiBeamForceField<DataTypes>::computeStiffness(int i, Index, Index)
         phiz = 0.0;
     else
         phiz = (Real)(24.0*(1.0 + _nu)*_Iy / (_Asz*L2));
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     StiffnessMatrix& k_loc = bd[i]._k_loc;
 
     // Define stiffness matrix 'k' in local coordinates
@@ -742,27 +741,27 @@ void MultiBeamForceField<DataTypes>::computeStiffness(int i, Index, Index)
         for (int j = i + 1; j<12; j++)
             k_loc[i][j] = k_loc[j][i];
 
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 }
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::BeamFFEdgeHandler::applyCreateFunction(unsigned int edgeIndex, BeamInfo &ei, const core::topology::BaseMeshTopology::Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void BeamPlasticFEMForceField<DataTypes>::BeamFFEdgeHandler::applyCreateFunction(unsigned int edgeIndex, BeamInfo &ei, const core::topology::BaseMeshTopology::Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
-    if(ff)
+    if (ff)
     {
         ff->reinitBeam(edgeIndex);
-        ei = ff->beamsData.getValue()[edgeIndex];
+        ei = ff->m_beamsData.getValue()[edgeIndex];
     }
 }
 
 
-/*****************************************************************************/
-/*                             SOFA METHODS                                  */
-/*****************************************************************************/
+/********************************************************************************/
+/*                             VISITOR METHODS                                  */
+/********************************************************************************/
 
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & /*dataV*/ )
+void BeamPlasticFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & /*dataV*/ )
 {
     VecDeriv& f = *(dataF.beginEdit());
     const VecCoord& p=dataX.getValue();
@@ -771,7 +770,7 @@ void MultiBeamForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
     typename VecElement::const_iterator it;
     unsigned int i;
 
-    for (it = _indexedElements->begin(), i = 0; it != _indexedElements->end(); ++it, ++i)
+    for (it = m_indexedElements->begin(), i = 0; it != m_indexedElements->end(); ++it, ++i)
     {
         Index a = (*it)[0];
         Index b = (*it)[1];
@@ -786,13 +785,13 @@ void MultiBeamForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
     // (otherwise the current position will be used instead in the 
     // computation)
     //TO DO: check if this is copy operator
-    _lastPos = p;
+    m_lastPos = p;
 
     dataF.endEdit();
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams *mparams, DataVecDeriv& datadF , const DataVecDeriv& datadX)
+void BeamPlasticFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams *mparams, DataVecDeriv& datadF , const DataVecDeriv& datadX)
 {
     VecDeriv& df = *(datadF.beginEdit());
     const VecDeriv& dx=datadX.getValue();
@@ -802,7 +801,7 @@ void MultiBeamForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
 
     typename VecElement::const_iterator it;
     unsigned int i = 0;
-    for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+    for(it = m_indexedElements->begin() ; it != m_indexedElements->end() ; ++it, ++i)
     {
         Index a = (*it)[0];
         Index b = (*it)[1];
@@ -816,7 +815,7 @@ void MultiBeamForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+void BeamPlasticFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
@@ -828,12 +827,12 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
         unsigned int &offset = r.offset;
 
         typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+        for(it = m_indexedElements->begin() ; it != m_indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
             Index b = (*it)[1];
 
-            const MechanicalState beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
+            const MechanicalState beamMechanicalState = m_beamsData.getValue()[i]._beamMechanicalState;
 
             defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
             q.normalize();
@@ -841,17 +840,17 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
             q.toMatrix(R);
             Rt.transpose(R);
             StiffnessMatrix K;
-            bool exploitSymmetry = _useSymmetricAssembly.getValue();
+            bool exploitSymmetry = d_useSymmetricAssembly.getValue();
 
             StiffnessMatrix K0;
             if (beamMechanicalState == PLASTIC)
-                K0 = beamsData.getValue()[i]._Kt_loc;
+                K0 = m_beamsData.getValue()[i]._Kt_loc;
             else
             {
-                if (_usePrecomputedStiffness.getValue())
-                    K0 = beamsData.getValue()[i]._k_loc;
+                if (d_usePrecomputedStiffness.getValue())
+                    K0 = m_beamsData.getValue()[i]._k_loc;
                 else
-                    K0 = beamsData.getValue()[i]._Ke_loc;
+                    K0 = m_beamsData.getValue()[i]._Ke_loc;
             }
                
             if (exploitSymmetry) {
@@ -897,14 +896,14 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
                 for (int y1 = 0; y1<12; ++y1)
                     mat->add(index[x1], index[y1], -K(x1, y1)*k);
 
-            //TO DO: beamsData.endEdit(); consecutive to the call to beamQuat
+            //TO DO: m_beamsData.endEdit(); consecutive to the call to beamQuat
 
-        } // end for _indexedElements
-    } // end if(r)
+        } // end for m_indexedElements
+    } // end if (r)
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void BeamPlasticFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
@@ -915,7 +914,7 @@ void MultiBeamForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
     std::vector<defaulttype::Vector3> gaussPoints[1];
     std::vector<defaulttype::Vec<4, float>> colours[1];
 
-    for (unsigned int i=0; i<_indexedElements->size(); ++i)
+    for (unsigned int i=0; i<m_indexedElements->size(); ++i)
         drawElement(i, gaussPoints, centrelinePoints, colours, x);
 
     vparams->drawTool()->setPolygonMode(2, true);
@@ -927,13 +926,13 @@ void MultiBeamForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 >* gaussPoints,
+void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 >* gaussPoints,
                                                  std::vector< defaulttype::Vector3 >* centrelinePoints,
                                                  std::vector<defaulttype::Vec<4, float>>* colours,
                                                  const VecCoord& x)
 {
-    Index a = (*_indexedElements)[i][0];
-    Index b = (*_indexedElements)[i][1];
+    Index a = (*m_indexedElements)[i][0];
+    Index b = (*m_indexedElements)[i][1];
 
     defaulttype::Vec3d pa, pb;
     pa = x[a].getCenter();
@@ -951,7 +950,7 @@ void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype
     beamQuat(i) = x[a].getOrientation();
     beamQuat(i).normalize();
 
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 
     defaulttype::Vec<3, Real> u, P1P2, P1P2_0;
     // local displacement
@@ -989,13 +988,13 @@ void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
 
     Eigen::Matrix<double, 3, 12> N;
-    const helper::fixed_array<MechanicalState, 27>& pointMechanicalState = beamsData.getValue()[i]._pointMechanicalState;
+    const helper::fixed_array<MechanicalState, 27>& pointMechanicalState = m_beamsData.getValue()[i]._pointMechanicalState;
     int gaussPointIt = 0; //incremented in the lambda function to iterate over Gauss points
 
     LambdaType computeGaussCoordinates = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
         //Shape function
-        N = beamsData.getValue()[i]._N[gaussPointIt];
+        N = m_beamsData.getValue()[i]._N[gaussPointIt];
         Eigen::Matrix<double, 3, 1> u = N*disp;
 
         defaulttype::Vec3d beamVec = {u[0]+u1, u[1]+u2, u[2]+u3};
@@ -1012,20 +1011,20 @@ void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype
         gaussPointIt++; //next Gauss Point
     };
 
-    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[i]._integrationInterval;
+    ozp::quadrature::detail::Interval<3> interval = m_beamsData.getValue()[i]._integrationInterval;
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeGaussCoordinates);
 
     //****** Centreline ******//
-    int nbSeg = beamsData.getValue()[i]._nbCentrelineSeg; //number of segments descretising the centreline
+    int nbSeg = m_beamsData.getValue()[i]._nbCentrelineSeg; //number of segments descretising the centreline
 
     centrelinePoints[0].push_back(pa);
 
     Eigen::Matrix<double, 3, 12> drawN;
-    const double L = beamsData.getValue()[i]._L;
+    const double L = m_beamsData.getValue()[i]._L;
     for (int drawPointIt = 0; drawPointIt < nbSeg - 1; drawPointIt++)
     {
         //Shape function of the centreline point
-        drawN = beamsData.getValue()[i]._drawN[drawPointIt];
+        drawN = m_beamsData.getValue()[i]._drawN[drawPointIt];
         Eigen::Matrix<double, 3, 1> u = drawN*disp;
 
         defaulttype::Vec3d beamVec = {u[0] + (drawPointIt +1)*(L/nbSeg), u[1], u[2]};
@@ -1038,7 +1037,7 @@ void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+void BeamPlasticFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
     if (!onlyVisible) return;
 
@@ -1076,17 +1075,17 @@ void MultiBeamForceField<DataTypes>::computeBBox(const core::ExecParams* params,
 /***************************** Virtual Displacement **************************/
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
+void BeamPlasticFEMForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
 {
-    Real _L = (Real)beamsData.getValue()[i]._L;
-    Real _yDim = (Real)beamsData.getValue()[i]._yDim;
-    Real _zDim = (Real)beamsData.getValue()[i]._zDim;
+    Real _L = (Real)m_beamsData.getValue()[i]._L;
+    Real _yDim = (Real)m_beamsData.getValue()[i]._yDim;
+    Real _zDim = (Real)m_beamsData.getValue()[i]._zDim;
 
-    const double E = (Real)beamsData.getValue()[i]._E;
-    const double nu = (Real)beamsData.getValue()[i]._nu;
+    const double E = (Real)m_beamsData.getValue()[i]._E;
+    const double nu = (Real)m_beamsData.getValue()[i]._nu;
 
-    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[i]._materialBehaviour;
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     StiffnessMatrix& Ke_loc = bd[i]._Ke_loc;
     Ke_loc.clear();
 
@@ -1104,14 +1103,14 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
 
     LambdaType computeStressMatrix = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
-        Be = beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
+        Be = m_beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
 
         stiffness += (w1*w2*w3)*beTCBeMult(Be.transpose(), C, nu, E);
 
         gaussPointIterator++; //next Gauss Point
     };
 
-    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[i]._integrationInterval;
+    ozp::quadrature::detail::Interval<3> interval = m_beamsData.getValue()[i]._integrationInterval;
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeStressMatrix);
 
     for (int i = 0; i < 12; i++)
@@ -1120,17 +1119,17 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
             Ke_loc[i][j] = stiffness(i, j);
         }
 
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::computeMaterialBehaviour(int i, Index a, Index b)
+void BeamPlasticFEMForceField<DataTypes>::computeMaterialBehaviour(int i, Index a, Index b)
 {
 
-    Real youngModulus = (Real)beamsData.getValue()[i]._E;
-    Real poissonRatio = (Real)beamsData.getValue()[i]._nu;
+    Real youngModulus = (Real)m_beamsData.getValue()[i]._E;
+    Real poissonRatio = (Real)m_beamsData.getValue()[i]._nu;
 
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
 
     Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
     // Material behaviour matrix, here: Hooke's law
@@ -1159,11 +1158,11 @@ void MultiBeamForceField<DataTypes>::computeMaterialBehaviour(int i, Index a, In
     S(3, 3) = S(4, 4) = S(5, 5) = 1 + poissonRatio;
     S *= 1 / youngModulus;
 
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 };
 
 template< class DataTypes>
-bool MultiBeamForceField<DataTypes>::goToPlastic(const VoigtTensor2 &stressTensor,
+bool BeamPlasticFEMForceField<DataTypes>::goToPlastic(const VoigtTensor2 &stressTensor,
                                                  const double yieldStress,
                                                  const bool verbose /*=FALSE*/)
 {
@@ -1179,7 +1178,7 @@ bool MultiBeamForceField<DataTypes>::goToPlastic(const VoigtTensor2 &stressTenso
 }
 
 template< class DataTypes>
-bool MultiBeamForceField<DataTypes>::goToPostPlastic(const VoigtTensor2 &stressTensor,
+bool BeamPlasticFEMForceField<DataTypes>::goToPostPlastic(const VoigtTensor2 &stressTensor,
                                                      const VoigtTensor2 &stressIncrement,
                                                      const bool verbose /*=FALSE*/)
 {
@@ -1200,7 +1199,7 @@ bool MultiBeamForceField<DataTypes>::goToPostPlastic(const VoigtTensor2 &stressT
 }
 
 template< class DataTypes>
-Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::deviatoricStress(const VoigtTensor2 &stressTensor)
+Eigen::Matrix<double, 6, 1> BeamPlasticFEMForceField<DataTypes>::deviatoricStress(const VoigtTensor2 &stressTensor)
 {
     // Returns the deviatoric stress from a given stress tensor in Voigt notation
 
@@ -1213,7 +1212,7 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::deviatoricStress(con
 }
 
 template< class DataTypes>
-double MultiBeamForceField<DataTypes>::equivalentStress(const VoigtTensor2 &stressTensor)
+double BeamPlasticFEMForceField<DataTypes>::equivalentStress(const VoigtTensor2 &stressTensor)
 {
     double res = 0.0;
     double sigmaX = stressTensor[0];
@@ -1231,7 +1230,7 @@ double MultiBeamForceField<DataTypes>::equivalentStress(const VoigtTensor2 &stre
 }
 
 template< class DataTypes>
-double MultiBeamForceField<DataTypes>::vonMisesYield(const VoigtTensor2 &stressTensor,
+double BeamPlasticFEMForceField<DataTypes>::vonMisesYield(const VoigtTensor2 &stressTensor,
                                                      const double yieldStress)
 {
     double eqStress = equivalentStress(stressTensor);
@@ -1239,7 +1238,7 @@ double MultiBeamForceField<DataTypes>::vonMisesYield(const VoigtTensor2 &stressT
 }
 
 template< class DataTypes>
-Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradient(const VoigtTensor2 &stressTensor)
+Eigen::Matrix<double, 6, 1> BeamPlasticFEMForceField<DataTypes>::vonMisesGradient(const VoigtTensor2 &stressTensor)
 {
     // NB: this gradient represent the normal to the yield surface
     // in case the Von Mises yield criterion is used.
@@ -1272,7 +1271,7 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradient(con
 }
 
 template< class DataTypes>
-Eigen::Matrix<double, 9, 9> MultiBeamForceField<DataTypes>::vonMisesHessian(const VoigtTensor2 &stressTensor,
+Eigen::Matrix<double, 9, 9> BeamPlasticFEMForceField<DataTypes>::vonMisesHessian(const VoigtTensor2 &stressTensor,
                                                                             const double yieldStress)
 {
     VectTensor4 hessian = VectTensor4::Zero();
@@ -1416,7 +1415,7 @@ Eigen::Matrix<double, 9, 9> MultiBeamForceField<DataTypes>::vonMisesHessian(cons
 /***************************** Alternative methods for DEBUG **************************/
 
 template< class DataTypes>
-double MultiBeamForceField<DataTypes>::vectEquivalentStress(const VectTensor2 &stressTensor)
+double BeamPlasticFEMForceField<DataTypes>::vectEquivalentStress(const VectTensor2 &stressTensor)
 {
     // Compute the equivalent stress using a vector notation
 
@@ -1439,7 +1438,7 @@ double MultiBeamForceField<DataTypes>::vectEquivalentStress(const VectTensor2 &s
 }
 
 template< class DataTypes>
-double MultiBeamForceField<DataTypes>::devEquivalentStress(const VoigtTensor2 &stressTensor)
+double BeamPlasticFEMForceField<DataTypes>::devEquivalentStress(const VoigtTensor2 &stressTensor)
 {
     // Compute the equivalent stress from the expression
     // of the deviatoric stress tensor
@@ -1451,7 +1450,7 @@ double MultiBeamForceField<DataTypes>::devEquivalentStress(const VoigtTensor2 &s
 }
 
 template< class DataTypes>
-double MultiBeamForceField<DataTypes>::devVonMisesYield(const VoigtTensor2 &stressTensor,
+double BeamPlasticFEMForceField<DataTypes>::devVonMisesYield(const VoigtTensor2 &stressTensor,
                                                         const double yieldStress)
 {
     double devEqStress = devEquivalentStress(stressTensor);
@@ -1460,7 +1459,7 @@ double MultiBeamForceField<DataTypes>::devVonMisesYield(const VoigtTensor2 &stre
 
 
 template< class DataTypes>
-double MultiBeamForceField<DataTypes>::vectVonMisesYield(const VectTensor2 &stressTensor,
+double BeamPlasticFEMForceField<DataTypes>::vectVonMisesYield(const VectTensor2 &stressTensor,
                                                          const double yieldStress)
 {
     double eqStress = vectEquivalentStress(stressTensor);
@@ -1469,7 +1468,7 @@ double MultiBeamForceField<DataTypes>::vectVonMisesYield(const VectTensor2 &stre
 
 
 template< class DataTypes>
-Eigen::Matrix<double, 9, 1> MultiBeamForceField<DataTypes>::vectVonMisesGradient(const VectTensor2 &stressTensor)
+Eigen::Matrix<double, 9, 1> BeamPlasticFEMForceField<DataTypes>::vectVonMisesGradient(const VectTensor2 &stressTensor)
 {
     // Computation of Von Mises yield function gradient,
     // in vector notation
@@ -1507,7 +1506,7 @@ Eigen::Matrix<double, 9, 1> MultiBeamForceField<DataTypes>::vectVonMisesGradient
 
 
 template< class DataTypes>
-Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::devVonMisesGradient(const VoigtTensor2 &stressTensor)
+Eigen::Matrix<double, 6, 1> BeamPlasticFEMForceField<DataTypes>::devVonMisesGradient(const VoigtTensor2 &stressTensor)
 {
     // Computation of the gradient of the Von Mises function, at stressTensor,
     // using the expression of the deviatoric stress tensor
@@ -1530,7 +1529,7 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::devVonMisesGradient(
 /*************************** Voigt notation correction ***********************/
 
 template< class DataTypes>
-double MultiBeamForceField<DataTypes>::voigtDotProduct(const VoigtTensor2 &t1, const VoigtTensor2 &t2)
+double BeamPlasticFEMForceField<DataTypes>::voigtDotProduct(const VoigtTensor2 &t1, const VoigtTensor2 &t2)
 {
     // This method provides a correct implementation of the dot product for 2nd-order tensors represented
     // with Voigt notation. As the tensors are symmetric, then can be represented with only 6 elements,
@@ -1543,7 +1542,7 @@ double MultiBeamForceField<DataTypes>::voigtDotProduct(const VoigtTensor2 &t1, c
 }
 
 template< class DataTypes>
-double MultiBeamForceField<DataTypes>::voigtTensorNorm(const VoigtTensor2 &t)
+double BeamPlasticFEMForceField<DataTypes>::voigtTensorNorm(const VoigtTensor2 &t)
 {
     // This method provides a correct implementation of the norm for 2nd-order tensors represented
     // with Voigt notation. The unrepresented elements are taken into account in the
@@ -1553,7 +1552,7 @@ double MultiBeamForceField<DataTypes>::voigtTensorNorm(const VoigtTensor2 &t)
 }
 
 template< class DataTypes>
-Eigen::Matrix<double, 12, 1> MultiBeamForceField<DataTypes>::beTTensor2Mult(const Eigen::Matrix<double, 12, 6> &BeT,
+Eigen::Matrix<double, 12, 1> BeamPlasticFEMForceField<DataTypes>::beTTensor2Mult(const Eigen::Matrix<double, 12, 6> &BeT,
     const VoigtTensor2 &T)
 {
     // In Voigt notation, 3 rows in Be (i.e. 3 columns in Be^T) are missing.
@@ -1583,7 +1582,7 @@ Eigen::Matrix<double, 12, 1> MultiBeamForceField<DataTypes>::beTTensor2Mult(cons
 }
 
 template< class DataTypes>
-Eigen::Matrix<double, 12, 12> MultiBeamForceField<DataTypes>::beTCBeMult(const Eigen::Matrix<double, 12, 6> &BeT,
+Eigen::Matrix<double, 12, 12> BeamPlasticFEMForceField<DataTypes>::beTCBeMult(const Eigen::Matrix<double, 12, 6> &BeT,
     const VoigtTensor4 &C,
     const double nu, const double E)
 {
@@ -1615,7 +1614,7 @@ Eigen::Matrix<double, 12, 12> MultiBeamForceField<DataTypes>::beTCBeMult(const E
 /********************* Stress computation - general methods ******************/
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
+void BeamPlasticFEMForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
                                                               const VecCoord& x,
                                                               int i,
                                                               Index a, Index b)
@@ -1626,9 +1625,9 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
     Eigen::Matrix<double, 12, 1> fint = Eigen::VectorXd::Zero(12);
 
-    if (_isPerfectlyPlastic.getValue())
+    if (d_isPerfectlyPlastic.getValue())
     {
-        //const MechanicalState beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
+        //const MechanicalState beamMechanicalState = m_beamsData.getValue()[i]._beamMechanicalState;
         //if (beamMechanicalState == ELASTIC)
         //    computeElasticForce(fint, x, i, a, b);
         //else if (beamMechanicalState == PLASTIC)
@@ -1661,7 +1660,7 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 }
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
+void BeamPlasticFEMForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
                                                              const VecDeriv& dx,
                                                              int i,
                                                              Index a, Index b, double fact)
@@ -1696,22 +1695,22 @@ void MultiBeamForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
     local_depl[10] = u[1];
     local_depl[11] = u[2];
 
-    beamsData.endEdit(); // consecutive to the call to beamQuat
+    m_beamsData.endEdit(); // consecutive to the call to beamQuat
 
-    const MechanicalState beamMechanicalState = beamsData.getValue()[i]._beamMechanicalState;
+    const MechanicalState beamMechanicalState = m_beamsData.getValue()[i]._beamMechanicalState;
     defaulttype::Vec<12, Real> local_dforce;
 
     // The stiffness matrix we use depends on the mechanical state of the beam element
 
     if (beamMechanicalState == PLASTIC)
-        local_dforce = beamsData.getValue()[i]._Kt_loc * local_depl;
+        local_dforce = m_beamsData.getValue()[i]._Kt_loc * local_depl;
     else
     {
-        if (_usePrecomputedStiffness.getValue())
+        if (d_usePrecomputedStiffness.getValue())
             // this computation can be optimised: (we know that half of "depl" is null)
-            local_dforce = beamsData.getValue()[i]._k_loc * local_depl;
+            local_dforce = m_beamsData.getValue()[i]._k_loc * local_depl;
         else
-            local_dforce = beamsData.getValue()[i]._Ke_loc * local_depl;
+            local_dforce = m_beamsData.getValue()[i]._Ke_loc * local_depl;
     }
 
     Vec3 fa1 = q.rotate(defaulttype::Vec3d(local_dforce[0], local_dforce[1], local_dforce[2]));
@@ -1724,11 +1723,11 @@ void MultiBeamForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
 }
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
+void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
                                                             Index a,
                                                             Index b)
 {
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     StiffnessMatrix& Kt_loc = bd[i]._Kt_loc;
     const Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
     const double E = bd[i]._E;
@@ -1757,7 +1756,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
     // Stress matrix, to be integrated
     LambdaType computeTangentStiffness = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
-        currentStressPoint = _prevStresses[i][gaussPointIt];
+        currentStressPoint = m_prevStresses[i][gaussPointIt];
 
         // Plastic modulus
         double plasticModulus = computeConstPlasticModulus();
@@ -1768,13 +1767,13 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
         // Cep
         gradient = vonMisesGradient(currentStressPoint);
 
-        if (!_useConsistentTangentOperator.getValue())
+        if (!d_useConsistentTangentOperator.getValue())
         {
             if (gradient.isZero() || pointMechanicalState[gaussPointIt] != PLASTIC)
                 Cep = C; //TO DO: is that correct ?
             else
             {
-                if (!_isPerfectlyPlastic.getValue())
+                if (!d_isPerfectlyPlastic.getValue())
                 {
                     VoigtTensor2 normal = helper::rsqrt(2.0 / 3.0)*gradient;
                     VectTensor2 vectNormal = voigtToVect2(normal);
@@ -1816,22 +1815,22 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
                 }
             }
         }
-        else // _useConsistentTangentOperator = true
+        else // d_useConsistentTangentOperator = true
         {
             if (pointMechanicalState[gaussPointIt] != PLASTIC)
                 Cep = C; //TO DO: is that correct ?
             else
             {
-                if (!_isPerfectlyPlastic.getValue())
+                if (!d_isPerfectlyPlastic.getValue())
                 {
                     //Computation of matrix H as in Studies in anisotropic plasticity with reference to the Hill criterion, De Borst and Feenstra, 1990
                     VectTensor4 H = VectTensor4::Zero();
                     VectTensor4 I = VectTensor4::Identity();
-                    VoigtTensor2 elasticPredictor = _elasticPredictors[i][gaussPointIt];
+                    VoigtTensor2 elasticPredictor = m_elasticPredictors[i][gaussPointIt];
 
                     VectTensor2 vectGradient = voigtToVect2(gradient);
                     VectTensor4 vectC = voigtToVect4(C);
-                    double yieldStress = beamsData.getValue()[i]._localYieldStresses[gaussPointIt];
+                    double yieldStress = m_beamsData.getValue()[i]._localYieldStresses[gaussPointIt];
                     double DeltaLambda = vonMisesYield(elasticPredictor, yieldStress) / (vectGradient.transpose()*vectC*vectGradient);
                     VectTensor4 vectHessian = vonMisesHessian(elasticPredictor, yieldStress);
 
@@ -1865,11 +1864,11 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
                     //Computation of matrix H as in Studies in anisotropic plasticity with reference to the Hill criterion, De Borst and Feenstra, 1990
                     VectTensor4 H = VectTensor4::Zero();
                     VectTensor4 I = VectTensor4::Identity();
-                    VoigtTensor2 elasticPredictor = _elasticPredictors[i][gaussPointIt];
+                    VoigtTensor2 elasticPredictor = m_elasticPredictors[i][gaussPointIt];
 
                     VectTensor2 vectGradient = voigtToVect2(gradient);
                     VectTensor4 vectC = voigtToVect4(C);
-                    double yieldStress = beamsData.getValue()[i]._localYieldStresses[gaussPointIt];
+                    double yieldStress = m_beamsData.getValue()[i]._localYieldStresses[gaussPointIt];
                     // NB: the gradient is the same between the elastic predictor and the new stress
                     double DeltaLambda = vonMisesYield(elasticPredictor, yieldStress) / (vectGradient.transpose()*vectC*vectGradient);
                     VectTensor4 vectHessian = vonMisesHessian(elasticPredictor, yieldStress);
@@ -1898,9 +1897,9 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
                         //double diffCep = (vectCep2 - consistentCep).norm();
                         //std::cout << "Norme de la difference dans le calcul de Cep : " << diffCep << std::endl;
                     }
-                } // end if _isPerfectlyPlastic = true
+                } // end if d_isPerfectlyPlastic = true
             } // end if pointMechanicalState[gaussPointIt] == PLASTIC
-        } // end if _useConsistentTangentOperator = true
+        } // end if d_useConsistentTangentOperator = true
 
         tangentStiffness += (w1*w2*w3)*beTCBeMult(Be.transpose(), Cep, nu, E);
 
@@ -1914,11 +1913,11 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
         for (int j = 0; j < 12; j++)
             Kt_loc[i][j] = tangentStiffness(i, j);
 
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 }
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computeLocalDisplacement(const VecCoord& x, Displacement &localDisp,
+void BeamPlasticFEMForceField<DataTypes>::computeLocalDisplacement(const VecCoord& x, Displacement &localDisp,
                                                               int i, Index a, Index b)
 {
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
@@ -1926,7 +1925,7 @@ void MultiBeamForceField<DataTypes>::computeLocalDisplacement(const VecCoord& x,
     beamQuat(i) = x[a].getOrientation();
     beamQuat(i).normalize();
 
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 
     defaulttype::Vec<3, Real> u, P1P2, P1P2_0;
 
@@ -1966,13 +1965,13 @@ void MultiBeamForceField<DataTypes>::computeLocalDisplacement(const VecCoord& x,
 }
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computeDisplacement(const VecCoord& x, const VecCoord& xRef,
+void BeamPlasticFEMForceField<DataTypes>::computeDisplacement(const VecCoord& x, const VecCoord& xRef,
                                                               Displacement &localDisp, int i, Index a, Index b)
 {
     beamQuat(i) = x[a].getOrientation();
     beamQuat(i).normalize();
 
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 
     defaulttype::Vec<3, Real> u, P1P2, P1P2_0;
 
@@ -2013,13 +2012,13 @@ void MultiBeamForceField<DataTypes>::computeDisplacement(const VecCoord& x, cons
 
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computeDisplacementWithoutCo(const VecCoord& x, const VecCoord& xRef,
+void BeamPlasticFEMForceField<DataTypes>::computeDisplacementWithoutCo(const VecCoord& x, const VecCoord& xRef,
                                                                   Displacement &localDisp, int i, Index a, Index b)
 {
     beamQuat(i) = x[a].getOrientation();
     beamQuat(i).normalize();
 
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 
     defaulttype::Vec<3, Real> u, P1P2, P1P2_0;
 
@@ -2058,7 +2057,7 @@ void MultiBeamForceField<DataTypes>::computeDisplacementWithoutCo(const VecCoord
 
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp,
+void BeamPlasticFEMForceField<DataTypes>::computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp,
                                                                   Displacement &lastDisp, Displacement &dispIncrement, int i, Index a, Index b)
 {
     // ***** Displacement for current position *****//
@@ -2080,7 +2079,7 @@ void MultiBeamForceField<DataTypes>::computeDisplacementIncrement(const VecCoord
 
 
 template< class DataTypes>
-double MultiBeamForceField<DataTypes>::computePlasticModulusFromStress(const Eigen::Matrix<double, 6, 1> &stressState)
+double BeamPlasticFEMForceField<DataTypes>::computePlasticModulusFromStress(const Eigen::Matrix<double, 6, 1> &stressState)
 {
     const double eqStress = equivalentStress(stressState);
     double plasticModulus = m_ConstitutiveLaw->getTangentModulusFromStress(eqStress); //TO DO: check for definition of H' in Hugues 1984
@@ -2088,21 +2087,21 @@ double MultiBeamForceField<DataTypes>::computePlasticModulusFromStress(const Eig
 }
 
 template< class DataTypes>
-double MultiBeamForceField<DataTypes>::computePlasticModulusFromStrain(int index, int gaussPointId)
+double BeamPlasticFEMForceField<DataTypes>::computePlasticModulusFromStrain(int index, int gaussPointId)
 {
-    const Real effPlasticStrain = beamsData.getValue()[index]._effectivePlasticStrains[gaussPointId];
+    const Real effPlasticStrain = m_beamsData.getValue()[index]._effectivePlasticStrains[gaussPointId];
     double plasticModulus = m_ConstitutiveLaw->getTangentModulusFromStrain(effPlasticStrain); //TO DO: check for definition of H' in Hugues 1984
     return plasticModulus;
 }
 
 template< class DataTypes>
-double MultiBeamForceField<DataTypes>::computeConstPlasticModulus()
+double BeamPlasticFEMForceField<DataTypes>::computeConstPlasticModulus()
 {
     return 34628588874.0; // TO DO: look for proper constant, from Hugues 1984 definition of H'
 }
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 12, 1> &internalForces,
+void BeamPlasticFEMForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 12, 1> &internalForces,
                                                          const VecCoord& x, int index, Index a, Index b)
 {
     // Here, all Gauss points are assumed to be in an ELASTIC state. Consequently,
@@ -2123,7 +2122,7 @@ void MultiBeamForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 1
 
     //***** Test if we enter in plastic deformation *****//
 
-    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour;
+    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[index]._materialBehaviour;
     Eigen::Matrix<double, 6, 12> Be;
 
     Real yieldStress;
@@ -2133,8 +2132,8 @@ void MultiBeamForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 1
     //For each Gauss point, we update the stress value for next iteration
     for (int gaussPointIt = 0; gaussPointIt < 27; gaussPointIt++)
     {
-        yieldStress = beamsData.getValue()[index]._localYieldStresses[gaussPointIt];
-        Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
+        yieldStress = m_beamsData.getValue()[index]._localYieldStresses[gaussPointIt];
+        Be = m_beamsData.getValue()[index]._BeMatrices[gaussPointIt];
         newStress = C*Be*eigenDepl; // Point is assumed to be ELASTIC
 
                                     // Checking if the deformation becomes plastic
@@ -2149,10 +2148,10 @@ void MultiBeamForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 1
             // in an ELASTIC state, but will allow the new PLASTIC points to be
             // handled correctly.
             computePlasticForce(internalForces, x, index, a, b);
-            helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+            helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
             MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
             beamMechanicalState = PLASTIC;
-            beamsData.endEdit();
+            m_beamsData.endEdit();
             return;
         }
 
@@ -2164,11 +2163,11 @@ void MultiBeamForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 1
     // would have been stopped by a call to computePlasticForce).
 
     // Storing the new stresses for the next time step, in case plasticity occurs.
-    _prevStresses[index] = newStresses;
+    m_prevStresses[index] = newStresses;
 
     // As all the points are in an ELASTIC state, it is not necessary
     // to use reduced integration (all the computation is linear).
-    nodalForces auxF = beamsData.getValue()[index]._Ke_loc * localDisp;
+    nodalForces auxF = m_beamsData.getValue()[index]._Ke_loc * localDisp;
 
     for (int i = 0; i<12; i++)
         internalForces(i) = auxF[i]; //TO DO: not very efficient, we should settle for one data structure only
@@ -2176,7 +2175,7 @@ void MultiBeamForceField<DataTypes>::computeElasticForce(Eigen::Matrix<double, 1
 }
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computePlasticForce(Eigen::Matrix<double, 12, 1> &internalForces,
+void BeamPlasticFEMForceField<DataTypes>::computePlasticForce(Eigen::Matrix<double, 12, 1> &internalForces,
                                                          const VecCoord& x, int index, Index a, Index b)
 {
     // Here, at least one Gauss point in the element is in a PLASTIC state. Other
@@ -2200,7 +2199,7 @@ void MultiBeamForceField<DataTypes>::computePlasticForce(Eigen::Matrix<double, 1
     Displacement currentDisp;
     Displacement lastDisp;
     Displacement dispIncrement;
-    computeDisplacementIncrement(x, _lastPos, currentDisp, lastDisp, dispIncrement, index, a, b);
+    computeDisplacementIncrement(x, m_lastPos, currentDisp, lastDisp, dispIncrement, index, a, b);
 
     // Converts to Eigen data structure
     EigenDisplacement displacementIncrement;
@@ -2213,7 +2212,7 @@ void MultiBeamForceField<DataTypes>::computePlasticForce(Eigen::Matrix<double, 1
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
 
-    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour;
+    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[index]._materialBehaviour;
     Eigen::Matrix<double, 6, 12> Be;
 
     VoigtTensor2 initialStressPoint = VoigtTensor2::Zero();
@@ -2221,7 +2220,7 @@ void MultiBeamForceField<DataTypes>::computePlasticForce(Eigen::Matrix<double, 1
     VoigtTensor2 newStressPoint = VoigtTensor2::Zero();
     double lambdaIncrement = 0;
 
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     helper::fixed_array<MechanicalState, 27>& pointMechanicalState = bd[index]._pointMechanicalState;
     bool isPlasticBeam = false;
     int gaussPointIt = 0;
@@ -2231,27 +2230,27 @@ void MultiBeamForceField<DataTypes>::computePlasticForce(Eigen::Matrix<double, 1
     // This function is to be called if the last stress point corresponded to elastic deformation
     LambdaType computePlastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
-        Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
+        Be = m_beamsData.getValue()[index]._BeMatrices[gaussPointIt];
         MechanicalState &mechanicalState = pointMechanicalState[gaussPointIt];
 
         //Strain
         strainIncrement = Be*displacementIncrement;
 
         //Stress
-        initialStressPoint = _prevStresses[index][gaussPointIt];
+        initialStressPoint = m_prevStresses[index][gaussPointIt];
         computeStressIncrement(index, gaussPointIt, initialStressPoint, newStressPoint,
             strainIncrement, lambdaIncrement, mechanicalState, currentDisp);
 
         isPlasticBeam = isPlasticBeam || (mechanicalState == PLASTIC);
 
-        _prevStresses[index][gaussPointIt] = newStressPoint;
+        m_prevStresses[index][gaussPointIt] = newStressPoint;
 
         internalForces += (w1*w2*w3)*beTTensor2Mult(Be.transpose(), newStressPoint);
 
         gaussPointIt++; //Next Gauss Point
     };
 
-    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[index]._integrationInterval;
+    ozp::quadrature::detail::Interval<3> interval = m_beamsData.getValue()[index]._integrationInterval;
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computePlastic);
 
     // Updates the beam mechanical state information
@@ -2260,7 +2259,7 @@ void MultiBeamForceField<DataTypes>::computePlasticForce(Eigen::Matrix<double, 1
         MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
         beamMechanicalState = POSTPLASTIC;
     }
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 
     //Update the tangent stiffness matrix with the new computed stresses
     //This matrix will then be used in addDForce and addKToMatrix methods
@@ -2269,7 +2268,7 @@ void MultiBeamForceField<DataTypes>::computePlasticForce(Eigen::Matrix<double, 1
 }
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<double, 12, 1> &internalForces,
+void BeamPlasticFEMForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<double, 12, 1> &internalForces,
     const VecCoord& x, int index, Index a, Index b)
 {
     // Here, we assume that no Gauss point is in PLASTIC state, but the
@@ -2289,12 +2288,12 @@ void MultiBeamForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<doubl
         eigenDepl(i) = localDisp[i];
 
     //***** Test if we enter in plastic deformation *****//
-    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour;
+    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[index]._materialBehaviour;
     Eigen::Matrix<double, 6, 12> Be;
-    const helper::fixed_array<MechanicalState, 27>& pointMechanicalState = beamsData.getValue()[index]._pointMechanicalState;
+    const helper::fixed_array<MechanicalState, 27>& pointMechanicalState = m_beamsData.getValue()[index]._pointMechanicalState;
 
-    const MechanicalState& beamMechanicalState = beamsData.getValue()[index]._beamMechanicalState;
-    const helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = beamsData.getValue()[index]._plasticStrainHistory;
+    const MechanicalState& beamMechanicalState = m_beamsData.getValue()[index]._beamMechanicalState;
+    const helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = m_beamsData.getValue()[index]._plasticStrainHistory;
     Real yieldStress;
     VoigtTensor2 newStress;
     helper::fixed_array<VoigtTensor2, 27> newStresses;
@@ -2307,8 +2306,8 @@ void MultiBeamForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<doubl
     // states
     for (int gaussPointIt = 0; gaussPointIt < 27; gaussPointIt++)
     {
-        yieldStress = beamsData.getValue()[index]._localYieldStresses[gaussPointIt];
-        Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
+        yieldStress = m_beamsData.getValue()[index]._localYieldStresses[gaussPointIt];
+        Be = m_beamsData.getValue()[index]._BeMatrices[gaussPointIt];
 
         if (pointMechanicalState[gaussPointIt] == ELASTIC)
             newStress = C*Be*eigenDepl;
@@ -2330,10 +2329,10 @@ void MultiBeamForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<doubl
             // in an ELASTIC or POSTPLASTIC state, but will allow the new
             // PLASTIC points to be handled correctly.
             computePlasticForce(internalForces, x, index, a, b);
-            helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+            helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
             MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
             beamMechanicalState = PLASTIC;
-            beamsData.endEdit();
+            m_beamsData.endEdit();
             return;
         }
 
@@ -2345,7 +2344,7 @@ void MultiBeamForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<doubl
     // been stopped by a call to computePlasticForce.
 
     // Storing the new stresses for the next time step, in case plasticity occurs.
-    _prevStresses[index] = newStresses;
+    m_prevStresses[index] = newStresses;
 
     // Computation of the resulting internal forces, using Gaussian reduced integration.
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
@@ -2354,19 +2353,19 @@ void MultiBeamForceField<DataTypes>::computePostPlasticForce(Eigen::Matrix<doubl
     int gaussPointIt = 0;
     LambdaType computePostPlastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
-        Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
+        Be = m_beamsData.getValue()[index]._BeMatrices[gaussPointIt];
 
         internalForces += (w1*w2*w3)*beTTensor2Mult(Be.transpose(), newStresses[gaussPointIt]);
 
         gaussPointIt++; //Next Gauss Point
     };
 
-    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[index]._integrationInterval;
+    ozp::quadrature::detail::Interval<3> interval = m_beamsData.getValue()[index]._integrationInterval;
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computePostPlastic);
 }
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
+void BeamPlasticFEMForceField<DataTypes>::computeStressIncrement(int index,
                                                             int gaussPointIt,
                                                             const VoigtTensor2 &initialStress,
                                                             VoigtTensor2 &newStressPoint,
@@ -2379,15 +2378,15 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     //NB: we consider that the yield function and the plastic flow are equal (f=g)
     //    This corresponds to an associative flow rule (for plasticity)
 
-    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
-    const Real yieldStress = beamsData.getValue()[index]._localYieldStresses[gaussPointIt];
+    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
+    const Real yieldStress = m_beamsData.getValue()[index]._localYieldStresses[gaussPointIt];
 
     //First we compute the elastic predictor
     VoigtTensor2 elasticIncrement = C*strainIncrement;
     VoigtTensor2 currentStressPoint = initialStress + elasticIncrement;
 
-    if (_useConsistentTangentOperator.getValue())
-        _elasticPredictors[index][gaussPointIt] = currentStressPoint;
+    if (d_useConsistentTangentOperator.getValue())
+        m_elasticPredictors[index][gaussPointIt] = currentStressPoint;
 
 
     /***************** Determination of the mechanical state *****************/
@@ -2414,8 +2413,8 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     else if (pointMechanicalState == POSTPLASTIC)
     {
         //We take into account the plastic history
-        const helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = beamsData.getValue()[index]._plasticStrainHistory;
-        const Eigen::Matrix<double, 6, 12> &Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
+        const helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = m_beamsData.getValue()[index]._plasticStrainHistory;
+        const Eigen::Matrix<double, 6, 12> &Be = m_beamsData.getValue()[index]._BeMatrices[gaussPointIt];
 
         EigenDisplacement eigenCurrentDisp;
         for (int k = 0; k < 12; k++)
@@ -2458,8 +2457,8 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
             newStressPoint = currentStressPoint;
 
             // Recomputation of the stress, taking off the plastic strain history
-            const Eigen::Matrix<double, 6, 12> &Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
-            const helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = beamsData.getValue()[index]._plasticStrainHistory;
+            const Eigen::Matrix<double, 6, 12> &Be = m_beamsData.getValue()[index]._BeMatrices[gaussPointIt];
+            const helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = m_beamsData.getValue()[index]._plasticStrainHistory;
 
             EigenDisplacement eigenCurrentDisp;
             for (int k = 0; k < 12; k++)
@@ -2514,15 +2513,15 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     double lambda = voigtDotProduct(yieldNormal, strainIncrement);
 
     VoigtTensor2 plasticStrainIncrement = lambda*yieldNormal;
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
     plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 }
 
 
 template<class DataTypes>
-Eigen::Matrix<double, 9, 1> MultiBeamForceField<DataTypes>::voigtToVect2(const VoigtTensor2 &voigtTensor)
+Eigen::Matrix<double, 9, 1> BeamPlasticFEMForceField<DataTypes>::voigtToVect2(const VoigtTensor2 &voigtTensor)
 {
     // This function aims at vectorising a second-order tensor taking into account
     // all 9 elements of the tensor. The result is thus a 9x1 vector (contrarily
@@ -2547,7 +2546,7 @@ Eigen::Matrix<double, 9, 1> MultiBeamForceField<DataTypes>::voigtToVect2(const V
 
 
 template<class DataTypes>
-Eigen::Matrix<double, 9, 9> MultiBeamForceField<DataTypes>::voigtToVect4(const VoigtTensor4 &voigtTensor)
+Eigen::Matrix<double, 9, 9> BeamPlasticFEMForceField<DataTypes>::voigtToVect4(const VoigtTensor4 &voigtTensor)
 {
     // This function aims at vectorising a fourth-order tensor taking into account
     // all 81 elements of the tensor. The result is thus a 9x9 matrix (contrarily
@@ -2614,7 +2613,7 @@ Eigen::Matrix<double, 9, 9> MultiBeamForceField<DataTypes>::voigtToVect4(const V
 
 
 template<class DataTypes>
-Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vectToVoigt2(const VectTensor2 &vectTensor)
+Eigen::Matrix<double, 6, 1> BeamPlasticFEMForceField<DataTypes>::vectToVoigt2(const VectTensor2 &vectTensor)
 {
     // This function aims at reducing the expression of a second-order tensor
     // using Voigt notation. The tensor is initially expressed in vector form
@@ -2638,7 +2637,7 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vectToVoigt2(const V
 
 
 template<class DataTypes>
-Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vectToVoigt4(const VectTensor4 &vectTensor)
+Eigen::Matrix<double, 6, 6> BeamPlasticFEMForceField<DataTypes>::vectToVoigt4(const VectTensor4 &vectTensor)
 {
     // This function aims at reducing the expression of a fourth-order tensor
     // using Voigt notation. The tensor is initially expressed in vector form
@@ -2703,14 +2702,14 @@ Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vectToVoigt4(const V
 
 // Hugues implementation (perfectly plastic and mixed hardening)
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computeForceWithHardening(Eigen::Matrix<double, 12, 1> &internalForces,
+void BeamPlasticFEMForceField<DataTypes>::computeForceWithHardening(Eigen::Matrix<double, 12, 1> &internalForces,
     const VecCoord& x, int index, Index a, Index b)
 {
     // Computes displacement increment, from last system solution
     Displacement currentDisp;
     Displacement lastDisp;
     Displacement dispIncrement;
-    computeDisplacementIncrement(x, _lastPos, currentDisp, lastDisp, dispIncrement, index, a, b);
+    computeDisplacementIncrement(x, m_lastPos, currentDisp, lastDisp, dispIncrement, index, a, b);
 
     // Converts to Eigen data structure
     EigenDisplacement displacementIncrement;
@@ -2723,14 +2722,14 @@ void MultiBeamForceField<DataTypes>::computeForceWithHardening(Eigen::Matrix<dou
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
 
-    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour;
+    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[index]._materialBehaviour;
     Eigen::Matrix<double, 6, 12> Be;
 
     VoigtTensor2 initialStressPoint = VoigtTensor2::Zero();
     VoigtTensor2 strainIncrement = VoigtTensor2::Zero();
     VoigtTensor2 newStressPoint = VoigtTensor2::Zero();
 
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     helper::fixed_array<MechanicalState, 27>& pointMechanicalState = bd[index]._pointMechanicalState;
     bool isPlasticBeam = false;
     int gaussPointIt = 0;
@@ -2740,27 +2739,27 @@ void MultiBeamForceField<DataTypes>::computeForceWithHardening(Eigen::Matrix<dou
     // This function is to be called if the last stress point corresponded to elastic deformation
     LambdaType computeStress = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
-        Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
+        Be = m_beamsData.getValue()[index]._BeMatrices[gaussPointIt];
         MechanicalState &mechanicalState = pointMechanicalState[gaussPointIt];
 
         //Strain
         strainIncrement = Be*displacementIncrement;
 
         //Stress
-        initialStressPoint = _prevStresses[index][gaussPointIt];
+        initialStressPoint = m_prevStresses[index][gaussPointIt];
         computeHardeningStressIncrement(index, gaussPointIt, initialStressPoint, newStressPoint,
             strainIncrement, mechanicalState);
 
         isPlasticBeam = isPlasticBeam || (mechanicalState == PLASTIC);
 
-        _prevStresses[index][gaussPointIt] = newStressPoint;
+        m_prevStresses[index][gaussPointIt] = newStressPoint;
 
         internalForces += (w1*w2*w3)*beTTensor2Mult(Be.transpose(), newStressPoint);
 
         gaussPointIt++; //Next Gauss Point
     };
 
-    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[index]._integrationInterval;
+    ozp::quadrature::detail::Interval<3> interval = m_beamsData.getValue()[index]._integrationInterval;
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeStress);
 
     // Updates the beam mechanical state information
@@ -2769,7 +2768,7 @@ void MultiBeamForceField<DataTypes>::computeForceWithHardening(Eigen::Matrix<dou
         MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
         beamMechanicalState = POSTPLASTIC;
     }
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 
     //Update the tangent stiffness matrix with the new computed stresses
     //This matrix will then be used in addDForce and addKToMatrix methods
@@ -2779,7 +2778,7 @@ void MultiBeamForceField<DataTypes>::computeForceWithHardening(Eigen::Matrix<dou
 
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
+void BeamPlasticFEMForceField<DataTypes>::computeHardeningStressIncrement(int index,
                                                                      int gaussPointIt,
                                                                      const VoigtTensor2 &lastStress,
                                                                      VoigtTensor2 &newStressPoint,
@@ -2790,7 +2789,7 @@ void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
     //NB: we consider that the yield function and the plastic flow are equal (f=g)
     //    This corresponds to an associative flow rule (for plasticity)
 
-    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
+    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
 
     /***************************************************/
     /*      Radial return with hardening - Hugues      */
@@ -2802,10 +2801,10 @@ void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
     VoigtTensor2 elasticIncrement = C*strainIncrement;
     VoigtTensor2 trialStress = lastStress + elasticIncrement;
 
-    if (_useConsistentTangentOperator.getValue())
-        _elasticPredictors[index][gaussPointIt] = trialStress;
+    if (d_useConsistentTangentOperator.getValue())
+        m_elasticPredictors[index][gaussPointIt] = trialStress;
 
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
 
     helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &backStresses = bd[index]._backStresses;
     Eigen::Matrix<double, 6, 1> &backStress = backStresses[gaussPointIt];
@@ -2842,8 +2841,8 @@ void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
 
             const double beta = 0.5; // Indicates the proportion of Kinematic vs isotropic hardening. beta=0 <=> kinematic, beta=1 <=> isotropic
 
-            const double E = beamsData.getValue()[index]._E;
-            const double nu = beamsData.getValue()[index]._nu;
+            const double E = m_beamsData.getValue()[index]._E;
+            const double nu = m_beamsData.getValue()[index]._nu;
             const double mu = E / (2 * (1 + nu)); // Lame coefficient
 
             double H = computeConstPlasticModulus();
@@ -2858,16 +2857,16 @@ void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
 
             backStress += helper::rsqrt(2.0 / 3.0)*(1 - beta)*H*plasticMultiplier*finalN;
 
-            //helper::vector<BeamInfo>& bd = *(beamsData.beginEdit()); //Done in the beginning to modify the yield and back stresses
+            //helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit()); //Done in the beginning to modify the yield and back stresses
             helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
             VoigtTensor2 plasticStrainIncrement = helper::rsqrt(3.0/2.0)*plasticMultiplier*finalN;
             plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
-            //beamsData.endEdit();
+            //m_beamsData.endEdit();
 
             helper::fixed_array<Real, 27> &effectivePlasticStrain = bd[index]._effectivePlasticStrains;
             effectivePlasticStrain[gaussPointIt] += plasticMultiplier;
 
-            beamsData.endEdit(); //end edit _backStresses, _localYieldStresses, _plasticStrainHistory, and _effectivePlasticStrains
+            m_beamsData.endEdit(); //end edit _backStresses, _localYieldStresses, _plasticStrainHistory, and _effectivePlasticStrains
         }
 
         /*******************************************/
@@ -2876,7 +2875,7 @@ void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
         {
             //***** Constructing the system for the first iteration *****/
 
-            //helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+            //helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
 
             //helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &backStresses = bd[index]._backStresses;
             //Eigen::Matrix<double, 6, 1> &backStress = backStresses[gaussPointIt];
@@ -2884,7 +2883,7 @@ void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
             //Real &yieldStress = localYieldStresses[gaussPointIt];
 
             //const VectTensor4 vectC = voigtToVect4(C);
-            //const double E = beamsData.getValue()[index]._E;
+            //const double E = m_beamsData.getValue()[index]._E;
             //const double beta = 0.5;
 
             //VoigtTensor2 currentStress = trialStress;
@@ -3021,7 +3020,7 @@ void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
             //VoigtTensor2 plasticStrainIncrement = lambda*currentNormal;
             //plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
 
-            //beamsData.endEdit(); //end edit _backStresses, _localYieldStresses, _plasticStrainHistory
+            //m_beamsData.endEdit(); //end edit _backStresses, _localYieldStresses, _plasticStrainHistory
         }
     }
 }
@@ -3029,14 +3028,14 @@ void MultiBeamForceField<DataTypes>::computeHardeningStressIncrement(int index,
 
 // TESTING : Incremental implementation for perfect plasticity
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computeForceWithPerfectPlasticity(Eigen::Matrix<double, 12, 1> &internalForces,
+void BeamPlasticFEMForceField<DataTypes>::computeForceWithPerfectPlasticity(Eigen::Matrix<double, 12, 1> &internalForces,
     const VecCoord& x, int index, Index a, Index b)
 {
     // Computes displacement increment, from last system solution
     Displacement currentDisp;
     Displacement lastDisp;
     Displacement dispIncrement;
-    computeDisplacementIncrement(x, _lastPos, currentDisp, lastDisp, dispIncrement, index, a, b);
+    computeDisplacementIncrement(x, m_lastPos, currentDisp, lastDisp, dispIncrement, index, a, b);
 
     // Converts to Eigen data structure
     EigenDisplacement displacementIncrement;
@@ -3049,14 +3048,14 @@ void MultiBeamForceField<DataTypes>::computeForceWithPerfectPlasticity(Eigen::Ma
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
 
-    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour;
+    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[index]._materialBehaviour;
     Eigen::Matrix<double, 6, 12> Be;
 
     VoigtTensor2 initialStressPoint = VoigtTensor2::Zero();
     VoigtTensor2 strainIncrement = VoigtTensor2::Zero();
     VoigtTensor2 newStressPoint = VoigtTensor2::Zero();
 
-    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     helper::fixed_array<MechanicalState, 27>& pointMechanicalState = bd[index]._pointMechanicalState;
     bool isPlasticBeam = false;
     int gaussPointIt = 0;
@@ -3066,27 +3065,27 @@ void MultiBeamForceField<DataTypes>::computeForceWithPerfectPlasticity(Eigen::Ma
     // This function is to be called if the last stress point corresponded to elastic deformation
     LambdaType computeStress = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
-        Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
+        Be = m_beamsData.getValue()[index]._BeMatrices[gaussPointIt];
         MechanicalState &mechanicalState = pointMechanicalState[gaussPointIt];
 
         //Strain
         strainIncrement = Be*displacementIncrement;
 
         //Stress
-        initialStressPoint = _prevStresses[index][gaussPointIt];
+        initialStressPoint = m_prevStresses[index][gaussPointIt];
         computePerfectPlasticStressIncrement(index, gaussPointIt, initialStressPoint, newStressPoint,
             strainIncrement, mechanicalState);
 
         isPlasticBeam = isPlasticBeam || (mechanicalState == PLASTIC);
 
-        _prevStresses[index][gaussPointIt] = newStressPoint;
+        m_prevStresses[index][gaussPointIt] = newStressPoint;
 
         internalForces += (w1*w2*w3)*beTTensor2Mult(Be.transpose(), newStressPoint);
 
         gaussPointIt++; //Next Gauss Point
     };
 
-    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[index]._integrationInterval;
+    ozp::quadrature::detail::Interval<3> interval = m_beamsData.getValue()[index]._integrationInterval;
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeStress);
 
     // Updates the beam mechanical state information
@@ -3095,7 +3094,7 @@ void MultiBeamForceField<DataTypes>::computeForceWithPerfectPlasticity(Eigen::Ma
         MechanicalState& beamMechanicalState = bd[index]._beamMechanicalState;
         beamMechanicalState = POSTPLASTIC;
     }
-    beamsData.endEdit();
+    m_beamsData.endEdit();
 
     //Update the tangent stiffness matrix with the new computed stresses
     //This matrix will then be used in addDForce and addKToMatrix methods
@@ -3104,7 +3103,7 @@ void MultiBeamForceField<DataTypes>::computeForceWithPerfectPlasticity(Eigen::Ma
 
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computePerfectPlasticStressIncrement(int index,
+void BeamPlasticFEMForceField<DataTypes>::computePerfectPlasticStressIncrement(int index,
                                                                           int gaussPointIt,
                                                                           const VoigtTensor2 &lastStress,
                                                                           VoigtTensor2 &newStressPoint,
@@ -3115,7 +3114,7 @@ void MultiBeamForceField<DataTypes>::computePerfectPlasticStressIncrement(int in
     //NB: we consider that the yield function and the plastic flow are equal (f=g)
     //    This corresponds to an associative flow rule (for plasticity)
 
-    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
+    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
 
     /***************************************************/
     /*  Radial return in perfect plasticity - Hugues   */
@@ -3127,10 +3126,10 @@ void MultiBeamForceField<DataTypes>::computePerfectPlasticStressIncrement(int in
         VoigtTensor2 elasticIncrement = C*strainIncrement;
         VoigtTensor2 trialStress = lastStress + elasticIncrement;
 
-        if (_useConsistentTangentOperator.getValue())
-            _elasticPredictors[index][gaussPointIt] = trialStress;
+        if (d_useConsistentTangentOperator.getValue())
+            m_elasticPredictors[index][gaussPointIt] = trialStress;
 
-        helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+        helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
 
         helper::fixed_array<Real, 27> &localYieldStresses = bd[index]._localYieldStresses;
         Real &yieldStress = localYieldStresses[gaussPointIt];
@@ -3179,10 +3178,10 @@ void MultiBeamForceField<DataTypes>::computePerfectPlasticStressIncrement(int in
             double lambda = voigtDotProduct(yieldNormal, strainIncrement);
 
             VoigtTensor2 plasticStrainIncrement = lambda*yieldNormal;
-            helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+            helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
             helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
             plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
-            beamsData.endEdit();
+            m_beamsData.endEdit();
         }
 
     }
@@ -3211,11 +3210,20 @@ inline defaulttype::Quat qDiff(defaulttype::Quat a, const defaulttype::Quat& b)
     return q;
 }
 
+template<class DataTypes>
+defaulttype::Quat& BeamPlasticFEMForceField<DataTypes>::beamQuat(int i)
+{
+    helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
+    return bd[i].quat;
+}
+
 
 
 
 
 /**************************************************************************/
+
+} // namespace beamplasticforcefield
 
 } // namespace forcefield
 
@@ -3223,4 +3231,4 @@ inline defaulttype::Quat qDiff(defaulttype::Quat a, const defaulttype::Quat& b)
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_INL
+#endif // SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_INL
