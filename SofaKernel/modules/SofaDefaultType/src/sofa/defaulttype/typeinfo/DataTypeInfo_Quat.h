@@ -31,8 +31,8 @@ namespace sofa::defaulttype
 template<class T>
 struct DataTypeInfo< sofa::helper::Quater<T> > : public FixedArrayTypeInfo< sofa::helper::Quater<T> >
 {
-    static std::string GetTypeName() { std::ostringstream o; o << "Quater<" << DataTypeName<T>::typeName() << ">"; return o.str(); }
-    static std::string GetName() { std::ostringstream o; o << "Quat" << DataTypeName<T>::name() ; return o.str(); }
+    static std::string GetTypeName() { std::ostringstream o; o << "Quat<" << DataTypeName<T>::GetTypeName() << ">"; return o.str(); }
+    static std::string GetName() { std::ostringstream o; o << "Quat" << DataTypeName<T>::GetName() ; return o.str(); }
 };
 
 } /// namespace sofa::defaulttype

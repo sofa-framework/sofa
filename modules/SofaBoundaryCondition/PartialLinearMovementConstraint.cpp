@@ -26,6 +26,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/simulation/Node.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
 
 namespace sofa
 {

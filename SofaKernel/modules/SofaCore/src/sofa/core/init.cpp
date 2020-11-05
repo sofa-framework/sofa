@@ -23,6 +23,9 @@
 
 #include <sofa/defaulttype/init.h>
 #include <sofa/helper/init.h>
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
+#include <sofa/defaulttype/AbstractTypeInfo.h>
+#include <iostream>
 
 namespace sofa
 {
@@ -39,6 +42,13 @@ SOFA_CORE_API void init()
     {
         sofa::defaulttype::init();
         s_initialized = true;
+
+        std::cout << "Module: " << sofa_tostring(SOFA_TARGET) << std::endl;
+        for(auto& info : sofa::defaulttype::DataTypeInfoRegistry::GetRegisteredTypes(sofa_tostring(SOFA_TARGET)))
+        {
+            std::string s = (info->ValidInfo())?"-":"!";
+            std::cout << "  " << s << " "  << info->name() << std::endl;
+        }
     }
 }
 

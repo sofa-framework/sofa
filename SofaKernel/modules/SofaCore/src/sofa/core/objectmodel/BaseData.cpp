@@ -99,13 +99,14 @@ BaseData::~BaseData()
 bool BaseData::validParent(BaseData* parent)
 {
 
-    std::cout << this->getValueTypeInfo()->name() << " && " << parent->getValueTypeInfo()->name() << std::endl;
-    std::cout << this->getValueTypeInfo()->name() << " && " << parent->getValueTypeInfo()->name() << std::endl;
+    std::cout << "type: " << this->getValueTypeInfo()->name() << " && " << parent->getValueTypeInfo()->name() << std::endl;
+    std::cout << "cvt: " << this->getValueTypeInfo()->ValidInfo() << "  " << parent->getValueTypeInfo()->ValidInfo() << std::endl;
+
     // Check if automatic conversion is possible
     if (this->getValueTypeInfo()->ValidInfo() && parent->getValueTypeInfo()->ValidInfo())
         return true;
     // Check if one of the data is a simple string
-    if (this->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name() || parent->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name())
+    if (this->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::GetName() || parent->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::GetName())
         return true;
     // No conversion found
     return false;
@@ -190,7 +191,7 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
     const defaulttype::AbstractTypeInfo* parentInfo = parent->getValueTypeInfo();
 
     // Check if one of the data is a simple string
-    if (this->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name() || parent->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name())
+    if (this->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::GetName() || parent->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::GetName())
     {
         std::string text = parent->getValueString();
         return this->read(text);

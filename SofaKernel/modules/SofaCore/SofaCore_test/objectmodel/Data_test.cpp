@@ -48,14 +48,15 @@ TEST_F(Data_test, getValueTypeString)
     EXPECT_EQ(dataFloat.getValueTypeName(), "float");
     EXPECT_EQ(dataBool.getValueTypeName(), "bool");
     EXPECT_EQ(dataVec3.getValueTypeName(), "Vec<3,double>");
-    EXPECT_EQ(dataVectorVec3.getValueTypeName(), "vector<Vec3d>");
+    EXPECT_EQ(dataVectorVec3.getValueTypeName(), "vector<Vec<3,double>>");
     EXPECT_EQ(dataVectorColor.getValueTypeName(), "vector<RGBAColor>");
 }
 
 TEST_F(Data_test, getValueName)
+{
     EXPECT_EQ(dataInt.getValueName(), "i");
     EXPECT_EQ(dataFloat.getValueName(), "f");
-    EXPECT_EQ(dataBool.getValueName(), "b");
+    EXPECT_EQ(dataBool.getValueName(), "bool");
     EXPECT_EQ(dataVec3.getValueName(), "Vec3d");
     EXPECT_EQ(dataVectorVec3.getValueName(), "vector<Vec3d>");
     EXPECT_EQ(dataVectorColor.getValueName(), "vector<RGBAColor>");
@@ -64,8 +65,8 @@ TEST_F(Data_test, getValueName)
 
 TEST_F(Data_test, getNameWithValueTypeInfo)
 {
-    EXPECT_EQ(dataInt.getValueTypeInfo()->name(), "int");
-    EXPECT_EQ(dataFloat.getValueTypeInfo()->name(), "float");
+    EXPECT_EQ(dataInt.getValueTypeInfo()->name(), "i");
+    EXPECT_EQ(dataFloat.getValueTypeInfo()->name(), "f");
     EXPECT_EQ(dataBool.getValueTypeInfo()->name(), "bool");
     EXPECT_EQ(dataVec3.getValueTypeInfo()->name(), "Vec3d");
     EXPECT_EQ(dataVectorVec3.getValueTypeInfo()->name(), "vector<Vec3d>");

@@ -32,6 +32,8 @@
 
 namespace sofa::defaulttype
 {
+using sofa::helper::fixed_array;
+using sofa::helper::vector;
 
 template <typename... Ts, typename F>
 constexpr void for_types(F&& f)
@@ -48,29 +50,23 @@ int vectorPreLoad()
             Vec2f, Vec2d, Vec2i, Vec2u,
             Vec3f, Vec3d, Vec3i, Vec3u,
             Vec4f, Vec4d, Vec4i, Vec4u,
+            fixed_array<float, 1>, fixed_array<float, 2>, fixed_array<float, 3>, fixed_array<float, 4>, fixed_array<float, 5>, fixed_array<float, 6>, fixed_array<float, 7>, fixed_array<float, 8>,
+            fixed_array<double, 1>, fixed_array<double, 2>, fixed_array<double, 3>, fixed_array<double, 4>, fixed_array<double, 5>, fixed_array<double, 6>, fixed_array<double, 7>, fixed_array<double, 8>,
+            fixed_array<char, 1>, fixed_array<char, 2>, fixed_array<char, 3>, fixed_array<char, 4>, fixed_array<char, 5>, fixed_array<char, 6>, fixed_array<char, 7>, fixed_array<double, 8>,
+            fixed_array<unsigned char, 1>, fixed_array<unsigned char, 2>, fixed_array<unsigned char, 3>, fixed_array<unsigned char, 4>, fixed_array<unsigned char, 5>, fixed_array<unsigned char, 6>, fixed_array<unsigned char, 7>, fixed_array<unsigned char, 8>,
+            fixed_array<int, 1>, fixed_array<int, 2>, fixed_array<int, 3>, fixed_array<int, 4>, fixed_array<int, 5>, fixed_array<int, 6>, fixed_array<int, 7>, fixed_array<int, 8>,
+            fixed_array<unsigned int, 1>, fixed_array<unsigned int, 2>, fixed_array<unsigned int, 3>, fixed_array<unsigned int, 4>, fixed_array<unsigned int, 5>, fixed_array<unsigned int, 6>, fixed_array<unsigned int, 7>, fixed_array<unsigned int, 8>,
+            fixed_array<long, 1>, fixed_array<long, 2>, fixed_array<long, 3>, fixed_array<long, 4>, fixed_array<long, 5>, fixed_array<long, 6>, fixed_array<long, 7>, fixed_array<long, 8>,
+            fixed_array<unsigned long, 1>, fixed_array<unsigned int, 2>, fixed_array<unsigned long, 3>, fixed_array<unsigned long, 4>, fixed_array<unsigned long, 5>, fixed_array<unsigned long, 6>, fixed_array<unsigned long, 7>, fixed_array<unsigned long, 8>,
+
+
             sofa::helper::types::RGBAColor, BoundingBox>([]<typename T>()
                                                          {
-//                                                             DataTypeInfoRegistry::Set(DataTypeId<T>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<T> >::get());
-                                                             DataTypeInfoRegistry::Set(DataTypeId<std::vector<T>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<std::vector<T>> >::get());
-                                                             DataTypeInfoRegistry::Set(DataTypeId<sofa::helper::vector<T>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<T>> >::get());
-
-                                                             typedef sofa::helper::fixed_array<float, 1> r;
-                                                             DataTypeInfoRegistry::Set(DataTypeId<std::vector<r>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<std::vector<r>> >::get());
-                                                             DataTypeInfoRegistry::Set(DataTypeId<sofa::helper::vector<r>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<r>> >::get());
-
-                                                             typedef sofa::helper::fixed_array<float, 2> rr;
-                                                             DataTypeInfoRegistry::Set(DataTypeId<std::vector<rr>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<std::vector<rr>> >::get());
-                                                             DataTypeInfoRegistry::Set(DataTypeId<sofa::helper::vector<rr>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<rr>> >::get());
-
-
-                                                             typedef sofa::helper::fixed_array<int, 1> r1;
-                                                             DataTypeInfoRegistry::Set(DataTypeId<std::vector<r1>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<std::vector<r>> >::get());
-                                                             DataTypeInfoRegistry::Set(DataTypeId<sofa::helper::vector<r1>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<r>> >::get());
-
-                                                             typedef sofa::helper::fixed_array<int, 2> r2;
-                                                             DataTypeInfoRegistry::Set(DataTypeId<std::vector<r2>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<std::vector<rr>> >::get());
-                                                             DataTypeInfoRegistry::Set(DataTypeId<sofa::helper::vector<r2>>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::helper::vector<rr>> >::get());
-                                                         });
+                                                             DataTypeInfoRegistry::Set(DataTypeId<vector<T>>::getTypeId(),
+                                                                                       VirtualTypeInfoA< DataTypeInfo<vector<T>> >::get(), sofa_tostring(SOFA_TARGET) );
+                                                             DataTypeInfoRegistry::Set(DataTypeId<vector<vector<T>>>::getTypeId(),
+                                                                                       VirtualTypeInfoA< DataTypeInfo<vector<vector<T>>> >::get(), sofa_tostring(SOFA_TARGET));
+                                                               });
     return 0;
 }
 

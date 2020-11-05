@@ -23,6 +23,9 @@
 #define SOFA_HELPER_BACKTRACE_H
 
 #include <sofa/helper/config.h>
+#include <vector>
+#include <string>
+#include <limits>
 
 namespace sofa
 {
@@ -41,6 +44,9 @@ public:
     /// Useful to have information about crashes without starting a debugger (as it is not always easy to do, i.e. for parallel/distributed applications).
     /// Currently only works on Linux. NOOP on other architectures
     static void autodump();
+
+    typedef std::vector<std::string> StackTrace;
+    static StackTrace getTrace(size_t maxEntries=std::numeric_limits<unsigned int>().max());
 
 protected:
 

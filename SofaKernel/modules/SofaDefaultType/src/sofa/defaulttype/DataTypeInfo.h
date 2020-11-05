@@ -22,6 +22,7 @@
 #pragma once
 
 #include <vector>
+#include <sofa/defaulttype/config.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
@@ -29,6 +30,8 @@
 #include <typeinfo>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/defaulttype/AbstractTypeInfo.h>
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
+#include <sofa/helper/NameDecoder.h>
 
 namespace sofa::helper
 {
@@ -88,9 +91,8 @@ template<class TDataType>
 struct DefaultDataTypeInfo
 {
     template<class T>
-    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    constexpr static int
-    MissingDataTypeInfo() {return 0;}
+    //[[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    constexpr static int MissingDataTypeInfo() {return 0;}
 
     /// Template parameter.
     typedef TDataType DataType;
@@ -175,8 +177,8 @@ public:
 
     static VirtualTypeInfo* get() { static VirtualTypeInfo<DataType> t; return &t; }
 
-    const AbstractTypeInfo* BaseType() const override  { return VirtualTypeInfo<typename Info::BaseType>::get(); }
-    const AbstractTypeInfo* ValueType() const override { return VirtualTypeInfo<typename Info::ValueType>::get(); }
+    const AbstractTypeInfo* getBaseType() const override  { return VirtualTypeInfo<typename Info::BaseType>::get(); }
+    const AbstractTypeInfo* getValueType() const override { return VirtualTypeInfo<typename Info::ValueType>::get(); }
 
     virtual std::string name() const override { return Info::name(); }
 
@@ -269,12 +271,12 @@ public:
 
     static VirtualTypeInfoA* get() { static VirtualTypeInfoA<Info> t; return &t; }
 
-    const AbstractTypeInfo* BaseType() const override  { return VirtualTypeInfoA<DataTypeInfo<typename Info::BaseType>>::get(); }
-    const AbstractTypeInfo* ValueType() const override { return VirtualTypeInfoA<DataTypeInfo<typename Info::ValueType>>::get(); }
+    const AbstractTypeInfo* getBaseType() const override  { return VirtualTypeInfoA<DataTypeInfo<typename Info::BaseType>>::get(); }
+    const AbstractTypeInfo* getValueType() const override { return VirtualTypeInfoA<DataTypeInfo<typename Info::ValueType>>::get(); }
 
-    virtual std::string name() const override { return Info::name(); }
-    virtual std::string getName() const override { return Info::getName(); }
-    virtual std::string getTypeName() const override { return Info::getTypeName(); }
+    virtual std::string name() const override { return Info::GetName(); }
+    virtual std::string getName() const override { return Info::GetName(); }
+    virtual std::string getTypeName() const override { return Info::GetTypeName(); }
 
     bool ValidInfo() const override       { return Info::ValidInfo; }
     bool FixedSize() const override       { return Info::FixedSize; }
@@ -360,12 +362,28 @@ template<class T>
 class IncompleteTypeInfo : public AbstractTypeInfo
 {
 public:
-    const AbstractTypeInfo* BaseType() const override  { return nullptr; }
-    const AbstractTypeInfo* ValueType() const override { return nullptr; }
+    /// Template parameter.
+    typedef T DataType;
 
-    virtual std::string name() const override { return typeid(T).name(); }
-    virtual std::string getTypeName() const override { return typeid(T).name(); }
-    virtual std::string getName() const override { return typeid(T).name(); }
+    /// If the type is a container, this the type of the values inside this
+    /// container, otherwise this is DataType.
+    typedef DataType BaseType;
+
+    /// Type of the final atomic values (i.e. the values indexed by getValue()).
+    typedef DataType ValueType;
+
+    /// TypeInfo for BaseType
+    typedef DataTypeInfo<BaseType> BaseTypeInfo;
+
+    /// TypeInfo for ValueType
+    typedef DataTypeInfo<ValueType> ValueTypeInfo;
+
+    const AbstractTypeInfo* getBaseType() const override  { return nullptr; }
+    const AbstractTypeInfo* getValueType() const override { return nullptr; }
+
+    virtual std::string name() const override { return sofa::helper::NameDecoder::decodeFullName(typeid(T)); }
+    virtual std::string getTypeName() const override { return sofa::helper::NameDecoder::decodeFullName(typeid(T)); }
+    virtual std::string getName() const override { return sofa::helper::NameDecoder::decodeFullName(typeid(T)); }
 
     bool ValidInfo() const override       { return 0; }
     bool FixedSize() const override       { return 0; }
@@ -457,21 +475,16 @@ public:
 class BaseDataTypeId
 {
 public:
+    int id;
+    const std::type_info& nfo;
+    BaseDataTypeId(int id_, const std::type_info& nfo_):
+    id(id_),
+      nfo(nfo_){}
+
     static int getNewId()
     {
         static int value = 0;
         return value++;
-    }
-};
-
-template<class T>
-class DataTypeId : public BaseDataTypeId
-{
-public:
-    static int getTypeId()
-    {
-        static int value = BaseDataTypeId::getNewId();
-        return value;
     }
 };
 
@@ -493,6 +506,57 @@ public:
         }
     }
 };
+
+template<class T>
+class DataTypeId : public BaseDataTypeId
+{
+public:
+
+
+    DataTypeId(int id_, const std::type_info& nfo_) : BaseDataTypeId(id_, nfo_){}
+
+    static int m_register ;
+    static const DataTypeId& getTypeId()
+    {
+       // static int a = DataTypeId<T>::m_register;
+        //SOFA_UNUSED(a);
+
+        static DataTypeId typeId(BaseDataTypeId::getNewId(), typeid(T));
+        return typeId;
+    }
+
+    template<class TT>
+    static int doRegister()
+    {
+        sofa::defaulttype::DataTypeInfoRegistry::Set(sofa::defaulttype::DataTypeId<T>::getTypeId(),
+                                                     sofa::defaulttype::AbstractTypeInfoCreator<T>::get(), sofa_tostring(SOFA_TARGET));
+        return 0;
+    }
+
+    static const sofa::defaulttype::AbstractTypeInfo* GetDataTypeInfo()
+    {
+        static int a = DataTypeId<T>::m_register;
+        SOFA_UNUSED(a);
+        static const sofa::defaulttype::AbstractTypeInfo* typeinfo {nullptr};
+        if(typeinfo==nullptr)
+        {
+            /// We don't cache valid info;
+            auto tmpinfo = sofa::defaulttype::DataTypeInfoRegistry::Get(sofa::defaulttype::DataTypeId<T>::getTypeId());
+            if(!tmpinfo->ValidInfo())
+                return tmpinfo;
+            typeinfo = tmpinfo;
+        }
+        return typeinfo;
+    }
+};
+
+
+
+template<class T>
+int DataTypeId<T>::m_register= sofa::defaulttype::DataTypeId<T>::getTypeId().id + DataTypeId<T>::doRegister<T>();
+
+
+
 
 template<class T>
 class BaseDataTypeInfo
@@ -523,7 +587,9 @@ struct DataTypeName : public DataTypeInfo<TDataType>
 
 #define REGISTER_MSG_PASTER(x,y) x ## _ ## y
 #define REGISTER_UNIQUE_NAME_GENERATOR(x,y)  REGISTER_MSG_PASTER(x,y)
-#define REGISTER_TYPE_INFO_CREATOR(theTypeName) static int REGISTER_UNIQUE_NAME_GENERATOR(_theTypeName_ , __LINE__) = DataTypeInfoRegistry::Set(DataTypeId<theTypeName>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<theTypeName>>::get());
+#define REGISTER_TYPE_INFO_CREATOR(theTypeName) static int REGISTER_UNIQUE_NAME_GENERATOR(_theTypeName_ , __LINE__) = DataTypeInfoRegistry::Set(DataTypeId<theTypeName>::getTypeId(), \
+    VirtualTypeInfoA< DataTypeInfo<theTypeName>>::get(),\
+    sofa_tostring(SOFA_TARGET));
 #define REGISTER_TYPE_INFO_CREATOR2(theTypeName, ext) template<> AbstractTypeInfo* AbstractTypeInfoCreator< theTypeName ext >::get() {return VirtualTypeInfoA< DataTypeInfo<theTypeName ext> >::get();}
 
 }/// namespace sofa::defaulttype

@@ -69,12 +69,13 @@ public:
     /// values inside this container.
     /// For example, if the type is `fixed_array<fixed_array<int, 2> 3>`, it
     /// returns the TypeInfo for `fixed_array<int, 2>`.
-    virtual const AbstractTypeInfo* BaseType() const = 0;
+    virtual const AbstractTypeInfo* getBaseType() const = 0;
+
     /// Returns the TypeInfo for the type of the values accessible by the
     /// get*Value() functions.
     /// For example, if the type is `fixed_array<fixed_array<int, 2> 3>`, it
     /// returns the TypeInfo for `int`.
-    virtual const AbstractTypeInfo* ValueType() const = 0;
+    virtual const AbstractTypeInfo* getValueType() const = 0;
 
     /// \brief Returns the name of this type.
     virtual std::string name() const = 0;
@@ -168,6 +169,9 @@ public:
     /// Get the type_info for this type.
     virtual const std::type_info* type_info() const = 0;
 
+    const std::string& getCompilationTarget() const { return m_compilationTarget; }
+    void setCompilationTarget(const std::string& target) { m_compilationTarget=target; }
+
 protected: // only derived types can instantiate this class
     AbstractTypeInfo() {}
     virtual ~AbstractTypeInfo() {}
@@ -175,6 +179,8 @@ protected: // only derived types can instantiate this class
 private: // copy constructor or operator forbidden
     AbstractTypeInfo(const AbstractTypeInfo&) {}
     void operator=(const AbstractTypeInfo&) {}
+
+    std::string m_compilationTarget;
 };
 
 } /// namespace sofa::defaulttype

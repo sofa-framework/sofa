@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 
+#include <sstream>
+
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa::defaulttype
@@ -46,8 +48,10 @@ struct VectorTypeInfo
     enum { Text            = BaseTypeInfo::Text            };
     enum { CopyOnWrite     = 1                             };
     enum { Container       = 1                             };
-
     enum { Size = BaseTypeInfo::Size };
+    static std::string GetName() { std::ostringstream o; o << "vector<" << DataTypeInfo<BaseType>::GetName() << ">"; return o.str(); }
+    static std::string GetTypeName() { std::ostringstream o; o << "vector<" << DataTypeInfo<BaseType>::GetTypeName() << ">"; return o.str(); }
+
     static size_t size()
     {
         return BaseTypeInfo::size();

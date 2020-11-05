@@ -25,5 +25,6 @@
 namespace sofa::defaulttype
 {
 
+
 } /// namespace sofa::defaulttype
 

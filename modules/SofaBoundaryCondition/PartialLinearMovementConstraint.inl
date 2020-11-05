@@ -31,6 +31,9 @@
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
+#include <sofa/core/topology/typeinfo/TypeInfo_Topology.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vector.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Bool.h>
 
 
 namespace sofa

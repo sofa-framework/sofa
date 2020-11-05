@@ -20,19 +20,22 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <vector>
+#include <string>
 #include <typeinfo>
 
 namespace sofa::defaulttype
 {
 
 class AbstractTypeInfo;
+class BaseDataTypeId;
+
 class DataTypeInfoRegistry
 {
 public:
-    //template<class T>
-    //static const AbstractTypeInfo* Get(const T&){ return Get(typeid(T)); }
-    static const AbstractTypeInfo* Get(const int id);
-    static int Set(const int id, AbstractTypeInfo* info);
+    static std::vector<const AbstractTypeInfo*> GetRegisteredTypes(const std::string& target="");
+    static const AbstractTypeInfo* Get(const BaseDataTypeId& id);
+    static int Set(const BaseDataTypeId& tid, AbstractTypeInfo* info, const std::string& compilationTarget);
 };
 
 }

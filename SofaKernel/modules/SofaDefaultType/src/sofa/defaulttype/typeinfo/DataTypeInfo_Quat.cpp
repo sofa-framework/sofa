@@ -25,6 +25,8 @@
 namespace sofa::defaulttype
 {
 
+REGISTER_TYPE_INFO_CREATOR(Quatd);
+REGISTER_TYPE_INFO_CREATOR(Quatf);
 
 } /// namespace sofa::defaulttype
 

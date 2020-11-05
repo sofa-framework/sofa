@@ -107,13 +107,15 @@ namespace defaulttype
 template<>
 struct DataTypeInfo< sofa::core::objectmodel::Tag > : public TextTypeInfo<sofa::core::objectmodel::Tag >
 {
-    static const char* name() { return "Tag"; }
+    static std::string GetName() { return "Tag"; }
+    static std::string GetTypeName() { return "Tag"; }
 };
 
 template<>
 struct DataTypeInfo< sofa::core::objectmodel::TagSet > : public SetTypeInfo<sofa::core::objectmodel::TagSet >
 {
-    static const char* name() { return "TagSet"; }
+    static std::string GetName() { return "TagSet"; }
+    static std::string GetTypeName() { return "TagSet"; }
 };
 
 } // namespace defaulttype

@@ -27,19 +27,9 @@
 namespace sofa::defaulttype
 {
 
-
-template<class T, class Alloc>
-struct DataTypeInfo< std::vector<T,Alloc> > : public VectorTypeInfo<std::vector<T,Alloc> >
-{
-    static std::string name() { std::ostringstream o; o << "std::vector<" << DataTypeInfo<T>::name() << ">"; return o.str(); }
-    static std::string typeName() { std::ostringstream o; o << "std::vector<" << DataTypeInfo<T>::typeName() << ">"; return o.str(); }
-};
-
 template<class T, class Alloc>
 struct DataTypeInfo< sofa::helper::vector<T,Alloc> > : public VectorTypeInfo<sofa::helper::vector<T,Alloc> >
 {
-    static std::string name() { std::ostringstream o; o << "vector<" << DataTypeInfo<T>::name() << ">"; return o.str(); }
-    static std::string typeName() { std::ostringstream o; o << "sofa::helper::vector<" << DataTypeInfo<T>::typeName() << ">"; return o.str(); }
 };
 
 // vector<bool> is a bitset, cannot get a pointer to the values
@@ -47,10 +37,6 @@ template<class Alloc>
 struct DataTypeInfo< sofa::helper::vector<bool,Alloc> > : public VectorTypeInfo<sofa::helper::vector<bool,Alloc> >
 {
     enum { SimpleLayout = 0 };
-
-    static std::string typeName() { std::ostringstream o; o << "sofa::helper::vector<bool>"; return o.str(); }
-    static std::string name() { std::ostringstream o; o << "vector<bool>"; return o.str(); }
-
     static const void* getValuePtr(const sofa::helper::vector<bool,Alloc>& /*data*/) { return nullptr; }
     static void* getValuePtr(sofa::helper::vector<bool,Alloc>& /*data*/) { return nullptr; }
 };
@@ -59,9 +45,6 @@ struct DataTypeInfo< sofa::helper::vector<bool,Alloc> > : public VectorTypeInfo<
 template<class Alloc>
 struct DataTypeInfo< sofa::helper::vector<std::string,Alloc> > : public VectorTypeInfo<sofa::helper::vector<std::string,Alloc> >
 {
-    static std::string typeName() { return "sofa::helper::vector<std::string>"; }
-    static std::string name() { return "vector<string>"; }
-
     // BaseType size is not fixed. Returning 1
     static size_t size() { return 1; }
 

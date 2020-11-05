@@ -136,6 +136,8 @@ public:
 
     /// Get the name of the type of the value held in this %Data.
     virtual std::string getValueTypeString() const = 0;
+    virtual std::string getValueTypeName() const = 0;
+    virtual std::string getValueName() const = 0;
 
     /// Get the TypeInfo for the type of the value held in this %Data.
     ///

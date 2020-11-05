@@ -29,71 +29,71 @@ namespace sofa::defaulttype
 template<>
 struct DataTypeInfo<char> : public IntegerTypeInfo<char>
 {
-    static const char* GetTypeName() { return "c"; }
-    static const char* getName() { return "c"; }
+    static const char* GetTypeName() { return "char"; }
+    static const char* GetName() { return "b"; }
 };
 
 template<>
 struct DataTypeInfo<unsigned char> : public IntegerTypeInfo<unsigned char>
 {
     static const char* GetTypeName() { return "unsigned char"; }
-    static const char* getName() { return "C"; }
+    static const char* GetName() { return "B"; }
 };
 
 template<>
 struct DataTypeInfo<short> : public IntegerTypeInfo<short>
 {
     static const char* GetTypeName() { return "short"; }
-    static const char* getName() { return "s"; }
+    static const char* GetName() { return "h"; }
 };
 
 template<>
 struct DataTypeInfo<unsigned short> : public IntegerTypeInfo<unsigned short>
 {
     static const char* GetTypeName() { return "unsigned short"; }
-    static const char* getName() { return "S"; }
+    static const char* GetName() { return "H"; }
 };
 
 template<>
 struct DataTypeInfo<int> : public IntegerTypeInfo<int>
 {
     static const char* GetTypeName() { return "int"; }
-    static const char* getName() { return "i"; }
+    static const char* GetName() { return "i"; }
 };
 
 template<>
 struct DataTypeInfo<unsigned int> : public IntegerTypeInfo<unsigned int>
 {
     static const char* GetTypeName() { return "unsigned int"; }
-    static const char* getName() { return "I"; }
+    static const char* GetName() { return "I"; }
 };
 
 template<>
 struct DataTypeInfo<long> : public IntegerTypeInfo<long>
 {
     static const char* GetTypeName() { return "long"; }
-    static const char* getName() { return "l"; }
+    static const char* GetName() { return "l"; }
 };
 
 template<>
 struct DataTypeInfo<unsigned long> : public IntegerTypeInfo<unsigned long>
 {
     static const char* GetTypeName() { return "unsigned long"; }
-    static const char* getName() { return "L"; }
+    static const char* GetName() { return "L"; }
 };
 
 template<>
 struct DataTypeInfo<long long> : public IntegerTypeInfo<long long>
 {
     static const char* GetTypeName() { return "long long"; }
-    static const char* getName() { return "x"; }
+    static const char* GetName() { return "q"; }
 };
 
 template<>
 struct DataTypeInfo<unsigned long long> : public IntegerTypeInfo<unsigned long long>
 {
     static const char* GetTypeName() { return "unsigned long long"; }
-    static const char* getName() { return "X"; }
+    static const char* GetName() { return "Q"; }
 };
 
 

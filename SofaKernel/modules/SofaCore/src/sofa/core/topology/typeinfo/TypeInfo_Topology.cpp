@@ -19,20 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/core/topology/typeinfo/TypeInfo_Topology.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vector.h>
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
 namespace sofa::defaulttype
 {
+using sofa::helper::vector;
+using namespace sofa::core::topology;
 
-template<class T, std::size_t N>
-struct DataTypeInfo< sofa::helper::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::helper::fixed_array<T,N> >
-{
-    static std::string GetName() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::GetName() << "," << N << ">"; return o.str(); }
-    static std::string GetTypeName() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::GetTypeName() << "," << N << ">"; return o.str(); }
-};
+REGISTER_TYPE_INFO_CREATOR(sofa::core::topology::Topology::Point);
+REGISTER_TYPE_INFO_CREATOR(sofa::core::topology::Topology::Edge);
+REGISTER_TYPE_INFO_CREATOR(sofa::core::topology::Topology::Triangle);
+REGISTER_TYPE_INFO_CREATOR(sofa::core::topology::Topology::Quad);
+REGISTER_TYPE_INFO_CREATOR(sofa::core::topology::Topology::Tetrahedron);
+REGISTER_TYPE_INFO_CREATOR(sofa::core::topology::Topology::Pyramid);
+REGISTER_TYPE_INFO_CREATOR(sofa::core::topology::Topology::Pentahedron);
+REGISTER_TYPE_INFO_CREATOR(sofa::core::topology::Topology::Hexahedron);
+
+REGISTER_TYPE_INFO_CREATOR(vector<Topology::Point>);
+REGISTER_TYPE_INFO_CREATOR(vector<Topology::Edge>);
+REGISTER_TYPE_INFO_CREATOR(vector<Topology::Triangle>);
+REGISTER_TYPE_INFO_CREATOR(vector<Topology::Quad>);
+REGISTER_TYPE_INFO_CREATOR(vector<Topology::Tetrahedron>);
+REGISTER_TYPE_INFO_CREATOR(vector<Topology::Pyramid>);
+REGISTER_TYPE_INFO_CREATOR(vector<Topology::Pentahedron>);
+REGISTER_TYPE_INFO_CREATOR(vector<Topology::Hexahedron>);
+
+REGISTER_TYPE_INFO_CREATOR(vector<vector<Topology::Point>>);
+REGISTER_TYPE_INFO_CREATOR(vector<vector<Topology::Edge>>);
+REGISTER_TYPE_INFO_CREATOR(vector<vector<Topology::Triangle>>);
+REGISTER_TYPE_INFO_CREATOR(vector<vector<Topology::Quad>>);
+REGISTER_TYPE_INFO_CREATOR(vector<vector<Topology::Tetrahedron>>);
+REGISTER_TYPE_INFO_CREATOR(vector<vector<Topology::Pyramid>>);
+REGISTER_TYPE_INFO_CREATOR(vector<vector<Topology::Pentahedron>>);
+REGISTER_TYPE_INFO_CREATOR(vector<vector<Topology::Hexahedron>>);
 
 } /// namespace sofa::defaulttype
 

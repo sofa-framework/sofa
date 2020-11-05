@@ -34,14 +34,14 @@ struct DataTypeInfo< sofa::defaulttype::Mat<L,C,real> > : public FixedArrayTypeI
     static std::string GetTypeName()
     {
         std::ostringstream o;
-        o << "Mat<" << L << "," << C << "," <<  DataTypeInfo<real>::typeName() << ">";
+        o << "Mat<" << L << "," << C << "," <<  DataTypeInfo<real>::GetTypeName() << ">";
         return o.str();
     }
 
     static std::string GetName()
     {
         std::ostringstream o;
-        o << "Mat" << L << "x" << C << DataTypeInfo<real>::name();
+        o << "Mat" << L << "x" << C << DataTypeInfo<real>::GetName();
         return o.str();
     }
 };

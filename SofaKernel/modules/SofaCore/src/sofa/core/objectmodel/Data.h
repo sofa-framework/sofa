@@ -65,8 +65,8 @@ public:
     {}
 
     inline void printValue(std::ostream& out) const override;
-    inline std::string getValueString() const override;
 
+    inline std::string getValueString() const override;
 
     virtual const T& virtualGetValue() const = 0;
     virtual void virtualSetValue(const T& v) = 0;
@@ -170,12 +170,16 @@ public:
         T value;
     };
 
+    [[deprecated("To deprecated...ugly name")]]
+    std::string getValueTypeString() const override;
 
-    inline std::string getValueTypeString() const override;
+    std::string getValueTypeName() const override;
+    std::string getValueName() const override;
 
+    [[deprecated("To deprecated...a template is a c++ concept")]]
     static std::string templateName()
     {
-        return TypeName();
+        return GetTypeName();
     }
 
     // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
@@ -346,23 +350,24 @@ public:
 
     int _doGetDataTypeId_() const override
     {
-        return sofa::defaulttype::DataTypeId<T>::getTypeId();
+        return sofa::defaulttype::DataTypeId<T>::getTypeId().id;
     }
 
     static const sofa::defaulttype::AbstractTypeInfo* GetDataTypeInfo()
     {
-        static int a = Data<T>::m_register;
-        SOFA_UNUSED(a);
-        static const sofa::defaulttype::AbstractTypeInfo* typeinfo {nullptr};
-        if(typeinfo==nullptr)
-        {
-            /// We don't cache valid info;
-            auto tmpinfo = sofa::defaulttype::DataTypeInfoRegistry::Get(sofa::defaulttype::DataTypeId<T>::getTypeId());
-            if(!tmpinfo->ValidInfo())
-                return tmpinfo;
-            typeinfo = tmpinfo;
-        }
-        return typeinfo;
+//        static int a = Data<T>::m_register;
+//        SOFA_UNUSED(a);
+//        static const sofa::defaulttype::AbstractTypeInfo* typeinfo {nullptr};
+//        if(typeinfo==nullptr)
+//        {
+//            /// We don't cache valid info;
+//            auto tmpinfo = sofa::defaulttype::DataTypeInfoRegistry::Get(sofa::defaulttype::DataTypeId<T>::getTypeId());
+//            if(!tmpinfo->ValidInfo())
+//                return tmpinfo;
+//            typeinfo = tmpinfo;
+//        }
+//        return typeinfo;
+        return sofa::defaulttype::DataTypeId<T>::GetDataTypeInfo();
     }
 
     /// Get info about the value type of the associated variable
@@ -374,15 +379,15 @@ public:
     template<class TT>
     static int doRegister()
     {
-        sofa::defaulttype::DataTypeInfoRegistry::Set(sofa::defaulttype::DataTypeId<T>::getTypeId(),
-                                                     sofa::defaulttype::AbstractTypeInfoCreator<T>::get());
+        //sofa::defaulttype::DataTypeInfoRegistry::Set(sofa::defaulttype::DataTypeId<T>::getTypeId(),
+        //                                             sofa::defaulttype::AbstractTypeInfoCreator<T>::get());
         return 0;
     }
 
     /// Helper method to get the type name of type T
     static std::string GetTypeName()
     {
-        auto tmp = sofa::defaulttype::DataTypeInfoRegistry::Get(sofa::defaulttype::DataTypeId<T>::getTypeId());
+        auto tmp = sofa::defaulttype::DataTypeId<T>::GetDataTypeInfo();
         if(tmp)
             return tmp->getTypeName();
         return "unknow";
@@ -391,7 +396,7 @@ public:
     /// Helper method to get the type name of type T
     static std::string GetName()
     {
-        auto tmp = sofa::defaulttype::DataTypeInfoRegistry::Get(sofa::defaulttype::DataTypeId<T>::getTypeId());
+        auto tmp = sofa::defaulttype::DataTypeId<T>::GetDataTypeInfo();
         if(tmp)
             return tmp->getName();
         return "unknow";
@@ -413,7 +418,7 @@ private:
 };
 
 template<class T>
-int Data<T>::m_register= sofa::defaulttype::DataTypeId<T>::getTypeId() + Data<T>::doRegister<T>();
+int Data<T>::m_register= sofa::defaulttype::DataTypeId<T>::getTypeId().id + Data<T>::doRegister<T>();
 
 class EmptyData : public Data<void*> {};
 
@@ -449,14 +454,14 @@ template<class T>
 inline
 std::string Data<T>::getValueTypeString() const
 {
-    return TypeName();
+    return GetTypeName();
 }
 
 template<class T>
 inline
 std::string Data<T>::getValueTypeName() const
 {
-    return TypeName();
+    return GetTypeName();
 }
 
 
@@ -464,7 +469,7 @@ template<class T>
 inline
 std::string Data<T>::getValueName() const
 {
-    return Name();
+    return GetName();
 }
 
 

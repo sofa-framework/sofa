@@ -47,6 +47,68 @@ namespace sofa
 namespace helper
 {
 
+/// Currently only works on Linux. NOOP on other architectures.
+BackTrace::StackTrace BackTrace::getTrace(size_t max)
+{
+    BackTrace::StackTrace result;
+#if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32)
+    void *array[128];
+    int size = backtrace(array, sizeof(array) / sizeof(array[0]));
+    if (size > 0)
+    {
+        char** symbols = backtrace_symbols(array, size);
+        if (symbols != nullptr)
+        {
+            for (size_t i = 0; i < std::min(size_t(size), max); ++i)
+            {
+                char* symbol = symbols[i];
+                // Decode the method's name to a more readable form if possible
+                char *beginmangled = strrchr(symbol,'(');
+                if (beginmangled != nullptr)
+                {
+                    ++beginmangled;
+                    char *endmangled = strrchr(beginmangled ,')');
+                    if (endmangled != nullptr)
+                    {
+                        // remove +0x[0-9a-fA-f]* suffix
+                        char* savedend = endmangled;
+                        while((endmangled[-1]>='0' && endmangled[-1]<='9') ||
+                                (endmangled[-1]>='a' && endmangled[-1]<='f') ||
+                                (endmangled[-1]>='A' && endmangled[-1]<='F'))
+                            --endmangled;
+                        if (endmangled[-1]=='x' && endmangled[-2]=='0' && endmangled[-3]=='+')
+                            endmangled -= 3;
+                        else
+                            endmangled = savedend; // suffix not found
+                        char* name = (char*)malloc(endmangled-beginmangled+1);
+                        memcpy(name, beginmangled, endmangled-beginmangled);
+                        name[endmangled-beginmangled] = '\0';
+                        int status;
+                        char* realname = abi::__cxa_demangle(name, 0, 0, &status);
+                        if (realname != nullptr)
+                        {
+                            free(name);
+                            name = realname;
+                        }
+                        std::string prefix{symbol};
+                        prefix = prefix.substr(0, beginmangled-symbol);
+                        result.push_back(prefix + name + endmangled);
+                        free(name);
+                    }
+                }
+            }
+            free(symbols);
+        }
+        else
+        {
+            backtrace_symbols_fd(array, size, STDERR_FILENO);
+        }
+    }
+#endif
+
+    return result;
+}
+
 /// Dump current backtrace to stderr.
 /// Currently only works on Linux. NOOP on other architectures.
 void BackTrace::dump()

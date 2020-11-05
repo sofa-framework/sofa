@@ -27,14 +27,14 @@
 namespace sofa::defaulttype
 {
 
-static int Mat1x1fDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat1x1f>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat1x1f> >::get());
-static int Mat1x1dDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat1x1d>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat1x1d> >::get());
-static int Mat2x2fDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat2x2f>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat2x2f> >::get());
-static int Mat2x2dDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat2x2d>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat2x2d> >::get());
-static int Mat3x3fDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat3x3f>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat3x3f> >::get());
-static int Mat3x3dDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat3x3d>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat3x3d> >::get());
-static int Mat4x4fDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat4x4f>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat4x4f> >::get());
-static int Mat4x4dDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat4x4d>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat4x4d> >::get());
+static int Mat1x1fDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat1x1f>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat1x1f> >::get(), sofa_tostring(SOFA_TARGET));
+static int Mat1x1dDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat1x1d>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat1x1d> >::get(), sofa_tostring(SOFA_TARGET));
+static int Mat2x2fDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat2x2f>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat2x2f> >::get(), sofa_tostring(SOFA_TARGET));
+static int Mat2x2dDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat2x2d>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat2x2d> >::get(), sofa_tostring(SOFA_TARGET));
+static int Mat3x3fDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat3x3f>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat3x3f> >::get(), sofa_tostring(SOFA_TARGET));
+static int Mat3x3dDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat3x3d>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat3x3d> >::get(), sofa_tostring(SOFA_TARGET));
+static int Mat4x4fDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat4x4f>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat4x4f> >::get(), sofa_tostring(SOFA_TARGET));
+static int Mat4x4dDataTypeInfo = DataTypeInfoRegistry::Set(DataTypeId<sofa::defaulttype::Mat4x4d>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<sofa::defaulttype::Mat4x4d> >::get(), sofa_tostring(SOFA_TARGET));
 
 } /// namespace sofa::defaulttype
 

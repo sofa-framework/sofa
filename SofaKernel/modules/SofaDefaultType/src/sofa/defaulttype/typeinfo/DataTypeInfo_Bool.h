@@ -29,7 +29,7 @@ namespace sofa::defaulttype
 template<>
 struct DataTypeInfo<bool> : public BoolTypeInfo
 {
-    static const char* GetName() { return "b"; }
+    static const char* GetName() { return "bool"; }
     static const char* GetTypeName() { return "bool"; }
 };
 

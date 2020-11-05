@@ -143,7 +143,7 @@ template <>
 struct DataTypeInfo<BoundingBox> : public BoundingBoxTypeInfo
 {
     static std::string GetName() { return "BoundingBox"; }
-    static std::string GetTypeName() { return name(); }
+    static std::string GetTypeName() { return "BoundingBox"; }
 };
 } /// namespace sofa::defaulttype
 

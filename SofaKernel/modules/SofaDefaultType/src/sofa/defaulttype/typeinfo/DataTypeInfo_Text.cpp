@@ -25,5 +25,7 @@
 namespace sofa::defaulttype
 {
 
+REGISTER_TYPE_INFO_CREATOR(std::string);
+
 } /// namespace sofa::defaulttype
 

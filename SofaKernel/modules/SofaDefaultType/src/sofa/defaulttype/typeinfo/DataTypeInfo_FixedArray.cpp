@@ -34,40 +34,40 @@
 namespace sofa::defaulttype
 {
 
-//template <typename... Ts, typename F>
-//constexpr void for_types(F&& f)
-//{
-//    (f.template operator()<Ts>(), ...);
-//}
+template <typename... Ts, typename F>
+constexpr void for_types(F&& f)
+{
+    (f.template operator()<Ts>(), ...);
+}
 
-//template<typename TT>
-//int mince()
-//{
-//    DataTypeInfoRegistry::Set(typeid(TT), VirtualTypeInfoA< DataTypeInfo<TT>>::get());
-//    return 0;
-//}
+template<typename TT>
+int mince()
+{
+    DataTypeInfoRegistry::Set(DataTypeId<TT>::getTypeId(), VirtualTypeInfoA< DataTypeInfo<TT>>::get(), sofa_tostring(SOFA_TARGET));
+    return 0;
+}
 
-//int fixedPreLoad()
-//{
-//    for_types<
-//            char, unsigned char, int, unsigned int, long, unsigned long, long long, unsigned long long,
-//            float, char,
-//            std::string>([]<typename T>()
-//                         {
-//                             mince<sofa::helper::fixed_array<T, 1>>();
-//                             mince<sofa::helper::fixed_array<T, 2>>();
-//                             mince<sofa::helper::fixed_array<T, 3>>();
-//                             mince<sofa::helper::fixed_array<T, 4>>();
-//                             mince<sofa::helper::fixed_array<T, 5>>();
-//                             mince<sofa::helper::fixed_array<T, 6>>();
-//                             mince<sofa::helper::fixed_array<T, 7>>();
-//                             mince<sofa::helper::fixed_array<T, 8>>();
-//                             mince<sofa::helper::fixed_array<T, 9>>();
-//                         });
-//    return 0;
-//}
+int fixedPreLoad()
+{
+    for_types<
+            char, unsigned char, int, unsigned int, long, unsigned long, long long, unsigned long long,
+            float, char,
+            std::string>([]<typename T>()
+                         {
+                             mince<sofa::helper::fixed_array<T, 1>>();
+                             mince<sofa::helper::fixed_array<T, 2>>();
+                             mince<sofa::helper::fixed_array<T, 3>>();
+                             mince<sofa::helper::fixed_array<T, 4>>();
+                             mince<sofa::helper::fixed_array<T, 5>>();
+                             mince<sofa::helper::fixed_array<T, 6>>();
+                             mince<sofa::helper::fixed_array<T, 7>>();
+                             mince<sofa::helper::fixed_array<T, 8>>();
+                             mince<sofa::helper::fixed_array<T, 9>>();
+                         });
+    return 0;
+}
 
-//static int allFixed = fixedPreLoad();
+static int allFixed = fixedPreLoad();
 
 } /// namespace sofa::defaulttype
 

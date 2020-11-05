@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/logging/Messaging.h>
 #include "NameDecoder.h"
+#include "StringUtils.h"
 
 #ifdef __GNUC__
 #include <cxxabi.h>
@@ -80,6 +81,7 @@ std::string NameDecoder::decodeTypeName(const std::type_info& t)
     for (size_t i=0; i<len; i++)
     {
         char c = realname[i];
+        if (c == '<') break;
         if (c == ':') // && cprev == ':')
         {
             start = i+1;
@@ -107,7 +109,7 @@ std::string NameDecoder::decodeTypeName(const std::type_info& t)
         name[dest++] = realname[start++];
     }
     name.resize(dest);
-    name.erase(std::remove(name.begin(), name.end(), ' '), name.end());  
+    replaceAll(name, "> >", ">>");
     return name;
 }
 

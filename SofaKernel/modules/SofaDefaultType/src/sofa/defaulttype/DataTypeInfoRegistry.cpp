@@ -24,39 +24,84 @@
 #include <map>
 #include <iostream>
 #include <sofa/defaulttype/AbstractTypeInfo.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/helper/NameDecoder.h>
+#include <sofa/helper/BackTrace.h>
+#include <algorithm>
 namespace sofa::defaulttype
 {
 
-static std::map<const int, const AbstractTypeInfo*>& getMap()
+static std::vector<const AbstractTypeInfo*>& getStorage()
 {
-    static std::map<const int, const AbstractTypeInfo*> typeinfos;
+    static std::vector<const AbstractTypeInfo*> typeinfos;
     return typeinfos;
 }
 
-const AbstractTypeInfo* DataTypeInfoRegistry::Get(const int id)
+std::vector<const AbstractTypeInfo*> DataTypeInfoRegistry::GetRegisteredTypes(const std::string& target)
 {
-    auto& typeinfos = getMap();
-    if( typeinfos.find(id) != typeinfos.end() )
+    std::vector<const AbstractTypeInfo*> tmp;
+    for(auto info : getStorage())
+    {
+        if(info->getCompilationTarget() == target)
+        tmp.push_back(info);
+    }
+    return tmp;
+}
+
+const AbstractTypeInfo* DataTypeInfoRegistry::Get(const BaseDataTypeId& tid)
+{
+    size_t id = tid.id;
+    auto& typeinfos = getStorage();
+
+    if( id < typeinfos.size() && typeinfos[id] != nullptr )
         return typeinfos[id];
 
-    std::cout << "WARNING WARNING... searching for type '"<< id << "' the type is not there...what can we do" << std::endl;
+    std::cout << "Searching for type '"<< id << "' the type is not there..." << std::endl;
+    std::cout << "     name: " << sofa::helper::NameDecoder::decodeFullName(tid.nfo) << std::endl;
+    auto stacktrace = sofa::helper::BackTrace::getTrace(5);
+    for(size_t i=1;i<stacktrace.size();i++)
+        std::cout << "    ["<<i<< "]" << stacktrace[i] << std::endl;
+
     return nullptr;
 }
 
-int DataTypeInfoRegistry::Set(const int id, AbstractTypeInfo* info)
+int DataTypeInfoRegistry::Set(const BaseDataTypeId& tid, AbstractTypeInfo* info, const std::string &compilationTarget)
 {
-    auto& typeinfos = getMap();
-    if( typeinfos.find(id) != typeinfos.end() )
+    auto& typeinfos = getStorage();
+    size_t id = tid.id;
+    info->setCompilationTarget(compilationTarget);
+
+    if( id >= typeinfos.size() )
+    {
+        typeinfos.resize(id+1, nullptr);
+    }
+
+    if( typeinfos[id] != nullptr )
     {
         if( typeinfos[id] != info && info->ValidInfo())
         {
             std::cout << " Promoting typeinfo "<< id << " from " << typeinfos[id]->name() << " to " << info->name() << std::endl;
+            info->setCompilationTarget(compilationTarget);
             typeinfos[id] = info;
             return 2;
         }
         return -1;
     }
-    std::cout << " Registering a new type info at "  << id << " => " << info->name() <<std::endl;
+    if( info->ValidInfo() )
+    {
+        std::cout << " Registering a new type info at "  << id << " => " << info->name() << "(Complete)" << std::endl;
+        info->setCompilationTarget(compilationTarget);
+    }
+    else
+    {
+
+        std::cout << " Registering a new type info at " << id << " (Partial)" << std::endl;
+        std::cout << "     name: " << info->name() << std::endl;
+        auto stacktrace = sofa::helper::BackTrace::getTrace(3);
+        for(size_t i=1;i<stacktrace.size();i++)
+            std::cout << "    ["<<i<< "]" << stacktrace[i] << std::endl;
+    }
+    info->setCompilationTarget(compilationTarget);
     typeinfos[id] = info;
     return 1;
 }
