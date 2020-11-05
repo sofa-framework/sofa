@@ -187,26 +187,26 @@ bool TopologyChecker::checkTriangleTopology()
             }
         }
     }
-
+    
     // check triangles around edges
     // check m_trianglesAroundEdge using checked m_edgesInTriangle
     triangleSet.clear();
-    for (size_t i = 0; i < nbE; ++i)
+    for (size_t edgeId = 0; edgeId < nbE; ++edgeId)
     {
-        const auto &tes = m_topology->getTrianglesAroundEdge(i);        
-        for (size_t j = 0; j < tes.size(); ++j)
+        const BaseMeshTopology::TrianglesAroundEdge& tes = m_topology->getTrianglesAroundEdge(edgeId);
+        for (auto triId : tes)
         {
-            const auto& eInTri = m_topology->getEdgesInTriangle(i);
-            bool check_triangle_edge_shell = (eInTri[0] == i)
-                || (eInTri[1] == i)
-                || (eInTri[2] == i);
+            const BaseMeshTopology::EdgesInTriangle& eInTri = m_topology->getEdgesInTriangle(triId);
+            bool check_triangle_edge_shell = (eInTri[0] == edgeId)
+                || (eInTri[1] == edgeId)
+                || (eInTri[2] == edgeId);
             if (!check_triangle_edge_shell)
             {
-                msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: triangle: " << tes[j] << " with edges: [" << eInTri << "] not found around edge: " << i;
+                msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: triangle: " << triId << " with edges: [" << eInTri << "] not found around edge: " << edgeId;
                 ret = false;
             }
 
-            triangleSet.insert(tes[j]);
+            triangleSet.insert(triId);
         }
     }
 
