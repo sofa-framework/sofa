@@ -23,6 +23,11 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+
+
 #include <sofa/simulation/Simulation.h>
 
 namespace sofa
@@ -44,6 +49,7 @@ int TopologyCheckerClass = core::RegisterObject("Read topological Changes and pr
 
 TopologyChecker::TopologyChecker()
     : m_draw( initData(&m_draw, false, "draw", "draw information"))
+    , d_eachStep(initData(&d_eachStep, false, "draw", "Check topology at each step"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
 {
@@ -156,7 +162,7 @@ bool TopologyChecker::checkTriangleTopology()
         msg_error() << "CheckTriangleTopology failed: found " << triangleSet.size() << " triangles in trianglesAroundVertex out of " << my_triangles.size();
         ret = false;
     }
-
+    
 
     int nbE = m_topology->getNbEdges();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
@@ -277,16 +283,19 @@ void TopologyChecker::checkCrossTopology()
 
 void TopologyChecker::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
+    if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
     {
-        //if (m_useDataInputs.getValue())
-        //    processTopologicalChanges(this->getTime());
-        //else
-        //    processTopologicalChanges();
+        if (ev->getKey() == 'D')
+        {
+            bool res = checkContainer();
+            if (!res)
+                msg_error() << "CheckContainer Error!!";
+        }
     }
-    if (/* simulation::AnimateEndEvent* ev = */simulation::AnimateEndEvent::checkEventType(event))
-    {
 
+    if (simulation::AnimateEndEvent::checkEventType(event) && d_eachStep.getValue())
+    {
+        
     }
 }
 
