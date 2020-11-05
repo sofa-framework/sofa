@@ -94,11 +94,11 @@ void TopologyChecker::reinit()
 bool TopologyChecker::checkContainer()
 {
     bool result = false;
-    if (m_topology->getTopologyType() == TopologyObjectType::TETRAHEDRON)
+    if (m_topology->getTopologyType() == TopologyElementType::TETRAHEDRON)
         result = checkTetrahedronTopology();
-    else if (m_topology->getTopologyType() == TopologyObjectType::TRIANGLE)
+    else if (m_topology->getTopologyType() == TopologyElementType::TRIANGLE)
         result = checkTriangleTopology();
-    else if (m_topology->getTopologyType() == TopologyObjectType::TRIANGLE)
+    else if (m_topology->getTopologyType() == TopologyElementType::EDGE)
         result = checkEdgeTopology();
 
     return result;
