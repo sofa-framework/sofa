@@ -297,7 +297,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     MultiMatrixAccessor::InteractionMatrixRef mat12 = matrix->getMatrix(mstate1, mstate2);
     MultiMatrixAccessor::InteractionMatrixRef mat21 = matrix->getMatrix(mstate2, mstate1);
 
-
     ///////////////////////////     STEP 1      ////////////////////////////////////
     /* -------------------------------------------------------------------------- */
     /*              compute jacobians using generic implementation                */
@@ -316,7 +315,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
 
     ///////////////////////     GET K       ////////////////////////////////////////
     CompressedRowSparseMatrix< Real1 >* K = new CompressedRowSparseMatrix< Real1 > ( );
-
     K->resizeBloc( 3*l_mechanicalState->getSize() ,  3*l_mechanicalState->getSize());
     K->clear();
     DefaultMultiMatrixAccessor* KAccessor;
@@ -381,23 +379,26 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     sofa::core::MultiMatrixDerivId c = sofa::core::MatrixDerivId::mappingJacobian();
     const MatrixDeriv1 &J1 = c[ms1].read()->getValue();
     const MatrixDeriv2 &J2 = c[ms2].read()->getValue();
-    if (this->getContext()->getTime() == 0)
-        nbColsJ1 = J1.begin().row().size()*DerivSize1;
     Eigen::SparseMatrix<double> J1eig;
     Eigen::SparseMatrix<double> J2eig;
+    if (bms1 != bms2)
+    {
+        nbColsJ1 = mat12.offCol;
+        nbColsJ2 = mat11->cols() - mat12.offCol;
+    }
+    else
+    {
+        nbColsJ1 = mat11->cols();
+    }
     J1eig.resize(K->nRow, nbColsJ1);
-
     optimizeAndCopyMappingJacobianToEigenFormat1(J1, J1eig);
     if (bms1 != bms2)
     {
         double startTime2= (double)timer->getTime();
-        if (this->getContext()->getTime() == 0)
-            nbColsJ2 = J2.begin().row().size()*DerivSize2;
         J2eig.resize(K->nRow, nbColsJ2);
         optimizeAndCopyMappingJacobianToEigenFormat2(J2, J2eig);
         msg_info()<<" time set J2eig alone : "<<( (double)timer->getTime() - startTime2)*timeScale<<" ms";
     }
-
     msg_info()<<" time getJ + set J1eig (and potentially J2eig) : "<<( (double)timer->getTime() - startTime)*timeScale<<" ms";
     startTime= (double)timer->getTime();
 
@@ -448,6 +449,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
       }
     msg_info()<<" time copy J1tKJ1eigen back to J1tKJ1 in CompressedRowSparse : "<<( (double)timer->getTime() - startTime)*timeScale<<" ms";
 
+
     if (bms1 != bms2)
     {
         startTime= (double)timer->getTime();
@@ -470,6 +472,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
         startTime= (double)timer->getTime();
         offrow = mat21.offRow;
         offcol = mat21.offCol;
+
         for (int k=0; k<J2tKJ1eigen.outerSize(); ++k)
           for (Eigen::SparseMatrix<double>::InnerIterator it(J2tKJ1eigen,k); it; ++it)
           {
