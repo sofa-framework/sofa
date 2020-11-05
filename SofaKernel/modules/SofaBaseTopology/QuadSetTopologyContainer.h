@@ -224,9 +224,6 @@ public:
 
     /// @}
 
-    /** \brief Returns the type of the topology */
-    sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::QUAD;}
-
 protected:
 
     /** \brief Creates the QuadSet array.

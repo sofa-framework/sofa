@@ -69,6 +69,7 @@ PointSetTopologyContainer::PointSetTopologyContainer(Size npoints)
     , points(initData(&points, "points","List of point indices"))
 {
     addAlias(&d_initPoints,"points");
+    m_upperElementType = sofa::core::topology::POINT;
 }
 
 void PointSetTopologyContainer::setNbPoints(Size n)

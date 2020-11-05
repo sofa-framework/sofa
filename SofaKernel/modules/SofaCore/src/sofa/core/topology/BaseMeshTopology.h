@@ -127,7 +127,7 @@ public:
     virtual const Tetra getTetrahedron(TetraID i)    { return getTetrahedra()[i]; }
     virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }   
 	   
-    virtual sofa::core::topology::TopologyObjectType getTopologyType() const = 0 ;
+    virtual sofa::core::topology::TopologyObjectType getTopologyType() const { return m_upperElementType; };
     /// @}
 
     /// Bridge from old functions (using Tetra/Tetras and Hexa/Hexas) to new ones
@@ -326,6 +326,8 @@ protected:
 
     sofa::core::objectmodel::DataFileName fileTopology;
 
+    /// Type of higher topology element contains in this container @see TopologyObjectType
+    TopologyObjectType m_upperElementType;
 
 public:
 

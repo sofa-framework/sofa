@@ -44,7 +44,7 @@ TriangleSetTopologyContainer::TriangleSetTopologyContainer()
     : EdgeSetTopologyContainer()
     , d_triangle(initData(&d_triangle, "triangles", "List of triangle indices"))
 {
-
+    m_upperElementType = sofa::core::topology::TRIANGLE;
 }
 
 

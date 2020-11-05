@@ -50,6 +50,7 @@ HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     , d_hexahedron(initData(&d_hexahedron, "hexahedra", "List of hexahedron indices"))
 {
     addAlias(&d_hexahedron, "hexas");
+    m_upperElementType = sofa::core::topology::HEXAHEDRON;
 }
 
 

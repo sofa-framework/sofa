@@ -58,6 +58,7 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer()
     , d_edge(initData(&d_edge, "edges", "List of edge indices"))
     , m_checkConnexity(initData(&m_checkConnexity, false, "checkConnexity", "It true, will check the connexity of the mesh."))
 {
+    m_upperElementType = sofa::core::topology::EDGE;
 }
 
 
