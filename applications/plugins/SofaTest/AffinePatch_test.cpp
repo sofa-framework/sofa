@@ -49,7 +49,7 @@ using namespace modeling;
 An affine movement (rotation and translation) is applied to the borders of a mesh. Test if the points inside have the same affine movement.*/
 
 template <typename _DataTypes>
-struct AffinePatch_test : public Elasticity_test<_DataTypes>
+struct AffinePatch_sofa_test : public Elasticity_test<_DataTypes>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::CPos CPos;
@@ -270,17 +270,17 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(AffinePatch_test, DataTypes);
+TYPED_TEST_CASE(AffinePatch_sofa_test, DataTypes);
 
 // first test case
-TYPED_TEST( AffinePatch_test , patchTest2D )
+TYPED_TEST( AffinePatch_sofa_test , patchTest2D )
 {
    this->createScene2DRegularGrid();
    ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(5e-6,5e-5));
 }
 
 // second test case
-TYPED_TEST( AffinePatch_test , patchTest3D )
+TYPED_TEST( AffinePatch_sofa_test , patchTest3D )
 {
     this->createScene3DRegularGrid();
     ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-5,1.1e-4));

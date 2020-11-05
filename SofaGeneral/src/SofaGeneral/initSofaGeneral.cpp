@@ -23,7 +23,6 @@
 
 #include <SofaGeneral/initSofaGeneral.h>
 #include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
 #include <SofaGeneralTopology/initGeneralTopology.h>
 #include <SofaTopologyMapping/initTopologyMapping.h>
 #include <SofaUserInteraction/initUserInteraction.h>
@@ -45,7 +44,6 @@ void initSofaGeneral()
     }
 
     initGeneralLoader();
-    initGeneralSimpleFEM();
     initGeneralTopology();
     initTopologyMapping();
     initUserInteraction();

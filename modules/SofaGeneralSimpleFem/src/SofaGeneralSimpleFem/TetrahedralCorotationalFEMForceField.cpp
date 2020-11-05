@@ -19,36 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELDANDMASS_CPP
-#include "HexahedronFEMForceFieldAndMass.inl"
+#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP
+
+#include <SofaGeneralSimpleFem/TetrahedralCorotationalFEMForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
 
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
 
 
 // Register in the Factory
-int HexahedronFEMForceFieldAndMassClass = core::RegisterObject("Hexahedral finite elements with mass")
-        .add< HexahedronFEMForceFieldAndMass<Vec3Types> >()
+int TetrahedralCorotationalFEMForceFieldClass = core::RegisterObject("Corotational FEM Tetrahedral finite elements")
+        .add< TetrahedralCorotationalFEMForceField<Vec3Types> >()
 
         ;
 
-template class SOFA_GENERAL_SIMPLE_FEM_API HexahedronFEMForceFieldAndMass<Vec3Types>;
+template class SOFA_SOFAGENERALSIMPLEFEM_API TetrahedralCorotationalFEMForceField<Vec3Types>;
 
 
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield
 

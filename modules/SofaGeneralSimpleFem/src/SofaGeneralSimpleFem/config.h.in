@@ -19,32 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef POISSONCONTAINER_
-#define POISSONCONTAINER_
-#include "config.h"
+#pragma once
 
-namespace sofa
-{
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace component
-{
+#define SOFAGENERALSIMPLEFEM_VERSION @PROJECT_VERSION@
 
-namespace container
-{
-
-class PoissonContainer : public virtual sofa::core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(PoissonContainer,sofa::core::objectmodel::BaseObject);
-
-    virtual double getPoisson(unsigned int index) = 0;
-};
-
-}
-
-}
-
-}
-
-
-#endif /*POISSONCONTAINER_*/
+#ifdef SOFA_BUILD_SOFAGENERALSIMPLEFEM
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAGENERALSIMPLEFEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAGENERALSIMPLEFEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif

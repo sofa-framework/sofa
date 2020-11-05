@@ -19,22 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_GENERAL_SIMPLE_FEM_INIT_H
-#define SOFA_COMPONENT_GENERAL_SIMPLE_FEM_INIT_H
-#include "config.h"
+#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_CPP
+#include <SofaGeneralSimpleFem/HexahedralFEMForceField.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+
+namespace sofa::component::forcefield
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
+
+// Register in the Factory
+int HexahedralFEMForceFieldClass = core::RegisterObject("Hexahedral finite elements")
+        .add< HexahedralFEMForceField<Vec3Types> >()
+
+        ;
+
+template class SOFA_SOFAGENERALSIMPLEFEM_API HexahedralFEMForceField<Vec3Types>;
 
 
-void SOFA_GENERAL_SIMPLE_FEM_API initGeneralSimpleFEM();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component::forcefield

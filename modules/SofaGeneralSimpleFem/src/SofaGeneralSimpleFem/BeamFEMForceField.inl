@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_INL
-
+#pragma once
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -42,16 +40,7 @@
 #include "BeamFEMForceField.h"
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
-{
-
-namespace _beamfemforcefield_
+namespace sofa::component::forcefield::_beamfemforcefield_
 {
 
 using core::objectmodel::BaseContext;
@@ -809,13 +798,4 @@ void BeamFEMForceField<DataTypes>::BeamInfo::init(double E, double L, double nu,
     _Asz = 0.0;
 }
 
-} // namespace _beamfemforcefield_
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_INL
-
+} // namespace  sofa::component::forcefield::_beamfemforcefield_

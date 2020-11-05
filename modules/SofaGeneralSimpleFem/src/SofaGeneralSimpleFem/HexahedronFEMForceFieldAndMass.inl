@@ -19,24 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONANDMASSFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONANDMASSFEMFORCEFIELD_INL
-
-
+#pragma once
 #include <SofaGeneralSimpleFem/HexahedronFEMForceFieldAndMass.h>
 #include <SofaSimpleFem/HexahedronFEMForceField.inl>
 #include <SofaBaseTopology/SparseGridTopology.h>
 
 
-namespace sofa
+namespace sofa::component::forcefield
 {
-
-namespace component
-{
-
-namespace forcefield
-{
-
 
 template<class DataTypes>
 HexahedronFEMForceFieldAndMass<DataTypes>::HexahedronFEMForceFieldAndMass()
@@ -336,10 +326,4 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
     vparams->drawTool()->drawPoints(pos,2.0f, defaulttype::Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONANDMASSFEMFORCEFIELD_INL
+} // namespace sofa::component::forcefield

@@ -19,31 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef STIFFNESSCONTAINER_H_
-#define STIFFNESSCONTAINER_H_
-#include "config.h"
+#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELDANDMASS_CPP
+#include <SofaGeneralSimpleFem/HexahedronFEMForceFieldAndMass.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::forcefield
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
 
-namespace container
-{
 
-class StiffnessContainer : public virtual sofa::core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(StiffnessContainer,sofa::core::objectmodel::BaseObject);
+// Register in the Factory
+int HexahedronFEMForceFieldAndMassClass = core::RegisterObject("Hexahedral finite elements with mass")
+        .add< HexahedronFEMForceFieldAndMass<Vec3Types> >()
 
-    virtual double getStiffness(unsigned int index) = 0;
-};
+        ;
 
-}
+template class SOFA_SOFAGENERALSIMPLEFEM_API HexahedronFEMForceFieldAndMass<Vec3Types>;
 
-}
 
-}
 
-#endif /*STIFFNESSCONTAINER_H_*/
+} // namespace sofa::component::forcefield

@@ -19,36 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP
-#include "HexahedralFEMForceFieldAndMass.inl"
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <SofaGeneralSimpleFem/config.h>
 
-
-namespace sofa
+namespace sofa::component::container
 {
 
-namespace component
+class PoissonContainer : public virtual sofa::core::objectmodel::BaseObject
 {
+public:
+    SOFA_CLASS(PoissonContainer,sofa::core::objectmodel::BaseObject);
 
-namespace forcefield
-{
+    virtual double getPoisson(sofa::Index index) = 0;
+};
 
-using namespace sofa::defaulttype;
-
-
-// Register in the Factory
-int HexahedralFEMForceFieldAndMassClass = core::RegisterObject("Hexahedral finite elements with mass")
-        .add< HexahedralFEMForceFieldAndMass<Vec3Types> >()
-
-        ;
-
-template class SOFA_GENERAL_SIMPLE_FEM_API HexahedralFEMForceFieldAndMass<Vec3Types>;
-
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::container

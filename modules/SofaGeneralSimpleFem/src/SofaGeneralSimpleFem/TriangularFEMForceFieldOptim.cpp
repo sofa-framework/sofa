@@ -19,30 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef LENGTHCONTAINER_H_
-#define LENGTHCONTAINER_H_
-#include "config.h"
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP
 
-namespace sofa
+#include <SofaGeneralSimpleFem/TriangularFEMForceFieldOptim.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::component::forcefield
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
 
-namespace container
-{
+// Register in the Factory
+int TriangularFEMForceFieldOptimClass = core::RegisterObject("Corotational Triangular finite elements")
+        .add< TriangularFEMForceFieldOptim<Vec3Types> >()
 
-class LengthContainer : public virtual sofa::core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(LengthContainer,core::objectmodel::BaseObject);
+        ;
 
-    virtual double getLength(unsigned int index) = 0;
-};
+template class SOFA_SOFAGENERALSIMPLEFEM_API TriangularFEMForceFieldOptim<Vec3Types>;
 
-}
 
-}
 
-}
-#endif /*LENGTHCONTAINER_H_*/
+} // sofa::component::forcefield

@@ -19,33 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
-
-
+#pragma once
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
-#include "config.h"
+#include <SofaGeneralSimpleFem/config.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 class StiffnessContainer;
 class PoissonContainer;
-} // namespace container
 
-namespace forcefield
+} // namespace sofa::component::container
+
+namespace  sofa::component::forcefield
 {
 
-namespace _beamfemforcefield_ {
+namespace _beamfemforcefield_
+{
 
 using topology::TopologyDataHandler;
 using core::MechanicalParams;
@@ -235,17 +228,11 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP)
-extern template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAGENERALSIMPLEFEM_API BeamFEMForceField<defaulttype::Rigid3Types>;
 #endif
 
-}
+} // namespace _beamfemforcefield_
 
 using _beamfemforcefield_::BeamFEMForceField;
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
+} // namespace sofa::component::forcefield

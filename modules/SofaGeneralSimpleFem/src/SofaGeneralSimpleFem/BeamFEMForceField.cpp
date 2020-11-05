@@ -19,39 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP
-
-#include "TetrahedralCorotationalFEMForceField.inl"
-#include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP
+#include <SofaGeneralSimpleFem/BeamFEMForceField.inl>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
-//#include <typeinfo>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield::_beamfemforcefield_
 {
 
 using namespace sofa::defaulttype;
 
-
 // Register in the Factory
-int TetrahedralCorotationalFEMForceFieldClass = core::RegisterObject("Corotational FEM Tetrahedral finite elements")
-        .add< TetrahedralCorotationalFEMForceField<Vec3Types> >()
-
+int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements")
+        .add< BeamFEMForceField<Rigid3Types> >()
         ;
 
-template class SOFA_GENERAL_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<Vec3Types>;
+template class SOFA_SOFAGENERALSIMPLEFEM_API BeamFEMForceField<Rigid3Types>;
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::forcefield::_beamfemforcefield_

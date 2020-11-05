@@ -46,4 +46,3 @@ add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralTopology/SofaGeneralT
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralLoader/SofaGeneralLoader_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaGeneral/SofaGeneralLoader/SofaGeneralLoader_test)
 # add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralMeshCollision/SofaGeneralMeshCollision_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaGeneral/SofaGeneralMeshCollision/SofaGeneralMeshCollision_test)
 # add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralRigid/SofaGeneralRigid_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaGeneral/SofaGeneralRigid/SofaGeneralRigid_test)
-add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralSimpleFem/SofaGeneralSimpleFem_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaGeneral/SofaGeneralSimpleFem/SofaGeneralSimpleFem_test)

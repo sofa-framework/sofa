@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_H
-#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralSimpleFem/config.h>
 
 
 #include "HexahedralFEMForceField.h"
@@ -29,13 +28,7 @@
 
 #include <SofaBaseTopology/TopologyData.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 /** Compute Finite Element forces based on hexahedral elements including continuum mass matrices
@@ -139,14 +132,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)
-extern template class SOFA_GENERAL_SIMPLE_FEM_API HexahedralFEMForceFieldAndMass<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAGENERALSIMPLEFEM_API HexahedralFEMForceFieldAndMass<defaulttype::Vec3Types>;
 
 #endif
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_H
+} // namespace sofa::component::forcefield

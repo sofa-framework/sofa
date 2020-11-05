@@ -19,26 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
+#pragma once
+#include <SofaGeneralSimpleFem/config.h>
 
-
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
-
-
-void initGeneralSimpleFEM()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component

@@ -19,35 +19,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELDOPTIM_CPP
+#include <SofaGeneralSimpleFem/initSofaGeneralSimpleFem.h>
 
-#include "TriangularFEMForceFieldOptim.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
+extern "C" {
+    SOFA_SOFAGENERALSIMPLEFEM_API void initExternalModule();
+    SOFA_SOFAGENERALSIMPLEFEM_API const char* getModuleName();
+    SOFA_SOFAGENERALSIMPLEFEM_API const char* getModuleVersion();
+    SOFA_SOFAGENERALSIMPLEFEM_API const char* getModuleLicense();
+    SOFA_SOFAGENERALSIMPLEFEM_API const char* getModuleDescription();
+    SOFA_SOFAGENERALSIMPLEFEM_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-namespace forcefield
+const char* getModuleName()
 {
+    return sofa_tostring(SOFA_TARGET);
+}
 
-using namespace sofa::defaulttype;
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFASOFAGENERALSIMPLEFEM_VERSION);
+}
 
-// Register in the Factory
-int TriangularFEMForceFieldOptimClass = core::RegisterObject("Corotational Triangular finite elements")
-        .add< TriangularFEMForceFieldOptim<Vec3Types> >()
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-        ;
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about General Simple FEM.";
+}
 
-template class SOFA_GENERAL_SIMPLE_FEM_API TriangularFEMForceFieldOptim<Vec3Types>;
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
 
-
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component
