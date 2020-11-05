@@ -340,6 +340,12 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "LineSetSkinningMapping", Pluginized("v20.12", "SofaGeneralRigid") },
     { "SkinningMapping", Pluginized("v20.12", "SofaGeneralRigid") },
 
+    // SofaGeneralObjectInteraction was pluginized in #1580
+    { "AttachConstraint", Pluginized("v20.12", "SofaGeneralObjectInteraction") },
+    { "BoxStiffSpringForceField", Pluginized("v20.12", "SofaGeneralObjectInteraction") },
+    { "InteractionEllipsoidForceField", Pluginized("v20.12", "SofaGeneralObjectInteraction") },
+    { "RepulsiveSpringForceField", Pluginized("v20.12", "SofaGeneralObjectInteraction") },
+
     /***********************/
     // REMOVED SINCE v20.06
 

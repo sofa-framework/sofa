@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_INTERACTION_ELLIPSOIDFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_INTERACTION_ELLIPSOIDFORCEFIELD_INL
-
+#pragma once
 #include <SofaGeneralObjectInteraction/InteractionEllipsoidForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
@@ -29,13 +27,7 @@
 #include <cassert>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 // v = sqrt(x0�/r0�+x1�/r1�+x2�/r2�)-1
@@ -420,10 +412,4 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
 }
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::interactionforcefield

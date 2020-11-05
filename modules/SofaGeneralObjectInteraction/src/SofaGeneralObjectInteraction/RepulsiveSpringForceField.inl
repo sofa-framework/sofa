@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_INL
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_INL
-
+#pragma once
 #include <SofaGeneralObjectInteraction/RepulsiveSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 
@@ -109,10 +101,4 @@ void RepulsiveSpringForceField<DataTypes>::updateMaskForce()
 }
 
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::interactionforcefield

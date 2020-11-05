@@ -247,6 +247,7 @@ sofa_add_module(modules/SofaGeneralExplicitOdeSolver SofaGeneralExplicitOdeSolve
 sofa_add_module(modules/SofaGeneralImplicitOdeSolver SofaGeneralImplicitOdeSolver ON)
 sofa_add_module(modules/SofaGeneralLinearSolver SofaGeneralLinearSolver ON)
 sofa_add_module(modules/SofaGeneralRigid SofaGeneralRigid ON)
+sofa_add_module(modules/SofaGeneralObjectInteraction SofaGeneralObjectInteraction ON)
     
     
     

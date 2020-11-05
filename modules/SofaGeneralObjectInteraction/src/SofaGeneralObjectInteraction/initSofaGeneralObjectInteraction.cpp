@@ -19,38 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_CPP
-#include <SofaGeneralObjectInteraction/RepulsiveSpringForceField.inl>
-#include <sofa/defaulttype/VecTypes.h>
+#include <SofaGeneralObjectInteraction/initSofaGeneralObjectInteraction.h>
+
+
 #include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
+extern "C" {
+    SOFA_SOFAGENERALOBJECTINTERACTION_API void initExternalModule();
+    SOFA_SOFAGENERALOBJECTINTERACTION_API const char* getModuleName();
+    SOFA_SOFAGENERALOBJECTINTERACTION_API const char* getModuleVersion();
+    SOFA_SOFAGENERALOBJECTINTERACTION_API const char* getModuleLicense();
+    SOFA_SOFAGENERALOBJECTINTERACTION_API const char* getModuleDescription();
+    SOFA_SOFAGENERALOBJECTINTERACTION_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-namespace interactionforcefield
+const char* getModuleName()
 {
+    return sofa_tostring(SOFA_TARGET);
+}
 
-using namespace sofa::defaulttype;
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAGENERALOBJECTINTERACTION_VERSION);
+}
 
-// Register in the Factory
-int RepulsiveSpringForceFieldClass = core::RegisterObject("Springs which only repell")
-        .add< RepulsiveSpringForceField<Vec3Types> >()
-        .add< RepulsiveSpringForceField<Vec2Types> >()
-        .add< RepulsiveSpringForceField<Vec1Types> >()
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-        ;
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about General Object Interaction.";
+}
 
-template class RepulsiveSpringForceField<Vec3Types>;
-template class RepulsiveSpringForceField<Vec2Types>;
-template class RepulsiveSpringForceField<Vec1Types>;
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
 
-
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component

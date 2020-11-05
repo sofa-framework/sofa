@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralObjectInteraction/config.h>
 
 
 
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <sofa/defaulttype/Vec.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 /** Set springs between the particles located inside a given box.
@@ -81,17 +74,11 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_CPP)
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec3Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec2Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec1Types>;
-extern template class SOFA_GENERAL_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec6Types>;
+extern template class SOFA_SOFAGENERALOBJECTINTERACTION_API BoxStiffSpringForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAGENERALOBJECTINTERACTION_API BoxStiffSpringForceField<defaulttype::Vec2Types>;
+extern template class SOFA_SOFAGENERALOBJECTINTERACTION_API BoxStiffSpringForceField<defaulttype::Vec1Types>;
+extern template class SOFA_SOFAGENERALOBJECTINTERACTION_API BoxStiffSpringForceField<defaulttype::Vec6Types>;
 
 #endif
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_H */
+} //namespace sofa::component::interactionforcefield

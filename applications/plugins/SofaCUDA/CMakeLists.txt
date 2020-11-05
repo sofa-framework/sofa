@@ -175,6 +175,7 @@ set(README_FILES SofaCUDA.txt)
 find_package(SofaMiscMapping REQUIRED)
 find_package(SofaMiscFem REQUIRED)
 find_package(SofaMiscForceField REQUIRED)
+find_package(SofaGeneralObjectInteraction REQUIRED)
 find_package(CUDA REQUIRED)
 find_package(VolumetricRendering QUIET)
 find_package(SofaValidation REQUIRED)
@@ -317,7 +318,7 @@ cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_S
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
-target_link_libraries(${PROJECT_NAME} SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaAdvanced SofaMiscMapping SofaMiscFem SofaValidation SofaMiscForceField)
+target_link_libraries(${PROJECT_NAME} SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaAdvanced SofaMiscMapping SofaMiscFem SofaValidation SofaMiscForceField SofaGeneralObjectInteraction)
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 

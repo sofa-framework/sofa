@@ -19,16 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGENERALOBJECTINTERACTION_CONFIG_H
-#define SOFAGENERALOBJECTINTERACTION_CONFIG_H
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_CPP
+#include <SofaGeneralObjectInteraction/RepulsiveSpringForceField.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-#include <SofaGeneral/config.h>
+namespace sofa::component::interactionforcefield
+{
 
-#ifdef SOFA_BUILD_GENERAL_OBJECT_INTERACTION
-#  define SOFA_TARGET SofaGeneralObjectInteraction
-#  define SOFA_GENERAL_OBJECT_INTERACTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_GENERAL_OBJECT_INTERACTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+using namespace sofa::defaulttype;
 
-#endif
+// Register in the Factory
+int RepulsiveSpringForceFieldClass = core::RegisterObject("Springs which only repell")
+        .add< RepulsiveSpringForceField<Vec3Types> >()
+        .add< RepulsiveSpringForceField<Vec2Types> >()
+        .add< RepulsiveSpringForceField<Vec1Types> >()
+
+        ;
+
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API RepulsiveSpringForceField<Vec3Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API RepulsiveSpringForceField<Vec2Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API RepulsiveSpringForceField<Vec1Types>;
+
+
+} //namespace sofa::component::interactionforcefield

@@ -19,26 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_CPP
+#include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.inl>
+#include <SofaDeformable/StiffSpringForceField.inl>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-
-namespace sofa
+namespace sofa::component::interactionforcefield
 {
 
-namespace component
-{
+int BoxStiffSpringForceFieldClass = core::RegisterObject("Set Spring between the points inside a given box")
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec3Types> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec2Types> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec1Types> >()
+        .add< BoxStiffSpringForceField<sofa::defaulttype::Vec6Types> >()
+
+        ;
+
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec3Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec2Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec1Types>;
+template class SOFA_SOFAGENERALOBJECTINTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec6Types>;
 
 
-void initGeneralObjectInteraction()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::interactionforcefield
