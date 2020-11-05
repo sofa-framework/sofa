@@ -107,12 +107,21 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
     {
         msg_warning() << ": no forcefield to link to for this node path: " << l_nodeToParse.getPath();
     }
+
     sofa::core::behavior::MechanicalState<DataTypes1>* ms1 = this->getMState1();
     sofa::core::behavior::MechanicalState<DataTypes2>* ms2 = this->getMState2();
-    nbColsJ1 = ms1->getSize()*DerivSize1;
-    nbColsJ2 = ms2->getSize()*DerivSize2;
+    m_nbColsJ1 = ms1->getSize()*DerivSize1;
+    m_nbColsJ2 = ms2->getSize()*DerivSize2;
 
     this->d_componentState.setValue(ComponentState::Valid) ;
+}
+
+template<class DataTypes1, class DataTypes2>
+void MechanicalMatrixMapper<DataTypes1, DataTypes2>::bwdInit()
+{
+    m_fullMatrixSize = l_mechanicalState.get()->getMatrixSize();
+    m_J1eig.resize(m_fullMatrixSize, m_nbColsJ1);
+    m_J2eig.resize(m_fullMatrixSize, m_nbColsJ2);
 }
 
 template<class DataTypes1, class DataTypes2>
@@ -190,7 +199,8 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::accumulateJacobians(const M
 template<class T>
 void copyKToEigenFormat(CompressedRowSparseMatrix< T >* K, Eigen::SparseMatrix<double,Eigen::ColMajor>& Keig)
 {
-    Keig.resize(K->nRow,K->nRow);
+    Keig.rows();
+    Keig.cols();
     std::vector< Eigen::Triplet<double> > tripletList;
     tripletList.reserve(K->colsValue.size());
 
@@ -319,7 +329,8 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
 
     ///////////////////////     GET K       ////////////////////////////////////////
     CompressedRowSparseMatrix< Real1 >* K = new CompressedRowSparseMatrix< Real1 > ( );
-    K->resizeBloc( 3*l_mechanicalState->getSize() ,  3*l_mechanicalState->getSize());
+    msg_warning() << "in adkktomatrix, : " << l_mechanicalState.get()->getMatrixSize();
+    K->resizeBloc( m_fullMatrixSize ,  m_fullMatrixSize );
     K->clear();
     DefaultMultiMatrixAccessor* KAccessor;
     KAccessor = new DefaultMultiMatrixAccessor;
@@ -374,6 +385,8 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
 
     time = (double)timer->getTime();
     Eigen::SparseMatrix<double,Eigen::ColMajor> Keig;
+    msg_warning() << "m_fullMatrixSize: " << m_fullMatrixSize;
+    Keig.resize(m_fullMatrixSize,m_fullMatrixSize);
     copyKToEigenFormat(K,Keig);
     msg_info()<<" time set Keig : "<<( (double)timer->getTime() - time)*timeScale<<" ms";
 
@@ -383,16 +396,12 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     sofa::core::MultiMatrixDerivId c = sofa::core::MatrixDerivId::mappingJacobian();
     const MatrixDeriv1 &J1 = c[ms1].read()->getValue();
     const MatrixDeriv2 &J2 = c[ms2].read()->getValue();
-    Eigen::SparseMatrix<double> J1eig;
-    Eigen::SparseMatrix<double> J2eig;
 
-    J1eig.resize(K->nRow, nbColsJ1);
-    optimizeAndCopyMappingJacobianToEigenFormat1(J1, J1eig);
+    optimizeAndCopyMappingJacobianToEigenFormat1(J1, m_J1eig);
     if (bms1 != bms2)
     {
         double startTime2= (double)timer->getTime();
-        J2eig.resize(K->nRow, nbColsJ2);
-        optimizeAndCopyMappingJacobianToEigenFormat2(J2, J2eig);
+        optimizeAndCopyMappingJacobianToEigenFormat2(J2, m_J2eig);
         msg_info()<<" time set J2eig alone : "<<( (double)timer->getTime() - startTime2)*timeScale<<" ms";
     }
     msg_info()<<" time getJ + set J1eig (and potentially J2eig) : "<<( (double)timer->getTime() - startTime)*timeScale<<" ms";
@@ -402,29 +411,29 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     /* -------------------------------------------------------------------------- */
     /*          perform the multiplication with [J1t J2t] * K * [J1 J2]           */
     /* -------------------------------------------------------------------------- */
-    nbColsJ1 = J1eig.cols();
+    m_nbColsJ1 = m_J1eig.cols();
     if (bms1 != bms2)
     {
-        nbColsJ2 = J2eig.cols();
+        m_nbColsJ2 = m_J2eig.cols();
     }
-    Eigen::SparseMatrix<double>  J1tKJ1eigen(nbColsJ1,nbColsJ1);
+    Eigen::SparseMatrix<double>  J1tKJ1eigen(m_nbColsJ1,m_nbColsJ1);
 
     if (!d_skipJ1tKJ1.getValue())
-    J1tKJ1eigen = J1eig.transpose()*Keig*J1eig;
+    J1tKJ1eigen = m_J1eig.transpose()*Keig*m_J1eig;
 
     msg_info()<<" time compute J1tKJ1eigen alone : "<<( (double)timer->getTime() - startTime)*timeScale<<" ms";
 
-    Eigen::SparseMatrix<double>  J2tKJ2eigen(nbColsJ2,nbColsJ2);
-    Eigen::SparseMatrix<double>  J1tKJ2eigen(nbColsJ1,nbColsJ2);
-    Eigen::SparseMatrix<double>  J2tKJ1eigen(nbColsJ2,nbColsJ1);
+    Eigen::SparseMatrix<double>  J2tKJ2eigen(m_nbColsJ2,m_nbColsJ2);
+    Eigen::SparseMatrix<double>  J1tKJ2eigen(m_nbColsJ1,m_nbColsJ2);
+    Eigen::SparseMatrix<double>  J2tKJ1eigen(m_nbColsJ2,m_nbColsJ1);
 
     if (bms1 != bms2)
     {
         double startTime2= (double)timer->getTime();
         if (!d_skipJ2tKJ2.getValue())
-                J2tKJ2eigen = J2eig.transpose()*Keig*J2eig;
-        J1tKJ2eigen = J1eig.transpose()*Keig*J2eig;
-        J2tKJ1eigen = J2eig.transpose()*Keig*J1eig;
+                J2tKJ2eigen = m_J2eig.transpose()*Keig*m_J2eig;
+        J1tKJ2eigen = m_J1eig.transpose()*Keig*m_J2eig;
+        J2tKJ1eigen = m_J2eig.transpose()*Keig*m_J1eig;
         msg_info()<<" time compute J1tKJ2eigen J2TKJ2 and J2tKJ1 : "<<( (double)timer->getTime() - startTime2)*timeScale<<" ms";
     }
 
@@ -434,7 +443,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     msg_info()<<" time compute all JtKJeigen with J1eig and J2eig : "<<( (double)timer->getTime() - startTime)*timeScale<<" ms";
     //int row;
     unsigned int mstateSize = l_mechanicalState->getSize();
-    addPrecomputedMassToSystem(mparams,mstateSize,J1eig,J1tKJ1eigen);
+    addPrecomputedMassToSystem(mparams,mstateSize,m_J1eig,J1tKJ1eigen);
     int offset,offrow, offcol;
     startTime= (double)timer->getTime();
     offset = mat11.offset;
