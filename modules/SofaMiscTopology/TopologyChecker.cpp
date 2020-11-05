@@ -105,16 +105,64 @@ bool TopologyChecker::checkContainer()
 }
 
 
-bool TopologyChecker::checkTetrahedronTopology()
+bool TopologyChecker::checkEdgeTopology()
 {
+    std::cout << "TopologyChecker::checkEdgeTopology()" << std::endl;
     bool ret = true;
+    int nbE = m_topology->getNbEdges();
+    const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
 
-    return ret && checkTriangleTopology();
+    if (nbE != my_edges.size())
+    {
+        msg_error() << "CheckEdgeTopology failed: not the good number of edges, getNbEdges returns " << nbE << " whereas edge array size is: " << my_edges.size();
+        return false;
+    }
+
+
+    // check edge buffer
+    for (std::size_t i = 0; i < nbE; ++i)
+    {
+        const auto& edge = my_edges[i];
+        if (edge[0] == edge[1]) {
+            msg_error() << "CheckEdgeTopology failed: edge " << i << " has 2 identical vertices: " << edge;
+            ret = false;
+        }
+    }
+
+    // check cross element
+    std::size_t nbP = m_topology->getNbPoints();
+
+    std::set<int> edgeSet;
+    for (std::size_t i = 0; i < nbP; ++i)
+    {
+        const auto& EdgesAV = m_topology->getEdgesAroundVertex(i);
+        for (size_t j = 0; j < EdgesAV.size(); ++j)
+        {
+            const Topology::Edge& edge = my_edges[EdgesAV[j]];
+            if (!(edge[0] == i || edge[1] == i))
+            {
+                msg_error() << "CheckEdgeTopology failed: edge " << EdgesAV[j] << ": [" << edge << "] not around vertex: " << i;
+                ret = false;
+            }
+
+            // count number of edge
+            edgeSet.insert(EdgesAV[j]);
+        }
+    }
+
+    if (edgeSet.size() != nbE)
+    {
+        msg_error() << "CheckEdgeTopology failed: found " << edgeSet.size() << " edges in m_edgesAroundVertex out of " << nbE;
+        ret = false;
+    }
+
+    return ret;
 }
 
 
 bool TopologyChecker::checkTriangleTopology()
 {
+    std::cout << "TopologyChecker::checkTriangleTopology()" << std::endl;
     bool ret = true;
     int nbT = m_topology->getNbTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& my_triangles = m_topology->getTriangles();
@@ -125,7 +173,7 @@ bool TopologyChecker::checkTriangleTopology()
         return false;
     }
 
-    // check edge buffer
+    // check triangle buffer
     for (std::size_t i = 0; i < nbT; ++i)
     {
         const auto& triangle = my_triangles[i];
@@ -202,7 +250,7 @@ bool TopologyChecker::checkTriangleTopology()
                 || (eInTri[2] == edgeId);
             if (!check_triangle_edge_shell)
             {
-                msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: triangle: " << triId << " with edges: [" << eInTri << "] not found around edge: " << edgeId;
+                msg_error() << "CheckTriangleTopology failed: triangle: " << triId << " with edges: [" << eInTri << "] not found around edge: " << edgeId;
                 ret = false;
             }
 
@@ -212,7 +260,7 @@ bool TopologyChecker::checkTriangleTopology()
 
     if (triangleSet.size() != my_triangles.size())
     {
-        msg_error() << "TriangleSetTopologyContainer::checkTopology() failed: found " << triangleSet.size() << " triangles in m_trianglesAroundEdge out of " << my_triangles.size();
+        msg_error() << "CheckTriangleTopology failed: found " << triangleSet.size() << " triangles in m_trianglesAroundEdge out of " << my_triangles.size();
         ret = false;
     }
 
@@ -220,57 +268,181 @@ bool TopologyChecker::checkTriangleTopology()
 }
 
 
-bool TopologyChecker::checkEdgeTopology()
+bool TopologyChecker::checkTetrahedronTopology()
 {
+    std::cout << "TopologyChecker::checkTetrahedronTopology()" << std::endl;
     bool ret = true;
-    int nbE = m_topology->getNbEdges();
-    const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
-    
-    if (nbE != my_edges.size())
+    int nbT = m_topology->getNbTetrahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& my_tetrahedra = m_topology->getTetrahedra();
+
+    if (nbT != my_tetrahedra.size())
     {
-        msg_error() << "CheckEdgeTopology failed: not the good number of edges, getNbEdges returns " << nbE << " whereas edge array size is: " << my_edges.size();
+        msg_error() << "checkTetrahedronTopology failed: not the good number of tetrahedra, getNbTetrahedra returns " << nbT << " whereas triangle array size is: " << my_tetrahedra.size();
         return false;
     }
-        
 
-    // check edge buffer
-    for (std::size_t i = 0; i < nbE; ++i)
+    // check tetrahedron buffer
+    for (std::size_t i = 0; i < nbT; ++i)
     {
-        const auto& edge = my_edges[i];
-        if (edge[0] == edge[1]) {
-            msg_error() << "CheckEdgeTopology failed: edge " << i << " has 2 identical vertices: " << edge;
-            ret = false;
+        const auto& tetra = my_tetrahedra[i];
+        for (int j = 0; j < 3; ++j)
+        {
+            for (int k = j + 1; k < 4; ++k)
+            {
+                if (tetra[j] == tetra[k])
+                {
+                    msg_error() << "checkTetrahedronTopology failed: tetrahedron " << i << " has 2 identical vertices: " << tetra;
+                    ret = false;
+                }
+            }
         }
     }
 
     // check cross element
-    std::size_t nbP = m_topology->getNbPoints();    
-    
-    std::set<int> edgeSet;
-    for (std::size_t i = 0; i < nbP; ++i)
+    std::size_t nbP = m_topology->getNbPoints();
+
+    // check tetrahedra around vertex
+    std::set <int> tetrahedronSet;
+    for (std::size_t pId = 0; pId < nbP; ++pId)
     {
-        const auto& EdgesAV = m_topology->getEdgesAroundVertex(i);
-        for (size_t j = 0; j < EdgesAV.size(); ++j)
+        const auto& tetraAV = m_topology->getTetrahedraAroundVertex(pId);
+        for (auto tetraId : tetraAV )
         {
-            const Topology::Edge& edge = my_edges[EdgesAV[j]];
-            if (!(edge[0] == i || edge[1] == i))
+            const Topology::Tetrahedron& tetra = my_tetrahedra[tetraId];
+            bool check_tetra_vertex_shell = (tetra[0] == pId)
+                || (tetra[1] == pId)
+                || (tetra[2] == pId)
+                || (tetra[3] == pId);
+            if (!check_tetra_vertex_shell)
             {
-                msg_error() << "CheckEdgeTopology failed: edge " << EdgesAV[j] << ": [" << edge << "] not around vertex: " << i;
+                msg_error() << "checkTetrahedronTopology failed: Tetrahedron " << tetraId << ": [" << tetra << "] not around vertex: " << pId;
                 ret = false;
             }
 
-            // count number of edge
-            edgeSet.insert(EdgesAV[j]);
+            tetrahedronSet.insert(tetraId);
         }
     }
 
-    if (edgeSet.size() != nbE)
+    if (tetrahedronSet.size() != my_tetrahedra.size())
     {
-        msg_error() << "CheckEdgeTopology failed: found " << edgeSet.size() << " edges in m_edgesAroundVertex out of " << nbE;
+        msg_error() << "checkTetrahedronTopology failed: found " << tetrahedronSet.size() << " tetrahedra in tetrahedraAroundVertex out of " << my_tetrahedra.size();
         ret = false;
     }
 
-    return ret;
+
+
+    int nbTri = m_topology->getNbTriangles();
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles& my_triangles = m_topology->getTriangles();
+    // check first m_trianglesInTetrahedron
+    for (std::size_t tetraId = 0; tetraId < nbT; ++tetraId)
+    {
+        const Topology::Tetrahedron& tetrahedron = my_tetrahedra[tetraId];
+        const auto& triInTetra = m_topology->getTrianglesInTetrahedron(tetraId);
+
+        for (unsigned int j = 0; j < 4; j++)
+        {
+            const Topology::Triangle& triangle = my_triangles[triInTetra[j]];
+            int cptFound = 0;
+            for (unsigned int k = 0; k < 4; k++)
+                if (triangle[0] == tetrahedron[k] || triangle[1] == tetrahedron[k] || triangle[2] == tetrahedron[k])
+                    cptFound++;
+
+            if (cptFound != 3)
+            {
+                msg_error() << "checkTetrahedronTopology failed: triangle: " << triInTetra[j] << ": [" << triangle << "] not found in tetrahedron: " << tetraId << ": " << tetrahedron;
+                ret = false;
+            }
+        }
+    }
+
+    // check tetrahedra around triangles
+    // check m_tetrahedraAroundTriangle using checked m_trianglesInTetrahedron
+    tetrahedronSet.clear();
+    for (size_t triId = 0; triId < nbTri; ++triId)
+    {
+        const BaseMeshTopology::TetrahedraAroundTriangle& tes = m_topology->getTetrahedraAroundTriangle(triId);
+        for (auto tetraId : tes)
+        {
+            const BaseMeshTopology::TrianglesInTetrahedron& triInTetra = m_topology->getTrianglesInTetrahedron(tetraId);
+            bool check_tetra_triangle_shell = (triInTetra[0] == triId)
+                || (triInTetra[1] == triId)
+                || (triInTetra[2] == triId)
+                || (triInTetra[3] == triId);
+            if (!check_tetra_triangle_shell)
+            {
+                msg_error() << "checkTetrahedronTopology failed: tetrahedron: " << tetraId << " with triangle: [" << triInTetra << "] not found around triangle: " << tetraId;
+                ret = false;
+            }
+
+            tetrahedronSet.insert(tetraId);
+        }
+    }
+
+    if (tetrahedronSet.size() != my_tetrahedra.size())
+    {
+        msg_error() << "checkTetrahedronTopology failed: found " << tetrahedronSet.size() << " tetrahedra in m_tetrahedraAroundTriangle out of " << my_tetrahedra.size();
+        ret = false;
+    }
+
+
+
+    int nbE = m_topology->getNbEdges();
+    const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
+    // check edges in tetrahedra
+    for (std::size_t i = 0; i < nbT; ++i)
+    {
+        const Topology::Tetrahedron& tetrahedron = my_tetrahedra[i];
+        const auto& eInTetra = m_topology->getEdgesInTetrahedron(i);
+
+        for (unsigned int j = 0; j < 6; j++)
+        {
+            const Topology::Edge& edge = my_edges[eInTetra[j]];
+            int cptFound = 0;
+            for (unsigned int k = 0; k < 4; k++)
+                if (edge[0] == tetrahedron[k] || edge[1] == tetrahedron[k])
+                    cptFound++;
+
+            if (cptFound != 2)
+            {
+                msg_error() << "checkTetrahedronTopology failed: edge: " << eInTetra[j] << ": [" << edge << "] not found in tetrahedron: " << i << ": " << tetrahedron;
+                ret = false;
+            }
+        }
+    }
+
+    // check tetrahedra around edges
+    // check m_tetrahedraAroundEdge using checked m_edgesInTetrahedron
+    tetrahedronSet.clear();
+    for (size_t edgeId = 0; edgeId < nbE; ++edgeId)
+    {
+        const BaseMeshTopology::TetrahedraAroundEdge& tes = m_topology->getTetrahedraAroundEdge(edgeId);
+        for (auto tetraId : tes)
+        {
+            const BaseMeshTopology::EdgesInTetrahedron& eInTetra = m_topology->getEdgesInTetrahedron(tetraId);
+            bool check_tetra_edge_shell = (eInTetra[0] == edgeId)
+                || (eInTetra[1] == edgeId)
+                || (eInTetra[2] == edgeId)
+                || (eInTetra[3] == edgeId)
+                || (eInTetra[4] == edgeId)
+                || (eInTetra[5] == edgeId);
+            if (!check_tetra_edge_shell)
+            {
+                msg_error() << "checkTetrahedronTopology failed: tetrahedron: " << tetraId << " with edges: [" << eInTetra << "] not found around edge: " << edgeId;
+                ret = false;
+            }
+
+            tetrahedronSet.insert(tetraId);
+        }
+    }
+
+    if (tetrahedronSet.size() != my_tetrahedra.size())
+    {
+        msg_error() << "CheckTriangleTopology failed: found " << tetrahedronSet.size() << " tetrahedra in m_tetrahedraAroundTriangle out of " << my_tetrahedra.size();
+        ret = false;
+    }
+
+
+    return ret && checkTriangleTopology();
 }
 
 
