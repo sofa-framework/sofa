@@ -107,6 +107,10 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
     {
         msg_warning() << ": no forcefield to link to for this node path: " << l_nodeToParse.getPath();
     }
+    sofa::core::behavior::MechanicalState<DataTypes1>* ms1 = this->getMState1();
+    sofa::core::behavior::MechanicalState<DataTypes2>* ms2 = this->getMState2();
+    nbColsJ1 = ms1->getSize()*DerivSize1;
+    nbColsJ2 = ms2->getSize()*DerivSize2;
 
     this->d_componentState.setValue(ComponentState::Valid) ;
 }
@@ -381,15 +385,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     const MatrixDeriv2 &J2 = c[ms2].read()->getValue();
     Eigen::SparseMatrix<double> J1eig;
     Eigen::SparseMatrix<double> J2eig;
-    if (bms1 != bms2)
-    {
-        nbColsJ1 = mat12.offCol;
-        nbColsJ2 = mat11->cols() - mat12.offCol;
-    }
-    else
-    {
-        nbColsJ1 = mat11->cols();
-    }
+
     J1eig.resize(K->nRow, nbColsJ1);
     optimizeAndCopyMappingJacobianToEigenFormat1(J1, J1eig);
     if (bms1 != bms2)
