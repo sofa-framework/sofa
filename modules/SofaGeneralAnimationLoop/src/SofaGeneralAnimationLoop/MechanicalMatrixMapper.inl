@@ -108,8 +108,8 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
         msg_warning() << ": no forcefield to link to for this node path: " << l_nodeToParse.getPath();
     }
 
-    sofa::core::behavior::MechanicalState<DataTypes1>* ms1 = this->getMState1();
-    sofa::core::behavior::MechanicalState<DataTypes2>* ms2 = this->getMState2();
+    auto ms1 = this->getMState1();
+    auto ms2 = this->getMState2();
     m_nbColsJ1 = ms1->getSize()*DerivSize1;
     m_nbColsJ2 = ms2->getSize()*DerivSize2;
 
@@ -329,7 +329,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
 
     ///////////////////////     GET K       ////////////////////////////////////////
     CompressedRowSparseMatrix< Real1 >* K = new CompressedRowSparseMatrix< Real1 > ( );
-    msg_warning() << "in adkktomatrix, : " << l_mechanicalState.get()->getMatrixSize();
     K->resizeBloc( m_fullMatrixSize ,  m_fullMatrixSize );
     K->clear();
     DefaultMultiMatrixAccessor* KAccessor;
@@ -385,7 +384,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
 
     time = (double)timer->getTime();
     Eigen::SparseMatrix<double,Eigen::ColMajor> Keig;
-    msg_warning() << "m_fullMatrixSize: " << m_fullMatrixSize;
     Keig.resize(m_fullMatrixSize,m_fullMatrixSize);
     copyKToEigenFormat(K,Keig);
     msg_info()<<" time set Keig : "<<( (double)timer->getTime() - time)*timeScale<<" ms";
