@@ -410,7 +410,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "UniformConstraint", Pluginized("v20.12", "SofaConstraint") },
     { "UnilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
 
-    // SofaGeneralLoader was pluginized in #15XX
+    // SofaGeneralLoader was pluginized in #1595
     { "GIDMeshLoader", Pluginized("v20.12", "SofaGeneralLoader") },
     { "GridMeshCreator", Pluginized("v20.12", "SofaGeneralLoader") },
     { "InputEventReader", Pluginized("v20.12", "SofaGeneralLoader") },
