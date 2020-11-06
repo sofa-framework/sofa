@@ -361,6 +361,9 @@ bool LCPForceFeedback_test::test_multiThread()
     EXPECT_NE(instruNode, nullptr);
     MecaRig::SPtr meca = instruNode->get<MecaRig>(instruNode->SearchDown);
     m_LCPFFBack = instruNode->get<LCPRig>(instruNode->SearchDown);
+    
+    // Force only 2 iteration max for ci tests
+    m_LCPFFBack->d_solverMaxIt.setValue(2);
 
     // Check components access
     EXPECT_NE(meca, nullptr);
@@ -397,7 +400,7 @@ bool LCPForceFeedback_test::test_multiThread()
 
     EXPECT_NEAR(m_meanForceFFBack[0], -0.01, 0.01);
     EXPECT_NEAR(m_meanForceFFBack[1], 9.4, 0.1);
-    EXPECT_NEAR(m_meanForceFFBack[2], -0.01, 0.01);
+    EXPECT_NEAR(m_meanForceFFBack[2], -0.02, 0.01);
 
     return true;
 }
