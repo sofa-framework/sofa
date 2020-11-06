@@ -30,13 +30,7 @@
 
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 using namespace defaulttype;
@@ -96,8 +90,10 @@ bool TopologyChecker::checkContainer()
     bool result = false;
     if (m_topology->getTopologyType() == TopologyElementType::TETRAHEDRON)
         result = checkTetrahedronTopology();
-    else if (m_topology->getTopologyType() == TopologyElementType::TRIANGLE)
+    else if (m_topology->getTopologyType() == TopologyElementType::QUAD)
         result = checkTriangleTopology();
+    else if (m_topology->getTopologyType() == TopologyElementType::TRIANGLE)
+        result = checkQuadTopology();
     else if (m_topology->getTopologyType() == TopologyElementType::EDGE)
         result = checkEdgeTopology();
 
@@ -264,6 +260,122 @@ bool TopologyChecker::checkTriangleTopology()
         ret = false;
     }
 
+    return ret && checkEdgeTopology();
+}
+
+
+bool TopologyChecker::checkQuadTopology()
+{
+    std::cout << "TopologyChecker::checkQuadTopology()" << std::endl;
+    bool ret = true;
+    int nbQ = m_topology->getNbQuads();
+    const sofa::core::topology::BaseMeshTopology::SeqQuads& my_quads = m_topology->getQuads();
+
+    if (nbQ != my_quads.size())
+    {
+        msg_error() << "checkQuadTopology failed: not the good number of quads, getNbQuads returns " << nbQ << " whereas quad array size is: " << my_quads.size();
+        return false;
+    }
+
+    // check triangle buffer
+    for (std::size_t i = 0; i < nbQ; ++i)
+    {
+        const auto& quad = my_quads[i];
+        for (int j = 0; j < 3; ++j)
+        {
+            for (int k = j + 1; k < 4; ++k)
+            {
+                if (quad[j] == quad[k])
+                {
+                    msg_error() << "checkQuadTopology failed: quad " << i << " has 2 identical vertices: " << quad;
+                    ret = false;
+                }
+            }
+        }
+    }
+
+    // check cross element
+    std::size_t nbP = m_topology->getNbPoints();
+
+    // check quads around vertex
+    std::set <int> quadSet;
+    for (std::size_t i = 0; i < nbP; ++i)
+    {
+        const auto& quadAV = m_topology->getQuadsAroundVertex(i);
+        for (size_t j = 0; j < quadAV.size(); ++j)
+        {
+            const Topology::Quad& quad = my_quads[quadAV[j]];
+            bool check_quad_vertex_shell = (quad[0] == i) || (quad[1] == i) || (quad[2] == i) || (quad[3] == i);
+            if (!check_quad_vertex_shell)
+            {
+                msg_error() << "CheckQuadTopology failed: quad " << quadAV[j] << ": [" << quad << "] not around vertex: " << i;
+                ret = false;
+            }
+
+            quadSet.insert(quadAV[j]);
+        }
+    }
+
+    if (quadSet.size() != my_quads.size())
+    {
+        msg_error() << "CheckQuadTopology failed: found " << quadSet.size() << " quads in quadsAroundVertex out of " << my_quads.size();
+        ret = false;
+    }
+
+
+    int nbE = m_topology->getNbEdges();
+    const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
+    // check edges in quads
+    for (std::size_t i = 0; i < nbQ; ++i)
+    {
+        const Topology::Quad& quad = my_quads[i];
+        const auto& eInQ = m_topology->getEdgesInQuad(i);
+
+        for (auto eId : eInQ)
+        {
+            const Topology::Edge& edge = my_edges[eId];
+            int cptFound = 0;
+            for (unsigned int k = 0; k < 4; k++)
+                if (edge[0] == quad[k] || edge[1] == quad[k])
+                    cptFound++;
+
+            if (cptFound != 2)
+            {
+                msg_error() << "CheckQuadTopology failed: edge: " << eId << ": [" << edge << "] not found in quad: " << i << ": " << quad;
+                ret = false;
+            }
+        }
+    }
+
+
+    // check quads around edges
+    // check m_quadsAroundEdge using checked m_edgesInQuad
+    quadSet.clear();
+    for (size_t edgeId = 0; edgeId < nbE; ++edgeId)
+    {
+        const BaseMeshTopology::QuadsAroundEdge& qAE = m_topology->getQuadsAroundEdge(edgeId);
+        for (auto qId : qAE)
+        {
+            const BaseMeshTopology::EdgesInQuad& eInQ = m_topology->getEdgesInQuad(qId);
+            bool check_quad_edge_shell = (eInQ[0] == edgeId)
+                || (eInQ[1] == edgeId)
+                || (eInQ[2] == edgeId)
+                || (eInQ[3] == edgeId);
+            if (!check_quad_edge_shell)
+            {
+                msg_error() << "CheckQuadTopology failed: quad: " << qId << " with edges: [" << eInQ << "] not found around edge: " << edgeId;
+                ret = false;
+            }
+
+            quadSet.insert(qId);
+        }
+    }
+
+    if (quadSet.size() != my_quads.size())
+    {
+        msg_error() << "CheckQuadTopology failed: found " << quadSet.size() << " quads in m_quadsAroundEdge out of " << my_quads.size();
+        ret = false;
+    }
     return ret && checkEdgeTopology();
 }
 

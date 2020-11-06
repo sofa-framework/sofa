@@ -28,13 +28,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 /** 
@@ -53,16 +47,16 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
+    bool checkContainer();
+
 protected:
     TopologyChecker();
 
     ~TopologyChecker() override;
 
-    bool checkContainer();
-
-    void checkCrossTopology();
 
     bool checkTetrahedronTopology();
+    bool checkQuadTopology();
     bool checkTriangleTopology();
     bool checkEdgeTopology();
     
@@ -83,8 +77,4 @@ protected:
 };
 
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::misc
