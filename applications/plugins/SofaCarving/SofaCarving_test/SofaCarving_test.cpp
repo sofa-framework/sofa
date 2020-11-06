@@ -72,6 +72,7 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     m_root->setDt(0.01);
     createObject(m_root, "RequiredPlugin", { { "name","SofaGeneralSimpleFem" } });
     createObject(m_root, "RequiredPlugin", { { "name","SofaTopologyMapping" } });
+    createObject(m_root, "RequiredPlugin", { { "name","SofaGeneralLoader" } });
     // create collision pipeline
     createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });
     createObject(m_root, "BruteForceDetection", { { "name","Detection" } });
