@@ -130,6 +130,7 @@ template <class DataTypes>
 LCPForceFeedback<DataTypes>::LCPForceFeedback()
     : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef."))
     , solverTimeout(initData(&solverTimeout, 0.0008, "solverTimeout","max time to spend solving constraints."))
+    , d_solverMaxIt(initData(&d_solverMaxIt, 100, "solverMaxIt", "max iteration to spend solving constraints"))
     , d_derivRotations(initData(&d_derivRotations, false, "derivRotations", "if true, deriv the rotations when updating the violations"))
     , d_localHapticConstraintAllFrames(initData(&d_localHapticConstraintAllFrames, false, "localHapticConstraintAllFrames", "Flag to enable/disable constraint haptic influence from all frames"))
     , mState(nullptr)
@@ -293,7 +294,7 @@ void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeri
         s_mtx.lock();
 
         // Solving constraints
-        cp->solveTimed(cp->tolerance * 0.001, 100, solverTimeout.getValue());	// tol, maxIt, timeout
+        cp->solveTimed(cp->tolerance * 0.001, d_solverMaxIt.getValue(), solverTimeout.getValue());	// tol, maxIt, timeout
 
         // Restore Dfree
         for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
