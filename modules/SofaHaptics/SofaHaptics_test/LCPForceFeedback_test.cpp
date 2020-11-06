@@ -172,8 +172,6 @@ bool LCPForceFeedback_test::test_SimpleCollision()
             EXPECT_FLOAT_EQ(coords[0][5], truthC[5]);
             EXPECT_FLOAT_EQ(coords[0][6], truthC[6]);
 
-
-            std::cout << std::setprecision(10) << coords[0][3] << " " << coords[0][4] << " " << coords[0][5] << " " << coords[0][6] << std::endl;
             pctTru++;
         }
     }
@@ -190,6 +188,9 @@ bool LCPForceFeedback_test::test_Collision()
     EXPECT_NE(instruNode, nullptr);
     MecaRig::SPtr meca = instruNode->get<MecaRig>(instruNode->SearchDown);
     LCPRig::SPtr lcp = instruNode->get<LCPRig>(instruNode->SearchDown);
+    
+    // Force only 2 iteration max for ci tests
+    lcp->d_solverMaxIt.setValue(2);
 
     // Check components access
     EXPECT_NE(meca, nullptr);
@@ -227,9 +228,6 @@ bool LCPForceFeedback_test::test_Collision()
 
     // test with groundtruth, do it index by index for better log
     Coord coordT = Coord(sofa::defaulttype::Vec3d(0.1083095508, -9.45640795, 0.01134330546), sofa::defaulttype::Quatd(0.01623300333, -0.006386979003, -0.408876291, 0.9124230788));
-
-    std::cout << std::setprecision(10) << "coords: " << coords[0] << std::endl;
-    std::cout << std::setprecision(10) << "force: " << force << std::endl;
     //// position
     EXPECT_FLOAT_EQ(coords[0][0], coordT[0]);
     EXPECT_FLOAT_EQ(coords[0][1], coordT[1]);
@@ -242,12 +240,10 @@ bool LCPForceFeedback_test::test_Collision()
     EXPECT_FLOAT_EQ(coords[0][6], coordT[6]);
 
     //// force
-    trueForce = sofa::defaulttype::Vec3(-0.00165600391, 0.002760009733, -2.52196513e-06);
+    trueForce = sofa::defaulttype::Vec3(-0.001655988795, 0.002759984308, -2.431849862e-06);
     EXPECT_FLOAT_EQ(force[0], trueForce[0]);
     EXPECT_FLOAT_EQ(force[1], trueForce[1]);
     EXPECT_FLOAT_EQ(force[2], trueForce[2]);
-
-    std::cout << std::setprecision(10) << "trueForce: " << trueForce << std::endl;
 
     // check position inside collision
     Coord inside = Coord(sofa::defaulttype::Vec3d(coords[0][0], coords[0][1] - 1.0, coords[0][2]), sofa::defaulttype::Quatd(0.01623300333, -0.006386979003, -0.408876291, 0.9124230788));
@@ -255,9 +251,6 @@ bool LCPForceFeedback_test::test_Collision()
 
     // test with groundtruth, do it index by index for better log
     coordT = Coord(sofa::defaulttype::Vec3d(0.1083095508, -10.45640795, 0.01134330546), sofa::defaulttype::Quatd(0.01623300333, -0.006386979003, -0.408876291, 0.9124230788));
-    std::cout << std::setprecision(10) << "coords 2: " << inside << std::endl;
-    std::cout << std::setprecision(10) << "force 2: " << force << std::endl;
-
     //// position
     EXPECT_FLOAT_EQ(inside[0], coordT[0]);
     EXPECT_FLOAT_EQ(inside[1], coordT[1]);
@@ -270,22 +263,22 @@ bool LCPForceFeedback_test::test_Collision()
     EXPECT_FLOAT_EQ(inside[6], coordT[6]);
 
     //// force
-    trueForce = sofa::defaulttype::Vec3(-0.1261571029, 8.760242635, -0.00076634827);
+    trueForce = sofa::defaulttype::Vec3(-0.1450155705, 8.930516304, 0.1567013005);
     EXPECT_FLOAT_EQ(force[0], trueForce[0]);
     EXPECT_FLOAT_EQ(force[1], trueForce[1]);
     EXPECT_FLOAT_EQ(force[2], trueForce[2]);
-    std::cout << std::setprecision(10) << "trueForce 2: " << trueForce << std::endl;
 
     // check rigidTypes computeForce method
     VecDeriv forces;
     lcp->computeForce(coords, forces);
+         
     EXPECT_EQ(forces.size(), 1);
-    EXPECT_NEAR(forces[0][0], -0.001656, epsilonTest);
-    EXPECT_NEAR(forces[0][1], 0.00276001, epsilonTest);
-    EXPECT_NEAR(forces[0][2], -2.52199e-06, epsilonTest);
-    EXPECT_NEAR(forces[0][3], 0.000150759, epsilonTest);
-    EXPECT_NEAR(forces[0][4], 8.95514e-05, epsilonTest);
-    EXPECT_NEAR(forces[0][5], -0.000989383, epsilonTest);
+    EXPECT_FLOAT_EQ(forces[0][0], -0.00164953925);
+    EXPECT_FLOAT_EQ(forces[0][1], 0.002749336856);
+    EXPECT_FLOAT_EQ(forces[0][2], -1.032894327e-05);
+    EXPECT_FLOAT_EQ(forces[0][3], 0.0001298280752);
+    EXPECT_FLOAT_EQ(forces[0][4], 7.443984612e-05);
+    EXPECT_FLOAT_EQ(forces[0][5], -0.0009855082698);
 
     return true;
 }
