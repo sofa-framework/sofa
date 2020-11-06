@@ -88,6 +88,8 @@ void TopologyChecker::reinit()
 bool TopologyChecker::checkContainer()
 {
     bool result = false;
+    if (m_topology->getTopologyType() == TopologyElementType::HEXAHEDRON)
+        result = checkTetrahedronTopology();
     if (m_topology->getTopologyType() == TopologyElementType::TETRAHEDRON)
         result = checkTetrahedronTopology();
     else if (m_topology->getTopologyType() == TopologyElementType::QUAD)
@@ -558,11 +560,194 @@ bool TopologyChecker::checkTetrahedronTopology()
 }
 
 
-void TopologyChecker::checkCrossTopology()
+bool TopologyChecker::checkHexahedronTopology()
 {
+    std::cout << "TopologyChecker::checkHexahedronTopology()" << std::endl;
+    bool ret = true;
+    int nbH = m_topology->getNbHexahedra();
+    const sofa::core::topology::BaseMeshTopology::SeqHexahedra& my_hexahedra = m_topology->getHexahedra();
 
+    if (nbH != my_hexahedra.size())
+    {
+        msg_error() << "checkHexahedronTopology failed: not the good number of hexahedra, getNbHexahedra returns " << nbH << " whereas hexahedra array size is: " << my_hexahedra.size();
+        return false;
+    }
+
+    // check hexahedron buffer
+    for (std::size_t i = 0; i < nbH; ++i)
+    {
+        const auto& hexahedron = my_hexahedra[i];
+        for (int j = 0; j < 7; ++j)
+        {
+            for (int k = j + 1; k < 8; ++k)
+            {
+                if (hexahedron[j] == hexahedron[k])
+                {
+                    msg_error() << "checkHexahedronTopology failed: hexahedron " << i << " has 2 identical vertices: " << hexahedron;
+                    ret = false;
+                }
+            }
+        }
+    }
+
+    // check cross element
+    std::size_t nbP = m_topology->getNbPoints();
+
+    // check hexahedra around vertex
+    std::set <int> hexahedronSet;
+    for (std::size_t pId = 0; pId < nbP; ++pId)
+    {
+        const auto& hexaAV = m_topology->getHexahedraAroundVertex(pId);
+        for (auto hexaId : hexaAV)
+        {
+            const Topology::Hexahedron& hexa = my_hexahedra[hexaId];
+            bool check_hexa_vertex_shell = false;
+            for (int j = 0; j < 8; ++j)
+            {
+                if (hexa[j] == pId) {
+                    check_hexa_vertex_shell = true;
+                    break;
+                }
+            }
+
+            if (!check_hexa_vertex_shell)
+            {
+                msg_error() << "checkHexahedronTopology failed: Hexahedron " << hexaId << ": [" << hexa << "] not around vertex: " << pId;
+                ret = false;
+            }
+
+            hexahedronSet.insert(hexaId);
+        }
+    }
+
+    if (hexahedronSet.size() != my_hexahedra.size())
+    {
+        msg_error() << "checkHexahedronTopology failed: found " << hexahedronSet.size() << " hexahedra in hexahedraAroundVertex out of " << my_hexahedra.size();
+        ret = false;
+    }
+
+
+
+    int nbQ = m_topology->getNbQuads();
+    const sofa::core::topology::BaseMeshTopology::SeqQuads& my_quads = m_topology->getQuads();
+    // check first m_quadsInHexahedron
+    for (std::size_t hexaId = 0; hexaId < nbH; ++hexaId)
+    {
+        const Topology::Hexahedron& hexahedron = my_hexahedra[hexaId];
+        const auto& qInHexa = m_topology->getQuadsInHexahedron(hexaId);
+
+        for (auto qId : qInHexa)
+        {
+            const Topology::Quad& quad = my_quads[qId];
+            int cptFound = 0;
+            for (unsigned int k = 0; k < 8; k++)
+                if (quad[0] == hexahedron[k] || quad[1] == hexahedron[k] || quad[2] == hexahedron[k] || quad[3] == hexahedron[k])
+                    cptFound++;
+
+            if (cptFound != 3)
+            {
+                msg_error() << "checkHexahedronTopology failed: quad: " << qId << ": [" << quad << "] not found in hexahedron: " << hexaId << ": " << hexahedron;
+                ret = false;
+            }
+        }
+    }
+
+    // check hexahedra around triangles
+    // check m_hexahedraAroundTriangle using checked m_trianglesInHexahedron
+    hexahedronSet.clear();
+    for (size_t qId = 0; qId < nbQ; ++qId)
+    {
+        const BaseMeshTopology::HexahedraAroundQuad& hAq = m_topology->getHexahedraAroundQuad(qId);
+        for (auto hexaId : hAq)
+        {
+            const BaseMeshTopology::QuadsInHexahedron& qInHexa = m_topology->getQuadsInHexahedron(hexaId);
+            bool check_hexa_quad_shell = false;
+            for (auto quadID : qInHexa)
+            {
+                if (quadID == qId) {
+                    check_hexa_quad_shell = true;
+                    break;
+                }
+            }
+
+            if (!check_hexa_quad_shell)
+            {
+                msg_error() << "checkHexahedronTopology failed: hexahedron: " << hexaId << " with quad: [" << qInHexa << "] not found around quad: " << qId;
+                ret = false;
+            }
+
+            hexahedronSet.insert(hexaId);
+        }
+    }
+
+    if (hexahedronSet.size() != my_hexahedra.size())
+    {
+        msg_error() << "checkHexahedronTopology failed: found " << hexahedronSet.size() << " hexahedra in m_hexahedraAroundQuad out of " << my_hexahedra.size();
+        ret = false;
+    }
+
+
+    int nbE = m_topology->getNbEdges();
+    const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
+    // check edges in hexahedra
+    for (std::size_t i = 0; i < nbH; ++i)
+    {
+        const Topology::Hexahedron& hexahedron = my_hexahedra[i];
+        const auto& eInHexa = m_topology->getEdgesInHexahedron(i);
+
+        for (unsigned int j = 0; j < 6; j++)
+        {
+            const Topology::Edge& edge = my_edges[eInHexa[j]];
+            int cptFound = 0;
+            for (unsigned int k = 0; k < 8; k++)
+                if (edge[0] == hexahedron[k] || edge[1] == hexahedron[k])
+                    cptFound++;
+
+            if (cptFound != 2)
+            {
+                msg_error() << "checkHexahedronTopology failed: edge: " << eInHexa[j] << ": [" << edge << "] not found in hexahedron: " << i << ": " << hexahedron;
+                ret = false;
+            }
+        }
+    }
+
+    // check hexahedra around edges
+    // check m_hexahedraAroundEdge using checked m_edgesInHexahedron
+    hexahedronSet.clear();
+    for (size_t edgeId = 0; edgeId < nbE; ++edgeId)
+    {
+        const BaseMeshTopology::HexahedraAroundEdge& hAe = m_topology->getHexahedraAroundEdge(edgeId);
+        for (auto hexaId : hAe)
+        {
+            const BaseMeshTopology::EdgesInHexahedron& eInHexa = m_topology->getEdgesInHexahedron(hexaId);
+            
+            bool check_hexa_edge_shell = false;
+            for (auto eInID : eInHexa)
+            {
+                if (eInID == edgeId) {
+                    check_hexa_edge_shell = true;
+                    break;
+                }
+            }
+            
+            if (!check_hexa_edge_shell)
+            {
+                msg_error() << "checkHexahedronTopology failed: hexahedron: " << hexaId << " with edges: [" << eInHexa << "] not found around edge: " << edgeId;
+                ret = false;
+            }
+
+            hexahedronSet.insert(hexaId);
+        }
+    }
+
+    if (hexahedronSet.size() != my_hexahedra.size())
+    {
+        msg_error() << "checkHexahedronTopology failed: found " << hexahedronSet.size() << " hexahedra in m_hexahedraAroundEdge out of " << my_hexahedra.size();
+        ret = false;
+    }
+
+    return ret && checkQuadTopology();
 }
-
 
 
 void TopologyChecker::handleEvent(sofa::core::objectmodel::Event* event)
@@ -595,66 +780,7 @@ void TopologyChecker::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    //sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
-    //m_topology->getContext()->get(triangleGeo);
-
-    //if (!triangleGeo)
-    //    return;
-
-    //size_t nbTriangles = m_topology->getNbTriangles();
-
-    //std::vector< Vector3 > trianglesToDraw;
-    //std::vector< Vector3 > pointsToDraw;
-
-    //for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
-    //{
-    //    for (size_t j = 0 ; j < triangleIncisionInformation[i].triangleIndices.size() ; j++)
-    //    {
-    //        unsigned int triIndex = triangleIncisionInformation[i].triangleIndices[j];
-
-    //        if ( triIndex > nbTriangles -1)
-    //            break;
-
-    //        Vec3Types::Coord coord[3];
-    //        triangleGeo->getTriangleVertexCoordinates(triIndex, coord);
-
-    //        for(unsigned int k = 0 ; k < 3 ; k++)
-    //            trianglesToDraw.push_back(coord[k]);
-
-    //        Vector3 a;
-    //        a.clear();
-    //        for (unsigned k = 0 ; k < 3 ; k++)
-    //            a += coord[k] * triangleIncisionInformation[i].barycentricCoordinates[j][k];
-
-    //        pointsToDraw.push_back(a);
-    //    }
-    //}
-
-    //vparams->drawTool()->drawTriangles(trianglesToDraw, Vec<4,float>(0.0,0.0,1.0,1.0));
-    //vparams->drawTool()->drawPoints(pointsToDraw, 15.0,  Vec<4,float>(1.0,0.0,1.0,1.0));
-
-    //if (!errorTrianglesIndices.empty())
-    //{
-    //    trianglesToDraw.clear();
-    //    /* initialize random seed: */
-    //    srand ( (unsigned int)time(nullptr) );
-
-    //    for (size_t i = 0 ; i < errorTrianglesIndices.size() ; i++)
-    //    {
-    //        Vec3Types::Coord coord[3];
-    //        triangleGeo->getTriangleVertexCoordinates(errorTrianglesIndices[i], coord);
-
-    //        for(unsigned int k = 0 ; k < 3 ; k++)
-    //            trianglesToDraw.push_back(coord[k]);
-    //    }
-
-    //    vparams->drawTool()->drawTriangles(trianglesToDraw,
-    //            Vec<4,float>(1.0f,(float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, 1.0f));
-    //}
 }
 
-} // namespace misc
+} // namespace sofa::component::misc
 
-} // namespace component
-
-} // namespace sofa

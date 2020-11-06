@@ -55,6 +55,7 @@ protected:
     ~TopologyChecker() override;
 
 
+    bool checkHexahedronTopology();
     bool checkTetrahedronTopology();
     bool checkQuadTopology();
     bool checkTriangleTopology();
