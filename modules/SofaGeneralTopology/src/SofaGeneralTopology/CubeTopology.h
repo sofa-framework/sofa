@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_CUBETOPOLOGY_H
-#define SOFA_COMPONENT_TOPOLOGY_CUBETOPOLOGY_H
-#include "config.h"
+#pragma once
+#include <SofaGeneralTopology/config.h>
 
 #include <SofaBaseTopology/MeshTopology.h>
 
-namespace sofa
+namespace sofa::component::topology
 {
 
-namespace component
-{
-
-namespace topology
-{
-
-class SOFA_GENERAL_TOPOLOGY_API CubeTopology : public MeshTopology
+class SOFA_SOFAGENERALTOPOLOGY_API CubeTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(CubeTopology,MeshTopology);
@@ -114,10 +107,4 @@ protected:
     void updateQuads();
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::topology

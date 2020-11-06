@@ -19,36 +19,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#include <SofaGeneralTopology/initSofaGeneralTopology.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaTopologyMapping/initTopologyMapping.h>
-#include <SofaUserInteraction/initUserInteraction.h>
-#include <SofaConstraint/initConstraint.h>
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFAGENERALTOPOLOGY_API void initExternalModule();
+    SOFA_SOFAGENERALTOPOLOGY_API const char* getModuleName();
+    SOFA_SOFAGENERALTOPOLOGY_API const char* getModuleVersion();
+    SOFA_SOFAGENERALTOPOLOGY_API const char* getModuleLicense();
+    SOFA_SOFAGENERALTOPOLOGY_API const char* getModuleDescription();
+    SOFA_SOFAGENERALTOPOLOGY_API const char* getModuleComponentList();
+}
 
-
-void initSofaGeneral()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
     {
         first = false;
     }
-
-    initGeneralLoader();
-    initTopologyMapping();
-    initUserInteraction();
-    initConstraint();
 }
 
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace component
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAGENERALTOPOLOGY_VERSION);
+}
 
-} // namespace sofa
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about General Topology.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

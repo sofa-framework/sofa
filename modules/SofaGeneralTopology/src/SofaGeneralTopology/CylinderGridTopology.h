@@ -19,40 +19,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_SPHEREQUADTOPOLOGY_H
-#define SOFA_COMPONENT_TOPOLOGY_SPHEREQUADTOPOLOGY_H
+#pragma once
+#include <SofaGeneralTopology/config.h>
 
-#include <SofaGeneralTopology/CubeTopology.h>
+#include <SofaBaseTopology/GridTopology.h>
 
-namespace sofa
+namespace sofa::component::topology
 {
 
-namespace component
-{
-
-namespace topology
-{
-
-class SOFA_GENERAL_TOPOLOGY_API SphereQuadTopology : public CubeTopology
+/** \brief Define a cylinder grid topology
+ * Paramenters are its @sa d_radius and @sa d_length .
+ * Position and direction are set by @sa d_center and @sa d_axis
+ * nz discretisation is along the cylinder axis
+  */
+class SOFA_SOFAGENERALTOPOLOGY_API CylinderGridTopology : public GridTopology
 {
 public:
-    SOFA_CLASS(SphereQuadTopology,CubeTopology);
+    SOFA_CLASS(CylinderGridTopology,GridTopology);
     typedef sofa::defaulttype::Vector3 Vector3;
 protected:
-    SphereQuadTopology(int nx, int ny, int nz);
-    SphereQuadTopology();
-public:
-    Vector3 getPoint(int x, int y, int z) const override;
+    /// Default constructor
+    CylinderGridTopology();
+    /// Constructor with grid size by int
+    CylinderGridTopology(int nx, int ny, int nz);
 
-protected:
-    Data< Vector3 > center; ///< Center of the sphere
-    Data< SReal > radius; ///< Radius of the sphere
+public:
+    /** \brief Overload method of @sa GridTopology::getPointInGrid.
+     * Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
+     * */
+    Vector3 getPointInGrid(int i, int j, int k) const override;
+
+    /// Set Cylinder grid center by @param 3 SReal
+    void setCenter(SReal x, SReal y, SReal z);
+    /// Set Cylinder axis center by @param 3 SReal
+    void setAxis(SReal x, SReal y, SReal z);
+    /// Set Cylinder radius from @param SReal
+    void setRadius(SReal radius);
+    /// Set Cylinder length from @param SReal
+    void setLength(SReal length);
+
+public:
+    /// Data storing the center position
+    Data< Vector3 > d_center;
+    /// Data storing the axis direction
+    Data< Vector3 > d_axis;
+    /// Data storing the radius value
+    Data< SReal > d_radius;
+    /// Data storing the length value
+    Data< SReal > d_length;
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace namespace sofa::component::topology

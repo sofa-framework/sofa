@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/rmath.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 using namespace sofa::defaulttype;
@@ -109,9 +103,4 @@ Vector3 SphereGridTopology::getPointInGrid(int i, int j, int k) const
     return d_center.getValue()+axisX*p[0] + axisY*p[1] + axisZ * p[2];
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::topology

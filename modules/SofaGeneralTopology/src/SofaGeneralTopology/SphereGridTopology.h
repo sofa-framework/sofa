@@ -19,16 +19,56 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGENERALTOPOLOGY_CONFIG_H
-#define SOFAGENERALTOPOLOGY_CONFIG_H
+#pragma once
+#include <SofaGeneralTopology/config.h>
 
-#include <SofaGeneral/config.h>
+#include <SofaBaseTopology/GridTopology.h>
 
-#ifdef SOFA_BUILD_GENERAL_TOPOLOGY
-#  define SOFA_TARGET SofaGeneralTopology
-#  define SOFA_GENERAL_TOPOLOGY_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_GENERAL_TOPOLOGY_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa::component::topology
+{
 
-#endif
+/** \brief Define a sphere grid topology
+ * Paramenters are its @sa d_radius and discretisation .
+ * Position and direction are set by @sa d_center and @sa d_axis
+ * nz discretisation is along the sphere axis
+  */
+class SOFA_SOFAGENERALTOPOLOGY_API SphereGridTopology : public GridTopology
+{
+public:
+    SOFA_CLASS(SphereGridTopology,GridTopology);
+    typedef sofa::defaulttype::Vector3 Vector3;
+protected:
+    /// Default constructor
+    SphereGridTopology();
+    /// Constructor with grid size by int
+    SphereGridTopology(int nx, int ny, int nz);
+
+public:
+    /** \brief Overload method of @sa GridTopology::getPoint.
+     * Get Point in grid @return Vector3 given its @param id i. Will call @sa getPointInGrid.
+     * */
+    Vector3 getPoint(Index i) const override;
+
+    /** \brief Overload method of @sa GridTopology::getPointInGrid.
+     * Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
+     * */
+    Vector3 getPointInGrid(int i, int j, int k) const override;
+
+    /// Set Sphere grid center by @param 3 SReal
+    void setCenter(SReal x, SReal y, SReal z);
+    /// Set Sphere axis center by @param 3 SReal
+    void setAxis(SReal x, SReal y, SReal z);
+    /// Set Sphere radius from @param SReal
+    void setRadius(SReal radius);
+
+public:
+    /// Data storing the center position
+    Data< Vector3 > d_center;
+    /// Data storing the axis direction
+    Data< Vector3 > d_axis;
+    /// Data storing the radius value
+    Data< SReal > d_radius;
+
+};
+
+} // namespace sofa::component::topology
