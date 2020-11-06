@@ -87,6 +87,8 @@ void TopologyChecker::reinit()
 
 bool TopologyChecker::checkContainer()
 {
+    msg_info() << "CheckContainer TopologyType: " << parseTopologyElementTypeToString(m_topology->getTopologyType());
+
     bool result = false;
     if (m_topology->getTopologyType() == TopologyElementType::HEXAHEDRON)
         result = checkTetrahedronTopology();
@@ -103,9 +105,9 @@ bool TopologyChecker::checkContainer()
 }
 
 
+
 bool TopologyChecker::checkEdgeTopology()
 {
-    std::cout << "TopologyChecker::checkEdgeTopology()" << std::endl;
     bool ret = true;
     int nbE = m_topology->getNbEdges();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
@@ -115,7 +117,6 @@ bool TopologyChecker::checkEdgeTopology()
         msg_error() << "CheckEdgeTopology failed: not the good number of edges, getNbEdges returns " << nbE << " whereas edge array size is: " << my_edges.size();
         return false;
     }
-
 
     // check edge buffer
     for (std::size_t i = 0; i < nbE; ++i)
@@ -158,9 +159,9 @@ bool TopologyChecker::checkEdgeTopology()
 }
 
 
+
 bool TopologyChecker::checkTriangleTopology()
 {
-    std::cout << "TopologyChecker::checkTriangleTopology()" << std::endl;
     bool ret = true;
     int nbT = m_topology->getNbTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& my_triangles = m_topology->getTriangles();
@@ -264,6 +265,7 @@ bool TopologyChecker::checkTriangleTopology()
 
     return ret && checkEdgeTopology();
 }
+
 
 
 bool TopologyChecker::checkQuadTopology()
@@ -382,9 +384,9 @@ bool TopologyChecker::checkQuadTopology()
 }
 
 
+
 bool TopologyChecker::checkTetrahedronTopology()
 {
-    std::cout << "TopologyChecker::checkTetrahedronTopology()" << std::endl;
     bool ret = true;
     int nbT = m_topology->getNbTetrahedra();
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& my_tetrahedra = m_topology->getTetrahedra();
@@ -562,7 +564,6 @@ bool TopologyChecker::checkTetrahedronTopology()
 
 bool TopologyChecker::checkHexahedronTopology()
 {
-    std::cout << "TopologyChecker::checkHexahedronTopology()" << std::endl;
     bool ret = true;
     int nbH = m_topology->getNbHexahedra();
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& my_hexahedra = m_topology->getHexahedra();
@@ -754,7 +755,7 @@ void TopologyChecker::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
     {
-        if (ev->getKey() == 'D')
+        if (ev->getKey() == 'T')
         {
             bool res = checkContainer();
             if (!res)
