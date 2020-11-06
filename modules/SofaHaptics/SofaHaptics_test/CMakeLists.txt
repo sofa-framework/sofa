@@ -4,7 +4,8 @@ project(SofaHaptics_test)
 
 
 find_package(SofaCommon REQUIRED)
-find_package(SofaGeneral REQUIRED)
+find_package(SofaGeneralLoader REQUIRED)
+find_package(SofaHaptics REQUIRED)
 
 set(SOURCE_FILES
     LCPForceFeedback_test.cpp)
