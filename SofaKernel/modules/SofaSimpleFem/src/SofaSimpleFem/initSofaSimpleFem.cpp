@@ -19,16 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimpleFem/initSimpleFEM.h>
+#include <SofaSimpleFem/initSofaSimpleFEM.h>
 
 
-namespace sofa
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
+
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFASIMPLEFEM_API void initExternalModule();
+    SOFA_SOFASIMPLEFEM_API const char* getModuleName();
+    SOFA_SOFASIMPLEFEM_API const char* getModuleVersion();
+    SOFA_SOFASIMPLEFEM_API const char* getModuleLicense();
+    SOFA_SOFASIMPLEFEM_API const char* getModuleDescription();
+    SOFA_SOFASIMPLEFEM_API const char* getModuleComponentList();
+}
 
-void initSimpleFEM()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -37,6 +46,31 @@ void initSimpleFEM()
     }
 }
 
-} // namespace component
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace sofa
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFASIMPLEFEM_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Simple Fem.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} //namespace sofa::component::forcefield

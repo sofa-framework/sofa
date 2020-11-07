@@ -20,18 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_CPP
-#include "TetrahedronFEMForceField.inl"
+#include <SofaSimpleFem/TetrahedronFEMForceField.inl>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -43,12 +38,7 @@ int TetrahedronFEMForceFieldClass = core::RegisterObject("Tetrahedral finite ele
 
         ;
 
-template class SOFA_SIMPLE_FEM_API TetrahedronFEMForceField<Vec3Types>;
+template class SOFA_SOFASIMPLEFEM_API TetrahedronFEMForceField<Vec3Types>;
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::forcefield

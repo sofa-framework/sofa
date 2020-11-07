@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaSimpleFem/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -31,18 +30,10 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/helper/decompose.h>
-#include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/helper/OptionsGroup.h>
 
-namespace sofa
+namespace sofa::component::forcefield
 {
-
-namespace component
-{
-
-namespace forcefield
-{
-
 
 template<class DataTypes>
 class HexahedronFEMForceField;
@@ -234,14 +225,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP)
-extern template class SOFA_SIMPLE_FEM_API HexahedronFEMForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFASIMPLEFEM_API HexahedronFEMForceField<defaulttype::Vec3Types>;
 
 #endif
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_H
+} //namespace sofa::component::forcefield

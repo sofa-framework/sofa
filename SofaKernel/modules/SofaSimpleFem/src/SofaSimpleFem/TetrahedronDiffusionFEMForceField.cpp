@@ -21,21 +21,13 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP
 
-#include "TetrahedronDiffusionFEMForceField.inl"
+#include <SofaSimpleFem/TetrahedronDiffusionFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
 #include <vector>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -49,16 +41,11 @@ int TetrahedronDiffusionFEMForceFieldClass = core::RegisterObject("Isotropic or 
 
 ;
 
-  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1Types>;
-  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2Types>;
-  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3Types>;
+  template class SOFA_SOFASIMPLEFEM_API TetrahedronDiffusionFEMForceField<Vec1Types>;
+  template class SOFA_SOFASIMPLEFEM_API TetrahedronDiffusionFEMForceField<Vec2Types>;
+  template class SOFA_SOFASIMPLEFEM_API TetrahedronDiffusionFEMForceField<Vec3Types>;
 
 
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::forcefield

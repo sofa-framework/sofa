@@ -19,12 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_H
-
-
-
-#include "config.h"
+#pragma once
+#include <SofaSimpleFem/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/helper/fixed_array.h>
@@ -33,43 +29,10 @@
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
-
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/CollisionBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
 
-
-
-//FOR the graph :
-#include <sofa/core/visual/VisualModel.h>
-#include <map>
-#include <sofa/helper/map.h>
-
-//FOR the timer
-#include <sofa/helper/system/thread/CTime.h>
-
-
-namespace sofa
+namespace sofa::component::forcefield
 {
-
-namespace component
-{
-
-
-namespace forcefield
-{
-
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace sofa::core::topology;
-using namespace sofa::component::topology;
-using namespace sofa::helper::system::thread;
-
 
 template<class DataTypes>
 class TetrahedronDiffusionFEMForceField : public core::behavior::ForceField<DataTypes>
@@ -86,8 +49,8 @@ class TetrahedronDiffusionFEMForceField : public core::behavior::ForceField<Data
       typedef typename sofa::helper::vector< Real > VectorReal    ;
 
       /// assumes the mechanical object type (3D)
-      typedef Vec<3,Real>                            Vec3;
-      typedef StdVectorTypes< Vec3, Vec3, Real >     MechanicalTypes ;
+      typedef defaulttype::Vec<3,Real>                            Vec3;
+      typedef defaulttype::StdVectorTypes< Vec3, Vec3, Real >     MechanicalTypes ;
       typedef sofa::core::behavior::MechanicalState<MechanicalTypes>      MechObject;
 
       typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
@@ -167,16 +130,10 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP)
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1Types>;
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2Types>;
-extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3Types>;
+extern template class SOFA_SOFASIMPLEFEM_API TetrahedronDiffusionFEMForceField<defaulttype::Vec1Types>;
+extern template class SOFA_SOFASIMPLEFEM_API TetrahedronDiffusionFEMForceField<defaulttype::Vec2Types>;
+extern template class SOFA_SOFASIMPLEFEM_API TetrahedronDiffusionFEMForceField<defaulttype::Vec3Types>;
  
 #endif
 
-} //namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif /* SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_H */
+} //namespace sofa::component::forcefield

@@ -19,22 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_INL
+#pragma once
+#include <SofaSimpleFem/HexahedronFEMForceField.h>
 
-#include "HexahedronFEMForceField.h"
+#include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
-#include <cassert>
-#include <iostream>
-#include <set>
-
-
-
-
-
-
 
 // WARNING: indices ordering is different than in topology node
 //
@@ -48,13 +38,7 @@
 //     |/	     |/
 //     0---------1-->X
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using std::set;
@@ -565,10 +549,10 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
 
     Real t1 = J_1[0][0]*J_1[0][0];                // m^-2            (J0J0             )
     Real t2 = t1*signx0;                          // m^-2            (J0J0    sx0      )
-    Real t3 = (Real)(signy0*signz0);              //                 (           sy0sz0)
+    Real t3 = Real(signy0)* Real(signz0);              //                 (           sy0sz0)
     Real t4 = t2*t3;                              // m^-2            (J0J0    sx0sy0sz0)
     Real t5 = w*signx1;                           // kg m^-4 s^-2    (W       sx1      )
-    Real t6 = (Real)(signy1*signz1);              //                 (           sy1sz1)
+    Real t6 = Real(signy1)*Real(signz1);              //                 (           sy1sz1)
     Real t7 = t5*t6;                              // kg m^-4 s^-2    (W       sx1sy1sz1)
     Real t10 = t1*signy0;                         // m^-2            (J0J0       sy0   )
     Real t12 = w*signy1;                          // kg m^-4 s^-2    (W          sy1   )
@@ -587,12 +571,12 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
     Real t49 = J_1[0][0]*signy0;                  // m^-1            (J0         sy0   )
     Real t50 = t49*signz0;                        // m^-1            (J0         sy0sz0)
     Real t51 = w*J_1[1][1];                       // kg m^-5 s^-2    (WJ1              )
-    Real t52 = (Real)(signx1*signz1);             //                 (        sx1   sz1)
+    Real t52 = Real(signx1)* Real(signz1);             //                 (        sx1   sz1)
     Real t53 = t51*t52;                           // kg m^-5 s^-2    (WJ1     sx1   sz1)
     Real t56 = t45*signy1;                        // kg m^-5 s^-2    (VJ1        sy1   )
     Real t64 = v*J_1[2][2];                       // kg m^-5 s^-2    (VJ2              )
     Real t68 = w*J_1[2][2];                       // kg m^-5 s^-2    (WJ2              )
-    Real t69 = (Real)(signx1*signy1);             //                 (        sx1sy1   )
+    Real t69 = Real(signx1)* Real(signy1);             //                 (        sx1sy1   )
     Real t70 = t68*t69;                           // kg m^-5 s^-2    (WJ2     sx1sy1   )
     Real t73 = t64*signz1;                        // kg m^-5 s^-2    (VJ2           sz1)
     Real t81 = J_1[1][1]*signy0;                  // m^-1            (J1         sy0   )
@@ -1001,19 +985,20 @@ SReal HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const core::Mechani
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix * rotations,int offset)
 {
-    std::size_t nbdof = this->mstate->getSize();
+    auto nbdof = this->mstate->getSize();
 
     if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
     {
         Transformation R;
-        for (unsigned int e=0; e<nbdof; ++e)
+        for (sofa::Index e=0; e<nbdof; ++e)
         {
             getNodeRotation(R,e);
-            for(int j=0; j<3; j++)
+            for(sofa::Index j=0; j<3; j++)
             {
-                for(int i=0; i<3; i++)
+                for(sofa::Index i=0; i<3; i++)
                 {
-                    diag->getVector()[e*9 + j*3 + i] = (float)R[j][i];
+                    const sofa::Index ind = e * 9 + j * 3 + i;
+                    diag->getVector()[ind] = float(R[j][i]);
                 }
             }
         }
@@ -1021,21 +1006,22 @@ void HexahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix * 
     else if (component::linearsolver::RotationMatrix<double> * diag = dynamic_cast<component::linearsolver::RotationMatrix<double> *>(rotations))
     {
         Transformation R;
-        for (unsigned int e=0; e<nbdof; ++e)
+        for (sofa::Index e=0; e<nbdof; ++e)
         {
             getNodeRotation(R,e);
-            for(int j=0; j<3; j++)
+            for(sofa::Index j=0; j<3; j++)
             {
-                for(int i=0; i<3; i++)
+                for(sofa::Index i=0; i<3; i++)
                 {
-                    diag->getVector()[e*9 + j*3 + i] = R[j][i];
+                    const sofa::Index ind = e * 9 + j * 3 + i;
+                    diag->getVector()[ind] = R[j][i];
                 }
             }
         }
     }
     else
     {
-        for (unsigned int i=0; i<nbdof; ++i)
+        for (sofa::Index i=0; i<nbdof; ++i)
         {
             Transformation t;
             getNodeRotation(t,i);
@@ -1298,10 +1284,4 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 }
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_INL
+} //namespace sofa::component::forcefield

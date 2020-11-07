@@ -19,29 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
+#pragma once
+#include <SofaSimpleFem/TetrahedronFEMForceField.h>
 
-#include "TetrahedronFEMForceField.h"
+#include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/GridTopology.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
-#include <cassert>
-#include <iostream>
-#include <set>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using sofa::core::objectmodel::ComponentState ;
@@ -1392,7 +1382,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     else
     {
         core::topology::BaseMeshTopology::SeqTetrahedra* tetrahedra = new core::topology::BaseMeshTopology::SeqTetrahedra;
-        std::size_t nbcubes = m_topology->getNbHexahedra();
+        auto nbcubes = m_topology->getNbHexahedra();
 
         // These values are only correct if the mesh is a grid topology
         int nx = 2;
@@ -1407,8 +1397,8 @@ void TetrahedronFEMForceField<DataTypes>::init()
         }
 
         // Tesselation of each cube into 6 tetrahedra
-        tetrahedra->reserve(nbcubes*6);
-        for (std::size_t i=0; i<nbcubes; i++)
+        tetrahedra->reserve(size_t(nbcubes)*6);
+        for (sofa::Size i=0; i<nbcubes; i++)
         {
             core::topology::BaseMeshTopology::Hexa c = m_topology->getHexahedron(i);
             if (!((i%nx)&1))
@@ -1596,10 +1586,10 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         {
             Mat44 matVert;
 
-            for (size_t k = 0; k < 4; k++) {
+            for (sofa::Index k = 0; k < 4; k++) {
                 Index ix = (*it)[k];
                 matVert[k][0] = 1.0;
-                for (size_t l = 1; l < 4; l++)
+                for (sofa::Index l = 1; l < 4; l++)
                     matVert[k][l] = X0[ix][l-1];
             }
 
@@ -2329,7 +2319,8 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix *
             {
                 for(int i=0; i<3; i++)
                 {
-                    diag->getVector()[e*9 + j*3 + i] = (float)R[j][i];
+                    const sofa::Index ind = e * 9 + j * 3 + i;
+                    diag->getVector()[ind] = (float)R[j][i];
                 }
             }
         }
@@ -2344,7 +2335,8 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix *
             {
                 for(int i=0; i<3; i++)
                 {
-                    diag->getVector()[e*9 + j*3 + i] = R[j][i];
+                    const sofa::Index ind = e * 9 + j * 3 + i;
+                    diag->getVector()[ind] = R[j][i];
                 }
             }
         }
@@ -2427,11 +2419,11 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     VecCoord U;
     U.resize(X.size());
-    for (size_t i = 0; i < X0.size(); i++)
+    for (sofa::Index i = 0; i < X0.size(); i++)
         U[i] = X[i] - X0[i];
 
     typename VecElement::const_iterator it;
-    size_t el;
+    sofa::Index el;
     helper::WriteAccessor<Data<helper::vector<Real> > > vME =  _vonMisesPerElement;
     for(it = _indexedElements->begin(), el = 0 ; it != _indexedElements->end() ; ++it, ++el)
     {
@@ -2442,17 +2434,17 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             Mat44& shf = elemShapeFun[el];
 
             /// compute gradU
-            for (size_t k = 0; k < 3; k++) {
-                for (size_t l = 0; l < 3; l++)  {
+            for (sofa::Index k = 0; k < 3; k++) {
+                for (sofa::Index l = 0; l < 3; l++)  {
                     gradU[k][l] = 0.0;
-                    for (size_t m = 0; m < 4; m++)
+                    for (sofa::Index m = 0; m < 4; m++)
                         gradU[k][l] += shf[l+1][m] * U[(*it)[m]][k];
                 }
             }
 
             Mat33 strain = ((Real)0.5)*(gradU + gradU.transposed() + gradU.transposed()*gradU);
 
-            for (size_t i = 0; i < 3; i++)
+            for (sofa::Index i = 0; i < 3; i++)
                 vStrain[i] = strain[i][i];
             vStrain[3] = strain[1][2];
             vStrain[4] = strain[0][2];
@@ -2461,7 +2453,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
         if (_computeVonMisesStress.getValue() == 1) {
             Element index = *it;
-            size_t elementIndex = el;
+            sofa::Index elementIndex = el;
 
             // Rotation matrix (deformed and displaced Tetrahedron/world)
             Transformation R_0_2;
@@ -2527,17 +2519,17 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             Mat44& shf = elemShapeFun[el];
 
             /// compute gradU
-            for (size_t k = 0; k < 3; k++) {
-                for (size_t l = 0; l < 3; l++)  {
+            for (sofa::Index k = 0; k < 3; k++) {
+                for (sofa::Index l = 0; l < 3; l++)  {
                     gradU[k][l] = 0.0;
-                    for (size_t m = 0; m < 4; m++)
+                    for (sofa::Index m = 0; m < 4; m++)
                         gradU[k][l] += shf[l+1][m] * D[3*m+k];
                 }
             }
 
             Mat33 strain = Real(0.5)*(gradU + gradU.transposed());
 
-            for (size_t i = 0; i < 3; i++)
+            for (sofa::Index i = 0; i < 3; i++)
                 vStrain[i] = strain[i][i];
             vStrain[3] = strain[1][2];
             vStrain[4] = strain[0][2];
@@ -2551,15 +2543,15 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
         VoigtTensor s;
 
         Real traceStrain = 0.0;
-        for (size_t k = 0; k < 3; k++) {
+        for (sofa::Index k = 0; k < 3; k++) {
             traceStrain += vStrain[k];
             s[k] = vStrain[k]*2*mu;
         }
 
-        for (size_t k = 3; k < 6; k++)
+        for (sofa::Index k = 3; k < 6; k++)
             s[k] = vStrain[k]*2*mu;
 
-        for (size_t k = 0; k < 3; k++)
+        for (sofa::Index k = 0; k < 3; k++)
             s[k] += lambda*traceStrain;
 
 
@@ -2572,7 +2564,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     helper::WriteAccessor<Data<helper::vector<Real> > > vMN =  _vonMisesPerNode;
 
     /// compute the values of vonMises stress in nodes
-    for(size_t dof = 0; dof < dofs.size(); dof++) {
+    for(sofa::Index dof = 0; dof < dofs.size(); dof++) {
         core::topology::BaseMeshTopology::TetrahedraAroundVertex tetrasAroundDOF = m_topology->getTetrahedraAroundVertex(dof);
 
         vMN[dof] = 0.0;
@@ -2627,10 +2619,4 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 }
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
+} //namespace sofa::component::forcefield

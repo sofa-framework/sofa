@@ -19,21 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_SIMPLE_FEM_INIT_H
-#define SOFA_COMPONENT_SIMPLE_FEM_INIT_H
-#include "config.h"
+#pragma once
+#include <SofaSimpleFem/config.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
-
-void SOFA_SIMPLE_FEM_API initSimpleFEM();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} //namespace sofa::component::forcefield

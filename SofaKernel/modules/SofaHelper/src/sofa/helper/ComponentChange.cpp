@@ -426,6 +426,11 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "StringMeshCreator", Pluginized("v20.12", "SofaGeneralLoader") },
     { "VoxelGridLoader", Pluginized("v20.12", "SofaGeneralLoader") },
 
+     // SofaSimpleFem was pluginized in #1XXX
+    { "HexahedronFEMForceField", Pluginized("v20.12", "SofaSimpleFem") },
+    { "TetrahedronDiffusionFEMForceField", Pluginized("v20.12", "SofaSimpleFem") },
+    { "TetrahedronFEMForceField", Pluginized("v20.12", "SofaSimpleFem") },
+
     /***********************/
     // REMOVED SINCE v20.12
     { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
