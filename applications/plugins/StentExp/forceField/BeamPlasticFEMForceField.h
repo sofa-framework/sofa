@@ -105,11 +105,9 @@ public:
 
 protected:
 
-    typedef defaulttype::Vec<12, Real> Displacement;        ///< the displacement vector
-    typedef defaulttype::Mat<3, 3, Real> Transformation; ///< matrix for rigid transformations like rotations
-
-    typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
-    typedef defaulttype::Mat<12, 8, Real> plasticityMatrix; ///< contribution of plasticity to internal forces
+    typedef defaulttype::Vec<12, Real> Displacement; ///< Vector representing the displacement of a beam element
+    typedef defaulttype::Mat<3, 3, Real> Transformation; ///< Matrix for rigid transformations like rotations
+    typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix; ///< Stiffness matrix associated to a beam element
 
     struct BeamInfo
     {
