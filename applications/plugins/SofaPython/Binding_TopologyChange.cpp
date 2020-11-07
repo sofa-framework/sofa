@@ -48,7 +48,7 @@ SP_CLASS_ATTR_SET(PointAncestorElem, type)(PyObject *self, PyObject * args, void
         PyErr_BadArgument();
         return -1;
     }
-    obj->type = static_cast<sofa::core::topology::TopologyObjectType>( PyLong_AsLong( args ) );
+    obj->type = static_cast<sofa::core::topology::TopologyElementType>( PyLong_AsLong( args ) );
 
     return 0;
 }
