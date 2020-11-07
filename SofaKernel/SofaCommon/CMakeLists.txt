@@ -10,11 +10,19 @@ set(SOFACOMMON_TARGETS
     SofaMeshCollision
     SofaObjectInteraction
     SofaRigid
-    SofaSimpleFem
     )
 
 foreach(TARGET ${SOFACOMMON_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+endforeach()
+
+# Modules
+set(SOFACOMMON_MODULES
+    SofaSimpleFem
+)
+
+foreach(MODULE ${SOFACOMMON_MODULES})
+    find_package(${MODULE} REQUIRED)
 endforeach()
 
 set(SOFACOMMON_SRC src/${PROJECT_NAME})
@@ -27,7 +35,7 @@ set(SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFACOMMON_TARGETS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFACOMMON_TARGETS} ${SOFACOMMON_MODULES})
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
