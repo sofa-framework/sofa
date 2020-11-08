@@ -431,7 +431,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "TetrahedronDiffusionFEMForceField", Pluginized("v20.12", "SofaSimpleFem") },
     { "TetrahedronFEMForceField", Pluginized("v20.12", "SofaSimpleFem") },
 
-    // SofaRigid was pluginized in #1XXX
+    // SofaRigid was pluginized in #1599
     { "JointSpringForceField", Pluginized("v20.12", "SofaRigid") },
     { "RigidMapping", Pluginized("v20.12", "SofaRigid") },
     { "RigidRigidMapping", Pluginized("v20.12", "SofaRigid") },
