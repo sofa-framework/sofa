@@ -6,7 +6,7 @@ set(SOFACOMMON_TARGETS
     SofaExplicitOdeSolver
     SofaImplicitOdeSolver
     SofaLoader
-    )
+)
 
 foreach(TARGET ${SOFACOMMON_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
