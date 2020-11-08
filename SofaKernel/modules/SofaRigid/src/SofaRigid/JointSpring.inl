@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_JOINTSPRING_INL
-#define SOFA_JOINTSPRING_INL
-
+#pragma once
 #include <SofaRigid/JointSpring.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 template<class DataTypes>
-JointSpring<DataTypes>::JointSpring(int m1 , int m2,
+JointSpring<DataTypes>::JointSpring(sofa::Index m1 , sofa::Index m2,
                                     Real softKst, Real hardKst , Real softKsr , Real hardKsr , Real blocKsr,
                                     Real axmin , Real axmax , Real aymin , Real aymax , Real azmin , Real azmax,
                                     Real kd):
@@ -54,11 +46,4 @@ JointSpring<DataTypes>::JointSpring(int m1 , int m2,
     initRot = defaulttype::Quat(0,0,0,1);
 }
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_JOINTSPRING_INL */
-
+} // namespace sofa::component::interactionforcefield

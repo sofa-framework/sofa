@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_JOINTSPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_JOINTSPRINGFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaRigid/config.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <SofaRigid/JointSpring.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 //This class is specialized with cudatypes
@@ -95,10 +88,10 @@ protected:
                         VecDeriv& f2,
                         const VecCoord& p2,
                         const VecDeriv& v2,
-                        int i, /*const*/ Spring& spring);
+                        sofa::Index i, /*const*/ Spring& spring);
 
     /// Apply the stiffness, i.e. accumulate df given dx
-    void addSpringDForce(VecDeriv& df1, const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, int i, /*const*/ Spring& spring, Real kFactor);
+    void addSpringDForce(VecDeriv& df1, const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, sofa::Index i, /*const*/ Spring& spring, Real kFactor);
 
     // project torsion to Lawfulltorsion according to limitangles
     void projectTorsion(Spring& spring);
@@ -163,9 +156,9 @@ public:
     sofa::helper::vector<Spring> * getSprings() { return d_springs.beginEdit(); }
 
     // -- Modifiers
-    void clear(int reserve=0) ;
+    void clear(sofa::Size reserve=0) ;
     void addSpring(const Spring& s) ;
-    void addSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr,
+    void addSpring(sofa::Index m1, sofa::Index m2, Real softKst, Real hardKst, Real softKsr,
                    Real hardKsr, Real blocKsr, Real axmin, Real axmax, Real aymin,
                    Real aymax, Real azmin, Real azmax, Real kd);
 
@@ -173,14 +166,8 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)
-extern template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3Types>;
-extern template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFARIGID_API JointSpring<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFARIGID_API JointSpringForceField<defaulttype::Rigid3Types>;
 
 #endif
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_JOINTSPRINGFORCEFIELD_H */
+} // namespace sofa::component::interactionforcefield

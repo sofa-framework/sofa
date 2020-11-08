@@ -26,13 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
@@ -44,14 +38,7 @@ int JointSpringForceFieldClass = core::RegisterObject("Springs for Rigids")
 
         ;
 
-template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3Types>;
-template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3Types>;
+template class SOFA_SOFARIGID_API JointSpringForceField<defaulttype::Rigid3Types>;
 
 
-
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::interactionforcefield

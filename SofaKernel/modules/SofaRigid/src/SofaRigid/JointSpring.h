@@ -19,17 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_JOINTSPRING_H
-#define SOFA_JOINTSPRING_H
-#include "config.h"
+#pragma once
+#include <SofaRigid/config.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 /// JOINTSPRING
@@ -49,13 +42,13 @@ public:
     typedef defaulttype::Vec<N,Real> Vector;
 
     /// Constructors
-    JointSpring(int m1 = 0,int m2 = 0,
+    JointSpring(sofa::Index m1 = 0, sofa::Index m2 = 0,
                 Real softKst = 0, Real hardKst = 10000, Real softKsr = 0, Real hardKsr = 10000, Real blocKsr = 100,
                 Real axmin = -100000, Real axmax = 100000, Real aymin = -100000, Real aymax = 100000, Real azmin = -100000, Real azmax= 100000,
                 Real kd = 0);
 
     /// Attributes
-    int  m1, m2;                    ///< the two extremities of the spring: masses m1 and m2
+    sofa::Index  m1, m2;                    ///< the two extremities of the spring: masses m1 and m2
     Real kd;                        ///< damping factor
     Vector torsion;                 ///< torsion of the springs in axis/angle format
     Vector lawfulTorsion;           ///< projected torsion in allowed angles
@@ -218,13 +211,7 @@ public:
 };
 
 #if  !defined(SOFA_JOINTSPRING_CPP)
-extern template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFARIGID_API JointSpring<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif /* #define SOFA_JOINTSPRING_H */
+} // sofa::component::interactionforcefield

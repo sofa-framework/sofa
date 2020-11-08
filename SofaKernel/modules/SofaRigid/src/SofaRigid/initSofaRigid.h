@@ -19,23 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_RIGID_INIT_H
-#define SOFA_COMPONENT_RIGID_INIT_H
-#include "config.h"
+#pragma once
+#include <SofaRigid/config.h>
 
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
-
-
-void SOFA_RIGID_API initRigid();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component
 

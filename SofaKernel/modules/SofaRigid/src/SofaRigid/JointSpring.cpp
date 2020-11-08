@@ -23,22 +23,11 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaRigid/JointSpring.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
 
-template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3Types>;
+template class SOFA_SOFARIGID_API JointSpring<defaulttype::Rigid3Types>;
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::interactionforcefield

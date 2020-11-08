@@ -23,13 +23,7 @@
 #include <SofaRigid/RigidMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace defaulttype;
@@ -38,19 +32,10 @@ using namespace defaulttype;
 int RigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
         .add< RigidMapping< Rigid3Types, Vec3dTypes > >()
         .add< RigidMapping< Rigid2Types, Vec2Types > >()
-
-
-
         ;
 
-template class SOFA_RIGID_API RigidMapping< Rigid3Types, Vec3dTypes >;
-template class SOFA_RIGID_API RigidMapping< Rigid2Types, Vec2Types >;
-
-
-
-
-
-
+template class SOFA_SOFARIGID_API RigidMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_SOFARIGID_API RigidMapping< Rigid2Types, Vec2Types >;
 
 
 template<>
@@ -63,12 +48,4 @@ const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sof
     return nullptr;
 }
 
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mapping
