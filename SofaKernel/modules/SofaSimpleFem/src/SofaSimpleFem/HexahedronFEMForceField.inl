@@ -294,7 +294,7 @@ void HexahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 }
 
 template <class DataTypes>
-const typename HexahedronFEMForceField<DataTypes>::Transformation& HexahedronFEMForceField<DataTypes>::getElementRotation(const unsigned elemidx)
+const typename HexahedronFEMForceField<DataTypes>::Transformation& HexahedronFEMForceField<DataTypes>::getElementRotation(const sofa::Index elemidx)
 {
     return _rotations[elemidx];
 }
@@ -312,7 +312,7 @@ const typename HexahedronFEMForceField<DataTypes>::Transformation& HexahedronFEM
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, double stiffnessFactor)
+void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const sofa::Index elementIndice, double stiffnessFactor)
 {
     const bool verbose = elementIndice==0;
     // X = n0 (1-x1)(1-x2)(1-x3)/8 + n1 (1+x1)(1-x2)(1-x3)/8 + n2 (1+x1)(1+x2)(1-x3)/8 + n3 (1-x1)(1+x2)(1-x3)/8 + n4 (1-x1)(1-x2)(1+x3)/8 + n5 (1+x1)(1-x2)(1+x3)/8 + n6 (1+x1)(1+x2)(1+x3)/8 + n7 (1-x1)(1+x2)(1+x3)/8
@@ -686,7 +686,7 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i)
+void HexahedronFEMForceField<DataTypes>::computeMaterialStiffness(sofa::Index i)
 {
     _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = 1;
     _materialsStiffnesses[i][0][1] = _materialsStiffnesses[i][0][2] = _materialsStiffnesses[i][1][0]
@@ -742,7 +742,7 @@ void HexahedronFEMForceField<DataTypes>::initSmall(int i, const Element &elem)
 }
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::accumulateForceSmall ( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem )
+void HexahedronFEMForceField<DataTypes>::accumulateForceSmall ( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem )
 {
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
@@ -838,7 +838,7 @@ void HexahedronFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
 }
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem )
+void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem )
 {
     defaulttype::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
@@ -1035,7 +1035,7 @@ void HexahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix * 
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem )
+void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem )
 {
     defaulttype::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
@@ -1194,11 +1194,10 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         vparams->drawTool()->setPolygonMode(0,true);
 
     typename VecElement::const_iterator it;
-    int i;
+    sofa::Index i;
+    std::vector< defaulttype::Vector3 > points[6];
     for(it = this->getIndexedElements()->begin(), i = 0 ; it != this->getIndexedElements()->end() ; ++it, ++i)
     {
-        std::vector< defaulttype::Vector3 > points[6];
-
         Index a = (*it)[0];
         Index b = (*it)[1];
         Index d = (*it)[3];

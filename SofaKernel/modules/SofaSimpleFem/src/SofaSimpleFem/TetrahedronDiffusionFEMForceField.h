@@ -122,7 +122,7 @@ protected:
       /// Pointer to topology
       sofa::core::topology::BaseMeshTopology::SPtr m_topology;
       /// Saving the number of edges
-      size_t nbEdges;
+      sofa::Size nbEdges;
 
 public:
       /// Boolean if the diffusion coefficients have loaded from file

@@ -397,7 +397,7 @@ template <class DataTypes>
 void TetrahedronDiffusionFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     sofa::helper::AdvancedTimer::stepBegin("addKToMatrix");
-    const int N = defaulttype::DataTypeInfo<Deriv>::size();
+    const auto N = defaulttype::DataTypeInfo<Deriv>::size();
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = r.matrix;
 
@@ -447,10 +447,10 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
         this->mechanicalObject->read(core::ConstVecCoordId::restPosition())->getValue();
         vparams->drawTool()->setLightingEnabled(false);
 
-        unsigned int nbr = m_topology->getNbTriangles();
-        sofa::helper::vector<unsigned int> surfaceTri;
+        auto nbr = m_topology->getNbTriangles();
+        sofa::helper::vector<sofa::Index> surfaceTri;
 
-        for (unsigned int i=0; i<nbr; ++i)
+        for (sofa::Index i=0; i<nbr; ++i)
         {
             if((m_topology->getTetrahedraAroundTriangle(i)).size() == 1)
                 surfaceTri.push_back(i);
@@ -459,10 +459,10 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
         sofa::defaulttype::Vec4f colorLine(1.0, 0.0, 0.0, 1.0);
         helper::vector<sofa::defaulttype::Vector3> vertices;
 
-        for (unsigned int i=0; i<surfaceTri.size(); ++i)
+        for (sofa::Index i=0; i<surfaceTri.size(); ++i)
         {
             sofa::defaulttype::Vector3 point[3];
-            Triangle tri = m_topology->getTriangle(surfaceTri[i]);
+            const Triangle& tri = m_topology->getTriangle(surfaceTri[i]);
             for (unsigned int j=0; j<3; ++j)
                 point[j] = restPosition[tri[j]];
 
@@ -475,9 +475,9 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
 
         vparams->drawTool()->drawLines(vertices, 1, colorLine);
 
-        unsigned int nbrTetra = m_topology->getNbTetrahedra();
+        auto nbrTetra = m_topology->getNbTetrahedra();
         Real maxDiffusion = 0.0;
-        for (unsigned int i = 0; i<nbrTetra; ++i)
+        for (sofa::Index i = 0; i<nbrTetra; ++i)
         {
             if (d_tetraDiffusionCoefficient.getValue()[i] > maxDiffusion)
                 maxDiffusion = d_tetraDiffusionCoefficient.getValue()[i];
@@ -485,7 +485,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
 
         colorLine = sofa::defaulttype::Vec4f(0.2f, 0.2f, 0.2f, 1.0f);
         vertices.clear();
-        for (unsigned int i = 0; i<nbrTetra; ++i)
+        for (sofa::Index i = 0; i<nbrTetra; ++i)
         {
             Real Ratio = d_tetraDiffusionCoefficient.getValue()[i] / maxDiffusion;
             sofa::defaulttype::Vec4f tetraColor(0.0f, float(Ratio), 0.5f-float(Ratio), 1.0f);
@@ -493,12 +493,12 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
             Tetrahedron tetra = m_topology->getTetrahedron(i);
             sofa::defaulttype::Vec<3,SReal> point[4];
 
-            for (unsigned int j = 0; j<4; j++)
+            for (sofa::Index j = 0; j<4; j++)
                 point[j] = restPosition[tetra[j]];
 
             vparams->drawTool()->drawTetrahedron(point[0],point[1],point[2],point[3],tetraColor);
 
-            for (unsigned int j = 0; j<4; j++)
+            for (sofa::Index j = 0; j<4; j++)
             {
                 vertices.push_back(point[j]);
                 vertices.push_back(point[(j+1)%4]);
