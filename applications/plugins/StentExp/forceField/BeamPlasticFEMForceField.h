@@ -109,14 +109,21 @@ protected:
     typedef defaulttype::Mat<3, 3, Real> Transformation; ///< Matrix for rigid transformations like rotations
     typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix; ///< Stiffness matrix associated to a beam element
 
+    /** \struct BeamInfo
+     *  \brief Data structure containing the main characteristics of the beam
+     *  elements. This includes mechanical and geometric parameters (Young's
+     *  modulus, Poisson ratio, length, section dimensions, ...), computation
+     *  variables (stiffness matrix, plasticity history, ...) and visualisation
+     *  data (shape functions, discretisation parameters).
+     */
     struct BeamInfo
     {
         /*********************************************************************/
         /*                     Virtual Displacement method                   */
         /*********************************************************************/
 
-        StiffnessMatrix _Ke_loc; //elastic stiffness
-        StiffnessMatrix _Kt_loc; //tangent stiffness
+        StiffnessMatrix _Ke_loc; ///< Precomputed stiffness matrix, used for elastic deformation
+        StiffnessMatrix _Kt_loc; ///< Linearised stiffness matrix (tangent stiffness), updated at each time step for plastic deformation
 
         typedef Eigen::Matrix<double, 6, 6> BehaviourMatrix;
         BehaviourMatrix _materialBehaviour;
