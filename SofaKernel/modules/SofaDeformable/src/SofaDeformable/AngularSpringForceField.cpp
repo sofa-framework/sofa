@@ -25,13 +25,7 @@
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
@@ -39,16 +33,8 @@ using namespace sofa::defaulttype;
 
 int AngularSpringForceFieldClass = core::RegisterObject("Angular springs applied to rotational degrees of freedom of a rigid body or frame")
         .add< AngularSpringForceField<Rigid3Types> >()
-        //.add< AngularSpringForceField<Rigid2Types> >()
-
         ;
 
-template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid3Types>;
-//template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid2Types>;
+template class SOFA_SOFADEFORMABLE_API AngularSpringForceField<Rigid3Types>;
 
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::forcefield

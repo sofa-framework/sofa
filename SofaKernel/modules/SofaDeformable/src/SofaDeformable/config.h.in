@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFADEFORMABLE_CONFIG_H
-#define SOFADEFORMABLE_CONFIG_H
+#pragma once
 
-#include <SofaCommon/config.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_DEFORMABLE
-#  define SOFA_TARGET SofaDeformable
-#  define SOFA_DEFORMABLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFADEFORMABLE_VERSION @PROJECT_VERSION@
+
+#ifdef SOFA_BUILD_SOFADEFORMABLE
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFADEFORMABLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_DEFORMABLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
+#  define SOFA_SOFADEFORMABLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif

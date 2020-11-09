@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_INL
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_INL
-
+#pragma once
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-namespace sofa
-{
 
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 template<class DataTypes>
@@ -321,11 +314,4 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
 
 }
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_INL */
-
+} // namespace sofa::component::interactionforcefield

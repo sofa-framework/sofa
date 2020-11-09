@@ -29,18 +29,10 @@
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/ObjectFactory.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
-
 
 SOFA_DECL_CLASS(PolynomialRestShapeSpringsForceField)
 
@@ -49,13 +41,6 @@ int PolynomialRestShapeSpringsForceFieldClass = core::RegisterObject("Simple ela
         .add< PolynomialRestShapeSpringsForceField<Vec3Types> >()
         ;
 
+template class SOFA_SOFADEFORMABLE_API PolynomialRestShapeSpringsForceField<Vec3Types>;
 
-template class SOFA_DEFORMABLE_API PolynomialRestShapeSpringsForceField<Vec3Types>;
-
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::interactionforcefield

@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_INL
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_INL
-
+#pragma once
 #include <SofaDeformable/SpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -32,13 +30,7 @@
 #include <iostream>
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 template<class DataTypes>
@@ -417,10 +409,4 @@ void SpringForceField<DataTypes>::exportGnuplot(SReal time)
     }
 }
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_INL */
+} // namespace sofa::component::interactionforcefield

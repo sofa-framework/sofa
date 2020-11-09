@@ -28,25 +28,14 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
+namespace sofa::core::behavior
 {
-namespace core
-{
-namespace behavior
-{
+
 template< class T > class MechanicalState;
 
-} // namespace behavior
-} // namespace core
-} // namespace sofa
+} // namespace sofa::core::behavior
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 /**
@@ -173,13 +162,8 @@ public:
 
 using namespace sofa::defaulttype;
 
-extern template class SOFA_DEFORMABLE_API PolynomialRestShapeSpringsForceField<Vec3Types>;
+extern template class SOFA_SOFADEFORMABLE_API PolynomialRestShapeSpringsForceField<Vec3Types>;
 
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_POLYNOMIAL_RESTSHAPESPRINGFORCEFIELD_CPP)
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::forcefield

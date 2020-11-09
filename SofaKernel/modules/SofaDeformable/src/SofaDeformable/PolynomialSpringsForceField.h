@@ -28,13 +28,7 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 /**
@@ -168,13 +162,8 @@ public:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_CPP)
 
-extern template class SOFA_DEFORMABLE_API PolynomialSpringsForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFADEFORMABLE_API PolynomialSpringsForceField<defaulttype::Vec3Types>;
 
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_CPP)
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace namespace sofa::component::interactionforcefield

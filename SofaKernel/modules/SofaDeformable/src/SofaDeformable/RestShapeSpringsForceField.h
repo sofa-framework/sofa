@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaDeformable/config.h>
 
 #include <sofa/helper/types/RGBAColor.h>
 
@@ -31,25 +30,14 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 
-namespace sofa
+namespace sofa::core::behavior
 {
-namespace core
-{
-namespace behavior
-{
+
 template< class T > class MechanicalState;
 
-} // namespace behavior
-} // namespace core
-} // namespace sofa
+} // namespace sofa::core::behavior
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 /**
@@ -144,15 +132,9 @@ private :
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec1Types>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3Types>;
+extern template class SOFA_SOFADEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_SOFADEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_SOFADEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3Types>;
 #endif
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H
+} // namespace sofa::component::forcefield

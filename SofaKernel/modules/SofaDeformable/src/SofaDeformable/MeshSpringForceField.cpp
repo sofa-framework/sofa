@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
@@ -44,13 +38,8 @@ int MeshSpringForceFieldClass = core::RegisterObject("Spring force field acting 
 
         ;
 
-template class SOFA_DEFORMABLE_API MeshSpringForceField<Vec3Types>;
-template class SOFA_DEFORMABLE_API MeshSpringForceField<Vec2Types>;
-template class SOFA_DEFORMABLE_API MeshSpringForceField<Vec1Types>;
+template class SOFA_SOFADEFORMABLE_API MeshSpringForceField<Vec3Types>;
+template class SOFA_SOFADEFORMABLE_API MeshSpringForceField<Vec2Types>;
+template class SOFA_SOFADEFORMABLE_API MeshSpringForceField<Vec1Types>;
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::interactionforcefield

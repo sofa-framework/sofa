@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaDeformable/config.h>
 
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -31,13 +30,7 @@
 
 #include <sofa/core/objectmodel/DataFileName.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 /// This class contains the description of one linear spring
@@ -207,18 +200,12 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
-extern template class SOFA_DEFORMABLE_API LinearSpring<double>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3Types>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2Types>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1Types>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6Types>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFADEFORMABLE_API LinearSpring<double>;
+extern template class SOFA_SOFADEFORMABLE_API SpringForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFADEFORMABLE_API SpringForceField<defaulttype::Vec2Types>;
+extern template class SOFA_SOFADEFORMABLE_API SpringForceField<defaulttype::Vec1Types>;
+extern template class SOFA_SOFADEFORMABLE_API SpringForceField<defaulttype::Vec6Types>;
+extern template class SOFA_SOFADEFORMABLE_API SpringForceField<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_H */
+} // namespace sofa::component::interactionforcefield

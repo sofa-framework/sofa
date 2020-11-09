@@ -33,10 +33,10 @@ set(SOURCE_FILES
     ${SOFADEFORMABLE_SRC}/PolynomialSpringsForceField.cpp
 )
 
-find_package(SofaBase REQUIRED) # SofaBaseTopology
+find_package(SofaBase REQUIRED) # SofaBaseTopology SofaEigen2Solver
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaEigen2Solver)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

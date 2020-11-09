@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_ANGULARSPRINGFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_ANGULARSPRINGFORCEFIELD_INL
-
+#pragma once
 #include "AngularSpringForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -30,13 +28,7 @@
 #include <iostream>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template<class DataTypes>
@@ -192,15 +184,4 @@ void AngularSpringForceField<DataTypes>::draw(const core::visual::VisualParams* 
     vparams->drawTool()->restoreLastState();
 }
 
-
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_ANGULARSPRINGFORCEFIELD_INL
-
-
-
+} // namespace sofa::component::forcefield

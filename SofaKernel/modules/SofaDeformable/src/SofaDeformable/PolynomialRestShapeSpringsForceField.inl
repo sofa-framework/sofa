@@ -29,14 +29,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template<class DataTypes>
@@ -522,10 +515,4 @@ double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialDerivativeValu
 }
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-
+} // namespace sofa::component::forcefield

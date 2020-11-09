@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaDeformable/config.h>
 
 #include <SofaDeformable/SpringForceField.h>
 #include <sofa/defaulttype/Mat.h>
@@ -29,13 +28,7 @@
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <SofaBaseTopology/TopologySubsetData.inl> 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 /** SpringForceField able to evaluate and apply its stiffness.
@@ -109,17 +102,11 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_CPP)
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec3Types>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec2Types>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec1Types>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec6Types>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<defaulttype::Vec2Types>;
+extern template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<defaulttype::Vec1Types>;
+extern template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<defaulttype::Vec6Types>;
+extern template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_H */
+} // namespace sofa::component::interactionforcefield

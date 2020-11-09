@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_ANGULARSPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_ANGULARSPRINGFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaDeformable/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -29,25 +28,14 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 
-namespace sofa
+namespace sofa::core::behavior
 {
-namespace core
-{
-namespace behavior
-{
+
 template< class T > class MechanicalState;
 
-} // namespace behavior
-} // namespace core
-} // namespace sofa
+} // namespace sofa::core::behavior
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 /**
@@ -111,16 +99,10 @@ protected :
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_AngularSpringForceField_CPP)
 
-extern template class SOFA_DEFORMABLE_API AngularSpringForceField<sofa::defaulttype::Rigid3Types>;
-//extern template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid2Types>;
+extern template class SOFA_SOFADEFORMABLE_API AngularSpringForceField<sofa::defaulttype::Rigid3Types>;
+//extern template class SOFA_SOFADEFORMABLE_API AngularSpringForceField<Rigid2Types>;
 
 
 #endif
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_ANGULARSPRINGFORCEFIELD_H
+} // namespace sofa::component::forcefield

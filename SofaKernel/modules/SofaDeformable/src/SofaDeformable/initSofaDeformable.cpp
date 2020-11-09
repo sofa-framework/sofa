@@ -19,17 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaDeformable/initDeformable.h>
+#include <SofaDeformable/initSofaDeformable.h>
 
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFADEFORMABLE_API void initExternalModule();
+    SOFA_SOFADEFORMABLE_API const char* getModuleName();
+    SOFA_SOFADEFORMABLE_API const char* getModuleVersion();
+    SOFA_SOFADEFORMABLE_API const char* getModuleLicense();
+    SOFA_SOFADEFORMABLE_API const char* getModuleDescription();
+    SOFA_SOFADEFORMABLE_API const char* getModuleComponentList();
+}
 
-
-void initDeformable()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -38,7 +45,31 @@ void initDeformable()
     }
 }
 
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace component
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFADEFORMABLE_VERSION);
+}
 
-} // namespace sofa
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Deformable.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

@@ -25,13 +25,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
@@ -45,15 +39,10 @@ int StiffSpringForceFieldClass = core::RegisterObject("Stiff springs for implici
         .add< StiffSpringForceField<Vec6Types> >()
         .add< StiffSpringForceField<Rigid3Types> >()
         ;
-template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec3Types>;
-template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec2Types>;
-template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec1Types>;
-template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec6Types>;
-template class SOFA_DEFORMABLE_API StiffSpringForceField<Rigid3Types>;
+template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<Vec3Types>;
+template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<Vec2Types>;
+template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<Vec1Types>;
+template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<Vec6Types>;
+template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<Rigid3Types>;
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::interactionforcefield
