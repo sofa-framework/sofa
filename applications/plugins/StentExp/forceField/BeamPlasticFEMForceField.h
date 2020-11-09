@@ -66,7 +66,7 @@ namespace _beamplasticfemforcefield_
  *  occurs).
  *  This type of mechanical behaviour allows to simulate irreversible
  *  deformation, which typically occurs in metals.
-*/
+ */
 template<class DataTypes>
 class SOFA_StentExp_API BeamPlasticFEMForceField : public core::behavior::ForceField<DataTypes>
 {
@@ -104,17 +104,20 @@ public:
     };
 
 protected:
+    /// Vector representing the displacement of a beam element.
+    typedef defaulttype::Vec<12, Real> Displacement;
+    /// Matrix for rigid transformations like rotations.
+    typedef defaulttype::Mat<3, 3, Real> Transformation;
+    /// Stiffness matrix associated to a beam element.
+    typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
 
-    typedef defaulttype::Vec<12, Real> Displacement; ///< Vector representing the displacement of a beam element
-    typedef defaulttype::Mat<3, 3, Real> Transformation; ///< Matrix for rigid transformations like rotations
-    typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix; ///< Stiffness matrix associated to a beam element
-
-    /** \struct BeamInfo
-     *  \brief Data structure containing the main characteristics of the beam
-     *  elements. This includes mechanical and geometric parameters (Young's
-     *  modulus, Poisson ratio, length, section dimensions, ...), computation
-     *  variables (stiffness matrix, plasticity history, ...) and visualisation
-     *  data (shape functions, discretisation parameters).
+    /**
+     * \struct BeamInfo
+     * \brief Data structure containing the main characteristics of the beam
+     * elements. This includes mechanical and geometric parameters (Young's
+     * modulus, Poisson ratio, length, section dimensions, ...), computation
+     * variables (stiffness matrix, plasticity history, ...) and visualisation
+     * data (shape functions, discretisation parameters).
      */
     struct BeamInfo
     {
@@ -122,10 +125,20 @@ protected:
         /*                     Virtual Displacement method                   */
         /*********************************************************************/
 
-        StiffnessMatrix _Ke_loc; ///< Precomputed stiffness matrix, used for elastic deformation
-        StiffnessMatrix _Kt_loc; ///< Linearised stiffness matrix (tangent stiffness), updated at each time step for plastic deformation
+        /// Precomputed stiffness matrix, used for elastic deformation.
+        StiffnessMatrix _Ke_loc;
+        /**
+         * Linearised stiffness matrix (tangent stiffness), updated at each time
+         * step for plastic deformation.
+         */
+        StiffnessMatrix _Kt_loc;
 
+        /// Homogeneous type to a 4th order tensor, in Voigt notation.
         typedef Eigen::Matrix<double, 6, 6> BehaviourMatrix;
+        /**
+         * Generalised Hooke's law (4th order tensor connecting strain and stress,
+         * expressed in Voigt notation)
+         */
         BehaviourMatrix _materialBehaviour;
 
         //Base interval for reduced integration: same for all the beam elements
