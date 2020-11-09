@@ -127,7 +127,6 @@ protected:
 
         typedef Eigen::Matrix<double, 6, 6> BehaviourMatrix;
         BehaviourMatrix _materialBehaviour;
-        BehaviourMatrix _materialInv;
 
         //Base interval for reduced integration: same for all the beam elements
         ozp::quadrature::detail::Interval<3> _integrationInterval;

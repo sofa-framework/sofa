@@ -1145,19 +1145,6 @@ void BeamPlasticFEMForceField<DataTypes>::computeMaterialBehaviour(int i, Index 
     C(3, 3) = C(4, 4) = C(5, 5) = (1 - 2 * poissonRatio) / (1 - poissonRatio);
     C *= (youngModulus*(1 - poissonRatio)) / ((1 + poissonRatio)*(1 - 2 * poissonRatio));
 
-    Eigen::Matrix<double, 6, 6>& S = bd[i]._materialInv;
-
-    S(0, 0) = S(1, 1) = S(2, 2) = 1;
-    S(0, 1) = S(0, 2) = S(1, 0) = S(1, 2) = S(2, 0) = S(2, 1) = -poissonRatio;
-    S(0, 3) = S(0, 4) = S(0, 5) = 0;
-    S(1, 3) = S(1, 4) = S(1, 5) = 0;
-    S(2, 3) = S(2, 4) = S(2, 5) = 0;
-    S(3, 0) = S(3, 1) = S(3, 2) = S(3, 4) = S(3, 5) = 0;
-    S(4, 0) = S(4, 1) = S(4, 2) = S(4, 3) = S(4, 5) = 0;
-    S(5, 0) = S(5, 1) = S(5, 2) = S(5, 3) = S(5, 4) = 0;
-    S(3, 3) = S(4, 4) = S(5, 5) = 1 + poissonRatio;
-    S *= 1 / youngModulus;
-
     m_beamsData.endEdit();
 };
 
