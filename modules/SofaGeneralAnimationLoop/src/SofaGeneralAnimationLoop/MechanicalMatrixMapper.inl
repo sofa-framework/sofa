@@ -199,8 +199,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::accumulateJacobians(const M
 template<class T>
 void copyKToEigenFormat(CompressedRowSparseMatrix< T >* K, Eigen::SparseMatrix<double,Eigen::ColMajor>& Keig)
 {
-    Keig.rows();
-    Keig.cols();
     std::vector< Eigen::Triplet<double> > tripletList;
     tripletList.reserve(K->colsValue.size());
 
