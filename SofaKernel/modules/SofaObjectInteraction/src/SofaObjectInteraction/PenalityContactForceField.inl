@@ -22,6 +22,7 @@
 #pragma once
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <cassert>
 #include <iostream>
 
@@ -31,7 +32,7 @@ namespace sofa::component::interactionforcefield
 {
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::clear(int reserve)
+void PenalityContactForceField<DataTypes>::clear(sofa::Size reserve)
 {
     prevContacts.swap(*contacts.beginEdit()); // save old contacts in prevContacts
     contacts.beginEdit()->clear();
@@ -42,9 +43,9 @@ void PenalityContactForceField<DataTypes>::clear(int reserve)
 
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1, int index2, const Deriv& norm, Real dist, Real ks, Real /*mu_s*/, Real /*mu_v*/, int oldIndex)
+void PenalityContactForceField<DataTypes>::addContact(sofa::Index m1, sofa::Index m2, sofa::Index index1, sofa::Index index2, const Deriv& norm, Real dist, Real ks, Real /*mu_s*/, Real /*mu_v*/, sofa::Index oldIndex)
 {
-    int i = contacts.getValue().size();
+    auto i = contacts.getValue().size();
     contacts.beginEdit()->resize(i+1);
     Contact& c = (*contacts.beginEdit())[i];
     c.m1 = m1;
@@ -79,7 +80,7 @@ void PenalityContactForceField<DataTypes>::addForce(const sofa::core::Mechanical
     f1.resize(x1.size());
     f2.resize(x2.size());
 
-    for (unsigned int i=0; i<cc.size(); i++)
+    for (sofa::Index i=0; i<cc.size(); i++)
     {
         Contact& c = cc[i];
         Coord u = x2[c.m2]-x1[c.m1];
@@ -112,7 +113,7 @@ void PenalityContactForceField<DataTypes>::addDForce(const sofa::core::Mechanica
 
     df1.resize(dx1.size());
     df2.resize(dx2.size());
-    for (unsigned int i=0; i<cc.size(); i++)
+    for (sofa::Index i=0; i<cc.size(); i++)
     {
         const Contact& c = cc[i];
         if (c.pen > 0) // + dpen > 0)
@@ -142,14 +143,18 @@ SReal PenalityContactForceField<DataTypes>::getPotentialEnergy(const sofa::core:
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
+    if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) 
+        return;
+    
+    using sofa::helper::types::RGBAColor;
+
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
     const helper::vector<Contact>& cc = contacts.getValue();
 
     std::vector< defaulttype::Vector3 > points[4];
 
-    for (unsigned int i=0; i<cc.size(); i++)
+    for (sofa::Index i=0; i<cc.size(); i++)
     {
         const Contact& c = cc[i];
         Real d = c.dist - (p2[c.m2]-p1[c.m1])*c.norm;
@@ -175,10 +180,10 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
             points[3].push_back(p2[c.m2]);
         }
     }
-    vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(1,0,1,1));
-    vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0,1,1,1));
-    vparams->drawTool()->drawLines(points[2], 1, defaulttype::Vec<4,float>(1,0,0,1));
-    vparams->drawTool()->drawLines(points[3], 1, defaulttype::Vec<4,float>(0,1,0,1));
+    vparams->drawTool()->drawLines(points[0], 1, RGBAColor::magenta());
+    vparams->drawTool()->drawLines(points[1], 1, RGBAColor::cyan());
+    vparams->drawTool()->drawLines(points[2], 1, RGBAColor::red());
+    vparams->drawTool()->drawLines(points[3], 1, RGBAColor::green());
 
 
     std::vector< defaulttype::Vector3 > pointsN;
@@ -196,7 +201,7 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
             pointsN.push_back(p2[c.m2]);
             pointsN.push_back(p);
         }
-        vparams->drawTool()->drawLines(pointsN, 1, defaulttype::Vec<4,float>(1,1,0,1));
+        vparams->drawTool()->drawLines(pointsN, 1, RGBAColor::yellow());
     }
 }
 
@@ -204,23 +209,25 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::grabPoint(
     const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
-    const helper::vector< unsigned int > &index,
+    const helper::vector< sofa::Index > &index,
     helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
-    helper::vector< unsigned int > &triangle,
-    helper::vector< unsigned int > &index_point)
+    helper::vector< sofa::Index > &triangle,
+    helper::vector< sofa::Index > &index_point)
 {
+    const auto& contactsRef = contacts.getValue();
+
     if (static_cast< core::objectmodel::BaseObject *>(this->mstate1) == static_cast< const core::objectmodel::BaseObject *>(tool))
     {
-        for (unsigned int i=0; i<contacts.getValue().size(); i++)
+        const auto& mstate2Pos = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+
+        for (sofa::Index i=0; i< contactsRef.size(); i++)
         {
-            for (unsigned int j=0; j<index.size(); j++)
+            for (sofa::Index j=0; j<index.size(); j++)
             {
-                if (contacts.getValue()[i].m1  == (int)index[j])
+                if (contactsRef[i].m1  == index[j])
                 {
-                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseObject *>(this),
-                            (this->mstate2->read(core::ConstVecCoordId::position())->getValue())[contacts.getValue()[i].m2])
-                                    );
-                    triangle.push_back(contacts.getValue()[i].index2);
+                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseObject *>(this),mstate2Pos[contactsRef[i].m2]));
+                    triangle.push_back(contactsRef[i].index2);
                     index_point.push_back(index[j]);
                 }
             }
@@ -228,18 +235,15 @@ void PenalityContactForceField<DataTypes>::grabPoint(
     }
     else if (static_cast< core::objectmodel::BaseObject *>(this->mstate2) == static_cast< const core::objectmodel::BaseObject *>(tool))
     {
-
-        for (unsigned int i=0; i<contacts.getValue().size(); i++)
+        const auto& mstate1Pos = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+        for (sofa::Index i=0; i< contactsRef.size(); i++)
         {
-            for (unsigned int j=0; j<index.size(); j++)
+            for (sofa::Index j=0; j<index.size(); j++)
             {
-                if (contacts.getValue()[i].m2  == (int)index[j])
+                if (contactsRef[i].m2  == index[j])
                 {
-                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseObject *>(this),
-                            (this->mstate1->read(core::ConstVecCoordId::position())->getValue())[contacts.getValue()[i].m1])
-                                    );
-
-                    triangle.push_back(contacts.getValue()[i].index1);
+                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseObject *>(this), mstate1Pos[contactsRef[i].m1]));
+                    triangle.push_back(contactsRef[i].index1);
                     index_point.push_back(index[j]);
                 }
             }
@@ -253,7 +257,7 @@ template<class DataTypes>
 void PenalityContactForceField<DataTypes>::updateForceMask()
 {
     const helper::vector<Contact>& cc = contacts.getValue();
-    for (unsigned int i=0; i<cc.size(); i++)
+    for (sofa::Index i=0; i<cc.size(); i++)
     {
         const Contact& c = cc[i];
         if (c.pen > 0)
