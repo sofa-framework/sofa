@@ -19,22 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MESH_COLLISION_INIT_H
-#define SOFA_COMPONENT_MESH_COLLISION_INIT_H
-#include "config.h"
+#pragma once
 
-namespace sofa
-{
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace component
-{
+<<<<<<< HEAD
+#define SOFAMESHCOLLISION_VERSION @PROJECT_VERSION@
 
+#ifdef SOFA_BUILD_SOFAMESHCOLLISION
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAMESHCOLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAMESHCOLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+=======
+#define SOFAEXPLICITODESOLVER_VERSION @PROJECT_VERSION@
 
-void SOFA_MESH_COLLISION_API initMeshCollision();
-
-} // namespace component
-
-} // namespace sofa
-
+#ifdef SOFA_BUILD_SOFAEXPLICITODESOLVER
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAEXPLICITODESOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAEXPLICITODESOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+>>>>>>> c208c7c147... cmake setup
 #endif
-
