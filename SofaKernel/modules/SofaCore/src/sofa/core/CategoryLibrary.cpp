@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include "CategoryLibrary.h"
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Integer.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
 
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>

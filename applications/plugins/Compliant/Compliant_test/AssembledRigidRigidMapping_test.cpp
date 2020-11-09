@@ -24,6 +24,7 @@
 
 #include <SofaTest/Mapping_test.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 #include <Compliant/mapping/AssembledRigidRigidMapping.h>
 
 #include <Compliant/utils/se3.h>

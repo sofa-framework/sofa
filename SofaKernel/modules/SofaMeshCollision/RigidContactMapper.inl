@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_INL
 #define SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_INL
 
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include <SofaMeshCollision/RigidContactMapper.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>

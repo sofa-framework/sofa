@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa::defaulttype

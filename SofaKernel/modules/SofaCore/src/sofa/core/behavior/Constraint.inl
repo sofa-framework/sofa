@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_CONSTRAINT_INL
 #define SOFA_CORE_BEHAVIOR_CONSTRAINT_INL
 
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
 #include <sofa/core/behavior/Constraint.h>
 
 namespace sofa

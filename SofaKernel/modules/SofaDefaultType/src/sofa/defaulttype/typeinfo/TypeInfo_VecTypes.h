@@ -21,19 +21,28 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/Quat.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::defaulttype
 {
 
-template<class T>
-struct DataTypeInfo< sofa::helper::Quater<T> > : public FixedArrayTypeInfo< sofa::helper::Quater<T> >
-{
-    static std::string GetTypeName() { std::ostringstream o; o << "Quat<" << DataTypeName<T>::GetTypeName() << ">"; return o.str(); }
-    static std::string GetName() { std::ostringstream o; o << "Quat" << DataTypeName<T>::GetName() ; return o.str(); }
-};
+//template<class Coord, class Deriv, typename real>
+//struct DataTypeInfo< sofa::defaulttype::StdVectorTypes<Coord, Deriv, real> >
+//{
+//    static std::string name()
+//    {
+//        std::ostringstream o;
+//        o << "VecCoord<" << DataTypeInfo<Coord>::name() << "," << DataTypeInfo<Deriv>::name() << "," <<  DataTypeInfo<real>::shortName() << ">";
+//        return o.str();
+//    }
+
+//    static std::string shortName()
+//    {
+//        std::ostringstream o;
+//        o << "Vec" << L << "x" << C << DataTypeInfo<real>::shortName();
+//        return o.str();
+//    }
+//};
 
 } /// namespace sofa::defaulttype
-

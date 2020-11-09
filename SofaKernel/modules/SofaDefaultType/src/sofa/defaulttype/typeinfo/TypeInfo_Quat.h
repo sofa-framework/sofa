@@ -19,13 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_BoundingBox.h>
-#include <sofa/defaulttype/DataTypeInfoRegistry.h>
+#pragma once
+
+#include <sofa/defaulttype/Quat.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 
 namespace sofa::defaulttype
 {
 
-REGISTER_TYPE_INFO_CREATOR(BoundingBox)
+template<class T>
+struct DataTypeInfo< sofa::helper::Quater<T> > : public FixedArrayTypeInfo< sofa::helper::Quater<T> >
+{
+    static std::string GetTypeName() { std::ostringstream o; o << "Quat<" << DataTypeName<T>::GetTypeName() << ">"; return o.str(); }
+    static std::string GetName() { std::ostringstream o; o << "Quat" << DataTypeName<T>::GetName() ; return o.str(); }
+};
 
 } /// namespace sofa::defaulttype
 

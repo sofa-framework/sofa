@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Mat.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
 namespace sofa::defaulttype

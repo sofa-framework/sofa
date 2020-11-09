@@ -22,9 +22,9 @@
 #pragma once
 
 #include <sofa/core/topology/Topology.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Integer.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
 
 namespace sofa::defaulttype
 {

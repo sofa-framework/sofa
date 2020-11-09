@@ -28,6 +28,7 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/core/objectmodel/DataContentValue.h>
 #include <sofa/defaulttype/DataTypeInfoRegistry.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {
@@ -353,35 +354,10 @@ public:
         return sofa::defaulttype::DataTypeId<T>::getTypeId().id;
     }
 
-    static const sofa::defaulttype::AbstractTypeInfo* GetDataTypeInfo()
-    {
-//        static int a = Data<T>::m_register;
-//        SOFA_UNUSED(a);
-//        static const sofa::defaulttype::AbstractTypeInfo* typeinfo {nullptr};
-//        if(typeinfo==nullptr)
-//        {
-//            /// We don't cache valid info;
-//            auto tmpinfo = sofa::defaulttype::DataTypeInfoRegistry::Get(sofa::defaulttype::DataTypeId<T>::getTypeId());
-//            if(!tmpinfo->ValidInfo())
-//                return tmpinfo;
-//            typeinfo = tmpinfo;
-//        }
-//        return typeinfo;
-        return sofa::defaulttype::DataTypeId<T>::GetDataTypeInfo();
-    }
-
     /// Get info about the value type of the associated variable
     const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
     {
-        return GetDataTypeInfo();
-    }
-
-    template<class TT>
-    static int doRegister()
-    {
-        //sofa::defaulttype::DataTypeInfoRegistry::Set(sofa::defaulttype::DataTypeId<T>::getTypeId(),
-        //                                             sofa::defaulttype::AbstractTypeInfoCreator<T>::get());
-        return 0;
+        return sofa::defaulttype::DataTypeId<T>::GetDataTypeInfo();
     }
 
     /// Helper method to get the type name of type T
@@ -417,8 +393,6 @@ private:
     static int m_register;
 };
 
-template<class T>
-int Data<T>::m_register= sofa::defaulttype::DataTypeId<T>::getTypeId().id + Data<T>::doRegister<T>();
 
 class EmptyData : public Data<void*> {};
 

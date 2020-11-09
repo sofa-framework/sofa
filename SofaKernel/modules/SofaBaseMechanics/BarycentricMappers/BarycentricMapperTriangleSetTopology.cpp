@@ -22,8 +22,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTRIANGLESETTOPOLOGY_CPP
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTRIANGLESETTOPOLOGY_CPP
 
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
 
 #include "BarycentricMapperTriangleSetTopology.inl"
 

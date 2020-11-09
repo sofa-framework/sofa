@@ -25,7 +25,7 @@
 #include "SubsetMapping.h"
 
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
 
 namespace sofa
 {

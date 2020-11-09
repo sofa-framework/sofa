@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_MAPPING_DistanceFromTargetMapping_CPP
 
 
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 
 #include "DistanceFromTargetMapping.inl"
 #include <sofa/core/ObjectFactory.h>

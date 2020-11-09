@@ -1,8 +1,6 @@
 #include "AssembledRigidRigidMapping.h"
-
-
 #include <sofa/defaulttype/RigidTypes.h>
-
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 namespace sofa
 {
 

@@ -56,7 +56,7 @@ const AbstractTypeInfo* DataTypeInfoRegistry::Get(const BaseDataTypeId& tid)
     if( id < typeinfos.size() && typeinfos[id] != nullptr )
         return typeinfos[id];
 
-    std::cout << "Searching for type '"<< id << "' the type is not there..." << std::endl;
+    std::cout << "Missing type '"<< id << "' the type is not there..." << std::endl;
     std::cout << "     name: " << sofa::helper::NameDecoder::decodeFullName(tid.nfo) << std::endl;
     auto stacktrace = sofa::helper::BackTrace::getTrace(5);
     for(size_t i=1;i<stacktrace.size();i++)
@@ -89,17 +89,11 @@ int DataTypeInfoRegistry::Set(const BaseDataTypeId& tid, AbstractTypeInfo* info,
     }
     if( info->ValidInfo() )
     {
-        std::cout << " Registering a new type info at "  << id << " => " << info->name() << "(Complete)" << std::endl;
-        info->setCompilationTarget(compilationTarget);
+        std::cout << " Registering a new type info at "  << id << " => " << info->name() << " - " << info->getTypeName() << "(Complete)" << (void*)info << std::endl;
     }
     else
     {
-
-        std::cout << " Registering a new type info at " << id << " (Partial)" << std::endl;
-        std::cout << "     name: " << info->name() << std::endl;
-        auto stacktrace = sofa::helper::BackTrace::getTrace(3);
-        for(size_t i=1;i<stacktrace.size();i++)
-            std::cout << "    ["<<i<< "]" << stacktrace[i] << std::endl;
+        std::cout << " Registering a new type info at "  << id << " => " << info->name() << "(Partial)" << std::endl;
     }
     info->setCompilationTarget(compilationTarget);
     typeinfos[id] = info;

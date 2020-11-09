@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include <SofaBaseMechanics/BarycentricMapping.inl>
 
 #include <sofa/defaulttype/VecTypes.h>

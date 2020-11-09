@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_INL
 #define SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_INL
 
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include "TopologyBarycentricMapper.h"
 
 namespace sofa

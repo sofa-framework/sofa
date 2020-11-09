@@ -19,32 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <type_traits>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
 namespace sofa::defaulttype
 {
 
-template<std::size_t L, std::size_t C, typename real>
-struct DataTypeInfo< sofa::defaulttype::Mat<L,C,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Mat<L,C,real> >
-{
-    static std::string GetTypeName()
-    {
-        std::ostringstream o;
-        o << "Mat<" << L << "," << C << "," <<  DataTypeInfo<real>::GetTypeName() << ">";
-        return o.str();
-    }
 
-    static std::string GetName()
-    {
-        std::ostringstream o;
-        o << "Mat" << L << "x" << C << DataTypeInfo<real>::GetName();
-        return o.str();
-    }
-};
 
 } /// namespace sofa::defaulttype
 

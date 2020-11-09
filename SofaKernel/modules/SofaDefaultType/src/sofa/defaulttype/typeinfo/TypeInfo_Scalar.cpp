@@ -19,14 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Quat.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
 namespace sofa::defaulttype
 {
 
-REGISTER_TYPE_INFO_CREATOR(Quatd);
-REGISTER_TYPE_INFO_CREATOR(Quatf);
+REGISTER_TYPE_INFO_CREATOR(float)
+REGISTER_TYPE_INFO_CREATOR(double)
 
 } /// namespace sofa::defaulttype
 

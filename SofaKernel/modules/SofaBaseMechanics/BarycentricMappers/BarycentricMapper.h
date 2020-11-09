@@ -26,8 +26,8 @@
 #include <sofa/core/Mapping.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 
 namespace sofa
 {

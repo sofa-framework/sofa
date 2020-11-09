@@ -19,13 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Bool.h>
-#include <sofa/defaulttype/DataTypeInfoRegistry.h>
+#pragma once
+
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa::defaulttype
 {
 
-REGISTER_TYPE_INFO_CREATOR(bool)
+template<std::size_t N, typename real>
+struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,real> >
+{
+    static std::string GetTypeName() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeInfo<real>::GetTypeName() << ">"; return o.str(); }
+    static std::string GetName() { std::ostringstream o; o << "Vec" << N << DataTypeInfo<real>::GetName() ; return o.str(); }
+};
+
+template<std::size_t N, typename real>
+struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
+{
+    static std::string GetName() { std::ostringstream o; o << "VecNoInit" << N << DataTypeInfo<real>::GetName(); return o.str(); }
+    static std::string GetTypeName() { std::ostringstream o; o << "VecNoInit" << N << "" << DataTypeInfo<real>::GetTypeName() ; return o.str(); }
+};
 
 } /// namespace sofa::defaulttype
 

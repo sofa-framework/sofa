@@ -23,8 +23,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 
 /// These two are needed as we instanciates the templates.
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_VecTypes.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 
 namespace sofa
 {

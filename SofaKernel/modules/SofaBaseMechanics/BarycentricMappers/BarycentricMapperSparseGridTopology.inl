@@ -22,8 +22,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERSPARSEGRIDTOPOLOGY_INL
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERSPARSEGRIDTOPOLOGY_INL
 
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
 #include "BarycentricMapperSparseGridTopology.h"
 
 #include <sofa/core/visual/VisualParams.h>

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
 #include "BaseProjectiveConstraintSet.h"
 #include <sofa/core/objectmodel/BaseNode.h>
 

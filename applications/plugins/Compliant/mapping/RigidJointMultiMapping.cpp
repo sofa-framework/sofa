@@ -1,7 +1,7 @@
 #include "RigidJointMultiMapping.h"
 
 #include <sofa/defaulttype/RigidTypes.h>
-
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

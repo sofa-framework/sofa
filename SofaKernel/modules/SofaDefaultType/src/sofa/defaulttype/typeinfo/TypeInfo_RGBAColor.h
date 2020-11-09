@@ -19,13 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_RGBAColor.h>
-#include <sofa/defaulttype/DataTypeInfoRegistry.h>
+#pragma once
+
+#include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa::defaulttype
 {
 
-REGISTER_TYPE_INFO_CREATOR(sofa::helper::types::RGBAColor)
+template<>
+class DataTypeInfo< sofa::helper::types::RGBAColor > : public FixedArrayTypeInfo<sofa::helper::fixed_array<float,4>>
+{
+    public:
+        static std::string GetName() { return "RGBAColor"; }
+        static std::string GetTypeName() { return "RGBAColor"; }
+};
 
 } /// namespace sofa::defaulttype
 

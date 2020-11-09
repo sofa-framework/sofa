@@ -21,28 +21,30 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <type_traits>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
 
 namespace sofa::defaulttype
 {
 
-//template<class Coord, class Deriv, typename real>
-//struct DataTypeInfo< sofa::defaulttype::StdVectorTypes<Coord, Deriv, real> >
-//{
-//    static std::string name()
-//    {
-//        std::ostringstream o;
-//        o << "VecCoord<" << DataTypeInfo<Coord>::name() << "," << DataTypeInfo<Deriv>::name() << "," <<  DataTypeInfo<real>::shortName() << ">";
-//        return o.str();
-//    }
+template<std::size_t L, std::size_t C, typename real>
+struct DataTypeInfo< sofa::defaulttype::Mat<L,C,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Mat<L,C,real> >
+{
+    static std::string GetTypeName()
+    {
+        std::ostringstream o;
+        o << "Mat<" << L << "," << C << "," <<  DataTypeInfo<real>::GetTypeName() << ">";
+        return o.str();
+    }
 
-//    static std::string shortName()
-//    {
-//        std::ostringstream o;
-//        o << "Vec" << L << "x" << C << DataTypeInfo<real>::shortName();
-//        return o.str();
-//    }
-//};
+    static std::string GetName()
+    {
+        std::ostringstream o;
+        o << "Mat" << L << "x" << C << DataTypeInfo<real>::GetName();
+        return o.str();
+    }
+};
 
 } /// namespace sofa::defaulttype
+

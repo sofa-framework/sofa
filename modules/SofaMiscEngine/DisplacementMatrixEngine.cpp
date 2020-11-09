@@ -24,7 +24,7 @@
 #include "DisplacementMatrixEngine.inl"
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
 
 
 namespace sofa

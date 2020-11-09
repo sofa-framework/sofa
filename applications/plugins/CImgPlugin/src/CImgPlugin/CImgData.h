@@ -635,7 +635,8 @@ struct ImageTypeInfo
 template<class T>
 struct DataTypeInfo< Image<T> > : public ImageTypeInfo< Image<T> >
 {
-    static std::string name() { std::ostringstream o; o << "Image<" << DataTypeName<T>::name() << ">"; return o.str(); }
+    static std::string GetName() { std::ostringstream o; o << "Image<" << DataTypeInfo<T>::GetName() << ">"; return o.str(); }
+    static std::string GetTypeName() { std::ostringstream o; o << "Image<" << DataTypeInfo<T>::GetTypeName() << ">"; return o.str(); }
 };
 
 

@@ -21,8 +21,8 @@
 ******************************************************************************/
 #define SOFA_CORE_BEHAVIOR_MASS_CPP
 
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_VecTypes.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 #include <sofa/core/behavior/Mass.inl>
 
 namespace sofa

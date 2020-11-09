@@ -19,14 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Bool.h>
 #include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
 namespace sofa::defaulttype
 {
 
-REGISTER_TYPE_INFO_CREATOR(float)
-REGISTER_TYPE_INFO_CREATOR(double)
+REGISTER_TYPE_INFO_CREATOR(bool)
 
 } /// namespace sofa::defaulttype
 

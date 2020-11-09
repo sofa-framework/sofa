@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_CORE_STATE_INL
 #define SOFA_CORE_STATE_INL
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
 #include <sofa/core/State.h>
 
 namespace sofa

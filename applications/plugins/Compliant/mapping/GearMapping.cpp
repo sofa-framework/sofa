@@ -1,7 +1,7 @@
 #include "GearMapping.h"
 
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 namespace sofa
 {
 

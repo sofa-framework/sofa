@@ -21,8 +21,8 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_CPP
 
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_VecTypes.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_RigidTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 #include <SofaBaseMechanics/UniformMass.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>

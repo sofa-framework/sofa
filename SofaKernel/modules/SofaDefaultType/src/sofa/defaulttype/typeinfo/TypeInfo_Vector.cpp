@@ -19,15 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Bool.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Text.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_RGBAColor.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_FixedArray.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_BoundingBox.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Integer.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vector.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Bool.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RGBAColor.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_BoundingBox.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
 #include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
 namespace sofa::defaulttype

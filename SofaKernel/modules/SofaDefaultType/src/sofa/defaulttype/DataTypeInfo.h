@@ -90,10 +90,6 @@ struct DataTypeInfo;
 template<class TDataType>
 struct DefaultDataTypeInfo
 {
-    template<class T>
-    //[[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    constexpr static int MissingDataTypeInfo() {return 0;}
-
     /// Template parameter.
     typedef TDataType DataType;
     /// If the type is a container, this the type of the values inside this
@@ -106,161 +102,89 @@ struct DefaultDataTypeInfo
     /// TypeInfo for ValueType
     typedef DataTypeInfo<ValueType> ValueTypeInfo;
 
-    /**
-       \{
-     */
-    enum { ValidInfo       = MissingDataTypeInfo<TDataType>() /**< 1 if this type has valid infos*/ };
+    enum { ValidInfo       = 0 /**< 1 if this type has valid infos*/ };
 
-    //    enum { FixedSize       = MissingDataTypeInfo<TDataType>() /**< 1 if this type has a fixed size*/ };
-    //    enum { ZeroConstructor = MissingDataTypeInfo<TDataType>() /**< 1 if the constructor is equivalent to setting memory to 0*/ };
-    //    enum { SimpleCopy      = MissingDataTypeInfo<TDataType>() /**< 1 if copying the data can be done with a memcpy*/ };
-    //    enum { SimpleLayout    = MissingDataTypeInfo<TDataType>() /**< 1 if the layout in memory is simply N values of the same base type*/ };
-    //    enum { Integer         = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses integer values*/ };
-    //    enum { Scalar          = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses scalar values*/ };
-    //    enum { Text            = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses text values*/ };
-    //    enum { CopyOnWrite     = MissingDataTypeInfo<TDataType>() /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
-    //    enum { Container       = MissingDataTypeInfo<TDataType>() /**< 1 if this type is a container*/ };
-    //    enum { Size = MissingDataTypeInfo<TDataType>() /**< largest known fixed size for this type, as returned by size() */ };
+    enum [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    { FixedSize       = 0 /**< 1 if this type has a fixed size*/ };
+    enum [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    { ZeroConstructor =  0 /**< 1 if the constructor is equivalent to setting memory to 0*/ };
+    enum [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    { SimpleCopy      = 0 /**< 1 if copying the data can be done with a memcpy*/ };
+    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    { SimpleLayout    = 0 /**< 1 if the layout in memory is simply N values of the same base type*/ };
+    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    { Integer         = 0 /**< 1 if this type uses integer values*/ };
+    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    { Scalar          = 0 /**< 1 if this type uses scalar values*/ };
+    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    { Text            = 0 /**< 1 if this type uses text values*/ };
+    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
+    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    { Container       = 0 /**< 1 if this type is a container*/ };
+    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    { Size = 0 /**< largest known fixed size for this type, as returned by size() */ };
 
-    //    // \}
+    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    static size_t size() { return 1; }
 
-    //    static size_t size() { return 1; }
-    //    static size_t byteSize() { return 1; }
+    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    static size_t byteSize() { return 1; }
 
-    //    static size_t size(const DataType& /*data*/) { return 1; }
+    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    static size_t size(const DataType& /*data*/) { return 1; }
 
-    //    template <typename T>
-    //    static void getValue(const DataType& /*data*/, size_t /*index*/, T& /*value*/)
-    //    {
-    //    }
+    template <typename T>
+    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    static void getValue(const DataType& /*data*/, size_t /*index*/, T& /*value*/)
+    {}
 
-    //    static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
+    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
 
-    //    template<typename T>
-    //    static void setValue(DataType& /*data*/, size_t /*index*/, const T& /*value*/)
-    //    {
-    //    }
+    template<typename T>
+    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    static void setValue(DataType& /*data*/, size_t /*index*/, const T& /*value*/){}
 
-    //    static void getValueString(const DataType& /*data*/, size_t /*index*/, std::string& /*value*/)
-    //    {
-    //    }
-
-    //    static void setValueString(DataType& /*data*/, size_t /*index*/, const std::string& /*value*/)
-    //    {
-    //    }
-
-    //    // mtournier: wtf is this supposed to do?
-    //    // mtournier: wtf is this not returning &type?
-    //    static const void* getValuePtr(const DataType& /*type*/)
-    //    {
-    //        return nullptr;
-    //    }
-
-    //    static void* getValuePtr(DataType& /*type*/)
-    //    {
-    //        return nullptr;
-    //    }
-
-    //static const char* name() { return "unknown"; }
-
+    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    static void getValueString(const DataType& /*data*/, size_t /*index*/, std::string& /*value*/){}
 };
 
+//TODO(dmarchal: 01/04/2020) This is for compatibility layer, remove it after 01/07/2021
+template<class T>
+class HasNewGetName
+{
+    typedef char YesType[1];
+    typedef char NoType[2];
 
+    template<typename C> static YesType& test( decltype (&C::GetName) );
+    template<typename C> static NoType& test(...);
 
-/// Abstract type traits class
-template<class TDataType>
-class VirtualTypeInfo : public AbstractTypeInfo
+public:
+    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
+};
+
+template<class T>
+class HasNewGetTypeName
+{
+    typedef char YesType[1];
+    typedef char NoType[2];
+
+    template<typename C> static YesType& test( decltype (&C::GetTypeName) );
+    template<typename C> static NoType& test(...);
+
+public:
+    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
+};
+
+class WillBeDeprecated
 {
 public:
-    typedef TDataType DataType;
-    typedef DataTypeInfo<DataType> Info;
 
-    static VirtualTypeInfo* get() { static VirtualTypeInfo<DataType> t; return &t; }
-
-    const AbstractTypeInfo* getBaseType() const override  { return VirtualTypeInfo<typename Info::BaseType>::get(); }
-    const AbstractTypeInfo* getValueType() const override { return VirtualTypeInfo<typename Info::ValueType>::get(); }
-
-    virtual std::string name() const override { return Info::name(); }
-
-    bool ValidInfo() const override       { return Info::ValidInfo; }
-    bool FixedSize() const override       { return Info::FixedSize; }
-    bool ZeroConstructor() const override { return Info::ZeroConstructor; }
-    bool SimpleCopy() const override      { return Info::SimpleCopy; }
-    bool SimpleLayout() const override    { return Info::SimpleLayout; }
-    bool Integer() const override         { return Info::Integer; }
-    bool Scalar() const override          { return Info::Scalar; }
-    bool Text() const override            { return Info::Text; }
-    bool CopyOnWrite() const override     { return Info::CopyOnWrite; }
-    bool Container() const override       { return Info::Container; }
-
-    size_t size() const override
-    {
-        return Info::size();
-    }
-    size_t byteSize() const override
-    {
-        return Info::byteSize();
-    }
-    size_t size(const void* data) const override
-    {
-        return Info::size(*(const DataType*)data);
-    }
-    bool setSize(void* data, size_t size) const override
-    {
-        return Info::setSize(*(DataType*)data, size);
-    }
-
-    long long getIntegerValue(const void* data, size_t index) const override
-    {
-        long long v = 0;
-        Info::getValue(*(const DataType*)data, index, v);
-        return v;
-    }
-
-    double    getScalarValue (const void* data, size_t index) const override
-    {
-        double v = 0;
-        Info::getValue(*(const DataType*)data, index, v);
-        return v;
-    }
-
-    virtual std::string getTextValue   (const void* data, size_t index) const override
-    {
-        std::string v;
-        Info::getValueString(*(const DataType*)data, index, v);
-        return v;
-    }
-
-    void setIntegerValue(void* data, size_t index, long long value) const override
-    {
-        Info::setValue(*(DataType*)data, index, value);
-    }
-
-    void setScalarValue (void* data, size_t index, double value) const override
-    {
-        Info::setValue(*(DataType*)data, index, value);
-    }
-
-    virtual void setTextValue(void* data, size_t index, const std::string& value) const override
-    {
-        Info::setValueString(*(DataType*)data, index, value);
-    }
-    const void* getValuePtr(const void* data) const override
-    {
-        return Info::getValuePtr(*(const DataType*)data);
-    }
-    void* getValuePtr(void* data) const override
-    {
-        return Info::getValuePtr(*(DataType*)data);
-    }
-
-    virtual const std::type_info* type_info() const override { return &typeid(DataType); }
-
-
-protected: // only derived types can instantiate this class
-    VirtualTypeInfo() {}
+    template<class TT>
+    [[deprecated("This will be deprecated soon.... please update your code...XXXX")]]
+    static std::string getDeprecatedName(const std::string& n){ return n; }
 };
-
 
 /// Abstract type traits class
 template<typename Info>
@@ -274,9 +198,28 @@ public:
     const AbstractTypeInfo* getBaseType() const override  { return VirtualTypeInfoA<DataTypeInfo<typename Info::BaseType>>::get(); }
     const AbstractTypeInfo* getValueType() const override { return VirtualTypeInfoA<DataTypeInfo<typename Info::ValueType>>::get(); }
 
-    virtual std::string name() const override { return Info::GetName(); }
-    virtual std::string getName() const override { return Info::GetName(); }
-    virtual std::string getTypeName() const override { return Info::GetTypeName(); }
+    virtual std::string name() const override
+    {
+        return getName();
+    }
+    virtual std::string getName() const override
+    {
+        if constexpr(HasNewGetName<Info>::value)
+                return Info::GetName();
+        else
+        {
+            return WillBeDeprecated::getDeprecatedName<Info>(Info::name());
+        }
+    }
+    virtual std::string getTypeName() const override
+    {
+        if constexpr(HasNewGetTypeName<Info>::value)
+                return Info::GetTypeName();
+        else
+        {
+            return WillBeDeprecated::getDeprecatedName<Info>(Info::name());
+        }
+    }
 
     bool ValidInfo() const override       { return Info::ValidInfo; }
     bool FixedSize() const override       { return Info::FixedSize; }
@@ -478,8 +421,8 @@ public:
     int id;
     const std::type_info& nfo;
     BaseDataTypeId(int id_, const std::type_info& nfo_):
-    id(id_),
-      nfo(nfo_){}
+        id(id_),
+        nfo(nfo_){}
 
     static int getNewId()
     {
@@ -518,9 +461,6 @@ public:
     static int m_register ;
     static const DataTypeId& getTypeId()
     {
-       // static int a = DataTypeId<T>::m_register;
-        //SOFA_UNUSED(a);
-
         static DataTypeId typeId(BaseDataTypeId::getNewId(), typeid(T));
         return typeId;
     }
@@ -530,7 +470,7 @@ public:
     {
         sofa::defaulttype::DataTypeInfoRegistry::Set(sofa::defaulttype::DataTypeId<T>::getTypeId(),
                                                      sofa::defaulttype::AbstractTypeInfoCreator<T>::get(), sofa_tostring(SOFA_TARGET));
-        return 0;
+        return sofa::defaulttype::DataTypeId<T>::getTypeId().id;
     }
 
     static const sofa::defaulttype::AbstractTypeInfo* GetDataTypeInfo()
@@ -553,7 +493,7 @@ public:
 
 
 template<class T>
-int DataTypeId<T>::m_register= sofa::defaulttype::DataTypeId<T>::getTypeId().id + DataTypeId<T>::doRegister<T>();
+int DataTypeId<T>::m_register = DataTypeId<T>::doRegister<T>();
 
 
 
@@ -583,6 +523,8 @@ public:
 template<class TDataType>
 struct DataTypeName : public DataTypeInfo<TDataType>
 {
+public:
+    static std::string name(){ return DataTypeInfo<TDataType>::GetName();  }
 };
 
 #define REGISTER_MSG_PASTER(x,y) x ## _ ## y

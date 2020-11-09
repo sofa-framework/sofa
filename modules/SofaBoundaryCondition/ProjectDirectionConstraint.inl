@@ -29,7 +29,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 
 
 namespace sofa

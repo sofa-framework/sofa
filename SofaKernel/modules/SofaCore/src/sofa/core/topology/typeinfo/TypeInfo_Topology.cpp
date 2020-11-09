@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/topology/typeinfo/TypeInfo_Topology.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vector.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
 #include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
 namespace sofa::defaulttype

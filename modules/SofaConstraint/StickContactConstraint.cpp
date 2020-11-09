@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 
 #include <SofaConstraint/StickContactConstraint.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.h>

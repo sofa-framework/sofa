@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseMechanics/MechanicalObject.inl>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_VecTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
 #include <SofaTest/Sofa_test.h>
 using BaseTest = sofa::Sofa_test<SReal>;
 

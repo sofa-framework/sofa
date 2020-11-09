@@ -23,8 +23,8 @@
 #define SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_INL
 
 #include <SofaBaseMechanics/IdentityMapping.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Vec.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
