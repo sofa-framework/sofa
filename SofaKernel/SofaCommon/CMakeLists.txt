@@ -6,7 +6,6 @@ set(SOFACOMMON_TARGETS
     SofaExplicitOdeSolver
     SofaImplicitOdeSolver
     SofaLoader
-    SofaMeshCollision
     )
 
 foreach(TARGET ${SOFACOMMON_TARGETS})
@@ -19,6 +18,7 @@ set(SOFACOMMON_MODULES
     SofaRigid
     SofaDeformable
     SofaObjectInteraction
+    SofaMeshCollision
 )
 
 foreach(MODULE ${SOFACOMMON_MODULES})
