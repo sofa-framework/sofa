@@ -1,43 +1,55 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaDeformable)
+project(SofaDeformable LANGUAGES CXX)
 
-find_package(SofaBase REQUIRED)
+set(SOFADEFORMABLE_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-    AngularSpringForceField.h
-    AngularSpringForceField.inl
-    MeshSpringForceField.h
-    MeshSpringForceField.inl
-    RestShapeSpringsForceField.h
-    RestShapeSpringsForceField.inl
-    PolynomialRestShapeSpringsForceField.h
-    PolynomialRestShapeSpringsForceField.inl
-    SpringForceField.h
-    SpringForceField.inl
-    StiffSpringForceField.h
-    StiffSpringForceField.inl
-    PolynomialSpringsForceField.h
-    PolynomialSpringsForceField.inl
-    config.h
-    initDeformable.h
+    ${SOFADEFORMABLE_SRC}/config.h.in
+    ${SOFADEFORMABLE_SRC}/initSofaDeformable.h
+    ${SOFADEFORMABLE_SRC}/AngularSpringForceField.h
+    ${SOFADEFORMABLE_SRC}/AngularSpringForceField.inl
+    ${SOFADEFORMABLE_SRC}/MeshSpringForceField.h
+    ${SOFADEFORMABLE_SRC}/MeshSpringForceField.inl
+    ${SOFADEFORMABLE_SRC}/RestShapeSpringsForceField.h
+    ${SOFADEFORMABLE_SRC}/RestShapeSpringsForceField.inl
+    ${SOFADEFORMABLE_SRC}/PolynomialRestShapeSpringsForceField.h
+    ${SOFADEFORMABLE_SRC}/PolynomialRestShapeSpringsForceField.inl
+    ${SOFADEFORMABLE_SRC}/SpringForceField.h
+    ${SOFADEFORMABLE_SRC}/SpringForceField.inl
+    ${SOFADEFORMABLE_SRC}/StiffSpringForceField.h
+    ${SOFADEFORMABLE_SRC}/StiffSpringForceField.inl
+    ${SOFADEFORMABLE_SRC}/PolynomialSpringsForceField.h
+    ${SOFADEFORMABLE_SRC}/PolynomialSpringsForceField.inl
 )
 
 set(SOURCE_FILES
-    AngularSpringForceField.cpp
-    MeshSpringForceField.cpp
-    RestShapeSpringsForceField.cpp
-    PolynomialRestShapeSpringsForceField.cpp
-    SpringForceField.cpp
-    StiffSpringForceField.cpp
-    PolynomialSpringsForceField.cpp
-    initDeformable.cpp
+    ${SOFADEFORMABLE_SRC}/initSofaDeformable.cpp
+    ${SOFADEFORMABLE_SRC}/AngularSpringForceField.cpp
+    ${SOFADEFORMABLE_SRC}/MeshSpringForceField.cpp
+    ${SOFADEFORMABLE_SRC}/RestShapeSpringsForceField.cpp
+    ${SOFADEFORMABLE_SRC}/PolynomialRestShapeSpringsForceField.cpp
+    ${SOFADEFORMABLE_SRC}/SpringForceField.cpp
+    ${SOFADEFORMABLE_SRC}/StiffSpringForceField.cpp
+    ${SOFADEFORMABLE_SRC}/PolynomialSpringsForceField.cpp
 )
 
+find_package(SofaBase REQUIRED) # SofaBaseTopology
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaCommon
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
-    )
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFADEFORMABLE_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFADEFORMABLE_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(${PROJECT_NAME}_test)
+endif()

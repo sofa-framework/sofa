@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaCommon)
 
 set(SOFACOMMON_TARGETS
-    SofaDeformable
     SofaEngine
     SofaExplicitOdeSolver
     SofaImplicitOdeSolver
@@ -19,6 +18,7 @@ endforeach()
 set(SOFACOMMON_MODULES
     SofaSimpleFem
     SofaRigid
+    SofaDeformable
 )
 
 foreach(MODULE ${SOFACOMMON_MODULES})
