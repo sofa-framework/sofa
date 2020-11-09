@@ -23,12 +23,10 @@
 
 #include <SofaLoader/initLoader.h>
 #include <SofaEngine/initEngine.h>
-#include <SofaObjectInteraction/initObjectInteraction.h>
 #include <SofaMeshCollision/initMeshCollision.h>
 #include <SofaExplicitOdeSolver/initExplicitODESolver.h>
 #include <SofaImplicitOdeSolver/initImplicitODESolver.h>
 #include <SofaEigen2Solver/initEigen2Solver.h>
-#include <SofaObjectInteraction/initObjectInteraction.h>
 
 namespace sofa
 {
@@ -47,12 +45,10 @@ void initSofaCommon()
 
     initLoader();
     initEngine();
-    initObjectInteraction();
     initMeshCollision();
     initExplicitODESolver();
     initImplicitODESolver();
     initEigen2Solver();
-    initObjectInteraction();
 }
 
 } // namespace component

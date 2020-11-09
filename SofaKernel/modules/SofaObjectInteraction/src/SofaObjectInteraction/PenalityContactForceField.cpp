@@ -25,31 +25,17 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
 
-
-
 // Register in the Factory
 int PenalityContactForceFieldClass = core::RegisterObject("Contact using repulsive springs")
         .add< PenalityContactForceField<Vec3Types> >()
-
         ;
 
-template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<Vec3Types>;
+template class SOFA_SOFAOBJECTINTERACTION_API PenalityContactForceField<Vec3Types>;
 
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::interactionforcefield

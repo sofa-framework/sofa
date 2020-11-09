@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAOBJECTINTERACTION_CONFIG_H
-#define SOFAOBJECTINTERACTION_CONFIG_H
+#pragma once
 
-#include <SofaCommon/config.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_OBJECT_INTERACTION
-#  define SOFA_TARGET SofaObjectInteraction
-#  define SOFA_OBJECT_INTERACTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFAOBJECTINTERACTION_VERSION @PROJECT_VERSION@
+
+#ifdef SOFA_BUILD_SOFAOBJECTINTERACTION
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAOBJECTINTERACTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_OBJECT_INTERACTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
+#  define SOFA_SOFAOBJECTINTERACTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
