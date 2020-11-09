@@ -19,10 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaObjectInteraction/config.h>
+#ifndef SOFA_COMPONENT_OBJECT_INTERACTION_INIT_H
+#define SOFA_COMPONENT_OBJECT_INTERACTION_INIT_H
+#include "config.h"
 
-namespace sofa::component
+namespace sofa
 {
 
-} // namespace sofa::component
+namespace component
+{
+
+
+void SOFA_OBJECT_INTERACTION_API initObjectInteraction();
+
+} // namespace component
+
+} // namespace sofa
+
+#endif
+
