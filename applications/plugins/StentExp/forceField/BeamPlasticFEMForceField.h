@@ -25,7 +25,7 @@
 #include <StentExp/config.h>
 #include <StentExp/initStentExp.h>
 #include "PlasticConstitutiveLaw.h"
-#include <StentExp/quadrature/Gaussian.h>
+#include <StentExp/quadrature/gaussian.h>
 #include <StentExp/quadrature/quadrature.h>
 
 #include <sofa/core/behavior/ForceField.h>

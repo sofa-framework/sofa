@@ -12,7 +12,7 @@ set(HEADER_FILES
 	forceField/BeamPlasticFEMForceField.inl
     forceField/PlasticConstitutiveLaw.h
     forceField/RambergOsgood.h
-	quadrature/Gaussian.h
+	quadrature/gaussian.h
 	quadrature/quadrature.h
 	PoissonContainer.h
 	StiffnessContainer.h
