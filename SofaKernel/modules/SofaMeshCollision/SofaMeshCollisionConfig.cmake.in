@@ -3,7 +3,6 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaBase QUIET REQUIRED)
 find_package(SofaObjectInteraction QUIET REQUIRED)
 find_package(SofaRigid QUIET REQUIRED)
 

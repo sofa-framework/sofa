@@ -22,6 +22,10 @@
 #include <SofaMeshCollision/initSofaMeshCollision.h>
 #include <SofaMeshCollision/MeshNewProximityIntersection.h>
 
+#include <type_traits>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -81,3 +85,26 @@ const char* getModuleComponentList()
 }
 
 } // namespace sofa::component
+
+namespace sofa::defaulttype
+{
+
+template<sofa::Size L, sofa::Size C, typename real>
+struct DataTypeInfo< sofa::defaulttype::Mat<L,C,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Mat<L,C,real> >
+{
+    static std::string GetTypeName()
+    {
+        std::ostringstream o;
+        o << "Mat<" << L << "," << C << "," <<  DataTypeInfo<real>::GetTypeName() << ">";
+        return o.str();
+    }
+
+    static std::string name()
+    {
+        std::ostringstream o;
+        o << "Mat" << L << "x" << C << DataTypeInfo<real>::name();
+        return o.str();
+    }
+};
+
+} /// namespace sofa::defaulttype
