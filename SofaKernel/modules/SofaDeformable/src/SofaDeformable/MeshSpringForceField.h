@@ -64,12 +64,12 @@ protected:
     Data< Real >  d_drawSpringSize; ///< Size of drawed lines
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > d_localRange;
+    Data< defaulttype::Vec<2, sofa::Index> > d_localRange;
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<MeshSpringForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    void addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping);
+    void addSpring(std::set<std::pair<sofa::Index, sofa::Index> >& sset, sofa::Index m1, sofa::Index m2, Real stiffness, Real damping);
 
     MeshSpringForceField() ;
     virtual ~MeshSpringForceField();

@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "AngularSpringForceField.h"
+#include <SofaDeformable/AngularSpringForceField.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -37,7 +38,7 @@ AngularSpringForceField<DataTypes>::AngularSpringForceField()
     , angularStiffness(initData(&angularStiffness, "angularStiffness", "angular stiffness for the controlled nodes"))
     , angularLimit(initData(&angularLimit, "limit", "angular limit (max; min) values where the force applies"))
     , drawSpring(initData(&drawSpring,false,"drawSpring","draw Spring"))
-    , springColor(initData(&springColor,sofa::defaulttype::Vec4f(0.0,1.0,0.0,1.0), "springColor","spring color"))
+    , springColor(initData(&springColor, helper::types::RGBAColor::green(), "springColor","spring color"))
 {    
 }
 
@@ -90,9 +91,9 @@ void AngularSpringForceField<DataTypes>::addForce(const core::MechanicalParams* 
     sofa::helper::WriteAccessor< DataVecDeriv > f1 = f;
     sofa::helper::ReadAccessor< DataVecCoord > p1 = x;
     f1.resize(p1.size());
-    for (unsigned int i = 1; i < indices.getValue().size(); i++)
+    for (sofa::Index i = 1; i < indices.getValue().size(); i++)
     {
-        const unsigned int index = indices.getValue()[i];
+        const sofa::Index index = indices.getValue()[i];
         defaulttype::Quat dq = p1[index].getOrientation() * p1[index-1].getOrientation().inverse();
         defaulttype::Vec3d axis;
         double angle = 0.0;
@@ -138,7 +139,7 @@ void AngularSpringForceField<DataTypes>::addDForce(const core::MechanicalParams*
 
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    for (unsigned int i=0; i<indices.getValue().size(); i++)
+    for (sofa::Index i=0; i<indices.getValue().size(); i++)
         getVOrientation(df1[indices.getValue()[i]]) -=  getVOrientation(dx1[indices.getValue()[i]]) * (i < this->k.size() ? this->k[i] : this->k[0]) * kFactor ;
 }
 
@@ -152,14 +153,12 @@ void AngularSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     unsigned int offset = mref.offset;
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    unsigned int curIndex = 0;
-    for (unsigned int index = 0; index < indices.getValue().size(); index++)
+    sofa::Index curIndex = 0;
+    for (sofa::Index index = 0; index < indices.getValue().size(); index++)
     {
-//        if (angle <  (angularLimit.getValue()[2*i]/180.0*M_PI) || angle >  (angularLimit.getValue()[2*i+1]/180.0*M_PI))  {
-            curIndex = indices.getValue()[index];
-            for(int i = 3; i < 6; i++)
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * (index < this->k.size() ? this->k[index] : this->k[0]));
-//        }
+        curIndex = indices.getValue()[index];
+        for(int i = 3; i < 6; i++)
+            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * (index < this->k.size() ? this->k[index] : this->k[0]));
     }
 }
 
@@ -175,9 +174,9 @@ void AngularSpringForceField<DataTypes>::draw(const core::visual::VisualParams* 
     sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
     sofa::helper::vector< defaulttype::Vec3d > vertices;
 
-    for (unsigned int i=0; i<indices.getValue().size(); i++)
+    for (sofa::Index i=0; i<indices.getValue().size(); i++)
     {
-        const unsigned int index = indices.getValue()[i];
+        const sofa::Index index = indices.getValue()[i];
         vertices.push_back(p[index].getCenter());
     }
     vparams->drawTool()->drawLines(vertices,5,springColor.getValue());

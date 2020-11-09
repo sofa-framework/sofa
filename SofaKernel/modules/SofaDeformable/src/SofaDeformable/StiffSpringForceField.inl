@@ -90,7 +90,7 @@ void StiffSpringForceField<DataTypes>::createSpringsFromInputs()
     const SReal& _ks = this->ks.getValue();
     const SReal& _kd = this->kd.getValue();
     const SReal& _length = d_length.getValue();
-    for (unsigned int i = 0; i<indices1.size(); ++i)
+    for (sofa::Index i = 0; i<indices1.size(); ++i)
         _springs.push_back(Spring(indices1[i], indices2[i], _ks, _kd, _length));
 
     this->springs.endEdit();
@@ -106,12 +106,12 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
         VecDeriv& f2,
         const  VecCoord& p2,
         const  VecDeriv& v2,
-        int i,
+        sofa::Index i,
         const Spring& spring)
 {
     //    this->cpt_addForce++;
-    int a = spring.m1;
-    int b = spring.m2;
+    sofa::Index a = spring.m1;
+    sofa::Index b = spring.m2;
 
     /// Get the positional part out of the dofs.
     typename DataTypes::CPos u = DataTypes::getCPos(p2[b])-DataTypes::getCPos(p1[a]);
@@ -139,9 +139,9 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
         // dF = k_s.U.U^T.dX + f/l.(I-U.U^T).dX = ((k_s-f/l).U.U^T + f/l.I).dX
         Mat& m = this->dfdx[i];
         Real tgt = forceIntensity * inverseLength;
-        for( int j=0; j<N; ++j )
+        for(sofa::Index j=0; j<N; ++j )
         {
-            for( int k=0; k<N; ++k )
+            for(sofa::Index k=0; k<N; ++k )
             {
                 m[j][k] = ((Real)spring.ks-tgt) * u[j] * u[k];
             }
@@ -151,9 +151,9 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
     else // null length, no force and no stiffness
     {
         Mat& m = this->dfdx[i];
-        for( int j=0; j<N; ++j )
+        for(sofa::Index j=0; j<N; ++j )
         {
-            for( int k=0; k<N; ++k )
+            for(sofa::Index k=0; k<N; ++k )
             {
                 m[j][k] = 0;
             }
@@ -162,10 +162,10 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, int i, const Spring& spring, double kFactor, double /*bFactor*/)
+void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, sofa::Index i, const Spring& spring, double kFactor, double /*bFactor*/)
 {
-    const int a = spring.m1;
-    const int b = spring.m2;
+    const sofa::Index a = spring.m1;
+    const sofa::Index b = spring.m2;
     const typename DataTypes::CPos d = DataTypes::getDPos(dx2[b]) - DataTypes::getDPos(dx1[a]);
     typename DataTypes::DPos dforce = this->dfdx[i]*d;
 
@@ -190,7 +190,7 @@ void StiffSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*
     f1.resize(x1.size());
     f2.resize(x2.size());
     this->m_potentialEnergy = 0;
-    for (unsigned int i=0; i<springs.size(); i++)
+    for (sofa::Index i=0; i<springs.size(); i++)
     {
         this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
     }
@@ -212,7 +212,7 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
-    for (unsigned int i=0; i<springs.size(); i++)
+    for (sofa::Index i=0; i<springs.size(); i++)
     {
         this->addSpringDForce(df1,dx1,df2,dx2, i, springs[i], kFactor, bFactor);
     }
@@ -233,16 +233,16 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat = matrix->getMatrix(this->mstate1);
         if (!mat) return;
         const sofa::helper::vector<Spring >& ss = this->springs.getValue();
-        const unsigned int n = ss.size() < this->dfdx.size() ? ss.size() : this->dfdx.size();
-        for (unsigned int e=0; e<n; e++)
+        const sofa::Size n = ss.size() < this->dfdx.size() ? sofa::Size(ss.size()) : sofa::Size(this->dfdx.size());
+        for (sofa::Index e=0; e<n; e++)
         {
             const Spring& s = ss[e];
-            unsigned p1 = mat.offset+Deriv::total_size*s.m1;
-            unsigned p2 = mat.offset+Deriv::total_size*s.m2;
+            sofa::Index p1 = mat.offset+Deriv::total_size*s.m1;
+            sofa::Index p2 = mat.offset+Deriv::total_size*s.m2;
             const Mat& m = this->dfdx[e];
-            for(int i=0; i<N; i++)
+            for(sofa::Index i=0; i<N; i++)
             {
-                for (int j=0; j<N; j++)
+                for (sofa::Index j=0; j<N; j++)
                 {
                     Real k = (Real)(m[i][j]*kFact);
                     mat.matrix->add(p1+i,p1+j, -k);
@@ -262,8 +262,8 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
 
         if (!mat11 && !mat22 && !mat12 && !mat21) return;
         const sofa::helper::vector<Spring >& ss = this->springs.getValue();
-        const unsigned int n = ss.size() < this->dfdx.size() ? ss.size() : this->dfdx.size();
-        for (unsigned int e=0; e<n; e++)
+        const sofa::Size n = ss.size() < this->dfdx.size() ? sofa::Size(ss.size()) : sofa::Size(this->dfdx.size());
+        for (sofa::Index e=0; e<n; e++)
         {
             const Spring& s = ss[e];
             unsigned p1 = /*mat.offset+*/Deriv::total_size*s.m1;
@@ -271,9 +271,9 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
             Mat m = this->dfdx[e]* (Real) kFact;
             if (mat11)
             {
-                for(int i=0; i<N; i++)
+                for(sofa::Index i=0; i<N; i++)
                 {
-                    for (int j=0; j<N; j++)
+                    for (sofa::Index j=0; j<N; j++)
                     {
                         mat11.matrix->add(mat11.offset+p1+i,mat11.offset+p1+j, -(Real)m[i][j]);
                     }
@@ -281,9 +281,9 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
             }
             if (mat12)
             {
-                for(int i=0; i<N; i++)
+                for(sofa::Index i=0; i<N; i++)
                 {
-                    for (int j=0; j<N; j++)
+                    for (sofa::Index j=0; j<N; j++)
                     {
                         mat12.matrix->add(mat12.offRow+p1+i,mat12.offCol+p2+j,  (Real)m[i][j]);
                     }
@@ -291,9 +291,9 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
             }
             if (mat21)
             {
-                for(int i=0; i<N; i++)
+                for(sofa::Index i=0; i<N; i++)
                 {
-                    for (int j=0; j<N; j++)
+                    for (sofa::Index j=0; j<N; j++)
                     {
                         mat21.matrix->add(mat21.offRow+p2+i,mat21.offCol+p1+j,  (Real)m[i][j]);
                     }
@@ -301,9 +301,9 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
             }
             if (mat22)
             {
-                for(int i=0; i<N; i++)
+                for(sofa::Index i=0; i<N; i++)
                 {
-                    for (int j=0; j<N; j++)
+                    for (sofa::Index j=0; j<N; j++)
                     {
                         mat22.matrix->add(mat22.offset+p2+i,mat22.offset+p2+j, -(Real)m[i][j]);
                     }

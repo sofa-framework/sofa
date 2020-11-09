@@ -20,12 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "RestShapeSpringsForceField.h"
+#include <SofaDeformable/RestShapeSpringsForceField.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-
-#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa::component::forcefield
 {
@@ -52,7 +51,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , d_external_points(initData(&d_external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
     , d_recompute_indices(initData(&d_recompute_indices, true, "recompute_indices", "Recompute indices (should be false for BBOX)"))
     , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
-    , d_springColor(initData(&d_springColor, sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
+    , d_springColor(initData(&d_springColor, sofa::helper::types::RGBAColor::green(), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
     , l_restMState(initLink("external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
 {
 }
@@ -182,12 +181,12 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
     m_indices.clear();
     m_ext_indices.clear();
 
-    for (unsigned int i = 0; i < d_points.getValue().size(); i++)
+    for (sofa::Index i = 0; i < d_points.getValue().size(); i++)
     {
         m_indices.push_back(d_points.getValue()[i]);
     }
 
-    for (unsigned int i = 0; i < d_external_points.getValue().size(); i++)
+    for (sofa::Index i = 0; i < d_external_points.getValue().size(); i++)
     {
         m_ext_indices.push_back(d_external_points.getValue()[i]);
     }
@@ -196,7 +195,7 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
     {
         // no point are defined, default case: points = all points
         msg_info() << "No point are defined. Change to default case: points = all points";
-        for (unsigned int i = 0; i < (unsigned)this->mstate->getSize(); i++)
+        for (sofa::Index i = 0; i < this->mstate->getSize(); i++)
         {
             m_indices.push_back(i);
         }
@@ -206,14 +205,14 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
     {
         if (useRestMState)
         {
-            for (unsigned int i = 0; i < getExtPosition()->getValue().size(); i++)
+            for (sofa::Index i = 0; i < getExtPosition()->getValue().size(); i++)
             {
                 m_ext_indices.push_back(i);
             }
         }
         else
         {
-            for (unsigned int i = 0; i < m_indices.size(); i++)
+            for (sofa::Index i = 0; i < m_indices.size(); i++)
             {
                 m_ext_indices.push_back(m_indices[i]);
             }
@@ -239,7 +238,7 @@ bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices()
         msg_error() << "Out of Bounds m_indices detected. ForceField is not activated.";
         return false;
     }
-    if (!checkOutOfBoundsIndices(m_ext_indices, getExtPosition()->getValue().size()))
+    if (!checkOutOfBoundsIndices(m_ext_indices, sofa::Size(getExtPosition()->getValue().size())))
     {
         msg_error() << "Out of Bounds m_ext_indices detected. ForceField is not activated.";
         return false;
@@ -253,9 +252,9 @@ bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices()
 }
 
 template<class DataTypes>
-bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices(const VecIndex &indices, const unsigned int dimension)
+bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices(const VecIndex &indices, const sofa::Size dimension)
 {
-    for (unsigned int i = 0; i < indices.size(); i++)
+    for (sofa::Index i = 0; i < indices.size(); i++)
     {
         if (indices[i] >= dimension)
         {
@@ -294,10 +293,10 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
         // Stiffness is not defined on each point, first stiffness is used
         const Real k0 = k[0];
 
-        for (unsigned int i=0; i<m_indices.size(); i++)
+        for (sofa::Index i=0; i<m_indices.size(); i++)
         {
-            const unsigned int index = m_indices[i];
-            const unsigned int ext_index = m_ext_indices[i];
+            const sofa::Index index = m_indices[i];
+            const sofa::Index ext_index = m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
             f1[index] -=  dx * k0 ;
@@ -306,10 +305,10 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
     else
     {
         // Heterogeneous stiffness for each spring
-        for (unsigned int i=0; i<m_indices.size(); i++)
+        for (sofa::Index i=0; i<m_indices.size(); i++)
         {
-            const unsigned int index = m_indices[i];
-            unsigned int ext_index = m_ext_indices[i];
+            const sofa::Index index = m_indices[i];
+            const sofa::Index ext_index = m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
             f1[index] -=  dx * k[i];
@@ -328,16 +327,16 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
     if (k.size() != m_indices.size())
     {
         // Stiffness is not defined on each point, first stiffness is used
-        const Real k0 = k[0] * (Real)kFactor;
+        const Real k0 = k[0] * kFactor;
 
-        for (unsigned int i=0; i<m_indices.size(); i++)
+        for (sofa::Index i=0; i<m_indices.size(); i++)
         {
             df1[m_indices[i]] -=  dx1[m_indices[i]] * k0;
         }
     }
     else
     {
-        for (unsigned int i=0; i<m_indices.size(); i++)
+        for (sofa::Index i=0; i<m_indices.size(); i++)
         {
             df1[m_indices[i]] -=  dx1[m_indices[i]] * k[i] * kFactor ;
         }
@@ -351,7 +350,7 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;  /// \todo put this in the parent class
 
-    if(DataTypes::spatial_dimensions > 3)
+    if constexpr (DataTypes::spatial_dimensions > 3)
     {
         msg_error() << "Draw function not implemented for this DataType";
         return;
@@ -366,16 +365,16 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     const VecIndex& indices = m_indices;
     const VecIndex& ext_indices = (useRestMState ? m_ext_indices : m_indices);
 
-    vector<Vector3> vertices;
+    std::vector<Vector3> vertices;
 
-    for (unsigned int i=0; i<indices.size(); i++)
+    for (sofa::Index i=0; i<indices.size(); i++)
     {
-        const unsigned int index = indices[i];
-        const unsigned int ext_index = ext_indices[i];
+        const sofa::Index index = indices[i];
+        const sofa::Index ext_index = ext_indices[i];
 
         Vector3 v0(0.0, 0.0, 0.0);
         Vector3 v1(0.0, 0.0, 0.0);
-        for(unsigned int j=0 ; j<DataTypes::spatial_dimensions ; j++)
+        for(sofa::Index j=0 ; j<DataTypes::spatial_dimensions ; j++)
         {
             v0[j] = p[index][j];
             v1[j] = p0[ext_index][j];
@@ -386,7 +385,7 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     }
 
     //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
-    vparams->drawTool()->drawLines(vertices,5,Vec4f(d_springColor.getValue()));
+    vparams->drawTool()->drawLines(vertices,5, d_springColor.getValue());
     vparams->drawTool()->restoreLastState();
 }
 
@@ -399,15 +398,15 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     const VecReal& k = d_stiffness.getValue();
-    const int N = Coord::total_size;
+    const sofa::Size N = Coord::total_size;
 
-    unsigned int curIndex = 0;
+    sofa::Index curIndex = 0;
 
     if (k.size() != m_indices.size())
     {
         const Real k0 = -k[0] * (Real)kFact;
 
-        for (unsigned int index = 0; index < m_indices.size(); index++)
+        for (sofa::Index index = 0; index < m_indices.size(); index++)
         {
             curIndex = m_indices[index];
 
@@ -419,7 +418,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
     }
     else
     {
-        for (unsigned int index = 0; index < m_indices.size(); index++)
+        for (sofa::Index index = 0; index < m_indices.size(); index++)
         {
             curIndex = m_indices[index];
 
@@ -440,15 +439,15 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalPara
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     const VecReal& k = d_stiffness.getValue();
-    const int N = Coord::total_size;
+    const sofa::Size N = Coord::total_size;
 
-    unsigned int curIndex = 0;
+    sofa::Index curIndex = 0;
 
     if (k.size() != m_indices.size())
     {
         const Real k0 = -k[0] * (Real)kFact;
 
-        for (unsigned int index = 0; index < m_indices.size(); index++)
+        for (sofa::Index index = 0; index < m_indices.size(); index++)
         {
             curIndex = m_indices[index];
 
@@ -481,7 +480,7 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalPara
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::updateForceMask()
 {
-    for (unsigned int i=0; i<m_indices.size(); i++)
+    for (sofa::Index i=0; i<m_indices.size(); i++)
         this->mstate->forceMask.insertEntry(m_indices[i]);
 }
 

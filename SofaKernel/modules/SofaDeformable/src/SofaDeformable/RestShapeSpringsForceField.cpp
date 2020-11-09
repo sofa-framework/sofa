@@ -54,10 +54,10 @@ void RestShapeSpringsForceField<Rigid3Types>::addForce(const core::MechanicalPar
     const VecReal& k = d_stiffness.getValue();
     const VecReal& k_a = d_angularStiffness.getValue();
 
-    for (unsigned int i = 0; i < m_indices.size(); i++)
+    for (sofa::Index i = 0; i < m_indices.size(); i++)
     {
-        const unsigned int index = m_indices[i];
-        unsigned int ext_index = m_indices[i];
+        const sofa::Index index = m_indices[i];
+        sofa::Index ext_index = m_indices[i];
         if(useRestMState)
             ext_index= m_ext_indices[i];
 
@@ -87,7 +87,7 @@ void RestShapeSpringsForceField<Rigid3Types>::addForce(const core::MechanicalPar
             dq = dq * -1.0;
         }
 
-        if (dq[3] < 0.999999999999999)
+        if (dq[3] < 1.0)
             dq.quatToAxis(dir, angle);
 
         getVOrientation(f1[index]) -= dir * angle * (i < k_a.size() ? k_a[i] : k_a[0]);
@@ -105,7 +105,7 @@ void RestShapeSpringsForceField<Rigid3Types>::addDForce(const core::MechanicalPa
     const VecReal& k_a = d_angularStiffness.getValue();
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    unsigned int curIndex = 0;
+    sofa::Index curIndex = 0;
 
     for (unsigned int i=0; i<m_indices.size(); i++)
     {
@@ -121,15 +121,15 @@ void RestShapeSpringsForceField<Rigid3Types>::addKToMatrix(const core::Mechanica
 {
     const VecReal& k = d_stiffness.getValue();
     const VecReal& k_a = d_angularStiffness.getValue();
-    const int N = 6;
+    const sofa::Size N = 6;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    unsigned int curIndex = 0;
+    sofa::Index curIndex = 0;
 
-    for (unsigned int index = 0; index < m_indices.size(); index++)
+    for (sofa::Index index = 0; index < m_indices.size(); index++)
     {
         curIndex = m_indices[index];
 
@@ -161,15 +161,15 @@ void RestShapeSpringsForceField<Rigid3Types>::draw(const core::visual::VisualPar
 
     sofa::helper::vector< Vector3 > vertices;
 
-    for (unsigned int i=0; i<m_indices.size(); i++)
+    for (sofa::Index i=0; i<m_indices.size(); i++)
     {
-        const unsigned int index = m_indices[i];
+        const sofa::Index index = m_indices[i];
 
         vertices.push_back(p[index].getCenter());
 
         if(useRestMState)
         {
-            const unsigned int ext_index = m_ext_indices[i];
+            const sofa::Index ext_index = m_ext_indices[i];
             vertices.push_back(p0[ext_index].getCenter());
         }
         else
@@ -177,7 +177,7 @@ void RestShapeSpringsForceField<Rigid3Types>::draw(const core::visual::VisualPar
             vertices.push_back(p0[index].getCenter());
         }
     }
-    vparams->drawTool()->drawLines(vertices,5, Vec4f(d_springColor.getValue()));
+    vparams->drawTool()->drawLines(vertices,5, d_springColor.getValue());
     vparams->drawTool()->restoreLastState();
 }
 

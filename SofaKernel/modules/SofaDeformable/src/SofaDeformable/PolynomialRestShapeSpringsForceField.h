@@ -57,15 +57,15 @@ public:
     typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef helper::vector<unsigned int> VecIndex;
+    typedef helper::vector<sofa::Index> VecIndex;
     typedef helper::vector<Real> VecReal;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
 
-    Data< helper::vector<unsigned int> > d_points;
-    Data< helper::vector<unsigned int> > d_external_points;
+    Data< helper::vector<sofa::Index> > d_points;
+    Data< helper::vector<sofa::Index> > d_external_points;
 
     /// polynomial data
     /// Describe set of polynomial coefficients combines in one array.
@@ -74,7 +74,7 @@ public:
     /// For examples the coeffiencts for polynomials with degrees [3, 2, 4] will be put as [ a1, a2, a3, b1, b2, c1, c2, c3, c4]
     Data< VecReal > d_polynomialStiffness;
     /// Describe set of polynomial degrees fro every spring
-    Data< helper::vector<unsigned int> > d_polynomialDegree;
+    Data< helper::vector<sofa::Size> > d_polynomialDegree;
 
 
     Data<bool> d_recomputeIndices;
@@ -108,14 +108,14 @@ protected:
     VecCoord m_weightedCoordinateDifference;
     VecReal m_coordinateSquaredNorm;
 
-    helper::vector<helper::vector<unsigned int>> m_polynomialsMap;
+    helper::vector<helper::vector<sofa::Size>> m_polynomialsMap;
 
     bool m_useRestMState; /// Indicator whether an external MechanicalState is used as rest reference.
 
 
-    void ComputeJacobian(unsigned int stiffnessIndex, unsigned int springIndex);
-    double PolynomialValue(unsigned int springIndex, double strainValue);
-    double PolynomialDerivativeValue(unsigned int springIndex, double strainValue);
+    void ComputeJacobian(sofa::Index stiffnessIndex, sofa::Index springIndex);
+    double PolynomialValue(sofa::Index springIndex, double strainValue);
+    double PolynomialDerivativeValue(sofa::Index springIndex, double strainValue);
 
 public:
     void bwdInit() override;
@@ -130,7 +130,7 @@ public:
 
     virtual void addSubKToMatrix(const core::MechanicalParams* mparams,
                                  const sofa::core::behavior::MultiMatrixAccessor* matrix,
-                                 const helper::vector<unsigned> & addSubIndex ) override;
+                                 const helper::vector<sofa::Index> & addSubIndex ) override;
 
     virtual void draw(const core::visual::VisualParams* vparams) override;
 

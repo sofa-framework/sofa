@@ -114,11 +114,11 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::bwdInit()
 
     m_polynomialsMap.clear();
     helper::vector<unsigned int> polynomial;
-    unsigned int inputIndex = 0;
-    for (size_t degreeIndex = 0; degreeIndex < vPolynomialDegree.size(); degreeIndex++) {
+    sofa::Index inputIndex = 0;
+    for (sofa::Index degreeIndex = 0; degreeIndex < vPolynomialDegree.size(); degreeIndex++) {
         polynomial.clear();
         polynomial.resize(vPolynomialDegree[degreeIndex]);
-        for (size_t polynomialIndex = 0; polynomialIndex < vPolynomialDegree[degreeIndex]; polynomialIndex++) {
+        for (sofa::Index polynomialIndex = 0; polynomialIndex < vPolynomialDegree[degreeIndex]; polynomialIndex++) {
             polynomial[polynomialIndex] = inputIndex;
             inputIndex++;
         }
@@ -126,8 +126,8 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::bwdInit()
     }
 
     msg_info() << "Polynomial data: ";
-    for (size_t degreeIndex = 0; degreeIndex < vPolynomialDegree.size(); degreeIndex++) {
-        for (size_t polynomialIndex = 0; polynomialIndex < vPolynomialDegree[degreeIndex]; polynomialIndex++) {
+    for (sofa::Index degreeIndex = 0; degreeIndex < vPolynomialDegree.size(); degreeIndex++) {
+        for (sofa::Index polynomialIndex = 0; polynomialIndex < vPolynomialDegree[degreeIndex]; polynomialIndex++) {
             msg_info() << m_polynomialsMap[degreeIndex][polynomialIndex] << " ";
         }
     }
@@ -150,16 +150,16 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::recomputeIndices()
     m_indices.clear();
     m_ext_indices.clear();
 
-    for (unsigned int i = 0; i < d_points.getValue().size(); i++)
+    for (sofa::Index i = 0; i < d_points.getValue().size(); i++)
         m_indices.push_back(d_points.getValue()[i]);
 
-    for (unsigned int i = 0; i < d_external_points.getValue().size(); i++)
+    for (sofa::Index i = 0; i < d_external_points.getValue().size(); i++)
         m_ext_indices.push_back(d_external_points.getValue()[i]);
 
     if (m_indices.empty())
     {
         msg_info() << "in PolynomialRestShapeSpringForceField no point are defined, default case: points = all points ";
-        for (unsigned int i = 0; i < (unsigned)this->mstate->getSize(); i++) {
+        for (sofa::Index i = 0; i < this->mstate->getSize(); i++) {
             m_indices.push_back(i);
         }
     }
@@ -170,14 +170,14 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
         if (m_useRestMState)
         {
-            for (unsigned int i = 0; i < (unsigned)getExtPosition()->getValue().size(); i++)
+            for (sofa::Index i = 0; i < getExtPosition()->getValue().size(); i++)
             {
                 m_ext_indices.push_back(i);
             }
         }
         else
         {
-            for (unsigned int i = 0; i < (unsigned)this->mstate->getSize(); i++)
+            for (sofa::Index i = 0; i < this->mstate->getSize(); i++)
             {
                 m_ext_indices.push_back(i);
             }
@@ -232,8 +232,8 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
         msg_warning() << "WARNING : stiffness is not defined on each point, first stiffness is used";
         for (unsigned int i = 0; i < m_indices.size(); i++)
         {
-            const unsigned int index = m_indices[i];
-            unsigned int ext_index = m_indices[i];
+            const sofa::Index index = m_indices[i];
+            sofa::Index ext_index = m_indices[i];
             if(m_useRestMState)
                 ext_index= m_ext_indices[i];
 
@@ -267,10 +267,10 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
     }
     else
     {
-        for (unsigned int i = 0; i < m_indices.size(); i++)
+        for (sofa::Index i = 0; i < m_indices.size(); i++)
         {
-            const unsigned int index = m_indices[i];
-            unsigned int ext_index = m_indices[i];
+            const sofa::Index index = m_indices[i];
+            sofa::Index ext_index = m_indices[i];
             if(m_useRestMState)
                 ext_index= m_ext_indices[i];
 
@@ -307,7 +307,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
 
 
 template<class DataTypes>
-void PolynomialRestShapeSpringsForceField<DataTypes>::ComputeJacobian(unsigned int stiffnessIndex, unsigned int springIndex)
+void PolynomialRestShapeSpringsForceField<DataTypes>::ComputeJacobian(sofa::Index stiffnessIndex, sofa::Index springIndex)
 {
     msg_info() << "\nCompute derivative: ";
     msg_info() << "spring length: " << m_directionSpringLength[springIndex];
@@ -333,13 +333,13 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::ComputeJacobian(unsigned i
 
     // compute data for Jacobian matrix
     JacobianVector& jacobVector = m_differential[springIndex];
-    for(unsigned int index = 0; index < Coord::total_size; index++)
+    for(sofa::Index index = 0; index < Coord::total_size; index++)
     {
         jacobVector[index] = (polynomialDerivativeRes - polynomialForceRes) * exponentialDerivative *
                     m_weightedCoordinateDifference[springIndex][index] * m_weightedCoordinateDifference[springIndex][index] + polynomialForceRes;
     }
 
-    for(unsigned int index = 0; index < Coord::total_size; index++)
+    for(sofa::Index index = 0; index < Coord::total_size; index++)
     {
         msg_info() << "for indices " << index << " the values is: " << jacobVector[index];
     }
@@ -357,10 +357,10 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addDForce(const core::Mech
     helper::ReadAccessor< DataVecDeriv > dx1 = dx;
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    for (unsigned int index = 0; index < m_indices.size(); index++)
+    for (sofa::Index index = 0; index < m_indices.size(); index++)
     {
         const JacobianVector& jacobVector = m_differential[index];
-        for(unsigned int coordIndex = 0; coordIndex < Coord::total_size; coordIndex++)
+        for(sofa::Index coordIndex = 0; coordIndex < Coord::total_size; coordIndex++)
         {
             df1[m_indices[index]][coordIndex] -= jacobVector[coordIndex] * dx1[m_indices[index]][coordIndex] * kFactor;
         }
@@ -383,10 +383,10 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
 
     std::vector< defaulttype::Vector3 > points;
 
-    for (unsigned int i=0; i<indices.size(); i++)
+    for (sofa::Index i=0; i<indices.size(); i++)
     {
-        const unsigned int index = indices[i];
-        const unsigned int ext_index = ext_indices[i];
+        const sofa::Index index = indices[i];
+        const sofa::Index ext_index = ext_indices[i];
         points.push_back(p[index]);
         points.push_back(p0[ext_index]);
     }
@@ -399,17 +399,15 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
 
 
     // draw connected point indices
-    defaulttype::Vec4f color(1.0, 1.0, 1.0, 1.0);
-
     Real scale = (vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * d_showIndicesScale.getValue();
 
     helper::vector<defaulttype::Vector3> positions;
-    for (size_t i = 0; i < indices.size(); i++) {
-        const unsigned int index = indices[i];
+    for (sofa::Index i = 0; i < indices.size(); i++) {
+        const sofa::Index index = indices[i];
         positions.push_back(defaulttype::Vector3(p0[index][0], p0[index][1], p0[index][2] ));
     }
 
-    vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+    vparams->drawTool()->draw3DText_Indices(positions, float(scale), helper::types::RGBAColor::white());
     vparams->drawTool()->restoreLastState();
 }
 
@@ -428,10 +426,10 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::M
     unsigned int offset = mref.offset;
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    unsigned int curIndex = 0;
+    sofa::Index curIndex = 0;
     const int Dimension = Coord::total_size;
 
-    for (unsigned int index = 0; index < m_indices.size(); index++)
+    for (sofa::Index index = 0; index < m_indices.size(); index++)
     {
         curIndex = m_indices[index];
         const JacobianVector& jacobVector = m_differential[index];
@@ -448,27 +446,27 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::M
 template<class DataTypes>
 void PolynomialRestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core::MechanicalParams* mparams,
                                                                       const sofa::core::behavior::MultiMatrixAccessor* matrix,
-                                                                      const helper::vector<unsigned> & addSubIndex )
+                                                                      const helper::vector<sofa::Index> & addSubIndex )
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    unsigned int curIndex = 0;
-    const int Dimension = Coord::total_size;
+    sofa::Index curIndex = 0;
+    const sofa::Size Dimension = Coord::total_size;
 
-    for (unsigned int index = 0; index < m_indices.size(); index++)
+    for (sofa::Index index = 0; index < m_indices.size(); index++)
     {
         curIndex = m_indices[index];
         const JacobianVector& jacobVector = m_differential[index];
         bool contains = false;
-        for (unsigned s = 0; s < addSubIndex.size() && !contains; s++) {
+        for (sofa::Index s = 0; s < addSubIndex.size() && !contains; s++) {
             if (curIndex == addSubIndex[s]) contains = true;
         }
         if (!contains) continue;
 
-        for(unsigned int i = 0; i < Dimension; i++)
+        for(sofa::Size i = 0; i < Dimension; i++)
         {
             mat->add(offset + Dimension * curIndex + i, offset + Dimension * curIndex + i, -kFact * jacobVector[i]);
         }
@@ -486,7 +484,7 @@ double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialValue(unsigned
     msg_info() << "Polynomial data: ";
     double highOrderStrain = 1.0;
     double result = 0.0;
-    for (size_t degreeIndex = 0; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
+    for (sofa::Index degreeIndex = 0; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
         highOrderStrain *= strainValue;
         result += vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex]] * highOrderStrain;
         msg_info() << "Degree:" << (degreeIndex + 1) << ", result: " << result;
@@ -505,7 +503,7 @@ double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialDerivativeValu
     msg_info() << "Polynomial derivative data: ";
     double highOrderStrain = 1.0;
     double result = 0.0;
-    for (size_t degreeIndex = 0; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
+    for (sofa::Index degreeIndex = 0; degreeIndex < vPolynomialDegree[springIndex]; degreeIndex++) {
         result += (degreeIndex + 1) * vPolynomialStiffness[m_polynomialsMap[springIndex][degreeIndex]] * highOrderStrain;
         highOrderStrain *= strainValue;
         msg_info() << "Degree:" << (degreeIndex + 1) << ", result: " << result;

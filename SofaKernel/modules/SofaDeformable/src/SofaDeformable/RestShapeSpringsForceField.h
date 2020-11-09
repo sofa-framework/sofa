@@ -59,17 +59,17 @@ public:
     typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef helper::vector< unsigned int > VecIndex;
+    typedef helper::vector< sofa::Index > VecIndex;
     typedef helper::vector< Real >	 VecReal;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< helper::vector< unsigned int > > d_points; ///< points controlled by the rest shape springs
+    Data< helper::vector< sofa::Index > > d_points; ///< points controlled by the rest shape springs
     Data< VecReal > d_stiffness; ///< stiffness values between the actual position and the rest shape position
     Data< VecReal > d_angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
     Data< helper::vector< CPos > > d_pivotPoints; ///< global pivot points used when translations instead of the rigid mass centers
-    Data< helper::vector< unsigned int > > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
+    Data< helper::vector< sofa::Index > > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
     Data< bool > d_recompute_indices; ///< Recompute indices (should be false for BBOX)
     Data< bool > d_drawSpring; ///< draw Spring
     Data< sofa::helper::types::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
@@ -103,7 +103,7 @@ public:
     /// Brings ForceField contribution to the global system stiffness matrix.
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
-    void addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & addSubIndex ) override;
+    void addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<sofa::Index> & addSubIndex ) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -118,7 +118,7 @@ protected :
 
     void recomputeIndices();
     bool checkOutOfBoundsIndices();
-    bool checkOutOfBoundsIndices(const VecIndex &indices, const unsigned int dimension);
+    bool checkOutOfBoundsIndices(const VecIndex &indices, const sofa::Size dimension);
 
     VecIndex m_indices;
     VecIndex m_ext_indices;
