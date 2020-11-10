@@ -67,7 +67,7 @@ protected:
     typename ResponseForceField::SPtr ff;
     core::objectmodel::BaseContext* parent;
 
-    typedef std::map<core::collision::DetectionOutput::ContactId,int> ContactIndexMap;
+    typedef std::map<core::collision::DetectionOutput::ContactId, int> ContactIndexMap;
     /// Mapping of contactids to force element (+1, so that 0 means not active).
     /// This allows to ignore duplicate contacts, and preserve information associated with each contact point over time
     ContactIndexMap contactIndex;
