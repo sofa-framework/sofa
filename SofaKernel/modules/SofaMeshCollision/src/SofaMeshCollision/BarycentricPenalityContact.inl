@@ -75,7 +75,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 
     }
 
-    auto insize = outputs.size();
+    int insize = int(outputs.size());
 
     // old index for each contact
     // >0 indicate preexisting contact
@@ -85,7 +85,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 
     Size nbnew = 0;
 
-    for (int i=0; i<insize; i++)
+    for (int i=0; i< insize; i++)
     {
         core::collision::DetectionOutput* o = &outputs[i];
         // find this contact in contactIndex, possibly creating a new entry initialized by 0

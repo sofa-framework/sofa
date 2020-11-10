@@ -137,13 +137,15 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
             {
                 const core::topology::EdgesAdded *ta = static_cast< const core::topology::EdgesAdded * >( *itBegin );
 
+                const Size elemsSize = Size(elems.size());
+
                 for (Size i = 0; i < ta->getNbAddedEdges(); ++i)
                 {
-                    elems[elems.size() - ta->getNbAddedEdges() + i].p[0] = (ta->edgeArray[i])[0];
-                    elems[elems.size() - ta->getNbAddedEdges() + i].p[1] = (ta->edgeArray[i])[1];
+                    elems[elemsSize - ta->getNbAddedEdges() + i].p[0] = (ta->edgeArray[i])[0];
+                    elems[elemsSize - ta->getNbAddedEdges() + i].p[1] = (ta->edgeArray[i])[1];
                 }
 
-                resize( elems.size() );
+                resize(elemsSize);
                 needsUpdate = true;
 
                 break;
@@ -160,7 +162,7 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
                 }
                 else
                 {
-                    last = elems.size() -1;
+                    last = Size(elems.size()) -1;
                 }
 
                 const auto &tab = ( static_cast< const core::topology::EdgesRemoved *>( *itBegin ) )->getArray();
@@ -174,7 +176,7 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
                     elems[ind_k] = elems[last];
                     elems[last] = tmp;
 
-                    ind_last = elems.size() - 1;
+                    ind_last = Size(elems.size()) - 1;
 
                     if(last != ind_last)
                     {
@@ -182,7 +184,7 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
                         elems[last] = elems[ind_last];
                         elems[ind_last] = tmp;
                     }
-                    resize( elems.size() - 1 );
+                    resize(Size(elems.size()) - 1 );
 
                     --last;
                 }
@@ -268,8 +270,6 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
                 // Ignore events that are not Edge  related.
                 break;
             };
-
-            resize( elems.size() ); // not necessary
 
             ++itBegin;
         }
@@ -556,9 +556,9 @@ int LineCollisionModel<DataTypes>::getLineFlags(Index i)
         i = getElemEdgeIndex(i);
         if (i < topology->getNbEdges())
         {
-            for (std::size_t j=0; j<2; ++j)
+            for (Index j=0; j<2; ++j)
             {
-                const sofa::core::topology::BaseMeshTopology::EdgesAroundVertex& eav = topology->getEdgesAroundVertex(e[j]);
+                const auto& eav = topology->getEdgesAroundVertex(e[j]);
                 if (eav[0] == (sofa::core::topology::BaseMeshTopology::EdgeID)i)
                     f |= (FLAG_P1 << j);
                 if (eav.size() == 1)
