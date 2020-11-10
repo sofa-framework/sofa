@@ -141,22 +141,40 @@ protected:
          */
         BehaviourMatrix _materialBehaviour;
 
-        //Base interval for reduced integration: same for all the beam elements
+        //--------------------------------------------------------------------//
+        //--------------- Gaussian reduced integration methods ---------------//
+        //--------------------------------------------------------------------//
+
+        /**
+         * \brief Integration ranges for Gaussian reduced integration.
+         * Data structure defined in the quadrature library used here for
+         * Gaussian integration, containing the limits of the integration
+         * ranges. Here the integration is performed in 3D, and the variable
+         * contains 6 real numbers, corresponding to 3 pairs of limits. These
+         * numbers depend on the beam element dimensions.
+         */
         ozp::quadrature::detail::Interval<3> _integrationInterval;
 
+        /// Matrix form of the beam element shape functions
         typedef Eigen::Matrix<double, 3, 12> shapeFunction;
+        /// Shape function matrices, evaluated in each Gauss point used in reduced integration.
         helper::fixed_array<shapeFunction, 27> _N;
+        // TO DO : define the "27" constant properly ! static const ? ifdef global definition ?
 
-        typedef Eigen::Matrix<double, 6, 12> deformationGradientFunction; ///< derivatives of the shape functions (Be)
-        helper::fixed_array<deformationGradientFunction, 27> _BeMatrices; /// One Be function for each Gauss Point (27 in one beam element)
+        /// Homogeneous to the derivative of shapeFunction type
+        typedef Eigen::Matrix<double, 6, 12> deformationGradientFunction;
+        /// Derivatives of the shape function matrices in _N, also evaluated in each Gauss point
+        helper::fixed_array<deformationGradientFunction, 27> _BeMatrices;
 
+        /// Mechanical states (elastic, plastic, or postplastic) of all gauss points in the beam element.
         helper::fixed_array<MechanicalState, 27> _pointMechanicalState;
-
-        ///< Indicates which type of mechanical computation should be used.
-        ///  The meaning of the three cases is the following :
-        ///     - ELASTIC: all the element Gauss points are in an ELASTIC state
-        ///     - PLASTIC: at least one Gauss point is in a PLASTIC state.
-        ///     - POSTPLASTIC: Gauss points are either in an ELASTIC or POSTPLASTIC state.
+        /**
+         * Indicates which type of mechanical computation should be used.
+         * The meaning of the three cases is the following :
+         *   - ELASTIC: all the element Gauss points are in an ELASTIC state
+         *   - PLASTIC: at least one Gauss point is in a PLASTIC state.
+         *   - POSTPLASTIC: Gauss points are either in an ELASTIC or POSTPLASTIC state.
+         */
         MechanicalState _beamMechanicalState;
 
         // Plastic strain
