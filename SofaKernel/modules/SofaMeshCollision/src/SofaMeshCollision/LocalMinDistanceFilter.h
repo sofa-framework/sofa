@@ -207,7 +207,7 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(const int /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validPoint(const Index /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
     {
         return true;
     }
@@ -215,7 +215,7 @@ public:
     /**
      * @brief Line Collision Primitive validation method.
      */
-    bool validLine(const int /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validLine(const Index /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
     {
         return true;
     }
@@ -223,7 +223,7 @@ public:
     /**
      * @brief Triangle Collision Primitive validation method.
      */
-    bool validTriangle(const int /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validTriangle(const Index /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
     {
         return true;
     }

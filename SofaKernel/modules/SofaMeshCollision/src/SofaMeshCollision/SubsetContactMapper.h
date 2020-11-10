@@ -53,7 +53,7 @@ public:
     typename MMechanicalState::SPtr outmodel;
     using Index = sofa::Index;
 
-    int nbp;
+    Size nbp;
     bool needInit;
 
     SubsetContactMapper();

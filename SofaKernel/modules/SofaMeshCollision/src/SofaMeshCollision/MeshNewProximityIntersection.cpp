@@ -98,7 +98,7 @@ int MeshNewProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal dist2 = alarmDist*alarmDist;
-    const int id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
+    const Index id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     int n = doIntersectionLineLine(dist2, e1.p1(),e1.p2(), e2.p1(),e2.p2(), contacts, id);
     if (n>0)
     {
@@ -225,8 +225,8 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
     const int f1 = e1.flags();
     const int f2 = e2.flags();
 
-    const int id1 = e1.getIndex()*3; // index of contacts involving points in e1
-    const int id2 = e1.getCollisionModel()->getSize()*3 + e2.getIndex()*12; // index of contacts involving points in e2
+    const Index id1 = e1.getIndex()*3; // index of contacts involving points in e1
+    const Index id2 = e1.getCollisionModel()->getSize()*3 + e2.getIndex()*12; // index of contacts involving points in e2
 
     bool useNormal = true;
     bool bothSide1 = e1.getCollisionModel()->d_bothSide.getValue();

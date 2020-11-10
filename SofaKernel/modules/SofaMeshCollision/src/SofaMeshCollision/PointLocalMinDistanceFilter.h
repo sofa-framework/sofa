@@ -119,7 +119,7 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(int /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validPoint(Index /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
     {
         return true;
     }

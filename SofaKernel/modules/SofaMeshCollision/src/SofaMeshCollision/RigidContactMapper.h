@@ -57,7 +57,7 @@ public:
     simulation::Node::SPtr child;
     typename MMapping::SPtr mapping;
     typename MMechanicalState::SPtr outmodel;
-    int nbp;
+    Size nbp;
 
 protected:
     RigidContactMapper();
@@ -84,8 +84,8 @@ public:
 
     Index addPoint(const Coord& P, Index index, Real&)
     {
-        int i = nbp++;
-        if ((int)outmodel->getSize() <= i)
+        Index i = nbp++;
+        if (outmodel->getSize() <= i)
             outmodel->resize(i+1);
         if (mapping)
         {

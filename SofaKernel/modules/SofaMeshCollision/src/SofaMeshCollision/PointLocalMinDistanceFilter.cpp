@@ -225,7 +225,7 @@ void PointLocalMinDistanceFilter::init()
         // Precomputation of the filters in the rigid case
         //points:
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
-        for(unsigned int p=0; p<pInfo.size(); p++)
+        for(Index p=0; p<pInfo.size(); p++)
         {
             pInfo[p].buildFilter(p);
 

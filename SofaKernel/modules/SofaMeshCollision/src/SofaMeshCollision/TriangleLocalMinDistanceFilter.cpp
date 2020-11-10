@@ -133,7 +133,7 @@ void TriangleLocalMinDistanceFilter::init()
 
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
         lInfo.resize(bmt->getNbEdges());
-        for (unsigned int i=0; i<bmt->getNbEdges(); i++)
+        for (Index i=0; i<bmt->getNbEdges(); i++)
         {
             lInfo[i].setLMDFilters(this);
             lInfo[i].setBaseMeshTopology(bmt);
@@ -162,7 +162,7 @@ void TriangleLocalMinDistanceFilter::init()
         // Precomputation of the filters in the rigid case
         //triangles:
         helper::vector< TriangleInfo >& tInfo = *(m_triangleInfo.beginEdit());
-        for(unsigned int t=0; t<tInfo.size(); t++)
+        for(Index t=0; t<tInfo.size(); t++)
         {
             tInfo[t].buildFilter(t);
 
@@ -171,7 +171,7 @@ void TriangleLocalMinDistanceFilter::init()
 
         //lines:
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
-        for(unsigned int l=0; l<lInfo.size(); l++)
+        for(Index l=0; l<lInfo.size(); l++)
         {
             lInfo[l].buildFilter(l);
 
@@ -180,7 +180,7 @@ void TriangleLocalMinDistanceFilter::init()
 
         //points:
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
-        for(unsigned int p=0; p<pInfo.size(); p++)
+        for(Index p=0; p<pInfo.size(); p++)
         {
             pInfo[p].buildFilter(p);
 
@@ -291,7 +291,7 @@ void TriangleLocalMinDistanceFilter::TriangleInfoHandler::applyCreateFunction(In
 }
 
 
-bool TriangleLocalMinDistanceFilter::validPoint(const int pointIndex, const defaulttype::Vector3 &PQ)
+bool TriangleLocalMinDistanceFilter::validPoint(const Index pointIndex, const defaulttype::Vector3 &PQ)
 {
     PointInfo & Pi = m_pointInfo[pointIndex];
 
@@ -308,7 +308,7 @@ bool TriangleLocalMinDistanceFilter::validPoint(const int pointIndex, const defa
 }
 
 
-bool TriangleLocalMinDistanceFilter::validLine(const int lineIndex, const defaulttype::Vector3 &PQ)
+bool TriangleLocalMinDistanceFilter::validLine(const Index lineIndex, const defaulttype::Vector3 &PQ)
 {
     LineInfo &Li = m_lineInfo[lineIndex];  // filter is precomputed
 
@@ -323,7 +323,7 @@ bool TriangleLocalMinDistanceFilter::validLine(const int lineIndex, const defaul
 }
 
 
-bool TriangleLocalMinDistanceFilter::validTriangle(const int triangleIndex, const defaulttype::Vector3 &PQ)
+bool TriangleLocalMinDistanceFilter::validTriangle(const Index triangleIndex, const defaulttype::Vector3 &PQ)
 {
     TriangleInfo &Ti = m_triangleInfo[triangleIndex];
 

@@ -143,8 +143,8 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
 
     m_topologyRevision = revision;
 
-    const unsigned nquads = m_topology->getNbQuads();
-    const unsigned ntris = m_topology->getNbTriangles();
+    const Size nquads = m_topology->getNbQuads();
+    const Size ntris = m_topology->getNbTriangles();
 
     if (nquads == 0) // only triangles
     {
@@ -153,15 +153,15 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
     }
     else
     {
-        const unsigned newsize = ntris + 2 * nquads;
-        const unsigned npoints = m_mstate->getSize();
+        const Size newsize = ntris+2*nquads;
+        const Size npoints = m_mstate->getSize();
 
         m_triangles = &m_internalTriangles;
         m_internalTriangles.resize(newsize);
         resize(newsize);
 
-        int index = 0;
-        for (unsigned i = 0; i < ntris; i++)
+        Index index = 0;
+        for (Index i=0; i<ntris; i++)
         {
             core::topology::BaseMeshTopology::Triangle idx = m_topology->getTriangle(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
@@ -174,7 +174,7 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
             m_internalTriangles[index] = idx;
             ++index;
         }
-        for (unsigned i = 0; i < nquads; i++)
+        for (Index i=0; i<nquads; i++)
         {
             core::topology::BaseMeshTopology::Quad idx = m_topology->getQuad(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
@@ -212,28 +212,11 @@ bool TriangleCollisionModel<DataTypes>::canCollideWithElement(Index index, Colli
     if (model2 == m_pointModels)
     {
         // if point belong to the triangle, return false
-        if ( index2==t.p1Index() || index2==t.p2Index() || index2==t.p3Index())
+        if (index2 == t.p1Index() || index2 == t.p2Index() || index2 == t.p3Index())
             return false;
 
-        //// if the point belong to the the neighborhood of the triangle, return false
-        //for (unsigned int i1=0; i1<EdgesAroundVertex11.size(); i1++)
-        //{
-        //	unsigned int e11 = EdgesAroundVertex11[i1];
-        //	p11 = elems[e11].i1;
-        //	p12 = elems[e11].i2;
-        //	if (index2==p11 || index2==p12)
-        //		return false;
-        //}
-        //for (unsigned int i1=0; i1<EdgesAroundVertex11.size(); i1++)
-        //{
-        //	unsigned int e12 = EdgesAroundVertex12[i1];
-        //	p11 = elems[e12].i1;
-        //	p12 = elems[e12].i2;
-        //	if (index2==p11 || index2==p12)
-        //		return false;
+        //// TODO : case with auto-collis with segment and auto-collis with itself
     }
-
-    //// TODO : case with auto-collis with segment and auto-collis with itself
 
     return true;
 
@@ -390,7 +373,7 @@ int TriangleCollisionModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
 
     if (i < m_topology->getNbTriangles())
     {
-        for (unsigned int j=0; j<3; ++j)
+        for (sofa::Index j=0; j<3; ++j)
         {
             const sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex& tav = m_topology->getTrianglesAroundVertex(t[j]);
             if (tav[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
@@ -401,7 +384,7 @@ int TriangleCollisionModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
 
         const sofa::core::topology::BaseMeshTopology::EdgesInTriangle& e = m_topology->getEdgesInTriangle(i);
 
-        for (unsigned int j=0; j<3; ++j)
+        for (sofa::Index j=0; j<3; ++j)
         {
             const sofa::core::topology::BaseMeshTopology::TrianglesAroundEdge& tae = m_topology->getTrianglesAroundEdge(e[j]);
             if (tae[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)

@@ -101,12 +101,12 @@ bool PointCollisionModel<DataTypes>::canCollideWithElement(Index index, Collisio
         const auto& verticesAroundVertex1 =topology->getVerticesAroundVertex(index);
         const auto& verticesAroundVertex2 =topology->getVerticesAroundVertex(index2);
 
-        for (unsigned int i1=0; i1<verticesAroundVertex1.size(); i1++)
+        for (Index i1=0; i1<verticesAroundVertex1.size(); i1++)
         {
 
             Index v1 = verticesAroundVertex1[i1];
 
-            for (unsigned int i2=0; i2<verticesAroundVertex2.size(); i2++)
+            for (Index i2=0; i2<verticesAroundVertex2.size(); i2++)
             {
 
                 if (v1 == verticesAroundVertex2[i2] || v1 == index2 || index == verticesAroundVertex2[i2])
@@ -205,7 +205,7 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::updateNormals()
 {
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    int n = x.size();
+    auto n = x.size();
     normals.resize(n);
     for (int i=0; i<n; ++i)
     {
@@ -217,7 +217,7 @@ void PointCollisionModel<DataTypes>::updateNormals()
         if (mesh->getNbTetrahedra()>0)
         {
             const core::topology::BaseMeshTopology::SeqTetrahedra &elems = mesh->getTetrahedra();
-            for (unsigned int i=0; i < elems.size(); ++i)
+            for (Index i=0; i < elems.size(); ++i)
             {
                 const core::topology::BaseMeshTopology::Tetra &e = elems[i];
                 const Coord& p1 = x[e[0]];
@@ -254,7 +254,7 @@ void PointCollisionModel<DataTypes>::updateNormals()
         if (mesh->getNbTriangles()>0)
         {
             const core::topology::BaseMeshTopology::SeqTriangles &elems = mesh->getTriangles();
-            for (unsigned int i=0; i < elems.size(); ++i)
+            for (Index i=0; i < elems.size(); ++i)
             {
                 const core::topology::BaseMeshTopology::Triangle &e = elems[i];
                 const Coord& p1 = x[e[0]];
@@ -273,7 +273,7 @@ void PointCollisionModel<DataTypes>::updateNormals()
         if (mesh->getNbQuads()>0)
         {
             const core::topology::BaseMeshTopology::SeqQuads &elems = mesh->getQuads();
-            for (unsigned int i=0; i < elems.size(); ++i)
+            for (Index i=0; i < elems.size(); ++i)
             {
                 const core::topology::BaseMeshTopology::Quad &e = elems[i];
                 const Coord& p1 = x[e[0]];
@@ -312,15 +312,14 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
     sofa::core::topology::BaseMeshTopology* mesh = this->model->l_topology.get();
     const typename DataTypes::VecCoord& x = (*this->model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue());
 
-    const helper::vector <unsigned int>& trianglesAroundVertex = mesh->getTrianglesAroundVertex(this->index);
-    const helper::vector <unsigned int>& edgesAroundVertex = mesh->getEdgesAroundVertex(this->index);
-
+    const auto& trianglesAroundVertex = mesh->getTrianglesAroundVertex(this->index);
+    const auto& edgesAroundVertex = mesh->getEdgesAroundVertex(this->index);
 
     defaulttype::Vector3 nMean;
 
-    for (unsigned int i=0; i<trianglesAroundVertex.size(); i++)
+    for (Index i=0; i<trianglesAroundVertex.size(); i++)
     {
-        unsigned int t = trianglesAroundVertex[i];
+        Index t = trianglesAroundVertex[i];
         const auto& ptr = mesh->getTriangle(t);
         defaulttype::Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
         nCur.normalize();
@@ -329,9 +328,9 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
 
     if (trianglesAroundVertex.size()==0)
     {
-        for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
+        for (Index i=0; i<edgesAroundVertex.size(); i++)
         {
-            unsigned int e = edgesAroundVertex[i];
+            Index e = edgesAroundVertex[i];
             const auto& ped = mesh->getEdge(e);
             defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
             l.normalize();
@@ -343,9 +342,9 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
         nMean.normalize();
 
 
-    for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
+    for (Index i=0; i<edgesAroundVertex.size(); i++)
     {
-        unsigned int e = edgesAroundVertex[i];
+        Index e = edgesAroundVertex[i];
         const auto& ped = mesh->getEdge(e);
         defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
         l.normalize();
@@ -436,7 +435,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
             if (p.isActive())
             {
                 pointsP.push_back(p.p());
-                if ((unsigned)i < normals.size())
+                if (i < Size(normals.size()))
                 {
                     pointsL.push_back(p.p());
                     pointsL.push_back(p.p() + normals[i] * 0.1f);

@@ -75,7 +75,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 
     }
 
-    int insize = outputs.size();
+    auto insize = outputs.size();
 
     // old index for each contact
     // >0 indicate preexisting contact
@@ -83,7 +83,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     // -1 indicate ignored duplicate contact
     std::vector<int> oldIndex(insize);
 
-    int nbnew = 0;
+    Size nbnew = 0;
 
     for (int i=0; i<insize; i++)
     {

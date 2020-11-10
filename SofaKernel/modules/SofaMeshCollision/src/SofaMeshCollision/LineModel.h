@@ -48,18 +48,18 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef LineCollisionModel<DataTypes> ParentModel;
 
-    TLine(ParentModel* model, int index);
+    TLine(ParentModel* model, Index index);
     TLine() {}
 
     explicit TLine(const core::CollisionElementIterator& i);
 
-    unsigned i1() const;
-    unsigned i2() const;
+    Index i1() const;
+    Index i2() const;
     int flags() const;
 
     const Coord& p1() const;
     const Coord& p2() const;
-    const Coord& p(int i) const;
+    const Coord& p(Index i) const;
 
     const Coord& p1Free() const;
     const Coord& p2Free() const;
@@ -181,7 +181,7 @@ protected:
 
 
 template<class DataTypes>
-inline TLine<DataTypes>::TLine(ParentModel* model, int index)
+inline TLine<DataTypes>::TLine(ParentModel* model, Index index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {
 }
@@ -193,10 +193,10 @@ inline TLine<DataTypes>::TLine(const core::CollisionElementIterator& i)
 }
 
 template<class DataTypes>
-inline unsigned TLine<DataTypes>::i1() const { return this->model->elems[this->index].p[0]; }
+inline sofa::Index TLine<DataTypes>::i1() const { return this->model->elems[this->index].p[0]; }
 
 template<class DataTypes>
-inline unsigned TLine<DataTypes>::i2() const { return this->model->elems[this->index].p[1]; }
+inline sofa::Index TLine<DataTypes>::i2() const { return this->model->elems[this->index].p[1]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[0]]; }
@@ -205,7 +205,7 @@ template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[1]]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p(int i) const {
+inline const typename DataTypes::Coord& TLine<DataTypes>::p(Index i) const {
     return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[i]];
 }
 

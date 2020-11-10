@@ -227,11 +227,11 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
                         {
                             Index ind_j = shell[j];
 
-                            if ((unsigned)elems[ind_j].p[0] == last)
+                            if (elems[ind_j].p[0] == last)
                             {
                                 elems[ind_j].p[0] = tab[i];
                             }
-                            else if ((unsigned)elems[ind_j].p[1] == last)
+                            else if (elems[ind_j].p[1] == last)
                             {
                                 elems[ind_j].p[1] = tab[i];
                             }

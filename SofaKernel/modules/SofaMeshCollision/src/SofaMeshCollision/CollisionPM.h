@@ -59,7 +59,7 @@ namespace sofa::component::collision
 
     class CollisionPairID{
     public:
-        CollisionPairID(int x,int y){
+        CollisionPairID(Index x, Index y){
             if(x < y){
                 _id1 = x;
                 _id2 = y;
@@ -80,8 +80,8 @@ namespace sofa::component::collision
         }
 
     private:
-        int _id1;
-        int _id2;
+        Index _id1;
+        Index _id2;
     };
 
     class CollidingPM{
@@ -91,7 +91,7 @@ namespace sofa::component::collision
             core::CollisionModel* sample;//just one collision model used to find the intersector further
 
             CollModID(){}
-            CollModID(int id,core::CollisionModel* cm) : enum_type(id),sample(cm){}
+            CollModID(Index id,core::CollisionModel* cm) : enum_type(id),sample(cm){}
 
             bool operator<(const CollModID & other)const{
                 return this->enum_type < other.enum_type;
@@ -111,7 +111,7 @@ namespace sofa::component::collision
             }
         }
 
-        void add(int a,int b,const core::CollisionElementIterator & elem1,const core::CollisionElementIterator & elem2){
+        void add(Index a, Index b,const core::CollisionElementIterator & elem1,const core::CollisionElementIterator & elem2){
             assert(elem1.getIndex() < elem1.getCollisionModel()->getSize());
             assert(elem2.getIndex() < elem2.getCollisionModel()->getSize());
             assert(elem1.getIndex() >= 0);
