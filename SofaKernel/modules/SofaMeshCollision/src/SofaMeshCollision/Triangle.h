@@ -23,4 +23,5 @@
 #include <SofaMeshCollision/config.h>
 
 #include <SofaMeshCollision/TriangleModel.h>
+SOFA_DEPRECATED_HEADER(v21.12, "SofaMeshCollision/TriangleModel.h")
 
