@@ -19,22 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MESH_COLLISION_INIT_H
-#define SOFA_COMPONENT_MESH_COLLISION_INIT_H
-#include "config.h"
+#pragma once
+#include <SofaMeshCollision/config.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
-
-
-void SOFA_MESH_COLLISION_API initMeshCollision();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component
