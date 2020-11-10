@@ -22,10 +22,6 @@
 #include <SofaMeshCollision/initSofaMeshCollision.h>
 #include <SofaMeshCollision/MeshNewProximityIntersection.h>
 
-#include <type_traits>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
-
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -64,7 +60,7 @@ const char* getModuleName()
 
 const char* getModuleVersion()
 {
-    return sofa_tostring(SOFACONSTRAINT_VERSION);
+    return sofa_tostring(SOFAMESHCOLLISION_VERSION);
 }
 
 const char* getModuleLicense()
