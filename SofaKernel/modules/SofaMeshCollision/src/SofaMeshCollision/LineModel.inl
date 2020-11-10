@@ -20,9 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_COLLISION_LINEMODEL_INL
-#define SOFA_COMPONENT_COLLISION_LINEMODEL_INL
-
+#pragma once
 #include <SofaMeshCollision/LineModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/LineLocalMinDistanceFilter.h>
@@ -34,13 +32,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using core::topology::BaseMeshTopology;
@@ -621,10 +613,4 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
     this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

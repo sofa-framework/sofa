@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef COLLISIONPM_H
-#define COLLISIONPM_H
-#include "config.h"
+#pragma once
+#include <SofaMeshCollision/config.h>
 
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/collision/Intersection.h>
@@ -30,13 +29,7 @@
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/hash.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
     class CollidingPair{

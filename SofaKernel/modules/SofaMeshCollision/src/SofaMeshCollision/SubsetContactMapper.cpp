@@ -25,20 +25,9 @@
 #include <SofaMeshCollision/SubsetContactMapper.inl>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace defaulttype;
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::collision

@@ -23,13 +23,7 @@
 #include <SofaMeshCollision/LineModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 int LineCollisionModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
@@ -45,11 +39,7 @@ int LineCollisionModelClass = core::RegisterObject("collision model using a line
         ;
 
 
-template class SOFA_MESH_COLLISION_API LineCollisionModel<defaulttype::Vec3Types>;
+template class SOFA_SOFAMESHCOLLISION_API LineCollisionModel<defaulttype::Vec3Types>;
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

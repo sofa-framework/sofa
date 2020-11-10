@@ -19,16 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "RayTriangleIntersection.h"
+#include <SofaMeshCollision/RayTriangleIntersection.h>
+
 #include <sofa/helper/LCPSolver.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 RayTriangleIntersection::RayTriangleIntersection()
@@ -79,8 +74,4 @@ bool RayTriangleIntersection::NewComputation(const sofa::defaulttype::Vector3 &p
     return true;
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

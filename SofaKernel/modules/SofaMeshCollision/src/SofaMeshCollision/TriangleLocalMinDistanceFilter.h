@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TRIANGLELOCALMINDISTANCEFILTER_H
-#define SOFA_COMPONENT_COLLISION_TRIANGLELOCALMINDISTANCEFILTER_H
-#include "config.h"
+#pragma once
+#include <SofaMeshCollision/config.h>
 
 #include <SofaMeshCollision/LocalMinDistanceFilter.h>
 #include <SofaMeshCollision/LineLocalMinDistanceFilter.h>
@@ -32,13 +31,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 using sofa::helper::AdvancedTimer;
 
@@ -97,7 +90,7 @@ protected:
 /**
  * @brief
  */
-class SOFA_MESH_COLLISION_API TriangleLocalMinDistanceFilter : public LocalMinDistanceFilter
+class SOFA_SOFAMESHCOLLISION_API TriangleLocalMinDistanceFilter : public LocalMinDistanceFilter
 {
 public:
     SOFA_CLASS(TriangleLocalMinDistanceFilter, LocalMinDistanceFilter);
@@ -201,10 +194,4 @@ private:
 };
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_COLLISION_TRIANGLELOCALMINDISTANCEFILTER_H
+} //namespace sofa::component::collision

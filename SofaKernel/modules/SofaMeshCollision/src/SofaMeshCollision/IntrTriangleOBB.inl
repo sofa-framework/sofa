@@ -21,9 +21,8 @@
 ******************************************************************************/
 #include <SofaMeshCollision/IntrTriangleOBB.h>
 
-namespace sofa{
-namespace component{
-namespace collision{
+namespace sofa::component::collision
+{
 //----------------------------------------------------------------------------
 
 template <typename TDataTypes,typename TDataTypes2>
@@ -193,6 +192,4 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
 template <typename TDataTypes,typename TDataTypes2>
 inline bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find(Real tmax){return Find(tmax,_tri->flags());}
 
-}
-}
-}
+} // namespace sofa::component::collision

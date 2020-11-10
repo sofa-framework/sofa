@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_INL
-#define SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_INL
-
+#pragma once
 #include <SofaMeshCollision/RigidContactMapper.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
@@ -29,13 +27,7 @@
 #include <sofa/simulation/DeleteVisitor.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template < class TCollisionModel, class DataTypes >
@@ -95,10 +87,4 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
     return outmodel.get();
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif /* SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_INL */
+} //namespace sofa::component::collision

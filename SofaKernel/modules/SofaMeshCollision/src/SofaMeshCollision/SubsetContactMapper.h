@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_H
-#define SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_H
-#include "config.h"
+#pragma once
+#include <SofaMeshCollision/config.h>
 
 #include <sofa/helper/Factory.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
@@ -40,13 +39,7 @@
 #include <iostream>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 
@@ -86,10 +79,4 @@ public:
     void updateXfree();
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif /* SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_H */
+} //namespace sofa::component::collision

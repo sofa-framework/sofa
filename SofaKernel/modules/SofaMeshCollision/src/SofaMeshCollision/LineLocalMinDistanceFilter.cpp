@@ -30,13 +30,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 
@@ -294,8 +288,4 @@ int LineLocalMinDistanceFilterClass = core::RegisterObject("This class manages L
         .add< LineLocalMinDistanceFilter >()
         ;
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

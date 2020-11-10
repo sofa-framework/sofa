@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAMESHCOLLISION_CONFIG_H
-#define SOFAMESHCOLLISION_CONFIG_H
+#pragma once
 
 #include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_MESH_COLLISION
-#  define SOFA_TARGET SofaMeshCollision
-#  define SOFA_MESH_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFAMESHCOLLISION_VERSION @PROJECT_VERSION@
+
+#ifdef SOFA_BUILD_SOFAMESHCOLLISION
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAMESHCOLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_MESH_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
+#  define SOFA_SOFAMESHCOLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif

@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_MESHNEWPROXIMITYINTERSECTION_INL
-#define SOFA_COMPONENT_COLLISION_MESHNEWPROXIMITYINTERSECTION_INL
-
+#pragma once
 #include <SofaMeshCollision/MeshNewProximityIntersection.h>
 #include <SofaBaseCollision/NewProximityIntersection.inl>
 #include <sofa/core/visual/VisualParams.h>
@@ -33,13 +31,7 @@
 #include <algorithm>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id, const defaulttype::Vector3& n, bool useNormal)
@@ -447,10 +439,4 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& 
     return 1;
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

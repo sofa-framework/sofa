@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_H
-#define SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_H
-#include "config.h"
+#pragma once
+#include <SofaMeshCollision/config.h>
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaMeshCollision/LocalMinDistanceFilter.h>
@@ -30,13 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template<class DataTypes>
@@ -70,7 +63,7 @@ public:
 };
 
 template<class TDataTypes>
-class SOFA_MESH_COLLISION_API PointCollisionModel : public core::CollisionModel
+class SOFA_SOFAMESHCOLLISION_API PointCollisionModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(PointCollisionModel, TDataTypes), core::CollisionModel);
@@ -200,16 +193,10 @@ using PointModel [[deprecated("The PointModel is now deprecated, please use Poin
 using Point = TPoint<sofa::defaulttype::Vec3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_CPP)
-extern template class SOFA_MESH_COLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAMESHCOLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
 
 #endif
 
 //bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension);
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

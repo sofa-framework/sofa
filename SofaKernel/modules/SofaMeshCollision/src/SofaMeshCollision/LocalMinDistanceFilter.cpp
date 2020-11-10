@@ -27,13 +27,7 @@
 #include <limits>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 using namespace defaulttype;
 using namespace core::behavior;
@@ -109,8 +103,4 @@ void InfoFilter::setValid()
     m_revision = m_lmdFilters->getRevision();
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

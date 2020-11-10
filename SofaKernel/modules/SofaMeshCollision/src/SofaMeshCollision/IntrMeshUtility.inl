@@ -23,11 +23,8 @@
 #include <SofaBaseCollision/IntrUtility3.inl>
 
 
-namespace sofa{
-namespace component{
-namespace collision{
-
-
+namespace sofa::component::collision
+{
 template <class DataTypes>
 void IntrUtil<TTriangle<DataTypes> >::triFaceNearestPoints(const IntrTri & tri,const defaulttype::Vec<3,Real> *second_face,int second_size, defaulttype::Vec<3,Real> &pt_on_first, defaulttype::Vec<3,Real> &pt_on_second){
     Real min1 = std::numeric_limits<Real>::max();
@@ -491,6 +488,4 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
 }
 
 
-}
-}
-}
+} // namespace sofa::component::collision

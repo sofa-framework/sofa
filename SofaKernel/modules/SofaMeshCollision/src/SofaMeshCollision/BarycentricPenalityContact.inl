@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICPENALITYCONTACT_INL
-#define SOFA_COMPONENT_COLLISION_BARYCENTRICPENALITYCONTACT_INL
-
+#pragma once
 #include <SofaMeshCollision/BarycentricPenalityContact.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
@@ -240,12 +232,4 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         ff->addTag(*it);
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-
-
-#endif
+} //namespace sofa::component::collision

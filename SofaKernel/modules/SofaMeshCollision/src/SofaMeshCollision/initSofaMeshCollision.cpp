@@ -19,21 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMeshCollision/initMeshCollision.h>
+#include <SofaMeshCollision/initSofaMeshCollision.h>
 #include <SofaMeshCollision/MeshNewProximityIntersection.h>
+
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace sofa::component::collision;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFAMESHCOLLISION_API void initExternalModule();
+    SOFA_SOFAMESHCOLLISION_API const char* getModuleName();
+    SOFA_SOFAMESHCOLLISION_API const char* getModuleVersion();
+    SOFA_SOFAMESHCOLLISION_API const char* getModuleLicense();
+    SOFA_SOFAMESHCOLLISION_API const char* getModuleDescription();
+    SOFA_SOFAMESHCOLLISION_API const char* getModuleComponentList();
+}
 
-
-void initMeshCollision()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -42,9 +50,34 @@ void initMeshCollision()
     }
 
     core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>("Mesh");
-    (void) pMeshNewProximityIntersectors;
+    (void)pMeshNewProximityIntersectors;
 }
 
-} // namespace component
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace sofa
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFACONSTRAINT_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Mesh Collision.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

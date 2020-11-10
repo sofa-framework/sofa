@@ -20,9 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_COLLISION_POINTMODEL_INL
-#define SOFA_COMPONENT_COLLISION_POINTMODEL_INL
-
+#pragma once
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
@@ -40,13 +38,7 @@
 
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template<class DataTypes>
@@ -487,10 +479,4 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
 }
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

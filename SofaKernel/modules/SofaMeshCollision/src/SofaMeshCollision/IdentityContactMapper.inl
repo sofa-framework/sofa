@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_INL
-#define SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_INL
-
+#pragma once
 #include <SofaMeshCollision/IdentityContactMapper.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
@@ -29,13 +27,7 @@
 #include <sofa/simulation/DeleteVisitor.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template < class TCollisionModel, class DataTypes >
@@ -71,10 +63,4 @@ typename IdentityContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Ide
 }
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

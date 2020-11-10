@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_INL
-#define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_INL
-
+#pragma once
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -30,13 +28,7 @@
 #include <sofa/simulation/DeleteVisitor.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template < class TCollisionModel, class DataTypes >
@@ -79,10 +71,4 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
     return mstate.get();
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

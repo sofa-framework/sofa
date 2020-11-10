@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_H
-#define SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_H
-#include "config.h"
+#pragma once
+#include <SofaMeshCollision/config.h>
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -31,13 +30,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaMeshCollision/PointModel.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template<class DataTypes>
@@ -80,7 +73,7 @@ public:
 };
 
 template<class TDataTypes>
-class SOFA_MESH_COLLISION_API LineCollisionModel : public core::CollisionModel
+class SOFA_SOFAMESHCOLLISION_API LineCollisionModel : public core::CollisionModel
 {
 public :
     SOFA_CLASS(SOFA_TEMPLATE(LineCollisionModel, TDataTypes), core::CollisionModel);
@@ -256,14 +249,8 @@ using  LineModel [[deprecated("The LineModel is now deprecated, please use LineC
 using Line = TLine<sofa::defaulttype::Vec3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP)
-extern template class SOFA_MESH_COLLISION_API LineCollisionModel<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAMESHCOLLISION_API LineCollisionModel<defaulttype::Vec3Types>;
 
 #endif
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

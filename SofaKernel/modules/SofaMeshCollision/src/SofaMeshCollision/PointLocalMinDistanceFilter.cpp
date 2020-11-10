@@ -34,13 +34,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 PointInfo::PointInfo(LocalMinDistanceFilter *lmdFilters)
@@ -299,8 +293,4 @@ int PointLocalMinDistanceFilterClass = core::RegisterObject("This class manages 
         .add< PointLocalMinDistanceFilter >()
         ;
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

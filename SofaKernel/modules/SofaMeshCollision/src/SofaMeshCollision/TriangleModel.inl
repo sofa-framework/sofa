@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_INL
-//#define SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_INL
-
+//#pragma once
 #include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/TriangleLocalMinDistanceFilter.h>
@@ -38,13 +36,7 @@
 
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template<class DataTypes>
@@ -539,10 +531,4 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
 
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-//#endif
+} //namespace sofa::component::collision

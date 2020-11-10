@@ -22,17 +22,13 @@
 #define SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_CPP
 #include <SofaMeshCollision/IntrTriangleOBB.inl>
 
-namespace sofa{
-namespace component{
-namespace collision{
+namespace sofa::component::collision{
 
 //----------------------------------------------------------------------------
 // Explicit instantiation.
 //----------------------------------------------------------------------------
-template class SOFA_MESH_COLLISION_API TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
+template class SOFA_SOFAMESHCOLLISION_API TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
 
 //----------------------------------------------------------------------------
 
-}
-}
-}
+} // namespace sofa::component::collision

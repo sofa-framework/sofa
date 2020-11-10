@@ -19,10 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TRIANGLE_H
-#define SOFA_COMPONENT_COLLISION_TRIANGLE_H
-#include "config.h"
+#pragma once
+#include <SofaMeshCollision/config.h>
 
 #include <SofaMeshCollision/TriangleModel.h>
 
-#endif

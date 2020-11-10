@@ -28,13 +28,7 @@
 #include <sofa/core/collision/IntersectorFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -314,9 +308,4 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
 
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::collision

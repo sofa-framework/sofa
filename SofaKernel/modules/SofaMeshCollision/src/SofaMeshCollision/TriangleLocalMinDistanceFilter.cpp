@@ -27,13 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -349,8 +343,4 @@ int TriangleLocalMinDistanceFilterClass = core::RegisterObject("This class manag
         .add< TriangleLocalMinDistanceFilter >()
         ;
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

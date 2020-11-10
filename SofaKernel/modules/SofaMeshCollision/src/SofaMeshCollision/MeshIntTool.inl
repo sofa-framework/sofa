@@ -19,15 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "MeshIntTool.h"
-namespace sofa
-{
-namespace component
-{
-namespace collision
-{
+#include <SofaMeshCollision/MeshIntTool.h>
 
-
+namespace sofa::component::collision
+{
 template <class DataTypes>
 int MeshIntTool::computeIntersection(TCapsule<DataTypes> & cap, Point & pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     if(doCapPointInt(cap,pnt.p(),alarmDist,contactDist,contacts)){
@@ -182,20 +177,4 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes>& cap, Triangle& tri,SRe
     return n + old_n;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}}}
+} // namespace sofa::component::collision

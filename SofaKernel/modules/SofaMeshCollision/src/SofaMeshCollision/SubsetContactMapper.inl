@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_INL
-#define SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_INL
-
+#pragma once
 #include <SofaMeshCollision/SubsetContactMapper.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
@@ -29,13 +27,7 @@
 #include <sofa/simulation/DeleteVisitor.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template < class TCollisionModel, class DataTypes >
@@ -159,10 +151,4 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::updateXfree()
     }
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif /* SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_INL */
+} //namespace sofa::component::collision

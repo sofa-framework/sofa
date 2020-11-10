@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_MESHNEWPROXIMITYINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_MESHNEWPROXIMITYINTERSECTION_H
-#include "config.h"
+#pragma once
+#include <SofaMeshCollision/config.h>
 
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
@@ -35,16 +34,10 @@
 #include <SofaBaseCollision/IntrUtility3.h>
 #include <SofaBaseCollision/BaseIntTool.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
-
-namespace collision
-{
-
-class SOFA_MESH_COLLISION_API MeshNewProximityIntersection : public core::collision::BaseIntersector
+class SOFA_SOFAMESHCOLLISION_API MeshNewProximityIntersection : public core::collision::BaseIntersector
 {
     typedef NewProximityIntersection::OutputVector OutputVector;
 
@@ -88,10 +81,4 @@ protected:
     NewProximityIntersection* intersection;
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

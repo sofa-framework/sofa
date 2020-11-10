@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_H
-#define SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_H
-#include "config.h"
+#pragma once
+#include <SofaMeshCollision/config.h>
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaMeshCollision/LocalMinDistanceFilter.h>
@@ -32,13 +31,7 @@
 #include <SofaMeshCollision/PointModel.h>
 #include <map>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template<class DataTypes>
@@ -108,7 +101,7 @@ public:
  * The class \sa TTriangle is used to access specific triangle of this collision Model.
  */
 template<class TDataTypes>
-class SOFA_MESH_COLLISION_API TriangleCollisionModel : public core::CollisionModel
+class SOFA_SOFAMESHCOLLISION_API TriangleCollisionModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TriangleCollisionModel, TDataTypes), core::CollisionModel);
@@ -305,13 +298,7 @@ using TriangleModel [[deprecated("The TriangleModel is now deprecated, please us
 using Triangle = TTriangle<sofa::defaulttype::Vec3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_TRIANGLECOLLISIONMODEL_CPP)
-extern template class SOFA_MESH_COLLISION_API TriangleCollisionModel<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAMESHCOLLISION_API TriangleCollisionModel<defaulttype::Vec3Types>;
 #endif
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

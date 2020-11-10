@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef ENDPOINT_H
-#define ENDPOINT_H
-#include "config.h"
+#pragma once
+#include <SofaMeshCollision/config.h>
 
 #include <iostream>
 #include <cstdio>
 #include <limits>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 class EndPoint{

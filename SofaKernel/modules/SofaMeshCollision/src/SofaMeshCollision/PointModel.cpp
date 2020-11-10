@@ -23,13 +23,7 @@
 #include <SofaMeshCollision/PointModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -46,12 +40,7 @@ int PointCollisionModelClass = core::RegisterObject("Collision model which repre
         .addAlias("PointSet")
         ;
 
-template class SOFA_MESH_COLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
+template class SOFA_SOFAMESHCOLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::collision

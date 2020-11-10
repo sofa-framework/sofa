@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_H
-#define SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_H
-#include "config.h"
+#pragma once
+#include <SofaMeshCollision/config.h>
 
 #include <sofa/core/collision/Intersection.h>
 #include <SofaBaseCollision/OBBModel.h>
@@ -29,9 +28,8 @@
 #include <SofaMeshCollision/IntrMeshUtility.h>
 #include <SofaBaseCollision/Intersector.h>
 
-namespace sofa{
-namespace component{
-namespace collision{
+namespace sofa::component::collision
+{
 
 /**
   *TDataTypes is the sphere type and TDataTypes2 the OBB type.
@@ -66,12 +64,8 @@ private:
 typedef TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types> IntrTriangleOBB;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_CPP)
-extern template class SOFA_MESH_COLLISION_API TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAMESHCOLLISION_API TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
 
 #endif
 
-}
-}
-}
-
-#endif // SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_H
+} // namespace sofa::component::collision
