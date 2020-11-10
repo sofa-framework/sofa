@@ -50,7 +50,7 @@ void PointInfo::buildFilter(Index p_index)
 
 
     bool debug=false;
-    if((int)p_index==-1)
+    if(p_index == sofa::InvalidID)
         debug=true;
 
     m_noLineModel = false;
@@ -157,7 +157,7 @@ bool PointInfo::validate(const Index p, const defaulttype::Vector3 &PQ)
 {
 
     bool debug=false;
-    if ((int)p==-1)
+    if (p == sofa::InvalidID)
         debug=true;
 
     if (isValid())
@@ -245,18 +245,7 @@ void PointLocalMinDistanceFilter::handleTopologyChange()
         msg_error() << "Filters optimization needed for topological change on rigid collision model";
         this->invalidate(); // all the filters will be recomputed, not only those involved in the topological change
     }
-
-    //core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
-
-    //assert(bmt != 0);
-
-    //std::list< const core::topology::TopologyChange * >::const_iterator itBegin = bmt->beginChange();
-    //std::list< const core::topology::TopologyChange * >::const_iterator itEnd = bmt->endChange();
-
-    //m_pointInfo.handleTopologyEvents(itBegin, itEnd);
 }
-
-
 
 void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(Index /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector<Index> &, const sofa::helper::vector< double >&)
 {

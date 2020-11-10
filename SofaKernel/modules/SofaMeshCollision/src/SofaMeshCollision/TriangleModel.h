@@ -23,13 +23,10 @@
 #include <SofaMeshCollision/config.h>
 
 #include <sofa/core/CollisionModel.h>
-#include <SofaMeshCollision/LocalMinDistanceFilter.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <map>
 
 namespace sofa::component::collision
 {
@@ -38,6 +35,10 @@ template<class DataTypes>
 class TriangleCollisionModel;
 
 class TriangleLocalMinDistanceFilter;
+
+template<class DataTypes>
+class PointCollisionModel;
+
 
 template<class TDataTypes>
 class TTriangle : public core::TCollisionElementIterator< TriangleCollisionModel<TDataTypes> >

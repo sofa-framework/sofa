@@ -23,29 +23,17 @@
 #include <SofaMeshCollision/config.h>
 
 #include <sofa/helper/Factory.h>
-#include <SofaBaseMechanics/BarycentricMapping.h>
-#include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaRigid/RigidMapping.h>
-#include <SofaBaseMechanics/SubsetMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/RigidCapsuleModel.h>
 #include <SofaBaseCollision/CylinderModel.h>
-#include <SofaBaseMechanics/IdentityMapping.h>
-#include <sofa/core/VecId.h>
-#include <iostream>
-
 
 namespace sofa::component::collision
 {
-
 
 /// Base class for all mappers using RigidMapping
 template < class TCollisionModel, class DataTypes >

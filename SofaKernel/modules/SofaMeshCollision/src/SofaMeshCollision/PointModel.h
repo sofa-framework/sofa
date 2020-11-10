@@ -27,7 +27,6 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <vector>
 
 namespace sofa::component::collision
 {

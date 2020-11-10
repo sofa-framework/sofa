@@ -25,16 +25,12 @@
 #include <SofaMeshCollision/LocalMinDistanceFilter.h>
 #include <SofaMeshCollision/LineLocalMinDistanceFilter.h>
 #include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
-#include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa::component::collision
 {
-using sofa::helper::AdvancedTimer;
-
 /**
  * @brief LocalMinDistance cone information class for a Triangle collision primitive.
  */

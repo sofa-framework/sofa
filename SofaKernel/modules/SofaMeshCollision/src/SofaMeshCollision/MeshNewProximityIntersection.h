@@ -23,13 +23,8 @@
 #include <SofaMeshCollision/config.h>
 
 #include <SofaBaseCollision/NewProximityIntersection.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/MeshIntTool.h>
 #include <SofaBaseCollision/IntrUtility3.h>
 #include <SofaBaseCollision/BaseIntTool.h>

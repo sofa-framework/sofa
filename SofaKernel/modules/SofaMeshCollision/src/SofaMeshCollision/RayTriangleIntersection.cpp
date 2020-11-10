@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaMeshCollision/RayTriangleIntersection.h>
 
+#include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/helper/LCPSolver.inl>
 
 namespace sofa::component::collision
@@ -72,6 +73,11 @@ bool RayTriangleIntersection::NewComputation(const sofa::defaulttype::Vector3 &p
         return false;
 
     return true;
+}
+
+bool RayTriangleIntersection::NewComputation(TTriangle<sofa::defaulttype::Vec3Types>* triP, const sofa::defaulttype::Vector3& origin, const sofa::defaulttype::Vector3& direction, SReal& t, SReal& u, SReal& v)
+{
+    return NewComputation(triP->p1(), triP->p2(), triP->p3(), origin, direction, t, u, v);
 }
 
 } //namespace sofa::component::collision

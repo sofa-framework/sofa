@@ -21,15 +21,14 @@
 ******************************************************************************/
 #pragma once
 #include <SofaMeshCollision/config.h>
-
-#include <SofaMeshCollision/Triangle.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::collision
 {
-
+template <class DataTypes>
+class TTriangle;
 
 /// this class computes if a Triangle P intersects a line segment
-
 class SOFA_SOFAMESHCOLLISION_API RayTriangleIntersection
 {
 public:
@@ -37,10 +36,7 @@ public:
     ~RayTriangleIntersection();
 
     bool NewComputation( const sofa::defaulttype::Vector3 &p1, const sofa::defaulttype::Vector3 &p2, const sofa::defaulttype::Vector3 &p3, const sofa::defaulttype::Vector3 &origin, const sofa::defaulttype::Vector3 &direction,  SReal &t,  SReal &u, SReal &v);
-    bool NewComputation( Triangle *triP, const sofa::defaulttype::Vector3 &origin, const sofa::defaulttype::Vector3 &direction,  SReal &t,  SReal &u, SReal &v)
-    {
-        return NewComputation( triP->p1(), triP->p2(), triP->p3(), origin, direction, t, u, v);
-    }
+    bool NewComputation(TTriangle<sofa::defaulttype::Vec3Types>* triP, const sofa::defaulttype::Vector3& origin, const sofa::defaulttype::Vector3& direction, SReal& t, SReal& u, SReal& v);
 };
 
 } //namespace sofa::component::collision

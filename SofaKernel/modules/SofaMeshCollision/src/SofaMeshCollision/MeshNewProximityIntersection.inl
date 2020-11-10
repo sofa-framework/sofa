@@ -23,12 +23,9 @@
 #include <SofaMeshCollision/MeshNewProximityIntersection.h>
 #include <SofaBaseCollision/NewProximityIntersection.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/collision/Intersection.inl>
-#include <iostream>
-#include <algorithm>
 
 
 namespace sofa::component::collision

@@ -23,7 +23,6 @@
 #include <SofaMeshCollision/config.h>
 
 #include <SofaMeshCollision/LocalMinDistanceFilter.h>
-#include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 #include <sofa/defaulttype/VecTypes.h>

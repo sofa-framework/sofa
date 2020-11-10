@@ -22,19 +22,15 @@
 //#pragma once
 #include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <SofaMeshCollision/PointModel.h>
 #include <SofaMeshCollision/TriangleLocalMinDistanceFilter.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <SofaMeshCollision/Triangle.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/simulation/Node.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
-#include <sofa/core/CollisionElement.h>
-#include <vector>
-#include <iostream>
-
+#include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologyChange.h>
-
-#include <sofa/simulation/Simulation.h>
+#include <vector>
 
 namespace sofa::component::collision
 {

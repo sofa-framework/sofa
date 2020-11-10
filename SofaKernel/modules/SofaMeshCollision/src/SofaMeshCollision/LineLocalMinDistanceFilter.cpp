@@ -49,7 +49,7 @@ void LineInfo::buildFilter(Index edge_index)
 
     bool debug=false;
 
-    if ((int)edge_index==-1)
+    if (edge_index == sofa::InvalidID)
         debug=true;
 
     BaseMeshTopology* bmt = this->base_mesh_topology;
@@ -59,21 +59,19 @@ void LineInfo::buildFilter(Index edge_index)
     const sofa::defaulttype::Vector3 &pt1 = (*this->position_filtering)[e[0]];
     const sofa::defaulttype::Vector3 &pt2 = (*this->position_filtering)[e[1]];
 
-    if (debug)
-        std::cout<<"pt1: "<<pt1<<"  - pt2: "<<pt2;
+    msg_info_when(debug, "LineInfo") <<"pt1: "<<pt1<<"  - pt2: "<<pt2;
 
     m_lineVector = pt2 - pt1;
     m_lineVector.normalize();
 
     const auto& trianglesAroundEdge = bmt->getTrianglesAroundEdge(edge_index);
 
-    if (debug)
-        std::cout<<"trianglesAroundEdge: "<<trianglesAroundEdge<<"  -";
+    msg_info_when(debug, "LineInfo") <<"trianglesAroundEdge: "<<trianglesAroundEdge<<"  -";
 
     // filter if there are two triangles around the edge
     if (trianglesAroundEdge.size() == 1)
     {
-        std::cout<<"TODO : validity for segment on a single triangle"<<std::endl;
+        msg_info_when(debug, "LineInfo") <<"TODO : validity for segment on a single triangle";
     }
 
     // filter if there are two triangles around the edge
@@ -114,14 +112,14 @@ void LineInfo::buildFilter(Index edge_index)
     // compute the angle for the cone to filter contacts using the normal of the triangle situated on the right
     m_computedRightAngleCone = (m_nMean * m_triangleRight) * m_lmdFilters->getConeExtension();
     if(debug)
-        std::cout<<"m_nMean: "<<m_nMean<<" - m_triangleRight:"<<m_triangleRight<<" - m_triangleLeft:"<<m_triangleLeft<<std::endl;
+        msg_info_when(debug, "LineInfo") << "m_nMean: "<<m_nMean<<" - m_triangleRight:"<<m_triangleRight<<" - m_triangleLeft:"<<m_triangleLeft;
     if (m_computedRightAngleCone < 0)
     {
         m_computedRightAngleCone = 0.0;
     }
     m_computedRightAngleCone += m_lmdFilters->getConeMinAngle();
     if( debug)
-        std::cout<<"m_computedRightAngleCone :"<<m_computedRightAngleCone<<std::endl;
+        msg_info_when(debug, "LineInfo") <<"m_computedRightAngleCone :"<<m_computedRightAngleCone;
 
     // compute the angle for the cone to filter contacts using the normal of the triangle situated on the left
     m_computedLeftAngleCone = (m_nMean * m_triangleLeft) * m_lmdFilters->getConeExtension();
@@ -131,7 +129,7 @@ void LineInfo::buildFilter(Index edge_index)
     }
     m_computedLeftAngleCone += m_lmdFilters->getConeMinAngle();
     if( debug)
-        std::cout<<"m_computedLeftAngleCone :"<<m_computedRightAngleCone<<std::endl;
+        msg_info_when(debug, "LineInfo")<<"m_computedLeftAngleCone :"<<m_computedRightAngleCone;
 
 
     setValid();
@@ -141,21 +139,18 @@ bool LineInfo::validate(const Index edge_index, const defaulttype::Vector3& PQ)
 {
     bool debug=false;
 
-    if ((int)edge_index==-1)
+    if (edge_index == sofa::InvalidID)
         debug=true;
 
     if (isValid())
     {
-        if (debug)
-            std::cout<<"Line "<<edge_index<<" is valid"<<std::endl;
+        msg_info_when(debug, "LineInfo") << "Line " << edge_index << " is valid";
+
         if (m_twoTrianglesAroundEdge)
         {
-            if (debug)
-            {
-                std::cout<<"m_triangleRight :"<<m_triangleRight<<"  - m_triangleLeft"<<m_triangleLeft<<std::endl;
-                std::cout<<"m_twoTrianglesAroundEdge ok tests: "<< (m_nMean * PQ)<<"<0 ?  - "<<m_triangleRight * PQ <<" < "<<-m_computedRightAngleCone * PQ.norm()<<" ?  - " <<m_triangleLeft * PQ <<" < "<<-m_computedLeftAngleCone * PQ.norm()<<" ?"<<std::endl;
+            msg_info_when(debug, "LineInfo") << "m_triangleRight :" << m_triangleRight << "  - m_triangleLeft" << m_triangleLeft;
+            msg_info_when(debug, "LineInfo") <<"m_twoTrianglesAroundEdge ok tests: "<< (m_nMean * PQ)<<"<0 ?  - "<<m_triangleRight * PQ <<" < "<<-m_computedRightAngleCone * PQ.norm()<<" ?  - " <<m_triangleLeft * PQ <<" < "<<-m_computedLeftAngleCone * PQ.norm()<<" ?";
 
-            }
             if ((m_nMean * PQ) < 0)
                 return false;
 
@@ -182,8 +177,8 @@ bool LineInfo::validate(const Index edge_index, const defaulttype::Vector3& PQ)
     }
     else
     {
-        if (debug)
-            std::cout<<"Line "<<edge_index<<" is no valid ------------ build"<<std::endl;
+        msg_info_when(debug, "LineInfo") <<"Line "<<edge_index<<" is no valid ------------ build";
+
         buildFilter(edge_index);
         return validate(edge_index, PQ);
     }

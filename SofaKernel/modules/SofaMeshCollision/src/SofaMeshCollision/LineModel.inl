@@ -19,18 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
 #include <SofaMeshCollision/LineModel.h>
+
+#include <SofaMeshCollision/PointModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/LineLocalMinDistanceFilter.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <SofaMeshCollision/Line.h>
 #include <sofa/core/CollisionElement.h>
-#include <vector>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/simulation/Simulation.h>
+#include <vector>
 
 namespace sofa::component::collision
 {

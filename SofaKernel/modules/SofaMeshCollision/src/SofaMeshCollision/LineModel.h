@@ -24,11 +24,9 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <SofaMeshCollision/LocalMinDistanceFilter.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaMeshCollision/PointModel.h>
 
 namespace sofa::component::collision
 {
@@ -37,6 +35,9 @@ template<class DataTypes>
 class LineCollisionModel;
 
 class LineLocalMinDistanceFilter;
+
+template<class DataTypes>
+class PointCollisionModel;
 
 template<class TDataTypes>
 class TLine : public core::TCollisionElementIterator<LineCollisionModel<TDataTypes> >
