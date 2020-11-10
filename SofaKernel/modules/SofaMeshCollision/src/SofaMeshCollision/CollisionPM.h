@@ -219,7 +219,4 @@ namespace sofa::component::collision
         umap_collision _coll_pairs[sofa::core::CollisionModel::ENUM_TYPE_SIZE][sofa::core::CollisionModel::ENUM_TYPE_SIZE];
         core::collision::ElementIntersector * _intersectors[sofa::core::CollisionModel::ENUM_TYPE_SIZE][sofa::core::CollisionModel::ENUM_TYPE_SIZE];
     };
-}
-}
-}
-#endif // COLLISIONPM_H
+} // namespace sofa::component::collision

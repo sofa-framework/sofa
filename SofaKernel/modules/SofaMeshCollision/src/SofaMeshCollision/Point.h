@@ -23,5 +23,3 @@
 #include <SofaMeshCollision/config.h>
 
 #include <SofaMeshCollision/PointModel.h>
-
-#endif

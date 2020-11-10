@@ -116,7 +116,4 @@ struct CompPEndPoint{
     }
 };
 
-}
-}
-}
-#endif // ENDPOINT_H
+} // namespace sofa::component::collision
