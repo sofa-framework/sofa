@@ -102,7 +102,7 @@ public:
     void resize(std::size_t size) override;
 
     void setParentOf(index_type childIndex, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
-    void setParentOf(int childIndex, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max, const sofa::defaulttype::Vector3& normal, const SReal angle=0);
+    void setParentOf(Index childIndex, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max, const sofa::defaulttype::Vector3& normal, const SReal angle=0);
     void setLeafCube(index_type cubeIndex, index_type childIndex);
     void setLeafCube(index_type cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
 
