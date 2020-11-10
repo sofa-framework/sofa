@@ -41,6 +41,7 @@
 
 namespace sofa::component::mass
 {
+using namespace sofa::core::topology;
 
 template <class DataTypes, class MassType>
 MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
