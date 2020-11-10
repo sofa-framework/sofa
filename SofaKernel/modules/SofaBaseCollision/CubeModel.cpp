@@ -174,6 +174,7 @@ void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (!isActive() || !((getNext()==nullptr)?vparams->displayFlags().getShowCollisionModels():vparams->displayFlags().getShowBoundingCollisionModels())) return;
 
+    // The deeper in the CubeModel graph, the higher the transparency of the bounding cube lines
     int level=0;
     CollisionModel* m = getPrevious();
     float color = 1.0f;
@@ -191,17 +192,8 @@ void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
 
 
     std::vector< Vector3 > points;
-    std::vector< Vec<4,float> > colours;
     for (index_type i=0; i<size; i++)
     {
-        if(elems[i].coneAngle < M_PI/2)
-            c[1] = c[2] = 0.5f;
-        else
-            c[1] = c[2] = 1.0f;
-
-        for(int j=0; j<12; j++)
-            colours.push_back(c);
-
         const Vector3& vmin = elems[i].minBBox;
         const Vector3& vmax = elems[i].maxBBox;
 
