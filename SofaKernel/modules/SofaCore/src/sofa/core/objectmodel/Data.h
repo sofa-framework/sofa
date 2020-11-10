@@ -357,13 +357,13 @@ public:
     /// Get info about the value type of the associated variable
     const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
     {
-        return sofa::defaulttype::DataTypeId<T>::GetDataTypeInfo();
+        return sofa::defaulttype::TypeInfo::Get<T>();
     }
 
     /// Helper method to get the type name of type T
     static std::string GetTypeName()
     {
-        auto tmp = sofa::defaulttype::DataTypeId<T>::GetDataTypeInfo();
+        auto tmp = sofa::defaulttype::TypeInfo::Get<T>();
         if(tmp)
             return tmp->getTypeName();
         return "unknow";
@@ -372,7 +372,7 @@ public:
     /// Helper method to get the type name of type T
     static std::string GetName()
     {
-        auto tmp = sofa::defaulttype::DataTypeId<T>::GetDataTypeInfo();
+        auto tmp = sofa::defaulttype::TypeInfo::Get<T>();
         if(tmp)
             return tmp->getName();
         return "unknow";

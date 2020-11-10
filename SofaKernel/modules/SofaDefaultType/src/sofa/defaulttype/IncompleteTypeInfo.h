@@ -69,21 +69,16 @@ public:
     /// values inside this container.
     /// For example, if the type is `fixed_array<fixed_array<int, 2> 3>`, it
     /// returns the TypeInfo for `fixed_array<int, 2>`.
-    [[deprecated("This method is deprecated and replaced with getValueType.")]]
-    const AbstractTypeInfo* BaseType() const { return getBaseType(); }
     virtual const AbstractTypeInfo* getBaseType() const = 0;
 
     /// Returns the TypeInfo for the type of the values accessible by the
     /// get*Value() functions.
     /// For example, if the type is `fixed_array<fixed_array<int, 2> 3>`, it
     /// returns the TypeInfo for `int`.
-    [[deprecated("This method is deprecated and replaced with getValueType.")]]
-    const AbstractTypeInfo* ValueType() const { return getValueType(); }
     virtual const AbstractTypeInfo* getValueType() const = 0;
 
     /// \brief Returns the name of this type.
-    [[deprecated("This method is deprecated and replaced with getName.")]]
-    std::string name() const { return getName(); }
+    virtual std::string name() const = 0;
 
     /// \brief Returns the name of this type.
     virtual std::string getName() const = 0;

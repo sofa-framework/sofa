@@ -24,6 +24,7 @@
 
 // Including component
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 #include "../deformationMapping/LinearMapping.h"
 
 #include <SofaTest/Mapping_test.h>

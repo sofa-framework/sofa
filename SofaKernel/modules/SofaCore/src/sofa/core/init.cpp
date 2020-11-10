@@ -47,7 +47,7 @@ SOFA_CORE_API void init()
         for(auto& info : sofa::defaulttype::DataTypeInfoRegistry::GetRegisteredTypes(sofa_tostring(SOFA_TARGET)))
         {
             std::string s = (info->ValidInfo())?"-":"!";
-            std::cout << "  " << s << " "  << info->name() << std::endl;
+            std::cout << "  " << s << " "  << info->getName() << std::endl;
         }
     }
 }

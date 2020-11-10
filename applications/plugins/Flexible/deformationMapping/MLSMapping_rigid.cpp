@@ -27,6 +27,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 #include "../types/AffineTypes.h"
 #include "../types/QuadraticTypes.h"
 #include "../types/DeformationGradientTypes.h"

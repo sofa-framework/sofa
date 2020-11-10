@@ -21,6 +21,8 @@
 ******************************************************************************/
 #define FLEXIBLE_RigidConstraint_CPP
 
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include "QuadraticTypes.h"
 #include "AffineTypes.h"
 #include "RigidConstraint.h"

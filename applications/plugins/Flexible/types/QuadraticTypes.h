@@ -23,6 +23,7 @@
 #define FLEXIBLE_QUADRATICTYPES_H
 
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
@@ -569,11 +570,13 @@ template<> inline const char* Quadratic3dTypes::Name() { return "Quadratic"; }
 
 template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3dTypes::Coord > : public FixedArrayTypeInfo< sofa::defaulttype::Quadratic3dTypes::Coord, sofa::defaulttype::Quadratic3dTypes::Coord::total_size >
 {
-    static std::string name() { std::ostringstream o; o << "QuadraticCoord<" << sofa::defaulttype::Quadratic3dTypes::Coord::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3dTypes::Real>::name() << ">"; return o.str(); }
+    static std::string GetName() { std::ostringstream o; o << "QuadraticCoord" << sofa::defaulttype::Quadratic3dTypes::Coord::total_size << DataTypeName<sofa::defaulttype::Quadratic3dTypes::Real>::GetName() ; return o.str(); }
+    static std::string GetTypeName() { std::ostringstream o; o << "QuadraticCoord<" << sofa::defaulttype::Quadratic3dTypes::Coord::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3dTypes::Real>::GetTypeName() << ">"; return o.str(); }
 };
 template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3dTypes::Deriv > : public FixedArrayTypeInfo< sofa::defaulttype::Quadratic3dTypes::Deriv, sofa::defaulttype::Quadratic3dTypes::Deriv::total_size >
 {
-    static std::string name() { std::ostringstream o; o << "QuadraticDeriv<" << sofa::defaulttype::Quadratic3dTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3dTypes::Real>::name() << ">"; return o.str(); }
+    static std::string GetName() { std::ostringstream o; o << "QuadraticDeriv" << sofa::defaulttype::Quadratic3dTypes::Deriv::total_size << DataTypeName<sofa::defaulttype::Quadratic3dTypes::Real>::GetName() ; return o.str(); }
+    static std::string GetTypeName() { std::ostringstream o; o << "QuadraticDeriv<" << sofa::defaulttype::Quadratic3dTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3dTypes::Real>::GetTypeName() << ">"; return o.str(); }
 };
 
 // The next line hides all those methods from the doxygen documentation

@@ -295,7 +295,7 @@ struct ImageDataEngine_test : public DataEngine_test<DataEngineType>
 
             const defaulttype::AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
 
-            if( typeinfo->name().find("Image") != std::string::npos || typeinfo->name().find("BranchingImage") != std::string::npos )
+            if( typeinfo->getName().find("Image") != std::string::npos || typeinfo->getName().find("BranchingImage") != std::string::npos )
             {
                 defaulttype::BaseImage* img = static_cast<defaulttype::BaseImage*>( data->beginEditVoidPtr() );
                 img->setDimensions( defaulttype::BaseImage::imCoord(2,2,2,1,1) );

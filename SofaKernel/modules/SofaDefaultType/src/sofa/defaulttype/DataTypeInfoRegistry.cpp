@@ -80,7 +80,7 @@ int DataTypeInfoRegistry::Set(const BaseDataTypeId& tid, AbstractTypeInfo* info,
     {
         if( typeinfos[id] != info && info->ValidInfo())
         {
-            std::cout << " Promoting typeinfo "<< id << " from " << typeinfos[id]->name() << " to " << info->name() << std::endl;
+            std::cout << " Promoting typeinfo "<< id << " from " << typeinfos[id]->getName() << " to " << info->getName() << std::endl;
             info->setCompilationTarget(compilationTarget);
             typeinfos[id] = info;
             return 2;
@@ -89,11 +89,11 @@ int DataTypeInfoRegistry::Set(const BaseDataTypeId& tid, AbstractTypeInfo* info,
     }
     if( info->ValidInfo() )
     {
-        std::cout << " Registering a new type info at "  << id << " => " << info->name() << " - " << info->getTypeName() << "(Complete)" << (void*)info << std::endl;
+        std::cout << " Registering a complete type info at "  << id << " => " << info->getName() << " - " << info->getTypeName() << std::endl;
     }
     else
     {
-        std::cout << " Registering a new type info at "  << id << " => " << info->name() << "(Partial)" << std::endl;
+        std::cout << " Registering a partial new type info at "  << id << " => " << info->getName() << std::endl;
     }
     info->setCompilationTarget(compilationTarget);
     typeinfos[id] = info;

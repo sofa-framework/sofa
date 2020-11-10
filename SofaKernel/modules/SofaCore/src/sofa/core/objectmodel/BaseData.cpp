@@ -98,15 +98,12 @@ BaseData::~BaseData()
 
 bool BaseData::validParent(BaseData* parent)
 {
-
-    std::cout << "type: " << this->getValueTypeInfo()->name() << " && " << parent->getValueTypeInfo()->name() << std::endl;
-    std::cout << "cvt: " << this->getValueTypeInfo()->ValidInfo() << "  " << parent->getValueTypeInfo()->ValidInfo() << std::endl;
-
     // Check if automatic conversion is possible
     if (this->getValueTypeInfo()->ValidInfo() && parent->getValueTypeInfo()->ValidInfo())
         return true;
     // Check if one of the data is a simple string
-    if (this->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::GetName() || parent->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::GetName())
+    if (this->getValueTypeInfo() == sofa::defaulttype::TypeInfo::Get<std::string>()
+            || parent->getValueTypeInfo() == sofa::defaulttype::TypeInfo::Get<std::string>())
         return true;
     // No conversion found
     return false;
@@ -122,9 +119,9 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
     {
         if (m_owner)
         {
-            msg_error(m_owner) << "Invalid Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName();
-            msg_error_when(!this->getValueTypeInfo()->ValidInfo(), m_owner) << "Possible reason: destination Data " << getName() << " has an unknown type";
-            msg_error_when(!parent->getValueTypeInfo()->ValidInfo(), m_owner) << "Possible reason: source Data " << parent->getName() << " has an unknown type";
+            msg_error(m_owner) << "Invalid Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName() << msgendl
+                << "Destination Data " << parent->getValueTypeInfo()->getName() << msgendl
+                << "Source Data " << parent->getValueTypeInfo()->getName();
         }
         return false;
     }
@@ -191,7 +188,8 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
     const defaulttype::AbstractTypeInfo* parentInfo = parent->getValueTypeInfo();
 
     // Check if one of the data is a simple string
-    if (this->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::GetName() || parent->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::GetName())
+    if (this->getValueTypeInfo() == sofa::defaulttype::TypeInfo::Get<std::string>() ||
+            parent->getValueTypeInfo() == sofa::defaulttype::TypeInfo::Get<std::string>())
     {
         std::string text = parent->getValueString();
         return this->read(text);
@@ -215,12 +213,12 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
         inSize = parentInfo->size(parentValue);
         if (outSize > inSize)
         {
-            msgs << "parent Data type " << parentInfo->name() << " contains " << inSize << " values while Data type " << dataInfo->name() << " requires " << outSize << " values.";
+            msgs << "parent Data type " << parentInfo->getName() << " contains " << inSize << " values while Data type " << dataInfo->getName() << " requires " << outSize << " values.";
             copySize = inSize;
         }
         else if (outSize < inSize)
         {
-            msgs << "parent Data type " << parentInfo->name() << " contains " << inSize << " values while Data type " << dataInfo->name() << " only requires " << outSize << " values.";
+            msgs << "parent Data type " << parentInfo->getName() << " contains " << inSize << " values while Data type " << dataInfo->getName() << " only requires " << outSize << " values.";
             copySize = outSize;
         }
         else
@@ -231,9 +229,9 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
         std::size_t dataBSize = dataInfo->size();
         std::size_t parentBSize = parentInfo->size();
         if (dataBSize > parentBSize)
-            msgs << "parent Data type " << parentInfo->name() << " contains " << parentBSize << " values per element while Data type " << dataInfo->name() << " requires " << dataBSize << " values.";
+            msgs << "parent Data type " << parentInfo->getName() << " contains " << parentBSize << " values per element while Data type " << dataInfo->getName() << " requires " << dataBSize << " values.";
         else if (dataBSize < parentBSize)
-            msgs << "parent Data type " << parentInfo->name() << " contains " << parentBSize << " values per element while Data type " << dataInfo->name() << " only requires " << dataBSize << " values.";
+            msgs << "parent Data type " << parentInfo->getName() << " contains " << parentBSize << " values per element while Data type " << dataInfo->getName() << " only requires " << dataBSize << " values.";
         std::size_t parentSize = parentInfo->size(parentValue);
         inSize = parentBSize;
         outSize = dataBSize;

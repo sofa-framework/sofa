@@ -480,7 +480,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
             else
             {
                 BaseData* parentData = dataVec[d]->getParent();
-                msg_info() << "Link from parent Data " << value << " (" << parentData->getValueTypeInfo()->name() << ") to Data " << attribute << "(" << dataVec[d]->getValueTypeInfo()->name() << ") OK";
+                msg_info() << "Link from parent Data " << value << " (" << parentData->getValueTypeInfo()->getName() << ") to Data " << attribute << "(" << dataVec[d]->getValueTypeInfo()->getName() << ") OK";
             }
             /* children Data cannot be modified changing the parent Data value */
             dataVec[d]->setReadOnly(true);

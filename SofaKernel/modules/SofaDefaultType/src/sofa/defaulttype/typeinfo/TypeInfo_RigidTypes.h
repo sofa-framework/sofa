@@ -29,15 +29,14 @@ namespace sofa::defaulttype
 {
 
 template<std::size_t N, typename real>
-struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidDeriv<N,real>,
-                                                                                          sofa::defaulttype::RigidDeriv<N,real>::total_size >
-//struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public IncompleteTypeInfo< sofa::defaulttype::RigidDeriv<N,real> >
+struct DataTypeInfo< sofa::defaulttype::StdRigidTypes<N, real> > : public sofa::defaulttype::DefaultDataTypeInfo<sofa::defaulttype::StdRigidTypes<N, real>>
 {
-    static std::string GetTypeName() { std::ostringstream o; o << "RigidDeriv<" << N << "," << DataTypeName<real>::GetTypeName() << ">"; return o.str(); }
+public:
+    static std::string GetTypeName() { std::ostringstream o; o << "RigidTypes<" << N << "," << DataTypeName<real>::GetTypeName() << ">"; return o.str(); }
     static std::string GetName()
     {
         std::ostringstream o;
-        o << "RigidDeriv" << N << DataTypeInfo<real>::GetName();
+        o << "RigidTypes" << N << DataTypeInfo<real>::GetName();
         return o.str();
     }
 };
@@ -51,6 +50,20 @@ struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArray
     {
         std::ostringstream o;
         o << "RigidCoord" << N << DataTypeInfo<real>::GetName() ;
+        return o.str();
+    }
+};
+
+template<std::size_t N, typename real>
+struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidDeriv<N,real>,
+                                                                                          sofa::defaulttype::RigidDeriv<N,real>::total_size >
+//struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public IncompleteTypeInfo< sofa::defaulttype::RigidDeriv<N,real> >
+{
+    static std::string GetTypeName() { std::ostringstream o; o << "RigidDeriv<" << N << "," << DataTypeName<real>::GetTypeName() << ">"; return o.str(); }
+    static std::string GetName()
+    {
+        std::ostringstream o;
+        o << "RigidDeriv" << N << DataTypeInfo<real>::GetName();
         return o.str();
     }
 };

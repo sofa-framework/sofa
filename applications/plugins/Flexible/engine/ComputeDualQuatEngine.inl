@@ -2,6 +2,7 @@
 
 #include "../types/AffineTypes.h"
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
 #include <sofa/helper/DualQuat.h>
 
 namespace

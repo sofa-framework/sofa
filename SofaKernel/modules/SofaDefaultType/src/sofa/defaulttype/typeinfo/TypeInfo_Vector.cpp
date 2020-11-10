@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
 namespace sofa::defaulttype
@@ -58,8 +59,8 @@ int vectorPreLoad()
             fixed_array<unsigned int, 1>, fixed_array<unsigned int, 2>, fixed_array<unsigned int, 3>, fixed_array<unsigned int, 4>, fixed_array<unsigned int, 5>, fixed_array<unsigned int, 6>, fixed_array<unsigned int, 7>, fixed_array<unsigned int, 8>,
             fixed_array<long, 1>, fixed_array<long, 2>, fixed_array<long, 3>, fixed_array<long, 4>, fixed_array<long, 5>, fixed_array<long, 6>, fixed_array<long, 7>, fixed_array<long, 8>,
             fixed_array<unsigned long, 1>, fixed_array<unsigned int, 2>, fixed_array<unsigned long, 3>, fixed_array<unsigned long, 4>, fixed_array<unsigned long, 5>, fixed_array<unsigned long, 6>, fixed_array<unsigned long, 7>, fixed_array<unsigned long, 8>,
-
-
+            Rigid2dMass, Rigid2dTypes, Rigid2fMass, Rigid2fTypes,
+            Rigid3dMass, Rigid3dTypes, Rigid3fMass, Rigid3fTypes,
             sofa::helper::types::RGBAColor, BoundingBox>([]<typename T>()
                                                          {
                                                              DataTypeInfoRegistry::Set(DataTypeId<vector<T>>::getTypeId(),

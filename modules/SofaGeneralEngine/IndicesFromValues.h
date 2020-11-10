@@ -74,7 +74,7 @@ public:
     /// instead of the default one generated automatically by the SOFA_CLASS() macro.
     static std::string GetCustomTemplateName()
     {
-        return sofa::defaulttype::DataTypeId<T>::GetDataTypeInfo()->name();
+        return sofa::defaulttype::TypeInfo::Get<T>()->getName();
     }
 };
 
@@ -89,11 +89,6 @@ extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues< helper::fixed_a
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<double>;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec2d>;
 extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Vec3d>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Coord>;
-// extern template class SOFA_GENERAL_ENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
- 
 #endif
 
 } // namespace engine

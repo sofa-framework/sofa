@@ -29,6 +29,9 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/random.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>
 #endif /* SOFA_SMP */
@@ -416,11 +419,13 @@ typedef StdAffineTypes<3, double> Affine3dTypes;
 // Specialization of the defaulttype::DataTypeInfo type traits template
 template<> struct DataTypeInfo< sofa::defaulttype::Affine3dTypes::Coord > : public FixedArrayTypeInfo< sofa::defaulttype::Affine3dTypes::Coord, sofa::defaulttype::Affine3dTypes::Coord::total_size >
 {
-    static std::string name() { std::ostringstream o; o << "AffineCoord<" << sofa::defaulttype::Affine3dTypes::Coord::total_size << "," << DataTypeName<sofa::defaulttype::Affine3dTypes::Real>::name() << ">"; return o.str(); }
+    static std::string GetName() { std::ostringstream o; o << "AffineCoord" << sofa::defaulttype::Affine3dTypes::Coord::total_size << DataTypeName<sofa::defaulttype::Affine3dTypes::Real>::GetName() ; return o.str(); }
+    static std::string GetTypeName() { std::ostringstream o; o << "AffineCoord<" << sofa::defaulttype::Affine3dTypes::Coord::total_size << "," << DataTypeName<sofa::defaulttype::Affine3dTypes::Real>::GetTypeName() << ">"; return o.str(); }
 };
 template<> struct DataTypeInfo< sofa::defaulttype::Affine3dTypes::Deriv > : public FixedArrayTypeInfo< sofa::defaulttype::Affine3dTypes::Deriv, sofa::defaulttype::Affine3dTypes::Deriv::total_size >
 {
-    static std::string name() { std::ostringstream o; o << "AffineDeriv<" << sofa::defaulttype::Affine3dTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Affine3dTypes::Real>::name() << ">"; return o.str(); }
+    static std::string GetName() { std::ostringstream o; o << "AffineDeriv" << sofa::defaulttype::Affine3dTypes::Deriv::total_size << DataTypeName<sofa::defaulttype::Affine3dTypes::Real>::GetName(); return o.str(); }
+    static std::string GetTypeName() { std::ostringstream o; o << "AffineDeriv<" << sofa::defaulttype::Affine3dTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Affine3dTypes::Real>::GetTypeName() << ">"; return o.str(); }
 };
 
 typedef Affine3dTypes Affine3Types;
