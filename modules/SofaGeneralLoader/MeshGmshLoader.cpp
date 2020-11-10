@@ -164,7 +164,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     // --- Loading Vertices ---
     file >> npoints; //nb points
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
+    auto my_positions = getWriteOnlyAccessor(d_positions);
 
     std::vector<unsigned int> pmap; // map for reordering vertices possibly not well sorted
     for (unsigned int i=0; i<npoints; ++i)
@@ -180,7 +180,6 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 
         pmap[index] = i; // In case of hole or switch
     }
-    d_positions.endEdit();
 
     file >> cmd;
     if (cmd != "$ENDNOD" && cmd != "$EndNodes")
@@ -202,18 +201,18 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 
     file >> nelems; //Loading number of Element
 
-    helper::vector<Edge>& my_edges = *(d_edges.beginEdit());
-    helper::vector<Triangle>& my_triangles = *(d_triangles.beginEdit());
-    helper::vector<Quad>& my_quads = *(d_quads.beginEdit());
-    helper::vector<Tetrahedron>& my_tetrahedra = *(d_tetrahedra.beginEdit());
-    helper::vector<Hexahedron>& my_hexahedra = *(d_hexahedra.beginEdit());
+    auto my_edges = getWriteOnlyAccessor(d_edges);
+    auto my_triangles = getWriteOnlyAccessor(d_triangles);
+    auto my_quads = getWriteOnlyAccessor(d_quads);
+    auto my_tetrahedra = getWriteOnlyAccessor(d_tetrahedra);
+    auto my_hexahedra = getWriteOnlyAccessor(d_hexahedra);
 
-    helper::vector<HighOrderEdgePosition >& my_highOrderEdgePositions = *(d_highOrderEdgePositions.beginEdit());
+    auto my_highOrderEdgePositions = getWriteOnlyAccessor(d_highOrderEdgePositions);
 
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_edgesGroups = *(d_edgesGroups.beginEdit());
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_trianglesGroups = *(d_trianglesGroups.beginEdit());
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_tetrahedraGroups = *(d_tetrahedraGroups.beginEdit());
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_hexahedraGroups = *(d_hexahedraGroups.beginEdit());
+    auto my_edgesGroups = getWriteOnlyAccessor(d_edgesGroups);
+    auto my_trianglesGroups = getWriteOnlyAccessor(d_trianglesGroups);
+    auto my_tetrahedraGroups = getWriteOnlyAccessor(d_tetrahedraGroups);
+    auto my_hexahedraGroups = getWriteOnlyAccessor(d_hexahedraGroups);
 
     for (unsigned int i=0; i<nelems; ++i) // for each elem
     {
@@ -290,32 +289,32 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
         switch (etype)
         {
         case 1: // Line
-            addInGroup(my_edgesGroups,tag,my_edges.size());
-            addEdge(&my_edges, Edge(nodes[0], nodes[1]));
+            addInGroup(my_edgesGroups.wref(),tag,my_edges.size());
+            addEdge(&my_edges.wref(), Edge(nodes[0], nodes[1]));
             ++nlines;
             break;
         case 2: // Triangle
-            addInGroup(my_trianglesGroups,tag,my_triangles.size());
-            addTriangle(&my_triangles, Triangle(nodes[0], nodes[1], nodes[2]));
+            addInGroup(my_trianglesGroups.wref(),tag,my_triangles.size());
+            addTriangle(&my_triangles.wref(), Triangle(nodes[0], nodes[1], nodes[2]));
             ++ntris;
             break;
         case 3: // Quad
-            addQuad(&my_quads, Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+            addQuad(&my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
             ++nquads;
             break;
         case 4: // Tetra
-            addInGroup(my_tetrahedraGroups,tag,my_tetrahedra.size());
-            addTetrahedron(&my_tetrahedra, Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+            addInGroup(my_tetrahedraGroups.wref(),tag,my_tetrahedra.size());
+            addTetrahedron(&my_tetrahedra.wref(), Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
             ++ntetrahedra;
             break;
         case 5: // Hexa
-            addInGroup(my_hexahedraGroups,tag,my_hexahedra.size());
-            addHexahedron(&my_hexahedra,Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4],nodes[5],nodes[6],nodes[7]));
+            addInGroup(my_hexahedraGroups.wref(),tag,my_hexahedra.size());
+            addHexahedron(&my_hexahedra.wref(),Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4],nodes[5],nodes[6],nodes[7]));
             ++ncubes;
             break;
         case 8: // quadratic edge
-            addInGroup(my_edgesGroups,tag,my_edges.size());
-            addEdge(&my_edges, Edge(nodes[0], nodes[1]));
+            addInGroup(my_edgesGroups.wref(),tag,my_edges.size());
+            addEdge(&my_edges.wref(), Edge(nodes[0], nodes[1]));
             {
                 HighOrderEdgePosition hoep;
                 hoep[0]= nodes[2];
@@ -327,8 +326,8 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             ++nlines;
             break;
         case 9: // quadratic triangle
-            addInGroup(my_trianglesGroups,tag,my_triangles.size());
-            addTriangle(&my_triangles, Triangle(nodes[0], nodes[1], nodes[2]));
+            addInGroup(my_trianglesGroups.wref(),tag,my_triangles.size());
+            addTriangle(&my_triangles.wref(), Triangle(nodes[0], nodes[1], nodes[2]));
             {
                 HighOrderEdgePosition hoep;
                 for(j=0;j<3;++j) {
@@ -339,7 +338,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                     Edge e(v0,v1);
                     if (edgeSet.find(e)==edgeSet.end()) {
                         edgeSet.insert(e);
-                        addEdge(&my_edges, v0, v1);
+                        addEdge(&my_edges.wref(), v0, v1);
                         hoep[0]= nodes[j+3];
                         hoep[1]=my_edges.size()-1;
                         hoep[2]=1;
@@ -351,8 +350,8 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             ++ntris;
             break;
         case 11: // quadratic tetrahedron
-            addInGroup(my_tetrahedraGroups,tag,my_tetrahedra.size());
-            addTetrahedron(&my_tetrahedra, Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+            addInGroup(my_tetrahedraGroups.wref(),tag,my_tetrahedra.size());
+            addTetrahedron(&my_tetrahedra.wref(), Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
             {
                 HighOrderEdgePosition hoep;
                 for(j=0;j<6;++j) {
@@ -363,7 +362,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                     Edge e(v0,v1);
                     if (edgeSet.find(e)==edgeSet.end()) {
                         edgeSet.insert(e);
-                        addEdge(&my_edges, v0, v1);
+                        addEdge(&my_edges.wref(), v0, v1);
                         hoep[0]= nodes[j+4];
                         hoep[1]=my_edges.size()-1;
                         hoep[2]=1;
@@ -381,22 +380,10 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
         }
     }
 
-    normalizeGroup(my_edgesGroups);
-    normalizeGroup(my_trianglesGroups);
-    normalizeGroup(my_tetrahedraGroups);
-    normalizeGroup(my_hexahedraGroups);
-
-    d_edgesGroups.endEdit();
-    d_trianglesGroups.endEdit();
-    d_tetrahedraGroups.endEdit();
-    d_hexahedraGroups.endEdit();
-
-    d_edges.endEdit();
-    d_triangles.endEdit();
-    d_quads.endEdit();
-    d_tetrahedra.endEdit();
-    d_hexahedra.endEdit();
-    d_highOrderEdgePositions.endEdit();
+    normalizeGroup(my_edgesGroups.wref());
+    normalizeGroup(my_trianglesGroups.wref());
+    normalizeGroup(my_tetrahedraGroups.wref());
+    normalizeGroup(my_hexahedraGroups.wref());
 
     file >> cmd;
     if (cmd != "$ENDELM" && cmd!="$EndElements")

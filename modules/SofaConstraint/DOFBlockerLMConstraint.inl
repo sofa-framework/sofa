@@ -40,7 +40,7 @@ namespace constraintset
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction(index_type /*nbPoints*/, const sofa::helper::vector< index_type > &, const sofa::helper::vector< double >& )
+bool DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction(Index /*nbPoints*/, const sofa::helper::vector< Index > &, const sofa::helper::vector< double >& )
 {
     if (fc)
     {
@@ -54,11 +54,11 @@ bool DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction
 
 // Define RemovalFunction
 template< class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyDestroyFunction(index_type pointIndex, value_type &)
+void DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
 {
     if (fc)
     {
-        fc->removeConstraint((index_type) pointIndex);
+        fc->removeConstraint((Index) pointIndex);
     }
     return;
 }
@@ -72,14 +72,14 @@ void DOFBlockerLMConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::addConstraint(index_type index)
+void DOFBlockerLMConstraint<DataTypes>::addConstraint(Index index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::removeConstraint(index_type index)
+void DOFBlockerLMConstraint<DataTypes>::removeConstraint(Index index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -138,7 +138,7 @@ void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(const core::Constr
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++numParticle)
     {
-        const index_type index=*it;
+        const Index index=*it;
         for (unsigned int i=0; i<axis.size(); ++i)
         {
             c->writeLine(cIndex).addCol(index,axis[i]);
@@ -204,7 +204,7 @@ void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* v
             it != indices.end();
             ++it)
     {
-        index_type index=(*it);
+        Index index=(*it);
         Coord pos=x[index];
         defaulttype::Vector3 position;
         DataTypes::get(position[0], position[1], position[2], pos);

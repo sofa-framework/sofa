@@ -41,6 +41,8 @@ public:
     SOFA_ABSTRACT_CLASS(BaseMeshTopology, core::topology::Topology);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseMeshTopology)
 
+    using index_type [[deprecated("PR#1515 (2020-10-14) BaseMeshTopology::index_type is a deprecated typedef. From now on, please sofa::Index instead of sofa::core::topology::BaseMeshTopology::index_type.")]] = sofa::Index;
+
     typedef sofa::helper::vector<Edge> 		        SeqEdges;
     typedef sofa::helper::vector<Triangle>		    SeqTriangles;
     typedef sofa::helper::vector<Quad>		        SeqQuads;
@@ -113,11 +115,11 @@ public:
     /// Random accessors
     /// @{
 
-    virtual size_t getNbEdges()                   { return getEdges().size(); }
-    virtual size_t getNbTriangles()               { return getTriangles().size(); }
-    virtual size_t getNbQuads()                   { return getQuads().size(); }
-    virtual size_t getNbTetrahedra()              { return getTetrahedra().size(); }
-    virtual size_t getNbHexahedra()	              { return getHexahedra().size(); }
+    virtual Size getNbEdges()                   { return Size(getEdges().size()); }
+    virtual Size getNbTriangles()               { return Size(getTriangles().size()); }
+    virtual Size getNbQuads()                   { return Size(getQuads().size()); }
+    virtual Size getNbTetrahedra()              { return Size(getTetrahedra().size()); }
+    virtual Size getNbHexahedra()	              { return Size(getHexahedra().size()); }
 
     virtual const Edge getEdge(EdgeID i)             { return getEdges()[i]; }
     virtual const Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
@@ -130,8 +132,8 @@ public:
 
     /// Bridge from old functions (using Tetra/Tetras and Hexa/Hexas) to new ones
     ///@{
-    virtual size_t getNbTetras()    { return getNbTetrahedra(); }
-    virtual size_t getNbHexas()     { return getNbHexahedra(); }
+    virtual Size getNbTetras()    { return getNbTetrahedra(); }
+    virtual Size getNbHexas()     { return getNbHexahedra(); }
 
     virtual Tetra getTetra(TetraID i)          { return getTetrahedra()[i]; }
     virtual Hexa getHexa(HexaID i)             { return getHexahedra()[i]; }
@@ -180,9 +182,9 @@ public:
     /// Returns the set of vertices adjacent to a given vertex (i.e. sharing an edge)
     virtual const VerticesAroundVertex getVerticesAroundVertex(PointID i);
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const sofa::helper::vector<index_type> getElementAroundElement(index_type elem);
+    virtual const sofa::helper::vector<Index> getElementAroundElement(Index elem);
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const sofa::helper::vector<index_type> getElementAroundElements(sofa::helper::vector<index_type> elems);
+    virtual const sofa::helper::vector<Index> getElementAroundElements(sofa::helper::vector<Index> elems);
     /// @}
 
 
@@ -235,7 +237,7 @@ public:
     /// @name Deprecated names, for backward-compatibility
     /// @{
     const SeqLines& getLines() { return getEdges(); }
-    size_t getNbLines() { return getNbEdges(); }
+    Size getNbLines() { return getNbEdges(); }
     Line getLine(LineID i) { return getEdge(i); }
     /// @}
 
@@ -243,21 +245,21 @@ public:
     /// Note that this data is only used for initialization and is not maintained afterwards (i.e. topological changes may not be applied)
     /// @{
     bool hasPos() const override { return false; }
-    SReal getPX(index_type) const override { return 0.0; }
-    SReal getPY(index_type) const override { return 0.0; }
-    SReal getPZ(index_type) const override { return 0.0; }
+    SReal getPX(Index) const override { return 0.0; }
+    SReal getPY(Index) const override { return 0.0; }
+    SReal getPZ(Index) const override { return 0.0; }
     /// @}
 
     /// Procedural creation methods
     /// @{
     virtual void clear();
     virtual void addPoint(SReal px, SReal py, SReal pz);
-    virtual void addEdge( index_type a, index_type b );
-    void addLine( index_type a, index_type b ) { addEdge(a,b); }
-    virtual void addTriangle( index_type a, index_type b, index_type c );
-    virtual void addQuad( index_type a, index_type b, index_type c, index_type d );
-    virtual void addTetra( index_type a, index_type b, index_type c, index_type d );
-    virtual void addHexa( index_type a, index_type b, index_type c, index_type d, index_type e, index_type f, index_type g, index_type h );
+    virtual void addEdge( Index a, Index b );
+    void addLine( Index a, Index b ) { addEdge(a,b); }
+    virtual void addTriangle( Index a, Index b, Index c );
+    virtual void addQuad( Index a, Index b, Index c, Index d );
+    virtual void addTetra( Index a, Index b, Index c, Index d );
+    virtual void addHexa( Index a, Index b, Index c, Index d, Index e, Index f, Index g, Index h );
     /// @}
 
     /// get information about connexity of the mesh
@@ -269,9 +271,9 @@ public:
     virtual bool checkTopology() const { return true; }
 
     /// Returns the number of connected component.
-    virtual size_t getNumberOfConnectedComponent() {return 0;}
+    virtual Size getNumberOfConnectedComponent() {return 0;}
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const sofa::helper::vector<index_type> getConnectedElement(index_type elem);
+    virtual const sofa::helper::vector<Index> getConnectedElement(Index elem);
     /// @}
 
     /// Get the current revision of this mesh.

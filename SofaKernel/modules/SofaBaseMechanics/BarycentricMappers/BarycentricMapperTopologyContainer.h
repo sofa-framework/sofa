@@ -70,7 +70,7 @@ public:
     enum { NIn = Inherit1::NIn };
     enum { NOut = Inherit1::NOut };
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
 public:
 
@@ -152,7 +152,7 @@ protected:
     Real m_gridCellSize;
     Real m_convFactor;
     std::unordered_map<Key, helper::vector<unsigned int>, HashFunction, HashEqual> m_hashTable;
-    unsigned int m_hashTableSize;
+    std::size_t m_hashTableSize;
 
 
     BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology);
@@ -163,7 +163,7 @@ protected:
     virtual helper::vector<SReal> getBaryCoef(const Real* f)=0;
     virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element)=0;
     virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element)=0;
-    virtual void addPointInElement(const index_type elementIndex, const SReal* baryCoords)=0;
+    virtual void addPointInElement(const Index elementIndex, const SReal* baryCoords)=0;
     virtual void computeDistance(double& d, const Vector3& v)=0;
 
     /// Compute the distance between outPos and the element e. If this distance is smaller than the previously stored one,

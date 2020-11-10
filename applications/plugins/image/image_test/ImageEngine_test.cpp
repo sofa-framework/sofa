@@ -284,7 +284,7 @@ struct ImageDataEngine_test : public DataEngine_test<DataEngineType>
     typedef core::objectmodel::DDGNode DDGNode;
     typedef DDGNode::DDGLinkContainer DDGLinkContainer;
 
-    virtual void init()
+    virtual void init() override
     {
         DataEngine_test<DataEngineType>::init();
 
@@ -305,8 +305,16 @@ struct ImageDataEngine_test : public DataEngine_test<DataEngineType>
         }
     }
 
+    virtual void preInit() override {}
+
 };
 
+template<>
+void ImageDataEngine_test< TestDataEngine<component::engine::MeshToImageEngine<defaulttype::ImageUC>> >::preInit()
+{
+    m_engineInput->findData("position")->read("0.0 0.0 0.0 1.0 1.0 1.0");
+    m_engineInput->findData("edges")->read("0 1");
+}
 
 
 

@@ -41,8 +41,8 @@ class SVector: public helper::vector<T, helper::CPUMemoryManager<T> >
 {
 public:
     typedef helper::CPUMemoryManager<T>  Alloc;
-    /// size_type
-    typedef typename helper::vector<T,Alloc>::size_type size_type;
+    /// Size
+    typedef typename helper::vector<T,Alloc>::Size Size;
     /// reference to a value (read-write)
     //typedef typename helper::vector<T,Alloc>::reference reference;
     /// const reference to a value (read only)
@@ -51,13 +51,13 @@ public:
     /// Basic onstructor
     SVector() : helper::vector<T,Alloc>() {}
     /// Constructor
-    SVector(size_type n, const T& value): helper::vector<T,Alloc>(n,value) {}
+    SVector(Size n, const T& value): helper::vector<T,Alloc>(n,value) {}
     /// Constructor
     SVector(int n, const T& value): helper::vector<T,Alloc>(n,value) {}
     /// Constructor
     SVector(long n, const T& value): helper::vector<T,Alloc>(n,value) {}
     /// Constructor
-    explicit SVector(size_type n): helper::vector<T,Alloc>(n) {}
+    explicit SVector(Size n): helper::vector<T,Alloc>(n) {}
     /// Constructor
     SVector(const helper::vector<T, Alloc>& x): helper::vector<T,Alloc>(x) {}
     /// Move constructor

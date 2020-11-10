@@ -427,7 +427,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(c
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass(sofa::defaulttype::index_type index, defaulttype::BaseMatrix *m ) const
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass(sofa::Index index, defaulttype::BaseMatrix *m ) const
 {
     // warning the mass needs to be diagonal-lumped per dof
 

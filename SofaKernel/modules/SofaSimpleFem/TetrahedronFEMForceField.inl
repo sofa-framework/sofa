@@ -640,7 +640,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
         //erase the stiffness matrix at each time step
         if(elementIndex==0)
         {
-            for(std::size_t i=0; i<_stiffnesses.size(); ++i)
+            for(Size i=0; i<_stiffnesses.size(); ++i)
             {
                 _stiffnesses[i].resize(0);
             }
@@ -648,13 +648,13 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
 
         for(int i=0; i<12; ++i)
         {
-            index_type row = index[i/3]*3+i%3;
+            Index row = index[i/3]*3+i%3;
 
             for(int j=0; j<12; ++j)
             {
                 if(JKJt[i][j]!=0)
                 {
-                    index_type col = index[j/3]*3+j%3;
+                    Index col = index[j/3]*3+j%3;
                     // search if the vertex is already take into account by another element
                     typename CompressedValue::iterator result = _stiffnesses[row].end();
                     for(typename CompressedValue::iterator it=_stiffnesses[row].begin(); it!=_stiffnesses[row].end()&&result==_stiffnesses[row].end(); ++it)
@@ -1022,10 +1022,10 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
 
         for(int i=0; i<12; ++i)
         {
-            index_type row = index[i/3]*3+i%3;
+            Index row = index[i/3]*3+i%3;
             for(int j=0; j<12; ++j)
             {
-                index_type col = index[j/3]*3+j%3;
+                Index col = index[j/3]*3+j%3;
 
                 // search if the vertex is already take into account by another element
                 typename CompressedValue::iterator result = _stiffnesses[row].end();
@@ -2307,7 +2307,7 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::getRotations(VecReal& vecR)
 {
     std::size_t nbdof = this->mstate->getSize();
-    for (index_type i=0; i<nbdof; ++i)
+    for (Index i=0; i<nbdof; ++i)
     {
 
         getRotation(*(Transformation*)&(vecR[i*9]),i);

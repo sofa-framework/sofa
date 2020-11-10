@@ -40,9 +40,10 @@ set(SOURCE_FILES
     initTopologyMapping.cpp
 )
 
+find_package(SofaGeneralSimpleFem REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaGeneralTopology)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaGeneralTopology SofaGeneralSimpleFem)
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaGeneral

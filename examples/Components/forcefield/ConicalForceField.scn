@@ -1,5 +1,7 @@
 <Node name="root" dt="0.01" gravity="0 -10 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="SofaBoundaryCondition"/>
+
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />

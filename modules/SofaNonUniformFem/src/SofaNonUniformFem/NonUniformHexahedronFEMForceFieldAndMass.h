@@ -69,7 +69,7 @@ public:
     typedef typename HexahedronFEMForceFieldAndMassT::MassT MassT;
     typedef typename HexahedronFEMForceFieldAndMassT::ElementMass ElementMass;
 
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 
 public:
 
@@ -98,7 +98,7 @@ protected:
 
     static const float FINE_TO_COARSE[8][8][8]; ///< interpolation matrices from finer level to a coarser (to build stiffness and mass matrices)
     /// add a matrix of a fine element to its englobing coarser matrix
-    void addFineToCoarse( ElementStiffness& coarse, const ElementStiffness& fine, index_type indice );
+    void addFineToCoarse( ElementStiffness& coarse, const ElementStiffness& fine, Index indice );
 
     /// condensate matrice from the (virtual) finest level to the actual mechanical level
     /// recursive function
@@ -108,7 +108,7 @@ protected:
     virtual void computeMechanicalMatricesByCondensation(); // call previous method for all elements
 
 
-    void computeClassicalMechanicalMatrices( ElementStiffness &K, ElementMass &M, const index_type elementIndice, int level);
+    void computeClassicalMechanicalMatrices( ElementStiffness &K, ElementMass &M, const Index elementIndice, int level);
 
 
     /// compute the hookean material matrix

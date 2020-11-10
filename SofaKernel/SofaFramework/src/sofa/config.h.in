@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CONFIG_H
-#define SOFA_CONFIG_H
+#pragma once
 
 #include <sofa/config/sharedlibrary_defines.h>
 #include <sofa/config/build_option_dump_visitor.h>
@@ -29,6 +28,7 @@
 #include <sofa/config/build_option_bbox.h>
 
 #include <cstddef> // For nullptr
+#include <limits> // std::numeric_limits<>
 
 // fixes CGAL plugin build errors (default value: 5)
 #define BOOST_PARAMETER_MAX_ARITY 12
@@ -153,4 +153,14 @@ typedef unsigned __int64	uint64_t;
 #  define SOFA_SOFAFRAMEWORK_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif
+namespace sofa
+{
+	
+using Index = uint32_t;
+using Size = uint32_t;
+
+constexpr Index InvalidID = (std::numeric_limits<Index>::max)(); 
+
+}
+
+

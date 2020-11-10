@@ -47,7 +47,7 @@ template<class In, class Out>
 class BarycentricMapperTriangleSetTopology : public BarycentricMapperTopologyContainer<In,Out,typename BarycentricMapper<In,Out>::MappingData2D,Triangle>
 {
     typedef typename BarycentricMapper<In,Out>::MappingData2D MappingData;
-    using index_type = sofa::defaulttype::index_type;
+    using Index = sofa::Index;
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTriangleSetTopology,In,Out),
                SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Triangle));
@@ -55,8 +55,8 @@ public:
 
     ~BarycentricMapperTriangleSetTopology() override {}
 
-    index_type addPointInTriangle(const index_type triangleIndex, const SReal* baryCoords) override;
-    index_type createPointInTriangle(const typename Out::Coord& p, index_type triangleIndex, const typename In::VecCoord* points) override;
+    Index addPointInTriangle(const Index triangleIndex, const SReal* baryCoords) override;
+    Index createPointInTriangle(const typename Out::Coord& p, Index triangleIndex, const typename In::VecCoord* points) override;
 
 protected:
     BarycentricMapperTriangleSetTopology();
@@ -72,7 +72,7 @@ protected:
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Triangle& element) override;
     void computeCenter(Vector3& center, const typename In::VecCoord& in, const Triangle& element) override;
     void computeDistance(double& d, const Vector3& v) override;
-    void addPointInElement(const index_type elementIndex, const SReal* baryCoords) override;
+    void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
 
     using Inherit1::d_map;
     using Inherit1::m_fromTopology;

@@ -24,13 +24,7 @@
 
 #include "BarycentricMapperTetrahedronSetTopology.h"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class In, class Out>
@@ -42,8 +36,8 @@ BarycentricMapperTetrahedronSetTopology<In,Out>::BarycentricMapperTetrahedronSet
 
 
 template <class In, class Out>
-typename BarycentricMapperTetrahedronSetTopology<In, Out>::index_type
-BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInTetra ( const index_type tetraIndex, const SReal* baryCoords )
+typename BarycentricMapperTetrahedronSetTopology<In, Out>::Index
+BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInTetra ( const Index tetraIndex, const SReal* baryCoords )
 {
     helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
     vectorData.resize ( d_map.getValue().size() +1 );
@@ -99,7 +93,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::computeDistance(double& d,
 }
 
 template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInElement(const index_type elementIndex, const SReal* baryCoords)
+void BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInElement(const Index elementIndex, const SReal* baryCoords)
 {
     addPointInTetra(elementIndex,baryCoords);
 }
@@ -107,8 +101,6 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInElement(const in
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In, Out>::processTopologicalChanges(const typename Out::VecCoord& out, const typename In::VecCoord& in, core::topology::Topology* t)
 {
-    using sofa::core::behavior::MechanicalState;
-
     if (t != m_toTopology) return;
 
     if (m_toTopology->beginChange() == m_toTopology->endChange())
@@ -206,10 +198,6 @@ void BarycentricMapperTetrahedronSetTopology<In, Out>::processAddPoint(const sof
     vectorData.baryCoords[2] = (Real)coefs[2];
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::mapping
 
 #endif

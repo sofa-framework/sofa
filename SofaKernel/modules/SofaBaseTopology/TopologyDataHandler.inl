@@ -36,7 +36,7 @@ namespace topology
 
 ///////////////////// Private functions on TopologyDataHandler changes /////////////////////////////
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::swap(index_type i1,index_type i2 )
+void TopologyDataHandler <TopologyElementType, VecT>::swap(Index i1,Index i2 )
 {
     container_type& data = *(m_topologyData->beginEdit());
     value_type tmp = data[i1];
@@ -47,9 +47,9 @@ void TopologyDataHandler <TopologyElementType, VecT>::swap(index_type i1,index_t
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::add(const sofa::helper::vector<index_type> & index,
+void TopologyDataHandler <TopologyElementType, VecT>::add(const sofa::helper::vector<Index> & index,
         const sofa::helper::vector< TopologyElementType >& elems,
-        const sofa::helper::vector<sofa::helper::vector<index_type> > &ancestors,
+        const sofa::helper::vector<sofa::helper::vector<Index> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs,
         const sofa::helper::vector< AncestorElem >& ancestorElems)
 {
@@ -69,13 +69,13 @@ void TopologyDataHandler <TopologyElementType, VecT>::add(const sofa::helper::ve
     }
     data.resize(i0+nbElements);
 
-    const sofa::helper::vector< index_type > empty_vecint;
+    const sofa::helper::vector< Index > empty_vecint;
     const sofa::helper::vector< double > empty_vecdouble;
 
-    for (index_type i = 0; i < nbElements; ++i)
+    for (Index i = 0; i < nbElements; ++i)
     {
         value_type& t = data[i0+i];
-        this->applyCreateFunction(i0+i, t, elems[i],
+        this->applyCreateFunction(Index(i0+i), t, elems[i],
             (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
             (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
             (ancestorElems.empty()             ) ? nullptr : &ancestorElems[i]);
@@ -85,8 +85,8 @@ void TopologyDataHandler <TopologyElementType, VecT>::add(const sofa::helper::ve
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::move( const sofa::helper::vector<index_type> &indexList,
-        const sofa::helper::vector< sofa::helper::vector< index_type > >& ancestors,
+void TopologyDataHandler <TopologyElementType, VecT>::move( const sofa::helper::vector<Index> &indexList,
+        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& coefs)
 {
     container_type& data = *(m_topologyData->beginEdit());
@@ -102,12 +102,13 @@ void TopologyDataHandler <TopologyElementType, VecT>::move( const sofa::helper::
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::remove( const sofa::helper::vector<index_type> &index )
+void TopologyDataHandler <TopologyElementType, VecT>::remove( const sofa::helper::vector<Index> &index )
 {
 		
 	container_type& data = *(m_topologyData->beginEdit());
-	if (data.size()>0) {
-        index_type last = data.size() -1;
+	if (data.size()>0) 
+    {
+        Index last = Index(data.size() -1);
 
         for (std::size_t i = 0; i < index.size(); ++i)
 		{
@@ -123,7 +124,7 @@ void TopologyDataHandler <TopologyElementType, VecT>::remove( const sofa::helper
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::renumber( const sofa::helper::vector<index_type> &index )
+void TopologyDataHandler <TopologyElementType, VecT>::renumber( const sofa::helper::vector<Index> &index )
 {
     container_type& data = *(m_topologyData->beginEdit());
 
@@ -136,13 +137,13 @@ void TopologyDataHandler <TopologyElementType, VecT>::renumber( const sofa::help
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<index_type> &indexList,
+void TopologyDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<Index> &indexList,
         const sofa::helper::vector<TopologyElementType> &elems)
 {
     container_type& data = *(m_topologyData->beginEdit());
 
     // Recompute data
-    sofa::helper::vector< index_type > ancestors;
+    sofa::helper::vector< Index > ancestors;
     sofa::helper::vector< double >  coefs;
     coefs.push_back (1.0);
     ancestors.resize(1);
@@ -158,7 +159,7 @@ void TopologyDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const s
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<index_type> &indices)
+void TopologyDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<Index> &indices)
 {
     container_type& data = *(m_topologyData->beginEdit());
 

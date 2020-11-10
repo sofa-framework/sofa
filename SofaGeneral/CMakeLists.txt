@@ -6,21 +6,8 @@ option(CMAKE_WARN_DEPRECATED "Send warning when deprecated projects are found" O
 
 # Subdirectories
 set(SOFAGENERAL_TARGETS
-    SofaGeneralAnimationLoop
-    SofaGeneralDeformable
-    SofaGeneralExplicitOdeSolver
-    SofaGeneralImplicitOdeSolver
-    SofaGeneralLinearSolver
     SofaGeneralLoader
-    SofaGeneralMeshCollision
-    SofaGeneralObjectInteraction
-    SofaGeneralRigid
-    SofaGeneralSimpleFem
-    SofaGeneralTopology
-    SofaBoundaryCondition
     SofaConstraint
-    SofaGeneralEngine
-    SofaGraphComponent
     SofaTopologyMapping
     SofaUserInteraction
 )
@@ -31,7 +18,20 @@ endforeach()
 
 # Modules
 set(SOFAGENERAL_MODULES
+    SofaBoundaryCondition
+    SofaGeneralMeshCollision
     SofaGeneralVisual
+    SofaGraphComponent
+    SofaGeneralAnimationLoop
+    SofaGeneralDeformable
+    SofaGeneralEngine
+    SofaGeneralExplicitOdeSolver
+    SofaGeneralImplicitOdeSolver
+    SofaGeneralLinearSolver
+    SofaGeneralRigid
+    SofaGeneralObjectInteraction
+    SofaGeneralSimpleFem
+    SofaGeneralTopology
 )
 foreach(MODULE ${SOFAGENERAL_MODULES})
     find_package(${MODULE} REQUIRED)

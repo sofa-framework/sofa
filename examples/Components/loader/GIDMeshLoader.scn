@@ -1,0 +1,16 @@
+<!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
+<Node name="Root" gravity="0 0 -9810" dt="0.02">
+    <RequiredPlugin name="SofaSparseSolver"/>
+    <VisualStyle displayFlags="showBehavior" />
+    <Node name="Tripod">
+        <EulerImplicitSolver/>
+        <SparseLDLSolver/>
+        <GIDMeshLoader name="loader" filename="mesh/tripod.gidmsh" />
+        <MeshTopology src="@loader"/>
+        <MechanicalObject/>
+        <UniformMass totalMass=0.035/>
+        <BoxROI name="roi" box="-10 -10 -10 10 10 10" drawBoxes="1"/>
+        <FixedConstraint indices="@roi.indices"/>
+        <TetrahedronFEMForceField youngModulus="100" poissonRatio="0.45"/>
+    </Node>
+</Node>

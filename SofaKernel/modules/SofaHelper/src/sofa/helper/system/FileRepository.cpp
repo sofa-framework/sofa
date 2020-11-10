@@ -226,7 +226,16 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
 {
     if (filename.empty()) return false; // no filename
     std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
-    boost::filesystem::path::imbue(std::locale(""));
+    std::locale locale;
+    try
+    {
+        locale = std::locale("en_US.UTF-8");
+    }
+    catch (std::exception e)
+    {
+        locale = std::locale("");
+    }
+    boost::filesystem::path::imbue(locale);
     boost::filesystem::path p(newfname);
     if (boost::filesystem::exists(p))
     {
