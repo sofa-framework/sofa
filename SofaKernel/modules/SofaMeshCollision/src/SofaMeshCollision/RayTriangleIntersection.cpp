@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <SofaMeshCollision/RayTriangleIntersection.h>
 
-#include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/helper/LCPSolver.inl>
 
 namespace sofa::component::collision
