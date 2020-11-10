@@ -63,8 +63,12 @@ set(SOURCE_FILES
     ${SOFAMESHCOLLISION_SRC}/TriangleModel.cpp
 )
 
+find_package(SofaBase REQUIRED) # SofaBaseMechanics SofaBaseCollision SofaBaseTopology
+find_package(SofaObjectInteraction REQUIRED)
+find_package(SofaRigid REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision SofaBaseMechanics SofaBaseTopology)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
