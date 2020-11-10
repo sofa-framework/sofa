@@ -26,7 +26,6 @@
 #include <sofa/core/collision/Intersection.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaObjectInteraction/PenalityContactForceField.h>
-#include <sofa/helper/Factory.h>
 
 #include <SofaMeshCollision/RigidContactMapper.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
