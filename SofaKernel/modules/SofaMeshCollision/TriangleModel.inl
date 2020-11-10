@@ -51,7 +51,7 @@ template<class DataTypes>
 TriangleCollisionModel<DataTypes>::TriangleCollisionModel()
     : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
     , d_computeNormals(initData(&d_computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
-    , useCurvature(initData(&useCurvature, false, "useCurvature", "use the curvature of the mesh to avoid some self-intersection test"))
+    , d_useCurvature(initData(&d_useCurvature, false, "useCurvature", "use the curvature of the mesh to avoid some self-intersection test"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_mstate(nullptr)
     , m_topology(nullptr)
@@ -304,7 +304,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
                 t.n().normalize();
             }
 
-            if(useCurvature.getValue())
+            if(d_useCurvature.getValue())
                 cubeModel->setParentOf(i, minElem, maxElem, t.n()); // define the bounding box of the current triangle
             else
                 cubeModel->setParentOf(i, minElem, maxElem);
@@ -372,7 +372,7 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt,
             t.n() = cross(pt2-pt1,pt3-pt1);
             t.n().normalize();
 
-            if(useCurvature.getValue())
+            if(d_useCurvature.getValue())
                 cubeModel->setParentOf(i, minElem, maxElem, t.n(), acos(cross(pt2v-pt1v,pt3v-pt1v).normalized() * t.n()));
             else
                 cubeModel->setParentOf(i, minElem, maxElem);
