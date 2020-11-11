@@ -3,7 +3,8 @@
   <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin name="Carving" pluginName="SofaCarving" />
   <RequiredPlugin name='SofaGeneralSimpleFem'/> 
-  <RequiredPlugin name='SofaTopologyMapping'/>  
+  <RequiredPlugin name='SofaTopologyMapping'/>
+  <RequiredPlugin name='SofaEngine'/>  
 
   <VisualStyle displayFlags="showCollisionModels" />
   
