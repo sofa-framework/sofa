@@ -711,7 +711,7 @@ void BoxROI<DataTypes>::doUpdate()
         }
 
 
-        d_nbIndices.setValue(indices.size());
+        d_nbIndices.setValue(sofa::Size(indices.size()));
     }
 }
 

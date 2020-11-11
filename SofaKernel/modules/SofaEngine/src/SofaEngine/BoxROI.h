@@ -146,7 +146,7 @@ public:
     Data<vector<Tetra> > d_tetrahedraInROI; ///< Tetrahedra contained in the ROI
     Data<vector<Hexa> > d_hexahedraInROI; ///< Hexahedra contained in the ROI
     Data<vector<Quad> > d_quadInROI; ///< Quad contained in the ROI
-    Data< unsigned int > d_nbIndices; ///< Number of selected indices
+    Data< sofa::Size > d_nbIndices; ///< Number of selected indices
 
     //Parameter
     Data<bool> d_drawBoxes; ///< Draw Boxes. (default = false)
