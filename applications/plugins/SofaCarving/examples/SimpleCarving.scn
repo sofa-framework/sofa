@@ -5,7 +5,7 @@
   <RequiredPlugin name='SofaGeneralSimpleFem'/> 
   <RequiredPlugin name='SofaTopologyMapping'/>
   <RequiredPlugin name='SofaEngine'/>
-  <RequiredPlugin name='SofaImplicitOdeSolver'/>  
+  <RequiredPlugin name='SofaImplicitOdeSolver'/>
 
   <VisualStyle displayFlags="showCollisionModels" />
   
