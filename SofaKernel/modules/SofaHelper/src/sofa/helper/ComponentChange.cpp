@@ -456,6 +456,9 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "TriangleLocalMinDistanceFilter", Pluginized("v20.12", "SofaMeshCollision") },
     { "TriangleCollisionModel", Pluginized("v20.12", "SofaMeshCollision") },
 
+    // SofaEngine was pluginized in #1603
+    { "BoxROI", Pluginized("v20.12", "SofaEngine") },
+
     /***********************/
     // REMOVED SINCE v20.12
     { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },

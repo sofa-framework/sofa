@@ -15,8 +15,10 @@ set(SOURCE_FILES
     ${SOFAENGINE_SRC}/BoxROI.cpp
 )
 
+find_package(SofaFramework REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaCore SofaDefaultType SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaCore SofaDefaultType)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
