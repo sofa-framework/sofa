@@ -21,40 +21,20 @@
 ******************************************************************************/
 #pragma once
 
-#include <vector>
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/set.h>
+#include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include <sofa/helper/types/RGBAColor.h>
-#include <sstream>
-#include <typeinfo>
-#include <sofa/helper/logging/Messaging.h>
-#include "AbstractTypeInfo.h"
-#include "typeinfo/DataTypeInfoDynamicWrapper.h"
-#include "typeinfo/DataTypeInfo.h"
-#include "typeinfo/TypeInfo_Bool.h"
-#include "typeinfo/TypeInfo_Integer.h"
-#include "typeinfo/TypeInfo_Mat.h"
-#include "typeinfo/TypeInfo_Quat.h"
-#include "typeinfo/TypeInfo_Scalar.h"
-#include "typeinfo/TypeInfo_Set.h"
-#include "typeinfo/TypeInfo_Text.h"
-#include "typeinfo/TypeInfo_Vec.h"
-#include "typeinfo/TypeInfo_FixedArray.h"
-#include "typeinfo/TypeInfo_BoundingBox.h"
-#include "typeinfo/TypeInfo_RGBAColor.h"
-#include "typeinfo/TypeInfo_Vector.h"
-#include "typeinfo/TypeInfo_RigidTypes.h"
-#include "typeinfo/TypeInfo_VecTypes.h"
 
 namespace sofa::defaulttype
 {
 
-/// We make an alias to wrap around the old name to the new one.
-template<class T>
-using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
-
-template<class T>
-using DataTypeName = DataTypeInfo<T>;
+template<>
+class DataTypeInfo< sofa::helper::types::RGBAColor > : public FixedArrayTypeInfo<sofa::helper::fixed_array<float,4>>
+{
+    public:
+        static std::string name() { return "RGBAColor"; }
+        static std::string GetTypeName() { return "RGBAColor"; }
+};
 
 } /// namespace sofa::defaulttype
+

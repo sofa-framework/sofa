@@ -41,6 +41,29 @@ set(HEADER_FILES
 
     ${SRC_ROOT}/typeinfo/DataTypeInfoDynamicWrapper.h
     ${SRC_ROOT}/typeinfo/DataTypeInfo.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_Bool.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_BoundingBox.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_FixedArray.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_Integer.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_Mat.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_Quat.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_RigidTypes.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_RGBAColor.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_Set.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_Scalar.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_Text.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_Vector.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_Vec.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_VecTypes.h
+
+    ${SRC_ROOT}/typeinfo/models/IncompleteTypeInfo.h
+    ${SRC_ROOT}/typeinfo/models/BoolTypeInfo.h
+    ${SRC_ROOT}/typeinfo/models/IntegerTypeInfo.h
+    ${SRC_ROOT}/typeinfo/models/FixedArrayTypeInfo.h
+    ${SRC_ROOT}/typeinfo/models/SetTypeInfo.h
+    ${SRC_ROOT}/typeinfo/models/ScalarTypeInfo.h
+    ${SRC_ROOT}/typeinfo/models/TextTypeInfo.h
+    ${SRC_ROOT}/typeinfo/models/VectorTypeInfo.h
 )
 
 set(SOURCE_FILES
@@ -53,6 +76,21 @@ set(SOURCE_FILES
     ${SRC_ROOT}/TypeInfoRegistry.cpp
     ${SRC_ROOT}/TypeInfoRegistryTools.cpp
     ${SRC_ROOT}/init.cpp
+
+    ${SRC_ROOT}/typeinfo/TypeInfo_Bool.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_BoundingBox.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_FixedArray.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_Integer.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_Mat.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_Quat.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_RGBAColor.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_RigidTypes.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_Set.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_Scalar.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_Text.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_Vector.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_Vec.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_VecTypes.cpp
 )
 
 find_package(Eigen3 REQUIRED)

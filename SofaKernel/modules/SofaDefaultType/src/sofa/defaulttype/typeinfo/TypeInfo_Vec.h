@@ -21,40 +21,27 @@
 ******************************************************************************/
 #pragma once
 
-#include <vector>
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/set.h>
-#include <sofa/helper/types/RGBAColor.h>
-#include <sstream>
-#include <typeinfo>
-#include <sofa/helper/logging/Messaging.h>
-#include "AbstractTypeInfo.h"
-#include "typeinfo/DataTypeInfoDynamicWrapper.h"
-#include "typeinfo/DataTypeInfo.h"
-#include "typeinfo/TypeInfo_Bool.h"
-#include "typeinfo/TypeInfo_Integer.h"
-#include "typeinfo/TypeInfo_Mat.h"
-#include "typeinfo/TypeInfo_Quat.h"
-#include "typeinfo/TypeInfo_Scalar.h"
-#include "typeinfo/TypeInfo_Set.h"
-#include "typeinfo/TypeInfo_Text.h"
-#include "typeinfo/TypeInfo_Vec.h"
-#include "typeinfo/TypeInfo_FixedArray.h"
-#include "typeinfo/TypeInfo_BoundingBox.h"
-#include "typeinfo/TypeInfo_RGBAColor.h"
-#include "typeinfo/TypeInfo_Vector.h"
-#include "typeinfo/TypeInfo_RigidTypes.h"
-#include "typeinfo/TypeInfo_VecTypes.h"
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa::defaulttype
 {
 
-/// We make an alias to wrap around the old name to the new one.
-template<class T>
-using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
+template<sofa::Size N, typename real>
+struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::Vec<N,real> >
+{
+    static std::string GetTypeName() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeInfo<real>::GetTypeName() << ">"; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "Vec" << N << DataTypeInfo<real>::name() ; return o.str(); }
+};
 
-template<class T>
-using DataTypeName = DataTypeInfo<T>;
+template<sofa::Size N, typename real>
+struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
+{
+    static std::string name() { std::ostringstream o; o << "VecNoInit" << N << DataTypeInfo<real>::name(); return o.str(); }
+    static std::string GetTypeName() { std::ostringstream o; o << "VecNoInit" << N << "" << DataTypeInfo<real>::GetTypeName() ; return o.str(); }
+};
 
 } /// namespace sofa::defaulttype
+

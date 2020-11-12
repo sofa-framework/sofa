@@ -52,7 +52,7 @@ std::vector<const AbstractTypeInfo*> TypeInfoRegistry::GetRegisteredTypes(const 
 
 const AbstractTypeInfo* TypeInfoRegistry::Get(const TypeInfoId& tid)
 {
-    size_t id = tid.id;
+    sofa::Size id = tid.id;
     auto& typeinfos = getStorage();
 
     if( id < typeinfos.size() && typeinfos[id] != nullptr )
@@ -67,7 +67,7 @@ const AbstractTypeInfo* TypeInfoRegistry::Get(const TypeInfoId& tid)
 int TypeInfoRegistry::Set(const TypeInfoId& tid, AbstractTypeInfo* info, const std::string &compilationTarget)
 {
     auto& typeinfos = getStorage();
-    size_t id = tid.id;
+    sofa::Size id = tid.id;
     info->setCompilationTarget(compilationTarget);
 
     if( id >= typeinfos.size() )

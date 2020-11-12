@@ -23,8 +23,8 @@
 #define SOFA_DEFAULTTYPE_VEC_H
 
 #include <sofa/helper/fixed_array.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <functional>
 #include <limits>
 
@@ -39,13 +39,13 @@ namespace defaulttype
 enum NoInit { NOINIT }; ///< use when calling Vec or Mat constructor to skip initialization of values to 0
 
 template < sofa::Size N, typename real=float>
-class Vec : public helper::fixed_array<real,N>
+class Vec : public helper::fixed_array<real,size_t(N)>
 {
 
     static_assert( N > 0, "" );
 
 public:
-    typedef typename helper::fixed_array<real, N>::Size Size;
+    typedef sofa::Size Size;
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to static_size and size() method)
     enum { total_size = N };
@@ -476,7 +476,7 @@ public:
     template<class real2>
     Vec<N,real> mulscalar(real2 f) const
     {
-        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
+        //static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         Vec<N,real> r(NOINIT);
         for (Size i=0; i<N; i++)
             r[i] = this->elems[i]*(real)f;
@@ -496,7 +496,7 @@ public:
     template<class real2>
     void eqmulscalar(real2 f)
     {
-        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
+        //static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         for (Size i=0; i<N; i++)
             this->elems[i]*=(real)f;
     }
@@ -514,7 +514,7 @@ public:
     template<class real2>
     Vec<N,real> divscalar(real2 f) const
     {
-        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
+        //static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         Vec<N,real> r(NOINIT);
         for (Size i=0; i<N; i++)
             r[i] = this->elems[i]/(real)f;
@@ -534,7 +534,7 @@ public:
     template<class real2>
     void eqdivscalar(real2 f)
     {
-        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
+        //static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         for (Size i=0; i<N; i++)
             this->elems[i]/=(real)f;
     }
@@ -892,56 +892,6 @@ typedef Vec6d Vector6; ///< alias
 } // namespace sofa
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
-
-namespace sofa
-{
-
-namespace defaulttype
-{
-
-template<sofa::Size N, typename real>
-struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,real> >
-{
-    static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
-};
-
-template<sofa::Size N, typename real>
-struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
-{
-    static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
-};
-
-
-
-// The next line hides all those methods from the doxygen documentation
-/// \cond TEMPLATE_OVERRIDES
-
-#define DataTypeInfoName(type,suffix)\
-template<sofa::Size N>\
-struct DataTypeInfo< sofa::defaulttype::Vec<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,type> >\
-{\
-    static std::string name() { std::ostringstream o; o << "Vec" << N << suffix; return o.str(); }\
-};\
-template<sofa::Size N>\
-struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,type> >\
-{\
-    static std::string name() { std::ostringstream o; o << "VecNoInit" << N << suffix; return o.str(); }\
-};
-
-DataTypeInfoName( float, "f" )
-DataTypeInfoName( double, "d" )
-DataTypeInfoName( int, "i" )
-DataTypeInfoName( unsigned, "u" )
-
-#undef DataTypeInfoName
-
-
-
-/// \endcond
-
-} // namespace defaulttype
-
-} // namespace sofa
 
 // Specialization of the std comparison function, to use Vec as std::map key
 namespace std
