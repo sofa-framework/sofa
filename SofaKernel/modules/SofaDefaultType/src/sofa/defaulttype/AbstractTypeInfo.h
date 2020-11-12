@@ -163,6 +163,9 @@ public:
     /// Get the type_info for this type.
     virtual const std::type_info* type_info() const = 0;
 
+    const std::string& getCompilationTarget() const { return m_compilationTarget; }
+    void setCompilationTarget(const std::string& target) { m_compilationTarget=target; }
+
 protected: // only derived types can instantiate this class
     AbstractTypeInfo() {}
     virtual ~AbstractTypeInfo() {}
@@ -170,6 +173,8 @@ protected: // only derived types can instantiate this class
 private: // copy constructor or operator forbidden
     AbstractTypeInfo(const AbstractTypeInfo&) {}
     void operator=(const AbstractTypeInfo&) {}
+
+    std::string m_compilationTarget;
 };
 
 } /// namespace sofa::defaulttype
