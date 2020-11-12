@@ -4,6 +4,7 @@ project(SofaDefaultType)
 set(SRC_ROOT "src/sofa/defaulttype")
 
 set(HEADER_FILES
+    ${SRC_ROOT}/AbstractTypeInfo.h
     ${SRC_ROOT}/BaseMatrix.h
     ${SRC_ROOT}/BaseVector.h
     ${SRC_ROOT}/BoundingBox.h
