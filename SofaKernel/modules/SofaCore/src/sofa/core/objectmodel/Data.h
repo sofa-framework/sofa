@@ -232,15 +232,15 @@ public:
     /// @{
 
     /// BeginEdit method if it is only to write the value
+    /// checking that current value is up to date
     inline T* beginEdit()
     {
         updateIfDirty();
-        m_counter++;
-        m_isSet = true;
-        BaseData::setDirtyOutputs();
-        return m_value.beginEdit();
+        return beginWriteOnly();
     }
 
+    /// beginWriteOnly method if it is only to write the value
+    /// regardless of the current status of this value: no dirtiness check
     inline T* beginWriteOnly()
     {
         m_counter++;

@@ -24,13 +24,7 @@
 
 #include "BarycentricMapperTetrahedronSetTopology.h"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class In, class Out>
@@ -107,8 +101,6 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInElement(const In
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In, Out>::processTopologicalChanges(const typename Out::VecCoord& out, const typename In::VecCoord& in, core::topology::Topology* t)
 {
-    using sofa::core::behavior::MechanicalState;
-
     if (t != m_toTopology) return;
 
     if (m_toTopology->beginChange() == m_toTopology->endChange())
@@ -206,10 +198,6 @@ void BarycentricMapperTetrahedronSetTopology<In, Out>::processAddPoint(const sof
     vectorData.baryCoords[2] = (Real)coefs[2];
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::mapping
 
 #endif

@@ -232,4 +232,4 @@ void LennardJonesForceField<DataTypes>::draw(const core::visual::VisualParams* v
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace namespace sofa::component::forcefield
+} // namespace sofa::component::forcefield

@@ -58,6 +58,7 @@ set(HEADER_FILES
     mapping/ContactMapping.h
     mapping/ConstantAssembledMapping.h
     mapping/ConstantAssembledMultiMapping.h
+    mapping/ContactMultiMapping.h
     mapping/DifferenceFromTargetMapping.h
     mapping/DifferenceMapping.h
     mapping/DotProductMapping.h
@@ -73,6 +74,7 @@ set(HEADER_FILES
     mapping/RigidJointMultiMapping.h
     mapping/RigidJointFromTargetMapping.h
     mapping/SafeDistanceMapping.h
+    mapping/WinchMultiMapping.h
     misc/CompliantAttachButtonSetting.h
     misc/CompliantSolverMerger.h
     misc/FailNode.h
@@ -171,6 +173,7 @@ set(SOURCE_FILES
     mapping/AffineMultiMapping.cpp
     mapping/AssembledRigidRigidMapping.cpp
     mapping/ContactMapping.cpp
+    mapping/ContactMultiMapping.cpp
     mapping/DifferenceFromTargetMapping.cpp
     mapping/DifferenceMapping.cpp
     mapping/DotProductMapping.cpp
@@ -186,6 +189,7 @@ set(SOURCE_FILES
     mapping/RigidJointMultiMapping.cpp
     mapping/RigidJointFromTargetMapping.cpp
     mapping/SafeDistanceMapping.cpp
+    mapping/WinchMultiMapping.cpp
     misc/CompliantAttachButtonSetting.cpp
     misc/CompliantSolverMerger.cpp
     misc/FailNode.cpp

@@ -8,20 +8,20 @@ find_package(SofaGeneral REQUIRED)
 set(SOFAADVANCED_VERSION ${SofaFramework_VERSION})
 
 ## Subdirectories
-set(SOFAADVANCED_TARGETS
+set(SOFAADVANCED_MODULES
     SofaNonUniformFem
     )
 
 message(DEPRECATION
     " ${PROJECT_NAME} is deprecated.\n"
     " You should now explicitely find (find_package) and link (target_link_library) each module you need within: \n"
-    " ${SOFAADVANCED_TARGETS}"
+    " ${SOFAADVANCED_MODULES}"
     )
 
-foreach(TARGET ${SOFAADVANCED_TARGETS})
-    find_package(${TARGET} QUIET)
-    if(NOT ${TARGET}_FOUND)
-        string(TOUPPER module_${TARGET} MODULE_TO_CHECK)
+foreach(module ${SOFAADVANCED_MODULES})
+    find_package(${module} QUIET)
+    if(NOT ${module}_FOUND)
+        string(TOUPPER module_${module} MODULE_TO_CHECK)
         list(APPEND LIST_MODULES_TO_CHECK ${MODULE_TO_CHECK})
     endif()
 endforeach()
@@ -44,7 +44,7 @@ set(SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAADVANCED_TARGETS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAADVANCED_MODULES})
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

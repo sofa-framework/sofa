@@ -40,6 +40,7 @@ public:
     void SetUp()
     {
         importPlugin("SofaOpenglVisual");
+        importPlugin("SofaGeneralTopology");
     }
 
     bool createCubeFailed();
