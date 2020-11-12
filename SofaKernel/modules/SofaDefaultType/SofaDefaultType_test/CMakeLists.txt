@@ -5,6 +5,7 @@ project(SofaDefaultType_test)
 set(SOURCE_FILES
     MapMapSparseMatrixEigenUtils_test.cpp
     MatTypes_test.cpp
+    TypeInfoRepository_test.cpp
     VecTypes_test.cpp
 )
 

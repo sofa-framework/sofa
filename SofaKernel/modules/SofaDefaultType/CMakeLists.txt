@@ -26,6 +26,10 @@ set(HEADER_FILES
     ${SRC_ROOT}/SolidTypes.inl
     ${SRC_ROOT}/TemplatesAliases.h
     ${SRC_ROOT}/TopologyTypes.h
+    ${SRC_ROOT}/TypeInfoID.h
+    ${SRC_ROOT}/TypeInfoRegistry.h
+    ${SRC_ROOT}/TypeInfoRegistryTools.h
+    ${SRC_ROOT}/TopologyTypes.h
     ${SRC_ROOT}/Vec.h
     ${SRC_ROOT}/Ray.h
     ${SRC_ROOT}/Vec3Types.h
@@ -42,6 +46,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/Frame.cpp
     ${SRC_ROOT}/SolidTypes.cpp
     ${SRC_ROOT}/TemplatesAliases.cpp
+    ${SRC_ROOT}/TypeInfoID.cpp
+    ${SRC_ROOT}/TypeInfoRegistry.cpp
+    ${SRC_ROOT}/TypeInfoRegistryTools.cpp
     ${SRC_ROOT}/init.cpp
 )
 
