@@ -19,45 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
+#include <Flexible/types/AffineTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
 #include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
 namespace sofa::defaulttype
 {
 
-#define REGISTER_RIGIDCOORD(theInnerType, size) static int REGISTER_UNIQUE_NAME_GENERATOR(theInnerName , __LINE__) = DataTypeInfoRegistry::Set(DataTypeId<RigidCoord<theInnerType, size>>::getTypeId(), \
-                                                VirtualTypeInfoA< DataTypeInfo<RigidCoord<theInnerType,size>>>::get(),\
-                                                sofa_tostring(SOFA_TARGET));
-#define REGISTER_RIGIDDERIV(theInnerType, size) static int REGISTER_UNIQUE_NAME_GENERATOR(theInnerName , __LINE__) = DataTypeInfoRegistry::Set(DataTypeId<RigidDeriv<theInnerType, size>>::getTypeId(), \
-                                                VirtualTypeInfoA< DataTypeInfo<RigidDeriv<theInnerType, size>>>::get(),\
-                                                sofa_tostring(SOFA_TARGET));
-//REGISTER_RIGIDCOORD(double, 2)
-//REGISTER_RIGIDCOORD(float, 2)
-//REGISTER_RIGIDCOORD(double, 3)
-//REGISTER_RIGIDCOORD(float, 3)
-
-//REGISTER_RIGIDDERIV(double, 2)
-//REGISTER_RIGIDDERIV(float, 2)
-//REGISTER_RIGIDDERIV(double, 3)
-//REGISTER_RIGIDDERIV(float, 3)
-
-REGISTER_TYPE_INFO_CREATOR(Rigid2fTypes)
-REGISTER_TYPE_INFO_CREATOR(Rigid2dTypes)
-REGISTER_TYPE_INFO_CREATOR(Rigid3fTypes)
-REGISTER_TYPE_INFO_CREATOR(Rigid3dTypes)
+typedef sofa::helper::vector<Affine3dTypes::Coord> Acc;
+typedef sofa::helper::vector<Affine3dTypes::Coord> Acd;
+REGISTER_TYPE_INFO_CREATOR(Affine3dTypes::Coord);
+REGISTER_TYPE_INFO_CREATOR(Affine3dTypes::Deriv);
+REGISTER_TYPE_INFO_CREATOR(Acc);
+REGISTER_TYPE_INFO_CREATOR(Acd);
 
 
-
-REGISTER_TYPE_INFO_CREATOR(Rigid2fMass)
-REGISTER_TYPE_INFO_CREATOR(Rigid2dMass)
-REGISTER_TYPE_INFO_CREATOR(Rigid3fMass)
-REGISTER_TYPE_INFO_CREATOR(Rigid3dMass)
-
-REGISTER_TYPE_INFO_CREATOR(Rigid2fTypes)
-REGISTER_TYPE_INFO_CREATOR(Rigid2dTypes)
-REGISTER_TYPE_INFO_CREATOR(Rigid3fTypes)
-REGISTER_TYPE_INFO_CREATOR(Rigid3dTypes)
-
-
-} /// namespace sofa::defaulttype
-
+}

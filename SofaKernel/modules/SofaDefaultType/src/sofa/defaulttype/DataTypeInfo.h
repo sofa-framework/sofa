@@ -113,68 +113,136 @@ struct DefaultDataTypeInfo
 
     enum { ValidInfo       = 0 /**< 1 if this type has valid infos*/ };
 
+//    static std::string GetName(){ return WillBeDeprecated::getDeprecatedName<TDataType>("undefined"); }
+
+//    enum [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    { FixedSize       = 0 /**< 1 if this type has a fixed size*/ };
+//    enum [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    { ZeroConstructor =  0 /**< 1 if the constructor is equivalent to setting memory to 0*/ };
+//    enum [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    { SimpleCopy      = 0 /**< 1 if copying the data can be done with a memcpy*/ };
+//    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    { SimpleLayout    = 0 /**< 1 if the layout in memory is simply N values of the same base type*/ };
+//    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    { Integer         = 0 /**< 1 if this type uses integer values*/ };
+//    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    { Scalar          = 0 /**< 1 if this type uses scalar values*/ };
+//    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    { Text            = 0 /**< 1 if this type uses text values*/ };
+//    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
+//    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    { Container       = 0 /**< 1 if this type is a container*/ };
+//    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    { Size = 0 /**< largest known fixed size for this type, as returned by size() */ };
+
+//    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    static size_t size() { return 1; }
+
+//    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    static size_t byteSize() { return 1; }
+
+//    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    static size_t size(const DataType& /*data*/) { return 1; }
+
+//    template <typename T>
+//    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    static void getValue(const DataType& /*data*/, size_t /*index*/, T& /*value*/)
+//    {}
+
+//    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
+
+//    template<typename T>
+//    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    static void setValue(DataType& /*data*/, size_t /*index*/, const T& /*value*/){}
+
+//    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    static void getValueString(const DataType& /*data*/, size_t /*index*/, std::string& /*value*/){}
+
+//    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    static const void* getValuePtr(const TDataType& data)
+//    {
+//        SOFA_UNUSED(data);
+//        return nullptr;
+//    }
+
+//    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    static void* getValuePtr(TDataType& data)
+//    {
+//        SOFA_UNUSED(data);
+//        return nullptr;
+//    }
+
+//    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+//    static void setValueString(DataType &data, size_t /*index*/, const std::string& value)
+//    {
+//        SOFA_UNUSED(data);
+//        SOFA_UNUSED(index);
+//        SOFA_UNUSED(value);
+//    }
+
+
+};
+
+
+template<class TDataType>
+struct PartialDataTypeInfo
+{
+    /// Template parameter.
+    typedef TDataType DataType;
+    /// If the type is a container, this the type of the values inside this
+    /// container, otherwise this is DataType.
+    typedef DataType BaseType;
+    /// Type of the final atomic values (i.e. the values indexed by getValue()).
+    typedef DataType ValueType;
+    /// TypeInfo for BaseType
+    typedef DataTypeInfo<BaseType> BaseTypeInfo;
+    /// TypeInfo for ValueType
+    typedef DataTypeInfo<ValueType> ValueTypeInfo;
+
+    enum { ValidInfo       = 0 /**< 1 if this type has valid infos*/ };
+
     static std::string GetName(){ return WillBeDeprecated::getDeprecatedName<TDataType>("undefined"); }
 
-    enum [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    { FixedSize       = 0 /**< 1 if this type has a fixed size*/ };
-    enum [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    { ZeroConstructor =  0 /**< 1 if the constructor is equivalent to setting memory to 0*/ };
-    enum [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    { SimpleCopy      = 0 /**< 1 if copying the data can be done with a memcpy*/ };
-    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    { SimpleLayout    = 0 /**< 1 if the layout in memory is simply N values of the same base type*/ };
-    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    { Integer         = 0 /**< 1 if this type uses integer values*/ };
-    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    { Scalar          = 0 /**< 1 if this type uses scalar values*/ };
-    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    { Text            = 0 /**< 1 if this type uses text values*/ };
-    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
-    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    { Container       = 0 /**< 1 if this type is a container*/ };
-    enum  [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    { Size = 0 /**< largest known fixed size for this type, as returned by size() */ };
+    enum { FixedSize       = 0 /**< 1 if this type has a fixed size*/ };
+    enum { ZeroConstructor =  0 /**< 1 if the constructor is equivalent to setting memory to 0*/ };
+    enum { SimpleCopy      = 0 /**< 1 if copying the data can be done with a memcpy*/ };
+    enum { SimpleLayout    = 0 /**< 1 if the layout in memory is simply N values of the same base type*/ };
+    enum { Integer         = 0 /**< 1 if this type uses integer values*/ };
+    enum { Scalar          = 0 /**< 1 if this type uses scalar values*/ };
+    enum { Text            = 0 /**< 1 if this type uses text values*/ };
+    enum { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
+    enum { Container       = 0 /**< 1 if this type is a container*/ };
+    enum { Size = 0 /**< largest known fixed size for this type, as returned by size() */ };
 
-    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    static size_t size() { return 1; }
-
-    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
-    static size_t byteSize() { return 1; }
-
-    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
+    static size_t size() { return 0; }
+    static size_t byteSize() { return 0; }
     static size_t size(const DataType& /*data*/) { return 1; }
 
     template <typename T>
-    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
     static void getValue(const DataType& /*data*/, size_t /*index*/, T& /*value*/)
     {}
 
-    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
     static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
 
     template<typename T>
-    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
     static void setValue(DataType& /*data*/, size_t /*index*/, const T& /*value*/){}
 
-    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
     static void getValueString(const DataType& /*data*/, size_t /*index*/, std::string& /*value*/){}
 
-    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
     static const void* getValuePtr(const TDataType& data)
     {
         SOFA_UNUSED(data);
         return nullptr;
     }
 
-    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
     static void* getValuePtr(TDataType& data)
     {
         SOFA_UNUSED(data);
         return nullptr;
     }
 
-    [[deprecated("Using values of a not fully defined component is not allowed since PR#xxxx")]]
     static void setValueString(DataType &data, size_t /*index*/, const std::string& value)
     {
         SOFA_UNUSED(data);
@@ -522,19 +590,25 @@ template<class TDataType>
 struct DataTypeInfo : public BaseDataTypeInfo<TDataType>, public DefaultDataTypeInfo<TDataType>
 {
 public:
-    static AbstractTypeInfo* get();
+    static AbstractTypeInfo* get(){}
 };
 
 class TypeInfo
 {
 public:
     template<class T>
+    static constexpr int Initialize(){
+        doRegister<T>();
+        return sofa::defaulttype::DataTypeId<T>::getTypeId().id;
+    }
+
+    template<class T>
     static AbstractTypeInfo* doRegister()
     {
-        static AbstractTypeInfo* info = sofa::defaulttype::AbstractTypeInfoCreator<T>::get();
+        static IncompleteTypeInfo<T> info;
         sofa::defaulttype::DataTypeInfoRegistry::Set(sofa::defaulttype::DataTypeId<T>::getTypeId(),
-                                                     info, sofa_tostring(SOFA_TARGET));
-        return info;
+                                                     &info, sofa_tostring(SOFA_TARGET));
+        return &info;
     }
 
     template<class T>

@@ -436,7 +436,6 @@ template<> inline const char* Affine3dTypes::Name() { return "Affine"; }
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
-
 template<> struct DataTypeName< defaulttype::Affine3dTypes::Coord > { static const char* name() { return "Affine3dTypes::Coord"; } };
 
 

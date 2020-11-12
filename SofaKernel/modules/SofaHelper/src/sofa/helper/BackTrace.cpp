@@ -92,7 +92,10 @@ BackTrace::StackTrace BackTrace::getTrace(size_t max)
                         }
                         std::string prefix{symbol};
                         prefix = prefix.substr(0, beginmangled-symbol);
-                        result.push_back(prefix + name + endmangled);
+                        if(std::string(name)=="")
+                            result.push_back(prefix + name + endmangled);
+                        else
+                            result.push_back(std::string(name) + endmangled);
                         free(name);
                     }
                 }

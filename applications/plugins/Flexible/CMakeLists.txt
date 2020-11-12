@@ -167,8 +167,10 @@ set(SOURCE_FILES
     strainMapping/RelativeStrainMapping.cpp
     strainMapping/LinearStrainMapping.cpp
     types/AffineComponents.cpp
+    types/AffineTypes.cpp
     types/DeformationGradientTypes.cpp
     types/QuadraticComponents.cpp
+    types/QuadraticTypes.cpp
     types/RigidConstraint.cpp
     types/StrainTypes.cpp
     )

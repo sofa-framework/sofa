@@ -120,8 +120,8 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
         if (m_owner)
         {
             msg_error(m_owner) << "Invalid Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName() << msgendl
-                << "Destination Data " << parent->getValueTypeInfo()->getName() << msgendl
-                << "Source Data " << parent->getValueTypeInfo()->getName();
+                << "Destination Data " << getValueTypeInfo()->getName() << " = " << getValueTypeInfo()->ValidInfo() << msgendl
+                << "Source Data " << parent->getValueTypeInfo()->getName() << " = " << parent->getValueTypeInfo()->ValidInfo() ;
         }
         return false;
     }

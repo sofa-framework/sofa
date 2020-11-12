@@ -29,7 +29,7 @@ namespace sofa::defaulttype
 {
 
 template<std::size_t N, typename real>
-struct DataTypeInfo< sofa::defaulttype::StdRigidTypes<N, real> > : public sofa::defaulttype::DefaultDataTypeInfo<sofa::defaulttype::StdRigidTypes<N, real>>
+struct DataTypeInfo< sofa::defaulttype::StdRigidTypes<N, real> > : public sofa::defaulttype::PartialDataTypeInfo<sofa::defaulttype::StdRigidTypes<N, real>>
 {
 public:
     static std::string GetTypeName() { std::ostringstream o; o << "RigidTypes<" << N << "," << DataTypeName<real>::GetTypeName() << ">"; return o.str(); }
@@ -69,7 +69,7 @@ struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArray
 };
 
 template<std::size_t N, typename real>
-struct DataTypeInfo< sofa::defaulttype::RigidMass<N,real> > : public DefaultDataTypeInfo<RigidMass<N,real>>
+struct DataTypeInfo< sofa::defaulttype::RigidMass<N,real> > : public PartialDataTypeInfo<RigidMass<N,real>>
 {
     static std::string GetTypeName() { std::ostringstream o; o << "RigidMass<" << N << "," << DataTypeName<real>::GetTypeName() << ">"; return o.str(); }
     static std::string GetName()

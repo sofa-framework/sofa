@@ -94,6 +94,11 @@ int DataTypeInfoRegistry::Set(const BaseDataTypeId& tid, AbstractTypeInfo* info,
     else
     {
         std::cout << " Registering a partial new type info at "  << id << " => " << info->getName() << std::endl;
+
+        auto stacktrace = sofa::helper::BackTrace::getTrace(10);
+        for(size_t i=1;i<stacktrace.size();i++)
+            std::cout << "    ["<<i<< "]" << stacktrace[i] << std::endl;
+
     }
     info->setCompilationTarget(compilationTarget);
     typeinfos[id] = info;

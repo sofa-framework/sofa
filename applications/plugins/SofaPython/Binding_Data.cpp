@@ -780,7 +780,7 @@ static PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
         size_t s = typeinfo->size();        /// the current type size
         dimensions.back() /= s;             /// to get the number of current type, the previous total size must be devided by the current type size
         dimensions.push_back( s );
-        valuetypeinfo=valuetypeinfo->ValueType();
+        valuetypeinfo=valuetypeinfo->getValueType();
     }
 
     PyObject* shape = PyTuple_New(dimensions.size());
@@ -797,7 +797,7 @@ static PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
     PyTuple_SetItem( res, 1, shape );
 
     /// the most basic type name
-    PyTuple_SetItem( res, 2, PyString_FromString( valuetypeinfo->name().c_str() ) );
+    PyTuple_SetItem( res, 2, PyString_FromString( valuetypeinfo->getName().c_str() ) );
 
     return res;
 }

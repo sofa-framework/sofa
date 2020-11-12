@@ -61,6 +61,8 @@ int vectorPreLoad()
             fixed_array<unsigned long, 1>, fixed_array<unsigned int, 2>, fixed_array<unsigned long, 3>, fixed_array<unsigned long, 4>, fixed_array<unsigned long, 5>, fixed_array<unsigned long, 6>, fixed_array<unsigned long, 7>, fixed_array<unsigned long, 8>,
             Rigid2dMass, Rigid2dTypes, Rigid2fMass, Rigid2fTypes,
             Rigid3dMass, Rigid3dTypes, Rigid3fMass, Rigid3fTypes,
+            Rigid3dTypes::Coord, Rigid3dTypes::Deriv, Rigid3fTypes::Coord, Rigid3fTypes::Deriv,
+            Rigid2dTypes::Coord, Rigid2dTypes::Deriv, Rigid2fTypes::Coord, Rigid2fTypes::Deriv,
             sofa::helper::types::RGBAColor, BoundingBox>([]<typename T>()
                                                          {
                                                              DataTypeInfoRegistry::Set(DataTypeId<vector<T>>::getTypeId(),

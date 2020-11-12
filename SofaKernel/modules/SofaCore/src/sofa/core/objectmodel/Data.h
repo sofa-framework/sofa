@@ -351,7 +351,7 @@ public:
 
     int _doGetDataTypeId_() const override
     {
-        return sofa::defaulttype::DataTypeId<T>::getTypeId().id;
+        return m_register;
     }
 
     /// Get info about the value type of the associated variable
@@ -390,9 +390,11 @@ private:
     Data(const Data& );
     Data& operator=(const Data& );
 
-    static int m_register;
+    static const int m_register;
 };
 
+template<class T>
+const int Data<T>::m_register = sofa::defaulttype::TypeInfo::Initialize<T>();
 
 class EmptyData : public Data<void*> {};
 

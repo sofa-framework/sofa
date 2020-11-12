@@ -20,7 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <Flexible/config.h>
-
+#include <iostream>
+#include <sofa/defaulttype/AbstractTypeInfo.h>
+#include <sofa/defaulttype/DataTypeInfoRegistry.h>
 
 namespace sofa
 {
@@ -45,6 +47,12 @@ void initExternalModule()
     if (first)
     {
         first = false;
+        std::cout << "Module: " << sofa_tostring(SOFA_TARGET) << std::endl;
+        for(auto& info : sofa::defaulttype::DataTypeInfoRegistry::GetRegisteredTypes(sofa_tostring(SOFA_TARGET)))
+        {
+            std::string s = (info->ValidInfo())?"-":"!";
+            std::cout << "  " << s << " "  << info->getName() << std::endl;
+        }
     }
 }
 
