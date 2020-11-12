@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/defaulttype/config.h>
+
 #include <vector>
 #include <string>
 
@@ -41,7 +43,7 @@ class TypeInfoId;
  *      AbstractTypeInfo* info = TypeInfoRegistry::Get(shortinfo.id);
  *      info->getName()
  **********************************************************************************/
-class TypeInfoRegistry
+class SOFA_DEFAULTTYPE_API TypeInfoRegistry
 {
 public:
     static std::vector<const AbstractTypeInfo*> GetRegisteredTypes(const std::string& target="");
