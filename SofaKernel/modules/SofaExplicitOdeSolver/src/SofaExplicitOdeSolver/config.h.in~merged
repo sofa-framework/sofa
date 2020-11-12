@@ -19,10 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> f8dbcc84d2... cmake setup
 #pragma once
-#include <SofaExplicitOdeSolver/config.h>
 
-namespace sofa::component
-{
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-} // namespace sofa::component
+<<<<<<< HEAD
+#define SOFAEXPLICITODESOLVER_VERSION @PROJECT_VERSION@
+
+#ifdef SOFA_BUILD_SOFAEXPLICITODESOLVER
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAEXPLICITODESOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAEXPLICITODESOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+=======
+#define SOFAENGINE_VERSION @PROJECT_VERSION@
+
+#ifdef SOFA_BUILD_SOFAENGINE
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAENGINE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAENGINE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+=======
+#ifndef SOFAENGINE_CONFIG_H
+#define SOFAENGINE_CONFIG_H
+
+#include <SofaCommon/config.h>
+
+#ifdef SOFA_BUILD_ENGINE
+#  define SOFA_TARGET SofaEngine
+#  define SOFA_ENGINE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_ENGINE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+>>>>>>> 006ab8e1c9... cmake setup
+>>>>>>> f8dbcc84d2... cmake setup
+#endif
