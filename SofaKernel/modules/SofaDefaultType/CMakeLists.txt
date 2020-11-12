@@ -38,6 +38,9 @@ set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/Color.h
+
+    ${SRC_ROOT}/typeinfo/DataTypeInfoDynamicWrapper.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo.h
 )
 
 set(SOURCE_FILES

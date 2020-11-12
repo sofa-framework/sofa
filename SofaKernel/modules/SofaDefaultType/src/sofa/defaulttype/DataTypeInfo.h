@@ -31,6 +31,8 @@
 #include <typeinfo>
 #include <sofa/helper/logging/Messaging.h>
 #include "AbstractTypeInfo.h"
+#include "typeinfo/DataTypeInfoDynamicWrapper.h"
+#include "typeinfo/DataTypeInfo.h"
 
 namespace sofa
 {
@@ -44,226 +46,13 @@ class vector;
 namespace defaulttype
 {
 
-/** Type traits class for objects stored in Data.
-
-    %DataTypeInfo is part of the introspection/reflection capabilities of the
-    Sofa scene graph API; it is used to manipulate Data values generically in \a
-    template code, working transparently with different types of containers
-    (vector, fixed_array, etc), and different types of values (integers, scalars
-    (float, double), strings, etc). For example, it can be used to work with
-    arrays without having to handle all the possible array classes used in Sofa:
-    fixed or dynamic size, CPU or GPU, etc.
-
-    <h4>Small example</h4>
-
-    Iterate over the values of a DataType in templated code:
-
-    \code{.cpp}
-    template<DataType>
-    MyComponent::someMethod(DataType& data) {
-        const size_t dim = defaulttype::DataTypeInfo<Coord>::size();
-        for(size_t i = 0; i < dim; ++i) {
-            DataTypeInfo<DataType>::ValueType value;
-            DataTypeInfo<Coord>::getValue(data, i, value);
-            // [...] Do something with 'value'
-        }
-    }
-    \endcode
-
-
-    <h4>Note about size and indices</h4>
-
-    The getValue() and setValue() methods take an index as a parameter, with the
-    following conventions:
-
-    - If a type is not a container, then the index \b must be 0.
-
-    - Multi-dimensional containers are abstracted to a single dimension.  This
-      allows iterating over any container using a single index, at the price of
-      some limitations.
-
-    \see AbstractTypeInfo provides similar mechanisms to manipulate Data objects
-    generically in non-template code.
-*/
-template<class TDataType>
-struct DataTypeInfo;
-
-template<class TDataType>
-struct DefaultDataTypeInfo
-{
-    /// Template parameter.
-    typedef TDataType DataType;
-    /// If the type is a container, this the type of the values inside this
-    /// container, otherwise this is DataType.
-    typedef DataType BaseType;
-    /// Type of the final atomic values (i.e. the values indexed by getValue()).
-    typedef DataType ValueType;
-    /// TypeInfo for BaseType
-    typedef DataTypeInfo<BaseType> BaseTypeInfo;
-    /// TypeInfo for ValueType
-    typedef DataTypeInfo<ValueType> ValueTypeInfo;
-    /**
-       \{
-     */
-    enum { ValidInfo       = 0 /**< 1 if this type has valid infos*/ };
-    enum { FixedSize       = 0 /**< 1 if this type has a fixed size*/ };
-    enum { ZeroConstructor = 0 /**< 1 if the constructor is equivalent to setting memory to 0*/ };
-    enum { SimpleCopy      = 0 /**< 1 if copying the data can be done with a memcpy*/ };
-    enum { SimpleLayout    = 0 /**< 1 if the layout in memory is simply N values of the same base type*/ };
-    enum { Integer         = 0 /**< 1 if this type uses integer values*/ };
-    enum { Scalar          = 0 /**< 1 if this type uses scalar values*/ };
-    enum { Text            = 0 /**< 1 if this type uses text values*/ };
-    enum { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
-    enum { Container       = 0 /**< 1 if this type is a container*/ };
-    enum { Size            = 1 /**< largest known fixed size for this type, as returned by size() */ };
-
-    // \}
-
-    static sofa::Size size() { return 1; }
-    static sofa::Size byteSize() { return 1; }
-
-    static sofa::Size size(const DataType& /*data*/) { return 1; }
-
-    template <typename T>
-    static void getValue(const DataType& /*data*/, Index /*index*/, T& /*value*/)
-    {
-    }
-
-    static bool setSize(DataType& /*data*/, sofa::Size /*size*/) { return false; }
-
-    template<typename T>
-    static void setValue(DataType& /*data*/, Index /*index*/, const T& /*value*/)
-    {
-    }
-
-    static void getValueString(const DataType& /*data*/, Index /*index*/, std::string& /*value*/)
-    {
-    }
-
-    static void setValueString(DataType& /*data*/, Index /*index*/, const std::string& /*value*/)
-    {
-    }
-
-    // mtournier: wtf is this supposed to do?
-    // mtournier: wtf is this not returning &type?
-    static const void* getValuePtr(const DataType& /*type*/)
-    {
-        return nullptr;
-    }
-
-    static void* getValuePtr(DataType& /*type*/)
-    {
-        return nullptr;
-    }
-
-    static const char* name() { return "unknown"; }
-
-};
-
-template<class TDataType>
-struct DataTypeInfo : DefaultDataTypeInfo<TDataType> { };
-
-
+/// We make an alias to wrap around the old name to the new one.
+template<class T>
+using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
 
 /// Type name template: default to using DataTypeInfo::name(), but can be overriden for types with shorter typedefs
 template<class TDataType>
-struct DataTypeName : public DataTypeInfo<TDataType>
-{
-};
-
-/// Abstract type traits class
-template<class TDataType>
-class VirtualTypeInfo : public AbstractTypeInfo
-{
-public:
-    typedef TDataType DataType;
-    typedef DataTypeInfo<DataType> Info;
-
-    static VirtualTypeInfo* get() { static VirtualTypeInfo<DataType> t; return &t; }
-
-    const AbstractTypeInfo* BaseType() const override  { return VirtualTypeInfo<typename Info::BaseType>::get(); }
-    const AbstractTypeInfo* ValueType() const override { return VirtualTypeInfo<typename Info::ValueType>::get(); }
-
-    virtual std::string name() const override { return DataTypeName<DataType>::name(); }
-
-    bool ValidInfo() const override       { return Info::ValidInfo; }
-    bool FixedSize() const override       { return Info::FixedSize; }
-    bool ZeroConstructor() const override { return Info::ZeroConstructor; }
-    bool SimpleCopy() const override      { return Info::SimpleCopy; }
-    bool SimpleLayout() const override    { return Info::SimpleLayout; }
-    bool Integer() const override         { return Info::Integer; }
-    bool Scalar() const override          { return Info::Scalar; }
-    bool Text() const override            { return Info::Text; }
-    bool CopyOnWrite() const override     { return Info::CopyOnWrite; }
-    bool Container() const override       { return Info::Container; }
-
-    sofa::Size size() const override
-    {
-        return Info::size();
-    }
-    sofa::Size byteSize() const override
-    {
-        return Info::byteSize();
-    }
-    sofa::Size size(const void* data) const override
-    {
-        return sofa::Size(Info::size(*(const DataType*)data));
-    }
-    bool setSize(void* data, sofa::Size size) const override
-    {
-        return Info::setSize(*(DataType*)data, size);
-    }
-
-    long long getIntegerValue(const void* data, Index index) const override
-    {
-        long long v = 0;
-        Info::getValue(*(const DataType*)data, index, v);
-        return v;
-    }
-
-    double    getScalarValue (const void* data, Index index) const override
-    {
-        double v = 0;
-        Info::getValue(*(const DataType*)data, index, v);
-        return v;
-    }
-
-    virtual std::string getTextValue   (const void* data, Index index) const override
-    {
-        std::string v;
-        Info::getValueString(*(const DataType*)data, index, v);
-        return v;
-    }
-
-    void setIntegerValue(void* data, Index index, long long value) const override
-    {
-        Info::setValue(*(DataType*)data, index, value);
-    }
-
-    void setScalarValue (void* data, Index index, double value) const override
-    {
-        Info::setValue(*(DataType*)data, index, value);
-    }
-
-    virtual void setTextValue(void* data, Index index, const std::string& value) const override
-    {
-        Info::setValueString(*(DataType*)data, index, value);
-    }
-    const void* getValuePtr(const void* data) const override
-    {
-        return Info::getValuePtr(*(const DataType*)data);
-    }
-    void* getValuePtr(void* data) const override
-    {
-        return Info::getValuePtr(*(DataType*)data);
-    }
-
-    virtual const std::type_info* type_info() const override { return &typeid(DataType); }
-
-
-protected: // only derived types can instantiate this class
-    VirtualTypeInfo() {}
-};
+struct DataTypeName : public DataTypeInfo<TDataType> {};
 
 template<class TDataType>
 struct IntegerTypeInfo
@@ -1119,19 +908,19 @@ struct DataTypeInfo<std::string> : public TextTypeInfo<std::string>
 template<class T, sofa::Size N>
 struct DataTypeInfo< sofa::helper::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::helper::fixed_array<T,N> >
 {
-    static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeName<T>::name() << "," << N << ">"; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeInfo<T>::name() << "," << N << ">"; return o.str(); }
 };
 
 template<class T, class Alloc>
 struct DataTypeInfo< std::vector<T,Alloc> > : public VectorTypeInfo<std::vector<T,Alloc> >
 {
-    static std::string name() { std::ostringstream o; o << "std::vector<" << DataTypeName<T>::name() << ">"; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "std::vector<" << DataTypeInfo<T>::name() << ">"; return o.str(); }
 };
 
 template<class T, class Alloc>
 struct DataTypeInfo< sofa::helper::vector<T,Alloc> > : public VectorTypeInfo<sofa::helper::vector<T,Alloc> >
 {
-    static std::string name() { std::ostringstream o; o << "vector<" << DataTypeName<T>::name() << ">"; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "vector<" << DataTypeInfo<T>::name() << ">"; return o.str(); }
 };
 
 // vector<bool> is a bitset, cannot get a pointer to the values
@@ -1182,7 +971,7 @@ struct DataTypeInfo< sofa::helper::vector<std::string,Alloc> > : public VectorTy
 template<class T, class Compare, class Alloc>
 struct DataTypeInfo< std::set<T,Compare,Alloc> > : public SetTypeInfo<std::set<T,Compare,Alloc> >
 {
-    static std::string name() { std::ostringstream o; o << "std::set<" << DataTypeName<T>::name() << ">"; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "std::set<" << DataTypeInfo<T>::name() << ">"; return o.str(); }
 };
 
 template<>
