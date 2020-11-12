@@ -30,7 +30,7 @@ namespace sofa::defaulttype
 /** *******************************************************************************
  * @brief A dedicated class to hold helper functions for TypeInfoRegistryTools
  **********************************************************************************/
-class TypeInfoRegistryTools
+class SOFA_DEFAULTTYPE_API TypeInfoRegistryTools
 {
 public:
         static void dumpRegistryContentToStream(std::ostream& out,

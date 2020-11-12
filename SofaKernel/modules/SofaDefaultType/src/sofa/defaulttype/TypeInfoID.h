@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/defaulttype/config.h>
+
 #include <typeinfo>
 
 namespace sofa::defaulttype
@@ -38,7 +40,7 @@ namespace sofa::defaulttype
  *      AbstractTypeInfo* info = TypeInfoRegistry::Get(shortinfo.id);
  *      info->getName()
  *****************************************************************************/
-class TypeInfoId
+class SOFA_DEFAULTTYPE_API TypeInfoId
 {
 public:
     template<class T>
