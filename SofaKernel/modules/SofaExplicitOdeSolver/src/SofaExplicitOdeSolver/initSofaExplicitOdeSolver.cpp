@@ -19,17 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaExplicitOdeSolver/initExplicitODESolver.h>
+#include <SofaExplicitOdeSolver/initSofaExplicitOdeSolver.h>
 
 
-namespace sofa
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
+
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFAEXPLICITODESOLVER_API void initExternalModule();
+    SOFA_SOFAEXPLICITODESOLVER_API const char* getModuleName();
+    SOFA_SOFAEXPLICITODESOLVER_API const char* getModuleVersion();
+    SOFA_SOFAEXPLICITODESOLVER_API const char* getModuleLicense();
+    SOFA_SOFAEXPLICITODESOLVER_API const char* getModuleDescription();
+    SOFA_SOFAEXPLICITODESOLVER_API const char* getModuleComponentList();
+}
 
-
-void initExplicitODESolver()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -38,6 +46,32 @@ void initExplicitODESolver()
     }
 }
 
-} // namespace component
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace sofa
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAEXPLICITODESOLVER_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Explicit Ode Solver.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component
+

@@ -20,18 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
-#include "config.h"
+#include <SofaExplicitOdeSolver/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace odesolver
+namespace sofa::component::odesolver
 {
 
 /** The simplest time integration.
@@ -39,7 +32,7 @@ namespace odesolver
  If true (the default), the symplectic variant of Euler's method is applied:
  If false, the basic Euler's method is applied (less robust)
  */
-class SOFA_EXPLICIT_ODE_SOLVER_API EulerExplicitSolver : public sofa::core::behavior::OdeSolver
+class SOFA_SOFAEXPLICITODESOLVER_API EulerExplicitSolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(EulerExplicitSolver, sofa::core::behavior::OdeSolver);
@@ -68,8 +61,4 @@ protected:
     core::behavior::MultiVecDeriv x;
 };
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace namespace sofa::component::odesolver
