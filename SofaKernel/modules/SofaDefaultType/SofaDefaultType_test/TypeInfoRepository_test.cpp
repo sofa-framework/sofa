@@ -25,6 +25,13 @@
 #include <sofa/defaulttype/AbstractTypeInfo.h>
 using sofa::defaulttype::AbstractTypeInfo;
 
+#include <sofa/defaulttype/typeinfo/models/IncompleteTypeInfo.h>
+using sofa::defaulttype::IncompleteTypeInfo;
+
+#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
+using sofa::defaulttype::DataTypeInfo;
+using sofa::defaulttype::DataTypeInfoDynamicWrapper;
+
 #include <sofa/defaulttype/TypeInfoID.h>
 using sofa::defaulttype::TypeInfoId;
 
@@ -41,6 +48,26 @@ TEST(TypeInfoRegistry, get)
     if(nfo)
         EXPECT_EQ(nfo->name(), std::string("d"));
 }
+
+class MyType {};
+template<> class sofa::defaulttype::DataTypeInfo<MyType> : public IncompleteTypeInfo<MyType>
+{
+public:
+    static std::string name(){ return "MyType"; }
+    static std::string GetTypeName(){ return "MyType"; }
+};
+
+TEST(TypeInfoRegistry, set_and_get)
+{
+    TypeInfoRegistry::Set(TypeInfoId::getTypeId<MyType>(),
+                          DataTypeInfoDynamicWrapper<DataTypeInfo<MyType>>::get(), "TestTarget");
+
+    const AbstractTypeInfo* nfo = TypeInfoRegistry::Get(TypeInfoId::getTypeId<MyType>());
+    EXPECT_NE(nfo, nullptr);
+    EXPECT_FALSE(nfo->ValidInfo());
+    EXPECT_EQ(nfo->name(), std::string("MyType"));
+}
+
 
 TEST(TypeInfoRegistry, dump)
 {
