@@ -19,62 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include <gtest/gtest.h>
-
-#include <sofa/defaulttype/AbstractTypeInfo.h>
-using sofa::defaulttype::AbstractTypeInfo;
+#pragma once
+#include <string>
 
 #include <sofa/defaulttype/typeinfo/models/IncompleteTypeInfo.h>
-using sofa::defaulttype::IncompleteTypeInfo;
-
 #include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
-using sofa::defaulttype::DataTypeInfo;
-using sofa::defaulttype::DataTypeInfoDynamicWrapper;
 
-#include <sofa/defaulttype/TypeInfoID.h>
-using sofa::defaulttype::TypeInfoId;
-
-#include <sofa/defaulttype/TypeInfoRegistry.h>
-using sofa::defaulttype::TypeInfoRegistry;
-using sofa::defaulttype::TypeInfoType;
-
-#include <sofa/defaulttype/TypeInfoRegistryTools.h>
-using sofa::defaulttype::TypeInfoRegistryTools;
-
-
-class MyTypeNotRegistered {};
-TEST(TypeInfoRegistry, get)
+namespace sofa::defaulttype
 {
-    const AbstractTypeInfo* nfo = TypeInfoRegistry::Get(TypeInfoId::getTypeId<MyTypeNotRegistered>());
-    EXPECT_NE(nfo, nullptr);
-    EXPECT_FALSE(nfo->ValidInfo());
-    EXPECT_EQ(nfo->name(), std::string("NoTypeInfo"));
-}
 
-class MyType {};
-template<> class sofa::defaulttype::DataTypeInfo<MyType> : public IncompleteTypeInfo<MyType>
+class StaticNoTypeInfo : public IncompleteTypeInfo<StaticNoTypeInfo>
 {
 public:
-    static std::string name(){ return "MyType"; }
-    static std::string GetTypeName(){ return "MyType"; }
+    static std::string name(){ return "NoTypeInfo"; }
 };
 
-TEST(TypeInfoRegistry, set_and_get)
+/** *******************************************************************************
+ * @brief A unique singleton describe a totally missing typeinfo.
+ **********************************************************************************/
+class NoTypeInfo : public DataTypeInfoDynamicWrapper<StaticNoTypeInfo>
 {
-    TypeInfoRegistry::Set(TypeInfoId::getTypeId<MyType>(),
-                          DataTypeInfoDynamicWrapper<DataTypeInfo<MyType>>::get(), "TestTarget");
+    public:
+        static const NoTypeInfo* get(){ static NoTypeInfo none; return &none; }
+};
 
-    const AbstractTypeInfo* nfo = TypeInfoRegistry::Get(TypeInfoId::getTypeId<MyType>());
-    EXPECT_NE(nfo, nullptr);
-    EXPECT_FALSE(nfo->ValidInfo());
-    EXPECT_EQ(nfo->name(), std::string("MyType"));
-}
-
-
-TEST(TypeInfoRegistry, dump)
-{
-    TypeInfoRegistryTools::dumpRegistryContentToStream(std::cout, TypeInfoType::NONE);
-    TypeInfoRegistryTools::dumpRegistryContentToStream(std::cout, TypeInfoType::PARTIAL);
-    TypeInfoRegistryTools::dumpRegistryContentToStream(std::cout, TypeInfoType::ALL);
-}
+} /// namespace sofa::defaulttype

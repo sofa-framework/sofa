@@ -53,8 +53,9 @@ public:
 
 enum class TypeInfoType
 {
-    COMPLETE,
+    NONE,
     PARTIAL,
+    COMPLETE,
     ALL
 };
 

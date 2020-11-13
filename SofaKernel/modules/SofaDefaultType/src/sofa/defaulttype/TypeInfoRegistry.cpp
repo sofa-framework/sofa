@@ -25,6 +25,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/defaulttype/AbstractTypeInfo.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/defaulttype/typeinfo/NoTypeInfo.h>
 #include <sofa/helper/NameDecoder.h>
 #include <algorithm>
 #include "TypeInfoID.h"
@@ -41,11 +42,12 @@ static std::vector<const AbstractTypeInfo*>& getStorage()
 
 std::vector<const AbstractTypeInfo*> TypeInfoRegistry::GetRegisteredTypes(const std::string& target)
 {
+    bool selectAll = target == "";
     std::vector<const AbstractTypeInfo*> tmp;
     for(auto info : getStorage())
     {
-        if(info->getCompilationTarget() == target)
-        tmp.push_back(info);
+        if(selectAll || info->getCompilationTarget() == target)
+            tmp.push_back(info);
     }
     return tmp;
 }
@@ -61,21 +63,25 @@ const AbstractTypeInfo* TypeInfoRegistry::Get(const TypeInfoId& tid)
     msg_error("TypeInfoRegistry") << "Missing type '"<< id << "' the type is not there..." << msgendl
                                   << "     name: " << sofa::helper::NameDecoder::decodeFullName(tid.nfo);
 
-    return nullptr;
+    return NoTypeInfo::get();
 }
 
 int TypeInfoRegistry::Set(const TypeInfoId& tid, AbstractTypeInfo* info, const std::string &compilationTarget)
 {
     auto& typeinfos = getStorage();
     sofa::Size id = tid.id;
+
+    if( info == nullptr )
+        return -1;
+
     info->setCompilationTarget(compilationTarget);
 
     if( id >= typeinfos.size() )
     {
-        typeinfos.resize(id+1, nullptr);
+        typeinfos.resize(id+1, NoTypeInfo::get());
     }
 
-    if( typeinfos[id] != nullptr )
+    if( typeinfos[id] != NoTypeInfo::get() )
     {
         if( typeinfos[id] != info && info->ValidInfo())
         {
