@@ -54,7 +54,4 @@ namespace sofa::defaulttype
 template<class T>
 using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
 
-template<class T>
-using DataTypeName = DataTypeInfo<T>;
-
 } /// namespace sofa::defaulttype

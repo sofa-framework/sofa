@@ -144,5 +144,8 @@ struct DefaultDataTypeInfo
 template<class TDataType>
 struct DataTypeInfo : DefaultDataTypeInfo<TDataType> { };
 
+template<class T>
+class DataTypeName : public DataTypeInfo<T> {};
+
 
 } /// namespace sofa::defaulttype
