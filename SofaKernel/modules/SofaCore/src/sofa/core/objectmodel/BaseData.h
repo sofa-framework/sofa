@@ -319,7 +319,7 @@ public:
     static std::string typeName(const T* = nullptr)
     {
         if (defaulttype::DataTypeInfo<T>::ValidInfo)
-            return defaulttype::DataTypeName<T>::name();
+            return defaulttype::DataTypeInfo<T>::name();
         else
             return decodeTypeName(typeid(T));
     }

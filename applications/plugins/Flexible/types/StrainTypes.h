@@ -287,18 +287,18 @@ template<> inline const char* E221dTypes::Name() { return "E221d"; }
 template<> inline const char* E221fTypes::Name() { return "E221f"; }
 
 
-template<> struct DataTypeInfo< E331fTypes::Deriv > : public FixedArrayTypeInfo< E331fTypes::Deriv, E331fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E331<" << DataTypeName<float>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< E331dTypes::Deriv > : public FixedArrayTypeInfo< E331dTypes::Deriv, E331dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E331<" << DataTypeName<double>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< E321fTypes::Deriv > : public FixedArrayTypeInfo< E321fTypes::Deriv, E321fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E321<" << DataTypeName<float>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< E321dTypes::Deriv > : public FixedArrayTypeInfo< E321dTypes::Deriv, E321dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E321<" << DataTypeName<double>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< E311fTypes::Deriv > : public FixedArrayTypeInfo< E311fTypes::Deriv, E311fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E311<" << DataTypeName<float>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< E311dTypes::Deriv > : public FixedArrayTypeInfo< E311dTypes::Deriv, E311dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E311<" << DataTypeName<double>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< E332fTypes::Deriv > : public FixedArrayTypeInfo< E332fTypes::Deriv, E332fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E332<" << DataTypeName<float>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< E332dTypes::Deriv > : public FixedArrayTypeInfo< E332dTypes::Deriv, E332dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E332<" << DataTypeName<double>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< E333fTypes::Deriv > : public FixedArrayTypeInfo< E333fTypes::Deriv, E333fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E333<" << DataTypeName<float>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< E333dTypes::Deriv > : public FixedArrayTypeInfo< E333dTypes::Deriv, E333dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E333<" << DataTypeName<double>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< E221fTypes::Deriv > : public FixedArrayTypeInfo< E221fTypes::Deriv, E221fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E221<" << DataTypeName<float>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< E221dTypes::Deriv > : public FixedArrayTypeInfo< E221dTypes::Deriv, E221dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E221<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E331fTypes::Deriv > : public FixedArrayTypeInfo< E331fTypes::Deriv, E331fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E331<" << DataTypeInfo<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E331dTypes::Deriv > : public FixedArrayTypeInfo< E331dTypes::Deriv, E331dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E331<" << DataTypeInfo<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E321fTypes::Deriv > : public FixedArrayTypeInfo< E321fTypes::Deriv, E321fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E321<" << DataTypeInfo<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E321dTypes::Deriv > : public FixedArrayTypeInfo< E321dTypes::Deriv, E321dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E321<" << DataTypeInfo<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E311fTypes::Deriv > : public FixedArrayTypeInfo< E311fTypes::Deriv, E311fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E311<" << DataTypeInfo<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E311dTypes::Deriv > : public FixedArrayTypeInfo< E311dTypes::Deriv, E311dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E311<" << DataTypeInfo<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E332fTypes::Deriv > : public FixedArrayTypeInfo< E332fTypes::Deriv, E332fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E332<" << DataTypeInfo<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E332dTypes::Deriv > : public FixedArrayTypeInfo< E332dTypes::Deriv, E332dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E332<" << DataTypeInfo<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E333fTypes::Deriv > : public FixedArrayTypeInfo< E333fTypes::Deriv, E333fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E333<" << DataTypeInfo<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E333dTypes::Deriv > : public FixedArrayTypeInfo< E333dTypes::Deriv, E333dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E333<" << DataTypeInfo<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E221fTypes::Deriv > : public FixedArrayTypeInfo< E221fTypes::Deriv, E221fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E221<" << DataTypeInfo<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< E221dTypes::Deriv > : public FixedArrayTypeInfo< E221dTypes::Deriv, E221dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "E221<" << DataTypeInfo<double>::name() << ">"; return o.str(); } };
 
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
@@ -346,8 +346,8 @@ typedef InvariantStrainTypes<3, 3, 0, SReal>  I331Types;
 template<> inline const char* I331dTypes::Name() { return "I331d"; }
 template<> inline const char* I331fTypes::Name() { return "I331f"; }
 
-template<> struct DataTypeInfo< I331fTypes::Deriv > : public FixedArrayTypeInfo< I331fTypes::Deriv, I331fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "I331<" << DataTypeName<float>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< I331dTypes::Deriv > : public FixedArrayTypeInfo< I331dTypes::Deriv, I331dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "I331<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< I331fTypes::Deriv > : public FixedArrayTypeInfo< I331fTypes::Deriv, I331fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "I331<" << DataTypeInfo<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< I331dTypes::Deriv > : public FixedArrayTypeInfo< I331dTypes::Deriv, I331dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "I331<" << DataTypeInfo<double>::name() << ">"; return o.str(); } };
 
 
 // The next line hides all those methods from the doxygen documentation
@@ -389,10 +389,10 @@ template<> inline const char* U331fTypes::Name() { return "U331f"; }
 template<> inline const char* U321dTypes::Name() { return "U321d"; }
 template<> inline const char* U321fTypes::Name() { return "U321f"; }
 
-template<> struct DataTypeInfo< U331fTypes::Deriv > : public FixedArrayTypeInfo< U331fTypes::Deriv, U331fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U331<" << DataTypeName<float>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< U331dTypes::Deriv > : public FixedArrayTypeInfo< U331dTypes::Deriv, U331dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U331<" << DataTypeName<double>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< U321fTypes::Deriv > : public FixedArrayTypeInfo< U321fTypes::Deriv, U321fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U321<" << DataTypeName<float>::name() << ">"; return o.str(); } };
-template<> struct DataTypeInfo< U321dTypes::Deriv > : public FixedArrayTypeInfo< U321dTypes::Deriv, U321dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U321<" << DataTypeName<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< U331fTypes::Deriv > : public FixedArrayTypeInfo< U331fTypes::Deriv, U331fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U331<" << DataTypeInfo<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< U331dTypes::Deriv > : public FixedArrayTypeInfo< U331dTypes::Deriv, U331dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U331<" << DataTypeInfo<double>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< U321fTypes::Deriv > : public FixedArrayTypeInfo< U321fTypes::Deriv, U321fTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U321<" << DataTypeInfo<float>::name() << ">"; return o.str(); } };
+template<> struct DataTypeInfo< U321dTypes::Deriv > : public FixedArrayTypeInfo< U321dTypes::Deriv, U321dTypes::Deriv::total_size > {    static std::string name() { std::ostringstream o; o << "U321<" << DataTypeInfo<double>::name() << ">"; return o.str(); } };
 
 
 // The next line hides all those methods from the doxygen documentation

@@ -91,13 +91,13 @@ namespace sofa
 
             static std::string templateName(const DataExchange<DataTypes>* = nullptr)
             { 
-                return sofa::defaulttype::DataTypeName<DataTypes>::name();
+                return sofa::defaulttype::DataTypeInfo<DataTypes>::name();
             }
 
 			template<class T>
 			static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
 			{
-				std::string dataTypeName = defaulttype::DataTypeName<DataTypes>::name();
+                std::string dataTypeName = defaulttype::DataTypeInfo<DataTypes>::name();
 				// check for the right template
                 if ( std::strcmp( dataTypeName.c_str(), arg->getAttribute("template") ) != 0 )
 				{
