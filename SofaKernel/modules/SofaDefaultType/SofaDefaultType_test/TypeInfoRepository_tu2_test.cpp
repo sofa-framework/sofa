@@ -39,41 +39,43 @@ using sofa::defaulttype::TypeInfoId;
 using sofa::defaulttype::TypeInfoRegistry;
 using sofa::defaulttype::TypeInfoType;
 
+#include <sofa/defaulttype/typeinfo/NoTypeInfo.h>
+using sofa::defaulttype::NoTypeInfo;
+
 #include <sofa/defaulttype/TypeInfoRegistryTools.h>
 using sofa::defaulttype::TypeInfoRegistryTools;
 
+/// Forward declaration of an object in translation unit1.
+class ObjectInTranslationUnit1 {};
 
-class MyTypeNotRegistered {};
-TEST(TypeInfoRegistry, get)
-{
-    const AbstractTypeInfo* nfo = TypeInfoRegistry::Get(TypeInfoId::getTypeId<MyTypeNotRegistered>());
-    EXPECT_NE(nfo, nullptr);
-    EXPECT_FALSE(nfo->ValidInfo());
-    EXPECT_EQ(nfo->name(), std::string("NoTypeInfo"));
-}
-
-class MyType {};
-template<> class sofa::defaulttype::DataTypeInfo<MyType> : public IncompleteTypeInfo<MyType>
+class ObjectInTranslationUnit2 {};
+template<> class sofa::defaulttype::DataTypeInfo<ObjectInTranslationUnit2> : public IncompleteTypeInfo<ObjectInTranslationUnit2>
 {
 public:
-    static std::string name(){ return "MyType"; }
-    static std::string GetTypeName(){ return "MyType"; }
+    static std::string name(){ return "ObjectInTranslationUnit2"; }
+    static std::string GetTypeName(){ return "ObjectInTranslationUnit2"; }
 };
 
-TEST(TypeInfoRegistry, set_and_get)
+TEST(TypeInfoRegistryTu2, internal_set_internal_get)
 {
-    TypeInfoRegistry::Set(TypeInfoId::getTypeId<MyType>(),
-                          DataTypeInfoDynamicWrapper<DataTypeInfo<MyType>>::get(), "TestTarget");
+    TypeInfoRegistry::Set(TypeInfoId::getTypeId<ObjectInTranslationUnit2>(),
+                          DataTypeInfoDynamicWrapper<DataTypeInfo<ObjectInTranslationUnit2>>::get(),
+                          "TranslationUnit2");
 
-    const AbstractTypeInfo* nfo = TypeInfoRegistry::Get(TypeInfoId::getTypeId<MyType>());
+    const AbstractTypeInfo* nfo = TypeInfoRegistry::Get(TypeInfoId::getTypeId<ObjectInTranslationUnit2>());
     EXPECT_NE(nfo, nullptr);
     EXPECT_FALSE(nfo->ValidInfo());
-    EXPECT_EQ(nfo->name(), std::string("MyType"));
+    EXPECT_EQ(nfo->name(), std::string("ObjectInTranslationUnit2"));
+    EXPECT_EQ(nfo->getCompilationTarget(), std::string("TranslationUnit2"));
 }
 
-TEST(TypeInfoRegistry, dump)
+TEST(TypeInfoRegistry, external_set_internal_get)
 {
-    TypeInfoRegistryTools::dumpRegistryContentToStream(std::cout, TypeInfoType::NONE);
-    TypeInfoRegistryTools::dumpRegistryContentToStream(std::cout, TypeInfoType::PARTIAL);
+    const AbstractTypeInfo* nfo = TypeInfoRegistry::Get(TypeInfoId::getTypeId<ObjectInTranslationUnit1>());
+    EXPECT_NE(nfo, nullptr);
+    EXPECT_FALSE(nfo->ValidInfo());
+    EXPECT_NE(nfo, NoTypeInfo::get());
+    EXPECT_EQ(nfo->name(), std::string("ObjectInTranslationUnit1"));
+    EXPECT_EQ(nfo->getCompilationTarget(), std::string("TranslationUnit1"));
     TypeInfoRegistryTools::dumpRegistryContentToStream(std::cout, TypeInfoType::ALL);
 }

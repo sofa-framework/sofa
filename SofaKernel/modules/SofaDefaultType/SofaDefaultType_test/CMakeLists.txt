@@ -6,6 +6,8 @@ set(SOURCE_FILES
     MapMapSparseMatrixEigenUtils_test.cpp
     MatTypes_test.cpp
     TypeInfoRepository_test.cpp
+    TypeInfoRepository_tu1_test.cpp
+    TypeInfoRepository_tu2_test.cpp
     VecTypes_test.cpp
 )
 
