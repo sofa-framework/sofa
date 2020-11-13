@@ -462,7 +462,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     // SofaExplicitOdeSolver was pluginized in #1606
     { "EulerExplicitSolver", Pluginized("v20.12", "SofaExplicitOdeSolver") },
 
-    // SofaExplicitOdeSolver was pluginized in #16XX
+    // SofaExplicitOdeSolver was pluginized in #1606
     { "EulerExplicitSolver", Pluginized("v20.12", "SofaExplicitOdeSolver") },
 
     /***********************/
