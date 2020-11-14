@@ -26,10 +26,6 @@
 namespace sofa::component::collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
-
 int PointCollisionModelClass = core::RegisterObject("Collision model which represents a set of points")
         .add< PointCollisionModel<defaulttype::Vec3Types> >()
 

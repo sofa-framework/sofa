@@ -4,7 +4,8 @@
   <RequiredPlugin name="Carving" pluginName="SofaCarving" />
   <RequiredPlugin name='SofaGeneralSimpleFem'/> 
   <RequiredPlugin name='SofaTopologyMapping'/>
-  <RequiredPlugin name='SofaEngine'/>  
+  <RequiredPlugin name='SofaEngine'/>
+  <RequiredPlugin name='SofaImplicitOdeSolver'/>  
 
   <VisualStyle displayFlags="showCollisionModels" />
   
