@@ -19,11 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+<<<<<<< HEAD
 #pragma once
 
-#include <SofaImplicitOdeSolver/config.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
+
+#define SOFAIMPLICITODESOLVER_VERSION @PROJECT_VERSION@
+
+#ifdef SOFA_BUILD_SOFAIMPLICITODESOLVER
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAIMPLICITODESOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAIMPLICITODESOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+=======
+<<<<<<< HEAD
+#pragma once
+#include <SofaExplicitOdeSolver/config.h>
 
 namespace sofa::component
 {
 
 } // namespace sofa::component
+=======
+#ifndef SOFA_COMPONENT_EXPLICIT_ODE_SOLVER_INIT_H
+#define SOFA_COMPONENT_EXPLICIT_ODE_SOLVER_INIT_H
+#include "config.h"
+
+namespace sofa
+{
+
+namespace component
+{
+
+
+void SOFA_EXPLICIT_ODE_SOLVER_API initExplicitODESolver();
+
+} // namespace component
+
+} // namespace sofa
+
+#endif
+
+>>>>>>> f8dbcc84d2... cmake setup
+>>>>>>> 94dc9f4d46... cmake setup
