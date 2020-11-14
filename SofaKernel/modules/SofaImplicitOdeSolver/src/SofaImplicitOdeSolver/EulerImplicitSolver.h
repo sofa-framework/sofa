@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ODESOLVER_EULERIMPLICITSOLVER_H
-#define SOFA_COMPONENT_ODESOLVER_EULERIMPLICITSOLVER_H
-#include "config.h"
+#pragma once
+#include <SofaImplicitOdeSolver/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace odesolver
+namespace sofa::component::odesolver
 {
 
 /** Semi-implicit time integrator using backward Euler scheme for first and second degree ODEs. (default: second)
@@ -100,7 +93,7 @@ namespace odesolver
  *   \f$ ( M + h/2 K ) v_{t+h} = f_ext \f$
  *
  */
-class SOFA_IMPLICIT_ODE_SOLVER_API EulerImplicitSolver : public sofa::core::behavior::OdeSolver
+class SOFA_SOFAIMPLICITODESOLVER_API EulerImplicitSolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(EulerImplicitSolver, sofa::core::behavior::OdeSolver);
@@ -168,10 +161,4 @@ protected:
 
 };
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::odesolver
