@@ -36,7 +36,7 @@ using namespace sofa::helper::types;
 using sofa::helper::getWriteOnlyAccessor;
 using sofa::helper::getWriteAccessor;
 
-static int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file format.")
+int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file format.")
         .add< MeshObjLoader >();
 
 MeshObjLoader::MeshObjLoader()
@@ -257,7 +257,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                         (*it).activated = true;
                         if (!material->activated)
                             material.wref() = *it;
-                        curMaterialId = it - my_materials.begin();
+                        curMaterialId = int(it - my_materials.begin());
                         break;
                     }
                 }
@@ -305,7 +305,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                         if (vtn[j] >= 1)
                             vtn[j] -=1; // -1 because the numerotation begins at 1 and a vector begins at 0
                         else if (vtn[j] < 0)
-                            vtn[j] += (j==0) ? my_positions.size() : (j==1) ? my_texCoords.size() : my_normals.size();
+                            vtn[j] += (j==0) ? sofa::Size(my_positions.size()) : (j==1) ? sofa::Size(my_texCoords.size()) : sofa::Size(my_normals.size());
                         else
                         {
                             msg_error() << "Invalid index " << tmp;
@@ -444,11 +444,11 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         }
 
         // Then we can compute how many vertices are created
-        int nbVOut = 0;
+        sofa::Size nbVOut = 0;
         bool vsplit = false;
         for (int i = 0; i < nbVIn; i++)
         {
-            int s = vertTexNormMap[i].size();
+            sofa::Size s = sofa::Size(vertTexNormMap[i].size());
             nbVOut += s;
         }
 

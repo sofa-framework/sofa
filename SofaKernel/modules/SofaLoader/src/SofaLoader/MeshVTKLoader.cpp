@@ -425,9 +425,9 @@ bool MeshVTKLoader::setInputsMesh()
                 HighOrderEdgePosition hoep;
                 for(j = 0; j < 3; ++j)
                 {
-                    size_t v0 = std::min( inFP[i + edgesInQuadraticTriangle[j][0]],
+                    sofa::Index v0 = std::min( inFP[i + edgesInQuadraticTriangle[j][0]],
                             inFP[i + edgesInQuadraticTriangle[j][1]]);
-                    size_t v1 = std::max( inFP[i + edgesInQuadraticTriangle[j][0]],
+                    sofa::Index v1 = std::max( inFP[i + edgesInQuadraticTriangle[j][0]],
                             inFP[i + edgesInQuadraticTriangle[j][1]]);
                     Edge e(v0, v1);
                     if (edgeSet.find(e) == edgeSet.end())
@@ -435,7 +435,7 @@ bool MeshVTKLoader::setInputsMesh()
                         edgeSet.insert(e);
                         addEdge(&my_edges.wref(), v0, v1);
                         hoep[0] = inFP[i + j + 3];
-                        hoep[1] = my_edges.size() - 1;
+                        hoep[1] = sofa::Size(my_edges.size()) - 1;
                         hoep[2] = 1;
                         hoep[3] = 1;
                         my_highOrderEdgePositions.push_back(hoep);
@@ -449,9 +449,9 @@ bool MeshVTKLoader::setInputsMesh()
                 HighOrderEdgePosition hoep;
                 for(j = 0; j < 6; ++j)
                 {
-                    size_t v0 = std::min( inFP[i + edgesInQuadraticTetrahedron[j][0]],
+                    sofa::Index v0 = std::min( inFP[i + edgesInQuadraticTetrahedron[j][0]],
                             inFP[i + edgesInQuadraticTetrahedron[j][1]]);
-                    size_t v1 = std::max( inFP[i + edgesInQuadraticTetrahedron[j][0]],
+                    sofa::Index v1 = std::max( inFP[i + edgesInQuadraticTetrahedron[j][0]],
                             inFP[i + edgesInQuadraticTetrahedron[j][1]]);
                     Edge e(v0, v1);
                     if (edgeSet.find(e) == edgeSet.end())
@@ -459,7 +459,7 @@ bool MeshVTKLoader::setInputsMesh()
                         edgeSet.insert(e);
                         addEdge(&my_edges.wref(), v0, v1);
                         hoep[0] = inFP[i + j + 4];
-                        hoep[1] = my_edges.size() - 1;
+                        hoep[1] = sofa::Size(my_edges.size()) - 1;
                         hoep[2] = 1;
                         hoep[3] = 1;
                         my_highOrderEdgePositions.push_back(hoep);
@@ -1259,7 +1259,7 @@ bool XMLVTKReader::loadImageData(TiXmlHandle datasetFormatHandle)
 /// Registering the component
 /// see: https://www.sofa-framework.org/community/doc/programming-with-sofa/components-api/the-objectfactory/
 /// 2-RegisterObject("description") + .add<> : Register the component
-static int MeshVTKLoaderClass = core::RegisterObject("Mesh loader for the VTK/VTU file format.")
+int MeshVTKLoaderClass = core::RegisterObject("Mesh loader for the VTK/VTU file format.")
         .add< MeshVTKLoader >();
 
 } /// namespace sofa::component::loader

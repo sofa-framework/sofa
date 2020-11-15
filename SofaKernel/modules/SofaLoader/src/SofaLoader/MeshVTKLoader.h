@@ -36,7 +36,7 @@ using basevtkreader::BaseVTKReader ;
 
 /// Format doc: http://www.vtk.org/VTK/img/file-formats.pdf
 /// http://www.cacr.caltech.edu/~slombey/asci/vtk/vtk_formats.simple.html
-class SOFA_LOADER_API MeshVTKLoader : public sofa::core::loader::MeshLoader
+class SOFA_SOFALOADER_API MeshVTKLoader : public sofa::core::loader::MeshLoader
 {
 
 public:
