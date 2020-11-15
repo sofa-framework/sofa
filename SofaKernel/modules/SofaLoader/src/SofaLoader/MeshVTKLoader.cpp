@@ -19,12 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <SofaLoader/MeshVTKLoader.h>
+
 #include <iostream>
 #include <cstdio>
 #include <sstream>
 
 #include <sofa/core/ObjectFactory.h>
-#include <SofaLoader/MeshVTKLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <SofaLoader/BaseVTKReader.h>

@@ -27,6 +27,3 @@ add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseMechanics/SofaBaseMec
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseTopology/SofaBaseTopology_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseTopology/SofaBaseTopology_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseVisual/SofaBaseVisual_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseVisual/SofaBaseVisual_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseUtils/SofaBaseUtils_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseVisual/SofaBaseUtils_test)
-
-# SofaCommon tests
-add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaLoader/SofaLoader_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaLoader/SofaLoader_test)

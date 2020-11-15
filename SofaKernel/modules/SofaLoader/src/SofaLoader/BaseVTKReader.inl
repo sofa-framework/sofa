@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_BASEVTKREADER_INL
-#define SOFA_COMPONENT_LOADER_BASEVTKREADER_INL
+#pragma once
 #include <SofaLoader/BaseVTKReader.h>
 
 #include <string>
@@ -28,16 +27,7 @@
 #include <fstream>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
-{
-
-namespace basevtkreader
+namespace sofa::component::loader::basevtkreader
 {
 
 using std::istringstream ;
@@ -209,12 +199,4 @@ BaseData* BaseVTKReader::VTKDataIO<T>::createSofaData()
 }
 
 
-} // basevtkreader
-
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::loader::basevtkloader

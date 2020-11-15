@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "config.h"
-
 #include <SofaLoader/BaseVTKReader.h>
 #include <SofaLoader/BaseVTKReader.inl>
 
@@ -30,16 +28,7 @@
 
 #include <cstdint>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
-{
-
-namespace basevtkreader
+namespace sofa::component::loader::basevtkreader
 {
 
 
@@ -294,10 +283,4 @@ bool BaseVTKReader::readVTK(const char* filename)
     return readFile(filename);
 }
 
-} // basevtkreader
-
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::loader::basevtkreader

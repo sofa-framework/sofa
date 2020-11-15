@@ -20,18 +20,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "config.h"
+#include <SofaLoader/config.h>
 
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa::component::loader
+namespace sofa::component::loader::basevtkreader
 {
-
-namespace basevtkreader{
     class BaseVTKReader ;
 }
 
+namespace sofa::component::loader
+{
 using basevtkreader::BaseVTKReader ;
 
 /// Format doc: http://www.vtk.org/VTK/img/file-formats.pdf
@@ -67,4 +67,3 @@ protected:
 };
 
 } /// namespace sofa::component::loader
-

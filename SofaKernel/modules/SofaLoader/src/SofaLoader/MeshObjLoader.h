@@ -24,6 +24,7 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/helper/types/Material.h>
+
 namespace sofa::component::loader
 {
 
@@ -80,4 +81,3 @@ public:
 
 
 } // namespace sofa::component::loader
-

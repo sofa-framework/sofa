@@ -242,7 +242,8 @@ sofa_add_module(SofaKernel/modules/SofaMeshCollision SofaMeshCollision ON)
 sofa_add_module(SofaKernel/modules/SofaEngine SofaEngine ON)
 sofa_add_module(SofaKernel/modules/SofaExplicitOdeSolver SofaExplicitOdeSolver ON)
 sofa_add_module(SofaKernel/modules/SofaImplicitOdeSolver SofaImplicitOdeSolver ON)
-
+sofa_add_module(SofaKernel/modules/SofaLoader SofaLoader ON)
+    
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 
 ## Modules
