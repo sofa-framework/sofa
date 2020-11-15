@@ -44,7 +44,7 @@ bool fake_TopologyScene::loadMeshFile()
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
 
-    auto meca = createObject(m_root, "RequiredPlugin", {
+    createObject(m_root, "RequiredPlugin", {
         { "name", "SofaLoader" } });
 
     std::string loaderType = "MeshObjLoader";
