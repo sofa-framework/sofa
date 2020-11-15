@@ -3,6 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaGeneralObjectInteraction'/>
     <RequiredPlugin name='SofaEngine'/>
+    <RequiredPlugin name='SofaExplicitOdeSolver'/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showInteractionForceFields showVisual" />
     <DefaultPipeline verbose="0" />

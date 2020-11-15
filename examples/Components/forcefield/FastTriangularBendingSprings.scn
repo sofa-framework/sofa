@@ -2,7 +2,9 @@
 <Node name="root" dt="0.01" gravity="0 0 -1">
     <RequiredPlugin name='SofaEngine'/>  
     <RequiredPlugin name='SofaGeneralSimpleFem'/>  
-    <RequiredPlugin name='SofaGeneralDeformable'/>  
+    <RequiredPlugin name='SofaGeneralDeformable'/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name='SofaLoader'/>
 
     <VisualStyle displayFlags="showBehavior hideCollision hideVisual " />
     <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />

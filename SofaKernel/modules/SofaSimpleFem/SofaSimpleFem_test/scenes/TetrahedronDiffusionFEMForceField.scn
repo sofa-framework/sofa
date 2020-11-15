@@ -2,6 +2,7 @@
     <VisualStyle displayFlags="showBehaviorModels"/>
     <RequiredPlugin name='SofaBoundaryCondition'/>
     <RequiredPlugin name='SofaTopologyMapping'/>
+    <RequiredPlugin name='SofaLoader'/>
 
     <MeshObjLoader name="temperatureLoader" filename="beamTemperatures.obj" />
     <RegularGridTopology name="grid" n="21 11 11"  p0="0 0 0" min="0 0 0" max="1 0.5 0.5" drawHexahedra="1" tags="geom"/>
