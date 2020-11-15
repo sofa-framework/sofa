@@ -23,8 +23,7 @@
 #include <SofaLoader/config.h>
 
 #include <string>
-#include <istream>
-#include <fstream>
+#include <iosfwd>
 
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseObject.h>

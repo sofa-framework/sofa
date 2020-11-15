@@ -22,7 +22,6 @@
 #include <SofaLoader/MeshObjLoader.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <fstream>
 #include <sofa/helper/accessor.h>

@@ -22,10 +22,8 @@
 #pragma once
 #include <SofaLoader/BaseVTKReader.h>
 
-#include <string>
 #include <istream>
 #include <fstream>
-
 
 namespace sofa::component::loader::basevtkreader
 {
