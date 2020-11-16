@@ -18,6 +18,7 @@ set(SOURCE_FILES
 list(APPEND HEADER_FILES
     ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridGeometryAlgorithms.h
     ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridGeometryAlgorithms.inl
+    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyAlgorithms.h
     ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyContainer.h
     ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyModifier.h
     ${SOFANONUNIFORMFEM_SRC}/MultilevelHexahedronSetTopologyContainer.h
