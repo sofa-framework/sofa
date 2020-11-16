@@ -87,7 +87,8 @@ struct IncompleteTypeInfo
         SOFA_UNUSED(value);
     }
 
-
+    static const std::string name() { return GetTypeName(); }
+    static const std::string GetTypeName() { return sofa::helper::NameDecoder::decodeFullName(typeid(DataType)); }
 };
 
 

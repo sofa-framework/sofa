@@ -23,6 +23,7 @@
 #include <sofa/defaulttype/config.h>
 #include <sofa/defaulttype/AbstractTypeInfo.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
+#include <sofa/defaulttype/TypeInfoID.h>
 #include <string>
 
 namespace sofa::defaulttype
@@ -56,10 +57,12 @@ public:
     typedef typename Info::DataType DataType;
 
     static AbstractTypeInfo* get() { static DataTypeInfoDynamicWrapper<Info> t; return &t; }
-    const AbstractTypeInfo* BaseType() const override  { return DataTypeInfoDynamicWrapper<DataTypeInfo<typename Info::BaseType>>::get(); }
-    const AbstractTypeInfo* ValueType() const override { return DataTypeInfoDynamicWrapper<DataTypeInfo<typename Info::ValueType>>::get(); }
 
-    virtual std::string name() const override { return Info::name(); }
+    virtual const TypeInfoId& getBaseTypeId() const { return TypeInfoId::GetTypeId<typename Info::BaseType>(); }
+    virtual const TypeInfoId& getValueTypeId() const { return TypeInfoId::GetTypeId<typename Info::ValueType>(); }
+
+    std::string name() const override { return Info::name(); }
+    std::string getTypeName() const override { return Info::GetTypeName(); }
 
     bool ValidInfo() const override       { return Info::ValidInfo; }
     bool FixedSize() const override       { return Info::FixedSize; }

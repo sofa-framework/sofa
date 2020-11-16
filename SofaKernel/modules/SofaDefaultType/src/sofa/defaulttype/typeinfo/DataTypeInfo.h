@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/defaulttype/config.h>
+#include <sofa/helper/NameDecoder.h>
 #include <string>
 
 namespace sofa::defaulttype
@@ -137,12 +138,12 @@ struct DefaultDataTypeInfo
         return nullptr;
     }
 
-    static const char* name() { return "unknown"; }
-
+    static const std::string name() { return "DefaultTypename =>" + GetTypeName(); }
+    static const std::string GetTypeName() { return sofa::helper::NameDecoder::decodeFullName(typeid(DataType)); }
 };
 
-template<class TDataType>
-struct DataTypeInfo : DefaultDataTypeInfo<TDataType> { };
+//template<class TDataType>
+//struct DataTypeInfo : DefaultDataTypeInfo<TDataType> { };
 
 template<class T>
 class DataTypeName : public DataTypeInfo<T> {};
