@@ -42,14 +42,20 @@ using sofa::defaulttype::TypeInfoType;
 #include <sofa/defaulttype/TypeInfoRegistryTools.h>
 using sofa::defaulttype::TypeInfoRegistryTools;
 
-class ObjectInTranslationUnit1 {};
-template<> class sofa::defaulttype::DataTypeInfo<ObjectInTranslationUnit1> : public IncompleteTypeInfo<ObjectInTranslationUnit1>
-{
-public:
-    static std::string name(){ return "ObjectInTranslationUnit1"; }
-    static std::string GetTypeName(){ return "ObjectInTranslationUnit1"; }
-};
+#include "DataMockup.h"
 
-static int t = TypeInfoRegistry::Set(TypeInfoId::GetTypeId<ObjectInTranslationUnit1>(),
-                                     DataTypeInfoDynamicWrapper<DataTypeInfo<ObjectInTranslationUnit1>>::get(),
-                                     "TranslationUnit1");
+TEST(TypeInfo, type_registration_with_implicit_declaration)
+{
+    DataMockup<double> dataDouble;
+    ASSERT_NE(dataDouble.getTypeInfo(), nullptr);
+    ASSERT_FALSE(dataDouble.getTypeInfo()->ValidInfo());
+    EXPECT_EQ(dataDouble.getTypeInfo()->name(), "double");
+    EXPECT_EQ(dataDouble.getTypeInfo()->getCompilationTarget(), "Implicit location");
+
+    DataMockup<int> dataInt;
+    ASSERT_NE(dataInt.getTypeInfo(), nullptr);
+    ASSERT_FALSE(dataInt.getTypeInfo()->ValidInfo());
+    EXPECT_EQ(dataInt.getTypeInfo()->name(), "int");
+    EXPECT_EQ(dataInt.getTypeInfo()->getCompilationTarget(),"Implicit location");
+}
+

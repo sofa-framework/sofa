@@ -39,11 +39,10 @@ using sofa::defaulttype::TypeInfoId;
 using sofa::defaulttype::TypeInfoRegistry;
 using sofa::defaulttype::TypeInfoType;
 
-#include <sofa/defaulttype/typeinfo/NoTypeInfo.h>
-using sofa::defaulttype::NoTypeInfo;
-
 #include <sofa/defaulttype/TypeInfoRegistryTools.h>
 using sofa::defaulttype::TypeInfoRegistryTools;
+
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 
 /// Forward declaration of an object in translation unit1.
 class ObjectInTranslationUnit1 {};
@@ -58,24 +57,43 @@ public:
 
 TEST(TypeInfoRegistryTu2, internal_set_internal_get)
 {
-    TypeInfoRegistry::Set(TypeInfoId::getTypeId<ObjectInTranslationUnit2>(),
+    TypeInfoRegistry::Set(TypeInfoId::GetTypeId<ObjectInTranslationUnit2>(),
                           DataTypeInfoDynamicWrapper<DataTypeInfo<ObjectInTranslationUnit2>>::get(),
                           "TranslationUnit2");
 
-    const AbstractTypeInfo* nfo = TypeInfoRegistry::Get(TypeInfoId::getTypeId<ObjectInTranslationUnit2>());
-    EXPECT_NE(nfo, nullptr);
+    const AbstractTypeInfo* nfo = TypeInfoRegistry::Get(TypeInfoId::GetTypeId<ObjectInTranslationUnit2>());
+    ASSERT_NE(nfo, nullptr);
     EXPECT_FALSE(nfo->ValidInfo());
     EXPECT_EQ(nfo->name(), std::string("ObjectInTranslationUnit2"));
     EXPECT_EQ(nfo->getCompilationTarget(), std::string("TranslationUnit2"));
 }
 
-TEST(TypeInfoRegistry, external_set_internal_get)
+TEST(TypeInfoRegistryTu2, external_set_internal_get)
 {
-    const AbstractTypeInfo* nfo = TypeInfoRegistry::Get(TypeInfoId::getTypeId<ObjectInTranslationUnit1>());
-    EXPECT_NE(nfo, nullptr);
+    const AbstractTypeInfo* nfo = TypeInfoRegistry::Get(TypeInfoId::GetTypeId<ObjectInTranslationUnit1>());
+    ASSERT_NE(nfo, nullptr);
     EXPECT_FALSE(nfo->ValidInfo());
-    EXPECT_NE(nfo, NoTypeInfo::get());
+    ASSERT_NE(nfo, nullptr);
     EXPECT_EQ(nfo->name(), std::string("ObjectInTranslationUnit1"));
     EXPECT_EQ(nfo->getCompilationTarget(), std::string("TranslationUnit1"));
-    TypeInfoRegistryTools::dumpRegistryContentToStream(std::cout, TypeInfoType::ALL);
+}
+
+#include "DataMockup.h"
+TEST(TypeInfoRegistryTu2, external_registration)
+{
+    TypeInfoRegistry::Set(TypeInfoId::GetTypeId<double>(),
+                          DataTypeInfoDynamicWrapper<DataTypeInfo<double>>::get(),
+                          "TranslationUnit2");
+
+    DataMockup<double> dataDouble;
+    ASSERT_NE(dataDouble.getTypeInfo(), nullptr);
+    EXPECT_EQ(dataDouble.getTypeInfo()->name(), "d");
+    ASSERT_TRUE(dataDouble.getTypeInfo()->ValidInfo());
+    EXPECT_EQ(dataDouble.getTypeInfo()->getCompilationTarget(), "TranslationUnit2");
+
+    DataMockup<int> dataInt;
+    ASSERT_NE(dataInt.getTypeInfo(), nullptr);
+    ASSERT_FALSE(dataInt.getTypeInfo()->ValidInfo());
+    EXPECT_EQ(dataInt.getTypeInfo()->name(),"int");
+    EXPECT_EQ(dataInt.getTypeInfo()->getCompilationTarget(),"Implicit location");
 }

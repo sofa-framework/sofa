@@ -19,17 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <gtest/gtest.h>
-
-#include <sofa/defaulttype/AbstractTypeInfo.h>
-using sofa::defaulttype::AbstractTypeInfo;
+#include <sofa/defaulttype/config.h>
 
 #include <sofa/defaulttype/typeinfo/models/IncompleteTypeInfo.h>
 using sofa::defaulttype::IncompleteTypeInfo;
 
 #include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
-using sofa::defaulttype::DataTypeInfo;
 using sofa::defaulttype::DataTypeInfoDynamicWrapper;
 
 #include <sofa/defaulttype/TypeInfoID.h>
@@ -39,17 +36,29 @@ using sofa::defaulttype::TypeInfoId;
 using sofa::defaulttype::TypeInfoRegistry;
 using sofa::defaulttype::TypeInfoType;
 
-#include <sofa/defaulttype/TypeInfoRegistryTools.h>
-using sofa::defaulttype::TypeInfoRegistryTools;
+#include <iostream>
 
-class ObjectInTranslationUnit1 {};
-template<> class sofa::defaulttype::DataTypeInfo<ObjectInTranslationUnit1> : public IncompleteTypeInfo<ObjectInTranslationUnit1>
+using sofa::defaulttype::AbstractTypeInfo;
+
+template<class T>
+class DataMockup
 {
 public:
-    static std::string name(){ return "ObjectInTranslationUnit1"; }
-    static std::string GetTypeName(){ return "ObjectInTranslationUnit1"; }
+    const AbstractTypeInfo* getTypeInfo()
+    {
+        static const int i = TypeInfoRegistry::Set(TypeInfoId::GetTypeId<T>(),
+                                                   DataTypeInfoDynamicWrapper<IncompleteTypeInfo<T>>::get(), "Implicit location");
+        static const AbstractTypeInfo* info {};
+        if(info!=nullptr && info->ValidInfo())
+            return info;
+
+        const AbstractTypeInfo* tmp = TypeInfoRegistry::Get(TypeInfoId::GetTypeId<T>());
+        if(tmp == nullptr)
+            return nullptr;
+
+        if(tmp->ValidInfo())
+            info = tmp;
+        return tmp;
+    }
 };
 
-static int t = TypeInfoRegistry::Set(TypeInfoId::GetTypeId<ObjectInTranslationUnit1>(),
-                                     DataTypeInfoDynamicWrapper<DataTypeInfo<ObjectInTranslationUnit1>>::get(),
-                                     "TranslationUnit1");
