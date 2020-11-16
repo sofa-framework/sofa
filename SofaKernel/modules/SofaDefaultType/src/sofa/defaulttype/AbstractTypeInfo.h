@@ -26,6 +26,8 @@
 
 namespace sofa::defaulttype
 {
+    class TypeInfoId;
+
 /** Information about the type of a value stored in a Data.
 
     %AbstractTypeInfo is part of the introspection/reflection capabilities of
@@ -71,15 +73,17 @@ public:
     /// values inside this container.
     /// For example, if the type is `fixed_array<fixed_array<int, 2> 3>`, it
     /// returns the TypeInfo for `fixed_array<int, 2>`.
-    virtual const AbstractTypeInfo* BaseType() const = 0;
+    const AbstractTypeInfo* BaseType() const;
+
     /// Returns the TypeInfo for the type of the values accessible by the
     /// get*Value() functions.
     /// For example, if the type is `fixed_array<fixed_array<int, 2> 3>`, it
-    /// returns the TypeInfo for `int`.
-    virtual const AbstractTypeInfo* ValueType() const = 0;
+    /// returns the TypeInfo for `int`.    
+    const AbstractTypeInfo* ValueType() const;
 
     /// \brief Returns the name of this type.
     virtual std::string name() const = 0;
+    virtual std::string getTypeName() const = 0;
 
     /// True iff the TypeInfo for this type contains valid information.
     /// A Type is considered "Valid" if there's at least one specialization of the ValueType
@@ -170,6 +174,9 @@ public:
 protected: // only derived types can instantiate this class
     AbstractTypeInfo() {}
     virtual ~AbstractTypeInfo() {}
+
+    virtual const TypeInfoId& getBaseTypeId() const = 0;
+    virtual const TypeInfoId& getValueTypeId() const = 0;
 
 private: // copy constructor or operator forbidden
     AbstractTypeInfo(const AbstractTypeInfo&) {}
