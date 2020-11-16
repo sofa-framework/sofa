@@ -625,6 +625,9 @@ public:
     /** \brief Returns for each index (between 0 and 12) the two vertex indices that are adjacent to that edge */
     Edge getLocalEdgesInHexahedron (const HexahedronID i) const override;
 
+  	/** \ brief returns the topologyType */
+    sofa::core::topology::TopologyElementType getTopologyType() const override { return m_upperElementType; }
+  
     int revision;
 
     // To draw the mesh, the topology position must be linked with the mechanical object position 
@@ -639,6 +642,9 @@ public:
     virtual void updateTetrahedra();
     virtual void updateHexahedra();
 
+protected:
+    /// Type of higher topology element contains in this container @see TopologyElementType
+    sofa::core::topology::TopologyElementType m_upperElementType;
 };
 
 } // namespace topology

@@ -58,7 +58,6 @@ int initStaticStructures()
 
 BaseMeshTopology::BaseMeshTopology()
     : fileTopology(initData(&fileTopology,"filename","Filename of the mesh"))
-    , m_upperElementType(TopologyElementType::UNKNOWN)
 {
     addAlias(&fileTopology,"fileTopology");
 }

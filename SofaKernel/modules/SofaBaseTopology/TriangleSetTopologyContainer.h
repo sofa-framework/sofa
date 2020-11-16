@@ -256,6 +256,9 @@ public:
     /// Will change order of vertices in triangle: t[1] <=> t[2]
     void reOrientateTriangle(TriangleID id) override;
 
+    /** \brief Returns the type of the topology */
+    sofa::core::topology::TopologyElementType getTopologyType() const override { return sofa::core::topology::TRIANGLE; }
+
 protected:
 
     /** \brief Creates the TriangleSet array.

@@ -96,7 +96,10 @@ public:
 
     /** \brief Returns the Z coordinate of the ith DOF. */
     SReal getPZ(Index i) const override;
-   
+
+    /** \brief Returns the type of the topology */
+    sofa::core::topology::TopologyElementType getTopologyType() const override {return sofa::core::topology::POINT;}
+    
     /// @}
 
 

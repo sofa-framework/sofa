@@ -294,6 +294,9 @@ public:
 
     /// @}
 
+    /** \brief Returns the type of the topology */
+    sofa::core::topology::TopologyElementType getTopologyType() const override {return sofa::core::topology::TETRAHEDRON;}
+
     inline friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t)
     {
         helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;

@@ -44,7 +44,6 @@ QuadSetTopologyContainer::QuadSetTopologyContainer()
     : EdgeSetTopologyContainer()
     , d_quad(initData(&d_quad, "quads", "List of quad indices"))
 {
-    m_upperElementType = sofa::core::topology::QUAD;
 }
 
 

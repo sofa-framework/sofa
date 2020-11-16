@@ -50,7 +50,6 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
     , d_tetrahedron(initData(&d_tetrahedron, "tetrahedra", "List of tetrahedron indices"))
 {
     addAlias(&d_tetrahedron, "tetras");
-    m_upperElementType = sofa::core::topology::TETRAHEDRON;
 }
 
 
