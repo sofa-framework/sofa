@@ -29,6 +29,9 @@ ctypeFromName = {
     'I': ctypes.c_uint,
     'l': ctypes.c_long,
     'L': ctypes.c_ulong,
+    'q': ctypes.c_longlong,
+    'Q': ctypes.c_ulonglong,
+
 }
 
 
