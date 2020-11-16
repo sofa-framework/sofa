@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGeneralMeshCollision LANGUAGES CXX)
 
-
-find_package(SofaCommon REQUIRED)
-
 set(SOFAGENERALMESHCOLLISION_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
@@ -41,6 +38,11 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctree.cpp
     ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctreeModel.cpp
     )
+
+find_package(SofaBase REQUIRED) # SofaBaseCollision
+find_package(SofaMeshCollision REQUIRED)
+find_package(SofaObjectInteraction REQUIRED)
+find_package(SofaRigid REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision SofaMeshCollision)

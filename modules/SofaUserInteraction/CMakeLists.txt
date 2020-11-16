@@ -68,7 +68,8 @@ list(APPEND SOURCE_FILES
     ${SOFAUSERINTERACTION_SRC}/SuturePointPerformer.cpp
     )
 
-find_package(SofaCommon REQUIRED) # SofaMeshCollision SofaDeformable
+find_package(SofaMeshCollision REQUIRED)
+find_package(SofaDeformable REQUIRED)
 find_package(SofaGeneralMeshCollision REQUIRED)
 find_package(SofaGeneralVisual REQUIRED)
 find_package(SofaTopologyMapping REQUIRED)

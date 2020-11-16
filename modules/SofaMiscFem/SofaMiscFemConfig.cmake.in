@@ -5,7 +5,7 @@
 set(SOFAMISCFEM_HAVE_NEWMAT @SOFAMISCFEM_HAVE_NEWMAT@)
 
 find_package(SofaBase QUIET REQUIRED)
-find_package(SofaCommon QUIET REQUIRED) # SofaSimpleFem
+find_package(SofaSimpleFem QUIET REQUIRED)
 
 if(SOFAMISCFEM_HAVE_NEWMAT)
     find_package(Newmat QUIET REQUIRED)
