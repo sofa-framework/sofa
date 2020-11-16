@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/defaulttype/config.h>
-
+#include <sofa/defaulttype/TypeInfoID.h>
 #include <vector>
 #include <string>
 
@@ -30,7 +30,6 @@ namespace sofa::defaulttype
 
 //////////////////////////////// Forward declaration //////////////////////////////
 class AbstractTypeInfo;
-class TypeInfoId;
 ///////////////////////////////////////////////////////////////////////////////////
 
 /** *******************************************************************************
@@ -39,7 +38,7 @@ class TypeInfoId;
  * The common use case is get the type id to access a full AbstractTypeInfo from
  * the TypeInfoRegistry.
  * Example:
- *      TypeInfoId& shortinfo = TypeInfoId::getTypeId<double>();
+ *      TypeInfoId& shortinfo = TypeInfoId::GetTypeId<double>();
  *      AbstractTypeInfo* info = TypeInfoRegistry::Get(shortinfo.id);
  *      info->getName()
  **********************************************************************************/
@@ -49,6 +48,7 @@ public:
     static std::vector<const AbstractTypeInfo*> GetRegisteredTypes(const std::string& target="");
     static const AbstractTypeInfo* Get(const TypeInfoId& id);
     static int Set(const TypeInfoId& tid, AbstractTypeInfo* info, const std::string& compilationTarget);
+    static int AllocateNewTypeId();
 };
 
 enum class TypeInfoType

@@ -25,8 +25,8 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/defaulttype/AbstractTypeInfo.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/NoTypeInfo.h>
 #include <sofa/helper/NameDecoder.h>
+#include <sofa/defaulttype/typeinfo/NoTypeInfo.h>
 #include <algorithm>
 #include "TypeInfoID.h"
 #include "TypeInfoRegistry.h"
@@ -36,7 +36,7 @@ namespace sofa::defaulttype
 
 static std::vector<const AbstractTypeInfo*>& getStorage()
 {
-    static std::vector<const AbstractTypeInfo*> typeinfos;
+    static std::vector<const AbstractTypeInfo*> typeinfos {NoTypeInfo::Get()};
     return typeinfos;
 }
 
@@ -46,6 +46,9 @@ std::vector<const AbstractTypeInfo*> TypeInfoRegistry::GetRegisteredTypes(const 
     std::vector<const AbstractTypeInfo*> tmp;
     for(auto info : getStorage())
     {
+        if(info==nullptr)
+            continue;
+
         if(selectAll || info->getCompilationTarget() == target)
             tmp.push_back(info);
     }
@@ -57,38 +60,52 @@ const AbstractTypeInfo* TypeInfoRegistry::Get(const TypeInfoId& tid)
     sofa::Size id = tid.id;
     auto& typeinfos = getStorage();
 
-    if( id < typeinfos.size() && typeinfos[id] != nullptr )
+
+
+    if( id < typeinfos.size() && typeinfos[id] != nullptr)
         return typeinfos[id];
 
-    msg_error("TypeInfoRegistry") << "Missing type '"<< id << "' the type is not there..." << msgendl
-                                  << "     name: " << sofa::helper::NameDecoder::decodeFullName(tid.nfo);
+    msg_error("TypeInfoRegistry") << "Missing typeinfo for '"<< sofa::helper::NameDecoder::decodeFullName(tid.nfo)
+                                  << "' (searching at index " << tid.id  << ")";
 
-    return NoTypeInfo::get();
+    return nullptr;
 }
+
+int TypeInfoRegistry::AllocateNewTypeId()
+{
+    auto& typeinfos = getStorage();
+    typeinfos.push_back(NoTypeInfo::Get());
+    return typeinfos.size()-1;
+}
+
 
 int TypeInfoRegistry::Set(const TypeInfoId& tid, AbstractTypeInfo* info, const std::string &compilationTarget)
 {
-    auto& typeinfos = getStorage();
-    sofa::Size id = tid.id;
-
     if( info == nullptr )
         return -1;
 
-    info->setCompilationTarget(compilationTarget);
+    auto& typeinfos = getStorage();
+    sofa::Size id = tid.id;
 
+    msg_info("TypeInfoRegistry") << " Trying to register '"<< info->name() << "/" << tid.nfo.name() << "' at index " << id << "";
+
+    info->setCompilationTarget(compilationTarget);
     if( id >= typeinfos.size() )
     {
-        typeinfos.resize(id+1, NoTypeInfo::get());
+        typeinfos.resize(id+1, NoTypeInfo::Get());
     }
 
-    if( typeinfos[id] != NoTypeInfo::get() )
+    if( typeinfos[id] )
     {
-        if( typeinfos[id] != info && info->ValidInfo())
+        if( typeinfos[id] != info )
         {
-            msg_info("TypeInfoRegistry") << " Promoting typeinfo "<< id << " from " << typeinfos[id]->name() << " to " << info->name();
-            info->setCompilationTarget(compilationTarget);
-            typeinfos[id] = info;
-            return 2;
+            if( (typeinfos[id] == NoTypeInfo::Get()) || info->ValidInfo())
+            {
+                msg_info("TypeInfoRegistry") << " Promoting typeinfo "<< id << " from " << typeinfos[id]->name() << " to " << info->name();
+                info->setCompilationTarget(compilationTarget);
+                typeinfos[id] = info;
+                return 2;
+            }
         }
         return -1;
     }
@@ -100,7 +117,6 @@ int TypeInfoRegistry::Set(const TypeInfoId& tid, AbstractTypeInfo* info, const s
     {
         msg_warning("TypeInfoRegistry") << " Registering a partial new type info at "  << id << " => " << info->name();
     }
-    info->setCompilationTarget(compilationTarget);
     typeinfos[id] = info;
     return 1;
 }

@@ -44,9 +44,9 @@ class SOFA_DEFAULTTYPE_API TypeInfoId
 {
 public:
     template<class T>
-    static const TypeInfoId& getTypeId()
+    static const TypeInfoId& GetTypeId()
     {
-        static TypeInfoId typeId(TypeInfoId::getNewId(), typeid(T));
+        static TypeInfoId typeId(TypeInfoId::GetNewId(), typeid(T));
         return typeId;
     }
 
@@ -55,7 +55,7 @@ public:
 
 private:
     TypeInfoId(int id_, const std::type_info& nfo_);
-    static int getNewId();
+    static int GetNewId();
 };
 
 } /// namespace sofa::defaulttype

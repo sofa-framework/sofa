@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include "AbstractTypeInfo.h"
 #include "TypeInfoRegistryTools.h"
-#include "typeinfo/NoTypeInfo.h"
 namespace sofa::defaulttype
 {
 
@@ -34,13 +33,13 @@ void TypeInfoRegistryTools::dumpRegistryContentToStream(std::ostream& out,
     for(auto& info :types)
     {
         std::string prefix = (info->ValidInfo())?" - ":" ! ";
-        if(type==TypeInfoType::NONE && info == NoTypeInfo::get())
+        if(type==TypeInfoType::NONE && info)
         {            
             out << prefix << info->name() << std::endl;
-        }else if(type==TypeInfoType::PARTIAL && info != NoTypeInfo::get() && !info->ValidInfo())
+        }else if(type==TypeInfoType::PARTIAL && info && !info->ValidInfo())
         {
             out << prefix << info->name() << std::endl;
-        }else if(type==TypeInfoType::COMPLETE && info != NoTypeInfo::get() && info->ValidInfo())
+        }else if(type==TypeInfoType::COMPLETE && info && info->ValidInfo())
         {
             out << prefix << info->name() << std::endl;
         }else if(type==TypeInfoType::ALL)

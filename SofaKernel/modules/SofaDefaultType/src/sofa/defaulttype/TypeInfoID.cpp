@@ -21,13 +21,14 @@
 ******************************************************************************/
 #pragma once
 #include "TypeInfoID.h"
+#include "TypeInfoRegistry.h"
+
 namespace sofa::defaulttype
 {
 
-int TypeInfoId::getNewId()
+int TypeInfoId::GetNewId()
 {
-    static int value = 0;
-    return value++;
+    return TypeInfoRegistry::AllocateNewTypeId();
 }
 
 TypeInfoId::TypeInfoId(int id_, const std::type_info& nfo_) : id(id_), nfo(nfo_) {}
