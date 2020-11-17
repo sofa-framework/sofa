@@ -34,6 +34,19 @@
 namespace sofa::types
 {
 
+namespace // anonymous
+{
+    template<typename real>
+    real rabs(const real r)
+    {
+        if constexpr (std::is_signed<real>())
+            return std::abs(r);
+        else
+            return r;
+    }
+
+} // anonymous namespace
+
 //enum NoInit { NOINIT }; ///< use when calling Vec or Mat constructor to skip initialization of values to 0
 struct NoInit {};
 constexpr NoInit NOINIT;
@@ -629,7 +642,7 @@ public:
     /// Euclidean norm.
     ValueType norm() const
     {
-        return helper::rsqrt(norm2());
+        return std::sqrt(norm2());
     }
 
     /// l-norm of the vector
@@ -643,7 +656,7 @@ public:
             ValueType n=0;
             for( Size i=0; i<N; i++ )
             {
-                ValueType a = helper::rabs( this->elems[i] );
+                ValueType a = rabs( this->elems[i] );
                 if( a>n ) n=a;
             }
             return n;
@@ -653,7 +666,7 @@ public:
             ValueType n=0;
             for( Size i=0; i<N; i++ )
             {
-                n += helper::rabs( this->elems[i] );
+                n += rabs( this->elems[i] );
             }
             return n;
         }
@@ -668,8 +681,8 @@ public:
         {
             ValueType n = 0;
             for( Size i=0; i<N; i++ )
-                n += pow( helper::rabs( this->elems[i] ), l );
-            return pow( n, ValueType(1.0)/(ValueType)l );
+                n += pow( rabs( this->elems[i] ), l );
+            return pow( n, ValueType(1.0)/(real)l );
         }
     }
 
@@ -711,8 +724,11 @@ public:
         return r;
     }
 
-    /// return true iff norm()==1
-    bool isNormalized( ValueType threshold=std::numeric_limits<ValueType>::epsilon()*(ValueType)10 ) const { return helper::rabs<ValueType>( norm2()-(ValueType)1 ) <= threshold; }
+    /// return true if norm()==1
+    bool isNormalized( ValueType threshold=std::numeric_limits<ValueType>::epsilon()*(ValueType)10 ) const 
+    { 
+        return rabs( norm2()-(ValueType)1) <= threshold; 
+    }
 
     template<typename R,Size NN = N, typename std::enable_if<(NN==3),int>::type = 0>
     Vec cross( const Vec<3,R>& b ) const
@@ -885,6 +901,7 @@ typedef Vec6d Vector6; ///< alias
 namespace std
 {
 
+// template <>
 template<sofa::Size N, class T>
 struct less< sofa::types::Vec<N,T> >
 {
@@ -903,5 +920,3 @@ struct less< sofa::types::Vec<N,T> >
 };
 
 } // namespace std
-
-
