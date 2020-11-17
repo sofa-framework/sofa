@@ -40,7 +40,7 @@ namespace sofa::helper
     template<class T>
     inline fixed_array<T, 3> make_array(const T& v0, const T& v1, const T& v2)
     {
-        return sofa::types::stdtypes::make_array(v0, v1, v3);
+        return sofa::types::stdtypes::make_array(v0, v1, v2);
     }
 
     template<class T>

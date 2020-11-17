@@ -23,6 +23,7 @@
 #define SOFA_DEFAULTTYPE_MAT_H
 
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/rmath.h>
 #include <iostream>
 #include <sofa/helper/logging/Messaging.h>
 
