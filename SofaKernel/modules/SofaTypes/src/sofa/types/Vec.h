@@ -33,6 +33,19 @@
 namespace sofa::types
 {
 
+namespace // anonymous
+{
+    template<typename real>
+    real rabs(const real r)
+    {
+        if constexpr (std::is_signed<real>())
+            return std::abs(r);
+        else
+            return r;
+    }
+
+} // anonymous namespace
+
 //enum NoInit { NOINIT }; ///< use when calling Vec or Mat constructor to skip initialization of values to 0
 struct NoInit {};
 constexpr NoInit NOINIT;
@@ -496,7 +509,6 @@ public:
     template<class real2>
     void eqmulscalar(real2 f)
     {
-        //static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         static_assert(std::is_arithmetic<real2>::value);
         for (Size i=0; i<N; i++)
             this->elems[i]*=(real)f;
@@ -536,7 +548,6 @@ public:
     template<class real2>
     void eqdivscalar(real2 f)
     {
-        //static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         static_assert(std::is_arithmetic<real2>::value);
         for (Size i=0; i<N; i++)
             this->elems[i]/=(real)f;
@@ -639,7 +650,7 @@ public:
     /// Euclidean norm.
     real norm() const
     {
-        return helper::rsqrt(norm2());
+        return std::sqrt(norm2());
     }
 
     /// l-norm of the vector
@@ -653,7 +664,7 @@ public:
             real n=0;
             for( Size i=0; i<N; i++ )
             {
-                real a = helper::rabs( this->elems[i] );
+                real a = rabs( this->elems[i] );
                 if( a>n ) n=a;
             }
             return n;
@@ -663,7 +674,7 @@ public:
             real n=0;
             for( Size i=0; i<N; i++ )
             {
-                n += helper::rabs( this->elems[i] );
+                n += rabs( this->elems[i] );
             }
             return n;
         }
@@ -678,7 +689,7 @@ public:
         {
             real n = 0;
             for( Size i=0; i<N; i++ )
-                n += pow( helper::rabs( this->elems[i] ), l );
+                n += pow( rabs( this->elems[i] ), l );
             return pow( n, real(1.0)/(real)l );
         }
     }
@@ -721,8 +732,11 @@ public:
         return r;
     }
 
-    /// return true iff norm()==1
-    bool isNormalized( real threshold=std::numeric_limits<real>::epsilon()*(real)10 ) const { return helper::rabs<real>( norm2()-(real)1 ) <= threshold; }
+    /// return true if norm()==1
+    bool isNormalized( real threshold=std::numeric_limits<real>::epsilon()*(real)10 ) const 
+    { 
+        return rabs( real( norm2()-(real)1) ) <= threshold; 
+    }
 
     template<typename R,Size NN = N, typename std::enable_if<(NN==3),int>::type = 0>
     Vec cross( const Vec<3,R>& b ) const
@@ -892,57 +906,11 @@ typedef Vec6d Vector6; ///< alias
 
 } // namespace sofa::types
 
-// Specialization of the defaulttype::DataTypeInfo type traits template
-
-namespace sofa::defaulttype
-{
-
-template<sofa::Size N, typename real>
-struct DataTypeInfo< sofa::types::Vec<N,real> > : public FixedArrayTypeInfo<sofa::types::Vec<N,real> >
-{
-    static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
-};
-
-template<sofa::Size N, typename real>
-struct DataTypeInfo< sofa::types::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::types::VecNoInit<N,real> >
-{
-    static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
-};
-
-
-
-// The next line hides all those methods from the doxygen documentation
-/// \cond TEMPLATE_OVERRIDES
-
-#define DataTypeInfoName(type,suffix)\
-template<sofa::Size N>\
-struct DataTypeInfo< sofa::types::Vec<N,type> > : public FixedArrayTypeInfo<sofa::types::Vec<N,type> >\
-{\
-    static std::string name() { std::ostringstream o; o << "Vec" << N << suffix; return o.str(); }\
-};\
-template<sofa::Size N>\
-struct DataTypeInfo< sofa::types::VecNoInit<N,type> > : public FixedArrayTypeInfo<sofa::types::VecNoInit<N,type> >\
-{\
-    static std::string name() { std::ostringstream o; o << "VecNoInit" << N << suffix; return o.str(); }\
-};
-
-DataTypeInfoName( float, "f" )
-DataTypeInfoName( double, "d" )
-DataTypeInfoName( int, "i" )
-DataTypeInfoName( unsigned, "u" )
-
-#undef DataTypeInfoName
-
-
-
-/// \endcond
-
-} // namespace sofa::defaulttype
-
 // Specialization of the std comparison function, to use Vec as std::map key
 namespace std
 {
 
+// template <>
 template<sofa::Size N, class T>
 struct less< sofa::types::Vec<N,T> >
 {
@@ -961,5 +929,3 @@ struct less< sofa::types::Vec<N,T> >
 };
 
 } // namespace std
-
-

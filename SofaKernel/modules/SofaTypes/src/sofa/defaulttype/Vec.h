@@ -23,8 +23,12 @@
 #pragma once
 
 #include <sofa/types/Vec.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
-SOFA_DEPRECATED_HEADER(v21.06, "sofa/types/Vec.h")
+SOFA_PRAGMA_WARNING( \
+    This header is deprecated and will be removed at SOFA v21.06.      \
+    To fix this warning you must include either sofa/defaulttype/Data_Vec.h if using Vec with Data<> \
+    or sofa/types/Vec.h if you do not intend to use Data<> or DataTypeInfo. )
 
 namespace sofa::defaulttype
 {
@@ -97,5 +101,47 @@ namespace sofa::defaulttype
     using Vector3 = sofa::types::Vector3;
     using Vector4 = sofa::types::Vector4;
     using Vector6 = sofa::types::Vector6;
+
+
+// Specialization of the defaulttype::DataTypeInfo type traits template
+template<std::size_t N, typename real>
+struct DataTypeInfo< sofa::types::Vec<N,real> > : public FixedArrayTypeInfo<sofa::types::Vec<N,real> >
+{
+    static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+};
+
+template<std::size_t N, typename real>
+struct DataTypeInfo< sofa::types::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::types::VecNoInit<N,real> >
+{
+    static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+};
+
+
+
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
+
+#define DataTypeInfoName(type,suffix)\
+template<std::size_t N>\
+struct DataTypeInfo< sofa::types::Vec<N,type> > : public FixedArrayTypeInfo<sofa::types::Vec<N,type> >\
+{\
+    static std::string name() { std::ostringstream o; o << "Vec" << N << suffix; return o.str(); }\
+};\
+template<std::size_t N>\
+struct DataTypeInfo< sofa::types::VecNoInit<N,type> > : public FixedArrayTypeInfo<sofa::types::VecNoInit<N,type> >\
+{\
+    static std::string name() { std::ostringstream o; o << "VecNoInit" << N << suffix; return o.str(); }\
+};
+
+DataTypeInfoName( float, "f" )
+DataTypeInfoName( double, "d" )
+DataTypeInfoName( int, "i" )
+DataTypeInfoName( unsigned, "u" )
+
+#undef DataTypeInfoName
+
+
+
+/// \endcond
 
 } // namespace sofa::defaulttype
