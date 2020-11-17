@@ -42,6 +42,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/typeinfo/DataTypeInfoDynamicWrapper.h
     ${SRC_ROOT}/typeinfo/DataTypeInfo.h
     ${SRC_ROOT}/typeinfo/NoTypeInfo.h
+    ${SRC_ROOT}/typeinfo/NameOnlyTypeInfo.h
     ${SRC_ROOT}/typeinfo/TypeInfo_Bool.h
     ${SRC_ROOT}/typeinfo/TypeInfo_BoundingBox.h
     ${SRC_ROOT}/typeinfo/TypeInfo_FixedArray.h
