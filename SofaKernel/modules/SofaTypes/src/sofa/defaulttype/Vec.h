@@ -104,13 +104,13 @@ namespace sofa::defaulttype
 
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
-template<std::size_t N, typename real>
+template<Size N, typename real>
 struct DataTypeInfo< sofa::types::Vec<N,real> > : public FixedArrayTypeInfo<sofa::types::Vec<N,real> >
 {
     static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
 };
 
-template<std::size_t N, typename real>
+template<Size N, typename real>
 struct DataTypeInfo< sofa::types::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::types::VecNoInit<N,real> >
 {
     static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
@@ -122,12 +122,12 @@ struct DataTypeInfo< sofa::types::VecNoInit<N,real> > : public FixedArrayTypeInf
 /// \cond TEMPLATE_OVERRIDES
 
 #define DataTypeInfoName(type,suffix)\
-template<std::size_t N>\
+template<Size N>\
 struct DataTypeInfo< sofa::types::Vec<N,type> > : public FixedArrayTypeInfo<sofa::types::Vec<N,type> >\
 {\
     static std::string name() { std::ostringstream o; o << "Vec" << N << suffix; return o.str(); }\
 };\
-template<std::size_t N>\
+template<Size N>\
 struct DataTypeInfo< sofa::types::VecNoInit<N,type> > : public FixedArrayTypeInfo<sofa::types::VecNoInit<N,type> >\
 {\
     static std::string name() { std::ostringstream o; o << "VecNoInit" << N << suffix; return o.str(); }\

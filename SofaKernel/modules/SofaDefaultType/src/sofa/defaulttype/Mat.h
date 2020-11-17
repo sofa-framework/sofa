@@ -22,6 +22,8 @@
 #ifndef SOFA_DEFAULTTYPE_MAT_H
 #define SOFA_DEFAULTTYPE_MAT_H
 
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/rmath.h>
 #include <iostream>
 #include <sofa/defaulttype/config.h>
 #include <sofa/defaulttype/Vec.h>
