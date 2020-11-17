@@ -26,7 +26,7 @@
 namespace sofa::defaulttype
 {
 
-class SOFA_DEFAULTTYPE_APINameOnlyTypeInfo : public AbstractTypeInfo
+class SOFA_DEFAULTTYPE_API NameOnlyTypeInfo : public AbstractTypeInfo
 {
 public:
     NameOnlyTypeInfo(const std::string& name, const std::string& typeName)

@@ -28,7 +28,7 @@ namespace sofa::defaulttype
 {
 
 template<class TDataType>
-struct SOFA_DEFAULTTYPE_APIIntegerTypeInfo
+struct SOFA_DEFAULTTYPE_API IntegerTypeInfo
 {
     typedef TDataType DataType;
     typedef DataType BaseType;

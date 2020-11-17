@@ -26,7 +26,7 @@
 namespace sofa::defaulttype
 {
 
-class SOFA_DEFAULTTYPE_APINoTypeInfo : public AbstractTypeInfo
+class SOFA_DEFAULTTYPE_API NoTypeInfo : public AbstractTypeInfo
 {
 public:
     NoTypeInfo(){ setCompilationTarget("SofaDefaultType"); }
