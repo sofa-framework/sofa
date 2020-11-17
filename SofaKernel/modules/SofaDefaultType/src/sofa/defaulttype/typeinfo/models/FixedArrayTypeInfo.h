@@ -28,7 +28,7 @@ namespace sofa::defaulttype
 {
 
 template<class TDataType, sofa::Size static_size = TDataType::static_size>
-struct FixedArrayTypeInfo
+struct SOFA_DEFAULTTYPE_APIFixedArrayTypeInfo
 {
     typedef TDataType DataType;
 

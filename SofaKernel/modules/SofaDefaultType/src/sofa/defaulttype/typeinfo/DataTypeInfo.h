@@ -71,7 +71,7 @@ template<class TDataType>
 struct DataTypeInfo;
 
 template<class TDataType>
-struct DefaultDataTypeInfo
+struct SOFA_DEFAULTTYPE_API DefaultDataTypeInfo
 {
     /// Template parameter.
     typedef TDataType DataType;
@@ -145,7 +145,6 @@ struct DefaultDataTypeInfo
 template<class TDataType>
 struct DataTypeInfo : public DefaultDataTypeInfo<TDataType>
 {
-static const std::string GetTypeName() { return sofa::helper::NameDecoder::decodeFullName(typeid(TDataType)); }
 };
 
 template<class T>

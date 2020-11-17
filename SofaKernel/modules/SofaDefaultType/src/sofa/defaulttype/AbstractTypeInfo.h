@@ -66,7 +66,7 @@ namespace sofa::defaulttype
     \see DataTypeInfo provides similar mechanisms to manipulate Data objects
     generically in template code.
 */
-class AbstractTypeInfo
+class SOFA_DEFAULTTYPE_API AbstractTypeInfo
 {
 public:
     /// If the type is a container, returns the TypeInfo for the type of the

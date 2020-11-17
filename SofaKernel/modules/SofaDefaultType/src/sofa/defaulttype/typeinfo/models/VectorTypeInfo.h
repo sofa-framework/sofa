@@ -29,7 +29,7 @@ namespace sofa::defaulttype
 {
 
 template<class TDataType>
-struct VectorTypeInfo
+struct SOFA_DEFAULTTYPE_API VectorTypeInfo
 {
     typedef TDataType DataType;
     typedef typename DataType::value_type BaseType;

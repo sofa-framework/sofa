@@ -28,7 +28,7 @@ namespace sofa::defaulttype
 {
 
 template<class TDataType>
-struct ScalarTypeInfo
+struct SOFA_DEFAULTTYPE_API ScalarTypeInfo
 {
     typedef TDataType DataType;
     typedef DataType BaseType;

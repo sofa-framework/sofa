@@ -27,7 +27,7 @@ namespace sofa::defaulttype
 {
 
 template<class TDataType>
-struct TextTypeInfo
+struct SOFA_DEFAULTTYPE_API TextTypeInfo
 {
     typedef TDataType DataType;
     typedef DataType BaseType;
