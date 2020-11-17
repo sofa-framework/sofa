@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include "TypeInfoRegistry.h"
+#include "typeinfo/DataTypeInfoDynamicWrapper.h"
 
 namespace sofa::defaulttype
 {
@@ -60,5 +61,34 @@ public:
                                                 TypeInfoType type=TypeInfoType::COMPLETE,
                                                 const std::string& target="");
 };
+
+//////////////////////////////////// A function to ease the registering of typeinfo to the TypeInfoRegistry ///////////////////
+template<typename TT>
+void loadInRepository(const std::string& target)
+{
+    TypeInfoRegistry::Set(TypeInfoId::GetTypeId<TT>(),
+                          DataTypeInfoDynamicWrapper<DataTypeInfo<TT>>::get(),
+                          target);
+}
+
+//////////////////////////////////// A macro to ease the registering of typeinfo to the TypeInfoRegistry ///////////////////
+///
+/// Example of use
+///
+/// ///Define a static type info for your data for use with DataTypeInfoDynamicWrapper.
+/// template<>
+/// struct DataTypeInfo<MyType> { /* as usual to define a static data type info */ }
+///
+/// /// Then you can register with:
+/// sofa::defaulttype
+/// {
+///     REGISTER_TYPE_INFO_CREATOR(MyType);
+/// }
+#define REGISTER_MSG_PASTER(x,y) x ## _ ## y
+#define REGISTER_UNIQUE_NAME_GENERATOR(x,y)  REGISTER_MSG_PASTER(x,y)
+#define REGISTER_TYPE_INFO_CREATOR(theTypeName) static int REGISTER_UNIQUE_NAME_GENERATOR(_theTypeName_ , __LINE__) = sofa::defaulttype::TypeInfoRegistry::Set(TypeInfoId::GetTypeId<theTypeName>(), \
+    sofa::defaulttype::DataTypeInfoDynamicWrapper< sofa::defaulttype::DataTypeInfo<theTypeName>>::get(),\
+    sofa_tostring(SOFA_TARGET));
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 } /// namespace sofa::defaulttype

@@ -19,10 +19,60 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/TypeInfoRegistry.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Bool.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RGBAColor.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_BoundingBox.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
+#include <sofa/defaulttype/TypeInfoRegistryTools.h>
 
 namespace sofa::defaulttype
 {
+
+template<class Type>
+void loadVectorForType(const std::string& target)
+{
+    loadInRepository<sofa::helper::vector<Type>>(target);
+    loadInRepository<sofa::helper::vector<sofa::helper::vector<Type>>>(target);
+}
+
+void loadVectorFixedArray(const std::string& target)
+{
+
+}
+
+int fixedPreLoad(const std::string& target)
+{
+    loadVectorForType<char>(target);
+    loadVectorForType<unsigned char>(target);
+    loadVectorForType<short>(target);
+    loadVectorForType<unsigned short>(target);
+    loadVectorForType<int>(target);
+    loadVectorForType<unsigned int>(target);
+    loadVectorForType<long>(target);
+    loadVectorForType<unsigned long>(target);
+    loadVectorForType<long long>(target);
+    loadVectorForType<unsigned long long>(target);
+
+    loadVectorForType<bool>(target);
+    loadVectorForType<std::string>(target);
+
+    loadVectorForType<float>(target);
+    loadVectorForType<double>(target);
+
+    loadVectorForType<sofa::helper::types::RGBAColor>(target);
+    loadVectorForType<sofa::defaulttype::BoundingBox>(target);
+
+    return 0;
+}
+
+static int allFixedArray = fixedPreLoad(sofa_tostring(SOFA_TARGET));
+
 
 } /// namespace sofa::defaulttype
 

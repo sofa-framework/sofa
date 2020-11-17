@@ -28,8 +28,7 @@ namespace sofa::defaulttype
 {
 /** Type traits class for objects stored in Data.
 
-    %DataTypeInfo is part of the introspection/reflection capabilities of the
-    Sofa scene graph API; it is used to manipulate Data values generically in \a
+    %DataTypeInfo is part of the introspection/reflection capabilities of the Sofa scene graph API; it is used to manipulate Data values generically in \a
     template code, working transparently with different types of containers
     (vector, fixed_array, etc), and different types of values (integers, scalars
     (float, double), strings, etc). For example, it can be used to work with
@@ -149,6 +148,5 @@ struct DataTypeInfo : public DefaultDataTypeInfo<TDataType>
 
 template<class T>
 class DataTypeName : public DataTypeInfo<T> {};
-
 
 } /// namespace sofa::defaulttype

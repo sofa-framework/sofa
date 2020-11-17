@@ -19,9 +19,61 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/TypeInfoRegistry.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Bool.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RGBAColor.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_BoundingBox.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
+#include <sofa/defaulttype/TypeInfoRegistryTools.h>
 namespace sofa::defaulttype
 {
+
+template<class Type>
+void loadContainerForType(const std::string& target)
+{
+    loadInRepository<sofa::helper::fixed_array<Type, 0>>(target);
+    loadInRepository<sofa::helper::fixed_array<Type, 1>>(target);
+    loadInRepository<sofa::helper::fixed_array<Type, 2>>(target);
+    loadInRepository<sofa::helper::fixed_array<Type, 3>>(target);
+    loadInRepository<sofa::helper::fixed_array<Type, 4>>(target);
+    loadInRepository<sofa::helper::fixed_array<Type, 5>>(target);
+    loadInRepository<sofa::helper::fixed_array<Type, 6>>(target);
+    loadInRepository<sofa::helper::fixed_array<Type, 7>>(target);
+    loadInRepository<sofa::helper::fixed_array<Type, 8>>(target);
+    loadInRepository<sofa::helper::fixed_array<Type, 9>>(target);
+}
+
+int fixedPreLoad(const std::string& target)
+{
+    loadContainerForType<char>(target);
+    loadContainerForType<unsigned char>(target);
+    loadContainerForType<short>(target);
+    loadContainerForType<unsigned short>(target);
+    loadContainerForType<int>(target);
+    loadContainerForType<unsigned int>(target);
+    loadContainerForType<long>(target);
+    loadContainerForType<unsigned long>(target);
+    loadContainerForType<long long>(target);
+    loadContainerForType<unsigned long long>(target);
+
+    loadContainerForType<bool>(target);
+    loadContainerForType<std::string>(target);
+
+    loadContainerForType<float>(target);
+    loadContainerForType<double>(target);
+
+    loadContainerForType<sofa::helper::types::RGBAColor>(target);
+    loadContainerForType<sofa::defaulttype::BoundingBox>(target);
+
+    return 0;
+}
+
+static int allFixedArray = fixedPreLoad(sofa_tostring(SOFA_TARGET));
 
 } /// namespace sofa::defaulttype
 

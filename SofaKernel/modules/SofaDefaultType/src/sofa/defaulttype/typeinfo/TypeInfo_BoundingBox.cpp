@@ -20,10 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/defaulttype/typeinfo/TypeInfo_BoundingBox.h>
-#include <sofa/defaulttype/TypeInfoRegistry.h>
+#include <sofa/defaulttype/TypeInfoRegistryTools.h>
 
 namespace sofa::defaulttype
 {
+
+REGISTER_TYPE_INFO_CREATOR(BoundingBox)
 
 } /// namespace sofa::defaulttype
 

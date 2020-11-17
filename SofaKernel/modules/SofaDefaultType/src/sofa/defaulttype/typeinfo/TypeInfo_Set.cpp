@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
-#include <sofa/defaulttype/TypeInfoRegistry.h>
+#include <sofa/defaulttype/TypeInfoRegistryTools.h>
 
 namespace sofa::defaulttype
 {

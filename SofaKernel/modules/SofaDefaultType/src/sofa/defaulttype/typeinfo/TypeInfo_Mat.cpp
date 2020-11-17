@@ -19,10 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/TypeInfoRegistry.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+#include <sofa/defaulttype/TypeInfoRegistryTools.h>
 
 namespace sofa::defaulttype
 {
+
+REGISTER_TYPE_INFO_CREATOR(Mat1x1d);
+REGISTER_TYPE_INFO_CREATOR(Mat2x2d);
+REGISTER_TYPE_INFO_CREATOR(Mat3x3d);
+REGISTER_TYPE_INFO_CREATOR(Mat4x4d);
+
+REGISTER_TYPE_INFO_CREATOR(Mat1x1f);
+REGISTER_TYPE_INFO_CREATOR(Mat2x2f);
+REGISTER_TYPE_INFO_CREATOR(Mat3x3f);
+REGISTER_TYPE_INFO_CREATOR(Mat4x4f);
 
 } /// namespace sofa::defaulttype
 

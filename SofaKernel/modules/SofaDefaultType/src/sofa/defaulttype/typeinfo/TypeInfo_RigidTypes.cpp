@@ -19,9 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/TypeInfoRegistry.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
+#include <sofa/defaulttype/TypeInfoRegistryTools.h>
 
 namespace sofa::defaulttype
 {
+
+REGISTER_TYPE_INFO_CREATOR(Rigid2fTypes)
+REGISTER_TYPE_INFO_CREATOR(Rigid2dTypes)
+REGISTER_TYPE_INFO_CREATOR(Rigid3fTypes)
+REGISTER_TYPE_INFO_CREATOR(Rigid3dTypes)
+
+REGISTER_TYPE_INFO_CREATOR(Rigid2fMass)
+REGISTER_TYPE_INFO_CREATOR(Rigid2dMass)
+REGISTER_TYPE_INFO_CREATOR(Rigid3fMass)
+REGISTER_TYPE_INFO_CREATOR(Rigid3dMass)
+
+REGISTER_TYPE_INFO_CREATOR(Rigid2fTypes)
+REGISTER_TYPE_INFO_CREATOR(Rigid2dTypes)
+REGISTER_TYPE_INFO_CREATOR(Rigid3fTypes)
+REGISTER_TYPE_INFO_CREATOR(Rigid3dTypes)
+
 } /// namespace sofa::defaulttype
 

@@ -20,10 +20,21 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
-#include <sofa/defaulttype/TypeInfoRegistry.h>
+#include <sofa/defaulttype/TypeInfoRegistryTools.h>
 
 namespace sofa::defaulttype
 {
+
+REGISTER_TYPE_INFO_CREATOR(char)
+REGISTER_TYPE_INFO_CREATOR(unsigned char)
+REGISTER_TYPE_INFO_CREATOR(short)
+REGISTER_TYPE_INFO_CREATOR(unsigned short)
+REGISTER_TYPE_INFO_CREATOR(int)
+REGISTER_TYPE_INFO_CREATOR(unsigned int)
+REGISTER_TYPE_INFO_CREATOR(long)
+REGISTER_TYPE_INFO_CREATOR(unsigned long)
+REGISTER_TYPE_INFO_CREATOR(long long)
+REGISTER_TYPE_INFO_CREATOR(unsigned long long)
 
 } /// namespace sofa::defaulttype
 

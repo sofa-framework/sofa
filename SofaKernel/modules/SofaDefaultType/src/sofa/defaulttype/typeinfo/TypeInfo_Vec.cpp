@@ -19,9 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/TypeInfoRegistry.h>
-
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
+#include <sofa/defaulttype/TypeInfoRegistryTools.h>
 namespace sofa::defaulttype
 {
+
+REGISTER_TYPE_INFO_CREATOR(Vec1f);
+REGISTER_TYPE_INFO_CREATOR(Vec2f);
+REGISTER_TYPE_INFO_CREATOR(Vec3f);
+REGISTER_TYPE_INFO_CREATOR(Vec4f);
+REGISTER_TYPE_INFO_CREATOR(Vec6f);
+
+REGISTER_TYPE_INFO_CREATOR(Vec1d);
+REGISTER_TYPE_INFO_CREATOR(Vec2d);
+REGISTER_TYPE_INFO_CREATOR(Vec3d);
+REGISTER_TYPE_INFO_CREATOR(Vec4d);
+REGISTER_TYPE_INFO_CREATOR(Vec6d);
+
+REGISTER_TYPE_INFO_CREATOR(Vec1i);
+REGISTER_TYPE_INFO_CREATOR(Vec2i);
+REGISTER_TYPE_INFO_CREATOR(Vec3i);
+REGISTER_TYPE_INFO_CREATOR(Vec4i);
+REGISTER_TYPE_INFO_CREATOR(Vec6i);
+
+REGISTER_TYPE_INFO_CREATOR(Vec1u);
+REGISTER_TYPE_INFO_CREATOR(Vec2u);
+REGISTER_TYPE_INFO_CREATOR(Vec3u);
+REGISTER_TYPE_INFO_CREATOR(Vec4u);
+REGISTER_TYPE_INFO_CREATOR(Vec6u);
+
 } /// namespace sofa::defaulttype
 
