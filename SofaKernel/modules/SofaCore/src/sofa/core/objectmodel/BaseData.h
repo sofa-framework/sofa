@@ -27,6 +27,8 @@
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/DataLink.h>
 
+#include <sofa/defaulttype/TypeInfoRegistry.h>
+
 namespace sofa
 {
 
@@ -318,10 +320,7 @@ public:
     template<class T>
     static std::string typeName(const T* = nullptr)
     {
-        if (defaulttype::DataTypeInfo<T>::ValidInfo)
-            return defaulttype::DataTypeName<T>::name();
-        else
-            return decodeTypeName(typeid(T));
+        return sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>())->getTypeName();
     }
 };
 

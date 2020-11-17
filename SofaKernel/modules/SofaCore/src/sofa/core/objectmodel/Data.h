@@ -69,7 +69,7 @@ public:
     /// Get info about the value type of the associated variable
     const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
     {
-        return sofa::defaulttype::VirtualTypeInfo<T>::get();
+        return sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>());
     }
 
     virtual const T& virtualGetValue() const = 0;
@@ -176,7 +176,7 @@ public:
 
     static std::string templateName()
     {
-        return sofa::core::objectmodel::BaseData::typeName<Data<T>>();
+        return sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>())->name();
     }
 
     // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
@@ -347,7 +347,7 @@ public:
 
 protected:
 
-    typedef DataContentValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
+    typedef DataContentValue<T, true> ValueType;
 
     /// Value
     ValueType m_value;
@@ -391,7 +391,7 @@ template<class T>
 inline
 std::string TData<T>::getValueTypeString() const
 {
-    return BaseData::typeName(&virtualGetValue());
+    return sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>())->name();
 }
 
 template <class T>
