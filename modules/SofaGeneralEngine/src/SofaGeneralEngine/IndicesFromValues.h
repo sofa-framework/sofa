@@ -67,7 +67,7 @@ public:
     /// instead of the default one generated automatically by the SOFA_CLASS() macro.
     static std::string GetCustomTemplateName()
     {
-        return sofa::defaulttype::DataTypeInfo<T>::name();
+        return sofa::defaulttype::DataTypeName<T>::name();
     }
 };
 
