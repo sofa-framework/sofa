@@ -46,8 +46,6 @@ class DataMockup
 public:
     const AbstractTypeInfo* getTypeInfo()
     {
-        static const int i = TypeInfoRegistry::Set(TypeInfoId::GetTypeId<T>(),
-                                                   DataTypeInfoDynamicWrapper<IncompleteTypeInfo<T>>::get(), "Implicit location");
         static const AbstractTypeInfo* info {};
         if(info!=nullptr && info->ValidInfo())
             return info;

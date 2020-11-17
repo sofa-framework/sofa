@@ -37,15 +37,14 @@ using sofa::defaulttype::TypeInfoId;
 
 #include <sofa/defaulttype/TypeInfoRegistry.h>
 using sofa::defaulttype::TypeInfoRegistry;
-using sofa::defaulttype::TypeInfoType;
 
 #include <sofa/defaulttype/TypeInfoRegistryTools.h>
 using sofa::defaulttype::TypeInfoRegistryTools;
+using sofa::defaulttype::TypeInfoType;
 
 class ObjectInTranslationUnit1 {};
-template<> class sofa::defaulttype::DataTypeInfo<ObjectInTranslationUnit1> : public IncompleteTypeInfo<ObjectInTranslationUnit1>
+template<> struct sofa::defaulttype::DataTypeInfo<ObjectInTranslationUnit1> : public IncompleteTypeInfo<ObjectInTranslationUnit1>
 {
-public:
     static std::string name(){ return "ObjectInTranslationUnit1"; }
     static std::string GetTypeName(){ return "ObjectInTranslationUnit1"; }
 };

@@ -37,10 +37,10 @@ using sofa::defaulttype::TypeInfoId;
 
 #include <sofa/defaulttype/TypeInfoRegistry.h>
 using sofa::defaulttype::TypeInfoRegistry;
-using sofa::defaulttype::TypeInfoType;
 
 #include <sofa/defaulttype/TypeInfoRegistryTools.h>
 using sofa::defaulttype::TypeInfoRegistryTools;
+using sofa::defaulttype::TypeInfoType;
 
 #include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 
@@ -48,7 +48,7 @@ using sofa::defaulttype::TypeInfoRegistryTools;
 class ObjectInTranslationUnit1 {};
 
 class ObjectInTranslationUnit2 {};
-template<> class sofa::defaulttype::DataTypeInfo<ObjectInTranslationUnit2> : public IncompleteTypeInfo<ObjectInTranslationUnit2>
+template<> struct sofa::defaulttype::DataTypeInfo<ObjectInTranslationUnit2> : public IncompleteTypeInfo<ObjectInTranslationUnit2>
 {
 public:
     static std::string name(){ return "ObjectInTranslationUnit2"; }
@@ -95,5 +95,5 @@ TEST(TypeInfoRegistryTu2, external_registration)
     ASSERT_NE(dataInt.getTypeInfo(), nullptr);
     ASSERT_FALSE(dataInt.getTypeInfo()->ValidInfo());
     EXPECT_EQ(dataInt.getTypeInfo()->name(),"int");
-    EXPECT_EQ(dataInt.getTypeInfo()->getCompilationTarget(),"Implicit location");
+    EXPECT_EQ(dataInt.getTypeInfo()->getCompilationTarget(),"SofaDefaultType");
 }

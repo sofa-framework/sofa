@@ -40,17 +40,18 @@ using sofa::defaulttype::TypeInfoId;
 
 #include <sofa/defaulttype/TypeInfoRegistry.h>
 using sofa::defaulttype::TypeInfoRegistry;
-using sofa::defaulttype::TypeInfoType;
 
 #include <sofa/defaulttype/TypeInfoRegistryTools.h>
 using sofa::defaulttype::TypeInfoRegistryTools;
-
+using sofa::defaulttype::TypeInfoType;
 
 class MyTypeNotRegistered {};
 TEST(TypeInfoRegistry, get_unregistered)
 {
     const AbstractTypeInfo* nfo = TypeInfoRegistry::Get(TypeInfoId::GetTypeId<MyTypeNotRegistered>());
-    ASSERT_EQ(nfo, nullptr);
+    ASSERT_NE(nfo, nullptr);
+    ASSERT_NE(nfo, NoTypeInfo::Get());
+    ASSERT_FALSE(nfo->ValidInfo());
 }
 
 class MyType {};
@@ -75,8 +76,13 @@ TEST(TypeInfoRegistry, set_and_get)
 
 TEST(TypeInfoRegistry, dump)
 {
-    TypeInfoRegistryTools::dumpRegistryContentToStream(std::cout, TypeInfoType::NONE);
-    TypeInfoRegistryTools::dumpRegistryContentToStream(std::cout, TypeInfoType::PARTIAL);
-    TypeInfoRegistryTools::dumpRegistryContentToStream(std::cout, TypeInfoType::ALL);
+    std::stringstream s1,s2,s3;
+    TypeInfoRegistryTools::dumpRegistryContentToStream(s1, TypeInfoType::MISSING);
+    TypeInfoRegistryTools::dumpRegistryContentToStream(s2, TypeInfoType::NAMEONLY);
+    TypeInfoRegistryTools::dumpRegistryContentToStream(s3, TypeInfoType::COMPLETE);
+
+    EXPECT_NE(s1.str(), "");
+    EXPECT_NE(s2.str(), "");
+    EXPECT_NE(s3.str(), "");
 }
 

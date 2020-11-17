@@ -37,10 +37,10 @@ using sofa::defaulttype::TypeInfoId;
 
 #include <sofa/defaulttype/TypeInfoRegistry.h>
 using sofa::defaulttype::TypeInfoRegistry;
-using sofa::defaulttype::TypeInfoType;
 
 #include <sofa/defaulttype/TypeInfoRegistryTools.h>
 using sofa::defaulttype::TypeInfoRegistryTools;
+using sofa::defaulttype::TypeInfoType;
 
 #include "DataMockup.h"
 
@@ -50,12 +50,12 @@ TEST(TypeInfo, type_registration_with_implicit_declaration)
     ASSERT_NE(dataDouble.getTypeInfo(), nullptr);
     ASSERT_FALSE(dataDouble.getTypeInfo()->ValidInfo());
     EXPECT_EQ(dataDouble.getTypeInfo()->name(), "double");
-    EXPECT_EQ(dataDouble.getTypeInfo()->getCompilationTarget(), "Implicit location");
+    EXPECT_EQ(dataDouble.getTypeInfo()->getCompilationTarget(), "SofaDefaultType");
 
     DataMockup<int> dataInt;
     ASSERT_NE(dataInt.getTypeInfo(), nullptr);
     ASSERT_FALSE(dataInt.getTypeInfo()->ValidInfo());
     EXPECT_EQ(dataInt.getTypeInfo()->name(), "int");
-    EXPECT_EQ(dataInt.getTypeInfo()->getCompilationTarget(),"Implicit location");
+    EXPECT_EQ(dataInt.getTypeInfo()->getCompilationTarget(), "SofaDefaultType");
 }
 
