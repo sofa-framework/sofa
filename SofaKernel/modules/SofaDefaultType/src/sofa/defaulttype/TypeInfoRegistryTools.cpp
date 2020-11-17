@@ -29,22 +29,30 @@ void TypeInfoRegistryTools::dumpRegistryContentToStream(std::ostream& out,
                                                         const std::string& target)
 {
     auto types = sofa::defaulttype::TypeInfoRegistry::GetRegisteredTypes(target);
-    out << "Module '" << target << "' has " << types.size()  <<  " types defined:" << std::endl;
+
+    int selected=0;
     for(auto& info :types)
     {
-        std::string prefix = (info->ValidInfo())?" - ":" ! ";
-        if(type==TypeInfoType::NONE && info)
+        if(type==TypeInfoType::MISSING && info)
+            selected++;
+        else if(type==TypeInfoType::NAMEONLY && info && !info->ValidInfo())
+            selected++;
+        else if(type==TypeInfoType::COMPLETE && info && info->ValidInfo())
+            selected++;
+    }
+
+    out << "Target '" << target << "' has " << selected << "/" << types.size()  <<  " types." << std::endl;
+    for(auto& info :types)
+    {
+        if(type==TypeInfoType::MISSING && info)
         {            
-            out << prefix << info->name() << std::endl;
-        }else if(type==TypeInfoType::PARTIAL && info && !info->ValidInfo())
+            out << " ? " << info->name() << std::endl;
+        }else if(type==TypeInfoType::NAMEONLY && info && !info->ValidInfo())
         {
-            out << prefix << info->name() << std::endl;
+            out << " N " << info->name() << std::endl;
         }else if(type==TypeInfoType::COMPLETE && info && info->ValidInfo())
         {
-            out << prefix << info->name() << std::endl;
-        }else if(type==TypeInfoType::ALL)
-        {
-            out << prefix << info->name() << std::endl;
+            out << " C " << info->name() << std::endl;
         }
     }
 }

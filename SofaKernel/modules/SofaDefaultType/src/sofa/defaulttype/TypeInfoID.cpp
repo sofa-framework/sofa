@@ -26,9 +26,9 @@
 namespace sofa::defaulttype
 {
 
-int TypeInfoId::GetNewId()
+int TypeInfoId::GetNewId(const std::type_info& nfo)
 {
-    return TypeInfoRegistry::AllocateNewTypeId();
+    return TypeInfoRegistry::AllocateNewTypeId(nfo);
 }
 
 TypeInfoId::TypeInfoId(int id_, const std::type_info& nfo_) : id(id_), nfo(nfo_) {}

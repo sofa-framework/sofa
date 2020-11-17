@@ -27,6 +27,29 @@
 namespace sofa::defaulttype
 {
 
+/**
+ * @brief Encodes the different kind of type infos stored in the TypeInfoRegistry
+ *
+ * In the TyepeInfoRegistry we can store different type of type info depending
+ * on how much the developper want to provide precise information (or not)
+ * on its data type.
+ *
+ * MISSING indicates that there was absolutely no valid information to trust in
+ * an AbstractTypeInfo object.
+ *
+ * NAMEONLY indicates that only the getName() and getTypeName() function are returning
+ * valid informations.
+ *
+ * COMPLETE indicates that all the function like size/getSize/etc... are implemented.
+ *
+ */
+enum class TypeInfoType
+{
+    MISSING,
+    NAMEONLY,
+    COMPLETE
+};
+
 /** *******************************************************************************
  * @brief A dedicated class to hold helper functions for TypeInfoRegistryTools
  **********************************************************************************/
@@ -34,7 +57,7 @@ class SOFA_DEFAULTTYPE_API TypeInfoRegistryTools
 {
 public:
         static void dumpRegistryContentToStream(std::ostream& out,
-                                                TypeInfoType type=TypeInfoType::ALL,
+                                                TypeInfoType type=TypeInfoType::COMPLETE,
                                                 const std::string& target="");
 };
 

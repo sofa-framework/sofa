@@ -27,6 +27,10 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/helper/NameDecoder.h>
 #include <sofa/defaulttype/typeinfo/NoTypeInfo.h>
+#include <sofa/defaulttype/typeinfo/NameOnlyTypeInfo.h>
+#include <sofa/defaulttype/typeinfo/models/IncompleteTypeInfo.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
+
 #include <algorithm>
 #include "TypeInfoID.h"
 #include "TypeInfoRegistry.h"
@@ -60,8 +64,6 @@ const AbstractTypeInfo* TypeInfoRegistry::Get(const TypeInfoId& tid)
     sofa::Size id = tid.id;
     auto& typeinfos = getStorage();
 
-
-
     if( id < typeinfos.size() && typeinfos[id] != nullptr)
         return typeinfos[id];
 
@@ -71,10 +73,12 @@ const AbstractTypeInfo* TypeInfoRegistry::Get(const TypeInfoId& tid)
     return nullptr;
 }
 
-int TypeInfoRegistry::AllocateNewTypeId()
+int TypeInfoRegistry::AllocateNewTypeId(const std::type_info& nfo)
 {
     auto& typeinfos = getStorage();
-    typeinfos.push_back(NoTypeInfo::Get());
+    std::string name = sofa::helper::NameDecoder::decodeTypeName(nfo);
+    std::string typeName = sofa::helper::NameDecoder::decodeTypeName(nfo);
+    typeinfos.push_back(new NameOnlyTypeInfo(name, typeName));
     return typeinfos.size()-1;
 }
 
@@ -99,7 +103,7 @@ int TypeInfoRegistry::Set(const TypeInfoId& tid, AbstractTypeInfo* info, const s
     {
         if( typeinfos[id] != info )
         {
-            if( (typeinfos[id] == NoTypeInfo::Get()) || info->ValidInfo())
+            if( (typeinfos[id] == NoTypeInfo::Get()) || !typeinfos[id]->ValidInfo())
             {
                 msg_info("TypeInfoRegistry") << " Promoting typeinfo "<< id << " from " << typeinfos[id]->name() << " to " << info->name();
                 info->setCompilationTarget(compilationTarget);
