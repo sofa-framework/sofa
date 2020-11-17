@@ -35,7 +35,6 @@ public:
         m_typeName = name;
         setCompilationTarget("SofaDefaultType");
     }
-    static AbstractTypeInfo* Get(){ static NoTypeInfo t; return &t; }
 
     /// \brief Returns the name of this type.
     virtual std::string name() const  {return m_name; }

@@ -138,12 +138,15 @@ struct DefaultDataTypeInfo
         return nullptr;
     }
 
-    static const std::string name() { return "DefaultTypename =>" + GetTypeName(); }
+    static const std::string name() { return GetTypeName(); }
     static const std::string GetTypeName() { return sofa::helper::NameDecoder::decodeFullName(typeid(DataType)); }
 };
 
-//template<class TDataType>
-//struct DataTypeInfo : DefaultDataTypeInfo<TDataType> { };
+template<class TDataType>
+struct DataTypeInfo : public DefaultDataTypeInfo<TDataType>
+{
+static const std::string GetTypeName() { return sofa::helper::NameDecoder::decodeFullName(typeid(TDataType)); }
+};
 
 template<class T>
 class DataTypeName : public DataTypeInfo<T> {};
