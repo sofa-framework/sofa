@@ -19,34 +19,59 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaTopologyMapping/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaUserInteraction/initUserInteraction.h>
-#include <SofaConstraint/initConstraint.h>
+#include <sofa/core/BaseMapping.h>
+#include <sofa/core/topology/TopologicalMapping.h>
 
-namespace sofa
+namespace sofa::component::topology
 {
 
-namespace component
-{
+/**
+ * This class, called CenterPointTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
+ *
+ * INPUT TOPOLOGY = any MeshTopology
+ * OUTPUT TOPOLOGY = A PointSetTopologie, as the boundary of the INPUT TOPOLOGY
+ *
+ * Each primitive in the input Topology will be mapped to a point in the output topology.
+ *
+ * CenterPointTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
+ *
+*/
 
-
-void initSofaGeneral()
+class SOFA_SOFATOPOLOGYMAPPING_API CenterPointTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
-    static bool first = true;
-    if (first)
+public:
+    SOFA_CLASS(CenterPointTopologicalMapping,sofa::core::topology::TopologicalMapping);
+protected:
+    /** \brief Constructor.
+     *
+     */
+    CenterPointTopologicalMapping ();
+
+    /** \brief Destructor.
+     *
+     * Does nothing.
+     */
+    ~CenterPointTopologicalMapping() override {}
+public:
+    /** \brief Initializes the target BaseTopology from the source BaseTopology.
+     */
+    void init() override;
+
+    /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
+    void updateTopologicalMappingTopDown() override;
+
+    Index getGlobIndex(Index ind) override
     {
-        first = false;
+        return ind;
     }
 
-    initGeneralLoader();
-    initUserInteraction();
-    initConstraint();
-}
+    Index getFromIndex(Index ind) override
+    {
+        return ind;
+    }
+};
 
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::topology

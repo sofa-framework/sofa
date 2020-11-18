@@ -19,34 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaTopologyMapping/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaUserInteraction/initUserInteraction.h>
-#include <SofaConstraint/initConstraint.h>
+#include <sofa/core/topology/TopologicalMapping.h>
 
-namespace sofa
+#include <sofa/defaulttype/Vec.h>
+#include <map>
+
+#include <sofa/core/BaseMapping.h>
+
+namespace sofa::component::topology
 {
 
-namespace component
+/**
+* This class, called Hexa2QuadTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
+*
+* INPUT TOPOLOGY = HexahedronSetTopology
+* OUTPUT TOPOLOGY = QuadSetTopology, as the boundary of the INPUT TOPOLOGY
+*
+* Hexa2QuadTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
+*
+*/
+
+class SOFA_SOFATOPOLOGYMAPPING_API Hexa2QuadTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
+public:
+    SOFA_CLASS(Hexa2QuadTopologicalMapping,sofa::core::topology::TopologicalMapping);
+protected:
+    /** \brief Constructor.
+    *
+    */
+    Hexa2QuadTopologicalMapping();
+
+    /** \brief Destructor.
+    *
+    * Does nothing.
+    */
+    ~Hexa2QuadTopologicalMapping() override = default;
+public:
+    /** \brief Initializes the target BaseTopology from the source BaseTopology.
+    */
+    void init() override;
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    /** \brief Translates the TopologyChange objects from the source to the target.
+    *
+    * Translates each of the TopologyChange objects waiting in the source list so that they have a meaning and
+    * reflect the effects of the first topology changes on the second topology.
+    *
+    */
+    void updateTopologicalMappingTopDown() override;
 
-    initGeneralLoader();
-    initUserInteraction();
-    initConstraint();
-}
+    Index getFromIndex(Index ind) override;
 
+protected:
+    Data<bool> flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
 
-} // namespace component
+};
 
-} // namespace sofa
+} //namespace sofa::component::topology

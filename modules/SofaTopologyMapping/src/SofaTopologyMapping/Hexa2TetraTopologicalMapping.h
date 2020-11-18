@@ -19,34 +19,64 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaTopologyMapping/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaUserInteraction/initUserInteraction.h>
-#include <SofaConstraint/initConstraint.h>
+#include <sofa/core/topology/TopologicalMapping.h>
 
-namespace sofa
+#include <sofa/defaulttype/Vec.h>
+#include <map>
+
+#include <sofa/core/BaseMapping.h>
+
+
+namespace sofa::component::topology
 {
 
-namespace component
+
+/**
+* This class, called Hexa2TetraTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
+*
+* INPUT TOPOLOGY = HexahedronSetTopology
+* OUTPUT TOPOLOGY = TetrahedronSetTopology
+*
+* Tetra2TriangleTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
+*
+*/
+
+class SOFA_SOFATOPOLOGYMAPPING_API Hexa2TetraTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
+public:
+    SOFA_CLASS(Hexa2TetraTopologicalMapping,sofa::core::topology::TopologicalMapping);
+protected:
+    /** \brief Constructor.
+    *
+    */
+    Hexa2TetraTopologicalMapping();
+
+    /** \brief Destructor.
+    *
+    * Does nothing.
+    */
+    ~Hexa2TetraTopologicalMapping() override;
+public:
+    /** \brief Initializes the target BaseTopology from the source BaseTopology.
+    */
+    void init() override;
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    /** \brief Translates the TopologyChange objects from the source to the target.
+    *
+    * Translates each of the TopologyChange objects waiting in the source list so that they have a meaning and
+    * reflect the effects of the first topology changes on the second topology.
+    *
+    */
+    void updateTopologicalMappingTopDown() override;
 
-    initGeneralLoader();
-    initUserInteraction();
-    initConstraint();
-}
+    Index getFromIndex(Index ind) override;
 
+    sofa::core::objectmodel::Data<bool> swapping; ///< Boolean enabling to swapp hexa-edges  in order to avoid bias effect
 
-} // namespace component
+};
 
-} // namespace sofa
+} //namespace sofa::component::topology

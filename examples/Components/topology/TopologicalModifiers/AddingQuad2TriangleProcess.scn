@@ -3,6 +3,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaMiscCollision' />
     <RequiredPlugin name='SofaMiscTopology'/>
+    <RequiredPlugin name='SofaTopologyMapping'/>  
+    
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />

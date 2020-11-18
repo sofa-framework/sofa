@@ -19,34 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaTopologyMapping/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaUserInteraction/initUserInteraction.h>
-#include <SofaConstraint/initConstraint.h>
+#include <sofa/core/topology/TopologicalMapping.h>
 
-namespace sofa
+#include <sofa/defaulttype/Vec.h>
+#include <map>
+
+#include <sofa/core/BaseMapping.h>
+
+namespace sofa::component::topology
 {
 
-namespace component
+
+
+/**
+* This class, called Quad2TriangleTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
+*
+* INPUT TOPOLOGY = QuadSetTopology
+* OUTPUT TOPOLOGY = TriangleSetTopology, as the constitutive elements of the INPUT TOPOLOGY
+*
+* Quad2TriangleTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
+*
+*/
+
+class SOFA_SOFATOPOLOGYMAPPING_API Quad2TriangleTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 
+public:
+    SOFA_CLASS(Quad2TriangleTopologicalMapping,sofa::core::topology::TopologicalMapping);
+protected:
+    /** \brief Constructor.
+    *
+    */
+    Quad2TriangleTopologicalMapping();
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-    initUserInteraction();
-    initConstraint();
-}
+    /** \brief Destructor.
+    *
+    * Does nothing.
+    */
+    ~Quad2TriangleTopologicalMapping() override;
+public:
+    /** \brief Initializes the target BaseTopology from the source BaseTopology.
+    */
+    void init() override;
 
 
-} // namespace component
+    /** \brief Translates the TopologyChange objects from the source to the target.
+    *
+    * Translates each of the TopologyChange objects waiting in the source list so that they have a meaning and
+    * reflect the effects of the first topology changes on the second topology.
+    *
+    */
+    void updateTopologicalMappingTopDown() override;
 
-} // namespace sofa
+    Index getFromIndex(Index ind) override;
+
+};
+
+} //namespace sofa::component::topology
