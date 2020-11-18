@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/defaulttype/AbstractTypeInfo.h>
 #include <sofa/defaulttype/TypeInfoID.h>
+#include <stdexcept>
 
 namespace sofa::defaulttype
 {
@@ -32,7 +33,7 @@ public:
     NameOnlyTypeInfo(const std::string& name, const std::string& typeName)
     {
         m_name = name;
-        m_typeName = name;
+        m_typeName = typeName;
         setCompilationTarget("SofaDefaultType");
     }
 
@@ -74,16 +75,16 @@ public:
     /// and those six elements are conceptually numbered from 0 to 5.  This is
     /// relevant only if FixedSize() is true. I FixedSize() is false,
     /// the return value will be equivalent to the one of byteSize()
-    virtual sofa::Size size() const {return -1;}
+    virtual sofa::Size size() const { throw std::runtime_error("Accessing an invalid datatype: "+name());}
     /// The size in bytes of the ValueType
     /// For example, the size of a fixed_array<fixed_array<int, 2>, 3>` is 4 on most systems,
     /// as it is the byte size of the smallest dimension in the array (int -> 32bit)
-    virtual sofa::Size byteSize() const {return -1;}
+    virtual sofa::Size byteSize() const { throw std::runtime_error("Accessing an invalid datatype: "+name());}
 
     /// The size of \a data, in number of iterable elements
     /// (For containers, that'll be the number of elements in the 1st dimension).
     /// For example, with type == `
-    virtual sofa::Size size(const void* data) const {return -1;}
+    virtual sofa::Size size(const void* data) const { throw std::runtime_error("Accessing an invalid datatype: "+name());}
     /// Resize \a data to \a size elements, if relevant.
 
     /// But resizing is not always relevant, for example:
@@ -94,31 +95,33 @@ public:
     ///   abstraction;
     ///
     /// Returns true iff the data was resizable
-    virtual bool setSize(void* data, sofa::Size size) const { return false; };
+    virtual bool setSize(void*, sofa::Size) const {  throw std::runtime_error("Accessing an invalid datatype: "+name());};
 
     /// Get the value at \a index of \a data as an integer.
     /// Relevant only if this type can be casted to `long long`.
-    virtual long long   getIntegerValue(const void* data, Index index) const {return 0;}
+    virtual long long getIntegerValue(const void*, Index) const { throw std::runtime_error("Accessing an invalid datatype: "+name());}
+
     /// Get the value at \a index of \a data as a scalar.
     /// Relevant only if this type can be casted to `double`.
-    virtual double      getScalarValue (const void* data, Index index) const {return 0;}
+    virtual double getScalarValue (const void*, Index) const { throw std::runtime_error("Accessing an invalid datatype: "+name());}
+
     /// Get the value at \a index of \a data as a string.
-    virtual std::string getTextValue   (const void* data, Index index) const {return 0;}
+    virtual std::string getTextValue (const void*, Index) const { throw std::runtime_error("Accessing an invalid datatype: "+name());}
 
     /// Set the value at \a index of \a data from an integer value.
-    virtual void setIntegerValue(void* data, Index index, long long value) const {return;}
+    virtual void setIntegerValue(void*, Index, long long) const { throw std::runtime_error("Accessing an invalid datatype: "+name());}
     /// Set the value at \a index of \a data from a scalar value.
-    virtual void setScalarValue (void* data, Index index, double value) const {return;}
+    virtual void setScalarValue (void*, Index, double) const { throw std::runtime_error("Accessing an invalid datatype: "+name());}
     /// Set the value at \a index of \a data from a string value.
-    virtual void setTextValue(void* data, Index index, const std::string& value) const {return;}
+    virtual void setTextValue(void*, Index, const std::string&) const { throw std::runtime_error("Accessing an invalid datatype: "+name());}
 
     /// Get a read pointer to the underlying memory
     /// Relevant only if this type is SimpleLayout
-    virtual const void* getValuePtr(const void* type) const {return 0;}
+    virtual const void* getValuePtr(const void*) const { throw std::runtime_error("Accessing an invalid datatype: "+name());}
 
     /// Get a write pointer to the underlying memory
     /// Relevant only if this type is SimpleLayout
-    virtual void* getValuePtr(void* type) const {return 0;}
+    virtual void* getValuePtr(void*) const { throw std::runtime_error("Accessing an invalid datatype: "+name());}
 
     /// Get the type_info for this type.
     virtual const std::type_info* type_info() const {return &typeid(this); }
