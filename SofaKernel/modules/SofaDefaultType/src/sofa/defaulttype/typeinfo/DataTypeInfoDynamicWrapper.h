@@ -75,7 +75,7 @@ class SOFA_DEFAULTTYPE_API DataTypeInfoDynamicWrapper : public AbstractTypeInfo,
 public:
     typedef typename Info::DataType DataType;
 
-    static SOFA_DEFAULTTYPE_API AbstractTypeInfo* get() { static DataTypeInfoDynamicWrapper<Info> t; return &t; }
+    static AbstractTypeInfo* get() { static DataTypeInfoDynamicWrapper<Info> t; return &t; }
 
     virtual const TypeInfoId& getBaseTypeId() const { return TypeInfoId::GetTypeId<typename Info::BaseType>(); }
     virtual const TypeInfoId& getValueTypeId() const { return TypeInfoId::GetTypeId<typename Info::ValueType>(); }
