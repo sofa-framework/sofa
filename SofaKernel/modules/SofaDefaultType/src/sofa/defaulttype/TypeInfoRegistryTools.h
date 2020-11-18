@@ -24,6 +24,9 @@
 #include <iostream>
 #include "TypeInfoRegistry.h"
 #include "typeinfo/DataTypeInfoDynamicWrapper.h"
+#include "typeinfo/TypeInfo_Set.h"
+#include "typeinfo/TypeInfo_Vector.h"
+#include "typeinfo/TypeInfo_FixedArray.h"
 
 namespace sofa::defaulttype
 {
@@ -69,6 +72,38 @@ void loadInRepository(const std::string& target)
     TypeInfoRegistry::Set(TypeInfoId::GetTypeId<TT>(),
                           DataTypeInfoDynamicWrapper<DataTypeInfo<TT>>::get(),
                           target);
+}
+
+template<typename Type>
+int loadVectorForType(const std::string& target)
+{
+    loadInRepository<sofa::helper::vector<Type>>(target);
+    loadInRepository<sofa::helper::vector<sofa::helper::vector<Type>>>(target);
+    return 1;
+}
+
+template<typename Type>
+int loadFixedArrayForType(const std::string& target)
+{
+    loadVectorForType<sofa::helper::fixed_array<Type,1>>(target);
+    loadVectorForType<sofa::helper::fixed_array<Type,2>>(target);
+    loadVectorForType<sofa::helper::fixed_array<Type,3>>(target);
+    loadVectorForType<sofa::helper::fixed_array<Type,4>>(target);
+    loadVectorForType<sofa::helper::fixed_array<Type,5>>(target);
+    loadVectorForType<sofa::helper::fixed_array<Type,6>>(target);
+    loadVectorForType<sofa::helper::fixed_array<Type,7>>(target);
+    loadVectorForType<sofa::helper::fixed_array<Type,8>>(target);
+    loadVectorForType<sofa::helper::fixed_array<Type,9>>(target);
+    return 1;
+}
+
+template<typename TT>
+int loadCoreContainersInRepositoryForType(const std::string& target)
+{
+    loadFixedArrayForType<TT>(target);
+    loadVectorForType<TT>(target);
+    loadInRepository<std::set<TT>>(target);
+    return 1;
 }
 
 //////////////////////////////////// A macro to ease the registering of typeinfo to the TypeInfoRegistry ///////////////////
