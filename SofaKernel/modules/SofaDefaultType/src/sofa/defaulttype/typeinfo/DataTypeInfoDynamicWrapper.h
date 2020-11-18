@@ -28,26 +28,6 @@
 
 namespace sofa::defaulttype
 {
-
-/**
- * @brief add a compatibility layer to supper the new existing GetTypeName.
- */
-template<class T>
-class HasGetTypeName
-{
-    typedef char YesType[1];
-    typedef char NoType[2];
-
-    template<typename C> static YesType& test( decltype (&C::GetTypeName) );
-    template<typename C> static NoType& test(...);
-
-public:
-    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
-};
-
-
-
-
 /**
     @brief wrap a DataTypeInfo type_traits in an AbstractTypeInfo
 
