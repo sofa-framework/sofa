@@ -44,16 +44,19 @@ void TypeInfoRegistryTools::dumpRegistryContentToStream(std::ostream& out,
     out << "Target '" << target << "' has " << selected << "/" << types.size()  <<  " types." << std::endl;
     for(auto& info :types)
     {
-        if(type==TypeInfoType::MISSING && info)
-        {            
-            out << " ? " << info->name() << std::endl;
-        }else if(type==TypeInfoType::NAMEONLY && info && !info->ValidInfo())
-        {
-            out << " N " << info->name() << std::endl;
-        }else if(type==TypeInfoType::COMPLETE && info && info->ValidInfo())
+        if(type==TypeInfoType::COMPLETE && info && info->ValidInfo())
         {
             out << " C " << info->name() << std::endl;
         }
+        if(type==TypeInfoType::NAMEONLY && info && !info->ValidInfo())
+        {
+            out << " N " << info->name() << std::endl;
+        }
+        if(type==TypeInfoType::MISSING && !info )
+        {
+            out << " ? " << info->name() << std::endl;
+        }
+
     }
 }
 
