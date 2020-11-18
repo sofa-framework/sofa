@@ -31,23 +31,12 @@
 #include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 #include <sofa/defaulttype/TypeInfoRegistryTools.h>
 
-namespace sofa::defaulttype
+namespace sofa::defaulttype::_typeinfo_vector_
 {
-
-template<class Type>
-void loadVectorForType(const std::string& target)
-{
-    loadInRepository<sofa::helper::vector<Type>>(target);
-    loadInRepository<sofa::helper::vector<sofa::helper::vector<Type>>>(target);
-}
-
-void loadVectorFixedArray(const std::string& target)
-{
-
-}
 
 int fixedPreLoad(const std::string& target)
 {
+    /// Load type info for the most common types.
     loadVectorForType<char>(target);
     loadVectorForType<unsigned char>(target);
     loadVectorForType<short>(target);
@@ -65,8 +54,52 @@ int fixedPreLoad(const std::string& target)
     loadVectorForType<float>(target);
     loadVectorForType<double>(target);
 
+    /// Load fixed array for the most common types.
+    loadFixedArrayForType<char>(target);
+    loadFixedArrayForType<unsigned char>(target);
+    loadFixedArrayForType<short>(target);
+    loadFixedArrayForType<unsigned short>(target);
+    loadFixedArrayForType<int>(target);
+    loadFixedArrayForType<unsigned int>(target);
+    loadFixedArrayForType<long>(target);
+    loadFixedArrayForType<unsigned long>(target);
+    loadFixedArrayForType<long long>(target);
+    loadFixedArrayForType<unsigned long long>(target);
+
+    loadFixedArrayForType<bool>(target);
+    loadFixedArrayForType<std::string>(target);
+
+    loadFixedArrayForType<float>(target);
+    loadFixedArrayForType<double>(target);
+
+    /// Load other types.
     loadVectorForType<sofa::helper::types::RGBAColor>(target);
     loadVectorForType<sofa::defaulttype::BoundingBox>(target);
+
+    loadVectorForType<Vec1d>(target);
+    loadVectorForType<Vec1f>(target);
+    loadVectorForType<Vec1i>(target);
+    loadVectorForType<Vec1u>(target);
+
+    loadVectorForType<Vec2d>(target);
+    loadVectorForType<Vec2f>(target);
+    loadVectorForType<Vec2i>(target);
+    loadVectorForType<Vec2u>(target);
+
+    loadVectorForType<Vec3d>(target);
+    loadVectorForType<Vec3f>(target);
+    loadVectorForType<Vec3i>(target);
+    loadVectorForType<Vec3u>(target);
+
+    loadVectorForType<Vec4d>(target);
+    loadVectorForType<Vec4f>(target);
+    loadVectorForType<Vec4i>(target);
+    loadVectorForType<Vec4u>(target);
+
+    loadVectorForType<Vec6d>(target);
+    loadVectorForType<Vec6f>(target);
+    loadVectorForType<Vec6i>(target);
+    loadVectorForType<Vec6u>(target);
 
     return 0;
 }

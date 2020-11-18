@@ -33,42 +33,28 @@
 namespace sofa::defaulttype
 {
 
-template<class Type>
-void loadContainerForType(const std::string& target)
-{
-    loadInRepository<sofa::helper::fixed_array<Type, 0>>(target);
-    loadInRepository<sofa::helper::fixed_array<Type, 1>>(target);
-    loadInRepository<sofa::helper::fixed_array<Type, 2>>(target);
-    loadInRepository<sofa::helper::fixed_array<Type, 3>>(target);
-    loadInRepository<sofa::helper::fixed_array<Type, 4>>(target);
-    loadInRepository<sofa::helper::fixed_array<Type, 5>>(target);
-    loadInRepository<sofa::helper::fixed_array<Type, 6>>(target);
-    loadInRepository<sofa::helper::fixed_array<Type, 7>>(target);
-    loadInRepository<sofa::helper::fixed_array<Type, 8>>(target);
-    loadInRepository<sofa::helper::fixed_array<Type, 9>>(target);
-}
 
 int fixedPreLoad(const std::string& target)
 {
-    loadContainerForType<char>(target);
-    loadContainerForType<unsigned char>(target);
-    loadContainerForType<short>(target);
-    loadContainerForType<unsigned short>(target);
-    loadContainerForType<int>(target);
-    loadContainerForType<unsigned int>(target);
-    loadContainerForType<long>(target);
-    loadContainerForType<unsigned long>(target);
-    loadContainerForType<long long>(target);
-    loadContainerForType<unsigned long long>(target);
+    loadFixedArrayForType<char>(target);
+    loadFixedArrayForType<unsigned char>(target);
+    loadFixedArrayForType<short>(target);
+    loadFixedArrayForType<unsigned short>(target);
+    loadFixedArrayForType<int>(target);
+    loadFixedArrayForType<unsigned int>(target);
+    loadFixedArrayForType<long>(target);
+    loadFixedArrayForType<unsigned long>(target);
+    loadFixedArrayForType<long long>(target);
+    loadFixedArrayForType<unsigned long long>(target);
 
-    loadContainerForType<bool>(target);
-    loadContainerForType<std::string>(target);
+    loadFixedArrayForType<bool>(target);
+    loadFixedArrayForType<std::string>(target);
 
-    loadContainerForType<float>(target);
-    loadContainerForType<double>(target);
+    loadFixedArrayForType<float>(target);
+    loadFixedArrayForType<double>(target);
 
-    loadContainerForType<sofa::helper::types::RGBAColor>(target);
-    loadContainerForType<sofa::defaulttype::BoundingBox>(target);
+    loadFixedArrayForType<sofa::helper::types::RGBAColor>(target);
+    loadFixedArrayForType<sofa::defaulttype::BoundingBox>(target);
 
     return 0;
 }

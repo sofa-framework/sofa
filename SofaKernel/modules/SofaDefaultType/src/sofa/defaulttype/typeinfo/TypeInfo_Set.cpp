@@ -21,9 +21,42 @@
 ******************************************************************************/
 #include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
 #include <sofa/defaulttype/TypeInfoRegistryTools.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RGBAColor.h>
 
-namespace sofa::defaulttype
+namespace sofa::defaulttype::_typeinfo_set_
 {
+
+template<class Type>
+void loadContainerForType(const std::string& target)
+{
+    loadInRepository<std::set<Type>>(target);
+}
+
+int fixedPreLoad(const std::string& target)
+{
+    loadContainerForType<char>(target);
+    loadContainerForType<unsigned char>(target);
+    loadContainerForType<short>(target);
+    loadContainerForType<unsigned short>(target);
+    loadContainerForType<int>(target);
+    loadContainerForType<unsigned int>(target);
+    loadContainerForType<long>(target);
+    loadContainerForType<unsigned long>(target);
+    loadContainerForType<long long>(target);
+    loadContainerForType<unsigned long long>(target);
+
+    loadContainerForType<bool>(target);
+    loadContainerForType<std::string>(target);
+
+    loadContainerForType<float>(target);
+    loadContainerForType<double>(target);
+
+    loadContainerForType<sofa::helper::types::RGBAColor>(target);
+
+    return 0;
+}
+
+static int allFixedArray = fixedPreLoad(sofa_tostring(SOFA_TARGET));
 
 
 } /// namespace sofa::defaulttype
