@@ -70,12 +70,12 @@ public:
     \endcode
 **/
 template<class Info>
-class SOFA_DEFAULTTYPE_API DataTypeInfoDynamicWrapper : public AbstractTypeInfo
+class SOFA_DEFAULTTYPE_API DataTypeInfoDynamicWrapper : public AbstractTypeInfo, public Info
 {
 public:
     typedef typename Info::DataType DataType;
 
-    static AbstractTypeInfo* get() { static DataTypeInfoDynamicWrapper<Info> t; return &t; }
+    static SOFA_DEFAULTTYPE_API AbstractTypeInfo* get() { static DataTypeInfoDynamicWrapper<Info> t; return &t; }
 
     virtual const TypeInfoId& getBaseTypeId() const { return TypeInfoId::GetTypeId<typename Info::BaseType>(); }
     virtual const TypeInfoId& getValueTypeId() const { return TypeInfoId::GetTypeId<typename Info::ValueType>(); }
