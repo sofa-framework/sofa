@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaMiscForceField_test)
 
 find_package(SofaMiscForceField REQUIRED)
+find_package(SofaTopologyMapping REQUIRED) # Needed by tests at runtime
 
 set(SOURCE_FILES
     MeshMatrixMass_test.cpp
