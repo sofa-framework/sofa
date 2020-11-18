@@ -71,7 +71,7 @@ template<class TDataType>
 struct DataTypeInfo;
 
 template<class TDataType>
-struct SOFA_DEFAULTTYPE_API DefaultDataTypeInfo
+struct DefaultDataTypeInfo
 {
     /// Template parameter.
     typedef TDataType DataType;

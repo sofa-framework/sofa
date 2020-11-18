@@ -70,7 +70,7 @@ public:
     \endcode
 **/
 template<class Info>
-class SOFA_DEFAULTTYPE_API DataTypeInfoDynamicWrapper : public AbstractTypeInfo, public Info
+class DataTypeInfoDynamicWrapper : public AbstractTypeInfo, public Info
 {
 public:
     typedef typename Info::DataType DataType;
