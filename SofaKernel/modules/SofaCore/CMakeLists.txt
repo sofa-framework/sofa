@@ -142,6 +142,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologyElementHandler.h
     ${SRC_ROOT}/topology/TopologyHandler.h
     ${SRC_ROOT}/typeinfo/TypeInfo_ComponentState.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_Tag.h
     ${SRC_ROOT}/typeinfo/TypeInfo_Topology.h
     ${SRC_ROOT}/visual/DisplayFlags.h
     ${SRC_ROOT}/visual/DrawTool.h
@@ -251,6 +252,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/TopologyHandler.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_ComponentState.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_Topology.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_Tag.cpp
     ${SRC_ROOT}/visual/Shader.cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp
     ${SRC_ROOT}/visual/VisualLoop.cpp
