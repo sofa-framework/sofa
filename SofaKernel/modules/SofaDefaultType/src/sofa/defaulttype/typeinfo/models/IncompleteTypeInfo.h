@@ -23,6 +23,7 @@
 
 #include <sofa/defaulttype/config.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
+#include <stdexcept>
 
 namespace sofa::defaulttype
 {
@@ -53,31 +54,30 @@ struct SOFA_DEFAULTTYPE_API IncompleteTypeInfo
     enum { Container       = 0 /**< 1 if this type is a container*/ };
     enum { Size = 0 /**< largest known fixed size for this type, as returned by size() */ };
 
-    static sofa::Size size() { return 0; }
-    static sofa::Size byteSize() { return 0; }
-    static sofa::Size size(const DataType& /*data*/) { return 1; }
+    static sofa::Size size() { throw std::runtime_error("Accessing an invalid datatype: "+name()); }
+    static sofa::Size byteSize() { throw std::runtime_error("Accessing an invalid datatype: "+name()); }
+    static sofa::Size size(const DataType& /*data*/) { throw std::runtime_error("Accessing an invalid datatype: "+name()); }
 
     template <typename T>
-    static void getValue(const DataType& /*data*/, sofa::Size /*index*/, T& /*value*/)
-    {}
+    static void getValue(const DataType& /*data*/, sofa::Size /*index*/, T& /*value*/){ throw std::runtime_error("Accessing an invalid datatype: "+name()); }
 
-    static bool setSize(DataType& /*data*/, sofa::Size /*size*/) { return false; }
+    static bool setSize(DataType& /*data*/, sofa::Size /*size*/) { throw std::runtime_error("Accessing an invalid datatype: "+name()); }
 
     template<typename T>
-    static void setValue(DataType& /*data*/, sofa::Size /*index*/, const T& /*value*/){}
+    static void setValue(DataType& /*data*/, sofa::Size /*index*/, const T& /*value*/){throw std::runtime_error("Accessing an invalid datatype: "+name());}
 
-    static void getValueString(const DataType& /*data*/, sofa::Size /*index*/, std::string& /*value*/){}
+    static void getValueString(const DataType& /*data*/, sofa::Size /*index*/, std::string& /*value*/){throw std::runtime_error("Accessing an invalid datatype: "+name());}
 
     static const void* getValuePtr(const TDataType& data)
     {
         SOFA_UNUSED(data);
-        return nullptr;
+        throw std::runtime_error("Accessing an invalid datatype: "+name());
     }
 
     static void* getValuePtr(TDataType& data)
     {
         SOFA_UNUSED(data);
-        return nullptr;
+        throw std::runtime_error("Accessing an invalid datatype: "+name());
     }
 
     static void setValueString(DataType &data, sofa::Size index, const std::string& value)
@@ -85,6 +85,7 @@ struct SOFA_DEFAULTTYPE_API IncompleteTypeInfo
         SOFA_UNUSED(data);
         SOFA_UNUSED(index);
         SOFA_UNUSED(value);
+        throw std::runtime_error("Accessing an invalid datatype: "+name());
     }
 
     static const std::string name() { return GetTypeName(); }
