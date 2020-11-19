@@ -229,7 +229,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
     Vector3& qn = e2.n();
 
     
-    if(neighbor /*&& pn*qn>0*/)
+    if(neighbor)
         return 0;
 
     const int f1 = e1.flags();
