@@ -137,12 +137,6 @@ int main(int argc, char** argv)
         }
     }
 
-    // Add plugins dir to PluginRepository
-    if ( FileSystem::isDirectory(Utils::getSofaPathPrefix()+"/plugins") )
-    {
-        PluginRepository.addFirstPath(Utils::getSofaPathPrefix()+"/plugins");
-    }
-
     sofa::helper::BackTrace::autodump();
 
 #ifdef WIN32
