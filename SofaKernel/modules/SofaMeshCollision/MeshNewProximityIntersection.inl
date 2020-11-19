@@ -213,7 +213,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
-    const SReal epsilon=std::numeric_limits<SReal>::min();
+    const SReal epsilon=std::numeric_limits<SReal>::epsilon();
 
     alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
     beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
