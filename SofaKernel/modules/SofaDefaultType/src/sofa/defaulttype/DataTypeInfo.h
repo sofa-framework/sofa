@@ -32,20 +32,8 @@
 #include "AbstractTypeInfo.h"
 #include "typeinfo/DataTypeInfo.h"
 //#include "typeinfo/DataTypeInfoDynamicWrapper.h"
-//#include "typeinfo/TypeInfo_Bool.h"
-//#include "typeinfo/TypeInfo_Integer.h"
-//#include "typeinfo/TypeInfo_Mat.h"
-//#include "typeinfo/TypeInfo_Quat.h"
-//#include "typeinfo/TypeInfo_Scalar.h"
-//#include "typeinfo/TypeInfo_Set.h"
-//#include "typeinfo/TypeInfo_Text.h"
 #include "typeinfo/TypeInfo_Vec.h"
-//#include "typeinfo/TypeInfo_FixedArray.h"
-//#include "typeinfo/TypeInfo_BoundingBox.h"
-//#include "typeinfo/TypeInfo_RGBAColor.h"
-//#include "typeinfo/TypeInfo_Vector.h"
 #include "typeinfo/TypeInfo_RigidTypes.h"
-#include "typeinfo/TypeInfo_VecTypes.h"
 
 namespace sofa::defaulttype
 {
