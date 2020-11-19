@@ -6,11 +6,13 @@ set(HEADER_FILES
     src/CImgPlugin/CImgPlugin.h.in
     src/CImgPlugin/SOFACImg.h
     src/CImgPlugin/CImgData.h
+    src/CImgPlugin/typeinfo/TypeInfo_Image.h
     )
 
 set(SOURCE_FILES
     src/CImgPlugin/ImageCImg.cpp
     src/CImgPlugin/initCImgPlugin.cpp
+    src/CImgPlugin/typeinfo/TypeInfo_Image.cpp
     )
 
 add_subdirectory(extlibs/CImg)

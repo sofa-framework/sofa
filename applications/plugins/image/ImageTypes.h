@@ -34,6 +34,10 @@
 
 #include <CImgPlugin/SOFACImg.h>
 
+// visual dependencies
+#include <SofaBaseVisual/VisualModelImpl.h>
+#include <SofaBaseVisual/VisualStyle.h>
+
 #include "VectorVis.h"
 
 //(imports + Image data structure + others) are in here

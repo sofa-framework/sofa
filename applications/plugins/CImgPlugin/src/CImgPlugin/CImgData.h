@@ -7,10 +7,6 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 
-// visual dependencies
-#include <SofaBaseVisual/VisualModelImpl.h>
-#include <SofaBaseVisual/VisualStyle.h>
-
 // helpers
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
@@ -245,8 +241,8 @@ public:
 
     // returns a binary image cutting through 3D input meshes, corresponding to a plane indexed by "coord" along "axis" and inside a bounding box
     // positions are in image coordinates
-    template<typename Real>
-    cimg_library::CImg<bool> get_slicedModels(const unsigned int coord,const unsigned int axis,const Mat<2,3,unsigned int>& ROI,const helper::vector<Vec<3,Real> >& position, const helper::vector< component::visualmodel::VisualModelImpl::VisualTriangle >& triangle, const helper::vector< component::visualmodel::VisualModelImpl::VisualQuad >& quad) const
+    template<typename Real, class TriangleType, class QuadType>
+    cimg_library::CImg<bool> get_slicedModels(const unsigned int coord,const unsigned int axis,const Mat<2,3,unsigned int>& ROI,const helper::vector<Vec<3,Real> >& position, const helper::vector< TriangleType >& triangle, const helper::vector< QuadType >& quad) const
     {
         const unsigned int dim[3]= {ROI[1][0]-ROI[0][0]+1,ROI[1][1]-ROI[0][1]+1,ROI[1][2]-ROI[0][2]+1};
         cimg_library::CImg<bool> ret;
@@ -565,85 +561,7 @@ public:
 
 };
 
-////// infos for Data
-class BaseImageTypeInfo
-{
-public:
-    virtual ~BaseImageTypeInfo(){}
-};
-
-template<class TDataType>
-struct ImageTypeInfo : public BaseImageTypeInfo
-{
-    typedef TDataType DataType;
-    typedef typename DataType::T BaseType;
-    typedef DataTypeInfo<BaseType> BaseTypeInfo;
-    typedef typename BaseTypeInfo::ValueType ValueType;
-    typedef DataTypeInfo<ValueType> ValueTypeInfo;
-
-    enum { ValidInfo       = BaseTypeInfo::ValidInfo       }; ///< 1 if this type has valid infos
-    enum { FixedSize       = 1                             }; ///< 1 if this type has a fixed size  -> always 1 Image
-    enum { ZeroConstructor = 0                             }; ///< 1 if the constructor is equivalent to setting memory to 0  -> I guess so, a default Image is initialzed with nothing
-    enum { SimpleCopy      = 0                             }; ///< 1 if copying the data can be done with a memcpy
-    enum { SimpleLayout    = 0                             }; ///< 1 if the layout in memory is simply N values of the same base type
-    enum { Integer         = 0                             }; ///< 1 if this type uses integer values
-    enum { Scalar          = 0                             }; ///< 1 if this type uses scalar values
-    enum { Text            = 0                             }; ///< 1 if this type uses text values
-    enum { CopyOnWrite     = 1                             }; ///< 1 if this type uses copy-on-write -> it seems to be THE important option not to perform too many copies
-    enum { Container       = 0                             }; ///< 1 if this type is a container
-
-    enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
-
-    static sofa::Size size() { return 1; }
-    static sofa::Size byteSize() { return 1; }
-
-    static sofa::Size size(const DataType& /*data*/) { return 1; }
-
-    static bool setSize(DataType& /*data*/, sofa::Size /*size*/) { return false; }
-
-    template <typename T>
-    static void getValue(const DataType &/*data*/, Index /*index*/, T& /*value*/)
-    {
-        return;
-    }
-
-    template<typename T>
-    static void setValue(DataType &/*data*/, Index /*index*/, const T& /*value*/ )
-    {
-        return;
-    }
-
-    static void getValueString(const DataType &data, Index index, std::string& value)
-    {
-        if (index != 0) return;
-        std::ostringstream o; o << data; value = o.str();
-    }
-
-    static void setValueString(DataType &data, Index index, const std::string& value )
-    {
-        if (index != 0) return;
-        std::istringstream i(value); i >> data;
-    }
-
-    static const void* getValuePtr(const DataType&)
-    {
-        return nullptr;
-    }
-
-    static void* getValuePtr(DataType&)
-    {
-        return nullptr;
-    }
-};
-
-
-template<class T>
-struct DataTypeInfo< Image<T> > : public ImageTypeInfo< Image<T> >
-{
-    static std::string name() { std::ostringstream o; o << "Image<" << DataTypeName<T>::name() << ">"; return o.str(); }
-};
-
-
 }
 }
 
+#include <CImgPlugin/typeinfo/TypeInfo_Image.h>
