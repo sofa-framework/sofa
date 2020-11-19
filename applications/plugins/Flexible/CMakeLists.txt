@@ -113,6 +113,10 @@ set(HEADER_FILES
     types/QuadraticTypes.h
     types/RigidConstraint.h
     types/StrainTypes.h
+    types/typeinfo/TypeInfo_AffineTypes.h
+    types/typeinfo/TypeInfo_DeformationGradientTypes.h
+    types/typeinfo/TypeInfo_QuadraticTypes.h
+    types/typeinfo/TypeInfo_StrainTypes.h
     )
 set(SOURCE_FILES
     deformationMapping/BaseDeformationMapping.cpp
@@ -173,6 +177,10 @@ set(SOURCE_FILES
     types/QuadraticComponents.cpp
     types/RigidConstraint.cpp
     types/StrainTypes.cpp
+    types/typeinfo/TypeInfo_AffineTypes.cpp
+    types/typeinfo/TypeInfo_DeformationGradientTypes.cpp
+    types/typeinfo/TypeInfo_QuadraticTypes.cpp
+    types/typeinfo/TypeInfo_StrainTypes.cpp
     )
 set(README_FILES
     README_Flexible.txt

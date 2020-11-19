@@ -565,28 +565,6 @@ typedef StdQuadraticTypes<3, SReal> Quadratic3Types;
 /// Note: Many scenes use Quadratic as template for 3D double-precision rigid type. Changing it to Quadratic3d would break backward compatibility.
 template<> inline const char* Quadratic3dTypes::Name() { return "Quadratic"; }
 
-// Specialization of the defaulttype::DataTypeInfo type traits template
-
-template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3dTypes::Coord > : public FixedArrayTypeInfo< sofa::defaulttype::Quadratic3dTypes::Coord, sofa::defaulttype::Quadratic3dTypes::Coord::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "QuadraticCoord<" << sofa::defaulttype::Quadratic3dTypes::Coord::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3dTypes::Real>::name() << ">"; return o.str(); }
-};
-template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3dTypes::Deriv > : public FixedArrayTypeInfo< sofa::defaulttype::Quadratic3dTypes::Deriv, sofa::defaulttype::Quadratic3dTypes::Deriv::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "QuadraticDeriv<" << sofa::defaulttype::Quadratic3dTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3dTypes::Real>::name() << ">"; return o.str(); }
-};
-
-// The next line hides all those methods from the doxygen documentation
-/// \cond TEMPLATE_OVERRIDES
-
-
-template<> struct DataTypeName< defaulttype::Quadratic3dTypes::Coord > { static const char* name() { return "Quadratic3dTypes::Coord"; } };
-
-
-
-/// \endcond
-
-
 
 // ====================================================================
 // QuadraticMass
@@ -597,24 +575,7 @@ typedef DeformableFrameMass<3, StdQuadraticTypes<3,double>::deriv_total_size, do
 typedef DeformableFrameMass<3, StdQuadraticTypes<3,SReal>::deriv_total_size, SReal> Quadratic3Mass;
 
 
-
-// The next line hides all those methods from the doxygen documentation
-/// \cond TEMPLATE_OVERRIDES
-
-
-template<> struct DataTypeName< defaulttype::Quadratic3dMass > { static const char* name() { return "Quadratic3dMass"; } };
-
-
-/// \endcond
-
-
-
 } // namespace defaulttype
-
-
-
 } // namespace sofa
-
-
-
 #endif
+#include <Flexible/types/typeinfo/TypeInfo_QuadraticTypes.h>

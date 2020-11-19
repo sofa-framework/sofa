@@ -410,63 +410,20 @@ public:
 
 };
 
-
-
 typedef StdAffineTypes<3, double> Affine3dTypes;
-
-// Specialization of the defaulttype::DataTypeInfo type traits template
-template<> struct DataTypeInfo< sofa::defaulttype::Affine3dTypes::Coord > : public FixedArrayTypeInfo< sofa::defaulttype::Affine3dTypes::Coord, sofa::defaulttype::Affine3dTypes::Coord::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "AffineCoord<" << sofa::defaulttype::Affine3dTypes::Coord::total_size << "," << DataTypeName<sofa::defaulttype::Affine3dTypes::Real>::name() << ">"; return o.str(); }
-};
-template<> struct DataTypeInfo< sofa::defaulttype::Affine3dTypes::Deriv > : public FixedArrayTypeInfo< sofa::defaulttype::Affine3dTypes::Deriv, sofa::defaulttype::Affine3dTypes::Deriv::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "AffineDeriv<" << sofa::defaulttype::Affine3dTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Affine3dTypes::Real>::name() << ">"; return o.str(); }
-};
-
 typedef Affine3dTypes Affine3Types;
 
 /// Note: Many scenes use Affine as template for 3D double-precision rigid type. Changing it to Affine3d would break backward compatibility.
 template<> inline const char* Affine3dTypes::Name() { return "Affine"; }
 
-// The next line hides all those methods from the doxygen documentation
-/// \cond TEMPLATE_OVERRIDES
-
-
-template<> struct DataTypeName< defaulttype::Affine3dTypes::Coord > { static const char* name() { return "Affine3dTypes::Coord"; } };
-
-
-
-/// \endcond
-
-
-
-
-// ====================================================================
-// AffineMass
-
-
 typedef DeformableFrameMass<3, StdAffineTypes<3,double>::deriv_total_size, double> Affine3dMass;
 typedef DeformableFrameMass<3, StdAffineTypes<3,float>::deriv_total_size, float> Affine3fMass;
 typedef DeformableFrameMass<3, StdAffineTypes<3,SReal>::deriv_total_size,SReal> Affine3Mass;
 
-
-// The next line hides all those methods from the doxygen documentation
-/// \cond TEMPLATE_OVERRIDES
-template<> struct DataTypeName< defaulttype::Affine3dMass > { static const char* name() { return "Affine3dMass"; } };
-template<> struct DataTypeName< defaulttype::Affine3fMass > { static const char* name() { return "Affine3fMass"; } };
-/// \endcond
-
-
-
 } // namespace defaulttype
-
-
-
-
-
 } // namespace sofa
 
-
+#include <Flexible/types/typeinfo/TypeInfo_AffineTypes.h>
 
 #endif
+
