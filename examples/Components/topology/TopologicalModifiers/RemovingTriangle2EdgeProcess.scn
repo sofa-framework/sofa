@@ -4,6 +4,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaMiscFem'/>
     <RequiredPlugin name='SofaMiscTopology'/>
+    <RequiredPlugin name='SofaTopologyMapping'/>  
     
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline verbose="0" />

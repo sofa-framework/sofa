@@ -36,7 +36,7 @@ struct SetTypeInfo
     typedef typename BaseTypeInfo::ValueType ValueType;
     typedef DataTypeInfo<ValueType> ValueTypeInfo;
 
-    enum { ValidInfo       = 1                             };
+    enum { ValidInfo       = BaseTypeInfo::ValidInfo       };
     enum { FixedSize       = 0                             };
     enum { ZeroConstructor = 0                             };
     enum { SimpleCopy      = 0                             };
