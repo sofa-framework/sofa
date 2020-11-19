@@ -25,6 +25,7 @@
 #include <cstring>
 #include <algorithm>
 #include <numeric>
+#include <cmath>
 
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;

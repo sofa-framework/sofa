@@ -24,6 +24,7 @@
 
 #ifndef SOFA_NO_OPENGL
 
+#include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
