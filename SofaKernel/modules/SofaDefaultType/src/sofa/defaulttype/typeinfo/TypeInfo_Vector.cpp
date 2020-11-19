@@ -101,6 +101,22 @@ int fixedPreLoad(const std::string& target)
     loadVectorForType<Vec6i>(target);
     loadVectorForType<Vec6u>(target);
 
+    loadVectorForType<Rigid2fTypes::Coord>(target);
+    loadVectorForType<Rigid2fTypes::Deriv>(target);
+    loadVectorForType<Rigid3fTypes::Coord>(target);
+    loadVectorForType<Rigid3fTypes::Deriv>(target);
+
+    loadVectorForType<Rigid2dTypes::Coord>(target);
+    loadVectorForType<Rigid2dTypes::Deriv>(target);
+    loadVectorForType<Rigid3dTypes::Coord>(target);
+    loadVectorForType<Rigid3dTypes::Deriv>(target);
+
+    loadVectorForType<Rigid2fMass>(target);
+    loadVectorForType<Rigid2dMass>(target);
+
+    loadVectorForType<Rigid3fMass>(target);
+    loadVectorForType<Rigid3dMass>(target);
+
     return 0;
 }
 
