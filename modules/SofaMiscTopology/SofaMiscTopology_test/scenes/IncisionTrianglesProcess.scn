@@ -3,6 +3,8 @@
     <RequiredPlugin name='SofaMiscCollision'/>
     <RequiredPlugin name='SofaMiscTopology'/>
     <RequiredPlugin name='SofaMiscFem'/>
+    <RequiredPlugin name='SofaTopologyMapping'/>
+    
     <VisualStyle displayFlags="showVisual showWireframe" />
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
