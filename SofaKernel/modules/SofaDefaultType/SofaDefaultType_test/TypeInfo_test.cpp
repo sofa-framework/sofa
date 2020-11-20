@@ -44,18 +44,13 @@ using sofa::defaulttype::TypeInfoType;
 
 #include "DataMockup.h"
 
+class MyType {};
+
 TEST(TypeInfo, type_registration_with_implicit_declaration)
 {
-    DataMockup<double> dataDouble;
-    ASSERT_NE(dataDouble.getTypeInfo(), nullptr);
-    ASSERT_FALSE(dataDouble.getTypeInfo()->ValidInfo());
-    EXPECT_EQ(dataDouble.getTypeInfo()->name(), "double");
-    EXPECT_EQ(dataDouble.getTypeInfo()->getCompilationTarget(), "SofaDefaultType");
-
-    DataMockup<int> dataInt;
-    ASSERT_NE(dataInt.getTypeInfo(), nullptr);
-    ASSERT_FALSE(dataInt.getTypeInfo()->ValidInfo());
-    EXPECT_EQ(dataInt.getTypeInfo()->name(), "int");
-    EXPECT_EQ(dataInt.getTypeInfo()->getCompilationTarget(), "SofaDefaultType");
+    DataMockup<MyType> aNewDataWithoutRegistration;
+    ASSERT_NE(aNewDataWithoutRegistration.getTypeInfo(), nullptr);
+    ASSERT_FALSE(aNewDataWithoutRegistration.getTypeInfo()->ValidInfo());
+    EXPECT_EQ(aNewDataWithoutRegistration.getTypeInfo()->getCompilationTarget(), "SofaDefaultType");
 }
 

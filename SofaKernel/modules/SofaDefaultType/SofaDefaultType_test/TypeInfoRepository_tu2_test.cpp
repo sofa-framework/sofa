@@ -90,10 +90,4 @@ TEST(TypeInfoRegistryTu2, external_registration)
     EXPECT_EQ(dataDouble.getTypeInfo()->name(), "d");
     ASSERT_TRUE(dataDouble.getTypeInfo()->ValidInfo());
     EXPECT_EQ(dataDouble.getTypeInfo()->getCompilationTarget(), "TranslationUnit2");
-
-    DataMockup<int> dataInt;
-    ASSERT_NE(dataInt.getTypeInfo(), nullptr);
-    ASSERT_FALSE(dataInt.getTypeInfo()->ValidInfo());
-    EXPECT_EQ(dataInt.getTypeInfo()->name(),"int");
-    EXPECT_EQ(dataInt.getTypeInfo()->getCompilationTarget(),"SofaDefaultType");
 }
