@@ -63,82 +63,84 @@ PyObject *GetDataValuePython(BaseData* data)
 {
     /// depending on the data type, we return the good python type (int, float, string, array, ...)
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-    const void* valueVoidPtr = data->getValueVoidPtr();
-
-    if (!typeinfo->Container())
+    if( typeinfo->ValidInfo() )
     {
-        /// this type is NOT a vector; return directly the proper native type
-        if (typeinfo->Text())
+        const void* valueVoidPtr = data->getValueVoidPtr();
+        if (!typeinfo->Container())
         {
-            return PyString_FromString(typeinfo->getTextValue(valueVoidPtr,0).c_str());
-        }
-        if (typeinfo->Scalar())
-        {
-            return PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,0));
-        }
-        if (typeinfo->Integer())
-        {
-            return PyInt_FromLong((long)typeinfo->getIntegerValue(valueVoidPtr,0));
-        }
+            /// this type is NOT a vector; return directly the proper native type
+            if (typeinfo->Text())
+            {
+                return PyString_FromString(typeinfo->getTextValue(valueVoidPtr,0).c_str());
+            }
+            if (typeinfo->Scalar())
+            {
+                return PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,0));
+            }
+            if (typeinfo->Integer())
+            {
+                return PyInt_FromLong((long)typeinfo->getIntegerValue(valueVoidPtr,0));
+            }
 
-        /// This type is not yet supported, the fallback scenario is to convert it using the python str() function and emit
-        /// a warning message.
-        msg_warning(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
-        return PyString_FromString(data->getValueString().c_str());
-    }
-    else
-    {
-        int rowWidth = typeinfo->size();
-        int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
-
-        /// this is a vector; return a python list of the corresponding type (ints, scalars or strings)
-        if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
-        {
-            SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" )
+            /// This type is not yet supported, the fallback scenario is to convert it using the python str() function and emit
+            /// a warning message.
+            msg_warning(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
             return PyString_FromString(data->getValueString().c_str());
         }
-
-        PyObject *rows = PyList_New(nbRows);
-        for (int i=0; i<nbRows; i++)
+        else
         {
-            PyObject *row = PyList_New(rowWidth);
-            for (int j=0; j<rowWidth; j++)
-            {
-                /// build each value of the list
-                if (typeinfo->Text())
-                {
-                    PyList_SetItem(row,j,PyString_FromString(typeinfo->getTextValue(valueVoidPtr,i*rowWidth+j).c_str()));
-                }
-                else if (typeinfo->Scalar())
-                {
-                    PyList_SetItem(row,j,PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,i*rowWidth+j)));
-                }
-                else if (typeinfo->Integer())
-                {
-                    PyList_SetItem(row,j,PyInt_FromLong((long)typeinfo->getIntegerValue(valueVoidPtr,i*rowWidth+j)));
-                }
-                else
-                {
-                    //TODO(PR:304) If this should not happen (see comment later) then we should rise an exception instead of providing a fallback scenario.
-                    /// this type is not yet supported (should not happen)
-                    SP_MESSAGE_ERROR( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value (should not come here!)" )
-                }
-            }
-            PyList_SetItem(rows,i,row);
-        }
+            int rowWidth = typeinfo->size();
+            int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
 
-        return rows;
+            /// this is a vector; return a python list of the corresponding type (ints, scalars or strings)
+            if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
+            {
+                SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" )
+                        return PyString_FromString(data->getValueString().c_str());
+            }
+
+            PyObject *rows = PyList_New(nbRows);
+            for (int i=0; i<nbRows; i++)
+            {
+                PyObject *row = PyList_New(rowWidth);
+                for (int j=0; j<rowWidth; j++)
+                {
+                    /// build each value of the list
+                    if (typeinfo->Text())
+                    {
+                        PyList_SetItem(row,j,PyString_FromString(typeinfo->getTextValue(valueVoidPtr,i*rowWidth+j).c_str()));
+                    }
+                    else if (typeinfo->Scalar())
+                    {
+                        PyList_SetItem(row,j,PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,i*rowWidth+j)));
+                    }
+                    else if (typeinfo->Integer())
+                    {
+                        PyList_SetItem(row,j,PyInt_FromLong((long)typeinfo->getIntegerValue(valueVoidPtr,i*rowWidth+j)));
+                    }
+                    else
+                    {
+                        //TODO(PR:304) If this should not happen (see comment later) then we should rise an exception instead of providing a fallback scenario.
+                        /// this type is not yet supported (should not happen)
+                        SP_MESSAGE_ERROR( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value (should not come here!)" )
+                    }
+                }
+                PyList_SetItem(rows,i,row);
+            }
+
+            return rows;
+        }
     }
 
     //TODO(PR:304) If this should not happen (see comment later) then we should rise an exception instead of providing a fallback scenario.
     /// default (should not happen)...
     SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value (should not come here!)" )
-    return PyString_FromString(data->getValueString().c_str());
+            return PyString_FromString(data->getValueString().c_str());
 }
 
 
 static int SetDataValuePythonList(BaseData* data, PyObject* args,
-                            const int rowWidth, int nbRows) {
+                                  const int rowWidth, int nbRows) {
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
 
     /// If list is empty we can safely exit.
@@ -167,7 +169,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
                     /// resizing was not possible
                     /// only a warning and not an exception because we have a fallback solution.
                     SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
-                        if (newNbRows<nbRows)
+                            if (newNbRows<nbRows)
                             nbRows = newNbRows;
                 }
                 else
@@ -189,7 +191,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
             {
                 /// only a warning and not an exception because we have a fallback solution.
                 SP_MESSAGE_WARNING( "row "<<i<<" size mismatch for data \""<<data->getName()<<"\"" )
-                    if (PyList_Size(row)<size)
+                        if (PyList_Size(row)<size)
                         size = PyList_Size(row);
             }
 
@@ -271,7 +273,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
                     /// resizing was not possible
                     /// only a warning; do not raise an exception...
                     SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
-                        if (newSize<size)
+                            if (newSize<size)
                             size = newSize;
                 }
                 else
@@ -756,7 +758,7 @@ static PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
 
     /// default: no owner or owner of unknown type
     SP_MESSAGE_WARNING( "Data_getLinkName the Data has no known owner. Returning its own name." )
-    return PyString_FromString(data->getName().c_str());
+            return PyString_FromString(data->getName().c_str());
 }
 
 
@@ -929,11 +931,11 @@ SP_CLASS_ATTR(Data,value)
 SP_CLASS_ATTRS_END
 
 namespace {
-static struct patch {
-    patch() {
-        SP_SOFAPYTYPEOBJECT(Data).tp_str = Data_str; /// adding __str__ function
-    }
-} patcher;
+    static struct patch {
+        patch() {
+            SP_SOFAPYTYPEOBJECT(Data).tp_str = Data_str; /// adding __str__ function
+        }
+    } patcher;
 }
 
 SP_CLASS_TYPE_BASE_PTR_ATTR(Data, BaseData);
