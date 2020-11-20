@@ -238,11 +238,11 @@ void MeshGenerationFromPolyhedron<DataTypes>::doUpdate()
     //    Mesh generation random or deterministic
     if (constantMeshProcess.getValue())
     {
-        CGAL::default_random = CGAL::Random(meshingSeed.getValue());
+        CGAL::get_default_random() = CGAL::Random(meshingSeed.getValue());
     }
     else
     {
-        CGAL::default_random = CGAL::Random();
+        CGAL::get_default_random() = CGAL::Random();
     }
 
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,6,0)
@@ -403,7 +403,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::doUpdate()
     msg_info() << "Generated mesh: " << nbp << " points, " << nbe << " tetrahedra.";
 
     frozen.setValue(true);
-    meshingSeed.setValue(CGAL::default_random.get_seed());
+    meshingSeed.setValue(CGAL::get_default_random().get_seed());
 }
 
 template <class DataTypes>

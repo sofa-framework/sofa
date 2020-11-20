@@ -347,7 +347,8 @@ void mycudaThreadSynchronize()
 {
     if (!cudaInitCalled) return; // no need to synchronize if no-one used cuda yet
 
-    cudaThreadSynchronize();
+    cudaDeviceSynchronize();
+//    cudaThreadSynchronize();
 }
 
 #if CUDA_VERSION >= 4000
@@ -363,7 +364,8 @@ void mycudaDeviceSynchronize()
 void mycudaCheckError(const char* src)
 {
     if (!cudaInitCalled) return; // no need to check errors if no-one used cuda yet
-    cudaThreadSynchronize();
+//    cudaThreadSynchronize();
+    cudaDeviceSynchronize();
     cudaCheck(cudaGetLastError(),src);
 }
 

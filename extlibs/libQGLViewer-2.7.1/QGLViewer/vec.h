@@ -92,6 +92,9 @@ public:
   /*! Standard constructor with the x, y and z values. */
   Vec(qreal X, qreal Y, qreal Z) : x(X), y(Y), z(Z) {}
 
+  /*! Standard constructor with reference (to avoid warnings) */
+  Vec(const Vec & v) : x(v.x), y(v.y), z(v.z) {}
+
   /*! Universal explicit converter from any class to Vec. You can use your own
 vector class everywhere a \c const \c Vec& parameter is required, as long as it
 implements the \c operator[ ]:

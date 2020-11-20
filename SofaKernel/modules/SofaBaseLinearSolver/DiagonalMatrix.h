@@ -459,23 +459,23 @@ public:
     void clearRow(Index i) override
     {
         Index bi=0; traits::split_row_index(i, bi);
-        for (Index bj=0; bj<LC; ++bj)
+        for (Index bj=0; bj<(Index) LC; ++bj)
             traits::v(data[i], bi, bj) = (Real)0;
     }
 
     void clearCol(Index j) override
     {
         Index bj=0; traits::split_col_index(j, bj);
-        for (Index bi=0; bi<LC; ++bi)
+        for (Index bi=0; bi<(Index) LC; ++bi)
             traits::v(data[j], bi, bj) = (Real)0;
     }
 
     void clearRowCol(Index i) override
     {
         Index bi=0; traits::split_row_index(i, bi);
-        for (Index bj=0; bj<LC; ++bj)
+        for (Index bj=0; bj<(Index) LC; ++bj)
             traits::v(data[i], bi, bj) = (Real)0;
-        for (Index bj=0; bj<LC; ++bj)
+        for (Index bj=0; bj<(Index) LC; ++bj)
             traits::v(data[i], bj, bi) = (Real)0;
     }
 
@@ -504,10 +504,10 @@ public:
         for (Index b=0; b<nblocs; b++)
         {
             Index i = b*LC;
-            for (Index bj=0; bj<LC; bj++)
+            for (Index bj=0; bj<(defaulttype::BaseMatrix::Index)LC; bj++)
             {
                 Real2 r = 0;
-                for (Index bi=0; bi<LC; bi++)
+                for (Index bi=0; bi<(defaulttype::BaseMatrix::Index)LC; bi++)
                 {
                     r += (Real2)(traits::v(data[b],bi,bj) * v[i+bi]);
                 }

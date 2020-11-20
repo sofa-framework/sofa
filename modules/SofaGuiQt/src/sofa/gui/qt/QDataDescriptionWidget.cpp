@@ -23,6 +23,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/helper/NameDecoder.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -74,7 +75,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
         addRow(boxLayout, "Name", object->getName(), 0);
         addRow(boxLayout, "Class", object->getClassName(), 1);
 
-        std::string namespacename = core::objectmodel::BaseClass::decodeNamespaceName(typeid(*object));
+        std::string namespacename = sofa::helper::NameDecoder::decodeNamespaceName(typeid(*object));
 
         int nextRow = 2;
         if (!namespacename.empty())

@@ -162,10 +162,4 @@ void Polygone::initNormal()
 	_c = _normal*vertex(0) ;
 }
 
-std::ostream& vrender::operator<<(std::ostream& o,const Feedback3DColor& f)
-{
-	o << "(" << f.pos() << ") + (" << f.red() << "," << f.green() << "," << f.blue() << "," << f.alpha() << ")" << endl ;
-	return o ;
-}
-
 

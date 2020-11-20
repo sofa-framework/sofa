@@ -67,7 +67,7 @@ bool ImageCImg::load(std::string filename)
     {
         cimgImage.load(filename.c_str());
     }
-    catch(cimg_library::CImgIOException e)
+    catch(cimg_library::CImgIOException & e)
     {
         msg_error() << "Caught exception while loading: " << e.what();
         return false;
@@ -157,7 +157,7 @@ bool ImageCImg::save(std::string filename, int /* compression_level */)
                 for(unsigned int c=0 ; c < channelsNb ; c++)
                     cimgImage[xy + c*totalSize] = data[xy * channelsNb + c];
     }
-    catch (cimg_library::CImgIOException e)
+    catch (cimg_library::CImgIOException & e)
     {
         msg_error() << "Caught exception while saving: " << e.what();
         res = false;
@@ -180,7 +180,7 @@ bool ImageCImg::save(std::string filename, int /* compression_level */)
 
         res = true;
     }
-    catch(cimg_library::CImgIOException e)
+    catch(cimg_library::CImgIOException & e)
     {
         msg_error() << "Caught exception while saving: " << e.what();
         res = false;

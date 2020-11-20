@@ -258,7 +258,8 @@ LogAndSign BandLUMatrix::LogDeterminant() const
    Real* a = store; int w = m1+1+m2; LogAndSign sum; int i = nrows;
    // while (i--) { sum *= *a; a += w; }
    if (i) for (;;) { sum *= *a; if (!(--i)) break; a += w; }
-   if (!d) sum.ChangeSign(); return sum;
+   if (!d) sum.ChangeSign();
+   return sum;
 }
 
 GeneralMatrix* BandMatrix::MakeSolver()

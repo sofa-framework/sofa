@@ -476,11 +476,12 @@ void copySubImage( CImg<T>& largeImage, const CImg<T>& subImage, unsigned posX, 
 //! Save image as an INRIMAGE-4 file \overloading.
 template<typename T>
 const CImg<T>& save_inr(const CImg<T>& cimg, std::FILE *const file, const char *const filename, const float *const voxel_size, const float *const translation) {
-      if (!file && !filename)
+    if (!file && !filename)
         throw CImgArgumentException("save_inr(): Specified filename is (null).");
-      if (cimg.is_empty())
-        throw CImgInstanceException("save_inr(): Empty instance, for file '%s'.",
-                                    filename?filename:"(FILE*)");
+
+    if (cimg.is_empty()) {
+        throw CImgInstanceException("save_inr(): Empty instance, for file '%s'.",filename?filename:"(FILE*)");
+    }
 
 	int inrpixsize=-1;
 	const char *inrtype = "unsigned fixed\nPIXSIZE=8 bits\nSCALE=2**0";

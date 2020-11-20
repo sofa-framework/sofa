@@ -67,7 +67,7 @@ void MeshMatrixMass<CudaVec3fTypes, float>::copyVertexMass()
     helper::vector<MassType>& vertexInf = *(d_vertexMassInfo.beginEdit());
     data.vMass.resize(m_topology->getNbPoints());
 
-    for (int i=0; i<this->m_topology->getNbPoints(); ++i)
+    for (unsigned i=0; i<this->m_topology->getNbPoints(); ++i)
         data.vMass[i] = (float) vertexInf[i];
 
     d_vertexMassInfo.endEdit();
@@ -116,7 +116,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::copyVertexMass()
     helper::vector<MassType>& vertexInf = *(d_vertexMassInfo.beginEdit());
     data.vMass.resize(m_topology->getNbPoints());
 
-    for (int i=0; i<this->m_topology->getNbPoints(); ++i)
+    for (unsigned i=0; i<this->m_topology->getNbPoints(); ++i)
         data.vMass[i] = (float) vertexInf[i];
 
     d_vertexMassInfo.endEdit();
@@ -165,7 +165,7 @@ void MeshMatrixMass<CudaVec1fTypes, float>::copyVertexMass()
     helper::vector<MassType>& vertexInf = *(d_vertexMassInfo.beginEdit());
     data.vMass.resize(m_topology->getNbPoints());
 
-    for (int i=0; i<this->m_topology->getNbPoints(); ++i)
+    for (unsigned i=0; i<this->m_topology->getNbPoints(); ++i)
         data.vMass[i] = (float) vertexInf[i];
 
     d_vertexMassInfo.endEdit();

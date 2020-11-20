@@ -130,7 +130,7 @@ __global__ void FixedConstraintCudaRigid3t_projectResponseIndexed_kernel(int siz
 
 void FixedConstraintCuda1f_projectResponseContiguous(unsigned int size, void* dx)
 {
-    dim3 threads(BSIZE,1);
+    //dim3 threads(BSIZE,1);
     //dim3 grid((size+BSIZE-1)/BSIZE,1);
     //FixedConstraintCuda3t_projectResponseContiguous_kernel<float><<< grid, threads >>>(size, (CudaVec3<float>*)dx);
     //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
@@ -140,7 +140,7 @@ void FixedConstraintCuda1f_projectResponseContiguous(unsigned int size, void* dx
 
 void FixedConstraintCuda3f_projectResponseContiguous(unsigned int size, void* dx)
 {
-    dim3 threads(BSIZE,1);
+    //dim3 threads(BSIZE,1);
     //dim3 grid((size+BSIZE-1)/BSIZE,1);
     //FixedConstraintCuda3t_projectResponseContiguous_kernel<float><<< grid, threads >>>(size, (CudaVec3<float>*)dx);
     //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
@@ -150,7 +150,7 @@ void FixedConstraintCuda3f_projectResponseContiguous(unsigned int size, void* dx
 
 void FixedConstraintCuda3f1_projectResponseContiguous(unsigned int size, void* dx)
 {
-    dim3 threads(BSIZE,1);
+    //dim3 threads(BSIZE,1);
     //dim3 grid((size+BSIZE-1)/BSIZE,1);
     //FixedConstraintCuda3t1_projectResponseContiguous_kernel<float><<< grid, threads >>>(size, (CudaVec4<float>*)dx);
     //dim3 grid((4*size+BSIZE-1)/BSIZE,1);
@@ -196,7 +196,7 @@ void FixedConstraintCudaRigid3f_projectResponseIndexed(unsigned int size, const 
 
 void FixedConstraintCuda3d_projectResponseContiguous(unsigned int size, void* dx)
 {
-    dim3 threads(BSIZE,1);
+    //dim3 threads(BSIZE,1);
     //dim3 grid((size+BSIZE-1)/BSIZE,1);
     //FixedConstraintCuda3t_projectResponseContiguous_kernel<double><<< grid, threads >>>(size, (CudaVec3<double>*)dx);
     //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
@@ -206,7 +206,7 @@ void FixedConstraintCuda3d_projectResponseContiguous(unsigned int size, void* dx
 
 void FixedConstraintCuda3d1_projectResponseContiguous(unsigned int size, void* dx)
 {
-    dim3 threads(BSIZE,1);
+    //dim3 threads(BSIZE,1);
     //dim3 grid((size+BSIZE-1)/BSIZE,1);
     //FixedConstraintCuda3t1_projectResponseContiguous_kernel<double><<< grid, threads >>>(size, (CudaVec4<double>*)dx);
     //dim3 grid((4*size+BSIZE-1)/BSIZE,1);

@@ -149,15 +149,6 @@ double Vector3::infNorm() const
   return max(max(fabs(_xyz[0]),fabs(_xyz[1])),fabs(_xyz[2])) ;
 }
 
-
-// -----------------------------------------------------------------------------
-//! Out stream override: prints the 3 vector components
-std::ostream& vrender::operator<< (std::ostream& out,const Vector3& u)
-{
-  out << u[0] << " " << u[1] << " " << u[2];
-  return ( out );
-}
-
 Vector3 Vector3::mini(const Vector3& v1,const Vector3& v2)
 {
   return Vector3(min(v1[0],v2[0]),min(v1[1],v2[1]),min(v1[2],v2[2])) ;

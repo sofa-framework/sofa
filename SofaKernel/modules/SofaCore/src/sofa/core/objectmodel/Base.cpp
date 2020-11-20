@@ -454,7 +454,6 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
             if (!dataVec[d]->setParent(value))
             {
                 BaseData* data = nullptr;
-                BaseLink* bl = nullptr;
 
                 PathResolver::FindBaseDataFromPath(dataVec[d] , value);
 
@@ -506,9 +505,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
             std::stringstream tmp;
             tmp << "  " << linkVec[l]->getLinkedPath(i) << " = ";
             Base* b = linkVec[l]->getLinkedBase(i);
-            BaseData* d = linkVec[l]->getLinkedData(i);
             if (b) tmp << b->getTypeName() << " " << b->getName();
-            if (d) tmp << " . " << d->getValueTypeString() << " " << d->getName();
             msg_info() << tmp.str();
         }
     }
