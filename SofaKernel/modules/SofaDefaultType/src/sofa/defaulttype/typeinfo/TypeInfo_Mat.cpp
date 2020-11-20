@@ -23,7 +23,7 @@
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include <sofa/defaulttype/TypeInfoRegistryTools.h>
-
+#include <sofa/defaulttype/TemplatesAliases.h>
 namespace sofa::defaulttype
 {
 
@@ -36,6 +36,16 @@ REGISTER_TYPE_INFO_CREATOR(Mat1x1f);
 REGISTER_TYPE_INFO_CREATOR(Mat2x2f);
 REGISTER_TYPE_INFO_CREATOR(Mat3x3f);
 REGISTER_TYPE_INFO_CREATOR(Mat4x4f);
+
+static RegisterTemplateAlias Matrix1fAlias("Mat<1,1,float>", DataTypeInfo<Mat1x1f>::name(), true);
+static RegisterTemplateAlias Matrix2fAlias("Mat<2,2,float>", DataTypeInfo<Mat2x2f>::name(), true);
+static RegisterTemplateAlias Matrix3fAlias("Mat<3,3,float>", DataTypeInfo<Mat3x3f>::name(), true);
+static RegisterTemplateAlias Matrix4fAlias("Mat<4,4,float>", DataTypeInfo<Mat4x4f>::name(), true);
+
+static RegisterTemplateAlias Matrix1dAlias("Mat<1,1,double>", DataTypeInfo<Mat1x1d>::name(), true);
+static RegisterTemplateAlias Matrix2dAlias("Mat<2,2,double>", DataTypeInfo<Mat2x2d>::name(), true);
+static RegisterTemplateAlias Matrix3dAlias("Mat<3,3,double>", DataTypeInfo<Mat3x3d>::name(), true);
+static RegisterTemplateAlias Matrix4dAlias("Mat<4,4,double>", DataTypeInfo<Mat4x4d>::name(), true);
 
 } /// namespace sofa::defaulttype
 
