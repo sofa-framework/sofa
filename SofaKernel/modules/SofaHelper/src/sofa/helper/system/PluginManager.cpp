@@ -370,17 +370,31 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
     return std::string();
 }
 
-bool PluginManager::pluginIsLoaded(const std::string& plugin)
+bool PluginManager::pluginIsLoaded(const std::string& pluginName)
 {
-    std::string pluginPath = plugin;
+    std::string pluginPath = pluginName;
 
-    if (!FileSystem::isFile(plugin)) {
-        pluginPath = findPlugin(plugin);
+    /// If we are not providing a filename then we have either to iterate in the plugin
+    /// map to check no plugin has the same name or check in there is no accessible path
+    /// in the plugin repository matching the pluginName
+    if (!FileSystem::isFile(pluginName))
+    {
+        /// Here is the iteration in the loaded plugin map
+        for(auto k : m_pluginMap)
+        {
+            if(pluginName == k.second.getModuleName())
+                return true;
+        }
+
+        /// At this point we have not found a loaded plugin, we try to
+        /// explore if the filesystem can help.
+        pluginPath = findPlugin(pluginName);
     }
 
+    /// Check that the path (either provided by user or through the call to findPlugin()
+    /// leads to a loaded plugin.
     return m_pluginMap.find(pluginPath) != m_pluginMap.end();
 }
-
 
 bool PluginManager::checkDuplicatedPlugin(const Plugin& plugin, const std::string& pluginPath)
 {
