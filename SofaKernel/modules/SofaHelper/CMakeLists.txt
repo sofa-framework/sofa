@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaHelper)
 
 # DEPENDENCIES
+# find_package(Sofa.Types REQUIRED)
+
 # Boost
 sofa_find_package(Boost REQUIRED
     COMPONENTS system filesystem program_options
@@ -356,7 +358,7 @@ if(MSVC)
 endif()
 
 # DEPENDENCY LINKS AND INCLUDE DIRS
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaTypes)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Types)
 
 # System libs
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
