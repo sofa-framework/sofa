@@ -153,6 +153,7 @@ std::vector<std::string> getTemplatesFromString(const std::string& input)
         }else{
             currentType += token;
         }
+
     }
     if(!currentType.empty())
         templateNames.push_back(currentType);
@@ -180,6 +181,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     ///  (4) rebuild the template string by joining them all with ','.
     std::vector<std::string> usertemplatenames = getTemplatesFromString(usertemplatename);
     std::vector<std::string> deprecatedTemplates;
+    std::vector<std::string> replacementTemplates;
     for(auto& name : usertemplatenames)
     {
         const sofa::defaulttype::TemplateAlias* alias;
@@ -189,16 +191,21 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             /// This alias results in "undefined" behavior.
             if( alias->second )
             {
+                /// Add the deprecation message.
                 deprecatedTemplates.push_back("Template '"+name+"' is deprecated and has been replaced by "+alias->first+". to remove this message you need to update your scene file.");
             }
-
-            name = alias->first;
+            /// Add the template replacement name.
+            replacementTemplates.push_back(alias->first);
+        }
+        else
+        {
+            /// Add the original name as there is no template.
+            replacementTemplates.push_back(name);
         }
     }
-    std::string templatename = sofa::helper::join(usertemplatenames, ",");
+    std::string templatename = sofa::helper::join(replacementTemplates, ",");
     std::string userresolved = templatename; // Copy in case we change for the default one
     ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     // In order to get the errors from the creators only, we save the current errors at this point
     // and we clear them. Once we extracted the errors from the creators, we put push them back.
@@ -329,10 +336,10 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     }
 
     /// The object has been created, but not with the template given by the user
-    if (!templatename.empty() && object->getTemplateName() != userresolved)
+    if (!userresolved.empty() && object->getTemplateName() != userresolved)
     {
-        std::string w = "Template '" + userresolved + "' incorrect, requested '"
-                                     + templatename + "' used but got " + object->getTemplateName();
+        std::string w = "Template '" + userresolved + "' was not available, it was replaced by '"
+                                     + templatename + "'  but this does not match with the template of the created object '" + object->getTemplateName()+"'";
         msg_warning(object.get()) << w;
     }
     else if (creators.size() > 1)
