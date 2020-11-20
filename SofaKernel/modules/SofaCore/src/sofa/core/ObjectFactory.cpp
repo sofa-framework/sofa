@@ -25,6 +25,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/StringUtils.h>
+#include <regex>
 
 namespace sofa
 {
@@ -109,6 +110,54 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
     registry[name] = previous;
 }
 
+/// Taken from https://www.fluentcpp.com/2017/04/21/how-to-split-a-string-in-c/
+std::vector<std::string> split(const std::string& s, char delimiter)
+{
+   std::vector<std::string> tokens;
+   std::string token;
+   std::istringstream tokenStream(s);
+   while (std::getline(tokenStream, token, delimiter))
+   {
+      tokens.push_back(token);
+   }
+   return tokens;
+}
+
+
+std::vector<std::string> getTemplatesFromString(const std::string& input)
+{
+    std::regex reg("([[:alnum:]][[:alnum:][:space:]]*)|([,<>])");
+    std::sregex_token_iterator iter(input.begin(), input.end(), reg);
+    std::sregex_token_iterator end;
+    std::vector<std::string> vec(iter, end);
+
+    int level=0;
+    std::string currentType;
+    std::vector<std::string> templateNames;
+    for (auto token : vec)
+    {
+        if(level == 0 && token == "," && !currentType.empty())
+        {
+            templateNames.push_back(currentType);
+            currentType="";
+        }
+        else if(token == "<" )
+        {
+            currentType += "<";
+            level++;
+        }
+        else if(token == ">")
+        {
+            currentType += ">";
+            level--;
+        }else{
+            currentType += token;
+        }
+    }
+    if(!currentType.empty())
+        templateNames.push_back(currentType);
+    return templateNames;
+}
 
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
@@ -120,7 +169,8 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Process the template aliases.
-    ///  (1) split in a vector the user provided templates by ','
+    ///  (1) split in a vector the user provided templates using a simple parser to handle ',' as
+    ///      separator properly handling cases like that Mat<4,4,double>,int
     ///  (2) for each entry search if there is an alias
     ///  (3) if there is none then keep value as is
     ///      otherwise replace the value with the alias.
@@ -128,7 +178,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     ///      and "undefined" behavior means that the template is converting a specifically given
     ///      type precision into a different one.
     ///  (4) rebuild the template string by joining them all with ','.
-    std::vector<std::string> usertemplatenames = sofa::helper::split(usertemplatename, ',');
+    std::vector<std::string> usertemplatenames = getTemplatesFromString(usertemplatename);
     std::vector<std::string> deprecatedTemplates;
     for(auto& name : usertemplatenames)
     {
@@ -139,7 +189,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             /// This alias results in "undefined" behavior.
             if( alias->second )
             {
-                deprecatedTemplates.push_back("The deprecated template '"+name+"' has been replaced by "+alias->first+". As they have different precisions this may result in undefined behavior. To remove this message, please update your scene to use the generic 'Vec3' templates or one of 'Vec3f/Vec3d' that match your the precision of your Sofa binary.");
+                deprecatedTemplates.push_back("Template '"+name+"' is deprecated and has been replaced by "+alias->first+". to remove this message you need to update your scene file.");
             }
 
             name = alias->first;
@@ -271,10 +321,18 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     object = creators[0].second->createInstance(context, arg);
     assert(object!=nullptr);
 
-    /// The object has been created, but not with the template given by the user
-    if (!usertemplatename.empty() && object->getTemplateName() != userresolved)
+    /// We managed to create an object but there is error message in the log. Thus we emit them
+    /// as warning to this object.
+    if(!deprecatedTemplates.empty())
     {
-        std::string w = "Template " + usertemplatename + std::string(" incorrect, used ") + object->getTemplateName();
+        msg_deprecated(object.get()) << sofa::helper::join(deprecatedTemplates, msgendl) ;
+    }
+
+    /// The object has been created, but not with the template given by the user
+    if (!templatename.empty() && object->getTemplateName() != userresolved)
+    {
+        std::string w = "Template '" + userresolved + "' incorrect, requested '"
+                                     + templatename + "' used but got " + object->getTemplateName();
         msg_warning(object.get()) << w;
     }
     else if (creators.size() > 1)
@@ -322,12 +380,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         object->parse(&newdesc);
     }
 
-    /// We managed to create an object but there is error message in the log. Thus we emit them
-    /// as warning to this object.
-    if(!deprecatedTemplates.empty())
-    {
-        msg_deprecated(object.get()) << sofa::helper::join(deprecatedTemplates, msgendl) ;
-    }
+
 
     return object;
 }
