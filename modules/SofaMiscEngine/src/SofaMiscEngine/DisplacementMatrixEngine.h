@@ -26,6 +26,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/TypeInfoRegistry.h>
 
 namespace sofa::component::engine
 {
@@ -70,7 +71,11 @@ public:
 
     // To simplify the template name in the xml file
     virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName(const DisplacementTransformEngine<DataTypes,OutputType>* = nullptr) { return DataTypes::Name()+std::string(",")+defaulttype::DataTypeInfo<OutputType>::name(); }
+    static std::string templateName(const DisplacementTransformEngine<DataTypes,OutputType>* = nullptr)
+    {
+        std::string tmp = sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<OutputType>())->name();
+        return DataTypes::Name()+std::string(",")+tmp;
+    }
 
 protected:
     helper::vector<OutputType> inverses;  ///< inverse initial positions
