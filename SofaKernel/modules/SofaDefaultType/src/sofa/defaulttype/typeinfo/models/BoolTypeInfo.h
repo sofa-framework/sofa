@@ -29,7 +29,7 @@
 namespace sofa::defaulttype
 {
 
-struct SOFA_DEFAULTTYPE_API BoolTypeInfo
+struct BoolTypeInfo
 {
     typedef bool DataType;
     typedef DataType BaseType;

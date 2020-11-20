@@ -28,7 +28,7 @@
 namespace sofa::defaulttype
 {
 template<class TDataType>
-struct SOFA_DEFAULTTYPE_API IncompleteTypeInfo
+struct IncompleteTypeInfo
 {
     /// Template parameter.
     typedef TDataType DataType;
