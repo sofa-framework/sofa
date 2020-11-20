@@ -130,6 +130,9 @@ static RegisterTemplateAlias Vec6dAlias("Vec6d", sofa::defaulttype::Vec6Types::N
 static RegisterTemplateAlias Rigid2dAlias("Rigid2d", sofa::defaulttype::Rigid2Types::Name(), isSRealFloat());
 static RegisterTemplateAlias Rigid3dAlias("Rigid3d", sofa::defaulttype::Rigid3Types::Name(), isSRealFloat());
 
+static RegisterTemplateAlias ExtVec3fAlias("ExtVec3f", sofa::defaulttype::Vec3Types::Name(), true);
+static RegisterTemplateAlias ExtVec3dAlias("ExtVec3d", sofa::defaulttype::Vec3Types::Name(), true);
+static RegisterTemplateAlias ExtVec3Alias("ExtVec3", sofa::defaulttype::Vec3Types::Name(), true);
 
 }// defaulttype
 
