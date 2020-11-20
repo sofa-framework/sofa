@@ -64,6 +64,7 @@ int registerTypeInfos(const std::string& target)
     loadInRepository<Quadratic3dTypes::Coord>(target);
     loadVectorForType<Quadratic3dTypes::Coord>(target);
 
+    ///
     loadInRepository<E331fTypes::Coord>(target);
     loadInRepository<E321fTypes::Coord>(target);
     loadInRepository<E311fTypes::Coord>(target);
@@ -71,6 +72,14 @@ int registerTypeInfos(const std::string& target)
     loadInRepository<E333fTypes::Coord>(target);
     loadInRepository<E221fTypes::Coord>(target);
 
+    loadVectorForType<E331fTypes::Coord>(target);
+    loadVectorForType<E321fTypes::Coord>(target);
+    loadVectorForType<E311fTypes::Coord>(target);
+    loadVectorForType<E332fTypes::Coord>(target);
+    loadVectorForType<E333fTypes::Coord>(target);
+    loadVectorForType<E221fTypes::Coord>(target);
+
+    ///
     loadInRepository<E331dTypes::Coord>(target);
     loadInRepository<E321dTypes::Coord>(target);
     loadInRepository<E311dTypes::Coord>(target);
@@ -78,6 +87,15 @@ int registerTypeInfos(const std::string& target)
     loadInRepository<E333dTypes::Coord>(target);
     loadInRepository<E221dTypes::Coord>(target);
 
+    loadVectorForType<E331dTypes::Coord>(target);
+    loadVectorForType<E321dTypes::Coord>(target);
+    loadVectorForType<E311dTypes::Coord>(target);
+    loadVectorForType<E332dTypes::Coord>(target);
+    loadVectorForType<E333dTypes::Coord>(target);
+    loadVectorForType<E221dTypes::Coord>(target);
+
+
+    ///
     loadInRepository<F331dTypes::Coord>(target);
     loadInRepository<F332dTypes::Coord>(target);
     loadInRepository<F321dTypes::Coord>(target);
@@ -90,7 +108,7 @@ int registerTypeInfos(const std::string& target)
     loadVectorForType<F311dTypes::Coord>(target);
     loadVectorForType<F221dTypes::Coord>(target);
 
-
+    ///
     loadInRepository<F331dTypes::Coord>(target);
     loadInRepository<F332dTypes::Coord>(target);
     loadInRepository<F321dTypes::Coord>(target);
