@@ -381,8 +381,7 @@ protected:
     void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,
                                       Displacement &dispIncrement, int i, Index a, Index b);
 
-    void computeStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &initialStress, VoigtTensor2 &newStressPoint, const VoigtTensor2 &strainIncrement,
-                                double &lambdaIncrement, MechanicalState &pointMechanicalState, const Displacement &lastDisp);
+    //---------- Force computation ----------//
 
     //Hardening
     void computeHardeningStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &lastStress, VoigtTensor2 &newStressPoint, const VoigtTensor2 &strainIncrement,
