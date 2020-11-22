@@ -193,18 +193,16 @@ protected:
 
         /*********************************************************************/
 
-        double _E0,_E; //Young
-        double _nu;//Poisson
-        double _L; //length
-        double _zDim; //for rectangular beams: dimension of the cross-section along z axis
-        double _yDim; //for rectangular beams: dimension of the cross-section along y axis
-        double _G; //shear modulus
-        double _Iy;
-        double _Iz; //Iz is the cross-section moment of inertia (assuming mass ratio = 1) about the z axis;
-        double _J;  //Polar moment of inertia (J = Iy + Iz)
-        double _A; // A is the cross-sectional area;
-        double _Asy; //_Asy is the y-direction effective shear area =  10/9 (for solid circular section) or 0 for a non-Timoshenko beam
-        double _Asz; //_Asz is the z-direction effective shear area;
+        double _E; ///< Young Modulus
+        double _nu; ///< Poisson ratio
+        double _L; ///< Length of the beam element
+        double _zDim; ///< for rectangular beams: dimension of the cross-section along the local z axis
+        double _yDim; ///< for rectangular beams: dimension of the cross-section along the local y axis
+        double _G; ///< Shear modulus
+        double _Iy; ///< 2nd moment of area with regard to the y axis, for a rectangular beam section
+        double _Iz; ///< 2nd moment of area with regard to the z axis, for a rectangular beam section
+        double _J; ///< Polar moment of inertia (J = Iy + Iz)
+        double _A; ///< Cross-sectional area
         StiffnessMatrix _k_loc;
 
         defaulttype::Quat quat;
@@ -215,8 +213,7 @@ protected:
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const BeamInfo& bi )
         {
-            os << bi._E0 << " "
-                << bi._E << " "
+            os << bi._E << " "
                 << bi._nu << " "
                 << bi._L << " "
                 << bi._zDim << " "
@@ -226,8 +223,6 @@ protected:
                 << bi._Iz << " "
                 << bi._J << " "
                 << bi._A << " "
-                << bi._Asy << " "
-                << bi._Asz << " "
                 << bi._Ke_loc << " "
                 << bi._Kt_loc << " "
                 << bi._k_loc;
@@ -237,8 +232,7 @@ protected:
         /// Input stream
         inline friend std::istream& operator>> ( std::istream& in, BeamInfo& bi )
         {
-            in	>> bi._E0
-                >> bi._E
+            in	>> bi._E
                 >> bi._nu
                 >> bi._L
                 >> bi._zDim
@@ -248,8 +242,6 @@ protected:
                 >> bi._Iz
                 >> bi._J
                 >> bi._A
-                >> bi._Asy
-                >> bi._Asz
                 >> bi._Ke_loc
                 >> bi._Kt_loc
                 >> bi._k_loc;

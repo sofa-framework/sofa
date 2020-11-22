@@ -272,7 +272,6 @@ template<class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, double L, double nu, double zSection, double ySection, bool isTimoshenko)
 {
     _E = E;
-    _E0 = E;
     _nu = nu;
     _L = L;
 
@@ -285,9 +284,6 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
     _Iy = zSection*zSection*zSection*ySection / 12.0;
     _J = _Iz + _Iy;
     _A = zSection*ySection;
-
-    _Asy = _A;
-    _Asz = _A;
 
     double phiY, phiZ;
     double L2 = L*L;
@@ -691,8 +687,6 @@ void BeamPlasticFEMForceField<DataTypes>::computeStiffness(int i, Index, Index)
     Real _E = (Real)m_beamsData.getValue()[i]._E;
     Real _Iy = (Real)m_beamsData.getValue()[i]._Iy;
     Real _Iz = (Real)m_beamsData.getValue()[i]._Iz;
-    Real _Asy = (Real)m_beamsData.getValue()[i]._Asy;
-    Real _Asz = (Real)m_beamsData.getValue()[i]._Asz;
     Real _G = (Real)m_beamsData.getValue()[i]._G;
     Real _J = (Real)m_beamsData.getValue()[i]._J;
     Real L2 = (Real)(_L * _L);
@@ -701,15 +695,17 @@ void BeamPlasticFEMForceField<DataTypes>::computeStiffness(int i, Index, Index)
     Real EIz = (Real)(_E * _Iz);
 
     // Find shear-deformation parameters
-    if (_Asy == 0)
+    if (_A == 0)
+    {
         phiy = 0.0;
-    else
-        phiy = (Real)(24.0*(1.0 + _nu)*_Iz / (_Asy*L2));
-
-    if (_Asz == 0)
         phiz = 0.0;
+    }
     else
-        phiz = (Real)(24.0*(1.0 + _nu)*_Iy / (_Asz*L2));
+    {
+        phiy = (Real)(24.0 * (1.0 + _nu) * _Iz / (_A * L2));
+        phiz = (Real)(24.0 * (1.0 + _nu) * _Iy / (_A * L2));
+    }
+
     helper::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     StiffnessMatrix& k_loc = bd[i]._k_loc;
 
