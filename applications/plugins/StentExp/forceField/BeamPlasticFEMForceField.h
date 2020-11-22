@@ -359,7 +359,6 @@ protected:
                          const bool verbose = FALSE);
 
     void computeLocalDisplacement(const VecCoord& x, Displacement &localDisp, int i, Index a, Index b);
-    void computeDisplacement(const VecCoord& x, const VecCoord& xRef, Displacement &localDisp, int i, Index a, Index b);
     void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,
                                       Displacement &dispIncrement, int i, Index a, Index b);
 
