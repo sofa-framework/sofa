@@ -383,15 +383,22 @@ protected:
 
     //---------- Force computation ----------//
 
-    //Hardening
-    void computeHardeningStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &lastStress, VoigtTensor2 &newStressPoint, const VoigtTensor2 &strainIncrement,
-                                         MechanicalState &pointMechanicalState);
-    void computeForceWithHardening(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
+    /// Force computation and tangent stiffness matrix update for perfect plasticity
+    void computeForceWithPerfectPlasticity(Eigen::Matrix<double, 12, 1>& internalForces, const VecCoord& x, int index, Index a, Index b);
 
-    //TESTING : incremental perfect plasticity
-    void computePerfectPlasticStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &lastStress, VoigtTensor2 &newStressPoint, const VoigtTensor2 &strainIncrement,
-        MechanicalState &pointMechanicalState);
-    void computeForceWithPerfectPlasticity(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
+    /// Stress increment computation for perfect plasticity, based on the radial return algorithm
+    void computePerfectPlasticStressIncrement(int index, int gaussPointIt, const VoigtTensor2& lastStress, VoigtTensor2& newStressPoint,
+                                              const VoigtTensor2& strainIncrement, MechanicalState& pointMechanicalState);
+
+    /// Force computation and tangent stiffness matrix update for linear mixed (isotropic and kinematic) hardening
+    void computeForceWithHardening(Eigen::Matrix<double, 12, 1>& internalForces, const VecCoord& x, int index, Index a, Index b);
+
+    /// Stress increment computation for linear mixed (isotropic and kinematic) hardening, based on the radial return algorithm
+    void computeHardeningStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &lastStress, VoigtTensor2 &newStressPoint,
+                                         const VoigtTensor2 &strainIncrement, MechanicalState &pointMechanicalState);
+
+    //---------------------------------------//
+
 
     // Auxiliary methods for hardening
     VectTensor2 voigtToVect2(const VoigtTensor2 &voigtTensor);
