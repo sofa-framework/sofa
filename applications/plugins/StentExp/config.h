@@ -19,20 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef STENTDEPLOY_CONFIG_H
-#define STENTDEPLOY_CONFIG_H
+#ifndef BEAMPLASTIC_CONFIG_H
+#define BEAMPLASTIC_CONFIG_H
 
 #include <sofa/config/sharedlibrary_defines.h>
 
 //Cf plugin Compliant, config.h.in
-//#define STENTEXP_MAJOR_VERSION ${STENTEXP_MAJOR_VERSION}
-//#define STENTEXP_MINOR_VERSION ${STENTEXP_MINOR_VERSION}
+//#define BEAMPLASTIC_MAJOR_VERSION ${BEAMPLASTIC_MAJOR_VERSION}
+//#define BEAMPLASTIC_MINOR_VERSION ${BEAMPLASTIC_MINOR_VERSION}
 
-#ifdef SOFA_BUILD_STENTEXP
-#   define SOFA_TARGET StentExp
-#   define SOFA_StentExp_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_BEAMPLASTIC
+#   define SOFA_TARGET BeamPlastic
+#   define SOFA_BeamPlastic_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#   define SOFA_StentExp_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#   define SOFA_BeamPlastic_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 #endif

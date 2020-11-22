@@ -7,12 +7,12 @@ namespace component
 {
 
 extern "C" {
-    SOFA_StentExp_API void initExternalModule();
-    SOFA_StentExp_API const char* getModuleName();
-    SOFA_StentExp_API const char* getModuleVersion();
-    SOFA_StentExp_API const char* getModuleLicense();
-    SOFA_StentExp_API const char* getModuleDescription();
-    SOFA_StentExp_API const char* getModuleComponentList();
+    SOFA_BeamPlastic_API void initExternalModule();
+    SOFA_BeamPlastic_API const char* getModuleName();
+    SOFA_BeamPlastic_API const char* getModuleVersion();
+    SOFA_BeamPlastic_API const char* getModuleLicense();
+    SOFA_BeamPlastic_API const char* getModuleDescription();
+    SOFA_BeamPlastic_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -27,7 +27,7 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "StentExp";
+    return "BeamPlastic";
 }
 
 const char* getModuleVersion()
@@ -49,7 +49,7 @@ const char* getModuleDescription()
 const char* getModuleComponentList()
 {
     //TODO: Comma-separated list of the components in this plugin, empty for now
-    return "MultiBeamForceField";
+    return "BeamPlasticFEMForceField";
 }
 
 } //component

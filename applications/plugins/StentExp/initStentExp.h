@@ -1,12 +1,12 @@
-#ifndef STENTEXP_H
-#define STENTEXP_H
+#ifndef BEAMPLASTIC_H
+#define BEAMPLASTIC_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_STENTEXP
-#define SOFA_StentExp_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_BEAMPLASTIC
+#define SOFA_BeamPlastic_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_StentExp_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#define SOFA_BeamPlastic_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 /**
