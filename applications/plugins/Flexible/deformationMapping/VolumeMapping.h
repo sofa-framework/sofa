@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -85,7 +85,7 @@ public:
     typedef typename sofa::core::topology::BaseMeshTopology::index_type Index;
     typedef sofa::helper::vector< Index > VecIndex;
 
-    virtual void init()
+    virtual void init() override
     {
         baseMatrices.resize( 1 );
         baseMatrices[0] = &jacobian;
@@ -93,7 +93,7 @@ public:
         this->Inherit::init();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         vf_triangles.resize(f_nbMeshes.getValue());
         vf_quads.resize(f_nbMeshes.getValue());
@@ -151,7 +151,7 @@ public:
         return sn[2] * (A[2] + B[2] + C[2]);
     }
 
-    virtual void apply(const core::MechanicalParams * /*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+    virtual void apply(const core::MechanicalParams * /*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn) override
     {
         helper::WriteOnlyAccessor< Data<OutVecCoord> >  v = dOut;
         helper::ReadAccessor< Data<InVecCoord> >  x = dIn;
@@ -185,11 +185,11 @@ public:
         jacobian.compress();
     }
 
-    virtual void applyJ(const core::MechanicalParams * /*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)    { if( jacobian.rowSize() > 0 ) jacobian.mult(dOut,dIn);    }
-    virtual void applyJT(const core::MechanicalParams * /*mparams*/, Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)    { if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(dIn,dOut);    }
-    virtual void applyJT(const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& /*dIn*/, const Data<OutMatrixDeriv>& /*dOut*/) {}
+    virtual void applyJ(const core::MechanicalParams * /*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn) override { if( jacobian.rowSize() > 0 ) jacobian.mult(dOut,dIn); }
+    virtual void applyJT(const core::MechanicalParams * /*mparams*/, Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut) override { if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(dIn,dOut); }
+    virtual void applyJT(const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& /*dIn*/, const Data<OutMatrixDeriv>& /*dOut*/) override {}
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId ) override
     {
         if( !f_geometricStiffness.getValue() ) return;
         Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
@@ -199,7 +199,7 @@ public:
         for(size_t m=0;m<f_nbMeshes.getValue();++m)        hessian[m].addMult(parentForceData,parentDisplacementData,mparams->kFactor()*childForce[m][0]);
     }
 
-    virtual const defaulttype::BaseMatrix* getK()
+    virtual const defaulttype::BaseMatrix* getK() override
     {
         if( f_geometricStiffness.getValue() )
         {
@@ -210,12 +210,12 @@ public:
         return &K;
     }
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()    { return &baseMatrices; }
+    virtual const sofa::defaulttype::BaseMatrix* getJ() override { return &jacobian; }
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override { return &baseMatrices; }
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         vf_triangles.parseSizeData(arg, f_nbMeshes);
         vf_quads.parseSizeData(arg, f_nbMeshes);
@@ -223,7 +223,7 @@ public:
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         vf_triangles.parseFieldsSizeData(str, f_nbMeshes);
         vf_quads.parseFieldsSizeData(str, f_nbMeshes);
@@ -248,9 +248,9 @@ protected:
 
     virtual ~VolumeMapping() {}
 
-    Data<helper::vector<Real> > offset;
+    Data<helper::vector<Real> > offset; ///< offsets added to output volumes
 
-    Data<unsigned int> f_nbMeshes;
+    Data<unsigned int> f_nbMeshes; ///< number of meshes to compute the volume for
     helper::vectorData< SeqTriangles > vf_triangles;
     helper::vectorData< SeqQuads > vf_quads;
     Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
@@ -262,13 +262,8 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_VolumeMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API VolumeMapping< Vec3dTypes, Vec1dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API VolumeMapping< Vec3fTypes, Vec1fTypes >;
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_VolumeMapping_CPP)
+extern template class SOFA_Flexible_API VolumeMapping< Vec3Types, Vec1Types >;
 
 #endif
 

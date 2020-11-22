@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showBehavior showVisual" />
     
     <Node name="Liver" >
@@ -12,21 +13,23 @@
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="WireframeVisu" >
             <VisualStyle displayFlags="showVisual showWireframe" />
-            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
+            <MeshObjLoader name="meshLoader_1" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <OglModel name="VisualModel" src="@meshLoader_1" />
             <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
         </Node>
         <Node name="Sphere" >
             <VisualStyle displayFlags="hideBehavior showCollision showWireframe" />
 	    <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject name="spheres" position="@[-1].position" />
-            <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius" />
+            <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius" />
             <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />
         </Node>
         
         
         <Node name="TranslatedSurface" gravity="0 -9.81 0">
 <!--             default rendering should be flat rendered and not wireframed -->
-            <OglModel fileMesh="mesh/liver.obj" translation="5 0 0" />
+            <MeshObjLoader name="meshLoader_0" filename="mesh/liver.obj" translation="5 0 0" handleSeams="1" />
+            <OglModel src="@meshLoader_0" />
         </Node>
         
     </Node>

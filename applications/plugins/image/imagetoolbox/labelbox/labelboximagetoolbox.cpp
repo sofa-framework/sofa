@@ -13,8 +13,6 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(LabelBoxImageToolBox)
-
 int LabelBoxImageToolBox_Class = core::RegisterObject("LabelBoxImageToolBox")
 .add< LabelBoxImageToolBox >()
 .addLicense("LGPL")

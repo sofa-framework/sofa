@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,14 +55,9 @@ int MeshIntTool::doCapPointInt(TCapsule<DataTypes>& cap, const defaulttype::Vect
 
     SReal alpha = 0.5;
 
-    //if (A < -0.000001 || A > 0.000001)
-    {
-        alpha = b/A;//projection of the point on the capsule segment such as the projected point P = p1 + AB * alpha
-        //if (alpha < 0.000001 || alpha > 0.999999)
-        //        return 0;
-        if (alpha < 0.0) alpha = 0.0;//if the projection is out the segment, we associate it to a segment apex
-        else if (alpha > 1.0) alpha = 1.0;
-    }
+    alpha = b/A;//projection of the point on the capsule segment such as the projected point P = p1 + AB * alpha
+    if (alpha < 0.0) alpha = 0.0;//if the projection is out the segment, we associate it to a segment apex
+    else if (alpha > 1.0) alpha = 1.0;
 
     defaulttype::Vector3 p,pq;
     p = p1 + AB * alpha;
@@ -172,12 +167,12 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes>& cap, Triangle& tri,SRe
     int old_n = n;
     n = 0;
 
-    if (tri_flg&TriangleModel::FLAG_E12)
-        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p1,tri_p2,alarmDist,contactDist,contacts,!(tri_flg&TriangleModel::FLAG_P1),!(tri_flg&TriangleModel::FLAG_P2));
-    if (tri_flg&TriangleModel::FLAG_E23)
-        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p2,tri_p3,alarmDist,contactDist,contacts,!(tri_flg&TriangleModel::FLAG_P2),!(tri_flg&TriangleModel::FLAG_P3));
-    if (tri_flg&TriangleModel::FLAG_E31)
-        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p3,tri_p1,alarmDist,contactDist,contacts,!(tri_flg&TriangleModel::FLAG_P3),!(tri_flg&TriangleModel::FLAG_P1));
+    if (tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)
+        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p1,tri_p2,alarmDist,contactDist,contacts,!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1),!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2));
+    if (tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E23)
+        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p2,tri_p3,alarmDist,contactDist,contacts,!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2),!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3));
+    if (tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)
+        n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p3,tri_p1,alarmDist,contactDist,contacts,!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3),!(tri_flg&TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1));
 
     for(OutputVector::iterator detection = contacts->end()-n ; detection != contacts->end() ; ++detection){
         detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);

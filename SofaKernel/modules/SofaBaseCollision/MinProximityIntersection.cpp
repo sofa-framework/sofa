@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_CPP
-#include <sofa/helper/system/config.h>
 #include <SofaBaseCollision/MinProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
@@ -37,6 +36,14 @@
 namespace sofa
 {
 
+namespace core
+{
+	namespace collision
+    {
+        template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
+    }
+}
+
 namespace component
 {
 
@@ -46,8 +53,6 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace helper;
-
-SOFA_DECL_CLASS(MinProximityIntersection)
 
 int MinProximityIntersectionClass = core::RegisterObject("A set of methods to compute if two primitives are close enough to consider they collide")
         .add< MinProximityIntersection >()
@@ -65,17 +70,17 @@ MinProximityIntersection::MinProximityIntersection()
 
 void MinProximityIntersection::init()
 {
-    intersectors.add<CubeModel, CubeModel, MinProximityIntersection>(this);
-    intersectors.add<SphereModel, SphereModel, MinProximityIntersection>(this);
-    intersectors.add<CapsuleModel,CapsuleModel, MinProximityIntersection> (this);
-    intersectors.add<CapsuleModel,SphereModel, MinProximityIntersection> (this);
-    intersectors.add<OBBModel,OBBModel, MinProximityIntersection> (this);
-    intersectors.add<CapsuleModel,OBBModel, MinProximityIntersection> (this);
-    intersectors.add<SphereModel,OBBModel, MinProximityIntersection> (this);
+    intersectors.add<CubeCollisionModel, CubeCollisionModel, MinProximityIntersection>(this);
+    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MinProximityIntersection>(this);
+    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, MinProximityIntersection> (this);
+    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,SphereCollisionModel<sofa::defaulttype::Vec3Types>, MinProximityIntersection> (this);
+    intersectors.add<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, MinProximityIntersection> (this);
+    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, MinProximityIntersection> (this);
+    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, MinProximityIntersection> (this);
     intersectors.add<RigidSphereModel,RigidSphereModel, MinProximityIntersection> (this);
-    intersectors.add<SphereModel,RigidSphereModel, MinProximityIntersection> (this);
-    intersectors.add<CapsuleModel,RigidSphereModel, MinProximityIntersection> (this);
-    intersectors.add<RigidSphereModel,OBBModel, MinProximityIntersection> (this);
+    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel, MinProximityIntersection> (this);
+    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel, MinProximityIntersection> (this);
+    intersectors.add<RigidSphereModel,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, MinProximityIntersection> (this);
 
     IntersectorFactory::getInstance()->addIntersectors(this);
 
@@ -96,14 +101,6 @@ void MinProximityIntersection::draw(const core::visual::VisualParams* vparams)
 } // namespace collision
 
 } // namespace component
-
-namespace core
-{
-namespace collision
-{
-template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
-}
-}
 
 } // namespace sofa
 

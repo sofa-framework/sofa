@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,9 @@
 #define SOFA_COMPONENT_ENGINE_CLUSTERING_INL
 
 #include <SofaGeneralEngine/ClusteringEngine.h>
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <fstream>
 
 #include <sofa/helper/logging/Messaging.h>
@@ -61,7 +61,7 @@ ClusteringEngine<DataTypes>::ClusteringEngine()
     , d_cluster(initData(&d_cluster,"cluster","Computed clusters."))
     , input_filename(initData(&input_filename,"inFile","import precomputed clusters"))
     , output_filename(initData(&output_filename,"outFile","export clusters"))
-    , topo(NULL)
+    , topo(nullptr)
 {
 }
 
@@ -70,7 +70,7 @@ void ClusteringEngine<DataTypes>::init()
 {
     this->mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 
-    if(this->mstate==NULL)
+    if(this->mstate==nullptr)
         msg_info(this) << "This component requires a mechanical state in its context for output visualization.";
 
     addInput(&d_radius);
@@ -89,7 +89,7 @@ void ClusteringEngine<DataTypes>::init()
 
 
 template <class DataTypes>
-void ClusteringEngine<DataTypes>::update()
+void ClusteringEngine<DataTypes>::doUpdate()
 {
     if(load()) return;
 
@@ -158,7 +158,6 @@ void ClusteringEngine<DataTypes>::update()
     }
 
     save();
-    cleanDirty();
 }
 
 
@@ -209,6 +208,7 @@ void ClusteringEngine<DataTypes>::farthestPointSampling(VI& ptIndices,VI& vorono
     voronoi.resize(nbp); voronoi.fill(0);
     VD distances((int)nbp,distMax);
 
+    std::stringstream tmpStr;
     while(ptIndices.size()<nbc)
     {
         if(this->topo && this->d_useTopo.getValue()) 	dijkstra(ptIndices , distances, voronoi);
@@ -218,9 +218,10 @@ void ClusteringEngine<DataTypes>::farthestPointSampling(VI& ptIndices,VI& vorono
         for (unsigned int i=0; i<nbp; i++) if(distances[i]>dmax) {dmax=distances[i]; imax=(ID)i;}
         if(dmax==0) break;
         else ptIndices.push_back(imax);
-        sout<<"ClusteringEngine :"<<(int)floor(100.*(double)ptIndices.size()/(double)nbc)<<" % done\r";
+        tmpStr<<(int)floor(100.*(double)ptIndices.size()/(double)nbc)<<" % done\r";
     }
-    sout<<"ClusteringEngine :100 % done\n";
+    tmpStr <<"Clustering 100 % done";
+    msg_info() << tmpStr.str();
 
     if(this->topo && this->d_useTopo.getValue()) 	dijkstra(ptIndices , distances, voronoi);
     else Voronoi(ptIndices , distances, voronoi);
@@ -305,16 +306,15 @@ bool ClusteringEngine<DataTypes>::load()
 {
     if (!this->input_filename.isSet()) return false;
 
-    input_filename.update();
     string fname(this->input_filename.getFullPath());
     if(!fname.compare(loadedFilename)) return true;
 
     if (!fname.size()) return false;
-    if (!helper::system::DataRepository.findFile(fname))  { serr << "ClusteringEngine: cannot find "<<fname<<sendl;  return false;	}
+    if (!helper::system::DataRepository.findFile(fname))  { msg_error() << "ClusteringEngine: cannot find "<<fname;  return false;	}
     fname=helper::system::DataRepository.getFile(fname);
 
     ifstream fileStream (fname.c_str(), std::ifstream::in);
-    if (!fileStream.is_open())	{ serr << "ClusteringEngine: cannot open "<<fname<<sendl;  return false;	}
+    if (!fileStream.is_open())	{ msg_error() << "ClusteringEngine: cannot open "<<fname;  return false;	}
 
     WriteOnlyAccessor< Data< VVI > > clust = this->d_cluster;
     clust.clear();
@@ -332,7 +332,7 @@ bool ClusteringEngine<DataTypes>::load()
     }
 
     loadedFilename = fname;
-    sout << "ClusteringEngine: loaded clusters from "<<fname<<sendl;
+    msg_info() << "ClusteringEngine: loaded clusters from "<<fname;
     return true;
 }
 
@@ -345,7 +345,7 @@ bool ClusteringEngine<DataTypes>::save()
     if (!fname.size()) return false;
 
     ofstream fileStream (fname.c_str(), ofstream::out);
-    if (!fileStream.is_open())	{ serr << "ClusteringEngine: cannot open "<<fname<<sendl;  return false;	}
+    if (!fileStream.is_open())	{ msg_error() << "ClusteringEngine: cannot open "<<fname;  return false;	}
 
     ReadAccessor< Data< VVI > > clust = this->d_cluster;
 
@@ -363,7 +363,7 @@ bool ClusteringEngine<DataTypes>::save()
         fileStream << std::endl;
     }
 
-    sout << "ClusteringEngine: saved clusters in "<<fname<<sendl;
+    msg_info() << "ClusteringEngine: saved clusters in ";
 
     return true;
 }
@@ -371,22 +371,21 @@ bool ClusteringEngine<DataTypes>::save()
 template <class DataTypes>
 void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (vparams->displayFlags().getShowBehaviorModels())
     {
-        if(this->mstate==NULL)
+        if(this->mstate==nullptr)
             return;
+
+        vparams->drawTool()->saveLastState();
 
         const VecCoord& currentPositions = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         ReadAccessor< Data< VVI > > clust = this->d_cluster;
         const unsigned int nbp = currentPositions.size();
 
-        glPushAttrib( GL_LIGHTING_BIT);
-
-        glDisable(GL_LIGHTING);
-
-        glBegin(GL_LINES);
-
+        std::vector<sofa::defaulttype::Vector3> vertices;
+        std::vector<sofa::defaulttype::Vec4f> colors;
+        vparams->drawTool()->disableLighting();
+        
         float r, g, b;
 
         for (unsigned int i=0 ; i<clust.size() ; ++i)
@@ -395,21 +394,20 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
             g = (float)((i*1357)%13)/13;
             b = (float)((i*4829)%17)/17;
 
-            glColor3f(r,g,b);
+            colors.push_back(sofa::helper::types::RGBAColor(r, g, b, 1.0));
+            colors.push_back(sofa::helper::types::RGBAColor(r, g, b, 1.0));
 
             VI::const_iterator it, itEnd;
             for (it = clust[i].begin()+1, itEnd = clust[i].end(); it != itEnd ; ++it)
                 if(*it<nbp) // discard visualization of fixed particles (as their current positions is unknown)
                 {
-                    helper::gl::glVertexT(currentPositions[clust[i].front()]);
-                    helper::gl::glVertexT(currentPositions[*it]);
+                    vertices.push_back(currentPositions[clust[i].front()]);
+                    vertices.push_back(currentPositions[*it]);
                 }
         }
-        glEnd();
-
-        glPopAttrib();
+        vparams->drawTool()->drawLines(vertices, 1.0, colors);
+        vparams->drawTool()->restoreLastState();
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 

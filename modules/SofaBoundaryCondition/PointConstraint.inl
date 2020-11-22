@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,16 +27,9 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-
-
-#include <sofa/helper/gl/BasicShapes.h>
-
-
-
 
 namespace sofa
 {
@@ -51,7 +44,7 @@ namespace projectiveconstraintset
 
 template <class DataTypes>
 PointConstraint<DataTypes>::PointConstraint()
-    : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
+    : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , _drawSize( initData(&_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
 {
@@ -71,9 +64,6 @@ template <class DataTypes>
 void PointConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
-
-    //  cerr<<"PointConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
-
 }
 
 /// Update and return the jacobian. @todo update it when needed using topological engines instead of recomputing it at each call.
@@ -83,7 +73,6 @@ const sofa::defaulttype::BaseMatrix*  PointConstraint<DataTypes>::getJ(const cor
     unsigned numBlocks = this->mstate->getSize();
     unsigned blockSize = DataTypes::deriv_total_size;
     jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
-    //    cerr<<"PointConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
 
     for(unsigned i=0; i<numBlocks*blockSize; i++ )
     {
@@ -103,8 +92,10 @@ const sofa::defaulttype::BaseMatrix*  PointConstraint<DataTypes>::getJ(const cor
 template <class DataTypes>
 void PointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataVecDeriv> res ( resData );
+    const SetIndexArray & indices = f_indices.getValue();
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
@@ -116,8 +107,10 @@ void PointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
 template <class DataTypes>
 void PointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
-    helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
+    SOFA_UNUSED(mparams);
+
+    helper::WriteAccessor<DataMatrixDeriv> c (  cData );
+    const SetIndexArray & indices = f_indices.getValue();
 
     MatrixDerivRowIterator rowIt = c->begin();
     MatrixDerivRowIterator rowItEnd = c->end();
@@ -134,7 +127,6 @@ void PointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
     }
 }
 
-// constant velocity: do not change the velocity
 template <class DataTypes>
 void PointConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*vData*/)
 {
@@ -143,10 +135,8 @@ void PointConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /
 template <class DataTypes>
 void PointConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& /*xData*/)
 {
-    // nothing to do
 }
 
-// Matrix Integration interface
 template <class DataTypes>
 void PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
@@ -183,9 +173,11 @@ void PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, 
 template <class DataTypes>
 void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
+
+    vparams->drawTool()->saveLastState();
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     const SetIndexArray & indices = f_indices.getValue();
@@ -207,7 +199,6 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        glColor4f (1.0f,0.35f,0.35f,1.0f);
         for (SetIndexArray::const_iterator it = indices.begin();
                 it != indices.end();
                 ++it)
@@ -217,23 +208,9 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
+
 }
-
-// Specialization for rigids
-#ifndef SOFA_FLOAT
-template <>
-void PointConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void PointConstraint<defaulttype::Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void PointConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void PointConstraint<defaulttype::Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-
 
 
 } // namespace constraint

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,10 +69,12 @@ protected:
 template <class DataTypes>
 class SOFA_USER_INTERACTION_API RemovePrimitivePerformer: public       TInteractionPerformer<DataTypes>, public RemovePrimitivePerformerConfiguration
 {
+    using index_type = sofa::defaulttype::index_type;
+
     typedef typename DataTypes::Real               Real;
     typedef typename DataTypes::Coord              Coord;
     typedef typename DataTypes::VecCoord           VecCoord;
-    typedef sofa::helper::vector <unsigned int>    VecIds;
+    typedef sofa::helper::vector <index_type>    VecIds;
 
 public:
     RemovePrimitivePerformer(BaseMouseInteractor *i);
@@ -141,13 +143,9 @@ private:
     sofa::core::topology::BaseMeshTopology* topo_curr;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
-#ifndef SOFA_DOUBLE
-extern template class SOFA_USER_INTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_USER_INTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3dTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
+extern template class SOFA_USER_INTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
+
 #endif
 
 }

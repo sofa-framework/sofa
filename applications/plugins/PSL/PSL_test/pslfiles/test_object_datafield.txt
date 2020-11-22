@@ -1,0 +1,15 @@
+Node : {
+    name : "root"
+
+    MechanicalObject : {
+        name : "aMechanicalObject1"
+    }
+
+    MechanicalObject : "aMechanicalObject2"
+
+    MechanicalObject : {}
+
+    TestResult : "Success"
+}
+
+

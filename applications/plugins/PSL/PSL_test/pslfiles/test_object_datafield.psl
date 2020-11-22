@@ -1,0 +1,17 @@
+Node : {
+    name : "root"
+
+    MechanicalObject : {
+        name : "aMechanicalObject1"
+        position : "1 2 3"
+    }
+
+    Python : '''
+             if root.getObject("aMechanicalObject1").position == [[1, 2, 3]]:
+                root.createObject("TestResult", result="Success")
+             else:
+                 root.createObject("TestResult", result="Fail")
+             '''
+}
+
+

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,7 +68,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
     /// Create the context for the tests.
     void SetUp()
     {
-//        if( sofa::simulation::getSimulation()==NULL )
+//        if( sofa::simulation::getSimulation()==nullptr )
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Create the scene
@@ -204,7 +204,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
 
     void TearDown()
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);
     }
 

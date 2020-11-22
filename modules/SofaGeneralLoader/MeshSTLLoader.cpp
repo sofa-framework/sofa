@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <SofaGeneralLoader/MeshSTLLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -29,22 +30,15 @@
 #include <sstream>
 #include <string>
 
-namespace sofa
+namespace sofa::component::loader
 {
 
-namespace component
-{
-
-namespace loader
-{
+using sofa::helper::getWriteOnlyAccessor;
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(MeshSTLLoader)
-
-int MeshSTLLoaderClass = core::RegisterObject("Specific mesh loader for STL file format.")
-        .add< MeshSTLLoader >()
-        ;
+static int MeshSTLLoaderClass = core::RegisterObject("Loader for the STL file format. STL can be used to represent the surface of object using with a triangulation.")
+        .add< MeshSTLLoader >();
 
 //Base VTK Loader
 MeshSTLLoader::MeshSTLLoader() : MeshLoader()
@@ -55,59 +49,93 @@ MeshSTLLoader::MeshSTLLoader() : MeshLoader()
 }
 
 
-
-bool MeshSTLLoader::load()
+bool MeshSTLLoader::doLoad()
 {
     const char* filename = m_filename.getFullPath().c_str();
+    std::string sfilename(filename);
+    if (!sofa::helper::system::DataRepository.findFile(sfilename))
+    {
+        msg_error(this) << "File " << filename << " not found ";
+        return false;
+    }
+
     std::ifstream file(filename);
     if (!file.good())
     {
         file.close();
-        serr << "Cannot read file '" << m_filename << "'." << sendl;
+        msg_error(this) << "Cannot read file '" << filename << "'.";
         return false;
     }
 
+    bool ret = false;
     if( _forceBinary.getValue() )
-        return this->readBinarySTL(filename); // -- Reading binary file
-
-    std::string test;
-    file >> test;
-
-    if ( test == "solid" )
-        return this->readSTL(file);
+        ret = this->readBinarySTL(filename); // -- Reading binary file
     else
     {
-        file.close(); // no longer need for an ascii-open file
-        return this->readBinarySTL(filename); // -- Reading binary file
+        std::string test;
+        file >> test;
+
+        if ( test == "solid" )
+            ret = this->readSTL(file);
+        else
+        {
+            file.close(); // no longer need for an ascii-open file
+            ret = this->readBinarySTL(filename); // -- Reading binary file
+        }
     }
+    return ret;
 }
 
+bool isBinarySTLValid(const char* filename, const MeshSTLLoader* _this)
+{
+    // Binary STL files have 80-bytes headers. The following 4-bytes is the number of triangular facets in the file
+    // Each facet is described with a 50-bytes field, so a valid binary STL file verifies the following condition:
+    // nFacets * 50 + 84-bytes header == filename
+
+    long filesize;
+    std::ifstream f(filename, std::ifstream::ate | std::ifstream::binary);
+    filesize = f.tellg();
+    if (filesize < 84)
+    {
+        msg_error(_this) << "Can't read binary STL file: " << filename;
+        return false;
+    }
+    f.seekg(0);
+    char buffer[80];
+    f.read(buffer, 80);
+    uint32_t ntriangles;
+    f.read(reinterpret_cast<char*>(&ntriangles), 4);
+    if (filesize != ntriangles * 50 + 84)
+    {
+        msg_error(_this) << filename << " isn't  binary STL file";
+        return false;
+    }
+    return true;
+}
 
 bool MeshSTLLoader::readBinarySTL(const char *filename)
 {
     dmsg_info() << "Reading binary STL file..." ;
+    if (!isBinarySTLValid(filename, this))
+        return false;
 
-    std::ifstream dataFile (filename, std::ios::in | std::ios::binary);
-
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(this->d_positions.beginWriteOnly());
-    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(this->d_normals.beginWriteOnly());
-    helper::vector<Triangle >& my_triangles = *(this->d_triangles.beginWriteOnly());
+    auto my_positions = getWriteOnlyAccessor(d_positions);
+    auto my_normals = getWriteOnlyAccessor(d_normals);
+    auto my_triangles = getWriteOnlyAccessor(this->d_triangles);
 
     std::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
     core::topology::Topology::index_type positionCounter = 0;
     bool useMap = d_mergePositionUsingMap.getValue();
 
-
+    std::ifstream dataFile(filename, std::ios::in | std::ifstream::binary);
 
     // Skipping header file
     char buffer[256];
     dataFile.read(buffer, _headerSize.getValue());
-//    sout << "Header binary file: "<< buffer << sendl;
 
     uint32_t nbrFacet;
-    dataFile.read((char*)&nbrFacet, 4);
+    dataFile.read(reinterpret_cast<char*>(&nbrFacet), 4);
 
-    my_triangles.resize( nbrFacet ); // exact size
     my_normals.resize( nbrFacet ); // exact size
     my_positions.reserve( nbrFacet * 3 ); // max size
 
@@ -129,10 +157,13 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     // temporaries
     sofa::defaulttype::Vec3f vertex, normal;
 
+    // reserve vector before filling it
+    my_triangles.reserve( nbrFacet );
+
     // Parsing facets
     for (uint32_t i = 0; i<nbrFacet; ++i)
     {
-        Triangle& the_tri = my_triangles[i];
+        Triangle the_tri;
 
         // Normal:
         dataFile.read((char*)&normal[0], 4);
@@ -179,92 +210,72 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
                     the_tri[j] = my_positions.size()-1;
                 }
             }
-
         }
+
+        this->addTriangle(my_triangles, the_tri);
 
         // Attribute byte count
         uint16_t count;
         dataFile.read((char*)&count, 2);
-
-        // Security: // checked once before reading in debug mode
-//        position = dataFile.tellg();
-//        if (position == length)
-//            break;
     }
 
-    this->d_positions.endEdit();
-    this->d_triangles.endEdit();
-    this->d_normals.endEdit();
+    if(my_triangles.size() != (size_t)nbrFacet)
+    {
+        msg_error() << "Size mismatch between triangle vector and facetSize";
+        return false;
+    }
 
     dmsg_info() << "done!" ;
-
     return true;
 }
 
 
 bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
 {
-    dmsg_info() << "Reading STL file..." ;
+    Vec3f result;
+    std::string line;
 
-    // Init
-    std::string buffer;
-    std::string name; // name of the solid, needed?
-
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
-    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(d_normals.beginEdit());
-    helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
-
+    auto my_positions = getWriteOnlyAccessor(d_positions);
+    auto my_normals = getWriteOnlyAccessor(d_normals);
+    auto my_triangles = getWriteOnlyAccessor(d_triangles);
 
     std::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
-    core::topology::Topology::index_type positionCounter = 0;
+    core::topology::Topology::index_type positionCounter = 0, vertexCounter = 0;
     bool useMap = d_mergePositionUsingMap.getValue();
 
-
-    // get length of file:
-    dataFile.seekg(0, std::ios::end);
-    std::streampos length = dataFile.tellg();
-    dataFile.seekg(0, std::ios::beg);
-
-    // Reading header
-    dataFile >> buffer >> name;
-
     Triangle the_tri;
-    size_t cpt = 0;
-    std::streampos position = 0;
 
-    // Parsing facets
-    while (position < length)
+    while (std::getline(dataFile, line))
     {
-        sofa::defaulttype::Vector3 normal, vertex;
-
-        std::getline(dataFile, buffer);
-        std::stringstream line;
-        line << buffer;
+        if (line.empty()) continue;
+        std::istringstream values(line);
 
         std::string bufferWord;
-        line >> bufferWord;
+        values >> bufferWord;
 
         if (bufferWord == "facet")
         {
-            line >> bufferWord >> normal[0] >> normal[1] >> normal[2];
-            my_normals.push_back(normal);
+            // Normal
+            values >> bufferWord >> result[0] >> result[1] >> result[2];
+            my_normals.push_back(result);
         }
         else if (bufferWord == "vertex")
         {
-            line >> vertex[0] >> vertex[1] >> vertex[2];
+            // Vertex
+            values >> result[0] >> result[1] >> result[2];
 
             if( useMap )
             {
-                auto it = my_map.find( vertex );
+                auto it = my_map.find(result);
                 if( it == my_map.end() )
                 {
-                    the_tri[cpt] = positionCounter;
-                    my_map[vertex] = positionCounter++;
-                    my_positions.push_back(vertex);
+                    the_tri[vertexCounter] = positionCounter;
+                    my_map[result] = positionCounter++;
+                    my_positions.push_back(result);
                 }
                 else
                 {
-                    the_tri[cpt] = it->second;
+                    the_tri[vertexCounter] = it->second;
                 }
             }
             else
@@ -272,37 +283,31 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
 
                 bool find = false;
                 for (size_t i=0; i<my_positions.size(); ++i)
-                    if ( (vertex[0] == my_positions[i][0]) && (vertex[1] == my_positions[i][1])  && (vertex[2] == my_positions[i][2]))
+                    if ( (result[0] == my_positions[i][0]) && (result[1] == my_positions[i][1])  && (result[2] == my_positions[i][2]))
                     {
                         find = true;
-                        the_tri[cpt] = static_cast<core::topology::Topology::PointID>(i);
+                        the_tri[vertexCounter] = static_cast<core::topology::Topology::PointID>(i);
                         break;
                     }
 
                 if (!find)
                 {
-                    my_positions.push_back(vertex);
-                    the_tri[cpt] = static_cast<core::topology::Topology::PointID>(my_positions.size()-1);
+                    my_positions.push_back(result);
+                    the_tri[vertexCounter] = static_cast<core::topology::Topology::PointID>(my_positions.size()-1);
                 }
             }
-            cpt++;
+            vertexCounter++;
         }
         else if (bufferWord == "endfacet")
         {
-            my_triangles.push_back(the_tri);
-            cpt = 0;
+            this->addTriangle(my_triangles, the_tri);
+            vertexCounter = 0;
         }
         else if (bufferWord == "endsolid" || bufferWord == "end")
         {
             break;
         }
-
-        position = dataFile.tellg();
     }
-
-    d_positions.endEdit();
-    d_triangles.endEdit();
-    d_normals.endEdit();
 
     dataFile.close();
 
@@ -311,13 +316,11 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
     return true;
 }
 
+void MeshSTLLoader::doClearBuffers()
+{
+    /// Nothing to do if no output is added to the "filename" dataTrackerEngine.
+}
 
-
-
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
+} /// namespace sofa::component::loader
 
 

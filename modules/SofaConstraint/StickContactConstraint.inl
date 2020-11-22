@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <SofaBaseCollision/DefaultContactManager.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/IdentityContactMapper.h>
-#include <SofaMeshCollision/RigidContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <sofa/simulation/Node.h>
 #include <iostream>
 
@@ -41,20 +41,24 @@ namespace collision
 {
 
 template < class TCollisionModel1, class TCollisionModel2 >
+StickContactConstraint<TCollisionModel1,TCollisionModel2>::StickContactConstraint()
+    : StickContactConstraint(nullptr, nullptr, nullptr)
+{
+    //#TODO -> Check impact of calling setCollisionModel
+}
+
+template < class TCollisionModel1, class TCollisionModel2 >
 StickContactConstraint<TCollisionModel1,TCollisionModel2>::StickContactConstraint(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1)
     , model2(model2)
     , intersectionMethod(intersectionMethod)
-    , m_constraint(NULL)
-    , parent(NULL)
+    , m_constraint(nullptr)
+    , parent(nullptr)
     , f_keepAlive(initData(&f_keepAlive, true, "keepAlive", "set to true to keep this contact alive even after collisions are no longer detected"))
 {
     mapper1.setCollisionModel(model1);
     mapper2.setCollisionModel(model2);
     this->f_printLog.setValue(true);
-    //contacts.clear();
-    //mappedContacts.clear();
-
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
@@ -65,15 +69,12 @@ StickContactConstraint<TCollisionModel1,TCollisionModel2>::~StickContactConstrai
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::cleanup()
 {
-    sout << "CLEANUP" << sendl;
     if (m_constraint)
     {
-        //m_constraint->cleanup();
-
-        if (parent != NULL)
+        if (parent != nullptr)
             parent->removeObject(m_constraint);
 
-        parent = NULL;
+        parent = nullptr;
         //delete m_constraint;
         intrusive_ptr_add_ref(m_constraint.get()); // HACK: keep created constraints to avoid crash
         m_constraint.reset();
@@ -91,7 +92,7 @@ template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector* o)
 {
     this->f_printLog.setValue(true);
-    sout << "setDetectionOutputs(" << (o == NULL ? -1 : (int)static_cast<TOutputVector*>(o)->size()) << ")" << sendl;
+    msg_info() << "setDetectionOutputs(" << (o == nullptr ? -1 : (int)static_cast<TOutputVector*>(o)->size()) << ")";
     contacts.clear();
     if (!o) return;
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
@@ -134,14 +135,14 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
 {
     if (!m_constraint)
     {
-        sout << "Creating StickContactConstraint bilateral constraints"<<sendl;
-        MechanicalState1* mstate1 = mapper1.createMapping(GenerateStirngID::generate().c_str());
-        MechanicalState2* mstate2 = mapper2.createMapping(GenerateStirngID::generate().c_str());
+        msg_info() << "Creating StickContactConstraint bilateral constraints";
+        MechanicalState1* mstate1 = mapper1.createMapping(GenerateStringID::generate().c_str());
+        MechanicalState2* mstate2 = mapper2.createMapping(GenerateStringID::generate().c_str());
         m_constraint = sofa::core::objectmodel::New<constraintset::BilateralInteractionConstraint<defaulttype::Vec3Types> >(mstate1, mstate2);
         m_constraint->setName( getName() );
     }
 
-    sout << "activateMappers(" << contacts.size() << ")" << sendl;
+    msg_info() << "activateMappers(" << contacts.size() << ")";
 
     int size = contacts.size();
     m_constraint->clear(size);
@@ -164,17 +165,9 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
         typename DataTypes2::Real r2 = 0.;
 
         // Create mapping for first point
-        index1 = mapper1.addPointB(o->point[0], index1, r1
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[0]
-#endif
-                                  );
+        index1 = mapper1.addPointB(o->point[0], index1, r1);
         // Create mapping for second point
-        index2 = mapper2.addPointB(o->point[1], index2, r2
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[1]
-#endif
-                                  );
+        index2 = mapper2.addPointB(o->point[1], index2, r2);
         double distance = d0 + r1 + r2;
 
         mappedContacts[i].first.first = index1;
@@ -188,16 +181,16 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
     mapper2.update();
     mapper2.updateXfree();
 
-    sout << contacts.size() << " StickContactConstraint created"<<sendl;
-    sout << "mstate1 size = " << m_constraint->getMState1()->getSize() << " x = " << m_constraint->getMState1()->getSize() << " xfree = " << m_constraint->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue().size() << sendl;
-    sout << "mstate2 size = " << m_constraint->getMState2()->getSize() << " x = " << m_constraint->getMState2()->getSize() << " xfree = " << m_constraint->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue().size() << sendl;
+    msg_info() << contacts.size() << " StickContactConstraint created";
+    msg_info() << "mstate1 size = " << m_constraint->getMState1()->getSize() << " x = " << m_constraint->getMState1()->getSize() << " xfree = " << m_constraint->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue().size();
+    msg_info() << "mstate2 size = " << m_constraint->getMState2()->getSize() << " x = " << m_constraint->getMState2()->getSize() << " xfree = " << m_constraint->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue().size();
 
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(core::objectmodel::BaseContext* group)
 {
-    sout << "->createResponse(" << group->getName() << ")" << sendl;
+    msg_info() << "->createResponse(" << group->getName() << ")";
     if (!contacts.empty() || !keepAlive())
     {
         activateMappers();
@@ -217,15 +210,15 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
         }
     }
 
-    if (m_constraint!=NULL)
+    if (m_constraint!=nullptr)
     {
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(m_constraint);
         }
         parent = group;
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->addObject(this);
             parent->addObject(m_constraint);
@@ -236,15 +229,15 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::removeResponse()
 {
-    sout << "->removeResponse()" << sendl;
+    msg_info() << "->removeResponse()";
     if (m_constraint)
     {
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(m_constraint);
         }
-        parent = NULL;
+        parent = nullptr;
     }
 }
 

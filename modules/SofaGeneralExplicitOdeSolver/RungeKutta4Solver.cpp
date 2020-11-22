@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
-#include <math.h>
+#include <cmath>
 
 
 namespace sofa
@@ -46,16 +46,11 @@ int RungeKutta4SolverClass = core::RegisterObject("A popular explicit time integ
         .addAlias("RungeKutta4")
         ;
 
-SOFA_DECL_CLASS(RungeKutta4);
-
-
-
 void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
     mop->setImplicit(false); // this solver is explicit only
-    //sout << "RK4 Init"<<sendl;
     // Get the Ids of the state vectors
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
@@ -73,7 +68,6 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     MultiVecDeriv k4v(&vop);
 
     MultiVecCoord newX(&vop);
-    //MultiVecDeriv newV(&vop);
 
     double stepBy2 = double(dt / 2.0);
     double stepBy3 = double(dt / 3.0);
@@ -198,9 +192,6 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
         mop.solveConstraint(vel, core::ConstraintParams::VEL);
     }
 #endif
-
-//	simulation::MechanicalSetPositionAndVelocityVisitor spav(0, core::VecCoordId::position(), core::VecId::velocity());
-//	spav.execute(this->getContext());
 }
 
 

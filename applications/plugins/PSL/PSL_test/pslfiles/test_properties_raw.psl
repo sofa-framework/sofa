@@ -1,0 +1,35 @@
+# This scene is demonstrating the use of args in template.
+# argument defined as "properties" are mapped to data field. The one
+# that don't can be accessed in the template scope through the use of the "args"
+# variable.
+Node : {
+    TestResult : "Success"
+
+    name : "root"
+    properties : {
+        arg : str(root)
+    }
+
+    Template : {
+        name : "Box"
+        properties : {
+            name : None
+            rootNode : None
+        }
+
+        Node : {
+            name : name
+            Python : '''
+                     import Sofa
+                     Sofa.msg_info(self, "Type of passed argument is "+str(rootNode))
+                     '''
+       }
+    }
+
+    Box : {
+        name : "Box1"
+        rootNode : str(type(root))
+    }
+}
+
+

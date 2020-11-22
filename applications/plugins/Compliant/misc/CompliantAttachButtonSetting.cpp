@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,7 +33,6 @@ namespace component
 namespace configurationsetting
 {
 
-SOFA_DECL_CLASS(CompliantAttachButtonSetting)
 int CompliantAttachButtonSettingClass = core::RegisterObject("CompliantAttach (CompliantAttachButtonSetting)")
         .add< CompliantAttachButtonSetting >()
         .addAlias("CompliantAttachButton")
@@ -43,7 +42,7 @@ CompliantAttachButtonSetting::CompliantAttachButtonSetting()
     : compliance(initData(&compliance, (SReal)1e-3, "compliance", "Compliance of the manipulator. 0 is rigid, the bigger the softer. Negative values make no sense."))
     , isCompliance(initData(&isCompliance, false, "isCompliance", "Is the mouse interaction treated as a compliance? (otherwise as a stiffness)"))
     , arrowSize(initData(&arrowSize, SReal(0), "arrowSize", ""))
-    , color(initData(&color, defaulttype::RGBAColor(1,0,0,1), "color", ""))
+    , color(initData(&color, sofa::helper::types::RGBAColor(1,0,0,1), "color", ""))
     , visualmodel(initData(&visualmodel, false, "visualmodel", ""))
 {
 }

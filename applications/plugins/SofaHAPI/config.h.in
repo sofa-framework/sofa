@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,10 +22,10 @@
 #ifndef SOFAHAPI_CONFIG_H
 #define SOFAHAPI_CONFIG_H
 
-#include <SofaGeneral/config.h>
+#include <sofa/config.h>
 
-#define SOFAHAPI_MAJOR_VERSION ${SOFAHAPI_MAJOR_VERSION}
-#define SOFAHAPI_MINOR_VERSION ${SOFAHAPI_MINOR_VERSION}
+#define SOFAHAPI_MAJOR_VERSION @SOFAHAPI_MAJOR_VERSION@
+#define SOFAHAPI_MINOR_VERSION @SOFAHAPI_MINOR_VERSION@
 
 #define SOFA_HAVE_HAPI
 

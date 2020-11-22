@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<!-- A pendulum made of a string of particles connected by distance constraints -->
+<!-- Inspired by the CompliantPendulum.scn from the Compliant plugin -->
+<Node   name="Root" gravity="0 -10 0" time="0" animate="0"  dt="0.01" >
+    <RequiredPlugin name="SofaSparseSolver"/>
+    <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+    <FreeMotionAnimationLoop solveVelocityConstraintFirst="true" />
+    <GenericConstraintSolver tolerance="1e-9" maxIterations="1000"/>
+    <!-- resolution = number of particles (including the fixed one) -->
+    <!-- scale = total length of the pendulum -->
+    <!-- 1m long wire -->
+    <!-- 
+    if the wire is not too much descritized (resolution around 10 or below ) then it remains stable with or 
+    without the implicit formulation of the constraint force 
+    -->
+    <StringMeshCreator name="loader" resolution="20" scale3d="1 1 1" />
+    
+    <Node  name="withImplicitConstraintForce" >
+        <TransformEngine name="translate" input_position="@../loader.position" translation="0 0 0" />
+        <EulerImplicitSolver />
+        <SparseCholeskySolver />
+        <GenericConstraintCorrection />
+
+        <EdgeSetTopologyContainer position="@translate.output_position" edges="@../loader.edges" />
+        <MechanicalObject name="defoDOF" template="Vec3d"  />
+        <EdgeSetGeometryAlgorithms drawEdges="true" />
+        <FixedConstraint indices="0" />
+        <!-- 1 g for the total mass of the wire -->
+        <DiagonalMass  name="mass" totalMass="1e-3"/>
+        <MappingGeometricStiffnessForceField mapping="@./extensionsNode/distanceMapping" />
+        <Node name="extensionsNode" >
+            <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+            <DistanceMapping  name="distanceMapping" />
+            <UniformConstraint template="Vec1d" iterative="false" />
+        </Node>
+    </Node>
+    
+    <Node  name="withoutImplicitConstraintForce" >
+        <TransformEngine name="translate" input_position="@../loader.position" translation="0 0 -2" />
+        <EulerImplicitSolver />
+        <SparseCholeskySolver />
+        <GenericConstraintCorrection />
+        <!-- resolution = number of particles (including the fixed one) -->
+        <!-- scale = total length of the pendulum -->
+        <EdgeSetTopologyContainer position="@translate.output_position" edges="@../loader.edges" />
+        <MechanicalObject name="defoDOF" template="Vec3d"  />
+        <EdgeSetGeometryAlgorithms drawEdges="true" />
+        <FixedConstraint indices="0" />
+        <!-- 1 g for the total mass of the wire -->
+        <DiagonalMass  name="mass" totalMass="1e-3"/>
+        <Node name="extensionsNode" >
+            <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+            <DistanceMapping  name="distanceMapping" />
+            <UniformConstraint template="Vec1d" iterative="false" /> 
+        </Node>
+    </Node>
+    
+</Node>

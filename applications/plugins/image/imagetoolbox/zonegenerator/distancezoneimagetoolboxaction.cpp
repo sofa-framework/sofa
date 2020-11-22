@@ -381,8 +381,6 @@ void DistanceZoneImageToolBoxAction::optionChangeSection(sofa::defaulttype::Vec3
 
 
 
-SOFA_DECL_CLASS(DistanceZoneImageToolBoxAction);
-
 //template class SOFA_IMAGE_GUI_API ImageToolBox<ImageUS>;
 
 

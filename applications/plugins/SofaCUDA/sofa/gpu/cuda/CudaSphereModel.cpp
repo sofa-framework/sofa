@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,11 +31,11 @@ namespace component
 namespace collision
 {
 
-template class SOFA_GPU_CUDA_API TSphereModel<sofa::gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API TSphereModel<sofa::gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API TSphereModel<sofa::gpu::cuda::CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API TSphereModel<sofa::gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace collision
@@ -48,14 +48,12 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaSphereModel)
-
 int CudaSphereModelClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::collision::TSphereModel<CudaVec3fTypes> >()
-        .add< component::collision::TSphereModel<CudaVec3f1Types> >()
+        .add< component::collision::SphereCollisionModel<CudaVec3fTypes> >()
+        .add< component::collision::SphereCollisionModel<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::collision::TSphereModel<CudaVec3dTypes> >()
-        .add< component::collision::TSphereModel<CudaVec3d1Types> >()
+        .add< component::collision::SphereCollisionModel<CudaVec3dTypes> >()
+        .add< component::collision::SphereCollisionModel<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         .addAlias("CudaSphere")
         .addAlias("CudaSphereModel");

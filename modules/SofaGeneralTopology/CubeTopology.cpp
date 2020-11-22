@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,17 +40,17 @@ void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->MeshTopology::parse(arg);
     float scale=1.0f;
-    if (arg->getAttribute("scale")!=NULL)
+    if (arg->getAttribute("scale")!=nullptr)
     {
         scale = arg->getAttributeAsFloat("scale",1.0);
     }
     this->setSize();
-    if (arg->getAttribute("xmin") != NULL &&
-        arg->getAttribute("ymin") != NULL &&
-        arg->getAttribute("zmin") != NULL &&
-        arg->getAttribute("xmax") != NULL &&
-        arg->getAttribute("ymax") != NULL &&
-        arg->getAttribute("zmax") != NULL )
+    if (arg->getAttribute("xmin") != nullptr &&
+        arg->getAttribute("ymin") != nullptr &&
+        arg->getAttribute("zmin") != nullptr &&
+        arg->getAttribute("xmax") != nullptr &&
+        arg->getAttribute("ymax") != nullptr &&
+        arg->getAttribute("zmax") != nullptr )
     {
         float xmin = arg->getAttributeAsFloat("xmin",0);
         float ymin = arg->getAttributeAsFloat("ymin",0);
@@ -63,8 +63,6 @@ void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
     }
     this->setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
 }
-
-SOFA_DECL_CLASS(CubeTopology)
 
 int CubeTopologyClass = core::RegisterObject("Surface of a cube in 3D")
         .add< CubeTopology >()
@@ -127,6 +125,7 @@ void CubeTopology::setSize()
     invalidate();
 
     // FF: add the following functions which seem to be missing, but I am not sure…
+    updatePoints();
     updateEdges();
     updateQuads();
 }
@@ -181,6 +180,18 @@ int CubeTopology::point(int x, int y, int z, Plane p) const
     }
     else
         return x+nx*(y+ny*z);
+}
+
+
+void CubeTopology::updatePoints()
+{
+    SeqPoints& points = *seqPoints.beginEdit();
+    points.resize(nbPoints) ;
+    for(std::size_t i=0;i<nbPoints;i++)
+    {
+        points[i] = getPoint(i);
+    }
+    seqPoints.endEdit();
 }
 
 void CubeTopology::updateEdges()

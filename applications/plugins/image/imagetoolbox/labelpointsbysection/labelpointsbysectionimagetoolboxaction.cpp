@@ -20,7 +20,7 @@ namespace qt
 {
 
 LabelPointsBySectionImageToolBoxAction::LabelPointsBySectionImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent):
-    LabelImageToolBoxAction(lba,parent),tablewidget(NULL),addPoints(false)
+    LabelImageToolBoxAction(lba,parent),tablewidget(nullptr),addPoints(false)
 {
 
 
@@ -547,10 +547,6 @@ void LabelPointsBySectionImageToolBoxAction::saveFileData()
     this->updateData();
     l->saveFile();
 }
-
-
-
-SOFA_DECL_CLASS(LabelPointsBySectionImageToolBoxAction)
 
 
 

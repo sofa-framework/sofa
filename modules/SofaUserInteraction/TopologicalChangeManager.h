@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,7 +32,7 @@
 #include <SofaBaseCollision/SphereModel.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/Node.h>
@@ -56,13 +56,15 @@ class TetrahedronModel;
 class SOFA_USER_INTERACTION_API TopologicalChangeManager
 {
 public:
+    using index_type = sofa::defaulttype::index_type;
+
     TopologicalChangeManager();
     ~TopologicalChangeManager();
 
     /// Handles Removing of topological element (from any type of topology)
-    int removeItemsFromCollisionModel(sofa::core::CollisionElementIterator) const;
-    int removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const int& index) const;
-    int removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const helper::vector<int>& indices) const;
+    index_type removeItemsFromCollisionModel(sofa::core::CollisionElementIterator) const;
+    index_type removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const index_type& index) const;
+    index_type removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const helper::vector<index_type>& indices) const;
 
 
     /** Handles Cutting (activated only for a triangular topology)
@@ -104,10 +106,10 @@ public:
      * @return bool - true if incision has been performed.
      */
     bool incisionCollisionModel(sofa::core::CollisionModel* model1,
-                                unsigned int idx1,
+                                index_type idx1,
                                 const defaulttype::Vector3& firstPoint,
                                 sofa::core::CollisionModel *model2,
-                                unsigned int idx2,
+                                index_type idx2,
                                 const defaulttype::Vector3& secondPoint,
                                 int snapingValue = 0,
                                 int snapingBorderValue = 0);
@@ -137,23 +139,20 @@ private:
      *
      * @return bool - true if incision has been performed.
      */
-    bool incisionTriangleModel(TriangleModel* model1,
-                               unsigned int idx1,
+    bool incisionTriangleModel(TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model1,
+                               index_type idx1,
                                const defaulttype::Vector3& firstPoint,
-                               TriangleModel *model2,
-                               unsigned int idx2,
+                               TriangleCollisionModel<sofa::defaulttype::Vec3Types> *model2,
+                               index_type idx2,
                                const defaulttype::Vector3& secondPoint,
                                int snapingValue = 0,
                                int snapingBorderValue = 0);
 
 
+    index_type removeItemsFromTriangleModel(sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<index_type>& indices) const;
+    index_type removeItemsFromPointModel(sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<index_type>& indices) const;
+    index_type removeItemsFromSphereModel(sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<index_type>& indices) const;
 
-    int removeItemsFromTriangleModel(sofa::component::collision::TriangleModel* model, const helper::vector<int>& indices) const;
-
-#if 0
-    int removeItemsFromTetrahedronModel(sofa::component::collision::TetrahedronModel* model, const helper::vector<int>& indices) const;
-#endif
-    int removeItemsFromSphereModel(sofa::component::collision::SphereModel* model, const helper::vector<int>& indices) const;
 
 private:
     /// Global variables to register intermediate informations for point to point incision.(incision along one segment in a triangular mesh)

@@ -2,7 +2,7 @@
     <VisualStyle displayFlags="showBehaviorModels"/>
 
     <MeshObjLoader name="temperatureLoader" filename="mesh/beamTemperatures.obj" />
-    <RegularGrid name="grid" n="21 11 11"  p0="0 0 0" min="0 0 0" max="1 0.5 0.5" drawHexahedra="1" tags="geom"/>
+    <RegularGridTopology name="grid" n="21 11 11"  p0="0 0 0" min="0 0 0" max="1 0.5 0.5" drawHexahedra="1" tags="geom"/>
     <MechanicalObject template="Vec3d"  name="gridDOFs" tags="geom" />
     <BoxROI name="box-dirac" box="-0.01 -0.01 -0.01 0.01 0.51 0.51" drawBoxes="1" position="@gridDOFs.position"/>
     <BoxROI name="box-fixed" box="0.99 -0.01 -0.01 1.01 0.51 0.51" drawBoxes="1" position="@gridDOFs.position"/>
@@ -13,7 +13,7 @@
         <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" tags="meca"/>
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  tags="meca"/>
         <Hexa2TetraTopologicalMapping name="default28" swapping="0" tags="meca"/>
-        <TriangleModel name="collisionmodel" />
+        <TriangleCollisionModel name="collisionmodel" />
 
         <Node name="Temperature" gravity="0 0 0"  >
             <EulerImplicitSolver name="Euler" firstOrder="1" tags="heat" rayleighStiffness="0.1" rayleighMass="0.1" />

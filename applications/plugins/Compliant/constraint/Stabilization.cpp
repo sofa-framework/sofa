@@ -8,7 +8,6 @@ namespace component {
 namespace odesolver {
 
 
-SOFA_DECL_CLASS(Stabilization)
 int StabilizationClass = core::RegisterObject("Kinematic constraint stabilization").add< Stabilization >();
 
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,21 +23,12 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_BILATERALCONSTRAINTRESOLUTION_H
 #include "config.h"
 
-#include <sofa/core/behavior/PairInteractionConstraint.h>
-#include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/behavior/BaseConstraint.h>
 
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-
-#include <deque>
+#include <Eigen/Core>
+#include <Eigen/Cholesky>
 
 namespace sofa
 {
@@ -57,24 +48,26 @@ using sofa::core::behavior::ConstraintResolution ;
 class BilateralConstraintResolution : public ConstraintResolution
 {
 public:
-    BilateralConstraintResolution(double* initF=NULL) : _f(initF) {}
-    virtual void resolution(int line, double** w, double* d, double* force, double *dfree)
+    BilateralConstraintResolution(double* initF=nullptr) 
+        : ConstraintResolution(1)
+        , _f(initF) {}
+    void resolution(int line, double** w, double* d, double* force, double *dfree) override
     {
         SOFA_UNUSED(dfree);
         force[line] -= d[line] / w[line][line];
     }
 
-    virtual void init(int line, double** /*w*/, double* force)
+    void init(int line, double** /*w*/, double* force) override
     {
         if(_f) { force[line] = *_f; }
     }
 
-    virtual void initForce(int line, double* force)
+    void initForce(int line, double* force) override
     {
         if(_f) { force[line] = *_f; }
     }
 
-    void store(int line, double* force, bool /*convergence*/)
+    void store(int line, double* force, bool /*convergence*/) override
     {
         if(_f) *_f = force[line];
     }
@@ -87,8 +80,12 @@ class BilateralConstraintResolution3Dof : public ConstraintResolution
 {
 public:
 
-    BilateralConstraintResolution3Dof(sofa::defaulttype::Vec3d* vec=NULL) : _f(vec) { nbLines=3; }
-    virtual void init(int line, double** w, double *force)
+    BilateralConstraintResolution3Dof(sofa::defaulttype::Vec3d* vec = nullptr)
+        : ConstraintResolution(3)
+        , _f(vec)
+    {
+    }
+    void init(int line, double** w, double *force) override
     {
         sofa::defaulttype::Mat<3,3,double> temp;
         temp[0][0] = w[line][line];
@@ -110,7 +107,7 @@ public:
         }
     }
 
-    virtual void initForce(int line, double* force)
+    void initForce(int line, double* force) override
     {
         if(_f)
         {
@@ -119,7 +116,7 @@ public:
         }
     }
 
-    virtual void resolution(int line, double** /*w*/, double* d, double* force, double * dFree)
+    void resolution(int line, double** /*w*/, double* d, double* force, double * dFree) override
     {
         SOFA_UNUSED(dFree);
         for(int i=0; i<3; i++)
@@ -129,7 +126,7 @@ public:
         }
     }
 
-    void store(int line, double* force, bool /*convergence*/)
+    void store(int line, double* force, bool /*convergence*/) override
     {
         if(_f)
         {
@@ -143,57 +140,34 @@ protected:
     sofa::defaulttype::Vec3d* _f;
 };
 
-template <int N>
 class BilateralConstraintResolutionNDof : public ConstraintResolution
 {
 public:
-    BilateralConstraintResolutionNDof(sofa::defaulttype::Vec<N, double>* vec=NULL) : _f(vec) { nbLines=N; }
-    virtual void init(int line, double** w, double *force)
+    BilateralConstraintResolutionNDof(unsigned blockSize ) 
+    : ConstraintResolution(blockSize)
+    , wBlock(Eigen::MatrixXd(blockSize, blockSize))
     {
-        sofa::defaulttype::Mat<N,N,double> temp;
-        for(int i=0; i<N; i++)
-            for(int j=0; j<N; j++)
-                temp[i][j] = w[line+i][line+j];
-
-        invertMatrix(invW, temp);
-
-        if(_f)
+    }
+    void init(int line, double** w, double * /*force*/) override
+    {
+        for (auto i = 0; i < wBlock.rows(); ++i)   
         {
-            for(int i=0; i<N; i++)
-                force[line+i] = (*_f)[i];
+            wBlock.row(i) = Eigen::VectorXd::Map(&w[line + i][line], wBlock.cols());
         }
+        wBlockInv.compute(wBlock);
     }
 
-    virtual void initForce(int line, double* force)
+    void resolution(int line, double** /*w*/, double* displacement, double* force, double* /*dFree*/) override
     {
-        if(_f)
-        {
-            for(int i=0; i<N; i++)
-                force[line+i] = (*_f)[i];
-        }
-    }
-
-    virtual void resolution(int line, double** /*w*/, double* d, double* force, double* /*dFree*/)
-    {
-        for(int i=0; i<N; i++)
-        {
-            for(int j=0; j<N; j++)
-                force[line+i] -= d[line+j] * invW[i][j];
-        }
-    }
-
-    void store(int line, double* force, bool /*convergence*/)
-    {
-        if(_f)
-        {
-            for(int i=0; i<N; i++)
-                (*_f)[i] = force[line+i];
-        }
+        Eigen::Map< Eigen::VectorXd > f(&force[line], wBlock.cols());
+        Eigen::Map< Eigen::VectorXd > d(&displacement[line], wBlock.cols());
+        Eigen::VectorXd f_local = wBlockInv.solve(d);
+        f -= f_local;
     }
 
 protected:
-    sofa::defaulttype::Mat<N,N,double> invW;
-    sofa::defaulttype::Vec<N, double>* _f;
+    Eigen::MatrixXd  wBlock;
+    Eigen::LDLT< Eigen::MatrixXd > wBlockInv;
 };
 
 } // namespace bilateralconstraintresolution

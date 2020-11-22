@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.1)
-project(newmat)
+cmake_minimum_required(VERSION 3.12)
+project(newmat VERSION 0.1)
 
 set(HEADER_FILES
     newmat/boolean.h
@@ -39,15 +39,12 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_compile_definitions(${PROJECT_NAME} PUBLIC "use_namespace")
 if(NOT DEFINED SOFA_WITH_DOUBLE)
     target_compile_definitions(${PROJECT_NAME} PUBLIC "USING_FLOAT")
 else()
     target_compile_definitions(${PROJECT_NAME} PUBLIC "USING_DOUBLE")
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 # The code must be relocatable if we want to link a shared library against it
 if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
@@ -56,4 +53,10 @@ endif()
 
 
 include(../../SofaFramework/SofaMacros.cmake)
-sofa_create_package(Newmat 0 ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_create_package_with_targets(
+    PACKAGE_NAME Newmat
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "."
+    INCLUDE_INSTALL_DIR "extlibs/Newmat"
+    )

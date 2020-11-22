@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,6 @@
 #include <SofaConstraint/FixedLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 
@@ -42,7 +41,7 @@ namespace constraintset
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedLMConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int /*nbPoints*/, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+bool FixedLMConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(index_type /*nbPoints*/, const sofa::helper::vector< index_type > &, const sofa::helper::vector< double >& )
 {
     if (fc)
     {
@@ -56,13 +55,24 @@ bool FixedLMConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsig
 
 // Define RemovalFunction
 template< class DataTypes>
-void FixedLMConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void FixedLMConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(index_type pointIndex, value_type &)
 {
     if (fc)
     {
-        fc->removeConstraint((unsigned int) pointIndex);
+        fc->removeConstraint((index_type) pointIndex);
     }
     return;
+}
+
+template <class DataTypes>
+FixedLMConstraint<DataTypes>::FixedLMConstraint(MechanicalState *dof)
+    : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
+    , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
+    , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_pointHandler(nullptr)
+{
+    
 }
 
 template <class DataTypes>
@@ -73,14 +83,14 @@ void FixedLMConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void FixedLMConstraint<DataTypes>::addConstraint(unsigned int index)
+void FixedLMConstraint<DataTypes>::addConstraint(index_type index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void FixedLMConstraint<DataTypes>::removeConstraint(unsigned int index)
+void FixedLMConstraint<DataTypes>::removeConstraint(index_type index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -95,7 +105,7 @@ void FixedLMConstraint<DataTypes>::initFixedPosition()
     const SetIndexArray & indices = this->f_indices.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
-        unsigned int index=*it;
+        index_type index=*it;
         this->restPosition.insert(std::make_pair(index, x[index]));
     }
 }
@@ -105,11 +115,27 @@ void FixedLMConstraint<DataTypes>::init()
 {
     core::behavior::LMConstraint<DataTypes,DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology, pointHandler);
-    f_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize functions and parameters
+        m_pointHandler = new FCPointHandler(this, &f_indices);
+        f_indices.createTopologicalEngine(_topology, m_pointHandler);
+        f_indices.registerTopologicalData();
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 
 
     X[0]=1; X[1]=0; X[2]=0;
@@ -135,7 +161,7 @@ void FixedLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
-        const unsigned int index=*it;
+        const index_type index=*it;
 
         //Constraint degree of freedom along X direction
         c->writeLine(cIndex).addCol(index,X);
@@ -163,7 +189,7 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& lineNu
     unsigned int counter=0;
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it,++counter)
     {
-        const unsigned int index = *it;
+        const index_type index = *it;
 
         core::behavior::ConstraintGroup *constraint = this->addGroupConstraint(Order);
         SReal correctionX=0,correctionY=0,correctionZ=0;
@@ -212,13 +238,10 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x =this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
-    //serr<<"FixedLMConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
-
     const SetIndexArray & indices = f_indices.getValue();
 
     std::vector< defaulttype::Vector3 > points;
     defaulttype::Vector3 point;
-    //serr<<"FixedLMConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
@@ -235,17 +258,6 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
         vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 }
-
-// Specialization for rigids
-#ifndef SOFA_FLOAT
-template <>
-void FixedLMConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void FixedLMConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-
 
 } // namespace constraintset
 

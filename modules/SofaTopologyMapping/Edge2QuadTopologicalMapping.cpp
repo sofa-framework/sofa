@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,7 +36,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
-#include <math.h>
+#include <cmath>
 #include <sofa/defaulttype/Vec.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -56,8 +56,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 
-SOFA_DECL_CLASS(Edge2QuadTopologicalMapping)
-
 // Register in the Factory
 int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of mapping where EdgeSetTopology is converted to QuadSetTopology")
         .add< Edge2QuadTopologicalMapping >()
@@ -65,6 +63,16 @@ int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
         ;
 
 // Implementation
+
+Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
+    : TopologicalMapping()
+    , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
+    , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
+    , edgeList(initData(&edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
+    , flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
+    , m_radiusContainer(nullptr)
+{
+}
 
 void Edge2QuadTopologicalMapping::init()
 {
@@ -74,16 +82,12 @@ void Edge2QuadTopologicalMapping::init()
         this->getContext()->get(m_radiusContainer);
 
         if(!m_radiusContainer)
-            sout << "No radius defined" << sendl;
+            msg_info() << "No radius defined";
     }
  
 
     unsigned int N = m_nbPointsOnEachCircle.getValue();
     double rho = m_radius.getValue();
-
-    
-
-    //sout << "INFO_print : init Edge2QuadTopologicalMapping" << sendl;
 
     // INITIALISATION of QUADULAR mesh from EDGE mesh :
 
@@ -93,12 +97,12 @@ void Edge2QuadTopologicalMapping::init()
     if (fromModel)
     {
 
-        sout << "INFO_print : Edge2QuadTopologicalMapping - from = edge" << sendl;
+        msg_info() << "INFO_print : Edge2QuadTopologicalMapping - from = edge";
 
         if (toModel)
         {
 
-            sout << "INFO_print : Edge2QuadTopologicalMapping - to = quad" << sendl;
+            msg_info() << "INFO_print : Edge2QuadTopologicalMapping - to = quad";
 
             QuadSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
@@ -108,7 +112,7 @@ void Edge2QuadTopologicalMapping::init()
 
             const sofa::helper::vector<Edge> &edgeArray=fromModel->getEdges();
 
-            sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+            sofa::helper::vector <index_type>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
             Loc2GlobVec.clear();
             In2OutMap.clear();
@@ -163,11 +167,11 @@ void Edge2QuadTopologicalMapping::init()
 
             // CREATION of the quads based on the the circles
             sofa::helper::vector< Quad > quads_to_create;
-            sofa::helper::vector< unsigned int > quadsIndexList;
+            sofa::helper::vector< index_type > quadsIndexList;
             if(edgeList.getValue().size()==0)
             {
 
-                int nb_elems = toModel->getNbQuads();
+                unsigned int nb_elems = (unsigned int)toModel->getNbQuads();
 
                 for (unsigned int i=0; i<edgeArray.size(); ++i)
                 {
@@ -175,7 +179,7 @@ void Edge2QuadTopologicalMapping::init()
                     unsigned int p0 = edgeArray[i][0];
                     unsigned int p1 = edgeArray[i][1];
 
-                    sofa::helper::vector<unsigned int> out_info;
+                    sofa::helper::vector<index_type> out_info;
 
                     for(unsigned int j=0; j<N; ++j)
                     {
@@ -200,7 +204,7 @@ void Edge2QuadTopologicalMapping::init()
                         }
 
                         Loc2GlobVec.push_back(i);
-                        out_info.push_back(Loc2GlobVec.size()-1);
+                        out_info.push_back((unsigned int)Loc2GlobVec.size()-1);
                     }
 
 
@@ -218,7 +222,7 @@ void Edge2QuadTopologicalMapping::init()
                     unsigned int p0 = edgeArray[i][0];
                     unsigned int p1 = edgeArray[i][1];
 
-                    sofa::helper::vector<unsigned int> out_info;
+                    sofa::helper::vector<index_type> out_info;
 
                     for(unsigned int j=0; j<N; ++j)
                     {
@@ -233,7 +237,7 @@ void Edge2QuadTopologicalMapping::init()
                         else
                             to_tstm->addQuadProcess(Quad((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3));
                         Loc2GlobVec.push_back(i);
-                        out_info.push_back(Loc2GlobVec.size()-1);
+                        out_info.push_back((unsigned int)Loc2GlobVec.size()-1);
                     }
 
                     In2OutMap[i]=out_info;
@@ -247,13 +251,16 @@ void Edge2QuadTopologicalMapping::init()
             //to_tstm->notifyEndingEvent();
             to_tstm->propagateTopologicalChanges();
             Loc2GlobDataVec.endEdit();
+
+            // Need to fully init the target topology
+            to_tstm->init();
         }
 
     }
 }
 
 
-unsigned int Edge2QuadTopologicalMapping::getFromIndex(unsigned int ind)
+index_type Edge2QuadTopologicalMapping::getFromIndex(index_type ind)
 {
     return ind; // identity
 }
@@ -276,7 +283,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
             std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
             std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
-            sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+            sofa::helper::vector <index_type>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
             while( itBegin != itEnd )
             {
@@ -287,7 +294,6 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::ENDING_EVENT:
                 {
-                    //sout << "INFO_print : TopologicalMapping - ENDING_EVENT" << sendl;
                     to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
                     to_tstm->propagateTopologicalChanges();
@@ -296,17 +302,16 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::EDGESADDED:
                 {
-                    //sout << "INFO_print : TopologicalMapping - EDGESADDED" << sendl;
                     if (fromModel)
                     {
 
                         const sofa::helper::vector<Edge> &edgeArray=fromModel->getEdges();
 
-                        const sofa::helper::vector<unsigned int> &tab = ( static_cast< const EdgesAdded *>( *itBegin ) )->edgeIndexArray;
+                        const auto &tab = ( static_cast< const EdgesAdded *>( *itBegin ) )->edgeIndexArray;
 
                         sofa::helper::vector< Quad > quads_to_create;
-                        sofa::helper::vector< unsigned int > quadsIndexList;
-                        int nb_elems = toModel->getNbQuads();
+                        sofa::helper::vector< index_type > quadsIndexList;
+                        std::size_t nb_elems = toModel->getNbQuads();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
                         {
@@ -315,7 +320,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             unsigned int p0 = edgeArray[k][0];
                             unsigned int p1 = edgeArray[k][1];
 
-                            sofa::helper::vector<unsigned int> out_info;
+                            sofa::helper::vector<index_type> out_info;
 
                             for(unsigned int j=0; j<N; ++j)
                             {
@@ -335,7 +340,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                 nb_elems+=1;
 
                                 Loc2GlobVec.push_back(k);
-                                out_info.push_back(Loc2GlobVec.size()-1);
+                                out_info.push_back((unsigned int)Loc2GlobVec.size()-1);
 
                                 //to_tstm->addQuadsProcess(quads_to_create) ;
                                 //to_tstm->addQuadsWarning(quads_to_create.size(), quads_to_create, quadsIndexList) ;
@@ -353,26 +358,23 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 }
                 case core::topology::EDGESREMOVED:
                 {
-                    //sout << "INFO_print : TopologicalMapping - EDGESREMOVED" << sendl;
-
                     if (fromModel)
                     {
+                        const auto &tab = ( static_cast< const EdgesRemoved *>( *itBegin ) )->getArray();
 
-                        const sofa::helper::vector<unsigned int> &tab = ( static_cast< const EdgesRemoved *>( *itBegin ) )->getArray();
+                        unsigned int last = (unsigned int)fromModel->getNbEdges() - 1;
 
-                        int last= fromModel->getNbEdges() - 1;
+                        index_type ind_tmp;
 
-                        unsigned int ind_tmp;
-
-                        sofa::helper::vector<unsigned int> ind_real_last;
-                        int ind_last=toModel->getNbQuads();
+                        sofa::helper::vector<index_type> ind_real_last;
+                        index_type ind_last = toModel->getNbQuads();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
                         {
                             unsigned int k = tab[i];
-                            sofa::helper::vector<unsigned int> ind_k;
+                            sofa::helper::vector<index_type> ind_k;
 
-                            std::map<unsigned int, sofa::helper::vector<unsigned int> >::iterator iter_1 = In2OutMap.find(k);
+                            auto iter_1 = In2OutMap.find(k);
                             if(iter_1 != In2OutMap.end())
                             {
 
@@ -387,13 +389,13 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                 ind_k = In2OutMap[k];
                                 ind_real_last = ind_k;
 
-                                std::map<unsigned int, sofa::helper::vector<unsigned int> >::iterator iter_2 = In2OutMap.find(last);
+                                auto iter_2 = In2OutMap.find(last);
                                 if(iter_2 != In2OutMap.end())
                                 {
 
                                     ind_real_last = In2OutMap[last];
 
-                                    if((int) k != last)
+                                    if (k != last)
                                     {
 
                                         In2OutMap.erase(In2OutMap.find(k));
@@ -413,16 +415,16 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                 }
                                 else
                                 {
-                                    sout << "INFO_print : Edge2QuadTopologicalMapping - In2OutMap should have the edge " << last << sendl;
+                                    msg_info() << "INFO_print : Edge2QuadTopologicalMapping - In2OutMap should have the edge " << last;
                                 }
 
-                                if( (int) ind_k[N-1] != ind_last)
+                                if (ind_k[N-1] != ind_last)
                                 {
 
                                     In2OutMap.erase(In2OutMap.find(Loc2GlobVec[ind_last]));
                                     In2OutMap[Loc2GlobVec[ind_last]] = ind_k;
 
-                                    sofa::helper::vector<unsigned int> out_info;
+                                    sofa::helper::vector<index_type> out_info;
                                     for(unsigned int j=0; j<N; ++j)
                                     {
                                         out_info.push_back(ind_last-j);
@@ -442,7 +444,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                                     ind_last = ind_last-1;
 
-                                    if( (int) ind_k[N-1-j] != ind_last)
+                                    if (ind_k[N-1-j] != ind_last)
                                     {
 
                                         ind_tmp = Loc2GlobVec[ind_k[N-1-j]];
@@ -455,7 +457,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                                 Loc2GlobVec.resize( Loc2GlobVec.size() - N );
 
-                                sofa::helper::vector< unsigned int > quads_to_remove;
+                                sofa::helper::vector< index_type > quads_to_remove;
                                 for(unsigned int j=0; j<N; ++j)
                                 {
                                     quads_to_remove.push_back(ind_list[j]);
@@ -466,7 +468,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             }
                             else
                             {
-                                sout << "INFO_print : Edge2QuadTopologicalMapping - In2OutMap should have the edge " << k << sendl;
+                                msg_info() << "INFO_print : Edge2QuadTopologicalMapping - In2OutMap should have the edge " << k;
                             }
 
                             --last;
@@ -478,13 +480,11 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::POINTSRENUMBERING:
                 {
-                    //sout << "INFO_print : Edge2QuadTopologicalMapping - POINTSRENUMBERING" << sendl;
+                    const auto &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
+                    const auto &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
-                    const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
-                    const sofa::helper::vector<unsigned int> &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
-
-                    sofa::helper::vector<unsigned int> indices;
-                    sofa::helper::vector<unsigned int> inv_indices;
+                    sofa::helper::vector<index_type> indices;
+                    sofa::helper::vector<index_type> inv_indices;
 
                     for(unsigned int i = 0; i < tab.size(); ++i)
                     {
@@ -494,12 +494,10 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             indices.push_back(tab[i]*N + j);
                             inv_indices.push_back(inv_tab[i]*N + j);
                         }
-
-                        //sout << "INFO_print : Edge2QuadTopologicalMapping - renumber point = " << tab[i] << sendl;
                     }
 
-                    sofa::helper::vector<unsigned int>& tab_indices = indices;
-                    sofa::helper::vector<unsigned int>& inv_tab_indices = inv_indices;
+                    sofa::helper::vector<index_type>& tab_indices = indices;
+                    sofa::helper::vector<index_type>& inv_tab_indices = inv_indices;
 
                     to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, true);
                     to_tstm->propagateTopologicalChanges();
@@ -510,18 +508,15 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::POINTSADDED:
                 {
-                    //sout << "INFO_print : Edge2QuadTopologicalMapping - POINTSADDED" << sendl;
-
                     const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
 
-                    unsigned int to_nVertices = ta->getNbAddedVertices() * N;
-                    sofa::helper::vector< sofa::helper::vector< unsigned int > > to_ancestorsList;
+                    unsigned int to_nVertices = (unsigned int)ta->getNbAddedVertices() * N;
+                    sofa::helper::vector< sofa::helper::vector< index_type > > to_ancestorsList;
                     sofa::helper::vector< sofa::helper::vector< double > > to_coefs;
 
                     for(unsigned int i =0; i < ta->getNbAddedVertices(); i++)
                     {
-
-                        sofa::helper::vector< unsigned int > my_ancestors;
+                        sofa::helper::vector< index_type > my_ancestors;
                         sofa::helper::vector< double > my_coefs;
 
                         for(unsigned int j =0; j < N; j++)

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,9 +22,14 @@
 #ifndef OPTITRACKNATNET_CONFIG_H
 #define OPTITRACKNATNET_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#ifdef _WIN32
+#  define WIN32_LEAN_AND_MEAN
+#endif
+
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_OPTITRACKNATNET
+#  define SOFA_TARGET OptiTrackNatNet
 #  define SOFA_OPTITRACKNATNET_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_OPTITRACKNATNET_API  SOFA_IMPORT_DYNAMIC_LIBRARY

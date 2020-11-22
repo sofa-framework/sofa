@@ -26,7 +26,7 @@ namespace mapping {
 
         Data<bool> d_constant; ///< If constant, the Jacobian and Hessian are build once for all during 'init' (false by default)
 
-        virtual void init() {
+        virtual void init() override {
             if( d_constant.getValue() )
             {
                 in_pos_type in_pos = this->in_pos();
@@ -39,7 +39,7 @@ namespace mapping {
 
         virtual void apply(const core::MechanicalParams*,
                            Data<typename Inherit1::OutVecCoord>& out,
-                           const Data<typename Inherit1::InVecCoord>& in) {
+                           const Data<typename Inherit1::InVecCoord>& in) override {
             out_pos_type out_pos(out);
             in_pos_type in_pos(in);
 
@@ -47,7 +47,7 @@ namespace mapping {
             if( !d_constant.getValue() ) this->assemble( in_pos );
         }
 
-        virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId childForce ) {
+        virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId childForce ) override {
             in_pos_type in_pos = this->in_pos();
             if( !d_constant.getValue() ) assemble_hessian( in_pos );
             this->assemble_geometric( in_pos, this->out_force( childForce ) );
@@ -66,7 +66,7 @@ namespace mapping {
         typedef typename Inherit1::out_pos_type out_pos_type;
 
         // to remove some warnings
-        virtual void apply(out_pos_type& out, const in_pos_type& in ) = 0;
+        virtual void apply(out_pos_type& out, const in_pos_type& in ) override = 0 ;
 
         /// The Hessian can be constant, while geometric stiffness is not:
         /// K = Hessian * out_force

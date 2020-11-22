@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,6 +61,7 @@ class ProjectDirectionConstraint : public core::behavior::ProjectiveConstraintSe
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ProjectDirectionConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
+    using index_type = sofa::defaulttype::index_type;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
@@ -72,7 +73,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<unsigned int> Indices;
+    typedef helper::vector<index_type> Indices;
     typedef sofa::defaulttype::Vector3 Vector3;
     typedef sofa::component::topology::PointSubsetData< Indices > IndexSubsetData;
     typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
@@ -91,6 +92,8 @@ public:
     Data<SReal> f_drawSize;    ///< The size of the square used to display the constrained particles
     Data<CPos> f_direction;    ///< The direction of the line. Will be normalized by init()
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<ProjectDirectionConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     ProjectDirectionConstraintInternalData<DataTypes>* data;
@@ -101,12 +104,12 @@ protected:
 
 public:
     void clearConstraints();
-    void addConstraint(unsigned int index);
-    void removeConstraint(unsigned int index);
+    void addConstraint(index_type index);
+    void removeConstraint(index_type index);
 
     // -- Constraint interface
-    virtual void init() override;
-    virtual void reinit() override;
+    void init() override;
+    void reinit() override;
 
     void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
@@ -118,10 +121,10 @@ public:
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 
     /// Project the the given matrix (Experimental API, see the spec in sofa::core::behavior::BaseProjectiveConstraintSet).
-    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
+    void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
     class FCPointHandler : public component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, Indices >
@@ -134,44 +137,29 @@ public:
 
 
         using component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, Indices >::applyDestroyFunction;
-        void applyDestroyFunction(unsigned int /*index*/, core::objectmodel::Data<value_type>& /*T*/);
+        void applyDestroyFunction(index_type /*index*/, core::objectmodel::Data<value_type>& /*T*/);
 
 
-        bool applyTestCreateFunction(unsigned int /*index*/,
-                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+        bool applyTestCreateFunction(index_type /*index*/,
+                const sofa::helper::vector< index_type > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
         ProjectDirectionConstraint<DataTypes> *fc;
     };
 
 protected :
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 
     SparseMatrix jacobian; ///< projection matrix in local state
     SparseMatrix J;        ///< auxiliary variable
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec2dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec1dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec6dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec2fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec1fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec6fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Rigid2fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<defaulttype::Vec2Types>;
+
 #endif
 
 } // namespace projectiveconstraintset

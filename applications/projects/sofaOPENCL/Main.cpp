@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -29,12 +29,12 @@
 #include <SofaSimulationTree/TreeSimulation.h>
 #include <SofaSimulationTree/GNode.h>
 #include <SofaSimulationTree/init.h>
-#include <SofaComponentMain/init.h>
+#include <SofaMain/init.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/config.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/glut.h>

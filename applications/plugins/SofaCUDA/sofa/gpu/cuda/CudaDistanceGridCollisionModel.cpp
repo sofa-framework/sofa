@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,19 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifdef SOFA_HAVE_GLEW
-#include <GL/glew.h>
-#endif
-#ifdef SOFA_HAVE_MINIFLOWVR
-    #include <flowvr/render/mesh.h>
-#endif // SOFA_HAVE_MINIFLOWVR
+
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <fstream>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/rmath.h>
+#include <SofaBaseCollision/CubeModel.h>
+#if SOFACUDA_HAVE_MINIFLOWVR
+    #include <flowvr/render/mesh.h>
+#endif // SOFACUDA_HAVE_MINIFLOWVR
+#include <GL/glew.h>
+#include <fstream>
 
 namespace sofa
 {
@@ -41,8 +40,6 @@ namespace gpu
 
 namespace cuda
 {
-
-SOFA_DECL_CLASS(CudaDistanceGridCollisionModel)
 
 int CudaRigidDistanceGridCollisionModelClass = core::RegisterObject("GPU-based grid distance field using CUDA")
         .add< CudaRigidDistanceGridCollisionModel >()
@@ -139,7 +136,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
             grid->sampleSurface(sampling);
         return grid;
     }
-#ifdef SOFA_HAVE_MINIFLOWVR
+#if SOFACUDA_HAVE_MINIFLOWVR
     else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
     {
         flowvr::render::Mesh mesh;
@@ -199,7 +196,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
         std::cout << "Distance grid creation DONE."<<std::endl;
         return grid;
     }
-#endif // SOFA_HAVE_MINIFLOWVR
+#endif // SOFACUDA_HAVE_MINIFLOWVR
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
@@ -244,12 +241,12 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
         grid->meshPts.resize(vertices.size());
         for(unsigned int i=0; i<vertices.size(); i++)
             grid->meshPts[i] = vertices[i]*scale;
-        const sofa::helper::vector<sofa::helper::vector<sofa::helper::vector<int> > > & facets = mesh->getFacets();
+        const auto & facets = mesh->getFacets();
         int nbt = 0;
         int nbq = 0;
         for (unsigned int i=0; i<facets.size(); i++)
         {
-            const sofa::helper::vector<int>& pts = facets[i][0];
+            const auto& pts = facets[i][0];
             if (pts.size() == 4)
                 ++nbq;
             else if (pts.size() >= 3)
@@ -261,7 +258,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
         nbq=0;
         for (unsigned int i=0; i<facets.size(); i++)
         {
-            const sofa::helper::vector<int>& pts = facets[i][0];
+            const auto& pts = facets[i][0];
             if (pts.size() == 4)
                 grid->meshQuads[nbq++] = sofa::core::topology::BaseMeshTopology::Quad(pts[0],pts[1],pts[2],pts[3]);
             else if (pts.size() >= 3)
@@ -432,7 +429,6 @@ void CudaDistanceGrid::calcCubeDistance(Real dim, int np)
 /// Compute distance field from given mesh
 void CudaDistanceGrid::calcDistance()
 {
-#ifdef SOFA_HAVE_GLEW
 
     if (GLEW_EXT_framebuffer_object && GLEW_ARB_vertex_buffer_object)
     {
@@ -476,10 +472,6 @@ void CudaDistanceGrid::calcDistance()
         std::cerr << "ERROR: Unsupported OpenGL extensions EXT_framebuffer_object ARB_vertex_buffer_object" << std::endl;
     }
 
-#else
-    std::cerr << "ERROR: CudaDistanceGrid::calcDistance requires GLEW to access OpenGL extensions" << std::endl;
-
-#endif
 }
 
 CudaDistanceGrid* CudaDistanceGrid::loadShared(const std::string& filename, double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)
@@ -570,13 +562,13 @@ void CudaRigidDistanceGridCollisionModel::init()
     std::cout << "< CudaRigidDistanceGridCollisionModel::init()"<<std::endl;
 }
 
-void CudaRigidDistanceGridCollisionModel::resize(int s)
+void CudaRigidDistanceGridCollisionModel::resize(std::size_t s)
 {
     this->core::CollisionModel::resize(s);
     elems.resize(s);
 }
 
-void CudaRigidDistanceGridCollisionModel::setGrid(CudaDistanceGrid* surf, int index)
+void CudaRigidDistanceGridCollisionModel::setGrid(CudaDistanceGrid* surf, index_type index)
 {
     if (elems[index].grid == surf) return;
     if (elems[index].grid!=NULL) elems[index].grid->release();
@@ -584,7 +576,7 @@ void CudaRigidDistanceGridCollisionModel::setGrid(CudaDistanceGrid* surf, int in
     modified = true;
 }
 
-void CudaRigidDistanceGridCollisionModel::setNewState(int index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
+void CudaRigidDistanceGridCollisionModel::setNewState(index_type index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
 {
     grid->addRef();
     if (elems[index].prevGrid!=NULL)
@@ -605,12 +597,12 @@ void CudaRigidDistanceGridCollisionModel::setNewState(int index, double dt, Cuda
     modified = true;
 }
 
-using sofa::component::collision::CubeModel;
+using sofa::component::collision::CubeCollisionModel;
 
 /// Create or update the bounding volume hierarchy.
 void CudaRigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = this->createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = this->createPrevious<CubeCollisionModel>();
 
     if (!modified && !isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
@@ -680,8 +672,9 @@ void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams*
         getPrevious()->draw(vparams);
 }
 
-void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,int index)
+void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* , index_type index)
 {
+#ifndef SOFA_NO_OPENGL
     if (elems[index].isTransformed)
     {
         glPushMatrix();
@@ -811,6 +804,7 @@ void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams*
     {
         glPopMatrix();
     }
+#endif // SOFA_NO_OPENGL
 }
 
 

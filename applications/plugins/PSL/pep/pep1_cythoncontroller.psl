@@ -1,0 +1,15 @@
+/// I this PEP we are proposing to define a Cython controller implemented using the pyximport
+/// This can make the whole system transparent but allows to write high performance code from
+/// the client code language.
+Node : {
+    name : "father"
+
+    CythonController : {
+            name : MyController
+            onBeginAnimationStep: '''
+                cdef float f
+                print(f)
+            '''
+            onDraw: '''print'''
+    }
+}

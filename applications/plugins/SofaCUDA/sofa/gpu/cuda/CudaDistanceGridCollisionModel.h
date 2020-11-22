@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -134,22 +134,22 @@ public:
         return p;
     }
 
-    int ix(const Coord& p) const
+    index_type ix(const Coord& p) const
     {
         return helper::rfloor((p[0]-pmin[0])*invCellWidth[0]);
     }
 
-    int iy(const Coord& p) const
+    index_type iy(const Coord& p) const
     {
         return helper::rfloor((p[1]-pmin[1])*invCellWidth[1]);
     }
 
-    int iz(const Coord& p) const
+    index_type iz(const Coord& p) const
     {
         return helper::rfloor((p[2]-pmin[2])*invCellWidth[2]);
     }
 
-    int index(const Coord& p, Coord& coefs) const
+    index_type index(const Coord& p, Coord& coefs) const
     {
         coefs[0] = (p[0]-pmin[0])*invCellWidth[0];
         coefs[1] = (p[1]-pmin[1])*invCellWidth[1];
@@ -166,13 +166,13 @@ public:
         return x+nx*(y+ny*(z));
     }
 
-    int index(const Coord& p) const
+    index_type index(const Coord& p) const
     {
         Coord coefs;
         return index(p, coefs);
     }
 
-    int index(int x, int y, int z)
+    index_type index(int x, int y, int z)
     {
         return x+nx*(y+ny*(z));
     }
@@ -182,15 +182,15 @@ public:
         return pmin+Coord(x*cellWidth[0], y*cellWidth[1], z*cellWidth[2]);
     }
 
-    Real operator[](int index) const { return dists[index]; }
-    Real& operator[](int index) { return dists[index]; }
+    Real operator[](index_type index) const { return dists[index]; }
+    Real& operator[](index_type index) { return dists[index]; }
 
     static Real interp(Real coef, Real a, Real b)
     {
         return a+coef*(b-a);
     }
 
-    Real interp(int index, const Coord& coefs) const
+    Real interp(index_type index, const Coord& coefs) const
     {
         return interp(coefs[2],interp(coefs[1],interp(coefs[0],dists[index          ],dists[index+1        ]),
                 interp(coefs[0],dists[index  +nx     ],dists[index+1+nx     ])),
@@ -205,7 +205,7 @@ public:
         return interp(i, coefs);
     }
 
-    Coord grad(int index, const Coord& coefs) const
+    Coord grad(index_type index, const Coord& coefs) const
     {
         // val = dist[0][0][0] * (1-x) * (1-y) * (1-z)
         //     + dist[1][0][0] * (  x) * (1-y) * (1-z)
@@ -236,7 +236,7 @@ public:
     Coord grad(const Coord& p) const
     {
         Coord coefs;
-        int i = index(p, coefs);
+        index_type i = index(p, coefs);
         return grad(i, coefs);
     }
 
@@ -416,7 +416,7 @@ class CudaRigidDistanceGridCollisionModel;
 class CudaRigidDistanceGridCollisionElement : public core::TCollisionElementIterator<CudaRigidDistanceGridCollisionModel>
 {
 public:
-    CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, int index);
+    CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, index_type index);
 
     explicit CudaRigidDistanceGridCollisionElement(const core::CollisionElementIterator& i);
 
@@ -476,19 +476,19 @@ protected:
 public:
     // Input data parameters
     sofa::core::objectmodel::DataFileName fileCudaRigidDistanceGrid;
-    Data< double > scale;
-    Data< double > sampling;
-    Data< helper::fixed_array<CudaDistanceGrid::Coord,2> > box;
-    Data< int > nx;
-    Data< int > ny;
-    Data< int > nz;
+    Data< double > scale; ///< scaling factor for input file
+    Data< double > sampling; ///< if not zero: sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
+    Data< helper::fixed_array<CudaDistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data< int > nx; ///< number of values on X axis
+    Data< int > ny; ///< number of values on Y axis
+    Data< int > nz; ///< number of values on Z axis
     sofa::core::objectmodel::DataFileName dumpfilename;
 
     typedef Rigid3Types InDataTypes;
     typedef Vec3Types DataTypes;
     typedef CudaRigidDistanceGridCollisionElement Element;
 
-    Data< bool > usePoints;
+    Data< bool > usePoints; ///< use mesh vertices for collision detection
 
     CudaRigidDistanceGridCollisionModel();
 
@@ -499,44 +499,44 @@ public:
 
     void init() override;
 
-    CudaDistanceGrid* getGrid(int index=0)
+    CudaDistanceGrid* getGrid(index_type index=0)
     {
         return elems[index].grid;
     }
-    bool isTransformed(int index=0)
+    bool isTransformed(index_type index=0)
     {
         return elems[index].isTransformed;
     }
-    const Matrix3& getRotation(int index=0)
+    const Matrix3& getRotation(index_type index=0)
     {
         return elems[index].rotation;
     }
-    const Vector3& getTranslation(int index=0)
+    const Vector3& getTranslation(index_type index=0)
     {
         return elems[index].translation;
     }
 
-    void setGrid(CudaDistanceGrid* surf, int index=0);
+    void setGrid(CudaDistanceGrid* surf, index_type index=0);
 
-    CudaDistanceGrid* getPrevGrid(int index=0)
+    CudaDistanceGrid* getPrevGrid(index_type index=0)
     {
         return elems[index].prevGrid;
     }
-    const Matrix3& getPrevRotation(int index=0)
+    const Matrix3& getPrevRotation(index_type index=0)
     {
         return elems[index].prevRotation;
     }
-    const Vector3& getPrevTranslation(int index=0)
+    const Vector3& getPrevTranslation(index_type index=0)
     {
         return elems[index].prevTranslation;
     }
-    double getPrevDt(int index=0)
+    double getPrevDt(index_type index=0)
     {
         return elems[index].prevDt;
     }
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(int index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
+    void setNewState(index_type index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
 
     /// @}
 
@@ -545,17 +545,17 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(int size) override;
+    void resize(std::size_t size) override;
 
     /// Create or update the bounding volume hierarchy.
     void computeBoundingTree(int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*,int index) override;
+    void draw(const core::visual::VisualParams*, index_type index) override;
 
     void draw(const core::visual::VisualParams*) override;
 };
 
-inline CudaRigidDistanceGridCollisionElement::CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, int index)
+inline CudaRigidDistanceGridCollisionElement::CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, index_type index)
     : core::TCollisionElementIterator<CudaRigidDistanceGridCollisionModel>(model, index)
 {}
 

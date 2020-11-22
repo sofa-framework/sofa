@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,7 +78,6 @@ protected:
     //////////////////////////////////////////////////////////////////////////////////
     #define V3(type) StdVectorTypes<Vec<3,type>,Vec<3,type>,type>
     #define V2(type) StdVectorTypes<Vec<2,type>,Vec<2,type>,type>
-    #define EV3(type) ExtVectorTypes<Vec<3,type>,Vec<3,type>,type>
 
     #define Rigid3(type)  StdRigidTypes<3,type>
     #define Affine3(type)  StdAffineTypes<3,type>
@@ -180,24 +179,24 @@ protected:
 
 
 
-template<class Real1, class Real2,  int Dim1, int Dim2>
+template<class Real1, class Real2,  size_t Dim1, size_t Dim2>
 inline Mat<Dim1, Dim2, Real2> covMN(const Vec<Dim1,Real1>& v1, const Vec<Dim2,Real2>& v2)
 {
     Mat<Dim1, Dim2, Real2> res;
-    for ( unsigned int i = 0; i < Dim1; ++i)
-        for ( unsigned int j = 0; j < Dim2; ++j)
+    for (size_t i = 0; i < Dim1; ++i)
+        for ( size_t j = 0; j < Dim2; ++j)
         {
             res[i][j] = (Real2)v1[i] * v2[j];
         }
     return res;
 }
 
-template<class Real,  int Dim>
+template<class Real,  size_t Dim>
 inline MatSym<Dim, Real> covN(const Vec<Dim,Real>& v)
 {
     MatSym<Dim, Real> res;
-    for ( unsigned int i = 0; i < Dim; ++i)
-        for ( unsigned int j = i; j < Dim; ++j)
+    for (size_t i = 0; i < Dim; ++i)
+        for (size_t j = i; j < Dim; ++j)
         {
             res(i,j) = v[i] * v[j];
         }

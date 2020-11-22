@@ -1,17 +1,18 @@
 <!-- Mechanical SubsetMapping Group Basic Example -->
 <Node name="root" dt="0.01" gravity="0 -9.6 0">
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe" />
-    <CollisionPipeline depth="6" verbose="0" draw="0"/>
+    <DefaultPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<LocalMinDistance name="Proximity"  alarmDistance="0.006" contactDistance="0.001" coneFactor="0.3" angleCone="0.01" filterIntersection="true"/>
-	<CollisionResponse name="Response" response="NeedleContact"/>
+	<DefaultContactManager name="Response" response="NeedleContact"/>
 
 	<Node name="sutureSoftCubes">
-		<EulerImplicit name="TissueSolver" printLog="false" rayleighStiffness="0.3" rayleighMass="0.2"/>
+		<EulerImplicitSolver name="TissueSolver" printLog="false" rayleighStiffness="0.3" rayleighMass="0.2"/>
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<MechanicalObject template="Vec3d"/>
 		<UniformMass mass="0.001"/>
-		<RegularGrid name="grid"
+		<RegularGridTopology name="grid"
 				nx="10" ny="4" nz="10"
 				xmin="-0.05" xmax="0.05"
 				ymin="0.0" ymax="0.03"
@@ -23,7 +24,7 @@
 
 		<Node name="subCube1">
 			<MechanicalObject template="Vec3d"/>
-			<RegularGrid name="grid"
+			<RegularGridTopology name="grid"
 				nx="5" ny="2" nz="10"
 				xmin="-0.05" xmax="-0.00555555555555555555555"
 				ymin="0.02" ymax="0.03"
@@ -52,16 +53,16 @@
 					<OglModel name="Visual1" color="0.3 1 0.3 1"/>
 					<IdentityMapping input="@../.." output="@Visual1"/>
 
-					<Triangle group="2" name="cube1_collis_tri"/>
-					<Line group="2"  name="cube1_collis_line"/>
-					<Point group="2" name="cube2_collis_point"/>
+					<TriangleCollisionModel group="2" name="cube1_collis_tri"/>
+					<LineCollisionModel group="2"  name="cube1_collis_line"/>
+					<PointCollisionModel group="2" name="cube2_collis_point"/>
 				</Node>
 			</Node>
 		</Node>
 
 		<Node name="subCube2">
 			<MechanicalObject template="Vec3d"/>
-			<RegularGrid name="grid"
+			<RegularGridTopology name="grid"
 				nx="5" ny="2" nz="10"
 				xmin="0.00555555555555555555555" xmax="0.05"
 				ymin="0.02" ymax="0.03"
@@ -90,16 +91,16 @@
 					<OglModel name="Visual2" color="0.3 0.3 1 1"/>
 					<IdentityMapping input="@../.." output="@Visual2"/>
 
-					<Triangle group="3" name="cube2_collis_tri"/>
-					<Line group="3"  name="cube2_collis_line"/>
-					<Point group="3" name="cube2_collis_point"/>
+					<TriangleCollisionModel group="3" name="cube2_collis_tri"/>
+					<LineCollisionModel group="3"  name="cube2_collis_line"/>
+					<PointCollisionModel group="3" name="cube2_collis_point"/>
 				</Node>
 			</Node>
 		</Node>
 
 		<Node name="subCube3">
 			<MechanicalObject template="Vec3d"/>
-			<RegularGrid name="grid"
+			<RegularGridTopology name="grid"
 				nx="10" ny="3" nz="10"
 				xmin="-0.05" xmax="0.05"
 				ymin="0.0" ymax="0.02"

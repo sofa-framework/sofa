@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
@@ -48,13 +47,11 @@ SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() : sofa::core::be
 	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
     , active(initData(&active, true, "active", "is the constraint active?"))
 {
-
 }
 
 template <class DataTypes>
 SkeletalMotionConstraint<DataTypes>::~SkeletalMotionConstraint()
 {
-
 }
 
 template <class DataTypes>
@@ -319,18 +316,17 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatri
 {
     if( !active.getValue() ) return;
 
-    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
     /*const unsigned int N = Deriv::size();
     const SetIndexArray & indices = m_indices.getValue();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
-    	// Reset Fixed Row and Col
-    	for (unsigned int c=0;c<N;++c)
-    		mat->clearRowCol(offset + N * (*it) + c);
-    	// Set Fixed Vertex
-    	for (unsigned int c=0;c<N;++c)
-    		mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+        // Reset Fixed Row and Col
+        for (unsigned int c=0;c<N;++c)
+            mat->clearRowCol(offset + N * (*it) + c);
+        // Set Fixed Vertex
+        for (unsigned int c=0;c<N;++c)
+            mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
     }*/
 }
 
@@ -339,7 +335,6 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
 {
     if( !active.getValue() ) return;
 
-    //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     /*const unsigned int N = Deriv::size();
 
     const SetIndexArray & indices = m_indices.getValue();
@@ -348,6 +343,17 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
     	for (unsigned int c=0;c<N;++c)
     		vect->clear(offset + N * (*it) + c);
     }*/
+}
+
+template <class DataTypes>
+void SkeletalMotionConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+{
+    unsigned blockSize = DataTypes::deriv_total_size;
+    unsigned size = this->mstate->getSize();
+    for( unsigned i=0; i<size; i++ )
+    {
+        M->clearRowsCols( offset + i * blockSize, offset + (i+1) * (blockSize) );
+    }
 }
 
 // display the paths the constrained dofs will go through

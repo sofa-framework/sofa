@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,11 +37,11 @@ namespace component
 namespace misc
 {
 
-template class ExtraMonitor<gpu::cuda::CudaRigid3fTypes>;
-template class ExtraMonitor<gpu::cuda::CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaRigid3fTypes>;
+template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaVec6fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class ExtraMonitor<gpu::cuda::CudaRigid3dTypes>;
-template class ExtraMonitor<gpu::cuda::CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaRigid3dTypes>;
+template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaVec6dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 }// namespace misc
@@ -54,8 +54,6 @@ namespace gpu
 
 namespace cuda
 {
-
-SOFA_DECL_CLASS(CudaExtraMonitor)
 
 int ExtraMonitorCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
         .add< component::misc::ExtraMonitor<CudaRigid3fTypes> >()

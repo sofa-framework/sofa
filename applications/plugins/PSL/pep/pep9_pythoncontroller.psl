@@ -1,0 +1,38 @@
+/// I this PEP we are proposing to define PythonController directly in the PSL file.
+/// The disadventage of this approach is that the scoping of the variable is not really clear.
+Node : {
+    name : "father"
+
+    Node : {
+        name : "child"
+
+        PythonController : {
+            name : MyController
+            onBeginAnimationStep: ''''''
+            onDraw: '''print'''
+        }
+
+        MyController : {
+
+        }
+    }
+}
+
+
+/// Alternative
+Node : {
+    PythonScriptController : "filename"
+}
+
+Node : {
+    PythonScriptController : {
+        filename : "filename"
+    }
+
+    InstanceOfTheScriptController : {
+        anAttribute : 1
+        properties : {
+            aProperty : 1
+        }
+    }
+}

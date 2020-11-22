@@ -1,100 +1,86 @@
-cmake_minimum_required(VERSION 3.1)
-project(SofaMiscFem)
+cmake_minimum_required(VERSION 3.12)
+project(SofaMiscFem VERSION 1.0 LANGUAGES CXX)
 
 # Dependencies
-find_package(Newmat)
-set(SOFA_HAVE_NEWMAT ${Newmat_FOUND})
+sofa_find_package(Newmat BOTH_SCOPES)
+find_package(SofaCommon REQUIRED) # SofaSimpleFem
 
-message(STATUS "SofaMiscFem:")
-################################ COMPONENTS HERE ARE THE NG-SET ####################################
+set(SOFAMISCFEM_SRC "src/${PROJECT_NAME}")
+
 set(HEADER_FILES
-    config.h
-    initMiscFEM.h
-)
+    ${SOFAMISCFEM_SRC}/config.h.in
+    ${SOFAMISCFEM_SRC}/initSofaMiscFEM.h
+    )
 
 set(SOURCE_FILES
-    initMiscFEM.cpp
-)
+    ${SOFAMISCFEM_SRC}/initSofaMiscFEM.cpp
+    )
 
-############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
-if(SOFA_BUILD_COMPONENTSET_LIGHT)
+list(APPEND HEADER_FILES
+    ${SOFAMISCFEM_SRC}/BaseMaterial.h
+    ${SOFAMISCFEM_SRC}/BoyceAndArruda.h
+    ${SOFAMISCFEM_SRC}/Costa.h
+    ${SOFAMISCFEM_SRC}/FastTetrahedralCorotationalForceField.h
+    ${SOFAMISCFEM_SRC}/FastTetrahedralCorotationalForceField.inl
+    ${SOFAMISCFEM_SRC}/HyperelasticMaterial.h
+    ${SOFAMISCFEM_SRC}/MooneyRivlin.h
+    ${SOFAMISCFEM_SRC}/NeoHookean.h
+    ${SOFAMISCFEM_SRC}/Ogden.h
+    ${SOFAMISCFEM_SRC}/STVenantKirchhoff.h
+    ${SOFAMISCFEM_SRC}/StandardTetrahedralFEMForceField.h
+    ${SOFAMISCFEM_SRC}/StandardTetrahedralFEMForceField.inl
+    ${SOFAMISCFEM_SRC}/TetrahedralTensorMassForceField.h
+    ${SOFAMISCFEM_SRC}/TetrahedralTensorMassForceField.inl
+    ${SOFAMISCFEM_SRC}/VerondaWestman.h
+
+    ${SOFAMISCFEM_SRC}/TetrahedronHyperelasticityFEMForceField.h
+    ${SOFAMISCFEM_SRC}/TetrahedronHyperelasticityFEMForceField.inl
+    ${SOFAMISCFEM_SRC}/TriangleFEMForceField.h
+    ${SOFAMISCFEM_SRC}/TriangleFEMForceField.inl
+    )
+list(APPEND SOURCE_FILES
+    ${SOFAMISCFEM_SRC}/FastTetrahedralCorotationalForceField.cpp
+    ${SOFAMISCFEM_SRC}/StandardTetrahedralFEMForceField.cpp
+    ${SOFAMISCFEM_SRC}/TetrahedralTensorMassForceField.cpp
+
+    ${SOFAMISCFEM_SRC}/TetrahedronHyperelasticityFEMForceField.cpp
+    ${SOFAMISCFEM_SRC}/TriangleFEMForceField.cpp
+    )
+
+if(Newmat_FOUND)
     list(APPEND HEADER_FILES
-
+        ${SOFAMISCFEM_SRC}/PlasticMaterial.h
+        ${SOFAMISCFEM_SRC}/TriangularAnisotropicFEMForceField.h
+        ${SOFAMISCFEM_SRC}/TriangularAnisotropicFEMForceField.inl
+        ${SOFAMISCFEM_SRC}/TriangularFEMForceField.h
+        ${SOFAMISCFEM_SRC}/TriangularFEMForceField.inl
         )
     list(APPEND SOURCE_FILES
-
+        ${SOFAMISCFEM_SRC}/PlasticMaterial.cpp
+        ${SOFAMISCFEM_SRC}/TriangularAnisotropicFEMForceField.cpp
+        ${SOFAMISCFEM_SRC}/TriangularFEMForceField.cpp
         )
 endif()
-
-############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
-if(SOFA_BUILD_COMPONENTSET_STANDARD)
-    list(APPEND HEADER_FILES
-        BaseMaterial.h
-        BoyceAndArruda.h
-        Costa.h
-        FastTetrahedralCorotationalForceField.h
-        FastTetrahedralCorotationalForceField.inl
-        HyperelasticMaterial.h
-        MooneyRivlin.h
-        NeoHookean.h
-        Ogden.h
-        STVenantKirchhoff.h
-        StandardTetrahedralFEMForceField.h
-        StandardTetrahedralFEMForceField.inl
-        TetrahedralTensorMassForceField.h
-        TetrahedralTensorMassForceField.inl
-        VerondaWestman.h
-
-        TetrahedronHyperelasticityFEMForceField.h
-        TetrahedronHyperelasticityFEMForceField.inl
-        TriangleFEMForceField.h
-        TriangleFEMForceField.inl
-        )
-    list(APPEND SOURCE_FILES
-        FastTetrahedralCorotationalForceField.cpp
-        StandardTetrahedralFEMForceField.cpp
-        TetrahedralTensorMassForceField.cpp
-
-        TetrahedronHyperelasticityFEMForceField.cpp
-        TriangleFEMForceField.cpp
-        )
-
-
-    if(SOFA_HAVE_NEWMAT)
-        list(APPEND HEADER_FILES
-            PlasticMaterial.h
-            TriangularAnisotropicFEMForceField.h
-            TriangularAnisotropicFEMForceField.inl
-            TriangularFEMForceField.h
-            TriangularFEMForceField.inl
-            )
-        list(APPEND SOURCE_FILES
-            PlasticMaterial.cpp
-            TriangularAnisotropicFEMForceField.cpp
-            TriangularFEMForceField.cpp
-            )
-    endif()
-
-endif()
-
-############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_COMPONENTSET_FULL)
-
-endif()
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem)
-
-if(NOT SOFA_NO_OPENGL)
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaOpenglVisual)
-endif()
-
-if(SOFA_HAVE_NEWMAT)
+if(Newmat_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_FEM")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaMisc ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+    )
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFAMISCFEM_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFAMISCFEM_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(SofaMiscFem_test)
+endif()

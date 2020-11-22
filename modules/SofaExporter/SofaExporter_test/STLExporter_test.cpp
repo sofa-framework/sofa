@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,15 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
- * Contributors:                                                              *
- *    - damien.marchal@univ-lille1.fr                                         *
- *****************************************************************************/
 #include <vector>
 using std::vector;
 
 #include <string>
 using std::string;
+
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -37,6 +36,8 @@ using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Node ;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::core::ExecParams ;
@@ -44,17 +45,20 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
-#include <SofaTest/Sofa_test.h>
-
 #include <boost/filesystem.hpp>
 namespace {
 std::string tempdir = boost::filesystem::temp_directory_path().string() ;
 
 
-class STLExporter_test : public sofa::Sofa_test<>{
+class STLExporter_test : public BaseTest {
 public:
     /// remove the file created...
     std::vector<std::string> dataPath ;
+
+    void SetUp()
+    {
+        sofa::simpleapi::importPlugin("SofaOpenglVisual");
+    }
 
     void TearDown()
     {
@@ -76,7 +80,8 @@ public:
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
-                "   <OglModel fileMesh='mesh/liver-smooth.obj'/>                   \n"
+                "   <MeshObjLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
+                "   <OglModel src='@loader'/>                                      \n"
                 "   <STLExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
@@ -108,7 +113,8 @@ public:
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
-                "   <OglModel fileMesh='mesh/liver-smooth.obj'/>                   \n"
+                "   <MeshObjLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
+                "   <OglModel src='@loader'/>                                      \n"
                 "   <STLExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n" ;
 

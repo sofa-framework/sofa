@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,8 +58,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 
-SOFA_DECL_CLASS(IdentityTopologicalMapping)
-
 // Register in the Factory
 int IdentityTopologicalMappingClass = core::RegisterObject("This class is a specific implementation of TopologicalMapping where the destination topology should be kept identical to the source topology. The implementation currently assumes that both topology have been initialized identically.")
         .add< IdentityTopologicalMapping >()
@@ -85,7 +83,7 @@ void IdentityTopologicalMapping::init()
     }
 }
 
-unsigned int IdentityTopologicalMapping::getFromIndex(unsigned int ind)
+index_type IdentityTopologicalMapping::getFromIndex(index_type ind)
 {
     return ind;
 }
@@ -99,15 +97,15 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
 
     if (itBegin == itEnd) return;
 
-    PointSetTopologyModifier *toPointMod = NULL;
-    EdgeSetTopologyModifier *toEdgeMod = NULL;
-    TriangleSetTopologyModifier *toTriangleMod = NULL;
+    PointSetTopologyModifier *toPointMod = nullptr;
+    EdgeSetTopologyModifier *toEdgeMod = nullptr;
+    TriangleSetTopologyModifier *toTriangleMod = nullptr;
 
-    TriangleSetTopologyContainer *fromTriangleCon = NULL;
+    TriangleSetTopologyContainer *fromTriangleCon = nullptr;
     fromModel->getContext()->get(fromTriangleCon);
 
 
-    TriangleSetTopologyContainer *toTriangleCon = NULL;
+    TriangleSetTopologyContainer *toTriangleCon = nullptr;
     toModel->getContext()->get(toTriangleCon);
 
     msg_info() << "Begin: " << msgendl
@@ -121,7 +119,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
     toModel->getContext()->get(toPointMod);
     if (!toPointMod)
     {
-        serr << "No PointSetTopologyModifier found for target topology." << sendl;
+         msg_error()<<"No PointSetTopologyModifier found for target topology." ;
         return;
     }
 
@@ -154,7 +152,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::POINTSREMOVED:
         {
             const PointsRemoved *pRem = static_cast< const PointsRemoved * >( topoChange );
-            sofa::helper::vector<unsigned int> tab = pRem->getArray();
+            auto tab = pRem->getArray();
             dmsg_info() << "POINTSREMOVED : " << tab.size() ;
             toPointMod->removePointsWarning(tab, true);
             toPointMod->propagateTopologicalChanges();
@@ -164,8 +162,8 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::POINTSRENUMBERING:
         {
             const PointsRenumbering *pRenumber = static_cast< const PointsRenumbering * >( topoChange );
-            const sofa::helper::vector<unsigned int> &tab = pRenumber->getIndexArray();
-            const sofa::helper::vector<unsigned int> &inv_tab = pRenumber->getinv_IndexArray();
+            const auto &tab = pRenumber->getIndexArray();
+            const auto &inv_tab = pRenumber->getinv_IndexArray();
             dmsg_info() << "POINTSRENUMBERING : " << tab.size() ;
             toPointMod->renumberPointsWarning(tab, inv_tab, true);
             toPointMod->propagateTopologicalChanges();
@@ -190,7 +188,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toEdgeMod) toModel->getContext()->get(toEdgeMod);
             if (!toEdgeMod) break;
             const EdgesRemoved *eRem = static_cast< const EdgesRemoved * >( topoChange );
-            sofa::helper::vector<unsigned int> tab = eRem->getArray();
+            auto tab = eRem->getArray();
             dmsg_info() << "EDGESREMOVED : " ;
             toEdgeMod->removeEdgesWarning(tab);
             toEdgeMod->propagateTopologicalChanges();
@@ -215,7 +213,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toTriangleMod) toModel->getContext()->get(toTriangleMod);
             if (!toTriangleMod) break;
             const TrianglesRemoved *tRem = static_cast< const TrianglesRemoved * >( topoChange );
-            sofa::helper::vector<unsigned int> tab = tRem->getArray();
+            auto tab = tRem->getArray();
             dmsg_info() << "TRIANGLESREMOVED : " << tab.size() ;
             toTriangleMod->removeTrianglesWarning(tab);
             toTriangleMod->propagateTopologicalChanges();

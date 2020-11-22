@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 
@@ -52,48 +52,35 @@ public:
 
 protected:
 
-    sofa::core::topology::BaseMeshTopology* m_topo;
-
     SmoothMeshEngine();
 
-    virtual ~SmoothMeshEngine() {}
+    ~SmoothMeshEngine() override {}
 public:
     void init() override;
     void reinit() override;
-    void update() override;
+    void doUpdate() override;
 	void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    Data<VecCoord> input_position;
-    Data<helper::vector <unsigned int> > input_indices;
-    Data<VecCoord> output_position;
+    Data<VecCoord> input_position; ///< Input position
+    Data<helper::vector <unsigned int> > input_indices; ///< Position indices that need to be smoothed, leave empty for all positions
+    Data<VecCoord> output_position; ///< Output position
 
-    Data<unsigned int> nb_iterations;
+    Data<unsigned int> nb_iterations; ///< Number of iterations of laplacian smoothing
 
-    Data<bool> showInput;
-    Data<bool> showOutput;
+    Data<bool> showInput; ///< showInput
+    Data<bool> showOutput; ///< showOutput
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const SmoothMeshEngine<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<SmoothMeshEngine<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
-
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP)
+extern template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<defaulttype::Vec3Types>;
 #endif
 
 } // namespace engine

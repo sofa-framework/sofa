@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,6 +63,7 @@ class FixedConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes
 public:
     SOFA_CLASS(SOFA_TEMPLATE(FixedConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));
 
+    using index_type = sofa::defaulttype::index_type;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
@@ -73,10 +74,11 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef helper::vector<index_type> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
     typedef sofa::core::topology::Point Point;
     typedef sofa::defaulttype::Vector3 Vector3;
+
 protected:
     FixedConstraint();
 
@@ -84,12 +86,13 @@ protected:
 
 public:
     SetIndex d_indices;
-    Data<bool> d_fixAll;
-    Data<bool> d_showObject;
-    Data<SReal> d_drawSize;
-    Data<bool> d_projectVelocity;
+    Data<bool> d_fixAll; ///< filter all the DOF to implement a fixed object
+    Data<bool> d_showObject; ///< draw or not the fixed constraints
+    Data<SReal> d_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
+    Data<bool> d_projectVelocity; ///< activate project velocity to set velocity
 
-
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<FixedConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
     FixedConstraintInternalData<DataTypes>* data;
     friend class FixedConstraintInternalData<DataTypes>;
@@ -97,12 +100,12 @@ protected:
 
 public:
     void clearConstraints();
-    void addConstraint(unsigned int index);
-    void removeConstraint(unsigned int index);
+    void addConstraint(index_type index);
+    void removeConstraint(index_type index);
 
     // -- Constraint interface
-    virtual void init() override;
-    virtual void reinit() override;
+    void init() override;
+    void reinit() override;
 
     void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
@@ -110,16 +113,16 @@ public:
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
 
-    virtual void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    virtual void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /** Project the the given matrix (Experimental API).
       See doc in base parent class
       */
-    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
+    void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     bool fixAllDOFs() const { return d_fixAll.getValue(); }
 
@@ -132,56 +135,33 @@ public:
             : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
 
-        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+        void applyDestroyFunction(index_type /*index*/, value_type& /*T*/);
 
 
-        bool applyTestCreateFunction(unsigned int /*index*/,
-                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+        bool applyTestCreateFunction(index_type /*index*/,
+                const sofa::helper::vector< index_type > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
         FixedConstraint<DataTypes> *fc;
     };
 
 protected :
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
+    /// Function check values of given indices
+    void checkIndices();
+    
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 
 };
 
-// Specialization for rigids
-#ifndef SOFA_FLOAT
-template <>
-void FixedConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void FixedConstraint<defaulttype::Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void FixedConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void FixedConstraint<defaulttype::Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec6Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid2Types>;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<defaulttype::Rigid2fTypes>;
-#endif
 #endif
 
 } // namespace projectiveconstraintset

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,8 +43,12 @@ namespace component
 namespace collision
 {
 
+PointInfo::PointInfo(LocalMinDistanceFilter *lmdFilters)
+    : InfoFilter(lmdFilters)
+{
+}
 
-void PointInfo::buildFilter(unsigned int p_index)
+void PointInfo::buildFilter(index_type p_index)
 {
     using sofa::simulation::Node;
     using sofa::helper::vector;
@@ -63,8 +67,8 @@ void PointInfo::buildFilter(unsigned int p_index)
 
     // get the topology
     BaseMeshTopology* bmt = this->base_mesh_topology;
-    const vector< unsigned int >& edgesAroundVertex = bmt->getEdgesAroundVertex(p_index);
-    const vector< unsigned int >& trianglesAroundVertex = bmt->getTrianglesAroundVertex(p_index);
+    const auto& edgesAroundVertex = bmt->getEdgesAroundVertex(p_index);
+    const auto& trianglesAroundVertex = bmt->getTrianglesAroundVertex(p_index);
 
     if(edgesAroundVertex.size() ==0)
     {
@@ -79,8 +83,8 @@ void PointInfo::buildFilter(unsigned int p_index)
 
     // compute the normal (nMean) of the point : IS IT STORED ANYWHERE ELSE ?
     // 1. using triangle around the point
-    vector< unsigned int >::const_iterator triIt = trianglesAroundVertex.begin();
-    vector< unsigned int >::const_iterator triItEnd = trianglesAroundVertex.end();
+    auto triIt = trianglesAroundVertex.begin();
+    auto triItEnd = trianglesAroundVertex.end();
     sofa::defaulttype::Vector3 nMean;
     while (triIt != triItEnd)
     {
@@ -95,8 +99,8 @@ void PointInfo::buildFilter(unsigned int p_index)
     if (trianglesAroundVertex.empty())
     {
         msg_info_when(debug, "PointInfo") <<" trianglesAroundVertex.empty !";
-        vector< unsigned int >::const_iterator edgeIt = edgesAroundVertex.begin();
-        vector< unsigned int >::const_iterator edgeItEnd = edgesAroundVertex.end();
+        auto edgeIt = edgesAroundVertex.begin();
+        auto edgeItEnd = edgesAroundVertex.end();
 
         while (edgeIt != edgeItEnd)
         {
@@ -122,8 +126,8 @@ void PointInfo::buildFilter(unsigned int p_index)
 
     // Build the set of unit vector that are normal to the planes that defines the cone
     // for each plane, we can "extend" the cone: allow for a larger cone
-    vector< unsigned int >::const_iterator edgeIt = edgesAroundVertex.begin();
-    vector< unsigned int >::const_iterator edgeItEnd = edgesAroundVertex.end();
+    auto edgeIt = edgesAroundVertex.begin();
+    auto edgeItEnd = edgesAroundVertex.end();
 
     m_computedData.clear();
     while (edgeIt != edgeItEnd)
@@ -155,7 +159,7 @@ void PointInfo::buildFilter(unsigned int p_index)
 
 
 
-bool PointInfo::validate(const unsigned int p, const defaulttype::Vector3 &PQ)
+bool PointInfo::validate(const index_type p, const defaulttype::Vector3 &PQ)
 {
 
     bool debug=false;
@@ -198,8 +202,8 @@ bool PointInfo::validate(const unsigned int p, const defaulttype::Vector3 &PQ)
 
 PointLocalMinDistanceFilter::PointLocalMinDistanceFilter()
     : m_pointInfo(initData(&m_pointInfo, "pointInfo", "point filter data"))
-    , pointInfoHandler(NULL)
-    , bmt(NULL)
+    , pointInfoHandler(nullptr)
+    , bmt(nullptr)
 {
 }
 
@@ -212,7 +216,7 @@ void PointLocalMinDistanceFilter::init()
 {
     bmt = getContext()->getMeshTopology();
 
-    if (bmt != 0)
+    if (bmt != nullptr)
     {
         helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
         pInfo.resize(bmt->getNbPoints());
@@ -244,7 +248,7 @@ void PointLocalMinDistanceFilter::handleTopologyChange()
 {
     if(this->isRigid())
     {
-        serr<<"WARNING: filters optimization needed for topological change on rigid collision model"<<sendl;
+        msg_error() << "Filters optimization needed for topological change on rigid collision model";
         this->invalidate(); // all the filters will be recomputed, not only those involved in the topological change
     }
 
@@ -260,10 +264,8 @@ void PointLocalMinDistanceFilter::handleTopologyChange()
 
 
 
-void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned int /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(index_type /*pointIndex*/, PointInfo &pInfo, const sofa::helper::vector<index_type> &, const sofa::helper::vector< double >&)
 {
-
-    std::cout<<" LMDFilterPointCreationFunction is called"<<std::endl;
     const PointLocalMinDistanceFilter *pLMDFilter = this->f;
     pInfo.setLMDFilters(pLMDFilter);
 
@@ -274,7 +276,7 @@ void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned
     if(pLMDFilter->isRigid())
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             pInfo.setPositionFiltering(&(mstateVec3d->read(core::ConstVecCoordId::restPosition())->getValue()));
         }
@@ -283,7 +285,7 @@ void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned
     else
     {
         /////// TODO : template de la classe
-        if(mstateVec3d != NULL)
+        if(mstateVec3d != nullptr)
         {
             pInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
         }
@@ -292,8 +294,6 @@ void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned
 }
 
 
-
-SOFA_DECL_CLASS(PointLocalMinDistanceFilter)
 
 int PointLocalMinDistanceFilterClass = core::RegisterObject("This class manages Point collision models cones filters computations and updates.")
         .add< PointLocalMinDistanceFilter >()

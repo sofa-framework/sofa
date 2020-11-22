@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,14 +58,14 @@ public:
 
     typedef SReal Real;
 
-    Data< bool > showMesh;
+    Data< bool > showMesh; ///< show reconstructed mesh
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
-    Data< ImageTypes > image;
-    Data< ImageTypes > background;
+    Data< ImageTypes > image; ///< Voronoi image
+    Data< ImageTypes > background; ///< Optional Voronoi image of the background to surface details
 
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
@@ -75,23 +75,20 @@ public:
     typedef helper::vector<Coord > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
-    Data< SeqPositions > position;
+    Data< SeqPositions > position; ///< output positions
 
     typedef typename core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
     typedef helper::WriteOnlyAccessor<Data< SeqEdges > > waEdges;
-    Data< SeqEdges > edges;
+    Data< SeqEdges > edges; ///< output edges
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
-    Data< SeqTriangles > triangles;
+    Data< SeqTriangles > triangles; ///< output triangles
 
-    Data< Real > minLength;
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const VoronoiToMeshEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
+    Data< Real > minLength; ///< minimun edge length in pixels
 
     VoronoiToMeshEngine()    :   Inherited()
       , showMesh(initData(&showMesh,false,"showMesh","show reconstructed mesh"))
@@ -109,7 +106,7 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&image);
         addInput(&background);
@@ -121,7 +118,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
@@ -228,7 +225,7 @@ protected:
     }
 
 
-    virtual void update() override
+    void doUpdate() override
     {
         raImage in(this->image);
         raImage inb(this->background);
@@ -387,7 +384,6 @@ protected:
         }
 
         if(this->f_printLog.getValue()) std::cout<<this->name<<": done"<<std::endl;
-        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event) override
@@ -409,10 +405,8 @@ protected:
         }
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams) override
+    void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
-
         if (!vparams->displayFlags().getShowVisualModels()) return;
         if (!this->showMesh.getValue()) return;
 
@@ -422,14 +416,12 @@ protected:
         std::vector<defaulttype::Vector3> points;
         raEdges Edges(this->edges);
         points.resize(2*Edges.size());
-        for (unsigned int i=0; i<Edges.size(); ++i)
+        for (std::size_t i=0; i<Edges.size(); ++i)
         {
             points[2*i][0]=pos[Edges[i][0]][0];            points[2*i][1]=pos[Edges[i][0]][1];            points[2*i][2]=pos[Edges[i][0]][2];
             points[2*i+1][0]=pos[Edges[i][1]][0];          points[2*i+1][1]=pos[Edges[i][1]][1];          points[2*i+1][2]=pos[Edges[i][1]][2];
         }
         vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(0.7,1,0.7,1));
-
-#endif /* SOFA_NO_OPENGL */
     }
 };
 

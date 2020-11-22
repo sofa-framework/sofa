@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -75,7 +75,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         DistanceGrid::Coord diff = p1-pdeform;
         SReal err = diff.norm();
         if (iter>3)
-            intersection->sout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<""<<intersection->sendl;
+            msg_info(intersection) << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<"";
         SReal berr = err*cubesize; if (berr>0.5f) berr=0.5f;
         if (b[0] < -berr || b[0] > 1+berr
             || b[1] < -berr || b[1] > 1+berr

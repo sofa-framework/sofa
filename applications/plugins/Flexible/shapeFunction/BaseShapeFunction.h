@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,7 +65,7 @@ public:
 
     typedef TShapeFunctionTypes ShapeFunctionTypes;
     typedef typename ShapeFunctionTypes::Real Real;
-	static const unsigned int spatial_dimensions=ShapeFunctionTypes::spatial_dimensions;
+    static const std::size_t spatial_dimensions=ShapeFunctionTypes::spatial_dimensions;
 
     /** @name types */
     //@{
@@ -94,12 +94,9 @@ public:
 	InternalData m_internalData;
     //@}
 
-    virtual std::string getTemplateName() const    { return templateName(this); }
-    static std::string templateName(const BaseShapeFunction<ShapeFunctionTypes>* = NULL) { return ShapeFunctionTypes::Name(); }
-
     BaseMechanicalState* _state;
 
-    virtual void init()
+    void init() override
     {
         if(!f_position.isSet())   // node positions are not given, so we retrieve them from the local mechanical state
         {
@@ -134,43 +131,43 @@ public:
     /// wrappers
     virtual void computeShapeFunction(const VCoord& childPosition, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw)
     {
-		unsigned int nb=childPosition.size();
+        std::size_t nb=childPosition.size();
         ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
-        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i]);
+        for(std::size_t i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i]);
 	}
 
     virtual void computeShapeFunction(const VCoord& childPosition, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw,  const VCell& cells)
     {
-        unsigned int nb=childPosition.size();
+        std::size_t nb=childPosition.size();
         ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
-        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i],cells[i]);
+        for(std::size_t i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i],cells[i]);
     }
 
     /// used to make a partition of unity: $sum_i w_i(x)=1$ and adjust derivatives accordingly
     void normalize(VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {
-        unsigned int nbRef=w.size();
+        std::size_t nbRef=w.size();
         Real sum_w=0;
         Gradient sum_dw;
         Hessian sum_ddw;
 
         // Compute norm
-        for (unsigned int j = 0; j < nbRef; j++) sum_w += w[j];
+        for (std::size_t j = 0; j < nbRef; j++) sum_w += w[j];
         if(dw)
         {
-            for (unsigned int j = 0; j < nbRef; j++) sum_dw += (*dw)[j];
-            if(ddw) for (unsigned int j = 0; j < nbRef; j++) sum_ddw += (*ddw)[j];
+            for (std::size_t j = 0; j < nbRef; j++) sum_dw += (*dw)[j];
+            if(ddw) for (std::size_t j = 0; j < nbRef; j++) sum_ddw += (*ddw)[j];
         }
 
         // Normalize
         if(sum_w)
-            for (unsigned int j = 0; j < nbRef; j++)
+            for (std::size_t j = 0; j < nbRef; j++)
             {
                 Real wn=w[j]/sum_w;
                 if(dw)
                 {
                     Gradient dwn=((*dw)[j] - sum_dw*wn)/sum_w;
-                    if(ddw) for(int o=0; o<Hessian::nbLines; o++) for(int p=0; p<Hessian::nbCols; p++) (*ddw)[j](o,p)=((*ddw)[j](o,p) - wn*sum_ddw(o,p) - sum_dw[o]*dwn[p] - sum_dw[p]*dwn[o])/sum_w;
+                    if(ddw) for(std::size_t o=0; o<Hessian::nbLines; o++) for(std::size_t p=0; p<Hessian::nbCols; p++) (*ddw)[j](o,p)=((*ddw)[j](o,p) - wn*sum_ddw(o,p) - sum_dw[o]*dwn[p] - sum_dw[p]*dwn[o])/sum_w;
                     (*dw)[j]=dwn;
                 }
                 w[j]=wn;
@@ -186,12 +183,12 @@ protected:
     {
     }
 
-    virtual ~BaseShapeFunction() {}
+    ~BaseShapeFunction() override {}
 
 };
 
 
-template <int spatial_dimensions_, class Real_>
+template <std::size_t spatial_dimensions_, class Real_>
 struct ShapeFunctionTypes
 {
     typedef Real_ Real;
@@ -211,31 +208,22 @@ struct ShapeFunctionTypes
     typedef helper::vector< helper::SVector<Gradient> > VecVGradient;
     typedef helper::vector< helper::SVector<Hessian> > VecVHessian;
 
-    static const int spatial_dimensions=spatial_dimensions_ ;
+    static const std::size_t spatial_dimensions=spatial_dimensions_ ;
     static const char* Name();
 };
 
-#ifndef SOFA_FLOAT
-typedef ShapeFunctionTypes<3,double> ShapeFunctiond;
-typedef ShapeFunctionTypes<2,double> ShapeFunction2d;
-template<> inline const char* ShapeFunctiond::Name() { return "ShapeFunctiond"; }
-template<> inline const char* ShapeFunction2d::Name() { return "ShapeFunction2d"; }
-#endif
-#ifndef SOFA_DOUBLE
-typedef ShapeFunctionTypes<3,float>  ShapeFunctionf;
+typedef ShapeFunctionTypes<3,float>  ShapeFunction3f;
 typedef ShapeFunctionTypes<2,float>  ShapeFunction2f;
-template<> inline const char* ShapeFunctionf::Name() { return "ShapeFunctionf"; }
+template<> inline const char* ShapeFunction3f::Name() { return "ShapeFunction3f"; }
 template<> inline const char* ShapeFunction2f::Name() { return "ShapeFunction2f"; }
-#endif
 
-#ifdef SOFA_FLOAT
-typedef ShapeFunctionf ShapeFunction;
-typedef ShapeFunction2f ShapeFunction2;
-#else
-typedef ShapeFunctiond ShapeFunction;
-typedef ShapeFunction2d ShapeFunction2;
-#endif
+typedef ShapeFunctionTypes<3,double> ShapeFunction3d;
+typedef ShapeFunctionTypes<2,double> ShapeFunction2d;
+template<> inline const char* ShapeFunction3d::Name() { return "ShapeFunction3d"; }
+template<> inline const char* ShapeFunction2d::Name() { return "ShapeFunction2d"; }
 
+typedef ShapeFunctionTypes<3,SReal> ShapeFunction3;
+typedef ShapeFunctionTypes<2,SReal> ShapeFunction2;
 
 }
 }

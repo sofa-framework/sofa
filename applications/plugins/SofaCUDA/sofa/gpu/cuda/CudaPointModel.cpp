@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,60 +35,62 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaPointModel)
-
-int CudaPointModelClass = core::RegisterObject("GPU-based point collision model using CUDA")
-        .add< CudaPointModel >()
+int CudaPointCollisionModelClass = core::RegisterObject("GPU-based point collision model using CUDA")
+        .add< CudaPointCollisionModel >()
         .addAlias("CudaPoint")
+        .addAlias("CudaPointModel")
         ;
 
 using namespace defaulttype;
 
-CudaPointModel::CudaPointModel()
-    : groupSize( initData( &groupSize, (int)BSIZE, "groupSize", "number of point per collision element" ) )
+CudaPointCollisionModel::CudaPointCollisionModel()
+    : groupSize( initData( &groupSize, (std::size_t)BSIZE, "groupSize", "number of point per collision element" ) )
     , mstate(NULL)
 {
 }
 
-void CudaPointModel::resize(int size)
+void CudaPointCollisionModel::resize(std::size_t size)
 {
     this->core::CollisionModel::resize(size);
 }
 
-void CudaPointModel::init()
+void CudaPointCollisionModel::init()
 {
     this->CollisionModel::init();
     mstate = dynamic_cast< core::behavior::MechanicalState<InDataTypes>* > (getContext()->getMechanicalState());
 
     if (mstate==NULL)
     {
-        serr << "ERROR: CudaPointModel requires a CudaVec3f Mechanical Model.\n";
+        serr << "ERROR: CudaPointCollisionModel requires a CudaVec3f Mechanical Model.\n";
         return;
     }
 
-    const int npoints = mstate->getSize();
-    int gsize = groupSize.getValue();
-    int nelems = (npoints + gsize-1)/gsize;
+    const std::size_t npoints = mstate->getSize();
+    std::size_t gsize = groupSize.getValue();
+    std::size_t nelems = (npoints + gsize-1)/gsize;
     resize(nelems);
 }
 
-void CudaPointModel::draw(const core::visual::VisualParams* ,int index)
+void CudaPointCollisionModel::draw(const core::visual::VisualParams* , index_type index)
 {
+#ifndef SOFA_NO_OPENGL
     const int gsize = groupSize.getValue();
     CudaPoint t(this,index);
     glBegin(GL_POINTS);
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-    int i0 = index*gsize;
-    int n = (index==size-1) ? x.size()-i0 : gsize;
-    for (int p=0; p<n; p++)
+    auto i0 = index*gsize;
+    auto n = (index==size-1) ? x.size()-i0 : gsize;
+    for (auto p=0; p<n; p++)
     {
         glVertex3fv(x[i0+p].ptr());
     }
     glEnd();
+#endif // SOFA_NO_OPENGL
 }
 
-void CudaPointModel::draw(const core::visual::VisualParams* vparams)
+void CudaPointCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (isActive() && vparams->displayFlags().getShowCollisionModels())
     {
         if (vparams->displayFlags().getShowWireFrame())
@@ -111,13 +113,14 @@ void CudaPointModel::draw(const core::visual::VisualParams* vparams)
     }
     if (isActive() && getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
+#endif // SOFA_NO_OPENGL
 }
 
-using sofa::component::collision::CubeModel;
+using sofa::component::collision::CubeCollisionModel;
 
-void CudaPointModel::computeBoundingTree(int maxDepth)
+void CudaPointCollisionModel::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = createPrevious<CubeModel>();
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const int npoints = mstate->getSize();
     const int gsize = groupSize.getValue();
     const int nelems = (npoints + gsize-1)/gsize;

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,6 @@
 #include <SofaBaseCollision/OBBModel.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
@@ -36,7 +35,6 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
 
 namespace sofa
@@ -49,16 +47,16 @@ namespace collision
 {
 
 template<class DataTypes>
-TOBBModel<DataTypes>::TOBBModel():
+OBBCollisionModel<DataTypes>::OBBCollisionModel():
     ext(initData(&ext,"extents","Extents in x,y and z directions")),
     default_ext(initData(&default_ext,(Real)(1.0), "defaultExtent","Default extent")),
-    _mstate(NULL)
+    _mstate(nullptr)
 {
     enum_type = OBB_TYPE;
 }
 
 template<class DataTypes>
-TOBBModel<DataTypes>::TOBBModel(core::behavior::MechanicalState<DataTypes>* mstate):
+OBBCollisionModel<DataTypes>::OBBCollisionModel(core::behavior::MechanicalState<DataTypes>* mstate):
     ext(initData(&ext, "extents","Extents in x,y and z directions")),
     default_ext(initData(&default_ext,(Real)(1.0), "defaultExtent","Default extent")),
     _mstate(mstate)
@@ -68,30 +66,30 @@ TOBBModel<DataTypes>::TOBBModel(core::behavior::MechanicalState<DataTypes>* msta
 
 
 template<class DataTypes>
-void TOBBModel<DataTypes>::init()
+void OBBCollisionModel<DataTypes>::init()
 {
     this->CollisionModel::init();
     _mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    if (_mstate==NULL)
+    if (_mstate==nullptr)
     {
-        serr<<"TOBBModel requires a Rigid Mechanical Model" << sendl;
+        msg_error()<<"OBBCollisionModel requires a Rigid Mechanical Model";
         return;
     }
 
-    const int npoints = _mstate->getSize();
+    const std::size_t npoints = _mstate->getSize();
     resize(npoints);
 }
 
 
 template<class DataTypes>
-void TOBBModel<DataTypes>::resize(int size){
+void OBBCollisionModel<DataTypes>::resize(std::size_t size){
     this->core::CollisionModel::resize(size);
 
     VecCoord & vext = *(ext.beginEdit());
 
-    if ((int)vext.size() < size)
+    if (vext.size() < size)
     {
-        while((int)vext.size() < size)
+        while(vext.size() < size)
             vext.push_back(Coord(default_ext.getValue(),default_ext.getValue(),default_ext.getValue()));
     }
     else
@@ -104,9 +102,9 @@ void TOBBModel<DataTypes>::resize(int size){
 
 
 template<class DataTypes>
-void TOBBModel<DataTypes>::computeBoundingTree(int maxDepth){
-    CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = _mstate->getSize();
+void OBBCollisionModel<DataTypes>::computeBoundingTree(int maxDepth){
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
+    const std::size_t npoints = _mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -121,11 +119,11 @@ void TOBBModel<DataTypes>::computeBoundingTree(int maxDepth){
     cubeModel->resize(size);
     if (!empty())
     {
-        const typename TOBBModel<DataTypes>::Real distance = (typename TOBBModel<DataTypes>::Real)this->proximity.getValue();
+        const typename OBBCollisionModel<DataTypes>::Real distance = (typename OBBCollisionModel<DataTypes>::Real)this->proximity.getValue();
 
         std::vector<Coord> vs;
         vs.reserve(8);
-        for (int i=0; i<size; i++)
+        for (std::size_t i=0; i<size; i++)
         {
             vs.clear();
             vertices(i,vs);
@@ -155,7 +153,7 @@ void TOBBModel<DataTypes>::computeBoundingTree(int maxDepth){
 
 
 template<class DataTypes>
-void TOBBModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int index){
+void OBBCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, index_type index){
 
     using namespace sofa::defaulttype;
 
@@ -217,19 +215,19 @@ void TOBBModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int in
 }
 
 template<class DataTypes>
-void TOBBModel<DataTypes>::draw(const core::visual::VisualParams* vparams){
+void OBBCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams){
     if (vparams->displayFlags().getShowCollisionModels())
     {
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
 
-        const int npoints = _mstate->getSize();
+        const std::size_t npoints = _mstate->getSize();
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
-        for(int i = 0 ; i < npoints ; ++i )
+        for(std::size_t i = 0 ; i < npoints ; ++i )
             draw(vparams,i);
         vparams->drawTool()->setLightingEnabled(false); //Disable lightning
     }
 
-    if (getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
+    if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 
     vparams->drawTool()->setPolygonMode(0,false);
@@ -255,13 +253,13 @@ inline bool TOBB<DataTypes>::onSurface(const Coord &c)const{
 }
 
 template <class DataTypes>
-inline typename TOBBModel<DataTypes>::Coord TOBBModel<DataTypes>::generalCoordinates(const Coord &c,int index)const{
+inline typename OBBCollisionModel<DataTypes>::Coord OBBCollisionModel<DataTypes>::generalCoordinates(const Coord &c, index_type index)const{
     return orientation(index).rotate(c) + center(index);
 }
 
 
 template <class DataTypes>
-inline typename TOBBModel<DataTypes>::Coord TOBBModel<DataTypes>::localCoordinates(const Coord &c,int index)const{
+inline typename OBBCollisionModel<DataTypes>::Coord OBBCollisionModel<DataTypes>::localCoordinates(const Coord &c, index_type index)const{
     return orientation(index).inverseRotate(c - center(index));
 }
 
@@ -271,7 +269,7 @@ inline typename TOBB<DataTypes>::Coord TOBB<DataTypes>::localCoordinates(const C
 }
 
 template <class DataTypes>
-inline const typename TOBBModel<DataTypes>::Coord & TOBBModel<DataTypes>::lvelocity(int index)const{
+inline const typename OBBCollisionModel<DataTypes>::Coord & OBBCollisionModel<DataTypes>::lvelocity(index_type index)const{
     return (_mstate->read(core::ConstVecDerivId::velocity())->getValue())[index].getLinear();
 }
 
@@ -281,7 +279,7 @@ inline const typename TOBB<DataTypes>::Coord & TOBB<DataTypes>::v()const{
 }
 
 template<class DataTypes>
-inline typename TOBBModel<DataTypes>::Coord TOBBModel<DataTypes>::axis(int index,int dim)const{
+inline typename OBBCollisionModel<DataTypes>::Coord OBBCollisionModel<DataTypes>::axis(index_type index,int dim)const{
     Coord unit;
     if(dim == 0){
         unit[0] = 1;
@@ -303,7 +301,7 @@ inline typename TOBBModel<DataTypes>::Coord TOBBModel<DataTypes>::axis(int index
 }
 
 template<class DataTypes>
-inline typename TOBBModel<DataTypes>::Coord TOBBModel<DataTypes>::vertex(int index,int num)const{
+inline typename OBBCollisionModel<DataTypes>::Coord OBBCollisionModel<DataTypes>::vertex(index_type index,int num)const{
     Real s0 = extent(index,0);
     Real s1 = extent(index,1);
     Real s2 = extent(index,2);
@@ -353,7 +351,7 @@ inline typename TOBBModel<DataTypes>::Coord TOBBModel<DataTypes>::vertex(int ind
 }
 
 template<class DataTypes>
-inline void TOBBModel<DataTypes>::axes(int index,Coord * v_axes)const{
+inline void OBBCollisionModel<DataTypes>::axes(index_type index,Coord * v_axes)const{
     v_axes[0] = axis(index,0);
     v_axes[1] = axis(index,1);
     v_axes[2] = axis(index,2);
@@ -365,7 +363,7 @@ inline void TOBB<DataTypes>::axes(Coord * v_axes)const{
 }
 
 template<class DataTypes>
-inline void TOBBModel<DataTypes>::vertices(int index,std::vector<Coord> & vs)const{
+inline void OBBCollisionModel<DataTypes>::vertices(index_type index,std::vector<Coord> & vs)const{
     Coord a0(axis(index,0) * extent(index,0));
     Coord a1(axis(index,1) * extent(index,1));
     Coord a2(axis(index,2) * extent(index,2));
@@ -383,22 +381,22 @@ inline void TOBBModel<DataTypes>::vertices(int index,std::vector<Coord> & vs)con
 }
 
 template<class DataTypes>
-inline const typename TOBBModel<DataTypes>::Coord & TOBBModel<DataTypes>::center(int index)const{
+inline const typename OBBCollisionModel<DataTypes>::Coord & OBBCollisionModel<DataTypes>::center(index_type index)const{
     return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getCenter();
 }
 
 template<class DataTypes>
-inline const typename TOBBModel<DataTypes>::Quaternion & TOBBModel<DataTypes>::orientation(int index)const{
+inline const typename OBBCollisionModel<DataTypes>::Quaternion & OBBCollisionModel<DataTypes>::orientation(index_type index)const{
     return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
 }
 
 template<class DataTypes>
-inline typename TOBBModel<DataTypes>::Real TOBBModel<DataTypes>::extent(int index,int dim)const{
+inline typename OBBCollisionModel<DataTypes>::Real OBBCollisionModel<DataTypes>::extent(index_type index,int dim)const{
     return ((ext.getValue())[index])[dim];
 }
 
 template<class DataTypes>
-inline const typename TOBBModel<DataTypes>::Coord & TOBBModel<DataTypes>::extents(int index)const{
+inline const typename OBBCollisionModel<DataTypes>::Coord & OBBCollisionModel<DataTypes>::extents(index_type index)const{
     return (ext.getValue())[index];
 }
 
@@ -428,7 +426,7 @@ inline const typename TOBB<DataTypes>::Quaternion & TOBB<DataTypes>::orientation
 }
 
 template <class DataTypes>
-inline Data<typename TOBBModel<DataTypes>::VecCoord> & TOBBModel<DataTypes>::writeExtents(){return ext;}
+inline Data<typename OBBCollisionModel<DataTypes>::VecCoord> & OBBCollisionModel<DataTypes>::writeExtents(){return ext;}
 
 template <class DataTypes>
 inline void TOBB<DataTypes>::vertices(std::vector<Coord> & vs)const{return this->model->vertices(this->index,vs);}
@@ -446,33 +444,33 @@ inline void TOBB<DataTypes>::showVertices()const{
 }
 
 template <class DataTypes>
-void TOBBModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+void OBBCollisionModel<DataTypes>::computeBBox(const core::ExecParams*, bool onlyVisible)
 {
     if( !onlyVisible ) return;
 
 
     static const Real max_real = std::numeric_limits<Real>::max();
-    static const Real min_real = std::numeric_limits<Real>::min();
+    static const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
 
     std::vector<Coord> p;
-    const int npoints = _mstate->getSize();
-    for(int i = 0 ; i < npoints ; ++i )
+    const std::size_t npoints = _mstate->getSize();
+    for(std::size_t i = 0 ; i < npoints ; ++i )
     {
         vertices(i,p);
         for (unsigned int j=0; j<8; j++)
         {
             for (int c=0; c<3; c++)
             {
-                if (p[j][c] > maxBBox[c]) maxBBox[c] = (Real)p[j][c];
-                if (p[j][c] < minBBox[c]) minBBox[c] = (Real)p[j][c];
+                if (p[j][c] > maxBBox[c]) maxBBox[c] = Real(p[j][c]);
+                if (p[j][c] < minBBox[c]) minBBox[c] = Real(p[j][c]);
             }
         }
     }
 
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 
 }
 

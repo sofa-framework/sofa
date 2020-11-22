@@ -3,7 +3,9 @@
 using std::cout;
 using std::cerr;
 using std::endl;
-//#define DEBUG_DRAW
+
+#include <sofa/helper/system/gl.h>
+
 namespace sofa
 {
 
@@ -19,21 +21,12 @@ VisualPickVisitor::VisualPickVisitor(core::visual::VisualParams* params)
 
 simulation::Visitor::Result VisualPickVisitor::processNodeTopDown(simulation::Node* node)
 {
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    glPushMatrix();
-    double glMatrix[16];
-    node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
-    glMultMatrixd( glMatrix );
-#endif
 //    cerr <<"VisualPickVisitor::processNodeTopDown" << endl;
     hasShader = (node->getShader()!=NULL);
 
     for_each(this, node, node->visualModel,     &VisualPickVisitor::fwdVisualModel);
     this->VisualVisitor::processNodeTopDown(node);
 
-#ifdef SOFA_SUPPORT_MOVING_FRAMES
-    glPopMatrix();
-#endif
     return RESULT_CONTINUE;
 }
 

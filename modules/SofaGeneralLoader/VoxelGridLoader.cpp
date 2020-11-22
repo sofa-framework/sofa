@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,7 +43,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using namespace sofa::core;
 
-SOFA_DECL_CLASS(VoxelGridLoader);
 int VoxelGridLoaderClass = RegisterObject("Voxel loader based on RAW files").add<VoxelGridLoader>();
 
 VoxelGridLoader::VoxelGridLoader()
@@ -57,8 +56,8 @@ VoxelGridLoader::VoxelGridLoader()
       backgroundValue ( initData ( &backgroundValue, "bgValue", "Background values (to be ignored)" ) ),
       activeValue ( initData ( &activeValue, "dataValue", "Active data values" ) ),
       generateHexa( initData ( &generateHexa, true, "generateHexa", "Interpret voxel as either hexa or points")),
-      image(NULL),
-      segmentation(NULL),
+      image(nullptr),
+      segmentation(nullptr),
       bpp(8) // bits per pixel
 {
     addAlias(&m_filename,"segmentationFile");
@@ -68,13 +67,13 @@ VoxelGridLoader::~VoxelGridLoader()
 {
     clear();
 
-    if(image != NULL)
+    if(image != nullptr)
         delete image;
-    image = NULL;
+    image = nullptr;
 
-    if(segmentation != NULL)
+    if(segmentation != nullptr)
         delete segmentation;
-    segmentation = NULL;
+    segmentation = nullptr;
 }
 
 void VoxelGridLoader::init()
@@ -94,9 +93,9 @@ void VoxelGridLoader::init()
     if(ROI[2] > ROI[5]) ROI[5] = ROI[2];
     roi.endEdit();
 
-    if ( image == NULL )
+    if ( image == nullptr )
     {
-        serr << "Error while loading the file " << m_filename.getValue() << this->sendl;
+        msg_error() << "Error while loading the file " << m_filename.getValue();
         return;
     }
 
@@ -142,7 +141,7 @@ void VoxelGridLoader::reinit()
                     }
                 }
 
-        sout << "inserting " << keepPoint.size() << " points ... " << sendl;
+        msg_info() << "inserting " << keepPoint.size() << " points ... ";
 
         unsigned int pointIdx = 0;
         seqPoints.resize ( keepPoint.size() );
@@ -165,7 +164,7 @@ void VoxelGridLoader::reinit()
                 }
         keepPoint.clear();
 
-        sout << " done. " << sendl;
+        msg_info() << " done. ";
 
         helper::vector<Hexahedron>& seqHexahedra = *hexahedra.beginEdit();
 
@@ -251,7 +250,7 @@ bool VoxelGridLoader::load ()
 
     image = loadImage(m_filename.getValue(), dataResolution.getValue(), headerSize.getValue());
 
-    if(image != NULL)
+    if(image != nullptr)
     {
         return true;
     }
@@ -261,7 +260,7 @@ bool VoxelGridLoader::load ()
 
 helper::io::Image* VoxelGridLoader::loadImage ( const std::string& filename, const Vec3i& res, const int hsize ) const
 {
-    helper::io::Image* image = NULL;
+    helper::io::Image* image = nullptr;
 
     std::string _filename ( filename );
 
@@ -286,7 +285,7 @@ helper::io::Image* VoxelGridLoader::loadImage ( const std::string& filename, con
                 break;
             default:
                 msg_warning("VoxelGridLoader") << "Unknown bitdepth: " << bpp ;
-                return 0;
+                return nullptr;
             }
             helper::io::ImageRAW *imageRAW = new helper::io::ImageRAW();
             imageRAW->init(res[0], res[1], res[2], 1, helper::io::Image::UNORM8, channels);
@@ -296,7 +295,7 @@ helper::io::Image* VoxelGridLoader::loadImage ( const std::string& filename, con
         }
     }
 
-    if(image == NULL)
+    if(image == nullptr)
     {
         msg_warning("VoxelGridLoader") << "Unable to load file " <<  _filename ;
     }
@@ -337,7 +336,7 @@ void VoxelGridLoader::addBackgroundValue ( const int value )
     helper::vector<int>& vecVal = ( *backgroundValue.beginEdit() );
     vecVal.push_back(value);
     std::sort(vecVal.begin(), vecVal.end());
-    std::unique(vecVal.begin(), vecVal.end());
+    vecVal.erase( std::unique(vecVal.begin(), vecVal.end()), vecVal.end() ); // remove non-unique values
     backgroundValue.endEdit();
     reinit();
 }
@@ -356,7 +355,7 @@ void VoxelGridLoader::addActiveDataValue(const int value)
     helper::vector<int>& vecVal = ( *activeValue.beginEdit() );
     vecVal.push_back(value);
     std::sort(vecVal.begin(), vecVal.end());
-    std::unique(vecVal.begin(), vecVal.end());
+    vecVal.erase( std::unique(vecVal.begin(), vecVal.end()), vecVal.end() ); // remove non-unique values
     activeValue.endEdit();
     reinit();
 }
@@ -381,7 +380,7 @@ unsigned char * VoxelGridLoader::getSegmentID()
     if( segmentation)
         return segmentation->getPixels();
     else
-        return NULL;
+        return nullptr;
 }
 
 
@@ -399,7 +398,7 @@ bool VoxelGridLoader::isActive(const unsigned int idx) const
     if(activeVal.empty() && bgVal.empty())
         return true;
 
-    helper::io::Image* img = (segmentation == NULL) ? image : segmentation;
+    helper::io::Image* img = (segmentation == nullptr) ? image : segmentation;
     const unsigned char value = img->getPixels()[idx];
 
     if(!activeVal.empty()) // active values were specified

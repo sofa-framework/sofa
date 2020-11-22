@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -47,11 +47,11 @@ public:
 protected:
     CompliantAttachButtonSetting();
 public:
-    std::string getOperationType() {return  "CompliantAttach";}
-    Data<SReal> compliance;
-    Data<bool> isCompliance;
+    std::string getOperationType() override {return  "CompliantAttach";}
+    Data<SReal> compliance; ///< Compliance of the manipulator. 0 is rigid, the bigger the softer. Negative values make no sense.
+    Data<bool> isCompliance; ///< Is the mouse interaction treated as a compliance? (otherwise as a stiffness)
     Data<SReal> arrowSize;
-    Data<defaulttype::RGBAColor> color;
+    Data<sofa::helper::types::RGBAColor> color;
     Data<bool> visualmodel;
 };
 

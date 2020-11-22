@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,6 @@
 
 #include <SofaGeneralEngine/IndicesFromValues.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 
 namespace sofa
 {
@@ -67,12 +66,10 @@ void IndicesFromValues<T>::reinit()
 }
 
 template <class T>
-void IndicesFromValues<T>::update()
+void IndicesFromValues<T>::doUpdate()
 {
     helper::ReadAccessor<Data<VecValue> > global = f_global;
     helper::ReadAccessor<Data<VecValue> > values = f_values;
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor<Data<VecIndex> > indices = f_indices;
     helper::WriteOnlyAccessor<Data<VecIndex> > otherIndices = f_otherIndices;
@@ -97,9 +94,7 @@ void IndicesFromValues<T>::update()
                     otherIndices.push_back(j);
                 }
             }
-            if (index < 0) {
-                sout << "Input value " << values[i] <<" not found"<< sendl;
-            }
+            msg_info_when(index < 0) << "Input value " << values[i] <<" not found";
         }
     } else {
         indices.reserve(values.size());
@@ -117,10 +112,12 @@ void IndicesFromValues<T>::update()
                     break;
                 }
             }
-            if (index >= 0)
+            if (index >= 0) {
                 indices.push_back(index);
-            else
-                serr << "Input value " << i <<" not found : " << v << sendl;
+            }
+            else {
+                msg_error() << "Input value " << i << " not found : " << v;
+            }
         }
     }
 }

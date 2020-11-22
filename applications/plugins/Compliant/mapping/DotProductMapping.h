@@ -33,10 +33,10 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 	
     typedef DotProductMapping<TIn,TOut> self;
 	
-	typedef defaulttype::Vec<2, unsigned> index_pair;
+    typedef defaulttype::Vec<2, std::size_t> index_pair;
     typedef helper::vector< index_pair > pairs_type;
 
-    Data< pairs_type > pairs;
+    Data< pairs_type > pairs; ///< index pairs for computing deltas
 
 	
     DotProductMapping()
@@ -45,20 +45,20 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 
 	enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
 
-    virtual void init()
+    virtual void init() override
     {
         this->getToModel()->resize( pairs.getValue().size() );
         AssembledMapping<TIn, TOut>::init();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         this->getToModel()->resize( pairs.getValue().size() );
         AssembledMapping<TIn, TOut>::reinit();
     }
 
 	virtual void apply(typename self::out_pos_type& out, 
-	                   const typename self::in_pos_type& in )  {
+                       const typename self::in_pos_type& in ) override {
 
         const pairs_type& p = pairs.getValue();
         assert( out.size() == p.size() );
@@ -69,7 +69,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
         }
 	}
 
-	virtual void assemble( const typename self::in_pos_type& in ) {
+    virtual void assemble( const typename self::in_pos_type& in ) override {
 
 		// jacobian matrix assembly
         const pairs_type& p = pairs.getValue();
@@ -103,7 +103,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 	}
 
 
-    virtual void assemble_geometric( const typename self::in_pos_type& in, const typename self::out_force_type& out )
+    virtual void assemble_geometric( const typename self::in_pos_type& in, const typename self::out_force_type& out ) override
     {
         const pairs_type& p = pairs.getValue();
 
@@ -136,7 +136,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
         K.compress();
     }
 
-    virtual void updateForceMask()
+    virtual void updateForceMask() override
     {
         const pairs_type& p = pairs.getValue();
 
@@ -199,13 +199,13 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 
         enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
-        virtual void init()
+        virtual void init() override
         {
             reinit();
             AssembledMultiMapping<TIn, TOut>::init();            
         }
 
-        virtual void reinit()
+        virtual void reinit() override
         {
             if(!pairs.getValue().size() && this->getFromModels()[0]->getSize()==this->getFromModels()[1]->getSize()) // if no pair is defined-> map all dofs
             {
@@ -218,7 +218,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
         }
 
         virtual void apply(typename self::out_pos_type& out,
-                           const helper::vector<typename self::in_pos_type>& in)  {
+                           const helper::vector<typename self::in_pos_type>& in) override {
 
             const pairs_type& p = pairs.getValue();
             assert( out.size() == p.size() );
@@ -237,7 +237,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
         typedef defaulttype::Vec<2, unsigned> index_pair;
         typedef defaulttype::Vec<2, index_pair> pair;
         typedef helper::vector< pair > pairs_type;
-        Data< pairs_type > pairs;
+        Data< pairs_type > pairs; ///< index pairs for computing deltas
 
     protected:
 
@@ -246,7 +246,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
         {
         }
 
-        void assemble(const helper::vector<typename self::in_pos_type>& in )
+        void assemble(const helper::vector<typename self::in_pos_type>& in ) override
         {
             const pairs_type& p = pairs.getValue();
             assert( !p.empty() );
@@ -279,7 +279,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
                 this->jacobian(i).compress();
         }
 
-        virtual void assemble_geometric( const helper::vector<typename self::const_in_coord_type>& in, const typename self::const_out_deriv_type& out)
+        virtual void assemble_geometric( const helper::vector<typename self::const_in_coord_type>& in, const typename self::const_out_deriv_type& out) override
         {
             typename self::geometric_type& K = this->geometric;
 
@@ -329,7 +329,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 
 
 
-        virtual void updateForceMask()
+        virtual void updateForceMask() override
         {
             const pairs_type& p = pairs.getValue();
 
@@ -372,8 +372,8 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 
         typedef typename Inherit1::InVecCoord InVecCoord;
 
-        Data< helper::vector< unsigned > > d_indices;
-        Data< InVecCoord > d_targets;
+        Data< helper::vector< unsigned > > d_indices; ///< indices of the dofs used to compute a dot product
+        Data< InVecCoord > d_targets; ///< targets to compute the dot products with
 
 
         DotProductFromTargetMapping()
@@ -383,13 +383,13 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 
         enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
 
-        virtual void init()
+        virtual void init() override
         {
             reinit();
             AssembledMapping<TIn, TOut>::init();
         }
 
-        virtual void reinit()
+        virtual void reinit() override
         {
             size_t size = d_indices.getValue().size();
             this->getToModel()->resize( size );
@@ -406,7 +406,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
         }
 
         virtual void apply(typename self::out_pos_type& out,
-                           const typename self::in_pos_type& in )  {
+                           const typename self::in_pos_type& in ) override {
 
             const helper::vector< unsigned >& indices = d_indices.getValue();
             const InVecCoord& targets = d_targets.getValue();
@@ -418,7 +418,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
             }
         }
 
-        virtual void assemble( const typename self::in_pos_type& in ) {
+        virtual void assemble( const typename self::in_pos_type& in ) override {
 
             // jacobian matrix assembly
             const helper::vector< unsigned >& indices = d_indices.getValue();
@@ -439,7 +439,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
         }
 
 
-        virtual void updateForceMask()
+        virtual void updateForceMask() override
         {
             const helper::vector< unsigned >& indices = d_indices.getValue();
 

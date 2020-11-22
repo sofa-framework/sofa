@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,13 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_RAYMODEL_H
-#define SOFA_COMPONENT_COLLISION_RAYMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_RAYCOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_RAYCOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <set>
 
 
@@ -38,12 +38,12 @@ namespace component
 namespace collision
 {
 
-class RayModel;
+class RayCollisionModel;
 
-class Ray : public core::TCollisionElementIterator<RayModel>
+class Ray : public core::TCollisionElementIterator<RayCollisionModel>
 {
 public:
-    Ray(RayModel* model, int index);
+    Ray(RayCollisionModel* model, int index);
 
     explicit Ray(const core::CollisionElementIterator& i);
 
@@ -58,26 +58,26 @@ public:
 
 class BaseRayContact;
 
-class SOFA_USER_INTERACTION_API RayModel : public core::CollisionModel
+class SOFA_USER_INTERACTION_API RayCollisionModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(RayModel, core::CollisionModel);
+    SOFA_CLASS(RayCollisionModel, core::CollisionModel);
 
     typedef sofa::defaulttype::Vec3Types InDataTypes;
     typedef sofa::defaulttype::Vec3Types DataTypes;
     typedef Ray Element;
     friend class Ray;
 protected:
-    RayModel(SReal defaultLength=1);
+    RayCollisionModel(SReal defaultLength=1);
 public:
     void init() override;
 
     // -- CollisionModel interface
-    virtual void resize(int size) override;
+    void resize(std::size_t size) override;
 
-    virtual void computeBoundingTree(int maxDepth) override;
+    void computeBoundingTree(int maxDepth) override;
 
-    void draw(const core::visual::VisualParams*,int index) override;
+    void draw(const core::visual::VisualParams*, index_type index) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
     core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }
@@ -99,19 +99,19 @@ protected:
     sofa::helper::vector<SReal> length;
     sofa::helper::vector<defaulttype::Vector3> direction;
 
-    Data<SReal> defaultLength;
+    Data<SReal> defaultLength; ///< TODO
 
     std::set<BaseRayContact*> contacts;
     core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;
 
 };
 
-inline Ray::Ray(RayModel* model, int index)
-    : core::TCollisionElementIterator<RayModel>(model, index)
+inline Ray::Ray(RayCollisionModel* model, int index)
+    : core::TCollisionElementIterator<RayCollisionModel>(model, index)
 {}
 
 inline Ray::Ray(const core::CollisionElementIterator& i)
-    : core::TCollisionElementIterator<RayModel>(static_cast<RayModel*>(i.getCollisionModel()), i.getIndex())
+    : core::TCollisionElementIterator<RayCollisionModel>(static_cast<RayCollisionModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
@@ -152,6 +152,8 @@ inline void Ray::setL(SReal newL)
 {
     model->length[index] = newL;
 }
+
+using RayModel [[deprecated("The RayModel is now deprecated, please use RayCollisionModel instead. Compatibility stops at v20.06")]] = RayCollisionModel;
 
 } // namespace collision
 

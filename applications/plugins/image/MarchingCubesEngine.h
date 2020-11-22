@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,10 +58,10 @@ public:
 
     typedef SReal Real;
 
-    Data< Real > isoValue;
-    Data< defaulttype::Vec<3,unsigned int> > subdiv;
-    Data< bool > invertNormals;
-    Data< bool > showMesh;
+    Data< Real > isoValue; ///< pixel value to extract isosurface
+    Data< defaulttype::Vec<3,unsigned int> > subdiv; ///< number of subdividions in x,y,z directions (use image dimension if =0)
+    Data< bool > invertNormals; ///< invert triangle vertex order
+    Data< bool > showMesh; ///< show reconstructed mesh
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
@@ -77,16 +77,13 @@ public:
     typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
-    Data< SeqPositions > position;
+    Data< SeqPositions > position; ///< output positions
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
-    Data< SeqTriangles > triangles;
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MarchingCubesEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
+    Data< SeqTriangles > triangles; ///< output triangles
 
     MarchingCubesEngine()    :   Inherited()
         , isoValue(initData(&isoValue,(Real)(1.0),"isoValue","pixel value to extract isosurface"))
@@ -104,7 +101,7 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -113,13 +110,13 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void update() override
+    void doUpdate() override
     {
         raImage in(this->image);
 		raTransform inT(this->transform);
@@ -150,7 +147,6 @@ protected:
         else
             cimglist_for(faces,l) tri[l]=Triangle(faces(l,0),faces(l,1),faces(l,2));
 
-        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event) override
@@ -172,49 +168,47 @@ protected:
         }
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams) override
+    void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;
         if (!this->showMesh.getValue()) return;
+
+        vparams->drawTool()->saveLastState();
 
         bool wireframe=vparams->displayFlags().getShowWireFrame();
 
         raPositions pos(this->position);
         raTriangles tri(this->triangles);
-        raImage in(this->image);
 
-        glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
+        const sofa::defaulttype::Vec4f color(0.5,0.5,0.5,0.5);
+        vparams->drawTool()->setMaterial(color);
+        vparams->drawTool()->enableLighting();
 
-        float color[]= {0.5,0.5,0.5,0.}, specular[]= {0.,0.,0.,0.};
-        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-        glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
-        glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
-        glColor4fv(color);
+        std::size_t size = tri.size();
+        std::vector<defaulttype::Vector3> points;
+        std::vector<defaulttype::Vector3> normals;
+        std::vector<defaulttype::Vec4f> colors;
+        points.resize(3*size);
+        normals.resize(size);
+        colors.resize(size);
 
-        glEnable( GL_LIGHTING);
-
-
-        if(!wireframe) glBegin(GL_TRIANGLES);
-        for (unsigned int i=0; i<tri.size(); ++i)
+        for (std::size_t i=0; i<size; ++i)
         {
-            if(wireframe) glBegin(GL_LINE_LOOP);
-            const defaulttype::Vec<3,Real>& a = pos[ tri[i][0] ];
-            const defaulttype::Vec<3,Real>& b = pos[ tri[i][1] ];
-            const defaulttype::Vec<3,Real>& c = pos[ tri[i][2] ];
-            defaulttype::Vec<3,Real> n = cross((a-b),(a-c));	n.normalize();
-            glNormal3d(n[0],n[1],n[2]);
-
-
-            glVertex3d(a[0],a[1],a[2]);
-            glVertex3d(b[0],b[1],b[2]);
-            glVertex3d(c[0],c[1],c[2]);
-            if(wireframe)  glEnd();
+            points[3*i] = pos[ tri[i][0] ];
+            points[3*i+1] = pos[ tri[i][1] ];
+            points[3*i+2] = pos[ tri[i][2] ];
+            normals[i] = cross((points[3*i]-points[3*i+1]),(points[3*i]-points[3*i+2]));
+            normals[i].normalize();
+            colors[i] = color;
         }
-        if(!wireframe) glEnd();
+        // Draw triangles
+        if(!wireframe)
+            vparams->drawTool()->drawTriangles(points,normals,colors);
+        // Wireframe mode: draw line loop
+        else
+            vparams->drawTool()->drawLineLoop(points,1.0,color);
 
-        glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->restoreLastState();
     }
 };
 

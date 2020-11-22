@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaGeneralMeshCollision/MeshDiscreteIntersection.inl>
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.inl>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/helper/proximity.h>
@@ -41,8 +40,6 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-SOFA_DECL_CLASS(MeshDiscreteIntersection)
-
 IntersectorCreator<DiscreteIntersection, MeshDiscreteIntersection> MeshDiscreteIntersectors("Mesh");
 
 MeshDiscreteIntersection::MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf)
@@ -50,9 +47,9 @@ MeshDiscreteIntersection::MeshDiscreteIntersection(DiscreteIntersection* object,
 {
     if (addSelf)
     {
-        intersection->intersectors.add<TriangleModel,     LineModel,       MeshDiscreteIntersection>  (this);
-        intersection->intersectors.add<CapsuleModel,LineModel,MeshDiscreteIntersection>(this);
-        intersection->intersectors.add<CapsuleModel,TriangleModel,MeshDiscreteIntersection>(this);
+        intersection->intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshDiscreteIntersection>  (this);
+        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, MeshDiscreteIntersection>(this);
+        intersection->intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, MeshDiscreteIntersection>(this);
     }
 }
 
@@ -85,7 +82,6 @@ int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, Output
         M[i][2] = -PQ[i];
         right[i] = P[i]-A[i];
     }
-    //sout << "M="<<M<<sendl;
     if (!Minv.invert(M))
         return 0;
     Vector3 baryCoords = Minv * right;

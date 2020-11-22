@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,7 +65,7 @@ ArticulationCenter* ArticulatedHierarchyContainer::getArticulationCenterAsChild(
         if ((*ac)->childIndex.getValue() == index)
             return (*ac);
     }
-    return (*ac);
+    return nullptr;
 }
 
 helper::vector<ArticulationCenter*> ArticulatedHierarchyContainer::getAcendantList(int index)
@@ -74,17 +74,25 @@ helper::vector<ArticulationCenter*> ArticulatedHierarchyContainer::getAcendantLi
     acendantList.clear();
     while (index !=0)
     {
-        acendantList.push_back(getArticulationCenterAsChild(index));
+        ArticulationCenter* AC = getArticulationCenterAsChild(index);
+        if (AC != nullptr)
+            acendantList.push_back(AC);
+        else {
+            msg_error() << "getArticulationCenterAsChild not found for index: " << index;
+            break;
+        }
+
         index = acendantList[i]->parentIndex.getValue();
         i++;
     }
+    
     return acendantList;
 }
 
 ArticulatedHierarchyContainer::ArticulatedHierarchyContainer():
     filename(initData(&filename, "filename", "BVH File to load the articulation", false))
 {
-    joint = NULL;
+    joint = nullptr;
     id = 0;
     chargedFromFile = false;
     numOfFrames = 0;
@@ -118,7 +126,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
     sofa::helper::io::bvh::BVHChannels* channels = bvhjoint->getChannels();
     sofa::helper::io::bvh::BVHMotion* motion = bvhjoint->getMotion();
 
-    sout<<"num Frames found in BVH ="<<motion->frameCount<<sendl;
+    msg_info()<<"num Frames found in BVH ="<<motion->frameCount;
 
     Articulation::SPtr a;
 
@@ -218,7 +226,7 @@ void ArticulatedHierarchyContainer::init ()
         dtbvh = joint->getMotion()->frameTime;
     }
 
-    if (joint != NULL)
+    if (joint != nullptr)
     {
         simulation::Node::SPtr articulationCenters = context->createChild("ArticulationCenters");
 

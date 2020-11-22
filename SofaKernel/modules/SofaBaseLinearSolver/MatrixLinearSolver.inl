@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,90 +36,47 @@ namespace linearsolver {
 template<class Matrix, class Vector>
 MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
     : Inherit()
-    , multiGroup( initData( &multiGroup, false, "multiGroup", "activate multiple system solve, one for each child node" ) )
-//, needInvert(true), systemMatrix(NULL), systemRHVector(NULL), systemLHVector(NULL)
     , currentGroup(&defaultGroup)
 {
-    invertData = NULL;
+    invertData = nullptr;
 }
 
 template<class Matrix, class Vector>
 MatrixLinearSolver<Matrix,Vector>::~MatrixLinearSolver()
 {
-    //if (systemMatrix) deleteMatrix(systemMatrix);
-    //if (systemRHVector) deleteVector(systemRHVector);
-    //if (systemLHVector) deleteVector(systemLHVector);
     if (invertData) delete invertData;
-    invertData = NULL;
+    invertData = nullptr;
 }
 
 template<class Matrix, class Vector>
 MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::getMatrixInvertData(defaulttype::BaseMatrix * /*m*/)
 {
-    if (invertData==NULL) invertData=createInvertData();
+    if (invertData==nullptr) invertData=createInvertData();
     return invertData;
 }
 
 template<class Matrix, class Vector>
 MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::createInvertData()
 {
-    msg_error("MatrixLinearSolver") << "The solver didn't implement MatrixLinearSolver::getMatrixInvertData this function is not available in MatrixLinearSolver, NULL is return." ;
-    return NULL;
-}
-
-template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParams* mparams)
-{
-    simulation::Node* root = dynamic_cast<simulation::Node*>(this->getContext());
-    //defaultGroup.node = root;
-    for (GroupDataMapIter it = gData.begin(), itend = gData.end(); it != itend; ++it)
-        it->second.systemSize = 0;
-    if (isMultiGroup())
-    {
-        double dim = 0;
-        groups.clear();
-        for (unsigned int g=0; g<root->child.size(); ++g)
-        {
-            simulation::Node* n = root->child[g].get();
-            SReal gdim = 0;
-            simulation::MechanicalGetDimensionVisitor(mparams, &gdim).execute(n);
-            if (gdim <= 0) continue;
-            groups.push_back(n);
-            gData[n].systemSize = (int)gdim;
-            dim += gdim;
-        }
-        defaultGroup.systemSize = (int)dim;
-    }
-    else
-    {
-        groups.clear();
-        SReal dim = 0;
-        simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(root);
-        defaultGroup.systemSize = (int)dim;
-    }
-    currentNode = root;
-    currentGroup = &defaultGroup;
+    msg_error("MatrixLinearSolver") << "The solver didn't implement MatrixLinearSolver::getMatrixInvertData this function is not available in MatrixLinearSolver, nullptr is return." ;
+    return nullptr;
 }
 
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::resetSystem()
 {
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    if (!this->frozen)
     {
-        setGroup(g);
-        if (!this->frozen)
-        {
-            if (currentGroup->systemMatrix) currentGroup->systemMatrix->clear();
-            currentGroup->needInvert = true;
-        }
-        if (currentGroup->systemRHVector) currentGroup->systemRHVector->clear();
-        if (currentGroup->systemLHVector) currentGroup->systemLHVector->clear();
-        currentGroup->solutionVecId = core::MultiVecDerivId::null();
+        if (currentGroup->systemMatrix) currentGroup->systemMatrix->clear();
+        currentGroup->needInvert = true;
     }
+    if (currentGroup->systemRHVector) currentGroup->systemRHVector->clear();
+    if (currentGroup->systemLHVector) currentGroup->systemLHVector->clear();
+    currentGroup->solutionVecId = core::MultiVecDerivId::null();
 }
 
 template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::resizeSystem(int n)
+void MatrixLinearSolver<Matrix,Vector>::resizeSystem(std::size_t n)
 {
     if (!this->frozen)
     {
@@ -128,6 +85,7 @@ void MatrixLinearSolver<Matrix,Vector>::resizeSystem(int n)
     }
     if (!currentGroup->systemRHVector) currentGroup->systemRHVector = createPersistentVector();
     currentGroup->systemRHVector->resize(n);
+
     if (!currentGroup->systemLHVector) currentGroup->systemLHVector = createPersistentVector();
     currentGroup->systemLHVector->resize(n);
     currentGroup->needInvert = true;
@@ -136,9 +94,9 @@ void MatrixLinearSolver<Matrix,Vector>::resizeSystem(int n)
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemMatrix(Matrix * matrix)
 {
-    if (currentGroup==NULL) currentGroup=&defaultGroup;
+    if (currentGroup==nullptr) currentGroup=&defaultGroup;
     currentGroup->systemMatrix = matrix;
-    if (matrix!=NULL) {
+    if (matrix!=nullptr) {
         if (!currentGroup->systemRHVector) currentGroup->systemRHVector = createPersistentVector();
         currentGroup->systemRHVector->resize(matrix->colSize());
         if (!currentGroup->systemLHVector) currentGroup->systemLHVector = createPersistentVector();
@@ -153,32 +111,28 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
     this->currentMFactor = mparams->mFactor();
     this->currentBFactor = mparams->bFactor();
     this->currentKFactor = mparams->kFactor();
-    createGroups(mparams);
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
-    {
-        setGroup(g);
-        if (!this->frozen)
-        {
-            simulation::common::MechanicalOperations mops(mparams, this->getContext());
-            if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
-            currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
-            currentGroup->matrixAccessor.clear();
 
-            //unsigned int nbRow=0, nbCol=0;
-            //MechanicalGetMatrixDimensionVisitor(nbRow, nbCol).execute( getContext() );
-            //this->getMatrixDimension(&nbRow, &nbCol);
-            //resizeSystem(nbRow);
-            mops.getMatrixDimension(&(currentGroup->matrixAccessor));
-            currentGroup->matrixAccessor.setupMatrices();
-            resizeSystem(currentGroup->matrixAccessor.getGlobalDimension());
-            currentGroup->systemMatrix->clear();
-            //unsigned int offset = 0;
-            //MechanicalAddMBK_ToMatrixVisitor(currentGroup->systemMatrix, mFact, bFact, kFact, offset).execute( getContext() );
-            mops.addMBK_ToMatrix(&(currentGroup->matrixAccessor), mparams->mFactor(), mparams->bFactor(), mparams->kFactor());
-            //this->addMBK_ToMatrix(&(currentGroup->matrixAccessor), mFact, bFact, kFact);
-            currentGroup->matrixAccessor.computeGlobalMatrix();
-        }
+    if (!this->frozen)
+    {
+        simulation::Node* root = dynamic_cast<simulation::Node*>(this->getContext());
+        SReal dim = 0;
+        simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(root);
+        currentGroup->systemSize = std::size_t(dim);
+        currentGroup->matrixAccessor.setDoPrintInfo( this->f_printLog.getValue() ) ;
+
+        simulation::common::MechanicalOperations mops(mparams, this->getContext());
+        if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
+        currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
+        currentGroup->matrixAccessor.clear();
+
+        mops.getMatrixDimension(&(currentGroup->matrixAccessor));
+        currentGroup->matrixAccessor.setupMatrices();
+        resizeSystem(currentGroup->matrixAccessor.getGlobalDimension());
+        currentGroup->systemMatrix->clear();
+        mops.addMBK_ToMatrix(&(currentGroup->matrixAccessor), mparams->mFactor(), mparams->bFactor(), mparams->kFactor());
+        currentGroup->matrixAccessor.computeGlobalMatrix();
     }
+
 }
 
 template<class Matrix, class Vector>
@@ -188,98 +142,55 @@ void MatrixLinearSolver<Matrix,Vector>::rebuildSystem(double massFactor, double 
     mparams.setMFactor(this->currentMFactor*massFactor);
     mparams.setBFactor(this->currentBFactor*forceFactor);
     mparams.setKFactor(this->currentKFactor*forceFactor);
-    //serr << "M=" << mparams.mFactor() << " K=" << mparams.kFactor() << sendl;
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    if (!this->frozen)
     {
-        setGroup(g);
-        if (!this->frozen)
-        {
-            simulation::common::MechanicalOperations mops(&mparams, this->getContext());
-            if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
-            currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
-            currentGroup->matrixAccessor.clear();
-            mops.getMatrixDimension(&(currentGroup->matrixAccessor));
-            currentGroup->matrixAccessor.setupMatrices();
-            resizeSystem(currentGroup->matrixAccessor.getGlobalDimension());
-            currentGroup->systemMatrix->clear();
-            mops.addMBK_ToMatrix(&(currentGroup->matrixAccessor), mparams.mFactor(), mparams.bFactor(), mparams.kFactor());
-            currentGroup->matrixAccessor.computeGlobalMatrix();
-        }
+        simulation::common::MechanicalOperations mops(&mparams, this->getContext());
+        if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
+        currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
+        currentGroup->matrixAccessor.clear();
+        mops.getMatrixDimension(&(currentGroup->matrixAccessor));
+        currentGroup->matrixAccessor.setupMatrices();
+        resizeSystem(currentGroup->matrixAccessor.getGlobalDimension());
+        currentGroup->systemMatrix->clear();
+        mops.addMBK_ToMatrix(&(currentGroup->matrixAccessor), mparams.mFactor(), mparams.bFactor(), mparams.kFactor());
+        currentGroup->matrixAccessor.computeGlobalMatrix();
     }
+
     this->invertSystem();
 }
 
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemRHVector(core::MultiVecDerivId v)
 {
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
-    {
-        setGroup(g);
-        //this->multiVector2BaseVector(v, currentGroup->systemRHVector, &(currentGroup->matrixAccessor));
-        executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor(core::ExecParams::defaultInstance(), v, currentGroup->systemRHVector, &(currentGroup->matrixAccessor)) );
-    }
+    executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor(core::ExecParams::defaultInstance(), v,
+                                                                         currentGroup->systemRHVector,
+                                                                         &(currentGroup->matrixAccessor)) );
 }
 
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemLHVector(core::MultiVecDerivId v)
 {
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    currentGroup->solutionVecId = v;
+    if (!currentGroup->solutionVecId.isNull())
     {
-        setGroup(g);
-        currentGroup->solutionVecId = v;
-        if (!currentGroup->solutionVecId.isNull())
-        {
-            //this->multiVector2BaseVector(v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor));
-            executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor( core::ExecParams::defaultInstance(), v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
-        }
+        executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor( core::ExecParams::defaultInstance(), v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
     }
 }
 
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::solveSystem()
 {
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    if (currentGroup->needInvert)
     {
-        setGroup(g);
-        if (currentGroup->needInvert)
-        {
-            this->invert(*currentGroup->systemMatrix);
-            currentGroup->needInvert = false;
-        }
-        this->solve(*currentGroup->systemMatrix, *currentGroup->systemLHVector, *currentGroup->systemRHVector);
-        if (!currentGroup->solutionVecId.isNull())
-        {
-            //v_clear(currentGroup->solutionVecId);
-            //multiVectorPeqBaseVector(currentGroup->solutionVecId, currentGroup->systemLHVector, &(currentGroup->matrixAccessor));
-            executeVisitor( simulation::MechanicalMultiVectorFromBaseVectorVisitor(core::ExecParams::defaultInstance(), currentGroup->solutionVecId, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
-        }
+        this->invert(*currentGroup->systemMatrix);
+        currentGroup->needInvert = false;
+    }
+    this->solve(*currentGroup->systemMatrix, *currentGroup->systemLHVector, *currentGroup->systemRHVector);
+    if (!currentGroup->solutionVecId.isNull())
+    {
+        executeVisitor( simulation::MechanicalMultiVectorFromBaseVectorVisitor(core::ExecParams::defaultInstance(), currentGroup->solutionVecId, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
     }
 }
-
-/*
-
-template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::partialSolveSystem(VecIndex&  Iout, VecIndex&  Iin)
-{
-    if (needInvert)
-    {
-        this->invert(*systemMatrix);
-        needInvert = false;
-    }
-    this->partial_solve(*systemMatrix, *systemLHVector, *systemRHVector, Iout, Iin);
-
-
-    if (!solutionVecId.isNull())
-    {
-        unsigned int offset = 0;
-        //MechanicalBaseVector2MultiVectorVisitor(systemLHVector, solutionVecId, offset).execute( getContext() );
-        //MechanicalVOpVisitor(solutionVecId).execute( getContext() ); // clear solutionVecId
-        //MechanicalMultiVectorPeqBaseVectorVisitor(solutionVecId, systemLHVector, offset).execute( getContext() );
-        v_clear(solutionVecId);
-        multiVectorPeqBaseVector(solutionVecId, systemLHVector, offset);
-    }
-}
-*/
 
 template<class Matrix, class Vector>
 Vector* MatrixLinearSolver<Matrix,Vector>::createPersistentVector()
@@ -308,14 +219,10 @@ void MatrixLinearSolver<Matrix,Vector>::deleteMatrix(Matrix* v)
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::invertSystem()
 {
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    if (currentGroup->needInvert)
     {
-        setGroup(g);
-        if (currentGroup->needInvert)
-        {
-            this->invert(*currentGroup->systemMatrix);
-            currentGroup->needInvert = false;
-        }
+        this->invert(*currentGroup->systemMatrix);
+        currentGroup->needInvert = false;
     }
 }
 
@@ -336,11 +243,11 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
             const typename SparseMatrix<Real>::LineConstIterator jitend = j->end();
             for (typename SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
             {
-                int row2 = jit->first;
+                auto row2 = jit->first;
                 double acc = 0.0;
                 for (typename SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
                 {
-                    int col2 = i2->first;
+                    auto col2 = i2->first;
                     double val2 = i2->second;
                     acc += val2 * currentGroup->systemLHVector->element(col2);
                 }
@@ -364,7 +271,8 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJtLocal(Matrix * /*M*/,ResMatrixT
     for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
     {
         // STEP 1 : put each line of matrix Jt in the right hand term of the system
-        for (typename JMatrixType::Index i=0; i<J->colSize(); i++) currentGroup->systemRHVector->set(i,J->element(row,i)); // currentGroup->systemMatrix->rowSize()
+        for (typename JMatrixType::Index i=0; i<J->colSize(); i++) 
+            currentGroup->systemRHVector->set(i, J->element(row,i)); // currentGroup->systemMatrix->rowSize()
 
         // STEP 2 : solve the system :
         solveSystem();
@@ -401,29 +309,34 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(defaulttype::BaseMatrix* resul
 }
 
 template<class Matrix, class Vector>
-bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(defaulttype::BaseMatrix* result, double fact)
+bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, double fact)
 {
-    if (result->rowSize()==0) return true;
-
     JMatrixType * j_local = internalData.getLocalJ();
     j_local->clear();
-    j_local->resize(result->rowSize(),currentGroup->systemMatrix->colSize());
+    j_local->resize(result->rowSize(), currentGroup->systemMatrix->colSize());
 
-    executeVisitor(simulation::MechanicalGetConstraintJacobianVisitor(core::ExecParams::defaultInstance(),j_local));
+    if (result->rowSize() == 0)
+    {
+        return true;
+    }
+
+    executeVisitor(simulation::MechanicalGetConstraintJacobianVisitor(cparams,j_local));
 
     return addJMInvJt(result,j_local,fact);
 }
 
 template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::applyContactForce(const defaulttype::BaseVector* f,double positionFactor,double velocityFactor) {
+void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::ConstraintParams* cparams, sofa::core::MultiVecDerivId dx, const defaulttype::BaseVector* f)
+{
     currentGroup->systemRHVector->clear();
     currentGroup->systemRHVector->resize(currentGroup->systemMatrix->colSize());
-
+    /// rhs = J^t * f
     internalData.projectForceInConstraintSpace(currentGroup->systemRHVector,f);
-
+    /// lhs = M^-1 * rhs
     this->solve(*currentGroup->systemMatrix,*currentGroup->systemLHVector,*currentGroup->systemRHVector);
 
-    executeVisitor(simulation::MechanicalIntegrateConstraintsVisitor(core::ExecParams::defaultInstance(),currentGroup->systemLHVector,positionFactor,velocityFactor,&(currentGroup->matrixAccessor)));
+    executeVisitor(simulation::MechanicalMultiVectorFromBaseVectorVisitor(cparams, dx, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
+    executeVisitor(simulation::MechanicalMultiVectorFromBaseVectorVisitor(cparams, cparams->lambda(), currentGroup->systemRHVector, &(currentGroup->matrixAccessor)));
 }
 
 template<class Matrix, class Vector>

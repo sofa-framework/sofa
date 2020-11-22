@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_H
-#include "config.h"
+#pragma once
+
+#include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
-
 #include <SofaBaseTopology/TopologySubsetData.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 /// Apply constant forces to given degrees of freedom.
@@ -56,109 +49,102 @@ public:
 
     typedef sofa::component::topology::PointSubsetData< VecIndex > SetIndex;
 
-public:
+
     /// indices of the points the force applies to
-    SetIndex                   d_indices;
+    SetIndex d_indices;
 
     /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
-    Data< bool >               d_indexFromEnd;
+    Data< bool > d_indexFromEnd;
 
     /// Per-point forces.
-    Data< VecDeriv >           d_forces;
+    Data< VecDeriv > d_forces;
 
     /// Force applied at each point, if per-point forces are not specified
-    Data< Deriv >              d_force;
+    Data< Deriv > d_force;
 
     /// Sum of the forces applied at each point, if per-point forces are not specified
-    Data< Deriv >              d_totalForce;
+    Data< Deriv > d_totalForce;
 
-    ///S for drawing. The sign changes the direction, 0 doesn't draw arrow
-    Data< SReal >              d_arrowSizeCoef;
+    /// S for drawing. The sign changes the direction, 0 doesn't draw arrow
+    Data< SReal > d_showArrowSize;
 
     /// display color
-    Data< defaulttype::RGBAColor > d_color;
+    Data< sofa::helper::types::RGBAColor > d_color;
+
     /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
     Data< bool > indexFromEnd;
 
-public:
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<ConstantForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
     /// Init function
     void init() override;
-    void parse(sofa::core::objectmodel::BaseObjectDescription *arg) override;
+
+    /// Re-init function
+    void reinit() override;
 
     /// Add the forces
-    virtual void addForce (const core::MechanicalParams* params, DataVecDeriv& f,
-                           const DataVecCoord& x, const DataVecDeriv& v) override;
+    void addForce (const core::MechanicalParams* params, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
     /// Constant force has null variation
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df ,
-                           const DataVecDeriv& d_dx) override;
-
-    using Inherit::addKToMatrix;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx) override;
 
     /// Constant force has null variation
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m,
-                              SReal kFactor, unsigned int &offset) override;
+    void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset) override;
 
     /// Constant force has null variation
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/,
-                              SReal /*kFact*/) ;
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, SReal /*kFact*/) ;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* params,
-                                     const DataVecCoord& x) const override;
+    SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void updateForceMask() override;
+    void updateForceMask() override;
+
+    /// Update data and internal vectors
+    void doUpdateInternal() override;
 
     /// Set a force to a given particle
     void setForce( unsigned i, const Deriv& f );
 
+    /// Parse function (to be removed after v19.12)
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
+
     using Inherit::addAlias ;
+    using Inherit::addKToMatrix;
+
 
 protected:
     ConstantForceField();
 
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
+    /// Functions checking inputs before update
+    bool checkForce(const Deriv&  force);
+    bool checkForces(const VecDeriv& forces);
+
+    /// Functions computing and updating the constant force vector
+    void computeForceFromSingleForce();
+    void computeForceFromForceVector();
+    void computeForceFromTotalForce();
+
+    /// Save system size for update of indices (doUpdateInternal)
+    size_t m_systemSize;
 };
 
-#ifndef SOFA_FLOAT
 template <>
-SReal ConstantForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
+SReal ConstantForceField<defaulttype::Rigid3Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 template <>
-SReal ConstantForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
+SReal ConstantForceField<defaulttype::Rigid2Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
+
+
+
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Vec6Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Rigid3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Rigid2Types>;
+
 #endif
 
-#ifndef SOFA_DOUBLE
-template <>
-SReal ConstantForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
-template <>
-SReal ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
-#endif
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Rigid3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Rigid3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API ConstantForceField<sofa::defaulttype::Rigid2fTypes>;
-#endif
-#endif
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_H
+} // namespace sofa::component::forcefield

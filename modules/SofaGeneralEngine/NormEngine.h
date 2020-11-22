@@ -1,7 +1,7 @@
  
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,20 +50,18 @@ public:
 
     NormEngine();
 
-    virtual ~NormEngine() {}
+    ~NormEngine() override {}
 
     void init() override;
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const NormEngine<TDataType>* = NULL)
+    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
+    /// so we need to override that by implementing GetCustomTemplateName() function
+    /// More details on the name customization infrastructure is in NameDecoder.h
+    static const std::string GetCustomTemplateName()
     {
         return defaulttype::DataTypeInfo<TDataType>::name();
     }
@@ -71,19 +69,15 @@ public:
 
 protected:
 
-    Data<VecData> d_input;
-    Data<VecReal> d_output;
-    Data<int> d_normType;
+    Data<VecData> d_input; ///< input array of 3d points
+    Data<VecReal> d_output; ///< output array of scalar norms
+    Data<int> d_normType; ///< The type of norm. Use a negative value for the infinite norm.
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_NORMENGINE_CPP)
-#ifndef SOFA_FLOAT
+#if  !defined(SOFA_COMPONENT_ENGINE_NORMENGINE_CPP)
 extern template class SOFA_GENERAL_ENGINE_API NormEngine<defaulttype::Vec3d>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API NormEngine<defaulttype::Vec3f>;
-#endif
+
 #endif
 
 } // namespace engine

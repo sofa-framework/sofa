@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,12 +67,12 @@ public:
 
     typedef SReal Real;
 
-    Data< helper::vector<Real> > voxelSize; // should be a Vec<3,Real>, but it is easier to be backward-compatible that way
+    Data< helper::vector<Real> > voxelSize; ///< should be a Vec<3,Real>, but it is easier to be backward-compatible that way
     typedef helper::WriteOnlyAccessor<Data< helper::vector<Real> > > waVecReal;
-    Data< defaulttype::Vec<3,unsigned> > nbVoxels;
-    Data< bool > rotateImage;
-    Data< unsigned int > padSize;
-    Data< unsigned int > subdiv;
+    Data< defaulttype::Vec<3,unsigned> > nbVoxels; ///< number of voxel (redondant with and priority over voxelSize)
+    Data< bool > rotateImage; ///< orient the image bounding box according to the mesh (OBB)
+    Data< unsigned int > padSize; ///< size of border in number of voxels
+    Data< unsigned int > subdiv; ///< number of subdivisions for face rasterization (if needed, increase to avoid holes)
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
@@ -118,17 +118,13 @@ public:
     helper::vectorData<SeqValues> vf_roiValue;   ///< values for each roi
     typedef helper::ReadAccessor<Data< VecSeqIndex > > raIndex;
 
-    Data< ValueType > backgroundValue;
+    Data< ValueType > backgroundValue; ///< pixel value at background
 
-    Data<unsigned int> f_nbMeshes;
+    Data<unsigned int> f_nbMeshes; ///< number of meshes to voxelize (Note that the last one write on the previous ones)
 
-    Data<bool> gridSnap;
+    Data<bool> gridSnap; ///< align voxel centers on voxelSize multiples for perfect image merging (nbVoxels and rotateImage should be off)
 
-    Data<bool> worldGridAligned;
-
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const MeshToImageEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
+    Data<bool> worldGridAligned; ///< perform rasterization on a world aligned grid using nbVoxels and voxelSize
 
     MeshToImageEngine()    :   Inherited()
       , voxelSize(initData(&voxelSize,helper::vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
@@ -170,11 +166,11 @@ public:
         this->addAlias(vf_roiValue[0], "roiValue");
     }
 
-    virtual ~MeshToImageEngine()
+    ~MeshToImageEngine() override
     {
     }
 
-    virtual void init() override
+    void init() override
     {
         // backward compatibility (if InsideValue is not set: use first value)
         for( size_t meshId=0; meshId<vf_InsideValues.size() ; ++meshId )
@@ -208,7 +204,7 @@ public:
         im.fill((T)0);
     }
 
-    virtual void reinit() override
+    void reinit() override
     {
         vf_positions.resize(f_nbMeshes.getValue());
         vf_edges.resize(f_nbMeshes.getValue());
@@ -251,11 +247,8 @@ public:
 
 protected:
 
-    virtual void update() override
+    void doUpdate() override
     {
-        updateAllInputsIfDirty();
-        cleanDirty();
-
         // to be backward-compatible, if less than 3 values, fill with the last one
         waVecReal vs( voxelSize ); unsigned vs_lastid=vs.size()-1;
         for( unsigned i=vs.size() ; i<3 ; ++i ) vs.push_back( vs[vs_lastid] );
@@ -391,7 +384,7 @@ protected:
 
         for( size_t meshId=0 ; meshId<f_nbMeshes.getValue() ; ++meshId )        rasterizeAndFill ( meshId, im, tr );
 
-        if(this->f_printLog.getValue()) sout<<this->getName()<<": Voxelization done"<<sendl;
+        msg_info() << "Voxelization done";
 
     }
 
@@ -402,17 +395,29 @@ protected:
         raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
         raTriangles tri(*this->vf_triangles[meshId]);       unsigned int nbtri = tri.size();
         raEdges edg(*this->vf_edges[meshId]);               unsigned int nbedg = edg.size();
-        if(!nbp || (!nbtri && !nbedg) ) { serr<<"no topology defined for mesh "<<meshId<<sendl; return; }
+        if(!nbp || (!nbtri && !nbedg) )
+        {
+            msg_error()<<"No topology defined for mesh "<<meshId;
+            return;
+        }
         unsigned int nbval = this->vf_values[meshId]->getValue().size();
 
         raIndex roiIndices(*this->vf_roiIndices[meshId]);
-        if(roiIndices.size() && !this->vf_roiValue[meshId]->getValue().size()) serr<<"at least one roiValue for mesh "<<meshId<<" needs to be specified"<<sendl;
-        if(this->f_printLog.getValue())  for(size_t r=0;r<roiIndices.size();++r) sout<<this->getName()<<": mesh "<<meshId<<"\t ROI "<<r<<"\t number of vertices= " << roiIndices[r].size() << "\t value= "<<getROIValue(meshId,r)<<sendl;
+
+        if(roiIndices.size() && !this->vf_roiValue[meshId]->getValue().size())
+            msg_error() <<"at least one roiValue for mesh "<<meshId<<" needs to be specified";
+
+        if(notMuted())
+        {
+            std::stringstream tmpStr;
+            for(size_t r=0;r<roiIndices.size();++r)
+                tmpStr <<"mesh "<<meshId<<"\t ROI "<<r<<"\t number of vertices= " << roiIndices[r].size() << "\t value= "<<getROIValue(meshId,r)<<msgendl;
+            msg_info() << tmpStr.str();
+        }
 
         /// colors definition
         const T FillColor = (T)getValue(meshId,0);
         const T InsideColor = (T)this->vf_InsideValues[meshId]->getValue();
-        //        T OutsideColor = (T)this->backgroundValue.getValue();
 
         /// draw surface
         cimg_library::CImg<bool> mask;
@@ -420,7 +425,7 @@ protected:
         mask.fill(false);
 
         // draw edges
-        if(this->f_printLog.getValue() && nbedg) sout<<this->getName()<<":  Voxelizing edges (mesh "<<meshId<<")..."<<sendl;
+        msg_info() <<"Voxelizing edges (mesh "<<meshId<<")";
 
         unsigned int subdivValue = this->subdiv.getValue();
 
@@ -456,7 +461,7 @@ protected:
         }
 
         //  draw filled faces
-        if(this->f_printLog.getValue() && nbtri) sout<<this->getName()<<":  Voxelizing triangles (mesh "<<meshId<<")..."<<sendl;
+        msg_info() << "Voxelizing triangles (mesh "<<meshId<<")...";
 
         std::map<unsigned int,T> triToValue; // we record special roi values and rasterize them after to prevent from overwriting
 #ifdef _OPENMP
@@ -494,9 +499,11 @@ protected:
         /// fill inside
         if(this->vf_FillInside[meshId]->getValue())
         {
-            if(!isClosed(tri.ref())) sout<<"mesh["<<meshId<<"] might be open, let's try to fill it anyway"<<sendl;
+            msg_info_when(!isClosed(tri.ref())) <<"mesh["<<meshId<<"] might be open, let's try to fill it anyway";
+
             // flood fill from the exterior point (0,0,0) with the color outsideColor
-            if(this->f_printLog.getValue()) sout<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<sendl;
+            msg_info() <<"Filling object (mesh "<<meshId<<")...";
+
             static const bool colorTrue=true;
             mask.draw_fill(0,0,0,&colorTrue);
             cimg_foroff(mask,off) if(!mask[off]) im[off]=InsideColor;
@@ -541,7 +548,7 @@ protected:
 
 
 
-    virtual void draw(const core::visual::VisualParams* /*vparams*/) override
+    void draw(const core::visual::VisualParams* /*vparams*/) override
     {
     }
 
@@ -704,7 +711,7 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_IMAGE_MeshToImageEngine_CPP)
+#if  !defined(SOFA_IMAGE_MeshToImageEngine_CPP)
 extern template class SOFA_IMAGE_API MeshToImageEngine<sofa::defaulttype::ImageB>;
 extern template class SOFA_IMAGE_API MeshToImageEngine<sofa::defaulttype::ImageUC>;
 extern template class SOFA_IMAGE_API MeshToImageEngine<sofa::defaulttype::ImageUS>;

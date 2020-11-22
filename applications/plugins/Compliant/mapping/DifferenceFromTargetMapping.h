@@ -5,7 +5,7 @@
 
 #include "ConstantAssembledMapping.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -38,12 +38,12 @@ public:
 
     Data< helper::vector<unsigned> > indices;         ///< indices of the parent points
 
-    Data< InVecCoord > targets;
-    Data< helper::vector<unsigned> > d_targetIndices;
+    Data< InVecCoord > targets; ///< target positions which who computes deltas
+    Data< helper::vector<unsigned> > d_targetIndices; ///< target indices in target positions which who computes deltas
 
-    Data< bool > d_inverted;
+    Data< bool > d_inverted; ///< target-p (rather than p-target)
     Data< SReal > d_showObjectScale; ///< drawing size
-    Data< defaulttype::RGBAColor > d_color; ///< drawing color
+    Data< sofa::helper::types::RGBAColor > d_color; ///< drawing color
 
 
     DifferenceFromTargetMapping()
@@ -52,7 +52,7 @@ public:
         , d_targetIndices( initData(&d_targetIndices, "targetIndices", "target indices in target positions which who computes deltas") )
         , d_inverted( initData(&d_inverted, false, "inverted", "target-p (rather than p-target)") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(0), "showObjectScale", "Scale for object display"))
-        , d_color(initData(&d_color, defaulttype::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+        , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     {
 
         // backward compatibility with OffsetMapping, a previous identical mapping
@@ -61,7 +61,7 @@ public:
 
     enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
 
-    virtual void init()
+    virtual void init() override
     {
         const helper::vector<unsigned>& ind = indices.getValue();
         if( ind.empty() ) this->toModel->resize( this->fromModel->getSize() );
@@ -94,7 +94,7 @@ public:
     }
 
     virtual void apply(typename Self::out_pos_type& out,
-                       const typename Self::in_pos_type& in )
+                       const typename Self::in_pos_type& in ) override
     {
         const InVecCoord& t = targets.getValue();
         const helper::vector<unsigned>& ind = indices.getValue();
@@ -137,7 +137,7 @@ public:
         }
     }
 
-    virtual void assemble( const typename Self::in_pos_type& in )
+    virtual void assemble( const typename Self::in_pos_type& in ) override
     {
         assert( Nout==Nin ); // supposing TIn==TOut
 
@@ -173,7 +173,7 @@ public:
     }
 
 
-    void draw(const core::visual::VisualParams* vparams)
+    void draw(const core::visual::VisualParams* vparams) override
     {
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 

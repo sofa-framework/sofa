@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <SofaBaseTopology/MeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -56,12 +55,8 @@ public:
     void setNy(int n) { ny.setValue(n); setSize(); }
     void setNz(int n) { nz.setValue(n); setSize(); }
 
-    virtual void init() override;
-    virtual void reinit() override;
-
-    //int getNbQuads();
-    //Quad getQuad(int i);
-    //Quad getQuad(int x, int y, int z);
+    void init() override;
+    void reinit() override;
 
     enum Plane { PLANE_UNKNOWN=0,
             PLANE_X0,
@@ -72,7 +67,7 @@ public:
             PLANE_Z1
                };
 
-    int point(int x, int y, int z, Plane p = PLANE_UNKNOWN) const; // { return x+nx.getValue()*(y+ny.getValue()*z); }
+    int point(int x, int y, int z, Plane p = PLANE_UNKNOWN) const;
 
     void setP0(const Vector3& val) { p0 = val; }
     void setDx(const Vector3& val) { dx = val; inv_dx2 = 1/(dx*dx); }
@@ -92,20 +87,21 @@ public:
     Vector3 getPoint(int i) const;
     virtual Vector3 getPoint(int x, int y, int z) const;
     bool hasPos()  const override { return true; }
-    SReal getPX(int i)  const override { return getPoint(i)[0]; }
-    SReal getPY(int i) const override { return getPoint(i)[1]; }
-    SReal getPZ(int i) const override { return getPoint(i)[2]; }
+    SReal getPX(index_type i)  const override { return getPoint(i)[0]; }
+    SReal getPY(index_type i) const override { return getPoint(i)[1]; }
+    SReal getPZ(index_type i) const override { return getPoint(i)[2]; }
 
     void setSplitNormals(bool b) {splitNormals.setValue(b);}
 
 protected:
-    Data<int> nx;
+    Data<int> nx; ///< z grid resolution
     Data<int> ny;
     Data<int> nz;
-    Data<bool> internalPoints;
-    Data<bool> splitNormals;
+    Data<bool> internalPoints; ///< include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)
+    Data<bool> splitNormals; ///< split corner points to have planar normals
 
-    Data< Vector3 > min, max;
+    Data< Vector3 > min; ///< Min
+    Data< Vector3 > max; ///< Max
     /// Position of point 0
     Vector3 p0;
     /// Distance between points in the grid. Must be perpendicular to each other
@@ -113,9 +109,9 @@ protected:
     SReal inv_dx2, inv_dy2, inv_dz2;
 
     virtual void setSize();
+    void updatePoints();
     void updateEdges();
     void updateQuads();
-    //void updateHexahedra();
 };
 
 } // namespace topology

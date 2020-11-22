@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,17 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CYLINDERMODEL_H
-#define SOFA_COMPONENT_COLLISION_CYLINDERMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/accessor.h>
-
 
 namespace sofa
 {
@@ -41,7 +37,7 @@ namespace collision
 {
 
 template<class DataTypes>
-class TCylinderModel;
+class CylinderCollisionModel;
 
 template<class DataTypes>
 class TCylinder;
@@ -50,19 +46,21 @@ class TCylinder;
   *A Cylinder can be viewed as a segment with a radius, here the segment is
   *defined by its apexes.
   */
-template< class MyReal>
-class TCylinder<sofa::defaulttype::StdRigidTypes<3,MyReal> > : public core::TCollisionElementIterator< TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> > >
+template< class TDataTypes>
+class TCylinder: public core::TCollisionElementIterator< CylinderCollisionModel< TDataTypes > >
 {
 public:
-    typedef sofa::defaulttype::StdRigidTypes<3,MyReal> DataTypes;
+    typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real   Real;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::CPos Coord;
+    typedef typename TDataTypes::CPos Coord;
+    typedef typename TDataTypes::Deriv Deriv;
     typedef typename DataTypes::VecCoord VecCoord;
 
-    typedef TCylinderModel<DataTypes> ParentModel;
+    typedef CylinderCollisionModel<DataTypes> ParentModel;
 
-    TCylinder(ParentModel* model, int index);
+    using index_type = sofa::defaulttype::index_type;
+
+    TCylinder(ParentModel* model, index_type index);
 
     explicit TCylinder(const core::CollisionElementIterator& i);
 
@@ -80,14 +78,13 @@ public:
 /**
   *CylinderModel templated by RigidTypes (frames), direction is given by Y direction of the frame.
   */
-template< class MyReal>
-class TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> > : public core::CollisionModel
+template< class TDataTypes>
+class CylinderCollisionModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TCylinderModel, SOFA_TEMPLATE2(sofa::defaulttype::StdRigidTypes, 3, MyReal)), core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(CylinderCollisionModel, TDataTypes), core::CollisionModel);
 
-
-    typedef sofa::defaulttype::StdRigidTypes<3,MyReal> DataTypes;
+    typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename  DataTypes::VecDeriv VecDeriv;
@@ -99,109 +96,82 @@ public:
 
     typedef TCylinder<DataTypes> Element;
     friend class TCylinder<DataTypes>;
+
+    Data<VecReal> d_cylinder_radii; ///< Radius of each cylinder
+    Data<VecReal> d_cylinder_heights; ///< The cylinder heights
+    Data<VecAxisCoord> d_cylinder_local_axes;
+
+    Data<Real> d_default_radius; ///< The default radius
+    Data<Real> d_default_height; ///< The default height
+    Data<Coord> d_default_local_axis; ///< The default local axis cylinder is modeled around
+
 protected:
-    Data<VecReal> _cylinder_radii;
-    Data<VecReal> _cylinder_heights;
-    Data<VecAxisCoord> _cylinder_local_axes;
+    CylinderCollisionModel();
+    CylinderCollisionModel(core::behavior::MechanicalState<DataTypes>* mstate );
 
-    Data<Real> _default_radius;
-    Data<Real> _default_height;
-    Data<Coord> _default_local_axis;
-
-    TCylinderModel();
-    TCylinderModel(core::behavior::MechanicalState<DataTypes>* mstate );
 public:
-    virtual void init() override;
+    void init() override;
 
     // -- CollisionModel interface
+    void resize(std::size_t size) override;
 
-    virtual void resize(int size) override;
+    void computeBoundingTree(int maxDepth=0) override;
 
-    virtual void computeBoundingTree(int maxDepth=0) override;
-
-    //virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
-
-    void draw(const core::visual::VisualParams* vparams,int index) override;
+    void draw(const core::visual::VisualParams* vparams,index_type index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return _mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return m_mstate; }
 
-    Real radius(int index) const;
+    Real radius(index_type index) const;
 
-    const Coord & center(int i)const;
+    const Coord & center(index_type i)const;
 
     //Returns the direction of the cylinder at index index
-    Coord axis(int index)const;
+    Coord axis(index_type index)const;
     //Returns the direction of the cylinder at index in local coordinates
-    Coord local_axis(int index) const;
+    Coord local_axis(index_type index) const;
 
-    const sofa::defaulttype::Quaternion orientation(int index)const;
+    const sofa::defaulttype::Quaternion orientation(index_type index)const;
 
-    Real height(int index)const;
+    Real height(index_type index)const;
 
-    Coord point1(int i) const;
+    Coord point1(index_type i) const;
 
-    Coord point2(int i) const;
+    Coord point2(index_type i) const;
 
     Real defaultRadius()const;
 
-    const Coord & velocity(int index)const;
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL && context->getMechanicalState() != NULL)
-            return false;
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const TCylinderModel<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
+    const Coord & velocity(index_type index)const;
 
     Data<VecReal>& writeRadii();
     Data<VecReal>& writeHeights();
     Data<VecAxisCoord>& writeLocalAxes();
 
 protected:
-    core::behavior::MechanicalState<DataTypes>* _mstate;
+    core::behavior::MechanicalState<DataTypes>* m_mstate;
 };
 
 
-template<class MyReal>
-inline TCylinder<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCylinder(ParentModel* model, int index)
+template<class DataTypes>
+inline TCylinder<DataTypes>::TCylinder(ParentModel* model, index_type index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 
-template<class MyReal>
-inline TCylinder<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCylinder(const core::CollisionElementIterator& i)
+template<class DataTypes>
+inline TCylinder<DataTypes>::TCylinder(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
-typedef TCylinderModel<sofa::defaulttype::Rigid3Types> CylinderModel;
-typedef TCylinder<sofa::defaulttype::Rigid3Types> Cylinder;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_CYLINDERMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TCylinderModel<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TCylinderModel<defaulttype::Rigid3fTypes>;
-#endif
+using CylinderModel [[deprecated("The CylinderModel is now deprecated, please use CylinderCollisionModel instead. Compatibility stops at v20.06")]] = CylinderCollisionModel<sofa::defaulttype::Rigid3Types>;
+using Cylinder = TCylinder<sofa::defaulttype::Rigid3Types>;
+
+#if  !defined(SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_CPP)
+extern template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3Types>;
+extern template class SOFA_BASE_COLLISION_API CylinderCollisionModel<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace collision

@@ -1,5 +1,4 @@
 #include <iostream>
-using namespace std;
 #include "SpringInteractor.h"
 #include "PickedPoint.h"
 #include <sofa/core/SofaLibrary.h>

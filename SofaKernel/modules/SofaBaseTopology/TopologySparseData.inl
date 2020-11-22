@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,16 +57,16 @@ void TopologySparseDataImpl <TopologyElementType, VecT>::createTopologicalEngine
         this->m_topologicalEngine->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("SparseEngine_"));
         if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine.get());
         this->m_topologicalEngine->init();
-        this->linkToElementDataArray((TopologyElementType*)NULL);
-        this->getOwner()->sout<<"TopologySparseDataImpl: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << " Topology." << this->getOwner()->sendl;
+        this->linkToElementDataArray((TopologyElementType*)nullptr);
+        msg_info(this->getOwner())<<"TopologySparseDataImpl: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << " Topology.";
     }
     else if (_topology)
     {
-        this->getOwner()->sout<<"TopologySparseDataImpl: " << this->getName() << " initialized with static " << _topology->getClassName() << " Topology." << this->getOwner()->sendl;
+        msg_info(this->getOwner())<<"TopologySparseDataImpl: " << this->getName() << " initialized with static " << _topology->getClassName() << " Topology.";
     }
     else
     {
-        this->getOwner()->sout<<"TopologySparseDataImpl: No Topology given to " << this->getName() << " to createTopologicalEngine. Topological changes will be disabled." << this->getOwner()->sendl;
+        msg_info(this->getOwner())<<"TopologySparseDataImpl: No Topology given to " << this->getName() << " to createTopologicalEngine. Topological changes will be disabled.";
     }
 }
 
@@ -85,7 +85,7 @@ void TopologySparseDataImpl <TopologyElementType, VecT>::registerTopologicalData
     if (this->m_topologicalEngine)
         this->m_topologicalEngine->registerTopology();
     else if (!this->m_topology)
-        this->getOwner()->sout<<"TopologySparseDataImpl: " << this->getName() << " has no engine. Topological changes will be disabled. Use createTopologicalEngine method before registerTopologicalData to allow topological changes." << this->getOwner()->sendl;
+        msg_info(this->getOwner())<<"TopologySparseDataImpl: " << this->getName() << " has no engine. Topological changes will be disabled. Use createTopologicalEngine method before registerTopologicalData to allow topological changes." ;
 }
 
 template <typename TopologyElementType, typename VecT>
@@ -94,7 +94,7 @@ void TopologySparseDataImpl <TopologyElementType, VecT>::addInputData(sofa::core
     if (this->m_topologicalEngine)
         this->m_topologicalEngine->addInput(_data);
     else if (!this->m_topology)
-        this->getOwner()->sout<<"Warning: TopologySparseDataImpl: " << this->getName() << " has no engine. Use createTopologicalEngine function before addInputData." << this->getOwner()->sendl;
+        msg_info(this->getOwner())<<"Warning: TopologySparseDataImpl: " << this->getName() << " has no engine. Use createTopologicalEngine function before addInputData." ;
 }
 
 

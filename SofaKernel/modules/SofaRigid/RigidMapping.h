@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -95,15 +95,15 @@ public:
     Data<VecCoord> points;    ///< mapped points in local coordinates
     VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
     RigidMappingInternalData<In, Out> data;
-    Data<unsigned int> index;
-    sofa::core::objectmodel::DataFileName fileRigidMapping;
-    Data<bool> useX0;
-    Data<bool> indexFromEnd;
+    Data<unsigned int> index; ///< input DOF index
+    sofa::core::objectmodel::DataFileName fileRigidMapping; ///< Filename
+    Data<bool> useX0; ///< Use x0 instead of local copy of initial positions (to support topo changes)
+    Data<bool> indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
 
-    Data< helper::vector<unsigned int> > rigidIndexPerPoint;
-    Data<bool> globalToLocalCoords;
+    Data< helper::vector<unsigned int> > rigidIndexPerPoint; ///< For each mapped point, the index of the Rigid it is mapped from
+    Data<bool> globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
-    Data<int> geometricStiffness;
+    Data<int> geometricStiffness; ///< assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)
 
 protected:
     RigidMapping();
@@ -115,30 +115,30 @@ public:
     int addPoint(const Coord& c);
     int addPoint(const Coord& c, unsigned int indexFrom);
 
-    virtual void init() override;
+    void init() override;
 
     /// Compute the local coordinates based on the current output coordinates.
-    virtual void reinit() override;
+    void reinit() override;
 
-    virtual void apply(const core::MechanicalParams *mparams, Data<VecCoord>& out, const Data<InVecCoord>& in) override;
+    void apply(const core::MechanicalParams *mparams, Data<VecCoord>& out, const Data<InVecCoord>& in) override;
 
-    virtual void applyJ(const core::MechanicalParams *mparams, Data<VecDeriv>& out, const Data<InVecDeriv>& in) override;
+    void applyJ(const core::MechanicalParams *mparams, Data<VecDeriv>& out, const Data<InVecDeriv>& in) override;
 
-    virtual void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<VecDeriv>& in) override;
+    void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<VecDeriv>& in) override;
 
-    virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
+    void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
+    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ() override;
+    const sofa::defaulttype::BaseMatrix* getJ() override;
 
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
-    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override;
-    virtual const defaulttype::BaseMatrix* getK() override;
+    void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override;
+    const defaulttype::BaseMatrix* getK() override;
 
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     void clear(int reserve = 0);
 
@@ -168,44 +168,25 @@ protected:
     StiffnessSparseMatrixEigen geometricStiffnessMatrix;
 };
 
-template <int N, class Real>
+template <std::size_t N, class Real>
 struct RigidMappingMatrixHelper;
 
 
 
-#ifndef SOFA_FLOAT
 template<>
-void RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
+void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
 template<>
-const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >::getK();
-#endif
-#ifndef SOFA_DOUBLE
-template<>
-void RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
-template<>
-const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >::getK();
-#endif
+const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK();
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >;
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3fTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes >;
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >;
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::ExtVec3fTypes >;
-#endif
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3fTypes >;
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3dTypes >;
-#endif
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
+extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
+
+
+
 #endif
 
 } // namespace mapping

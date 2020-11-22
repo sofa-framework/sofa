@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,8 +36,6 @@ namespace topology
 using namespace sofa::defaulttype;
 
 
-
-SOFA_DECL_CLASS(SphereGridTopology)
 
 int SphereGridTopologyClass = core::RegisterObject("Sphere grid in 3D")
         .addAlias("SphereGrid")
@@ -76,7 +74,7 @@ void SphereGridTopology::setRadius(SReal radius)
 }
 
 
-Vector3 SphereGridTopology::getPoint(int i) const
+Vector3 SphereGridTopology::getPoint(index_type i) const
 {
     int x = i%d_n.getValue()[0]; i/=d_n.getValue()[0];
     int y = i%d_n.getValue()[1]; i/=d_n.getValue()[1];

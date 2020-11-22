@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,15 +61,15 @@ public:
 
     /// @name  Plasticity parameters such as "Interactive Virtual Materials", Muller & Gross, GI 2004
     //@{
-    Data<helper::vector<Real> > _max;
-    Data<helper::vector<Real> > _yield;
+    Data<helper::vector<Real> > _max; ///< Plastic Max Threshold (2-norm of the strain)
+    Data<helper::vector<Real> > _yield; ///< Plastic Yield Threshold (2-norm of the strain)
     helper::vector<Real> _squaredYield;
     Data<helper::vector<Real> > _creep; ///< this parameter is different from the article, here it includes the multiplication by dt
     //@}
 
 
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         _squaredYield.resize(_yield.getValue().size());
         for(size_t i=0;i<_yield.getValue().size();i++) _squaredYield[i] = _yield.getValue()[i] * _yield.getValue()[i];
@@ -77,7 +77,7 @@ public:
         Inherit::reinit();
     }
 
-    virtual void reset()
+    virtual void reset() override
     {
         //serr<<"PlasticStrainMapping::reset"<<sendl;
         Inherit::reset();
@@ -106,7 +106,7 @@ protected:
 
     virtual ~PlasticStrainMapping() { }
 
-    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
+    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn ) override
     {
         helper::ReadAccessor<Data<typename Inherit::InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<typename Inherit::OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));

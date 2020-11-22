@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,29 +44,26 @@ namespace collision
  */
 struct BodyPicked
 {
-    BodyPicked():body(NULL), mstate(NULL), dist(0) {}
+    BodyPicked():body(nullptr), mstate(nullptr), dist(0) {}
     sofa::core::CollisionModel *body;
     sofa::core::behavior::BaseMechanicalState *mstate;
-    unsigned int indexCollisionElement;
+    sofa::defaulttype::index_type indexCollisionElement;
     defaulttype::Vector3 point;
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    defaulttype::Vector3 baryCoords;
-#endif
     SReal dist;
     SReal rayLength;
-    operator bool() { return mstate != NULL; }
+    operator bool() { return mstate != nullptr; }
 };
 
 class SOFA_USER_INTERACTION_API BaseMouseInteractor : public core::BehaviorModel
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMouseInteractor, core::BehaviorModel);
-    typedef sofa::component::collision::RayModel MouseCollisionModel;
+    typedef sofa::component::collision::RayCollisionModel MouseCollisionModel;
     typedef helper::vector< InteractionPerformer* > VecPerformer;
 protected:
     BaseMouseInteractor(): isAttached(false),distanceFromMouse(0) {}
 public:
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     void cleanup() override;
 
@@ -118,37 +115,22 @@ public:
     typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
     typedef typename DataTypes::Coord Coord;
 public:
-    MouseInteractor():mouseInSofa(NULL) {}
-    ~MouseInteractor() {}
+    MouseInteractor():mouseInSofa(nullptr) {}
+    ~MouseInteractor() override {}
 
     void init() override;
 
     core::behavior::BaseMechanicalState *getMouseContainer() override {return mouseInSofa;}
 
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-    static std::string templateName(const MouseInteractor<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
 protected:
     MouseContainer       *mouseInSofa;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP)
-#ifndef SOFA_DOUBLE
-extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec2fTypes>;
-extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3fTypes>;
-extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec2dTypes>;
-extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3dTypes>;
-extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3dTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP)
+extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec2Types>;
+extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3Types>;
+extern template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3Types>;
+
 #endif
 
 

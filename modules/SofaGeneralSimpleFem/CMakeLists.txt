@@ -1,68 +1,47 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaGeneralSimpleFem)
 
-message(STATUS "SofaGeneralSimpleFem:")
-################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
     config.h
     initGeneralSimpleFEM.h
-)
+    )
 
 set(SOURCE_FILES
     initGeneralSimpleFEM.cpp
-)
+    )
 
-############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
-if(SOFA_BUILD_COMPONENTSET_LIGHT)
-    list(APPEND HEADER_FILES
+list(APPEND HEADER_FILES
+    BeamFEMForceField.h
+    BeamFEMForceField.inl
+    HexahedralFEMForceField.h
+    HexahedralFEMForceField.inl
+    HexahedralFEMForceFieldAndMass.h
+    HexahedralFEMForceFieldAndMass.inl
+    HexahedronFEMForceFieldAndMass.h
+    HexahedronFEMForceFieldAndMass.inl
+    LengthContainer.h
+    PoissonContainer.h
+    RadiusContainer.h
+    StiffnessContainer.h
+    TetrahedralCorotationalFEMForceField.h
+    TetrahedralCorotationalFEMForceField.inl
+    TriangularFEMForceFieldOptim.h
+    TriangularFEMForceFieldOptim.inl
+    )
+list(APPEND SOURCE_FILES
+    BeamFEMForceField.cpp
+    HexahedralFEMForceField.cpp
+    HexahedralFEMForceFieldAndMass.cpp
+    HexahedronFEMForceFieldAndMass.cpp
+    TetrahedralCorotationalFEMForceField.cpp
+    TriangularFEMForceFieldOptim.cpp
 
-        )
-    list(APPEND SOURCE_FILES
-
-        )
-endif()
-
-############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
-if(SOFA_BUILD_COMPONENTSET_STANDARD)
-    list(APPEND HEADER_FILES
-        BeamFEMForceField.h
-        BeamFEMForceField.inl
-        HexahedralFEMForceField.h
-        HexahedralFEMForceField.inl
-        HexahedralFEMForceFieldAndMass.h
-        HexahedralFEMForceFieldAndMass.inl
-        HexahedronFEMForceFieldAndMass.h
-        HexahedronFEMForceFieldAndMass.inl
-        LengthContainer.h
-        PoissonContainer.h
-        RadiusContainer.h
-        StiffnessContainer.h
-        TetrahedralCorotationalFEMForceField.h
-        TetrahedralCorotationalFEMForceField.inl
-        TriangularFEMForceFieldOptim.h
-        TriangularFEMForceFieldOptim.inl
-        )
-    list(APPEND SOURCE_FILES
-        BeamFEMForceField.cpp
-        HexahedralFEMForceField.cpp
-        HexahedralFEMForceFieldAndMass.cpp
-        HexahedronFEMForceFieldAndMass.cpp
-        TetrahedralCorotationalFEMForceField.cpp
-        TriangularFEMForceFieldOptim.cpp
-
-        )
-endif()
-
-############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_COMPONENTSET_FULL)
-
-endif()
-
+    )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaSimpleFem)
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_GENERAL_SIMPLE_FEM")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_add_targets_to_package(
+    PACKAGE_NAME SofaGeneral
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    )

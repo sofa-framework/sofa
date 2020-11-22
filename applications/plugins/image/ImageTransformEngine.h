@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,13 +60,10 @@ public:
     Data< TransformType > inputTransform;
     Data< TransformType > outputTransform;
 
-    Data<defaulttype::Vector3> translation; // translation
-    Data<defaulttype::Vector3> rotation; // rotation
-    Data<Real> scale; // scale
-    Data<bool> inverse;
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageTransformEngine* = NULL) { return std::string();  }
+    Data<defaulttype::Vector3> translation; ///< translation
+    Data<defaulttype::Vector3> rotation; ///< rotation
+    Data<Real> scale; ///< scale
+    Data<bool> inverse; ///< true to apply inverse transformation
 
     ImageTransformEngine()    :   Inherited()
       , inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
@@ -78,9 +75,9 @@ public:
     {
     }
 
-    virtual ~ImageTransformEngine() {}
+    ~ImageTransformEngine() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&translation);
         addInput(&rotation);
@@ -91,11 +88,11 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
-    virtual void update() override
+    void doUpdate() override
     {
 		raTransform inT(this->inputTransform);
         waTransform outT(this->outputTransform);
@@ -124,8 +121,6 @@ protected:
         outT->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
 
         outT->update(); // update internal data
-
-        cleanDirty();
     }
 
 };

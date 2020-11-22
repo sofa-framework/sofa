@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,7 +33,7 @@ namespace linearsolver
 {
 /*
 template<> FullVector<bool>::FullVector()
-: data(NULL), cursize(0), allocsize(0)
+: data(nullptr), cursize(0), allocsize(0)
 {
 }
 */
@@ -63,7 +63,7 @@ template<> double FullVector<bool>::norm() const
     return helper::rsqrt(r);
 }
 
-template SOFA_BASE_LINEAR_SOLVER_API class FullVector<bool>;
+template class SOFA_BASE_LINEAR_SOLVER_API FullVector<bool>;
 
 } // namespace linearsolver
 

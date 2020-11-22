@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,8 +44,6 @@ using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 using sofa::helper::fixed_array;
 
-SOFA_DECL_CLASS ( SimpleTesselatedHexaTopologicalMapping )
-
 // Register in the Factory
 int SimpleTesselatedHexaTopologicalMappingClass = core::RegisterObject ( "Special case of mapping where HexahedronSetTopology is converted into a finer HexahedronSetTopology" )
         .add< SimpleTesselatedHexaTopologicalMapping >()
@@ -64,17 +62,17 @@ void SimpleTesselatedHexaTopologicalMapping::init()
         {
             toModel->clear();
 
-            for (int i=0; i<fromModel->getNbPoints(); ++i)
+            for (std::size_t i=0; i<fromModel->getNbPoints(); ++i)
             {
                 // points mapped from points
                 pointMappedFromPoint.push_back(i);
                 toModel->addPoint(fromModel->getPX(i), fromModel->getPY(i), fromModel->getPZ(i));
             }
 
-            int pointIndex = pointMappedFromPoint.size();
+            size_t pointIndex = pointMappedFromPoint.size();
             Vector3 pA, pB, p;
 
-            for (int i=0; i<fromModel->getNbHexahedra(); ++i)
+            for (std::size_t i=0; i<fromModel->getNbHexahedra(); ++i)
             {
                 core::topology::BaseMeshTopology::Hexa h = fromModel->getHexahedron(i);
 
@@ -236,13 +234,13 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                 }
 
                 // points mapped from hexahedra
-                pointMappedFromHexa.push_back(pointIndex);
+                pointMappedFromHexa.push_back((int)pointIndex);
                 p = (p0+p1+p2+p3+p4+p5+p6+p7)/8;
                 toModel->addPoint(p[0], p[1], p[2]);
                 pointIndex++;
             }
 
-            for (int i=0; i<fromModel->getNbHexahedra(); ++i)
+            for (unsigned int i=0; i<fromModel->getNbHexahedra(); ++i)
             {
                 core::topology::BaseMeshTopology::Hexa h = fromModel->getHexahedron(i);
 
@@ -327,6 +325,9 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                         pointMappedFromEdge[fixed_array<int,2>(h[7],h[6])],
                         h[7]);
             }
+
+            // Need to fully init the target topology
+            toModel->init();
         }
     }
 }

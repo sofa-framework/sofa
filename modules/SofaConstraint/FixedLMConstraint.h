@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,6 +54,7 @@ class FixedLMConstraint :  public core::behavior::LMConstraint<DataTypes,DataTyp
 public:
     SOFA_CLASS(SOFA_TEMPLATE(FixedLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::behavior::LMConstraint, DataTypes, DataTypes));
 
+    using index_type = sofa::defaulttype::index_type;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -63,7 +64,7 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
-    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef helper::vector<index_type> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;
@@ -72,32 +73,18 @@ protected:
     FixedLMConstraintInternalData<DataTypes> data;
     friend class FixedLMConstraintInternalData<DataTypes>;
 
-
-    FixedLMConstraint( MechanicalState *dof)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
-        , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-        , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    {
-        pointHandler = new FCPointHandler(this, &f_indices);
-    }
-
-    FixedLMConstraint()
-        : f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
-        , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    {
-        pointHandler = new FCPointHandler(this, &f_indices);
-    }
+    FixedLMConstraint( MechanicalState *dof = nullptr);
 
     ~FixedLMConstraint()
     {
-        if (pointHandler)
-            delete pointHandler;
+        if (m_pointHandler)
+            delete m_pointHandler;
     }
 
 public:
     void clearConstraints();
-    void addConstraint(unsigned int index);
-    void removeConstraint(unsigned int index);
+    void addConstraint(index_type index);
+    void removeConstraint(index_type index);
 
     void init() override;
     void draw(const core::visual::VisualParams* vparams) override;
@@ -108,16 +95,6 @@ public:
     void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex) override;
     void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order) override;
 
-
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-    static std::string templateName(const FixedLMConstraint<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
     bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/) const override
     {
         simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
@@ -125,9 +102,11 @@ public:
         else return false;
     }
 
-    SetIndex f_indices;
-    Data<double> _drawSize;
+    SetIndex f_indices; ///< List of the index of particles to be fixed
+    Data<double> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<FixedLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
@@ -138,11 +117,11 @@ public:
 
 
 
-        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+        void applyDestroyFunction(index_type /*index*/, value_type& /*T*/);
 
 
-        bool applyTestCreateFunction(unsigned int /*index*/,
-                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+        bool applyTestCreateFunction(index_type /*index*/,
+                const sofa::helper::vector< index_type > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
         FixedLMConstraint<DataTypes> *fc;
@@ -152,24 +131,18 @@ protected :
 
     Deriv X,Y,Z;
     SetIndexArray idxX, idxY, idxZ;
-    std::map< unsigned int, Coord> restPosition;
+    std::map< index_type, Coord> restPosition;
 
-    sofa::core::topology::BaseMeshTopology* topology;
 
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_FIXEDLMCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_FIXEDLMCONSTRAINT_CPP)
+extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_CONSTRAINT_API FixedLMConstraint<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace constraintset

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,7 +35,7 @@ namespace topology
 
 ///////////////////// Private functions on TopologySubsetDataHandler changes /////////////////////////////
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::swap( unsigned int i1, unsigned int i2 )
+void TopologySubsetDataHandler <TopologyElementType, VecT>::swap( index_type i1, index_type i2 )
 {
     container_type& data = *(m_topologyData->beginEdit());
 
@@ -47,8 +47,8 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::swap( unsigned int i
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::add(unsigned int nbElements,
-        const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
+void TopologySubsetDataHandler <TopologyElementType, VecT>::add(std::size_t nbElements,
+        const sofa::helper::vector<sofa::helper::vector<index_type> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
     // Using default values
@@ -56,11 +56,11 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(unsigned int nbE
 
     size_t size = data.size();
     bool test;
-    for (unsigned int i = 0; i < nbElements; ++i)
+    for (std::size_t i = 0; i < nbElements; ++i)
     {
         if (ancestors.empty() || coefs.empty())
         {
-            const sofa::helper::vector< unsigned int > empty_vecint;
+            const sofa::helper::vector< index_type > empty_vecint;
             const sofa::helper::vector< double > empty_vecdouble;
             test = this->applyTestCreateFunction(size + i, empty_vecint, empty_vecdouble);
         }
@@ -75,9 +75,9 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(unsigned int nbE
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::add(unsigned int nbElements,
+void TopologySubsetDataHandler <TopologyElementType, VecT>::add(std::size_t nbElements,
         const sofa::helper::vector< TopologyElementType >& ,
-        const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
+        const sofa::helper::vector<sofa::helper::vector<index_type> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs)
 {
     this->add(nbElements, ancestors, coefs);
@@ -85,8 +85,8 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(unsigned int nbE
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::move( const sofa::helper::vector<unsigned int> &,
-        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
+void TopologySubsetDataHandler <TopologyElementType, VecT>::move( const sofa::helper::vector<index_type> &,
+        const sofa::helper::vector< sofa::helper::vector< index_type > >& ,
         const sofa::helper::vector< sofa::helper::vector< double > >& )
 {
 
@@ -94,13 +94,13 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::move( const sofa::he
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::helper::vector<unsigned int> &index )
+void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::helper::vector<index_type> &index )
 {
     container_type& data = *(m_topologyData->beginEdit());
-    unsigned int it1;
-    unsigned int it2;
+    std::size_t it1;
+    std::size_t it2;
 
-    for (unsigned int i = 0; i < index.size(); ++i)
+    for (std::size_t i = 0; i < index.size(); ++i)
     {
         it1=0;
         while(it1<data.size())
@@ -160,12 +160,12 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::renumber( const sofa::helper::vector<unsigned int> &index )
+void TopologySubsetDataHandler <TopologyElementType, VecT>::renumber( const sofa::helper::vector<index_type> &index )
 {
     container_type& data = *(m_topologyData->beginEdit());
     container_type copy = m_topologyData->getValue(); // not very efficient memory-wise, but I can see no better solution...
 
-    for (unsigned int i = 0; i < data.size(); ++i)
+    for (std::size_t i = 0; i < data.size(); ++i)
     {
         data[i] = copy[ index[i] ];
     }
@@ -174,7 +174,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::renumber( const sofa
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<unsigned int> &,
+void TopologySubsetDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<index_type> &,
         const sofa::helper::vector<TopologyElementType> &)
 {
     dmsg_error("TopologySubsetDataHandler") << "addOnMovedPosition event on topology subsetData is not yet handled." ;
@@ -182,7 +182,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::addOnMovedPosition(c
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<unsigned int> &)
+void TopologySubsetDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<index_type> &)
 {
     dmsg_error("TopologySubsetDataHandler") << "removeOnMovedPosition event on topology subsetData is not yet handled" ;
 }

@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -9.8 0 " dt="0.05"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="image"/>
     <RequiredPlugin pluginName="SofaPython"/>
     <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showWireframe" />
 
     <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
-    <CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
+    <CGLinearSolver tolerance="1.0e-9" threshold="1.0e-9" />
 
     <Node 	name="Frames"   >
 	  <MeshObjLoader name="loader" filename="mesh/torus.obj" triangulate="1"/>
@@ -27,7 +28,7 @@
 	  <ImageDensityMass  template="Affine" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" /> 
 
 	    <Node 	name="collision"   >
-		<Mesh name="mesh" src="@../loader" /> 
+		<MeshTopology name="mesh" src="@../loader" /> 
 		<MechanicalObject  template="Vec3d" name="pts"    />
 	    	<LinearMapping template="Affine,Vec3d"/>
 	    </Node>
@@ -47,7 +48,8 @@
 	  </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
+		<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="1 0.8 0.8 "/>
 	    	<LinearMapping template="Affine,ExtVec3f"/>
 	    </Node>
     </Node>

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,13 +34,11 @@ namespace engine
 {
 
 template <class DataTypes>
-void MeshClosingEngine<DataTypes>::update()
+void MeshClosingEngine<DataTypes>::doUpdate()
 {
     helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);
     helper::ReadAccessor<Data< SeqTriangles > > tri(this->inputTriangles);
     helper::ReadAccessor<Data< SeqQuads > > qd(this->inputQuads);
-
-    cleanDirty();
 
     helper::WriteOnlyAccessor<Data< SeqPositions > > opos(this->position);
     helper::WriteOnlyAccessor<Data< SeqTriangles > >  otri(this->triangles);
@@ -105,7 +103,7 @@ void MeshClosingEngine<DataTypes>::update()
             }
         }
     }
-    sout<<"Found "<< loops.size()<<" loops"<<sendl;
+    msg_info()<<"Found "<< loops.size()<<" loops";
 
     // insert points at loop centroids and triangles connecting loop edges and centroids
     for(size_t i=0; i<loops.size(); i++)

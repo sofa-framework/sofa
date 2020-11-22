@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,8 +37,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using helper::vector;
 
-SOFA_DECL_CLASS(StringMeshCreator)
-
 int StringMeshCreatorClass = core::RegisterObject("Procedural creation of a one-dimensional mesh.")
         .add< StringMeshCreator >()
         ;
@@ -50,8 +48,13 @@ StringMeshCreator::StringMeshCreator(): MeshLoader()
 {
 }
 
+void StringMeshCreator::doClearBuffers()
+{
 
-bool StringMeshCreator::load()
+}
+
+
+bool StringMeshCreator::doLoad()
 {
     helper::WriteAccessor<Data<vector<sofa::defaulttype::Vector3> > > my_positions (d_positions);
     unsigned numX = resolution.getValue();

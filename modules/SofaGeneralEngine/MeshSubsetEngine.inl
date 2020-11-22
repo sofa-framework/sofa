@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,7 +34,27 @@ namespace engine
 {
 
 template <class DataTypes>
-void MeshSubsetEngine<DataTypes>::update()
+MeshSubsetEngine<DataTypes>::MeshSubsetEngine()
+    : Inherited()
+    , inputPosition(initData(&inputPosition,"inputPosition","input vertices"))
+    , inputEdges(initData(&inputEdges,"inputEdges","input edges"))
+    , inputTriangles(initData(&inputTriangles,"inputTriangles","input triangles"))
+    , inputQuads(initData(&inputQuads,"inputQuads","input quads"))
+    , indices(initData(&indices,"indices","Index lists of the selected vertices"))
+    , position(initData(&position,"position","Vertices of mesh subset"))
+    , edges(initData(&edges,"edges","edges of mesh subset"))
+    , triangles(initData(&triangles,"triangles","Triangles of mesh subset"))
+    , quads(initData(&quads,"quads","Quads of mesh subset"))
+{
+}
+
+template <class DataTypes>
+MeshSubsetEngine<DataTypes>::~MeshSubsetEngine()
+{
+}
+
+template <class DataTypes>
+void MeshSubsetEngine<DataTypes>::doUpdate()
 {
     helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);
     helper::ReadAccessor<Data< SeqEdges > > edg(this->inputEdges);
@@ -78,8 +98,6 @@ void MeshSubsetEngine<DataTypes>::update()
         for(size_t j=0; j<4; j++) if(FtoS.find(qd[i][j])==FtoS.end()) { inside=false; break; } else cell[j]=FtoS[qd[i][j]];
         if(inside) oqd.push_back(cell);
     }
-
-    this->cleanDirty();
 }
 
 

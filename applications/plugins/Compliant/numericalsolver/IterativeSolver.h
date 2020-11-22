@@ -18,7 +18,7 @@ class SOFA_Compliant_API IterativeSolver : public KKTSolver {
 	// iterations control
 	Data<SReal> precision;
 	Data<unsigned> iterations;
-	Data<bool> relative;
+	Data<bool> relative; ///< use relative precision
 
   protected:
     SingleLink<IterativeSolver, Benchmark, 0> bench;

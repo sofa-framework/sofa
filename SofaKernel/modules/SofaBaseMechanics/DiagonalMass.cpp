@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_CPP
+
 #include <SofaBaseMechanics/DiagonalMass.inl>
 #include <sofa/core/ObjectFactory.h>
 
@@ -27,14 +28,9 @@ using sofa::core::visual::VisualParams ;
 using sofa::core::MechanicalParams ;
 using sofa::helper::ReadAccessor ;
 
-namespace sofa
+namespace sofa::component::mass
 {
 
-namespace component
-{
-
-namespace mass
-{
 using sofa::core::objectmodel::ComponentState ;
 
 using namespace sofa::defaulttype;
@@ -46,7 +42,7 @@ SReal DiagonalMass<RigidTypes, RigidMass>::getPotentialEnergyRigidImpl( const Me
 {
     SOFA_UNUSED(mparams) ;
     SReal e = 0;
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     const VecCoord& _x = x.getValue();
 
     // gravity
@@ -65,7 +61,7 @@ template <class RigidTypes, class RigidMass>
 template <class T>
 void DiagonalMass<RigidTypes, RigidMass>::drawRigid3dImpl(const VisualParams* vparams)
 {
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -114,7 +110,7 @@ template <class RigidTypes, class RigidMass>
 template <class T>
 void DiagonalMass<RigidTypes, RigidMass>::drawRigid2dImpl(const VisualParams* vparams)
 {
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
@@ -136,7 +132,7 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
 {
     if(this->getContext()==nullptr){
         dmsg_error(this) << "Calling the initRigidImpl function is only possible if the object has a valid associated context \n" ;
-        m_componentstate = ComponentState::Invalid ;
+        this->d_componentState.setValue(ComponentState::Invalid) ;
 
         //return;
     }
@@ -144,18 +140,26 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
     if(this->mstate == nullptr ){
         msg_error(this) << "DiagonalComponent can only be used on node with an associated '<MechanicalObject>' \n"
                            "To remove this warning you can: add a <MechanicalObject> to the node. \n" ;
-        m_componentstate = ComponentState::Invalid ;
+        this->d_componentState.setValue(ComponentState::Invalid) ;
 
         //return;
     }
 
-    _topology = this->getContext()->getMeshTopology();
 
-    if(_topology){
-        msg_warning(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+    
+    if(m_topology){
+        msg_error(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
                              "The component cannot be initialized and thus is de-activated. \n "
                              "To supress this warning you can add a Topology component in the parent node of'<"<< this->getName() <<">'.\n" ;
-        m_componentstate = ComponentState::Invalid ;
+        this->d_componentState.setValue(ComponentState::Invalid) ;
 
         //return;
     }
@@ -168,17 +172,17 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
     // Initialize the f_mass vector. The f_mass vector is enlarged to contains
     // as much as value as the 'mstate'. The new entries are initialized with the
     // last value of f_mass.
-    if (!this->mstate && d_mass.getValue().size() > 0 && d_mass.getValue().size() < (unsigned)this->mstate->getSize())
+    if (!this->mstate && d_vertexMass.getValue().size() > 0 && d_vertexMass.getValue().size() < (unsigned)this->mstate->getSize())
     {
-        MassVector &masses= *d_mass.beginEdit();
+        MassVector &masses= *d_vertexMass.beginEdit();
         size_t i = masses.size()-1;
         size_t n = (size_t)this->mstate->getSize();
         while (masses.size() < n)
             masses.push_back(masses[i]);
-        d_mass.endEdit();
+        d_vertexMass.endEdit();
     }
 
-    m_componentstate = ComponentState::Valid ;
+    this->d_componentState.setValue(ComponentState::Valid) ;
 }
 
 template <class RigidTypes, class RigidMass>
@@ -190,7 +194,7 @@ Vector6 DiagonalMass<RigidTypes,RigidMass>::getMomentumRigid3Impl ( const Mechan
     ReadAccessor<DataVecDeriv> v = vv;
     ReadAccessor<DataVecCoord> x = vx;
 
-    const MassVector &masses = d_mass.getValue();
+    const MassVector &masses = d_vertexMass.getValue();
 
     defaulttype::Vector6 momentum;
 
@@ -215,7 +219,7 @@ Vector6 DiagonalMass<Vec3Types, Vec3Mass>::getMomentumVec3Impl( const Mechanical
     ReadAccessor<DataVecDeriv> v = vv;
     ReadAccessor<DataVecCoord> x = vx;
 
-    const MassVector &masses = d_mass.getValue();
+    const MassVector &masses = d_vertexMass.getValue();
 
     Vector6 momentum;
 
@@ -232,187 +236,92 @@ Vector6 DiagonalMass<Vec3Types, Vec3Mass>::getMomentumVec3Impl( const Mechanical
 }
 
 
-#ifdef SOFA_WITH_DOUBLE
 template <>
-SReal DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const MechanicalParams* mparams,
+SReal DiagonalMass<Rigid3Types, Rigid3Mass>::getPotentialEnergy( const MechanicalParams* mparams,
                                                                    const DataVecCoord& x) const
 {
-    return getPotentialEnergyRigidImpl<Rigid3dTypes>(mparams, x) ;
+    return getPotentialEnergyRigidImpl<Rigid3Types>(mparams, x) ;
 }
 
 template <>
-SReal DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const MechanicalParams* mparams,
+SReal DiagonalMass<Rigid2Types, Rigid2Mass>::getPotentialEnergy( const MechanicalParams* mparams,
                                                                    const DataVecCoord& x) const
 {
-    return getPotentialEnergyRigidImpl<Rigid2dTypes>(mparams, x) ;
+    return getPotentialEnergyRigidImpl<Rigid2Types>(mparams, x) ;
 }
 
 template <>
-void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw(const VisualParams* vparams)
+void DiagonalMass<Rigid3Types, Rigid3Mass>::draw(const VisualParams* vparams)
 {
     drawRigid3dImpl<Rigid3Types>(vparams) ;
 }
 
 template <>
-void DiagonalMass<Rigid3dTypes, Rigid3dMass>::reinit()
+void DiagonalMass<Rigid3Types, Rigid3Mass>::reinit()
 {
     Inherited::reinit();
 }
 
 template <>
-void DiagonalMass<Rigid2dTypes, Rigid2dMass>::reinit()
+void DiagonalMass<Rigid2Types, Rigid2Mass>::reinit()
 {
     Inherited::reinit();
 }
 
 template <>
-void DiagonalMass<Rigid3dTypes, Rigid3dMass>::init()
+void DiagonalMass<Rigid3Types, Rigid3Mass>::init()
 {
-    initRigidImpl<Rigid3dTypes>() ;
+    initRigidImpl<Rigid3Types>() ;
 }
 
 template <>
-void DiagonalMass<Rigid2dTypes, Rigid2dMass>::init()
+void DiagonalMass<Rigid2Types, Rigid2Mass>::init()
 {
-    initRigidImpl<Rigid2dTypes>() ;
+    initRigidImpl<Rigid2Types>() ;
 }
 
 template <>
-void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw(const VisualParams* vparams)
+void DiagonalMass<Rigid2Types, Rigid2Mass>::draw(const VisualParams* vparams)
 {
-    drawRigid2dImpl<Rigid2dTypes>(vparams);
+    drawRigid2dImpl<Rigid2Types>(vparams);
 }
 
 
 template <>
-Vector6 DiagonalMass<Vec3dTypes, double>::getMomentum ( const MechanicalParams* mparams,
+Vector6 DiagonalMass<Vec3Types, double>::getMomentum ( const MechanicalParams* mparams,
                                                         const DataVecCoord& vx,
                                                         const DataVecDeriv& vv ) const
 {
-    return getMomentumVec3Impl<Vec3dTypes>(mparams, vx, vv) ;
+    return getMomentumVec3Impl<Vec3Types>(mparams, vx, vv) ;
 }
 
 template <>
-Vector6 DiagonalMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const MechanicalParams* mparams,
+Vector6 DiagonalMass<Rigid3Types,Rigid3Mass>::getMomentum ( const MechanicalParams* mparams,
                                                               const DataVecCoord& vx,
                                                               const DataVecDeriv& vv ) const
 {
-    return getMomentumRigid3Impl<Rigid3dTypes>(mparams, vx, vv) ;
-}
-
-#endif
-
-
-#ifdef SOFA_WITH_FLOAT
-template <>
-SReal DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const MechanicalParams* mparams,
-                                                                   const DataVecCoord& x) const
-{
-    return getPotentialEnergyRigidImpl<Rigid3fTypes>(mparams, x);
-}
-
-template <>
-SReal DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const MechanicalParams* mparams,
-                                                                   const DataVecCoord& x) const
-{
-    return getPotentialEnergyRigidImpl<Rigid2fTypes>(mparams, x) ;
-}
-
-template <>
-void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw(const VisualParams* vparams)
-{
-    drawRigid3dImpl<Rigid3fTypes>(vparams) ;
-}
-
-template <>
-void DiagonalMass<Rigid3fTypes, Rigid3fMass>::reinit()
-{
-    Inherited::reinit();
-}
-
-template <>
-void DiagonalMass<Rigid2fTypes, Rigid2fMass>::reinit()
-{
-    Inherited::reinit();
-}
-
-template <>
-void DiagonalMass<Rigid3fTypes, Rigid3fMass>::init()
-{
-     initRigidImpl<Rigid3fTypes>() ;
-}
-
-template <>
-void DiagonalMass<Rigid2fTypes, Rigid2fMass>::init()
-{
-     initRigidImpl<Rigid2fTypes>() ;
-}
-
-template <>
-void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw(const VisualParams* vparams)
-{
-    drawRigid2dImpl<Rigid2fTypes>(vparams) ;
-}
-
-template <>
-Vector6 DiagonalMass<Vec3fTypes, float>::getMomentum ( const MechanicalParams* mparams,
-                                                       const DataVecCoord& vx,
-                                                       const DataVecDeriv& vv ) const
-{
-    return getMomentumVec3Impl<Vec3fTypes>(mparams, vx, vv) ;
-}
-
-template <>
-Vector6 DiagonalMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const MechanicalParams* mparams,
-                                                              const DataVecCoord& vx,
-                                                              const DataVecDeriv& vv ) const
-{
-    return getMomentumRigid3Impl<Rigid3fTypes>(mparams, vx, vv) ;
+    return getMomentumRigid3Impl<Rigid3Types>(mparams, vx, vv) ;
 }
 
 
-#endif
 
-
-SOFA_DECL_CLASS(DiagonalMass)
 
 // Register in the Factory
 int DiagonalMassClass = core::RegisterObject("Define a specific mass for each particle")
-#ifdef SOFA_WITH_DOUBLE
-        .add< DiagonalMass<Vec3dTypes,double> >()
-        .add< DiagonalMass<Vec2dTypes,double> >()
-        .add< DiagonalMass<Vec1dTypes,double> >()
-        .add< DiagonalMass<Rigid3dTypes,Rigid3dMass> >()
-        .add< DiagonalMass<Rigid2dTypes,Rigid2dMass> >()
-#endif
-#ifdef SOFA_WITH_FLOAT
-        .add< DiagonalMass<Vec3fTypes,float> >()
-        .add< DiagonalMass<Vec2fTypes,float> >()
-        .add< DiagonalMass<Vec1fTypes,float> >()
-        .add< DiagonalMass<Rigid3fTypes,Rigid3fMass> >()
-        .add< DiagonalMass<Rigid2fTypes,Rigid2fMass> >()
-#endif
+        .add< DiagonalMass<Vec3Types,double> >()
+        .add< DiagonalMass<Vec2Types,double> >()
+        .add< DiagonalMass<Vec1Types,double> >()
+        .add< DiagonalMass<Rigid3Types,Rigid3Mass> >()
+        .add< DiagonalMass<Rigid2Types,Rigid2Mass> >()
+
         ;
 
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec3dTypes,double>;
-template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec2dTypes,double>;
-template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec1dTypes,double>;
-template class SOFA_BASE_MECHANICS_API DiagonalMass<Rigid3dTypes,Rigid3dMass>;
-template class SOFA_BASE_MECHANICS_API DiagonalMass<Rigid2dTypes,Rigid2dMass>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec3fTypes,float>;
-template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec2fTypes,float>;
-template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec1fTypes,float>;
-template class SOFA_BASE_MECHANICS_API DiagonalMass<Rigid3fTypes,Rigid3fMass>;
-template class SOFA_BASE_MECHANICS_API DiagonalMass<Rigid2fTypes,Rigid2fMass>;
-#endif
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec3Types,double>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec2Types,double>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Vec1Types,double>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Rigid3Types,Rigid3Mass>;
+template class SOFA_BASE_MECHANICS_API DiagonalMass<Rigid2Types,Rigid2Mass>;
 
 
-} // namespace mass
 
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mass

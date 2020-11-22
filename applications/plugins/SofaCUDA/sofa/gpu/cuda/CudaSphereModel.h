@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,8 +35,8 @@ namespace gpu
 namespace cuda
 {
 
-typedef sofa::component::collision::TSphereModel<gpu::cuda::CudaVec3Types> CudaSphereModel;
-typedef sofa::component::collision::TSphere<gpu::cuda::CudaVec3Types> CudaSphere;
+using CudaSphereModel [[deprecated("The CudaSphereModel is now deprecated, please use sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types> instead. Compatibility stops at v20.06")]] = sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>;
+using CudaSphere = sofa::component::collision::TSphere<gpu::cuda::CudaVec3Types>;
 
 
 } // namespace cuda
@@ -50,12 +50,12 @@ namespace collision
 {
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_GPU_CUDA)
-extern template class SOFA_GPU_CUDA_API sofa::component::collision::TSphereModel<sofa::gpu::cuda::CudaVec3fTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::component::collision::TSphereModel<sofa::gpu::cuda::CudaVec3f1Types>;
+#if  !defined(SOFA_BUILD_GPU_CUDA)
+extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
+extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-extern template class SOFA_GPU_CUDA_API sofa::component::collision::TSphereModel<sofa::gpu::cuda::CudaVec3dTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::component::collision::TSphereModel<sofa::gpu::cuda::CudaVec3d1Types>;
+extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
+extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif
 

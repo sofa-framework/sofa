@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,7 @@
 #include <QObject>
 #include <image/image_gui/config.h>
 #include <image/ImageTypes.h>
-#include "sofa/defaulttype/defaulttype.h"
+#include "sofa/defaulttype/config.h"
 #include "sofa/defaulttype/VecTypes.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -79,7 +79,7 @@ public:
     
     
     
-    Data< bool > d_islinkedToToolBox;
+    Data< bool > d_islinkedToToolBox; ///< true if a toobbox use this Label
     Data< sofa::defaulttype::Vec4d > d_color;
 
 //    virtual std::string getTemplateName() const    { return templateName(this);    }
@@ -87,36 +87,34 @@ public:
 
     LabelImageToolBox();
 
-    virtual void init() override
+    void init() override
     {
         //addInput(&image);
         //addOutput(&triangles);
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void update() override
+    void doUpdate() override
     {
-        cleanDirty();
-
     }
 
     void handleEvent(sofa::core::objectmodel::Event * /*event*/) override
     {
     }
 
-    virtual void draw(const core::visual::VisualParams* /*vparams*/) override
+    void draw(const core::visual::VisualParams* /*vparams*/) override
     {
     }
 
 public:
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget* /*parent*/=NULL )=0;
+    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget* /*parent*/=nullptr )=0;
 
 };
 

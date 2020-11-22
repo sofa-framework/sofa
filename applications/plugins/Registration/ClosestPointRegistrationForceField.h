@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -91,12 +91,12 @@ public:
     core::behavior::MechanicalState<DataTypes>* getObject() { return this->mstate; }
 
     // -- ForceField interface
-    void reinit();
-    void init();
-    void addForce(const core::MechanicalParams* /*mparams*/,DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v);
-    void addDForce(const core::MechanicalParams* mparams ,DataVecDeriv&   df , const DataVecDeriv&   dx);
-    SReal getPotentialEnergy(const core::MechanicalParams* ,const DataVecCoord&) const { return m_potentialEnergy; }
-    void addKToMatrix( const core::MechanicalParams* mparams,const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void reinit() override;
+    void init() override;
+    void addForce(const core::MechanicalParams* /*mparams*/,DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v) override;
+    void addDForce(const core::MechanicalParams* mparams ,DataVecDeriv&   df , const DataVecDeriv&   dx) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* ,const DataVecCoord&) const override { return m_potentialEnergy; }
+    void addKToMatrix( const core::MechanicalParams* mparams,const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     Real getStiffness() const{ return ks.getValue(); }
     Real getDamping() const{ return kd.getValue(); }
@@ -107,7 +107,7 @@ public:
     int getDrawMode() const{return drawMode.getValue();}
     void setDrawMode(int m){drawMode.setValue(m);}
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
 protected :
@@ -119,20 +119,20 @@ protected :
 
     Real min,max;
 
-    Data<Real> ks;
-    Data<Real> kd;
-    Data<unsigned int> cacheSize;
-    Data<Real> blendingFactor;
-    Data<Real> outlierThreshold;
-    Data<Real> normalThreshold;
-    Data<bool> projectToPlane;
-    Data<bool> rejectBorders;
-    Data<bool> rejectOutsideBbox;
+    Data<Real> ks; ///< uniform stiffness for the all springs.
+    Data<Real> kd; ///< uniform damping for the all springs.
+    Data<unsigned int> cacheSize; ///< number of closest points used in the cache to speed up closest point computation.
+    Data<Real> blendingFactor; ///< blending between projection (=0) and attraction (=1) forces.
+    Data<Real> outlierThreshold; ///< suppress outliers when distance > (meandistance + threshold*stddev).
+    Data<Real> normalThreshold; ///< suppress outliers when normal.closestPointNormal < threshold.
+    Data<bool> projectToPlane; ///< project closest points in the plane defined by the normal.
+    Data<bool> rejectBorders; ///< ignore border vertices.
+    Data<bool> rejectOutsideBbox; ///< ignore source points outside bounding box of target points.
     defaulttype::BoundingBox targetBbox;
 
     // source mesh data
-    Data< helper::vector< tri > > sourceTriangles;
-    Data< VecCoord > sourceNormals;
+    Data< helper::vector< tri > > sourceTriangles; ///< Triangles of the source mesh.
+    Data< VecCoord > sourceNormals; ///< Normals of the source mesh.
     helper::vector< distanceSet >  closestSource; // CacheSize-closest target points from source
     helper::vector< distanceToPoint > cacheThresh_max;	helper::vector< distanceToPoint > cacheThresh_min; VecCoord previousX; // storage for cache acceleration
     KDT sourceKdTree;
@@ -142,30 +142,26 @@ protected :
     void initSource(); // built k-d tree and identify border vertices
 
     // target mesh data
-    Data< VecCoord > targetPositions;
-    Data< VecCoord > targetNormals;
-    Data< helper::vector< tri > > targetTriangles;
+    Data< VecCoord > targetPositions; ///< Vertices of the target mesh.
+    Data< VecCoord > targetNormals; ///< Normals of the target mesh.
+    Data< helper::vector< tri > > targetTriangles; ///< Triangles of the target mesh.
     helper::vector< distanceSet >  closestTarget; // CacheSize-closest source points from target
     KDT targetKdTree;
     helper::vector< bool > targetBorder;
     void initTarget();  // built k-d tree and identify border vertices
 
-    Data<float> showArrowSize;
-    Data<int> drawMode; //Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
-    Data<bool> drawColorMap;
-    Data<bool> theCloserTheStiffer;
+    Data<float> showArrowSize; ///< size of the axis.
+    Data<int> drawMode; ///< Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
+    Data<bool> drawColorMap; ///< Hue mapping of distances to closest point
+    Data<bool> theCloserTheStiffer; ///< Modify stiffness according to distance
 
     void detectBorder(helper::vector<bool> &border,const helper::vector< tri > &triangles);
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(CLOSESTPOINTREGISTRATIONFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_REGISTRATION_API ClosestPointRegistrationForceField<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_REGISTRATION_API ClosestPointRegistrationForceField<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(CLOSESTPOINTREGISTRATIONFORCEFIELD_CPP)
+extern template class SOFA_REGISTRATION_API ClosestPointRegistrationForceField<defaulttype::Vec3Types>;
+
 #endif
 
 

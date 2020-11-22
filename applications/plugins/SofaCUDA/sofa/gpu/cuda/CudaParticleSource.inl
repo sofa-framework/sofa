@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,7 +67,6 @@ using namespace gpu::cuda;
 //     if (!this->mstate) return;
 //     const VecIndex& lastparticles = this->lastparticles.getValue();
 //     if (lastparticles.empty()) return;
-//     //sout << "ParticleSource: projectResponse of last particles ("<<lastparticles<<")."<<sendl;
 //     double time = getContext()->getTime();
 //     if (time < f_start.getValue() || time > f_stop.getValue()) return;
 //     // constraint the last values
@@ -81,7 +80,6 @@ using namespace gpu::cuda;
 //     if (!this->mstate) return;
 //     const VecIndex& lastparticles = this->lastparticles.getValue();
 //     if (lastparticles.empty()) return;
-//     //sout << "ParticleSource: projectVelocity of last particles ("<<lastparticles[0]<<"-"<<lastparticles[lastparticles.size()-1]<<") out of " << res.size() << "."<<sendl;
 //     double time = getContext()->getTime();
 //     if (time < f_start.getValue() || time > f_stop.getValue()) return;
 //     // constraint the last values
@@ -102,7 +100,6 @@ using namespace gpu::cuda;
 //     if (!this->mstate) return;
 //     const VecIndex& lastparticles = this->lastparticles.getValue();
 //     if (lastparticles.empty()) return;
-//     //sout << "ParticleSource: projectVelocity of last particles ("<<lastparticles<<")."<<sendl;
 //     double time = getContext()->getTime();
 //     if (time < f_start.getValue() || time > f_stop.getValue()) return;
 //     // constraint the last values
@@ -121,7 +118,6 @@ using namespace gpu::cuda;
 //     if (!this->mstate) return;
 //     const VecIndex& lastparticles = this->lastparticles.getValue();
 //     if (lastparticles.empty()) return;
-//     //sout << "ParticleSource: projectResponse of last particle ("<<lastparticle<<")."<<sendl;
 //     double time = getContext()->getTime();
 //     if (time < f_start.getValue() || time > f_stop.getValue()) return;
 //     // constraint the last values

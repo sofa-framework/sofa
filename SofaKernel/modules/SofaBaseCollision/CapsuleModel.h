@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,17 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CAPSULEMODEL_H
-#define SOFA_COMPONENT_COLLISION_CAPSULEMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/accessor.h>
-
 
 namespace sofa
 {
@@ -42,14 +38,14 @@ namespace collision
 
 
 template<class DataTypes>
-class TCapsuleModel;
+class CapsuleCollisionModel;
 
 /**
   *A capsule can be viewed as a segment with a radius, here the segment is
   *defined by its apexes.
   */
 template<class TDataTypes>
-class TCapsule : public core::TCollisionElementIterator< TCapsuleModel<TDataTypes> >
+class TCapsule : public core::TCollisionElementIterator< CapsuleCollisionModel<TDataTypes> >
 {
 public:
     typedef TDataTypes DataTypes;
@@ -58,9 +54,11 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
-    typedef TCapsuleModel<DataTypes> ParentModel;
+    typedef CapsuleCollisionModel<DataTypes> ParentModel;
 
-    TCapsule(ParentModel* model, int index);
+    using index_type = sofa::defaulttype::index_type;
+
+    TCapsule(ParentModel* model, index_type index);
 
     explicit TCapsule(const core::CollisionElementIterator& i);
 
@@ -88,10 +86,10 @@ public:
   *is a segment with a radius.
   */
 template< class TDataTypes>
-class TCapsuleModel : public core::CollisionModel
+class CapsuleCollisionModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TCapsuleModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(CapsuleCollisionModel, TDataTypes), core::CollisionModel);
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -102,91 +100,96 @@ public:
     typedef typename DataTypes::VecReal VecReal;
     typedef TCapsule<DataTypes> Element;
     friend class TCapsule<DataTypes>;
-protected:
-    Data<VecReal > _capsule_radii;
-    Data<Real> _default_radius;
-    sofa::helper::vector<std::pair<int,int> > _capsule_points;
 
-    TCapsuleModel();
-    TCapsuleModel(core::behavior::MechanicalState<TDataTypes>* mstate );
+    using index_type = sofa::defaulttype::index_type;
+protected:
+    Data<VecReal > _capsule_radii; ///< Radius of each capsule
+    Data<Real> _default_radius; ///< The default radius
+    sofa::helper::vector<std::pair<index_type, index_type> > _capsule_points;
+
+    CapsuleCollisionModel();
+    CapsuleCollisionModel(core::behavior::MechanicalState<TDataTypes>* mstate );
 public:
-    virtual void init() override;
+    void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size) override;
+    void resize(std::size_t size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0) override;
+    void computeBoundingTree(int maxDepth=0) override;
 
     //virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
 
-    void draw(const core::visual::VisualParams* vparams,int index) override;
+    void draw(const core::visual::VisualParams* vparams, index_type index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return _mstate; }
 
-    Real radius(int index) const;
+    Real radius(index_type index) const;
 
-    inline const Coord & point(int i)const;
+    inline const Coord & point(index_type i)const;
 
-    const Coord & point1(int index)const;
+    const Coord & point1(index_type index)const;
 
-    const Coord & point2(int index)const;
+    const Coord & point2(index_type index)const;
 
     //Returns the point1-point2 normalized vector
-    Coord axis(int index)const;
+    Coord axis(index_type index)const;
 
-    sofa::defaulttype::Quaternion orientation(int index)const;
+    sofa::defaulttype::Quaternion orientation(index_type index)const;
 
-    int point1Index(int index)const;
+    index_type point1Index(index_type index)const;
 
-    int point2Index(int index)const;
+    index_type point2Index(index_type index)const;
 
-    Coord center(int index)const;
+    Coord center(index_type index)const;
 
-    Real height(int index)const;
+    Real height(index_type index)const;
 
-    inline unsigned int nbCap()const;
+    inline std::size_t nbCap()const;
 
     Real defaultRadius()const;
 
-    Deriv velocity(int index)const;
+    Deriv velocity(index_type index)const;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == NULL && context->getMechanicalState() != NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == nullptr && context->getMechanicalState() != nullptr)
+        {
+            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+                          "' found in the context node.");
             return false;
+        }
 
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
+    sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
     {
-        return templateName(this);
-    }
-
-    static std::string templateName(const TCapsuleModel<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
+        return l_topology.get();
     }
 
     /**
       *Returns true if capsules at indexes i1 and i2 share the same vertex.
       */
-    bool shareSameVertex(int i1,int i2)const;
+    bool shareSameVertex(index_type i1, index_type i2)const;
 
     Data<VecReal > & writeRadii();
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<CapsuleCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     core::behavior::MechanicalState<DataTypes>* _mstate;
 };
 
 template<class DataTypes>
-inline TCapsule<DataTypes>::TCapsule(ParentModel* model, int index)
+inline TCapsule<DataTypes>::TCapsule(ParentModel* model, index_type index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 
@@ -196,19 +199,14 @@ inline TCapsule<DataTypes>::TCapsule(const core::CollisionElementIterator& i)
 {
 }
 
+template <class TDataTypes> using TCapsuleModel [[deprecated("The TCapsuleModel is now deprecated, please use CapsuleCollisionModel instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<TDataTypes>;
+using CapsuleModel [[deprecated("The CapsuleModel is now deprecated, please use CapsuleCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<sofa::defaulttype::Vec3Types>;
+using Capsule = TCapsule<sofa::defaulttype::Vec3Types>;
 
-typedef TCapsuleModel<sofa::defaulttype::Vec3Types> CapsuleModel;
-typedef TCapsule<sofa::defaulttype::Vec3Types> Capsule;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_CAPSULEMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_CPP)
+extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3Types>;
+extern template class SOFA_BASE_COLLISION_API CapsuleCollisionModel<defaulttype::Vec3Types>;
 #endif
 
 } // namespace collision

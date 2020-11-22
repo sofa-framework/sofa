@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -32,8 +29,10 @@
 #include <SofaSimulationTree/init.h>
 #include <SofaSimulationTree/TreeSimulation.h>
 
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentBase/initComponentBase.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaBase/initSofaBase.h>
+
+#include <boost/program_options.hpp>
 
 
 void fallingCubeExample(sofa::simulation::Node::SPtr root)
@@ -103,13 +102,39 @@ void fallingDrapExample(sofa::simulation::Node::SPtr root)
 int main(int argc, char** argv)
 {
     sofa::simulation::tree::init();
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
 
+    bool showHelp = false;
     unsigned int idExample = 0;
-    sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
-            .option(&idExample,'e',"example","Example Number to enter from (0 - 9)")
-    (argc,argv);
+    ArgumentParser* argParser = new ArgumentParser(argc, argv);
+    argParser->addArgument(
+        boost::program_options::value<bool>(&showHelp)
+        ->default_value(false)
+        ->implicit_value(true),
+        "help,h",
+        "Display this help message"
+    );
+    argParser->addArgument(
+        boost::program_options::value<unsigned int>(&idExample)
+        ->default_value(0)
+        ->notifier([](unsigned int value) {
+            if (value > 9) {
+                std::cerr << "Example Number to enter from (0 - 9), current value: " << value << std::endl;
+                exit( EXIT_FAILURE );
+            }
+        }),
+        "example,e",
+        "Example Number to enter from (0 - 9)"
+    );
+
+    argParser->parse();
+
+    if(showHelp)
+    {
+        argParser->showHelp();
+        exit( EXIT_SUCCESS );
+    }
 
     // init GUI
     sofa::gui::initMain();

@@ -56,7 +56,7 @@ public:
     typedef typename Inherit::CollisionModel2 CollisionModel2;
     typedef typename Inherit::Intersection Intersection;
 
-    Data< SReal > viscousFriction;
+    Data< SReal > viscousFriction; ///< 0 <= viscousFriction <= 1
 
 
 protected:
@@ -89,7 +89,7 @@ protected:
         , viscousFriction( initData(&viscousFriction, SReal(0), "viscousFriction", "0 <= viscousFriction <= 1") )
     {}
 
-    void create_node()
+    void create_node() override
     {
 
 //        simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor bob( sofa::core::MechanicalParams::defaultInstance() );
@@ -223,7 +223,7 @@ protected:
 
 
 
-    void update_node() {
+    void update_node() override {
 
         const unsigned size = this->mappedContacts.size();
 

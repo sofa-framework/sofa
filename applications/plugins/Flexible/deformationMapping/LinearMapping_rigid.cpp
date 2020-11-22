@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,14 +40,11 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(LinearMapping_rigid)
-
 using namespace defaulttype;
 
 // Register in the Factory
 int LinearMappingClass_rigid = core::RegisterObject("Map child positions as a linear combination of parents.")
         .add< LinearMapping< Rigid3Types, Vec3Types > >()
-        .add< LinearMapping< Rigid3Types, ExtVec3fTypes > >()
         .add< LinearMapping< Rigid3Types, F331Types > >()
         .add< LinearMapping< Rigid3Types, F321Types > >()
         .add< LinearMapping< Rigid3Types, F311Types > >()
@@ -56,7 +53,6 @@ int LinearMappingClass_rigid = core::RegisterObject("Map child positions as a li
         ;
 
 template class SOFA_Flexible_API LinearMapping< Rigid3Types, Vec3Types >;
-template class SOFA_Flexible_API LinearMapping< Rigid3Types, ExtVec3fTypes >;
 template class SOFA_Flexible_API LinearMapping< Rigid3Types, F331Types >;
 template class SOFA_Flexible_API LinearMapping< Rigid3Types, F321Types >;
 template class SOFA_Flexible_API LinearMapping< Rigid3Types, F311Types >;

@@ -40,7 +40,7 @@ Q_OBJECT
 
 public:
     LabelGridImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent);
-    ~LabelGridImageToolBoxAction();
+    ~LabelGridImageToolBoxAction() override;
     
     sofa::component::engine::LabelGridImageToolBoxNoTemplated* LGITB();
 
@@ -55,9 +55,9 @@ private:
 
 
 public slots:
-    virtual void addOnGraphs();
-    virtual void updateGraphs();
-    virtual void updateColor();
+    void addOnGraphs() override;
+    void updateGraphs() override;
+    void updateColor() override;
 
 private slots:
     void selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);

@@ -1,0 +1,31 @@
+Node : {
+    name : "root"
+    Import : importedpythondsl
+
+    importedpythondsl.Template1 : {
+        name : "InvalidArgument"
+    }
+
+    importedpythondsl.MyTemplate : {
+        name : "MyTemplate"
+        numchild : 3
+    }
+
+    importedpythondsl.MyTemplate : {
+        name : "MyTemplate"
+        numchild : 3
+    }
+
+    Python : '''
+             cp=0
+             for child in root.getChildren():
+                if child.name == "MyTemplate":
+                    cp+=1
+             if cp != 2:
+                Sofa.msg_error(root, "The templates that should be instantiated are missing.")
+             '''
+
+    TestResult : "Success"
+}
+
+

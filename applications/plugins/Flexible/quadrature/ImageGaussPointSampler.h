@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -352,8 +352,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
 
         for(unsigned int i=0; i<2; i++) AddSeedPoint<DistT>(trial,dist,regimg, pos[i],vorindex[i]);
         if(This->useDijkstra.getValue()) dijkstra<DistT,DistT>(trial,dist, regimg,voxelsize); else fastMarching<DistT,DistT>(trial,dist, regimg,voxelsize);
-        //dist.display();
-        //regimg.display();
         while(!converged)
         {
             converged=!(Lloyd<DistT>(pos,vorindex,regimg));
@@ -426,9 +424,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
 
         fact.fill(wi,pi,This->fillOrder(),voxelsize,This->volOrder());
 
-        //  std::cout<<"pt "<<*(fact.voronoiIndices.begin())-1<<" : "<<fact.center<<std::endl<<std::endl<<std::endl<<pi<<std::endl<<std::endl<<wi<<std::endl;
-        //test: fact.directSolve(wi,pi); std::cout<<"Jacobi err="<<fact.getError()<<std::endl;
-
         // write error into output image
         if(writeErrorImg)
         {
@@ -471,22 +466,22 @@ public:
     typedef typename ImageGaussPointSamplerSpec::IndTypes IndTypes;
     typedef helper::ReadAccessor<Data< IndTypes > > raInd;
     typedef helper::WriteOnlyAccessor<Data< IndTypes > > waInd;
-    Data< IndTypes > f_index;
+    Data< IndTypes > f_index; ///< image of dof indices
 
     typedef ImageTypes_ DistTypes;
     typedef typename DistTypes::T DistT;
     typedef typename DistTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< DistTypes > > raDist;
     typedef helper::WriteOnlyAccessor<Data< DistTypes > > waDist;
-    Data< DistTypes > f_w;
+    Data< DistTypes > f_w; ///< weight image
 
     typedef MaskTypes_ MaskTypes;
     typedef typename MaskTypes::T  MaskT;
     typedef helper::ReadAccessor<Data< MaskTypes > > raMask;
-    Data< MaskTypes > f_mask;
+    Data< MaskTypes > f_mask; ///< optional mask to restrict the sampling region
     typedef helper::vector<MaskT> MaskLabelsType;
     typedef helper::ReadAccessor<Data< MaskLabelsType > > raMaskLabels;
-    Data< MaskLabelsType > f_maskLabels;
+    Data< MaskLabelsType > f_maskLabels; ///< Mask labels where sampling is restricted
 
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
@@ -495,16 +490,16 @@ public:
 
     /** @name  region data */
     //@{
-    Data< IndTypes > f_region;
-    Data< DistTypes > f_error;
+    Data< IndTypes > f_region; ///< sample region : labeled image with sample indices
+    Data< DistTypes > f_error; ///< weigth fitting error
     //@}
 
     /** @name  Options */
     //@{
-    Data<bool> f_clearData;
-    Data<unsigned int> targetNumber;
-    Data<bool> useDijkstra;
-    Data<unsigned int> iterations;
+    Data<bool> f_clearData; ///< clear region and error images after computation
+    Data<unsigned int> targetNumber; ///< target number of samples
+    Data<bool> useDijkstra; ///< Use Dijkstra for geodesic distance computation (use fastmarching otherwise)
+    Data<unsigned int> iterations; ///< maximum number of Lloyd iterations
     Data<bool> evaluateShapeFunction;   ///< If true, ImageGaussPointSampler::bwdInit() is called to evaluate shape functions over integration regions
                                         ///< and writes over values computed by sofa::component::mapping::LinearMapping.
                                         ///< Otherwise shape functions are interpolated only at sample locations using finite differencies in sofa::component::mapping::LinearMapping.
@@ -513,10 +508,7 @@ public:
     Data< unsigned int > f_fillOrder; ///< Fill Order  // For the mapping, we use second order fit (to have translation invariance of elastons, use first order)
     //@}
 
-    virtual std::string getTemplateName() const    { return templateName(this); }
-    static std::string templateName(const ImageGaussPointSampler<ImageTypes_, MaskTypes_>* = NULL) { return ImageTypes_::Name()+std::string(",")+MaskTypes_::Name(); }
-
-    virtual void init()
+    void init() override
     {
         Inherit::init();
 
@@ -534,9 +526,9 @@ public:
         this->getContext()->get( deformationMapping, core::objectmodel::BaseContext::Local);
     }
 
-    virtual void reinit() { update(); }
+    void reinit() override { update(); }
 
-    virtual void bwdInit() {  updateMapping(); }
+    void bwdInit() override {  updateMapping(); }
 
 protected:
     ImageGaussPointSampler()    :   Inherit()
@@ -558,7 +550,7 @@ protected:
     {
     }
 
-    virtual ~ImageGaussPointSampler()
+    ~ImageGaussPointSampler() override
     {
         // what is that?
         f_index.setReadOnly(true);
@@ -584,12 +576,8 @@ protected:
     static const int spatial_dimensions=3;
     mapping::BasePointMapper<spatial_dimensions,Real>* deformationMapping; ///< link to local deformation mapping for weights update
 
-    virtual void update()
+    void doUpdate() override
     {
-        updateAllInputsIfDirty(); // the easy way...
-
-        cleanDirty();
-
         ImageGaussPointSamplerSpec::init(this);
         ImageGaussPointSamplerSpec::Cluster_SimilarIndices(this);
 
@@ -686,14 +674,6 @@ protected:
             // set sample orientation to identity (could be image orientation)
             transforms[i].identity();
         }
-
-        // test
-        /*for(unsigned int i=0; i<nb; i++)
-        {
-            Real sumw=0; for(unsigned int j=0; j<w[i].size(); j++) { sumw+=w[i][j]; }
-            Vec<spatial_dimensions,Real>  sumdw; for(unsigned int j=0; j<dw[i].size(); j++) sumdw+=dw[i][j];
-            if(sumdw.norm()>1E-2 || fabs(sumw-1)>1E-2) std::cout<<"error on "<<i<<" : "<<sumw<<","<<sumdw<<std::endl;
-        }*/
 
         if(evaluateShapeFunction.getValue())
         {

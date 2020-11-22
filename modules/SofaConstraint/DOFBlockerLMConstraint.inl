@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,9 +25,8 @@
 #include <SofaConstraint/DOFBlockerLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/Axis.h>
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/helper/types/RGBAColor.h>
 
 
 namespace sofa
@@ -39,11 +38,9 @@ namespace component
 namespace constraintset
 {
 
-
-
 // Define TestNewPointFunction
 template< class DataTypes>
-bool DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction(unsigned int /*nbPoints*/, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+bool DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction(index_type /*nbPoints*/, const sofa::helper::vector< index_type > &, const sofa::helper::vector< double >& )
 {
     if (fc)
     {
@@ -57,11 +54,11 @@ bool DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyTestCreateFunction
 
 // Define RemovalFunction
 template< class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void DOFBlockerLMConstraint<DataTypes>::FCTPointHandler::applyDestroyFunction(index_type pointIndex, value_type &)
 {
     if (fc)
     {
-        fc->removeConstraint((unsigned int) pointIndex);
+        fc->removeConstraint((index_type) pointIndex);
     }
     return;
 }
@@ -75,14 +72,14 @@ void DOFBlockerLMConstraint<DataTypes>::clearConstraints()
 }
 
 template <class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::addConstraint(unsigned int index)
+void DOFBlockerLMConstraint<DataTypes>::addConstraint(index_type index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
 }
 
 template <class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::removeConstraint(unsigned int index)
+void DOFBlockerLMConstraint<DataTypes>::removeConstraint(index_type index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
@@ -94,11 +91,27 @@ void DOFBlockerLMConstraint<DataTypes>::init()
 {
     core::behavior::LMConstraint<DataTypes,DataTypes>::init();
 
-    topology = this->getContext()->getMeshTopology();
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-    // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology, pointHandler);
-    f_indices.registerTopologicalData();
+    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
+
+    if (_topology)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+        
+        // Initialize functions and parameters
+        m_pointHandler = new FCTPointHandler(this, &f_indices);
+        f_indices.createTopologicalEngine(_topology, m_pointHandler);
+        f_indices.registerTopologicalData();        
+    }
+    else
+    {
+        msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+    }
 }
 
 
@@ -125,7 +138,7 @@ void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(const core::Constr
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++numParticle)
     {
-        const unsigned int index=*it;
+        const index_type index=*it;
         for (unsigned int i=0; i<axis.size(); ++i)
         {
             c->writeLine(cIndex).addCol(index,axis[i]);
@@ -179,31 +192,32 @@ void DOFBlockerLMConstraint<DataTypes>::writeConstraintEquations(unsigned int& l
 template <class DataTypes>
 void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     const VecCoord& x =this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
 
+    vparams->drawTool()->saveLastState();
+
     const SetIndexArray & indices = f_indices.getValue();
+    sofa::helper::types::RGBAColor color = sofa::helper::types::RGBAColor::yellow();
 
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
     {
-        unsigned int index=(*it);
+        index_type index=(*it);
         Coord pos=x[index];
         defaulttype::Vector3 position;
         DataTypes::get(position[0], position[1], position[2], pos);
-        glColor3f(1,1,0);
         const helper::vector<Deriv>& axis=BlockedAxis.getValue();
         for (unsigned int i=0; i<axis.size(); ++i)
         {
             defaulttype::Vector3 direction;
             DataTypes::get(direction[0], direction[1], direction[2],axis[i]);
-            helper::gl::Axis::draw(position,position+direction*showSizeAxis.getValue(),
-                    showSizeAxis.getValue()*0.03);
+            vparams->drawTool()->drawArrow(position, position+direction*showSizeAxis.getValue(),
+                                           showSizeAxis.getValue()*0.03,color);
         }
     }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace constraintset

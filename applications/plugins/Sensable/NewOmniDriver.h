@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -125,7 +125,7 @@ public:
     SOFA_CLASS(NewOmniDriver, Controller);
     typedef RigidTypes::Coord Coord;
     typedef RigidTypes::VecCoord VecCoord;
-    typedef component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> MMechanicalObject;
+    typedef component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MMechanicalObject;
 
 
 
@@ -133,36 +133,35 @@ public:
     {
         simulation::Node::SPtr node;
         sofa::component::visualmodel::OglModel::SPtr visu;
-        sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  >::SPtr mapping;
+        sofa::component::mapping::RigidMapping< Rigid3Types , Vec3Types  >::SPtr mapping;
     };
 
 
 
-    Data<double> forceScale;
-    Data<double> scale;
-    Data<Vec3d> positionBase;
-    Data<Quat> orientationBase;
-    Data<Vec3d> positionTool;
-    Data<Quat> orientationTool;
-    Data<bool> permanent;
-    Data<bool> omniVisu;
-    Data< VecCoord > posDevice;
-    Data< VecCoord > posStylus;
-    Data< std::string > locDOF;
-    Data< std::string > deviceName;
-    Data< int > deviceIndex;
-    Data<Vec1d> openTool;
-    Data<double> maxTool;
-    Data<double> minTool;
-    Data<double> openSpeedTool;
-    Data<double> closeSpeedTool;
-    Data<bool> useScheduler;
-    Data<bool> setRestShape;
-    Data<bool> applyMappings;
-    Data<bool> alignOmniWithCamera;
-	Data<bool> stateButton1;
-	Data<bool> stateButton2;
-
+    Data<double> forceScale; ///< Default forceScale applied to the force feedback. 
+    Data<double> scale; ///< Default scale applied to the Phantom Coordinates. 
+    Data<Vec3d> positionBase; ///< Position of the interface base in the scene world coordinates
+    Data<Quat> orientationBase; ///< Orientation of the interface base in the scene world coordinates
+    Data<Vec3d> positionTool; ///< Position of the tool in the omni end effector frame
+    Data<Quat> orientationTool; ///< Orientation of the tool in the omni end effector frame
+    Data<bool> permanent; ///< Apply the force feedback permanently
+    Data<bool> omniVisu; ///< Visualize the position of the interface in the virtual scene
+    Data< VecCoord > posDevice; ///< position of the base of the part of the device
+    Data< VecCoord > posStylus; ///< position of the base of the stylus
+    Data< std::string > locDOF; ///< localisation of the DOFs MechanicalObject
+    Data< std::string > deviceName; ///< name of the device
+    Data< int > deviceIndex; ///< index of the device
+    Data<Vec1d> openTool; ///< opening of the tool
+    Data<double> maxTool; ///< maxTool value
+    Data<double> minTool; ///< minTool value
+    Data<double> openSpeedTool; ///< openSpeedTool value
+    Data<double> closeSpeedTool; ///< closeSpeedTool value
+    Data<bool> useScheduler; ///< Enable use of OpenHaptics Scheduler methods to synchronize haptics thread
+    Data<bool> setRestShape; ///< True to control the rest position instead of the current position directly
+    Data<bool> applyMappings; ///< True to enable applying the mappings after setting the position
+    Data<bool> alignOmniWithCamera; ///< True to keep the Omni's movements in the same reference frame as the camera
+    Data<bool> stateButton1; ///< True if the First button of the Omni is pressed
+    Data<bool> stateButton2; ///< True if the Second button of the Omni is pressed
 
 
     sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *DOFs;
@@ -176,21 +175,21 @@ public:
     NewOmniDriver();
     virtual ~NewOmniDriver();
 
-    virtual void init();
-    virtual void bwdInit();
-    virtual void reset();
-    void reinit();
+    virtual void init() override;
+    virtual void bwdInit() override;
+    virtual void reset() override;
+    void reinit() override;
 
     int initDevice();
 
-    void cleanup();
-	virtual void draw(const core::visual::VisualParams*) override;
+    void cleanup() override;
+    virtual void draw(const core::visual::VisualParams*) override;
     virtual void draw();
 
     void setForceFeedback(ForceFeedback* ff);
 
-    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
-    void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
+    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) override;
+    void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *) override;
     void onAnimateBeginEvent();
 
     void setDataValue();
@@ -232,7 +231,7 @@ public:
     //vector<NewOmniDriver*> autreOmniDriver;
 
 private:
-    void handleEvent(core::objectmodel::Event *);
+    void handleEvent(core::objectmodel::Event *) override;
     bool noDevice;
 
 

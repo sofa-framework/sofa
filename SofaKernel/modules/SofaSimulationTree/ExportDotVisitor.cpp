@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaSimulationTree/ExportDotVisitor.h>
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Colors.h>
@@ -89,8 +88,8 @@ bool ExportDotVisitor::display(GNode* node, const char **color)
 bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **color)
 {
     using namespace Colors;
-    const char* c = NULL;
-    if (color==NULL) color=&c;
+    const char* c = nullptr;
+    if (color==nullptr) color=&c;
     if (!obj) return false;
     if (!showObject) return false;
     *color = COLOR[OBJECT];
@@ -253,12 +252,12 @@ std::string ExportDotVisitor::getName(core::objectmodel::BaseObject* obj)
 void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObject* obj)
 {
     //std::cout << ' ' << obj->getName() << '(' << sofa::helper::gettypename(typeid(*obj)) << ')';
-    const char* color=NULL;
+    const char* color=nullptr;
     if (display(obj,&color))
     {
         std::string name = getName(obj);
         *out << name << " [shape=box,";
-        if (color!=NULL)
+        if (color!=nullptr)
             *out << "style=\"filled\",fillcolor=\"" << color << "\",";
         *out << "label=\"";
         if (labelObjectClass)
@@ -289,7 +288,7 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
         }
         /*
         core::behavior::BaseMechanicalState* bms = dynamic_cast<core::behavior::BaseMechanicalState*>(obj);
-        if (bms!=NULL)
+        if (bms!=nullptr)
         {
             core::objectmodel::BaseLink* l_topology = bms->findLink("topology");
             if (l_topology)
@@ -304,7 +303,7 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
         }
         */
         core::behavior::BaseInteractionForceField* iff = obj->toBaseInteractionForceField();
-        if (iff!=NULL)
+        if (iff!=nullptr)
         {
             core::behavior::BaseMechanicalState* model1 = iff->getMechModel1();
             core::behavior::BaseMechanicalState* model2 = iff->getMechModel2();
@@ -317,7 +316,7 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
             }
         }
         core::BaseMapping* map = obj->toBaseMapping();
-        if (map!=NULL)
+        if (map!=nullptr)
         {
             core::objectmodel::BaseObject* model1 = map->getFrom()[0];
             core::objectmodel::BaseObject* model2 = map->getTo()[0];
@@ -340,7 +339,7 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
 
 simulation::Visitor::Result ExportDotVisitor::processNodeTopDown(GNode* node)
 {
-    const char* color=NULL;
+    const char* color=nullptr;
     if (display(node,&color))
     {
         *out << getName(node) << " [shape=hexagon,width=0.25,height=0.25,style=\"filled\"";

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,7 +42,13 @@ namespace constraintset
 class UnilateralConstraintResolution : public core::behavior::ConstraintResolution
 {
 public:
-    virtual void resolution(int line, double** w, double* d, double* force, double *dfree)
+
+    UnilateralConstraintResolution() : core::behavior::ConstraintResolution(1)
+    {
+
+    }
+
+    void resolution(int line, double** w, double* d, double* force, double *dfree) override
     {
         SOFA_UNUSED(dfree);
         force[line] -= d[line] / w[line][line];
@@ -85,17 +91,17 @@ protected:
 class SOFA_CONSTRAINT_API UnilateralConstraintResolutionWithFriction : public core::behavior::ConstraintResolution
 {
 public:
-    UnilateralConstraintResolutionWithFriction(double mu, PreviousForcesContainer* prev=NULL, bool* active = NULL)
-        : _mu(mu)
+    UnilateralConstraintResolutionWithFriction(double mu, PreviousForcesContainer* prev = nullptr, bool* active = nullptr)
+        :core::behavior::ConstraintResolution(3)
+        , _mu(mu)
         , _prev(prev)
         , _active(active)
     {
-        this->nbLines=3;
     }
 
-    virtual void init(int line, double** w, double* force);
-    virtual void resolution(int line, double** w, double* d, double* force, double *dFree);
-    virtual void store(int line, double* force, bool /*convergence*/);
+    void init(int line, double** w, double* force) override;
+    void resolution(int line, double** w, double* d, double* force, double *dFree) override;
+    void store(int line, double* force, bool /*convergence*/) override;
 
 protected:
     double _mu;
@@ -168,7 +174,6 @@ protected:
 
     PreviousForcesContainer prevForces;
     bool* contactsStatus;
-//	sofa::helper::vector<bool> contactsStatus;
 
     /// Computes constraint violation in position and stores it into resolution global vector
     ///
@@ -184,50 +189,18 @@ public:
 
     unsigned int constraintId;
 protected:
-    UnilateralInteractionConstraint(MechanicalState* object1=NULL, MechanicalState* object2=NULL)
-        : Inherit(object1, object2)
-        , epsilon(Real(0.001))
-        , yetIntegrated(false)
-        , customTolerance(0.0)
-        , contactsStatus(NULL)
-    {
-    }
+    UnilateralInteractionConstraint(MechanicalState* object1=nullptr, MechanicalState* object2=nullptr);
+    virtual ~UnilateralInteractionConstraint();
 
-    virtual ~UnilateralInteractionConstraint()
-    {
-        if(contactsStatus)
-            delete[] contactsStatus;
-    }
 public:
     void setCustomTolerance(double tol) { customTolerance = tol; }
 
-    void clear(int reserve = 0)
-    {
-        contacts.clear();
-        if (reserve)
-            contacts.reserve(reserve);
-    }
+    void clear(int reserve = 0);
 
     virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0);
 
-    void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0)
-    {
-        addContact(mu, norm, P, Q, contactDistance, m1, m2,
-                this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
-                this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
-                id, localid);
-    }
-
-    void addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0)
-    {
-        addContact(mu, norm,
-                this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2],
-                this->getMState1()->read(core::ConstVecCoordId::position())->getValue()[m1],
-                contactDistance, m1, m2,
-                this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
-                this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue()[m1],
-                id, localid);
-    }
+    void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0);
+    void addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0);
 
     void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
             , const DataVecCoord &x1, const DataVecCoord &x2) override;
@@ -236,32 +209,18 @@ public:
             , const DataVecDeriv &v1, const DataVecDeriv &v2) override;
 
 
-    virtual void getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas) override;
+    void getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas) override;
 
-    virtual void getConstraintResolution(const core::ConstraintParams *,std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
+    void getConstraintResolution(const core::ConstraintParams *,std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
     bool isActive() const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3dTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec2dTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec1dTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec6dTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3fTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec2fTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec1fTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec6fTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Rigid2fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_CPP)
+extern template class SOFA_CONSTRAINT_API UnilateralInteractionConstraint<defaulttype::Vec3Types>;
+
 #endif
 
 } // namespace constraintset

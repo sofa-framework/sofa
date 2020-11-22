@@ -1,0 +1,37 @@
+Node : {
+    name : "root"
+
+    Python : '''import xml'''
+
+    Node : {
+        name : "frame0"
+        Python : '''
+                 aLocalVar="Test"
+                 '''
+
+        Python : '''
+                 if not 'aLocalVar' in globals():
+                     Sofa.msg_error(root, "Unable to get 'aLocalVar' from a parent context")
+                 '''
+
+        Python : '''
+                 if not 'xml' in globals():
+                     Sofa.msg_error(root, "Unable to get 'xml' from a parent context")
+                 '''
+    }
+
+    Python : '''
+             if 'aLocalVar' in globals():
+                Sofa.msg_error(root, "The variable 'aLocalVar' has leaked from a child context")
+             '''
+
+
+    Python : '''
+             if not 'xml' in globals():
+                Sofa.msg_error(root, "Unable to get xml 'from' the 'brother context")
+             '''
+	
+    TestResult : "Success"
+}
+
+

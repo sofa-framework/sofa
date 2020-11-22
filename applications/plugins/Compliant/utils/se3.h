@@ -3,8 +3,8 @@
 
 // SE(3) kinematics
 
-// author: maxime.tournier@inria.fr
-// license: LGPL 2.1
+// author: tournier.maxime@gmail.com
+// license: LGPL 2.1-or-later
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -38,13 +38,13 @@ struct SE3 {
 	typedef vec6 twist;
     
 	// easy mappings between sofa/eigen vectors
-	template<int I>
+    template<std::size_t I>
 	static Eigen::Map< Eigen::Matrix<real, I, 1> > map(::sofa::defaulttype::Vec<I, real>& v) {
 		return Eigen::Map< Eigen::Matrix<real, I, 1> >(v.ptr());
 	}
 
 
-	template<int I>
+    template<std::size_t I>
 	static Eigen::Map<const Eigen::Matrix<real, I, 1> > map(const ::sofa::defaulttype::Vec<I, real>& v) {
 		return Eigen::Map<const Eigen::Matrix<real, I, 1> >(v.ptr());
 	}
@@ -258,8 +258,8 @@ struct SE3 {
         real sin_half_theta; // note that sin(theta/2) == norm of the imaginary part for unit quaternion
         real theta;
 
-        // to avoid numerical instabilities of acos for theta < 5°
-        if(w>0.999) // theta < 5° -> _q[3] = cos(theta/2) > 0.999
+        // to avoid numerical instabilities of acos for theta < 5Â°
+        if(w>0.999) // theta < 5Â° -> _q[3] = cos(theta/2) > 0.999
         {
             sin_half_theta = q.vec().norm();
             theta = (real)(2.0 * asin(sin_half_theta)); // in (0, pi)

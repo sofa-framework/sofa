@@ -1,0 +1,75 @@
+Template : {
+    name : "VisualSphere"
+    properties : {
+        position : "0 0 0"
+    }
+    Node : {
+        name : "Sphere"
+        OglModel : {
+                translation : p"position"
+                filename : "mesh/sphere.obj"
+        }
+    }
+}
+
+
+Template :
+{
+    name : "Armadillo"
+    properties : {
+        name : "DefaultName"
+        position : "0 0 0"
+        color : "1 0 0"
+    }
+
+    Node : {
+        name : p"name"
+        MechanicalObject : {
+            translation : p"position"
+            name : "mstate"
+        }
+
+        UniformMass : { totalmass : "1" }
+        RegularGridTopology : {
+            n : "2 2 2"
+            max:"2.5 0.5 2"
+            min:"-2.5 -0.5 -2"
+        }
+
+        Node : {
+            name : "Visu"
+            OglModel : {
+                name : "visual"
+                color : p"color"
+                filename : "mesh/Armadillo_simplified.obj"
+            }
+            BarycentricMapping : {
+                input : "@.."
+                output : "@visual"
+            }
+        }
+    }
+}
+
+Template : {
+    name : "GridRepeat"
+    properties : {
+        target : "None"
+        nx : 2
+        ny : 2
+    }
+    Node : {
+        name : "GridRepeat"
+
+        Python : '''
+                 from pslengine import instanciate
+
+                 c = self.createChild("Square")
+                 for i in range(0, nx):
+                    for j in range(0, ny):
+                            instanciate(c, target,
+                                        name="Armadillo_"+str(i),
+                                        position=[-5+i*10, 0, j*8])
+                '''
+   }
+}

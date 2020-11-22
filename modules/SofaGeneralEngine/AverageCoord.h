@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 
@@ -57,13 +57,13 @@ protected:
 
     AverageCoord();
 
-    virtual ~AverageCoord() {}
+    ~AverageCoord() override {}
 public:
     void init() override;
 
     void reinit() override;
 
-    void update() override;
+    void doUpdate() override;
 
     Data<VecIndex> d_indices;    ///< indices of the coordinates to average
     Data<unsigned> d_vecId;  ///< index of the vector (default value corresponds to core::VecCoordId::position() )
@@ -72,36 +72,16 @@ public:
     void handleEvent(core::objectmodel::Event *event) override;
     void onBeginAnimationStep(const double /*dt*/);
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-
-    static std::string templateName(const AverageCoord<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-
-
 protected:
     sofa::core::behavior::MechanicalState<DataTypes> *mstate;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_AverageCoord_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec2dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Rigid2dTypes>;
-extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec2fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Rigid2fTypes>;
-extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(SOFA_COMPONENT_ENGINE_AverageCoord_CPP)
+extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec2Types>;
+extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Rigid2Types>;
+extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Rigid3Types>;
+ 
 #endif
 
 } // namespace engine

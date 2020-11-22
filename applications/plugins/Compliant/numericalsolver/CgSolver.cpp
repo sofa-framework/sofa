@@ -13,7 +13,6 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(CgSolver)
 int CgSolverClass = core::RegisterObject("Sparse CG linear solver").add< CgSolver >();
 
 CgSolver::CgSolver() 

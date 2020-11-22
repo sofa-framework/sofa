@@ -126,9 +126,9 @@ static PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObj
 {
     TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
 
-    PyObject* triangleArgs  = NULL;
-    PyObject* ancestorsArgs = NULL;
-    PyObject* coefsArgs     = NULL;
+    PyObject* triangleArgs  = nullptr;
+    PyObject* ancestorsArgs = nullptr;
+    PyObject* coefsArgs     = nullptr;
 
     if (PyArg_UnpackTuple(args, "addTriangles", 1, 3, &triangleArgs, &ancestorsArgs, &coefsArgs))
     {
@@ -138,8 +138,8 @@ static PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObj
         {
             if(ancestorsArgs && coefsArgs )
             {
-                vector< vector< unsigned int > > ancestors = parseVectorOfVector<unsigned int>( ancestorsArgs );
-                vector< vector< double       > > coefs     = parseVectorOfVector<double>(coefsArgs);
+                const auto& ancestors = parseVectorOfVector<sofa::defaulttype::index_type>( ancestorsArgs );
+                const auto& coefs     = parseVectorOfVector<double>(coefsArgs);
                 obj->addTriangles(triangles, ancestors, coefs );
             }
             else
@@ -156,13 +156,13 @@ static PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, Py
 {
     TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
 
-    PyObject* triangleIndicesArg      = NULL;
-    PyObject* removeIsolatedEdgesArg  = NULL;
-    PyObject* removeIsolatedPointsArg = NULL;
+    PyObject* triangleIndicesArg      = nullptr;
+    PyObject* removeIsolatedEdgesArg  = nullptr;
+    PyObject* removeIsolatedPointsArg = nullptr;
 
     if (PyArg_UnpackTuple(args, "removeTriangles", 1, 3, &triangleIndicesArg, &removeIsolatedEdgesArg, &removeIsolatedPointsArg))
     {
-        vector< unsigned int > triangleIndices;
+        vector< sofa::defaulttype::index_type > triangleIndices;
         bool removeIsolatedEdges=true;
         bool removeIsolatedPoints=true;
 
@@ -199,11 +199,11 @@ static PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *self,
 {
     TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
 
-    PyObject* trianglesArg            = NULL;
-    PyObject* triangleIndicesArg      = NULL;
-    PyObject* ancestorsArg            = NULL;
-    PyObject* coefsArg                = NULL;
-    PyObject* triangles2RemoveArg      = NULL;
+    PyObject* trianglesArg            = nullptr;
+    PyObject* triangleIndicesArg      = nullptr;
+    PyObject* ancestorsArg            = nullptr;
+    PyObject* coefsArg                = nullptr;
+    PyObject* triangles2RemoveArg      = nullptr;
 
     if (PyArg_UnpackTuple(args, "removeTriangles", 5, 5, &trianglesArg,
                                                          &triangleIndicesArg,
@@ -211,11 +211,11 @@ static PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *self,
                                                          &coefsArg,
                                                          &triangles2RemoveArg) )
     {
-        vector< Topology::Triangle > triangles = parseTriangleList( trianglesArg );
-        vector< unsigned int       > triangleIndices    = parseVector<unsigned int>( triangleIndicesArg );
-        vector< vector< unsigned int > > ancestors = parseVectorOfVector<unsigned int>( ancestorsArg );
-        vector< vector< double       > > coefs     = parseVectorOfVector<double>(coefsArg);
-        vector< unsigned int > triangles2remove = parseVector<unsigned int>(triangles2RemoveArg);
+        auto triangles = parseTriangleList( trianglesArg );
+        auto triangleIndices    = parseVector<Topology::TriangleID>( triangleIndicesArg );
+        auto ancestors = parseVectorOfVector<sofa::defaulttype::index_type>( ancestorsArg );
+        auto coefs     = parseVectorOfVector<double>(coefsArg);
+        auto triangles2remove = parseVector<sofa::defaulttype::index_type>(triangles2RemoveArg);
 
         obj->addRemoveTriangles(triangles.size(),triangles,triangleIndices,ancestors,coefs, triangles2remove );
 

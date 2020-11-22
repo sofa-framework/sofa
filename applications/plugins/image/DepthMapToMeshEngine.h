@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,9 +59,9 @@ public:
 
     typedef SReal Real;
 
-    Data< Real > depthFactor;
-    Data< Real > minThreshold;
-    Data< Real > diffThreshold;
+    Data< Real > depthFactor; ///< Intensity to depth factor
+    Data< Real > minThreshold; ///< minimal depth for point creation
+    Data< Real > diffThreshold; ///< maximal depth variation for triangle creation
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
@@ -81,23 +81,20 @@ public:
     typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
-    Data< SeqPositions > position;
+    Data< SeqPositions > position; ///< output positions
 
     typedef helper::fixed_array<Real,2> TexCoord;
     typedef helper::vector<TexCoord> SeqTexCoords;
     typedef helper::ReadAccessor<Data< SeqTexCoords > > raTexCoords;
     typedef helper::WriteOnlyAccessor<Data< SeqTexCoords > > waTexCoords;
-    Data< SeqTexCoords > texCoord;
-    Data< TexCoord > texOffset;
+    Data< SeqTexCoords > texCoord; ///< output texture coordinates
+    Data< TexCoord > texOffset; ///< texture offsets (in [0,1])
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
-    Data< SeqTriangles > triangles;
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const DepthMapToMeshEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
+    Data< SeqTriangles > triangles; ///< output triangles
 
     DepthMapToMeshEngine()    :   Inherited()
         , depthFactor(initData(&depthFactor,(Real)(1.0),"depthFactor","Intensity to depth factor"))
@@ -120,14 +117,14 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual ~DepthMapToMeshEngine()
+    ~DepthMapToMeshEngine() override
     {
 #ifndef SOFA_NO_OPENGL
         if(texture) delete texture;
 #endif /* SOFA_NO_OPENGL */
     }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -137,7 +134,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
@@ -147,15 +144,12 @@ protected:
     static const unsigned texture_res=256;
 #endif /* SOFA_NO_OPENGL */
 
-    virtual void update() override
+    void doUpdate() override
     {
         raImage in(this->image);
         raTransform inT(this->transform);
         raTexture inTex(this->texImage);
         const unsigned int dimx=in->getDimensions()[0],dimy=in->getDimensions()[1];
-
-
-        cleanDirty();
 
         waPositions pos(this->position);
         waTexCoords tc(this->texCoord);
@@ -236,10 +230,8 @@ protected:
         }
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams) override
+    void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
-
         // need a valid opengl context to initialize an opengl texture, a context is not always bound during the init phase so we init the texture here
         if(!texture)
         {
@@ -253,26 +245,24 @@ protected:
 
         if (!vparams->displayFlags().getShowVisualModels()) return;
 
+        vparams->drawTool()->saveLastState();
+
         raPositions pos(this->position);
         raTexCoords tc(this->texCoord);
         raTriangles tri(this->triangles);
-        raImage in(this->image);
         raTexture inTex(this->texImage);
 
-        glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
+        vparams->drawTool()->setMaterial({0.5,0.5,0.5,0.});
 
-        float color[]= {0.5,0.5,0.5,0.}, specular[]= {0.,0.,0.,0.};
-        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-        glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
-        glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
-        glColor4fv(color);
+        vparams->drawTool()->enableLighting();
 
-        glEnable( GL_LIGHTING);
-
-        if(!inTex->isEmpty()) { glEnable( GL_TEXTURE_2D ); texture->bind();}
+        if(!inTex->isEmpty()) {
+            glEnable( GL_TEXTURE_2D );
+            texture->bind();
+        }
 
         glBegin(GL_TRIANGLES);
-        for (unsigned int i=0; i<tri.size(); ++i)
+        for (std::size_t i=0; i<tri.size(); ++i)
         {
             const defaulttype::Vec<3,Real>& a = pos[ tri[i][0] ];
             const defaulttype::Vec<3,Real>& b = pos[ tri[i][1] ];
@@ -284,12 +274,13 @@ protected:
             glTexCoord2d(tc[tri[i][1]][0],tc[tri[i][1]][1]); glVertex3d(b[0],b[1],b[2]);
             glTexCoord2d(tc[tri[i][2]][0],tc[tri[i][2]][1]); glVertex3d(c[0],c[1],c[2]);
         }
-        glEnd();
 
-        if(!inTex->isEmpty()) { texture->unbind(); 	glDisable( GL_TEXTURE_2D ); }
+        if(!inTex->isEmpty()) {
+            texture->unbind();
+            glDisable( GL_TEXTURE_2D );
+        }
 
-        glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->restoreLastState();
     }
 };
 

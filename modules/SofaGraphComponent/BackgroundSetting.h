@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,40 +19,4 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_BACKGROUND_H
-#define SOFA_COMPONENT_CONFIGURATIONSETTING_BACKGROUND_H
-#include "config.h"
-
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/RGBAColor.h>
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace configurationsetting
-{
-
-///Class for the configuration of background settings.
-class SOFA_GRAPH_COMPONENT_API BackgroundSetting: public core::objectmodel::ConfigurationSetting
-{
-public:
-    SOFA_CLASS(BackgroundSetting,core::objectmodel::ConfigurationSetting);  ///< Sofa macro to define typedef.
-protected:
-    BackgroundSetting();    ///< Default constructor
-public:
-    Data<defaulttype::RGBAColor> color;   ///< Color of the Background of the Viewer.
-    sofa::core::objectmodel::DataFileName image;                 ///< Image to be used as background of the viewer.
-
-};
-
-}
-
-}
-
-}
-#endif
+#error "This file has been moved to a new location for release 19.06. You need to update your code by replacing #include<SofaGrapComponent/BackgroundSetting.h> by #include<SofaBaseVisual/BackgroundSetting.h"

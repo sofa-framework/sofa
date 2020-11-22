@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,12 +53,11 @@ void RepulsiveSpringForceField<DataTypes>::addForce(const sofa::core::Mechanical
     f2.resize(x2.size());
     for (unsigned int i=0; i<springs.size(); i++)
     {
-#if 1
         int a = springs[i].m1;
         int b = springs[i].m2;
         Coord u = x2[b]-x1[a];
         Real d = u.norm();
-        if (d < springs[i].initpos)
+        if (d!=0 && d < springs[i].initpos)
         {
             Real inverseLength = 1.0f/d;
             u *= inverseLength;
@@ -82,7 +81,6 @@ void RepulsiveSpringForceField<DataTypes>::addForce(const sofa::core::Mechanical
             }
         }
         else
-#endif
         {
             Mat& m = this->dfdx[i];
             for( int j=0; j<N; ++j )
@@ -98,7 +96,7 @@ void RepulsiveSpringForceField<DataTypes>::addForce(const sofa::core::Mechanical
 template <class DataTypes>
 SReal RepulsiveSpringForceField<DataTypes>::getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const
 {
-    serr<<"RepulsiveSpringForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
+    msg_error() << "RepulsiveSpringForceField::getPotentialEnergy-not-implemented !!!";
     return 0;
 }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,11 +55,11 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > _youngModulus;
-    Data<helper::vector<Real> > _viscosity;
+    Data<helper::vector<Real> > _youngModulus; ///< Young Modulus
+    Data<helper::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Real youngModulus=0,viscosity=0;
         for(unsigned int i=0; i<this->material.size(); i++)

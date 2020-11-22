@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,17 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_SPHEREMODEL_H
-#define SOFA_COMPONENT_COLLISION_SPHEREMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/accessor.h>
-//#include <SofaMeshCollision/RigidContactMapper.h>
 
 namespace sofa
 {
@@ -40,24 +36,25 @@ namespace component
 namespace collision
 {
 
-
 template<class DataTypes>
-class TSphereModel;
+class SphereCollisionModel;
 
 //template <class TDataTypes>
 //class TSphere;
 
 template<class TDataTypes>
-class TSphere : public core::TCollisionElementIterator< TSphereModel<TDataTypes> >
+class TSphere : public core::TCollisionElementIterator< SphereCollisionModel<TDataTypes> >
 {
 public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real   Real;
     typedef typename TDataTypes::CPos Coord;
 
-    typedef TSphereModel<DataTypes> ParentModel;
+    typedef SphereCollisionModel<DataTypes> ParentModel;
 
-    TSphere(ParentModel* model, int index);
+    using index_type = sofa::defaulttype::index_type;
+
+    TSphere(ParentModel* model, index_type index);
 
     explicit TSphere(const core::CollisionElementIterator& i);
 
@@ -81,28 +78,20 @@ public:
     {
         return surfacePoint;
     }
-
 };
 
 // Specializations
-#ifndef SOFA_FLOAT
 template <> SOFA_BASE_COLLISION_API
-sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointByNormal( const sofa::defaulttype::Vector3& /*contactNormal*/ );
+sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const sofa::defaulttype::Vector3& /*contactNormal*/ );
 template <> SOFA_BASE_COLLISION_API
-sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointWithSurfacePoint( const sofa::defaulttype::Vector3& );
-#endif
-#ifndef SOFA_DOUBLE
-template <> SOFA_BASE_COLLISION_API
-sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointByNormal( const sofa::defaulttype::Vector3& /*contactNormal*/ );
-template <> SOFA_BASE_COLLISION_API
-sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointWithSurfacePoint( const sofa::defaulttype::Vector3& );
-#endif
+sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const sofa::defaulttype::Vector3& );
+
 
 template< class TDataTypes>
-class TSphereModel : public core::CollisionModel
+class SphereCollisionModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TSphereModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(SphereCollisionModel, TDataTypes), core::CollisionModel);
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -114,21 +103,21 @@ public:
     typedef TSphere<DataTypes> Element;
     friend class TSphere<DataTypes>;
 protected:
-    TSphereModel();
+    SphereCollisionModel();
 
-    TSphereModel(core::behavior::MechanicalState<TDataTypes>* _mstate );
+    SphereCollisionModel(core::behavior::MechanicalState<TDataTypes>* _mstate );
 public:
-    virtual void init() override;
+    void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size) override;
+    void resize(std::size_t size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0) override;
+    void computeBoundingTree(int maxDepth=0) override;
 
-    virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
+    void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*,int index) override;
+    void draw(const core::visual::VisualParams*, index_type index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -137,17 +126,21 @@ public:
 
     const VecReal& getR() const { return this->radius.getValue(); }
 
-    Real getRadius(const int i) const;
+    Real getRadius(const index_type i) const;
 
-    const Coord & velocity(int index)const;
+    const Coord & velocity(index_type index)const;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == NULL && context->getMechanicalState() != NULL)
+        if (dynamic_cast<core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == nullptr && context->getMechanicalState() != nullptr)
+        {
+            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
+                          "' found in the context node.");
             return false;
+        }
 
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -156,7 +149,7 @@ public:
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         typename T::SPtr obj;
-        core::behavior::MechanicalState<TDataTypes>* _mstate = NULL;
+        core::behavior::MechanicalState<TDataTypes>* _mstate = nullptr;
 
         if( context)
         {
@@ -174,33 +167,21 @@ public:
         return obj;
     }
 
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const TSphereModel<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
     //TODO(dmarchal) guideline de sofa.
-    Data< VecReal > radius;
-    Data< SReal > defaultRadius;
-    Data< bool > d_showImpostors;
+    Data< VecReal > radius; ///< Radius of each sphere
+    Data< SReal > defaultRadius; ///< Default Radius
+    Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres
 
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
+    void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
+    SingleLink<SphereCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 };
 
-
-
 template<class DataTypes>
-inline TSphere<DataTypes>::TSphere(ParentModel* model, int index)
+inline TSphere<DataTypes>::TSphere(ParentModel* model, index_type index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 
@@ -223,7 +204,7 @@ template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->read(core::ConstVecCoordId::freePosition())).getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename TSphereModel<DataTypes>::Coord& TSphereModel<DataTypes>::velocity(int index) const { return DataTypes::getDPos(mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]);}
+inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(index_type index) const { return DataTypes::getDPos(mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]);}
 
 template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::v() const { return DataTypes::getDPos(this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]); }
@@ -235,23 +216,18 @@ template<class DataTypes>
 inline bool TSphere<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
 
-typedef TSphereModel<sofa::defaulttype::Vec3Types> SphereModel;
-typedef TSphere<sofa::defaulttype::Vec3Types> Sphere;
+template <class TDataTypes> using TSphereModel [[deprecated("The TSphereModel is now deprecated, please use SphereCollisionModel instead. Compatibility stops at v20.06")]] = SphereCollisionModel<TDataTypes>;
+using SphereModel [[deprecated("The SphereModel is now deprecated, please use SphereCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = SphereCollisionModel<sofa::defaulttype::Vec3Types>;
+using Sphere = TSphere<sofa::defaulttype::Vec3Types>;
 
-typedef TSphereModel<sofa::defaulttype::Rigid3Types> RigidSphereModel;
+typedef SphereCollisionModel<sofa::defaulttype::Rigid3Types> RigidSphereModel;
 typedef TSphere<sofa::defaulttype::Rigid3Types> RigidSphere;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_SPHEREMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_CPP)
+extern template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3Types>;
+extern template class SOFA_BASE_COLLISION_API SphereCollisionModel<defaulttype::Vec3Types>;
+extern template class SOFA_BASE_COLLISION_API SphereCollisionModel<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace collision

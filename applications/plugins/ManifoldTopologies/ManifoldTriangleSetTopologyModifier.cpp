@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,13 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ManifoldTriangleSetTopologyModifier.h"
 
-#include <sofa/core/visual/VisualParams.h>
-#include "ManifoldTriangleSetTopologyContainer.h"
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <algorithm>
-#include <iostream>
+#include <ManifoldTopologies/ManifoldTriangleSetTopologyModifier.h>
+#include <ManifoldTopologies/ManifoldTriangleSetTopologyContainer.h> 
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -36,7 +32,6 @@ namespace component
 
 namespace topology
 {
-SOFA_DECL_CLASS(ManifoldTriangleSetTopologyModifier)
 int ManifoldTriangleSetTopologyModifierClass = core::RegisterObject("Triangle set topology manifold modifier")
         .add< ManifoldTriangleSetTopologyModifier >()
         ;
@@ -44,6 +39,14 @@ int ManifoldTriangleSetTopologyModifierClass = core::RegisterObject("Triangle se
 using namespace std;
 using namespace sofa::defaulttype;
 
+
+ManifoldTriangleSetTopologyModifier::ManifoldTriangleSetTopologyModifier()
+    : TriangleSetTopologyModifier()
+    , m_triSwap(initData(&m_triSwap, "swap 2 triangles by their index", "Debug : Test swap function (only while animate)."))
+    , m_swapMesh(initData(&m_swapMesh, false, "Mesh Optimization", "If true, optimize the mesh only by swapping edges"))
+{
+
+}
 
 void ManifoldTriangleSetTopologyModifier::init()
 {
@@ -57,7 +60,7 @@ void ManifoldTriangleSetTopologyModifier::reinit()
 }
 
 
-bool ManifoldTriangleSetTopologyModifier::removeTrianglesPreconditions(const sofa::helper::vector< unsigned int >& items)
+bool ManifoldTriangleSetTopologyModifier::removeTrianglesPreconditions(const sofa::helper::vector< index_type >& items)
 {
     createRemovingTrianglesFutureModifications (items); // Create the map of modification for triangles
     createRemovingEdgesFutureModifications (items); // Create the map of modification for the edges
@@ -67,10 +70,10 @@ bool ManifoldTriangleSetTopologyModifier::removeTrianglesPreconditions(const sof
 
 
 
-void ManifoldTriangleSetTopologyModifier::createRemovingTrianglesFutureModifications(const sofa::helper::vector< unsigned int >& items)
+void ManifoldTriangleSetTopologyModifier::createRemovingTrianglesFutureModifications(const sofa::helper::vector< index_type >& items)
 {
     Triangle vertexTriangle;
-    sofa::helper::vector<unsigned int> trianglesAroundVertex;
+    sofa::helper::vector<index_type> trianglesAroundVertex;
 
     // Loop if there are many triangles to remove in the vector items
     for (unsigned int triangleIndex = 0; triangleIndex < items.size(); ++triangleIndex)
@@ -90,7 +93,7 @@ void ManifoldTriangleSetTopologyModifier::createRemovingTrianglesFutureModificat
             //values: vector equivalent to trianglesAroundVertex with 0 for triangles to keep and 1 for triangle to remove
             if (it_modif == m_modifications.end())
             {
-                m_modifications[vertexTriangle[vertexIndex]]=sofa::helper::vector<unsigned int>();
+                m_modifications[vertexTriangle[vertexIndex]]=sofa::helper::vector<index_type>();
 
                 for (unsigned int i = 0; i < trianglesAroundVertex.size(); ++i)
                 {
@@ -119,7 +122,7 @@ void ManifoldTriangleSetTopologyModifier::createRemovingTrianglesFutureModificat
 }
 
 
-void ManifoldTriangleSetTopologyModifier::createRemovingEdgesFutureModifications (const sofa::helper::vector <unsigned int> items)
+void ManifoldTriangleSetTopologyModifier::createRemovingEdgesFutureModifications (const sofa::helper::vector <index_type> items)
 {
     EdgesInTriangle EdgesInTriangleArray;
     bool test = true;
@@ -153,7 +156,7 @@ void ManifoldTriangleSetTopologyModifier::createRemovingEdgesFutureModifications
 
 bool ManifoldTriangleSetTopologyModifier::testRemovingModifications()
 {
-    std::map< unsigned int, sofa::helper::vector<unsigned int> >::iterator it;
+    std::map< index_type, sofa::helper::vector<index_type> >::iterator it;
     const sofa::helper::vector <PointID>& border = m_container->getPointsOnBorder();
 
     unsigned int connexite;
@@ -199,9 +202,7 @@ bool ManifoldTriangleSetTopologyModifier::testRemovingModifications()
 
         if( connexite > 2)
         {
-            std::cout << "Error: ManifoldTriangleSetTopologyModifier::testRemoveModifications: You could not remove this/these triangle(s)";
-            std::cout << " around the vertex: " << (*it).first << std::endl;
-
+            msg_error() << "TestRemoveModifications: You could not remove this/these triangle(s) around the vertex: " << (*it).first;
             test=false;
         }
     }
@@ -221,7 +222,7 @@ bool ManifoldTriangleSetTopologyModifier::testRemovingModifications()
 
 
 
-void ManifoldTriangleSetTopologyModifier::removeTrianglesPostProcessing(const sofa::helper::vector< unsigned int >& edgeToBeRemoved, const sofa::helper::vector< unsigned int >& vertexToBeRemoved )
+void ManifoldTriangleSetTopologyModifier::removeTrianglesPostProcessing(const sofa::helper::vector< index_type >& edgeToBeRemoved, const sofa::helper::vector< index_type >& vertexToBeRemoved )
 {
     internalRemovingPostProcessingEdges(); // Realy apply post processings to edges of the topology.
     internalRemovingPostProcessingTriangles(); // Realy apply post processings to the triangles of the topology.
@@ -238,8 +239,8 @@ void ManifoldTriangleSetTopologyModifier::removeTrianglesPostProcessing(const so
 
 void ManifoldTriangleSetTopologyModifier::internalRemovingPostProcessingTriangles()
 {
-    std::map< unsigned int, sofa::helper::vector<unsigned int> >::iterator it;
-    sofa::helper::vector<unsigned int> vertexshell;
+    std::map< index_type, sofa::helper::vector<index_type> >::iterator it;
+    sofa::helper::vector<index_type> vertexshell;
 
     for(it=m_modifications.begin(); it !=m_modifications.end(); ++it)
     {
@@ -272,7 +273,7 @@ void ManifoldTriangleSetTopologyModifier::internalRemovingPostProcessingTriangle
 void ManifoldTriangleSetTopologyModifier::internalRemovingPostProcessingEdges()
 {
 
-    sofa::helper::vector<unsigned int> vertexshell;
+    sofa::helper::vector<index_type> vertexshell;
     bool test = false;
 
     for(it_modif=m_modifications.begin(); it_modif !=m_modifications.end(); ++it_modif)
@@ -322,8 +323,8 @@ void ManifoldTriangleSetTopologyModifier::reorderEdgeForRemoving()
 
 
 
-void ManifoldTriangleSetTopologyModifier::updateRemovingModifications (const sofa::helper::vector< unsigned int >& edgeToBeRemoved,
-        const sofa::helper::vector< unsigned int >& vertexToBeRemoved)
+void ManifoldTriangleSetTopologyModifier::updateRemovingModifications (const sofa::helper::vector< index_type >& edgeToBeRemoved,
+        const sofa::helper::vector< index_type >& vertexToBeRemoved)
 {
     //???
     for (unsigned int i = 0; i <vertexToBeRemoved.size(); ++i)
@@ -352,33 +353,27 @@ void ManifoldTriangleSetTopologyModifier::updateRemovingModifications (const sof
 
 void ManifoldTriangleSetTopologyModifier::Debug() //To be removed when release is sure
 {
-    //#ifndef NDEBUG
-
-    std::cout << "ManifoldTriangleSetTopologyModifier::Debug()" << std::endl;
+    msg_info() << "ManifoldTriangleSetTopologyModifier::Debug()";
 
     for (int i = 0; i < m_container->getNbPoints(); ++i)
     {
-        std::cout << "vertex: " << i << " => Triangles:  " << m_container->getTrianglesAroundVertexForModification(i) << std::endl;
+        msg_info() << "vertex: " << i << " => Triangles:  " << m_container->getTrianglesAroundVertexForModification(i);
     }
 
     for (unsigned int i = 0; i < m_container->getNumberOfEdges(); ++i)
     {
-        std::cout << "edge: " << i << " => Triangles:  " << m_container->getTrianglesAroundEdgeForModification(i) << std::endl;
+        msg_info() << "edge: " << i << " => Triangles:  " << m_container->getTrianglesAroundEdgeForModification(i);
     }
 
     for (int i = 0; i < m_container->getNbPoints(); ++i)
     {
-        std::cout << "vertex: " << i << " => Edges:  " << m_container->getEdgesAroundVertexForModification(i) << std::endl;
+        msg_info() << "vertex: " << i << " => Edges:  " << m_container->getEdgesAroundVertexForModification(i);
     }
 
     for (unsigned int i = 0; i < m_container->getNumberOfEdges(); ++i)
     {
-        std::cout << "edge: " << i << " => Vertex:  " << m_container->getEdgeArray()[i] << std::endl;
+        msg_info() << "edge: " << i << " => Vertex:  " << m_container->getEdgeArray()[i];
     }
-
-
-
-    //#endif
 }
 
 
@@ -386,21 +381,20 @@ void ManifoldTriangleSetTopologyModifier::Debug() //To be removed when release i
 bool ManifoldTriangleSetTopologyModifier::addTrianglesPreconditions( const sofa::helper::vector <Triangle> &triangles)
 {
 
-    std::map< unsigned int, sofa::helper::vector <Triangle> > extremes;
-    std::map< unsigned int, Triangle > trianglesList;
-    std::map< unsigned int, Triangle >::iterator it;
-    sofa::helper::vector <unsigned int> listDone;
+    std::map< index_type, sofa::helper::vector <Triangle> > extremes;
+    std::map< index_type, Triangle > trianglesList;
+    std::map< index_type, Triangle >::iterator it;
+    sofa::helper::vector <index_type> listDone;
 
     unsigned int position[3];
 
     bool allDone = true;
     bool oneDone = true;
-    std::cout << triangles [0] << std::endl;
 
     // Copy the triangles vector with this positions as key:
     for (unsigned int i = 0; i < triangles.size(); i++)
     {
-        trianglesList.insert ( pair <unsigned int, Triangle> (i, triangles[i]));
+        trianglesList.insert ( pair <index_type, Triangle> (i, triangles[i]));
     }
 
 
@@ -412,13 +406,10 @@ bool ManifoldTriangleSetTopologyModifier::addTrianglesPreconditions( const sofa:
         // horrible loop
         for ( it = trianglesList.begin(); it != trianglesList.end(); it++)
         {
-            //	    std::cout << "it triangle: " << (*it).first << std::endl;
-
             oneDone = true;
 
             for (unsigned int vertexIndex = 0; vertexIndex <3; vertexIndex++)
             {
-                //	      std::cout << "vertexIndex: " << vertexIndex << " real index: " <<(*it).second[vertexIndex] << std::endl;
                 it_add = m_Addmodifications.find( (*it).second[vertexIndex]);
 
                 //Fill map of extremes triangles and map m_addmodifications:
@@ -427,12 +418,11 @@ bool ManifoldTriangleSetTopologyModifier::addTrianglesPreconditions( const sofa:
                     extremes[ (*it).second[vertexIndex] ] = sofa::helper::vector <Triangle> ();
                     m_Addmodifications[ (*it).second[vertexIndex] ] = sofa::helper::vector <int> ();
 
-                    sofa::helper::vector <unsigned int> &trianglesAroundVertex = m_container->getTrianglesAroundVertexForModification((*it).second[vertexIndex]);
+                    sofa::helper::vector <index_type> &trianglesAroundVertex = m_container->getTrianglesAroundVertexForModification((*it).second[vertexIndex]);
 
                     extremes[(*it).second[vertexIndex]].push_back( m_container->getTriangleArray()[trianglesAroundVertex[0]] );
                     extremes[(*it).second[vertexIndex]].push_back( m_container->getTriangleArray()[trianglesAroundVertex[ trianglesAroundVertex.size()-1 ]] );
 
-                    //		std::cout << " extremes[(*it).second[vertexIndex]] " << extremes[(*it).second[vertexIndex]] << std::endl;
                     for (unsigned int i=0; i<trianglesAroundVertex.size(); i++)
                     {
                         m_Addmodifications[ (*it).second[vertexIndex] ].push_back(-1);
@@ -441,8 +431,7 @@ bool ManifoldTriangleSetTopologyModifier::addTrianglesPreconditions( const sofa:
 
                 int vertexInTriangle0 = m_container->getVertexIndexInTriangle(extremes[(*it).second[vertexIndex]][0], (*it).second[vertexIndex]);
                 int vertexInTriangle1 = m_container->getVertexIndexInTriangle(extremes[(*it).second[vertexIndex]][1], (*it).second[vertexIndex]);
-                //	      std::cout << " (*it).second[ (vertexIndex+1)%3 ] " << (*it).second[ (vertexIndex+1)%3 ] << " extremes[(*it).second[vertexIndex]][1][(vertexInTriangle0+2)%3] " << extremes[(*it).second[vertexIndex]][1][(vertexInTriangle1+2)%3] << std::endl;
-                //	      std::cout << " (*it).second[ (vertexIndex+2)%3 ] " << (*it).second[ (vertexIndex+2)%3 ] << " extremes[(*it).second[vertexIndex]][0][(vertexInTriangle1+1)%3] " << extremes[(*it).second[vertexIndex]][0][(vertexInTriangle0+1)%3] << std::endl;
+
                 //Tests where the triangle could be in the shell: i.e to which extreme triangle it is adjacent ATTENTION extrems could not be similar to shell
                 if ( (*it).second[ (vertexIndex+1)%3 ] == extremes[(*it).second[vertexIndex]][1][(vertexInTriangle1+2)%3] )
                 {
@@ -457,8 +446,7 @@ bool ManifoldTriangleSetTopologyModifier::addTrianglesPreconditions( const sofa:
                 else
                 {
                     oneDone = false;
-                    std::cout << " Error: ManifoldTriangleSetTopologyModifier::addPrecondition adding this triangle: ";
-                    std::cout << (*it).second << " doesn't keep the topology manifold." << std::endl;
+                    msg_error() << "AddPrecondition adding this triangle: " << (*it).second << " doesn't keep the topology manifold.";
                 }
             }
 
@@ -501,15 +489,13 @@ bool ManifoldTriangleSetTopologyModifier::addTrianglesPreconditions( const sofa:
     //debug party:
     //	for (it_add = m_Addmodifications.begin(); it_add!=m_Addmodifications.end(); it_add++)
     //	{
-    //	  std::cout << "vertex: " << (*it_add).first << " => " << (*it_add).second << std::endl;
+    //	  msg_info() << "vertex: " << (*it_add).first << " => " << (*it_add).second;
     //	}
 
 
 
     if (trianglesList.size() != 0 )
     {
-        //	  std::cout << " passe false" << std::endl;
-
         m_Addmodifications.clear();
         return false;
     }
@@ -517,29 +503,19 @@ bool ManifoldTriangleSetTopologyModifier::addTrianglesPreconditions( const sofa:
     // For manifold classes all shells have to be present while adding triangles. As it is not obliged in upper class. It is done here.
     if(!m_container->hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
-#ifndef NDEBUG
-        std::cout << "Warning. [ManifoldTriangleSetTopologyModifier::addPrecondition] Triangle vertex shell array is empty." << std::endl;
-#endif
         m_container->createTrianglesAroundVertexArray();
     }
 
     if(!m_container->hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
     {
-#ifndef NDEBUG
-        std::cout << "Warning. [ManifoldTriangleSetTopologyModifier::addPrecondition] Triangle edge shell array is empty." << std::endl;
-#endif
         m_container->createTrianglesAroundEdgeArray();
     }
 
     if(!m_container->hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
-#ifndef NDEBUG
-        std::cout << "Warning. [ManifoldTriangleSetTopologyModifier::addPrecondition] Edge vertex shell array is empty." << std::endl;
-#endif
         m_container->createEdgesAroundVertexArray();
     }
 
-    //	std::cout << " passe true" << std::endl;
     return true;
 }
 
@@ -551,15 +527,15 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
     // for each vertex, reorder shells:
     for (it_add = m_Addmodifications.begin(); it_add != m_Addmodifications.end(); it_add++)
     {
-        //	  std::cout << " -------------------- " << std::endl;
-        //	  std::cout << "it vertex: " << (*it_add).first << std::endl;
-        sofa::helper::vector <unsigned int> &trianglesAroundVertex = m_container->getTrianglesAroundVertexForModification((*it_add).first);
-        sofa::helper::vector <unsigned int> &edgesAroundVertex = m_container->getEdgesAroundVertexForModification((*it_add).first);
+        //	  msg_info() << " -------------------- ";
+        //	  msg_info() << "it vertex: " << (*it_add).first;
+        sofa::helper::vector <index_type> &trianglesAroundVertex = m_container->getTrianglesAroundVertexForModification((*it_add).first);
+        sofa::helper::vector <index_type> &edgesAroundVertex = m_container->getEdgesAroundVertexForModification((*it_add).first);
 
-        //	  std::cout << "trianglesAroundVertex: " <<  trianglesAroundVertex << std::endl;
-        //	  std::cout << "edgesAroundVertex: " <<  edgesAroundVertex << std::endl;
-        sofa::helper::vector <unsigned int> triShellTmp;
-        sofa::helper::vector <unsigned int> edgeShellTmp;
+        //	  msg_info() << "trianglesAroundVertex: " <<  trianglesAroundVertex;
+        //	  msg_info() << "edgesAroundVertex: " <<  edgesAroundVertex;
+        sofa::helper::vector <index_type> triShellTmp;
+        sofa::helper::vector <index_type> edgeShellTmp;
 
         triShellTmp.resize(trianglesAroundVertex.size());
         edgeShellTmp.resize(trianglesAroundVertex.size());
@@ -571,7 +547,7 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
 
 
         if ( triShellTmp.size() != ((*it_add).second).size())
-            std::cout << " Error: ManifoldTriangleSetTopologyModifier::addPostProcessing: Size of shells differ. " << std::endl;
+            msg_error() << "AddPostProcessing: Size of shells differ. ";
 
         //reordering m_trianglesAroundVertex
         for (unsigned int i = 0; i <triShellTmp.size(); i++)
@@ -592,7 +568,7 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
             }
         }
 
-        //	  std::cout << "triShellTmp: " << triShellTmp << std::endl;
+        //	  msg_info() << "triShellTmp: " << triShellTmp;
         trianglesAroundVertex = triShellTmp;
 
         cpt =0;
@@ -610,16 +586,16 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
             else
             {
                 const Triangle &tri = triangles[(*it_add).second[i]];
-                //	      std::cout << " Le tri: " << tri << std::endl;
+                //	      msg_info() << " Le tri: " << tri;
 
                 int vertexInTriangle = m_container->getVertexIndexInTriangle(tri, (*it_add).first);
-                //	      std::cout << " le vertex dedans: " << vertexInTriangle << std::endl;
+                //	      msg_info() << " le vertex dedans: " << vertexInTriangle;
 
 
                 if (before)
                 {
-                    //		std::cout << "passe before: "<< std::endl;
-                    //		std::cout << "on cherche: " << tri[ vertexInTriangle ] << " " << tri[ (vertexInTriangle+1)%3 ]<< std::endl;
+                    //		msg_info() << "passe before: ";
+                    //		msg_info() << "on cherche: " << tri[ vertexInTriangle ] << " " << tri[ (vertexInTriangle+1)%3 ];
 
                     if ( tri[ vertexInTriangle ] < tri[ (vertexInTriangle+1)%3 ] ) // order vertex in edge
                         edgeShellTmp[i] = m_container->getEdgeIndex(tri[ vertexInTriangle ], tri[ (vertexInTriangle+1)%3 ]);
@@ -627,42 +603,42 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
                         edgeShellTmp[i] = m_container->getEdgeIndex(tri[ (vertexInTriangle+1)%3 ], tri[ vertexInTriangle ]);
 
                     cpt++;
-                    //		std::cout << "edgeShellTmp[i]: "<< edgeShellTmp[i] << std::endl;
+                    //		msg_info() << "edgeShellTmp[i]: "<< edgeShellTmp[i];
                     //m_trianglesAroundEdge:
-                    sofa::helper::vector <unsigned int> &trianglesAroundEdge = m_container->getTrianglesAroundEdgeForModification(edgeShellTmp[i]);
-                    unsigned int tmp = trianglesAroundEdge[0];
+                    auto &trianglesAroundEdge = m_container->getTrianglesAroundEdgeForModification(edgeShellTmp[i]);
+                    index_type tmp = trianglesAroundEdge[0];
                     trianglesAroundEdge[0] = trianglesAroundEdge[1];
                     trianglesAroundEdge[1] = tmp;
                 }
                 else
                 {
-                    //		std::cout << "passe after: "<< std::endl;
-                    //		std::cout << "on cherche: " << tri[ vertexInTriangle ] << " " << tri[ (vertexInTriangle+1)%3 ]<< std::endl;
+                    //		msg_info() << "passe after: ";
+                    //		msg_info() << "on cherche: " << tri[ vertexInTriangle ] << " " << tri[ (vertexInTriangle+1)%3 ];
                     if ( tri[ vertexInTriangle ] < tri[ (vertexInTriangle+1)%3 ] )
                         edgeShellTmp[i] = m_container->getEdgeIndex(tri[ vertexInTriangle ], tri[ (vertexInTriangle+1)%3 ]);
                     else
                         edgeShellTmp[i] = m_container->getEdgeIndex(tri[ (vertexInTriangle+1)%3 ], tri[ vertexInTriangle ]);
-                    //		std::cout << "edgeShellTmp[i]: "<< edgeShellTmp[i] << std::endl;
+                    //		msg_info() << "edgeShellTmp[i]: "<< edgeShellTmp[i];
                     // bord2=i;
                     bord++;
 
                 }
             }
         }
-        //	  std::cout << "edgeShellTmp: " << edgeShellTmp << std::endl;
+        //	  msg_info() << "edgeShellTmp: " << edgeShellTmp;
 
         if ( ((*it_add).second).size() != edgesAroundVertex.size()) // we are on the border, one edge is missing
         {
-            //	    std::cout << "passe bord: "<< std::endl;
-            //	    std::cout << "bord: " << bord << std::endl;
-            //	    std::cout << "bord2: " << bord2 << std::endl;
-            sofa::helper::vector <unsigned int>::iterator it;
+            //	    msg_info() << "passe bord: ";
+            //	    msg_info() << "bord: " << bord;
+            //	    msg_info() << "bord2: " << bord2;
+            sofa::helper::vector <index_type>::iterator it;
             it = edgeShellTmp.begin();
             //	    edgeShellTmp.insert (it+bord2+1, edgesAroundVertex[bord]);
             edgeShellTmp.push_back (edgesAroundVertex[bord]);
         }
 
-        //	  std::cout << "edgeShellTmp again: " << edgeShellTmp << std::endl;
+        //	  msg_info() << "edgeShellTmp again: " << edgeShellTmp;
         edgesAroundVertex = edgeShellTmp;
 
     }
@@ -675,15 +651,15 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
 }
 
 
-void ManifoldTriangleSetTopologyModifier::addRemoveTriangles (const unsigned int nTri2Add,
+void ManifoldTriangleSetTopologyModifier::addRemoveTriangles (const size_t nTri2Add,
         const sofa::helper::vector< Triangle >& triangles2Add,
-        const sofa::helper::vector< unsigned int >& trianglesIndex2Add,
-        const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+        const sofa::helper::vector< index_type >& trianglesIndex2Add,
+        const sofa::helper::vector< sofa::helper::vector< index_type > > & ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
-        sofa::helper::vector< unsigned int >& trianglesIndex2remove)
+        sofa::helper::vector< index_type >& trianglesIndex2remove)
 {
     // I - Create ROI to remesh: step 1/2
-    sofa::helper::vector <unsigned int> vertexROI2Remesh;
+    sofa::helper::vector <index_type> vertexROI2Remesh;
 
     // Look for every vertices concerned by the modifications
     for (unsigned int i = 0; i <trianglesIndex2remove.size(); i++)
@@ -721,10 +697,10 @@ void ManifoldTriangleSetTopologyModifier::addRemoveTriangles (const unsigned int
 
     // IV - Create ROI to remesh: step 2/2
 
-    sofa::helper::vector <unsigned int> trianglesFinalList;
+    sofa::helper::vector <index_type> trianglesFinalList;
     trianglesFinalList = trianglesIndex2Add;
 
-    std::sort( trianglesIndex2remove.begin(), trianglesIndex2remove.end(), std::greater<unsigned int>() );
+    std::sort( trianglesIndex2remove.begin(), trianglesIndex2remove.end(), std::greater<index_type>() );
 
     // Update the list of triangles (removing triangles change the index order)
     for (unsigned int i = 0; i<trianglesIndex2remove.size(); i++)
@@ -748,23 +724,21 @@ void ManifoldTriangleSetTopologyModifier::addRemoveTriangles (const unsigned int
     bool topo = m_container->checkTopology();
     if (!topo) //IN DEVELOPMENT (probably only in NDEBUG
     {
-        std::cout <<"WARNING. [ManifoldTriangleSetTopologyModifier::addRemoveTriangles] The topology wasn't manifold after reordering the ROI. Reordering the whole triangulation." << std::endl;
+        msg_warning() << "AddRemoveTriangles: The topology wasn't manifold after reordering the ROI. Reordering the whole triangulation.";
 
-        sofa::helper::vector <unsigned int> allmesh;
+        sofa::helper::vector <index_type> allmesh;
         for (int i = 0; i <m_container->getNbPoints(); i++)
             allmesh.push_back (i);
 
         reorderingTopologyOnROI (allmesh);
     }
 
-#ifndef NDEBUG
-    if(!m_container->checkTopology())
-        sout << "Error. [ManifoldTriangleSetTopologyModifier::addRemoveTriangles] The topology is not any more Manifold." << endl;
-#endif
+    if (!m_container->checkTopology())
+        msg_error() << "AddRemoveTriangles: The topology is not any more Manifold.";
 }
 
 
-void ManifoldTriangleSetTopologyModifier::reorderingEdge(const unsigned int edgeIndex)
+void ManifoldTriangleSetTopologyModifier::reorderingEdge(const index_type edgeIndex)
 {
     if(m_container->hasEdges() && m_container->hasTrianglesAroundEdge())
     {
@@ -772,16 +746,14 @@ void ManifoldTriangleSetTopologyModifier::reorderingEdge(const unsigned int edge
         helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
 
 //        Edge the_edge = m_edge[edgeIndex];
-        unsigned int triangleIndex, edgeIndexInTriangle;
+        index_type triangleIndex, edgeIndexInTriangle;
         EdgesInTriangle EdgesInTriangleArray;
         Triangle TriangleVertexArray;
 
         if (m_container->m_trianglesAroundEdge[edgeIndex].empty())
         {
-#ifndef NDEBUG
-            std::cout << "Warning. [ManifoldTriangleSetTopologyModifier::reorderingEdge]: shells required have not beeen created " << std::endl;
+            msg_error() << "ReorderingEdge: shells required have not beeen created.";
             return;
-#endif
         }
         triangleIndex = m_container->m_trianglesAroundEdge[edgeIndex][0];
         EdgesInTriangleArray = m_container->getEdgesInTriangle( triangleIndex);
@@ -794,42 +766,40 @@ void ManifoldTriangleSetTopologyModifier::reorderingEdge(const unsigned int edge
     }
     else
     {
-#ifndef NDEBUG
-        std::cout << "Warning. [ManifoldTriangleSetTopologyModifier::reorderingEdge]: shells required have not beeen created " << std::endl;
-#endif
+        msg_error() << "ReorderingEdge: shells required have not beeen created.";
     }
 
 }
 
 
 
-void ManifoldTriangleSetTopologyModifier::reorderingTrianglesAroundVertex (const unsigned int vertexIndex)
+void ManifoldTriangleSetTopologyModifier::reorderingTrianglesAroundVertex (const index_type vertexIndex)
 {
-    std::cout << "ManifoldTriangleSetTopologyModifier::reorderingTrianglesAroundVertex()" << std::endl;
+    msg_info() << "ManifoldTriangleSetTopologyModifier::reorderingTrianglesAroundVertex()";
     //To be added eventually
     (void)vertexIndex;
 }
 
 
-void ManifoldTriangleSetTopologyModifier::reorderingEdgesAroundVertex (const unsigned int vertexIndex)
+void ManifoldTriangleSetTopologyModifier::reorderingEdgesAroundVertex (const index_type vertexIndex)
 {
-    std::cout << "ManifoldTriangleSetTopologyModifier::reorderingEdgesAroundVertex()" << std::endl;
+    msg_info() << "ManifoldTriangleSetTopologyModifier::reorderingEdgesAroundVertex()";
     //To be added eventually
     (void)vertexIndex;
 }
 
 
-void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::helper::vector <unsigned int>& listVertex)
+void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::helper::vector <index_type>& listVertex)
 {
     //To use this function, all shells should have already been created.
 
     //Finding edges concerned
-    for (unsigned int vertexIndex = 0; vertexIndex < listVertex.size(); vertexIndex++)
+    for (index_type vertexIndex = 0; vertexIndex < listVertex.size(); vertexIndex++)
     {
         bool doublon = false;
 
         // Avoid doublon
-        for(unsigned int i = 0; i<vertexIndex; i++)
+        for(index_type i = 0; i<vertexIndex; i++)
         {
             if (listVertex[i] == listVertex[vertexIndex]) //means this new vertex has already been treated
             {
@@ -844,25 +814,22 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
         // Check if the vertex really exist
         if ( (int)listVertex[ vertexIndex ] >= m_container->getNbPoints())
         {
-#ifndef NDEBUG
-            std::cout << "Warning. [ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI]: vertex: "<< listVertex[ vertexIndex ] << " is out of bound" << std::endl;
-#endif
+            msg_warning() << "ReorderingTopologyOnROI: vertex: "<< listVertex[ vertexIndex ] << " is out of bound";
             continue;
         }
 
         // Start processing:
 
-        sofa::helper::vector <unsigned int>& edgesAroundVertex = m_container->getEdgesAroundVertexForModification( listVertex[vertexIndex] );
-        sofa::helper::vector <unsigned int>& trianglesAroundVertex = m_container->getTrianglesAroundVertexForModification( listVertex[vertexIndex] );
+        auto& edgesAroundVertex = m_container->getEdgesAroundVertexForModification( listVertex[vertexIndex] );
+        auto& trianglesAroundVertex = m_container->getTrianglesAroundVertexForModification( listVertex[vertexIndex] );
 
-        sofa::helper::vector <unsigned int>::iterator it;
-        sofa::helper::vector < sofa::helper::vector <unsigned int> > vertexTofind;
+        sofa::helper::vector < sofa::helper::vector <index_type> > vertexTofind;
 
-        sofa::helper::vector <unsigned int> goodEdgeShell;
-        sofa::helper::vector <unsigned int> goodTriangleShell;
+        sofa::helper::vector <index_type> goodEdgeShell;
+        sofa::helper::vector <index_type> goodTriangleShell;
 
-        unsigned int firstVertex =0;
-        unsigned int secondVertex =0;
+        index_type firstVertex =0;
+        index_type secondVertex =0;
         unsigned int cpt = 0;
 
         vertexTofind.resize (trianglesAroundVertex.size());
@@ -870,7 +837,7 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
 
 
         // Path to follow creation
-        for (unsigned int triangleIndex = 0; triangleIndex < trianglesAroundVertex.size(); triangleIndex++)
+        for (index_type triangleIndex = 0; triangleIndex < trianglesAroundVertex.size(); triangleIndex++)
         {
             Triangle vertexTriangle = m_triangle[ trianglesAroundVertex[triangleIndex] ];
 
@@ -892,9 +859,9 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
         cpt = 0;
 
         // Start following path
-        for (unsigned int triangleIndex = 1; triangleIndex < trianglesAroundVertex.size(); triangleIndex++)
+        for (index_type triangleIndex = 1; triangleIndex < trianglesAroundVertex.size(); triangleIndex++)
         {
-            for (unsigned int pathIndex = 1; pathIndex < trianglesAroundVertex.size(); pathIndex++)
+            for (index_type pathIndex = 1; pathIndex < trianglesAroundVertex.size(); pathIndex++)
             {
 
                 if (vertexTofind[pathIndex][0] == secondVertex)
@@ -926,13 +893,11 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
         // Reverse path following methode
         if(reverse)
         {
-#ifndef NDEBUG
-            std::cout << "shell on border: "<< listVertex[vertexIndex] << std::endl;
-#endif
+            msg_info() << "shell on border: "<< listVertex[vertexIndex];
 
-            for (unsigned int triangleIndex = cpt+1; triangleIndex<trianglesAroundVertex.size(); triangleIndex++)
+            for (index_type triangleIndex = cpt+1; triangleIndex<trianglesAroundVertex.size(); triangleIndex++)
             {
-                for (unsigned int pathIndex = 0; pathIndex<trianglesAroundVertex.size(); pathIndex++)
+                for (index_type pathIndex = 0; pathIndex<trianglesAroundVertex.size(); pathIndex++)
                 {
 
                     if (vertexTofind[pathIndex][1] == firstVertex)
@@ -998,9 +963,7 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
             }
             else
             {
-#ifndef NDEBUG
-                std::cout << "Error: reorderingTopologyOnROI: vertex "<< listVertex[vertexIndex] << "is on the border but last edge not found." <<std::endl;
-#endif
+                msg_warning() << "ReorderingTopologyOnROI: vertex "<< listVertex[vertexIndex] << "is on the border but last edge not found.";
             }
         }
 

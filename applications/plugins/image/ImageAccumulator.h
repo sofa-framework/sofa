@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,14 +70,11 @@ public:
     typedef sofa::helper::system::thread::ctime_t ctime_t;
     typedef sofa::helper::system::thread::CTime CTime;
 
-    Data< bool > accumulate;
+    Data< bool > accumulate; ///< accumulate ?
     Data< ImageTypes > inputImage;
     Data< TransformType > inputTransform;
     Data< ImageTypes > outputImage;
     Data< TransformType > outputTransform;
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageAccumulator<ImageTypes>* = NULL) { return ImageTypes::Name(); }
 
     ImageAccumulator()    :   Inherited()
         , accumulate(initData(&accumulate,false,"accumulate","accumulate ?"))
@@ -95,9 +92,9 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual ~ImageAccumulator() {}
+    ~ImageAccumulator() override {}
 
-    virtual void init() override
+    void init() override
     {
         addInput(&inputImage);
         addInput(&inputTransform);
@@ -106,14 +103,14 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
     double SimuTime;
     ctime_t t0,t;
     int count;
 
-    virtual void update() override
+    void doUpdate() override
     {
         if(SimuTime==this->getContext()->getTime()) return; // check if simutime has changed
         SimuTime=this->getContext()->getTime();
@@ -123,8 +120,6 @@ protected:
         raImage in(this->inputImage);
         if(in->isEmpty()) return;
         raTransform inT(this->inputTransform);
-
-        cleanDirty();
 
         waImage out(this->outputImage);
         waTransform outT(this->outputTransform);

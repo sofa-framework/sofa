@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,10 +63,10 @@ public:
     Data<helper::vector<Real> > f_d1;
     Data<helper::vector<Real> > f_d2;
     Data<helper::vector<Real> > f_d3;
-    Data<bool > f_PSDStabilization;
+    Data<bool > f_PSDStabilization; ///< project stiffness matrix to its nearest symmetric, positive semi-definite matrix
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Real mu1=0,mu2=0,mu3=0,alpha1=0,alpha2=0,alpha3=0,d1=0,d2=0,d3=0;
         for(unsigned int i=0; i<this->material.size(); i++)

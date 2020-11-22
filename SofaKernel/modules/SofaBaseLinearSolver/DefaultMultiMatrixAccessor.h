@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,7 +61,7 @@ class SOFA_BASE_LINEAR_SOLVER_API DefaultMultiMatrixAccessor : public sofa::core
 {
 public:
     DefaultMultiMatrixAccessor();
-    virtual ~DefaultMultiMatrixAccessor();
+    ~DefaultMultiMatrixAccessor() override;
 
     virtual void clear();
 
@@ -70,29 +70,29 @@ public:
 
     // When a real MS is visited by the visitor, it must be registed in a local data here (realStateOffsets)
     // the global size of the system must be ajusted.
-    virtual void addMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate);
+    void addMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate) override;
 
     // When a mapping is visited by the visitor, satisfying that is a mechanical mapping
     // and having implemented getJ, this mapping must be registed in a local data here (mappingList)
-    virtual void addMechanicalMapping(sofa::core::BaseMapping* mapping);
+    void addMechanicalMapping(sofa::core::BaseMapping* mapping) override;
 
     //do nothing for instance
-    virtual void addMappedMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate);
+    void addMappedMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate) override;
 
     //Read all Real Mechanical State
     virtual void setupMatrices();
 
     //give the sum of size of all Real Mechanical State in ordre to set the global matrix dimension
-    virtual int getGlobalDimension() const;
+    Index getGlobalDimension() const override;
 
     //give position in global matrix of the blog related to a given Mechanical State
-    virtual int getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const;
+    int getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const override;
 
     //give the Matrix Reference (Matrix and Offset) related to a given Mechanical State
-    virtual MatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const;
+    MatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const override;
 
     //give the Matrix Reference (Matrix and Offset) related to a interactionForceField (between 2 Mechanical State)
-    virtual InteractionMatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2) const;
+    InteractionMatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2) const override;
 
     //Compute the global system matrix
     //If there are no mapping, do nothing
@@ -104,11 +104,15 @@ public:
     //the stiffness and interaction stiffness of this state couldn't directly described on the principal matrix
     //then it demande to create a new matrix
     static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2);
+    static defaulttype::BaseMatrix* createMatrixImpl(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2, bool doPrintInfo);
+
+    //Activate/deactive the printing of extra information related to the numerical system that is being solved.
+    void setDoPrintInfo(bool value){ m_doPrintInfo = value; }
 
 protected:
-
-    defaulttype::BaseMatrix* globalMatrix;
-    unsigned int globalDim;
+    bool m_doPrintInfo {false} ;
+    defaulttype::BaseMatrix* globalMatrix {nullptr} ;
+    Index globalDim {0} ;
 
     //           case1                                           case2
     //      |               |                                  |       |
@@ -126,7 +130,7 @@ protected:
     // using matrix buffer in case of interaction between mapped model
 
     //map used for real mechanical state (non-mapped only)
-    std::map< const sofa::core::behavior::BaseMechanicalState*, int > realStateOffsets;
+    std::map< const sofa::core::behavior::BaseMechanicalState*, unsigned int > realStateOffsets;
 
     //map used only for mapped mechanical state
     //a mapped state is added here if and only if its stiffness matrix is guessed by other component (forcefield)

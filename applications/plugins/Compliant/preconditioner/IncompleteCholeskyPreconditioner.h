@@ -31,13 +31,13 @@ class SOFA_Compliant_API IncompleteCholeskyPreconditioner : public BasePrecondit
     typedef AssembledSystem::rmat rmat;
     typedef AssembledSystem::cmat cmat;
 
-    virtual void reinit();
+    void reinit() override;
 
-    virtual void compute( const rmat& H );
-    virtual void apply( vec& res, const vec& v );
+    void compute( const rmat& H ) override;
+    void apply( vec& res, const vec& v ) override;
 
-    Data<bool> d_constant;
-    Data<real> d_shift;
+    Data<bool> d_constant; ///< reuse first factorization
+    Data<real> d_shift; ///< initial shift
 
   protected:
 

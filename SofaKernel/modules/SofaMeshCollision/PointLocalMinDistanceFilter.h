@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,7 +43,7 @@ namespace collision
 /**
  * @brief LocalMinDistance cone information class for a Point collision primitive.
  */
-class PointInfo : public InfoFilter //< Point >
+class SOFA_MESH_COLLISION_API PointInfo : public InfoFilter //< Point >
 {
 public:
     typedef std::vector< std::pair< sofa::defaulttype::Vector3, double > > TDataContainer;
@@ -51,31 +51,18 @@ public:
     /**
      * @brief Default constructor.
      */
-    PointInfo(LocalMinDistanceFilter *lmdFilters)
-        : InfoFilter(lmdFilters)
-    {
-
-    }
-
-    /**
-     * @brief Empty constructor. Required by PointData<>.
-     */
-    PointInfo()
-        : InfoFilter(NULL)
-    {
-
-    }
+    PointInfo(LocalMinDistanceFilter *lmdFilters = nullptr);
 
     /**
      * @brief Default destructor.
      */
-    virtual ~PointInfo() {}
+    ~PointInfo() override {}
 
     /**
      * @brief Returns the validity of a detected contact according to this PointInfo.
      */
     //virtual bool validate(const Point & /*p*/, const defaulttype::Vector3 & /*PQ*/);
-    virtual bool validate(const unsigned int /*p*/, const defaulttype::Vector3 & /*PQ*/);
+    bool validate(const index_type /*p*/, const defaulttype::Vector3 & /*PQ*/) override;
     /**
      * @brief Output stream.
      */
@@ -96,7 +83,7 @@ public:
      * @brief Computes the region of interest cone of the Point primitive.
      */
     //virtual void buildFilter(const Point & /*p*/);
-    virtual void buildFilter(unsigned int /*p*/);
+    void buildFilter(index_type /*p*/) override;
 
 protected:
 
@@ -116,7 +103,7 @@ public:
 
 protected:
     PointLocalMinDistanceFilter();
-    virtual ~PointLocalMinDistanceFilter();
+    ~PointLocalMinDistanceFilter() override;
 public:
 
     /**
@@ -155,14 +142,14 @@ public:
     public:
         PointInfoHandler(PointLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >(_data), f(_f) {}
 
-        void applyCreateFunction(unsigned int pointIndex, PointInfo& m, const sofa::helper::vector< unsigned int > &,
+        void applyCreateFunction(index_type pointIndex, PointInfo& m, const sofa::helper::vector< index_type > &,
                 const sofa::helper::vector< double > &);
     protected:
         PointLocalMinDistanceFilter* f;
     };
 
 private:
-    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo;
+    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo; ///< point filter data
     PointInfoHandler* pointInfoHandler;
     core::topology::BaseMeshTopology *bmt;
 };

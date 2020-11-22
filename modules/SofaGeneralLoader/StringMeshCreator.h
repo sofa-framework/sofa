@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,11 +21,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_StringMeshCreator_H
 #define SOFA_COMPONENT_LOADER_StringMeshCreator_H
-#include "config.h"
+#include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/MeshLoader.h>
 
-#include <sofa/helper/SVector.h>
 namespace sofa
 {
 
@@ -47,16 +46,15 @@ public:
 
     SOFA_CLASS(StringMeshCreator,sofa::core::loader::MeshLoader);
     virtual std::string type() { return "This object is procedurally created"; }
-    virtual bool canLoad() override { return true; }
-    virtual bool load() override; ///< create the string
-
-    template <class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg ) { return BaseLoader::canCreate (obj, context, arg); }
+    bool canLoad() override { return true; }
+    bool doLoad() override; ///< create the string
 
     Data< unsigned > resolution;  ///< Number of vertices (more than 1)
 
 protected:
     StringMeshCreator();
+
+    void doClearBuffers() override;
 };
 
 

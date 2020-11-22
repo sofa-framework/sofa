@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,33 +30,6 @@ namespace component
 
 namespace collision
 {
-
-
-/******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
-
 
 inline EndPointID & ISAPBox::min(int dim){return *(_min[dim]);}
 inline const EndPointID & ISAPBox::min(int dim)const{return *(_min[dim]);}
@@ -126,7 +99,7 @@ inline void ISAPBox::init(int boxID,EndPointID ** endPts){
 //        _max[i]->setMax();
     }
 
-    //update();
+    // update();
 }
 
 inline bool ISAPBox::endPointsOverlap(const ISAPBox & other, int axis) const{
@@ -224,7 +197,7 @@ IncrSAP::IncrSAP()
     , box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored")),
       _nothing_added(true)
 {
-    //_end_points = new EndPointList[3];
+    // _end_points = new EndPointList[3];
 }
 
 
@@ -234,7 +207,7 @@ IncrSAP::~IncrSAP(){
             delete (*it);
 
 
-    //delete[] _end_points;
+    // delete[] _end_points;
 }
 
 
@@ -258,14 +231,14 @@ void IncrSAP::init()
     reinit();
 }
 
-//
-//void IncrSAP::initIntersectors(){
+// 
+// void IncrSAP::initIntersectors(){
 //    for(typename std::set<CollModID>::const_iterator it = collisionModels.begin() ; it != collisionModels.end() ; ++it){
 //        for(std::set<CollModID>::const_iterator it2 = it ; it2 != collisionModels.end() ; ++it2){
 
 //        }
 //    }
-//}
+// }
 
 
 void IncrSAP::reinit()
@@ -277,7 +250,7 @@ void IncrSAP::reinit()
     }
     else
     {
-        if (!boxModel) boxModel = sofa::core::objectmodel::New<CubeModel>();
+        if (!boxModel) boxModel = sofa::core::objectmodel::New<CubeCollisionModel>();
         boxModel->resize(1);
         boxModel->setParentOf(0, box.getValue()[0], box.getValue()[1]);
     }
@@ -304,7 +277,7 @@ inline void IncrSAP::addCollisionModel(core::CollisionModel *cm)
         _colliding_elems.add(cm->getLast(),intersectionMethod);
         _nothing_added = false;
 
-        CubeModel * cube_model = dynamic_cast<CubeModel *>(cm->getLast()->getPrevious());
+        CubeCollisionModel * cube_model = dynamic_cast<CubeCollisionModel *>(cm->getLast()->getPrevious());
         assert(cube_model->getPrevious() == cm->getFirst());
 
         int old_size = _boxes.size();
@@ -312,7 +285,7 @@ inline void IncrSAP::addCollisionModel(core::CollisionModel *cm)
         _boxes.resize(cube_model_size + old_size);
 
         EndPointID * endPts[6];
-        for(int i = 0 ; i < cube_model->getSize() ; ++i){
+        for(std::size_t i = 0 ; i < cube_model->getSize() ; ++i){
             for(int j = 0 ; j < 6 ; ++j)
                 endPts[j] = new EndPointID;
 
@@ -333,12 +306,12 @@ inline void IncrSAP::addCollisionModel(core::CollisionModel *cm)
 
 int IncrSAP::greatestVarianceAxis()const{
     double diff;
-    double v[3];//variances for each axis
-    double m[3];//means for each axis
+    double v[3]; // variances for each axis
+    double m[3]; // means for each axis
     for(int i = 0 ; i < 3 ; ++i)
         v[i] = m[i] = 0;
 
-    //computing the mean value of end points on each axis
+    // computing the mean value of end points on each axis
     for(int j = 0 ; j < 3 ; ++j)
         for(EndPointList::const_iterator it = _end_points[j].begin() ; it != _end_points[j].end() ; ++it)
             m[j] += (**it).value;
@@ -347,7 +320,7 @@ int IncrSAP::greatestVarianceAxis()const{
     m[1] /= 2*_boxes.size();
     m[2] /= 2*_boxes.size();
 
-    //computing the variance of end points on each axis
+    // computing the variance of end points on each axis
     for(int j = 0 ; j < 3 ; ++j){
         for(EndPointList::const_iterator it = _end_points[j].begin() ; it != _end_points[j].end() ; ++it){
             diff = (**it).value - m[j];
@@ -436,11 +409,11 @@ void IncrSAP::addIfCollide(int boxID1,int boxID2){
 
     ISAPBox & box0 = _boxes[boxID1];
     ISAPBox & box1 = _boxes[boxID2];
-    core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
+    core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast(); // get the finnest CollisionModel which is not a CubeModel
     core::CollisionModel *finalcm2 = box1.cube.getCollisionModel()->getLast();
 
     if((finalcm1->isSimulated() || finalcm2->isSimulated()) &&
-            (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.overlaps(box1,_alarmDist))){//intersection on all axes
+            (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.overlaps(box1,_alarmDist))){ // intersection on all axes
 
          _colliding_elems.add(boxID1,boxID2,box0.finalElement(),box1.finalElement());
     }
@@ -457,11 +430,11 @@ void IncrSAP::addIfCollide(int boxID1,int boxID2,int axis1,int axis2){
 
     ISAPBox & box0 = _boxes[boxID1];
     ISAPBox & box1 = _boxes[boxID2];
-    core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
+    core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast(); // get the finnest CollisionModel which is not a CubeModel
     core::CollisionModel *finalcm2 = box1.cube.getCollisionModel()->getLast();
 
     if((finalcm1->isSimulated() || finalcm2->isSimulated()) &&
-            (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.endPointsOverlap(box1,axis1) && box0.endPointsOverlap(box1,axis2))){//intersection on all axes
+            (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2)) && box0.endPointsOverlap(box1,axis1) && box0.endPointsOverlap(box1,axis2))){ // intersection on all axes
 
                 _colliding_elems.add(boxID1,boxID2,box0.finalElement(),box1.finalElement());
     }
@@ -476,20 +449,20 @@ void IncrSAP::boxPrune(){
 
     sofa::helper::AdvancedTimer::stepBegin("Box Prune SAP intersection");
 
-    std::deque<int> active_boxes;//active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
-                                 //if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
-                                 //                                                                                                      b1_min---------------------b1_max
-                                 //once we encouter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.
-                                 //so the rule is : -every time we encounter a box min end point, we check if it is overlapping with other active_boxes and add the owner (a box) of this end point to
-                                 //                  the active boxes.
-                                 //                 -every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,
-                                 //                  so, we delete the owner box, of this max end point from the active boxes
+    std::deque<int> active_boxes; // active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
+                                  // if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
+                                  //                                                                                                      b1_min---------------------b1_max
+                                  // once we encouter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.
+                                  // so the rule is : - every time we encounter a box min end point, we check if it is overlapping with other active_boxes and add the owner (a box) of this end point to
+                                  //                  the active boxes.
+                                  //                  - every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,
+                                  //                  so, we delete the owner box, of this max end point from the active boxes
     for(EndPointList::iterator it = _end_points[_cur_axis].begin() ; it != _end_points[_cur_axis].end() ; ++it){
-        if((**it).max()){//erase it from the active_boxes
+        if((**it).max()){ // erase it from the active_boxes
             assert(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()) != active_boxes.end());
             active_boxes.erase(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()));
         }
-        else{//we encounter a min possible intersection between it and active_boxes
+        else{ // we encounter a min possible intersection between it and active_boxes
             int new_box = (**it).boxID();
 
             for(unsigned int i = 0 ; i < active_boxes.size() ; ++i){
@@ -508,12 +481,12 @@ void IncrSAP::removeCollision(int a,int b){
     if(a == b)
         return;
 
-    core::CollisionModel *finalcm1 = _boxes[a].cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel
+    core::CollisionModel *finalcm1 = _boxes[a].cube.getCollisionModel()->getLast(); // get the finnest CollisionModel which is not a CubeModel
     core::CollisionModel *finalcm2 = _boxes[b].cube.getCollisionModel()->getLast();
 
     bool swap;
-    if((!(_boxes[a].overlaps(_boxes[b],_alarmDist))) && //check if it really doesn't overlap
-            (finalcm1->isSimulated() || finalcm2->isSimulated()) &&//check if the two boxes could be in collision, if it is not the case they are not added to _colliding_elems
+    if((!(_boxes[a].overlaps(_boxes[b],_alarmDist))) && // check if it really doesn't overlap
+            (finalcm1->isSimulated() || finalcm2->isSimulated()) && // check if the two boxes could be in collision, if it is not the case they are not added to _colliding_elems
             (((finalcm1->getContext() != finalcm2->getContext()) || finalcm1->canCollideWith(finalcm2))) && (intersectionMethod->findIntersector(finalcm1,finalcm2,swap) != 0x0)){
         _colliding_elems.remove(a,b,_boxes[a].finalElement(),_boxes[b].finalElement());
     }
@@ -723,7 +696,7 @@ void IncrSAP::updateMovingBoxes(){
         return;
 
     EndPointID * cur_end_point_min,*cur_end_point_max;
-    cur_end_point_min = cur_end_point_max = 0x0;
+    cur_end_point_min = cur_end_point_max = nullptr;
 
     EndPointList::iterator it_min,next_it_min,prev_it_min,base_it_min,it_max,next_it_max,prev_it_max,base_it_max;
     bool min_updated,max_updated,min_moving,max_moving;
@@ -736,13 +709,15 @@ void IncrSAP::updateMovingBoxes(){
             min_updated = false;
             max_updated = false;
 
-            //FIRST CREATING CONTACTS THEN DELETING, this order is very important, it doesn't work in the other sens
-            //MOVING MAX FOREWARD
+            // FIRST CREATING CONTACTS THEN DELETING, this order is very important, it doesn't work in the other sens
+            // MOVING MAX FOREWARD
             if((max_moving = cur_box.maxMoving(dim,_alarmDist_d2))){
-                cur_box.updatedMax(dim,updated_max,_alarmDist_d2);//we don't update directly update the max of the box but a copy of it, because when
-                                                    //moving an end point, only one end point can change its value. In this case, we could
-                                                    //update the value of the max but not move it, it would mean that the max could not be at its right place and when moving
-                                                    //the min backward (below), the list would not be sorted...
+                // we don't directly update the max of the box but a copy of it, because when
+                // moving an end point, only one end point can change its value. In this case, we could
+                // update the value of the max but not move it, it would mean that the max could not be at its right place and when moving
+                // the min backward (below), the list would not be sorted...                
+                cur_box.updatedMax(dim,updated_max,_alarmDist_d2);
+
                 cur_end_point_max = &(cur_box.max(dim));
                 it_max = _end_points[dim].begin() + cur_end_point_max->ID;
                 base_it_max = it_max;
@@ -755,12 +730,14 @@ void IncrSAP::updateMovingBoxes(){
                 if(it_max != _end_points[dim].begin())
                     --prev_it_max;
 
-                if(next_it_max != _end_points[dim].end() && inferior(*next_it_max,&updated_max)){//moving the max foreward
-                    cur_end_point_max->value = updated_max.value;//the real update of the end point (belonging to the end point list) is done
-                                                                 //here because this end point will be put at its right place
+                if(next_it_max != _end_points[dim].end() && inferior(*next_it_max,&updated_max)){ // moving the max foreward
+                    // the real update of the end point (belonging to the end point list) is done
+                    // here because this end point will be put at its right place
+                    cur_end_point_max->value = updated_max.value;
+
                     moveMaxForward(dim,cur_end_point_max,it_max,next_it_max);
                     max_updated = true;
-                }//after, cases when the end point is at its right place
+                } // after, cases when the end point is at its right place
                 else if(next_it_max == _end_points[dim].end() && inferior(*prev_it_max,&updated_max)){
                     cur_end_point_max->value = updated_max.value;
                     max_updated = true;
@@ -775,7 +752,7 @@ void IncrSAP::updateMovingBoxes(){
                 }
             }
 
-            //MOVING MIN BACKWARD
+            // MOVING MIN BACKWARD
             if((min_moving = cur_box.minMoving(dim,_alarmDist_d2))){
                 cur_box.updatedMin(dim,updated_min,_alarmDist_d2);
                 cur_end_point_min = &(cur_box.min(dim));
@@ -790,11 +767,11 @@ void IncrSAP::updateMovingBoxes(){
                 if(it_min != _end_points[dim].begin())
                     --prev_it_min;
 
-                if((it_min != _end_points[dim].begin()) && inferior(&updated_min,*prev_it_min)){//moving the min backward
+                if((it_min != _end_points[dim].begin()) && inferior(&updated_min,*prev_it_min)){ // moving the min backward
                     cur_end_point_min->value = updated_min.value;
                     moveMinBackward(dim,cur_end_point_min,it_min,prev_it_min);
                     min_updated = true;
-                }//after, cases when the end point is at its right place
+                } // after, cases when the end point is at its right place
                 else if(it_min == _end_points[dim].begin() && inferior(&updated_min,*next_it_min)){
                     cur_end_point_min->value = updated_min.value;
                     min_updated = true;
@@ -809,17 +786,17 @@ void IncrSAP::updateMovingBoxes(){
                 }
             }
 
-            //THEN DELETING
+            // THEN DELETING
             if(min_moving && (!min_updated)){
                 cur_end_point_min->value = updated_min.value;
 
-                //MOVING MIN FOREWARD
+                // MOVING MIN FOREWARD
                 if((next_it_min != _end_points[dim].end()) && (inferior(*next_it_min,cur_end_point_min))){
                     moveMinForward(dim,cur_end_point_min,it_min,next_it_min);
                 }
             }
 
-            //MOVING MAX BACKWARD
+            // MOVING MAX BACKWARD
             if(max_moving && (!max_updated)){
                 cur_end_point_max->value = updated_max.value;
 
@@ -894,8 +871,6 @@ bool ISAPBox::overlaps(const ISAPBox & other,double alarmDist) const{
 
 using namespace sofa::defaulttype;
 using namespace collision;
-
-SOFA_DECL_CLASS(IncrSAP)
 
 int IncrSAPClassSofaVector = core::RegisterObject("Collision detection using incremental sweep and prune")
         .addAlias( "IncrementalSAP" )

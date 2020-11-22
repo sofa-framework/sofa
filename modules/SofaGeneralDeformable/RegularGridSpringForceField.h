@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,6 +25,7 @@
 
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/MechanicalParams.h>
 
 
@@ -56,43 +57,16 @@ public:
 
 
 protected:
-    Data< Real > linesStiffness;
-    Data< Real > linesDamping;
-    Data< Real > quadsStiffness;
-    Data< Real > quadsDamping;
-    Data< Real > cubesStiffness;
-    Data< Real > cubesDamping;
+    Data< Real > linesStiffness; ///< Lines Stiffness
+    Data< Real > linesDamping; ///< Lines Damping
+    Data< Real > quadsStiffness; ///< Quads Stiffness
+    Data< Real > quadsDamping; ///< Quads Damping
+    Data< Real > cubesStiffness; ///< Cubes Stiffness
+    Data< Real > cubesDamping; ///< Cubes Damping
 
+    RegularGridSpringForceField();
+    RegularGridSpringForceField(core::behavior::MechanicalState<DataTypes>* object1, core::behavior::MechanicalState<DataTypes>* object2);
 
-    RegularGridSpringForceField(core::behavior::MechanicalState<DataTypes>* object1, core::behavior::MechanicalState<DataTypes>* object2)
-        : StiffSpringForceField<DataTypes>(object1, object2),
-          linesStiffness  (initData(&linesStiffness,Real(100),"linesStiffness","Lines Stiffness"))
-          , linesDamping  (initData(&linesDamping  ,Real(5),"linesDamping"  ,"Lines Damping"))
-          , quadsStiffness(initData(&quadsStiffness,Real(100),"quadsStiffness","Quads Stiffness"))
-          , quadsDamping  (initData(&quadsDamping  ,Real(5),"quadsDamping"  ,"Quads Damping"))
-          , cubesStiffness(initData(&cubesStiffness,Real(100),"cubesStiffness","Cubes Stiffness"))
-          , cubesDamping  (initData(&cubesDamping  ,Real(5),"cubesDamping"  ,"Cubes Damping"))
-          , topology(NULL)
-    {
-        this->addAlias(&linesStiffness,    "stiffness"); this->addAlias(&linesDamping,    "damping");
-        this->addAlias(&quadsStiffness,    "stiffness"); this->addAlias(&quadsDamping,    "damping");
-        this->addAlias(&cubesStiffness,    "stiffness"); this->addAlias(&cubesDamping,    "damping");
-    }
-
-    RegularGridSpringForceField()
-        :
-        linesStiffness  (initData(&linesStiffness,Real(100),"linesStiffness","Lines Stiffness"))
-        , linesDamping  (initData(&linesDamping  ,Real(5),"linesDamping"  ,"Lines Damping"))
-        , quadsStiffness(initData(&quadsStiffness,Real(100),"quadsStiffness","Quads Stiffness"))
-        , quadsDamping  (initData(&quadsDamping  ,Real(5),"quadsDamping"  ,"Quads Damping"))
-        , cubesStiffness(initData(&cubesStiffness,Real(100),"cubesStiffness","Cubes Stiffness"))
-        , cubesDamping  (initData(&cubesDamping  ,Real(5),"cubesDamping"  ,"Cubes Damping"))
-        , topology(NULL)
-    {
-        this->addAlias(&linesStiffness,    "stiffness"); this->addAlias(&linesDamping,    "damping");
-        this->addAlias(&quadsStiffness,    "stiffness"); this->addAlias(&quadsDamping,    "damping");
-        this->addAlias(&cubesStiffness,    "stiffness"); this->addAlias(&cubesDamping,    "damping");
-    }
 public:
     Real getStiffness() const { return linesStiffness.getValue(); }
     Real getLinesStiffness() const { return linesStiffness.getValue(); }
@@ -140,32 +114,25 @@ public:
         cubesDamping.setValue(val);
     }
 
-    virtual void init() override;
+    void init() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
     ///SOFA_DEPRECATED_ForceField <<<virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
     ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
     topology::RegularGridTopology* topology;
 };
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec3dTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec2dTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec1dTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec6dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec3fTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec2fTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec1fTypes>;
-extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec6fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_CPP)
+extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec3Types>;
+extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec2Types>;
+extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec1Types>;
+extern template class SOFA_GENERAL_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec6Types>;
+
 #endif
 
 } // namespace interactionforcefield

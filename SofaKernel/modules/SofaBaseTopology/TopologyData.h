@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,9 +70,9 @@ public:
     /// Constructor
     TopologyDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : sofa::core::topology::BaseTopologyData< VecT >(data),
-          m_topologicalEngine(NULL),
-          m_topology(NULL),
-          m_topologyHandler(NULL)
+          m_topologicalEngine(nullptr),
+          m_topology(nullptr),
+          m_topologyHandler(nullptr)
     {}
 
     virtual ~TopologyDataImpl();

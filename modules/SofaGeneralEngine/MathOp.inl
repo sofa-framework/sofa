@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -249,7 +249,7 @@ struct MathOpTraitsVecReal
         Ops;
 };
 
-template<int N, typename Real>
+template< std::size_t N, typename Real>
 class MathOpTraits< defaulttype::Vec<N,Real> > : public MathOpTraitsVecReal< defaulttype::Vec<N,Real> > {};
 
 /// Bool-like ops
@@ -419,7 +419,7 @@ void MathOp<VecT>::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
     if (p)
     {
         std::string nbStr = p;
-        sout << "parse: setting nbInputs="<<nbStr<<sendl;
+        msg_info() << "parse: setting nbInputs=";
         f_nbInputs.read(nbStr);
         createInputs();
     }
@@ -434,7 +434,7 @@ void MathOp<VecT>::parseFields ( const std::map<std::string,std::string*>& str )
     if (it != str.end() && it->second)
     {
         std::string nbStr = *it->second;
-        sout << "parseFields: setting nbInputs="<<nbStr<<sendl;
+        msg_info() << "parseFields: setting nbInputs="<<nbStr;
         f_nbInputs.read(nbStr);
         createInputs();
     }
@@ -452,7 +452,7 @@ void MathOp<VecT>::init()
     std::string op = f_op.getValue().getSelectedItem();
     bool result = MathOpApply< typename MathOpTraits<Value>::Ops >::isSupported(op);
     if (!result)
-        serr << "Operation " << op << " NOT SUPPORTED" << sendl;
+        msg_error() << "Operation " << op << " NOT SUPPORTED";
 
     setDirtyValue();
 }
@@ -466,21 +466,15 @@ void MathOp<VecT>::reinit()
 }
 
 template <class VecT>
-void MathOp<VecT>::update()
+void MathOp<VecT>::doUpdate()
 {
 //    createInputs();
     std::string op = f_op.getValue().getSelectedItem();
 
-    // ensure all inputs are up-to-date before cleaning engine
-    for (unsigned int i=0, iend=vf_inputs.size(); i<iend; ++i)
-        vf_inputs[i]->updateIfDirty();
-
-    cleanDirty();
-
     bool result = MathOpApply< typename MathOpTraits<Value>::Ops >::apply(
         op, &f_output, vf_inputs);
     if (!result)
-        serr << "Operation " << op << " FAILED" << sendl;
+        msg_error() << "Operation " << op << " FAILED";
 }
 
 } // namespace engine

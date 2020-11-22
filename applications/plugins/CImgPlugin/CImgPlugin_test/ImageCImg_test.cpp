@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -25,27 +25,27 @@
 #include <cstring>
 #include <algorithm>
 #include <numeric>
-#include <gtest/gtest.h>
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 namespace sofa {
 
 //used to compare lossy images
 const float PIXEL_TOLERANCE = 1.28; //0.5% difference on the average of the image
 
-class ImageCImg_test : public Sofa_test<>
+class ImageCImg_test : public BaseTest
 {
 protected:
     ImageCImg_test() {
 
     }
 
-    void SetUp()
+    void SetUp() override
     {
         sofa::helper::system::DataRepository.addFirstPath(CIMGPLUGIN_RESOURCES_DIR);
     }
-    void TearDown()
+    void TearDown() override
     {
         sofa::helper::system::DataRepository.removePath(CIMGPLUGIN_RESOURCES_DIR);
     }
@@ -205,7 +205,8 @@ TEST_F(ImageCImg_test, ImageCImg_WriteBlackWhite)
     bool isLoaded = img.load("imagetest_blackwhite.png");
     ASSERT_TRUE(isLoaded);
 
-    bool isWritten = img.save(sofa::helper::system::DataRepository.getFirstPath() + "/output_bw.png");
+    std::string output_bw_path = sofa::helper::system::DataRepository.getFirstPath() + "/output_bw.png";
+    bool isWritten = img.save(output_bw_path);
     ASSERT_TRUE(isWritten);
 
     delete[] imgdata;
@@ -215,6 +216,8 @@ TEST_F(ImageCImg_test, ImageCImg_WriteBlackWhite)
 
     ImageCImgTestData imgBW("output_bw.png", width, height, bpp, imgdata);
     imgBW.testBench();
+
+    std::remove(output_bw_path.c_str());
 }
 
 }// namespace sofa

@@ -1,128 +1,82 @@
-cmake_minimum_required(VERSION 3.1)
-project(SofaMiscMapping)
+cmake_minimum_required(VERSION 3.12)
+project(SofaMiscMapping VERSION 1.0 LANGUAGES CXX)
 
-message(STATUS "SofaMiscMapping:")
-################################ COMPONENTS HERE ARE THE NG-SET ####################################
+find_package(SofaCommon REQUIRED) # SofaSimpleFem SofaRigid
+find_package(SofaGeneral REQUIRED) # SofaGeneralSimpleFem
+
+set(SOFAMISCMAPPING_SRC "src/${PROJECT_NAME}")
+
 set(HEADER_FILES
-    config.h
-    initMiscMapping.h
-)
+    ${SOFAMISCMAPPING_SRC}/config.h.in
+    ${SOFAMISCMAPPING_SRC}/initSofaMiscMapping.h
+    )
 
 set(SOURCE_FILES
-    initMiscMapping.cpp
-)
+    ${SOFAMISCMAPPING_SRC}/initSofaMiscMapping.cpp
+    )
 
-############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
-if(SOFA_BUILD_COMPONENTSET_LIGHT)
-    list(APPEND HEADER_FILES
-
-        )
-    list(APPEND SOURCE_FILES
-
-        )
-endif()
-
-############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
-if(SOFA_BUILD_COMPONENTSET_STANDARD)
-    list(APPEND HEADER_FILES
-        BarycentricMappingRigid.h
-        BarycentricMappingRigid.inl
-        BeamLinearMapping.h
-        BeamLinearMapping.inl
-        #CatmullRomSplineMapping.h
-        #CatmullRomSplineMapping.inl
-        CenterOfMassMapping.h
-        CenterOfMassMapping.inl
-        CenterOfMassMulti2Mapping.h
-        CenterOfMassMulti2Mapping.inl
-        CenterOfMassMultiMapping.h
-        CenterOfMassMultiMapping.inl
-        #CenterPointMechanicalMapping.h
-        #CenterPointMechanicalMapping.inl
-        #CurveMapping.h
-        #CurveMapping.inl
-        DeformableOnRigidFrameMapping.h
-        DeformableOnRigidFrameMapping.inl
-        DistanceFromTargetMapping.h
-        DistanceFromTargetMapping.inl
-        DistanceMapping.h
-        DistanceMapping.inl
-        #ExternalInterpolationMapping.h
-        #ExternalInterpolationMapping.inl
-        IdentityMultiMapping.h
-        IdentityMultiMapping.inl
-        #ProjectionToLineMapping.h
-        #ProjectionToLineMapping.inl
-        #ProjectionToPlaneMapping.h
-        #ProjectionToPlaneMapping.inl
-        SquareDistanceMapping.h
-        SquareDistanceMapping.inl
-        SquareMapping.h
-        SquareMapping.inl
-        SubsetMultiMapping.h
-        SubsetMultiMapping.inl
-        TubularMapping.h
-        TubularMapping.inl
-        VoidMapping.h
-        )
-    list(APPEND SOURCE_FILES
-        BarycentricMappingRigid.cpp
-        BeamLinearMapping.cpp
-        #CatmullRomSplineMapping.cpp
-        CenterOfMassMapping.cpp
-        CenterOfMassMulti2Mapping.cpp
-        CenterOfMassMultiMapping.cpp
-        #CenterPointMechanicalMapping.cpp
-        #CurveMapping.cpp
-        DeformableOnRigidFrameMapping.cpp
-        DistanceFromTargetMapping.cpp
-        DistanceMapping.cpp
-        #ExternalInterpolationMapping.cpp
-        IdentityMultiMapping.cpp
-        #ProjectionToLineMapping.cpp
-        #ProjectionToPlaneMapping.cpp
-        SquareDistanceMapping.cpp
-        SquareMapping.cpp
-        SubsetMultiMapping.cpp
-        TubularMapping.cpp
-        VoidMapping.cpp
-        )
-
-endif()
-
-############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_COMPONENTSET_FULL)
-    list(APPEND HEADER_FILES
-        CatmullRomSplineMapping.h
-        CatmullRomSplineMapping.inl
-        CenterPointMechanicalMapping.h
-        CenterPointMechanicalMapping.inl
-        CurveMapping.h
-        CurveMapping.inl
-        ExternalInterpolationMapping.h
-        ExternalInterpolationMapping.inl
-        ProjectionToLineMapping.h
-        ProjectionToLineMapping.inl
-        ProjectionToPlaneMapping.h
-        ProjectionToPlaneMapping.inl
-        )
-    list(APPEND SOURCE_FILES
-        CatmullRomSplineMapping.cpp
-        CenterPointMechanicalMapping.cpp
-        CurveMapping.cpp
-        ExternalInterpolationMapping.cpp
-        ProjectionToLineMapping.cpp
-        ProjectionToPlaneMapping.cpp
-        )
-endif()
-
-
+list(APPEND HEADER_FILES
+    ${SOFAMISCMAPPING_SRC}/BarycentricMappingRigid.h
+    ${SOFAMISCMAPPING_SRC}/BarycentricMappingRigid.inl
+    ${SOFAMISCMAPPING_SRC}/BeamLinearMapping.h
+    ${SOFAMISCMAPPING_SRC}/BeamLinearMapping.inl
+    ${SOFAMISCMAPPING_SRC}/CenterOfMassMapping.h
+    ${SOFAMISCMAPPING_SRC}/CenterOfMassMapping.inl
+    ${SOFAMISCMAPPING_SRC}/CenterOfMassMulti2Mapping.h
+    ${SOFAMISCMAPPING_SRC}/CenterOfMassMulti2Mapping.inl
+    ${SOFAMISCMAPPING_SRC}/CenterOfMassMultiMapping.h
+    ${SOFAMISCMAPPING_SRC}/CenterOfMassMultiMapping.inl
+    ${SOFAMISCMAPPING_SRC}/DeformableOnRigidFrameMapping.h
+    ${SOFAMISCMAPPING_SRC}/DeformableOnRigidFrameMapping.inl
+    ${SOFAMISCMAPPING_SRC}/DistanceFromTargetMapping.h
+    ${SOFAMISCMAPPING_SRC}/DistanceFromTargetMapping.inl
+    ${SOFAMISCMAPPING_SRC}/DistanceMapping.h
+    ${SOFAMISCMAPPING_SRC}/DistanceMapping.inl
+    ${SOFAMISCMAPPING_SRC}/IdentityMultiMapping.h
+    ${SOFAMISCMAPPING_SRC}/IdentityMultiMapping.inl
+    ${SOFAMISCMAPPING_SRC}/SquareDistanceMapping.h
+    ${SOFAMISCMAPPING_SRC}/SquareDistanceMapping.inl
+    ${SOFAMISCMAPPING_SRC}/SquareMapping.h
+    ${SOFAMISCMAPPING_SRC}/SquareMapping.inl
+    ${SOFAMISCMAPPING_SRC}/SubsetMultiMapping.h
+    ${SOFAMISCMAPPING_SRC}/SubsetMultiMapping.inl
+    ${SOFAMISCMAPPING_SRC}/TubularMapping.h
+    ${SOFAMISCMAPPING_SRC}/TubularMapping.inl
+    ${SOFAMISCMAPPING_SRC}/VoidMapping.h
+    )
+list(APPEND SOURCE_FILES
+    ${SOFAMISCMAPPING_SRC}/BarycentricMappingRigid.cpp
+    ${SOFAMISCMAPPING_SRC}/BeamLinearMapping.cpp
+    ${SOFAMISCMAPPING_SRC}/CenterOfMassMapping.cpp
+    ${SOFAMISCMAPPING_SRC}/CenterOfMassMulti2Mapping.cpp
+    ${SOFAMISCMAPPING_SRC}/CenterOfMassMultiMapping.cpp
+    ${SOFAMISCMAPPING_SRC}/DeformableOnRigidFrameMapping.cpp
+    ${SOFAMISCMAPPING_SRC}/DistanceFromTargetMapping.cpp
+    ${SOFAMISCMAPPING_SRC}/DistanceMapping.cpp
+    ${SOFAMISCMAPPING_SRC}/IdentityMultiMapping.cpp
+    ${SOFAMISCMAPPING_SRC}/SquareDistanceMapping.cpp
+    ${SOFAMISCMAPPING_SRC}/SquareMapping.cpp
+    ${SOFAMISCMAPPING_SRC}/SubsetMultiMapping.cpp
+    ${SOFAMISCMAPPING_SRC}/TubularMapping.cpp
+    ${SOFAMISCMAPPING_SRC}/VoidMapping.cpp
+    )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaRigid)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaRigid SofaGeneralSimpleFem)
 
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+    )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_MAPPING")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-
-sofa_install_targets(SofaMisc ${PROJECT_NAME} ${PROJECT_NAME})
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFAMISCMAPPING_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFAMISCMAPPING_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(SofaMiscMapping_test)
+endif()

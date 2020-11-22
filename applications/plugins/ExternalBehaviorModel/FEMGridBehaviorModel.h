@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -92,26 +92,26 @@ public:
 
     /// @name Component API
     /// @{
-    virtual void init(); /// call when initializing the simulation
-    virtual void draw( const core::visual::VisualParams* vparams ); /// debug drawing
-    virtual void handleEvent(sofa::core::objectmodel::Event *event);
+    virtual void init() override; /// call when initializing the simulation
+    virtual void draw( const core::visual::VisualParams* vparams ) override; /// debug drawing
+    virtual void handleEvent(sofa::core::objectmodel::Event *event) override;
     /// @}
 
 
     /// @name Internal force API
     /// @{
     /// f += K( x, v ) -> build the right part of the sytem (including gravity)
-    virtual void addForce( const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v );
+    virtual void addForce( const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v ) override;
     /// df += K.dx -> call at each iteration by unassembled system solvers
     /// necessary to perform an implicit interaction
-    virtual void addDForce( const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx );
+    virtual void addDForce( const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) override;
     /// @}
 
 
     /// @name Mass API
     /// @{
     /// f += factor M dx (for implicit solvers)
-    virtual void addMDx( const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor );
+    virtual void addMDx( const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor ) override;
     /// @}
 
 
@@ -119,22 +119,14 @@ public:
     // Data fields will automatically appear in qt-based GUI and in read/write XML scene files
     // in this simple example, there is only one young modulus for all elements and one similar mass to every particle
     // Note that Data must be initialized in the constructor, giving the default value, the field name and a description
-    Data<Real> _youngModulus;
-    Data<Real> _poissonRatio;
-    Data<Real> _totalMass;
-    Data<unsigned> _subdivisions;
-
-
-
+    Data<Real> _youngModulus; ///< Uniform Young modulus
+    Data<Real> _poissonRatio; ///< Uniform Poisson ratio
+    Data<Real> _totalMass; ///< Total Mass (lumped and uniformly distributed on particles
+    Data<unsigned> _subdivisions; ///< nb grid subdivisions
 
 protected:
-
     FEMGridBehaviorModel();
-
     virtual ~FEMGridBehaviorModel() {}
-
-
-
 
     /// @name internal sofa stuff that could be replaced by any library
     /// @{
@@ -144,33 +136,13 @@ protected:
     typename component::mass::UniformMass<DataTypes,Real>::SPtr m_internalMass;
     sofa::simulation::Node::SPtr m_internalNode;
 
-
-
     int mapExposedInternalIndices[8]; ///< identity mapping between exposed SOFA dofs and internal model dofs
-
-
-
     /// @}
-
-
-
-
-
 }; // class FEMGridBehaviorModel
 
-
-
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_EXTERNALBEHAVIORMODEL_FEMGRIDBEHAVIORMODEL_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<defaulttype::Vec3dTypes>;
+#if !defined(SOFA_EXTERNALBEHAVIORMODEL_FEMGRIDBEHAVIORMODEL_CPP)
+extern template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<defaulttype::Vec3Types>;
 #endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_ExternalBehaviorModel_API FEMGridBehaviorModel<defaulttype::Vec3fTypes>;
-#endif
-#endif
-
-
 
 } // namespace externalBehaviorModel
 

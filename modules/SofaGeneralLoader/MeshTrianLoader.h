@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_MESHTRIANLOADER_H
 #define SOFA_COMPONENT_LOADER_MESHTRIANLOADER_H
-#include "config.h"
+#include <SofaGeneralLoader/config.h>
 
 #include <sofa/core/loader/MeshLoader.h>
 
@@ -48,15 +48,11 @@ public:
 protected:
     MeshTrianLoader();
 public:
-    virtual bool load() override;
-
-    template <class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
-    {
-        return BaseLoader::canCreate (obj, context, arg);
-    }
+    bool doLoad() override;
 
 protected:
+
+    void doClearBuffers() override;
 
     bool readTrian(const char* filename);
 
@@ -64,11 +60,10 @@ protected:
 
 public:
     //Add specific Data here:
-    Data <bool> p_trian2;
-    Data <helper::vector < helper::fixed_array <int,3> > > neighborTable;
-    Data <helper::vector < helper::vector <unsigned int> > > edgesOnBorder;
-    Data <helper::vector <unsigned int> > trianglesOnBorderList;
-
+    Data <bool> p_trian2; ///< Set to true if the mesh is a trian2 format.
+    Data <helper::vector < helper::fixed_array <int,3> > > neighborTable; ///< Table of neighborhood triangle indices for each triangle.
+    Data <helper::vector < helper::vector <unsigned int> > > edgesOnBorder; ///< List of edges which are on the border of the mesh loaded.
+    Data <helper::vector <unsigned int> > trianglesOnBorderList; ///< List of triangle indices which are on the border of the mesh loaded.
 };
 
 

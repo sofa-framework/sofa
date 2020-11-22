@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="image"/>
     <VisualStyle displayFlags="showVisual showWireframe " />
@@ -15,7 +16,7 @@
 
      <Node 	name="FEM"   >
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	      <Mesh name="mesh" src="@loader" />
+	      <MeshTopology name="mesh" src="@loader" />
 	      <MechanicalObject template="Vec3d" name="parent" />
 
              <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
@@ -27,7 +28,8 @@
 	     <TetrahedronFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="svd"/>  
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
+		<MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" color="1 .4 0.5 1"/>
 	    	<BarycentricMapping template="Vec3d,ExtVec3f"/>
 	    </Node>
     </Node>
@@ -56,7 +58,7 @@
 
 		<!-- use tet centers and volumes -->
 <!--        	<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />-->
-<!--		<Mesh name="mesh" src="@loader" />-->
+<!--		<MeshTopology name="mesh" src="@loader" />-->
 <!--	    	<TopologyGaussPointSampler name="sampler" inPosition="@mesh.position" showSamplesScale="0" method="0" order="1" />-->
 
 		<MechanicalObject template="F331" name="F" />
@@ -71,7 +73,7 @@
 	    </Node>
 
 	    <Node 	name="collision"   >
-		<Mesh name="mesh" src="@../surf" /> 
+		<MeshTopology name="mesh" src="@../surf" /> 
 		<MechanicalObject  template="Vec3d" name="pts"    />
 
 	    	<UniformMass totalMass="250" />
@@ -83,7 +85,8 @@
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
+		<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="1 0.8 0.8 "/>
 	    	<MLSMapping template="Vec3d,ExtVec3f"/>
 	    </Node>
 

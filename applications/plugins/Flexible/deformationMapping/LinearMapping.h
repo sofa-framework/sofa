@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,7 +29,6 @@
 #include "LinearJacobianBlock_rigid.inl"
 #include "LinearJacobianBlock_affine.inl"
 #include "LinearJacobianBlock_quadratic.inl"
-
 
 #ifdef __APPLE__
 // a strange behaviour of the mac's linker requires to compile a few stuffs again
@@ -84,7 +83,7 @@ protected:
 
 
 public :
-    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)
+    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w) override
     {
         helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
@@ -106,7 +105,7 @@ public :
         }
     }
 
-    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)
+    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)  override
     {
         helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
@@ -127,7 +126,7 @@ public :
         F=Fc.getF();
     }
 
-    virtual void mapDeformationGradientRate(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)
+    virtual void mapDeformationGradientRate(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw) override
     {
         helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecDeriv> > in (*this->fromModel->read(core::ConstVecDerivId::velocity()));
@@ -148,12 +147,12 @@ public :
         F=Fc.getF();
     }
 
-    virtual void initJacobianBlocks()
+    virtual void initJacobianBlocks() override
     {
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
 
-        unsigned int size=this->f_pos0.getValue().size();
+        std::size_t size=this->f_pos0.getValue().size();
 
         bool dw  = !this->f_dw.getValue().empty();
         bool ddw = !this->f_ddw.getValue().empty();
@@ -161,13 +160,13 @@ public :
 
         static const MaterialToSpatial FI = identity<MaterialToSpatial>();
         this->jacobian.resize(size);
-        for(unsigned int i=0; i<size; i++ )
+        for( std::size_t i=0; i<size; i++ )
         {
-            unsigned int nbref=this->f_index.getValue()[i].size();
+            std::size_t nbref=this->f_index.getValue()[i].size();
             this->jacobian[i].resize(nbref);
-            for(unsigned int j=0; j<nbref; j++ )
+            for( std::size_t j=0; j<nbref; j++ )
             {
-                unsigned int index=this->f_index.getValue()[i][j];
+                std::size_t index=this->f_index.getValue()[i][j];
                 this->jacobian[i][j].init( in[index],out[i],this->f_pos0.getValue()[i],
                                            F0 ? this->f_F0.getValue()[i] : FI,
                                            this->f_w.getValue()[i][j],
@@ -178,7 +177,7 @@ public :
         }
     }
 
-    virtual void initJacobianBlocks(const InVecCoord& inCoord, const OutVecCoord& outCoord)
+    virtual void initJacobianBlocks(const InVecCoord& inCoord, const OutVecCoord& outCoord) override
     {
         if(this->f_printLog.getValue())
             std::cout<<this->getName()<< "::" << SOFA_CLASS_METHOD <<std::endl;

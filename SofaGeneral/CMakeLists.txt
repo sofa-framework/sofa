@@ -1,24 +1,10 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaGeneral)
 
-## Dependencies
-find_package(SofaCommon REQUIRED)
-find_package(Newmat)
-set(SOFA_HAVE_NEWMAT ${Newmat_FOUND})
-find_package(CSparse)
-set(SOFA_HAVE_CSPARSE ${CSparse_FOUND})
-find_package(Metis QUIET)
-set(SOFA_HAVE_METIS ${Metis_FOUND})
+# Send warnings when deprecated CMake project is activated
+option(CMAKE_WARN_DEPRECATED "Send warning when deprecated projects are found" ON)
 
-## Version
-set(SOFAGENERAL_VERSION ${SofaFramework_VERSION})
-
-## SofaGeneral/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaGeneral/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaGeneral/config.h" DESTINATION "include/SofaGeneral")
-
-### Subdirectories
-
+# Subdirectories
 set(SOFAGENERAL_TARGETS
     SofaGeneralAnimationLoop
     SofaGeneralDeformable
@@ -31,38 +17,44 @@ set(SOFAGENERAL_TARGETS
     SofaGeneralRigid
     SofaGeneralSimpleFem
     SofaGeneralTopology
-    SofaGeneralVisual
     SofaBoundaryCondition
-    SofaComponentGeneral
     SofaConstraint
     SofaGeneralEngine
-    SofaExporter
     SofaGraphComponent
-    SofaHaptics
-    SofaPreconditioner
-    SofaSparseSolver
     SofaTopologyMapping
     SofaUserInteraction
-    SofaValidation
 )
-
-if(SOFA_HAVE_NEWMAT)
-    list(APPEND SOFAGENERAL_TARGETS SofaDenseSolver)
-endif()
-
-if(NOT SOFA_NO_OPENGL)
-    list(APPEND SOFAGENERAL_TARGETS SofaOpenglVisual)
-endif()
 
 foreach(TARGET ${SOFAGENERAL_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-    set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX _d)
-    set_target_properties(${TARGET} PROPERTIES FOLDER SofaGeneral) # IDE folder
-    set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFAGENERAL_VERSION})
 endforeach()
 
+# Modules
+set(SOFAGENERAL_MODULES
+    SofaGeneralVisual
+)
+foreach(MODULE ${SOFAGENERAL_MODULES})
+    find_package(${MODULE} REQUIRED)
+endforeach()
 
-## CMake package configurations files
-sofa_write_package_config_files(SofaGeneral ${SOFAGENERAL_VERSION})
+set(SOFAGENERAL_SRC src/${PROJECT_NAME})
+
+set(HEADER_FILES
+    ${SOFAGENERAL_SRC}/config.h.in
+    ${SOFAGENERAL_SRC}/initSofaGeneral.h
+    )
+
+set(SOURCE_FILES
+    ${SOFAGENERAL_SRC}/initSofaGeneral.cpp
+    )
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGENERAL_TARGETS} ${SOFAGENERAL_MODULES})
+
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    )

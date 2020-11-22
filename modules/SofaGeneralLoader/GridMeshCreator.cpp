@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,8 +37,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using helper::vector;
 
-SOFA_DECL_CLASS(GridMeshCreator)
-
 int GridMeshCreatorClass = core::RegisterObject("Procedural creation of a two-dimensional mesh.")
         .add< GridMeshCreator >()
         ;
@@ -49,6 +47,11 @@ GridMeshCreator::GridMeshCreator(): MeshLoader()
     , resolution( initData(&resolution,Vec2i(2,2),"resolution","Number of vertices in each direction"))
     , trianglePattern( initData(&trianglePattern,2,"trianglePattern","0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles"))
 {
+}
+
+void GridMeshCreator::doClearBuffers()
+{
+
 }
 
 
@@ -84,9 +87,9 @@ void GridMeshCreator::insertQuad(unsigned a, unsigned b, unsigned c, unsigned d)
 }
 
 
-bool GridMeshCreator::load()
+bool GridMeshCreator::doLoad()
 {
-    helper::WriteAccessor<Data<vector<sofa::defaulttype::Vector3> > > my_positions (d_positions);
+    auto my_positions = getWriteOnlyAccessor(d_positions);
     unsigned numX = resolution.getValue()[0], numY=resolution.getValue()[1];
 
     // Warning: Vertex creation order must be consistent with method vert.
@@ -150,7 +153,6 @@ bool GridMeshCreator::load()
     d_edges.endEdit();
 
     return true;
-
 }
 
 

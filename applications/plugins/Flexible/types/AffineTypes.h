@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,12 +43,12 @@ namespace defaulttype
 
 /** DOF types associated with deformable frames. Each deformable frame generates an affine displacement field, with 12 independent degrees of freedom.
  */
-template<int _spatial_dimensions, typename _Real>
+template<std::size_t _spatial_dimensions, typename _Real>
 class StdAffineTypes
 {
 public:
-    static const unsigned int spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
-    static const unsigned int VSize = spatial_dimensions +  spatial_dimensions * spatial_dimensions;  // number of entries
+    static const std::size_t spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
+    static const std::size_t VSize = spatial_dimensions +  spatial_dimensions * spatial_dimensions;  // number of entries
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
     typedef _Real Real;
@@ -73,7 +73,7 @@ public:
         Coord() { clear(); }
         Coord( const Vec<VSize,Real>& d):MyVec(d) {}
         Coord( const SpatialCoord& c, const Frame& a) { getCenter()=c; getAffine()=a;}
-        void clear()  { MyVec::clear(); for(unsigned int i=0; i<_spatial_dimensions; ++i) getAffine()[i][i]=(Real)1.0; } // init affine part to identity
+        void clear()  { MyVec::clear(); for(std::size_t i=0; i<_spatial_dimensions; ++i) getAffine()[i][i]=(Real)1.0; } // init affine part to identity
 
         typedef Real value_type;
 
@@ -164,10 +164,10 @@ public:
         }
 
 
-        template< int N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
-        template< int N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        template< std::size_t N, class Real2 > // N <= VSize
+        void operator+=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        template< std::size_t N, class Real2 > // N <= VSize
+        void operator=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
     };
 
     typedef helper::vector<Coord> VecCoord;
@@ -179,7 +179,7 @@ public:
     {
         assert ( ancestors.size() == coefs.size() );
         Coord c;
-        for ( unsigned int i = 0; i < ancestors.size(); i++ ) c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
+        for ( std::size_t i = 0; i < ancestors.size(); i++ ) c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
         return c;
     }
 
@@ -247,13 +247,13 @@ public:
             }
 
             // translation -> identity
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
-                for(unsigned int j=0; j<spatial_dimensions; ++j)
+            for(std::size_t i=0; i<spatial_dimensions; ++i)
+                for(std::size_t j=0; j<spatial_dimensions; ++j)
                     J(i,j)=(i==j)?1.:0;
 
             // affine part
-            for(unsigned int i=0; i<MSize; ++i)
-                for(unsigned int j=0; j<MSize; ++j)
+            for(std::size_t i=0; i<MSize; ++i)
+                for(std::size_t j=0; j<MSize; ++j)
                     J(i+spatial_dimensions,j+spatial_dimensions)=dQOverdM(i,j);
         }
 
@@ -285,8 +285,8 @@ public:
                     Frame W = getVAffine() * Ainv;
 
                     // make it skew-symmetric
-                    for(unsigned i=0; i<spatial_dimensions; i++) W[i][i] = 0.0;
-                    for(unsigned i=0; i<spatial_dimensions; i++)
+                    for(std::size_t i=0; i<spatial_dimensions; i++) W[i][i] = 0.0;
+                    for(std::size_t i=0; i<spatial_dimensions; i++)
                     {
                         for(unsigned j=i+1; j<spatial_dimensions; j++)
                         {
@@ -316,10 +316,10 @@ public:
 
 
 
-        template< int N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
-        template< int N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        template< std::size_t N, class Real2 > // N <= VSize
+        void operator+=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        template< std::size_t N, class Real2 > // N <= VSize
+        void operator=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
 
     };
 
@@ -330,7 +330,7 @@ public:
     {
         assert ( ancestors.size() == coefs.size() );
         Deriv c;
-        for ( unsigned int i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
+        for (std::size_t i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
         return c;
     }
 
@@ -411,7 +411,6 @@ public:
 
 
 
-#ifndef SOFA_FLOAT
 typedef StdAffineTypes<3, double> Affine3dTypes;
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
@@ -423,54 +422,18 @@ template<> struct DataTypeInfo< sofa::defaulttype::Affine3dTypes::Deriv > : publ
 {
     static std::string name() { std::ostringstream o; o << "AffineDeriv<" << sofa::defaulttype::Affine3dTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Affine3dTypes::Real>::name() << ">"; return o.str(); }
 };
-#endif
-#ifndef SOFA_DOUBLE
-typedef StdAffineTypes<3, float> Affine3fTypes;
 
-// Specialization of the defaulttype::DataTypeInfo type traits template
-template<> struct DataTypeInfo< sofa::defaulttype::Affine3fTypes::Coord > : public FixedArrayTypeInfo< sofa::defaulttype::Affine3fTypes::Coord, sofa::defaulttype::Affine3fTypes::Coord::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "AffineCoord<" << sofa::defaulttype::Affine3fTypes::Coord::total_size << "," << DataTypeName<sofa::defaulttype::Affine3fTypes::Real>::name() << ">"; return o.str(); }
-};
-template<> struct DataTypeInfo< sofa::defaulttype::Affine3fTypes::Deriv > : public FixedArrayTypeInfo< sofa::defaulttype::Affine3fTypes::Deriv, sofa::defaulttype::Affine3fTypes::Deriv::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "AffineDeriv<" << sofa::defaulttype::Affine3fTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Affine3fTypes::Real>::name() << ">"; return o.str(); }
-};
-#endif
+typedef Affine3dTypes Affine3Types;
 
 /// Note: Many scenes use Affine as template for 3D double-precision rigid type. Changing it to Affine3d would break backward compatibility.
-#ifdef SOFA_FLOAT
-template<> inline const char* Affine3fTypes::Name() { return "Affine"; }
-#else
 template<> inline const char* Affine3dTypes::Name() { return "Affine"; }
-#ifndef SOFA_DOUBLE
-template<> inline const char* Affine3fTypes::Name() { return "Affine3f"; }
-#endif
-#endif
-
-#ifdef SOFA_FLOAT
-typedef Affine3fTypes Affine3Types;
-#else
-typedef Affine3dTypes Affine3Types;
-#endif
-//typedef Affine3Types AffineTypes;
-
-
-
-
-
-
 
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
 
-#ifndef SOFA_FLOAT
 template<> struct DataTypeName< defaulttype::Affine3dTypes::Coord > { static const char* name() { return "Affine3dTypes::Coord"; } };
-#endif
-#ifndef SOFA_DOUBLE
-template<> struct DataTypeName< defaulttype::Affine3fTypes::Coord > { static const char* name() { return "Affine3fTypes::Coord"; } };
-#endif
+
 
 
 /// \endcond
@@ -482,31 +445,15 @@ template<> struct DataTypeName< defaulttype::Affine3fTypes::Coord > { static con
 // AffineMass
 
 
-#ifndef SOFA_FLOAT
 typedef DeformableFrameMass<3, StdAffineTypes<3,double>::deriv_total_size, double> Affine3dMass;
-#endif
-#ifndef SOFA_DOUBLE
 typedef DeformableFrameMass<3, StdAffineTypes<3,float>::deriv_total_size, float> Affine3fMass;
-#endif
-
-#ifdef SOFA_FLOAT
-typedef Affine3fMass Affine3Mass;
-#else
-typedef Affine3dMass Affine3Mass;
-#endif
-
+typedef DeformableFrameMass<3, StdAffineTypes<3,SReal>::deriv_total_size,SReal> Affine3Mass;
 
 
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
-
-#ifndef SOFA_FLOAT
 template<> struct DataTypeName< defaulttype::Affine3dMass > { static const char* name() { return "Affine3dMass"; } };
-#endif
-#ifndef SOFA_DOUBLE
 template<> struct DataTypeName< defaulttype::Affine3fMass > { static const char* name() { return "Affine3fMass"; } };
-#endif
-
 /// \endcond
 
 

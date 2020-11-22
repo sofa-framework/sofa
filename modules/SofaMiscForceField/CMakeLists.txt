@@ -1,69 +1,58 @@
-cmake_minimum_required(VERSION 3.1)
-project(SofaMiscForceField)
+cmake_minimum_required(VERSION 3.12)
+project(SofaMiscForceField VERSION 1.0 LANGUAGES CXX)
 
+find_package(SofaFramework REQUIRED) # SofaHelper
+find_package(SofaCommon REQUIRED) # SofaDeformable
+find_package(SofaGeneral REQUIRED) # SofaBoundaryCondition SofaGeneralTopology
 
-message(STATUS "SofaMiscForceField:")
-################################ COMPONENTS HERE ARE THE NG-SET ####################################
+set(SOFAMISCFORCEFIELD_SRC "src/${PROJECT_NAME}")
+
 set(HEADER_FILES
-    config.h
-    initMiscForcefield.h
-)
+    ${SOFAMISCFORCEFIELD_SRC}/config.h.in
+    ${SOFAMISCFORCEFIELD_SRC}/initSofaMiscForcefield.h
+    )
 
 set(SOURCE_FILES
-    initMiscForcefield.cpp
-)
+    ${SOFAMISCFORCEFIELD_SRC}/initSofaMiscForcefield.cpp
+    )
 
-############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
-if(SOFA_BUILD_COMPONENTSET_LIGHT)
+list(APPEND HEADER_FILES
+    ${SOFAMISCFORCEFIELD_SRC}/GearSpringForceField.h
+    ${SOFAMISCFORCEFIELD_SRC}/GearSpringForceField.inl
+    ${SOFAMISCFORCEFIELD_SRC}/MeshMatrixMass.h
+    ${SOFAMISCFORCEFIELD_SRC}/MeshMatrixMass.inl
+    )
+list(APPEND SOURCE_FILES
+    ${SOFAMISCFORCEFIELD_SRC}/GearSpringForceField.cpp
+    ${SOFAMISCFORCEFIELD_SRC}/MeshMatrixMass.cpp
+    )
+
+if(SOFA_WITH_DEPRECATED_COMPONENTS)
     list(APPEND HEADER_FILES
-
+        ${SOFAMISCFORCEFIELD_SRC}/LennardJonesForceField.h
+        ${SOFAMISCFORCEFIELD_SRC}/LennardJonesForceField.inl
         )
     list(APPEND SOURCE_FILES
-
+        ${SOFAMISCFORCEFIELD_SRC}/LennardJonesForceField.cpp
         )
 endif()
-
-############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
-if(SOFA_BUILD_COMPONENTSET_STANDARD)
-    list(APPEND HEADER_FILES
-	    GearSpringForceField.h
-        GearSpringForceField.inl             
-        MatrixMass.h
-        MatrixMass.inl
-        MeshMatrixMass.h
-        MeshMatrixMass.inl
-        )
-    list(APPEND SOURCE_FILES     
-	    GearSpringForceField.cpp           
-        MatrixMass.cpp
-        MeshMatrixMass.cpp
-        )
-
-endif()
-
-############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_COMPONENTSET_FULL)
-    list(APPEND HEADER_FILES
-	    ForceMaskOff.h  
-        LineBendingSprings.h
-        LineBendingSprings.inl
-        WashingMachineForceField.h
-        WashingMachineForceField.inl
-		LennardJonesForceField.h
-        LennardJonesForceField.inl
-        )
-    list(APPEND SOURCE_FILES
-	    ForceMaskOff.cpp        
-        LineBendingSprings.cpp
-        WashingMachineForceField.cpp
-		LennardJonesForceField.cpp
-        )
-endif()
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDeformable SofaBoundaryCondition SofaMiscTopology SofaGeneralTopology)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_FORCEFIELD")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaMisc ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+    )
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFAMISCFORCEFIELD_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFAMISCFORCEFIELD_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(SofaMiscForceField_test)
+endif()

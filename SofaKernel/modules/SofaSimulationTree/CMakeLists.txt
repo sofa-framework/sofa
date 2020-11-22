@@ -1,7 +1,8 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaSimulationTree)
 
 set(HEADER_FILES
+    config.h.in
     ExportDotVisitor.h
     GNode.h
     GNodeMultiMappingElement.h
@@ -22,9 +23,8 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SIMULATION_TREE")
 
-sofa_install_targets(SofaSimulation ${PROJECT_NAME} ${PROJECT_NAME})
-
-install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/" DESTINATION "include/SofaSimulationTree"
-        FILES_MATCHING PATTERN "*.h" PATTERN "*.inl")
+sofa_add_targets_to_package(
+    PACKAGE_NAME SofaSimulation
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    )

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,6 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -63,7 +62,8 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     m_drawForceColor(initData(&m_drawForceColor, defaulttype::Vec4f(0,1,1,1), "drawForceColor", "DEBUG: color used to render force vectors")),
     m_volumeAfterTC(initData(&m_volumeAfterTC, "volumeAfterTC", "OUT: Volume after a topology change")),
     m_surfaceAreaAfterTC(initData(&m_surfaceAreaAfterTC, (Real)0.0, "surfaceAreaAfterTC", "OUT: Surface area after a topology change")),
-    m_topology(NULL),
+    l_topology(initLink("topology", "link to the topology container")),
+    m_topology(nullptr),
     lastTopologyRevision(-1)
 {
     m_p0.setGroup("Controls");
@@ -107,7 +107,22 @@ template <class DataTypes>
 void TaitSurfacePressureForceField<DataTypes>::init()
 {
     Inherit1::init();
-    m_topology = this->getContext()->getMeshTopology();
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     updateFromTopology();
     computeMeshVolumeAndArea(*m_currentVolume.beginEdit(), *m_currentSurfaceArea.beginEdit(), this->mstate->read(sofa::core::VecCoordId::position()));
@@ -155,7 +170,7 @@ void TaitSurfacePressureForceField<DataTypes>::handleEvent(core::objectmodel::Ev
                 curInj -= maxInj;
             else if (inj > curInj)
                 curInj += maxInj;
-            sout << "Current Injected Volume = " << curInj << sendl;
+            msg_info() << "Current Injected Volume = " << curInj;
             m_currentInjectedVolume.setValue(curInj);
             updateFromTopology();
         }
@@ -168,7 +183,7 @@ void TaitSurfacePressureForceField<DataTypes>::updateFromTopology()
     if (m_topology && lastTopologyRevision != m_topology->getRevision())
     {
         if (lastTopologyRevision >= 0)
-            serr << "NEW TOPOLOGY v" << m_topology->getRevision() << sendl;
+            msg_error() << "NEW TOPOLOGY v" << m_topology->getRevision();
 
         lastTopologyRevision = m_topology->getRevision();
         computePressureTriangles();
@@ -315,6 +330,13 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrix(const core::Mechanic
     writer.addKToMatrix(this, mparams, matrix->getMatrix(this->mstate));
 }
 
+template<class DataTypes>
+SReal TaitSurfacePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+{
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
+    return 0.0;
+}
+
 /// Convert a vector cross-product to a to matrix multiplication, i.e. cross(a,b) = matCross(a)*b
 template <typename T>
 inline sofa::defaulttype::Mat<3,3,T> matCross( const sofa::defaulttype::Vec<3,T>& u )
@@ -331,11 +353,9 @@ template<class MatrixWriter>
 void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter mwriter)
 {
     helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate);
-    //helper::ReadAccessor<DataVecCoord> x0 = this->mstate->read(core::ConstVecCoordId::restPosition());
     helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
     const Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-    //const Real currentVolume = m_currentVolume.getValue();
     const Real currentPressure = m_currentPressure.getValue();
     const Real currentStiffness = m_currentStiffness.getValue();
 
@@ -368,9 +388,17 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::Mechani
             mbc = matCross((x[t[2]]-x[t[1]])*dfscale2);
             mca = matCross((x[t[0]]-x[t[2]])*dfscale2);
             mab = matCross((x[t[1]]-x[t[0]])*dfscale2);
-            mwriter.add(t[0],t[1],mab); mwriter.add(t[1],t[0],-mab);
-            mwriter.add(t[1],t[2],mbc); mwriter.add(t[2],t[1],-mbc);
-            mwriter.add(t[2],t[0],mca); mwriter.add(t[0],t[2],-mca);
+
+            // Full derivative matrix of triangle (ABC):
+            // K(A,A) = mbc   K(A,B) = mca   K(A,C) = mab
+            // K(B,A) = mbc   K(B,B) = mca   K(B,C) = mab
+            // K(C,A) = mbc   K(C,B) = mca   K(C,C) = mab
+
+            // -> the diagonal contributions become zero for closed meshes
+
+            /*mwriter.add(t[0], t[0], mbc);*/ mwriter.add(t[0], t[1], mca); mwriter.add(t[0], t[2], mab);
+            mwriter.add(t[1], t[0], mbc); /*mwriter.add(t[1], t[1], mca);*/ mwriter.add(t[1], t[2], mab);
+            mwriter.add(t[2], t[0], mbc); mwriter.add(t[2], t[1], mca); /*mwriter.add(t[2],t[2], mab); */
         }
     }
 }
@@ -456,7 +484,7 @@ void TaitSurfacePressureForceField<DataTypes>::computePressureAndStiffness(Real&
 {
     if (currentVolume > 10*v0 || 10*currentVolume < v0)
     {
-        serr << "TOO MUCH VOLUME VARIATION." << sendl;
+        msg_error() << "TOO MUCH VOLUME VARIATION.";
         pressure = 0;
         stiffness = 0;
     }

@@ -12,34 +12,20 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(ContactMapping)
-
 using namespace defaulttype;
 
 // Register in the Factory
 int ContactMappingClass = core::RegisterObject("Maps relative position/velocity between contact points")
-#ifndef SOFA_FLOAT
-.add< ContactMapping< Vec3dTypes, Vec1dTypes > >()
-.add< ContactMapping< Vec3dTypes, Vec2dTypes > >()
-.add< ContactMapping< Vec3dTypes, Vec3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< ContactMapping< Vec3fTypes, Vec1fTypes > >()
-.add< ContactMapping< Vec3fTypes, Vec2fTypes > >()
-.add< ContactMapping< Vec3fTypes, Vec3fTypes > >()
-#endif
+.add< ContactMapping< Vec3Types, Vec1Types > >()
+.add< ContactMapping< Vec3Types, Vec2Types > >()
+.add< ContactMapping< Vec3Types, Vec3Types > >()
+
 ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Compliant_API ContactMapping<  Vec3dTypes, Vec1dTypes >;
-template class SOFA_Compliant_API ContactMapping<  Vec3dTypes, Vec2dTypes >;
-template class SOFA_Compliant_API ContactMapping<  Vec3dTypes, Vec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API ContactMapping<  Vec3fTypes, Vec1fTypes >;
-template class SOFA_Compliant_API ContactMapping<  Vec3fTypes, Vec2fTypes >;
-template class SOFA_Compliant_API ContactMapping<  Vec3fTypes, Vec3fTypes >;
-#endif
+template class SOFA_Compliant_API ContactMapping<  Vec3Types, Vec1Types >;
+template class SOFA_Compliant_API ContactMapping<  Vec3Types, Vec2Types >;
+template class SOFA_Compliant_API ContactMapping<  Vec3Types, Vec3Types >;
+
 
 
 } // namespace mapping

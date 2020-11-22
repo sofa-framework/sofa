@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -74,45 +74,29 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::mapping;
 using namespace sofa::gpu::cuda;
 
-extern template class  IdentityMapping< CudaVec3fTypes, CudaVec3fTypes>;
-#ifndef SOFA_DOUBLE
-extern template class  IdentityMapping< CudaVec3fTypes, Vec3fTypes>;
-extern template class  IdentityMapping< Vec3fTypes, CudaVec3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-extern template class  IdentityMapping< CudaVec3fTypes, Vec3dTypes>;
-extern template class  IdentityMapping< Vec3dTypes, CudaVec3fTypes>;
-#endif
+// CudaVec3fTypes
+extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, CudaVec3fTypes>;
+extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, CudaVec3f1Types>;
+extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, Vec3Types>;
+extern template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3Types, CudaVec3fTypes>;
+
+// CudaVec3f1Types
+extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3f1Types, CudaVec3f1Types>;
+extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3f1Types, CudaVec3fTypes>;
+extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3f1Types, Vec3Types>;
+extern template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3dTypes, CudaVec3f1Types>;
+
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-extern template class  IdentityMapping< CudaVec3fTypes, CudaVec3dTypes>;
-extern template class  IdentityMapping< CudaVec3dTypes, CudaVec3fTypes>;
-extern template class  IdentityMapping< CudaVec3dTypes, CudaVec3dTypes>;
-extern template class  IdentityMapping< CudaVec3dTypes, Vec3fTypes>;
-extern template class  IdentityMapping< CudaVec3dTypes, Vec3dTypes>;
-#ifndef SOFA_DOUBLE
-extern template class  IdentityMapping< Vec3dTypes, CudaVec3dTypes>;
-#endif
-#ifndef SOFA_FLOAT
-extern template class  IdentityMapping< Vec3fTypes, CudaVec3dTypes>;
-#endif
+// CudaVec3dTypes
+extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3dTypes, CudaVec3dTypes>;
+extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3dTypes, CudaVec3fTypes>;
+extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3dTypes, Vec3Types>;
 
-extern template class  IdentityMapping< CudaVec3d1Types, ExtVec3dTypes >;
-extern template class  IdentityMapping< CudaVec3dTypes, ExtVec3dTypes >;
+extern template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, CudaVec3dTypes>;
+extern template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3Types, CudaVec3dTypes>;
+
 #endif
-extern template class  IdentityMapping< CudaVec3f1Types, ExtVec3fTypes >;
-extern template class  IdentityMapping< CudaVec3f1Types, CudaVec3f1Types>;
-extern template class  IdentityMapping< CudaVec3f1Types, Vec3fTypes>;
-#ifndef SOFA_FLOAT
-extern template class  IdentityMapping< Vec3dTypes, CudaVec3f1Types>;
-extern template class  IdentityMapping< CudaVec3f1Types, Vec3dTypes>;
-extern template class  IdentityMapping< CudaVec3f1Types, ExtVec3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class  IdentityMapping< Vec3fTypes, ExtVec3fTypes>;
-#endif
-extern template class  IdentityMapping< CudaVec3f1Types, CudaVec3fTypes>;
-extern template class  IdentityMapping< CudaVec3fTypes, CudaVec3f1Types>;
 
 #endif
 

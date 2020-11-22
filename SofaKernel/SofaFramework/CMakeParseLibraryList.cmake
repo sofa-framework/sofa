@@ -10,6 +10,9 @@
 #                         GENERAL <out_gen_list>)
 
 # CMake module
+
+include_guard(GLOBAL)
+
 include(CMakeParseArguments)
 
 function(PARSE_LIBRARY_LIST)

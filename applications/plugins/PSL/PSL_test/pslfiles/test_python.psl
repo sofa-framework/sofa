@@ -1,0 +1,27 @@
+Node : {
+    name : "root"
+
+    /// Access a variable binded from the scene graph.
+    Python : '''a = root.name'''
+
+    Node : {
+        name : "child1"
+        Python : '''
+                 if not child1.name == "child1":
+                       Sofa.msg_error("Parser", "Unable to get the child.")
+                 '''
+        Python : '''
+                 for i in range(0, 10):
+                    child1.createChild("test"+str(i))
+                 '''
+
+        Python : '''
+                 if len(child1.getChildren()) != 10:
+                     Sofa.msg_error("Parser", "Unable to get the child.")
+                 '''
+    }
+
+    TestResult : "Success"
+}
+
+

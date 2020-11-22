@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,7 +36,7 @@ namespace topology
 
 ///////////////////// Private functions on TopologyDataHandler changes /////////////////////////////
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::swap( unsigned int i1, unsigned int i2 )
+void TopologyDataHandler <TopologyElementType, VecT>::swap(index_type i1,index_type i2 )
 {
     container_type& data = *(m_topologyData->beginEdit());
     value_type tmp = data[i1];
@@ -47,51 +47,51 @@ void TopologyDataHandler <TopologyElementType, VecT>::swap( unsigned int i1, uns
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::add(const sofa::helper::vector<unsigned int> & index,
+void TopologyDataHandler <TopologyElementType, VecT>::add(const sofa::helper::vector<index_type> & index,
         const sofa::helper::vector< TopologyElementType >& elems,
-        const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
+        const sofa::helper::vector<sofa::helper::vector<index_type> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs,
         const sofa::helper::vector< AncestorElem >& ancestorElems)
 {
-    unsigned int nbElements = (unsigned)index.size();
+    std::size_t nbElements = index.size();
     if (nbElements == 0) return;
     // Using default values
     container_type& data = *(m_topologyData->beginEdit());
-    unsigned int i0 = (unsigned)data.size();
+    std::size_t i0 = data.size();
     if (i0 != index[0])
     {
-        this->m_topologyData->getOwner()->serr << "TopologyDataHandler SIZE MISMATCH in Data "
+        msg_error(this->m_topologyData->getOwner()) << "TopologyDataHandler SIZE MISMATCH in Data "
             << this->m_topologyData->getName() << ": " << nbElements << " "
             << core::topology::TopologyElementInfo<TopologyElementType>::name()
             << " ADDED starting from index " << index[0]
-            << " while vector size is " << i0 << this->m_topologyData->getOwner()->sendl;
+            << " while vector size is " << i0;
         i0 = index[0];
     }
     data.resize(i0+nbElements);
 
-    const sofa::helper::vector< unsigned int > empty_vecint;
+    const sofa::helper::vector< index_type > empty_vecint;
     const sofa::helper::vector< double > empty_vecdouble;
 
-    for (unsigned int i = 0; i < nbElements; ++i)
+    for (index_type i = 0; i < nbElements; ++i)
     {
         value_type& t = data[i0+i];
         this->applyCreateFunction(i0+i, t, elems[i],
             (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
             (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
-            (ancestorElems.empty()             ) ? NULL : &ancestorElems[i]);
+            (ancestorElems.empty()             ) ? nullptr : &ancestorElems[i]);
     }
     m_topologyData->endEdit();
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::move( const sofa::helper::vector<unsigned int> &indexList,
-        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+void TopologyDataHandler <TopologyElementType, VecT>::move( const sofa::helper::vector<index_type> &indexList,
+        const sofa::helper::vector< sofa::helper::vector< index_type > >& ancestors,
         const sofa::helper::vector< sofa::helper::vector< double > >& coefs)
 {
     container_type& data = *(m_topologyData->beginEdit());
 
-    for (unsigned int i = 0; i <indexList.size(); i++)
+    for (std::size_t i = 0; i <indexList.size(); i++)
     {
         this->applyDestroyFunction( indexList[i], data[indexList[i]] );
         this->applyCreateFunction( indexList[i], data[indexList[i]], ancestors[i], coefs[i] );
@@ -102,14 +102,14 @@ void TopologyDataHandler <TopologyElementType, VecT>::move( const sofa::helper::
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::remove( const sofa::helper::vector<unsigned int> &index )
+void TopologyDataHandler <TopologyElementType, VecT>::remove( const sofa::helper::vector<index_type> &index )
 {
 		
 	container_type& data = *(m_topologyData->beginEdit());
 	if (data.size()>0) {
-		unsigned int last = (unsigned)data.size() -1;
+        index_type last = data.size() -1;
 
-		for (unsigned int i = 0; i < index.size(); ++i)
+        for (std::size_t i = 0; i < index.size(); ++i)
 		{
 			this->applyDestroyFunction( index[i], data[index[i]] );
 			this->swap( index[i], last );
@@ -123,12 +123,12 @@ void TopologyDataHandler <TopologyElementType, VecT>::remove( const sofa::helper
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::renumber( const sofa::helper::vector<unsigned int> &index )
+void TopologyDataHandler <TopologyElementType, VecT>::renumber( const sofa::helper::vector<index_type> &index )
 {
     container_type& data = *(m_topologyData->beginEdit());
 
     container_type copy = m_topologyData->getValue(); // not very efficient memory-wise, but I can see no better solution...
-    for (unsigned int i = 0; i < index.size(); ++i)
+    for (std::size_t i = 0; i < index.size(); ++i)
         data[i] = copy[ index[i] ];
 
     m_topologyData->endEdit();
@@ -136,18 +136,18 @@ void TopologyDataHandler <TopologyElementType, VecT>::renumber( const sofa::help
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<unsigned int> &indexList,
+void TopologyDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<index_type> &indexList,
         const sofa::helper::vector<TopologyElementType> &elems)
 {
     container_type& data = *(m_topologyData->beginEdit());
 
     // Recompute data
-    sofa::helper::vector< unsigned int > ancestors;
+    sofa::helper::vector< index_type > ancestors;
     sofa::helper::vector< double >  coefs;
     coefs.push_back (1.0);
     ancestors.resize(1);
 
-    for (unsigned int i = 0; i <indexList.size(); i++)
+    for (std::size_t i = 0; i <indexList.size(); i++)
     {
         ancestors[0] = indexList[i];
         this->applyCreateFunction( indexList[i], data[indexList[i]], elems[i], ancestors, coefs );
@@ -158,11 +158,11 @@ void TopologyDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const s
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<unsigned int> &indices)
+void TopologyDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<index_type> &indices)
 {
     container_type& data = *(m_topologyData->beginEdit());
 
-    for (unsigned int i = 0; i <indices.size(); i++)
+    for (std::size_t i = 0; i <indices.size(); i++)
         this->applyDestroyFunction( indices[i], data[indices[i]] );
 
     m_topologyData->endEdit();

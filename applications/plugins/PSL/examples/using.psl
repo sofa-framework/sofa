@@ -1,0 +1,14 @@
+Node : {
+    name : "root"
+    Using : MechanicalObject as MyName
+
+    MechanicalObject : {
+        name : "createdFromName"
+    }
+
+    MyName : {
+        name : "createdFromAlias"
+    }
+}
+
+

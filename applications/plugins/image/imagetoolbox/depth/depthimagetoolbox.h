@@ -93,7 +93,7 @@ public:
     {
     }
     
-    virtual void init() override
+    void init() override
     {
         addInput(&d_transform);
         addInput(&d_filename);
@@ -123,7 +123,7 @@ public:
 
     }
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
+    sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
     {
         return new sofa::gui::qt::DepthImageToolBoxAction(this,parent);
     }
@@ -461,7 +461,7 @@ public:
 
             for(unsigned int j=0;j<4;j++)
             {
-                unsigned int &p = quad[j];
+                auto &p = quad[j];
 
                 it=mapEdge.find(p);
                 if(it==mapEdge.end())
@@ -1574,7 +1574,7 @@ public:
     DataFileName d_filename;
     DataFileName d_scnfilename;
 
-    Data< TransformType> d_transform;
+    Data< TransformType> d_transform; ///< Transform
 
     Data< VecDouble > d_outImagePosition;
 

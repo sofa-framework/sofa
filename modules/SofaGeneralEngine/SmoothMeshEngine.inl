@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,14 +22,10 @@
 #ifndef SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_INL
 #define SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include "SmoothMeshEngine.h"
-#include <sofa/helper/gl/template.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -48,6 +44,8 @@ SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
     , nb_iterations( initData (&nb_iterations, (unsigned int)1, "nb_iterations", "Number of iterations of laplacian smoothing") )
     , showInput( initData (&showInput, false, "showInput", "showInput") )
     , showOutput( initData (&showOutput, false, "showOutput", "showOutput") )
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
 {
 
 }
@@ -55,12 +53,24 @@ SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
 template <class DataTypes>
 void SmoothMeshEngine<DataTypes>::init()
 {
-    m_topo = this->getContext()->getMeshTopology();
-    if (!m_topo)
-        serr << "SmoothMeshEngine requires a mesh topology" << sendl;
-
     addInput(&input_position);
     addOutput(&output_position);
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     setDirtyValue();
 }
@@ -72,13 +82,11 @@ void SmoothMeshEngine<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void SmoothMeshEngine<DataTypes>::update()
+void SmoothMeshEngine<DataTypes>::doUpdate()
 {
     using sofa::core::topology::BaseMeshTopology;
 
-    cleanDirty();
-
-    if (!m_topo) return;
+    if (!m_topology) return;
 
     helper::ReadAccessor< Data<VecCoord> > in(input_position);
     helper::ReadAccessor< Data<helper::vector <unsigned int > > > indices(input_indices);
@@ -96,7 +104,7 @@ void SmoothMeshEngine<DataTypes>::update()
         {
             for (unsigned int i = 0; i < out.size(); i++)
             {
-                BaseMeshTopology::VerticesAroundVertex v = m_topo->getVerticesAroundVertex(i);
+                BaseMeshTopology::VerticesAroundVertex v = m_topology->getVerticesAroundVertex(i);
                 if (v.size()>0) {
                     Coord p = Coord();
                     for (unsigned int j = 0; j < v.size(); j++)
@@ -117,7 +125,7 @@ void SmoothMeshEngine<DataTypes>::update()
             }            
             for(unsigned int i = 0; i < indices.size(); i++)
             {
-                BaseMeshTopology::VerticesAroundVertex v = m_topo->getVerticesAroundVertex(indices[i]);
+                BaseMeshTopology::VerticesAroundVertex v = m_topology->getVerticesAroundVertex(indices[i]);
                 if (v.size()>0) {
                     Coord p = Coord();
                     for (unsigned int j = 0; j < v.size(); j++)
@@ -136,14 +144,14 @@ void SmoothMeshEngine<DataTypes>::update()
  * initial geometry. Thus, the output coordinates are "inside" the input one's
  */
 template<class DataTypes>
-void SmoothMeshEngine<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+void SmoothMeshEngine<DataTypes>::computeBBox(const core::ExecParams*, bool onlyVisible)
 {
 	if( !onlyVisible ) return;
 
 	helper::ReadAccessor< Data<VecCoord> > x(input_position);
 
 	static const Real max_real = std::numeric_limits<Real>::max();
-	static const Real min_real = std::numeric_limits<Real>::min();
+	static const Real min_real = std::numeric_limits<Real>::lowest();
 	Real maxBBox[3] = {min_real,min_real,min_real};
 	Real minBBox[3] = {max_real,max_real,max_real};
 	for (size_t i=0; i<x.size(); i++)
@@ -155,84 +163,68 @@ void SmoothMeshEngine<DataTypes>::computeBBox(const core::ExecParams* params, bo
 		}
 	}
 
-	this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+	this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 template <class DataTypes>
 void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams)
-{
+{    
+    if (!vparams->displayFlags().getShowVisualModels() || m_topology == nullptr) return;
+
     using sofa::defaulttype::Vec;
-#ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowVisualModels()) return;
+    vparams->drawTool()->saveLastState();
 
     bool wireframe=vparams->displayFlags().getShowWireFrame();
 
-    sofa::core::topology::BaseMeshTopology::SeqTriangles tri = m_topo->getTriangles();
+    sofa::core::topology::BaseMeshTopology::SeqTriangles tri = m_topology->getTriangles();
 
-    glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
-    glEnable( GL_LIGHTING);
+    vparams->drawTool()->enableLighting();
+
+    if(wireframe)
+        vparams->drawTool()->setPolygonMode(0, true);
 
     if (this->showInput.getValue())
     {
+        std::vector<sofa::defaulttype::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord> > in(input_position);
 
-        const float color[] = {1.0f, 0.76078431372f, 0.0f, 0.0f};
-        const float specular[] = {0.0f, 0.0f ,0.0f ,0.0f};
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.0f);
+        sofa::helper::types::RGBAColor color(1.0f, 0.76078431372f, 0.0f, 1.0f);
+        vparams->drawTool()->setMaterial(color);
 
-        if(!wireframe) glBegin(GL_TRIANGLES);
         for (unsigned int i=0; i<tri.size(); ++i)
         {
-            if(wireframe) glBegin(GL_LINE_LOOP);
             const Vec<3,Real>& a = in[ tri[i][0] ];
             const Vec<3,Real>& b = in[ tri[i][1] ];
             const Vec<3,Real>& c = in[ tri[i][2] ];
-            Vec<3,Real> n = cross((a-b),(a-c));	n.normalize();
-            glNormal3d(n[0],n[1],n[2]);
-
-            glVertex3d(a[0],a[1],a[2]);
-            glVertex3d(b[0],b[1],b[2]);
-            glVertex3d(c[0],c[1],c[2]);
-
-            if(wireframe)  glEnd();
+            vertices.push_back(a);
+            vertices.push_back(b);
+            vertices.push_back(c);
         }
-        if(!wireframe) glEnd();
+        vparams->drawTool()->drawTriangles(vertices,color);
     }
 
     if (this->showOutput.getValue())
     {
+        std::vector<sofa::defaulttype::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord> > out(output_position);
+        sofa::helper::types::RGBAColor color(0.0f, 0.6f, 0.8f, 1.0f);
 
-        const float color[] = {0.0f, 0.6f, 0.8f, 0.0f};
-        const float specular[] = {0.0f, 0.0f, 0.0f, 0.0f};
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.0f);
-
-        if(!wireframe) glBegin(GL_TRIANGLES);
         for (unsigned int i=0; i<tri.size(); ++i)
         {
-            if(wireframe) glBegin(GL_LINE_LOOP);
             const Vec<3,Real>& a = out[ tri[i][0] ];
             const Vec<3,Real>& b = out[ tri[i][1] ];
             const Vec<3,Real>& c = out[ tri[i][2] ];
-            Vec<3,Real> n = cross((a-b),(a-c));	n.normalize();
-            glNormal3d(n[0],n[1],n[2]);
-
-            glVertex3d(a[0],a[1],a[2]);
-            glVertex3d(b[0],b[1],b[2]);
-            glVertex3d(c[0],c[1],c[2]);
-
-            if(wireframe)  glEnd();
+            vertices.push_back(a);
+            vertices.push_back(b);
+            vertices.push_back(c);
         }
-        if(!wireframe) glEnd();
+        vparams->drawTool()->drawTriangles(vertices, color);
     }
 
-    glPopAttrib();
+    if (wireframe)
+        vparams->drawTool()->setPolygonMode(0, false);
 
-#endif
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace engine

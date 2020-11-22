@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,6 +46,7 @@ SubsetMapping<TIn, TOut>::SubsetMapping()
     , f_handleTopologyChange( initData(&f_handleTopologyChange, true, "handleTopologyChange", "Enable support of topological changes for indices (disable if it is linked from SubsetTopologicalMapping::pointD2S)"))
     , f_ignoreNotFound( initData(&f_ignoreNotFound, false, "ignoreNotFound", "True to ignore points that are not found in the input model, they will be treated as fixed points"))
     , f_resizeToModel( initData(&f_resizeToModel, false, "resizeToModel", "True to resize the output MechanicalState to match the size of indices"))
+    , l_topology(initLink("topology", "link to the topology container"))
     , matrixJ()
     , updateJ(false)
 {
@@ -75,21 +76,6 @@ int SubsetMapping<TIn, TOut>::addPoint(int index)
     f_indices.endEdit();
     return i;
 }
-
-// Handle topological changes
-/*
-template <class TIn, class TOut>
-void SubsetMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
-{
-    core::topology::BaseMeshTopology* topoFrom = this->fromModel->getContext()->getMeshTopology();
-    if (t != topoFrom) return;
-
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin=topoFrom->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd=topoFrom->endChange();
-    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->fromModel->getSize());
-    f_indices.endEdit();
-}
-*/
 
 template <class TIn, class TOut>
 void SubsetMapping<TIn, TOut>::init()
@@ -141,7 +127,7 @@ void SubsetMapping<TIn, TOut>::init()
                 ++numnotfound;
                 if(!ignoreNotFound)
                 {
-                    sout<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model within a radius of "<<rmax<<"."<<sendl;
+                    msg_error() << "Point " << i << "=" << out[i] << " not found in input model within a radius of " << rmax << ".";
                 }
                 indices[i] = (unsigned int)-1;
             }
@@ -149,7 +135,7 @@ void SubsetMapping<TIn, TOut>::init()
         f_indices.endEdit();
         if (numnotfound > 0)
         {
-            sout << out.size() << " points, " << out.size()-numnotfound << " found, " << numnotfound << " fixed points" << sendl;
+            msg_info() << out.size() << " points, " << out.size() - numnotfound << " found, " << numnotfound << " fixed points";
         }
     }
     else if (!ignoreNotFound)
@@ -159,7 +145,7 @@ void SubsetMapping<TIn, TOut>::init()
         {
             if ((unsigned)indices[i] >= inSize)
             {
-                serr << "ERROR(SubsetMapping): incorrect index "<<indices[i]<<" (input size "<<inSize<<")"<<sendl;
+                msg_error() << "incorrect index "<<indices[i]<<" (input size "<<inSize<<")";
                 indices.erase(indices.begin()+i);
                 --i;
             }
@@ -167,14 +153,30 @@ void SubsetMapping<TIn, TOut>::init()
         f_indices.endEdit();
     }
     this->Inherit::init();
-
-    topology = this->getContext()->getMeshTopology();
-
+    
     if (f_handleTopologyChange.getValue())
     {
-        // Initialize functions and parameters for topological changes
-        f_indices.createTopologicalEngine(topology);
-        f_indices.registerTopologicalData();
+        if (l_topology.empty())
+        {
+            msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+            l_topology.set(this->getContext()->getMeshTopologyLink());
+
+        }
+
+        sofa::core::topology::BaseMeshTopology* topology = l_topology.get();
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        if (topology)
+        {
+            // Initialize functions and parameters for topological changes
+            f_indices.createTopologicalEngine(topology);
+            f_indices.registerTopologicalData();
+        }
+        else
+        {
+            msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << " Set handleTopologyChange to false if topology is not needed.";
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        }
     }
 
     postInit();
@@ -224,10 +226,10 @@ void SubsetMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /*mparams*/
 
     const InVecDeriv& in = dIn.getValue();
     OutVecDeriv& out = *dOut.beginEdit();
-    const unsigned int fromSize = in.size();
+    const std::size_t fromSize = in.size();
 
     out.resize(indices.size());
-    for(unsigned int i = 0; i < out.size(); ++i)
+    for(std::size_t i = 0; i < out.size(); ++i)
     {
         if(indices[i] < fromSize)
             out[i] = in[ indices[i] ];
@@ -243,7 +245,7 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::MechanicalParams* /*mparams
 
     const OutVecDeriv& in = dIn.getValue();
     InVecDeriv& out = *dOut.beginEdit();
-    const unsigned int fromSize = out.size();
+    const std::size_t fromSize = out.size();
 
     if (indices.empty())
         return;
@@ -292,22 +294,6 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::ConstraintParams * /*cparam
         }
     }
     dOut.endEdit();
-    //int offset = out.size();
-    //out.resize(offset+in.size());
-
-    //const IndexArray& indices = f_indices.getValue();
-    //for(unsigned int i = 0; i < in.size(); ++i)
-    //{
-    //  OutConstraintIterator itOut;
-    //  std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
-    //
-    //  for (itOut=iter.first;itOut!=iter.second;itOut++)
-    //    {
-    //      unsigned int indexIn = itOut->first;
-    //      OutDeriv data = (OutDeriv) itOut->second;
-    //      out[i+offset].add( indices[indexIn] , data );
-    //    }
-    //}
 }
 
 template<class TIn, class TOut>
@@ -319,7 +305,7 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
         const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
         const IndexArray& indices = f_indices.getValue();
         assert(indices.size() == out.size());
-        const unsigned int fromSize = in.size();
+        const std::size_t fromSize = in.size();
 
         updateJ = false;
         if (matrixJ.get() == 0 ||
@@ -353,8 +339,8 @@ const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJ
         updateJ = false;
 
         const IndexArray& indices = f_indices.getValue();
-        const unsigned rowsBlock = indices.size();
-        const unsigned colsBlock = this->fromModel->getSize();
+        const std::size_t rowsBlock = indices.size();
+        const std::size_t colsBlock = this->fromModel->getSize();
 
         const unsigned rows = rowsBlock * NOut;
         const unsigned cols = colsBlock * NIn;

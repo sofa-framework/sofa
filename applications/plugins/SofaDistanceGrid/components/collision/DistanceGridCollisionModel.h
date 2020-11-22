@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,12 +26,12 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <SofaMeshCollision/RigidContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include "../../DistanceGrid.h"
@@ -58,7 +58,7 @@ class SOFA_SOFADISTANCEGRID_API RigidDistanceGridCollisionElement : public core:
 {
 public:
 
-    RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, int index);
+    RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, index_type index);
 
     explicit RigidDistanceGridCollisionElement(const core::CollisionElementIterator& i);
 
@@ -124,45 +124,45 @@ public:
 
     // Input data parameters
     sofa::core::objectmodel::DataFileName fileRigidDistanceGrid;
-    Data< double > scale;
-    Data< defaulttype::Vector3 > translation;
-    Data< defaulttype::Vector3 > rotation;
-    Data< double > sampling;
-    Data< helper::fixed_array<DistanceGrid::Coord,2> > box;
-    Data< int > nx;
-    Data< int > ny;
-    Data< int > nz;
+    Data< double > scale; ///< scaling factor for input file
+    Data< defaulttype::Vector3 > translation; ///< translation to apply to input file
+    Data< defaulttype::Vector3 > rotation; ///< rotation to apply to input file
+    Data< double > sampling; ///< if not zero: sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
+    Data< helper::fixed_array<DistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data< int > nx; ///< number of values on X axis
+    Data< int > ny; ///< number of values on Y axis
+    Data< int > nz; ///< number of values on Z axis
     sofa::core::objectmodel::DataFileName dumpfilename;
 
-    Data< bool > usePoints;
-    Data< bool > flipNormals;
-    Data< bool > showMeshPoints;
-    Data< bool > showGridPoints;
-    Data< double > showMinDist;
-    Data< double > showMaxDist;
+    Data< bool > usePoints; ///< use mesh vertices for collision detection
+    Data< bool > flipNormals; ///< reverse surface direction, i.e. points are considered in collision if they move outside of the object instead of inside
+    Data< bool > showMeshPoints; ///< Enable rendering of mesh points
+    Data< bool > showGridPoints; ///< Enable rendering of grid points
+    Data< double > showMinDist; ///< Min distance to render gradients
+    Data< double > showMaxDist; ///< Max distance to render gradients
 protected:
     RigidDistanceGridCollisionModel();
 
-    ~RigidDistanceGridCollisionModel();
+    ~RigidDistanceGridCollisionModel() override;
 public:
     core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
 
-    void init();
+    void init() override;
 
-    DistanceGrid* getGrid(int index=0)
+    DistanceGrid* getGrid(index_type index=0)
     {
         return elems[index].grid;
     }
-    bool isTransformed(int index=0) const
+    bool isTransformed(index_type index=0) const
     {
         return elems[index].isTransformed;
     }
-    const defaulttype::Matrix3& getRotation(int index=0) const
+    const defaulttype::Matrix3& getRotation(index_type index=0) const
     {
         return elems[index].rotation;
     }
-    const defaulttype::Vector3& getTranslation(int index=0) const
+    const defaulttype::Vector3& getTranslation(index_type index=0) const
     {
         return elems[index].translation;
     }
@@ -190,27 +190,27 @@ public:
         return flipNormals.getValue();
     }
 
-    void setGrid(DistanceGrid* surf, int index=0);
+    void setGrid(DistanceGrid* surf, index_type index=0);
 
-    DistanceGrid* getPrevGrid(int index=0)
+    DistanceGrid* getPrevGrid(index_type index=0)
     {
         return elems[index].prevGrid;
     }
-    const defaulttype::Matrix3& getPrevRotation(int index=0) const
+    const defaulttype::Matrix3& getPrevRotation(index_type index=0) const
     {
         return elems[index].prevRotation;
     }
-    const defaulttype::Vector3& getPrevTranslation(int index=0) const
+    const defaulttype::Vector3& getPrevTranslation(index_type index=0) const
     {
         return elems[index].prevTranslation;
     }
-    double getPrevDt(int index=0) const
+    double getPrevDt(index_type index=0) const
     {
         return elems[index].prevDt;
     }
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(int index, double dt, DistanceGrid* grid, const defaulttype::Matrix3& rotation, const defaulttype::Vector3& translation);
+    void setNewState(index_type index, double dt, DistanceGrid* grid, const defaulttype::Matrix3& rotation, const defaulttype::Vector3& translation);
 
     /// @}
 
@@ -222,17 +222,17 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(int size);
+    void resize(std::size_t size) override;
 
     /// Create or update the bounding volume hierarchy.
-    void computeBoundingTree(int maxDepth=0);
+    void computeBoundingTree(int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*, int index);
+    void draw(const core::visual::VisualParams*, index_type index) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 };
 
-inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, int index)
+inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, index_type index)
     : core::TCollisionElementIterator<RigidDistanceGridCollisionModel>(model, index)
 {}
 
@@ -269,7 +269,7 @@ class FFDDistanceGridCollisionElement : public core::TCollisionElementIterator<F
 {
 public:
 
-    FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, int index);
+    FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, index_type index);
 
     explicit FFDDistanceGridCollisionElement(const core::CollisionElementIterator& i);
 
@@ -295,7 +295,7 @@ public:
         struct Point
         {
             GCoord bary; ///< Barycentric coordinates
-            int index; ///< Index of corresponding point in DistanceGrid
+            index_type index; ///< Index of corresponding point in DistanceGrid
         };
         helper::vector<Point> points; ///< barycentric coordinates of included points
         helper::vector<GCoord> normals; ///< normals in barycentric coordinates of included points
@@ -431,12 +431,12 @@ protected:
 
     // Input data parameters
     sofa::core::objectmodel::DataFileName  fileFFDDistanceGrid;
-    Data< double > scale;
-    Data< double > sampling;
-    Data< helper::fixed_array<DistanceGrid::Coord,2> > box;
-    Data< int > nx;
-    Data< int > ny;
-    Data< int > nz;
+    Data< double > scale; ///< scaling factor for input file
+    Data< double > sampling; ///< if not zero: sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
+    Data< helper::fixed_array<DistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data< int > nx; ///< number of values on X axis
+    Data< int > ny; ///< number of values on Y axis
+    Data< int > nz; ///< number of values on Z axis
     sofa::core::objectmodel::DataFileName dumpfilename;
 
     core::behavior::MechanicalState<defaulttype::Vec3Types>* ffd;
@@ -452,48 +452,48 @@ public:
     typedef topology::RegularGridTopology Topology;
     typedef FFDDistanceGridCollisionElement Element;
 
-    Data< bool > usePoints;
-    Data< bool > singleContact;
+    Data< bool > usePoints; ///< use mesh vertices for collision detection
+    Data< bool > singleContact; ///< keep only the deepest contact in each cell
 protected:
     FFDDistanceGridCollisionModel();
 
-    ~FFDDistanceGridCollisionModel();
+    ~FFDDistanceGridCollisionModel() override;
 public:
     core::behavior::MechanicalState<DataTypes>* getDeformModel() { return ffd; }
     core::topology::BaseMeshTopology* getDeformGrid() { return ffdMesh; }
 
     /// alias used by ContactMapper
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
-    core::topology::BaseMeshTopology* getMeshTopology() { return ffdMesh; }
+    core::topology::BaseMeshTopology* getCollisionTopology() override { return ffdMesh; }
 
-    void init();
+    void init() override;
 
-    DistanceGrid* getGrid(int index=0)
+    DistanceGrid* getGrid(index_type index=0)
     {
         return elems[index].grid;
     }
 
-    DeformedCube& getDeformCube(int index=0)
+    DeformedCube& getDeformCube(index_type index=0)
     {
         return elems[index];
     }
 
-    void setGrid(DistanceGrid* surf, int index=0);
+    void setGrid(DistanceGrid* surf, index_type index=0);
 
     /// CollisionModel interface
-    void resize(int size);
+    void resize(std::size_t size) override;
 
     /// Create or update the bounding volume hierarchy.
-    void computeBoundingTree(int maxDepth=0);
+    void computeBoundingTree(int maxDepth=0) override;
 
-    bool canCollideWithElement(int index, CollisionModel* model2, int index2);
+    bool canCollideWithElement(index_type index, CollisionModel* model2, index_type index2) override;
 
-    void draw(const core::visual::VisualParams*,int index);
+    void draw(const core::visual::VisualParams*, index_type index) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 };
 
-inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, int index)
+inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, index_type index)
     : core::TCollisionElementIterator<FFDDistanceGridCollisionModel>(model, index)
 {}
 
@@ -512,10 +512,12 @@ class ContactMapper<FFDDistanceGridCollisionModel,DataTypes> : public Barycentri
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    int addPoint(const Coord& P, int index, Real&)
+    using index_type = sofa::defaulttype::index_type;
+
+    index_type addPoint(const Coord& P, index_type index, Real&)
     {
         defaulttype::Vector3 bary;
-        int elem = this->model->getDeformCube(index).elem;
+        index_type elem = this->model->getDeformCube(index).elem;
         bary = this->model->getDeformCube(index).baryCoords(P);
         return this->mapper->addPointInCube(elem,bary.ptr());
     }
@@ -535,6 +537,7 @@ public:
     typedef RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
+    using index_type = sofa::defaulttype::index_type;
 
     MMechanicalState* createMapping(const char* name="contactPoints")
     {
@@ -549,7 +552,7 @@ public:
                     this->child->addObject(visu);
                     visu->useAlpha.setValue(true);
                     visu->vscale.setValue(this->model->getContext()->getDt());
-                    IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > * map = new IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >( outmodel, visu );
+                    IdentityMapping< DataTypes, StdVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > * map = new IdentityMapping< DataTypes, StdVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >( outmodel, visu );
                     this->child->addObject(map);
                     visu->init();
                     map->init(); */
@@ -557,7 +560,7 @@ public:
         return outmodel;
     }
 
-    int addPoint(const Coord& P, int index, Real& r)
+    index_type addPoint(const Coord& P, index_type index, Real& r)
     {
         Coord trans = this->model->getInitRotation() * this->model->getInitTranslation();
         int i = Inherit::addPoint(P+trans, index, r);
@@ -608,7 +611,7 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_CPP)
+#if  !defined(SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_CPP)
 
 extern template class SOFA_SOFADISTANCEGRID_API ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 extern template class SOFA_SOFADISTANCEGRID_API ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;

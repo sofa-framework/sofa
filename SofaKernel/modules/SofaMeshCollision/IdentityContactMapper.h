@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_H
 #include "config.h"
 
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
@@ -65,9 +64,10 @@ public:
     typedef mapping::IdentityMapping< InDataTypes, typename IdentityContactMapper::DataTypes > MMapping;
     MCollisionModel* model;
     typename MMapping::SPtr mapping;
+    using index_type = sofa::defaulttype::index_type;
 
     IdentityContactMapper()
-        : model(NULL), mapping(NULL)
+        : model(nullptr), mapping(nullptr)
     {
     }
 
@@ -80,18 +80,18 @@ public:
 
     MMechanicalState* createMapping(const char* name="contactPoints");
 
-    void resize(int /*size*/)
+    void resize(std::size_t /*size*/)
     {
     }
 
-    int addPoint(const Coord&, int index, Real&)
+    index_type addPoint(const Coord&, index_type index, Real&)
     {
         return index;
     }
 
     void update()
     {
-        if (mapping!=NULL)
+        if (mapping!=nullptr)
         {
             mapping->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
             mapping->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
@@ -100,15 +100,17 @@ public:
 
     void updateXfree()
     {
-        if (mapping!=NULL)
+        if (mapping!=nullptr)
         {
             mapping->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+            mapping->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::freeVelocity(), core::ConstVecDerivId::freeVelocity());
+
         }
     }
-
+    
     void updateX0()
     {
-        if(mapping!=NULL)
+        if(mapping!=nullptr)
         {
              mapping->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
         }
@@ -128,9 +130,10 @@ public:
     typedef core::behavior::MechanicalState<InDataTypes> InMechanicalState;
     typedef core::behavior::MechanicalState<DataTypes> MMechanicalState;
     MCollisionModel* model;
+    using index_type = sofa::defaulttype::index_type;
 
     IdentityContactMapper()
-        : model(NULL)
+        : model(nullptr)
     {
     }
 
@@ -145,15 +148,15 @@ public:
 
     MMechanicalState* createMapping(const char* /*name*/="contactPoints")
     {
-        if (model==NULL) return NULL;
+        if (model==nullptr) return nullptr;
         return model->getMechanicalState();
     }
 
-    void resize(int /*size*/)
+    void resize(std::size_t /*size*/)
     {
     }
 
-    int addPoint(const Coord& /*P*/, int index, Real&)
+    index_type addPoint(const Coord& /*P*/, index_type index, Real&)
     {
         return index;
     }
@@ -174,19 +177,21 @@ public:
 
 /// Mapper for PointModel
 template<class DataTypes>
-class ContactMapper<PointModel, DataTypes> : public IdentityContactMapper<PointModel, DataTypes>
+class ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public IdentityContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 {
 public:
 };
 
 /// Mapper for SphereModel
 template<class DataTypes>
-class ContactMapper<SphereModel, DataTypes> : public IdentityContactMapper<SphereModel, DataTypes>
+class ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public IdentityContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    int addPoint(const Coord& /*P*/, int index, Real& r)
+    using index_type = sofa::defaulttype::index_type;
+
+    index_type addPoint(const Coord& /*P*/, index_type index, Real& r)
     {
         Sphere e(this->model, index);
         r = e.r();
@@ -194,9 +199,9 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP)
-extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel, sofa::defaulttype::Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel, sofa::defaulttype::Vec3Types>;
+#if  !defined(SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP)
+extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 #endif
 
 } // namespace collision

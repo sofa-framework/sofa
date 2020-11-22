@@ -159,7 +159,7 @@ def parseInput() :
         epilog='''The output of this script uses the python plugin of sofa. The python plugin allows for a manipulation of a scene at run time. More informations about the plugin itself can be found in sofa/applications/plugins/SofaPython/doc/SofaPython.pdf. If you prefer to only produce one output file O.py (instead of producing two ouputfiles O.scn and O.py), then set the flag --py. To be able to run a scene O.py, the sofa python plugin has to be added in the sofa plugin manager, i.e. add the sofa python plugin in runSofa->Edit->PluginManager. Author of createPythonScene.py: Christoph PAULUS, christoph.paulus@inria.fr''')
     parser.add_argument('inputScenes', metavar='I', type=str, nargs='+',help='Filename(s) of the standard scene(s)')
     parser.add_argument('-n', nargs='?', help='Node to replace by python script, if equals None the complete scene is replaced by a python script')
-    parser.add_argument('-o', nargs='*', help='Filename(s) of the transformed scene(s)')
+    parser.add_argument('-o', nargs='*', help='Filename(s) of the transformed scene(s), if equals None the script generates the output filename(s) by adding Python to the input filenames')
     parser.add_argument('-s', dest='onlyOutputPythonScript', action='store_const', default=0, const=1, help='Output .scn and .py file')
     args = parser.parse_args()
     return parser,args;

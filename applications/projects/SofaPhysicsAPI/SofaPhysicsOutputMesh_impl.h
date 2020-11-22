@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -65,15 +65,13 @@ public:
     int getQuadsRevision();    ///< changes each time quads data is updated
 
     typedef sofa::core::visual::VisualModel SofaVisualOutputMesh;
-    
-    //typedef sofa::defaulttype::ExtVec3dTypes Vec3d
     typedef sofa::component::visualmodel::VisualModelImpl SofaOutputMesh;
     typedef SofaOutputMesh::DataTypes DataTypes;
     typedef SofaOutputMesh::Coord Coord;
     typedef SofaOutputMesh::Deriv Deriv;
     typedef SofaOutputMesh::TexCoord TexCoord;
-    typedef SofaOutputMesh::Triangle Triangle;
-    typedef SofaOutputMesh::Quad Quad;
+    typedef SofaOutputMesh::VisualTriangle Triangle;
+    typedef SofaOutputMesh::VisualQuad Quad;
     typedef sofa::core::visual::ShaderElement SofaVAttribute;
 
 protected:

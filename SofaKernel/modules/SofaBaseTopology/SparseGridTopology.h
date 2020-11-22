@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,9 +65,9 @@ protected:
     SparseGridTopology(Vec3i numVertices, BoundingBox box, bool _isVirtual=false);
 public:
     static const float WEIGHT27[8][27];
-    static const int cornerIndicesFromFineToCoarse[8][8];
+    static const index_type cornerIndicesFromFineToCoarse[8][8];
 
-    virtual void init() override;
+    void init() override;
 
     /// building from a mesh file
     virtual void buildAsFinest();
@@ -78,30 +78,30 @@ public:
     /// building eventual virtual finer levels (cf _nbVirtualFinerLevels)
     virtual void buildVirtualFinerLevels();
 
-    typedef std::map<Vector3,int> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
+    typedef std::map<Vector3, index_type> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
 
     /// connexion between several coarsened levels
-    typedef std::vector<helper::fixed_array<int,8> > HierarchicalCubeMap; ///< a cube indice -> corresponding 8 child indices on the potential _finerSparseGrid
+    typedef std::vector<helper::fixed_array<index_type,8> > HierarchicalCubeMap; ///< a cube indice -> corresponding 8 child indices on the potential _finerSparseGrid
     HierarchicalCubeMap _hierarchicalCubeMap;
-    typedef helper::vector<int> InverseHierarchicalCubeMap; ///< a fine cube indice -> corresponding coarser cube indice
+    typedef helper::vector<index_type> InverseHierarchicalCubeMap; ///< a fine cube indice -> corresponding coarser cube indice
     InverseHierarchicalCubeMap _inverseHierarchicalCubeMap;
 
-    typedef std::map<int,float> AHierarchicalPointMap;
+    typedef std::map<index_type,float> AHierarchicalPointMap;
     typedef helper::vector< AHierarchicalPointMap > HierarchicalPointMap; ///< a point indice -> corresponding 27 child indices on the potential _finerSparseGrid with corresponding weight
     HierarchicalPointMap _hierarchicalPointMap;
     typedef helper::vector< AHierarchicalPointMap > InverseHierarchicalPointMap; ///< a fine point indice -> corresponding some parent points for interpolation
     InverseHierarchicalPointMap _inverseHierarchicalPointMap;
-    typedef helper::vector< int > PointMap;
+    typedef helper::vector< index_type > PointMap;
     PointMap _pointMap; ///< a coarse point indice -> corresponding point in finer level
     PointMap _inversePointMap;  ///< a fine point indice -> corresponding point in coarser level
 
 
     enum {UP,DOWN,RIGHT,LEFT,BEFORE,BEHIND,NUM_CONNECTED_NODES};
-    typedef helper::vector< helper::fixed_array<int,NUM_CONNECTED_NODES> > NodeAdjacency; ///< a node -> its 6 neighboors
+    typedef helper::vector< helper::fixed_array<index_type,NUM_CONNECTED_NODES> > NodeAdjacency; ///< a node -> its 6 neighboors
     NodeAdjacency _nodeAdjacency;
-    typedef helper::vector< helper::vector<int> >NodeCubesAdjacency; ///< a node -> its 8 neighboor cells
+    typedef helper::vector< helper::vector<index_type> >NodeCubesAdjacency; ///< a node -> its 8 neighboor cells
     NodeCubesAdjacency _nodeCubesAdjacency;
-    typedef helper::vector< helper::vector<int> >NodeCornersAdjacency; ///< a node -> its 8 corners of neighboor cells
+    typedef helper::vector< helper::vector<index_type> >NodeCornersAdjacency; ///< a node -> its 8 corners of neighboor cells
     NodeCornersAdjacency _nodeCornersAdjacency;
 
 
@@ -145,22 +145,22 @@ public:
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    virtual int findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
+    virtual index_type findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    virtual int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
+    virtual index_type findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
 
     /// return indices of 6 neighboor cubes
-    virtual helper::fixed_array<int,6> findneighboorCubes( int indice );
+    virtual helper::fixed_array<index_type,6> findneighboorCubes(index_type indice );
 
     /// return the type of the i-th cube
-    virtual Type getType( int i );
+    virtual Type getType(index_type i );
 
     /// return the stiffness coefficient of the i-th cube
-    virtual float getStiffnessCoef(int elementIdx);
+    virtual float getStiffnessCoef(index_type elementIdx);
     /// return the mass coefficient of the i-th cube
-    virtual float getMassCoef(int elementIdx);
+    virtual float getMassCoef(index_type elementIdx);
 
     SparseGridTopology *getFinerSparseGrid() const {return _finerSparseGrid;}
     void setFinerSparseGrid( SparseGridTopology *fsp ) {_finerSparseGrid=fsp;}
@@ -170,10 +170,10 @@ public:
     void updateMesh();
 
     RegularGridTopology::SPtr _regularGrid; ///< based on a corresponding RegularGrid
-    helper::vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
-    helper::vector< int > _indicesOfCubeinRegularGrid; ///< to redirect an indice of a cube in the sparse grid to its indice in the regular grid
+    helper::vector< index_type > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
+    helper::vector< index_type > _indicesOfCubeinRegularGrid; ///< to redirect an indice of a cube in the sparse grid to its indice in the regular grid
 
-    Vector3 getPointPos( int i ) { return Vector3( seqPoints.getValue()[i][0],seqPoints.getValue()[i][1],seqPoints.getValue()[i][2] ); }
+    Vector3 getPointPos(index_type i ) { return Vector3( seqPoints.getValue()[i][0],seqPoints.getValue()[i][1],seqPoints.getValue()[i][2] ); }
 
     void getMesh( sofa::helper::io::Mesh &m);
 
@@ -191,30 +191,27 @@ public:
     }
 
     Data< helper::vector< unsigned char > >     dataVoxels;
-    Data<bool> _fillWeighted; // is quantity of matter inside a cell taken into account?
+    Data<bool> _fillWeighted; ///< is quantity of matter inside a cell taken into account?
 
-    Data<bool> d_bOnlyInsideCells;
+    Data<bool> d_bOnlyInsideCells; ///< Select only inside cells (exclude boundary cells)
 
 
 protected:
     bool isVirtual;
     /// cutting number in all directions
     Data< sofa::defaulttype::Vec< 3, int > > n;
-    Data< Vector3 > _min;
-    Data< Vector3 > _max;
+    Data< Vector3 > _min; ///< Min
+    Data< Vector3 > _max; ///< Max
     Data< SReal > _cellWidth; ///< if > 0 : dimension of each cell in the created grid
     Data< int > _nbVirtualFinerLevels; ///< create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)
 
 public:
-    Data< Vec3i >			dataResolution;
-    Data< Vector3 >         voxelSize;
-    Data< unsigned int >    marchingCubeStep;
-    Data< unsigned int >    convolutionSize;
+    Data< Vec3i >			dataResolution; ///< Dimension of the voxel File
+    Data< Vector3 >         voxelSize; ///< Dimension of one voxel
+    Data< unsigned int >    marchingCubeStep; ///< Step of the Marching Cube algorithm
+    Data< unsigned int >    convolutionSize; ///< Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required.
 
-    Data< helper::vector< Vector3 > >    vertices;
-    Data< helper::vector < helper::vector <int> > >facets;
-    Data< SeqTriangles > input_triangles;
-    Data< SeqQuads > input_quads;
+    Data< helper::vector < helper::vector <index_type> > >facets; ///< Input mesh facets
 
     /** Create the data structure based on resolution, size and filling.
           \param numPoints  Number of points in the x,y,and z directions
@@ -226,7 +223,6 @@ public:
 protected:
     virtual void updateEdges();
     virtual void updateQuads();
-    virtual void updateHexahedra() override;
 
     sofa::helper::MarchingCubeUtility                 marchingCubes;
     bool                                _usingMC;
@@ -258,7 +254,7 @@ protected:
             RegularGridTopology::SPtr regularGrid,
             helper::vector<Type>& regularGridTypes) const;
 
-    void buildFromTriangleMesh(const std::string& filename);
+    void buildFromTriangleMesh(sofa::helper::io::Mesh* mesh);
 
     void buildFromRegularGridTypes(RegularGridTopology::SPtr regularGrid, const helper::vector<Type>& regularGridTypes);
 
@@ -299,71 +295,26 @@ protected:
     };
 
 
-    /*	/// to compute valid cubes (intersection between mesh segments and cubes)
-    typedef struct segmentForIntersection{
-    Vector3 center;
-    Vector3 dir;
-    SReal norm;
-    segmentForIntersection(const Vector3& s0, const Vector3& s1)
-    {
-    center = (s0+s1)*.5;
-    dir = center-s0;
-    norm = dir.norm();
-    dir /= norm;
-    };
-    } SegmentForIntersection;
-    struct ltSegmentForIntersection // for set of SegmentForIntersection
-    {
-    bool operator()(const SegmentForIntersection& s0, const SegmentForIntersection& s1) const
-    {
-    return s0.center < s1.center || s0.norm < s1.norm;
-    }
-    };
-    typedef struct cubeForIntersection{
-    Vector3 center;
-    fixed_array<Vector3,3> dir;
-    Vector3 norm;
-    cubeForIntersection( const CubeCorners&  corners )
-    {
-    center = (corners[7] + corners[0]) * .5;
-
-    norm[0] = (center[0] - corners[0][0]);
-    dir[0] = Vector3(1,0,0);
-
-    norm[1] = (center[1] - corners[0][1]);
-    dir[1] = Vector3(0,1,0);
-
-    norm[2] = (center[2] - corners[0][2]);
-    dir[2] = Vector3(0,0,1);
-    }
-    } CubeForIntersection;
-    /// return true if there is an intersection between a SegmentForIntersection and a CubeForIntersection
-    bool intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  ); */
 
     bool _alreadyInit;
 
 public :
 
-#ifdef SOFA_NEW_HEXA
-    virtual const SeqHexahedra& getHexahedra() override
+
+    const SeqHexahedra& getHexahedra() override
     {
         if( !_alreadyInit ) init();
         return sofa::component::topology::MeshTopology::getHexahedra();
     }
-#else
-    virtual const SeqCubes& getHexahedra()
-    {
-        if( !_alreadyInit ) init();
-        return sofa::component::topology::MeshTopology::getHexahedra();
-    }
-#endif
-    virtual int getNbPoints() const override
+
+    std::size_t getNbPoints() const override
     {
         if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
         return sofa::component::topology::MeshTopology::getNbPoints();
     }
 
-    virtual int getNbHexahedra() override { return (int)this->getHexahedra().size();}
+    /// TODO 2018-07-23 epernod: check why this method is override to return the same result as parent class.
+    size_t getNbHexahedra() override { return this->getHexahedra().size();}
 };
 
 } // namespace topology

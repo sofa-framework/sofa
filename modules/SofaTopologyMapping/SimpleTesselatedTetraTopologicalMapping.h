@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,11 +62,11 @@ protected:
      *
          * Does nothing.
          */
-    virtual ~SimpleTesselatedTetraTopologicalMapping() {}
+    ~SimpleTesselatedTetraTopologicalMapping() override {}
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
-    virtual void init() override;
+    void init() override;
 
     /** \brief Translates the TopologyChange objects from the source to the target.
      *
@@ -74,7 +74,7 @@ public:
      * reflect the effects of the first topology changes on the second topology.
      *
      */
-    virtual void updateTopologicalMappingTopDown() override;
+    void updateTopologicalMappingTopDown() override;
 
     /** \brief Translates the TopologyChange objects from the target to the source.
      *
@@ -82,38 +82,38 @@ public:
      * reflect the effects of the second topology changes on the first topology.
      *
      */
-    virtual void updateTopologicalMappingBottomUp() override;
+    void updateTopologicalMappingBottomUp() override;
 
     /// Return true if this mapping is able to propagate topological changes from input to output model
-    virtual bool propagateFromInputToOutputModel() override { return true; }
+    bool propagateFromInputToOutputModel() override { return true; }
 
     /// Return true if this mapping is able to propagate topological changes from output to input model
-    virtual bool propagateFromOutputToInputModel() override { return true; }
+    bool propagateFromOutputToInputModel() override { return true; }
 
-    const helper::vector<int>& getPointMappedFromPoint() const { return d_pointMappedFromPoint.getValue(); }
-    const helper::vector<int>& getPointMappedFromEdge() const { return d_pointMappedFromEdge.getValue(); }
-    const helper::vector<int>& getPointSource() const { return d_pointSource.getValue(); }
+    const helper::vector<index_type>& getPointMappedFromPoint() const { return d_pointMappedFromPoint.getValue(); }
+    const helper::vector<index_type>& getPointMappedFromEdge() const { return d_pointMappedFromEdge.getValue(); }
+    const helper::vector<index_type>& getPointSource() const { return d_pointSource.getValue(); }
 
 protected:
-    TetrahedronData< sofa::helper::vector<sofa::helper::fixed_array<int, 8> > > tetrahedraMappedFromTetra; ///< Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
-    TetrahedronData< sofa::helper::vector<int> > tetraSource; ///<Which tetra from the input topology map to a given tetra in the output topology (-1 if none)
+    TetrahedronData< sofa::helper::vector<sofa::helper::fixed_array<index_type, 8> > > tetrahedraMappedFromTetra; ///< Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
+    TetrahedronData< sofa::helper::vector<index_type> > tetraSource; ///<Which tetra from the input topology map to a given tetra in the output topology (INVALID_INDEX if none)
 
-    Data< helper::vector<int> > d_pointMappedFromPoint; ///< Each point of the input topology is mapped to the same point.
-    Data< helper::vector<int> > d_pointMappedFromEdge; ///< Each edge of the input topology is mapped to his midpoint.
-    Data< helper::vector<int> > d_pointSource; ///< Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1
+    Data< helper::vector<index_type> > d_pointMappedFromPoint; ///< Each point of the input topology is mapped to the same point.
+    Data< helper::vector<index_type> > d_pointMappedFromEdge; ///< Each edge of the input topology is mapped to his midpoint.
+    Data< helper::vector<index_type> > d_pointSource; ///< Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1
 
-    void swapOutputPoints(int i1, int i2);
-    void removeOutputPoints( const sofa::helper::vector<unsigned int>& tab );
-    void renumberOutputPoints( const sofa::helper::vector<unsigned int>& tab );
+    void swapOutputPoints(index_type i1, index_type i2);
+    void removeOutputPoints( const sofa::helper::vector<index_type>& tab );
+    void renumberOutputPoints( const sofa::helper::vector<index_type>& tab );
 
-    void swapOutputTetrahedra(int i1, int i2);
-    void removeOutputTetrahedra( const sofa::helper::vector<unsigned int>& tab );
+    void swapOutputTetrahedra(index_type i1, index_type i2);
+    void removeOutputTetrahedra( const sofa::helper::vector<index_type>& tab );
 
     void setPointSource(int i, int source)
     {
-        helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointSourceData = d_pointSource;
-        helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointMappedFromPointData = d_pointMappedFromPoint;
-        helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
+        helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointSourceData = d_pointSource;
+        helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointMappedFromPointData = d_pointMappedFromPoint;
+        helper::WriteAccessor< Data< sofa::helper::vector<index_type> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
 
 
         if (i != -1)
@@ -127,17 +127,17 @@ protected:
             pointMappedFromEdgeData[-source-1] = i;
         }
     }
-    std::set<unsigned int> tetrahedraToRemove;
+    std::set<index_type> tetrahedraToRemove;
 
 
-    void swapInputPoints(int i1, int i2);
-    void removeInputPoints( const sofa::helper::vector<unsigned int>& tab );
-    void renumberInputPoints( const sofa::helper::vector<unsigned int>& tab );
-    void swapInputEdges(int i1, int i2);
-    void removeInputEdges( const sofa::helper::vector<unsigned int>& tab );
+    void swapInputPoints(index_type i1, index_type i2);
+    void removeInputPoints( const sofa::helper::vector<index_type>& tab );
+    void renumberInputPoints( const sofa::helper::vector<index_type>& tab );
+    void swapInputEdges(index_type i1, index_type i2);
+    void removeInputEdges( const sofa::helper::vector<index_type>& tab );
 
-    void swapInputTetrahedra(int i1, int i2);
-    void removeInputTetrahedra( const sofa::helper::vector<unsigned int>& tab );
+    void swapInputTetrahedra(index_type i1, index_type i2);
+    void removeInputTetrahedra( const sofa::helper::vector<index_type>& tab );
 
 };
 

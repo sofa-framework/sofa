@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,6 +61,7 @@ class PartialLinearMovementConstraint : public core::behavior::ProjectiveConstra
 public:
     SOFA_CLASS(SOFA_TEMPLATE(PartialLinearMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
 
+    using index_type = sofa::defaulttype::index_type;
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -73,7 +74,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef helper::vector<index_type> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 protected:
@@ -100,32 +101,38 @@ public :
     ///initial constrained DOFs position
     VecCoord x0;
 
-    core::objectmodel::Data<bool> linearMovementBetweenNodesInIndices;
-    core::objectmodel::Data<unsigned> mainIndice;
-    core::objectmodel::Data<unsigned> minDepIndice;
-    core::objectmodel::Data<unsigned> maxDepIndice;
+    core::objectmodel::Data<bool> linearMovementBetweenNodesInIndices; ///< Take into account the linear movement between the constrained points
+    core::objectmodel::Data<unsigned> mainIndice; ///< The main indice node in the list of constrained nodes, it defines how to apply the linear movement between this constrained nodes 
+    core::objectmodel::Data<unsigned> minDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the minimum displacment 
+    core::objectmodel::Data<unsigned> maxDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the maximum displacment 
     core::objectmodel::Data<helper::vector<Real> > m_imposedDisplacmentOnMacroNodes; ///< imposed displacement at  u1 u2 u3 u4 for 2d case
     ///< and u1 u2 u3 u4 u5 u6 u7 u8 for 3d case
-    Data<Real> X0,Y0,Z0;
+    Data<Real> X0; ///< Size of specimen in X-direction
+    Data<Real> Y0; ///< Size of specimen in Y-direction
+    Data<Real> Z0; ///< Size of specimen in Z-direction
 
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
     core::objectmodel::Data<VecBool> movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<PartialLinearMovementConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
 protected:
     PartialLinearMovementConstraint();
+    ~PartialLinearMovementConstraint() override;
 
-    virtual ~PartialLinearMovementConstraint();
 public:
     ///methods to add/remove some indices, keyTimes, keyMovement
     void clearIndices();
-    void addIndex(unsigned int index);
-    void removeIndex(unsigned int index);
+    void addIndex(index_type index);
+    void removeIndex(index_type index);
     void clearKeyMovements();
-    /**add a new key movement
-    @param time : the simulation time you want to set a movement (in sec)
-    @param movement : the corresponding motion
-    for instance, addKeyMovement(1.0, Deriv(5,0,0) ) will set a translation of 5 in x direction a time 1.0s
-    **/
+
+    ///@brief Add a new key movement
+    ///@param time : the simulation time you want to set a movement (in sec)
+    ///@param movement : the corresponding motion
+    ///for instance, addKeyMovement(1.0, Deriv(5,0,0) ) will set a translation of 5 in x direction a time 1.0s
     void addKeyMovement(Real time, Deriv movement);
 
 
@@ -138,10 +145,10 @@ public:
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
-    virtual void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    virtual void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    virtual void draw(const core::visual::VisualParams*) override;
+    void draw(const core::visual::VisualParams*) override;
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
@@ -151,13 +158,9 @@ public:
         FCPointHandler(PartialLinearMovementConstraint<DataTypes>* _lc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), lc(_lc) {}
 
-
-
-        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
-
-
-        bool applyTestCreateFunction(unsigned int /*index*/,
-                const sofa::helper::vector< unsigned int > & /*ancestors*/,
+        void applyDestroyFunction(index_type /*index*/, value_type& /*T*/);
+        bool applyTestCreateFunction(index_type /*index*/,
+                const sofa::helper::vector< index_type > & /*ancestors*/,
                 const sofa::helper::vector< double > & /*coefs*/);
     protected:
         PartialLinearMovementConstraint<DataTypes> *lc;
@@ -172,9 +175,6 @@ protected:
     template <class MyCoord>
     void interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, sofa::defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);
 
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
 private:
 
     /// to keep the time corresponding to the key times
@@ -187,25 +187,16 @@ private:
     void findKeyTimes();
 
     /// Handler for subset Data
-    FCPointHandler* pointHandler;
+    FCPointHandler* m_pointHandler;
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6dTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6fTypes>;
-extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_CPP)
+extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Vec6Types>;
+extern template class SOFA_BOUNDARY_CONDITION_API PartialLinearMovementConstraint<defaulttype::Rigid3Types>;
 #endif
 
 

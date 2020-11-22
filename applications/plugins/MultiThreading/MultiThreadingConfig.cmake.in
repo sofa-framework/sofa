@@ -1,7 +1,8 @@
 # CMake package configuration file for the MultiThreading plugin
 
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
-find_package(SofaMisc REQUIRED)
+find_package(SofaMiscMapping REQUIRED)
 #find_package(Boost QUIET COMPONENTS thread)
 
 if(NOT TARGET MultiThreading)

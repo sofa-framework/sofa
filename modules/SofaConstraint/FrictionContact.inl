@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,7 @@
 #include <SofaBaseCollision/DefaultContactManager.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/IdentityContactMapper.h>
-#include <SofaMeshCollision/RigidContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <sofa/simulation/Node.h>
 #include <iostream>
 
@@ -41,12 +41,19 @@ namespace collision
 {
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
+FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionContact()
+    : FrictionContact(nullptr, nullptr, nullptr)
+{
+}
+
+
+template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
 FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1)
     , model2(model2)
     , intersectionMethod(intersectionMethod)
-    , m_constraint(NULL)
-    , parent(NULL)
+    , m_constraint(nullptr)
+    , parent(nullptr)
     , mu (initData(&mu, 0.8, "mu", "friction coefficient (0 for frictionless contacts)"))
     , tol (initData(&tol, 0.0, "tol", "tolerance for the constraints resolution (0 for default tolerance)"))
 {
@@ -70,11 +77,10 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::clean
     {
         m_constraint->cleanup();
 
-        if (parent != NULL)
+        if (parent != nullptr)
             parent->removeObject(m_constraint);
 
-        parent = NULL;
-        //delete m_constraint;
+        parent = nullptr;
         m_constraint.reset();
 
         mapper1.cleanup();
@@ -99,7 +105,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDe
 
     if (model1->getContactStiffness(0) == 0 || model2->getContactStiffness(0) == 0)
     {
-        serr << "Disabled FrictionContact with " << (outputs.size()) << " collision points." << sendl;
+        msg_error() << "Disabled FrictionContact with " << (outputs.size()) << " collision points.";
         return;
     }
 
@@ -135,9 +141,17 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
     if (!m_constraint)
     {
         // Get the mechanical model from mapper1 to fill the constraint vector
-        MechanicalState1* mmodel1 = mapper1.createMapping(GenerateStirngID::generate().c_str());
+        MechanicalState1* mmodel1 = mapper1.createMapping(getName().c_str());
         // Get the mechanical model from mapper2 to fill the constraints vector
-        MechanicalState2* mmodel2 = selfCollision ? mmodel1 : mapper2.createMapping(GenerateStirngID::generate().c_str());
+        MechanicalState2* mmodel2;
+        if (selfCollision)
+        {
+            mmodel2 = mmodel1;
+        }
+        else
+        {
+            mmodel2 = mapper2.createMapping(getName().c_str());
+        }
         m_constraint = sofa::core::objectmodel::New<constraintset::UnilateralInteractionConstraint<defaulttype::Vec3Types> >(mmodel1, mmodel2);
         m_constraint->setName( getName() );
         setInteractionTags(mmodel1, mmodel2);
@@ -169,27 +183,15 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
         typename DataTypes2::Real r2 = 0.;
 
         // Create mapping for first point
-        index1 = mapper1.addPointB(o->point[0], index1, r1
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                , o->baryCoords[0]
-#endif
-                                  );
+        index1 = mapper1.addPointB(o->point[0], index1, r1);
         // Create mapping for second point
         if (selfCollision)
         {
-            index2 = mapper1.addPointB(o->point[1], index2, r2
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    , o->baryCoords[1]
-#endif
-                                      );
+            index2 = mapper1.addPointB(o->point[1], index2, r2);
         }
         else
         {
-            index2 = mapper2.addPointB(o->point[1], index2, r2
-#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                    , o->baryCoords[1]
-#endif
-                                      );
+            index2 = mapper2.addPointB(o->point[1], index2, r2);
         }
         double distance = d0 + r1 + r2;
 
@@ -213,7 +215,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::creat
     const double mu_ = this->mu.getValue();
     // Checks if friction is considered
     if ( mu_ < 0.0 )
-        serr << sendl << "Error: mu has to take positive values" << sendl;
+        msg_error() << "mu has to take positive values";
 
     int i=0;
     if (m_constraint)
@@ -232,14 +234,14 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::creat
             m_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id);
         }
 
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(m_constraint);
         }
 
         parent = group;
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->addObject(this);
             parent->addObject(m_constraint);
@@ -254,12 +256,12 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::remov
     {
         mapper1.resize(0);
         mapper2.resize(0);
-        if (parent!=NULL)
+        if (parent!=nullptr)
         {
             parent->removeObject(this);
             parent->removeObject(m_constraint);
         }
-        parent = NULL;
+        parent = nullptr;
     }
 }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_INL
 
@@ -29,7 +26,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>
-
+#include <SofaBaseTopology/TopologySubsetData.inl>
 namespace sofa
 {
 
@@ -39,12 +36,73 @@ namespace component
 namespace interactionforcefield
 {
 
+template<class DataTypes>
+StiffSpringForceField<DataTypes>::StiffSpringForceField(double ks, double kd)
+    : StiffSpringForceField<DataTypes>(nullptr, nullptr, ks, kd)
+{
+}
+
+template<class DataTypes>
+StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks, double kd)
+    : SpringForceField<DataTypes>(object1, object2, ks, kd)
+    , d_indices1(initData(&d_indices1, "indices1", "Indices of the source points on the first model"))
+    , d_indices2(initData(&d_indices2, "indices2", "Indices of the fixed points on the second model"))
+    , d_length(initData(&d_length, 0.0, "length", "uniform length of all springs"))
+{
+}
+
 
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::init()
 {
+    if (d_indices1.isSet() && d_indices2.isSet())
+    {        
+        this->trackInternalData(d_indices1);
+        this->trackInternalData(d_indices2);
+
+        createSpringsFromInputs();
+    }
+
     this->SpringForceField<DataTypes>::init();
 }
+
+template<class DataTypes>
+void StiffSpringForceField<DataTypes>::doUpdateInternal()
+{
+    if (!d_indices1.isSet() && !d_indices2.isSet()) // nothing to do in this case
+        return;
+
+    createSpringsFromInputs();
+}
+
+
+template<class DataTypes>
+void StiffSpringForceField<DataTypes>::createSpringsFromInputs()
+{
+    if (d_indices1.getValue().size() != d_indices2.getValue().size())
+    {
+        msg_error() << "Inputs indices sets sizes are different: d_indices1: " << d_indices1.getValue().size() 
+            << " | d_indices2 " << d_indices2.getValue().size()
+            << " . No springs will be created";
+        return;
+    }
+
+    msg_info() << "Inputs have changed, recompute  Springs From Data Inputs";    
+    helper::vector<Spring>& _springs = *this->springs.beginEdit();
+    _springs.clear();
+
+    const SetIndexArray & indices1 = d_indices1.getValue();
+    const SetIndexArray & indices2 = d_indices2.getValue();
+    
+    const SReal& _ks = this->ks.getValue();
+    const SReal& _kd = this->kd.getValue();
+    const SReal& _length = d_length.getValue();
+    for (unsigned int i = 0; i<indices1.size(); ++i)
+        _springs.push_back(Spring(indices1[i], indices2[i], _ks, _kd, _length));
+
+    this->springs.endEdit();
+}
+
 
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addSpringForce(
@@ -61,7 +119,9 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
     //    this->cpt_addForce++;
     int a = spring.m1;
     int b = spring.m2;
-    Coord u = p2[b]-p1[a];
+
+    /// Get the positional part out of the dofs.
+    typename DataTypes::CPos u = DataTypes::getCPos(p2[b])-DataTypes::getCPos(p1[a]);
     Real d = u.norm();
     if( spring.enabled && d>1.0e-9 && (!spring.elongationOnly || d>spring.initpos))
     {
@@ -70,13 +130,13 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
         u *= inverseLength;
         Real elongation = (Real)(d - spring.initpos);
         potentialEnergy += elongation * elongation * spring.ks / 2;
-        Deriv relativeVelocity = v2[b]-v1[a];
+        typename DataTypes::DPos relativeVelocity = DataTypes::getDPos(v2[b])-DataTypes::getDPos(v1[a]);
         Real elongationVelocity = dot(u,relativeVelocity);
         Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
-        Deriv force = u*forceIntensity;
+        typename DataTypes::DPos force = u*forceIntensity;
 
-        f1[a]+=force;
-        f2[b]-=force;
+        DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + force ) ;
+        DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) - force ) ;
 
         // Compute stiffness dF/dX
         // The force change dF comes from length change dl and unit vector change dU:
@@ -113,12 +173,13 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecD
 {
     const int a = spring.m1;
     const int b = spring.m2;
-    const Coord d = dx2[b]-dx1[a];
-    Deriv dforce = this->dfdx[i]*d;
+    const typename DataTypes::CPos d = DataTypes::getDPos(dx2[b]) - DataTypes::getDPos(dx1[a]);
+    typename DataTypes::DPos dforce = this->dfdx[i]*d;
+
     dforce *= kFactor;
 
-    df1[a]+=dforce;
-    df2[b]-=dforce;
+    DataTypes::setDPos( df1[a], DataTypes::getDPos(df1[a]) + dforce ) ;
+    DataTypes::setDPos( df2[b], DataTypes::getDPos(df2[b]) - dforce ) ;
 }
 
 template<class DataTypes>
@@ -173,7 +234,6 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     if (this->mstate1 == this->mstate2)
     {

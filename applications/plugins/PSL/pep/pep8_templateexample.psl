@@ -1,0 +1,37 @@
+Node : {
+
+/// In libraries it would be nice to have example of use embded
+Template : {
+    name : "MyTemplate"
+    Node : {
+        OglModel : {filename: "meshes/cube.obj"}
+    }
+}
+
+Template : {
+    name : "MyTemplate1"
+    Node : {
+        OglModel : {filename: "meshes/cube.obj"}
+    }
+}
+
+Template : {
+    name : "MyTemplate2"
+    Node : {
+        OglModel : {filename: "meshes/cube.obj"}
+    }
+}
+
+
+///////////////////////////////// EXAMPLE //////////////////////////////////////////////////////////
+Template : {
+    name : "Example"
+}
+
+Python : '''
+         if psl.mainFileName == psl.currentFileName :
+            root.instanciate("Example")
+         '''
+
+
+}

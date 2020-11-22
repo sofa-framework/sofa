@@ -45,7 +45,7 @@ private:
     
 public:
     
-    TableWidgetForLabelPointBySectionToolBoxAction(QWidget *parent=NULL): QGroupBox(parent)
+    TableWidgetForLabelPointBySectionToolBoxAction(QWidget *parent=nullptr): QGroupBox(parent)
     {
         listSection = new QComboBox();
         listPoints = new QTableWidget();

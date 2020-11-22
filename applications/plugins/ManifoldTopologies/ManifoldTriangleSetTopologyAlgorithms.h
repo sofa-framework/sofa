@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,12 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYALGORITHMS_H
-#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYALGORITHMS_H
-#include <ManifoldTopologies/config.h>
+#ifndef SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_H
+#define SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_H
 
 #include <ManifoldTopologies/config.h>
-
 #include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
 
 namespace sofa
@@ -55,6 +53,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
+    using index_type = sofa::defaulttype::index_type;
 
     ManifoldTriangleSetTopologyAlgorithms()
         : TriangleSetTopologyAlgorithms<DataTypes>()
@@ -66,26 +65,26 @@ public:
     virtual ~ManifoldTriangleSetTopologyAlgorithms()
     {}
 
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
 
     /** \brief Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
      * Each end of the path is given either by an existing point or a point inside the first/last triangle. If the first/last triangle is (TriangleID)-1, it means that to path crosses the boundary of the surface.
      * @returns the indice of the end point, or -1 if the incision failed.
      */
-    virtual int SplitAlongPath(unsigned int pa, Coord& a, unsigned int pb, Coord& b,
+    virtual int SplitAlongPath(index_type pa, Coord& a, index_type pb, Coord& b,
             sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
-            sofa::helper::vector<unsigned int>& indices_list,
+            sofa::helper::vector<index_type>& indices_list,
             sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
-            sofa::helper::vector<core::topology::BaseMeshTopology::EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0);
+            sofa::helper::vector<core::topology::BaseMeshTopology::EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0) override;
 
 
     /** \brief Duplicates the given edges. Only works if at least the first or last point is adjacent to a border.
      * @returns true if the incision succeeded.
      */
-    virtual bool InciseAlongEdgeList(const sofa::helper::vector<unsigned int>& edges, sofa::helper::vector<unsigned int>& new_points, sofa::helper::vector<unsigned int>& end_points, bool& reachBorder);
+    virtual bool InciseAlongEdgeList(const sofa::helper::vector<index_type>& edges, sofa::helper::vector<index_type>& new_points, sofa::helper::vector<index_type>& end_points, bool& reachBorder) override;
 
 
     /** \brief: Swap a list of edges.
@@ -107,14 +106,14 @@ public:
 
     /** \brief: Reorder the whole mesh by swaping a all edges.
      * For each edge, check if topology will be better before swaping it.
-     * @see swapRemeshing (const sofa::helper::vector <unsigned int>& listedges)
+     * @see swapRemeshing (const sofa::helper::vector <index_type>& listedges)
      */
     void swapRemeshing ();
 
 protected:
 
-    Data< sofa::helper::vector< unsigned int> > m_triSwap;
-    Data< bool > m_swapMesh;
+    Data< sofa::helper::vector< index_type> > m_triSwap; ///< Debug : Test swap function (only while animate).
+    Data< bool > m_swapMesh; ///< If true, optimize the mesh only by swapping edges
 
     /**\brief Function swaping edge between two adjacents triangles. Create two new triangles and remove the two old one.
     * This function call private functions of the container reordering the different shells.
@@ -133,7 +132,11 @@ private:
     TriangleSetGeometryAlgorithms< DataTypes >*	              m_geometryAlgorithms;
 };
 
-
+#if  !defined(SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP)
+extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::Vec1Types>;
+#endif
 
 } // namespace topology
 
@@ -141,4 +144,4 @@ private:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_H

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,14 +72,11 @@ void QuatToRigidEngine<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void QuatToRigidEngine<DataTypes>::update()
+void QuatToRigidEngine<DataTypes>::doUpdate()
 {
-
     const helper::vector<Vec3>& positions = f_positions.getValue();
     const helper::vector<Quat>& orientations = f_orientations.getValue();
     const helper::vector<Vec3>& colinearPositions = f_colinearPositions.getValue();
-
-    cleanDirty();
 
     helper::vector<RigidVec3>& rigids = *(f_rigids.beginWriteOnly());
 
@@ -89,7 +86,7 @@ void QuatToRigidEngine<DataTypes>::update()
     int nbOrientations = orientations.size();
     if (!nbOrientations)
     {
-        serr << "Warnings : no orientations" << sendl;
+        msg_warning() << "No orientations";
         sizeRigids = 0;
     }
     else if (nbOrientations == 1)
@@ -98,7 +95,7 @@ void QuatToRigidEngine<DataTypes>::update()
     }
     else if(nbOrientations > 1 && nbPositions != nbOrientations)
     {
-        serr << "Warnings : size of positions and orientations are not equal" << sendl;
+        msg_warning() << "Size of positions and orientations are not equal";
         sizeRigids = std::min(nbPositions, nbOrientations);
     }
 

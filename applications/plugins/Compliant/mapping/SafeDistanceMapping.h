@@ -5,7 +5,7 @@
 
 #include "AssembledMapping.h"
 #include "AssembledMultiMapping.h"
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
@@ -44,15 +44,15 @@ class SOFA_Compliant_API SafeDistanceMapping : public AssembledMapping<TIn, TOut
     typedef defaulttype::Vec<2, unsigned> index_pair;
     typedef helper::vector< index_pair > pairs_type;
 
-    Data< pairs_type > d_pairs;
-    Data< helper::vector< SReal > > d_restLengths;
+    Data< pairs_type > d_pairs; ///< index pairs for computing distance
+    Data< helper::vector< SReal > > d_restLengths; ///< rest lengths
 
-    Data< SReal > d_epsilonLength;
+    Data< SReal > d_epsilonLength; ///< Threshold to consider a length too close to 0
 
     Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     Data< SReal > d_showObjectScale; ///< drawing size
-    Data< defaulttype::RGBAColor > d_color; ///< drawing color
+    Data< sofa::helper::types::RGBAColor > d_color; ///< drawing color
 
 protected:
 
@@ -69,20 +69,20 @@ protected:
         , d_epsilonLength( initData(&d_epsilonLength, 1e-4, "epsilonLength", "Threshold to consider a length too close to 0") )
         , d_geometricStiffness( initData(&d_geometricStiffness, 2u, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(-1), "showObjectScale", "Scale for object display"))
-        , d_color(initData(&d_color, defaulttype::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+        , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     {}
 
     enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
 
 public:
 
-    virtual void init()
+    virtual void init() override
     {
         reinit();
         Inherit1::init();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         const pairs_type& pairs = d_pairs.getValue();
         helper::vector<SReal>& restLengths = *d_restLengths.beginEdit();
@@ -113,7 +113,7 @@ public:
     }
 
     virtual void apply(typename self::out_pos_type& out,
-                       const typename self::in_pos_type& in )  {
+                       const typename self::in_pos_type& in ) override {
 
         const pairs_type& pairs = d_pairs.getValue();
         const helper::vector<SReal>& restLengths = d_restLengths.getValue();
@@ -126,8 +126,6 @@ public:
             Direction& gap = m_directions[i];
 
              gap = in[pairs[i][1]] - in[pairs[i][0]]; // (only for position)
-//            computeCoordPositionDifference( gap, in[links[i][0]], in[links[i][1]] ); // todo for more complex types such as Rigids
-
              m_lengths[i] = gap.norm();
 
 
@@ -184,7 +182,7 @@ public:
 
     }
 
-    virtual void assemble( const typename self::in_pos_type& in )
+    virtual void assemble( const typename self::in_pos_type& in ) override
     {
         size_t size = this->getToModel()->getSize();
 
@@ -252,7 +250,7 @@ public:
     }
 
 
-    virtual void assemble_geometric( const typename self::in_pos_type& in, const typename self::out_force_type& out )
+    virtual void assemble_geometric( const typename self::in_pos_type& in, const typename self::out_force_type& out ) override
     {
         typename self::geometric_type& K = this->geometric;
         const unsigned& geometricStiffness = d_geometricStiffness.getValue();
@@ -295,7 +293,7 @@ public:
         K.compress();
     }
 
-    void draw(const core::visual::VisualParams* vparams)
+    void draw(const core::visual::VisualParams* vparams) override
     {
 
 #ifndef SOFA_NO_OPENGL
@@ -332,7 +330,7 @@ public:
 #endif /* SOFA_NO_OPENGL */
     }
 
-    virtual void updateForceMask()
+    virtual void updateForceMask() override
     {
         const pairs_type& p = d_pairs.getValue();
 
@@ -383,14 +381,14 @@ class SOFA_Compliant_API SafeDistanceFromTargetMapping : public AssembledMapping
 
     typedef SafeDistanceFromTargetMapping self;
 
-    Data< helper::vector< unsigned > > d_indices;
+    Data< helper::vector< unsigned > > d_indices; ///< index of dof to compute the distance
     Data< typename self::InVecCoord > d_targetPositions; ///< positions the distances are measured from
-    Data< helper::vector< SReal > > d_restLengths;
+    Data< helper::vector< SReal > > d_restLengths; ///< rest lengths
 
     typedef defaulttype::Vec<TIn::spatial_dimensions,SReal> Direction;
     Data< helper::vector<Direction> > d_directions; ///< Unit vectors in the directions of the lines
 
-    Data< SReal > d_epsilonLength;
+    Data< SReal > d_epsilonLength; ///< Threshold to consider a length too close to 0
 
     Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
@@ -419,13 +417,13 @@ protected:
 
 public:
 
-    virtual void init()
+    virtual void init() override
     {
         reinit();
         Inherit1::init();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         const helper::vector< unsigned >& indices = d_indices.getValue();
         const typename self::InVecCoord& targets = d_targetPositions.getValue();
@@ -467,7 +465,7 @@ public:
     }
 
     virtual void apply(typename self::out_pos_type& out,
-                       const typename self::in_pos_type& in )  {
+                       const typename self::in_pos_type& in ) override {
 
         const helper::vector< unsigned >& indices = d_indices.getValue();
         const typename self::InVecCoord& targets = d_targetPositions.getValue();
@@ -544,7 +542,7 @@ public:
 
     }
 
-    virtual void assemble( const typename self::in_pos_type& in )
+    virtual void assemble( const typename self::in_pos_type& in ) override
     {
         size_t size = this->getToModel()->getSize();
 
@@ -586,7 +584,7 @@ public:
     }
 
 
-    virtual void assemble_geometric( const typename self::in_pos_type& in, const typename self::out_force_type& out )
+    virtual void assemble_geometric( const typename self::in_pos_type& in, const typename self::out_force_type& out ) override
     {
         typename self::geometric_type& K = this->geometric;
         const unsigned& geometricStiffness = d_geometricStiffness.getValue();
@@ -627,7 +625,7 @@ public:
         K.compress();
     }
 
-    void draw(const core::visual::VisualParams* vparams)
+    void draw(const core::visual::VisualParams* vparams) override
     {
 
 #ifndef SOFA_NO_OPENGL
@@ -665,7 +663,7 @@ public:
 #endif /* SOFA_NO_OPENGL */
     }
 
-    virtual void updateForceMask()
+    virtual void updateForceMask() override
     {
         const helper::vector< unsigned >& indices = d_indices.getValue();
 

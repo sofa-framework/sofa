@@ -13,8 +13,6 @@ namespace collision
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(BulletRigidContactMapper)
-
 ContactMapperCreator< ContactMapper<BulletConvexHullModel,Vec3Types> > BulletConvexHullModelContactMapperClass("default", true);
 
 template class SOFA_BULLETCOLLISIONDETECTION_API ContactMapper<BulletConvexHullModel,Vec3Types>;

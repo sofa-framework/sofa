@@ -4,7 +4,7 @@
 
 #include "ConstantAssembledMapping.h"
 #include "ConstantAssembledMultiMapping.h"
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
@@ -40,9 +40,9 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
     typedef defaulttype::Vec<2, unsigned> index_pair;
     typedef helper::vector< index_pair > pairs_type;
 
-    Data< pairs_type > pairs;
+    Data< pairs_type > pairs; ///< index pairs for computing deltas
     Data< SReal > d_showObjectScale; ///< drawing size
-    Data< defaulttype::RGBAColor > d_color; ///< drawing color
+    Data< sofa::helper::types::RGBAColor > d_color; ///< drawing color
 
 
 
@@ -50,25 +50,25 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
     AdditionMapping()
         : pairs( initData(&pairs, "pairs", "index pairs for computing additions") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(-1), "showObjectScale", "Scale for object display"))
-        , d_color(initData(&d_color, defaulttype::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+        , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     {}
 
     enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
 
-    virtual void init()
+    virtual void init() override
     {
         this->getToModel()->resize( pairs.getValue().size() );
         Inherit1::init();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         this->getToModel()->resize( pairs.getValue().size() );
         Inherit1::reinit();
     }
 
     virtual void apply(typename self::out_pos_type& out,
-                       const typename self::in_pos_type& in )  {
+                       const typename self::in_pos_type& in ) override {
         assert( this->Nout == this->Nin );
 
         const pairs_type& p = pairs.getValue();
@@ -80,7 +80,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
         }
     }
 
-    virtual void assemble( const typename self::in_pos_type& in ) {
+    virtual void assemble( const typename self::in_pos_type& in ) override {
         // jacobian matrix assembly
         const pairs_type& p = pairs.getValue();
         assert( !p.empty() );
@@ -117,7 +117,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
         J.finalize();
     }
 
-    void draw(const core::visual::VisualParams* vparams)
+    void draw(const core::visual::VisualParams* vparams) override
     {
 
 #ifndef SOFA_NO_OPENGL
@@ -154,7 +154,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
 #endif /* SOFA_NO_OPENGL */
     }
 
-    virtual void updateForceMask()
+    virtual void updateForceMask() override
     {
         const pairs_type& p = pairs.getValue();
 
@@ -218,7 +218,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
 
         enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
-        virtual void init()
+        virtual void init() override
         {
             if(!pairs.getValue().size() && this->getFromModels()[0]->getSize()==this->getFromModels()[1]->getSize()) // if no pair is defined-> map all dofs
             {
@@ -230,7 +230,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
             Inherit1::init();
         }
 
-        virtual void reinit()
+        virtual void reinit() override
         {
             if(!pairs.getValue().size() && this->getFromModels()[0]->getSize()==this->getFromModels()[1]->getSize()) // if no pair is defined-> map all dofs
             {
@@ -243,7 +243,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
         }
 
         virtual void apply(typename self::out_pos_type& out,
-                           const helper::vector<typename self::in_pos_type>& in)  {
+                           const helper::vector<typename self::in_pos_type>& in) override {
             // macro_trace;
             assert( in.size() == 2 );
 
@@ -262,7 +262,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
         typedef defaulttype::Vec<2, unsigned> index_pair;
         typedef helper::vector< index_pair > pairs_type;
 
-        Data< pairs_type > pairs;
+        Data< pairs_type > pairs; ///< index pairs for computing deltas
 
     protected:
 
@@ -271,7 +271,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
 
         }
 
-        void assemble(const helper::vector<typename self::in_pos_type>& in ) {
+        void assemble(const helper::vector<typename self::in_pos_type>& in ) override {
 
             const pairs_type& p = pairs.getValue();
             assert( !p.empty() );
@@ -310,7 +310,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
         }
 
 
-        virtual void updateForceMask()
+        virtual void updateForceMask() override
         {
             const pairs_type& p = pairs.getValue();
 

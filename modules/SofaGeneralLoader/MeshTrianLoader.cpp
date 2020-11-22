@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,8 +37,6 @@ namespace loader
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(MeshTrianLoader)
-
 int MeshTrianLoaderClass = core::RegisterObject("Specific mesh loader for trian (only triangulations) file format.")
         .add< MeshTrianLoader >()
         ;
@@ -56,9 +54,9 @@ MeshTrianLoader::MeshTrianLoader() : MeshLoader()
 
 
 
-bool MeshTrianLoader::load()
+bool MeshTrianLoader::doLoad()
 {
-    sout << "Loading Trian file: " << m_filename << sendl;
+    msg_info() << "Loading Trian file: " << m_filename;
 
     bool fileRead = false;
 
@@ -68,7 +66,7 @@ bool MeshTrianLoader::load()
 
     if (!file.good())
     {
-        serr << "Cannot read file '" << m_filename << "'." << sendl;
+        msg_error() << "Cannot read file '" << m_filename << "'.";
         return false;
     }
 
@@ -80,6 +78,16 @@ bool MeshTrianLoader::load()
 
     file.close();
     return fileRead;
+}
+
+void MeshTrianLoader::doClearBuffers()
+{
+    neighborTable.beginEdit()->clear();
+    neighborTable.endEdit();
+    edgesOnBorder.beginEdit()->clear();
+    edgesOnBorder.endEdit();
+    trianglesOnBorderList.beginEdit()->clear();
+    trianglesOnBorderList.endEdit();
 }
 
 
@@ -170,7 +178,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
         /*
         if ((v0<v1)|| (ngh2== -1))
         {
-        sout << " ((v0<v1)|| (ngh2== -1)) " << sendl;
+        msg_info() << " ((v0<v1)|| (ngh2== -1)) ";
 
         e=new E(trian,vertexTable[v0],vertexTable[v1],t,0);
         t->setEdge(2,e);
@@ -183,7 +191,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
              }
              if ((v1<v2) | (ngh0== -1))
              {
-        sout << " ((v1<v2) | (ngh0== -1)) " << sendl;
+        msg_info() << " ((v1<v2) | (ngh0== -1)) ";
         e=new E(trian,vertexTable[v1],vertexTable[v2],
             t,0);
         t->setEdge(0,e);
@@ -197,7 +205,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
              }
              if ((v2<v0)| (ngh1== -1))
              {
-        sout << " ((v2<v0)| (ngh1== -1)) " << sendl;
+        msg_info() << " ((v2<v0)| (ngh1== -1)) ";
         e=new E(trian,vertexTable[v2],vertexTable[v0],
             t,0);
         t->setEdge(1,e);

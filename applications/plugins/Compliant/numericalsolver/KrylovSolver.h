@@ -25,22 +25,22 @@ class SOFA_Compliant_API KrylovSolver : public IterativeSolver {
 	
 	KrylovSolver();				
 	
-	Data<bool> verbose;
-    Data<unsigned> restart;
+	Data<bool> verbose; ///< print debug stuff on std::cerr
+    Data<unsigned> restart; ///< restart every n steps
 	
-	virtual void init();
+	void init() override;
 	
-	virtual void solve(vec& x,
+	void solve(vec& x,
 	                   const system_type& system,
-                       const vec& rhs) const;
+                       const vec& rhs) const override;
 
-	virtual void correct(vec& x,
+	void correct(vec& x,
 						 const system_type& system,
 						 const vec& rhs,
-						 real damping) const;
+						 real damping) const override;
 
 
-	virtual void factor(const system_type& sys);
+	void factor(const system_type& sys) override;
 	
   protected:
 
@@ -85,7 +85,7 @@ class SOFA_Compliant_API KrylovSolver : public IterativeSolver {
     
 public:
 
-  Data<bool> parallel;
+  Data<bool> parallel; ///< use openmp to parallelize matrix-vector products when use_schur is false (parallelization per KKT blocks, 4 threads)
 
 };
 

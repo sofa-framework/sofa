@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,24 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: FastTriangularBendingSprings
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_H
 #define SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <map>
 
@@ -89,21 +76,23 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
+    using index_type = sofa::defaulttype::index_type;
 
-
-    Data<SReal> f_bendingStiffness;  ///< Material parameter
+    Data<SReal> d_bendingStiffness;  ///< Material parameter
     Data<SReal> d_minDistValidity; ///< Minimal distance to consider a spring valid
 
+    /// Link to be set to the topology container in the component graph. 
+    SingleLink<FastTriangularBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     /// Searches triangle topology and creates the bending springs
-    virtual void init() override;
+    void init() override;
 
-    virtual void reinit() override;
+    void reinit() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset) override; // compute and add all the element stiffnesses to the global stiffness matrix
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const override;
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset) override; // compute and add all the element stiffnesses to the global stiffness matrix
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -127,47 +116,10 @@ protected:
         typedef defaulttype::Mat<12,12,Real> StiffnessMatrix;
 
         /// Store the vertex indices and perform all the precomputations
-        void setEdgeSpring( const VecCoord& p, unsigned iA, unsigned iB, unsigned iC, unsigned iD, Real materialBendingStiffness )
-        {
-            is_activated = is_initialized = true;
-
-            vid[A]=iA;
-            vid[B]=iB;
-            vid[C]=iC;
-            vid[D]=iD;
-
-            Deriv NA = cross( p[vid[A]]-p[vid[C]], p[vid[A]]-p[vid[D]] );
-            Deriv NB = cross( p[vid[B]]-p[vid[D]], p[vid[B]]-p[vid[C]] );
-            Deriv NC = cross( p[vid[C]]-p[vid[B]], p[vid[C]]-p[vid[A]] );
-            Deriv ND = cross( p[vid[D]]-p[vid[A]], p[vid[D]]-p[vid[B]] );
-
-            alpha[A] =  NB.norm() / (NA.norm() + NB.norm());
-            alpha[B] =  NA.norm() / (NA.norm() + NB.norm());
-            alpha[C] = -ND.norm() / (NC.norm() + ND.norm());
-            alpha[D] = -NC.norm() / (NC.norm() + ND.norm());
-
-            // stiffness
-            Deriv edgeDir = p[vid[C]]-p[vid[D]];
-            edgeDir.normalize();
-            Deriv AC = p[vid[C]]-p[vid[A]];
-            Deriv BC = p[vid[C]]-p[vid[B]];
-            Real ha = (AC - edgeDir * (AC*edgeDir)).norm(); // distance from A to CD
-            Real hb = (BC - edgeDir * (BC*edgeDir)).norm(); // distance from B to CD
-            Real l = (p[vid[C]]-p[vid[D]]).norm();          // distance from C to D
-            lambda = (Real)(2./3) * (ha+hb)/(ha*ha*hb*hb) * l * materialBendingStiffness;
-        }
+        void setEdgeSpring( const VecCoord& p, unsigned iA, unsigned iB, unsigned iC, unsigned iD, Real materialBendingStiffness );
 
         /// Accumulates force and return potential energy
-        Real addForce( VecDeriv& f, const VecCoord& p, const VecDeriv& /*v*/) const
-        {
-            if( !is_activated ) return 0;
-            Deriv R = p[vid[A]]*alpha[A] +  p[vid[B]]*alpha[B] +  p[vid[C]]*alpha[C] +  p[vid[D]]*alpha[D];
-            f[vid[A]] -= R * lambda * alpha[A];
-            f[vid[B]] -= R * lambda * alpha[B];
-            f[vid[C]] -= R * lambda * alpha[C];
-            f[vid[D]] -= R * lambda * alpha[D];
-            return R * R * lambda * (Real)0.5;
-        }
+        Real addForce( VecDeriv& f, const VecCoord& p, const VecDeriv& /*v*/) const;
 
 #ifdef LOCAL_OPTIM
         // Optimized version of addDForce
@@ -202,39 +154,13 @@ protected:
 #endif
 
         /// Stiffness matrix assembly
-        void addStiffness( sofa::defaulttype::BaseMatrix *bm, unsigned int offset, SReal scale, core::behavior::ForceField< _DataTypes>* ff ) const
-        {
-            StiffnessMatrix K;
-            getStiffness( K );
-            ff->addToMatrix(bm,offset,vid,K,scale);
-        }
-
+        void addStiffness( sofa::defaulttype::BaseMatrix *bm, unsigned int offset, SReal scale, core::behavior::ForceField< _DataTypes>* ff ) const;
         /// Compliant stiffness matrix assembly
-        void getStiffness( StiffnessMatrix &K ) const
-        {
-            for( unsigned j=0; j<4; j++ )
-                for( unsigned k=0; k<4; k++ )
-                {
-                    K[j*3][k*3] = K[j*3+1][k*3+1] = K[j*3+2][k*3+2] = -lambda * alpha[j] * alpha[k];
-                }
-        }
-
+        void getStiffness( StiffnessMatrix &K ) const;
         /// replace a vertex index with another one
-        void replaceIndex( unsigned oldIndex, unsigned newIndex )
-        {
-            for(unsigned i=0; i<4; i++)
-                if( vid[i] == oldIndex )
-                    vid[i] = newIndex;
-        }
-
+        void replaceIndex( index_type oldIndex, index_type newIndex );
         /// replace all the vertex indices with the given ones
-        void replaceIndices( const helper::vector<unsigned> &newIndices )
-        {
-            for(unsigned i=0; i<4; i++)
-                vid[i] = newIndices[vid[i]];
-        }
-
-
+        void replaceIndices( const helper::vector<index_type> &newIndices );
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgeSpring& /*ei*/ )
@@ -250,7 +176,7 @@ protected:
     };
 
     /// The list of edge springs, one for each edge between two triangles
-    sofa::component::topology::EdgeData<helper::vector<EdgeSpring> > edgeSprings;
+    sofa::component::topology::EdgeData<helper::vector<EdgeSpring> > d_edgeSprings;
 
     class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeSpring> >
     {
@@ -259,21 +185,21 @@ protected:
         TriangularBSEdgeHandler(FastTriangularBendingSprings<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeSpring> >* _data)
             : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeSpring> >(_data), ff(_ff) {}
 
-        void applyCreateFunction(unsigned int edgeIndex,
+        void applyCreateFunction(index_type edgeIndex,
                 EdgeSpring &ei,
-                const core::topology::BaseMeshTopology::Edge& ,  const sofa::helper::vector< unsigned int > &,
+                const core::topology::BaseMeshTopology::Edge& ,  const sofa::helper::vector< index_type > &,
                 const sofa::helper::vector< double >&);
 
-        void applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded,
+        void applyTriangleCreation(const sofa::helper::vector<index_type> &triangleAdded,
                 const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> & ,
-                const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ,
+                const sofa::helper::vector<sofa::helper::vector<index_type> > & ,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
-        void applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved);
+        void applyTriangleDestruction(const sofa::helper::vector<index_type> &triangleRemoved);
 
-        void applyPointDestruction(const sofa::helper::vector<unsigned int> &pointIndices);
+        void applyPointDestruction(const sofa::helper::vector<index_type> &pointIndices);
 
-        void applyPointRenumbering(const sofa::helper::vector<unsigned int> &pointToRenumber);
+        void applyPointRenumbering(const sofa::helper::vector<index_type> &pointToRenumber);
 
         using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeSpring> >::ApplyTopologyChange;
         /// Callback to add triangles elements.
@@ -290,28 +216,24 @@ protected:
         FastTriangularBendingSprings<DataTypes>* ff;
     };
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* m_topology;
 
 
     FastTriangularBendingSprings();
 
     virtual ~FastTriangularBendingSprings();
 
-    sofa::component::topology::EdgeData<helper::vector<EdgeSpring> > &getEdgeInfo() {return edgeSprings;}
+    sofa::component::topology::EdgeData<helper::vector<EdgeSpring> > &getEdgeInfo() {return d_edgeSprings;}
 
-    TriangularBSEdgeHandler* edgeHandler;
+    TriangularBSEdgeHandler* d_edgeHandler;
 
     SReal m_potentialEnergy;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API FastTriangularBendingSprings<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API FastTriangularBendingSprings<defaulttype::Vec3fTypes>;
-#endif
-#endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
+extern template class SOFA_GENERAL_DEFORMABLE_API FastTriangularBendingSprings<defaulttype::Vec3Types>;
+
+#endif // !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
 
 
 } // namespace forcefield

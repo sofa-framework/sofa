@@ -1,0 +1,33 @@
+# THIS TEST IS STILL TO IMPLEMENT.
+#
+Node : {
+    name : "root"
+    TestResult : {
+        name: "test"
+        result: "Success"
+    }
+
+    Template : {
+        name : "Box"
+        properties : {
+            name : None
+            child : None
+        }
+        Python : '''print(str(child))'''
+    }
+
+    Box : {
+        name : "Box1"
+        child : {
+            Node : {
+                name :"Child"
+            }
+         }
+    }
+
+    Python : '''if root.name=="Box1":
+                    test.result = "Fail"
+             '''
+}
+
+

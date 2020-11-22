@@ -102,7 +102,7 @@ def createScene(node):
     rigidFilename = SofaPython.Tools.localPath( __file__, "damping_mass.rigid" )
     rigidFile = open(rigidFilename, "wb")
     rigidFile.write( 'Xsp 3.0\n' )
-    rigidFile.write( 'mass '+str(MASS)+'\n' )
+    rigidFile.write( 'vertexMass '+str(MASS)+'\n' )
     rigidFile.write( 'volm '+str(VOLUME)+'\n' )
     rigidFile.write( 'inrt '+str(INERTIA/MASS) + ' 0 0   0 '+str(INERTIA/MASS) + ' 0  0 0 '+str(INERTIA/MASS) + '\n' )
     rigidFile.write( 'cntr 0 0 0\n' )

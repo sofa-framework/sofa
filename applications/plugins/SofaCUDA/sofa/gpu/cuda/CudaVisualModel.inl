@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -227,7 +227,7 @@ void CudaVisualModel< TDataTypes >::updateTopology()
     int nbv = 0;
     if (!nelems.empty())
         nbv = nelems.rbegin()->first + 1;
-    sout << "CUDA CudaVisualModel: "<<triangles.size()<<" triangles, "<<quads.size()<<" quads, "<<nbv<<"/"<<state->getSize()<<" attached points, max "<<nmax<<" elements per point."<<sendl;
+    msg_info() << "CUDA CudaVisualModel: "<<triangles.size()<<" triangles, "<<quads.size()<<" quads, "<<nbv<<"/"<<state->getSize()<<" attached points, max "<<nmax<<" elements per point.";
     initV(triangles.size()+quads.size(), nbv, nmax);
 
     nelems.clear();
@@ -311,6 +311,7 @@ void CudaVisualModel< TDataTypes >::drawShadow(const core::visual::VisualParams*
 template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowVisualModels()) return;
 
     if (!topology || !state || !state->getSize()) return;
@@ -443,11 +444,14 @@ void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParam
     }
 
     d_x->endEdit();
+#endif // SOFA_NO_OPENGL
 }
 
 template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::computeBBox(const core::ExecParams* params, bool)
 {
+    SOFA_UNUSED(params);
+
     const VecCoord& x = state->write(core::VecCoordId::position())->getValue();
 
     SReal minBBox[3] = {std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()};
@@ -461,7 +465,7 @@ void CudaVisualModel< TDataTypes >::computeBBox(const core::ExecParams* params, 
             if (p[c] < minBBox[c]) minBBox[c] = p[c];
         }
     }
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
 

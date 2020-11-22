@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,16 +55,16 @@ protected:
     Grid2D* ftemp;
 
 public:
-    sofa::core::objectmodel::Data<int> f_nx;
-    sofa::core::objectmodel::Data<int> f_ny;
-    sofa::core::objectmodel::Data<real> f_cellwidth;
-    sofa::core::objectmodel::Data<real> f_height;
-    sofa::core::objectmodel::Data<vec2> f_dir;
-    sofa::core::objectmodel::Data<real> f_tstart;
-    sofa::core::objectmodel::Data<real> f_tstop;
+    sofa::core::objectmodel::Data<int> f_nx; ///< grid size along x axis
+    sofa::core::objectmodel::Data<int> f_ny; ///< grid size along y axis
+    sofa::core::objectmodel::Data<real> f_cellwidth; ///< width of each cell
+    sofa::core::objectmodel::Data<real> f_height; ///< initial fluid height
+    sofa::core::objectmodel::Data<vec2> f_dir; ///< initial fluid surface normal
+    sofa::core::objectmodel::Data<real> f_tstart; ///< starting time for fluid source
+    sofa::core::objectmodel::Data<real> f_tstop; ///< stopping time for fluid source
 protected:
     Fluid2D();
-    virtual ~Fluid2D();
+    ~Fluid2D() override;
 public:
     int getNx() const { return f_nx.getValue(); }
     void setNx(int v) { f_nx.setValue(v);       }
@@ -72,15 +72,15 @@ public:
     int getNy() const { return f_ny.getValue(); }
     void setNy(int v) { f_ny.setValue(v);       }
 
-    virtual void init();
+    void init() override;
 
-    virtual void reset();
+    void reset() override;
 
-    virtual void updatePosition(SReal dt);
+    void updatePosition(SReal dt) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void computeBBox(const core::ExecParams* /* params */, bool onlyVisible=false);
+    void computeBBox(const core::ExecParams* /* params */, bool onlyVisible=false) override;
 
     virtual void updateVisual();
 

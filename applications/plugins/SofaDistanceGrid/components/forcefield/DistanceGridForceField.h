@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -144,33 +144,34 @@ protected:
 public:
 
     // Input data parameters
-    sofa::core::objectmodel::DataFileName fileDistanceGrid;
-    Data< double > scale;
-    Data< helper::fixed_array<DistanceGrid::Coord,2> > box;
-    Data< int > nx;
-    Data< int > ny;
-    Data< int > nz;
+    sofa::core::objectmodel::DataFileName fileDistanceGrid; ///< load distance grid from specified file
+    Data< double > scale; ///< scaling factor for input file
+    Data< helper::fixed_array<DistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data< int > nx; ///< number of values on X axis
+    Data< int > ny; ///< number of values on Y axis
+    Data< int > nz; ///< number of values on Z axis
 
-    Data<Real> stiffnessIn, stiffnessOut;
-    Data<Real> damping;
-    Data<Real> maxDist;
-    Data<Real> minArea;
-    Data<Real> stiffnessArea;
-    Data<Real> minVolume;
-    Data<Real> stiffnessVolume;
+    Data<Real> stiffnessIn; ///< force stiffness when inside of the object
+    Data<Real> stiffnessOut; ///< force stiffness when outside of the object
+    Data<Real> damping; ///< force damping coefficient
+    Data<Real> maxDist; ///< max distance of the surface after which no more force is applied
+    Data<Real> minArea; ///< minimal area for each triangle, as seen from the direction of the local surface (i.e. a flipped triangle will have a negative area)
+    Data<Real> stiffnessArea; ///< force stiffness if a triangle have an area less than minArea
+    Data<Real> minVolume; ///< minimal volume for each tetrahedron (a flipped triangle will have a negative volume)
+    Data<Real> stiffnessVolume; ///< force stiffness if a tetrahedron have an volume less than minVolume
     bool flipNormals;
 
-    Data<defaulttype::RGBAColor> color;
-    Data<bool> bDraw;
-    Data<bool> drawPoints;
-    Data<Real> drawSize;
+    Data<sofa::helper::types::RGBAColor> color; ///< display color.(default=[0.0,0.5,0.2,1.0])
+    Data<bool> bDraw; ///< enable/disable drawing of distancegrid
+    Data<bool> drawPoints; ///< enable/disable drawing of distancegrid
+    Data<Real> drawSize; ///< display size if draw is enabled
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
 protected:
     DistanceGridForceField()
         : grid(NULL)
-        , fileDistanceGrid( initData( &fileDistanceGrid, "fileDistanceGrid", "load distance grid from specified file"))
+        , fileDistanceGrid( initData( &fileDistanceGrid, "filename", "load distance grid from specified file"))
         , scale( initData( &scale, 1.0, "scale", "scaling factor for input file"))
         , box( initData( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
         , nx( initData( &nx, 64, "nx", "number of values on X axis") )
@@ -184,7 +185,7 @@ protected:
         , stiffnessArea(initData(&stiffnessArea, (Real)100, "stiffnessArea", "force stiffness if a triangle have an area less than minArea"))
         , minVolume(initData(&minVolume, (Real)0, "minVolume", "minimal volume for each tetrahedron (a flipped triangle will have a negative volume)"))
         , stiffnessVolume(initData(&stiffnessVolume, (Real)0, "stiffnessVolume", "force stiffness if a tetrahedron have an volume less than minVolume"))
-        , color(initData(&color, defaulttype::RGBAColor(0.0f,0.5f,0.2f,1.0f), "color", "display color.(default=[0.0,0.5,0.2,1.0])"))
+        , color(initData(&color, sofa::helper::types::RGBAColor(0.0f,0.5f,0.2f,1.0f), "color", "display color.(default=[0.0,0.5,0.2,1.0])"))
         , bDraw(initData(&bDraw, false, "draw", "enable/disable drawing of distancegrid"))
         , drawPoints(initData(&drawPoints, false, "drawPoints", "enable/disable drawing of distancegrid"))
         , drawSize(initData(&drawSize, (Real)10.0f, "drawSize", "display size if draw is enabled"))
@@ -192,10 +193,10 @@ protected:
     {
         this->addAlias(&stiffnessIn,"stiffness");
         this->addAlias(&stiffnessOut,"stiffness");
-        this->addAlias(&fileDistanceGrid,"filename");
+        this->addAlias(&fileDistanceGrid,"fileDistanceGrid");
     }
 public:
-    virtual void init();
+    void init() override;
 
     void setMState(  core::behavior::MechanicalState<DataTypes>* mstate ) { this->mstate = mstate; }
 
@@ -210,31 +211,25 @@ public:
         damping.setValue( damp );
     }
 
-    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) ;
-    virtual void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) ;
-    virtual void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) ;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
+    void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
+    void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        msg_warning() << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
     void drawDistanceGrid(const core::visual::VisualParams*, float size=0.0f);
 
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec3dTypes>;
-//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec2dTypes>;
-//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec1dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec3fTypes>;
-//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec2fTypes>;
-//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec1fTypes>;
-#endif
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_CPP)
+extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec3Types>;
+//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec2Types>;
+//extern template class SOFA_SOFADISTANCEGRID_API DistanceGridForceField<defaulttype::Vec1Types>;
+
 #endif
 
 } // namespace forcefield

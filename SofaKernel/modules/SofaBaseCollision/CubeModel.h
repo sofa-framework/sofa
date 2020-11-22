@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,13 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CUBEMODEL_H
-#define SOFA_COMPONENT_COLLISION_CUBEMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_CUBECOLLISIONMODEL_H
+#define SOFA_COMPONENT_COLLISION_CUBECOLLISIONMODEL_H
 #include "config.h"
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -36,12 +36,12 @@ namespace component
 namespace collision
 {
 
-class CubeModel;
+class CubeCollisionModel;
 
-class Cube : public core::TCollisionElementIterator<CubeModel>
+class Cube : public core::TCollisionElementIterator<CubeCollisionModel>
 {
 public:
-    Cube(CubeModel* model=NULL, int index=0);
+    Cube(CubeCollisionModel* model=nullptr, sofa::defaulttype::index_type index=0);
 
     explicit Cube(const core::CollisionElementIterator& i);
 
@@ -52,10 +52,12 @@ public:
     const std::pair<Cube,Cube>& subcells() const;
 };
 
-class SOFA_BASE_COLLISION_API CubeModel : public core::CollisionModel
+class SOFA_BASE_COLLISION_API CubeCollisionModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(CubeModel,sofa::core::CollisionModel);
+    SOFA_CLASS(CubeCollisionModel,sofa::core::CollisionModel);
+
+    using index_type = sofa::defaulttype::index_type;
 
     struct CubeData
     {
@@ -75,29 +77,11 @@ public:
             SReal v2 = c2.minBBox[axis]+c2.maxBBox[axis];
             return v1 < v2;
         }
-        template<int Axis>
-        static int sortCube(const void* p1, const void* p2)
-        {
-            const CubeModel::CubeData* c1 = (const CubeModel::CubeData*)p1;
-            const CubeModel::CubeData* c2 = (const CubeModel::CubeData*)p2;
-            SReal v1 = c1->minBBox[Axis] + c1->maxBBox[Axis];
-            SReal v2 = c2->minBBox[Axis] + c2->maxBBox[Axis];
-
-            if (v1 < v2)
-                return -1;
-            else if (v1 > v2)
-                return 1;
-            else
-                return 0;
-        }
     };
 
 protected:
-
-    //class CubeSortPredicate;
-
     sofa::helper::vector<CubeData> elems;
-    sofa::helper::vector<int> parentOf; ///< Given the index of a child leaf element, store the index of the parent cube
+    sofa::helper::vector<index_type> parentOf; ///< Given the index of a child leaf element, store the index of the parent cube
 
 public:
     typedef core::CollisionElementIterator ChildIterator;
@@ -105,37 +89,37 @@ public:
     typedef Cube Element;
     friend class Cube;
 protected:
-    CubeModel();
+    CubeCollisionModel();
 public:
-    virtual void resize(int size) override;
+    void resize(std::size_t size) override;
 
-    void setParentOf(int childIndex, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
-    void setLeafCube(int cubeIndex, int childIndex);
-    void setLeafCube(int cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
+    void setParentOf(index_type childIndex, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
+    void setLeafCube(index_type cubeIndex, index_type childIndex);
+    void setLeafCube(index_type cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
 
 
-    unsigned int getNumberCells() { return (unsigned int)elems.size();}
+    std::size_t getNumberCells() { return elems.size();}
 
     void getBoundingTree ( sofa::helper::vector< std::pair< sofa::defaulttype::Vector3, sofa::defaulttype::Vector3> > &bounding )
     {
         bounding.resize(elems.size());
-        for (unsigned int index=0; index<elems.size(); index++)
+        for (std::size_t index=0; index<elems.size(); index++)
         {
             bounding[index] = std::make_pair( elems[index].minBBox, elems[index].maxBBox);
         }
     }
 
-    int getLeafIndex(int index) const
+    index_type getLeafIndex(index_type index) const
     {
         return elems[index].children.first.getIndex();
     }
 
-    int getLeafEndIndex(int index) const
+    index_type getLeafEndIndex(index_type index) const
     {
         return elems[index].children.second.getIndex();
     }
 
-    const CubeData & getCubeData(int index)const{return elems[index];}
+    const CubeData & getCubeData(index_type index)const{return elems[index];}
 
     // -- CollisionModel interface
 
@@ -148,27 +132,27 @@ public:
       *the max depth. The division is made along an axis. This axis corresponds to the biggest dimension of the current bounding box.
       *Note : a bounding box is a Cube here.
       */
-    virtual void computeBoundingTree(int maxDepth=0) override;
+    void computeBoundingTree(int maxDepth=0) override;
 
-    virtual std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getInternalChildren(int index) const override;
+    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getInternalChildren(index_type index) const override;
 
-    virtual std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getExternalChildren(int index) const override;
+    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getExternalChildren(index_type index) const override;
 
-    virtual bool isLeaf( int index ) const override;
+    bool isLeaf(index_type index ) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    int addCube(Cube subcellsBegin, Cube subcellsEnd);
-    void updateCube(int index);
+    index_type addCube(Cube subcellsBegin, Cube subcellsEnd);
+    void updateCube(index_type index);
     void updateCubes();
 };
 
-inline Cube::Cube(CubeModel* model, int index)
-    : core::TCollisionElementIterator<CubeModel>(model, index)
+inline Cube::Cube(CubeCollisionModel* model, index_type index)
+    : core::TCollisionElementIterator<CubeCollisionModel>(model, index)
 {}
 
 inline Cube::Cube(const core::CollisionElementIterator& i)
-    : core::TCollisionElementIterator<CubeModel>(static_cast<CubeModel*>(i.getCollisionModel()), i.getIndex())
+    : core::TCollisionElementIterator<CubeCollisionModel>(static_cast<CubeCollisionModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
@@ -187,6 +171,8 @@ inline const std::pair<Cube,Cube>& Cube::subcells() const
 {
     return model->elems[index].subcells;
 }
+
+using CubeModel [[deprecated("The CubeModel is now deprecated, please use CubeCollisionModel instead. Compatibility stops at v20.06")]] = CubeCollisionModel;
 
 } // namespace collision
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
 #include <SofaEulerianFluid/initEulerianFluid.h>
 
 
@@ -75,9 +74,6 @@ const char* getModuleComponentList()
     return "Fluid2D Fluid3D";
 }
 
-
-SOFA_LINK_CLASS(Fluid2D)
-SOFA_LINK_CLASS(Fluid3D)
 
 } /// namespace component
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,14 +22,9 @@
 #ifndef SOFA_COMPONENT_ENGINE_EXTRUDESURFACE_INL
 #define SOFA_COMPONENT_ENGINE_EXTRUDESURFACE_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <SofaGeneralEngine/ExtrudeSurface.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/BasicShapes.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -72,10 +67,9 @@ void ExtrudeSurface<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void ExtrudeSurface<DataTypes>::update()
+void ExtrudeSurface<DataTypes>::doUpdate()
 {
     using sofa::core::topology::BaseMeshTopology;
-
 
     const helper::vector<BaseMeshTopology::TriangleID>& surfaceTriangles = f_surfaceTriangles.getValue();
     const VecCoord& surfaceVertices = f_surfaceVertices.getValue();
@@ -85,14 +79,12 @@ void ExtrudeSurface<DataTypes>::update()
 
     const BaseMeshTopology::SeqTriangles* triangles = &f_triangles.getValue();
 
-    cleanDirty();
-
     VecCoord* extrusionVertices = f_extrusionVertices.beginWriteOnly();
     extrusionVertices->clear();
     helper::vector<BaseMeshTopology::Triangle>* extrusionTriangles = f_extrusionTriangles.beginWriteOnly();
     extrusionTriangles->clear();
 
-    helper::vector<BaseMeshTopology::TriangleID>::const_iterator itTriangles, itTrianglesSide;
+    helper::vector<BaseMeshTopology::TriangleID>::const_iterator itTriangles;
 
     std::map<int, int> pointMatching;
     std::map<BaseMeshTopology::Edge, bool > edgesOnBorder;
@@ -218,76 +210,69 @@ void ExtrudeSurface<DataTypes>::update()
 template <class DataTypes>
 void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-
     using sofa::core::topology::BaseMeshTopology;
 
     const helper::vector<BaseMeshTopology::TriangleID> &surfaceTriangles = f_surfaceTriangles.getValue();
 
-    helper::vector<BaseMeshTopology::TriangleID>::const_iterator itTriangles;
-    glDisable(GL_LIGHTING);
-
     if (!vparams->displayFlags().getShowBehaviorModels() || !isVisible.getValue())
         return;
 
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
 
     const helper::vector<BaseMeshTopology::Triangle> &extrusionTriangles = f_extrusionTriangles.getValue();
     const VecCoord& extrusionVertices = f_extrusionVertices.getValue();
-    helper::vector<BaseMeshTopology::Triangle>::const_iterator it;
+
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     //Triangles From Surface
-
-    glColor3f(1.0,0.0,0.0);
-    glBegin(GL_TRIANGLES);
     for (unsigned int i=0 ; i<surfaceTriangles.size()*2 ; i+=2)
     {
         BaseMeshTopology::Triangle triangle = extrusionTriangles[i];
 
         for (unsigned int j=0 ; j<3 ; j++)
         {
-            Coord p = (extrusionVertices[triangle[j]]);
-            glVertex3d(p[0], p[1], p[2]);
+            const Coord& p = (extrusionVertices[triangle[j]]);
+            vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
         }
     }
-    glEnd();
+
+    vparams->drawTool()->drawTriangles(vertices, sofa::helper::types::RGBAColor::red());
+    vertices.clear();
 
     //Triangles From Extrusion
-    glColor3f(0.0,1.0,0.0);
-    glBegin(GL_TRIANGLES);
     for (unsigned int i=1 ; i<surfaceTriangles.size()*2 ; i+=2)
     {
         BaseMeshTopology::Triangle triangle = extrusionTriangles[i];
 
         for (unsigned int j=0 ; j<3 ; j++)
         {
-            Coord p = (extrusionVertices[triangle[j]]);
-            glVertex3d(p[0], p[1], p[2]);
+            const Coord& p = (extrusionVertices[triangle[j]]);
+            vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
         }
     }
-    glEnd();
+    vparams->drawTool()->drawTriangles(vertices, sofa::helper::types::RGBAColor::green());
 
     //Border Triangles
-    glColor3f(0.0,0.0,1.0);
-    glBegin(GL_TRIANGLES);
     for (unsigned int i=surfaceTriangles.size()*2 ; i<extrusionTriangles.size() ; i++)
     {
         BaseMeshTopology::Triangle triangle = extrusionTriangles[i];
 
         for (unsigned int j=0 ; j<3 ; j++)
         {
-            Coord p = (extrusionVertices[triangle[j]]);
-            glVertex3d(p[0], p[1], p[2]);
+            const Coord& p = (extrusionVertices[triangle[j]]);
+            vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
         }
     }
-    glEnd();
+    vparams->drawTool()->drawTriangles(vertices, sofa::helper::types::RGBAColor::blue());
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    glEnable(GL_LIGHTING);
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->setPolygonMode(0, false);
+    
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace engine

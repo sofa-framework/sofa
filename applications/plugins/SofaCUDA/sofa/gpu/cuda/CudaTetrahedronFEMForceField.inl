@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,11 +24,6 @@
 
 #include "CudaTetrahedronFEMForceField.h"
 #include <SofaSimpleFem/TetrahedronFEMForceField.inl>
-#if 0 //defined(SOFA_DEV)
-#include <sofa/gpu/cuda/CudaDiagonalMatrix.h>
-#include <sofa/gpu/cuda/CudaRotationMatrix.h>
-#include <sofa/core/behavior/RotationMatrix.h>
-#endif // SOFA_DEV
 namespace sofa
 {
 
@@ -40,25 +35,25 @@ namespace cuda
 
 extern "C"
 {
-    void TetrahedronFEMForceFieldCuda3f_addForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
-    void TetrahedronFEMForceFieldCuda3f_addDForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
+void TetrahedronFEMForceFieldCuda3f_addForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
+void TetrahedronFEMForceFieldCuda3f_addDForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
 
-    void TetrahedronFEMForceFieldCuda3f1_addForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
-    void TetrahedronFEMForceFieldCuda3f1_addDForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
+void TetrahedronFEMForceFieldCuda3f1_addForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
+void TetrahedronFEMForceFieldCuda3f1_addDForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
 
-    void TetrahedronFEMForceFieldCuda3f_getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations);
-    void TetrahedronFEMForceFieldCuda3f_getElementRotations(unsigned int nbElem, const void* rotationsAos, void* rotations);
+void TetrahedronFEMForceFieldCuda3f_getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations);
+void TetrahedronFEMForceFieldCuda3f_getElementRotations(unsigned int nbElem, const void* rotationsAos, void* rotations);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-    void TetrahedronFEMForceFieldCuda3d_addForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
-    void TetrahedronFEMForceFieldCuda3d_addDForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
+void TetrahedronFEMForceFieldCuda3d_addForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
+void TetrahedronFEMForceFieldCuda3d_addDForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
 
-    void TetrahedronFEMForceFieldCuda3d1_addForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
-    void TetrahedronFEMForceFieldCuda3d1_addDForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
+void TetrahedronFEMForceFieldCuda3d1_addForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
+void TetrahedronFEMForceFieldCuda3d1_addDForce(int bsize,int pt,unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx, double factor);
 
-    void TetrahedronFEMForceFieldCuda3d_getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations);
-    void TetrahedronFEMForceFieldCuda3d_getElementRotations(unsigned int nbElem, const void* rotationsAos, void* rotations);
+void TetrahedronFEMForceFieldCuda3d_getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations);
+void TetrahedronFEMForceFieldCuda3d_getElementRotations(unsigned int nbElem, const void* rotationsAos, void* rotations);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
@@ -149,9 +144,9 @@ using namespace gpu::cuda;
 template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::reinit(Main* m)
 {
-    if (!m->_mesh->getTetrahedra().empty())
+    if (!m->m_topology->getTetrahedra().empty())
     {
-        m->_indexedElements = & (m->_mesh->getTetrahedra());
+        m->_indexedElements = & (m->m_topology->getTetrahedra());
     }
 
     Data& data = m->data;
@@ -209,19 +204,19 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
     data.init(activeElems.size(), v0, nbv, nmax);
 
-//     nelems.clear();
-//     for (unsigned int i=0;i<activeElems.size();i++)
-//     {
-//         int ei = activeElems[i];
-//         const Element& e = elems[ei];
-//         const Coord& a = m->_rotatedInitialElements[ei][0];
-//         const Coord& b = m->_rotatedInitialElements[ei][1];
-//         const Coord& c = m->_rotatedInitialElements[ei][2];
-//         const Coord& d = m->_rotatedInitialElements[ei][3];
-//         data.setE(i, e, a, b, c, d, m->materialsStiffnesses[ei], m->strainDisplacements[ei]);
-//         for (unsigned int j=0;j<e.size();j++)
-//             data.setV(e[j], nelems[e[j]]++, i*e.size()+j);
-//     }
+    //     nelems.clear();
+    //     for (unsigned int i=0;i<activeElems.size();i++)
+    //     {
+    //         int ei = activeElems[i];
+    //         const Element& e = elems[ei];
+    //         const Coord& a = m->_rotatedInitialElements[ei][0];
+    //         const Coord& b = m->_rotatedInitialElements[ei][1];
+    //         const Coord& c = m->_rotatedInitialElements[ei][2];
+    //         const Coord& d = m->_rotatedInitialElements[ei][3];
+    //         data.setE(i, e, a, b, c, d, m->materialsStiffnesses[ei], m->strainDisplacements[ei]);
+    //         for (unsigned int j=0;j<e.size();j++)
+    //             data.setV(e[j], nelems[e[j]]++, i*e.size()+j);
+    //     }
 
 
     data.nbElementPerVertex = nmax;
@@ -281,18 +276,18 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     f.resize(x.size());
 
     Kernels::addForce(
-        data.GATHER_BSIZE,
-        data.GATHER_PT,
-        data.size(),
-        data.nbVertex,
-        data.nbElementPerVertex,
-        data.elems.deviceRead(),
-        data.state.deviceWrite(),
-        data.eforce.deviceWrite(),
-        data.velems.deviceRead(),
-        (      Deriv*)f.deviceWrite() + data.vertex0,
-        (const Coord*)x.deviceRead()  + data.vertex0,
-        (const Deriv*)v.deviceRead()  + data.vertex0);
+                data.GATHER_BSIZE,
+                data.GATHER_PT,
+                data.size(),
+                data.nbVertex,
+                data.nbElementPerVertex,
+                data.elems.deviceRead(),
+                data.state.deviceWrite(),
+                data.eforce.deviceWrite(),
+                data.velems.deviceRead(),
+                (      Deriv*)f.deviceWrite() + data.vertex0,
+                (const Coord*)x.deviceRead()  + data.vertex0,
+                (const Deriv*)v.deviceRead()  + data.vertex0);
 
 #if 0
     // compare with CPU version
@@ -311,9 +306,9 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         Mat3x3f Rdiff = Rt-s.Rt;
         if ((Rdiff[0].norm2()+Rdiff[1].norm2()+Rdiff[2].norm2()) > 0.000001f)
         {
-            sout << "CPU Rt "<<i<<" = "<<Rt<<sendl;
-            sout << "GPU Rt "<<i<<" = "<<s.Rt<<sendl;
-            sout << "DIFF   "<<i<<" = "<<Rdiff<<sendl;
+            msg_info() << "CPU Rt "<<i<<" = "<<Rt
+                       << "GPU Rt "<<i<<" = "<<s.Rt
+                       << "DIFF   "<<i<<" = "<<Rdiff;
         }
         Coord xb = Rt*(x[b]-x[a]);
         Coord xc = Rt*(x[c]-x[a]);
@@ -338,10 +333,10 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
         if (Sdiff.norm2() > 0.0001f)
         {
-            sout << "    D "<<i<<" = "<<D<<sendl;
-            sout << "CPU S "<<i<<" = "<<S<<sendl;
-            sout << "GPU S "<<i<<" = "<<s.S<<sendl;
-            sout << "DIFF   "<<i<<" = "<<Sdiff<<sendl;
+            msg_info() << "    D "<<i<<" = "<<D
+                       << "CPU S "<<i<<" = "<<S
+                       << "GPU S "<<i<<" = "<<s.S
+                       << "DIFF   "<<i<<" = "<<Sdiff;
         }
 
     }
@@ -355,219 +350,219 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     Data& data = m->data;
     df.resize(dx.size());
     Kernels::addDForce(
-        data.GATHER_BSIZE,
-        data.GATHER_PT,
-        data.size(),
-        data.nbVertex,
-        data.nbElementPerVertex,
-        data.elems.deviceRead(),
-        data.state.deviceRead(),
-        data.eforce.deviceWrite(),
-        data.velems.deviceRead(),
-        (      Deriv*)df.deviceWrite() + data.vertex0,
-        (const Deriv*)dx.deviceRead()  + data.vertex0,
-        kFactor);
+                data.GATHER_BSIZE,
+                data.GATHER_PT,
+                data.size(),
+                data.nbVertex,
+                data.nbElementPerVertex,
+                data.elems.deviceRead(),
+                data.state.deviceRead(),
+                data.eforce.deviceWrite(),
+                data.velems.deviceRead(),
+                (      Deriv*)df.deviceWrite() + data.vertex0,
+                (const Deriv*)dx.deviceRead()  + data.vertex0,
+                kFactor);
 }
 
 
 template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addKToMatrix(Main* m, sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
-        Data& data = m->data;
+    Data& data = m->data;
 
-        if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * >(mat))
+    if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> > * >(mat))
+    {
+        const VecElement& elems = *m->_indexedElements;
+
+        helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
+
+        // Build Matrix Block for this ForceField
+        int i,j,n1, n2;
+        int offd3 = offset/3;
+
+        typename Main::Transformation Rot;
+        typename Main::StiffnessMatrix JKJt,tmp;
+
+        Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+        Rot[0][1]=Rot[0][2]=0;
+        Rot[1][0]=Rot[1][2]=0;
+        Rot[2][0]=Rot[2][1]=0;
+
+        for (int ei=0; ei<data.nbElement; ++ei)
         {
-            const VecElement& elems = *m->_indexedElements;
+            const Element& e = elems[ei];
 
-            helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
+            int blockIdx = ei / BSIZE;
+            int threadIdx = ei % BSIZE;
 
-            // Build Matrix Block for this ForceField
-            int i,j,n1, n2;
-            int offd3 = offset/3;
+            for(i=0; i<3; i++)
+                for (j=0; j<3; j++)
+                    Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
 
-            typename Main::Transformation Rot;
-            typename Main::StiffnessMatrix JKJt,tmp;
+            m->computeStiffnessMatrix(JKJt, tmp, m->materialsStiffnesses[ei], m->strainDisplacements[ei], Rot);
+            defaulttype::Mat<3,3,double> tmpBlock[4][4];
 
-            Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-            Rot[0][1]=Rot[0][2]=0;
-            Rot[1][0]=Rot[1][2]=0;
-            Rot[2][0]=Rot[2][1]=0;
-
-            for (int ei=0; ei<data.nbElement; ++ei)
+            // find index of node 1
+            for (n1=0; n1<4; n1++)
             {
-                const Element& e = elems[ei];
-
-                int blockIdx = ei / BSIZE;
-                int threadIdx = ei % BSIZE;
-
                 for(i=0; i<3; i++)
-                    for (j=0; j<3; j++)
-                        Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
-
-                m->computeStiffnessMatrix(JKJt, tmp, m->materialsStiffnesses[ei], m->strainDisplacements[ei], Rot);
-                defaulttype::Mat<3,3,double> tmpBlock[4][4];
-
-                // find index of node 1
-                for (n1=0; n1<4; n1++)
                 {
-                    for(i=0; i<3; i++)
+                    for (n2=0; n2<4; n2++)
                     {
-                        for (n2=0; n2<4; n2++)
+                        for (j=0; j<3; j++)
                         {
-                            for (j=0; j<3; j++)
-                            {
-                                tmpBlock[n1][n2][i][j] = - tmp[n1*3+i][n2*3+j]*k;
-                            }
-                        }
-                    }
-                }
-
-                *crsmat->wbloc(offd3 + e[0], offd3 + e[0],true) += tmpBlock[0][0];
-                *crsmat->wbloc(offd3 + e[0], offd3 + e[1],true) += tmpBlock[0][1];
-                *crsmat->wbloc(offd3 + e[0], offd3 + e[2],true) += tmpBlock[0][2];
-                *crsmat->wbloc(offd3 + e[0], offd3 + e[3],true) += tmpBlock[0][3];
-
-                *crsmat->wbloc(offd3 + e[1], offd3 + e[0],true) += tmpBlock[1][0];
-                *crsmat->wbloc(offd3 + e[1], offd3 + e[1],true) += tmpBlock[1][1];
-                *crsmat->wbloc(offd3 + e[1], offd3 + e[2],true) += tmpBlock[1][2];
-                *crsmat->wbloc(offd3 + e[1], offd3 + e[3],true) += tmpBlock[1][3];
-
-                *crsmat->wbloc(offd3 + e[2], offd3 + e[0],true) += tmpBlock[2][0];
-                *crsmat->wbloc(offd3 + e[2], offd3 + e[1],true) += tmpBlock[2][1];
-                *crsmat->wbloc(offd3 + e[2], offd3 + e[2],true) += tmpBlock[2][2];
-                *crsmat->wbloc(offd3 + e[2], offd3 + e[3],true) += tmpBlock[2][3];
-
-                *crsmat->wbloc(offd3 + e[3], offd3 + e[0],true) += tmpBlock[3][0];
-                *crsmat->wbloc(offd3 + e[3], offd3 + e[1],true) += tmpBlock[3][1];
-                *crsmat->wbloc(offd3 + e[3], offd3 + e[2],true) += tmpBlock[3][2];
-                *crsmat->wbloc(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
-            }
-        }
-        else if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * >(mat))
-        {
-            const VecElement& elems = *m->_indexedElements;
-
-            helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
-
-            // Build Matrix Block for this ForceField
-            int i,j,n1, n2;
-            int offd3 = offset/3;
-
-            typename Main::Transformation Rot;
-            typename Main::StiffnessMatrix JKJt,tmp;
-
-            Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-            Rot[0][1]=Rot[0][2]=0;
-            Rot[1][0]=Rot[1][2]=0;
-            Rot[2][0]=Rot[2][1]=0;
-
-            for (int ei=0; ei<data.nbElement; ++ei)
-            {
-                const Element& e = elems[ei];
-
-                int blockIdx = ei / BSIZE;
-                int threadIdx = ei % BSIZE;
-
-                for(i=0; i<3; i++)
-                    for (j=0; j<3; j++)
-                        Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
-
-                m->computeStiffnessMatrix(JKJt, tmp, m->materialsStiffnesses[ei], m->strainDisplacements[ei], Rot);
-                defaulttype::Mat<3,3,double> tmpBlock[4][4];
-
-                // find index of node 1
-                for (n1=0; n1<4; n1++)
-                {
-                    for(i=0; i<3; i++)
-                    {
-                        for (n2=0; n2<4; n2++)
-                        {
-                            for (j=0; j<3; j++)
-                            {
-                                tmpBlock[n1][n2][i][j] = - tmp[n1*3+i][n2*3+j]*k;
-                            }
-                        }
-                    }
-                }
-
-                *crsmat->wbloc(offd3 + e[0], offd3 + e[0],true) += tmpBlock[0][0];
-                *crsmat->wbloc(offd3 + e[0], offd3 + e[1],true) += tmpBlock[0][1];
-                *crsmat->wbloc(offd3 + e[0], offd3 + e[2],true) += tmpBlock[0][2];
-                *crsmat->wbloc(offd3 + e[0], offd3 + e[3],true) += tmpBlock[0][3];
-
-                *crsmat->wbloc(offd3 + e[1], offd3 + e[0],true) += tmpBlock[1][0];
-                *crsmat->wbloc(offd3 + e[1], offd3 + e[1],true) += tmpBlock[1][1];
-                *crsmat->wbloc(offd3 + e[1], offd3 + e[2],true) += tmpBlock[1][2];
-                *crsmat->wbloc(offd3 + e[1], offd3 + e[3],true) += tmpBlock[1][3];
-
-                *crsmat->wbloc(offd3 + e[2], offd3 + e[0],true) += tmpBlock[2][0];
-                *crsmat->wbloc(offd3 + e[2], offd3 + e[1],true) += tmpBlock[2][1];
-                *crsmat->wbloc(offd3 + e[2], offd3 + e[2],true) += tmpBlock[2][2];
-                *crsmat->wbloc(offd3 + e[2], offd3 + e[3],true) += tmpBlock[2][3];
-
-                *crsmat->wbloc(offd3 + e[3], offd3 + e[0],true) += tmpBlock[3][0];
-                *crsmat->wbloc(offd3 + e[3], offd3 + e[1],true) += tmpBlock[3][1];
-                *crsmat->wbloc(offd3 + e[3], offd3 + e[2],true) += tmpBlock[3][2];
-                *crsmat->wbloc(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
-            }
-        }
-        else
-        {
-            const VecElement& elems = *m->_indexedElements;
-
-            helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
-
-            // Build Matrix Block for this ForceField
-            int i,j,n1, n2, row, column, ROW, COLUMN;
-
-            typename Main::Transformation Rot;
-            typename Main::StiffnessMatrix JKJt,tmp;
-
-            Index noeud1, noeud2;
-
-            Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-            Rot[0][1]=Rot[0][2]=0;
-            Rot[1][0]=Rot[1][2]=0;
-            Rot[2][0]=Rot[2][1]=0;
-
-            for (int ei=0; ei<data.nbElement; ++ei)
-            {
-                const Element& e = elems[ei];
-
-                int blockIdx = ei / BSIZE;
-                int threadIdx = ei % BSIZE;
-
-                for(i=0; i<3; i++)
-                    for (j=0; j<3; j++)
-                        Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
-
-                m->computeStiffnessMatrix(JKJt, tmp, m->materialsStiffnesses[ei], m->strainDisplacements[ei], Rot);
-
-                // find index of node 1
-                for (n1=0; n1<4; n1++)
-                {
-                    noeud1 = e[n1];
-
-                    for(i=0; i<3; i++)
-                    {
-                        ROW = offset+3*noeud1+i;
-                        row = 3*n1+i;
-                        // find index of node 2
-                        for (n2=0; n2<4; n2++)
-                        {
-                            noeud2 = e[n2];
-
-                            for (j=0; j<3; j++)
-                            {
-                                COLUMN = offset+3*noeud2+j;
-                                column = 3*n2+j;
-                                mat->add(ROW, COLUMN, - tmp[row][column]*k);
-                            }
+                            tmpBlock[n1][n2][i][j] = - tmp[n1*3+i][n2*3+j]*k;
                         }
                     }
                 }
             }
+
+            *crsmat->wbloc(offd3 + e[0], offd3 + e[0],true) += tmpBlock[0][0];
+            *crsmat->wbloc(offd3 + e[0], offd3 + e[1],true) += tmpBlock[0][1];
+            *crsmat->wbloc(offd3 + e[0], offd3 + e[2],true) += tmpBlock[0][2];
+            *crsmat->wbloc(offd3 + e[0], offd3 + e[3],true) += tmpBlock[0][3];
+
+            *crsmat->wbloc(offd3 + e[1], offd3 + e[0],true) += tmpBlock[1][0];
+            *crsmat->wbloc(offd3 + e[1], offd3 + e[1],true) += tmpBlock[1][1];
+            *crsmat->wbloc(offd3 + e[1], offd3 + e[2],true) += tmpBlock[1][2];
+            *crsmat->wbloc(offd3 + e[1], offd3 + e[3],true) += tmpBlock[1][3];
+
+            *crsmat->wbloc(offd3 + e[2], offd3 + e[0],true) += tmpBlock[2][0];
+            *crsmat->wbloc(offd3 + e[2], offd3 + e[1],true) += tmpBlock[2][1];
+            *crsmat->wbloc(offd3 + e[2], offd3 + e[2],true) += tmpBlock[2][2];
+            *crsmat->wbloc(offd3 + e[2], offd3 + e[3],true) += tmpBlock[2][3];
+
+            *crsmat->wbloc(offd3 + e[3], offd3 + e[0],true) += tmpBlock[3][0];
+            *crsmat->wbloc(offd3 + e[3], offd3 + e[1],true) += tmpBlock[3][1];
+            *crsmat->wbloc(offd3 + e[3], offd3 + e[2],true) += tmpBlock[3][2];
+            *crsmat->wbloc(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
         }
+    }
+    else if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> > * >(mat))
+    {
+        const VecElement& elems = *m->_indexedElements;
+
+        helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
+
+        // Build Matrix Block for this ForceField
+        int i,j,n1, n2;
+        int offd3 = offset/3;
+
+        typename Main::Transformation Rot;
+        typename Main::StiffnessMatrix JKJt,tmp;
+
+        Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+        Rot[0][1]=Rot[0][2]=0;
+        Rot[1][0]=Rot[1][2]=0;
+        Rot[2][0]=Rot[2][1]=0;
+
+        for (int ei=0; ei<data.nbElement; ++ei)
+        {
+            const Element& e = elems[ei];
+
+            int blockIdx = ei / BSIZE;
+            int threadIdx = ei % BSIZE;
+
+            for(i=0; i<3; i++)
+                for (j=0; j<3; j++)
+                    Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
+
+            m->computeStiffnessMatrix(JKJt, tmp, m->materialsStiffnesses[ei], m->strainDisplacements[ei], Rot);
+            defaulttype::Mat<3,3,double> tmpBlock[4][4];
+
+            // find index of node 1
+            for (n1=0; n1<4; n1++)
+            {
+                for(i=0; i<3; i++)
+                {
+                    for (n2=0; n2<4; n2++)
+                    {
+                        for (j=0; j<3; j++)
+                        {
+                            tmpBlock[n1][n2][i][j] = - tmp[n1*3+i][n2*3+j]*k;
+                        }
+                    }
+                }
+            }
+
+            *crsmat->wbloc(offd3 + e[0], offd3 + e[0],true) += tmpBlock[0][0];
+            *crsmat->wbloc(offd3 + e[0], offd3 + e[1],true) += tmpBlock[0][1];
+            *crsmat->wbloc(offd3 + e[0], offd3 + e[2],true) += tmpBlock[0][2];
+            *crsmat->wbloc(offd3 + e[0], offd3 + e[3],true) += tmpBlock[0][3];
+
+            *crsmat->wbloc(offd3 + e[1], offd3 + e[0],true) += tmpBlock[1][0];
+            *crsmat->wbloc(offd3 + e[1], offd3 + e[1],true) += tmpBlock[1][1];
+            *crsmat->wbloc(offd3 + e[1], offd3 + e[2],true) += tmpBlock[1][2];
+            *crsmat->wbloc(offd3 + e[1], offd3 + e[3],true) += tmpBlock[1][3];
+
+            *crsmat->wbloc(offd3 + e[2], offd3 + e[0],true) += tmpBlock[2][0];
+            *crsmat->wbloc(offd3 + e[2], offd3 + e[1],true) += tmpBlock[2][1];
+            *crsmat->wbloc(offd3 + e[2], offd3 + e[2],true) += tmpBlock[2][2];
+            *crsmat->wbloc(offd3 + e[2], offd3 + e[3],true) += tmpBlock[2][3];
+
+            *crsmat->wbloc(offd3 + e[3], offd3 + e[0],true) += tmpBlock[3][0];
+            *crsmat->wbloc(offd3 + e[3], offd3 + e[1],true) += tmpBlock[3][1];
+            *crsmat->wbloc(offd3 + e[3], offd3 + e[2],true) += tmpBlock[3][2];
+            *crsmat->wbloc(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
+        }
+    }
+    else
+    {
+        const VecElement& elems = *m->_indexedElements;
+
+        helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
+
+        // Build Matrix Block for this ForceField
+        int i,j,n1, n2, row, column, ROW, COLUMN;
+
+        typename Main::Transformation Rot;
+        typename Main::StiffnessMatrix JKJt,tmp;
+
+        Index noeud1, noeud2;
+
+        Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+        Rot[0][1]=Rot[0][2]=0;
+        Rot[1][0]=Rot[1][2]=0;
+        Rot[2][0]=Rot[2][1]=0;
+
+        for (int ei=0; ei<data.nbElement; ++ei)
+        {
+            const Element& e = elems[ei];
+
+            int blockIdx = ei / BSIZE;
+            int threadIdx = ei % BSIZE;
+
+            for(i=0; i<3; i++)
+                for (j=0; j<3; j++)
+                    Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
+
+            m->computeStiffnessMatrix(JKJt, tmp, m->materialsStiffnesses[ei], m->strainDisplacements[ei], Rot);
+
+            // find index of node 1
+            for (n1=0; n1<4; n1++)
+            {
+                noeud1 = e[n1];
+
+                for(i=0; i<3; i++)
+                {
+                    ROW = offset+3*noeud1+i;
+                    row = 3*n1+i;
+                    // find index of node 2
+                    for (n2=0; n2<4; n2++)
+                    {
+                        noeud2 = e[n2];
+
+                        for (j=0; j<3; j++)
+                        {
+                            COLUMN = offset+3*noeud2+j;
+                            column = 3*n2+j;
+                            mat->add(ROW, COLUMN, - tmp[row][column]*k);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 template<class TCoord, class TDeriv, class TReal>
@@ -804,7 +799,6 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
         for (int i=0; i<data.nbVertex; ++i)
         {
             data.rotationIdx[i] = m->_rotationIdx[i];
-            //m->sout << "RotationIdx["<<i<<"] = " << data.rotationIdx[i]<<m->sendl;
         }
         for (int i=0; i<data.nbElement; ++i)
         {
@@ -816,18 +810,17 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
                     data.initState[i/BSIZE].Rt[l][c][i%BSIZE] = m->_initialRotations[i][c][l];
                     curR[l][c] = data.state[i/BSIZE].Rt[l][c][i%BSIZE];
                 }
-            //m->sout << "rotation element "<<i<<": init = " << initR << ", cur = " << curR <<m->sendl;
         }
     }
     if ((int)rotations.size() < data.nbVertex*9)
         rotations.resize(data.nbVertex*9);
 
     Kernels::getRotations(data.size(),
-            data.nbVertex,
-            data.initState.deviceRead(),
-            data.state.deviceRead(),
-            data.rotationIdx.deviceRead(),
-            rotations.deviceWrite());
+                          data.nbVertex,
+                          data.initState.deviceRead(),
+                          data.state.deviceRead(),
+                          data.rotationIdx.deviceRead(),
+                          rotations.deviceWrite());
 }
 
 template<class TCoord, class TDeriv, class TReal>
@@ -835,41 +828,10 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 {
     Data& data = m->data;
 
-#if 0 //defined(SOFA_DEV)
-    if (CudaRotationMatrix<TReal> * diagd = dynamic_cast<CudaRotationMatrix<TReal> * >(rotations))
-    {
-        data.getRotations(m,diagd->getVector());
-    }
-    else
-#endif // SOFA_DEV
     {
         data.vecTmpRotation.resize(data.nbVertex*9);
         data.getRotations(m,data.vecTmpRotation);
 
-
-#if 0 //defined(SOFA_DEV)
-        if (CudaRotationMatrix<float> * diagd = dynamic_cast<CudaRotationMatrix<float> * >(rotations))   //if the test with real didn pass that mean that rotation are different than real so we test both float and double
-        {
-            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getVector()[i] = data.vecTmpRotation[i];
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        }
-        else if (CudaRotationMatrix<double> * diagd = dynamic_cast<CudaRotationMatrix<double> * >(rotations))
-        {
-            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getVector()[i] = data.vecTmpRotation[i];
-#endif
-        }
-        else if (component::linearsolver::RotationMatrix<float> * diagd = dynamic_cast<component::linearsolver::RotationMatrix<float> * >(rotations))
-        {
-            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getVector()[i] = data.vecTmpRotation[i];
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        }
-        else if (component::linearsolver::RotationMatrix<double> * diagd = dynamic_cast<component::linearsolver::RotationMatrix<double> * >(rotations))
-        {
-            for (unsigned i=0; i<data.vecTmpRotation.size(); i++) diagd->getVector()[i] = data.vecTmpRotation[i];
-#endif
-        }
-        else
-#endif // SOFA_DEV
         {
             for (int i=0; i<data.nbVertex; i++)
             {
@@ -894,30 +856,30 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaTetrahedronFEMForceField_ImplMethods(T) \
     template<> inline void TetrahedronFEMForceField< T >::reinit() \
-    { data.reinit(this); } \
+{ data.reinit(this); } \
     template<> inline void TetrahedronFEMForceField< T >::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) \
-    { \
-		VecDeriv& f = *d_f.beginEdit(); \
-		const VecCoord& x = d_x.getValue(); \
-		const VecDeriv& v = d_v.getValue(); \
-		data.addForce(this, f, x, v); \
-		d_f.endEdit(); \
-	} \
+{ \
+    VecDeriv& f = *d_f.beginEdit(); \
+    const VecCoord& x = d_x.getValue(); \
+    const VecDeriv& v = d_v.getValue(); \
+    data.addForce(this, f, x, v); \
+    d_f.endEdit(); \
+} \
     template<> inline void TetrahedronFEMForceField< T >::getRotations(VecReal & rotations) \
-    { data.getRotations(this, rotations); } \
+{ data.getRotations(this, rotations); } \
     template<> inline void TetrahedronFEMForceField< T >::getRotations(defaulttype::BaseMatrix * rotations,int offset) \
-    { data.getRotations(this, rotations,offset); } \
+{ data.getRotations(this, rotations,offset); } \
     template<> inline void TetrahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) \
-    { \
-		VecDeriv& df = *d_df.beginEdit(); \
-		const VecDeriv& dx = d_dx.getValue(); \
-		data.addDForce(this, df, dx, mparams->kFactor(), mparams->bFactor()); \
-		d_df.endEdit(); \
-    } \
+{ \
+    VecDeriv& df = *d_df.beginEdit(); \
+    const VecDeriv& dx = d_dx.getValue(); \
+    data.addDForce(this, df, dx, mparams->kFactor(), mparams->bFactor()); \
+    d_df.endEdit(); \
+} \
     template<> inline void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset) \
-    { data.addKToMatrix(this, mat, kFactor, offset); } \
+{ data.addKToMatrix(this, mat, kFactor, offset); } \
     template<> inline void TetrahedronFEMForceField< T >::addSubKToMatrix(sofa::defaulttype::BaseMatrix* mat, const helper::vector<unsigned> & subMatrixIndex, SReal kFactor, unsigned int& offset) \
-    { data.addSubKToMatrix(this, mat, subMatrixIndex, kFactor, offset); }
+{ data.addSubKToMatrix(this, mat, subMatrixIndex, kFactor, offset); }
 
 
 CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3fTypes)

@@ -12,12 +12,8 @@ namespace collision
 {
 
 int BulletCylinderModelClass = core::RegisterObject("collision model using a set of Capsules, it can be used in the bullet collision pipeline")
-#ifndef SOFA_FLOAT
-        .add< TBulletCylinderModel< defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TBulletCylinderModel< defaulttype::Rigid3fTypes> >()
-#endif
+        .add< TBulletCylinderModel< defaulttype::Rigid3Types> >()
+
         .addAlias("BulletCylinderModel")
         .addAlias("BtCylinderModel")
         .addAlias("BulletCylinder")
@@ -25,12 +21,8 @@ int BulletCylinderModelClass = core::RegisterObject("collision model using a set
         ;
 
 
-#ifndef SOFA_FLOAT
-template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3fTypes>;
-#endif
+template class SOFA_BULLETCOLLISIONDETECTION_API TBulletCylinderModel<defaulttype::Rigid3Types>;
+
 
 } // namespace collision
 

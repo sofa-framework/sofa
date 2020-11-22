@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/gl.h>
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -79,7 +80,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
 
     static void regularSampling( ImageSamplerT* sampler, const bool atcorners=false, const bool recursive=false )
     {
-//        typedef typename ImageSamplerT::Real Real;
+        //        typedef typename ImageSamplerT::Real Real;
         typedef typename ImageSamplerT::Coord Coord;
         typedef typename ImageSamplerT::Edge Edge;
         typedef typename ImageSamplerT::Hexa Hexa;
@@ -127,7 +128,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
                         if(z) if(img(x,y,z-1)) e.push_back(Edge(pPlane(x,y),nb));
                         // hexa
                         if(x && y && z) if(img(x-1,y,z) && img(x,y-1,z) && img(x,y,z-1) && img(x-1,y-1,z) && img(x-1,y,z-1)  && img(x,y-1,z-1)   && img(x-1,y-1,z-1) )
-                                h.push_back(Hexa(nb,pLine(x),pLine(x-1),nb-1,pPlane(x,y),pPlane(x,y-1),pPlane(x-1,y-1),pPlane(x-1,y) ));
+                            h.push_back(Hexa(nb,pLine(x),pLine(x-1),nb-1,pPlane(x,y),pPlane(x,y-1),pPlane(x-1,y-1),pPlane(x-1,y) ));
 
                         nLine(x)=nb; nPlane(x,y)=nb;
                         nb++;
@@ -152,8 +153,8 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
     {
         typedef typename ImageSamplerT::Real Real;
         typedef typename ImageSamplerT::Coord Coord;
-//        typedef typename ImageSamplerT::Edge Edge;
-//        typedef typename ImageSamplerT::Hexa Hexa;
+        //        typedef typename ImageSamplerT::Edge Edge;
+        //        typedef typename ImageSamplerT::Hexa Hexa;
 
         clock_t timer = clock();
 
@@ -258,10 +259,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
         for(unsigned int i=0; i<pos_VoxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_VoxelIndex[i]));
         sampler->position.endEdit();
 
-        if(sampler->f_printLog.getValue())
-        {
-            sampler->sout<<sampler->getName()<<": sampling completed in "<< it <<" Lloyd iterations ("<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s )"<<sampler->sendl;
-        }
+        msg_info(sampler) << "Sampling completed in "<< it <<" Lloyd iterations ("<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s )";
 
     }
 
@@ -271,7 +269,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
         typedef typename ImageSamplerT::Real Real;
         typedef typename ImageSamplerT::Coord Coord;
         typedef typename ImageSamplerT::Edge Edge;
-//        typedef typename ImageSamplerT::Hexa Hexa;
+        //        typedef typename ImageSamplerT::Hexa Hexa;
 
         clock_t timer = clock();
 
@@ -385,7 +383,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
                 std::set<unsigned int> neighb;
                 CImg_3x3x3(I,unsigned int);
                 cimg_for3x3x3(voronoi,x,y,z,0,I,unsigned int)
-                if(Iccc==newpos_voronoiIndex[i])
+                        if(Iccc==newpos_voronoiIndex[i])
                 {
                     if(Incc && Incc<=nbold) neighb.insert(Incc);
                     if(Icnc && Icnc<=nbold) neighb.insert(Icnc);
@@ -411,10 +409,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
         for(unsigned int i=0; i<pos_VoxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_VoxelIndex[i]));
         sampler->position.endEdit();
 
-        if(sampler->f_printLog.getValue())
-        {
-            sampler->sout<<sampler->getName()<<": sampling completed in "<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s )"<<sampler->sendl;
-        }
+        msg_info(sampler)<<": sampling completed in "<< (clock() - timer) / (float)CLOCKS_PER_SEC <<"s )";
 
         sampler->position.endEdit();
     }
@@ -462,9 +457,9 @@ public:
     typedef helper::vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
-    Data<helper::OptionsGroup> method;
-    Data< bool > computeRecursive;
-    Data< ParamTypes > param;
+    Data<helper::OptionsGroup> method; ///< method (param)
+    Data< bool > computeRecursive; ///< if true: insert nodes recursively and build the graph
+    Data< ParamTypes > param; ///< Parameters
     /**@}*/
 
     //@name sample data (points+connectivity)
@@ -472,20 +467,20 @@ public:
     typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
-    Data< SeqPositions > position;
-    Data< SeqPositions > fixedPosition;
+    Data< SeqPositions > position; ///< output positions
+    Data< SeqPositions > fixedPosition; ///< user defined sample positions
 
     typedef typename core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
     typedef helper::WriteOnlyAccessor<Data< SeqEdges > > waEdges;
-    Data< SeqEdges > edges;
-    Data< SeqEdges > graphEdges;
+    Data< SeqEdges > edges; ///< edges connecting neighboring nodes
+    Data< SeqEdges > graphEdges; ///< oriented graph connecting parent to child nodes
 
     typedef typename core::topology::BaseMeshTopology::Hexa Hexa;
     typedef typename core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
     typedef helper::WriteOnlyAccessor<Data< SeqHexahedra > > waHexa;
-    Data< SeqHexahedra > hexahedra;
+    Data< SeqHexahedra > hexahedra; ///< output hexahedra
     /**@}*/
 
     //@name distances (may be used for shape function computation)
@@ -504,52 +499,49 @@ public:
 
     //@name visu data
     /**@{*/
-    Data<bool> f_clearData;
-    Data< float > showSamplesScale;
-    Data< int > drawMode;
-    Data< bool > showEdges;
-    Data< bool > showGraph;
-	Data< bool > showFaces;
+    Data<bool> f_clearData; ///< clear distance image after computation
+    Data< float > showSamplesScale; ///< show samples
+    Data< int > drawMode; ///< 0: points, 1: spheres
+    Data< bool > showEdges; ///< show edges
+    Data< bool > showGraph; ///< show graph
+    Data< bool > showFaces; ///< show the faces of cubes
 
     /**@}*/
-
-    virtual std::string getTemplateName() const    override { return templateName(this);    }
-    static std::string templateName(const ImageSampler<ImageTypes>* = NULL) { return ImageTypes::Name();    }
     ImageSampler()    :   Inherited()
-        , image(initData(&image,ImageTypes(),"image",""))
-        , transform(initData(&transform,TransformType(),"transform",""))
-        , method ( initData ( &method,"method","method (param)" ) )
-        , computeRecursive(initData(&computeRecursive,false,"computeRecursive","if true: insert nodes recursively and build the graph"))
-        , param ( initData ( &param,"param","Parameters" ) )
-        , position(initData(&position,SeqPositions(),"position","output positions"))
-        , fixedPosition(initData(&fixedPosition,SeqPositions(),"fixedPosition","user defined sample positions"))
-        , edges(initData(&edges,SeqEdges(),"edges","edges connecting neighboring nodes"))
-        , graphEdges(initData(&graphEdges,SeqEdges(),"graphEdges","oriented graph connecting parent to child nodes"))
-        , hexahedra(initData(&hexahedra,SeqHexahedra(),"hexahedra","output hexahedra"))
-        , distances(initData(&distances,DistTypes(),"distances",""))
-        , voronoi(initData(&voronoi,VorTypes(),"voronoi",""))
-        , f_clearData(initData(&f_clearData,true,"clearData","clear distance image after computation"))
-        , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples"))
-        , drawMode(initData(&drawMode,0,"drawMode","0: points, 1: spheres"))
-        , showEdges(initData(&showEdges,false,"showEdges","show edges"))
-        , showGraph(initData(&showGraph,false,"showGraph","show graph"))
-        , showFaces(initData(&showFaces,false,"showFaces","show the faces of cubes"))
-        , time((unsigned int)0)
+      , image(initData(&image,ImageTypes(),"image",""))
+      , transform(initData(&transform,TransformType(),"transform",""))
+      , method ( initData ( &method,"method","method (param)" ) )
+      , computeRecursive(initData(&computeRecursive,false,"computeRecursive","if true: insert nodes recursively and build the graph"))
+      , param ( initData ( &param,"param","Parameters" ) )
+      , position(initData(&position,SeqPositions(),"position","output positions"))
+      , fixedPosition(initData(&fixedPosition,SeqPositions(),"fixedPosition","user defined sample positions"))
+      , edges(initData(&edges,SeqEdges(),"edges","edges connecting neighboring nodes"))
+      , graphEdges(initData(&graphEdges,SeqEdges(),"graphEdges","oriented graph connecting parent to child nodes"))
+      , hexahedra(initData(&hexahedra,SeqHexahedra(),"hexahedra","output hexahedra"))
+      , distances(initData(&distances,DistTypes(),"distances",""))
+      , voronoi(initData(&voronoi,VorTypes(),"voronoi",""))
+      , f_clearData(initData(&f_clearData,true,"clearData","clear distance image after computation"))
+      , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples"))
+      , drawMode(initData(&drawMode,0,"drawMode","0: points, 1: spheres"))
+      , showEdges(initData(&showEdges,false,"showEdges","show edges"))
+      , showGraph(initData(&showGraph,false,"showGraph","show graph"))
+      , showFaces(initData(&showFaces,false,"showFaces","show the faces of cubes"))
+      , time((unsigned int)0)
     {
         image.setReadOnly(true);
         transform.setReadOnly(true);
         f_listening.setValue(true);
 
         helper::OptionsGroup methodOptions(2,"0 - Regular sampling (at voxel center(0) or corners (1)) "
-                ,"1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)/ParallelMarching(2)=1 | PMM max iter | PMM tolerance)"
-                                          );
+                                           ,"1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)/ParallelMarching(2)=1 | PMM max iter | PMM tolerance)"
+                                           );
         methodOptions.setSelectedItem(REGULAR);
         method.setValue(methodOptions);
 
         ImageSamplerSpecialization<ImageTypes>::init( this );
     }
 
-    virtual void init() override
+    void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -563,18 +555,14 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() override { update(); }
+    void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void update() override
+    void doUpdate() override
     {
-        updateAllInputsIfDirty(); // easy to ensure that all inputs are up-to-date
-
-        cleanDirty();
-
         raParam params(this->param);
 
         if(this->method.getValue().getSelectedId() == REGULAR)
@@ -608,12 +596,15 @@ protected:
             waVor vor(this->voronoi); vor->clear();
         }
 
-        if(this->f_printLog.getValue())
+        if(notMuted())
         {
-            if(this->position.getValue().size())    sout<< this->position.getValue().size() <<" generated samples"<<sendl;
-            if(this->edges.getValue().size())       sout<< this->edges.getValue().size() <<" generated edges"<<sendl;
-            if(this->hexahedra.getValue().size())   sout<< this->hexahedra.getValue().size() <<" generated hexahedra"<<sendl;
-            if(this->graphEdges.getValue().size())  sout<< this->graphEdges.getValue().size() <<" generated dependencies"<<sendl;
+            std::stringstream tmpStr;
+            if(this->position.getValue().size())    tmpStr<< this->position.getValue().size() <<" generated samples"<<msgendl;
+            if(this->edges.getValue().size())       tmpStr<< this->edges.getValue().size() <<" generated edges"<<msgendl;
+            if(this->hexahedra.getValue().size())   tmpStr<< this->hexahedra.getValue().size() <<" generated hexahedra"<<msgendl;
+            if(this->graphEdges.getValue().size())  tmpStr<< this->graphEdges.getValue().size() <<" generated dependencies"<<msgendl;
+
+            msg_info() << tmpStr.str();
         }
     }
 
@@ -637,7 +628,7 @@ protected:
     }
 
 #ifndef SOFA_NO_OPENGL
-    virtual void draw(const core::visual::VisualParams* vparams) override
+    void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;
@@ -664,7 +655,7 @@ protected:
             }
         }
 
-		
+
         if (this->showEdges.getValue())
         {
             std::vector<defaulttype::Vector3> points;
@@ -675,7 +666,7 @@ protected:
                 points[2*i+1][0]=pos[e[i][1]][0];          points[2*i+1][1]=pos[e[i][1]][1];          points[2*i+1][2]=pos[e[i][1]][2];
             }
             vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(0.7,0,0.7,1));
-			//vparams->drawTool()->drawTriangles(points, defaulttype::Vec4f(0.7,0,0.7,1));
+            //vparams->drawTool()->drawTriangles(points, defaulttype::Vec4f(0.7,0,0.7,1));
         }
         if (this->showGraph.getValue())
         {
@@ -691,60 +682,60 @@ protected:
             vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(1,1,0.5,1));
         }
 
-		if(this->showFaces.getValue())
-		{
-			//Tableau des points du cube
-			std::vector<defaulttype::Vector3> points;
-			points.resize(36);
-			
-			//Tableau des normales de ces faces
+        if(this->showFaces.getValue())
+        {
+            //Tableau des points du cube
+            std::vector<defaulttype::Vector3> points;
+            points.resize(36);
+
+            //Tableau des normales de ces faces
             std::vector<defaulttype::Vector3> normales;
 
-			//Tableau des couleurs des faces
+            //Tableau des couleurs des faces
             std::vector<defaulttype::Vector4> couleurs;
 
-			int tmp[] = {0,1,2, 0,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 3,2,6, 3,6,7, 0,3,7, 0,7,4, 7,4,5, 7,5,6};
-			int ns1, ns2, ns3;
+            int tmp[] = {0,1,2, 0,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 3,2,6, 3,6,7, 0,3,7, 0,7,4, 7,4,5, 7,5,6};
+            int ns1, ns2, ns3;
             defaulttype::Vector3 s1, s2, s3;
             for(size_t iH=0;iH<this->hexahedra.getValue().size(); iH++)
-			{
-				sofa::core::topology::Topology::Hexahedron currentCube = hexahedra.getValue().at(iH);
+            {
+                sofa::core::topology::Topology::Hexahedron currentCube = hexahedra.getValue().at(iH);
 
-				for(int i=0;i<12; i++)
-				{
-					//Numero du sommet 1
-					ns1 = currentCube.at(tmp[i*3+0]);
-					//Numero du sommet 2
-					ns2 = currentCube.at(tmp[i*3+1]);
-					//Numero du sommet 3
-					ns3 = currentCube.at(tmp[i*3+2]);
+                for(int i=0;i<12; i++)
+                {
+                    //Numero du sommet 1
+                    ns1 = currentCube.at(tmp[i*3+0]);
+                    //Numero du sommet 2
+                    ns2 = currentCube.at(tmp[i*3+1]);
+                    //Numero du sommet 3
+                    ns3 = currentCube.at(tmp[i*3+2]);
 
 
-					s1 = pos[ns1];
-					s2 = pos[ns2];
-					s3 = pos[ns3];
+                    s1 = pos[ns1];
+                    s2 = pos[ns2];
+                    s3 = pos[ns3];
 
-					//Construction des points du cube
-					points.push_back(s1);
-					points.push_back(s2);
-					points.push_back(s3);
+                    //Construction des points du cube
+                    points.push_back(s1);
+                    points.push_back(s2);
+                    points.push_back(s3);
 
-					//Calcul de la normale de la surface
+                    //Calcul de la normale de la surface
                     defaulttype::Vector3 ab = s2 - s1;
                     defaulttype::Vector3 ac = s3 - s1;
                     defaulttype::Vector3 normal = ab.cross(ac);
-					normal.normalize();
-					normales.push_back(normal);		
+                    normal.normalize();
+                    normales.push_back(normal);
 
-					//Calcul de la couleur de la face
-					couleurs.push_back(defaulttype::Vec4f(0.7,0,0.7,1));
+                    //Calcul de la couleur de la face
+                    couleurs.push_back(defaulttype::Vec4f(0.7,0,0.7,1));
 
 
-				}
-				
-			}
-			vparams->drawTool()->drawTriangles(points,defaulttype::Vec4f(1,1,1,1));
-		}
+                }
+
+            }
+            vparams->drawTool()->drawTriangles(points,defaulttype::Vec4f(1,1,1,1));
+        }
 
 #endif /* SOFA_NO_OPENGL */
     }
@@ -784,17 +775,13 @@ protected:
             typename distanceSet::iterator it=q.begin();
             BB[0][dir]=q.begin()->first; BB[1][dir]=q.rbegin()->first;
             C[dir]=(BB[1][dir]+BB[0][dir])*0.5;   while(it->first<C[dir]) ++it;       // mean
-            // for(unsigned int count=0; count<nb/2; count++) it++;   // median
             Real c=it->first;
             --it;
-            if(C[dir]-it->first<c-C[dir]) 
+            if(C[dir]-it->first<c-C[dir])
                 c=it->first;
             C[dir]=c;
-            //            sampler->sout<<"dir="<<dir<<":"; for( it=q.begin(); it!=q.end(); it++)  sampler->sout<<it->first <<" "; sampler->sout<<sampler->sendl; sampler->sout<<"C="<<C[dir]<<sampler->sendl;
         }
-        //        for(unsigned int i=0;i<nb;i++) sampler->sout<<"("<<pos[indices[i]]<<") ";  sampler->sout<<sampler->sendl;
         Coord p;
-        typename helper::vector<Coord>::iterator it;
         // add corners
         unsigned int corners[8]= {addPoint(Coord(BB[0][0],BB[0][1],BB[0][2]),pos,indices),addPoint(Coord(BB[1][0],BB[0][1],BB[0][2]),pos,indices),addPoint(Coord(BB[0][0],BB[1][1],BB[0][2]),pos,indices),addPoint(Coord(BB[1][0],BB[1][1],BB[0][2]),pos,indices),addPoint(Coord(BB[0][0],BB[0][1],BB[1][2]),pos,indices),addPoint(Coord(BB[1][0],BB[0][1],BB[1][2]),pos,indices),addPoint(Coord(BB[0][0],BB[1][1],BB[1][2]),pos,indices),addPoint(Coord(BB[1][0],BB[1][1],BB[1][2]),pos,indices)};
         // add cell center
@@ -842,7 +829,6 @@ protected:
         }
         for(unsigned int i=0; i<8; i++)
         {
-            // sampler->sout<<i<<" : "<<octant[i]<<sampler->sendl;
             subdivide(octant[i]);
         }
     }

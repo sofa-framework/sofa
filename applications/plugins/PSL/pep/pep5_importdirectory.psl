@@ -1,0 +1,16 @@
+/// Currently we can import from file... we may want to import from directory or zip files.
+/// To simplify the creation of library shipped as a single package.
+Node : {
+    /// This would load all the files in the directory to build a big "imported" ast.
+    Import : "shapes"
+
+    Import : "mechanicals"
+
+    mechanicals.rigid.Sphere: {}
+    mechanicals.rigid.Cube : {}
+
+    mechanicals.deformable.FEM : {
+        filename : "obj1.obj"
+    }
+
+}

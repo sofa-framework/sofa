@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SofaBaseCollision)
 
 set(HEADER_FILES
@@ -69,8 +69,9 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BASE_COLLISION")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCommon)
 
-sofa_install_targets(SofaBase ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_add_targets_to_package(
+    PACKAGE_NAME SofaBase
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    )

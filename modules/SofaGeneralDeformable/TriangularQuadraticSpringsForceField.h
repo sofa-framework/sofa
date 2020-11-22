@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -58,6 +56,8 @@ public:
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+
+    using index_type = sofa::defaulttype::index_type;
 
     class Mat3 : public sofa::helper::fixed_array<Deriv,3>
     {
@@ -126,31 +126,33 @@ protected:
     };
 
 
-    sofa::core::topology::BaseMeshTopology* _topology;
+   
     Data< VecCoord > _initialPoints;										///< the intial positions of the points
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio;
-    Data<Real> f_youngModulus;
-    Data<Real> f_dampingRatio;
-    Data<bool> f_useAngularSprings; // whether angular springs should be included
+    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
+    Data<Real> f_dampingRatio; ///< Ratio damping/stiffness
+    Data<bool> f_useAngularSprings; ///< whether angular springs should be included
 
-    Real lambda;  /// first Lam� coefficient
-    Real mu;    /// second Lam� coefficient
+    Real lambda;  /// first Lame coefficient
+    Real mu;    /// second Lame coefficient
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<TriangularQuadraticSpringsForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     TriangularQuadraticSpringsForceField();
 
     virtual ~TriangularQuadraticSpringsForceField();
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
 
@@ -181,12 +183,12 @@ public:
         typedef typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation TriangleRestInformation;
         TRQSTriangleHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, sofa::helper::vector<TriangleRestInformation> >(_data), ff(_ff) {}
 
-        void applyCreateFunction(unsigned int triangleIndex, TriangleRestInformation& ,
+        void applyCreateFunction(index_type triangleIndex, TriangleRestInformation& ,
                 const core::topology::BaseMeshTopology::Triangle & t,
-                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< index_type > &,
                 const sofa::helper::vector< double > &);
 
-        void applyDestroyFunction(unsigned int, TriangleRestInformation &);
+        void applyDestroyFunction(index_type, TriangleRestInformation &);
 
     protected:
         TriangularQuadraticSpringsForceField<DataTypes>* ff;
@@ -198,9 +200,9 @@ public:
         typedef typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
         TRQSEdgeHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeRestInformation> >(_data), ff(_ff) {}
 
-        void applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation& ,
+        void applyCreateFunction(index_type edgeIndex, EdgeRestInformation& ,
                 const core::topology::BaseMeshTopology::Edge & t,
-                const sofa::helper::vector< unsigned int > &,
+                const sofa::helper::vector< index_type > &,
                 const sofa::helper::vector< double > &);
 
     protected:
@@ -209,27 +211,25 @@ public:
 
 
 protected :
-    sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> > triangleInfo;
-    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
+    sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> > triangleInfo; ///< Internal triangle data
+    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
 
     sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
     TRQSTriangleHandler* triangleHandler;
     TRQSEdgeHandler* edgeHandler;
 
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP)
 
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangularQuadraticSpringsForceField<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_DEFORMABLE_API TriangularQuadraticSpringsForceField<sofa::defaulttype::Vec3fTypes>;
-#endif
+extern template class SOFA_GENERAL_DEFORMABLE_API TriangularQuadraticSpringsForceField<sofa::defaulttype::Vec3Types>;
 
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP)
+
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP)
 
 
 } //namespace forcefield

@@ -1,54 +1,42 @@
-cmake_minimum_required(VERSION 3.1)
-project(SofaMiscEngine)
+cmake_minimum_required(VERSION 3.12)
+project(SofaMiscEngine VERSION 1.0 LANGUAGES CXX)
 
-message(STATUS "SofaMiscEngine:")
-################################ COMPONENTS HERE ARE THE NG-SET ####################################
+find_package(SofaNonUniformFem REQUIRED)
+
+set(SOFAMISCENGINE_SRC "src/${PROJECT_NAME}")
+
 set(HEADER_FILES
-    config.h
-    initMiscEngine.h
-)
+    ${SOFAMISCENGINE_SRC}/config.h.in
+    ${SOFAMISCENGINE_SRC}/initSofaMiscEngine.h
+    )
 
 set(SOURCE_FILES
-    initMiscEngine.cpp
-)
+    ${SOFAMISCENGINE_SRC}/initSofaMiscEngine.cpp
+    )
 
-############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
-if(SOFA_BUILD_COMPONENTSET_LIGHT)
-    list(APPEND HEADER_FILES
-
-        )
-    list(APPEND SOURCE_FILES
-
-        )
-endif()
-
-############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
-if(SOFA_BUILD_COMPONENTSET_STANDARD)
-    list(APPEND HEADER_FILES
-        DisplacementMatrixEngine.h
-        DisplacementMatrixEngine.inl
-        Distances.h
-        Distances.inl
-        ProjectiveTransformEngine.h
-        ProjectiveTransformEngine.inl
-        )
-    list(APPEND SOURCE_FILES
-        DisplacementMatrixEngine.cpp
-        Distances.cpp
-        ProjectiveTransformEngine.cpp
-        )
-
-endif()
-
-############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_COMPONENTSET_FULL)
-
-endif()
-
+list(APPEND HEADER_FILES
+    ${SOFAMISCENGINE_SRC}/DisplacementMatrixEngine.h
+    ${SOFAMISCENGINE_SRC}/DisplacementMatrixEngine.inl
+    ${SOFAMISCENGINE_SRC}/Distances.h
+    ${SOFAMISCENGINE_SRC}/Distances.inl
+    ${SOFAMISCENGINE_SRC}/ProjectiveTransformEngine.h
+    ${SOFAMISCENGINE_SRC}/ProjectiveTransformEngine.inl
+    )
+list(APPEND SOURCE_FILES
+    ${SOFAMISCENGINE_SRC}/DisplacementMatrixEngine.cpp
+    ${SOFAMISCENGINE_SRC}/Distances.cpp
+    ${SOFAMISCENGINE_SRC}/ProjectiveTransformEngine.cpp
+    )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaNonUniformFem)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_ENGINE")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaMisc ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+    )
+

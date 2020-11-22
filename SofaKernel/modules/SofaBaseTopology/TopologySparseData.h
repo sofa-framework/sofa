@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,13 +62,15 @@ public:
     /// const iterator
     typedef typename container_type::const_iterator const_iterator;
 
+    using index_type = sofa::defaulttype::index_type;
+
 
     /// Constructor
     TopologySparseDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : sofa::core::topology::BaseTopologyData< VecT >(data),
-          m_topologicalEngine(NULL),
-          m_topology(NULL),
-          m_topologyHandler(NULL),
+          m_topologicalEngine(nullptr),
+          m_topology(nullptr),
+          m_topologyHandler(nullptr),
           m_isConcerned(false)
     {}
 
@@ -107,24 +109,36 @@ public:
     void linkToTetrahedronDataArray();
     void linkToHexahedronDataArray();
 
-    void setMap2Elements(const sofa::helper::vector<unsigned int> _map2Elements)
+    void setMap2Elements(const sofa::helper::vector<index_type> _map2Elements)
     {
         m_map2Elements = _map2Elements;
     }
 
-    sofa::helper::vector<unsigned int>& getMap2Elements() {return m_map2Elements;}
+    sofa::helper::vector<index_type>& getMap2Elements() {return m_map2Elements;}
 
     bool getSparseDataStatus() {return m_isConcerned;}
 
     void activateSparseData() {m_isConcerned = true;}
     void desactivateSparseData() {m_isConcerned = false;}
 
+    size_t size() {return m_map2Elements.size();}
+
+    index_type indexOfElement(index_type index)
+    {
+        for (unsigned int i=0; i<m_map2Elements.size(); ++i)
+            if (index == m_map2Elements[i])
+                return i;
+
+        return sofa::core::topology::Topology::InvalidID;
+    }
+
 
 protected:
 
     virtual void createTopologyHandler() {}
 
-    sofa::helper::vector<unsigned int> m_map2Elements; // same size as SparseData but contain id of Triangle link to each data[]
+    // same size as SparseData but contain id of element link to each data[]
+    sofa::helper::vector<index_type> m_map2Elements;
 
     typename sofa::component::topology::TopologyEngineImpl<VecT>::SPtr m_topologicalEngine;
     sofa::core::topology::BaseMeshTopology* m_topology;

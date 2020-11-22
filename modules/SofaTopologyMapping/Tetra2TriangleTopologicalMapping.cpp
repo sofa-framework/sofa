@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,6 +29,7 @@
 
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 
@@ -50,8 +51,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 
-SOFA_DECL_CLASS(Tetra2TriangleTopologicalMapping)
-
 // Register in the Factory
 int Tetra2TriangleTopologicalMappingClass = core::RegisterObject("Special case of mapping where TetrahedronSetTopology is converted to TriangleSetTopology")
         .add< Tetra2TriangleTopologicalMapping >()
@@ -61,84 +60,104 @@ int Tetra2TriangleTopologicalMappingClass = core::RegisterObject("Special case o
 // Implementation
 
 Tetra2TriangleTopologicalMapping::Tetra2TriangleTopologicalMapping()
-    : flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
+    : sofa::core::topology::TopologicalMapping()
+    , flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
     , noNewTriangles(initData(&noNewTriangles, bool(false), "noNewTriangles", "If true no new triangles are being created"))
     , noInitialTriangles(initData(&noInitialTriangles, bool(false), "noInitialTriangles", "If true the list of initial triangles is initially empty. Only additional triangles will be added in the list"))
-{
-}
-
-Tetra2TriangleTopologicalMapping::~Tetra2TriangleTopologicalMapping()
+    , m_outTopoModifier(nullptr)
 {
 }
 
 void Tetra2TriangleTopologicalMapping::init()
 {
-    //sout << "INFO_print : init Tetra2TriangleTopologicalMapping" << sendl;
-
-    // INITIALISATION of TRIANGULAR mesh from TETRAHEDRAL mesh :
-
-
-    if (fromModel)
+    bool modelsOk = true;
+    if (!fromModel)
     {
+        // If the input topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
+        // If it is null at this point, it means no input mesh topology could be found.
+        msg_error() << "No input mesh topology found. Consider setting the '" << fromModel.getName() << "' data attribute.";
+        modelsOk = false;
+    }
 
-        sout << "INFO_print : Tetra2TriangleTopologicalMapping - from = tetra" << sendl;
+    if (!toModel)
+    {
+        // If the output topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
+        // If it is null at this point, it means no output mesh topology could be found.
+        msg_error() << "No output mesh topology found. Consider setting the '" << toModel.getName() << "' data attribute.";
+        modelsOk = false;
+    }
 
-        if (toModel)
-        {
-
-            sout << "INFO_print : Tetra2TriangleTopologicalMapping - to = triangle" << sendl;
-
-            TriangleSetTopologyContainer *to_tstc;
-            toModel->getContext()->get(to_tstc);
-            to_tstc->clear();
-
-            toModel->setNbPoints(fromModel->getNbPoints());
-
-            TriangleSetTopologyModifier *to_tstm;
-            toModel->getContext()->get(to_tstm);
-
-            const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> &triangleArray=fromModel->getTriangles();
-            const bool flipN = flipNormals.getValue();
-
-            /// only initialize with border triangles if necessary
-            if (noInitialTriangles.getValue()==false)
-            {
-
-                sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
-
-                Loc2GlobVec.clear();
-                Glob2LocMap.clear();
-
-                for (unsigned int i=0; i<triangleArray.size(); ++i)
-                {
-
-                    if (fromModel->getTetrahedraAroundTriangle(i).size()==1)
-                    {
-                        if(flipN)
-                        {
-                            core::topology::BaseMeshTopology::Triangle t = triangleArray[i];
-                            unsigned int tmp = t[2];
-                            t[2] = t[1];
-                            t[1] = tmp;
-                            to_tstm->addTriangleProcess(t);
-                        }
-                        else	to_tstm->addTriangleProcess(triangleArray[i]);
-
-                        Loc2GlobVec.push_back(i);
-                        Glob2LocMap[i]=Loc2GlobVec.size()-1;
-                    }
-                }
-
-                //to_tstm->propagateTopologicalChanges();
-                to_tstm->notifyEndingEvent();
-                //to_tstm->propagateTopologicalChanges();
-                Loc2GlobDataVec.endEdit();
-            }
+    // Making sure the output topology is derived from the triangle topology container
+    if (!dynamic_cast<TriangleSetTopologyContainer *>(toModel.get())) {
+        msg_error() << "The output topology '" << toModel.getPath() << "' is not a derived class of TriangleSetTopologyContainer. "
+                    << "Consider setting the '" << toModel.getName() << "' data attribute to a valid"
+                                                                        " TriangleSetTopologyContainer derived object.";
+        modelsOk = false;
+    } else {
+        // Making sure a topology modifier exists at the same level as the output topology
+        TriangleSetTopologyModifier *to_tstm;
+        toModel->getContext()->get(to_tstm);
+        if (!to_tstm) {
+            msg_error() << "No TriangleSetTopologyModifier found in the output topology node '"
+                        << toModel->getContext()->getName() << "'.";
+            modelsOk = false;
+        } else {
+            m_outTopoModifier = to_tstm;
         }
     }
+
+    if (!modelsOk)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+
+    // INITIALISATION of Triangle mesh from Tetrahedral mesh :
+    // Clear output topology
+    toModel->clear();
+
+    // Set the same number of points
+    toModel->setNbPoints(fromModel->getNbPoints());
+
+    // if no init triangle option (set output topology to empty)
+    if (noInitialTriangles.getValue()){
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+        return;
+    }
+
+    // create topology maps and add triangle on border into output topology
+    const auto & triangleArray = fromModel->getTriangles();
+    const bool flipN = flipNormals.getValue();
+
+    Topology::SetIndices & Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+
+    Loc2GlobVec.clear();
+    Glob2LocMap.clear();
+
+    for (Topology::TriangleID triId=0; triId<triangleArray.size(); ++triId)
+    {
+        if (fromModel->getTetrahedraAroundTriangle(triId).size() == 1)
+        {
+            const core::topology::BaseMeshTopology::Triangle& t = triangleArray[triId];
+            if(flipN)
+                toModel->addTriangle(t[0], t[2], t[1]);
+            else
+                toModel->addTriangle(t[0], t[1], t[2]);
+
+            Loc2GlobVec.push_back(triId);
+            Glob2LocMap[triId]= Loc2GlobVec.size() - 1;
+        }
+    }
+    // Need to fully init the target topology
+    toModel->init();
+
+    Loc2GlobDataVec.endEdit();
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-unsigned int Tetra2TriangleTopologicalMapping::getFromIndex(unsigned int ind)
+
+index_type Tetra2TriangleTopologicalMapping::getFromIndex(index_type ind)
 {
 
     if(fromModel->getTetrahedraAroundTriangle(ind).size()==1)
@@ -153,543 +172,436 @@ unsigned int Tetra2TriangleTopologicalMapping::getFromIndex(unsigned int ind)
 
 void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 {
-    // INITIALISATION of TRIANGULAR mesh from TETRAHEDRAL mesh :
-    if (fromModel)
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
+    sofa::helper::AdvancedTimer::stepBegin("Update Tetra2TriangleTopologicalMapping");
+
+    auto itBegin=fromModel->beginChange();
+    auto itEnd=fromModel->endChange();
+
+    sofa::helper::vector <index_type>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+
+    while( itBegin != itEnd )
     {
-        TriangleSetTopologyModifier *to_tstm;
-        toModel->getContext()->get(to_tstm);
+        TopologyChangeType changeType = (*itBegin)->getChangeType();
+        std::string topoChangeType = "Tetra2TriangleTopologicalMapping - " + parseTopologyChangeTypeToString(changeType);
+        sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
 
-        if (toModel)
+        switch( changeType )
         {
-            std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
-            std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
-            sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+        case core::topology::ENDING_EVENT:
+        {
+            m_outTopoModifier->notifyEndingEvent();
+            m_outTopoModifier->propagateTopologicalChanges();
+            break;
+        }
 
-            while( itBegin != itEnd )
+        case core::topology::TRIANGLESREMOVED:
+        {
+            const auto &triIDtoRemove = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
+
+            // search for the list of triangles to remove in mapped topology
+            sofa::helper::vector< index_type > triangles_to_remove;
+
+            for (auto globTriId : triIDtoRemove)
             {
-                TopologyChangeType changeType = (*itBegin)->getChangeType();
-
-                switch( changeType )
-                {
-
-                case core::topology::ENDING_EVENT:
-                {
-                    //sout << "INFO_print : Tetra2TriangleTopologicalMapping - ENDING_EVENT" << sendl;
-                    to_tstm->propagateTopologicalChanges();
-                    to_tstm->notifyEndingEvent();
-                    to_tstm->propagateTopologicalChanges();
-                    break;
-                }
-
-                case core::topology::TRIANGLESREMOVED:
-                {
-                    int last;
-                    int ind_last;
-
-                    last= fromModel->getNbTriangles() - 1;
-
-                    const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
-
-                    unsigned int ind_tmp;
-
-                    unsigned int ind_real_last;
-                    ind_last=toModel->getNbTriangles();
-
-                    for (unsigned int i = 0; i <tab.size(); ++i)
-                    {
-                        unsigned int k = tab[i];
-
-                        std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
-                        if(iter_1 != Glob2LocMap.end())
-                        {
-
-                            ind_last = ind_last - 1;
-
-                            unsigned int ind_k = Glob2LocMap[k];
-//                            ind_real_last = ind_k;
-
-                            std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
-                            if(iter_2 != Glob2LocMap.end())
-                            {
-
-                                ind_real_last = Glob2LocMap[last];
-
-                                if((int) k != last)
-                                {
-
-                                    Glob2LocMap.erase(Glob2LocMap.find(k));
-                                    Glob2LocMap[k] = ind_real_last;
-
-                                    Glob2LocMap.erase(Glob2LocMap.find(last));
-                                    Glob2LocMap[last] = ind_k;
-
-                                    ind_tmp = Loc2GlobVec[ind_real_last];
-                                    Loc2GlobVec[ind_real_last] = Loc2GlobVec[ind_k];
-                                    Loc2GlobVec[ind_k] = ind_tmp;
-                                }
-                            }
-
-                            if((int) ind_k != ind_last)
-                            {
-
-                                Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_last]));
-                                Glob2LocMap[Loc2GlobVec[ind_last]] = ind_k;
-
-                                Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_k]));
-                                Glob2LocMap[Loc2GlobVec[ind_k]] = ind_last;
-
-                                ind_tmp = Loc2GlobVec[ind_k];
-                                Loc2GlobVec[ind_k] = Loc2GlobVec[ind_last];
-                                Loc2GlobVec[ind_last] = ind_tmp;
-
-                            }
-
-                            Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[Loc2GlobVec.size() - 1]));
-                            Loc2GlobVec.resize( Loc2GlobVec.size() - 1 );
-
-                            sofa::helper::vector< unsigned int > triangles_to_remove;
-                            triangles_to_remove.push_back(ind_k);
-
-                            TriangleSetTopologyModifier *triangleMod;
-                            toModel->getContext()->get(triangleMod);
-                            triangleMod->removeTriangles(triangles_to_remove, true, false);
-
-                            for(unsigned int i=0; i<addedTriangleIndex.size(); i++)
-                            {
-                                if(addedTriangleIndex[i]==ind_k)
-                                    addedTriangleIndex[i]=0;
-                                if(addedTriangleIndex[i]>ind_k)
-                                    addedTriangleIndex[i]-=1;
-                            }
-                        }
-                        else
-                        {
-                            sout << "INFO_print : Tetra2TriangleTopologicalMapping - Glob2LocMap should have the visible triangle " << tab[i] << sendl;
-                            sout << "INFO_print : Tetra2TriangleTopologicalMapping - nb triangles = " << ind_last << sendl;
-
-                            std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
-                            if(iter_2 != Glob2LocMap.end())
-                            {
-
-                                ind_real_last = Glob2LocMap[last];
-                                Glob2LocMap.erase(Glob2LocMap.find(last));
-                                Glob2LocMap[k] = ind_real_last;
-                                Loc2GlobVec[ind_real_last]=k;
-                            }
-                        }
-
-                        --last;
-                    }
-                    break;
-                }
-
-                case core::topology::TRIANGLESADDED:
-                {
-                    const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesAdded *>( *itBegin ) )->getArray();
-
-                    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
-                    sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
-                    sofa::helper::vector< unsigned int > trianglesIndexList;
-                    int nb_elems = toModel->getNbTriangles();
-                    const bool flipN = flipNormals.getValue();
-
-                    for (unsigned int i = 0; i <tab.size(); ++i)
-                    {
-                        core::topology::BaseMeshTopology::Triangle t;
-                        t=fromModel->getTriangle(tab[i]);
-                        const core::topology::BaseMeshTopology::TetrahedraAroundTriangle tetraId=fromModel->getTetrahedraAroundTriangle(tab[i]);
-
-                        if(tetraId.size()==1)
-                        {
-                            std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(tab[i]);
-                            if(iter_1 != Glob2LocMap.end() )
-                            {
-                                serr << "INFO_print : Tetra2TriangleTopologicalMapping - fail to add triangle " << tab[i] << "which already exists" << sendl;
-                            }
-                            else
-                            {
-                                core::topology::BaseMeshTopology::Tetrahedron te=tetrahedronArray[tetraId[0]];
-
-                                for(int j=0; j<4; j++)
-                                {
-                                    bool flag=true;
-                                    for(int k=0; k<3; k++)
-                                    {
-                                        if(t[k]==te[j])
-                                        {
-                                            flag=false;
-                                            break;
-                                        }
-                                    }
-                                    if(flag)
-                                    {
-                                        if ((j%2))
-                                        {
-                                            t[0]=(int)(te[(j+1)%4]); t[1]=(int)(te[(j+2)%4]); t[2]=(int)(te[(j+3)%4]);
-                                        }
-                                        else
-                                        {
-                                            t[0]=(int)(te[(j+1)%4]); t[2]=(int)(te[(j+2)%4]); t[1]=(int)(te[(j+3)%4]);
-                                        }
-                                        if(flipN)
-                                        {
-                                            unsigned int temp=t[2];
-                                            t[2]=t[1];
-                                            t[1]=temp;
-                                        }
-                                    }
-                                }
-
-                                // sort t such that t[0] is the smallest one
-                                while ((t[0]>t[1]) || (t[0]>t[2]))
-                                {
-                                    int val=t[0]; t[0]=t[1]; t[1]=t[2]; t[2]=val;
-                                }
-
-                                triangles_to_create.push_back(t);
-                                trianglesIndexList.push_back(nb_elems);
-                                //addedTriangleIndex.push_back(nb_elems);
-                                nb_elems+=1;
-
-                                Loc2GlobVec.push_back(tab[i]);
-                                Glob2LocMap[tab[i]]=Loc2GlobVec.size()-1;
-                            }
-                        }
-                    }
-
-                    to_tstm->addTrianglesProcess(triangles_to_create) ;
-                    to_tstm->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
-                    break;
-                }
-
-                case core::topology::TETRAHEDRAADDED:
-                {
-                    if ((fromModel) && (noNewTriangles.getValue()==false))
-                    {
-                        //const sofa::helper::vector<Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
-                        const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraAdded *>( *itBegin ) )->getArray();
-
-                        sofa::helper::vector< core::topology::BaseMeshTopology::TriangleID > triangles_to_remove;
-                        //int nb_elems = toModel->getNbTriangles();
-
-                        for (unsigned int i = 0; i < tab.size(); ++i)
-                        {
-                            for (unsigned int j = 0; j < 4; ++j)
-                            {
-                                unsigned int k = (fromModel->getTrianglesInTetrahedron(tab[i]))[j];
-                                if (fromModel->getTetrahedraAroundTriangle(k).size()==1)
-                                {
-                                    //do nothing
-                                }
-                                else
-                                {
-                                    bool flag=true;
-                                    for(unsigned int m=0; m<triangles_to_remove.size(); m++)
-                                    {
-                                        if(k==triangles_to_remove[m])
-                                        {
-                                            flag=false;
-                                            break;
-                                        }
-                                    }
-                                    if(flag)
-                                        triangles_to_remove.push_back(k);
-                                }
-                            }
-                        }
-
-                        int ind_last;
-                        unsigned int ind_tmp;
-                        ind_last=toModel->getNbTriangles();
-
-                        for (unsigned int i = 0; i <triangles_to_remove.size(); ++i)
-                        {
-                            unsigned int k = triangles_to_remove[i];
-
-                            std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
-                            if(iter_1 != Glob2LocMap.end())
-                            {
-
-                                ind_last = ind_last - 1;
-                                unsigned int ind_k = Glob2LocMap[k];
-
-                                if((int) ind_k != ind_last)
-                                {
-
-                                    Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_last]));
-                                    Glob2LocMap[Loc2GlobVec[ind_last]] = ind_k;
-
-                                    Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_k]));
-                                    Glob2LocMap[Loc2GlobVec[ind_k]] = ind_last;
-
-                                    ind_tmp = Loc2GlobVec[ind_k];
-                                    Loc2GlobVec[ind_k] = Loc2GlobVec[ind_last];
-                                    Loc2GlobVec[ind_last] = ind_tmp;
-
-                                }
-
-                                Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[Loc2GlobVec.size() - 1]));
-                                Loc2GlobVec.resize( Loc2GlobVec.size() - 1 );
-
-                                sofa::helper::vector< unsigned int > triangle_to_remove;
-                                triangle_to_remove.push_back(ind_k);
-
-                                TriangleSetTopologyModifier *triangleMod;
-                                toModel->getContext()->get(triangleMod);
-                                triangleMod->removeTriangles(triangle_to_remove, true, false);
-
-                                for(unsigned int i=0; i<addedTriangleIndex.size(); i++)
-                                {
-                                    if(addedTriangleIndex[i]==ind_k)
-                                        addedTriangleIndex[i]=0;
-                                    if(addedTriangleIndex[i]>ind_k)
-                                        addedTriangleIndex[i]-=1;
-                                }
-
-                            }
-                            else
-                            {
-                                sout << "INFO_print : Tetra2TriangleTopologicalMapping - Glob2LocMap should have the visible triangle " << triangles_to_remove[i] << sendl;
-                                sout << "INFO_print : Tetra2TriangleTopologicalMapping - nb triangles = " << ind_last << sendl;
-                            }
-                        }
-                    }
-                    break;
-                }
-
-                case core::topology::TETRAHEDRAREMOVED:
-                {
-                    if ((fromModel) && (noNewTriangles.getValue()==false))
-                    {
-
-                        const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
-                        const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *itBegin ) )->getArray();
-
-                        sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
-                        sofa::helper::vector< unsigned int > trianglesIndexList;
-                        int nb_elems = toModel->getNbTriangles();
-                        const bool flipN = flipNormals.getValue();
-
-                        for (unsigned int i = 0; i < tab.size(); ++i)
-                        {
-
-                            for (unsigned int j = 0; j < 4; ++j)
-                            {
-                                unsigned int k = (fromModel->getTrianglesInTetrahedron(tab[i]))[j];
-
-                                if (fromModel->getTetrahedraAroundTriangle(k).size()==1)   // remove as visible the triangle indexed by k
-                                {
-
-                                    // do nothing
-
-                                }
-                                else if(fromModel->getTetrahedraAroundTriangle(k).size()==2)
-                                {
-
-                                    unsigned int ind_test;
-                                    if(tab[i] == fromModel->getTetrahedraAroundTriangle(k)[0])
-                                    {
-
-                                        ind_test = fromModel->getTetrahedraAroundTriangle(k)[1];
-
-                                    }
-                                    else   // tab[i] == fromModel->getTetrahedraAroundTriangle(k)[1]
-                                    {
-
-                                        ind_test = fromModel->getTetrahedraAroundTriangle(k)[0];
-                                    }
-
-                                    bool is_present = false;
-                                    unsigned int k0 = 0;
-
-                                    // HD may be a buf here k0<tab.size()
-                                    while((!is_present) && k0 < i)
-                                    {
-                                        is_present = (ind_test == tab[k0]);
-                                        k0+=1;
-                                    }
-
-                                    int nb=0;
-                                    for(k0=0; k0<tab.size(); k0++)
-                                    {
-                                        if(ind_test==tab[k0])
-                                            nb++;
-                                        if(nb==2)
-                                        {
-                                            is_present=false;
-                                            break;
-                                        }
-                                    }
-                                    if(!is_present)
-                                    {
-
-                                        core::topology::BaseMeshTopology::Triangle t;
-                                        const core::topology::BaseMeshTopology::Tetrahedron &te=tetrahedronArray[ind_test];
-
-                                        int h = fromModel->getTriangleIndexInTetrahedron(fromModel->getTrianglesInTetrahedron(ind_test),k);
-
-                                        if ((h%2) && (!flipN))
-                                        {
-                                            t[0]=(int)(te[(h+1)%4]); t[1]=(int)(te[(h+2)%4]); t[2]=(int)(te[(h+3)%4]);
-                                        }
-                                        else
-                                        {
-                                            t[0]=(int)(te[(h+1)%4]); t[2]=(int)(te[(h+2)%4]); t[1]=(int)(te[(h+3)%4]);
-                                        }
-
-                                        for(int j=0; j<4; j++)
-                                        {
-                                            bool flag=true;
-                                            for(int k=0; k<3; k++)
-                                            {
-                                                if(t[k]==te[j])
-                                                {
-                                                    flag=false;
-                                                    break;
-                                                }
-                                            }
-                                            if(flag)
-                                            {
-                                                if ((j%2))
-                                                {
-                                                    t[0]=(int)(te[(j+1)%4]); t[1]=(int)(te[(j+2)%4]); t[2]=(int)(te[(j+3)%4]);
-                                                }
-                                                else
-                                                {
-                                                    t[0]=(int)(te[(j+1)%4]); t[2]=(int)(te[(j+2)%4]); t[1]=(int)(te[(j+3)%4]);
-                                                }
-                                                if(flipN)
-                                                {
-                                                    unsigned int temp=t[2];
-                                                    t[2]=t[1];
-                                                    t[1]=temp;
-                                                }
-                                            }
-                                        }
-
-
-                                        // sort t such that t[0] is the smallest one
-                                        while ((t[0]>t[1]) || (t[0]>t[2]))
-                                        {
-                                            int val=t[0]; t[0]=t[1]; t[1]=t[2]; t[2]=val;
-                                        }
-
-                                        triangles_to_create.push_back(t);
-                                        trianglesIndexList.push_back(nb_elems);
-
-                                        nb_elems+=1;
-
-                                        Loc2GlobVec.push_back(k);
-                                        std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
-                                        if(iter_1 != Glob2LocMap.end() )
-                                        {
-                                            sout << "INFO_print : Tetra2TriangleTopologicalMapping - fail to add triangle " << k << "which already exists" << sendl;
-                                            Glob2LocMap.erase(Glob2LocMap.find(k));
-                                        }
-                                        else
-                                        {
-                                            addedTriangleIndex.push_back(nb_elems-1);
-                                        }
-                                        Glob2LocMap[k]=Loc2GlobVec.size()-1;
-                                    }
-                                }
-                            }
-                        }
-
-                        to_tstm->addTrianglesProcess(triangles_to_create) ;
-                        to_tstm->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
-
-                    }
-
-                    break;
-
-                }
-
-                case core::topology::EDGESADDED:
-                {
-                    const EdgesAdded *ea=static_cast< const EdgesAdded * >( *itBegin );
-                    to_tstm->addEdgesProcess(ea->edgeArray);
-                    to_tstm->addEdgesWarning(ea->nEdges,ea->edgeArray,ea->edgeIndexArray);
-                    break;
-                }
-
-                case core::topology::POINTSADDED:
-                {
-
-                    int nbAddedPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
-                    to_tstm->addPointsProcess(nbAddedPoints);
-                    to_tstm->addPointsWarning(nbAddedPoints, true);
-
-                    break;
-                }
-
-                case core::topology::POINTSREMOVED:
-                {
-                    //sout << "INFO_print : Tetra2TriangleTopologicalMapping - POINTSREMOVED" << sendl;
-
-                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
-
-                    sofa::helper::vector<unsigned int> indices;
-
-                    for(unsigned int i = 0; i < tab.size(); ++i)
-                    {
-
-                        indices.push_back(tab[i]);
-                    }
-
-                    sofa::helper::vector<unsigned int>& tab_indices = indices;
-
-                    to_tstm->removePointsWarning(tab_indices, false);
-
-                    to_tstm->propagateTopologicalChanges();
-                    to_tstm->removePointsProcess(tab_indices, false);
-
-                    break;
-                }
-
-                case core::topology::POINTSRENUMBERING:
-                {
-                    //sout << "INFO_print : Hexa2QuadTopologicalMapping - POINTSREMOVED" << sendl;
-
-                    const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
-                    const sofa::helper::vector<unsigned int> &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
-
-                    sofa::helper::vector<unsigned int> indices;
-                    sofa::helper::vector<unsigned int> inv_indices;
-
-                    for(unsigned int i = 0; i < tab.size(); ++i)
-                    {
-
-                        //sout << "INFO_print : Hexa2QuadTopologicalMapping - point = " << tab[i] << sendl;
-                        indices.push_back(tab[i]);
-                        inv_indices.push_back(inv_tab[i]);
-                    }
-
-                    sofa::helper::vector<unsigned int>& tab_indices = indices;
-                    sofa::helper::vector<unsigned int>& inv_tab_indices = inv_indices;
-
-                    to_tstm->renumberPointsWarning(tab_indices, inv_tab_indices, false);
-                    to_tstm->propagateTopologicalChanges();
-                    to_tstm->renumberPointsProcess(tab_indices, inv_tab_indices, false);
-
-                    break;
-                }
-                default:
-                    // Ignore events that are not Triangle  related.
-                    break;
-                };
-
-                ++itBegin;
+                auto iter_1 = Glob2LocMap.find(globTriId);
+                if (iter_1 != Glob2LocMap.end())
+                    triangles_to_remove.push_back(iter_1->second);
             }
-            to_tstm->propagateTopologicalChanges();
-            Loc2GlobDataVec.endEdit();
+            std::sort(triangles_to_remove.begin(), triangles_to_remove.end(), std::greater<unsigned int>());
+
+            unsigned int lastGlobId = (unsigned int)fromModel->getNbTriangles() - 1;
+            unsigned int nbrGlobElem = fromModel->getNbTriangles() - triIDtoRemove.size();
+            unsigned int nbrBotElem = toModel->getNbTriangles() - triangles_to_remove.size();
+
+            // update Glob2LocMap from fromModel changes
+            for (auto oldGlobTriId : triIDtoRemove)
+            {
+                auto iter_last = Glob2LocMap.find(lastGlobId);
+                if (iter_last != Glob2LocMap.end())
+                {
+                    // swap and pop glob map like fromModel triangle container
+                    unsigned int lastLocId = iter_last->second;
+                    Glob2LocMap[oldGlobTriId] = lastLocId;
+
+                    if (lastLocId < Loc2GlobVec.size()) // could be maped to an already removed element in loc2Glob
+                        Loc2GlobVec[lastLocId] = oldGlobTriId;
+                }
+                else
+                {
+                    iter_last = Glob2LocMap.find(oldGlobTriId);
+                    if(iter_last == Glob2LocMap.end())
+                    {
+                        if (!noNewTriangles.getValue() && !noInitialTriangles.getValue()) // otherwise it is normal
+                            msg_warning() << "Could not find last triangle id in Glob2LocMap: " << lastGlobId << " nor removed triangle id: " << oldGlobTriId;
+                        lastGlobId--;
+                        continue;
+                    }
+                }
+                Glob2LocMap.erase(iter_last);
+                lastGlobId--;
+            }
+
+
+            // update the maps from toModel changes
+            for (auto oldLocTriId : triangles_to_remove)
+            {
+                //unsigned int oldGlobTriId = tmpLoc2Glob[oldLocTriId];
+                unsigned int newGlobTriId = Loc2GlobVec.back();
+                Loc2GlobVec[oldLocTriId] = newGlobTriId; // swap loc2Glob map like normal triangle removal
+
+                if (newGlobTriId < nbrGlobElem && oldLocTriId < nbrBotElem){
+                    Glob2LocMap[newGlobTriId] = oldLocTriId; // update Glob2LocMap of new loc ids
+                }
+                Loc2GlobVec.pop_back(); //pop last
+            }
+
+            m_outTopoModifier->removeTriangles(triangles_to_remove, true, false);
+
+            break;
+        }
+        /**
+        case core::topology::TRIANGLESADDED:
+        {
+            This case doesn't need to be handle here as TetraAdded case is emit first and handle new triangle to be added to output topology.
+            break;
+        }
+        */
+        case core::topology::TETRAHEDRAADDED:
+        {
+            if (noNewTriangles.getValue())
+                break;
+
+            const auto * tetraAdded = static_cast< const TetrahedraAdded *>( *itBegin );
+
+            sofa::helper::vector< BaseMeshTopology::Triangle > triangles_to_create;
+            sofa::helper::vector< BaseMeshTopology::TriangleID > triangleId_to_create;
+            sofa::helper::vector< BaseMeshTopology::TriangleID > triangleId_to_remove;
+
+            // Need to first add all the new triangles before removing the old one.
+            for (auto tetraId : tetraAdded->tetrahedronIndexArray)
+            {
+                const auto & triIntetra = fromModel->getTrianglesInTetrahedron(tetraId);
+                for (auto triGlobId : triIntetra)
+                {
+                    auto iter_1 = Glob2LocMap.find(triGlobId);
+                    const auto & tetraATri = fromModel->getTetrahedraAroundTriangle(triGlobId);
+                    if (iter_1 != Glob2LocMap.end()) // in the map
+                    {
+                        if (tetraATri.size() != 1) // already in the map but not anymore on border, add it for later removal.
+                            triangleId_to_remove.push_back(triGlobId);
+                    }
+                    else
+                    {
+                        if (tetraATri.size() > 1) // not in the map and not on border, nothing to do.
+                            continue;
+
+                        // not in the map but on border. Need to add this it.
+                        const auto triangle = fromModel->getTriangle(triGlobId);
+                        triangles_to_create.push_back(triangle);
+                        triangleId_to_create.push_back((unsigned int)Loc2GlobVec.size());
+
+                        Loc2GlobVec.push_back(triGlobId);
+                        Glob2LocMap[triGlobId] = (unsigned int)Loc2GlobVec.size() - 1;
+                    }
+                }
+            }
+
+            // add new elements to output topology
+            m_outTopoModifier->addTriangles(triangles_to_create);
+
+            // remove elements not anymore on part of the border
+            sofa::helper::vector< BaseMeshTopology::TriangleID > local_triangleId_to_remove;
+            for (auto triGlobId : triangleId_to_remove)
+            {
+                auto iter_1 = Glob2LocMap.find(triGlobId);
+                if (iter_1 == Glob2LocMap.end())
+                {
+                    msg_error() << " in TETRAHEDRAADDED process, triangle id " << triGlobId << " not found in Glob2LocMap";
+                    continue;
+                }
+                // add triangle for output topology update
+                local_triangleId_to_remove.push_back(iter_1->second);
+                Glob2LocMap.erase(iter_1);
+            }
+
+            // sort local triangle to remove
+            std::sort(local_triangleId_to_remove.begin(), local_triangleId_to_remove.end(), std::greater<BaseMeshTopology::TriangleID>());
+
+            for (auto triLocId : local_triangleId_to_remove)
+            {
+                BaseMeshTopology::TriangleID lastGlobId = Loc2GlobVec.back();
+
+                // udpate loc2glob array
+                Loc2GlobVec[triLocId] = lastGlobId;
+                Loc2GlobVec.pop_back();
+
+                // redirect glob2loc map
+                Glob2LocMap[lastGlobId] = triLocId;
+            }
+
+            // remove old triangles
+            m_outTopoModifier->removeTriangles(local_triangleId_to_remove, true, false);
+            break;
+        }
+        case core::topology::TETRAHEDRAREMOVED:
+        {
+            if (noNewTriangles.getValue())
+                break;
+
+            const auto & tetrahedronArray=fromModel->getTetrahedra();
+            const auto & tetraIds2Remove = ( static_cast< const TetrahedraRemoved *>( *itBegin ) )->getArray();
+
+            sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
+            sofa::helper::vector< unsigned int > trianglesIndexList;
+            size_t nb_elems = toModel->getNbTriangles();
+            const bool flipN = flipNormals.getValue();
+
+            // For each tetrahedron removed inside the tetra2Remove array. Will look for each face if it shared with another tetrahedron.
+            // If none, it means it will be added to the triangle border topoloy.
+            // NB: doesn't check if triangle is inbetween 2 tetrahedra removed. This will be handle in TriangleRemoved event.
+            for (Topology::TetrahedronID i = 0; i < tetraIds2Remove.size(); ++i)
+            {
+                Topology::TetrahedronID tetraId = tetraIds2Remove[i];
+                const auto & triInTetra = fromModel->getTrianglesInTetrahedron(tetraId);
+
+                // get each triangle of the tetrahedron involved
+                for (auto triangleId : triInTetra)
+                {
+                    const auto & tetraATriangle = fromModel->getTetrahedraAroundTriangle(triangleId);
+
+                    if (tetraATriangle.size() != 2) // means either more than 2 tetra sharing the triangle (so will not be on border) or only one, will be removed by TriangleRemoved later.
+                        continue;
+
+                    // Id of the opposite tetrahedron
+                    Topology::TetrahedronID idOtherTetra;
+                    if (tetraId == tetraATriangle[0])
+                        idOtherTetra = tetraATriangle[1];
+                    else
+                        idOtherTetra = tetraATriangle[0];
+
+                    // check if tetrahedron already processed in a previous iteration
+                    bool is_present = false;
+                    for (unsigned int k=0; k<i; ++k)
+                        if (idOtherTetra == tetraIds2Remove[k])
+                        {
+                            is_present = true;
+                            break;
+                        }
+                    if (is_present) // already done, continue.
+                        continue;
+
+                    core::topology::BaseMeshTopology::Triangle tri;
+                    const auto & otherTetra = tetrahedronArray[idOtherTetra];
+                    const auto & triInOtherTetra = fromModel->getTrianglesInTetrahedron(idOtherTetra);
+
+                    int posInTetra = fromModel->getTriangleIndexInTetrahedron(triInOtherTetra, triangleId);
+
+                    for (int i=0; i<3; i++)
+                    {
+                        unsigned int vIdInTetra = trianglesOrientationInTetrahedronArray[posInTetra][i];
+                        tri[i] = otherTetra[vIdInTetra];
+                    }
+
+                    if(flipN)
+                    {
+                        unsigned int temp=tri[2];
+                        tri[2]=tri[1];
+                        tri[1]=temp;
+                    }
+
+                    // sort triangle such that tri[0] is the smallest one
+                    while ((tri[0]>tri[1]) || (tri[0]>tri[2]))
+                    {
+                        int val=tri[0]; tri[0]=tri[1]; tri[1]=tri[2]; tri[2]=val;
+                    }
+
+                    // Add triangle to creation buffers
+                    triangles_to_create.push_back(tri);
+                    trianglesIndexList.push_back(nb_elems);
+                    nb_elems+=1;
+
+                    // update topology maps
+                    Loc2GlobVec.push_back(triangleId);
+
+                    // check if already exist
+                    auto iter_1 = Glob2LocMap.find(triangleId);
+                    if(iter_1 != Glob2LocMap.end() )
+                        Glob2LocMap.erase(iter_1);
+
+                    Glob2LocMap[triangleId] = (unsigned int)Loc2GlobVec.size()-1;
+                }
+            }
+
+            m_outTopoModifier->addTriangles(triangles_to_create);
+            break;
+        }
+
+        case core::topology::EDGESADDED:
+        {
+            const auto * edgeAdded=static_cast< const EdgesAdded * >( *itBegin );
+            m_outTopoModifier->addEdges(edgeAdded->edgeArray);
+            break;
+        }
+
+        case core::topology::POINTSADDED:
+        {
+            const auto nbAddedPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
+            m_outTopoModifier->addPointsProcess(nbAddedPoints);
+            m_outTopoModifier->addPointsWarning(nbAddedPoints, true);
+            m_outTopoModifier->propagateTopologicalChanges();
+            break;
+        }
+
+        case core::topology::POINTSREMOVED:
+        {
+            const auto pointRemoved = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+
+            sofa::helper::vector<index_type> indices;
+
+            for(unsigned int i = 0; i < pointRemoved.size(); ++i)
+            {
+
+                indices.push_back(pointRemoved[i]);
+            }
+
+            Topology::SetIndices & tab_indices = indices;
+
+            m_outTopoModifier->removePointsWarning(tab_indices, false);
+
+            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->removePointsProcess(tab_indices, false);
+            break;
+        }
+
+        case core::topology::POINTSRENUMBERING:
+        {
+            const Topology::SetIndices &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();
+            const Topology::SetIndices &inv_tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+
+            Topology::SetIndices indices;
+            Topology::SetIndices inv_indices;
+
+
+            for(unsigned int i = 0; i < tab.size(); ++i)
+            {
+                indices.push_back(tab[i]);
+                inv_indices.push_back(inv_tab[i]);
+            }
+
+            Topology::SetIndices & tab_indices = indices;
+            Topology::SetIndices & inv_tab_indices = inv_indices;
+
+            m_outTopoModifier->renumberPointsWarning(tab_indices, inv_tab_indices, false);
+            m_outTopoModifier->propagateTopologicalChanges();
+            m_outTopoModifier->renumberPointsProcess(tab_indices, inv_tab_indices, false);
+
+            break;
+        }
+        default:
+            // Ignore events that are not Triangle  related.
+            break;
+        };
+
+        sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
+        ++itBegin;
+    }    
+    Loc2GlobDataVec.endEdit();
+
+    sofa::helper::AdvancedTimer::stepEnd("Update Tetra2TriangleTopologicalMapping");
+}
+
+
+bool Tetra2TriangleTopologicalMapping::checkTopologies()
+{
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return false;
+
+    // result of the method to be changed in case of error encountered
+    bool allOk = true;
+
+    const auto & triangleArray_top = fromModel->getTriangles();
+    const auto & triangleArray_bot = toModel->getTriangles();
+    const auto & buffer = Loc2GlobDataVec.getValue();
+
+    dmsg_info() << "################# checkTopologies #####################";
+    dmsg_info() << "triangleArray_bot.size(): " << triangleArray_bot.size();
+    dmsg_info() << "Glob2LocMap.size(): " << Glob2LocMap.size();
+    dmsg_info() << "Loc2GlobDataVec.size(): " << buffer.size();
+
+    std::map<index_type, index_type>::iterator itM;
+    for (size_t i=0; i<triangleArray_top.size(); i++)
+    {
+        const auto & tri = triangleArray_top[i];
+        const auto & tetraATri = fromModel->getTetrahedraAroundTriangle(i);
+        if (tetraATri.size() != 1)
+            continue;
+
+        itM = Glob2LocMap.find(i);
+        if (itM == Glob2LocMap.end()){
+            msg_error() << "Top triangle: " << i << " -> " << tri[0] << " " << tri[1] << " " << tri[2] << " NOT FOUND in Glob2LocMap";
+            for (unsigned int k=0; k<triangleArray_bot.size(); k++)
+            {
+                const auto & triBot = triangleArray_bot[k];
+                int cptFound = 0;
+                for (unsigned int j=0; j<3; j++)
+                {
+                    if (triBot[j] == tri[0] || triBot[j] == tri[1] || triBot[j] == tri[2])
+                        cptFound++;
+                }
+
+                if (cptFound == 3){
+                    msg_error() << "Top triangle: " << i << " -> " << tri << " found at bottom id: " << k << " -> " << triBot << " | Loc2GlobDataVec: " << buffer[k];
+                    break;
+                }
+            }
+
+            allOk = false;
+            continue;
+        }
+
+        unsigned int triLocID = (*itM).second;
+        if (triLocID >= triangleArray_bot.size()){
+            msg_error() << "## Glob2LocMap out of bounds: " << i << " - " << triLocID;
+            allOk = false;
+            continue;
+        }
+        const auto & tri2 = triangleArray_bot[triLocID];
+
+
+
+        bool ok = false;
+        for (int j=0; j<3; ++j)
+        {
+            ok = false;
+            for (int k=0; k<3; ++k)
+                if (tri[j] == tri2[k])
+                {
+                    ok = true;
+                    break;
+                }
+            if (!ok)
+                break;
+        }
+
+        if (!ok){
+            msg_error() << "## Top Triangle Not same as bottom Triangle: ";
+            msg_error() << "Top Triangle: " << i << " -> " << tri[0] << " " << tri[1] << " " << tri[2] << " --> Bottom Triangle: " << triLocID << " -> " << tri2[0] << " " << tri2[1] << " " << tri2[2];
+            allOk = false;
+        }
+
+        if (buffer[triLocID] != i) {
+            msg_error() << "## Maps no coherent: Loc2Glob: " << triLocID << " -> " << buffer[triLocID];
+            allOk = false;
         }
     }
 
-    return;
+    dmsg_info() << "###############################################";
+    return allOk;
 }
-
 
 } // namespace topology
 

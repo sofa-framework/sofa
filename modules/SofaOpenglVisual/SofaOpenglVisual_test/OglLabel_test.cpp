@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -15,8 +15,7 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Contributors:                                                               *
-*    - damien.marchal@univ-lille1.fr                                          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -26,8 +25,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test ;
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -44,12 +43,22 @@ using sofa::core::ExecParams ;
 #include <SofaOpenglVisual/OglLabel.h>
 using sofa::component::visualmodel::OglLabel ;
 
-#include <sofa/defaulttype/RGBAColor.h>
-using sofa::defaulttype::RGBAColor ;
+#include <sofa/helper/types/RGBAColor.h>
+using sofa::helper::types::RGBAColor ;
 
-class OglLabelTest : public Sofa_test<>
+#include <SofaBaseMechanics/initBaseMechanics.h>
+
+#include <SofaSimulationGraph/SimpleApi.h>
+
+class OglLabelTest : public BaseTest
 {
 public:
+    void SetUp()
+    {
+        sofa::component::initBaseMechanics();
+        sofa::simulation::setSimulation(new DAGSimulation());
+    }
+
     void checkExcludingAttributes()
     {
         EXPECT_MSG_EMIT(Warning) ;
@@ -77,6 +86,9 @@ public:
 
         EXPECT_TRUE(ogllabel->d_selectContrastingColor.getValue()) ;
         EXPECT_EQ(RGBAColor::fromFloat(1,1,1,1), ogllabel->d_color.getValue()) ;
+
+        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::getSimulation()->createNewGraph("");
     }
 
 
@@ -106,6 +118,9 @@ public:
 
         EXPECT_TRUE(ogllabel->d_selectContrastingColor.getValue()) ;
         EXPECT_EQ(RGBAColor::fromFloat(1,1,1,1), ogllabel->d_color.getValue()) ;
+
+        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::getSimulation()->createNewGraph("");
     }
 
     void checkAttributes()
@@ -135,6 +150,9 @@ public:
 
         for(auto& attrname : attrnames)
             EXPECT_NE( lm->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
+
+        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::getSimulation()->createNewGraph("");
     }
 };
 

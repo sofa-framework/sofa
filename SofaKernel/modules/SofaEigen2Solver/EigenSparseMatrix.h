@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
 #define SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
 
+#include <SofaEigen2Solver/config.h>
 #include "EigenBaseSparseMatrix.h"
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
@@ -71,9 +72,10 @@ public:
     enum { Nin=InDataTypes::deriv_total_size, Nout=OutDataTypes::deriv_total_size };
     typedef defaulttype::Mat<Nout,Nin, OutReal> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
 
+    using Index = defaulttype::BaseMatrix::Index;
 protected:
-    typedef std::map<int,Block> BlockRowMap;        ///< Map which represents one block-view row of the matrix. The index represents the block-view column index of an entry.
-    typedef std::map<int,BlockRowMap> BlockMatMap;  ///< Map which represents a block-view matrix. The index represents the block-view index of a block-view row.
+    typedef std::map<Index,Block> BlockRowMap;        ///< Map which represents one block-view row of the matrix. The index represents the block-view column index of an entry.
+    typedef std::map<Index,BlockRowMap> BlockMatMap;  ///< Map which represents a block-view matrix. The index represents the block-view index of a block-view row.
     BlockMatMap incomingBlocks;                     ///< To store block-view data before it is compressed in optimized format.
     typedef Eigen::Matrix<InReal,Eigen::Dynamic,1>  VectorEigenIn;
 
@@ -141,31 +143,6 @@ public:
     {
         this->resize(nbBlockRows * Nout, nbBlockCols * Nin);
     }
-
-
-//    /// Finalize the matrix after a series of insertions. Add the values from the temporary list to the compressed matrix, and clears the list.
-//    virtual void compress()
-//    {
-//        Inherit::compress();
-
-//        if( incomingBlocks.empty() ) return;
-//        compress_incomingBlocks();
-//        //        cerr<<"compress, before incoming blocks " << this->eigenMatrix << endl;
-//        //        cerr<<"compress, incoming blocks " << this->compressedIncoming << endl;
-//        this->compressedMatrix += this->compressedIncoming;
-//        //        cerr<<"compress, final value " << this->eigenMatrix << endl;
-//        this->compressedMatrix.finalize();
-//    }
-
-//    /** Return write access to an incoming block.
-//    Note that this does not give access to the compressed matrix.
-//    The block belongs to a temporary list which will be added to the compressed matrix using method compress().
-//    */
-//    Block& wBlock( int i, int j )
-//    {
-//        return incomingBlocks[i][j];
-//    }
-
 
     /// Schedule the addition of the block at the given place. Scheduled additions must be finalized using function compress().
     void addBlock( unsigned row, unsigned col, const Block& b )
@@ -280,30 +257,21 @@ public:
     void copyFrom( const CompressedRowSparseMatrix< defaulttype::Mat<Nout,Nin, AnyReal> >& crs )
     {
         this->resize( crs.rowSize(), crs.colSize() );
-//        cerr<<"copyFrom, size " << crs.rowSize() << ", " << crs.colSize()<< ", block rows: " << crs.rowIndex.size() << endl;
-//        cerr<<"copyFrom, crs = " << crs << endl;
 
 //        int rowStarted = 0;
         for (unsigned int xi = 0; xi < crs.rowIndex.size(); ++xi)  // for each non-null block row
         {
             int blRow = crs.rowIndex[xi];      // block row
 
-//            while( rowStarted<blRow*Nout )   // make sure all the rows are started, even the empty ones
-//            {
-//                this->compressedMatrix.startVec(rowStarted);
-//                rowStarted++;
-//            }
-
             typename CompressedRowSparseMatrix<Block>::Range rowRange(crs.rowBegin[xi], crs.rowBegin[xi+1]);
 
             for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
             {
                 if(r+ blRow*Nout >= (unsigned)this->rowSize() ) break;
-//                cerr<<"copyFrom,  startVec " << rowStarted << endl;
 //                this->compressedMatrix.startVec(rowStarted++);
 
 
-                for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block
+                for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block
                 {
                     int blCol = crs.colsIndex[xj];     // block column
                     const Block& b = crs.colsValue[xj]; // block value
@@ -311,7 +279,6 @@ public:
                         {
                         this->add(r + blRow*Nout, c + blCol*Nin, b[r][c]);
 //                        this->compressedMatrix.insertBack(r + blRow*Nout, c + blCol*Nin) = b[r][c];
-//                        cerr<<"copyFrom,  insert at " << r + blRow*Nout << ", " << c + blCol*Nin << endl;
                         }
 
                 }
@@ -320,10 +287,6 @@ public:
         this->compress();
 
     }
-
-#ifdef _OPENMP
-#define EIGENSPARSEMATRIX_PARALLEL
-#endif
 
 protected:
 
@@ -338,7 +301,7 @@ protected:
 		// use optimized product if possible
         if(canCast(data)) {
 
-#ifdef EIGENSPARSEMATRIX_PARALLEL
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
             if( alias(result, data) )
                 map(result) = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, map(data).template cast<Real>() );
             else
@@ -355,24 +318,23 @@ protected:
 			
 			return;
 		}
-
 		// convert the data to Eigen type
         VectorEigenOut aux1(this->colSize(),1), aux2(this->rowSize(),1);
-        for(unsigned i = 0, n = data.size(); i < n; ++i) {
+        for(size_t i = 0, n = data.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nin; ++j) {
                 aux1[Nin * i + j] = data[i][j];
 			}
 		}
 		
         // compute the product
-#ifdef EIGENSPARSEMATRIX_PARALLEL
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
         aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
 #else
         aux2.noalias() = this->compressedMatrix * aux1;
 #endif
-
+        
         // convert the result back to the Sofa type
-        for(unsigned i = 0, n = result.size(); i < n; ++i) {
+        for(size_t i = 0, n = result.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nout; ++j) {
                 result[i][j] = aux2[Nout * i + j];
 			}
@@ -388,7 +350,7 @@ protected:
 		// use optimized product if possible
 		if( canCast(data) ) {
 
-#ifdef EIGENSPARSEMATRIX_PARALLEL
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
             if( alias(result, data) )
                 map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, this->map(data).template cast<Real>() * fact ).template cast<OutReal>();
             else
@@ -418,7 +380,7 @@ protected:
 		}
         
         // compute the product
-#ifdef EIGENSPARSEMATRIX_PARALLEL
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
         aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
 #else
         aux2.noalias() = this->compressedMatrix * aux1;
@@ -440,7 +402,7 @@ protected:
 		// use optimized product if possible
 		if(canCast(result)) {
 
-#ifdef EIGENSPARSEMATRIX_PARALLEL
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
             if( alias(result, data) )
                 map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact ).template cast<InReal>();
             else {
@@ -463,21 +425,21 @@ protected:
 		// convert the data to Eigen type
         VectorEigenOut aux1(this->rowSize()), aux2(this->colSize());
 
-        for(unsigned i = 0, n = data.size(); i < n; ++i) {
+        for(size_t i = 0, n = data.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nout; ++j) {
 				aux1[Nout * i + j] = data[i][j];
 			}
 		}
 		
 		// compute the product
-#ifdef EIGENSPARSEMATRIX_PARALLEL
+#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
         aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), aux1 );
 #else
         aux2.noalias() = this->compressedMatrix.transpose() * aux1;
 #endif
 
 		// convert the result back to the Sofa type
-        for(unsigned i = 0, n = result.size(); i < n; ++i) {
+        for(size_t i = 0, n = result.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nin; ++j) {
                 result[i][j] += aux2[Nin * i + j] * fact;
 			}
@@ -583,13 +545,8 @@ private:
 
 };
 
-#ifndef SOFA_FLOAT
-template<> inline const char* EigenSparseMatrix<defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >::Name() { return "EigenSparseMatrix3d1d"; }
-#endif
+template<> inline const char* EigenSparseMatrix<defaulttype::Vec3Types, defaulttype::Vec1Types >::Name() { return "EigenSparseMatrix3d1d"; }
 
-#ifndef SOFA_DOUBLE
-template<> inline const char* EigenSparseMatrix<defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >::Name() { return "EigenSparseMatrix3f1f"; }
-#endif
 
 // max: much cleaner like this :)
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,20 +72,9 @@ protected:
     DistanceLMConstraintInternalData<DataTypes> data;
     friend class DistanceLMConstraintInternalData<DataTypes>;
 
-
-    DistanceLMConstraint( MechanicalState *dof)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
-        , vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
-    {}
-
-    DistanceLMConstraint( MechanicalState *dof1, MechanicalState * dof2)
-        : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
-        , vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
-    {}
-
-    DistanceLMConstraint()
-        : vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
-    {}
+    DistanceLMConstraint();
+    DistanceLMConstraint( MechanicalState *dof);
+    DistanceLMConstraint( MechanicalState *dof1, MechanicalState * dof2);
 
     ~DistanceLMConstraint() {}
 public:
@@ -97,7 +86,7 @@ public:
     void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex) override;
     void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     bool isCorrectionComputedWithSimulatedDOF(core::ConstraintParams::ConstOrder /*order*/) const override
     {
@@ -107,18 +96,11 @@ public:
         else return false;
     }
 
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-    static std::string templateName(const DistanceLMConstraint<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
     //Edges involving a distance constraint
-    Data< SeqEdges > vecConstraint;
+    Data< SeqEdges > vecConstraint; ///< List of the edges to constrain
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink <DistanceLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected :
 
     ///Compute the length of an edge given the vector of coordinates corresponding
@@ -127,33 +109,20 @@ protected :
     Deriv getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
     void updateRestLength();
 
-    // Base Components of the current context
-    core::topology::BaseMeshTopology *topology;
-
     helper::vector<  unsigned int > registeredConstraints;
 
     // rest length pre-computated
     sofa::helper::vector< double > l0;
 };
 
-#ifndef SOFA_FLOAT
 template<>
-defaulttype::Rigid3dTypes::Deriv DistanceLMConstraint<defaulttype::Rigid3dTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
-#endif
-#ifndef SOFA_DOUBLE
-template<>
-defaulttype::Rigid3fTypes::Deriv DistanceLMConstraint<defaulttype::Rigid3fTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
-#endif
+defaulttype::Rigid3Types::Deriv DistanceLMConstraint<defaulttype::Rigid3Types>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_DISTANCELMCONSTRAINT_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API DistanceLMConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_CONSTRAINT_API DistanceLMConstraint<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_CONSTRAINT_API DistanceLMConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_CONSTRAINT_API DistanceLMConstraint<defaulttype::Rigid3fTypes>;
-#endif
+
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DISTANCELMCONSTRAINT_CPP)
+extern template class SOFA_CONSTRAINT_API DistanceLMConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_CONSTRAINT_API DistanceLMConstraint<defaulttype::Rigid3Types>;
+
 #endif
 
 } // namespace constraintset

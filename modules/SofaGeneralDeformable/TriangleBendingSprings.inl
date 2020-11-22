@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,17 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: TriangleBendingSprings
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_INL
 
@@ -49,8 +38,9 @@ namespace interactionforcefield
 
 template<class DataTypes>
 TriangleBendingSprings<DataTypes>::TriangleBendingSprings()
+    : l_topology(initLink("topology", "link to the topology container"))
 {
-    //serr<<"TriangleBendingSprings<DataTypes>::TriangleBendingSprings"<<sendl;
+    
 }
 
 
@@ -66,13 +56,11 @@ void TriangleBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
     Real d = (Real)this->kd.getValue();
     Real l = (x[a]-x[b]).norm();
     this->SpringForceField<DataTypes>::addSpring(a,b, s, d, l );
-    //sout<<"=================================TriangleBendingSprings<DataTypes>::addSpring "<<a<<", "<<b<<sendl;
 }
 
 template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b, unsigned c, std::map<IndexPair, unsigned>& edgeMap)
 {
-    //sout<<"=================================TriangleBendingSprings<DataTypes>::registerTriangle "<<a<<", "<<b<<", "<<c<<sendl;
     using namespace std;
     {
         IndexPair edge(a<b ? a : b,a<b ? b : a);
@@ -129,11 +117,22 @@ void TriangleBendingSprings<DataTypes>::init()
     // Set the bending springs
 
     std::map< IndexPair, unsigned > edgeMap;
-    sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
-    assert( topology );
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    sofa::core::topology::BaseMeshTopology* topology = l_topology.get();
+    if (topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
-    //sout<<"==================================TriangleBendingSprings<DataTypes>::init(), triangles size = "<<triangles.size()<<sendl;
     for( unsigned i= 0; i<triangles.size(); ++i )
     {
         const sofa::core::topology::BaseMeshTopology::Triangle& face = triangles[i];
@@ -144,7 +143,6 @@ void TriangleBendingSprings<DataTypes>::init()
     }
 
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
-    //sout<<"==================================TriangleBendingSprings<DataTypes>::init(), quad size = "<<topology->getQuads().size()<<sendl;
     for( unsigned i= 0; i<quads.size(); ++i )
     {
         const sofa::core::topology::BaseMeshTopology::Quad& face = quads[i];

@@ -1,11 +1,34 @@
 # CMake package configuration file for SofaMisc
+
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaAdvanced REQUIRED)
-find_package(SofaGeneral REQUIRED)
+set(SOFAMISC_TARGETS @SOFAMISC_TARGETS@)
 
-if(NOT TARGET SofaComponentMisc)
-	include("${CMAKE_CURRENT_LIST_DIR}/SofaMiscTargets.cmake")
+set(SOFAMISCTOPOLOGY_HAVE_ZLIB @SOFAMISCTOPOLOGY_HAVE_ZLIB@)
+set(SOFAMISCFEM_HAVE_NEWMAT @SOFAMISCFEM_HAVE_NEWMAT@)
+
+find_package(SofaFramework QUIET REQUIRED) # SofaHelper (SofaMiscForceField)
+find_package(SofaSimulation QUIET REQUIRED) # SofaSimulationTree (SofaMiscSolver)
+find_package(SofaBase QUIET REQUIRED) # SofaBaseTopology (SofaMiscTopology)
+find_package(SofaCommon QUIET REQUIRED) # SofaSimpleFem (SofaMiscFem), SofaDeformable (SofaMiscForceField), SofaSimpleFem SofaRigid (SofaMiscMapping)
+find_package(SofaGeneral QUIET REQUIRED) #  SofaGeneralMeshCollision SofaTopologyMapping (SofaMiscExtra), SofaBoundaryCondition SofaGeneralTopology (SofaMiscForceField)
+
+# Required by SofaMiscEngine
+find_package(SofaNonUniformFem REQUIRED)
+
+if(SOFAMISCTOPOLOGY_HAVE_ZLIB)
+    find_package(ZLIB QUIET REQUIRED)
+endif()
+if(SOFAMISCFEM_HAVE_NEWMAT)
+    find_package(Newmat QUIET REQUIRED)
 endif()
 
-check_required_components(@SOFAMISC_TARGETS@)
+foreach(target ${SOFAMISC_TARGETS})
+    if(NOT TARGET ${target})
+        include("${CMAKE_CURRENT_LIST_DIR}/SofaMiscTargets.cmake")
+        break()
+    endif()
+endforeach()
+
+check_required_components(${SOFAMISC_TARGETS})

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(BulletCollisionDetection)
 
 #WARNING, when installing bullet write in the bullet CMakeLists.txt the line add_definitions(-DBULLET_TRIANGLE_COLLISION)
@@ -41,7 +41,7 @@ set(SOURCE_FILES
 
 set(README_FILES BulletCollisionDetection.txt)
 
-find_package(SofaMisc REQUIRED)
+find_package(SofaMiscCollision REQUIRED)
 find_package(SofaVolumetricData REQUIRED)
 find_package(Compliant QUIET)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})

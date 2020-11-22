@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,7 +46,7 @@ static PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
         int ir,ig,ib,ia; // helper: you can set integer values
         if (!PyArg_ParseTuple(args, "iiii",&ir,&ig,&ib,&ia))
         {
-            return NULL;
+            return nullptr;
         }
 
         PyErr_Clear();
@@ -68,14 +68,14 @@ static PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
     char* filename;
     if (!PyArg_ParseTuple(args, "s",&filename))
     {
-        return NULL;
+        return nullptr;
     }
 
     std::ofstream outfile(filename);
 
-    int vindex = 0;
-    int nindex = 0;
-    int tindex = 0;
+    sofa::defaulttype::index_type vindex = 0;
+    sofa::defaulttype::index_type nindex = 0;
+    sofa::defaulttype::index_type tindex = 0;
     int count = 0;
 
     obj->exportOBJ(obj->getName(),&outfile,NULL,vindex,nindex,tindex,count);

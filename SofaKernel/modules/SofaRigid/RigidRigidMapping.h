@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,60 +67,49 @@ public:
     typedef typename Inherit::ForceMask ForceMask;
 
 protected:
-    Data < OutVecCoord > points;
+    Data < OutVecCoord > points; ///< Initial position of the points
     OutVecCoord pointsR0;
     Mat rotation;
     class Loader;
     void load(const char* filename);
+    /// number of child frames per parent frame.
+    /// If empty, all the children are attached to the parent with index
+    /// given in the "index" attribute. If one value, each parent frame drives
+    /// the given number of children frames. Otherwise, the values are the number
+    /// of child frames driven by each parent frame.
     Data< sofa::helper::vector<unsigned int> >  repartition;
 
 public:
-    Data<unsigned> index;
-    sofa::core::objectmodel::DataFileName fileRigidRigidMapping;
-    //axis length for display
-    Data<double> axisLength;
-    Data< bool > indexFromEnd;
-    Data< bool > globalToLocalCoords;
+    Data<unsigned> index; ///< input frame index
+    sofa::core::objectmodel::DataFileName fileRigidRigidMapping; ///< Filename
+
+    /// axis length for display
+    Data<double> axisLength; ///< axis length for display
+    Data< bool > indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
+    Data< bool > globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
 protected:
-    RigidRigidMapping()
-        : Inherit(),
-          points(initData(&points, "initialPoints", "Initial position of the points")),
-          repartition(initData(&repartition,"repartition","number of child frames per parent frame. \n"
-                               "If empty, all the children are attached to the parent with index \n"
-                               "given in the \"index\" attribute. If one value, each parent frame drives \n"
-                               "the given number of children frames. Otherwise, the values are the number \n"
-                               "of child frames driven by each parent frame. ")),
-          index(initData(&index,(unsigned)0,"index","input frame index")),
-          fileRigidRigidMapping(initData(&fileRigidRigidMapping,"fileRigidRigidMapping","Filename")),
-          axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display")),
-          indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
-          globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
-    {
-        this->addAlias(&fileRigidRigidMapping,"filename");
-    }
+    RigidRigidMapping() ;
+    ~RigidRigidMapping() override {}
 
-    virtual ~RigidRigidMapping()
-    {
-    }
 public:
-    virtual void init() override;
+    void init() override;
 
-    virtual void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in) override;
+    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in) override;
 
-    virtual void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in) override;
+    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in) override;
 
-    virtual void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in) override;
+    void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in) override;
 
-    virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
+    void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
-    virtual void computeAccFromMapping(const core::MechanicalParams *mparams, Data<OutVecDeriv>& acc_out, const Data<InVecDeriv>& v_in, const Data<InVecDeriv>& acc_in) override;
+    void computeAccFromMapping(const core::MechanicalParams *mparams, Data<OutVecDeriv>& acc_out, const Data<InVecDeriv>& v_in, const Data<InVecDeriv>& acc_in) override;
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
+    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ() override
+    const sofa::defaulttype::BaseMatrix* getJ() override
     {
-        return NULL;
+        return nullptr;
     }
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -138,23 +127,11 @@ protected:
 
     bool getShow(const core::BaseMapping* /*m*/, const core::visual::VisualParams* vparams) const { return vparams->displayFlags().getShowMechanicalMappings(); }
 
-    virtual void updateForceMask() override { /*already done in applyJT*/ }
+    void updateForceMask() override { /*already done in applyJT*/ }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API RigidRigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API RigidRigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3fTypes >;
-#endif
-
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API RigidRigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3fTypes >;
-extern template class SOFA_RIGID_API RigidRigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3dTypes >;
-#endif
-#endif
+#if  !defined(SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP)
+extern template class SOFA_RIGID_API RigidRigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 #endif
 
 } // namespace mapping

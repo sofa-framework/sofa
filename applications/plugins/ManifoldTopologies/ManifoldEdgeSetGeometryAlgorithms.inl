@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_INL
-#define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETGEOMETRYALGORITHMS_INL
-#include "ManifoldEdgeSetGeometryAlgorithms.h"
+#ifndef SOFA_MANIFOLD_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
+#define SOFA_MANIFOLD_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 
+#include <ManifoldTopologies/ManifoldEdgeSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
@@ -40,4 +40,4 @@ namespace topology
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENTS_MANIFOLDEDGESETGEOMETRYALGORITHMS_INL
+#endif // SOFA_MANIFOLD_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL

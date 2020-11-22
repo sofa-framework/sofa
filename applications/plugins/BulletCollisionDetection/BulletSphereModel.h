@@ -17,11 +17,11 @@ namespace collision
 {
 
 template<class TDataTypes>
-class TBulletSphereModel : public sofa::component::collision::TSphereModel<TDataTypes>,public BulletCollisionModel
+class TBulletSphereModel : public sofa::component::collision::SphereCollisionModel<TDataTypes>,public BulletCollisionModel
 {
 public:
-    //SOFA_CLASS2(SOFA_TEMPLATE(TBulletSphereModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TTriangleModel, TDataTypes),BulletCollisionModel);
-    SOFA_CLASS(SOFA_TEMPLATE(TBulletSphereModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TSphereModel, TDataTypes));
+    //SOFA_CLASS2(SOFA_TEMPLATE(TBulletSphereModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes),BulletCollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(TBulletSphereModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::SphereCollisionModel, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -32,7 +32,7 @@ public:
     typedef typename DataTypes::VecReal VecReal;
     //typedef TBtTriangle<DataTypes> Element;
 
-    sofa::core::objectmodel::Data<SReal> margin;
+    sofa::core::objectmodel::Data<SReal> margin; ///< Margin used for collision detection within bullet
 
     virtual void initBullet();
     virtual void updateBullet();
@@ -63,13 +63,9 @@ protected:
 
 typedef TBulletSphereModel<defaulttype::Vec3Types> BulletSphereModel;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletSphereModel<defaulttype::Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletSphereModel<defaulttype::Vec3fTypes>;
-#endif
+#if  !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)
+extern template class SOFA_BULLETCOLLISIONDETECTION_API TBulletSphereModel<defaulttype::Vec3Types>;
+
 #endif
 
 }}}

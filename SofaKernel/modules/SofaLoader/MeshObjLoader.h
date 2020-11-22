@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,20 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_MESHOBJLOADER_H
-#define SOFA_COMPONENT_LOADER_MESHOBJLOADER_H
-#include "config.h"
-
+#pragma once
+#include <SofaLoader/config.h>
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/helper/SVector.h>
-namespace sofa
+#include <sofa/helper/types/Material.h>
+namespace sofa::component::loader
 {
 
-namespace component
-{
-
-namespace loader
-{
+using sofa::core::objectmodel::BaseData;
 
 class SOFA_LOADER_API MeshObjLoader : public sofa::core::loader::MeshLoader
 {
@@ -40,40 +35,49 @@ public:
     enum FaceType { EDGE, TRIANGLE, QUAD, NBFACETYPE };
 
     SOFA_CLASS(MeshObjLoader,sofa::core::loader::MeshLoader);
-
 protected:
-
     MeshObjLoader();
-    virtual ~MeshObjLoader();
+    ~MeshObjLoader() override;
 
 public:
-
-    virtual bool load() override;
-
-    template <class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
-    {
-        return BaseLoader::canCreate (obj, context, arg);
-    }
+    bool doLoad() override;
 
 protected:
+    bool readOBJ (std::ifstream &file, const char* filename);
+    bool readMTL (const char* filename, helper::vector <sofa::helper::types::Material>& d_materials);
+    void addGroup (const sofa::core::loader::PrimitiveGroup& g);
+    void doClearBuffers() override;
 
-    bool readOBJ (std::istream &stream, const char* filename);
+    std::string textureName;
+    FaceType faceType;
 
 public:
+    Data<bool> d_handleSeams;
+    Data<bool> d_loadMaterial;
+    Data<sofa::helper::types::Material> d_material;
+    Data <helper::vector <sofa::helper::types::Material> > d_materials;
+    Data <helper::SVector <helper::SVector <int> > > d_faceList;
+    Data <helper::SVector <helper::SVector <int> > > d_texIndexList;
+    Data <helper::vector<sofa::defaulttype::Vector3> > d_positionsList;
+    Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoordsList;
+    Data <helper::SVector<helper::SVector<int> > > d_normalsIndexList;
+    Data <helper::vector<sofa::defaulttype::Vector3> > d_normalsList;
+    Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoords;
+    Data< bool > d_computeMaterialFaces;
+    helper::vector< Data <helper::vector <unsigned int> >* > d_subsets_indices;
 
-    Data< bool > d_storeGroups; ///< should sub-groups be stored?
+    /// If vertices have multiple normals/texcoords, then we need to separate them
+    /// This vector store which input position is used for each vertex
+    /// If it is empty then each vertex correspond to one position
+    Data< helper::vector<int> > d_vertPosIdx;
+
+    /// Similarly this vector store which input normal is used for each vertex
+    /// If it is empty then each vertex correspond to one normal
+    Data< helper::vector<int> > d_vertNormIdx;
 
     virtual std::string type() { return "The format of this mesh is OBJ."; }
 };
 
 
+} // namespace sofa::component::loader
 
-
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
-#endif

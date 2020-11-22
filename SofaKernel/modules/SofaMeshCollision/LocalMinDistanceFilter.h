@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,6 +26,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/TopologyTypes.h>
 
 namespace sofa
 {
@@ -41,10 +42,11 @@ class LocalMinDistanceFilter;
 /**
  * @brief LocalMinDistance cone information class for an unique collision primitive.
  */
-//template< class TCollisionElement >
 class SOFA_MESH_COLLISION_API InfoFilter
 {
 public:
+    using index_type = sofa::defaulttype::index_type;
+
     /**
      * @brief Default constructor.
      *
@@ -54,8 +56,8 @@ public:
     InfoFilter(LocalMinDistanceFilter *lmdFilters)
         :	m_revision(-1),
             m_lmdFilters(lmdFilters),
-            base_mesh_topology(NULL),
-            position_filtering(NULL)
+            base_mesh_topology(nullptr),
+            position_filtering(nullptr)
     {}
 
     /**
@@ -66,7 +68,7 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to the InfoFilter.
      */
-    virtual bool validate(const unsigned int /*edge_index*/, const defaulttype::Vector3& /*PQ*/) = 0;
+    virtual bool validate(const index_type /*edge_index*/, const defaulttype::Vector3& /*PQ*/) = 0;
 
     /**
      * @brief Returns cone information validity (up to date or not?).
@@ -101,7 +103,7 @@ protected:
      * If the collision primitive is mapped to a rigid MState, the computation is only an update according to the
      * rigid transformation.
      */
-    virtual void buildFilter( unsigned int /*edge_index*/) = 0;
+    virtual void buildFilter( index_type /*edge_index*/) = 0;
 
     int m_revision; ///< Last filter update revision.
 
@@ -134,12 +136,9 @@ protected:
     /**
      * @brief Default destructor.
      */
-    virtual ~LocalMinDistanceFilter();
+    ~LocalMinDistanceFilter() override;
 public:
-    //virtual void init(){}
-
     void reinit() override { init(); bwdInit();}
-
     void reset() override {reinit();}
 
     /**

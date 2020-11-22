@@ -1,19 +1,20 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -9.8 0 " dt="0.05"  >
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="image"/>
 <!--     <RequiredPlugin pluginName="SofaMJEDFEM"/> -->
   
     <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
-    <CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
+    <CGLinearSolver tolerance="1.0e-9" threshold="1.0e-9" />
 
     <!-- <PythonScriptController filename="RealTimeController.py" classname="RealTimeController"/> -->
 
 <!--     <Node 	name="FEM"   activated="0" >
     	      <VisualStyle displayFlags="showVisualModels hideBehaviorModels" />
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	      <Mesh name="mesh" src="@loader" />
+	      <MeshTopology name="mesh" src="@loader" />
 	      <MechanicalObject template="Vec3d" name="parent" />
 
              <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
@@ -24,7 +25,8 @@
  <MJEDTetrahedralForceField name="ff" materialName="StVenantKirchhoff" ParameterSet="833.3333 555.55555" /> 
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
+		<MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" color="1 .4 0.5 1"/>
 	    	<BarycentricMapping template="Vec3d,ExtVec3f"/>
 	    </Node>
     </Node>-->
@@ -72,20 +74,21 @@
 	<Node 	name="mass"   >
 	      <VisualStyle displayFlags="showVisualModels hideBehaviorModels" />
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	      <Mesh name="mesh" src="@loader" />
+	      <MeshTopology name="mesh" src="@loader" />
 	      <MechanicalObject />
 	      <UniformMass totalMass="20" />
 	      <LinearMapping template="Quadratic,Vec3d"  />
         </Node>
 
 	    <Node 	name="collision"   >
-		<Mesh name="mesh" src="@../loader" /> 
+		<MeshTopology name="mesh" src="@../loader" /> 
 		<MechanicalObject  template="Vec3d" name="pts"    />
 	    	<LinearMapping template="Quadratic,Vec3d"/>
 	    </Node>
 
 	    <Node 	name="visual"   >
-		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
+		<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="1 0.8 0.8 "/>
 	    	<LinearMapping template="Quadratic,ExtVec3f"/>
 	    </Node>
     </Node>

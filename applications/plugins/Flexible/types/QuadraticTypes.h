@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,14 +45,14 @@ namespace defaulttype
 
 /** DOF types associated with 2nd order deformable frames. Each deformable frame generates an quadratic displacement field, with 30 independent degrees of freedom.
 */
-template<int _spatial_dimensions, typename _Real>
+template< std::size_t _spatial_dimensions, typename _Real>
 class StdQuadraticTypes
 {
 public:
-    static const unsigned int spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
-    static const unsigned int num_cross_terms =  spatial_dimensions==1? 0 : ( spatial_dimensions==2? 1 : spatial_dimensions==3? 3 : 0);
-    static const unsigned int num_quadratic_terms =  2*spatial_dimensions + num_cross_terms;
-    static const unsigned int VSize = spatial_dimensions +  spatial_dimensions * num_quadratic_terms;  // number of entries
+    static const std::size_t spatial_dimensions = _spatial_dimensions;  ///< Number of dimensions the frame is moving in, typically 3
+    static const std::size_t num_cross_terms =  spatial_dimensions==1? 0 : ( spatial_dimensions==2? 1 : spatial_dimensions==3? 3 : 0);
+    static const std::size_t num_quadratic_terms =  2*spatial_dimensions + num_cross_terms;
+    static const std::size_t VSize = spatial_dimensions +  spatial_dimensions * num_quadratic_terms;  // number of entries
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
     typedef _Real Real;
@@ -84,18 +84,18 @@ public:
         Coord ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const CrossM &crossterms=CrossM())
         {
             getCenter() = center;
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
+            for(std::size_t i=0; i<spatial_dimensions; ++i)
             {
-                for(unsigned int j=0; j<spatial_dimensions; ++j)
+                for(std::size_t j=0; j<spatial_dimensions; ++j)
                 {
                     Frame& quadratic=getQuadratic();
                     quadratic[i][j]=affine[i][j];
                     quadratic[i][j+spatial_dimensions]=square[i][j];
                 }
             }
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
+            for(std::size_t i=0; i<spatial_dimensions; ++i)
             {
-                for(unsigned int j=0; j<num_cross_terms; ++j)
+                for(std::size_t j=0; j<num_cross_terms; ++j)
                 {
                     Frame& quadratic=getQuadratic();
                     quadratic[i][j+2*spatial_dimensions]=crossterms[i][j];
@@ -117,8 +117,8 @@ public:
         Affine getAffine() const
         {
             Affine m;
-            for (unsigned int i = 0; i < spatial_dimensions; ++i)
-                for (unsigned int j = 0; j < spatial_dimensions; ++j)
+            for (std::size_t i = 0; i < spatial_dimensions; ++i)
+                for (std::size_t j = 0; j < spatial_dimensions; ++j)
                     m[i][j]=getQuadratic()[i][j];
             return  m;
         }
@@ -202,10 +202,10 @@ public:
                     q[i][j] = 0.;
         }
 
-        template< int N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
-        template< int N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        template< std::size_t N, class Real2 > // N <= VSize
+        void operator+=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        template< std::size_t N, class Real2 > // N <= VSize
+        void operator=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
 
     };
 
@@ -219,7 +219,7 @@ public:
     {
         assert ( ancestors.size() == coefs.size() );
         Coord c;
-        for ( unsigned int i = 0; i < ancestors.size(); i++ ) c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
+        for (std::size_t i = 0; i < ancestors.size(); i++ ) c += ancestors[i] * coefs[i];  // Position and deformation gradient linear interpolation.
         return c;
     }
 
@@ -251,18 +251,18 @@ public:
         Deriv ( const SpatialCoord &center, const Affine &affine, const Affine &square=Affine(), const CrossM &crossterms=CrossM())
         {
             getVCenter() = center;
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
+            for(std::size_t i=0; i<spatial_dimensions; ++i)
             {
-                for(unsigned int j=0; j<spatial_dimensions; ++j)
+                for(std::size_t j=0; j<spatial_dimensions; ++j)
                 {
                     Frame& quadratic=getVQuadratic();
                     quadratic[i][j]=affine[i][j];
                     quadratic[i][j+spatial_dimensions]=square[i][j];
                 }
             }
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
+            for(std::size_t i=0; i<spatial_dimensions; ++i)
             {
-                for(unsigned int j=0; j<num_cross_terms; ++j)
+                for(std::size_t j=0; j<num_cross_terms; ++j)
                 {
                     Frame& quadratic=getVQuadratic();
                     quadratic[i][j+2*spatial_dimensions]=crossterms[i][j];
@@ -284,8 +284,8 @@ public:
         Affine getAffine() const
         {
             Affine m;
-            for (unsigned int i = 0; i < spatial_dimensions; ++i)
-                for (unsigned int j = 0; j < spatial_dimensions; ++j)
+            for (std::size_t i = 0; i < spatial_dimensions; ++i)
+                for (std::size_t j = 0; j < spatial_dimensions; ++j)
                     m[i][j]=getVQuadratic()[i][j];
             return  m;
         }
@@ -322,13 +322,13 @@ public:
             J.clear();
 
             // translation -> identity
-            for(unsigned int i=0; i<spatial_dimensions; ++i)
-                for(unsigned int j=0; j<spatial_dimensions; ++j)
+            for(std::size_t i=0; i<spatial_dimensions; ++i)
+                for(std::size_t j=0; j<spatial_dimensions; ++j)
                     J(i,j)=(i==j)?1.:0;
 
             // affine part
-            for(unsigned int i=0; i<MSize; ++i)
-                for(unsigned int j=0; j<MSize; ++j)
+            for(std::size_t i=0; i<MSize; ++i)
+                for(std::size_t j=0; j<MSize; ++j)
                     J(i+spatial_dimensions,j+spatial_dimensions)=dQOverdM(i,j);
         }
 
@@ -418,10 +418,10 @@ public:
         }
 
 
-        template< int N, class Real2 > // N <= VSize
-        void operator+=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
-        template< int N, class Real2 > // N <= VSize
-        void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
+        template< std::size_t N, class Real2 > // N <= VSize
+        void operator+=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        template< std::size_t N, class Real2 > // N <= VSize
+        void operator=( const Vec<N,Real2>& p ) { for(std::size_t i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
     };
 
     typedef helper::vector<Deriv> VecDeriv;
@@ -431,7 +431,7 @@ public:
     {
         assert ( ancestors.size() == coefs.size() );
         Deriv c;
-        for ( unsigned int i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
+        for ( std::size_t i = 0; i < ancestors.size(); i++ )     c += ancestors[i] * coefs[i];
         return c;
     }
 
@@ -542,7 +542,7 @@ template<typename Real>
 static Mat<5,2,Real> SpatialToQuadraticCoordGradient(const Vec<2,Real>& p)
 {
     Mat<5,2,Real> M;
-    for(unsigned int i=0;i<2;i++) { M(i,i)=1;  M(i+2,i)=2*p[i];}
+    for(std::size_t i=0;i<2;i++) { M(i,i)=1;  M(i+2,i)=2*p[i];}
     M(4,0)=p[1];     M(4,1)=p[0];
     return M;
 }
@@ -551,7 +551,7 @@ template<typename Real>
 static Mat<9,3,Real> SpatialToQuadraticCoordGradient(const Vec<3,Real>& p)
 {
     Mat<9,3,Real> M;
-    for(unsigned int i=0;i<3;i++) { M(i,i)=1;  M(i+3,i)=2*p[i];}
+    for(std::size_t i=0;i<3;i++) { M(i,i)=1;  M(i+3,i)=2*p[i];}
     M(6,0)=p[1]; M(6,1)=p[0];
     M(7,1)=p[2]; M(7,2)=p[1];
     M(8,0)=p[2]; M(8,2)=p[0];
@@ -559,44 +559,14 @@ static Mat<9,3,Real> SpatialToQuadraticCoordGradient(const Vec<3,Real>& p)
 }
 
 
-#ifndef SOFA_FLOAT
 typedef StdQuadraticTypes<3, double> Quadratic3dTypes;
-#endif
-#ifndef SOFA_DOUBLE
-typedef StdQuadraticTypes<3, float> Quadratic3fTypes;
-#endif
+typedef StdQuadraticTypes<3, SReal> Quadratic3Types;
 
 /// Note: Many scenes use Quadratic as template for 3D double-precision rigid type. Changing it to Quadratic3d would break backward compatibility.
-#ifdef SOFA_FLOAT
-template<> inline const char* Quadratic3fTypes::Name() { return "Quadratic"; }
-#else
 template<> inline const char* Quadratic3dTypes::Name() { return "Quadratic"; }
-#ifndef SOFA_DOUBLE
-template<> inline const char* Quadratic3fTypes::Name() { return "Quadratic3f"; }
-#endif
-#endif
-
-#ifdef SOFA_FLOAT
-typedef Quadratic3fTypes Quadratic3Types;
-#else
-typedef Quadratic3dTypes Quadratic3Types;
-#endif
-//typedef Quadratic3Types QuadraticTypes;
-
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
-#ifndef SOFA_DOUBLE
-template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3fTypes::Coord > : public FixedArrayTypeInfo< sofa::defaulttype::Quadratic3fTypes::Coord, sofa::defaulttype::Quadratic3fTypes::Coord::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "QuadraticCoord<" << sofa::defaulttype::Quadratic3fTypes::Coord::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3fTypes::Real>::name() << ">"; return o.str(); }
-};
-template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3fTypes::Deriv > : public FixedArrayTypeInfo< sofa::defaulttype::Quadratic3fTypes::Deriv, sofa::defaulttype::Quadratic3fTypes::Deriv::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "QuadraticDeriv<" << sofa::defaulttype::Quadratic3fTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3fTypes::Real>::name() << ">"; return o.str(); }
-};
-#endif
 
-#ifndef SOFA_FLOAT
 template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3dTypes::Coord > : public FixedArrayTypeInfo< sofa::defaulttype::Quadratic3dTypes::Coord, sofa::defaulttype::Quadratic3dTypes::Coord::total_size >
 {
     static std::string name() { std::ostringstream o; o << "QuadraticCoord<" << sofa::defaulttype::Quadratic3dTypes::Coord::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3dTypes::Real>::name() << ">"; return o.str(); }
@@ -605,17 +575,13 @@ template<> struct DataTypeInfo< sofa::defaulttype::Quadratic3dTypes::Deriv > : p
 {
     static std::string name() { std::ostringstream o; o << "QuadraticDeriv<" << sofa::defaulttype::Quadratic3dTypes::Deriv::total_size << "," << DataTypeName<sofa::defaulttype::Quadratic3dTypes::Real>::name() << ">"; return o.str(); }
 };
-#endif
+
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
 
-#ifndef SOFA_FLOAT
 template<> struct DataTypeName< defaulttype::Quadratic3dTypes::Coord > { static const char* name() { return "Quadratic3dTypes::Coord"; } };
-#endif
-#ifndef SOFA_DOUBLE
-template<> struct DataTypeName< defaulttype::Quadratic3fTypes::Coord > { static const char* name() { return "Quadratic3fTypes::Coord"; } };
-#endif
+
 
 
 /// \endcond
@@ -625,19 +591,10 @@ template<> struct DataTypeName< defaulttype::Quadratic3fTypes::Coord > { static 
 // ====================================================================
 // QuadraticMass
 
-#ifndef SOFA_FLOAT
-typedef DeformableFrameMass<3, StdQuadraticTypes<3,double>::deriv_total_size, double> Quadratic3dMass;
-#endif
-#ifndef SOFA_DOUBLE
+
 typedef DeformableFrameMass<3, StdQuadraticTypes<3,float>::deriv_total_size, float> Quadratic3fMass;
-#endif
-
-
-#ifdef SOFA_FLOAT
-typedef Quadratic3fMass Quadratic3Mass;
-#else
-typedef Quadratic3dMass Quadratic3Mass;
-#endif
+typedef DeformableFrameMass<3, StdQuadraticTypes<3,double>::deriv_total_size, double> Quadratic3dMass;
+typedef DeformableFrameMass<3, StdQuadraticTypes<3,SReal>::deriv_total_size, SReal> Quadratic3Mass;
 
 
 
@@ -645,12 +602,8 @@ typedef Quadratic3dMass Quadratic3Mass;
 /// \cond TEMPLATE_OVERRIDES
 
 
-#ifndef SOFA_FLOAT
 template<> struct DataTypeName< defaulttype::Quadratic3dMass > { static const char* name() { return "Quadratic3dMass"; } };
-#endif
-#ifndef SOFA_DOUBLE
-template<> struct DataTypeName< defaulttype::Quadratic3fMass > { static const char* name() { return "Quadratic3fMass"; } };
-#endif
+
 
 /// \endcond
 

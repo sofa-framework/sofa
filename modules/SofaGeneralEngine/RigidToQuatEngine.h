@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,9 +56,9 @@ public:
     typedef typename sofa::defaulttype::StdRigidTypes<3,Real>::Coord RigidVec3;
 protected:
     RigidToQuatEngine();
-    virtual ~RigidToQuatEngine();
+    ~RigidToQuatEngine() override;
 public:
-    void update() override;
+    void doUpdate() override;
     void init() override;
     void reinit() override;
 
@@ -69,29 +69,15 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const RigidToQuatEngine<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
     //
-    Data<helper::vector<Vec3 > > f_positions;
-    Data<helper::vector<Quat> > f_orientations;
-    Data<helper::vector<RigidVec3> > f_rigids;
+    Data<helper::vector<Vec3 > > f_positions; ///< Positions (Vector of 3)
+    Data<helper::vector<Quat> > f_orientations; ///< Orientations (Quaternion)
+    Data<helper::vector<Vec3> > f_orientationsEuler; ///< Orientation (Euler angle)
+    Data<helper::vector<RigidVec3> > f_rigids; ///< Rigid (Position + Orientation)
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(RIGIDTOQUATENGINE_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_ENGINE_API RigidToQuatEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_ENGINE_API RigidToQuatEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#if  !defined(RIGIDTOQUATENGINE_CPP)
+extern template class SOFA_GENERAL_ENGINE_API RigidToQuatEngine<defaulttype::Vec3Types>;
 #endif
 
 } // namespace engine

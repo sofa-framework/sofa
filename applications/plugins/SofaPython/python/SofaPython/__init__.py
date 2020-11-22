@@ -134,3 +134,22 @@ class Controller(Sofa.PythonScriptController):
         if not cls.onLoaded is Sofa.PythonScriptController.onLoaded:
             Sofa.msg_warning('SofaPython',
                              '`onLoaded` is defined in subclass but will not be called in the future' )
+
+class DataEngine(Sofa.PythonScriptDataEngine):
+
+    def __init__(self, node, *args, **kwargs):
+        Sofa.msg_warning('SofaPython', 'SofaPython.DataEngine is intended as compatibility class only')
+
+        # setting attributes from kwargs
+        for name, value in kwargs.iteritems():
+            setattr(self, name, value)
+
+        # call createGraph for compatibility purposes
+        self.createGraph(node)
+
+        # check whether derived class has 'onLoaded'
+        cls = type(self)
+        if not cls.onLoaded is Sofa.PythonScriptDataEngine.onLoaded:
+            Sofa.msg_warning('SofaPython',
+                             '`onLoaded` is defined in subclass but will not be called in the future' )
+

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,10 +53,10 @@ public:
     //@{
     Data<helper::vector<Real> > f_L1;
     Data<helper::vector<Real> > f_L2;
-    Data<helper::vector<Real> > f_lambdaL;
+    Data<helper::vector<Real> > f_lambdaL; ///< stretch above which behavior becomes linear
     //@}
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Real L1=0,L2=0,lambdaL=0;
         for(unsigned int i=0; i<this->material.size(); i++)

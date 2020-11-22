@@ -1,7 +1,8 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(glutOnePick)
 
 find_package(SofaSimpleGUI)
+find_package(SofaOpenglVisual REQUIRED)
 
 add_executable(${PROJECT_NAME} glutOnePick.cpp oneTetra.h)
-target_link_libraries(${PROJECT_NAME} SofaSimpleGUI)
+target_link_libraries(${PROJECT_NAME} SofaSimpleGUI SofaOpenglVisual)

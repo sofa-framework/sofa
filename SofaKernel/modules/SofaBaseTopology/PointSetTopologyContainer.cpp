@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,24 +57,24 @@ struct GeneratePointID
 
 using namespace sofa::defaulttype;
 
-SOFA_DECL_CLASS(PointSetTopologyContainer)
 int PointSetTopologyContainerClass = core::RegisterObject("Point set topology container")
         .add< PointSetTopologyContainer >()
         ;
 
-PointSetTopologyContainer::PointSetTopologyContainer(int npoints)
+PointSetTopologyContainer::PointSetTopologyContainer( std::size_t npoints)
     : d_initPoints (initData(&d_initPoints, "position", "Initial position of points",true,true))
+    , d_checkTopology (initData(&d_checkTopology, false, "checkTopology", "Parameter to activate internal topology checks (might slow down the simulation)"))
     , m_pointTopologyDirty(false)
-    , nbPoints (initData(&nbPoints, (unsigned int )npoints, "nbPoints", "Number of points"))
+    , nbPoints (initData(&nbPoints, std::size_t(npoints), "nbPoints", "Number of points"))
     , points(initData(&points, "points","List of point indices"))
 {
     addAlias(&d_initPoints,"points");
 }
 
-void PointSetTopologyContainer::setNbPoints(int n)
+void PointSetTopologyContainer::setNbPoints(std::size_t n)
 {
 
-    int diffSize = n - (int)nbPoints.getValue();
+    int diffSize = n - nbPoints.getValue();
     sofa::helper::WriteAccessor< sofa::Data< sofa::helper::vector<PointID> > > points = this->points;
     points.resize(n);
 
@@ -87,7 +87,7 @@ void PointSetTopologyContainer::setNbPoints(int n)
     nbPoints.setValue(n);  
 }
 
-unsigned int PointSetTopologyContainer::getNumberOfElements() const
+size_t PointSetTopologyContainer::getNumberOfElements() const
 {
     return nbPoints.getValue();
 }
@@ -126,7 +126,7 @@ bool PointSetTopologyContainer::hasPos() const
     return !initPoints.empty();
 }
 
-SReal PointSetTopologyContainer::getPX(int i) const
+SReal PointSetTopologyContainer::getPX(index_type i) const
 {
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
@@ -135,7 +135,7 @@ SReal PointSetTopologyContainer::getPX(int i) const
         return 0.0;
 }
 
-SReal PointSetTopologyContainer::getPY(int i) const
+SReal PointSetTopologyContainer::getPY(index_type i) const
 {
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
@@ -144,7 +144,7 @@ SReal PointSetTopologyContainer::getPY(int i) const
         return 0.0;
 }
 
-SReal PointSetTopologyContainer::getPZ(int i) const
+SReal PointSetTopologyContainer::getPZ(index_type i) const
 {
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
@@ -165,13 +165,13 @@ void PointSetTopologyContainer::init()
 
 }
 
-void PointSetTopologyContainer::addPoints(const unsigned int nPoints)
+void PointSetTopologyContainer::addPoints(const std::size_t nPoints)
 {
     //nbPoints.setValue( nbPoints.getValue() + nPoints);
     setNbPoints( nbPoints.getValue() + nPoints );
 }
 
-void PointSetTopologyContainer::removePoints(const unsigned int nPoints)
+void PointSetTopologyContainer::removePoints(const std::size_t nPoints)
 {
     //nbPoints.setValue(nbPoints.getValue() - nPoints);
     setNbPoints( nbPoints.getValue() - nPoints );
@@ -186,7 +186,7 @@ void PointSetTopologyContainer::addPoint()
 void PointSetTopologyContainer::removePoint()
 {
     //nbPoints.setValue(nbPoints.getValue()-1);
-    setNbPoints( nbPoints.getValue() -1 );
+    setNbPoints( nbPoints.getValue() - 1 );
 }
 
 
@@ -204,6 +204,37 @@ void PointSetTopologyContainer::addEngineToList(sofa::core::topology::TopologyEn
 const sofa::helper::vector< PointSetTopologyContainer::PointID >& PointSetTopologyContainer::getPoints() const
 {
     return points.getValue();
+}
+
+void PointSetTopologyContainer::setPointTopologyToDirty()
+{
+    // set this container to dirty
+    m_pointTopologyDirty = true;
+
+    // set all engines link to this container to dirty
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        topoEngine->setDirtyValue();
+        msg_info() << "Point Topology Set dirty engine: " << topoEngine->name;
+    }
+}
+
+void PointSetTopologyContainer::cleanPointTopologyFromDirty()
+{
+    m_pointTopologyDirty = false;
+
+    // security, clean all engines to avoid loops
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            msg_warning() << "Point Topology update did not clean engine: " << (*it)->name;
+            (*it)->cleanDirty();
+        }
+    }
 }
 
 
@@ -245,10 +276,7 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
             }
 
             sofa::core::objectmodel::BaseData* data = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
-            if (data)
-            {
-                sout << "Warning: Data alone linked: " << data->getName() << sendl;
-            }
+            msg_warning_when(data) << "Data alone linked: " << data->getName();
         }
 
         _outs.clear();
@@ -298,7 +326,7 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
 
     // check good loop escape
     if (cpt_security >= 1000)
-        serr << "Error: PointSetTopologyContainer::updateTopologyEngineGraph reach end loop security." << sendl;
+        msg_error() << "PointSetTopologyContainer::updateTopologyEngineGraph reach end loop security.";
 
 
     // Reorder engine graph by inverting order and avoiding duplicate engines
@@ -331,10 +359,9 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
     std::string name;
     std::stringstream tmpmsg;
     name = my_Data.getName();
-    tmpmsg << name << msgendl << msgendl;
+    tmpmsg << msgendl << "Data Name: " << name << msgendl;
 
     unsigned int cpt_engine = 0;
-
 
     for (unsigned int i=0; i<this->m_enginesGraph.size(); ++i ) // per engine level
     {
@@ -364,8 +391,8 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
             cpt_engine++;
         }
         tmpmsg << msgendl ;
-        msg_info() << tmpmsg.str() ;
     }
+    msg_info() << tmpmsg.str() ;
 }
 
 

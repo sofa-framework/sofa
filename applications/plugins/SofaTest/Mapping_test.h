@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -30,11 +30,9 @@
 
 #include <SceneCreator/SceneCreator.h>
 
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaGeneral/initSofaGeneral.h>
 
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -43,6 +41,7 @@
 #include <SceneCreator/SceneCreator.h>
 
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/ArgumentParser.h>
 
 namespace sofa {
 
@@ -131,11 +130,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::component::initComponentBase();
-        sofa::component::initComponentCommon();
-        sofa::component::initComponentGeneral();
-        sofa::component::initComponentAdvanced();
-        sofa::component::initComponentMisc();
+        sofa::component::initSofaBase();
+        sofa::component::initSofaCommon();
+        sofa::component::initSofaGeneral();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Parent node
@@ -151,16 +148,14 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::component::initComponentBase();
-        sofa::component::initComponentCommon();
-        sofa::component::initComponentGeneral();
-        sofa::component::initComponentAdvanced();
-        sofa::component::initComponentMisc();
+        sofa::component::initSofaBase();
+        sofa::component::initSofaCommon();
+        sofa::component::initSofaGeneral();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene
         root = simulation->createNewGraph("root");
-        root = sofa::simulation::getSimulation()->load(fileName.c_str());
+        root = sofa::simulation::getSimulation()->load(fileName.c_str(), false, sofa::helper::ArgumentParser::extra_args());
 
         // InDofs
         inDofs = root->get<InDOFs>(root->SearchDown);
@@ -240,7 +235,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
         mparams.setSymmetricMatrix(false);
-
         inDofs->resize(parentInit.size());
         WriteInVecCoord xin = inDofs->writePositions();
         copyToData(xin,parentInit); // xin = parentInit
@@ -275,7 +269,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         }
 
         /// test applyJ and everything related to Jacobians
-        const unsigned Np=inDofs->getSize(), Nc=outDofs->getSize();
+        size_t Np = inDofs->getSize(), Nc=outDofs->getSize();
 
         InVecCoord xp(Np),xp1(Np);
         InVecDeriv vp(Np),fp(Np),dfp(Np),fp2(Np);
@@ -319,7 +313,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         ReadOutVecDeriv vout = outDofs->readVelocities();
         copyFromData( vc, vout);
         //          cout<<"child velocity vc = " << vc << endl;
-
 
         // apply geometric stiffness
         inDofs->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
@@ -451,11 +444,11 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             // K can be null or empty for linear mappings
             // still performing the test with a null Kv vector to check if the mapping is really linear
 
-            if( bk != NULL ){
+            if( bk != nullptr ){
 
                 typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
                 const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
-                if( K == NULL ){
+                if( K == nullptr ){
                     succeed = false;
                     ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
                     // TODO perform a slow conversion with a big warning rather than a failure?
@@ -493,8 +486,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             }
         }
 
-
-
         if(!succeed)
         { ADD_FAILURE() << "Failed Seed number = " << BaseSofa_test::seed << std::endl;}
         return succeed;
@@ -521,7 +512,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     virtual ~Mapping_test()
     {
-        if (root!=NULL)
+        if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);
     }
 
@@ -532,13 +523,13 @@ protected:
     static EigenSparseMatrixType* getMatrix(const helper::vector<sofa::defaulttype::BaseMatrix*>* matrices)
     {
         if( !matrices ){
-            ADD_FAILURE()<< "Matrix list is NULL (API for assembly is not implemented)";
+            ADD_FAILURE()<< "Matrix list is nullptr (API for assembly is not implemented)";
         }
         if( matrices->size() != 1 ){
             ADD_FAILURE()<< "Matrix list should have size == 1 in simple mappings";
         }
         EigenSparseMatrixType* ei = dynamic_cast<EigenSparseMatrixType*>((*matrices)[0] );
-        if( ei == NULL ){
+        if( ei == nullptr ){
             ADD_FAILURE() << "getJs returns a matrix of non-EigenSparseMatrix type";
             // TODO perform a slow conversion with a big warning rather than a failure?
         }

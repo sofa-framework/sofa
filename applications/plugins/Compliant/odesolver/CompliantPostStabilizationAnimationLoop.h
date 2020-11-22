@@ -44,14 +44,14 @@ protected:
 
     CompliantPostStabilizationAnimationLoop(simulation::Node* gnode);
 
-    virtual ~CompliantPostStabilizationAnimationLoop() {}
+    ~CompliantPostStabilizationAnimationLoop() override {}
 
 public:
 
 
-    virtual void init();
+    void init() override;
 
-    virtual void step( const sofa::core::ExecParams* params, SReal dt );
+    void step( const sofa::core::ExecParams* params, SReal dt ) override;
 
 
 protected :

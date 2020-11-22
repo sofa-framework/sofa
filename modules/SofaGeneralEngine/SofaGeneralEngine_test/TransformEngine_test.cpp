@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,13 +23,13 @@
 #include <SofaTest/Sofa_test.h>
 #include <SofaGeneralEngine/TransformEngine.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 using sofa::component::engine::TransformEngine;
 
-sofa::defaulttype::Vector3		NULL_VEC(0,0,0);
-sofa::defaulttype::Vector3		NULL_SCALE(1,1,1);
+sofa::defaulttype::Vector3		nullptr_VEC(0,0,0);
+sofa::defaulttype::Vector3		nullptr_SCALE(1,1,1);
 
 sofa::defaulttype::Vector3		INPUT_POS(1,0,0);
 sofa::helper::Quater<SReal>		INPUT_QUAT(0,0,0,1);
@@ -162,42 +162,42 @@ TYPED_TEST( TransformEngine_test , input )
 // test translation
 TYPED_TEST( TransformEngine_test , translation )
 {
-    this->setInputTransformation(TRANSLATION, NULL_VEC, NULL_SCALE);
+    this->setInputTransformation(TRANSLATION, nullptr_VEC, nullptr_SCALE);
     this->testOutput(OUTPUT_TRANSLATION_POS);
 }
 
 // test rotation
 TYPED_TEST( TransformEngine_test , rotation )
 {
-    this->setInputTransformation(NULL_VEC, ROTATION, NULL_SCALE);
+    this->setInputTransformation(nullptr_VEC, ROTATION, nullptr_SCALE);
     this->testOutput(OUTPUT_ROTATION_POS, OUTPUT_ROTATION_QUAT);
 }
 
 // test scale
 TYPED_TEST( TransformEngine_test , scale )
 {
-    this->setInputTransformation(NULL_VEC, NULL_VEC, SCALE);
+    this->setInputTransformation(nullptr_VEC, nullptr_VEC, SCALE);
     this->testOutput(OUTPUT_SCALE_POS);
 }
 
 // test translation-rotation composite
 TYPED_TEST( TransformEngine_test , translationRotation )
 {
-    this->setInputTransformation(TRANSLATION, ROTATION, NULL_SCALE);
+    this->setInputTransformation(TRANSLATION, ROTATION, nullptr_SCALE);
     this->testOutput(OUTPUT_ROTATION_POS + TRANSLATION, OUTPUT_ROTATION_QUAT);
 }
 
 // test translation-scale composite
 TYPED_TEST( TransformEngine_test , translationScale )
 {
-    this->setInputTransformation( TRANSLATION, NULL_VEC, SCALE );
+    this->setInputTransformation( TRANSLATION, nullptr_VEC, SCALE );
     this->testOutput(OUTPUT_SCALE_POS + TRANSLATION);
 }
 
 // test rotation-scale composite
 TYPED_TEST( TransformEngine_test , rotationScale )
 {
-    this->setInputTransformation( NULL_VEC, ROTATION, SCALE );
+    this->setInputTransformation( nullptr_VEC, ROTATION, SCALE );
     this->testOutput(OUTPUT_ROTATION_SCALE_POS, OUTPUT_ROTATION_QUAT);
 }
 

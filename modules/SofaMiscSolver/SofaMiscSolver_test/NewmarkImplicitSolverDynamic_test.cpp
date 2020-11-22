@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -88,8 +88,8 @@ struct NewmarkImplicitDynamic_test : public Elasticity_test<_DataTypes>
 
         // Solver
         NewmarkImplicitSolver::SPtr newmarkSolver = addNew<NewmarkImplicitSolver> (root);
-        newmarkSolver->f_rayleighStiffness.setValue(rk);
-        newmarkSolver->f_rayleighMass.setValue(rm);
+        newmarkSolver->d_rayleighStiffness.setValue(rk);
+        newmarkSolver->d_rayleighMass.setValue(rm);
 
         CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver> (root);
         cgLinearSolver->f_maxIter=3000;

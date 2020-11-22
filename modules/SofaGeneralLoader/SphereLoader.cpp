@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,10 +48,11 @@ SphereLoader::SphereLoader()
     addAlias(&positions,"sphere_centers");
 }
 
-
-
 bool SphereLoader::load()
 {
+    radius.beginEdit()->clear();
+    radius.endEdit();
+
     // Make sure that fscanf() uses a dot '.' as the decimal separator.
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 
@@ -65,7 +66,7 @@ bool SphereLoader::load()
 
     static const char* SPH_FORMAT = "sph 1.0";
 
-    if ((file = fopen(fname.c_str(), "r")) == NULL)
+    if ((file = fopen(fname.c_str(), "r")) == nullptr)
     {
         msg_error("SphereLoader") << "cannot read file '" << filename << "'. ";
         return false;
@@ -77,7 +78,7 @@ bool SphereLoader::load()
     int totalNumSpheres=0;
 
     // Check first line
-    if (fgets(cmd, 7, file) == NULL || !strcmp(cmd,SPH_FORMAT))
+    if (fgets(cmd, 7, file) == nullptr || !strcmp(cmd,SPH_FORMAT))
     {
         fclose(file);
         return false;

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -31,7 +31,6 @@ using sofa::helper::system::PluginRepository ;
 
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::PluginRepository;
-using sofa::helper::system::DataRepository;
 using sofa::helper::system::FileSystem;
 
 #include <sofa/helper/Utils.h>
@@ -41,10 +40,8 @@ namespace sofa {
 namespace {
     static struct raii {
       raii() {
-          const std::string pluginDir = Utils::getPluginDirectory() ;
-          PluginRepository.addFirstPath(pluginDir);
           PluginManager::getInstance().loadPlugin("SceneCreator") ;
-          PluginManager::getInstance().loadPlugin("SofaAllCommonComponents") ;
+          PluginManager::getInstance().loadPlugin("SofaComponentAll") ;
       }
     } singleton;
 }
@@ -68,10 +65,6 @@ void BaseSofa_test::clearSceneGraph()
 
 
 
-#ifdef SOFA_WITH_FLOAT
-template struct SOFA_SOFATEST_API Sofa_test<float>;
-#endif
-#ifdef SOFA_WITH_DOUBLE
 template struct SOFA_SOFATEST_API Sofa_test<double>;
-#endif
+
 }

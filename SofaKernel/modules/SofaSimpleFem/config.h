@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,5 +23,12 @@
 #define SOFASIMPLEFEM_CONFIG_H
 
 #include <SofaCommon/config.h>
+
+#ifdef SOFA_BUILD_SIMPLE_FEM
+#  define SOFA_TARGET SofaSimpleFem
+#  define SOFA_SIMPLE_FEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SIMPLE_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif

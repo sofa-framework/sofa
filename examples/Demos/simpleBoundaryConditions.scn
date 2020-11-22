@@ -1,5 +1,5 @@
 <!--Decompose a hexahedral grid in tetrahedra and triangles, then stretch the object using a TrianglePressureForceField -->
-<!--Francois Faure, 2012-->
+
 <Node name="SimpleBoundaryConditions demo" gravity="0 0 0" dt="0.1">
     <VisualStyle displayFlags="showBehavior hideVisual" />
     <Node name="Cube grid" >

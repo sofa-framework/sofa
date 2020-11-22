@@ -1,10 +1,8 @@
 <!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
 <Node>
+    <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showVisual" />
 
     <MeshSTLLoader name="STLLoader" filename="mesh/pliers_binary.stl" printLog="true" />
     <OglModel src="@STLLoader" name="VisualModel" color="red" />
-
-    <OglModel fileMesh="mesh/pliers_binary.stl" name="VisualModel2" color="green" translation="1 0 0" />
-
 </Node>

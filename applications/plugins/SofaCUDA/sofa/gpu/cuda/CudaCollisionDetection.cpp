@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,8 +37,6 @@ extern "C"
 {
     void CudaCollisionDetection_runTests(unsigned int nbTests, unsigned int maxPoints, const void* tests, void* nresults);
 }
-
-SOFA_DECL_CLASS(CudaCollisionDetection)
 
 int CudaCollisionDetectionClass = core::RegisterObject("GPU-based collision detection using CUDA")
         .add< CudaCollisionDetection >()
@@ -178,17 +176,17 @@ CudaCollisionDetection::Test* CudaCollisionDetection::createTest(core::Collision
     {
         if (CudaRigidDistanceGridCollisionModel* rigid2 = dynamic_cast<CudaRigidDistanceGridCollisionModel*>(model2))
             return new RigidRigidTest(rigid1, rigid2);
-        else if (CudaSphereModel* sphere2 = dynamic_cast<CudaSphereModel*>(model2))
+        else if (sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>* sphere2 = dynamic_cast<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>*>(model2))
             return new SphereRigidTest(sphere2, rigid1);
-        else if (CudaPointModel* point2 = dynamic_cast<CudaPointModel*>(model2))
+        else if (CudaPointCollisionModel* point2 = dynamic_cast<CudaPointCollisionModel*>(model2))
             return new PointRigidTest(point2, rigid1);
     }
-    else if (CudaSphereModel* sphere1 = dynamic_cast<CudaSphereModel*>(model1))
+    else if (sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>* sphere1 = dynamic_cast<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>*>(model1))
     {
         if (CudaRigidDistanceGridCollisionModel* rigid2 = dynamic_cast<CudaRigidDistanceGridCollisionModel*>(model2))
             return new SphereRigidTest(sphere1, rigid2);
     }
-    else if (CudaPointModel* point1 = dynamic_cast<CudaPointModel*>(model1))
+    else if (CudaPointCollisionModel* point1 = dynamic_cast<CudaPointCollisionModel*>(model1))
     {
         if (CudaRigidDistanceGridCollisionModel* rigid2 = dynamic_cast<CudaRigidDistanceGridCollisionModel*>(model2))
             return new PointRigidTest(point1, rigid2);
@@ -360,7 +358,7 @@ void CudaCollisionDetection::RigidRigidTest::fillContacts(DetectionOutputVector&
 }
 */
 
-CudaCollisionDetection::SphereRigidTest::SphereRigidTest( CudaSphereModel* model1, CudaRigidDistanceGridCollisionModel* model2 )
+CudaCollisionDetection::SphereRigidTest::SphereRigidTest(sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types> *model1, CudaRigidDistanceGridCollisionModel* model2 )
     : model1(model1), model2(model2)
 {
     std::cout << "CudaCollisionDetection::SphereRigidTest "<<model1->getClassName()<<" - "<<model2->getClassName()<<std::endl;
@@ -469,7 +467,7 @@ void CudaCollisionDetection::SphereRigidTest::fillContacts(DetectionOutputVector
 }
 */
 
-CudaCollisionDetection::PointRigidTest::PointRigidTest( CudaPointModel* model1, CudaRigidDistanceGridCollisionModel* model2 )
+CudaCollisionDetection::PointRigidTest::PointRigidTest( CudaPointCollisionModel* model1, CudaRigidDistanceGridCollisionModel* model2 )
     : model1(model1), model2(model2)
 {
     std::cout << "CudaCollisionDetection::PointRigidTest "<<model1->getClassName()<<" - "<<model2->getClassName()<<std::endl;
