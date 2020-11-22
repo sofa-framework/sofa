@@ -384,10 +384,6 @@ protected:
     void computeStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &initialStress, VoigtTensor2 &newStressPoint, const VoigtTensor2 &strainIncrement,
                                 double &lambdaIncrement, MechanicalState &pointMechanicalState, const Displacement &lastDisp);
 
-    void computeElasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
-    void computePlasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
-    void computePostPlasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
-
     //Hardening
     void computeHardeningStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &lastStress, VoigtTensor2 &newStressPoint, const VoigtTensor2 &strainIncrement,
                                          MechanicalState &pointMechanicalState);
