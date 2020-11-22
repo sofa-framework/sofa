@@ -1991,51 +1991,6 @@ void BeamPlasticFEMForceField<DataTypes>::computeDisplacement(const VecCoord& x,
 
 
 template< class DataTypes>
-void BeamPlasticFEMForceField<DataTypes>::computeDisplacementWithoutCo(const VecCoord& x, const VecCoord& xRef,
-                                                                  Displacement &localDisp, int i, Index a, Index b)
-{
-    beamQuat(i) = x[a].getOrientation();
-    beamQuat(i).normalize();
-
-    m_beamsData.endEdit();
-
-    defaulttype::Vec<3, Real> u, P1P2, P1P2_0;
-
-    // translations //
-    P1P2_0 = xRef[b].getCenter() - xRef[a].getCenter();
-    P1P2 = x[b].getCenter() - x[a].getCenter();
-    u = P1P2 - P1P2_0;
-
-    localDisp[0] = 0.0; localDisp[1] = 0.0; localDisp[2] = 0.0;
-    localDisp[6] = u[0]; localDisp[7] = u[1]; localDisp[8] = u[2];
-
-    // rotations //
-    defaulttype::Quat dQ0, dQ;
-
-    // dQ = QA.i * QB ou dQ = QB * QA.i() ??
-    dQ0 = qDiff(xRef[b].getOrientation(), xRef[a].getOrientation()); // x0[a].getOrientation().inverse() * x0[b].getOrientation();
-    dQ = qDiff(x[b].getOrientation(), x[a].getOrientation()); // x[a].getOrientation().inverse() * x[b].getOrientation();
-                                                              //u = dQ.toEulerVector() - dQ0.toEulerVector(); // Consider to use quatToRotationVector instead of toEulerVector to have the rotation vector
-
-    dQ0.normalize();
-    dQ.normalize();
-
-    defaulttype::Quat tmpQ = qDiff(dQ, dQ0);
-    tmpQ.normalize();
-
-    u = tmpQ.quatToRotationVector(); //dQ.quatToRotationVector() - dQ0.quatToRotationVector();  // Use of quatToRotationVector instead of toEulerVector:
-                                     // this is done to keep the old behavior (before the
-                                     // correction of the toEulerVector  function). If the
-                                     // purpose was to obtain the Eulerian vector and not the
-                                     // rotation vector please use the following line instead
-                                     //u = tmpQ.toEulerVector(); //dQ.toEulerVector() - dQ0.toEulerVector();
-
-    localDisp[3] = 0.0; localDisp[4] = 0.0; localDisp[5] = 0.0;
-    localDisp[9] = u[0]; localDisp[10] = u[1]; localDisp[11] = u[2];
-}
-
-
-template< class DataTypes>
 void BeamPlasticFEMForceField<DataTypes>::computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp,
                                                                   Displacement &lastDisp, Displacement &dispIncrement, int i, Index a, Index b)
 {
