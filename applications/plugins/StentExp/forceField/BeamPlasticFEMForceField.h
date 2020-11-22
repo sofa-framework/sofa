@@ -369,15 +369,17 @@ protected:
     double computeConstPlasticModulus();
     //-------------------------------------//
 
-    /// Test if the stress tensor of a material point in an elastic state
+    /// Tests if the stress tensor of a material point in an elastic state
     /// actually corresponds to plastic deformation.
     bool goToPlastic(const VoigtTensor2 &stressTensor, const double yieldStress, const bool verbose=FALSE);
-    /// Test if the new stress tensor of a material point in a plastic state
+    /// Tests if the new stress tensor of a material point in a plastic state
     /// actually corresponds to an elastic (incremental) deformation
     bool goToPostPlastic(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement,
                          const bool verbose = FALSE);
 
+    /// Computes local displacement of a beam element using the corotational model
     void computeLocalDisplacement(const VecCoord& x, Displacement &localDisp, int i, Index a, Index b);
+    /// Computes a displacement increment between to positions of a beam element (with respect to its local frame)
     void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,
                                       Displacement &dispIncrement, int i, Index a, Index b);
 
@@ -400,32 +402,65 @@ protected:
     //---------------------------------------//
 
 
-    // Auxiliary methods for hardening
+    //---------- Auxiliary methods for Voigt to vector notation conversion ----------//
+
+    // TO DO :
+    /* The Voigt notation consists in reducing the dimension of symmetrical tensors by
+     * not representing explicitly the symmetrical terms. However these termes have to
+     * be taken into account in some operations (such as scalar products) for which
+     * they have to be represented explicitly.
+     * For the moment, we mostly rely on a full vector notation of all symmetrical
+     * variables, and convert them afterwards to Voigt notation in order to reduce the
+     * storage cost. In the long term, we should implement all generic functions
+     * correcting algebric operations made with Voigt variables (such as voigtDotProduct
+     * or voigtTensorNorm), and remove the vector notation.
+     */
+
+    /// Converts the 6D Voigt representation of a 2nd-order tensor to a 9D vector representation
     VectTensor2 voigtToVect2(const VoigtTensor2 &voigtTensor);
+    /// Converts the 6x6 Voigt representation of a 4th-order tensor to a 9x9 matrix representation
     VectTensor4 voigtToVect4(const VoigtTensor4 &voigtTensor);
+    /// Converts the 9D vector representation of a 2nd-order tensor to a 6D Voigt representation
     VoigtTensor2 vectToVoigt2(const VectTensor2 &vectTensor);
+    /// Converts the 9x9 matrix representation of a 4th-order tensor to a 6x6 Voigt representation
     VoigtTensor4 vectToVoigt4(const VectTensor4 &vectTensor);
 
+    // Special implementation for second-order tensor operations, with the Voigt notation.
+    double voigtDotProduct(const VoigtTensor2& t1, const VoigtTensor2& t2);
+    double voigtTensorNorm(const VoigtTensor2& t);
+    Eigen::Matrix<double, 12, 1> beTTensor2Mult(const Eigen::Matrix<double, 12, 6>& BeT, const VoigtTensor2& T);
+    Eigen::Matrix<double, 12, 12> beTCBeMult(const Eigen::Matrix<double, 12, 6>& BeT, const VoigtTensor4& C,
+                                             const double nu, const double E);
+    //-------------------------------------------------------------------------------//
+
+    /// Computes the deviatoric stress from a tensor in Voigt notation
     VoigtTensor2 deviatoricStress(const VoigtTensor2 &stressTensor);
+    /// Computes the equivalent stress from a tensor in Voigt notation
     double equivalentStress(const VoigtTensor2 &stressTensor);
+    /// Evaluates the Von Mises yield function for given stress tensor (in Voigt notation) and yield stress
     double vonMisesYield(const VoigtTensor2 &stressTensor, const double yieldStress);
+    /// Computes the Von Mises yield function gradient (in Voigt notation) at a given stress tensor (in Voigt notation)
     VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor);
+    /// Computes the Von Mises yield function hessian (in matrix notation) at a given stress tensor (in Voigt notation)
     VectTensor4 vonMisesHessian(const VoigtTensor2 &stressTensor, const double yieldStress);
 
-    //Alternative expressions of the Von Mises functions, for debug
+    //----- Alternative expressions of the above functions with vector notations -----//
+    /// Computes the equivalent stress from a tensor in vector notation
     double vectEquivalentStress(const VectTensor2 &stressTensor);
-    double devEquivalentStress(const VoigtTensor2 &stressTensor);
-    double devVonMisesYield(const VoigtTensor2 &stressTensor, const double yieldStress);
+    /// Evaluates the Von Mises yield function for given stress tensor (in vector notation) and yield stress
     double vectVonMisesYield(const VectTensor2 &stressTensor, const double yieldStress);
+    /// Computes the Von Mises yield function gradient (in vector notation) at a given stress tensor (in vector notation)
     VectTensor2 vectVonMisesGradient(const VectTensor2 &stressTensor);
-    VoigtTensor2 devVonMisesGradient(const VoigtTensor2 &stressTensor);
 
-    // Special implementation for second-order tensor operations, with the Voigt notation.
-    double voigtDotProduct(const VoigtTensor2 &t1, const VoigtTensor2 &t2);
-    double voigtTensorNorm(const VoigtTensor2 &t);
-    Eigen::Matrix<double, 12, 1> beTTensor2Mult(const Eigen::Matrix<double, 12, 6> &BeT, const VoigtTensor2 &T);
-    Eigen::Matrix<double, 12, 12> beTCBeMult(const Eigen::Matrix<double, 12, 6> &BeT, const VoigtTensor4 &C,
-                                             const double nu, const double E);
+    //----- Alternative functions using the deviatoric stress expression -----//
+    // TO DO : is deviatoric computation more efficient than direct computation ?
+    /// Computes the equivalent stress from a tensor in Voigt notation, using the deviatoric stress
+    double devEquivalentStress(const VoigtTensor2& stressTensor);
+    /// Evaluates the Von Mises yield function for given stress tensor (in Voigt notation), using the deviatoric stress
+    double devVonMisesYield(const VoigtTensor2& stressTensor, const double yieldStress);
+    /// Computes the Von Mises yield function gradient (in Voigt notation) at a given stress tensor (in Voigt notation),
+    ///  using the deviatoric stress
+    VoigtTensor2 devVonMisesGradient(const VoigtTensor2& stressTensor);
 
     //Methods called by addForce, addDForce and addKToMatrix when deforming plasticly
     void accumulateNonLinearForce(VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
@@ -473,6 +508,7 @@ public:
     virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv&   datadF , const DataVecDeriv&   datadX );
     virtual void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
 
+    // TO DO : necessary ?
     virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
     {
         serr << "Get potentialEnergy not implemented" << sendl;
