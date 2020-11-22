@@ -184,10 +184,6 @@ void BeamPlasticFEMForceField<DataTypes>::reinit()
     //Initialises the lastPos field with the rest position
     m_lastPos = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    /***** Krabbenhoft plasticity *****/
-    m_NRThreshold = 0.0; //to be changed during iterations
-    m_NRMaxIterations = 25;
-
     m_prevStresses.resize(n);
     for (int i = 0; i < n; i++)
         for (int j = 0; j < 27; j++)

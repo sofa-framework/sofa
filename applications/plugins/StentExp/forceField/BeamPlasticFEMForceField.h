@@ -319,12 +319,6 @@ protected:
     //Position at the last time step, to handle increments for the plasticity resolution
     VecCoord m_lastPos;
 
-    /************** Plasticity elements ***********************/
-
-    //Newton-Raphson parameters
-    double m_NRThreshold;
-    unsigned int m_NRMaxIterations;
-
     // Indicates if the plasticity model is perfect plasticity, or if hardening
     // is represented. The only hardening model we implement is a linear
     // combination of isotropic and kinematic hardening, as described in :
