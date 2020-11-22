@@ -141,10 +141,6 @@ protected:
          */
         BehaviourMatrix _materialBehaviour;
 
-        //--------------------------------------------------------------------//
-        //--------------- Gaussian reduced integration methods ---------------//
-        //--------------------------------------------------------------------//
-
         /**
          * \brief Integration ranges for Gaussian reduced integration.
          * Data structure defined in the quadrature library used here for
@@ -177,19 +173,31 @@ protected:
          */
         MechanicalState _beamMechanicalState;
 
-        // Plastic strain
-        helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> _plasticStrainHistory; ///< history of the plastic strain, one tensor for each Gauss point
+        //---------- Plastic variables ----------//
+
+        /// History of plastic strain, one tensor for each Gauss point in the element.
+        helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> _plasticStrainHistory;
+        /**
+         * Effective plastic strain, for each Gauss point in the element.
+         * The effective plastic strain is only used to compute the tangent
+         * modulus if it is not constant.
+         */
         helper::fixed_array<Real, 27> _effectivePlasticStrains;
 
-        // For hardening
+        /// Tensor representing the yield surface centre, one for each Gauss point in the element.
         helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> _backStresses;
+        /// Yield threshold, one for each Gauss point in the element.
         helper::fixed_array<Real, 27> _localYieldStresses;
 
-        ///< For drawing
+        //---------- Visualisation ----------//
+
+        /// Number of interpolation segments to visualise the centreline of the beam element
         int _nbCentrelineSeg = 10;
+
+        /// Precomputation of the shape functions matrices for each centreline point coordinates.
         helper::fixed_array<shapeFunction, 9> _drawN; //TO DO: allow parameterisation of the number of segments
                                                       //       which discretise the centreline (here : 10)
-                                                      // NB: we use 9 shape functions bewause extremity points are known
+                                                      // NB: we use 9 shape functions because extremity points are known
 
         /*********************************************************************/
 
@@ -203,11 +211,11 @@ protected:
         double _Iz; ///< 2nd moment of area with regard to the z axis, for a rectangular beam section
         double _J; ///< Polar moment of inertia (J = Iy + Iz)
         double _A; ///< Cross-sectional area
-        StiffnessMatrix _k_loc;
+        StiffnessMatrix _k_loc; ///< Precomputed stiffness matrix, used only for elastic deformation if d_usePrecomputedStiffness = true
 
-        defaulttype::Quat quat;
+        defaulttype::Quat quat; // TO DO : supress ? Apparently it is not used effectively in the computation, only updated
 
-        //void localStiffness();
+        /// Initialisation of BeamInfo members from constructor parameters
         void init(double E, double yS, double L, double nu, double zSection, double ySection, bool isTimoshenko);
 
         /// Output stream
@@ -277,14 +285,13 @@ protected:
 public:
 
     typedef defaulttype::Vec<12, Real> nodalForces; ///<  Intensities of the nodal forces in the Timoshenko beam element
+    // TO DO : is this type really useful ?
 
     typedef Eigen::Matrix<double, 6, 1> VoigtTensor2; ///< Symmetrical tensor of order 2, written with Voigt notation
-    typedef Eigen::Matrix<double, 9, 1> VectTensor2; ///< Symmetrical tensor of order 2, written with in vector notation
+    typedef Eigen::Matrix<double, 9, 1> VectTensor2; ///< Symmetrical tensor of order 2, written with vector notation
     typedef Eigen::Matrix<double, 6, 6> VoigtTensor4; ///< Symmetrical tensor of order 4, written with Voigt notation
-    typedef Eigen::Matrix<double, 9, 9> VectTensor4; ///< Symmetrical tensor of order 4, written in vector notation
-    typedef Eigen::Matrix<double, 12, 1> EigenDisplacement; ///<Nodal displacement
-    typedef Eigen::Matrix<double, 12, 1> EigenNodalForces;
-    typedef Eigen::Matrix<double, 12, 12> tangentStiffnessMatrix;
+    typedef Eigen::Matrix<double, 9, 9> VectTensor4; ///< Symmetrical tensor of order 4, written with vector notation
+    typedef Eigen::Matrix<double, 12, 1> EigenDisplacement; ///< Nodal displacement
 
 protected:
 
@@ -300,23 +307,37 @@ protected:
     // should be used.
     Data<bool> d_usePrecomputedStiffness;
 
-    // In the elasto-plastic model, the tangent operator can be computed either
-    // in a straightforward way, or in a way consistent with the radial return
-    // algorithm. This field is used to determine which method will be used.
-    // For more information on the consistent tangent operator, we recommend
-    // reading the following publications :
-    //   - Consistent tangent operators for rate-independent elastoplasticity, Simo and Taylor, 1985
-    //   - Studies in anisotropic plasticity with reference to the Hill criterion, De Borst and Feenstra, 1990
+    /**
+     * In the elasto-plastic model, the tangent operator can be computed either
+     * in a straightforward way, or in a way consistent with the radial return
+     * algorithm. This data field is used to determine which method will be used.
+     * For more information on the consistent tangent operator, we recommend
+     * reading the following publications :
+     *  - Consistent tangent operators for rate-independent elastoplasticity, Simo and Taylor, 1985
+     *  - Studies in anisotropic plasticity with reference to the Hill criterion, De Borst and Feenstra, 1990
+     */
     Data<bool> d_useConsistentTangentOperator;
 
+    /**
+     * Computes the elastic stiffness matrix _Ke_loc using reduced intergation.
+     * The alternative is a precomputation of the elastic stiffness matrix, which is
+     * possible for beam elements. The corresponding matrix _k_loc is close of the
+     * reduced integration matrix _Ke_loc.
+     */
     void computeVDStiffness(int i, Index a, Index b);
+    /// Computes the generalised Hooke's law matrix.
     void computeMaterialBehaviour(int i, Index a, Index b);
 
-    typedef helper::fixed_array<VoigtTensor2, 27>  gaussPointStresses; ///< one 6x1 strain tensor for each of the 27 points of integration
+     /// Used to store stress tensor information (in Voigt notation) for each of the 27 points of integration.
+    typedef helper::fixed_array<VoigtTensor2, 27> gaussPointStresses;
+    /// Stress tensors fo each Gauss point in every beam element, computed at the previous time step.
+    /// These stresses are required for the iterative radial return algorithm if plasticity is detected.
     helper::vector<gaussPointStresses> m_prevStresses;
+    /// Stress tensors corresponding to the elastic prediction step of the radial return algorithm.
+    /// These are stored for the update of the tangent stiffness matrix
     helper::vector<gaussPointStresses> m_elasticPredictors;
 
-    //Position at the last time step, to handle increments for the plasticity resolution
+    /// Position at the last time step, to handle increments for the plasticity resolution
     VecCoord m_lastPos;
 
     // Indicates if the plasticity model is perfect plasticity, or if hardening
