@@ -340,21 +340,40 @@ protected:
     /// Position at the last time step, to handle increments for the plasticity resolution
     VecCoord m_lastPos;
 
-    // Indicates if the plasticity model is perfect plasticity, or if hardening
-    // is represented. The only hardening model we implement is a linear
-    // combination of isotropic and kinematic hardening, as described in :
-    // Theoretical foundation for large scale computations for nonlinear material
-    // behaviour, Hugues(et al) 1984
+    /**
+     * Indicates if the plasticity model is perfect plasticity, or if hardening
+     * is represented.
+     * The only hardening model we implement is a linear combination of isotropic
+     * and kinematic hardening, as described in :
+     * Theoretical foundation for large scale computations for nonlinear material
+     * behaviour, Hugues(et al) 1984.
+     */
     Data<bool> d_isPerfectlyPlastic;
 
     BeamPlasticFEMForceField<DataTypes>* ff;
 
-    // 1D Contitutive law model, which is in charge of computing the
-    // tangent modulus during plastic deformation
+    //---------- Plastic modulus ----------//
+    /**
+     * 1D Contitutive law model, which is in charge of computing the
+     * plastic modulus during plastic deformation.
+     * The constitutive law is used to retrieve a non-constant plastic
+     * modulus, with computePlasticModulusFromStress or
+     * computePlasticModulusFromStress, but the computeConstPlasticModulus
+     * method can be used instead.
+     */
     fem::PlasticConstitutiveLaw<DataTypes> *m_ConstitutiveLaw;
     Data<std::string> d_modelName; ///< name of the model, for specialisation
 
+    double computePlasticModulusFromStress(const Eigen::Matrix<double, 6, 1>& stressState);
+    double computePlasticModulusFromStrain(int index, int gaussPointId);
+    double computeConstPlasticModulus();
+    //-------------------------------------//
+
+    /// Test if the stress tensor of a material point in an elastic state
+    /// actually corresponds to plastic deformation.
     bool goToPlastic(const VoigtTensor2 &stressTensor, const double yieldStress, const bool verbose=FALSE);
+    /// Test if the new stress tensor of a material point in a plastic state
+    /// actually corresponds to an elastic (incremental) deformation
     bool goToPostPlastic(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement,
                          const bool verbose = FALSE);
 
@@ -364,11 +383,6 @@ protected:
 
     void computeStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &initialStress, VoigtTensor2 &newStressPoint, const VoigtTensor2 &strainIncrement,
                                 double &lambdaIncrement, MechanicalState &pointMechanicalState, const Displacement &lastDisp);
-
-    // Plastic modulus
-    double computePlasticModulusFromStress(const Eigen::Matrix<double, 6, 1> &stressState);
-    double computePlasticModulusFromStrain(int index, int gaussPointId);
-    double computeConstPlasticModulus();
 
     void computeElasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
     void computePlasticForce(Eigen::Matrix<double, 12, 1> &internalForces, const VecCoord& x, int index, Index a, Index b);
