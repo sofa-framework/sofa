@@ -1,4 +1,4 @@
-#include "initStentExp.h"
+#include "initBeamPlastic.h"
 
 namespace sofa
 {

@@ -45,7 +45,7 @@ int BeamPlasticFEMForceFieldClass = core::RegisterObject("Stent adaptated beam f
         .add< BeamPlasticFEMForceField<Rigid3Types> >()
         ;
 
-template class SOFA_StentExp_API BeamPlasticFEMForceField<Rigid3Types>;
+template class SOFA_BeamPlastic_API BeamPlasticFEMForceField<Rigid3Types>;
 
 } // namespace _beamplasticfemforcefield_
 

@@ -50,7 +50,7 @@ sofa_add_plugin(SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible 
 
 sofa_add_plugin_experimental(PSL PSL)
 # sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default
-sofa_add_plugin(StentExp StentExp)
+sofa_add_plugin(BeamPlastic BeamPlastic)
 
 if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
     sofa_add_plugin(SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc

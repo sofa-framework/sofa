@@ -22,11 +22,11 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_H
 
-#include <StentExp/config.h>
-#include <StentExp/initStentExp.h>
+#include <BeamPlastic/config.h>
+#include <BeamPlastic/initBeamPlastic.h>
 #include "PlasticConstitutiveLaw.h"
-#include <StentExp/quadrature/gaussian.h>
-#include <StentExp/quadrature/quadrature.h>
+#include <BeamPlastic/quadrature/gaussian.h>
+#include <BeamPlastic/quadrature/quadrature.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologyData.h>
@@ -68,7 +68,7 @@ namespace _beamplasticfemforcefield_
  *  deformation, which typically occurs in metals.
  */
 template<class DataTypes>
-class SOFA_StentExp_API BeamPlasticFEMForceField : public core::behavior::ForceField<DataTypes>
+class SOFA_BeamPlastic_API BeamPlasticFEMForceField : public core::behavior::ForceField<DataTypes>
 {
 
 public:
@@ -532,7 +532,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_BEAMPLASTICFEMFORCEFIELD_CPP)
-extern template class SOFA_StentExp_API BeamPlasticFEMForceField<defaulttype::Rigid3Types>;
+extern template class SOFA_BeamPlastic_API BeamPlasticFEMForceField<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace _beamplasticfemforcefield_

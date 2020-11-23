@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 2.8.12)
-project(StentExp)
+project(BeamPlastic)
 
-set(STENTEXP_MAJOR_VERSION 0)
-set(STENTEXP_MINOR_VERSION 1)
-set(STENTEXP_VERSION ${STENTEXP_MAJOR_VERSION}.${STENTEXP_MINOR_VERSION})
+set(BEAMPLASTIC_MAJOR_VERSION 0)
+set(BEAMPLASTIC_MINOR_VERSION 1)
+set(BEAMPLASTIC_VERSION ${BEAMPLASTIC_MAJOR_VERSION}.${BEAMPLASTIC_MINOR_VERSION})
 
 set(HEADER_FILES
-	initStentExp.h
+	initBeamPlastic.h
 	config.h
 	forceField/BeamPlasticFEMForceField.h
 	forceField/BeamPlasticFEMForceField.inl
@@ -19,7 +19,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-	initStentExp.cpp
+	initBeamPlastic.cpp
 	forceField/BeamPlasticFEMForceField.cpp
 )
 
@@ -27,7 +27,7 @@ find_package(SofaFramework REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaBaseTopology SofaSimpleFem)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_STENTEXP"
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BEAMPLASTIC"
 	                                             DEBUG_POSTFIX "_d")
 
 
