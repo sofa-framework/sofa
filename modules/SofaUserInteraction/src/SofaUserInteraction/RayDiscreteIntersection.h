@@ -19,32 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaUserInteraction/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
+#include <sofa/core/collision/Intersection.h>
+#include <sofa/helper/FnDispatcher.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaMeshCollision/LineModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaBaseCollision/CubeModel.h>
+#include <SofaUserInteraction/RayModel.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/DiscreteIntersection.h>
 
-namespace sofa
+namespace sofa::component::collision
+{
+class SOFA_SOFAUSERINTERACTION_API RayDiscreteIntersection : public core::collision::BaseIntersector
 {
 
-namespace component
-{
+    typedef DiscreteIntersection::OutputVector OutputVector;
 
+public:
+    RayDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    template<class T> bool testIntersection(Ray&, TSphere<T>&);
+    bool testIntersection(Ray&, Triangle&);
 
-    initGeneralLoader();
-    initConstraint();
-}
+    template<class T> int computeIntersection(Ray&, TSphere<T>&, OutputVector*);
+    int computeIntersection(Ray&, Triangle&, OutputVector*);
 
+    bool testIntersection(Ray& rRay, OBB& rOBB);
+    int computeIntersection(Ray& rRay, OBB& rOBB, OutputVector*);
 
-} // namespace component
+protected:
 
-} // namespace sofa
+    DiscreteIntersection* intersection;
+
+};
+
+} //namespace sofa::component::collision

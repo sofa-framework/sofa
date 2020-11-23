@@ -19,32 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#define SOFA_COMPONENT_COLLISION_STARTNAVIGATIONPERFORMER_CPP
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
+#include <SofaUserInteraction/StartNavigationPerformer.h>
+#include <SofaGeneralVisual/RecordedCamera.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/Factory.inl>
+#include <SofaRigid/JointSpringForceField.inl>
+#include <SofaDeformable/SpringForceField.inl>
+#include <SofaDeformable/StiffSpringForceField.inl>
+#include <sofa/helper/cast.h>
 
-namespace sofa
+using namespace sofa::component::interactionforcefield;
+using namespace sofa::core::objectmodel;
+
+namespace sofa::component::collision
 {
+    helper::Creator<InteractionPerformer::InteractionPerformerFactory, StartNavigationPerformer> StartNavigationPerformerClass("StartNavigation");
 
-namespace component
-{
-
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
+    void StartNavigationPerformer::start()
     {
-        first = false;
+        sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( interactor->getContext()->getRootContext() );
+        if(root)
+        {
+            sofa::component::visualmodel::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visualmodel::RecordedCamera>();
+
+            if(currentCamera)
+            {
+                // The navigation mode of Recorded Camera is set to true
+                currentCamera->m_navigationMode.setValue(!currentCamera->m_navigationMode.getValue());
+            }
+        }
     }
 
-    initGeneralLoader();
-    initConstraint();
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision

@@ -19,32 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaUserInteraction/MouseInteractor.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/gl.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
-
-namespace sofa
+#include <map>
+namespace sofa::component::collision
 {
 
-namespace component
+template <class DataTypes>
+void MouseInteractor<DataTypes>::init()
 {
-
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-    initConstraint();
+    BaseMouseInteractor::init();
+    mouseInSofa = dynamic_cast< MouseContainer*>(this->getContext()->getMechanicalState());
+    assert(mouseInSofa);
 }
 
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision

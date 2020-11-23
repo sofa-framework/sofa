@@ -19,32 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaUserInteraction/AddFramePerformer.inl>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/Factory.inl>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
+template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3Types>;
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
 
-    initGeneralLoader();
-    initConstraint();
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddFramePerformer<defaulttype::Vec3dTypes> >  AddFramePerformerVec3dClass("AddFrame",true);
+
 }
-
-
-} // namespace component
-
-} // namespace sofa
+}
+}
+#endif

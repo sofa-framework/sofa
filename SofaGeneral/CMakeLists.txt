@@ -8,7 +8,6 @@ option(CMAKE_WARN_DEPRECATED "Send warning when deprecated projects are found" O
 set(SOFAGENERAL_TARGETS
     SofaGeneralLoader
     SofaConstraint
-    SofaUserInteraction
 )
 
 foreach(TARGET ${SOFAGENERAL_TARGETS})
@@ -32,6 +31,7 @@ set(SOFAGENERAL_MODULES
     SofaGeneralSimpleFem
     SofaGeneralTopology
     SofaTopologyMapping
+    SofaUserInteraction
 )
 foreach(MODULE ${SOFAGENERAL_MODULES})
     find_package(${MODULE} REQUIRED)
