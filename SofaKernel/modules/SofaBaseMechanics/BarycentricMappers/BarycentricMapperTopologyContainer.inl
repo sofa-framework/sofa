@@ -318,7 +318,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJT
     {
         if( !this->maskTo->getEntry(i) ) continue;
 
-        index_type index = d_map.getValue()[i].in_index;
+        Index index = d_map.getValue()[i].in_index;
         const Element& element = elements[index];
 
         const typename Out::DPos inPos = Out::getDPos(in[i]);
@@ -342,7 +342,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJ 
     {
         if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
-        index_type index = d_map.getValue()[i].in_index;
+        Index index = d_map.getValue()[i].in_index;
         const Element& element = elements[index];
 
         helper::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
@@ -358,7 +358,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJ 
 template <class In, class Out, class MappingDataType, class Element>
 void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::resize( core::State<Out>* toModel )
 {
-    toModel->resize(d_map.getValue().size());
+    toModel->resize(Size(d_map.getValue().size()));
 }
 
 template<class In, class Out, class MappingDataType, class Element>
@@ -377,7 +377,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::apply (
     const helper::vector<Element>& elements = getElements();
     for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
     {
-        index_type index = d_map.getValue()[i].in_index;
+        Index index = d_map.getValue()[i].in_index;
         const Element& element = elements[index];
 
         helper::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
@@ -402,7 +402,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::draw  (
     {
         for ( unsigned int i=0; i<d_map.getValue().size(); i++ )
         {
-            index_type index = d_map.getValue()[i].in_index;
+            Index index = d_map.getValue()[i].in_index;
             const Element& element = elements[index];
             helper::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
             for ( unsigned int j=0; j<element.size(); j++ )

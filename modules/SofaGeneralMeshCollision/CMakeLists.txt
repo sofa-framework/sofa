@@ -1,46 +1,63 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaGeneralMeshCollision)
+project(SofaGeneralMeshCollision LANGUAGES CXX)
+
+
+find_package(SofaCommon REQUIRED)
+
+set(SOFAGENERALMESHCOLLISION_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-    config.h
-    initGeneralMeshCollision.h
+    ${SOFAGENERALMESHCOLLISION_SRC}/config.h.in
+    ${SOFAGENERALMESHCOLLISION_SRC}/initSofaGeneralMeshCollision.h
     )
 
 set(SOURCE_FILES
-    initGeneralMeshCollision.cpp
+    ${SOFAGENERALMESHCOLLISION_SRC}/initSofaGeneralMeshCollision.cpp
     )
 
 list(APPEND HEADER_FILES
-    DirectSAP.h
-    IncrSAP.h
+    ${SOFAGENERALMESHCOLLISION_SRC}/DirectSAP.h
+    ${SOFAGENERALMESHCOLLISION_SRC}/IncrSAP.h
     # IntrTriangleOBB.h
     # IntrTriangleOBB.inl
-    MeshDiscreteIntersection.h
-    MeshDiscreteIntersection.inl
-    MeshMinProximityIntersection.h
+    ${SOFAGENERALMESHCOLLISION_SRC}/MeshDiscreteIntersection.h
+    ${SOFAGENERALMESHCOLLISION_SRC}/MeshDiscreteIntersection.inl
+    ${SOFAGENERALMESHCOLLISION_SRC}/MeshMinProximityIntersection.h
     # RigidContactMapper.h
     # RigidContactMapper.inl
     # SubsetContactMapper.h
     # SubsetContactMapper.inl
-    TriangleOctree.h
-    TriangleOctreeModel.h
+    ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctree.h
+    ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctreeModel.h
     )
 list(APPEND SOURCE_FILES
-    DirectSAP.cpp
-    IncrSAP.cpp
+    ${SOFAGENERALMESHCOLLISION_SRC}/DirectSAP.cpp
+    ${SOFAGENERALMESHCOLLISION_SRC}/IncrSAP.cpp
     # IntrTriangleOBB.cpp
-    MeshDiscreteIntersection.cpp
-    MeshMinProximityIntersection.cpp
+    ${SOFAGENERALMESHCOLLISION_SRC}/MeshDiscreteIntersection.cpp
+    ${SOFAGENERALMESHCOLLISION_SRC}/MeshMinProximityIntersection.cpp
     # RigidContactMapper.cpp
     # SubsetContactMapper.cpp
-    TriangleOctree.cpp
-    TriangleOctreeModel.cpp
+    ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctree.cpp
+    ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctreeModel.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision SofaMeshCollision)
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaGeneral
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
-    )
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+)
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+# cmake_dependent_option(SOFAGENERALMESHCOLLISION_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+# if(SOFAGENERALMESHCOLLISION_BUILD_TESTS)
+#     enable_testing()
+#     add_subdirectory(${PROJECT_NAME}_test)
+# endif()

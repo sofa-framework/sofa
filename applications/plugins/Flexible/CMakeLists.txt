@@ -3,6 +3,8 @@ project(Flexible VERSION 0.1)
 
 find_package(SofaMiscMapping REQUIRED)
 find_package(SofaValidation REQUIRED)
+find_package(SofaGeneralEngine REQUIRED)
+find_package(SofaBoundaryCondition REQUIRED)
 sofa_find_package(SofaPython REQUIRED)
 sofa_find_package(image QUIET)
 sofa_find_package(SofaHighOrderTopology QUIET)
@@ -225,7 +227,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES} ${README_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaMiscMapping SofaValidation SofaBaseVisual)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMiscMapping SofaValidation SofaBaseVisual SofaGeneralEngine SofaBoundaryCondition)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)

@@ -48,7 +48,7 @@ public:
     typedef linearsolver::EigenSparseMatrix<TIn,TOut> SparseMatrixEigen;
     typedef linearsolver::EigenSparseMatrix<TIn,TIn> SparseKMatrixEigen;
     typedef sofa::core::topology::BaseMeshTopology::Tetra Tetra;
-    typedef sofa::core::topology::BaseMeshTopology::index_type Index;
+    typedef sofa::core::topology::BaseMeshTopology::Index Index;
     typedef sofa::helper::vector< Index > VecIndex;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 

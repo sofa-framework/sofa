@@ -58,13 +58,14 @@
 #include <cassert>
 #include <iostream>
 
+
 namespace sofa
 {
 
 namespace helper
 {
 
-template<class T, std::size_t N>
+template<class T, sofa::Size N>
 class fixed_array
 {
 public:
@@ -79,7 +80,7 @@ public:
     typedef const T*       const_iterator;
     typedef T&             reference;
     typedef const T&       const_reference;
-    typedef std::size_t    size_type;
+    typedef sofa::Size     size_type;
     typedef std::ptrdiff_t difference_type;
 
     fixed_array()

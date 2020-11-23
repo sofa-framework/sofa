@@ -402,6 +402,11 @@ if(Boost_FOUND)
     if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
         sofa_install_libraries(PATHS ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
     endif()
+
+    if(MSVC)
+        #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
+        target_compile_definitions(${PROJECT_NAME} PUBLIC BOOST_ALL_DYN_LINK)
+    endif()
 endif()
 
 # GTest

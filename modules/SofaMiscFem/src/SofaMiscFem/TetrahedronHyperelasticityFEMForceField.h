@@ -72,7 +72,7 @@ class TetrahedronHyperelasticityFEMForceField : public core::behavior::ForceFiel
     typedef helper::vector<Coord> SetAnisotropyDirectionArray;
 
 
-    typedef core::topology::BaseMeshTopology::index_type Index;
+    typedef core::topology::BaseMeshTopology::Index Index;
     typedef core::topology::BaseMeshTopology::Tetra Element;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
     typedef sofa::core::topology::Topology::Tetrahedron Tetrahedron;
@@ -180,8 +180,8 @@ public:
 
       }
 
-      void applyCreateFunction(index_type, TetrahedronRestInformation &t, const Tetrahedron &,
-                               const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &);
+      void applyCreateFunction(Index, TetrahedronRestInformation &t, const Tetrahedron &,
+                               const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &);
 
     protected:
       TetrahedronHyperelasticityFEMForceField<DataTypes>* ff;
