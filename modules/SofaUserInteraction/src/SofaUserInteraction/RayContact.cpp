@@ -19,32 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#include <SofaUserInteraction/RayContact.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <SofaUserInteraction/RayModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaBaseCollision/OBBModel.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
-
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
+using namespace sofa::defaulttype;
+
+Creator<core::collision::Contact::Factory, RayContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>> > RaySphereContactClass("ray",true);
+Creator<core::collision::Contact::Factory, RayContact<RigidSphereModel> > RayRigidSphereContactClass("ray",true);
+Creator<core::collision::Contact::Factory, RayContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > RayTriangleContactClass("ray",true);
+Creator<core::collision::Contact::Factory, RayContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > RayRigidBoxContactClass("ray", true); //cast not wroking
+
+
+
+BaseRayContact::BaseRayContact(CollisionModel1* model1, core::collision::Intersection* /*instersectionMethod*/)
+    : model1(model1)
 {
+    if (model1!=nullptr)
+        model1->addContact(this);
+}
 
-
-void initSofaGeneral()
+BaseRayContact::~BaseRayContact()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-    initConstraint();
+    if (model1!=nullptr)
+        model1->removeContact(this);
 }
 
 
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

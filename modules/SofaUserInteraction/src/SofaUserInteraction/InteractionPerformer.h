@@ -19,32 +19,64 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaUserInteraction/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
+#include <SofaGraphComponent/MouseButtonSetting.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
+class BaseMouseInteractor;
+template <class DataTypes>
+class MouseInteractor;
 
 
-void initSofaGeneral()
+class SOFA_SOFAUSERINTERACTION_API InteractionPerformer
 {
-    static bool first = true;
-    if (first)
+public:
+    typedef helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*> InteractionPerformerFactory;
+
+    InteractionPerformer(BaseMouseInteractor *i):interactor(i),freezePerformer(0) {}
+    virtual ~InteractionPerformer() {}
+
+    virtual void configure(configurationsetting::MouseButtonSetting* /*setting*/) {}
+
+    virtual void start()=0;
+    virtual void execute()=0;
+
+    virtual void handleEvent(core::objectmodel::Event * ) {}
+    virtual void draw(const core::visual::VisualParams* ) {}
+
+    virtual void setPerformerFreeze() {freezePerformer = true;}
+
+    template <class RealObject>
+    static RealObject* create( RealObject*, BaseMouseInteractor* interactor)
     {
-        first = false;
+        return new RealObject(interactor);
+    }
+    BaseMouseInteractor *interactor;
+    bool freezePerformer;
+};
+
+
+template <class DataTypes>
+class TInteractionPerformer: public InteractionPerformer
+{
+public:
+
+    TInteractionPerformer(BaseMouseInteractor *i):InteractionPerformer(i) {}
+
+    template <class RealObject>
+    static RealObject* create( RealObject*, BaseMouseInteractor* interactor)
+    {
+        if (!dynamic_cast< MouseInteractor<DataTypes>* >(interactor)) return nullptr;
+        else return new RealObject(interactor);
     }
 
-    initGeneralLoader();
-    initConstraint();
-}
+};
 
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

@@ -19,32 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaUserInteraction/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
+#include <SofaUserInteraction/MouseInteractor.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
+#include <SofaBaseCollision/BaseContactMapper.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <SofaDeformable/SpringForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
+class SOFA_SOFAUSERINTERACTION_API AddRecordedCameraPerformer: public InteractionPerformer
 {
+public:
+    AddRecordedCameraPerformer(BaseMouseInteractor *i)
+        : InteractionPerformer(i) {};
 
+    ~AddRecordedCameraPerformer() override{};
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    // Save the current camera's position and orientation in the appropriate Data of Recorded Camera for navigation. 
+    void start() override;
+    void execute() override{};
 
-    initGeneralLoader();
-    initConstraint();
-}
+};
 
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision
