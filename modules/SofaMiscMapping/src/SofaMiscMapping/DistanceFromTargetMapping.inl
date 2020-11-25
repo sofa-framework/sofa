@@ -23,6 +23,8 @@
 
 #include "DistanceFromTargetMapping.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/Mapping.inl>
+
 #include <sofa/helper/types/RGBAColor.h>
 #include <iostream>
 

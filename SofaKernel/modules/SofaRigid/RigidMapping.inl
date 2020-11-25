@@ -37,6 +37,7 @@
 #include <sofa/helper/decompose.h>
 
 #include <sofa/simulation/Simulation.h>
+#include <sofa/core/Mapping.inl>
 
 #include <Eigen/Dense>
 

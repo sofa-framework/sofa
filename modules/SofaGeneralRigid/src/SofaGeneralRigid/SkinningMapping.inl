@@ -29,6 +29,7 @@
 #include <limits>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/core/Mapping.inl>
 
 #include <string>
 #include <iostream>

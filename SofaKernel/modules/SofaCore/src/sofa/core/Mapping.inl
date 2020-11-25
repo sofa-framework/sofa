@@ -22,6 +22,7 @@
 #ifndef SOFA_CORE_MAPPING_INL
 #define SOFA_CORE_MAPPING_INL
 
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/Mapping.h>
 #include <iostream>
 
@@ -271,6 +272,96 @@ bool Mapping<In,Out>::setFrom(BaseState* from)
 
     this->fromModel.set( in );
     return true;
+}
+
+template <class In, class Out>
+template<class T>
+bool Mapping<In,Out>::canCreate(T*& obj,
+                                core::objectmodel::BaseContext* context,
+                                core::objectmodel::BaseObjectDescription* arg)
+{
+    State<In>* stin = nullptr;
+    State<Out>* stout = nullptr;
+
+    std::string inPath, outPath;
+
+    if (arg->getAttribute("input"))
+        inPath = arg->getAttribute("input");
+    else
+        inPath = "@../";
+
+    context->findLinkDest(stin, inPath, nullptr);
+
+    if (arg->getAttribute("output"))
+        outPath = arg->getAttribute("output");
+    else
+        outPath = "@./";
+
+    context->findLinkDest(stout, outPath, nullptr);
+
+    if (stin == nullptr)
+    {
+        arg->logError("Data attribute 'input' does not point to a mechanical state of data type '"+std::string(In::Name())+"' and none can be found in the parent node context.");
+        return false;
+    }
+
+    if (stout == nullptr)
+    {
+        arg->logError("Data attribute 'output' does not point to a mechanical state of data type '"+std::string(Out::Name())+"' and none can be found in the parent node context.");
+        return false;
+    }
+
+    if (dynamic_cast<BaseObject*>(stin) == dynamic_cast<BaseObject*>(stout))
+    {
+        // we should refuse to create mappings with the same input and output model, which may happen if a State object is missing in the child node
+        arg->logError("Both the input and the output point to the same mechanical state ('"+stin->getName()+"').");
+        return false;
+    }
+
+    return BaseMapping::canCreate(obj, context, arg);
+}
+
+template <class In, class Out>
+template<class T>
+std::string Mapping<In,Out>::shortName(const T* ptr,
+                                       objectmodel::BaseObjectDescription* arg)
+{
+    std::string name = Inherit1::shortName(ptr, arg);
+    sofa::helper::replaceAll(name, "Mapping", "Map");
+    return name;
+}
+
+template <class In, class Out>
+template<class T>
+typename T::SPtr Mapping<In,Out>::create(T*,
+                                         core::objectmodel::BaseContext* context,
+                                         core::objectmodel::BaseObjectDescription* arg)
+{
+    typename T::SPtr obj = sofa::core::objectmodel::New<T>();
+
+    if (context)
+        context->addObject(obj);
+
+    if (arg)
+    {
+        std::string inPath, outPath;
+        if (arg->getAttribute("input"))
+            inPath = arg->getAttribute("input");
+        else
+            inPath = "@../";
+
+        if (arg->getAttribute("output"))
+            outPath = arg->getAttribute("output");
+        else
+            outPath = "@./";
+
+        obj->fromModel.setPath( inPath );
+        obj->toModel.setPath( outPath );
+
+        obj->parse(arg);
+    }
+
+    return obj;
 }
 
 template <class In, class Out>

@@ -23,6 +23,7 @@
 
 #include <SofaMiscMapping/BeamLinearMapping.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/Mapping.inl>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 

@@ -23,6 +23,7 @@
 #pragma once
 #include <SofaGeneralRigid/ArticulatedSystemMapping.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/Mapping.inl>
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/BaseContext.h>

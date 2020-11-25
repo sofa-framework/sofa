@@ -22,7 +22,6 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_INL
 
-#include <SofaBaseMechanics/BarycentricMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
@@ -48,6 +47,9 @@
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperQuadSetTopology.h>
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
+
+#include <sofa/core/Mapping.inl>
 
 #include <sofa/helper/vector.h>
 

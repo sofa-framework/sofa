@@ -23,6 +23,7 @@
 
 #include "SquareMapping.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/Mapping.inl>
 #include <iostream>
 #include <sofa/simulation/Node.h>
 

@@ -23,6 +23,7 @@
 #define SOFA_JOINTSPRING_INL
 
 #include <SofaRigid/JointSpring.h>
+#include <sofa/core/Mapping.inl>
 
 namespace sofa
 {

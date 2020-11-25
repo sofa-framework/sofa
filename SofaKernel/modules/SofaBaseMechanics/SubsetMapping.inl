@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_INL
 
 #include "SubsetMapping.h"
+#include <sofa/core/Mapping.inl>
 
 #include <SofaBaseTopology/TopologySubsetData.inl>
 

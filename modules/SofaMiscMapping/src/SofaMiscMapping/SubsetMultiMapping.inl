@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/Mapping.inl>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <iostream>

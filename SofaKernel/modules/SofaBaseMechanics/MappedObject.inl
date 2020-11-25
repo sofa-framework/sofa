@@ -25,6 +25,7 @@
 #include <SofaBaseMechanics/MappedObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/Mapping.inl>
 
 namespace sofa
 {

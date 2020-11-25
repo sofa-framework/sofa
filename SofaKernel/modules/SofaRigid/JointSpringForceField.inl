@@ -24,6 +24,8 @@
 
 #include <SofaRigid/JointSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/Mapping.inl>
+
 #include <fstream>
 
 namespace sofa

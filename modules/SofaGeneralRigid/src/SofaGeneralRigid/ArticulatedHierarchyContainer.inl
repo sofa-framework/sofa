@@ -23,6 +23,8 @@
 #pragma once
 #include <SofaGeneralRigid/ArticulatedHierarchyContainer.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/Mapping.inl>
+
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Simulation.h>
 

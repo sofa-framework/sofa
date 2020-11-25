@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include "Mesh2PointMechanicalMapping.h"
+#include <sofa/core/Mapping.inl>
 
 #include <SofaTopologyMapping/Mesh2PointTopologicalMapping.h>
 

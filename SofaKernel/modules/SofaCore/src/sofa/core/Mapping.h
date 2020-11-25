@@ -24,7 +24,6 @@
 
 #include <sofa/core/BaseMapping.h>
 
-
 namespace sofa
 {
 
@@ -194,92 +193,17 @@ public:
     /// if they are compatible with the input and output model types of this
     /// mapping.
     template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        State<In>* stin = nullptr;
-        State<Out>* stout = nullptr;
-
-        std::string inPath, outPath;
-
-        if (arg->getAttribute("input"))
-            inPath = arg->getAttribute("input");
-        else
-            inPath = "@../";
-
-        context->findLinkDest(stin, inPath, nullptr);
-
-        if (arg->getAttribute("output"))
-            outPath = arg->getAttribute("output");
-        else
-            outPath = "@./";
-
-        context->findLinkDest(stout, outPath, nullptr);
-
-        if (stin == nullptr)
-        {
-            arg->logError("Data attribute 'input' does not point to a mechanical state of data type '"+std::string(In::Name())+"' and none can be found in the parent node context.");
-            return false;
-        }
-
-        if (stout == nullptr)
-        {
-            arg->logError("Data attribute 'output' does not point to a mechanical state of data type '"+std::string(Out::Name())+"' and none can be found in the parent node context.");
-            return false;
-        }
-
-        if (dynamic_cast<BaseObject*>(stin) == dynamic_cast<BaseObject*>(stout))
-        {
-            // we should refuse to create mappings with the same input and output model, which may happen if a State object is missing in the child node
-            arg->logError("Both the input and the output point to the same mechanical state ('"+stin->getName()+"').");
-            return false;
-        }
-
-        return BaseMapping::canCreate(obj, context, arg);
-    }
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg);
 
     /// Construction method called by ObjectFactory.
     ///
     /// This implementation read the input and output attributes to
     /// find the input and output models of this mapping.
     template<class T>
-    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-
-        if (context)
-            context->addObject(obj);
-
-        if (arg)
-        {
-            std::string inPath, outPath;
-            if (arg->getAttribute("input"))
-                inPath = arg->getAttribute("input");
-            else
-                inPath = "@../";
-
-            if (arg->getAttribute("output"))
-                outPath = arg->getAttribute("output");
-            else
-                outPath = "@./";
-
-            obj->fromModel.setPath( inPath );
-            obj->toModel.setPath( outPath );
-
-            obj->parse(arg);
-        }
-
-        return obj;
-    }
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg);
 
     template<class T>
-    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
-    {
-        std::string name = Inherit1::shortName(ptr, arg);
-        sofa::helper::replaceAll(name, "Mapping", "Map");
-        return name;
-    }
-
-
+    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr);
 protected:
 
     typedef BaseMapping::ForceMask ForceMask;

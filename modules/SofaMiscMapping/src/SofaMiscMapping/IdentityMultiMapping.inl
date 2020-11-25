@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/Mapping.inl>
 #include <SofaMiscMapping/IdentityMultiMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <iostream>

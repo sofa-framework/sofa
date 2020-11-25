@@ -31,6 +31,7 @@
 #include <sofa/helper/io/XspLoader.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/core/Mapping.inl>
 
 #include <cstring>
 #include <iostream>

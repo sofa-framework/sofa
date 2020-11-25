@@ -27,6 +27,7 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/Mapping.inl>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 

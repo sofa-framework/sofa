@@ -25,6 +25,7 @@
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/Mapping.inl>
 
 
 namespace sofa
