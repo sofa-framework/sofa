@@ -163,6 +163,10 @@ protected:
     MultiLink  < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseForceField, BaseLink::FLAG_NONE > l_forceField;
 
 
+    unsigned int m_nbColsJ1, m_nbColsJ2;
+    Eigen::SparseMatrix<double> m_J1eig;
+    Eigen::SparseMatrix<double> m_J2eig;
+    unsigned int m_fullMatrixSize;
     size_t m_nbInteractionForceFields;
 
     MechanicalMatrixMapper() ;
@@ -171,6 +175,7 @@ public:
 
     ////////////////////////// Inherited from BaseObject //////////////////////
     void init() override;
+    void bwdInit() override;
     ///////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from ForceField //////////////////////

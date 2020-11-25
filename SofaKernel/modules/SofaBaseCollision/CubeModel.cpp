@@ -77,6 +77,17 @@ void CubeCollisionModel::setParentOf(Index childIndex, const Vector3& min, const
     Index i = parentOf[childIndex];
     elems[i].minBBox = min;
     elems[i].maxBBox = max;
+    elems[i].coneAngle = 2*M_PI;
+}
+
+void CubeModel::setParentOf(Index childIndex, const Vector3& min, const Vector3& max, const Vector3& normal, const SReal angle)
+{
+    Index i = parentOf[childIndex];
+    elems[i].minBBox = min;
+    elems[i].maxBBox = max;
+
+    elems[i].coneAxis = normal;
+    elems[i].coneAngle = angle;
 }
 
 void CubeCollisionModel::setLeafCube(Index cubeIndex, Index childIndex)
@@ -118,11 +129,29 @@ void CubeCollisionModel::updateCube(Index index)
         Cube c = subcells.first;
         Vector3 minBBox = c.minVect();
         Vector3 maxBBox = c.maxVect();
+
+        elems[index].coneAxis = c.getConeAxis();
+        elems[index].coneAngle = c.getConeAngle();
+
+        int subCellsNb = 1;
+
         ++c;
         while(c != subcells.second)
         {
+            subCellsNb++;
             const Vector3& cmin = c.minVect();
             const Vector3& cmax = c.maxVect();
+
+            SReal alpha = std::max<SReal>(elems[index].coneAngle, c.getConeAngle());
+            if(alpha <= M_PI/2)
+            {
+                SReal beta = acos(c.getConeAxis() *  elems[index].coneAxis);
+                elems[index].coneAxis = (c.getConeAxis() + elems[index].coneAxis).normalized();
+                elems[index].coneAngle = beta/2 + alpha;
+            }
+            else
+                elems[index].coneAngle = 2*M_PI;
+            
             for (int j=0; j<3; j++)
             {
                 if (cmax[j] > maxBBox[j]) maxBBox[j] = cmax[j];
@@ -145,6 +174,7 @@ void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (!isActive() || !((getNext()==nullptr)?vparams->displayFlags().getShowCollisionModels():vparams->displayFlags().getShowBoundingCollisionModels())) return;
 
+    // The deeper in the CubeModel graph, the higher the transparency of the bounding cube lines
     int level=0;
     CollisionModel* m = getPrevious();
     float color = 1.0f;
@@ -152,13 +182,14 @@ void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
     {
         m = m->getPrevious();
         ++level;
-        color *= 0.5f;
+        color *= 0.8f;
     }
     Vec<4,float> c;
     if (isSimulated())
         c=Vec<4,float>(1.0f, 1.0f, 1.0f, color);
     else
         c=Vec<4,float>(1.0f, 1.0f, 1.0f, color);
+
 
     std::vector< Vector3 > points;
     for (Index i=0; i<size; i++)

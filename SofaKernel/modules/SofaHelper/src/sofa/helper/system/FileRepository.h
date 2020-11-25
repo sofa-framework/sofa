@@ -59,8 +59,40 @@ class SOFA_HELPER_API FileRepository
 public:
     typedef std::map< std::string, std::list<std::string> > fileKeysMap;
 
-    /// Initialize the set of paths from an environment variable.
-    FileRepository(const char* envVar = "SOFA_DATA_PATH", const char* relativePath = nullptr, const fileKeysMap& iniFilesAndKeys = {});
+    /**
+     * Initialize the set of paths using the environment variable SOFA_DATA_PATH as default.
+     */
+    FileRepository() : FileRepository("SOFA_DATA_PATH", nullptr, {}) {};
+
+    /**
+     * Initialize the set of paths using the environment variable specified by the parameter envVar.
+     */
+    FileRepository(const char* envVar) : FileRepository(envVar, nullptr, {}) {};
+
+    /**
+     * Initialize the set of paths using the environment variable specified by the parameter envVar and the relative path
+     * specified by the parameter relativePath.
+     */
+    FileRepository(const char* envVar,  const char* relativePath) : FileRepository(envVar, relativePath, {}) {};
+
+    /**
+     * Initialize the set of paths using the environment variable specified by the parameter envVar and the relative paths
+     * specified by the parameter paths.
+     */
+    FileRepository(const char* envVar,  const std::vector<std::string> & paths) : FileRepository(envVar, paths, {}) {};
+
+    /**
+     * Initialize the set of paths using the environment variable specified by the parameter envVar, the relative path
+     * specified by the parameter relativePath and the ini files and respective keys specified by the paramter iniFilesAndKeys.
+     */
+    FileRepository(const char* envVar, const char* relativePath, const fileKeysMap& iniFilesAndKeys)
+    : FileRepository(envVar, {relativePath?std::string(relativePath):""}, iniFilesAndKeys) {}
+
+    /**
+     * Initialize the set of paths using the environment variable specified by the parameter envVar, the relative paths
+     * specified by the parameter paths and the ini files and respective keys specified by the paramter iniFilesAndKeys.
+     */
+    FileRepository(const char* envVar, const std::vector<std::string> & paths, const fileKeysMap& iniFilesAndKeys);
 
     ~FileRepository();
 
