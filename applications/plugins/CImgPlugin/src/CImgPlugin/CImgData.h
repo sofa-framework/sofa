@@ -566,9 +566,14 @@ public:
 };
 
 ////// infos for Data
+class BaseImageTypeInfo
+{
+public:
+    virtual ~BaseImageTypeInfo(){}
+};
 
 template<class TDataType>
-struct ImageTypeInfo
+struct ImageTypeInfo : public BaseImageTypeInfo
 {
     typedef TDataType DataType;
     typedef typename DataType::T BaseType;

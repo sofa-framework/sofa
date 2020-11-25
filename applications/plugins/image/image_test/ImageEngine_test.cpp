@@ -292,15 +292,17 @@ struct ImageDataEngine_test : public DataEngine_test<DataEngineType>
         for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
         {
             core::objectmodel::BaseData* data = static_cast<core::objectmodel::BaseData*>(parent_inputs[i]);
+            /// Get the general type info describing what is in the data field
+            auto typeinfo = data->getValueTypeInfo();
 
-            const defaulttype::AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-
-            if( typeinfo->name().find("Image") != std::string::npos || typeinfo->name().find("BranchingImage") != std::string::npos )
+            /// To detect that the object in the typeinfo is in fact a BaseImageTypeInfo and thus
+            /// the data field contains something inheriting from BaseImage.
+            auto imgInfo = dynamic_cast<const defaulttype::BaseImageTypeInfo*>(typeinfo);
+            if( imgInfo )
             {
                 defaulttype::BaseImage* img = static_cast<defaulttype::BaseImage*>( data->beginEditVoidPtr() );
                 img->setDimensions( defaulttype::BaseImage::imCoord(2,2,2,1,1) );
                 img->fill(1.0);
-                data->endEditVoidPtr();
             }
         }
     }

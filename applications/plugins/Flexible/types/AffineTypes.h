@@ -22,6 +22,7 @@
 #ifndef FLEXIBLE_AffineTYPES_H
 #define FLEXIBLE_AffineTYPES_H
 
+#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

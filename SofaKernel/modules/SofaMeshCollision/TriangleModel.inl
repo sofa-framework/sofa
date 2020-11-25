@@ -51,6 +51,7 @@ template<class DataTypes>
 TriangleCollisionModel<DataTypes>::TriangleCollisionModel()
     : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
     , d_computeNormals(initData(&d_computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
+    , d_useCurvature(initData(&d_useCurvature, false, "useCurvature", "use the curvature of the mesh to avoid some self-intersection test"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_mstate(nullptr)
     , m_topology(nullptr)
@@ -160,11 +161,11 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
     if (nquads == 0) // only triangles
     {
         resize(ntris);
-        m_triangles = & m_topology->getTriangles();
+        m_triangles = &m_topology->getTriangles();
     }
     else
     {
-        const unsigned newsize = ntris+2*nquads;
+        const unsigned newsize = ntris + 2 * nquads;
         const unsigned npoints = m_mstate->getSize();
 
         m_triangles = &m_internalTriangles;
@@ -172,29 +173,29 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
         resize(newsize);
 
         int index = 0;
-        for (unsigned i=0; i<ntris; i++)
+        for (unsigned i = 0; i < ntris; i++)
         {
             core::topology::BaseMeshTopology::Triangle idx = m_topology->getTriangle(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
             {
-                msg_error() << "Vertex index out of range in triangle " << i << ": " << idx[0] << " " << idx[1] << " " << idx[2] <<" ( total points=" << npoints << ")";
-                if (idx[0] >= npoints) idx[0] = npoints-1;
-                if (idx[1] >= npoints) idx[1] = npoints-1;
-                if (idx[2] >= npoints) idx[2] = npoints-1;
+                msg_error() << "Vertex index out of range in triangle " << i << ": " << idx[0] << " " << idx[1] << " " << idx[2] << " ( total points=" << npoints << ")";
+                if (idx[0] >= npoints) idx[0] = npoints - 1;
+                if (idx[1] >= npoints) idx[1] = npoints - 1;
+                if (idx[2] >= npoints) idx[2] = npoints - 1;
             }
             m_internalTriangles[index] = idx;
             ++index;
         }
-        for (unsigned i=0; i<nquads; i++)
+        for (unsigned i = 0; i < nquads; i++)
         {
             core::topology::BaseMeshTopology::Quad idx = m_topology->getQuad(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
             {
                 msg_error() << "Vertex index out of range in quad " << i << ": " << idx[0] << " " << idx[1] << " " << idx[2] << " " << idx[3] << " ( total points=" << npoints << ")";
-                if (idx[0] >= npoints) idx[0] = npoints-1;
-                if (idx[1] >= npoints) idx[1] = npoints-1;
-                if (idx[2] >= npoints) idx[2] = npoints-1;
-                if (idx[3] >= npoints) idx[3] = npoints-1;
+                if (idx[0] >= npoints) idx[0] = npoints - 1;
+                if (idx[1] >= npoints) idx[1] = npoints - 1;
+                if (idx[2] >= npoints) idx[2] = npoints - 1;
+                if (idx[3] >= npoints) idx[3] = npoints - 1;
             }
             m_internalTriangles[index][0] = idx[1];
             m_internalTriangles[index][1] = idx[2];
@@ -302,7 +303,11 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
                 t.n() = cross(pt2-pt1,pt3-pt1);
                 t.n().normalize();
             }
-            cubeModel->setParentOf(i, minElem, maxElem); // define the bounding box of the current triangle
+
+            if(d_useCurvature.getValue())
+                cubeModel->setParentOf(i, minElem, maxElem, t.n()); // define the bounding box of the current triangle
+            else
+                cubeModel->setParentOf(i, minElem, maxElem);
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
@@ -367,7 +372,10 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt,
             t.n() = cross(pt2-pt1,pt3-pt1);
             t.n().normalize();
 
-            cubeModel->setParentOf(i, minElem, maxElem);
+            if(d_useCurvature.getValue())
+                cubeModel->setParentOf(i, minElem, maxElem, t.n(), acos(cross(pt2v-pt1v,pt3v-pt1v).normalized() * t.n()));
+            else
+                cubeModel->setParentOf(i, minElem, maxElem);
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
@@ -398,7 +406,9 @@ int TriangleCollisionModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
         {
             const sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex& tav = m_topology->getTrianglesAroundVertex(t[j]);
             if (tav[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
+            {
                 f |= (FLAG_P1 << j);
+            }
         }
 
         const sofa::core::topology::BaseMeshTopology::EdgesInTriangle& e = m_topology->getEdgesInTriangle(i);

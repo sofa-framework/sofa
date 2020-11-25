@@ -357,6 +357,35 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "TetrahedralCorotationalFEMForceField", Pluginized("v20.12", "SofaGeneralSimpleFem") },
     { "TriangularFEMForceFieldOptim", Pluginized("v20.12", "SofaGeneralSimpleFem") },
 
+    // SofaGeneralTopology was pluginized in #1583
+    { "CubeTopology", Pluginized("v20.12", "SofaGeneralTopology") },
+    { "CylinderGridTopology", Pluginized("v20.12", "SofaGeneralTopology") },
+    { "SphereGridTopology", Pluginized("v20.12", "SofaGeneralTopology") },
+    { "SphereQuadTopology", Pluginized("v20.12", "SofaGeneralTopology") },
+
+    // SofaGeneralTopology was pluginized in #1586
+    { "CenterPointTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Edge2QuadTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Hexa2QuadTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Hexa2TetraTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "IdentityTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Mesh2PointMechanicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Mesh2PointTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Quad2TriangleTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "SimpleTesselatedHexaTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "SimpleTesselatedTetraMechanicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "SimpleTesselatedTetraTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "SubsetTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Tetra2TriangleTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Triangle2EdgeTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+
+    // SofaUserInteraction was pluginized in #15XX
+    { "MechanicalStateController", Pluginized("v20.12", "SofaUserInteraction") },
+    { "MouseInteractor", Pluginized("v20.12", "SofaUserInteraction") },
+    { "RayModel", Pluginized("v20.12", "SofaUserInteraction") },
+    { "RayTraceDetection", Pluginized("v20.12", "SofaUserInteraction") },
+    { "SleepController", Pluginized("v20.12", "SofaUserInteraction") },
+
     /***********************/
     // REMOVED SINCE v20.06
 
