@@ -87,18 +87,18 @@ void TopologyChecker::reinit()
 
 bool TopologyChecker::checkContainer()
 {
-    msg_info() << "CheckContainer TopologyType: " << parseTopologyElementTypeToString(m_topology->getTopologyType());
+    msg_info() << "CheckContainer TopologyType: " << parseTopologyObjectTypeToString(m_topology->getTopologyType());
 
     bool result = false;
-    if (m_topology->getTopologyType() == TopologyElementType::HEXAHEDRON)
+    if (m_topology->getTopologyType() == TopologyObjectType::HEXAHEDRON)
         result = checkTetrahedronTopology();
-    if (m_topology->getTopologyType() == TopologyElementType::TETRAHEDRON)
+    if (m_topology->getTopologyType() == TopologyObjectType::TETRAHEDRON)
         result = checkTetrahedronTopology();
-    else if (m_topology->getTopologyType() == TopologyElementType::QUAD)
+    else if (m_topology->getTopologyType() == TopologyObjectType::QUAD)
         result = checkTriangleTopology();
-    else if (m_topology->getTopologyType() == TopologyElementType::TRIANGLE)
+    else if (m_topology->getTopologyType() == TopologyObjectType::TRIANGLE)
         result = checkQuadTopology();
-    else if (m_topology->getTopologyType() == TopologyElementType::EDGE)
+    else if (m_topology->getTopologyType() == TopologyObjectType::EDGE)
         result = checkEdgeTopology();
 
     return result;
@@ -109,7 +109,7 @@ bool TopologyChecker::checkContainer()
 bool TopologyChecker::checkEdgeTopology()
 {
     bool ret = true;
-    int nbE = m_topology->getNbEdges();
+    sofa::Size nbE = m_topology->getNbEdges();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
 
     if (nbE != my_edges.size())
@@ -119,7 +119,7 @@ bool TopologyChecker::checkEdgeTopology()
     }
 
     // check edge buffer
-    for (std::size_t i = 0; i < nbE; ++i)
+    for (sofa::Index i = 0; i < nbE; ++i)
     {
         const auto& edge = my_edges[i];
         if (edge[0] == edge[1]) {
@@ -129,10 +129,10 @@ bool TopologyChecker::checkEdgeTopology()
     }
 
     // check cross element
-    std::size_t nbP = m_topology->getNbPoints();
+    sofa::Size nbP = m_topology->getNbPoints();
 
     std::set<int> edgeSet;
-    for (std::size_t i = 0; i < nbP; ++i)
+    for (sofa::Index i = 0; i < nbP; ++i)
     {
         const auto& EdgesAV = m_topology->getEdgesAroundVertex(i);
         for (size_t j = 0; j < EdgesAV.size(); ++j)
@@ -163,7 +163,7 @@ bool TopologyChecker::checkEdgeTopology()
 bool TopologyChecker::checkTriangleTopology()
 {
     bool ret = true;
-    int nbT = m_topology->getNbTriangles();
+    sofa::Size nbT = m_topology->getNbTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& my_triangles = m_topology->getTriangles();
 
     if (nbT != my_triangles.size())
@@ -173,7 +173,7 @@ bool TopologyChecker::checkTriangleTopology()
     }
 
     // check triangle buffer
-    for (std::size_t i = 0; i < nbT; ++i)
+    for (sofa::Index i = 0; i < nbT; ++i)
     {
         const auto& triangle = my_triangles[i];
         if (triangle[0] == triangle[1] || triangle[0] == triangle[2] || triangle[1] == triangle[2]) {
@@ -183,11 +183,11 @@ bool TopologyChecker::checkTriangleTopology()
     }
 
     // check cross element
-    std::size_t nbP = m_topology->getNbPoints();
+    sofa::Size nbP = m_topology->getNbPoints();
 
     // check triangles around vertex
     std::set <int> triangleSet;
-    for (std::size_t i = 0; i < nbP; ++i)
+    for (sofa::Index i = 0; i < nbP; ++i)
     {
         const auto& triAV = m_topology->getTrianglesAroundVertex(i);
         for (size_t j = 0; j < triAV.size(); ++j)
@@ -211,10 +211,10 @@ bool TopologyChecker::checkTriangleTopology()
     }
     
 
-    int nbE = m_topology->getNbEdges();
+    sofa::Size nbE = m_topology->getNbEdges();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
     // check edges in triangles
-    for (std::size_t i = 0; i < nbT; ++i)
+    for (sofa::Index i = 0; i < nbT; ++i)
     {
         const Topology::Triangle& triangle = my_triangles[i];
         const auto& eInTri = m_topology->getEdgesInTriangle(i);
@@ -238,7 +238,7 @@ bool TopologyChecker::checkTriangleTopology()
     // check triangles around edges
     // check m_trianglesAroundEdge using checked m_edgesInTriangle
     triangleSet.clear();
-    for (size_t edgeId = 0; edgeId < nbE; ++edgeId)
+    for (sofa::Index edgeId = 0; edgeId < nbE; ++edgeId)
     {
         const BaseMeshTopology::TrianglesAroundEdge& tes = m_topology->getTrianglesAroundEdge(edgeId);
         for (auto triId : tes)
@@ -272,7 +272,7 @@ bool TopologyChecker::checkQuadTopology()
 {
     std::cout << "TopologyChecker::checkQuadTopology()" << std::endl;
     bool ret = true;
-    int nbQ = m_topology->getNbQuads();
+    sofa::Size nbQ = m_topology->getNbQuads();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& my_quads = m_topology->getQuads();
 
     if (nbQ != my_quads.size())
@@ -282,7 +282,7 @@ bool TopologyChecker::checkQuadTopology()
     }
 
     // check triangle buffer
-    for (std::size_t i = 0; i < nbQ; ++i)
+    for (sofa::Index i = 0; i < nbQ; ++i)
     {
         const auto& quad = my_quads[i];
         for (int j = 0; j < 3; ++j)
@@ -299,11 +299,11 @@ bool TopologyChecker::checkQuadTopology()
     }
 
     // check cross element
-    std::size_t nbP = m_topology->getNbPoints();
+    sofa::Size nbP = m_topology->getNbPoints();
 
     // check quads around vertex
     std::set <int> quadSet;
-    for (std::size_t i = 0; i < nbP; ++i)
+    for (sofa::Index i = 0; i < nbP; ++i)
     {
         const auto& quadAV = m_topology->getQuadsAroundVertex(i);
         for (size_t j = 0; j < quadAV.size(); ++j)
@@ -327,10 +327,10 @@ bool TopologyChecker::checkQuadTopology()
     }
 
 
-    int nbE = m_topology->getNbEdges();
+    sofa::Size nbE = m_topology->getNbEdges();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
     // check edges in quads
-    for (std::size_t i = 0; i < nbQ; ++i)
+    for (sofa::Index i = 0; i < nbQ; ++i)
     {
         const Topology::Quad& quad = my_quads[i];
         const auto& eInQ = m_topology->getEdgesInQuad(i);
@@ -355,7 +355,7 @@ bool TopologyChecker::checkQuadTopology()
     // check quads around edges
     // check m_quadsAroundEdge using checked m_edgesInQuad
     quadSet.clear();
-    for (size_t edgeId = 0; edgeId < nbE; ++edgeId)
+    for (sofa::Index edgeId = 0; edgeId < nbE; ++edgeId)
     {
         const BaseMeshTopology::QuadsAroundEdge& qAE = m_topology->getQuadsAroundEdge(edgeId);
         for (auto qId : qAE)
@@ -388,7 +388,7 @@ bool TopologyChecker::checkQuadTopology()
 bool TopologyChecker::checkTetrahedronTopology()
 {
     bool ret = true;
-    int nbT = m_topology->getNbTetrahedra();
+    sofa::Size nbT = m_topology->getNbTetrahedra();
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& my_tetrahedra = m_topology->getTetrahedra();
 
     if (nbT != my_tetrahedra.size())
@@ -398,7 +398,7 @@ bool TopologyChecker::checkTetrahedronTopology()
     }
 
     // check tetrahedron buffer
-    for (std::size_t i = 0; i < nbT; ++i)
+    for (sofa::Index i = 0; i < nbT; ++i)
     {
         const auto& tetra = my_tetrahedra[i];
         for (int j = 0; j < 3; ++j)
@@ -415,11 +415,11 @@ bool TopologyChecker::checkTetrahedronTopology()
     }
 
     // check cross element
-    std::size_t nbP = m_topology->getNbPoints();
+    sofa::Size nbP = m_topology->getNbPoints();
 
     // check tetrahedra around vertex
     std::set <int> tetrahedronSet;
-    for (std::size_t pId = 0; pId < nbP; ++pId)
+    for (sofa::Index pId = 0; pId < nbP; ++pId)
     {
         const auto& tetraAV = m_topology->getTetrahedraAroundVertex(pId);
         for (auto tetraId : tetraAV )
@@ -447,10 +447,10 @@ bool TopologyChecker::checkTetrahedronTopology()
 
 
 
-    int nbTri = m_topology->getNbTriangles();
+    sofa::Size nbTri = m_topology->getNbTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& my_triangles = m_topology->getTriangles();
     // check first m_trianglesInTetrahedron
-    for (std::size_t tetraId = 0; tetraId < nbT; ++tetraId)
+    for (sofa::Index tetraId = 0; tetraId < nbT; ++tetraId)
     {
         const Topology::Tetrahedron& tetrahedron = my_tetrahedra[tetraId];
         const auto& triInTetra = m_topology->getTrianglesInTetrahedron(tetraId);
@@ -474,7 +474,7 @@ bool TopologyChecker::checkTetrahedronTopology()
     // check tetrahedra around triangles
     // check m_tetrahedraAroundTriangle using checked m_trianglesInTetrahedron
     tetrahedronSet.clear();
-    for (size_t triId = 0; triId < nbTri; ++triId)
+    for (sofa::Index triId = 0; triId < nbTri; ++triId)
     {
         const BaseMeshTopology::TetrahedraAroundTriangle& tes = m_topology->getTetrahedraAroundTriangle(triId);
         for (auto tetraId : tes)
@@ -502,10 +502,10 @@ bool TopologyChecker::checkTetrahedronTopology()
 
 
 
-    int nbE = m_topology->getNbEdges();
+    sofa::Size nbE = m_topology->getNbEdges();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
     // check edges in tetrahedra
-    for (std::size_t i = 0; i < nbT; ++i)
+    for (sofa::Index i = 0; i < nbT; ++i)
     {
         const Topology::Tetrahedron& tetrahedron = my_tetrahedra[i];
         const auto& eInTetra = m_topology->getEdgesInTetrahedron(i);
@@ -529,7 +529,7 @@ bool TopologyChecker::checkTetrahedronTopology()
     // check tetrahedra around edges
     // check m_tetrahedraAroundEdge using checked m_edgesInTetrahedron
     tetrahedronSet.clear();
-    for (size_t edgeId = 0; edgeId < nbE; ++edgeId)
+    for (sofa::Index edgeId = 0; edgeId < nbE; ++edgeId)
     {
         const BaseMeshTopology::TetrahedraAroundEdge& tes = m_topology->getTetrahedraAroundEdge(edgeId);
         for (auto tetraId : tes)
@@ -565,7 +565,7 @@ bool TopologyChecker::checkTetrahedronTopology()
 bool TopologyChecker::checkHexahedronTopology()
 {
     bool ret = true;
-    int nbH = m_topology->getNbHexahedra();
+    sofa::Size nbH = m_topology->getNbHexahedra();
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& my_hexahedra = m_topology->getHexahedra();
 
     if (nbH != my_hexahedra.size())
@@ -575,7 +575,7 @@ bool TopologyChecker::checkHexahedronTopology()
     }
 
     // check hexahedron buffer
-    for (std::size_t i = 0; i < nbH; ++i)
+    for (sofa::Index i = 0; i < nbH; ++i)
     {
         const auto& hexahedron = my_hexahedra[i];
         for (int j = 0; j < 7; ++j)
@@ -592,11 +592,11 @@ bool TopologyChecker::checkHexahedronTopology()
     }
 
     // check cross element
-    std::size_t nbP = m_topology->getNbPoints();
+    sofa::Size nbP = m_topology->getNbPoints();
 
     // check hexahedra around vertex
     std::set <int> hexahedronSet;
-    for (std::size_t pId = 0; pId < nbP; ++pId)
+    for (sofa::Index pId = 0; pId < nbP; ++pId)
     {
         const auto& hexaAV = m_topology->getHexahedraAroundVertex(pId);
         for (auto hexaId : hexaAV)
@@ -629,10 +629,10 @@ bool TopologyChecker::checkHexahedronTopology()
 
 
 
-    int nbQ = m_topology->getNbQuads();
+    sofa::Size nbQ = m_topology->getNbQuads();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& my_quads = m_topology->getQuads();
     // check first m_quadsInHexahedron
-    for (std::size_t hexaId = 0; hexaId < nbH; ++hexaId)
+    for (sofa::Index hexaId = 0; hexaId < nbH; ++hexaId)
     {
         const Topology::Hexahedron& hexahedron = my_hexahedra[hexaId];
         const auto& qInHexa = m_topology->getQuadsInHexahedron(hexaId);
@@ -656,7 +656,7 @@ bool TopologyChecker::checkHexahedronTopology()
     // check hexahedra around triangles
     // check m_hexahedraAroundTriangle using checked m_trianglesInHexahedron
     hexahedronSet.clear();
-    for (size_t qId = 0; qId < nbQ; ++qId)
+    for (sofa::Index qId = 0; qId < nbQ; ++qId)
     {
         const BaseMeshTopology::HexahedraAroundQuad& hAq = m_topology->getHexahedraAroundQuad(qId);
         for (auto hexaId : hAq)
@@ -688,10 +688,10 @@ bool TopologyChecker::checkHexahedronTopology()
     }
 
 
-    int nbE = m_topology->getNbEdges();
+    sofa::Size nbE = m_topology->getNbEdges();
     const sofa::core::topology::BaseMeshTopology::SeqEdges& my_edges = m_topology->getEdges();
     // check edges in hexahedra
-    for (std::size_t i = 0; i < nbH; ++i)
+    for (sofa::Index i = 0; i < nbH; ++i)
     {
         const Topology::Hexahedron& hexahedron = my_hexahedra[i];
         const auto& eInHexa = m_topology->getEdgesInHexahedron(i);
@@ -715,7 +715,7 @@ bool TopologyChecker::checkHexahedronTopology()
     // check hexahedra around edges
     // check m_hexahedraAroundEdge using checked m_edgesInHexahedron
     hexahedronSet.clear();
-    for (size_t edgeId = 0; edgeId < nbE; ++edgeId)
+    for (sofa::Index edgeId = 0; edgeId < nbE; ++edgeId)
     {
         const BaseMeshTopology::HexahedraAroundEdge& hAe = m_topology->getHexahedraAroundEdge(edgeId);
         for (auto hexaId : hAe)
