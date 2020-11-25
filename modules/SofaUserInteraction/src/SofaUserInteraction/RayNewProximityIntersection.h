@@ -19,32 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaUserInteraction/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
+#include <SofaBaseCollision/NewProximityIntersection.h>
+#include <sofa/helper/FnDispatcher.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMeshCollision/LineModel.h>
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaBaseCollision/CubeModel.h>
+#include <SofaUserInteraction/RayModel.h>
+#include <SofaBaseCollision/OBBModel.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
+class SOFA_SOFAUSERINTERACTION_API RayNewProximityIntersection : public core::collision::BaseIntersector
 {
+    typedef NewProximityIntersection::OutputVector OutputVector;
+
+public:
+    RayNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
+
+	bool testIntersection(Ray& t1, Triangle& t2);
+    int computeIntersection(Ray& t1, Triangle& t2, OutputVector*);
+
+    // why rigidsphere has a different collision detection compared to RayDiscreteIntersection?
+    bool testIntersection(Ray& rRay, RigidSphere& rSphere);
+    int computeIntersection(Ray& rRay, RigidSphere& rSphere, OutputVector*);
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+protected:
 
-    initGeneralLoader();
-    initConstraint();
-}
+    NewProximityIntersection* intersection;
+};
 
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

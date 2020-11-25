@@ -19,32 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace sofa
-{
+#define SOFAUSERINTERACTION_VERSION @PROJECT_VERSION@
 
-namespace component
-{
-
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-    initConstraint();
-}
-
-
-} // namespace component
-
-} // namespace sofa
+#ifdef SOFA_BUILD_SOFAUSERINTERACTION
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAUSERINTERACTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAUSERINTERACTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif

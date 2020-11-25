@@ -19,32 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#define SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_CPP
+#include <SofaUserInteraction/InteractionPerformer.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/Factory.inl>
 
-namespace sofa
+namespace sofa::helper
 {
-
-namespace component
-{
-
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-    initConstraint();
-}
-
-
-} // namespace component
-
-} // namespace sofa
+//explicit instanciation of our factory class.
+template class SOFA_SOFAUSERINTERACTION_API Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
+} //namespace sofa::helper

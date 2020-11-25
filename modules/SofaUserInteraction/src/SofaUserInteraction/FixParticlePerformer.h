@@ -19,32 +19,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaUserInteraction/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
 
-namespace sofa
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaUserInteraction/MouseInteractor.h>
+
+namespace sofa::component::collision
 {
 
-namespace component
+class FixParticlePerformerConfiguration
 {
+public:
+    void setStiffness(SReal s) {stiffness=s;}
+protected:
+    SReal stiffness;
+};
 
-
-void initSofaGeneral()
+template <class DataTypes>
+class FixParticlePerformer: public TInteractionPerformer<DataTypes>, public FixParticlePerformerConfiguration
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+public:
+    typedef sofa::component::interactionforcefield::StiffSpringForceField< DataTypes >   MouseForceField;
+    typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
 
-    initGeneralLoader();
-    initConstraint();
-}
+    FixParticlePerformer(BaseMouseInteractor *i);
+
+    void start();
+    void execute();
+    void draw(const core::visual::VisualParams* vparams);
+
+protected:
+    MouseContainer* getFixationPoints(const BodyPicked &b, helper::vector<unsigned int> &points, typename DataTypes::Coord &fixPoint);
+
+    std::vector< simulation::Node * > fixations;
+};
 
 
-} // namespace component
+#if  !defined(SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_CPP)
+extern template class SOFA_SOFAUSERINTERACTION_API FixParticlePerformer<defaulttype::Vec3Types>;
 
-} // namespace sofa
+#endif
+
+
+} // namespace sofa::component::collision

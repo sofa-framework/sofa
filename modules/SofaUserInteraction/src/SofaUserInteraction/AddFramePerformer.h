@@ -19,32 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaUserInteraction/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-#include <SofaConstraint/initConstraint.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <../applications/plugins/frame/Blending.h>
 
-namespace sofa
+
+namespace sofa::component::collision
 {
+using sofa::defaulttype::StdRigidTypes;
 
-namespace component
+template <class DataTypes>
+class AddFramePerformer: public TInteractionPerformer<DataTypes>
 {
+    typedef typename sofa::defaulttype::BaseFrameBlendingMapping<true> FBMapping;
+
+public:
+    AddFramePerformer(BaseMouseInteractor *i);
+    ~AddFramePerformer();
+
+    void start();
+    void execute();
+
+};
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
 
-    initGeneralLoader();
-    initConstraint();
+#if  !defined(SOFA_COMPONENT_COLLISION_ADDFRAMEPERFORMER_CPP)
+extern template class SOFA_USER_INTERACTION_API  AddFramePerformer<defaulttype::Vec3Types>;
+
+#endif
+
+
+}
+}
 }
 
-
-} // namespace component
-
-} // namespace sofa
+#endif
