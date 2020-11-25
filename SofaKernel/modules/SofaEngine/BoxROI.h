@@ -117,13 +117,6 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T* tObj, BaseContext* context, BaseObjectDescription* arg)
-    {
-        return BaseObject::create(tObj, context, arg);
-    }
-
 public:
     //Input
     Data<vector<Vec6> >  d_alignedBoxes; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax
