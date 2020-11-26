@@ -19,28 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaGeneralLoader/config.h>
+#include <sofa/core/loader/MeshLoader.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-
-namespace sofa
+namespace sofa::component::loader
 {
 
-namespace component
+// Format doc: http://en.wikipedia.org/wiki/STL_(file_format)
+class SOFA_SOFAGENERALLOADER_API MeshSTLLoader : public sofa::core::loader::MeshLoader
 {
+public:
+    SOFA_CLASS(MeshSTLLoader,sofa::core::loader::MeshLoader);
+protected:
+    MeshSTLLoader();
 
+protected:
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    // ascii
+    bool readSTL(std::ifstream& file);
 
-}
+    // binary
+    bool readBinarySTL(const char* filename);
 
+private:
+    void doClearBuffers() override;
+    bool doLoad() override;
 
-} // namespace component
+public:
+    //Add Data here
+    Data <unsigned int> _headerSize; ///< Size of the header binary file (just before the number of facet).
+    Data <bool> _forceBinary; ///< Force reading in binary mode. Even in first keyword of the file is solid.
+    Data <bool> d_mergePositionUsingMap; ///< Since positions are duplicated in a STL, they have to be merged. Using a map to do so will temporarily duplicate memory but should be more efficient. Disable it if memory is really an issue.
 
-} // namespace sofa
+};
+
+} //namespace sofa::component::loader

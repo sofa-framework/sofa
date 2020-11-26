@@ -4,6 +4,7 @@
     <RequiredPlugin name='SofaMiscTopology'/>
     <RequiredPlugin name='SofaMiscFem'/>
     <RequiredPlugin name='SofaTopologyMapping'/>
+    <RequiredPlugin name='SofaGeneralLoader'/>
     
     <VisualStyle displayFlags="showVisual showWireframe" />
     <DefaultPipeline name="default0" verbose="0" />

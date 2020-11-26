@@ -45,6 +45,10 @@ set(SOURCE_FILES
     ${SOFAVALIDATION_SRC}/Monitor.cpp
     )
 
+find_package(SofaBase REQUIRED) # SofaBaseCollision
+find_package(SofaCommon REQUIRED) # SofaMeshCollision SofaLoader
+find_package(SofaGeneralLoader REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseCollision SofaLoader SofaMeshCollision SofaGeneralLoader)
 

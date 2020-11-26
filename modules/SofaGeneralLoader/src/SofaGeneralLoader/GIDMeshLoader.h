@@ -19,28 +19,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaGeneralLoader/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
+#include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa
+
+namespace sofa::component::loader
 {
 
-namespace component
+class SOFA_SOFAGENERALLOADER_API GIDMeshLoader : public sofa::core::loader::MeshLoader
 {
+public :
+	SOFA_CLASS(GIDMeshLoader, sofa::core::loader::MeshLoader);
+
+    typedef sofa::core::topology::Topology::Edge Edge;
+    typedef sofa::core::topology::Topology::Triangle Triangle;
+    typedef sofa::core::topology::Topology::Quad Quad;
+    typedef sofa::core::topology::Topology::Tetrahedron Tetrahedron;
+    typedef sofa::core::topology::Topology::Hexahedron Hexahedron;
+    typedef sofa::defaulttype::Vector3 Coord;
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+public :
+    bool doLoad() override;
 
-}
+protected :
+	enum ElementType{ LINEAR, TRIANGLE, QUADRILATERAL, TETRAHEDRA, HEXAHEDRA, PRISM, PYRAMID, SPHERE, CIRCLE };
 
+	GIDMeshLoader();
+	~GIDMeshLoader() override;
 
-} // namespace component
+	bool readGID(std::ifstream& file);
 
-} // namespace sofa
+    void doClearBuffers() override;
+
+private :
+
+	bool readLinearElements(std::ifstream& file);
+	bool readTriangleElements(std::ifstream& file);
+	bool readQuadrilateralElements(std::ifstream& file);
+	bool readTetrahedralElements(std::ifstream& file);
+	bool readHexahedralElements(std::ifstream& file);
+
+private :
+	unsigned short m_dimensions;
+	ElementType m_eltType;
+	unsigned short m_nNode;
+
+};
+
+} //namespace sofa::component::loader

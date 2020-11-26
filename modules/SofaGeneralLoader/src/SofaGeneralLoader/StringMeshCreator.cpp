@@ -19,28 +19,55 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#include <sofa/core/ObjectFactory.h>
+#include <SofaGeneralLoader/StringMeshCreator.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/SetDirectory.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-
-namespace sofa
+namespace sofa::component::loader
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
+using namespace sofa::core::loader;
+using helper::vector;
+
+int StringMeshCreatorClass = core::RegisterObject("Procedural creation of a one-dimensional mesh.")
+        .add< StringMeshCreator >()
+        ;
 
 
-void initSofaGeneral()
+
+StringMeshCreator::StringMeshCreator(): MeshLoader()
+  , resolution( initData(&resolution,(unsigned)2,"resolution","Number of vertices"))
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+}
+
+void StringMeshCreator::doClearBuffers()
+{
 
 }
 
 
-} // namespace component
+bool StringMeshCreator::doLoad()
+{
+    helper::WriteAccessor<Data<vector<sofa::defaulttype::Vector3> > > my_positions (d_positions);
+    unsigned numX = resolution.getValue();
 
-} // namespace sofa
+    // Warning: Vertex creation order must be consistent with method vert.
+    for(unsigned x=0; x<numX; x++)
+    {
+        my_positions.push_back( Vector3(x * 1./(numX-1), 0, 0) );
+    }
+    helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
+    for( unsigned e=1; e<numX; e++ )
+    {
+        my_edges.push_back( Edge(e-1,e) );
+    }
+    d_edges.endEdit();
+
+    return true;
+
+}
+
+
+} // namespace sofa::component::loader
