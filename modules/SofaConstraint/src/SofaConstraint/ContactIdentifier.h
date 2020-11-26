@@ -19,30 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaConstraint/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <sofa/core/collision/DetectionOutput.h>
+#include <list>
 
-namespace sofa
+
+namespace sofa::component::collision
 {
 
-namespace component
+class SOFA_SOFACONSTRAINT_API ContactIdentifier
 {
-
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
+public:
+    ContactIdentifier()
     {
-        first = false;
+        if (!availableId.empty())
+        {
+            id = availableId.front();
+            availableId.pop_front();
+        }
+        else
+            id = cpt++;
     }
 
-    initGeneralLoader();
+    virtual ~ContactIdentifier()
+    {
+        availableId.push_back(id);
+    }
+
+protected:
+    static sofa::core::collision::DetectionOutput::ContactId cpt;
+    sofa::core::collision::DetectionOutput::ContactId id;
+    static std::list<sofa::core::collision::DetectionOutput::ContactId> availableId;
+};
+
+inline long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x, sofa::core::collision::DetectionOutput::ContactId y)
+{
+    // Polynome de Cantor de NxN sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
+    return (long)(((x+y)*(x+y)+3*x+y)/2);
 }
 
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision

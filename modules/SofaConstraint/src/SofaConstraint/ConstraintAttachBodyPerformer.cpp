@@ -19,30 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#define SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <SofaConstraint/ConstraintAttachBodyPerformer.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/Factory.inl>
+#include <SofaRigid/JointSpringForceField.inl>
+#include <SofaDeformable/SpringForceField.inl>
+#include <SofaDeformable/StiffSpringForceField.inl>
 
-namespace sofa
+
+using namespace sofa::component::interactionforcefield;
+using namespace sofa::core::objectmodel;
+namespace sofa::component::collision
 {
 
-namespace component
-{
+template class SOFA_SOFACONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, ConstraintAttachBodyPerformer<defaulttype::Vec3Types> >  ConstraintAttachBodyPerformerVec3dClass("ConstraintAttachBody",true);
 
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision

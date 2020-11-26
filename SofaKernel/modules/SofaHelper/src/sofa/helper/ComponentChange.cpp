@@ -379,7 +379,36 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "Tetra2TriangleTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
     { "Triangle2EdgeTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
 
+    // SofaUserInteraction was pluginized in #1588
+    { "MechanicalStateController", Pluginized("v20.12", "SofaUserInteraction") },
+    { "MouseInteractor", Pluginized("v20.12", "SofaUserInteraction") },
+    { "RayModel", Pluginized("v20.12", "SofaUserInteraction") },
+    { "RayTraceDetection", Pluginized("v20.12", "SofaUserInteraction") },
+    { "SleepController", Pluginized("v20.12", "SofaUserInteraction") },
 
+    // SofaConstraint was pluginized in #1592
+    { "BilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "ConstraintAnimationLoop", Pluginized("v20.12", "SofaConstraint") },
+    { "DistanceLMConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "DistanceLMContactConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "DOFBlockerLMConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "FixedLMConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "FreeMotionAnimationLoop", Pluginized("v20.12", "SofaConstraint") },
+    { "GenericConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "GenericConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LCPConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LinearSolverConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "LMConstraintDirectSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LMConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LMDNewProximityIntersection", Pluginized("v20.12", "SofaConstraint") },
+    { "LocalMinDistance", Pluginized("v20.12", "SofaConstraint") },
+    { "MappingGeometricStiffnessForceField", Pluginized("v20.12", "SofaConstraint") },
+    { "PrecomputedConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "SlidingConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "StopperConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "UncoupledConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "UniformConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "UnilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
 
     /***********************/
     // REMOVED SINCE v20.12

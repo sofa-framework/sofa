@@ -19,30 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#define SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_CPP
+#include <SofaConstraint/DOFBlockerLMConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-
-namespace sofa
+namespace sofa::component::constraintset
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+
+int DOFBlockerLMConstraintClass = core::RegisterObject("Constrain the rotation of a given set of Rigid Bodies")
+        .add< DOFBlockerLMConstraint<Rigid3Types> >()
+        .add< DOFBlockerLMConstraint<Vec3Types> >()
+
+        ;
+
+template class DOFBlockerLMConstraint<Rigid3Types>;
+template class DOFBlockerLMConstraint<Vec3Types>;
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-}
 
 
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::constraintset

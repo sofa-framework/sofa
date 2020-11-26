@@ -19,30 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#include <SofaConstraint/MappingGeometricStiffnessForceField.inl>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
+namespace sofa::constraint
 {
+int GeometricStiffnessForceFieldClass = sofa::core::RegisterObject("A ForceField that assembles the geometric stiffness stored in a Mapping")
+.add<MappingGeometricStiffnessForceField<sofa::defaulttype::Vec3Types> >()
+.add<MappingGeometricStiffnessForceField<sofa::defaulttype::Rigid3Types> >()
+;
 
-namespace component
-{
-
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::constraint

@@ -19,30 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaConstraint/LocalMinDistance.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/proximity.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/core/collision/Intersection.inl>
+#include <iostream>
+#include <algorithm>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <sofa/simulation/Node.h>
 
-namespace sofa
+#include <iostream>
+#include <algorithm>
+
+
+#define DYNAMIC_CONE_ANGLE_COMPUTATION
+
+namespace sofa::component::collision
 {
 
-namespace component
-{
-
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

@@ -19,30 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#define SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_CPP
+#include <SofaConstraint/StopperConstraint.inl>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::constraintset
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+
+int StopperConstraintClass = core::RegisterObject("TODO-StopperConstraint")
+        .add< StopperConstraint<Vec1Types> >()
+
+        ;
+
+template class StopperConstraint<Vec1Types>;
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::constraintset

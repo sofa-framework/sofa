@@ -19,30 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#define SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP
+#include <SofaConstraint/LinearSolverConstraintCorrection.inl>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::constraintset
 {
+using namespace sofa::defaulttype;
 
-namespace component
-{
+int LinearSolverContactCorrectionClass = core::RegisterObject("")
+        .add< LinearSolverConstraintCorrection<Vec3Types> >()
+        .add< LinearSolverConstraintCorrection<Vec2Types> >()
+        .add< LinearSolverConstraintCorrection<Vec1Types> >()
+        .add< LinearSolverConstraintCorrection<Rigid3Types> >()
 
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-}
+        ;
+template class SOFA_SOFACONSTRAINT_API LinearSolverConstraintCorrection<Vec3Types>;
+template class SOFA_SOFACONSTRAINT_API LinearSolverConstraintCorrection<Vec2Types>;
+template class SOFA_SOFACONSTRAINT_API LinearSolverConstraintCorrection<Vec1Types>;
+template class SOFA_SOFACONSTRAINT_API LinearSolverConstraintCorrection<Rigid3Types>;
 
 
-} // namespace component
 
-} // namespace sofa
+} //namespace sofa::component::constraintset

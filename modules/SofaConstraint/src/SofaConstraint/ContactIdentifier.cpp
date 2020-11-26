@@ -19,30 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#include <SofaConstraint/ContactIdentifier.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
+sofa::core::collision::DetectionOutput::ContactId ContactIdentifier::cpt = 0;
+std::list<sofa::core::collision::DetectionOutput::ContactId> ContactIdentifier::availableId;
 
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

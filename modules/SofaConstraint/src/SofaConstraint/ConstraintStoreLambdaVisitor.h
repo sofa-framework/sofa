@@ -19,30 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#pragma once
+#include <SofaConstraint/config.h>
 
-namespace sofa
+#include <sofa/simulation/MechanicalVisitor.h>
+
+
+namespace sofa::simulation
 {
 
-namespace component
+class SOFA_SOFACONSTRAINT_API ConstraintStoreLambdaVisitor : public BaseMechanicalVisitor
 {
+public:
+    ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::defaulttype::BaseVector* lambda);
+
+    Visitor::Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
+
+    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
+
+    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
+
+private:
+    const sofa::core::ConstraintParams* m_cParams;
+    const sofa::defaulttype::BaseVector* m_lambda;
+};
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::simulation

@@ -19,30 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#define SOFA_COMPONENT_CONSTRAINTSET_FIXEDLMCONSTRAINT_CPP
+#include <SofaConstraint/FixedLMConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
 
-namespace sofa
+namespace sofa::component::constraintset
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+
+int FixedLMConstraintClass = core::RegisterObject("Maintain a set of particle to a fixed position using LMConstraint")
+        .add< FixedLMConstraint<Vec3Types> >()
+        .add< FixedLMConstraint<Rigid3Types> >()
+
+        ;
+
+template class SOFA_SOFACONSTRAINT_API FixedLMConstraint<Vec3Types>;
+template class SOFA_SOFACONSTRAINT_API FixedLMConstraint<Rigid3Types>;
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
 
-    initGeneralLoader();
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::constraintset

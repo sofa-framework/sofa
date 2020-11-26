@@ -19,30 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#define SOFA_COMPONENT_CONSTRAINTSET_DistanceLMContactConstraint_CPP
+#include <SofaConstraint/DistanceLMContactConstraint.inl>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <sofa/core/behavior/LMConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
+namespace sofa::component::constraintset
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+
+int DistanceLMContactConstraintClass = core::RegisterObject("Maintain a minimum contact distance between two objects")
+        .add< DistanceLMContactConstraint<Vec3Types> >()
+
+        ;
+
+template class SOFA_SOFACONSTRAINT_API DistanceLMContactConstraint<Vec3Types>;
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-}
 
 
-} // namespace component
 
-} // namespace sofa
+} //namespace sofa::component::constraintset

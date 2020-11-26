@@ -19,30 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#include <SofaConstraint/ConstraintStoreLambdaVisitor.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-
-namespace sofa
+namespace sofa::simulation
 {
 
-namespace component
+ConstraintStoreLambdaVisitor::ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::defaulttype::BaseVector* lambda)
+:BaseMechanicalVisitor(cParams)
+,m_cParams(cParams)
+,m_lambda(lambda)
 {
-
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
 }
 
+Visitor::Result ConstraintStoreLambdaVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
+{
+    if (core::behavior::BaseConstraint *c = dynamic_cast<core::behavior::BaseConstraint*>(cSet) )
+    {
+        ctime_t t0 = begin(node, c);
+        c->storeLambda(m_cParams, m_cParams->lambda(), m_lambda);
+        end(node, c, t0);
+    }
+    return RESULT_CONTINUE;
+}
 
-} // namespace component
+void ConstraintStoreLambdaVisitor::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+{
+    SOFA_UNUSED(node);
 
-} // namespace sofa
+    sofa::core::MechanicalParams mparams(*m_cParams);
+    mparams.setDx(m_cParams->dx());
+    mparams.setF(m_cParams->lambda());
+    map->applyJT(&mparams, m_cParams->lambda(), m_cParams->lambda());
+}
+
+bool ConstraintStoreLambdaVisitor::stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+{
+    SOFA_UNUSED(node);
+    SOFA_UNUSED(map);
+
+    return false;
+}
+
+} // namespace sofa::simulation
