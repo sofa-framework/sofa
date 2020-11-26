@@ -19,32 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYALGORITHMS_INL
-#define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYALGORITHMS_INL
+#define SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP
 
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
-#include <SofaBaseTopology/HexahedronSetTopologyAlgorithms.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
-#include <algorithm>
-#include <functional>
+#include <ManifoldTopologies/ManifoldTriangleSetGeometryAlgorithms.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
+
 namespace component
 {
+
 namespace topology
 {
 
-template<class DataTypes>
-void HexahedronSetTopologyAlgorithms< DataTypes >::init()
-{
-    QuadSetTopologyAlgorithms< DataTypes >::init();
-    this->getContext()->get(m_container);
-    this->getContext()->get(m_modifier);
-    this->getContext()->get(m_geometryAlgorithms);
-}
+using namespace sofa::defaulttype;
+int ManifoldTriangleSetGeometryAlgorithmsClass = core::RegisterObject("ManifoldTriangle set topology algorithms")
+        .add< ManifoldTriangleSetGeometryAlgorithms<Vec3Types> >(true) // default template
+        .add< ManifoldTriangleSetGeometryAlgorithms<Vec2Types> >()
+        .add< ManifoldTriangleSetGeometryAlgorithms<Vec1Types> >()
+        ;
+
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<Vec1Types>;
 
 } // namespace topology
 
@@ -52,4 +50,3 @@ void HexahedronSetTopologyAlgorithms< DataTypes >::init()
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENTS_HexahedronSetTOPOLOGY_INL

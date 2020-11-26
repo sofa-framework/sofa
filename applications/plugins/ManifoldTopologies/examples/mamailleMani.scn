@@ -15,7 +15,6 @@
 		
 	<ManifoldTriangleSetTopologyContainer src="@loader"  name="Container" fileTopology=""/>
   	<ManifoldTriangleSetTopologyModifier   name="Modifier" />
-  	<ManifoldTriangleSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
   	<TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
 
 		<DiagonalMass massDensity="0.15" />

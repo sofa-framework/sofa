@@ -21,69 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_H
-#include "config.h"
 
-#include <SofaBaseTopology/PointSetTopologyAlgorithms.h>
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
-{
-class EdgeSetTopologyContainer;
-
-class EdgeSetTopologyModifier;
-
-template < class DataTypes >
-class EdgeSetGeometryAlgorithms;
-
-
-/**
-* A class that performs topology algorithms on an EdgeSet.
-*/
-template < class DataTypes >
-class EdgeSetTopologyAlgorithms : public PointSetTopologyAlgorithms<DataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(EdgeSetTopologyAlgorithms,DataTypes),SOFA_TEMPLATE(PointSetTopologyAlgorithms,DataTypes));
-protected:
-
-    typedef core::topology::BaseMeshTopology::EdgeID EdgeID;
-    //	typedef core::topology::BaseMeshTopology::Edge Edge;
-    typedef core::topology::BaseMeshTopology::SeqEdges SeqEdges;
-    typedef core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
-
-    EdgeSetTopologyAlgorithms()
-        : PointSetTopologyAlgorithms<DataTypes>()
-    {}
-
-    virtual ~EdgeSetTopologyAlgorithms() {}
-public:
-    void init() override;
-
-private:
-    EdgeSetTopologyContainer*					m_container;
-    EdgeSetTopologyModifier*					m_modifier;
-    EdgeSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
-};
-
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_CPP)
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec1Types>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Rigid2Types>;
-
-
-#endif
-
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
+#error This class has been removed in PR #1546. EdgeSetGeometryAlgorithms or EdgeSetTopologyModifier should be used.
 
 #endif

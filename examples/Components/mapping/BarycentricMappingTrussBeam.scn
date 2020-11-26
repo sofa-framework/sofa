@@ -12,7 +12,6 @@
         <MeshGmshLoader name="meshLoader0" filename="mesh/truss_tetra.msh" />
         <TetrahedronSetTopologyContainer name="Container" src="@meshLoader0" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <MechanicalObject template="Vec3d" name="TrussMO" />
         <UniformMass totalMass="0.05" />

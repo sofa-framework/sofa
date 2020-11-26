@@ -37,12 +37,53 @@ int TriangleSetGeometryAlgorithmsClass = core::RegisterObject("Triangle set geom
         .add< TriangleSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
         .add< TriangleSetGeometryAlgorithms<Vec2Types> >()
         .add< TriangleSetGeometryAlgorithms<Vec1Types> >()
-
         ;
+
+
+
+// methods specilizations declaration
+template<> SOFA_BASE_TOPOLOGY_API
+int TriangleSetGeometryAlgorithms<defaulttype::Vec2Types>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
+    sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
+    sofa::helper::vector<ElemID>& indices_list,
+    sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
+    sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder);
+template<> SOFA_BASE_TOPOLOGY_API
+int TriangleSetGeometryAlgorithms<defaulttype::Vec1Types>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
+    sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
+    sofa::helper::vector<ElemID>& indices_list,
+    sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
+    sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder);
+
+
 
 template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec3Types>;
 template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2Types>;
 template class SOFA_BASE_TOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1Types>;
+
+
+
+template<>
+int TriangleSetGeometryAlgorithms<defaulttype::Vec2Types>::SplitAlongPath(PointID, Coord&, PointID, Coord&,
+    sofa::helper::vector< sofa::core::topology::TopologyObjectType>&,
+    sofa::helper::vector<ElemID>&,
+    sofa::helper::vector< sofa::defaulttype::Vec<3, double> >&,
+    sofa::helper::vector<EdgeID>&, double, double)
+{
+    msg_warning() << "TriangleSetTopologyAlgorithms<defaulttype::Vec2Types>::SplitAlongPath not implemented";
+    return 0;
+}
+
+template<>
+int TriangleSetGeometryAlgorithms<defaulttype::Vec1Types>::SplitAlongPath(PointID, Coord&, PointID, Coord&,
+    sofa::helper::vector< sofa::core::topology::TopologyObjectType>&,
+    sofa::helper::vector<ElemID>&,
+    sofa::helper::vector< sofa::defaulttype::Vec<3, double> >&,
+    sofa::helper::vector<EdgeID>&, double, double)
+{
+    msg_warning() << "TriangleSetTopologyAlgorithms<defaulttype::Vec1Types>::SplitAlongPath not implemented";
+    return 0;
+}
 
 
 

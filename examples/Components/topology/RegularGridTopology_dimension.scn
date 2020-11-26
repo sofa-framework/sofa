@@ -22,7 +22,6 @@
         <Node name="Q">
             <QuadSetTopologyContainer  name="Container" />
             <QuadSetTopologyModifier   name="Modifier" />
-            <QuadSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
             <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
             <Hexa2QuadTopologicalMapping input="@../grid" output="@Container" />
             <TriangleCollisionModel />

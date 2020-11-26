@@ -564,6 +564,14 @@ int TriangleSetTopologyContainer::getEdgeIndexInTriangle(const EdgesInTriangle &
 }
 
 
+TriangleSetTopologyContainer::PointID TriangleSetTopologyContainer::getOtherPointInTriangle(const Triangle& t, PointID p1, PointID p2) const
+{
+    if (t[0] != p1 && t[0] != p2) return t[0];
+    else if (t[1] != p1 && t[1] != p2) return t[1];
+    else return t[2];
+}
+
+
 const sofa::helper::vector <TriangleSetTopologyContainer::TriangleID>& TriangleSetTopologyContainer::getTrianglesOnBorder()
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists

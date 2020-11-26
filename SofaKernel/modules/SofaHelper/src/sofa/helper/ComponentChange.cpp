@@ -379,12 +379,17 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "Tetra2TriangleTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
     { "Triangle2EdgeTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
 
-    // SofaUserInteraction was pluginized in #15XX
-    { "MechanicalStateController", Pluginized("v20.12", "SofaUserInteraction") },
-    { "MouseInteractor", Pluginized("v20.12", "SofaUserInteraction") },
-    { "RayModel", Pluginized("v20.12", "SofaUserInteraction") },
-    { "RayTraceDetection", Pluginized("v20.12", "SofaUserInteraction") },
-    { "SleepController", Pluginized("v20.12", "SofaUserInteraction") },
+
+
+    /***********************/
+    // REMOVED SINCE v20.12
+    { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "HexahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "TetrahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "QuadSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "TriangleSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "EdgeSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "PointSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
 
     /***********************/
     // REMOVED SINCE v20.06

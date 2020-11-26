@@ -29,7 +29,6 @@
 
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
 #include <SofaBaseTopology/QuadSetTopologyModifier.h>
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
@@ -624,9 +623,6 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             sofa::component::topology::TriangleSetTopologyModifier* triangleMod;
             m_topology->getContext()->get(triangleMod);
 
-            sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlg;
-            m_topology->getContext()->get(triangleAlg);
-
             sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
             m_topology->getContext()->get(triangleGeo);
 
@@ -717,7 +713,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 sofa::helper::vector<Index> new_edges;
 
                 //Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
-                triangleAlg->SplitAlongPath(a_last, a, b_last, b,
+                triangleGeo->SplitAlongPath(a_last, a, b_last, b,
                         topoPath_list, indices_list, coords2_list,
                         new_edges, 0.1, 0.25);
 
@@ -726,7 +722,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 bool reachBorder = false;
 
                 //Duplicates the given edges
-                triangleAlg->InciseAlongEdgeList(new_edges,
+                triangleGeo->InciseAlongEdgeList(new_edges,
                         new_points, end_points, reachBorder);
 
                 if (!end_points.empty())
@@ -1038,13 +1034,6 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, Index& triangl
     //get the number of triangle in the topology
     size_t nbTriangle = m_topology->getNbTriangles();
 
-    sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlg;
-    m_topology->getContext()->get(triangleAlg);
-    if (!triangleAlg)
-    {
-        msg_error() <<"TopologicalChangeProcessor needs a TriangleSetTopologyAlgorithms component." ;
-    }
-
     sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
     if (!triangleGeo)
@@ -1192,9 +1181,6 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     sofa::component::topology::TriangleSetTopologyModifier* triangleMod;
     m_topology->getContext()->get(triangleMod);
 
-    sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlg;
-    m_topology->getContext()->get(triangleAlg);
-
     sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
 
@@ -1299,14 +1285,14 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         sofa::helper::vector< Index > new_edges;
 
         //Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
-        triangleAlg->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, m_epsilonSnapPath.getValue(), m_epsilonSnapBorder.getValue());
+        triangleGeo->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, m_epsilonSnapPath.getValue(), m_epsilonSnapBorder.getValue());
 
         sofa::helper::vector<Index> new_points;
         sofa::helper::vector<Index> end_points;
         bool reachBorder = false;
 
         //Duplicates the given edges
-        triangleAlg->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
+        triangleGeo->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
 
         msg_info_when(reachBorder) << "Incision has reached a border.";
 
