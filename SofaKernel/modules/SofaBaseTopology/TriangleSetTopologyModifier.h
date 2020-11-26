@@ -260,6 +260,11 @@ public:
             const bool moveDOF = true) override;
 
 
+    /** \brief Duplicates the given edge. Only works if at least one of its points is adjacent to a border.
+     * @returns the number of newly created points, or -1 if the incision failed.
+     */
+    virtual int InciseAlongEdge(EdgeID edge, int* createdPoints = nullptr);
+
 protected:
 
     /** \brief Precondition to fulfill before removing triangles. No preconditions are needed in this class. This function should be inplemented in children classes.

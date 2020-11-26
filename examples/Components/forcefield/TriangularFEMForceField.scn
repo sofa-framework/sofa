@@ -14,7 +14,6 @@
         <MechanicalObject src="@loader" name="DOFs" scale3d="100 100 0" />
         <TriangleSetTopologyContainer src="@loader" name="Container" />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         <DiagonalMass massDensity="0.005" />
         <FixedConstraint indices="0 1 2" />

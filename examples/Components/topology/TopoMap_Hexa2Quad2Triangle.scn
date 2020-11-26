@@ -18,7 +18,6 @@
         <Node name="Q">
             <QuadSetTopologyContainer  name="Container" />
             <QuadSetTopologyModifier   name="Modifier" />
-            <QuadSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
             <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
             <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
             <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
@@ -30,7 +29,6 @@
             <Node name="T">
                 <TriangleSetTopologyContainer  name="Container" />
                 <TriangleSetTopologyModifier   name="Modifier" />
-                <TriangleSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
                 <TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
                 <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
                 <TriangularFEMForceField name="FEM" youngModulus="10" poissonRatio="0.3" method="large" />

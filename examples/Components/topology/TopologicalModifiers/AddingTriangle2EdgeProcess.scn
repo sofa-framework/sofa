@@ -17,7 +17,6 @@
         <MechanicalObject name="dofs" src="@loader" template="Vec3d" />
         <TriangleSetTopologyContainer src="@loader" name="Triangle_topo" listening="1" />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetTopologyAlgorithms template="Vec3" name="TopoAlgo" />
         <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
         <UniformMass totalMass="0.1" />
         <FixedConstraint template="Vec3" name="default6" indices="0 2 18 20" />
@@ -26,7 +25,6 @@
         <Node name="Edge Mesh"  >
 			<EdgeSetTopologyContainer name="Edge_topo" printLog="1"/>
 			<EdgeSetTopologyModifier name="Edge_mod" />
-			<EdgeSetTopologyAlgorithms template="Vec3" name="TopoAlgo" />
 			<EdgeSetGeometryAlgorithms template="Vec3" name="GeomAlgo"  drawEdges="1" />
 			<Triangle2EdgeTopologicalMapping name="Mapping"  input="@../Triangle_topo"  output="@Edge_topo" />
 		</Node>

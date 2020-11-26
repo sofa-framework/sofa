@@ -16,7 +16,6 @@
         <MechanicalObject src="@loader" name="Volume" />
         <TetrahedronSetTopologyContainer name="Tetra_topo" src="@loader" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         
         <DiagonalMass massDensity="1.0" />

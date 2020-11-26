@@ -8,7 +8,6 @@
     <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" tags="mechanics"/>
     <MechanicalObject template="Vec3d" name="raptorDOFs" src="@meshLoader" tags="mechanics" />
     <TetrahedronSetTopologyModifier name="Modifier" tags="mechanics"/>
-    <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" tags="mechanics"/>
     <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  tags="mechanics"/>
     <BoxROI name="box-hot" box="-3 4 4 3 8 8" drawBoxes="1" position="@raptorDOFs.position"/>
     <BoxROI name="box-cold" box="-3 4 -4 3 8 -10" drawBoxes="1" position="@raptorDOFs.position"/>

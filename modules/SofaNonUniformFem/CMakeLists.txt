@@ -33,7 +33,6 @@ list(APPEND HEADER_FILES
     )
 list(APPEND SOURCE_FILES
     ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridGeometryAlgorithms.cpp
-    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyAlgorithms.cpp
     ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyContainer.cpp
     ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyModifier.cpp
     ${SOFANONUNIFORMFEM_SRC}/MultilevelHexahedronSetTopologyContainer.cpp

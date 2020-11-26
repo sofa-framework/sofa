@@ -11,7 +11,6 @@
         <MeshGmshLoader name="meshLoader0" filename="mesh/liver.msh" />
         <TetrahedronSetTopologyContainer name="Container1" src="@meshLoader0" />
         <TetrahedronSetTopologyModifier />
-        <TetrahedronSetTopologyAlgorithms template="Vec3d" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" drawEdges="1" drawColorEdges="0 1 0" />
         <MechanicalObject name="dofs" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
@@ -20,7 +19,6 @@
         <Node name="TetraTopology2">
             <TetrahedronSetTopologyContainer name="Container2" />
             <TetrahedronSetTopologyModifier />
-            <TetrahedronSetTopologyAlgorithms template="Vec3d" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" drawTetrahedra="1" drawColorTetrahedra="1 0 0 1" />
             <SimpleTesselatedTetraTopologicalMapping input="@Container1" output="@Container2" />
             <MechanicalObject />

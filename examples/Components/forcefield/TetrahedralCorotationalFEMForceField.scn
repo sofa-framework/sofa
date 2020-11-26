@@ -21,7 +21,6 @@
         <Node name="T">
 			<TriangleSetTopologyContainer name="ContainerT"/> 
 			<TriangleSetTopologyModifier />
-			<TriangleSetTopologyAlgorithms name="TopoAlgo" />
 			<TriangleSetGeometryAlgorithms name="GeomAlgo" showTriangleIndices="false"/>
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@ContainerT" flipNormals="true"/>
             <Triangle/>
@@ -44,7 +43,6 @@
         <Node name="T">
 			<TriangleSetTopologyContainer name="ContainerT"/> 
 			<TriangleSetTopologyModifier />
-			<TriangleSetTopologyAlgorithms name="TopoAlgo" />
 			<TriangleSetGeometryAlgorithms name="GeomAlgo" showTriangleIndices="false"/>
             <Tetra2TriangleTopologicalMapping object1="../../Container" object2="ContainerT" flipNormals="true"/>
             <Triangle/>
@@ -67,7 +65,6 @@
         <Node name="T">
 			<TriangleSetTopologyContainer name="ContainerT"/> 
 			<TriangleSetTopologyModifier />
-			<TriangleSetTopologyAlgorithms name="TopoAlgo" />
 			<TriangleSetGeometryAlgorithms name="GeomAlgo" showTriangleIndices="false"/>
             <Tetra2TriangleTopologicalMapping object1="../../Container" object2="ContainerT" flipNormals="true"/>
             <Triangle/>
@@ -90,7 +87,6 @@
         <Node name="T">
 			<TriangleSetTopologyContainer name="ContainerT"/> 
 			<TriangleSetTopologyModifier />
-			<TriangleSetTopologyAlgorithms name="TopoAlgo" />
 			<TriangleSetGeometryAlgorithms name="GeomAlgo" showTriangleIndices="false"/>
             <Tetra2TriangleTopologicalMapping object1="../../Container" object2="ContainerT" flipNormals="true"/>
             <Triangle/>

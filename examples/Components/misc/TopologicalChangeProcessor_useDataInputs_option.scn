@@ -13,7 +13,6 @@
         <MechanicalObject name="mecaObj" src="@loader" template="Vec3d" scale3d="10 10 10" restScale="1" />
         <TriangleSetTopologyContainer src="@loader" name="Container" />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <DiagonalMass template="Vec3d" name="default5" massDensity="0.15" />
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />

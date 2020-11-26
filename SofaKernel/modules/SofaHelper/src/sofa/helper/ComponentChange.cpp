@@ -411,6 +411,16 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "UnilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
 
     /***********************/
+    // REMOVED SINCE v20.12
+    { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "HexahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "TetrahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "QuadSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "TriangleSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "EdgeSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "PointSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+
+    /***********************/
     // REMOVED SINCE v20.06
 
     // SofaKernel
