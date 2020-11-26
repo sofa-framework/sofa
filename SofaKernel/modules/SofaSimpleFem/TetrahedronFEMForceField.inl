@@ -1794,7 +1794,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     vparams->drawTool()->setLightingEnabled(false);
 
     if (_showVonMisesStressPerNode.getValue()) {
-        std::vector<defaulttype::Vec4f> nodeColors(x.size());
+        std::vector<sofa::helper::types::RGBAColor> nodeColors(x.size());
         std::vector<defaulttype::Vector3> pts(x.size());
         helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVMN, maxVMN);
         for (size_t nd = 0; nd < x.size(); nd++) {

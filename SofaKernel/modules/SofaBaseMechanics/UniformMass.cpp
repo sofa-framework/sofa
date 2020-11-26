@@ -288,7 +288,7 @@ void UniformMass<Vec6Types, MassType>::drawVec6Impl(const core::visual::VisualPa
     Mat3x3d R; R.identity();
 
     std::vector<Vector3> vertices;
-    std::vector<sofa::defaulttype::Vec4f> colors;
+    std::vector<sofa::helper::types::RGBAColor> colors;
 
     const sofa::defaulttype::Vec4f red(1.0,0.0,0.0,1.0);
     const sofa::defaulttype::Vec4f green(0.0,1.0,0.0,1.0);

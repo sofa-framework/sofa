@@ -4659,7 +4659,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         SReal normalLength = _drawNormalLength.getValue();
 
         sofa::helper::vector<sofa::defaulttype::Vector3> vertices;
-        sofa::helper::vector<sofa::defaulttype::Vec4f> colors;
+        std::vector<sofa::helper::types::RGBAColor> colors;
 
         for (size_t i =0; i<nbrTtri; i++)
         {

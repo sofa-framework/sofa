@@ -412,10 +412,10 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vpar
         helper::WriteAccessor< Data<sofa::helper::vector<Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
 
         CPos point2, point1;
-        std::vector<sofa::defaulttype::Vec4f> colors;
+        std::vector<sofa::helper::types::RGBAColor> colors;
 
         float vectorLength = p_vectorLength.getValue();
-        sofa::defaulttype::Vec4f color = sofa::helper::types::RGBAColor::black();
+        auto color = sofa::helper::types::RGBAColor::black();
         std::vector<sofa::defaulttype::Vector3> vertices;
         for (unsigned int i =0; i<tetrahedronVectors.size(); i++)
         {
