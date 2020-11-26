@@ -19,28 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaGeneralLoader/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
-
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component

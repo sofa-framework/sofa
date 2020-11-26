@@ -19,28 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaGeneralLoader/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
+#include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa
+namespace sofa::component::loader
 {
 
-namespace component
+class SOFA_SOFAGENERALLOADER_API MeshGmshLoader : public sofa::core::loader::MeshLoader
 {
+public:
+    SOFA_CLASS(MeshGmshLoader,sofa::core::loader::MeshLoader);
+
+    bool doLoad() override;
+
+protected:
+
+    void doClearBuffers() override;
+
+    bool readGmsh(std::ifstream &file, const unsigned int gmshFormat);
+
+    void addInGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group,int tag,int eid);
+
+    void normalizeGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group);
+
+public:
+
+};
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-}
 
 
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::loader

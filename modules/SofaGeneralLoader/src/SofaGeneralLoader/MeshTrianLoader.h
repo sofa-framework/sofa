@@ -19,28 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaGeneralLoader/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
+#include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa
+namespace sofa::component::loader
 {
 
-namespace component
+/// Cette classe permet la fabrication d'un visuel pour un fichier de type trian
+/// ces fichiers se presentent de la maniere suivante
+/// nombre de sommets
+///liste des coordonnees des sommets ex 1.45 1.25 6.85
+/// nombre de faces
+///liste de toutes les faces ex 1 2 3 0 0 0 les 3 derniers chiffres ne sont pas utilises pour le moment
+
+class SOFA_SOFAGENERALLOADER_API MeshTrianLoader : public sofa::core::loader::MeshLoader
 {
+public:
+    SOFA_CLASS(MeshTrianLoader,sofa::core::loader::MeshLoader);
+protected:
+    MeshTrianLoader();
+public:
+    bool doLoad() override;
+
+protected:
+
+    void doClearBuffers() override;
+
+    bool readTrian(const char* filename);
+
+    bool readTrian2(const char* filename);
+
+public:
+    //Add specific Data here:
+    Data <bool> p_trian2; ///< Set to true if the mesh is a trian2 format.
+    Data <helper::vector < helper::fixed_array <int,3> > > neighborTable; ///< Table of neighborhood triangle indices for each triangle.
+    Data <helper::vector < helper::vector <unsigned int> > > edgesOnBorder; ///< List of edges which are on the border of the mesh loaded.
+    Data <helper::vector <unsigned int> > trianglesOnBorderList; ///< List of triangle indices which are on the border of the mesh loaded.
+};
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::loader

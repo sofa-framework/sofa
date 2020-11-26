@@ -19,28 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaGeneralLoader/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
+#include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa
+namespace sofa::component::loader
 {
 
-namespace component
+class SOFA_SOFAGENERALLOADER_API MeshXspLoader : public sofa::core::loader::MeshLoader
 {
+public:
+    SOFA_CLASS(MeshXspLoader,sofa::core::loader::MeshLoader);
+
+    /// Inherited from MeshLoader
+    bool doLoad() override;
+
+protected:
+    MeshXspLoader();
+
+    void doClearBuffers() override;
+};
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-}
 
 
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::loader

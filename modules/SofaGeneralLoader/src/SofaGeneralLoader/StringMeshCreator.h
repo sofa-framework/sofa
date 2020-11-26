@@ -19,28 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaGeneralLoader/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
+#include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa
+namespace sofa::component::loader
 {
 
-namespace component
+
+/** Procedurally creates a string.
+  The coordinates range from (0,0,0) to (1,0,0). They can be translated, rotated and scaled using the corresponding attributes of the parent class.
+
+  @author François Faure, 2012
+  */
+class SOFA_SOFAGENERALLOADER_API StringMeshCreator : public sofa::core::loader::MeshLoader
 {
+public:
+
+    SOFA_CLASS(StringMeshCreator,sofa::core::loader::MeshLoader);
+    virtual std::string type() { return "This object is procedurally created"; }
+    bool canLoad() override { return true; }
+    bool doLoad() override; ///< create the string
+
+    Data< unsigned > resolution;  ///< Number of vertices (more than 1)
+
+protected:
+    StringMeshCreator();
+
+    void doClearBuffers() override;
+};
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-}
 
 
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::loader

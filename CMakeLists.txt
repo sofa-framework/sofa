@@ -253,6 +253,7 @@ sofa_add_module(modules/SofaGeneralTopology SofaGeneralTopology ON)
 sofa_add_module(modules/SofaTopologyMapping SofaTopologyMapping ON)
 sofa_add_module(modules/SofaUserInteraction SofaUserInteraction ON)
 sofa_add_module(modules/SofaConstraint SofaConstraint ON)
+sofa_add_module(modules/SofaGeneralLoader SofaGeneralLoader ON)
     
     
 add_subdirectory(SofaGeneral)

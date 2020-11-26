@@ -19,28 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaGeneralLoader/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
+#include <SofaGeneralLoader/MeshOffLoader.h>
 
-namespace sofa
+namespace sofa::component::loader
 {
 
-namespace component
+/** This class load a sequence of .off mesh files, ordered by index in their name
+*/
+class SOFA_SOFAGENERALLOADER_API OffSequenceLoader : public MeshOffLoader
 {
+public:
+    SOFA_CLASS(OffSequenceLoader,sofa::component::loader::MeshOffLoader);
+protected:
+    OffSequenceLoader();
+public:
+    void init() override;
 
+    void reset() override;
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
-}
+    using MeshOffLoader::load;
+    virtual bool load(const char * filename);
 
+    void clear();
 
-} // namespace component
+private:
+    /// the number of files in the sequences
+    Data<int> nbFiles;
+    /// duration each file must be loaded
+    Data<double> stepDuration;
 
-} // namespace sofa
+    /// index of the first file
+    int firstIndex;
+    /// index of the current read file
+    int currentIndex;
+
+    ///parsed file name
+    std::string m_filenameAndNb;
+
+};
+
+} // namespace sofa::component::loader

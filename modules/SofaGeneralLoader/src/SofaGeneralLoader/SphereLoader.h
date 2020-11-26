@@ -19,28 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaGeneralLoader/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
+#include <sofa/core/loader/BaseLoader.h>
 
-namespace sofa
+namespace sofa::component::loader
 {
 
-namespace component
+class SphereLoader : public sofa::core::loader::BaseLoader
 {
+public:
+    SOFA_CLASS(SphereLoader,sofa::core::loader::BaseLoader);
+protected:
+    SphereLoader();
 
+public:
+    // Point coordinates in 3D in double.
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions; ///< Sphere centers
+    Data< helper::vector<SReal> > radius; ///< Radius of each sphere
+    Data< defaulttype::Vector3 > d_scale; ///< Scale applied to sphere positions
+    Data< defaulttype::Vector3 > d_translation; ///< Translation applied to sphere positions
+    bool load() override;
+};
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::loader
