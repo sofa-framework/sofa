@@ -14,7 +14,6 @@
         <MechanicalObject src="@loader" template="Vec3d" name="Volume" restScale="1" />
         <TetrahedronSetTopologyContainer src="@loader" name="Container" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <DiagonalMass template="Vec3d" name="default3" massDensity="0.5" />
         <FixedPlaneConstraint template="Vec3d" name="default4" direction="0 0 1" dmin="-0.1" dmax="0.1" />
@@ -24,7 +23,6 @@
         <Node name="T" gravity="0 -9.81 0">
             <TriangleSetTopologyContainer name="Container" tags="meca" />
             <TriangleSetTopologyModifier name="Modifier" tags="meca" />
-            <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" tags="meca" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" tags="meca" />
             <Tetra2TriangleTopologicalMapping name="default6" input="@../Container" output="@Container" />
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />

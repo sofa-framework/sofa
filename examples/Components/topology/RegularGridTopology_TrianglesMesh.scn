@@ -17,7 +17,6 @@
         
         <TriangleSetTopologyContainer  name="Container" src="@grid"/>
         <TriangleSetTopologyModifier   name="Modifier" />
-        <TriangleSetTopologyAlgorithms name="TopoAlgo" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" drawEdges="1"/>
         
         <DiagonalMass massDensity="0.15" />

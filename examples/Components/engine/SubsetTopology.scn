@@ -14,7 +14,6 @@
             <MechanicalObject template="Vec3d" name="mecaObj2" position="@../meshLoader.position" />
             <TriangleSetTopologyContainer name="Container" position="@mecaObj2.position" triangles="@../Subset.trianglesInROI" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
             <DiagonalMass template="Vec3d" name="default5" massDensity="1.15" />
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="30" />
@@ -29,7 +28,6 @@
             <MechanicalObject template="Vec3d" name="mecaObj2" position="@../meshLoader.position" />
             <TriangleSetTopologyContainer name="Container" position="@mecaObj2.position" triangles="@../Subset.trianglesOutROI" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
             <DiagonalMass template="Vec3d" name="default5" massDensity="1.15" />
             <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="30" />
