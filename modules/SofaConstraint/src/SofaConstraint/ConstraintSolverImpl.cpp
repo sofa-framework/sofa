@@ -19,30 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <SofaConstraint/ConstraintSolverImpl.h>
+#include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
+namespace sofa::component::constraintset
 {
 
-namespace component
+ConstraintProblem::ConstraintProblem()
+    : tolerance(0.00001), maxIterations(1000),
+      dimension(0), problemId(0)
 {
-
-
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
 }
 
+ConstraintProblem::~ConstraintProblem()
+{
+}
 
-} // namespace component
+void ConstraintProblem::clear(int nbConstraints)
+{
+    dimension = nbConstraints;
+    W.resize(nbConstraints, nbConstraints);
+    dFree.resize(nbConstraints);
+    f.resize(nbConstraints);
 
-} // namespace sofa
+    static unsigned int counter = 0;
+    problemId = ++counter;
+}
+
+unsigned int ConstraintProblem::getProblemId()
+{
+    return problemId;
+}
+
+} //namespace sofa::component::constraintset

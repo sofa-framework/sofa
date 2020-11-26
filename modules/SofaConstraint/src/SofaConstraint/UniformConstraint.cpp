@@ -19,30 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#include <SofaConstraint/UniformConstraint.inl>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
+namespace sofa::constraint
 {
 
-namespace component
-{
+int UniformConstraintClass = sofa::core::RegisterObject("A constraint equation applied on all dofs.")
+.add< UniformConstraint<sofa::defaulttype::Vec1Types> >()
+;
+
+template class UniformConstraint<sofa::defaulttype::Vec1Types>;
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::constraint

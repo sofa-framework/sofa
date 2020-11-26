@@ -19,30 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <sofa/core/BaseMapping.h>
+#include <sofa/core/behavior/ForceField.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-
-namespace sofa
+namespace sofa::constraint
 {
 
-namespace component
+template <class DataTypes>
+class MappingGeometricStiffnessForceField final : public sofa::core::behavior::ForceField<DataTypes>
 {
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(MappingGeometricStiffnessForceField, DataTypes), 
+               SOFA_TEMPLATE(sofa::core::behavior::ForceField,DataTypes) );
+    
+    typedef Inherit1 Inherit;
+    typedef sofa::SingleLink< MyType, sofa::core::BaseMapping, 
+        sofa::BaseLink::FLAG_STRONGLINK | sofa::BaseLink::FLAG_STOREPATH > MappingLink;
+    typedef typename Inherit::DataVecDeriv DataVecDeriv;
+    typedef typename Inherit::DataVecCoord DataVecCoord;
 
+    void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
+    void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+
+    void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+
+    SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&) const override
     {
-        first = false;
+        return 0;
     }
 
-    initGeneralLoader();
-}
+protected:
+    MappingGeometricStiffnessForceField();
 
+    ~MappingGeometricStiffnessForceField();
 
-} // namespace component
+private:
+    MappingLink l_mapping;
+};
 
-} // namespace sofa
+} // namespace sofa::constraint

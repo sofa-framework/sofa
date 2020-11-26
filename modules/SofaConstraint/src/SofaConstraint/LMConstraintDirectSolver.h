@@ -19,30 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaConstraint/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <SofaConstraint/LMConstraintSolver.h>
+#include <sofa/helper/OptionsGroup.h>
 
-namespace sofa
+namespace sofa::component::constraintset
 {
 
-namespace component
+class SOFA_SOFACONSTRAINT_API LMConstraintDirectSolver : public LMConstraintSolver
 {
+    typedef Eigen::SparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
+    typedef helper::vector<linearsolver::LLineManipulator> JacobianRows;
 
+public:
+    SOFA_CLASS(LMConstraintDirectSolver, LMConstraintSolver);
+protected:
+    LMConstraintDirectSolver();
+public:
+    bool buildSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    bool solveSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+protected:
 
-    initGeneralLoader();
-}
+    void analyseConstraints(const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints, core::ConstraintParams::ConstOrder order,
+            JacobianRows &rowsL,JacobianRows &rowsLT, helper::vector< unsigned int > &rightHandElements) const;
 
+    void buildLeftRectangularMatrix(const DofToMatrix& invMassMatrix,
+            DofToMatrix& LMatrix, DofToMatrix& LTMatrix,
+            SparseColMajorMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const;
 
-} // namespace component
+    Data<sofa::helper::OptionsGroup> solverAlgorithm; ///< Algorithm used to solve the system W.Lambda=c
+};
 
-} // namespace sofa
+} //namespace sofa::component::constraintset

@@ -19,30 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <SofaConstraint/config.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <sofa/simulation/CollisionAnimationLoop.h>
+#include <SofaConstraint/LCPConstraintSolver.h>
 
-namespace sofa
+namespace sofa::component::animationloop
 {
 
-namespace component
+class SOFA_SOFACONSTRAINT_API FreeMotionAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
+public:
+    SOFA_CLASS(FreeMotionAnimationLoop, sofa::simulation::CollisionAnimationLoop);
 
+public:
+    void step (const sofa::core::ExecParams* params, SReal dt) override;
+    void init() override;
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
+    /// Construction method called by ObjectFactory. An animation loop can only
+    /// be created if
+    template<class T>
+    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
-        first = false;
+        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+        return obj;
     }
 
-    initGeneralLoader();
-}
+    Data<bool> displayTime;
+    Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
+    Data<bool> d_threadSafeVisitor;
 
+protected:
+    FreeMotionAnimationLoop(simulation::Node* gnode);
+    ~FreeMotionAnimationLoop() override ;
 
-} // namespace component
+    sofa::core::behavior::ConstraintSolver *constraintSolver;
+    component::constraintset::LCPConstraintSolver::SPtr defaultSolver;
+};
 
-} // namespace sofa
+} // namespace sofa::component::animationloop

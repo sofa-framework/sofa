@@ -19,30 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#pragma once
+#include <sofa/core/behavior/Constraint.h>
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
-
-namespace sofa
+namespace sofa::constraint
 {
 
-namespace component
+template < class DataTypes >
+class UniformConstraint : public sofa::core::behavior::Constraint< DataTypes >
 {
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(UniformConstraint, DataTypes), SOFA_TEMPLATE(sofa::core::behavior::Constraint, DataTypes));
 
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real  Real;
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    typedef sofa::Data<VecCoord>    DataVecCoord;
+    typedef sofa::Data<VecDeriv>    DataVecDeriv;
+    typedef sofa::Data<MatrixDeriv> DataMatrixDeriv;
 
-    initGeneralLoader();
-}
+    void buildConstraintMatrix(const sofa::core::ConstraintParams* cParams, DataMatrixDeriv & c, unsigned int &cIndex, const DataVecCoord &x) override;
 
+    void getConstraintViolation(const sofa::core::ConstraintParams* cParams, sofa::defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v) override;
 
-} // namespace component
+    void getConstraintResolution(const sofa::core::ConstraintParams* cParams, std::vector<sofa::core::behavior::ConstraintResolution*>& crVector, unsigned int& offset) override;
 
-} // namespace sofa
+    sofa::Data<bool> d_iterative;
+    sofa::Data<bool> d_constraintRestPos;
+protected:
+
+    unsigned int m_constraintIndex;
+
+    UniformConstraint();
+};
+
+} // namespace sofa::constraint

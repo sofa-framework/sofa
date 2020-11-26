@@ -19,30 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneral/config.h>
+#define SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP
 
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <SofaConstraint/SlidingConstraint.inl>
 
-namespace sofa
+#include <sofa/defaulttype/VecTypes.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::constraintset
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+
+int SlidingConstraintClass = core::RegisterObject("TODO-SlidingConstraint")
+        .add< SlidingConstraint<Vec3Types> >(true);
+
+template class SOFA_SOFACONSTRAINT_API SlidingConstraint<Vec3Types>;
 
 
-void initSofaGeneral()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initGeneralLoader();
-}
-
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::constraintset
