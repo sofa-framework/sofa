@@ -227,38 +227,367 @@ public:
 
     virtual void clear() {}
 
-    // Compatibility wrapper functions 
-    // as std::vector<RGBAColor> is not a std::vector<Vec4f>
+    /// Compatibility wrapper functions 
     using Vec4f = sofa::defaulttype::Vec4f;
+#define DEPRECATE_VEC4F \
+    [[deprecated("This function has been deprecated in #PR 1627. The function will be removed " \
+    "in the v21.06 release. Vec4f defining a color is deprecated, use RGBAColor instead.")]]
+
+
+    // Necessary to not break existing code
+    // as std::vector<RGBAColor> is not a std::vector<Vec4f>
+    DEPRECATE_VEC4F
     void drawPoints(const std::vector<Vector3>& points, float size, const std::vector<Vec4f>& colour)
     {
-        msg_warning("DrawTool") << "Vec4f defining a color is deprecated, use RGBAColor instead.";
         std::vector<RGBAColor> rgbaColours;
         std::copy(colour.begin(), colour.end(), rgbaColours.begin());
         drawPoints(points, size, rgbaColours);
     }
+    
+    DEPRECATE_VEC4F
     void drawLines(const std::vector<Vector3>& points, float size, const std::vector<Vec4f>& colours)
     {
-        msg_warning("DrawTool") << "Vec4f defining a color is deprecated, use RGBAColor instead.";
         std::vector<RGBAColor> rgbaColours;
         std::copy(colours.begin(), colours.end(), rgbaColours.begin());
         drawLines(points, size, rgbaColours);
     }
 
+    DEPRECATE_VEC4F
     void drawTriangles(const std::vector<Vector3>& points, const std::vector< Vec3i >& index, const std::vector<Vector3>& normal, const std::vector<Vec4f>& colour)
     {
-        msg_warning("DrawTool") << "Vec4f defining a color is deprecated, use RGBAColor instead.";
         std::vector<RGBAColor> rgbaColours;
         std::copy(colour.begin(), colour.end(), rgbaColours.begin());
         drawTriangles(points, index, normal, rgbaColours);
     }
-    void drawQuads(const std::vector<Vector3>& points, const std::vector<Vec4f>& colours)
+
+
+    DEPRECATE_VEC4F
+    void drawTriangles(const std::vector<Vector3>& points, const std::vector< Vec4f >& colour)
     {
-        msg_warning("DrawTool") << "Vec4f defining a color is deprecated, use RGBAColor instead.";
+        std::vector<RGBAColor> rgbaColours;
+        std::copy(colour.begin(), colour.end(), rgbaColours.begin());
+        drawTriangles(points, rgbaColours);
+    }
+
+    DEPRECATE_VEC4F
+    void drawTriangles(const std::vector<Vector3>& points,
+            const std::vector<Vector3>& normal,
+            const std::vector< Vec4f >& colour)
+    {
+        std::vector<RGBAColor> rgbaColours;
+        std::copy(colour.begin(), colour.end(), rgbaColours.begin());
+        drawTriangles(points, normal, rgbaColours);
+    }
+
+    DEPRECATE_VEC4F
+    void drawQuads(const std::vector<Vector3>& points, const std::vector<Vec4f>& colours)
+    {        
         std::vector<RGBAColor> rgbaColours;
         std::copy(colours.begin(), colours.end(), rgbaColours.begin());
         drawQuads(points,rgbaColours);
     }
+
+    ///////
+    // Just for the deprecation
+    DEPRECATE_VEC4F
+    void drawPoints(const std::vector<Vector3>& points, float size, const Vec4f& colour)
+    {
+        drawPoints(points, size, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawLine(const Vector3& p1, const Vector3& p2, const Vec4f& colour)
+    {
+        drawLine(p1, p2, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawInfiniteLine(const Vector3& point, const Vector3& direction, const Vec4f& color)
+    {
+        drawInfiniteLine(point, direction, RGBAColor(color));
+    }
+
+    DEPRECATE_VEC4F
+    void drawLines(const std::vector<Vector3>& points, float size, const Vec4f& colour)
+    {
+        drawLines(points, size, RGBAColor(colour));
+    }
+
+
+    void drawLines(const std::vector<Vector3>& points, const std::vector< Vec2i >& index, float size, const Vec4f& colour)
+    {
+        drawLines(points, index, size, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawLineStrip(const std::vector<Vector3>& points, float size, const Vec4f& colour)
+    {
+        drawLineStrip(points, size, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawLineLoop(const std::vector<Vector3>& points, float size, const Vec4f& colour)
+    {
+        drawLineLoop(points, size, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawDisk(float radius, double from, double to, int resolution, const Vec4f& color) 
+    {
+        drawDisk(radius, from, to, resolution, RGBAColor(color));
+    }
+
+    DEPRECATE_VEC4F
+    void drawCircle(float radius, float lineThickness, int resolution, const Vec4f& color)
+    {
+        drawCircle(radius, lineThickness, resolution, RGBAColor(color));
+    }
+
+    DEPRECATE_VEC4F
+    void drawTriangles(const std::vector<Vector3>& points, const Vec4f& colour)
+    {
+        drawTriangles(points, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawTriangles(const std::vector<Vector3>& points, const Vector3& normal, const Vec4f& colour)
+    {
+        drawTriangles(points, normal, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawTriangles(const std::vector<Vector3>& points,
+        const std::vector< Vec3i >& index,
+        const std::vector<Vector3>& normal,
+        const Vec4f& colour)
+    {
+        drawTriangles(points, index, normal, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawTriangleStrip(const std::vector<Vector3>& points,
+        const std::vector<Vector3>& normal,
+        const Vec4f& colour)
+    {
+        drawTriangleStrip(points, normal, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawTriangleFan(const std::vector<Vector3>& points,
+        const std::vector<Vector3>& normal,
+        const Vec4f& colour)
+    {
+        drawTriangleFan(points, normal, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawFrame(const Vector3& position, const Quaternion& orientation, const Vec3f& size, const Vec4f& colour)
+    {
+        drawFrame(position, orientation, size, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawSpheres(const std::vector<Vector3>& points, const std::vector<float>& radius, const Vec4f& colour)
+    {
+        drawSpheres(points, radius, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawSpheres(const std::vector<Vector3>& points, float radius, const Vec4f& colour)
+    {
+        drawSpheres(points, radius, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawFakeSpheres(const std::vector<Vector3>& points, const std::vector<float>& radius, const Vec4f& colour)
+    {
+        drawFakeSpheres(points, radius, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawFakeSpheres(const std::vector<Vector3>& points, float radius, const Vec4f& colour)
+    {
+        drawFakeSpheres(points, radius, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawCone(const Vector3& p1, const Vector3& p2, float radius1, float radius2, const Vec4f& colour, int subd = 16)
+    {
+        drawCone(p1, p2, radius1, radius2, RGBAColor(colour), subd);
+    }
+
+    DEPRECATE_VEC4F
+    void drawCube(const float& radius, const Vec4f& colour, const int& subd = 16)
+    {
+        drawCube(radius, RGBAColor(colour), subd);
+    }
+
+    DEPRECATE_VEC4F
+    void drawCylinder(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& colour, int subd = 16)
+    {
+        drawCylinder(p1, p2, radius, RGBAColor(colour), subd);
+    }
+
+    DEPRECATE_VEC4F
+    void drawCapsule(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& colour, int subd = 16)
+    {
+        drawCapsule(p1, p2, radius, RGBAColor(colour), subd);
+    }
+
+    DEPRECATE_VEC4F
+    void drawArrow(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& colour, int subd = 16)
+    {
+        drawArrow(p1, p2, radius, RGBAColor(colour), subd);
+    }
+
+    DEPRECATE_VEC4F
+    void drawArrow(const Vector3& p1, const Vector3& p2, float radius, float coneLength, const Vec4f& colour, int subd = 16)
+    {
+        drawArrow(p1, p2, radius, coneLength, RGBAColor(colour), subd);
+    }
+
+    DEPRECATE_VEC4F
+    void drawArrow(const Vector3& p1, const Vector3& p2, float radius, float coneLength, float coneRadius, const Vec4f& color, int subd = 16)
+    {
+        drawArrow(p1, p2, radius, coneLength, coneRadius, RGBAColor(color), subd);
+    }
+
+    DEPRECATE_VEC4F
+    void drawCross(const Vector3& p, float length, const Vec4f& colour)
+    {
+        drawCross(p, length, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawPlus(const float& radius, const Vec4f& colour, const int& subd = 16)
+    {
+        drawPlus(radius, RGBAColor(colour), subd);
+    }
+
+    DEPRECATE_VEC4F
+    void drawPoint(const Vector3& p, const Vec4f& c)
+    {
+        drawPoint(p, RGBAColor(c));
+    }
+
+    DEPRECATE_VEC4F
+    void drawPoint(const Vector3& p, const Vector3& n, const Vec4f& c)
+    {
+        drawPoint(p, n, RGBAColor(c));
+    }
+
+    DEPRECATE_VEC4F
+    void drawTriangle(const Vector3& p1, const Vector3& p2, const Vector3& p3,
+        const Vector3& normal,
+        const Vec4f& c1, const Vec4f& c2, const Vec4f& c3)
+    {
+        drawTriangle(p1, p2, p3, normal, RGBAColor(c1), RGBAColor(c2), RGBAColor(c3));
+    }
+
+    DEPRECATE_VEC4F
+    void drawTriangle(const Vector3& p1, const Vector3& p2, const Vector3& p3,
+        const Vector3& normal1, const Vector3& normal2, const Vector3& normal3,
+        const Vec4f& c1, const Vec4f& c2, const Vec4f& c3)
+    {
+        drawTriangle(p1, p2, p3, normal1, normal2, normal3, RGBAColor(c1), RGBAColor(c2), RGBAColor(c3));
+    }
+
+    DEPRECATE_VEC4F
+    void drawQuad(const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& p4,
+        const Vector3& normal, const Vec4f& c)
+    {
+        drawQuad(p1, p2, p3, p4, normal, RGBAColor(c));
+    }
+
+    DEPRECATE_VEC4F
+    void drawQuad(const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& p4,
+        const Vector3& normal1, const Vector3& normal2, const Vector3& normal3, const Vector3& normal4,
+        const Vec4f& c1, const Vec4f& c2, const Vec4f& c3, const Vec4f& c4)
+    {
+        drawQuad(p1, p2, p3, p4, normal1, normal2, normal3, normal4, RGBAColor(c1), RGBAColor(c2), RGBAColor(c3), RGBAColor(c4));
+    }
+
+    DEPRECATE_VEC4F
+    void drawQuads(const std::vector<Vector3>& points, const Vec4f& colour)
+    {
+        drawQuads(points, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawTetrahedron(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vec4f& colour)
+    {
+        drawTetrahedron(p0, p1, p2, p3, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawTetrahedra(const std::vector<Vector3>& points, const Vec4f& colour)
+    {
+        drawTetrahedra(points, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawScaledTetrahedra(const std::vector<Vector3>& points, const Vec4f& colour, const float scale)
+    {
+        drawScaledTetrahedra(points, RGBAColor(colour), scale);
+    }
+
+    DEPRECATE_VEC4F
+    void drawHexahedron(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3,
+        const Vector3& p4, const Vector3& p5, const Vector3& p6, const Vector3& p7, const Vec4f& colour)
+    {
+        drawHexahedron(p0, p1, p2, p3, p4, p5, p6, p7, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawHexahedra(const std::vector<Vector3>& points, const Vec4f& colour)
+    {
+        drawHexahedra(points, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void drawScaledHexahedra(const std::vector<Vector3>& points, const Vec4f& colour, const float scale)
+    {
+        drawScaledHexahedra(points, RGBAColor(colour), scale);
+    }
+
+    DEPRECATE_VEC4F
+    void drawSphere(const Vector3& p, float radius, const Vec4f& colour)
+    {
+        drawSphere(p, radius, RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void draw3DText(const Vector3& p, float scale, const Vec4f& color, const char* text)
+    {
+        draw3DText(p, scale, RGBAColor(color), text);
+    }
+
+    DEPRECATE_VEC4F
+    void draw3DText_Indices(const std::vector<Vector3>& positions, float scale, const Vec4f& color)
+    {
+        draw3DText_Indices(positions, scale, RGBAColor(color));
+    }
+
+    DEPRECATE_VEC4F
+    void setMaterial(const Vec4f& colour)
+    {
+        setMaterial(RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void resetMaterial(const Vec4f& colour)
+    {
+        resetMaterial(RGBAColor(colour));
+    }
+
+    DEPRECATE_VEC4F
+    void writeOverlayText(int x, int y, unsigned fontSize, const Vec4f& color, const char* text)
+    {
+        writeOverlayText(x, y, fontSize, RGBAColor(color), text);
+    }
+
+#undef DEPRECATE_VEC4F
+
 };
 
 } // namespace visual

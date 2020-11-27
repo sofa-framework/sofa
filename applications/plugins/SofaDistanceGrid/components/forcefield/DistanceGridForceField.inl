@@ -494,7 +494,7 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
                 pointsTri.push_back(p);
             }
         }
-        vparams->drawTool()->drawTriangles(pointsTri, { 1.0f,0.2f,0.2f,0.5f });
+        vparams->drawTool()->drawTriangles(pointsTri, sofa::helper::types::RGBAColor{ 1.0f,0.2f,0.2f,0.5f });
     }
     const sofa::helper::vector<VContact>& vcontacts = this->vcontacts.getValue();
     if (!vcontacts.empty())
@@ -525,7 +525,7 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
             pointsTet.push_back(p[3]);
             pointsTet.push_back(p[2]);
         }
-        vparams->drawTool()->drawTriangles(pointsTet, { 0.8f,0.8f,0.0f,0.25f });
+        vparams->drawTool()->drawTriangles(pointsTet, sofa::helper::types::RGBAColor{ 0.8f,0.8f,0.0f,0.25f });
     }
 
     if (drawPoints.getValue())
@@ -545,9 +545,9 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
                 }
 
         if (distancePointsIn.size())
-            vparams->drawTool()->drawPoints(distancePointsIn, (float)drawSize.getValue(), { 0.8f,0.2f,0.2f,1.0f });
+            vparams->drawTool()->drawPoints(distancePointsIn, (float)drawSize.getValue(), sofa::helper::types::RGBAColor{ 0.8f,0.2f,0.2f,1.0f });
         if (distancePointsOut.size())
-            vparams->drawTool()->drawPoints(distancePointsOut, (float)drawSize.getValue() * 1.2f, { 0.2f,0.8f,0.2f,1.0f });
+            vparams->drawTool()->drawPoints(distancePointsOut, (float)drawSize.getValue() * 1.2f, sofa::helper::types::RGBAColor{ 0.2f,0.8f,0.2f,1.0f });
     }
 
 }
