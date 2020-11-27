@@ -683,7 +683,7 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
     if ( d_showCenterOfGravity.getValue() )
     {
         gravityCenter /= x.size();
-        const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
+        const sofa::helper::types::RGBAColor color = sofa::helper::types::RGBAColor::yellow();
 
         Real axisSize = d_showAxisSize.getValue();
         sofa::defaulttype::Vector3 temp;
