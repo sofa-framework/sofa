@@ -202,41 +202,41 @@ protected:
     defaulttype::Matrix4 d_previousTransformation;
 
 
-    void addPosition(helper::vector< sofa::defaulttype::Vec<3, SReal> >* pPositions, const sofa::defaulttype::Vec<3, SReal>& p);
-    void addPosition(helper::vector<sofa::defaulttype::Vec<3, SReal> >* pPositions,  SReal x, SReal y, SReal z);
+    void addPosition(helper::vector< sofa::defaulttype::Vec<3, SReal> >& pPositions, const sofa::defaulttype::Vec<3, SReal>& p);
+    void addPosition(helper::vector<sofa::defaulttype::Vec<3, SReal> >& pPositions,  SReal x, SReal y, SReal z);
 
-    void addPolyline(helper::vector<Polyline>* pPolylines, Polyline p);
+    void addPolyline(helper::vector<Polyline>& pPolylines, Polyline p);
 
-    void addEdge(helper::vector<Edge>* pEdges, const Edge& p);
-    void addEdge(helper::vector<Edge>* pEdges, Topology::EdgeID p0, Topology::EdgeID p1);
+    void addEdge(helper::vector<Edge>& pEdges, const Edge& p);
+    void addEdge(helper::vector<Edge>& pEdges, Topology::EdgeID p0, Topology::EdgeID p1);
 
-    void addTriangle(helper::vector<Triangle>* pTriangles, const Triangle& p);
-    void addTriangle(helper::vector<Triangle>* pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2);
+    void addTriangle(helper::vector<Triangle>& pTriangles, const Triangle& p);
+    void addTriangle(helper::vector<Triangle>& pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2);
 
-    void addQuad(helper::vector<Quad>* pQuads, const Quad& p);
-    void addQuad(helper::vector<Quad>* pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3);
+    void addQuad(helper::vector<Quad>& pQuads, const Quad& p);
+    void addQuad(helper::vector<Quad>& pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3);
 
-    void addPolygon(helper::vector< helper::vector <Topology::ElemID> >* pPolygons, const helper::vector<Topology::ElemID>& p);
+    void addPolygon(helper::vector< helper::vector <Topology::ElemID> >& pPolygons, const helper::vector<Topology::ElemID>& p);
 
-    void addTetrahedron(helper::vector<Tetrahedron>* pTetrahedra, const Tetrahedron& p);
-    void addTetrahedron(helper::vector<Tetrahedron>* pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3);
+    void addTetrahedron(helper::vector<Tetrahedron>& pTetrahedra, const Tetrahedron& p);
+    void addTetrahedron(helper::vector<Tetrahedron>& pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3);
 
-    void addHexahedron(helper::vector< Hexahedron>* pHexahedra, const Hexahedron& p);
-    void addHexahedron(helper::vector< Hexahedron>* pHexahedra,
+    void addHexahedron(helper::vector< Hexahedron>& pHexahedra, const Hexahedron& p);
+    void addHexahedron(helper::vector< Hexahedron>& pHexahedra,
                        Topology::HexahedronID p0, Topology::HexahedronID p1, Topology::HexahedronID p2, Topology::HexahedronID p3,
                        Topology::HexahedronID p4, Topology::HexahedronID p5, Topology::HexahedronID p6, Topology::HexahedronID p7);
 
-    void addPentahedron(helper::vector< Pentahedron>* pPentahedra, const Pentahedron& p);
-    void addPentahedron(helper::vector< Pentahedron>* pPentahedra,
+    void addPentahedron(helper::vector< Pentahedron>& pPentahedra, const Pentahedron& p);
+    void addPentahedron(helper::vector< Pentahedron>& pPentahedra,
                         Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3,
                         Topology::ElemID p4, Topology::ElemID p5);
 
-    void addPyramid(helper::vector< Pyramid>* pPyramids, const Pyramid& p);
-    void addPyramid(helper::vector< Pyramid>* pPyramids,
+    void addPyramid(helper::vector< Pyramid>& pPyramids, const Pyramid& p);
+    void addPyramid(helper::vector< Pyramid>& pPyramids,
                     Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3, Topology::ElemID p4);
 
     /// Temporary method that will copy all buffers from a io::Mesh into the corresponding Data. Will be removed as soon as work on unifying meshloader is finished
-    void copyMeshToData(helper::io::Mesh* _mesh);
+    void copyMeshToData(helper::io::Mesh& _mesh);
 };
 
 

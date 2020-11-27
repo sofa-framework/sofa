@@ -327,9 +327,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 if (!handleSeams) // we have to wait for renumbering vertices if we handle seams
                 {
                     if (nodes[0]<nodes[1])
-                        addEdge(&my_edges.wref(), Edge(nodes[0], nodes[1]));
+                        addEdge(my_edges.wref(), Edge(nodes[0], nodes[1]));
                     else
-                        addEdge(&my_edges.wref(), Edge(nodes[1], nodes[0]));
+                        addEdge(my_edges.wref(), Edge(nodes[1], nodes[0]));
                 }
                 ++nbFaces[MeshObjLoader::EDGE];
                 faceType = MeshObjLoader::EDGE;
@@ -338,7 +338,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             {
                 if (!handleSeams) // we have to wait for renumbering vertices if we handle seams
                 {
-                    addQuad(&my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+                    addQuad(my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
                 }
                 ++nbFaces[MeshObjLoader::QUAD];
                 faceType = MeshObjLoader::QUAD;
@@ -348,7 +348,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 if (!handleSeams) // we have to wait for renumbering vertices if we handle seams
                 {
                     for (size_t j=2; j<nodes.size(); j++)
-                        addTriangle(&my_triangles.wref(), Triangle(nodes[0], nodes[j-1], nodes[j]));
+                        addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[j-1], nodes[j]));
                 }
                 ++nbFaces[MeshObjLoader::TRIANGLE];
                 faceType = MeshObjLoader::TRIANGLE;
@@ -535,18 +535,18 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             if (nodes.size() == 2) // Edge
             {
                 if (nodes[0]<nodes[1])
-                    addEdge(&my_edges.wref(), Edge(nodes[0], nodes[1]));
+                    addEdge(my_edges.wref(), Edge(nodes[0], nodes[1]));
                 else
-                    addEdge(&my_edges.wref(), Edge(nodes[1], nodes[0]));
+                    addEdge(my_edges.wref(), Edge(nodes[1], nodes[0]));
             }
             else if (nodes.size()==4 && !this->d_triangulate.getValue()) // Quad
             {
-                addQuad(&my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+                addQuad(my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
             }
             else // Triangulate
             {
                 for (size_t j=2; j<nodes.size(); j++)
-                    addTriangle(&my_triangles.wref(), Triangle(nodes[0], nodes[j-1], nodes[j]));
+                    addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[j-1], nodes[j]));
             }
         }
         for (size_t i=0; i<vnormals.size(); ++i)

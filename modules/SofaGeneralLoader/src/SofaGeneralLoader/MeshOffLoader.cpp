@@ -132,12 +132,12 @@ bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
         if (numberOfVerticesPerFace == 3)
         {
             values >> triangle[0] >> triangle[1] >> triangle[2];
-            addTriangle(&my_triangles.wref(), triangle);
+            addTriangle(my_triangles.wref(), triangle);
         }
         if (numberOfVerticesPerFace == 4)
         {
             values >> quad[0] >> quad[1] >> quad[2] >> quad[3];
-            addQuad(&my_quads.wref(), quad);
+            addQuad(my_quads.wref(), quad);
         }
         currentNumberOfFaces++;
     }
