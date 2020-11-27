@@ -227,7 +227,38 @@ public:
 
     virtual void clear() {}
 
+    // Compatibility wrapper functions 
+    // as std::vector<RGBAColor> is not a std::vector<Vec4f>
+    using Vec4f = sofa::defaulttype::Vec4f;
+    void drawPoints(const std::vector<Vector3>& points, float size, const std::vector<Vec4f>& colour)
+    {
+        msg_warning("DrawTool") << "Vec4f defining a color is deprecated, use RGBAColor instead.";
+        std::vector<RGBAColor> rgbaColours;
+        std::copy(colour.begin(), colour.end(), rgbaColours.begin());
+        drawPoints(points, size, rgbaColours);
+    }
+    void drawLines(const std::vector<Vector3>& points, float size, const std::vector<Vec4f>& colours)
+    {
+        msg_warning("DrawTool") << "Vec4f defining a color is deprecated, use RGBAColor instead.";
+        std::vector<RGBAColor> rgbaColours;
+        std::copy(colours.begin(), colours.end(), rgbaColours.begin());
+        drawLines(points, size, rgbaColours);
+    }
 
+    void drawTriangles(const std::vector<Vector3>& points, const std::vector< Vec3i >& index, const std::vector<Vector3>& normal, const std::vector<Vec4f>& colour)
+    {
+        msg_warning("DrawTool") << "Vec4f defining a color is deprecated, use RGBAColor instead.";
+        std::vector<RGBAColor> rgbaColours;
+        std::copy(colour.begin(), colour.end(), rgbaColours.begin());
+        drawTriangles(points, index, normal, rgbaColours);
+    }
+    void drawQuads(const std::vector<Vector3>& points, const std::vector<Vec4f>& colours)
+    {
+        msg_warning("DrawTool") << "Vec4f defining a color is deprecated, use RGBAColor instead.";
+        std::vector<RGBAColor> rgbaColours;
+        std::copy(colours.begin(), colours.end(), rgbaColours.begin());
+        drawQuads(points,rgbaColours);
+    }
 };
 
 } // namespace visual
