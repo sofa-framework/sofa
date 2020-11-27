@@ -230,7 +230,7 @@ public:
     /// Compatibility wrapper functions 
     using Vec4f = sofa::defaulttype::Vec4f;
 #define DEPRECATE_VEC4F \
-    [[deprecated("This function has been deprecated in #PR 1627. The function will be removed " \
+    [[deprecated("This function has been deprecated in #PR 1626. The function will be removed " \
     "in the v21.06 release. Vec4f defining a color is deprecated, use RGBAColor instead.")]]
 
 
