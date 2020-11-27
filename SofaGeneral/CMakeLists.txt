@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGeneral)
 
-find_package(SofaCommon QUIET REQUIRED)
-
 # Send warnings when deprecated CMake project is activated
 option(CMAKE_WARN_DEPRECATED "Send warning when deprecated projects are found" ON)
 
@@ -27,12 +25,6 @@ set(SOFAGENERAL_MODULES
     SofaConstraint
     SofaGeneralLoader
 )
-
-message(DEPRECATION
-    " ${PROJECT_NAME} is deprecated.\n"
-    " You should now explicitely find (find_package) and link (target_link_library) each module you need within: \n"
-    " ${SOFAGENERAL_MODULES}"
-    )
 
 foreach(module ${SOFAGENERAL_MODULES})
     find_package(${module} QUIET)

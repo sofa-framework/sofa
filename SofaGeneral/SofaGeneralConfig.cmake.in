@@ -1,11 +1,14 @@
 # CMake package configuration file for SofaGeneral
-
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaCommon QUIET REQUIRED)
-
 set(SOFAGENERAL_MODULES @SOFAGENERAL_MODULES@)
+
+message(DEPRECATION
+    " @PROJECT_NAME@ is deprecated.\n"
+    " You must now explicitely find (find_package) and link (target_link_library) the modules you need within: \n"
+    " ${SOFAGENERAL_MODULES}"
+    )
 
 foreach(module ${SOFAGENERAL_MODULES})
     find_package(${module} QUIET REQUIRED)
