@@ -15,7 +15,6 @@
         <MechanicalObject name="dofs" scale="1" src="@VtkLoader" />
         <TriangleSetTopologyContainer name="topo" src="@VtkLoader" />
         <TriangleSetTopologyModifier name="modif" />
-        <TriangleSetTopologyAlgorithms name="algo" />
         <TriangleSetGeometryAlgorithms name="triGeo" />
         <OglModel name="VisualModel" src="@VtkLoader" color="red" texturename="textures/liver-texture-square.png" />
     </Node>

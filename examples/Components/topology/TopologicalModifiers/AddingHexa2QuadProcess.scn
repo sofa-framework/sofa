@@ -18,7 +18,6 @@
         <MechanicalObject src="@loader" name="Hexa" />
         <HexahedronSetTopologyContainer src="@loader" name="Hexa_topo" listening="1" />
         <HexahedronSetTopologyModifier name="Modifier" />
-        <HexahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <HexahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawHexa="1" />
         <TopologicalChangeProcessor listening="1" filename="AddingHexahedraProcess.txt" />
         <!--		<HexahedralFEMForceField" name="FEM" youngModulus="100" poissonRatio="0.3"  method="large" />-->
@@ -27,7 +26,6 @@
         <Node name="Q">
             <QuadSetTopologyContainer name="Quad_topo" listening="1" />
             <QuadSetTopologyModifier name="Modifier" />
-            <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawQuads="1" />
             <Hexa2QuadTopologicalMapping input="@../Hexa_topo" output="@Quad_topo" />
             <!--           		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>-->

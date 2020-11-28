@@ -88,7 +88,6 @@ bool fake_TopologyScene::loadMeshFile()
         });
         
         createObject(m_root, topoType + "SetTopologyModifier", {{ "name", "topoMod" }});
-        createObject(m_root, topoType + "SetTopologyAlgorithms", { { "name", "topoAlgo" } });
         createObject(m_root, topoType + "SetGeometryAlgorithms", { { "name", "topoGeo" } });
     }
 

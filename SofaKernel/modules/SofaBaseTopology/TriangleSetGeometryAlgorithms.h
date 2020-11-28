@@ -35,6 +35,10 @@ namespace component
 namespace topology
 {
 
+class TriangleSetTopologyContainer;
+
+class TriangleSetTopologyModifier;
+
 /**
 * A class that provides geometry information on an TriangleSet.
 */
@@ -282,6 +286,62 @@ public:
 
     /// return a pointer to the container of cubature points
     NumericalIntegrationDescriptor<Real,3> &getTriangleNumericalIntegrationDescriptor();
+
+
+    /** \brief  Moves and fixes the two closest points of two triangles to their median point
+    */
+    bool Suture2Points(TriangleID ind_ta, TriangleID ind_tb, PointID &ind1, PointID &ind2);
+
+    /** \brief Removes triangles along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
+     */
+    void RemoveAlongTrianglesList(const sofa::defaulttype::Vec<3, double>& a,
+        const sofa::defaulttype::Vec<3, double>& b,
+        const TriangleID ind_ta, const TriangleID ind_tb);
+
+    /** \brief Incises along the list of points (ind_edge,coord) intersected by the sequence of input segments (list of input points) and the triangular mesh
+     */
+    void InciseAlongLinesList(const sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& input_points,
+        const sofa::helper::vector< TriangleID > &input_triangles);
+
+
+
+    /** \brief Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
+     * Each end of the path is given either by an existing point or a point inside the first/last triangle. If the first/last triangle is (TriangleID)-1, it means that to path crosses the boundary of the surface.
+     * @returns the indice of the end point, or -1 if the incision failed.
+     */
+    virtual int SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
+        sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+        sofa::helper::vector<ElemID>& indices_list,
+        sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
+        sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0);
+
+
+
+    /* void SnapAlongPath (sofa::helper::vector<TriangleID>& triangles_list, sofa::helper::vector<EdgeID>& edges_list,
+      sofa::helper::vector<double>& coords_list, sofa::helper::vector<double>& points2Snap);*/
+
+    void SnapAlongPath(sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+        sofa::helper::vector<ElemID>& indices_list, sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
+        sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,
+        double epsilonSnapPath);
+
+    void SnapBorderPath(PointID pa, Coord& a, PointID pb, Coord& b,
+        sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
+        sofa::helper::vector<ElemID>& indices_list,
+        sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
+        sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,
+        double epsilonSnapBorder);
+
+
+
+    /** \brief Duplicates the given edges. Only works if at least the first or last point is adjacent to a border.
+     * @returns true if the incision succeeded.
+     */
+    virtual bool InciseAlongEdgeList(const sofa::helper::vector<EdgeID>& edges, sofa::helper::vector<PointID>& new_points, sofa::helper::vector<PointID>& end_points, bool& reachBorder);
+
+
+
+
 protected:
     Data<bool> showTriangleIndices; ///< Debug : view Triangle indices
     Data<bool> _draw; ///< if true, draw the triangles in the topology
@@ -292,6 +352,10 @@ protected:
     Data<bool> p_flipNormals; ///< if true, will flip normal of the first triangle used to recompute triangle orientation.
     /// include cubature points
     NumericalIntegrationDescriptor<Real,3> triangleNumericalIntegration;
+
+private:
+    TriangleSetTopologyContainer*				m_container;
+    TriangleSetTopologyModifier*				m_modifier;
 };
 
 

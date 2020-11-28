@@ -1,4 +1,4 @@
-#!/bin/bash
+#!bash
 
 usage() {
     echo "Usage: windows-postinstall-fixup.sh <build-dir> <install-dir>"
@@ -26,4 +26,10 @@ for plugin in \
         SofaMiscCollision  \
     ; do
     grep "$plugin" "$INSTALL_DIR/bin/plugin_list.conf.default" >> "$INSTALL_DIR/bin/plugin_list.conf"
+done
+
+# Link all plugin libs in install/bin to make them easily findable
+cd "$INSTALL_DIR" && find "plugins" -name "*.dll" | while read lib; do
+    libname="$(basename $lib)"
+    ln -s "../$lib" "bin/$libname"
 done

@@ -18,7 +18,6 @@
         <Node name="Tetra" gravity="0 -9.81 0">
             <TetrahedronSetTopologyContainer name="Container" />
             <TetrahedronSetTopologyModifier name="Modifier" />
-            <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
             <TriangleCollisionModel template="Vec3d" name="default30" />
             <Hexa2TetraTopologicalMapping name="default28" input="@../grid" output="@Container" />

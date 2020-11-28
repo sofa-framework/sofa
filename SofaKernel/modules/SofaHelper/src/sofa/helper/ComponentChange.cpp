@@ -379,12 +379,62 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "Tetra2TriangleTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
     { "Triangle2EdgeTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
 
-    // SofaUserInteraction was pluginized in #15XX
+    // SofaUserInteraction was pluginized in #1588
     { "MechanicalStateController", Pluginized("v20.12", "SofaUserInteraction") },
     { "MouseInteractor", Pluginized("v20.12", "SofaUserInteraction") },
     { "RayModel", Pluginized("v20.12", "SofaUserInteraction") },
     { "RayTraceDetection", Pluginized("v20.12", "SofaUserInteraction") },
     { "SleepController", Pluginized("v20.12", "SofaUserInteraction") },
+
+    // SofaConstraint was pluginized in #1592
+    { "BilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "ConstraintAnimationLoop", Pluginized("v20.12", "SofaConstraint") },
+    { "DistanceLMConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "DistanceLMContactConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "DOFBlockerLMConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "FixedLMConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "FreeMotionAnimationLoop", Pluginized("v20.12", "SofaConstraint") },
+    { "GenericConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "GenericConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LCPConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LinearSolverConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "LMConstraintDirectSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LMConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LMDNewProximityIntersection", Pluginized("v20.12", "SofaConstraint") },
+    { "LocalMinDistance", Pluginized("v20.12", "SofaConstraint") },
+    { "MappingGeometricStiffnessForceField", Pluginized("v20.12", "SofaConstraint") },
+    { "PrecomputedConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "SlidingConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "StopperConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "UncoupledConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "UniformConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "UnilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
+
+    // SofaGeneralLoader was pluginized in #1595
+    { "GIDMeshLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "GridMeshCreator", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "InputEventReader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshGmshLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshOffLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshSTLLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshTrianLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshXspLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "OffSequenceLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "ReadState", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "ReadTopology", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "SphereLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "StringMeshCreator", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "VoxelGridLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+
+    /***********************/
+    // REMOVED SINCE v20.12
+    { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "HexahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "TetrahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "QuadSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "TriangleSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "EdgeSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "PointSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
 
     /***********************/
     // REMOVED SINCE v20.06

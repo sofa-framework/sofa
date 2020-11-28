@@ -16,7 +16,6 @@
         <MechanicalObject name="dofs" scale="10" src="@GmshLoader" />
         <TriangleSetTopologyContainer name="topo" src="@GmshLoader" />
         <TriangleSetTopologyModifier name="modif" />
-        <TriangleSetTopologyAlgorithms name="algo" />
         <TriangleSetGeometryAlgorithms name="triGeo" drawEdges="1" />
         <DiagonalMass massDensity="0.15" />
         <FixedConstraint indices="0 1" />

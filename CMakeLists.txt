@@ -93,7 +93,6 @@ if(UNIX)
 
     # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
     set(CMAKE_INSTALL_RPATH
-        "../lib"
         "$ORIGIN/../lib"
         "$$ORIGIN/../lib"
         )
@@ -252,6 +251,8 @@ sofa_add_module(modules/SofaGeneralSimpleFem SofaGeneralSimpleFem ON)
 sofa_add_module(modules/SofaGeneralTopology SofaGeneralTopology ON)
 sofa_add_module(modules/SofaTopologyMapping SofaTopologyMapping ON)
 sofa_add_module(modules/SofaUserInteraction SofaUserInteraction ON)
+sofa_add_module(modules/SofaConstraint SofaConstraint ON)
+sofa_add_module(modules/SofaGeneralLoader SofaGeneralLoader ON)
     
     
 add_subdirectory(SofaGeneral)

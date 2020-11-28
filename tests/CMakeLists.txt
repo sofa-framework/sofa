@@ -37,11 +37,3 @@ add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaLoader/SofaLoader_test ${
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaMeshCollision/SofaMeshCollision_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaMeshCollision/SofaMeshCollision_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaRigid/SofaRigid_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaRigid/SofaRigid_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimpleFem/SofaSimpleFem_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaSimpleFem/SofaSimpleFem_test)
-
-# SofaGeneral tests
-#add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaBoundaryCondition/SofaBoundaryCondition_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaGeneral/SofaBoundaryCondition/SofaBoundaryCondition_test)
-add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaConstraint/SofaConstraint_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaGeneral/SofaConstraint/SofaConstraint_test)
-# add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralDeformable/SofaGeneralDeformable_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaGeneral/SofaGeneralDeformable/SofaGeneralDeformable_test)
-add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralLoader/SofaGeneralLoader_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaGeneral/SofaGeneralLoader/SofaGeneralLoader_test)
-# add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralMeshCollision/SofaGeneralMeshCollision_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaGeneral/SofaGeneralMeshCollision/SofaGeneralMeshCollision_test)
-# add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralRigid/SofaGeneralRigid_test ${SOFA_EXT_MODULES_BINARY_DIR}/SofaGeneral/SofaGeneralRigid/SofaGeneralRigid_test)

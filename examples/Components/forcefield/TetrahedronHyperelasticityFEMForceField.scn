@@ -34,7 +34,6 @@
 		<Node name="tetras">
 			<TetrahedronSetTopologyContainer name="Container"/>
 			<TetrahedronSetTopologyModifier name="Modifier" />
-			<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 			<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 			<Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
 			
@@ -58,7 +57,6 @@
 		<Node name="tetras">
 			<TetrahedronSetTopologyContainer name="Container"/>
 			<TetrahedronSetTopologyModifier name="Modifier" />
-			<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 			<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 			<Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
 			
@@ -83,7 +81,6 @@
 		<Node name="tetras">
 			<TetrahedronSetTopologyContainer name="Container"/>
 			<TetrahedronSetTopologyModifier name="Modifier" />
-			<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 			<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 			<Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
 			
@@ -108,7 +105,6 @@
 		<Node name="tetras">
 			<TetrahedronSetTopologyContainer name="Container"/>
 			<TetrahedronSetTopologyModifier name="Modifier" />
-			<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 			<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 			<Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
 			
