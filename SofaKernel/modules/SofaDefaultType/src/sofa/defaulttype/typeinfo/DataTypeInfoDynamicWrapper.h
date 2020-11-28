@@ -77,8 +77,8 @@ public:
 
     static AbstractTypeInfo* get() { static DataTypeInfoDynamicWrapper<Info> t; return &t; }
 
-    virtual const TypeInfoId& getBaseTypeId() const override { return TypeInfoId::GetTypeId<typename Info::BaseType>(); }
-    virtual const TypeInfoId& getValueTypeId() const override { return TypeInfoId::GetTypeId<typename Info::ValueType>(); }
+    const TypeInfoId& getBaseTypeId() const override { return TypeInfoId::GetTypeId<typename Info::BaseType>(); }
+    const TypeInfoId& getValueTypeId() const override { return TypeInfoId::GetTypeId<typename Info::ValueType>(); }
 
     std::string name() const override { return Info::name(); }
     std::string getTypeName() const override {return Info::name();}
