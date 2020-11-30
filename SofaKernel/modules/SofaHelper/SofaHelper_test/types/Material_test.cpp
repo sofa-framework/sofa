@@ -28,7 +28,7 @@ using std::string ;
 #include <sofa/core/objectmodel/Base.h>
 using sofa::core::objectmodel::Data ;
 
-#include <sofa/helper/types/Material.h>
+#include <sofa/core/datatypes/DataMaterial.h>
 using sofa::helper::types::Material ;
 
 #include <sofa/helper/testing/BaseTest.h>

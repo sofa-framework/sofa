@@ -19,11 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/topology/TopologyChange.h>
+#include <list>
 
-#include "AbstractTypeInfo.h"
-#include "TypeInfoRegistry.h"
-
-namespace sofa::defaulttype
+namespace sofa::core::objectmodel
 {
 
-} /// namespace sofa::defaulttype
+#ifndef SOFA_CORE_OBJECTMODEL_DATATYPES_DATASET_INTERN
+extern template class Data<std::set<sofa::core::objectmodel::TagSet>>;
+#endif ///
+
+}

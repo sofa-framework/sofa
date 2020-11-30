@@ -19,11 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/helper/vector.h>
+#include <sofa/defaulttype/Vec.h>
+#include <string>
 
-#include "AbstractTypeInfo.h"
-#include "TypeInfoRegistry.h"
-
-namespace sofa::defaulttype
+namespace sofa::core::objectmodel
 {
 
-} /// namespace sofa::defaulttype
+#ifndef SOFA_CORE_OBJECTMODEL_DATATYPES_DATAVECTOR_INTERN
+extern template class Data<sofa::helper::vector<unsigned int>>;
+extern template class Data<sofa::helper::vector<int>>;
+extern template class Data<sofa::helper::vector<std::string>>;
+extern template class Data<sofa::helper::vector<sofa::helper::types::RGBAColor>>;
+
+extern template class Data<sofa::helper::vector<sofa::defaulttype::Vec3d>>;
+extern template class Data<sofa::helper::vector<sofa::defaulttype::Vec3f>>;
+#endif ///
+
+}

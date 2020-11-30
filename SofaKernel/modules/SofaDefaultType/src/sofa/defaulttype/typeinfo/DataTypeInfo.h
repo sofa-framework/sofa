@@ -126,8 +126,6 @@ struct DefaultDataTypeInfo
     {
     }
 
-    // mtournier: wtf is this supposed to do?
-    // mtournier: wtf is this not returning &type?
     static const void* getValuePtr(const DataType& /*type*/)
     {
         return nullptr;
@@ -143,8 +141,12 @@ struct DefaultDataTypeInfo
 };
 
 template<class TDataType>
-struct DataTypeInfo : public DefaultDataTypeInfo<TDataType>
+struct DataTypeInfo
 {
+public:
+//       typedef TDataType DataType;
+//       static const std::string name() { return "GetTypeName()"""; }
+//       enum {ValidInfo = 0};
 };
 
 template<class T>

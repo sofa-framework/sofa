@@ -19,24 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_QUAT_H
-#define SOFA_DEFAULTTYPE_QUAT_H
+#pragma once
 
 #include <sofa/helper/Quater.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Quat.h>
 
-namespace sofa
-{
-
-namespace defaulttype
+namespace sofa::defaulttype
 {
 typedef helper::Quater<double> Quatd; ///< alias
 typedef helper::Quater<float>  Quatf; ///< alias
 typedef helper::Quater<SReal>  Quat; ///< alias
 typedef Quat Quaternion; ///< alias
-} // namespace defaulttype
-
 } // namespace sofa
-
-#endif
 

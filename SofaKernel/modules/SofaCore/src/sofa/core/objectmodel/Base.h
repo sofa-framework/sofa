@@ -29,12 +29,13 @@
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
+#include <sofa/core/datatypes/DataQuat.h>
 #include <list>
 #include <sofa/core/sptr.h>
 
 #include <deque>
 
-#include <sofa/core/objectmodel/ComponentState.h>
+#include <sofa/core/datatypes/DataComponentState.h>
 #include <sofa/core/DataTracker.h>
 
 // forward declaration of castable classes

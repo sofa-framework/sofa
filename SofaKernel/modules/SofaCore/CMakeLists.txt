@@ -58,6 +58,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/Mass.h
     ${SRC_ROOT}/behavior/Mass.inl
     ${SRC_ROOT}/behavior/MechanicalState.h
+    ${SRC_ROOT}/behavior/MechanicalState.inl
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.h
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.inl
     ${SRC_ROOT}/behavior/MixedInteractionForceField.h
@@ -87,6 +88,28 @@ set(HEADER_FILES
     ${SRC_ROOT}/collision/IntersectorFactory.h
     ${SRC_ROOT}/collision/NarrowPhaseDetection.h
     ${SRC_ROOT}/collision/Pipeline.h
+    ${SRC_ROOT}/datatypes/DataComponentState.h
+    ${SRC_ROOT}/datatypes/DataComponentState.inl
+    ${SRC_ROOT}/datatypes/DataBoundingBox.h
+    ${SRC_ROOT}/datatypes/DataIntegral.h
+    ${SRC_ROOT}/datatypes/DataIntegral.inl
+    ${SRC_ROOT}/datatypes/DataList.h
+    ${SRC_ROOT}/datatypes/DataList.inl
+    ${SRC_ROOT}/datatypes/DataMaterial.h
+    ${SRC_ROOT}/datatypes/DataMaterial.inl
+    ${SRC_ROOT}/datatypes/DataOptionGroup.h
+    ${SRC_ROOT}/datatypes/DataOptionGroup.inl
+    ${SRC_ROOT}/datatypes/DataPrimitiveGroup.h
+    ${SRC_ROOT}/datatypes/DataPrimitiveGroup.inl
+    ${SRC_ROOT}/datatypes/DataQuat.h
+    ${SRC_ROOT}/datatypes/DataQuat.inl
+    ${SRC_ROOT}/datatypes/DataSet.h
+    ${SRC_ROOT}/datatypes/DataScalar.h
+    ${SRC_ROOT}/datatypes/DataScalar.inl
+    ${SRC_ROOT}/datatypes/DataVec.h
+    ${SRC_ROOT}/datatypes/DataVec.inl
+    ${SRC_ROOT}/datatypes/DataVector.h
+    ${SRC_ROOT}/datatypes/DataVector.inl
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/core.h
     ${SRC_ROOT}/init.h
@@ -114,6 +137,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/ContextObject.h
     ${SRC_ROOT}/objectmodel/DDGNode.h
     ${SRC_ROOT}/objectmodel/Data.h
+    ${SRC_ROOT}/objectmodel/Data.inl
     ${SRC_ROOT}/objectmodel/DataContentValue.h
     ${SRC_ROOT}/objectmodel/DataFileName.h
     ${SRC_ROOT}/objectmodel/DataLink.h
@@ -203,6 +227,18 @@ set(SOURCE_FILES
     ${SRC_ROOT}/collision/Contact.cpp
     ${SRC_ROOT}/collision/Intersection.cpp
     ${SRC_ROOT}/collision/Pipeline.cpp
+    ${SRC_ROOT}/datatypes/DataBoundingBox.cpp
+    ${SRC_ROOT}/datatypes/DataComponentState.cpp
+    ${SRC_ROOT}/datatypes/DataIntegral.cpp
+    ${SRC_ROOT}/datatypes/DataList.cpp
+    ${SRC_ROOT}/datatypes/DataMaterial.cpp
+    ${SRC_ROOT}/datatypes/DataOptionGroup.cpp
+    ${SRC_ROOT}/datatypes/DataPrimitiveGroup.cpp
+    ${SRC_ROOT}/datatypes/DataQuat.cpp
+    ${SRC_ROOT}/datatypes/DataScalar.cpp
+    ${SRC_ROOT}/datatypes/DataSet.cpp
+    ${SRC_ROOT}/datatypes/DataVec.cpp
+    ${SRC_ROOT}/datatypes/DataVector.cpp
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/loader/BaseLoader.cpp
     ${SRC_ROOT}/loader/MeshLoader.cpp

@@ -25,6 +25,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
+#include <sofa/helper/SVector.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sstream>
 #include <typeinfo>
@@ -35,23 +36,26 @@
 #include "typeinfo/TypeInfo_Bool.h"
 #include "typeinfo/TypeInfo_Integer.h"
 #include "typeinfo/TypeInfo_Mat.h"
-#include "typeinfo/TypeInfo_Quat.h"
 #include "typeinfo/TypeInfo_Scalar.h"
 #include "typeinfo/TypeInfo_Set.h"
 #include "typeinfo/TypeInfo_Text.h"
 #include "typeinfo/TypeInfo_Vec.h"
 #include "typeinfo/TypeInfo_FixedArray.h"
-#include "typeinfo/TypeInfo_BoundingBox.h"
+////#include "typeinfo/TypeInfo_BoundingBox.h"
 #include "typeinfo/TypeInfo_RGBAColor.h"
-#include "typeinfo/TypeInfo_Vector.h"
+////#include "typeinfo/TypeInfo_Vector.h"
 #include "typeinfo/TypeInfo_RigidTypes.h"
 #include "typeinfo/TypeInfo_VecTypes.h"
+#include "typeinfo/models/IncompleteTypeInfo.h"
 
-namespace sofa::defaulttype
-{
+//namespace sofa::defaulttype
+//{
 
-/// We make an alias to wrap around the old name to the new one.
-template<class T>
-using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
+//template<class T>
+//struct DataTypeInfo<sofa::helper::SVector<T>> : public IncompleteTypeInfo<sofa::helper::SVector<T>>{};
 
-} /// namespace sofa::defaulttype
+///// We make an alias to wrap around the old name to the new one.
+//template<class T>
+//using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
+
+//} /// namespace sofa::defaulttype

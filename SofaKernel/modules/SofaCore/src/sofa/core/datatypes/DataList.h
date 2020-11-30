@@ -19,11 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include "AbstractTypeInfo.h"
-#include "TypeInfoRegistry.h"
+#pragma once
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/defaulttype/typeinfo/NameOnlyTypeInfo.h>
+#include <sofa/core/topology/TopologyChange.h>
+#include <list>
 
 namespace sofa::defaulttype
 {
+    template<class T>
+    struct DataTypeInfo<std::list<T>> : public sofa::defaulttype::IncompleteTypeInfo<std::list<T>> {};
+}
 
-} /// namespace sofa::defaulttype
+namespace sofa::core::objectmodel
+{
+
+#ifndef SOFA_CORE_OBJECTMODEL_DATATYPES_DATALIST_NOEXTERN
+extern template class Data<std::list<sofa::core::topology::TopologyChange const*>>;
+#endif ///
+
+}

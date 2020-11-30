@@ -19,11 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include "AbstractTypeInfo.h"
-#include "TypeInfoRegistry.h"
+#pragma once
+#include <sofa/defaulttype/config.h>
+#include <sofa/defaulttype/TypeInfoRegistry.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
 
 namespace sofa::defaulttype
 {
 
-} /// namespace sofa::defaulttype
+
+}

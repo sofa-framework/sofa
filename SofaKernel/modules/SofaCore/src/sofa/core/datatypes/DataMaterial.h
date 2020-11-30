@@ -19,11 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include "AbstractTypeInfo.h"
-#include "TypeInfoRegistry.h"
+#pragma once
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/defaulttype/typeinfo/models/IncompleteTypeInfo.h>
+#include <sofa/helper/types/Material.h>
 
 namespace sofa::defaulttype
 {
 
-} /// namespace sofa::defaulttype
+template<>
+struct DataTypeInfo<sofa::helper::types::Material> : public IncompleteTypeInfo<sofa::helper::types::Material>
+{
+
+};
+
+}
+
+namespace sofa::core::objectmodel
+{
+
+template<>
+bool Data<sofa::helper::types::Material>::operator==(const sofa::helper::types::Material&) const;
+
+template<>
+bool Data<sofa::helper::types::Material>::operator!=(const sofa::helper::types::Material&) const;
+
+
+#ifndef SOFA_CORE_OBJECTMODEL_DATATYPES_DATAMATERIAL_NOEXTERN
+extern template class Data<sofa::helper::types::Material>;
+#endif ///
+
+}

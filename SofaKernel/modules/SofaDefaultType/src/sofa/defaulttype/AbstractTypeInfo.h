@@ -175,9 +175,6 @@ protected: // only derived types can instantiate this class
     AbstractTypeInfo() {}
     virtual ~AbstractTypeInfo() {}
 
-    virtual const TypeInfoId& getBaseTypeId() const = 0;
-    virtual const TypeInfoId& getValueTypeId() const = 0;
-
 private: // copy constructor or operator forbidden
     AbstractTypeInfo(const AbstractTypeInfo&) {}
     void operator=(const AbstractTypeInfo&) {}

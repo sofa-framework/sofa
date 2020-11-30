@@ -69,16 +69,12 @@ public:
     TypeInfoRegistry::Set(TypeInfoId::getNewId<MyType>(), info);
     \endcode
 **/
+
 template<class Info>
 class DataTypeInfoDynamicWrapper : public AbstractTypeInfo, public Info
 {
 public:
     typedef typename Info::DataType DataType;
-
-    static AbstractTypeInfo* get() { static DataTypeInfoDynamicWrapper<Info> t; return &t; }
-
-    virtual const TypeInfoId& getBaseTypeId() const { return TypeInfoId::GetTypeId<typename Info::BaseType>(); }
-    virtual const TypeInfoId& getValueTypeId() const { return TypeInfoId::GetTypeId<typename Info::ValueType>(); }
 
     std::string name() const override { return Info::name(); }
     std::string getTypeName() const override {return Info::name();}
@@ -158,8 +154,8 @@ public:
 
     virtual const std::type_info* type_info() const override { return &typeid(DataType); }
 
-protected: // only derived types can instantiate this class
     DataTypeInfoDynamicWrapper() {}
+
 };
 
 } /// namespace sofa::defaulttype

@@ -19,11 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <sofa/core/objectmodel/Data.h>
 
-#include "AbstractTypeInfo.h"
-#include "TypeInfoRegistry.h"
-
-namespace sofa::defaulttype
+namespace sofa::core::objectmodel
 {
 
-} /// namespace sofa::defaulttype
+#ifndef SOFA_CORE_OBJECTMODEL_DATATYPES_DATAMATERIAL_NOEXTERN
+extern template class Data<bool>;
+extern template class Data<char>;
+extern template class Data<unsigned char>;
+extern template class Data<short>;
+extern template class Data<unsigned short>;
+extern template class Data<int>;
+extern template class Data<unsigned int>;
+extern template class Data<long>;
+extern template class Data<unsigned long>;
+extern template class Data<long long>;
+extern template class Data<unsigned long long>;
+#endif ///
+
+}

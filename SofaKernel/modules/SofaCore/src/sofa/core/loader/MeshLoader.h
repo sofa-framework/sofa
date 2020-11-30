@@ -24,9 +24,9 @@
 
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/loader/BaseLoader.h>
-#include <sofa/core/loader/PrimitiveGroup.h>
 #include <sofa/core/topology/Topology.h>
 
+#include <sofa/core/datatypes/DataPrimitiveGroup.h>
 
 namespace sofa
 {

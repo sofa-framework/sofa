@@ -57,6 +57,9 @@ public:
         return p0 < p.p0;
     }
 
+    bool operator==(const PrimitiveGroup& b) const { return true; }
+    bool operator!=(const PrimitiveGroup& b) const { return false; }
+
     PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
     PrimitiveGroup(int p0, int nbp, std::string materialName, std::string groupName, int materialId) : p0(p0), nbp(nbp), materialName(materialName), groupName(groupName), materialId(materialId) {}
 };

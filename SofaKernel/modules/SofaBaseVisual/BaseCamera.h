@@ -27,10 +27,10 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Ray.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/Quater.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/OptionsGroup.h>
+#include <sofa/core/datatypes/DataOptionGroup.h>
+#include <sofa/core/datatypes/DataQuat.h>
 
 #include "BackgroundSetting.h"
 

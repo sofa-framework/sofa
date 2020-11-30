@@ -19,11 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/Quater.h>
+#include <sofa/defaulttype/Quat.h>
 
-#include "AbstractTypeInfo.h"
-#include "TypeInfoRegistry.h"
-
-namespace sofa::defaulttype
+namespace sofa::core::objectmodel
 {
-
-} /// namespace sofa::defaulttype
+#ifndef SOFA_CORE_OBJECTMODEL_DATATYPES_DATAQUAT_NOEXTERN
+extern template class Data<sofa::defaulttype::Quatf>;
+extern template class Data<sofa::defaulttype::Quatd>;
+#endif ///
+}

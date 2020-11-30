@@ -118,11 +118,6 @@ public:
 
     /// Get the type_info for this type.
     virtual const std::type_info* type_info() const {return &typeid(this); }
-
-protected:
-    virtual const TypeInfoId& getBaseTypeId() const { return TypeInfoId::GetTypeId<NoTypeInfo>(); }
-    virtual const TypeInfoId& getValueTypeId() const  { return TypeInfoId::GetTypeId<NoTypeInfo>(); }
-
 };
 
 } /// namespace sofa::defaulttype
