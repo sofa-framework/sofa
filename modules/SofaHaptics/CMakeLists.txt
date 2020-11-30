@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaHaptics LANGUAGES CXX)
 
-find_package(SofaGeneral REQUIRED) # To have SofaConstraint
+find_package(SofaConstraint REQUIRED)
 
 set(HEADER_FILES
     src/SofaHaptics/config.h

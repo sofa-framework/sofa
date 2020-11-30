@@ -3,7 +3,7 @@ project(SofaPreconditioner)
 
 # Dependencies
 find_package(SofaCommon REQUIRED) # SofaImplicitOdeSolver SofaSimpleFem
-find_package(SofaGeneral REQUIRED) # SofaGeneralLinearSolver
+find_package(SofaGeneralLinearSolver REQUIRED) # SofaGeneralLinearSolver
 sofa_find_package(SofaSparseSolver QUIET) # Soft dependency of PrecomputedWarpPreconditioner
 
 set(SRC_ROOT src/SofaPreconditioner)

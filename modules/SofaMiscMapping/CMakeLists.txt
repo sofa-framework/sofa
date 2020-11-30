@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaMiscMapping LANGUAGES CXX)
 
 find_package(SofaCommon REQUIRED) # SofaSimpleFem SofaRigid
-find_package(SofaGeneral REQUIRED) # SofaGeneralSimpleFem
+find_package(SofaGeneralSimpleFem REQUIRED)
 
 set(SOFAMISCMAPPING_SRC "src/${PROJECT_NAME}")
 

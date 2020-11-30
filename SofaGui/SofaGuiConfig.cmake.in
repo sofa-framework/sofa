@@ -15,9 +15,8 @@ set(SOFAGUIQT_HAVE_NODEEDITOR @SOFAGUIQT_HAVE_NODEEDITOR@)
 set(SOFAGUIQT_HAVE_TINYXML @SOFAGUIQT_HAVE_TINYXML@)
 
 # Find dependencies
-find_package(SofaBase QUIET REQUIRED)
-find_package(SofaCommon QUIET REQUIRED)
-find_package(SofaGeneral QUIET REQUIRED)
+find_package(SofaFramework QUIET REQUIRED)
+find_package(SofaUserInteraction QUIET REQUIRED)
 find_package(SofaGraphComponent QUIET REQUIRED)
 find_package(SofaMiscForceField QUIET REQUIRED) # SofaGuiQt
 

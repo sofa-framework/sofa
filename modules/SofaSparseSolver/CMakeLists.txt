@@ -4,7 +4,7 @@ project(SofaSparseSolver LANGUAGES CXX)
 # Dependencies
 find_package(SofaBase REQUIRED) # SofaGeneralLinearSolver
 find_package(SofaCommon REQUIRED) # SofaImplicitOdeSolver SofaSimpleFem
-find_package(SofaGeneral REQUIRED) # SofaGeneralLinearSolver
+find_package(SofaGeneralLinearSolver REQUIRED)
 
 add_subdirectory(extlibs/csparse)
 sofa_set_01(SOFASPARSESOLVER_HAVE_CSPARSE VALUE TRUE)
