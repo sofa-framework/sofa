@@ -22,11 +22,8 @@
 #ifndef SOFA_CORE_OBJECTMODEL_DATA_H
 #define SOFA_CORE_OBJECTMODEL_DATA_H
 
-#include <istream>
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/core/objectmodel/DataContentValue.h>
@@ -38,6 +35,86 @@ namespace core
 
 namespace objectmodel
 {
+
+/** \brief Abstract base class template for Data. */
+template < class T >
+class TData : public BaseData
+{
+public:
+    typedef T value_type;
+
+
+    explicit TData(const BaseInitData& init) : BaseData(init)
+    {
+    }
+
+    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped.
+    //[[deprecated("Replaced with one with std::string instead of char* version")]]
+    TData( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false) :
+        TData( sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly) {}
+
+    TData( const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
+        : BaseData(helpMsg, isDisplayed, isReadOnly)
+    {
+    }
+
+
+    ~TData() override
+    {}
+
+    inline void printValue(std::ostream& out) const override;
+    inline std::string getValueString() const override;
+    inline std::string getValueTypeString() const override;
+
+    /// Get info about the value type of the associated variable
+    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
+    {
+        return sofa::defaulttype::VirtualTypeInfo<T>::get();
+    }
+
+    virtual const T& virtualGetValue() const = 0;
+    virtual void virtualSetValue(const T& v) = 0;
+    virtual void virtualSetLink(const BaseData& bd) = 0;
+    virtual T* virtualBeginEdit() = 0;
+    virtual void virtualEndEdit() = 0;
+
+    /// Get current value as a void pointer (use getValueTypeInfo to find how to access it)
+    const void* getValueVoidPtr() const override
+    {
+        return &(virtualGetValue());
+    }
+
+    /// Begin edit current value as a void pointer (use getValueTypeInfo to find how to access it)
+    void* beginEditVoidPtr() override
+    {
+        return virtualBeginEdit();
+    }
+
+    /// End edit current value as a void pointer (use getValueTypeInfo to find how to access it)
+    void endEditVoidPtr() override
+    {
+        virtualEndEdit();
+    }
+
+    /** Try to read argument value from an input stream.
+    Return false if failed
+     */
+    virtual bool read( const std::string& s ) override;
+
+    bool isCounterValid() const override {return true;}
+
+    bool copyValue(const TData<T>* parent);
+
+    bool copyValue(const BaseData* parent) override;
+
+    bool validParent(BaseData* parent) override;
+
+protected:
+
+    bool updateFromParentValue(const BaseData* parent) override;
+};
+
+
 /** \brief Container that holds a variable for a component.
  *
  * This is a fundamental class template in Sofa.  Data are used to encapsulated
@@ -73,25 +150,16 @@ namespace objectmodel
  * <Foo bar="false"/>
  * \endcode
  */
-
-template<class T>
-class HasDataTypeInfo
-{
-    typedef char YesType[1];
-    typedef char NoType[2];
-
-    template<typename C> static YesType& test( decltype (&C::ValidInfo) );
-    template<typename C> static NoType& test(...);
-
-public:
-    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
-};
-
-
-template <class T>
-class Data : public BaseData
+template < class T = void* >
+class Data : public TData<T>
 {
 public:
+    using TData<T>::m_counter;
+    using TData<T>::m_isSet;
+    using TData<T>::setDirtyOutputs;
+    using TData<T>::updateIfDirty;
+    using TData<T>::notifyEndEdit;
+
     /// @name Construction / destruction
     /// @{
 
@@ -99,11 +167,11 @@ public:
     class InitData : public BaseData::BaseInitData
     {
     public:
-        InitData() : value(*new T()) {}
-        InitData(const T& v) : value{*new T(v)} {}
-        InitData(const BaseData::BaseInitData& i) : BaseData::BaseInitData(i), value(*new T()) {}
+        InitData() : value(T()) {}
+        InitData(const T& v) : value(v) {}
+        InitData(const BaseData::BaseInitData& i) : BaseData::BaseInitData(i), value(T()) {}
 
-        T& value;
+        T value;
     };
 
     static std::string templateName()
@@ -111,59 +179,53 @@ public:
         return sofa::core::objectmodel::BaseData::typeName<Data<T>>();
     }
 
-    Data() : BaseData(std::string(""), false,false) {}
-
     // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
-    BaseData* getNewInstance() override { return new Data();}
-
-    void printValue(std::ostream& out) const override;
-    std::string getValueString() const override;
-
-    /// Get info about the value type of the associated variable
-    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override;
-
-    bool read(const std::string& newvalue) override { return _doSetValueFromString_(newvalue); }
-
-    [[deprecated("Never Used")]]
-    bool isCounterValid() const override {return true;}
-
-    bool copyValue(const Data<T>* parent);                ///< Fast path when you already know the content
-    bool _doCopyValue_(const BaseData* parent) override;  ///< Slow copy path from the abstracted level
-
+    virtual BaseData* getNewInstance() { return new Data();}
 
     /** \copydoc BaseData(const BaseData::BaseInitData& init) */
     explicit Data(const BaseData::BaseInitData& init)
-        : BaseData(init)
+        : TData<T>(init)
     {
     }
 
     /** \copydoc Data(const BaseData::BaseInitData&) */
     explicit Data(const InitData& init)
-        : BaseData(init)
+        : TData<T>(init)
     {
         m_value = ValueType(init.value);
     }
 
+    /** \copydoc BaseData(const char*, bool, bool) */
+    //[[deprecated("Replaced with one with std::string instead of char* version")]]
+    Data( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
+        : Data(sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly) {}
 
     /** \copydoc BaseData(const std::string& , bool, bool) */
     Data( const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
-        : BaseData(helpMsg, isDisplayed, isReadOnly)
+        : TData<T>(helpMsg, isDisplayed, isReadOnly)
     {
         m_value = ValueType();
     }
 
+    /** \copydoc BaseData(const char*, bool, bool)
+     *  \param value The default value.
+     */
+    Data( const T& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false) :
+        Data(value, sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly)
+    {}
 
     /** \copydoc BaseData(const char*, bool, bool)
      *  \param value The default value.
      */
     Data( const T& value, const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
-        : BaseData(helpMsg, isDisplayed, isReadOnly)
+        : TData<T>(helpMsg, isDisplayed, isReadOnly)
     {
         m_value = ValueType(value);
     }
 
     /// Destructor.
     virtual ~Data() {}
+
     /// @}
 
     /// @name Simple edition and retrieval API
@@ -171,7 +233,7 @@ public:
 
     /// BeginEdit method if it is only to write the value
     /// checking that current value is up to date
-    T* beginEdit()
+    inline T* beginEdit()
     {
         updateIfDirty();
         return beginWriteOnly();
@@ -179,58 +241,88 @@ public:
 
     /// beginWriteOnly method if it is only to write the value
     /// regardless of the current status of this value: no dirtiness check
-    T* beginWriteOnly()
+    inline T* beginWriteOnly()
     {
         m_counter++;
         m_isSet=true;
-        setDirtyOutputs();
+        BaseData::setDirtyOutputs();
         return m_value.beginEdit();
     }
 
-    void endEdit()
+    inline void endEdit()
     {
         m_value.endEdit();
-        notifyEndEdit();
+        BaseData::notifyEndEdit();
     }
 
     /// @warning writeOnly (the Data is not updated before being set)
-    void setValue(const T& value)
+    inline void setValue(const T& value)
     {
         *beginWriteOnly()=value;
         endEdit();
     }
 
-    const T& getValue() const
+    inline const T& getValue() const
     {
         updateIfDirty();
         return m_value.getValue();
     }
-    /// @}
 
-
-    /// Get current value as a void pointer (use getValueTypeInfo to find how to access it)
-    const void* getValueVoidPtr() const override
-    {
-        return &(getValue());
-    }
-
-    /// Begin edit current value as a void pointer (use getValueTypeInfo to find how to access it)
-    void* beginEditVoidPtr() override
-    {
-        return beginEdit();
-    }
-
-    /// End edit current value as a void pointer (use getValueTypeInfo to find how to access it)
-    void endEditVoidPtr() override
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    inline void endEdit(const core::ExecParams*)
     {
         endEdit();
     }
 
-    void clearValue() override ;
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    inline T* beginWriteOnly(const core::ExecParams*)
+    {
+        return beginWriteOnly();
+    }
 
-    bool _doUpdateFromParentValue_(const BaseData*) override;
-    bool _isACompatibleParent_(const BaseData* parent) override;
-    bool _doSetValueFromString_(const std::string&) override;
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    inline T* beginEdit(const core::ExecParams*)
+    {
+        return beginEdit();
+    }
+
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    inline void setValue(const core::ExecParams*, const T& value)
+    {
+        setValue(value);
+    }
+
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    inline const T& getValue(const core::ExecParams*) const
+    {
+        return getValue();
+    }
+
+
+    /// @}
+
+    /// @name Virtual edition and retrieval API (for generic TData parent API, deprecated)
+    /// @{
+
+    virtual const T& virtualGetValue() const { return getValue(); }
+    virtual void virtualSetValue(const T& v) { setValue(v); }
+
+    virtual void virtualSetLink(const BaseData& bd)
+    {
+        const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
+        if (d)
+        {
+            m_value = d->m_value;
+            m_counter++;
+            m_isSet = true;
+            BaseData::setDirtyOutputs();
+        }
+    }
+
+    virtual T* virtualBeginEdit() { return beginEdit(); }
+    virtual void virtualEndEdit() { endEdit(); }
+
+    /// @}
 
     friend std::ostream & operator << (std::ostream &out, const Data& df)
     {
@@ -255,7 +347,7 @@ public:
 
 protected:
 
-    typedef DataContentValue<T, true> ValueType;
+    typedef DataContentValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
 
     /// Value
     ValueType m_value;
@@ -267,75 +359,111 @@ private:
 
 class EmptyData : public Data<void*> {};
 
+/// Specialization for reading strings
+template<>
+bool TData<std::string>::read( const std::string& str );
+
+
+/// Specialization for reading booleans
+template<>
+bool TData<bool>::read( const std::string& str );
+
+
 /// General case for printing default value
 template<class T>
 inline
-void Data<T>::printValue( std::ostream& out) const
+void TData<T>::printValue( std::ostream& out) const
 {
-    out << getValue() << " ";
+    out << virtualGetValue() << " ";
 }
 
 /// General case for printing default value
 template<class T>
 inline
-std::string Data<T>::getValueString() const
+std::string TData<T>::getValueString() const
 {
     std::ostringstream out;
-    out << getValue();
+    out << virtualGetValue();
     return out.str();
 }
 
-template <class T>
-bool Data<T>::_doSetValueFromString_(const std::string& s)
+template<class T>
+inline
+std::string TData<T>::getValueTypeString() const
 {
-    std::istringstream istr {s};
-    istr >> *beginEdit();
-    endEdit();
-    return istr.fail();
-}
-
-
-template <class T>
-void Data<T>::clearValue()
-{
-    setValue(T{});
+    return BaseData::typeName(&virtualGetValue());
 }
 
 template <class T>
-bool Data<T>::copyValue(const Data<T>* parent)
+bool TData<T>::read(const std::string& s)
 {
-    setValue(parent->getValue());
+    if (s.empty())
+    {
+        bool resized = getValueTypeInfo()->setSize( virtualBeginEdit(), 0 );
+        virtualEndEdit();
+        return resized;
+    }
+    std::istringstream istr( s.c_str() );
+    istr >> *virtualBeginEdit();
+    virtualEndEdit();
+    if( istr.fail() )
+    {
+        return false;
+    }
     return true;
 }
 
 template <class T>
-bool Data<T>::_doCopyValue_(const BaseData* parent)
+bool TData<T>::copyValue(const TData<T>* parent)
 {
-    auto pdata = dynamic_cast<const Data<T>*>(parent);
-    if(pdata)
-        return copyValue(pdata);
-    return false;
+    virtualSetValue(parent->virtualGetValue());
+    return true;
 }
 
 template <class T>
-bool Data<T>::_isACompatibleParent_(const BaseData* parent)
+bool TData<T>::copyValue(const BaseData* parent)
 {
-    if (dynamic_cast<const Data<T>*>(parent))
-        return true;
-    return false;
-}
-
-template <class T>
-bool Data<T>::_doUpdateFromParentValue_(const BaseData* parent)
-{
-    auto typedParent = dynamic_cast<const Data<T>*>(parent);
-    if (typedParent)
+    const TData<T>* p = dynamic_cast<const TData<T>*>(parent);
+    if (p)
     {
-        setValue(typedParent->getValue());
+        virtualSetValue(p->virtualGetValue());
         return true;
     }
-    return false;
+    return BaseData::copyValue(parent);
 }
+
+template <class T>
+bool TData<T>::validParent(BaseData* parent)
+{
+    if (dynamic_cast<TData<T>*>(parent))
+        return true;
+    return BaseData::validParent(parent);
+}
+
+
+template <class T>
+bool TData<T>::updateFromParentValue(const BaseData* parent)
+{
+    auto typedParent = dynamic_cast<const TData<T>*>(parent);
+    if (typedParent)
+    {
+        virtualSetLink(*parent);
+        return true;
+    }
+    else
+        return BaseData::updateFromParentValue(parent);
+}
+
+#if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
+
+extern template class SOFA_CORE_API TData< std::string >;
+extern template class SOFA_CORE_API Data< std::string >;
+extern template class SOFA_CORE_API TData< sofa::helper::vector<std::string> >;
+extern template class SOFA_CORE_API Data< sofa::helper::vector<std::string> >;
+extern template class SOFA_CORE_API TData< bool >;
+extern template class SOFA_CORE_API Data< bool >;
+
+#endif
 
 } // namespace objectmodel
 

@@ -35,6 +35,11 @@ namespace objectmodel
 {
 
 //#define SOFA_DDG_TRACE
+
+BaseData::BaseData(const char* h, DataFlags dataflags) : BaseData(sofa::helper::safeCharToString(h), dataflags)
+{
+}
+
 BaseData::BaseData(const std::string& h, DataFlags dataflags)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counter(), m_isSet(), m_dataFlags(dataflags)
@@ -45,6 +50,11 @@ BaseData::BaseData(const std::string& h, DataFlags dataflags)
     m_isSet = false;
     setFlag(FLAG_PERSISTENT, false);
 }
+
+BaseData::BaseData( const char* helpMsg, bool isDisplayed, bool isReadOnly) : BaseData(sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly)
+{
+}
+
 
 BaseData::BaseData( const std::string& h, bool isDisplayed, bool isReadOnly)
     : help(h), ownerClass(""), group(""), widget("")
@@ -82,28 +92,9 @@ BaseData::BaseData( const BaseInitData& init)
     setFlag(FLAG_PERSISTENT, false);
 }
 
-std::string BaseData::getValueTypeString() const
-{
-    return getValueTypeInfo()->getTypeName();
-}
-
 BaseData::~BaseData()
 {
 }
-
-bool BaseData::read(const std::string& newvalue)
-{
-    return setValueFromString(newvalue);
-}
-
-
-bool BaseData::setValueFromString(const std::string& s)
-{
-    if (s.empty())
-        clearValue();
-    return _doSetValueFromString_(s);
-}
-
 
 bool BaseData::validParent(BaseData* parent)
 {
@@ -189,11 +180,6 @@ void BaseData::update()
 /// Update this Data from the value of its parent
 bool BaseData::updateFromParentValue(const BaseData* parent)
 {
-    /// Try to go with the low-level copy
-    if(_doUpdateFromParentValue_(parent))
-        return true;
-
-    /// If this does not work fall back to abstract type info to do the copy.
     const defaulttype::AbstractTypeInfo* dataInfo = this->getValueTypeInfo();
     const defaulttype::AbstractTypeInfo* parentInfo = parent->getValueTypeInfo();
 
@@ -295,9 +281,9 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
 /// @return true if copy was successfull
 bool BaseData::copyValue(const BaseData* parent)
 {
-    if (_doCopyValue_(parent))
+    if (updateFromParentValue(parent))
         return true;
-    return BaseData::copyValue(parent);
+    return false;
 }
 
 std::string BaseData::decodeTypeName(const std::type_info& t)

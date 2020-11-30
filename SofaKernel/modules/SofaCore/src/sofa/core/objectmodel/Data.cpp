@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_CORE_OBJECTMODEL_DATA_CPP
+
 #include <sofa/core/objectmodel/Data.h>
 
 namespace sofa
@@ -32,15 +34,15 @@ namespace objectmodel
 
 /// Specialization for reading strings
 template<>
-bool SOFA_CORE_API Data<std::string>::read( const std::string& str )
+bool SOFA_CORE_API TData<std::string>::read( const std::string& str )
 {
-    setValue(str);
+    virtualSetValue(str);
     return true;
 }
 
 /// Specialization for reading booleans
 template<>
-bool SOFA_CORE_API Data<bool>::read( const std::string& str )
+bool SOFA_CORE_API TData<bool>::read( const std::string& str )
 {
     if (str.empty())
         return false;
@@ -53,9 +55,16 @@ bool SOFA_CORE_API Data<bool>::read( const std::string& str )
         val = (atoi(str.c_str()) != 0);
     else
         return false;
-    setValue(val);
+    virtualSetValue(val);
     return true;
 }
+
+template class SOFA_CORE_API TData< std::string >;
+template class SOFA_CORE_API Data< std::string >;
+template class SOFA_CORE_API TData< sofa::helper::vector<std::string> >;
+template class SOFA_CORE_API Data< sofa::helper::vector<std::string> >;
+template class SOFA_CORE_API TData< bool >;
+template class SOFA_CORE_API Data< bool >;
 
 } // objectmodel
 

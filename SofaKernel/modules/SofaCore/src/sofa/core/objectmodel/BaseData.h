@@ -23,7 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASEDATA_H
 
 #include <sofa/core/config.h>
-#include <sofa/defaulttype/AbstractTypeInfo.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/DataLink.h>
 
@@ -92,6 +92,10 @@ public:
      */
     BaseData(const std::string& helpMsg, DataFlags flags = FLAG_DEFAULT);
 
+    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped.
+    //[[deprecated("Replaced with one with std::string instead of char* version")]]
+    BaseData(const char* helpMsg, DataFlags flags = FLAG_DEFAULT);
+
     /** Constructor.
      *  \param helpMsg A help message that describes this %Data.
      *  \param isDisplayed Whether this %Data should be displayed in GUIs.
@@ -99,22 +103,25 @@ public:
      */
     BaseData(const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false);
 
+    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped.
+    //[[deprecated("Replaced with one with std::string instead of char* version")]]
+    BaseData(const char* helpMsg, bool isDisplayed=true, bool isReadOnly=false);
+
     /// Destructor.
     ~BaseData() override;
 
     /// Assign a value to this %Data from a string representation.
     /// \return true on success.
-    virtual bool read(const std::string& newvalue);
+    virtual bool read(const std::string& value) = 0;
 
     /// Print the value of this %Data to a stream.
     virtual void printValue(std::ostream&) const = 0;
 
     /// Get a string representation of the value held in this %Data.
     virtual std::string getValueString() const = 0;
-    virtual bool setValueFromString(const std::string& value);
 
     /// Get the name of the type of the value held in this %Data.
-    std::string getValueTypeString() const ;
+    virtual std::string getValueTypeString() const = 0;
 
     /// Get the TypeInfo for the type of the value held in this %Data.
     ///
@@ -143,7 +150,7 @@ public:
     ///
     /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
     /// @return true if the copy was successful.
-    bool copyValue(const BaseData* parent);
+    virtual bool copyValue(const BaseData* parent);
 
     /// Get a help message that describes this %Data.
     const std::string& getHelp() const { return help; }
@@ -237,16 +244,24 @@ public:
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)s
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    bool isSet(const core::ExecParams*) const { return isSet(); }
     bool isSet() const { return m_isSet; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    void unset(const core::ExecParams*) { unset(); }
     void unset() { m_isSet = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    void forceSet(const core::ExecParams*) { forceSet(); }
     void forceSet() { m_isSet = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
+    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    int getCounter(const core::ExecParams*) const { return getCounter(); }
     int getCounter() const { return m_counter; }
 
     /// @}
@@ -263,19 +278,14 @@ public:
     /// Update the value of this %Data
     void update() override;
 
-    virtual void clearValue() = 0;
 protected:
     /// @}
-    virtual bool _doCopyValue_(const BaseData* parent) = 0;
-    virtual bool _isACompatibleParent_(const BaseData* parent) = 0;
-    virtual bool _doUpdateFromParentValue_(const BaseData* parent) = 0;
-    virtual bool _doSetValueFromString_(const std::string&) = 0;
 
     /// Delegates from DDGNode.
     void doDelInput(DDGNode* n) override;
 
     /// Update this %Data from the value of its parent
-    bool updateFromParentValue(const BaseData* parent);
+    virtual bool updateFromParentValue(const BaseData* parent);
 
     /// Help message
     std::string help {""};
@@ -308,7 +318,10 @@ public:
     template<class T>
     static std::string typeName(const T* = nullptr)
     {
-       return decodeTypeName(typeid(T));
+        if (defaulttype::DataTypeInfo<T>::ValidInfo)
+            return defaulttype::DataTypeName<T>::name();
+        else
+            return decodeTypeName(typeid(T));
     }
 };
 
