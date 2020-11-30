@@ -87,12 +87,6 @@ public:
     {
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]    
-    void endEdit(const core::ExecParams*)
-    {
-        endEdit();
-    }
-
     void endEdit()
     {
         updatePath();
@@ -115,8 +109,6 @@ public:
         return m_pathType;
     }
 
-    virtual void virtualEndEdit() { endEdit(); }
-    virtual void virtualSetValue(const std::string& v) { setValue(v); }
     virtual bool read(const std::string& s );
 
     virtual const std::string& getRelativePath() const
@@ -208,12 +200,6 @@ public:
         Inherit::endEdit();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]    
-    void endEdit(const core::ExecParams*)
-    {
-        endEdit();
-    }
-
     void setValue(const sofa::helper::vector<std::string>& v)
     {
         *beginEdit() = v;
@@ -236,7 +222,6 @@ public:
         ss >> val;
         endEdit();
     }
-    virtual void virtualSetValueAsString(const std::string& v) { setValueAsString(v); }
 
     virtual bool read(const std::string& s )
     {
