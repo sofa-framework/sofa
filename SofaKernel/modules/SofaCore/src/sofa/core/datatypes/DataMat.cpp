@@ -19,17 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/loader/PrimitiveGroup.h>
-#include <sofa/helper/vector.h>
+#define SOFA_CORE_DATATYPES_DATAMAT_DEFINITION
+#include <sofa/core/datatypes/DataMat.h>
+#include <sofa/core/objectmodel/Data.inl>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
 
 namespace sofa::core::objectmodel
 {
-
-#ifndef SOFA_CORE_OBJECTMODEL_DATATYPES_DATAOPTIONGROUP_NOEXTERN
-extern template class Data<sofa::core::loader::PrimitiveGroup>;
-extern template class Data<sofa::helper::vector<sofa::core::loader::PrimitiveGroup>>;
-#endif ///
-
+template class Data<sofa::defaulttype::Mat2x2f>;
+template class Data<sofa::defaulttype::Mat3x3f>;
+template class Data<sofa::defaulttype::Mat4x4f>;
+template class Data<sofa::defaulttype::Mat2x2d>;
+template class Data<sofa::defaulttype::Mat3x3d>;
+template class Data<sofa::defaulttype::Mat4x4d>;
 }

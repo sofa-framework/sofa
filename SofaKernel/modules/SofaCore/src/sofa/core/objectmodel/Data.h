@@ -232,23 +232,23 @@ public:
     bool _isACompatibleParent_(const BaseData* parent) override;
     bool _doSetValueFromString_(const std::string&) override;
 
-    inline friend std::ostream & operator << (std::ostream &out, const Data& df)
+    friend std::ostream & operator << (std::ostream &out, const Data& df)
     {
         out<<df.getValue();
         return out;
     }
 
-    inline bool operator ==( const T& value ) const
+    bool operator ==( const T& value ) const
     {
         return getValue()==value;
     }
 
-    inline bool operator !=( const T& value ) const
+    bool operator !=( const T& value ) const
     {
         return getValue()!=value;
     }
 
-    inline void operator =( const T& value )
+    void operator =( const T& value )
     {
         this->setValue(value);
     }

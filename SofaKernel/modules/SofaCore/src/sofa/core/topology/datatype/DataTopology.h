@@ -20,16 +20,28 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/loader/PrimitiveGroup.h>
-#include <sofa/helper/vector.h>
+
+#include <sofa/core/topology/Topology.h>
 
 namespace sofa::core::objectmodel
 {
 
-#ifndef SOFA_CORE_OBJECTMODEL_DATATYPES_DATAOPTIONGROUP_NOEXTERN
-extern template class Data<sofa::core::loader::PrimitiveGroup>;
-extern template class Data<sofa::helper::vector<sofa::core::loader::PrimitiveGroup>>;
+#ifndef SOFA_CORE_TOPOLOGY_DATATYPE_DATATOPOLOGY_DEFINITION
+extern template class Data<sofa::core::topology::Topology::Edge>;
+extern template class Data<sofa::core::topology::Topology::Triangle>;
+extern template class Data<sofa::core::topology::Topology::Quad>;
+extern template class Data<sofa::core::topology::Topology::Pyramid>;
+extern template class Data<sofa::core::topology::Topology::Tetrahedron>;
+extern template class Data<sofa::core::topology::Topology::Pentahedron>;
+extern template class Data<sofa::core::topology::Topology::Hexahedron>;
+
+extern template class Data<sofa::helper::vector<sofa::core::topology::Topology::Edge>>;
+extern template class Data<sofa::helper::vector<sofa::core::topology::Topology::Triangle>>;
+extern template class Data<sofa::helper::vector<sofa::core::topology::Topology::Quad>>;
+extern template class Data<sofa::helper::vector<sofa::core::topology::Topology::Pyramid>>;
+extern template class Data<sofa::helper::vector<sofa::core::topology::Topology::Tetrahedron>>;
+extern template class Data<sofa::helper::vector<sofa::core::topology::Topology::Pentahedron>>;
+extern template class Data<sofa::helper::vector<sofa::core::topology::Topology::Hexahedron>>;
 #endif ///
 
 }

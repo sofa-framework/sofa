@@ -21,32 +21,11 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/defaulttype/typeinfo/models/IncompleteTypeInfo.h>
 #include <sofa/helper/types/Material.h>
-
-namespace sofa::defaulttype
-{
-
-template<>
-struct DataTypeInfo<sofa::helper::types::Material> : public IncompleteTypeInfo<sofa::helper::types::Material>
-{
-
-};
-
-}
 
 namespace sofa::core::objectmodel
 {
-
-template<>
-bool Data<sofa::helper::types::Material>::operator==(const sofa::helper::types::Material&) const;
-
-template<>
-bool Data<sofa::helper::types::Material>::operator!=(const sofa::helper::types::Material&) const;
-
-
-#ifndef SOFA_CORE_OBJECTMODEL_DATATYPES_DATAMATERIAL_NOEXTERN
+#ifndef SOFA_CORE_DATATYPES_DATAMATERIAL_DEFINITION
 extern template class Data<sofa::helper::types::Material>;
 #endif ///
-
 }

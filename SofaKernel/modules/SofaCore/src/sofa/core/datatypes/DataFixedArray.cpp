@@ -19,17 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/loader/PrimitiveGroup.h>
-#include <sofa/helper/vector.h>
+#include <sofa/core/datatypes/DataFixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
+#include <sofa/core/objectmodel/Data.inl>
 
 namespace sofa::core::objectmodel
 {
 
-#ifndef SOFA_CORE_OBJECTMODEL_DATATYPES_DATAOPTIONGROUP_NOEXTERN
-extern template class Data<sofa::core::loader::PrimitiveGroup>;
-extern template class Data<sofa::helper::vector<sofa::core::loader::PrimitiveGroup>>;
-#endif ///
+template class Data<sofa::helper::fixed_array<unsigned int,2>>;
+template class Data<sofa::helper::fixed_array<unsigned int,3>>;
+template class Data<sofa::helper::fixed_array<unsigned int,4>>;
+template class Data<sofa::helper::fixed_array<unsigned int,5>>;
+template class Data<sofa::helper::fixed_array<unsigned int,6>>;
+template class Data<sofa::helper::fixed_array<unsigned int,7>>;
+template class Data<sofa::helper::fixed_array<unsigned int,8>>;
+
+template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,2>>>;
+template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,3>>>;
+template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,4>>>;
+template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,5>>>;
+template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,6>>>;
+template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,7>>>;
+template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,8>>>;
 
 }

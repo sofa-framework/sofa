@@ -37,6 +37,8 @@ extern template class Data<sofa::helper::vector<sofa::helper::types::RGBAColor>>
 
 extern template class Data<sofa::helper::vector<sofa::defaulttype::Vec3d>>;
 extern template class Data<sofa::helper::vector<sofa::defaulttype::Vec3f>>;
+
+extern template class Data<sofa::helper::vector<sofa::helper::vector<unsigned int>>>;
 #endif ///
 
 }

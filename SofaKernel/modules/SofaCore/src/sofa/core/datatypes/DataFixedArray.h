@@ -21,15 +21,28 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/loader/PrimitiveGroup.h>
+#include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa::core::objectmodel
 {
 
-#ifndef SOFA_CORE_OBJECTMODEL_DATATYPES_DATAOPTIONGROUP_NOEXTERN
-extern template class Data<sofa::core::loader::PrimitiveGroup>;
-extern template class Data<sofa::helper::vector<sofa::core::loader::PrimitiveGroup>>;
+#ifndef SOFA_CORE_DATATYPES_DATAFIXEDARRAY_DEFINITION
+extern template class Data<sofa::helper::fixed_array<unsigned int,2>>;
+extern template class Data<sofa::helper::fixed_array<unsigned int,3>>;
+extern template class Data<sofa::helper::fixed_array<unsigned int,4>>;
+extern template class Data<sofa::helper::fixed_array<unsigned int,5>>;
+extern template class Data<sofa::helper::fixed_array<unsigned int,6>>;
+extern template class Data<sofa::helper::fixed_array<unsigned int,7>>;
+extern template class Data<sofa::helper::fixed_array<unsigned int,8>>;
+
+extern template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,2>>>;
+extern template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,3>>>;
+extern template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,4>>>;
+extern template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,5>>>;
+extern template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,6>>>;
+extern template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,7>>>;
+extern template class Data<sofa::helper::vector<sofa::helper::fixed_array<unsigned int,8>>>;
 #endif ///
 
 }

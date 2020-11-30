@@ -12,3 +12,9 @@ const sofa::defaulttype::AbstractTypeInfo* Data<T>::getValueTypeInfo() const
 }
 
 }
+
+#define REGISTER_DATATYPEINFO(d) \
+    namespace sofa::core::objectmodel \
+    { \
+        template class Data<sofa::helper::types::Material>; \
+    }

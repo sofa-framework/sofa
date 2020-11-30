@@ -21,15 +21,17 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/loader/PrimitiveGroup.h>
+#include <string>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/SVector.h>
 
 namespace sofa::core::objectmodel
 {
 
-#ifndef SOFA_CORE_OBJECTMODEL_DATATYPES_DATAOPTIONGROUP_NOEXTERN
-extern template class Data<sofa::core::loader::PrimitiveGroup>;
-extern template class Data<sofa::helper::vector<sofa::core::loader::PrimitiveGroup>>;
+#ifndef SOFA_CORE_DATATYPES_DATASTRING_DEFINITION
+extern template class Data<std::string>;
+extern template class Data<sofa::helper::vector<std::string>>;
+extern template class Data<sofa::helper::SVector<std::string>>;
 #endif ///
 
 }

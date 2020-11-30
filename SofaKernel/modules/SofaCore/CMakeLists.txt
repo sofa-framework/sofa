@@ -91,11 +91,13 @@ set(HEADER_FILES
     ${SRC_ROOT}/datatypes/DataComponentState.h
     ${SRC_ROOT}/datatypes/DataComponentState.inl
     ${SRC_ROOT}/datatypes/DataBoundingBox.h
+    ${SRC_ROOT}/datatypes/DataFixedArray.h
     ${SRC_ROOT}/datatypes/DataIntegral.h
     ${SRC_ROOT}/datatypes/DataIntegral.inl
     ${SRC_ROOT}/datatypes/DataList.h
     ${SRC_ROOT}/datatypes/DataList.inl
     ${SRC_ROOT}/datatypes/DataMaterial.h
+    ${SRC_ROOT}/datatypes/DataMat.h
     ${SRC_ROOT}/datatypes/DataMaterial.inl
     ${SRC_ROOT}/datatypes/DataOptionGroup.h
     ${SRC_ROOT}/datatypes/DataOptionGroup.inl
@@ -106,6 +108,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/datatypes/DataSet.h
     ${SRC_ROOT}/datatypes/DataScalar.h
     ${SRC_ROOT}/datatypes/DataScalar.inl
+    ${SRC_ROOT}/datatypes/DataString.h
     ${SRC_ROOT}/datatypes/DataVec.h
     ${SRC_ROOT}/datatypes/DataVec.inl
     ${SRC_ROOT}/datatypes/DataVector.h
@@ -165,6 +168,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologyChange.h
     ${SRC_ROOT}/topology/TopologyElementHandler.h
     ${SRC_ROOT}/topology/TopologyHandler.h
+    ${SRC_ROOT}/topology/datatype/DataTopology.h
     ${SRC_ROOT}/visual/DisplayFlags.h
     ${SRC_ROOT}/visual/DrawTool.h
     ${SRC_ROOT}/visual/Shader.h
@@ -229,14 +233,17 @@ set(SOURCE_FILES
     ${SRC_ROOT}/collision/Pipeline.cpp
     ${SRC_ROOT}/datatypes/DataBoundingBox.cpp
     ${SRC_ROOT}/datatypes/DataComponentState.cpp
+    ${SRC_ROOT}/datatypes/DataFixedArray.cpp
     ${SRC_ROOT}/datatypes/DataIntegral.cpp
     ${SRC_ROOT}/datatypes/DataList.cpp
     ${SRC_ROOT}/datatypes/DataMaterial.cpp
+    ${SRC_ROOT}/datatypes/DataMat.cpp
     ${SRC_ROOT}/datatypes/DataOptionGroup.cpp
     ${SRC_ROOT}/datatypes/DataPrimitiveGroup.cpp
     ${SRC_ROOT}/datatypes/DataQuat.cpp
     ${SRC_ROOT}/datatypes/DataScalar.cpp
     ${SRC_ROOT}/datatypes/DataSet.cpp
+    ${SRC_ROOT}/datatypes/DataString.cpp
     ${SRC_ROOT}/datatypes/DataVec.cpp
     ${SRC_ROOT}/datatypes/DataVector.cpp
     ${SRC_ROOT}/init.cpp
@@ -283,6 +290,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/TopologyChange.cpp
     ${SRC_ROOT}/topology/TopologyElementHandler.cpp
     ${SRC_ROOT}/topology/TopologyHandler.cpp
+    ${SRC_ROOT}/topology/datatype/DataTopology.cpp
     ${SRC_ROOT}/visual/Shader.cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp
     ${SRC_ROOT}/visual/VisualLoop.cpp

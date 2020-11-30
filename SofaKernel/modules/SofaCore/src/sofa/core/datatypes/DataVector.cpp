@@ -15,4 +15,6 @@ template class Data<sofa::helper::types::RGBAColor>;
 
 template class Data<sofa::helper::vector<sofa::defaulttype::Vec3d>>;
 template class Data<sofa::helper::vector<sofa::defaulttype::Vec3f>>;
+
+template class Data<sofa::helper::vector<sofa::helper::vector<unsigned int>>>;
 }

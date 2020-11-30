@@ -58,7 +58,6 @@
 #include <cassert>
 #include <iostream>
 
-
 namespace sofa
 {
 
@@ -362,6 +361,19 @@ public:
                 return false; // (*this)>v
         }
         return false; // (*this)==v
+    }
+
+    bool operator==(const fixed_array& rhs) const
+    {
+        for (size_type i=0; i<N; i++)
+            if( elems[i] != rhs[i] )
+                return false;
+        return true;
+    }
+
+    bool operator!=(const fixed_array& rhs) const
+    {
+        return !(*this==rhs);
     }
 
 private:
