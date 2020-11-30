@@ -46,7 +46,7 @@ using helper::vector;
   The two ways of filling the matrix can not be used at the same time.
   */
 template<class InDataTypes, class OutDataTypes>
-class SOFA_SOFAEIGEN2SOLVER_API EigenSparseMatrix : public EigenBaseSparseMatrix<typename OutDataTypes::Real>
+class EigenSparseMatrix : public EigenBaseSparseMatrix<typename OutDataTypes::Real>
 {
 public:
     typedef EigenBaseSparseMatrix<typename OutDataTypes::Real> Inherit;

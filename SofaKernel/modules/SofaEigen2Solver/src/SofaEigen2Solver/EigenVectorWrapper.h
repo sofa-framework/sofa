@@ -36,7 +36,7 @@ namespace sofa::component::linearsolver
 /** Wrapper of an Eigen vector to provide it with a defaulttype::BaseVector interface.
   */
 template<class Real>
-class SOFA_SOFAEIGEN2SOLVER_API EigenVectorWrapper : public defaulttype::BaseVector
+class EigenVectorWrapper : public defaulttype::BaseVector
 {
 
 public:
