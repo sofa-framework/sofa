@@ -21,12 +21,10 @@
 ******************************************************************************/
 #pragma once
 #include <SofaEigen2Solver/config.h>
+
 #include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/SortedPermutation.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <map>
 #include <Eigen/Sparse>
 
 #if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)

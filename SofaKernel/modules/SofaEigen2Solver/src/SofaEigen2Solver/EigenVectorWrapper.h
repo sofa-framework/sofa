@@ -23,7 +23,6 @@
 #include <SofaEigen2Solver/config.h>
 
 #include <sofa/defaulttype/BaseVector.h>
-#include <sofa/defaulttype/Vec.h>
 #include <Eigen/Dense>
 
 namespace sofa::component::linearsolver

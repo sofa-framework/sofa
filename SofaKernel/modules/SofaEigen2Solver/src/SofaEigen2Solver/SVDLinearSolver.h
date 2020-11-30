@@ -24,8 +24,6 @@
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-#include <sofa/helper/map.h>
-#include <cmath>
 
 namespace sofa::component::linearsolver
 {
