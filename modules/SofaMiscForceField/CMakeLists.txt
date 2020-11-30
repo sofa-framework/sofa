@@ -3,7 +3,8 @@ project(SofaMiscForceField LANGUAGES CXX)
 
 find_package(SofaFramework REQUIRED) # SofaHelper
 find_package(SofaCommon REQUIRED) # SofaDeformable
-find_package(SofaGeneral REQUIRED) # SofaBoundaryCondition SofaGeneralTopology
+find_package(SofaBoundaryCondition REQUIRED)
+find_package(SofaGeneralTopology REQUIRED) 
 find_package(SofaMiscTopology REQUIRED)
 
 set(SOFAMISCFORCEFIELD_SRC "src/${PROJECT_NAME}")
