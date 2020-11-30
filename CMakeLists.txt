@@ -231,6 +231,7 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     # Depends on SofaSimulation
     add_subdirectory(tools/SofaGTestMain)
 endif()
+
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 
 ## Modules
