@@ -182,7 +182,7 @@ public:
     {}
     virtual bool createWidgets()
     {
-        const data_type& d = this->getData()->getValue();
+        const data_type& d = this->getData()->virtualGetValue();
         if (!container.createWidgets(this, d, ! this->isEnabled() ) )
             return false;
 

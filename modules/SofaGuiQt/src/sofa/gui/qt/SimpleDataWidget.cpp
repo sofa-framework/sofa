@@ -145,7 +145,7 @@ Creator<DataWidgetFactory,RadioDataWidget> DWClass_OptionsGroup("default",true);
 bool RadioDataWidget::createWidgets()
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
-    sofa::helper::OptionsGroup m_radiotrick = getData()->getValue();
+    sofa::helper::OptionsGroup m_radiotrick = getData()->virtualGetValue();
     const unsigned int LIMIT_NUM_BUTTON=4;
     buttonMode=m_radiotrick.size() < LIMIT_NUM_BUTTON;
     if (buttonMode)
@@ -168,7 +168,7 @@ bool RadioDataWidget::createWidgets()
         comboList=new QComboBox(this);
 		comboList->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        sofa::helper::OptionsGroup m_radiotrick = getData()->getValue();
+        sofa::helper::OptionsGroup m_radiotrick = getData()->virtualGetValue();
         QStringList list;
         for(unsigned int i=0; i<m_radiotrick.size(); i++) list << m_radiotrick[i].c_str();
 
@@ -201,7 +201,7 @@ void RadioDataWidget::setDataReadOnly(bool readOnly)
 
 void RadioDataWidget::readFromData()
 {
-    sofa::helper::OptionsGroup m_radiotrick = getData()->getValue();
+    sofa::helper::OptionsGroup m_radiotrick = getData()->virtualGetValue();
 
     if (buttonMode)
     {
@@ -214,7 +214,7 @@ void RadioDataWidget::readFromData()
 }
 void RadioDataWidget::writeToData()
 {
-    sofa::helper::OptionsGroup m_radiotrick = getData()->getValue();
+    sofa::helper::OptionsGroup m_radiotrick = getData()->virtualGetValue();
     if (buttonMode)
     {
         m_radiotrick.setSelectedItem((unsigned int)buttonList->checkedId ());
@@ -224,7 +224,7 @@ void RadioDataWidget::writeToData()
         m_radiotrick.setSelectedItem((unsigned int)comboList->currentIndex());
     }
 
-    this->getData()->setValue(m_radiotrick);
+    this->getData()->virtualSetValue(m_radiotrick);
 }
 
 

@@ -126,7 +126,7 @@ void MaterialDataWidget::setDataReadOnly(bool readOnly)
 }
 void MaterialDataWidget::readFromData()
 {
-    const Material& material = getData()->getValue();
+    const Material& material = getData()->virtualGetValue();
     _nameEdit->setText( QString( material.name.c_str() ) );
     _ambientCheckBox->setChecked( material.useAmbient );
     _emissiveCheckBox->setChecked( material.useEmissive );
@@ -151,7 +151,7 @@ void MaterialDataWidget::readFromData()
 }
 void MaterialDataWidget::writeToData()
 {
-    Material* material = getData()->beginEdit();
+    Material* material = getData()->virtualBeginEdit();
 
     material->name      = _nameEdit->text().toStdString();
     material->ambient   = _ambientPicker->getColor();
@@ -166,14 +166,14 @@ void MaterialDataWidget::writeToData()
     material->useSpecular = _specularCheckBox->isChecked();
 
 
-    getData()->endEdit();
+    getData()->virtualEndEdit();
 
 }
 
 
 bool VectorMaterialDataWidget::createWidgets()
 {
-    if( getData()->getValue().empty() )
+    if( getData()->virtualGetValue().empty() )
     {
         return false;
     }
@@ -201,7 +201,7 @@ void VectorMaterialDataWidget::setDataReadOnly(bool readOnly)
 void VectorMaterialDataWidget::readFromData()
 {
     VectorMaterial::const_iterator iter;
-    const VectorMaterial& vecMaterial = getData()->getValue();
+    const VectorMaterial& vecMaterial = getData()->virtualGetValue();
     if( vecMaterial.empty() )
     {
         return;
@@ -224,7 +224,7 @@ void VectorMaterialDataWidget::changeMaterial( int index )
 {
     //Save previous Material
     _materialDataWidget->updateDataValue();
-    Material mat(_currentMaterial.getValue() );
+    Material mat(_currentMaterial.virtualGetValue() );
     _vectorEditedMaterial[_currentMaterialPos] = mat;
 
     //Update current Material
@@ -239,14 +239,14 @@ void VectorMaterialDataWidget::changeMaterial( int index )
 void VectorMaterialDataWidget::writeToData()
 {
     _materialDataWidget->updateDataValue();
-    Material mat(_currentMaterial.getValue() );
+    Material mat(_currentMaterial.virtualGetValue() );
     _vectorEditedMaterial[_currentMaterialPos] = mat;
 
-    VectorMaterial* vecMaterial = getData()->beginEdit();
+    VectorMaterial* vecMaterial = getData()->virtualBeginEdit();
     assert(vecMaterial->size() == _vectorEditedMaterial.size() );
     std::copy(_vectorEditedMaterial.begin(), _vectorEditedMaterial.end(), vecMaterial->begin() );
 
-    getData()->endEdit();
+    getData()->virtualEndEdit();
 }
 
 } /// namespace materialdatawidget_h

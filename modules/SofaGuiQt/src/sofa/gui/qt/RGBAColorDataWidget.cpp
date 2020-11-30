@@ -59,10 +59,10 @@ void RGBAColorDataWidget::readFromData()
 
 void RGBAColorDataWidget::writeToData()
 {
-    RGBAColor* color = getData()->beginEdit();
+    RGBAColor* color = getData()->virtualBeginEdit();
     (*color) = m_colorPicker->getColor() ;
 
-    getData()->endEdit();
+    getData()->virtualEndEdit();
 }
 
 } /// namespace rgbacolordatawidget

@@ -307,7 +307,7 @@ void QPoissonRatioWidget::setDataReadOnly(bool readOnly)
 
 void QPoissonRatioWidget::readFromData()
 {
-    double value = this->getData()->getValue();
+    double value = this->getData()->virtualGetValue();
     QString str;
     str.setNum(value);
     lineEdit->setText(str);
@@ -320,7 +320,7 @@ void QPoissonRatioWidget::writeToData()
     double d = lineEdit->text().toDouble(&ok);
     if(ok)
     {
-        this->getData()->setValue(d);
+        this->getData()->virtualSetValue(d);
     }
 }
 
