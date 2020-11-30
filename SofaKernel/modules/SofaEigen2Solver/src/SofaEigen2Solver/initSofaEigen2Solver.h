@@ -19,22 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_EIGEN2_SOLVER_INIT_H
-#define SOFA_COMPONENT_EIGEN2_SOLVER_INIT_H
+#pragma once
 #include <SofaEigen2Solver/config.h>
 
-namespace sofa
-{
-
-namespace component
+namespace sofa::component
 {
 
 
-void SOFA_EIGEN2_SOLVER_API initEigen2Solver();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component

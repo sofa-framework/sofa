@@ -22,13 +22,7 @@
 #include <SofaEigen2Solver/EigenMatrixManipulator.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 LLineManipulator& LLineManipulator::addCombination(unsigned int idxConstraint, SReal factor)
@@ -39,16 +33,16 @@ LLineManipulator& LLineManipulator::addCombination(unsigned int idxConstraint, S
 
 void LMatrixManipulator::init(const SparseMatrixEigen& L)
 {
-    const unsigned int numConstraint=L.rows();
-    const unsigned int numDofs=L.cols();
+    const auto numConstraint = L.rows();
+    const auto numDofs = L.cols();
     LMatrix.resize(numConstraint,SparseVectorEigen(numDofs));
     for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].reserve(numDofs*3/10);
     for (int k=0; k<L.outerSize(); ++k)
     {
         for (SparseMatrixEigen::InnerIterator it(L,k); it; ++it)
         {
-            const unsigned int row=it.row();
-            const unsigned int col=it.col();
+            const auto row=it.row();
+            const auto col=it.col();
             const SReal value=it.value();
             LMatrix[row].insert(col)=value;
         }
@@ -73,12 +67,6 @@ void LMatrixManipulator::buildLMatrix(const helper::vector<LLineManipulator> &li
     }
 }
 
-
 helper::vector< SparseVectorEigen > LMatrix;
 
-
-
-
-}
-}
-}
+} // namespace sofa::component::linearsolver

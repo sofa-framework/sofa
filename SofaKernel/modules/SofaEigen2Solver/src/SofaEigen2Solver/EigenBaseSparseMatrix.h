@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_EigenBaseSparseMatrix_H
-#define SOFA_COMPONENT_LINEARSOLVER_EigenBaseSparseMatrix_H
-
+#pragma once
 #include <SofaEigen2Solver/config.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
@@ -35,13 +33,7 @@
 #include "EigenBaseSparseMatrix_MT.h"
 #endif
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 /** Sparse matrix based on the Eigen library.
@@ -460,14 +452,11 @@ public:
 template<> inline const char* EigenBaseSparseMatrix<double>::Name() { return "EigenBaseSparseMatrixd"; }
 template<> inline const char* EigenBaseSparseMatrix<float>::Name()  { return "EigenBaseSparseMatrixf"; }
 
+} // namespace sofa::component::linearsolver
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-
-namespace defaulttype {
+namespace sofa::defaulttype 
+{
 
 template<class Real>
 struct DataTypeInfo< component::linearsolver::EigenBaseSparseMatrix<Real> > 
@@ -489,8 +478,4 @@ struct DataTypeInfo< component::linearsolver::EigenBaseSparseMatrix<Real> >
     
 };
 
-}
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::defaulttype

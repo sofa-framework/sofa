@@ -32,11 +32,7 @@
 #include <Eigen/Dense>
 #include <Eigen/Core>
 
-namespace sofa
-{
-namespace component
-{
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 using core::VecId;
 using namespace sofa::defaulttype;
@@ -129,9 +125,4 @@ int SVDLinearSolverClass = core::RegisterObject("Linear system solver using the 
         .addAlias("SVD")
         ;
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::linearsolver

@@ -19,18 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAEIGEN2SOLVER_CONFIG_H
-#define SOFAEIGEN2SOLVER_CONFIG_H
+#pragma once
 
-#include <SofaBase/config.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-#cmakedefine01 SOFAEIGEN2SOLVER_HAVE_OPENMP
+#define SOFAEIGEN2SOLVER_VERSION @PROJECT_VERSION@
 
-#ifdef SOFA_BUILD_EIGEN2_SOLVER
-#  define SOFA_TARGET SofaEigen2Solver
-#  define SOFA_EIGEN2_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_SOFAEIGEN2SOLVER
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAEIGEN2SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_EIGEN2_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
+#  define SOFA_SOFAEIGEN2SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
