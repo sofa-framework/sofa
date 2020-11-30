@@ -124,8 +124,8 @@ public:
     virtual const std::type_info* type_info() const {return &typeid(this); }
 
 protected:
-    virtual const TypeInfoId& getBaseTypeId() const { return TypeInfoId::GetTypeId<NoTypeInfo>(); }
-    virtual const TypeInfoId& getValueTypeId() const  { return TypeInfoId::GetTypeId<NoTypeInfo>(); }
+    const TypeInfoId& getBaseTypeId() const override { return TypeInfoId::GetTypeId<NoTypeInfo>(); }
+    const TypeInfoId& getValueTypeId() const override { return TypeInfoId::GetTypeId<NoTypeInfo>(); }
 
 private:
     std::string m_name;
