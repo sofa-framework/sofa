@@ -99,12 +99,12 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addForce(const core::Mec
     Grid::Grid* g = m_grid->getGrid();
     data.pos4.recreate(x.size());
     data.Kernels_computeDensity(
-        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+        g->getNbCells(), g->getCellvector().deviceRead(), g->getCellGhostVector().deviceRead(),
         data.pos4.deviceWrite(), x.deviceRead());
 
 //WARNING: erreur à l'appel v.deviceRead() quand utilisation 2^n trop grand ou BSIZE = 64
     data.Kernels_addForce(
-        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+        g->getNbCells(), g->getCellvector().deviceRead(), g->getCellGhostVector().deviceRead(),
         f.deviceWrite(), data.pos4.deviceRead(), v.deviceRead());
 
     d_f.endEdit();
@@ -126,7 +126,7 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(const core::Me
     df.resize(dx.size());
     Grid::Grid* g = m_grid->getGrid();
     data.Kernels_addDForce(
-        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+        g->getNbCells(), g->getCellvector().deviceRead(), g->getCellGhostVector().deviceRead(),
         df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
 
     d_df.endEdit();
@@ -166,10 +166,10 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addForce(const core::Mec
     Grid::Grid* g = m_grid->getGrid();
     data.pos4.recreate(x.size());
     data.Kernels_computeDensity(
-        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+        g->getNbCells(), g->getCellvector().deviceRead(), g->getCellGhostVector().deviceRead(),
         data.pos4.deviceWrite(), x.deviceRead());
     data.Kernels_addForce(
-        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+        g->getNbCells(), g->getCellvector().deviceRead(), g->getCellGhostVector().deviceRead(),
         f.deviceWrite(), data.pos4.deviceRead(), v.deviceRead());
 
     d_f.endEdit();
@@ -187,7 +187,7 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce(const core::Me
     df.resize(dx.size());
     Grid::Grid* g = m_grid->getGrid();
     data.Kernels_addDForce(
-        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+        g->getNbCells(), g->getCellvector().deviceRead(), g->getCellGhostVector().deviceRead(),
         df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
     d_df.endEdit();
 }

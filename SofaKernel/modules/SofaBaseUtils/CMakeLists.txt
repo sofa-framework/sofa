@@ -13,7 +13,9 @@ set(HEADER_FILES
     ${SOFABASEUTILS_SRC}/MakeDataAliasComponent.h
     ${SOFABASEUTILS_SRC}/InfoComponent.h
     ${SOFABASEUTILS_SRC}/RequiredPlugin.h
+    ${SOFABASEUTILS_SRC}/SuffixMap.h
     ${SOFABASEUTILS_SRC}/AddResourceRepository.h
+    ${SOFABASEUTILS_SRC}/datatype/DataSuffixMap.h
 )
 
 set(SOURCE_FILES
@@ -21,9 +23,10 @@ set(SOURCE_FILES
     ${SOFABASEUTILS_SRC}/messageHandlerComponent.cpp
     ${SOFABASEUTILS_SRC}/MakeAliasComponent.cpp
     ${SOFABASEUTILS_SRC}/MakeDataAliasComponent.cpp
-    ${SOFABASEUTILS_SRC}/InfoComponent.cpp
+    ${SOFABASEUTILS_SRC}/InfoComponent.cpp    
     ${SOFABASEUTILS_SRC}/RequiredPlugin.cpp
     ${SOFABASEUTILS_SRC}/AddResourceRepository.cpp
+    ${SOFABASEUTILS_SRC}/datatype/DataSuffixMap.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

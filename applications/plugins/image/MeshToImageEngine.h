@@ -31,7 +31,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
@@ -112,7 +112,7 @@ public:
     helper::vectorData< bool > vf_FillInside;
     helper::vectorData< ValueType > vf_InsideValues;
 
-    typedef helper::SVector<typename core::topology::BaseMeshTopology::PointID> SeqIndex; ///< one roi defined as an index list
+    typedef helper::vector<typename core::topology::BaseMeshTopology::PointID> SeqIndex; ///< one roi defined as an index list
     typedef helper::vector<SeqIndex> VecSeqIndex;  ///< vector of rois
     helper::vectorData<VecSeqIndex> vf_roiIndices;  ///< vector of rois for each mesh
     helper::vectorData<SeqValues> vf_roiValue;   ///< values for each roi

@@ -102,7 +102,7 @@ private:
 
 //*****************************************************************
 //Rotation Operation
-template <class DataTypes, int N, bool isVector>
+template <class DataTypes, int N, bool ivector>
 struct RotationSpecialized : public TransformOperation<DataTypes>
 {
 	typedef typename DataTypes::Real Real;

@@ -24,6 +24,9 @@
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/DataTypeInfoHelper.h>
+
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::component::interactionforcefield::PenalityContactForceField<sofa::defaulttype::Vec3Types>::Contact);
 
 namespace sofa
 {

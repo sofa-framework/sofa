@@ -56,7 +56,6 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
-protected:
     class Contact
     {
     public:

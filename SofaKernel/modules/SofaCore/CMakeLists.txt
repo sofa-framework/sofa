@@ -88,31 +88,40 @@ set(HEADER_FILES
     ${SRC_ROOT}/collision/IntersectorFactory.h
     ${SRC_ROOT}/collision/NarrowPhaseDetection.h
     ${SRC_ROOT}/collision/Pipeline.h
-    ${SRC_ROOT}/datatypes/DataComponentState.h
-    ${SRC_ROOT}/datatypes/DataComponentState.inl
-    ${SRC_ROOT}/datatypes/DataBoundingBox.h
-    ${SRC_ROOT}/datatypes/DataFixedArray.h
-    ${SRC_ROOT}/datatypes/DataIntegral.h
-    ${SRC_ROOT}/datatypes/DataIntegral.inl
-    ${SRC_ROOT}/datatypes/DataList.h
-    ${SRC_ROOT}/datatypes/DataList.inl
-    ${SRC_ROOT}/datatypes/DataMaterial.h
-    ${SRC_ROOT}/datatypes/DataMat.h
-    ${SRC_ROOT}/datatypes/DataMaterial.inl
-    ${SRC_ROOT}/datatypes/DataOptionGroup.h
-    ${SRC_ROOT}/datatypes/DataOptionGroup.inl
-    ${SRC_ROOT}/datatypes/DataPrimitiveGroup.h
-    ${SRC_ROOT}/datatypes/DataPrimitiveGroup.inl
-    ${SRC_ROOT}/datatypes/DataQuat.h
-    ${SRC_ROOT}/datatypes/DataQuat.inl
-    ${SRC_ROOT}/datatypes/DataSet.h
-    ${SRC_ROOT}/datatypes/DataScalar.h
-    ${SRC_ROOT}/datatypes/DataScalar.inl
-    ${SRC_ROOT}/datatypes/DataString.h
-    ${SRC_ROOT}/datatypes/DataVec.h
-    ${SRC_ROOT}/datatypes/DataVec.inl
-    ${SRC_ROOT}/datatypes/DataVector.h
-    ${SRC_ROOT}/datatypes/DataVector.inl
+    ${SRC_ROOT}/datatype/Data[bool].h
+    ${SRC_ROOT}/datatype/Data[ComponentState].h
+    ${SRC_ROOT}/datatype/Data[ComponentState].inl
+    ${SRC_ROOT}/datatype/Data[BoundingBox].h
+    ${SRC_ROOT}/datatype/Data[FixedArray].h
+    ${SRC_ROOT}/datatype/Data[Integral].h
+    ${SRC_ROOT}/datatype/Data[Integral].inl
+    ${SRC_ROOT}/datatype/Data[List].h
+    ${SRC_ROOT}/datatype/Data[List].inl
+    ${SRC_ROOT}/datatype/Data[Material].h
+    ${SRC_ROOT}/datatype/Data[Mat].h
+    ${SRC_ROOT}/datatype/Data[Material].inl
+    ${SRC_ROOT}/datatype/Data[OptionGroup].h
+    ${SRC_ROOT}/datatype/Data[OptionGroup].inl
+    ${SRC_ROOT}/datatype/Data[PrimitiveGroup].h
+    ${SRC_ROOT}/datatype/Data[PrimitiveGroup].inl
+    ${SRC_ROOT}/datatype/Data[MapMapSparseMatrix].h
+    ${SRC_ROOT}/datatype/Data[MatSym].h
+    ${SRC_ROOT}/datatype/Data[RigidTypes].h
+    ${SRC_ROOT}/datatype/Data[VecTypes].h
+    ${SRC_ROOT}/datatype/Data[Quat].h
+    ${SRC_ROOT}/datatype/Data[Quat].inl
+    ${SRC_ROOT}/datatype/Data[Set].h
+    ${SRC_ROOT}/datatype/Data[Scalar].h
+    ${SRC_ROOT}/datatype/Data[Scalar].inl
+    ${SRC_ROOT}/datatype/Data[String].h
+    ${SRC_ROOT}/datatype/Data[Tag].h
+    ${SRC_ROOT}/datatype/Data[Vec].h
+    ${SRC_ROOT}/datatype/Data[Vec].inl
+    ${SRC_ROOT}/datatype/Data[Vector].h
+    ${SRC_ROOT}/datatype/Data[Vector].inl
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[MapMapSparseMatrix].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[RigidTypes].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[VecTypes].h
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/core.h
     ${SRC_ROOT}/init.h
@@ -168,7 +177,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologyChange.h
     ${SRC_ROOT}/topology/TopologyElementHandler.h
     ${SRC_ROOT}/topology/TopologyHandler.h
-    ${SRC_ROOT}/topology/datatype/DataTopology.h
+    ${SRC_ROOT}/topology/datatype/Data[Topology].h
     ${SRC_ROOT}/visual/DisplayFlags.h
     ${SRC_ROOT}/visual/DrawTool.h
     ${SRC_ROOT}/visual/Shader.h
@@ -231,21 +240,27 @@ set(SOURCE_FILES
     ${SRC_ROOT}/collision/Contact.cpp
     ${SRC_ROOT}/collision/Intersection.cpp
     ${SRC_ROOT}/collision/Pipeline.cpp
-    ${SRC_ROOT}/datatypes/DataBoundingBox.cpp
-    ${SRC_ROOT}/datatypes/DataComponentState.cpp
-    ${SRC_ROOT}/datatypes/DataFixedArray.cpp
-    ${SRC_ROOT}/datatypes/DataIntegral.cpp
-    ${SRC_ROOT}/datatypes/DataList.cpp
-    ${SRC_ROOT}/datatypes/DataMaterial.cpp
-    ${SRC_ROOT}/datatypes/DataMat.cpp
-    ${SRC_ROOT}/datatypes/DataOptionGroup.cpp
-    ${SRC_ROOT}/datatypes/DataPrimitiveGroup.cpp
-    ${SRC_ROOT}/datatypes/DataQuat.cpp
-    ${SRC_ROOT}/datatypes/DataScalar.cpp
-    ${SRC_ROOT}/datatypes/DataSet.cpp
-    ${SRC_ROOT}/datatypes/DataString.cpp
-    ${SRC_ROOT}/datatypes/DataVec.cpp
-    ${SRC_ROOT}/datatypes/DataVector.cpp
+    ${SRC_ROOT}/datatype/Data[bool].cpp
+    ${SRC_ROOT}/datatype/Data[BoundingBox].cpp
+    ${SRC_ROOT}/datatype/Data[ComponentState].cpp
+    ${SRC_ROOT}/datatype/Data[FixedArray].cpp
+    ${SRC_ROOT}/datatype/Data[Integral].cpp
+    ${SRC_ROOT}/datatype/Data[List].cpp
+    ${SRC_ROOT}/datatype/Data[Material].cpp
+    ${SRC_ROOT}/datatype/Data[Mat].cpp
+    ${SRC_ROOT}/datatype/Data[OptionGroup].cpp
+    ${SRC_ROOT}/datatype/Data[PrimitiveGroup].cpp
+    ${SRC_ROOT}/datatype/Data[Quat].cpp
+    ${SRC_ROOT}/datatype/Data[Scalar].cpp
+    ${SRC_ROOT}/datatype/Data[Set].cpp
+    ${SRC_ROOT}/datatype/Data[Tag].cpp
+    ${SRC_ROOT}/datatype/Data[String].cpp
+    ${SRC_ROOT}/datatype/Data[Vec].cpp
+    ${SRC_ROOT}/datatype/Data[Vector].cpp
+    ${SRC_ROOT}/datatype/Data[MapMapSparseMatrix].cpp
+    ${SRC_ROOT}/datatype/Data[MatSym].cpp
+    ${SRC_ROOT}/datatype/Data[RigidTypes].cpp
+    ${SRC_ROOT}/datatype/Data[VecTypes].cpp
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/loader/BaseLoader.cpp
     ${SRC_ROOT}/loader/MeshLoader.cpp
@@ -290,7 +305,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/TopologyChange.cpp
     ${SRC_ROOT}/topology/TopologyElementHandler.cpp
     ${SRC_ROOT}/topology/TopologyHandler.cpp
-    ${SRC_ROOT}/topology/datatype/DataTopology.cpp
+    ${SRC_ROOT}/topology/datatype/Data[Topology].cpp
     ${SRC_ROOT}/visual/Shader.cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp
     ${SRC_ROOT}/visual/VisualLoop.cpp

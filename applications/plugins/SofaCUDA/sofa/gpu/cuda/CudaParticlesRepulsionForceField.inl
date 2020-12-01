@@ -80,7 +80,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addForce(const cor
     f.resize(x.size());
     Grid::Grid* g = grid->getGrid();
     ParticlesRepulsionForceFieldCuda3f_addForce(
-        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+        g->getNbCells(), g->getCellvector().deviceRead(), g->getCellGhostVector().deviceRead(),
         &repulsion, f.deviceWrite(), x.deviceRead(), v.deviceRead());
 
     d_f.endEdit();
@@ -105,7 +105,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const co
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
     ParticlesRepulsionForceFieldCuda3f_addDForce(
-        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+        g->getNbCells(), g->getCellvector().deviceRead(), g->getCellGhostVector().deviceRead(),
         &repulsion, df.deviceWrite(), x.deviceRead(), dx.deviceRead());
 
     d_df.endEdit();
@@ -132,7 +132,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addForce(const cor
     f.resize(x.size());
     Grid::Grid* g = grid->getGrid();
     ParticlesRepulsionForceFieldCuda3d_addForce(
-        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+        g->getNbCells(), g->getCellvector().deviceRead(), g->getCellGhostVector().deviceRead(),
         &repulsion, f.deviceWrite(), x.deviceRead(), v.deviceRead());
 
     d_f.endEdit();
@@ -157,7 +157,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const co
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
     ParticlesRepulsionForceFieldCuda3d_addDForce(
-        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
+        g->getNbCells(), g->getCellvector().deviceRead(), g->getCellGhostVector().deviceRead(),
         &repulsion, df.deviceWrite(), x.deviceRead(), dx.deviceRead());
 
     d_df.endEdit();

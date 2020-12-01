@@ -23,7 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_DATAFILENAME_H
 
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -163,10 +163,10 @@ private:
 
 
 
-class SOFA_CORE_API DataFileNameVector : public sofa::core::objectmodel::Data< sofa::helper::SVector<std::string> >
+class SOFA_CORE_API DataFileNameVector : public sofa::core::objectmodel::Data< sofa::helper::vector<std::string> >
 {
 public:
-    typedef sofa::core::objectmodel::Data<sofa::helper::SVector<std::string> > Inherit;
+    typedef sofa::core::objectmodel::Data<sofa::helper::vector<std::string> > Inherit;
 
     DataFileNameVector( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
         : Inherit(helpMsg, isDisplayed, isReadOnly),
@@ -230,7 +230,7 @@ public:
     }
     void setValueAsString(const std::string& v)
     {
-        sofa::helper::SVector<std::string>& val = *beginEdit();
+        sofa::helper::vector<std::string>& val = *beginEdit();
         val.clear();
         std::istringstream ss( v );
         ss >> val;

@@ -28,14 +28,14 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/vectorData.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 
 
 namespace sofa::component::engine
 {
 
 /**
- * This class merges a list of ROIs (vector<Indices>) into a single Data (vector<svector<Indices>>)
+ * This class merges a list of ROIs (vector<Indices>) into a single Data (vector<vector<Indices>>)
  */
 
 class SOFA_SOFAGENERALENGINE_API MergeROIs : public sofa::core::DataEngine
@@ -51,7 +51,7 @@ public:
     helper::vectorData<helper::vector<Index> > f_indices;
 
     //Output
-    Data<helper::vector<helper::SVector<Index> > > d_outputIndices; ///< Vector of ROIs
+    Data<helper::vector<helper::vector<Index> > > d_outputIndices; ///< Vector of ROIs
 
     void init() override;
     void reinit() override;

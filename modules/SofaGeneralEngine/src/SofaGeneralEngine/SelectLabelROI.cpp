@@ -28,7 +28,7 @@
 namespace sofa::component::engine
 {
 
-int SelectLabelROIClass = core::RegisterObject("Select a subset of labeled points or cells stored in (vector<svector<label>>) given certain labels")
+int SelectLabelROIClass = core::RegisterObject("Select a subset of labeled points or cells stored in (vector<vector<label>>) given certain labels")
         .add< SelectLabelROI<unsigned int> >(true)
         .add< SelectLabelROI<unsigned char> >()
         .add< SelectLabelROI<unsigned short> >()

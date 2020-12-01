@@ -28,7 +28,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/core/objectmodel/DataTypeInfoHelper.h>
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::helper::vector<sofa::component::collision::LineInfo>);
 
 namespace sofa
 {

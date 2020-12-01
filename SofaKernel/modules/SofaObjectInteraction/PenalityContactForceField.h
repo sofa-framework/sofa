@@ -60,8 +60,8 @@ public:
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
-protected:
 
+public:
     class Contact
     {
     public:
@@ -98,7 +98,7 @@ protected:
     // contacts from previous frame
     sofa::helper::vector<Contact> prevContacts;
 
-
+protected:
     PenalityContactForceField(MechanicalState* object1, MechanicalState* object2)
         : Inherit(object1, object2), contacts(initData(&contacts,"contacts", "Contacts"))
     {
@@ -135,7 +135,6 @@ public:
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)
 extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3Types>;
-
 #endif
 
 } // namespace interactionforcefield

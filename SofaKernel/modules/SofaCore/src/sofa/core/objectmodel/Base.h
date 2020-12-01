@@ -29,13 +29,19 @@
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
-#include <sofa/core/datatypes/DataQuat.h>
+#include <sofa/core/datatype/Data[Quat].h>
+
+#include <sofa/core/datatype/Data[bool].h>
+#include <sofa/core/datatype/Data[String].h>
+#include <sofa/core/datatype/Data[ComponentState].h>
+#include <sofa/core/datatype/Data[BoundingBox].h>
+#include <sofa/core/datatype/Data[Tag].h>
+
 #include <list>
 #include <sofa/core/sptr.h>
 
 #include <deque>
 
-#include <sofa/core/datatypes/DataComponentState.h>
 #include <sofa/core/DataTracker.h>
 
 // forward declaration of castable classes
@@ -511,7 +517,7 @@ public:
     /// @{
 
     ComponentState getComponentState() const { return d_componentState.getValue() ; }
-    bool isComponentStateValid() const { return d_componentState == ComponentState::Valid; }
+    bool isComponentStateValid() const { return d_componentState.getValue() == ComponentState::Valid; }
 
     ///@}
 

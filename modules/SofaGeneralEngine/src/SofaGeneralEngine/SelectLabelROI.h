@@ -27,14 +27,14 @@
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 
 
 namespace sofa::component::engine
 {
 
 /**
- * Select a subset of labeled points or cells stored in (vector<svector<label>>) given certain labels
+ * Select a subset of labeled points or cells stored in (vector<vector<label>>) given certain labels
  */
 
 template <class _T>
@@ -48,7 +48,7 @@ public:
     typedef unsigned int Index;
 
     //Input
-    Data<helper::vector<helper::SVector<T> > > d_labels; ///< lists of labels associated to each point/cell
+    Data<helper::vector<helper::vector<T> > > d_labels; ///< lists of labels associated to each point/cell
     Data<helper::vector<T> > d_selectLabels; ///< list of selected labels
 
     //Output
@@ -90,7 +90,7 @@ protected:
         std::set<T> selectLabelsSet;
         selectLabelsSet.insert(selectLabels.begin(), selectLabels.end());
 
-        helper::ReadAccessor< Data< helper::vector<helper::SVector<T> >  > > labels = d_labels;
+        helper::ReadAccessor< Data< helper::vector<helper::vector<T> >  > > labels = d_labels;
         size_t nb = labels.size();
         helper::WriteOnlyAccessor< Data< helper::vector<Index> > > indices = d_indices;
         indices.clear();

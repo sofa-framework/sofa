@@ -109,10 +109,10 @@ void JointSpringForceField<DataTypes>::bwdInit()
     const VecCoord& x1= this->mstate1->read(core::ConstVecCoordId::position())->getValue();
 
     const VecCoord& x2= this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-    helper::vector<Spring> &springsVector=*(d_springs.beginEdit());
+    helper::vector<Spring> &springvector=*(d_springs.beginEdit());
     for (unsigned int i=0; i<d_springs.getValue().size(); ++i)
     {
-        Spring &s=springsVector[i];
+        Spring &s=springvector[i];
         if (s.needToInitializeTrans)
         {
             s.initTrans = x2[s.m2].getCenter() - x1[s.m1].getCenter();

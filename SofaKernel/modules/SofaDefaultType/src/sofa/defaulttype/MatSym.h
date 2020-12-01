@@ -640,6 +640,4 @@ inline real scalarProduct(const Mat<D,D,real>& left, const MatSym<D,real>& right
 
 } // namespace sofa
 
-// iostream
-
 #endif

@@ -75,9 +75,9 @@ public:
     /** @name  Shape Function types    */
     //@{
     typedef helper::vector<Real> VReal;
-    typedef helper::vector< helper::SVector<Real> > VecVReal;
+    typedef helper::vector< helper::vector<Real> > VecVReal;
     typedef helper::vector<unsigned int> VRef;
-    typedef helper::vector< helper::SVector<unsigned int> > VecVRef;
+    typedef helper::vector< helper::vector<unsigned int> > VecVRef;
     //@}
 
     /** @name  Jacobian types    */

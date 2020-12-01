@@ -233,7 +233,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		typename MechanicalObject::SPtr dofs = root->get<MechanicalObject>(std::string("BezierTetrahedronTopology/"));
 		typename MechanicalObject::WriteVecCoord coords = dofs->writePositions();
 		MeshMatrixMass *mass=root->get<MeshMatrixMass>(root->SearchDown);
-		const sofa::helper::vector<typename MeshMatrixMass::MassVector> & mv=mass->tetrahedronMassInfo.getValue();
+		const sofa::helper::vector<typename MeshMatrixMass::Masvector> & mv=mass->tetrahedronMassInfo.getValue();
 		const sofa::helper::vector<typename MeshMatrixMass::MassType> &ma =mass->vertexMassInfo.getValue();
 
 		size_t i,j,k,rank;	

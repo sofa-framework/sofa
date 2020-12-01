@@ -286,7 +286,7 @@ public:
 
     /// Display parameters
     Data<bool> d_showStressValue;
-    Data<bool> d_showStressVector; ///< Flag activating rendering of stress directions within each triangle
+    Data<bool> d_showStresvector; ///< Flag activating rendering of stress directions within each triangle
     Data<Real> d_showStressMaxValue; ///< Max value for rendering of stress values
 
 

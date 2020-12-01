@@ -24,7 +24,7 @@
 
 #include <SofaAssimp/config.h>
 #include <sofa/core/loader/SceneLoader.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 #include <sofa/simulation/Node.h>
 #include <SofaBoundaryCondition/SkeletalMotionConstraint.h>
 

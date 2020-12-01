@@ -65,7 +65,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/Quater.h
     ${SRC_ROOT}/Quater.inl
     ${SRC_ROOT}/RandomGenerator.h
-    ${SRC_ROOT}/SVector.h
+    ${SRC_ROOT}/vector.h
     ${SRC_ROOT}/SimpleTimer.h
     ${SRC_ROOT}/SortedPermutation.h
     ${SRC_ROOT}/StringUtils.h
@@ -176,7 +176,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/NameDecoder.cpp
     ${SRC_ROOT}/OptionsGroup.cpp
     ${SRC_ROOT}/StateMask.cpp
-    ${SRC_ROOT}/SVector.cpp
+    ${SRC_ROOT}/vector.cpp
     ${SRC_ROOT}/Polynomial_LD.cpp
     ${SRC_ROOT}/Quater.cpp
     ${SRC_ROOT}/RandomGenerator.cpp

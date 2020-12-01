@@ -25,7 +25,7 @@
 #include <Flexible/config.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 #include "../shapeFunction/BaseShapeFunction.h"
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 
 
 namespace sofa

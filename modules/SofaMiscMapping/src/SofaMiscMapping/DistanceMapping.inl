@@ -443,8 +443,8 @@ template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::addPoint( int from, int index)
 {
     assert((size_t)from<this->fromModels.size());
-    helper::vector<defaulttype::Vec2i>& indexPairsVector = *d_indexPairs.beginEdit();
-    indexPairsVector.push_back(defaulttype::Vec2i(from,index));
+    helper::vector<defaulttype::Vec2i>& indexPairvector = *d_indexPairs.beginEdit();
+    indexPairvector.push_back(defaulttype::Vec2i(from,index));
     d_indexPairs.endEdit();
 }
 

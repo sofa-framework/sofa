@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -85,12 +85,12 @@ protected:
 
     // data for dual quat blending
     Data< helper::vector<unsigned int> > nbRef; ///< Number of primitives influencing each point.
-    Data< helper::vector<sofa::helper::SVector<unsigned int> > > f_index; ///< indices of primitives influencing each point.
-    Data< helper::vector<sofa::helper::SVector<InReal> > > weight; ///< influence weights of the Dofs.
+    Data< helper::vector<sofa::helper::vector<unsigned int> > > f_index; ///< indices of primitives influencing each point.
+    Data< helper::vector<sofa::helper::vector<InReal> > > weight; ///< influence weights of the Dofs.
     void updateWeights();
 
 public:
-    void setWeights(const helper::vector<sofa::helper::SVector<InReal> >& weights, const helper::vector<sofa::helper::SVector<unsigned int> >& indices, const helper::vector<unsigned int>& nbrefs);
+    void setWeights(const helper::vector<sofa::helper::vector<InReal> >& weights, const helper::vector<sofa::helper::vector<unsigned int> >& indices, const helper::vector<unsigned int>& nbrefs);
 
 public:
     Data<unsigned int> showFromIndex; ///< Displayed From Index.

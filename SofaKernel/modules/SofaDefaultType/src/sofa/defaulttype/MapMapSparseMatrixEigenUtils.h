@@ -178,8 +178,8 @@ void addMultTransposeEigen(MapMapSparseMatrix<LhsDeriv>& lhs, const Eigen::Spars
     typedef Eigen::SparseMatrix<Real, Eigen::RowMajor> EigenSparseMatrix;
     const EigenSparseMatrix jacobianT = jacobian.transpose();
 
-    typedef Eigen::Matrix<typename RhsDeriv::value_type, RhsDeriv::total_size, 1> EigenRhsVector;
-    typedef Eigen::Matrix<typename LhsDeriv::value_type, LhsDeriv::total_size, 1> EigenLhsVector;
+    typedef Eigen::Matrix<typename RhsDeriv::value_type, RhsDeriv::total_size, 1> EigenRhvector;
+    typedef Eigen::Matrix<typename LhsDeriv::value_type, LhsDeriv::total_size, 1> EigenLhvector;
 
     // must be passed a valid iterator
     auto isEigenSparseIteratorInsideBlock = [](const typename EigenSparseMatrix::InnerIterator& it,
@@ -231,8 +231,8 @@ void addMultTransposeEigen(MapMapSparseMatrix<LhsDeriv>& lhs, const Eigen::Spars
                         auto b = jacobianT.block(k, bColBegin, LhsDeriv::total_size, RhsDeriv::total_size);
 
                         LhsDeriv lhsToInsert;
-                        Eigen::Map< EigenLhsVector >       lhs(lhsToInsert.ptr());
-                        Eigen::Map<const EigenRhsVector >  rhs(rhsColIt.val().ptr());
+                        Eigen::Map< EigenLhvector >       lhs(lhsToInsert.ptr());
+                        Eigen::Map<const EigenRhvector >  rhs(rhsColIt.val().ptr());
                         lhs = b * rhs;
 
                         lhsRowIt.addCol( k / LhsDeriv::total_size, lhsToInsert);

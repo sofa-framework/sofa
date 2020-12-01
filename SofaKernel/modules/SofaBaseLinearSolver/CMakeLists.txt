@@ -4,6 +4,7 @@ project(SofaBaseLinearSolver)
 set(HEADER_FILES
     BlocMatrixWriter.h
     CGLinearSolver.h
+    CGLinearSolverResidual.h
     CGLinearSolver.inl
     CompressedRowSparseMatrix.h
     CompressedRowSparseMatrix.inl
@@ -20,6 +21,7 @@ set(HEADER_FILES
     config.h
     initBaseLinearSolver.h
     matrix_bloc_traits.h
+    datatype/DataCGMap.h
 )
 
 set(SOURCE_FILES
@@ -30,6 +32,7 @@ set(SOURCE_FILES
     MatrixLinearSolver.cpp
     SingleMatrixAccessor.cpp
     initBaseLinearSolver.cpp
+    datatype/DataCGMap.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

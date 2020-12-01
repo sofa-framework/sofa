@@ -24,7 +24,9 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/DataTypeInfoHelper.h>
 
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::helper::vector<sofa::component::interactionforcefield::LinearSpring<SReal>>);
 
 namespace sofa
 {
@@ -47,7 +49,7 @@ int SpringForceFieldClass = core::RegisterObject("Springs")
         .add< SpringForceField<Rigid3Types> >()
         ;
 
-template class SOFA_DEFORMABLE_API LinearSpring<double>;
+template class SOFA_DEFORMABLE_API LinearSpring<SReal>;
 template class SOFA_DEFORMABLE_API SpringForceField<Vec3Types>;
 template class SOFA_DEFORMABLE_API SpringForceField<Vec2Types>;
 template class SOFA_DEFORMABLE_API SpringForceField<Vec1Types>;

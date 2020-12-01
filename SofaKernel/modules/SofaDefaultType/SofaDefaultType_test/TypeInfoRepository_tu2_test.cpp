@@ -42,7 +42,7 @@ using sofa::defaulttype::TypeInfoRegistry;
 using sofa::defaulttype::TypeInfoRegistryTools;
 using sofa::defaulttype::TypeInfoType;
 
-#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
 
 /// Forward declaration of an object in translation unit1.
 class ObjectInTranslationUnit1 {};

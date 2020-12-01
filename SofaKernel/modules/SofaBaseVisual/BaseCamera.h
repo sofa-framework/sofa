@@ -29,8 +29,8 @@
 #include <sofa/defaulttype/Mat.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/datatypes/DataOptionGroup.h>
-#include <sofa/core/datatypes/DataQuat.h>
+#include <sofa/core/datatype/Data[OptionGroup].h>
+#include <sofa/core/datatype/Data[Quat].h>
 
 #include "BackgroundSetting.h"
 

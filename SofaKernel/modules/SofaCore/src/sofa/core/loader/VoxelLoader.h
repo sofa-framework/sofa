@@ -23,7 +23,6 @@
 #define SOFA_CORE_VOXELLOADER_H
 
 #include <sofa/core/loader/BaseLoader.h>
-#include <sofa/core/datatypes/DataVector.h>
 namespace sofa
 {
 namespace helper { namespace io { class Image; }}

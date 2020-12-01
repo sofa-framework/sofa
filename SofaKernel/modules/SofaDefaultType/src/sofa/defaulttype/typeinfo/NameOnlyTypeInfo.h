@@ -33,7 +33,7 @@ public:
     NameOnlyTypeInfo(const std::string& name, const std::string& typeName)
     {
         m_name = name;
-        m_typeName = name;
+        m_typeName = typeName;
         setCompilationTarget("SofaDefaultType");
     }
 

@@ -25,6 +25,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/simulation/Node.h>
+#include <sofa/core/objectmodel/DataTypeAutomaticRegistrationHelper.h>
 
 namespace sofa::component::projectiveconstraintset
 {

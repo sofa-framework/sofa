@@ -59,13 +59,6 @@ bool SOFA_CORE_API TData<bool>::read( const std::string& str )
     return true;
 }
 
-template class SOFA_CORE_API TData< std::string >;
-template class SOFA_CORE_API Data< std::string >;
-template class SOFA_CORE_API TData< sofa::helper::vector<std::string> >;
-template class SOFA_CORE_API Data< sofa::helper::vector<std::string> >;
-template class SOFA_CORE_API TData< bool >;
-template class SOFA_CORE_API Data< bool >;
-
 } // objectmodel
 
 } // core

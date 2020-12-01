@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaLoader/config.h>
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/types/Material.h>
 namespace sofa::component::loader
 {
@@ -56,11 +56,11 @@ public:
     Data<bool> d_loadMaterial;
     Data<sofa::helper::types::Material> d_material;
     Data <helper::vector <sofa::helper::types::Material> > d_materials;
-    Data <helper::SVector <helper::SVector <int> > > d_faceList;
-    Data <helper::SVector <helper::SVector <int> > > d_texIndexList;
+    Data <helper::vector <helper::vector <int> > > d_faceList;
+    Data <helper::vector <helper::vector <int> > > d_texIndexList;
     Data <helper::vector<sofa::defaulttype::Vector3> > d_positionsList;
     Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoordsList;
-    Data <helper::SVector<helper::SVector<int> > > d_normalsIndexList;
+    Data <helper::vector<helper::vector<int> > > d_normalsIndexList;
     Data <helper::vector<sofa::defaulttype::Vector3> > d_normalsList;
     Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoords;
     Data< bool > d_computeMaterialFaces;

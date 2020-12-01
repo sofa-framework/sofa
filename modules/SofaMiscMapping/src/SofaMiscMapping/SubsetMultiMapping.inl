@@ -118,9 +118,9 @@ template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::addPoint( int from, int index)
 {
     assert((size_t)from < this->fromModels.size());
-    helper::vector<unsigned>& indexPairsVector = *indexPairs.beginEdit();
-    indexPairsVector.push_back(from);
-    indexPairsVector.push_back(index);
+    helper::vector<unsigned>& indexPairvector = *indexPairs.beginEdit();
+    indexPairvector.push_back(from);
+    indexPairvector.push_back(index);
     indexPairs.endEdit();
 }
 

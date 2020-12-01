@@ -27,7 +27,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[string].h>
 
 namespace sofa::component::engine
 {
@@ -67,7 +67,7 @@ public:
     /// instead of the default one generated automatically by the SOFA_CLASS() macro.
     static std::string GetCustomTemplateName()
     {
-        return sofa::defaulttype::DataTypeName<T>::name();
+        return sofa::defaulttype::DataTypeInfo<T>::name();
     }
 };
 

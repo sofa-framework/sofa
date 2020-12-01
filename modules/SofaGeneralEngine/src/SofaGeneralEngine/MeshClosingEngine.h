@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa::component::engine
 {
@@ -54,7 +54,7 @@ public:
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef typename core::topology::BaseMeshTopology::SeqQuads SeqQuads;
     typedef typename core::topology::BaseMeshTopology::PointID PointID;
-    typedef helper::SVector<typename core::topology::BaseMeshTopology::PointID> SeqIndex;
+    typedef helper::vector<typename core::topology::BaseMeshTopology::PointID> SeqIndex;
     typedef helper::vector<SeqIndex> VecSeqIndex;  ///< vector of index lists
 
     /// inputs

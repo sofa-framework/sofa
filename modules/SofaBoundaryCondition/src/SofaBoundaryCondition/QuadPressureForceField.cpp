@@ -24,6 +24,9 @@
 #include <SofaBoundaryCondition/QuadPressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/objectmodel/DataTypeInfoHelper.h>
+
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::component::forcefield::QuadPressureForceField<sofa::defaulttype::Vec3Types>::QuadPressureInformation)
 
 namespace sofa::component::forcefield
 {

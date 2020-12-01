@@ -66,8 +66,7 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<QuadPressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-protected:
-
+public:
     class QuadPressureInformation
     {
     public:
@@ -94,12 +93,14 @@ protected:
 
     sofa::component::topology::QuadSparseData<sofa::helper::vector<QuadPressureInformation> > quadPressureMap; ///< map between edge indices and their pressure
 
+
+protected:
     /// Pointer to the current topology                                                                        /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;
 
     QuadPressureForceField();
-
     virtual ~QuadPressureForceField();
+
 public:
     void init() override;
 

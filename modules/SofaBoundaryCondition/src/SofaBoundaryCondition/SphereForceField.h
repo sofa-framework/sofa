@@ -55,7 +55,9 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
-protected:
+public:
+    SphereForceFieldInternalData<DataTypes> data;
+
     class Contact
     {
     public:
@@ -81,12 +83,7 @@ protected:
 
     };
 
-    Data<sofa::helper::vector<Contact> > contacts; ///< Contacts
-
-    SphereForceFieldInternalData<DataTypes> data;
-
-public:
-
+    Data<sofa::helper::vector<Contact>> contacts; ///< Contacts
     Data<Coord> sphereCenter; ///< sphere center
     Data<Real> sphereRadius; ///< sphere radius
     Data<Real> stiffness; ///< force stiffness

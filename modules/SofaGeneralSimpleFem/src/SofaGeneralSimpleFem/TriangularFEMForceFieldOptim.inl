@@ -71,7 +71,7 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , d_young(initData(&d_young,(Real)(1000.0),"youngModulus","Young modulus in Hooke's law"))
     , d_damping(initData(&d_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , d_restScale(initData(&d_restScale,(Real)1.,"restScale","Scale factor applied to rest positions (to simulate pre-stretched materials)"))
-    , d_showStressVector(initData(&d_showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
+    , d_showStresvector(initData(&d_showStresvector,false,"showStresvector","Flag activating rendering of stress directions within each triangle"))
     , d_showStressMaxValue(initData(&d_showStressMaxValue,(Real)0.0,"showStressMaxValue","Max value for rendering of stress values"))
     , l_topology(initLink("topology", "link to the topology container"))
     , drawPrevMaxStress((Real)-1.0)
@@ -551,20 +551,20 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
     const bool showStressValue = this->d_showStressValue.getValue();
-    const bool showStressVector = this->d_showStressVector.getValue();
-    if (showStressValue || showStressVector)
+    const bool showStresvector = this->d_showStresvector.getValue();
+    if (showStressValue || showStresvector)
     {
         Real minStress = 0;
         Real maxStress = 0;
         std::vector<Real> stresses;
         std::vector<std::pair<int,Real> > pstresses;
-        std::vector<Deriv> stressVectors;
+        std::vector<Deriv> stresvectors;
         std::vector<Real> stresses2;
-        std::vector<Deriv> stressVectors2;
+        std::vector<Deriv> stresvectors2;
         stresses.resize(nbTriangles);
-        stressVectors.resize(nbTriangles);
+        stresvectors.resize(nbTriangles);
         stresses2.resize(nbTriangles);
-        stressVectors2.resize(nbTriangles);
+        stresvectors2.resize(nbTriangles);
 
         if (showStressValue)
         {
@@ -572,7 +572,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         }
         for (unsigned int i=0; i<nbTriangles; i++)
         {
-            getTrianglePrincipalStress(i,stresses[i],stressVectors[i],stresses2[i],stressVectors2[i]);
+            getTrianglePrincipalStress(i,stresses[i],stresvectors[i],stresses2[i],stresvectors2[i]);
 
             if ( stresses[i] < minStress ) minStress = stresses[i];
             if ( stresses[i] > maxStress ) maxStress = stresses[i];
@@ -605,7 +605,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         {
             maxStress = d_showStressMaxValue.getValue();
         }
-        if (showStressVector && maxStress > 0)
+        if (showStresvector && maxStress > 0)
         {
             std::vector< Vector3 > points[2];
             for (unsigned int i=0; i<nbTriangles; i++)
@@ -614,9 +614,9 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
                 Vector3 a = x[t[0]];
                 Vector3 b = x[t[1]];
                 Vector3 c = x[t[2]];
-                Vector3 d1 = stressVectors[i];
+                Vector3 d1 = stresvectors[i];
                 Real s1 = stresses[i];
-                Vector3 d2 = stressVectors2[i];
+                Vector3 d2 = stresvectors2[i];
                 Real s2 = stresses2[i];
                 Vector3 center = (a+b+c)/3;
                 Vector3 n = cross(b-a,c-a);

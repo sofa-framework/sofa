@@ -24,6 +24,12 @@
 #include <SofaBoundaryCondition/TrianglePressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/typeinfo/models/IncompleteTypeInfo.h>
+#include <sofa/helper/vector.h>
+#include <sofa/core/objectmodel/DataTypeInfoHelper.h>
+
+typedef sofa::component::forcefield::TrianglePressureForceField<sofa::defaulttype::Vec3Types>::TrianglePressureInformation TT;
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(TT);
 
 namespace sofa::component::forcefield
 {
@@ -32,9 +38,8 @@ using namespace sofa::defaulttype;
 
 int TrianglePressureForceFieldClass = core::RegisterObject("TrianglePressure")
         .add< TrianglePressureForceField<Vec3Types> >()
-
         ;
 
-template class SOFA_SOFABOUNDARYCONDITION_API TrianglePressureForceField<Vec3Types>;
+template class TrianglePressureForceField<Vec3Types>;
 
 } // namespace sofa::component::forcefield

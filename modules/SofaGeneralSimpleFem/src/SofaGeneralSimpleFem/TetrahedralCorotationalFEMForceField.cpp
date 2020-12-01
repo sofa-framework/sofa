@@ -25,7 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/core/objectmodel/DataTypeAutomaticRegistrationHelper.h>
 
 namespace sofa::component::forcefield
 {

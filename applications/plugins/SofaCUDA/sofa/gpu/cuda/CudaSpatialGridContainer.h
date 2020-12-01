@@ -103,7 +103,7 @@ public:
     }
 
     //const sofa::gpu::cuda::CudaVector< unsigned int >& getParticleIndexVector() const { return particleIndex; }
-    const sofa::gpu::cuda::CudaVector< int >& getCellsVector() const { return cells; }
+    const sofa::gpu::cuda::CudaVector< int >& getCellvector() const { return cells; }
     const sofa::gpu::cuda::CudaVector< int >& getCellGhostVector() const { return cellGhost; }
 
 protected:

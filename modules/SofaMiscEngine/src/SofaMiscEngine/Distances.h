@@ -27,7 +27,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
 #include <sofa/helper/map.h>
 #include <sofa/helper/OptionsGroup.h>
@@ -75,7 +75,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename sofa::helper::vector< VecCoord > VecVecCoord;
-    typedef helper::SVector<helper::SVector<double> > VVD;
+    typedef helper::vector<helper::vector<double> > VVD;
 
 protected:
     DistancesInternalData<DataTypes> data;

@@ -24,6 +24,11 @@
 #include <SofaBoundaryCondition/EllipsoidForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/DataTypeInfoHelper.h>
+
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::component::forcefield::EllipsoidForceField<sofa::defaulttype::Vec3Types>::Contact);
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::component::forcefield::EllipsoidForceField<sofa::defaulttype::Vec2Types>::Contact);
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::component::forcefield::EllipsoidForceField<sofa::defaulttype::Vec1Types>::Contact);
 
 namespace sofa::component::forcefield
 {

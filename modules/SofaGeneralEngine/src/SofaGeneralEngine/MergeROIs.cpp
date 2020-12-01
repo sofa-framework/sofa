@@ -62,7 +62,7 @@ void MergeROIs::doUpdate()
     f_indices.resize(nb);
     if(!nb) return;
 
-    helper::WriteOnlyAccessor< Data< helper::vector<helper::SVector<Index> > > > outputIndices = d_outputIndices;
+    helper::WriteOnlyAccessor< Data< helper::vector<helper::vector<Index> > > > outputIndices = d_outputIndices;
     outputIndices.resize(nb);
 
     for(size_t j=0; j<nb;j++)
@@ -72,7 +72,7 @@ void MergeROIs::doUpdate()
         for(size_t i=0 ; i<indices.size() ; i++) outputIndices[j][i]=indices[i];
     }
 }
-int MergeROIsClass = core::RegisterObject("Merge a list of ROIs (vector<Indices>) into a single Data (vector<svector<Indices>>)")
+int MergeROIsClass = core::RegisterObject("Merge a list of ROIs (vector<Indices>) into a single Data (vector<vector<Indices>>)")
         .add< MergeROIs >(true)
         ;
 

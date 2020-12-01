@@ -23,7 +23,12 @@
 #include "HexahedronFEMForceField.inl"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/DataTypeInfoHelper.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Mat].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[vector].h>
 
+typedef sofa::defaulttype::Mat<24, 24, SReal> Mat24x24Real;
+REGISTER_DATATYPEINFO(Mat24x24Real);
 
 namespace sofa
 {

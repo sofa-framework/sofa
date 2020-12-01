@@ -43,10 +43,11 @@ set(HEADER_FILES
     UniformMass.inl
     config.h
     initBaseMechanics.h
+
+    datatype/Data[BarycentricMapper].h
 )
 
 set(SOURCE_FILES
-
     BarycentricMappers/BarycentricMapper.cpp
     BarycentricMappers/TopologyBarycentricMapper.cpp
     BarycentricMappers/BarycentricMapperMeshTopology.cpp
@@ -67,8 +68,9 @@ set(SOURCE_FILES
     SubsetMapping.cpp
     UniformMass.cpp
     initBaseMechanics.cpp
-)
 
+    datatype/Data[BarycentricMapper].cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaEigen2Solver)

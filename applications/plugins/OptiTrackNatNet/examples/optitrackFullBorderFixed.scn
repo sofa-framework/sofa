@@ -97,7 +97,7 @@
         <DiagonalMass massDensity="0.15" />
         <BoxROI name="boxROI" box="-1 -1 -1   101 1 1    -1 -1 -1   1 101 1    99 -1 -1   101 101 1    -1 99 -1   101 101 1"  drawBoxes="true" position="@meshLoader.position"/>
         <FixedConstraint indices="@boxROI.indices" />
-        <TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" showStressValue="false" showStressVector="false"
+        <TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" showStressValue="false" showStresvector="false"
 			showFracturableTriangles="true" hosfordExponant="10.0" criteriaValue="10000" computePrincipalStress="true"/>
 <!--        <TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" />-->
         <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />

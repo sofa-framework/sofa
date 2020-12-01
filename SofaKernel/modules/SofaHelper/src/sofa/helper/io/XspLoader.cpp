@@ -46,7 +46,7 @@ namespace io
 XspLoaderDataHook::~XspLoaderDataHook(){}
 
 bool XspLoader::ReadXspContent(std::ifstream &file,
-                               bool hasVectorSpring,
+                               bool havectorSpring,
                                XspLoaderDataHook& data)
 {
     bool hasTotalNumMasses=false;
@@ -119,7 +119,7 @@ bool XspLoader::ReadXspContent(std::ifstream &file,
             size_t m0,m1;
             double ks=0.0, kd=0.0, initpos=-1;
             double restx=0.0,resty=0.0,restz=0.0;
-            if (hasVectorSpring)
+            if (havectorSpring)
             {
                 file >> index >> m0 >> m1 >> ks >> kd >> initpos >> restx >> resty >> restz;
             }

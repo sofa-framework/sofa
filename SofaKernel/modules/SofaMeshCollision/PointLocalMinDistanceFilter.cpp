@@ -32,7 +32,8 @@
 #include <sofa/simulation/Node.h>
 
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/core/objectmodel/DataTypeInfoHelper.h>
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::helper::vector<sofa::component::collision::PointInfo>);
 
 namespace sofa
 {

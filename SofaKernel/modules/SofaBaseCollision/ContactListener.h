@@ -141,7 +141,7 @@ protected:
     const CollisionModel* m_CollisionModel2;
 
 private:
-    helper::vector<const helper::vector<DetectionOutput>* > m_ContactsVector;
+    helper::vector<const helper::vector<DetectionOutput>* > m_Contactvector;
     core::collision::NarrowPhaseDetection* m_NarrowPhase;
 };
 

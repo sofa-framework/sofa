@@ -25,7 +25,7 @@
 
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/core/datatypes/DataOptionGroup.h>
+#include <sofa/core/datatype/Data[OptionGroup].h>
 #include <sofa/helper/map_ptr_stable_compare.h>
 
 

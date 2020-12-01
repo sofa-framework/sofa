@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <sofa/helper/TagFactory.h>
 #include <sofa/core/objectmodel/Tag.h>
-//#include <algorithm> // for std::includes
 
 namespace sofa
 {

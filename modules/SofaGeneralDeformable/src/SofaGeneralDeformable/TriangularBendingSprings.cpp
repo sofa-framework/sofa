@@ -23,6 +23,7 @@
 #include <SofaGeneralDeformable/TriangularBendingSprings.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/DataTypeAutomaticRegistrationHelper.h>
 
 namespace sofa::component::forcefield
 {

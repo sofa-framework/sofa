@@ -39,6 +39,8 @@ namespace component
 namespace linearsolver
 {
 
+typedef std::map < std::string, sofa::helper::vector<SReal> > CGLinearSolverResidual;
+
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 class CGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix, TVector>
@@ -54,7 +56,7 @@ public:
     Data<SReal> f_smallDenominatorThreshold; ///< minimum value of the denominator in the conjugate Gradient solution
     Data<bool> f_warmStart; ///< Use previous solution as initial solution
     Data<bool> f_verbose; ///< Dump system state at each iteration
-    Data<std::map < std::string, sofa::helper::vector<SReal> > > f_graph; ///< Graph of residuals at each iteration
+    Data<CGLinearSolverResidual> f_graph; ///< Graph of residuals at each iteration
 
 protected:
 

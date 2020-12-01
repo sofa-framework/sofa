@@ -308,21 +308,6 @@ protected:
 
     /// Parent Data
     DataLink<BaseData> parentData;
-
-    /// Helper method to decode the type name to a more readable form if possible
-    static std::string decodeTypeName(const std::type_info& t);
-
-public:
-
-    /// Helper method to get the type name of type T
-    template<class T>
-    static std::string typeName(const T* = nullptr)
-    {
-        if (defaulttype::DataTypeInfo<T>::ValidInfo)
-            return defaulttype::DataTypeName<T>::name();
-        else
-            return decodeTypeName(typeid(T));
-    }
 };
 
 /** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container

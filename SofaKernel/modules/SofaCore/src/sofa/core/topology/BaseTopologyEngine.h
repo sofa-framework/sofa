@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYENGINE_H
 
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/core/datatypes/DataList.h>
+#include <sofa/core/datatype/Data[List].h>
 #include <sofa/core/DataEngine.h>
 
 namespace sofa

@@ -23,7 +23,7 @@
 #include <SofaGeneralSimpleFem/BeamFEMForceField.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/core/objectmodel/DataTypeAutomaticRegistrationHelper.h>
 
 namespace sofa::component::forcefield::_beamfemforcefield_
 {

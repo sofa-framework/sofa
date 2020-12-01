@@ -124,7 +124,7 @@ public:
 
 private:
     static bool ReadXspContent(std::ifstream &file,
-                               bool hasVectorSpring,
+                               bool havectorSpring,
                                XspLoaderDataHook& data);
 
 };

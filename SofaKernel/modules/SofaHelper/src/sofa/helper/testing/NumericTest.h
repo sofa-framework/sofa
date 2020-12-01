@@ -245,7 +245,7 @@ struct data_traits
 };
 
 // Do not use this class directly
-template<class DataTypes, sofa::Size N, bool isVector>
+template<class DataTypes, sofa::Size N, bool ivector>
 struct setRotWrapper
 { static void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot); };
 

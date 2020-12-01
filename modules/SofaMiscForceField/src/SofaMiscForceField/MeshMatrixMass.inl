@@ -1179,8 +1179,8 @@ void MeshMatrixMass<DataTypes, MassType>::printMass()
         return;
 
     //Info post-init
-    const MassVector &vertexM = d_vertexMass.getValue();
-    const MassVector &mDensity = d_massDensity.getValue();
+    const Masvector &vertexM = d_vertexMass.getValue();
+    const Masvector &mDensity = d_massDensity.getValue();
 
     Real average_vertex = 0.0;
     Real min_vertex = std::numeric_limits<Real>::max();
@@ -1469,7 +1469,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromVertexMass()
 
     computeMass();
 
-    helper::WriteAccessor<Data<MassVector> > vertexMassInfo = d_vertexMassInfo;
+    helper::WriteAccessor<Data<Masvector> > vertexMassInfo = d_vertexMassInfo;
     //Compute volume = mass since massDensity = 1.0
     Real volume = 0.0;
     for(size_t i=0; i<vertexMassInfo.size(); i++)
@@ -1531,8 +1531,8 @@ void MeshMatrixMass<DataTypes, MassType>::initFromVertexAndEdgeMass()
 
     computeMass();
 
-    helper::WriteAccessor<Data<MassVector> > vertexMassInfo = d_vertexMassInfo;
-    helper::WriteAccessor<Data<MassVector> > edgeMassInfo = d_edgeMassInfo;
+    helper::WriteAccessor<Data<Masvector> > vertexMassInfo = d_vertexMassInfo;
+    helper::WriteAccessor<Data<Masvector> > edgeMassInfo = d_edgeMassInfo;
     //Compute volume = mass since massDensity = 1.0
     Real volume = 0.0;
     for(size_t i=0; i<vertexMassInfo.size(); i++)
@@ -1648,7 +1648,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromMassDensity()
 
     computeMass();
 
-    const MassVector &vertexMassInfo = d_vertexMassInfo.getValue();
+    const Masvector &vertexMassInfo = d_vertexMassInfo.getValue();
     Real sumMass = 0.0;
     for (size_t i=0; i<size_t(m_topology->getNbPoints()); i++)
     {
@@ -1669,7 +1669,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromTotalMass()
 
     computeMass();
 
-    const MassVector &vertexMassInfo = d_vertexMassInfo.getValue();
+    const Masvector &vertexMassInfo = d_vertexMassInfo.getValue();
     for (size_t i=0; i<size_t(m_topology->getNbPoints()); i++)
     {
         sumMass += vertexMassInfo[i]*m_massLumpingCoeff;
@@ -1774,8 +1774,8 @@ void MeshMatrixMass<DataTypes, MassType>::copyVertexMass(){}
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::clear()
 {
-    MassVector& vertexMass = *d_vertexMassInfo.beginEdit();
-    MassVector& edgeMass = *d_edgeMassInfo.beginEdit();
+    Masvector& vertexMass = *d_vertexMassInfo.beginEdit();
+    Masvector& edgeMass = *d_edgeMassInfo.beginEdit();
     vertexMass.clear();
     edgeMass.clear();
     d_vertexMassInfo.endEdit();
@@ -1787,8 +1787,8 @@ void MeshMatrixMass<DataTypes, MassType>::clear()
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, DataVecDeriv& vres, const DataVecDeriv& vdx, SReal factor)
 {
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
-    const MassVector &edgeMass= d_edgeMassInfo.getValue();
+    const Masvector &vertexMass= d_vertexMassInfo.getValue();
+    const Masvector &edgeMass= d_edgeMassInfo.getValue();
 
     helper::WriteAccessor< DataVecDeriv > res = vres;
     helper::ReadAccessor< DataVecDeriv > dx = vdx;
@@ -1862,7 +1862,7 @@ void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams*
 
     helper::WriteAccessor< DataVecDeriv > _a = a;
     const VecDeriv& _f = f.getValue();
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
+    const Masvector &vertexMass= d_vertexMassInfo.getValue();
 
     for (unsigned int i=0; i<vertexMass.size(); i++)
     {
@@ -1881,7 +1881,7 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*
 
     helper::WriteAccessor< DataVecDeriv > f = vf;
 
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
+    const Masvector &vertexMass= d_vertexMassInfo.getValue();
 
     // gravity
     defaulttype::Vec3d g ( this->getContext()->getGravity() );
@@ -1897,8 +1897,8 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*
 template <class DataTypes, class MassType>
 SReal MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams*, const DataVecDeriv& vv ) const
 {
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
-    const MassVector &edgeMass= d_edgeMassInfo.getValue();
+    const Masvector &vertexMass= d_vertexMassInfo.getValue();
+    const Masvector &edgeMass= d_edgeMassInfo.getValue();
 
     helper::ReadAccessor< DataVecDeriv > v = vv;
 
@@ -1928,7 +1928,7 @@ SReal MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::Mechani
 template <class DataTypes, class MassType>
 SReal MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx) const
 {
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
+    const Masvector &vertexMass= d_vertexMassInfo.getValue();
 
     helper::ReadAccessor< DataVecCoord > x = vx;
 
@@ -1980,8 +1980,8 @@ void MeshMatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPa
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
-    const MassVector &edgeMass= d_edgeMassInfo.getValue();
+    const Masvector &vertexMass= d_vertexMassInfo.getValue();
+    const Masvector &edgeMass= d_edgeMassInfo.getValue();
 
     size_t nbEdges=m_topology->getNbEdges();
     size_t v0,v1;
@@ -2064,7 +2064,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 template <class DataTypes, class MassType>
 SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(Index index) const
 {
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
+    const Masvector &vertexMass= d_vertexMassInfo.getValue();
     SReal mass = vertexMass[index] * m_massLumpingCoeff;
 
     return mass;
@@ -2096,7 +2096,7 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const MassVector &vertexMass= d_vertexMassInfo.getValue();
+    const Masvector &vertexMass= d_vertexMassInfo.getValue();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord gravityCenter;

@@ -66,11 +66,6 @@ public:
     inline std::string getValueString() const override;
     inline std::string getValueTypeString() const override;
 
-    /// Get info about the value type of the associated variable
-    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
-    {
-        return sofa::defaulttype::VirtualTypeInfo<T>::get();
-    }
 
     virtual const T& virtualGetValue() const = 0;
     virtual void virtualSetValue(const T& v) = 0;
@@ -115,6 +110,33 @@ protected:
 };
 
 
+template<class T>
+class HasSkipTypeInfo
+{
+    typedef char YesType[1];
+    typedef char NoType[2];
+
+    template<typename C> static YesType& test( decltype (&C::SkipTypeInfo) );
+    template<typename C> static NoType& test(...);
+
+public:
+    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
+};
+
+template<class T>
+class IsPrivateData
+{
+    typedef char YesType[1];
+    typedef char NoType[2];
+
+    template<typename C> static YesType& test( decltype (&C::IsPrivateData) );
+    template<typename C> static NoType& test(...);
+
+public:
+    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
+};
+
+
 /** \brief Container that holds a variable for a component.
  *
  * This is a fundamental class template in Sofa.  Data are used to encapsulated
@@ -150,7 +172,7 @@ protected:
  * <Foo bar="false"/>
  * \endcode
  */
-template < class T = void* >
+template < class T = void*>
 class Data : public TData<T>
 {
 public:
@@ -174,10 +196,18 @@ public:
         T value;
     };
 
-    static std::string templateName()
+    /// Get info about the value type of the associated variable
+
+    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override { return GetValueTypeInfo(); }
+    static const sofa::defaulttype::AbstractTypeInfo* GetValueTypeInfo()
     {
-        return sofa::core::objectmodel::BaseData::typeName<Data<T>>();
+        return GetValueTypeInfoValidTypeInfo();
     }
+
+    static const sofa::defaulttype::AbstractTypeInfo* GetValueTypeInfoValidTypeInfo();
+    static const sofa::defaulttype::AbstractTypeInfo* GetValueTypeInfoMissingTypeInfo();
+
+    static const std::string templateName(){ return GetValueTypeInfo()->name(); }
 
     // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
     virtual BaseData* getNewInstance() { return new Data();}
@@ -330,15 +360,15 @@ public:
         return out;
     }
 
-    bool operator ==( const T& value ) const
-    {
-        return getValue()==value;
-    }
+//    bool operator ==( const T& value ) const
+//    {
+//        return getValue()==value;
+//    }
 
-    bool operator !=( const T& value ) const
-    {
-        return getValue()!=value;
-    }
+//    bool operator !=( const T& value ) const
+//    {
+//        return getValue()!=value;
+//    }
 
     void operator =( const T& value )
     {
@@ -347,7 +377,7 @@ public:
 
 protected:
 
-    typedef DataContentValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
+    typedef DataContentValue<T, true> ValueType;
 
     /// Value
     ValueType m_value;
@@ -355,6 +385,20 @@ protected:
 private:
     Data(const Data& );
     Data& operator=(const Data& );
+};
+
+template<class T>
+class PrivateData : public Data<T>
+{
+public:
+    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override { return GetValueTypeInfo(); }
+
+    static const sofa::defaulttype::AbstractTypeInfo* GetValueTypeInfo()
+    {
+        return GetValueTypeInfoMissingTypeInfo();
+    }
+    static const sofa::defaulttype::AbstractTypeInfo* GetValueTypeInfoValidTypeInfo() = delete;
+    static const sofa::defaulttype::AbstractTypeInfo* GetValueTypeInfoMissingTypeInfo();
 };
 
 class EmptyData : public Data<void*> {};
@@ -391,7 +435,7 @@ template<class T>
 inline
 std::string TData<T>::getValueTypeString() const
 {
-    return BaseData::typeName(&virtualGetValue());
+    return getValueTypeInfo()->name();
 }
 
 template <class T>
@@ -453,17 +497,6 @@ bool TData<T>::updateFromParentValue(const BaseData* parent)
     else
         return BaseData::updateFromParentValue(parent);
 }
-
-#if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
-
-extern template class SOFA_CORE_API TData< std::string >;
-extern template class SOFA_CORE_API Data< std::string >;
-extern template class SOFA_CORE_API TData< sofa::helper::vector<std::string> >;
-extern template class SOFA_CORE_API Data< sofa::helper::vector<std::string> >;
-extern template class SOFA_CORE_API TData< bool >;
-extern template class SOFA_CORE_API Data< bool >;
-
-#endif
 
 } // namespace objectmodel
 

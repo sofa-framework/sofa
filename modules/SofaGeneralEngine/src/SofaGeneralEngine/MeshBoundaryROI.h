@@ -25,7 +25,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa::component::engine
 {

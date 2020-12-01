@@ -24,7 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/RigidTypes.h>
-
+#include <sofa/core/objectmodel/DataTypeAutomaticRegistrationHelper.h>
 
 namespace sofa::component::interactionforcefield
 {

@@ -49,8 +49,8 @@ class DiagonalMassInternalData
 {
 public :
     typedef typename DataTypes::Real Real;
-    typedef helper::vector<TMassType> MassVector;
-    typedef sofa::component::topology::PointData<MassVector> VecMass;
+    typedef helper::vector<TMassType> Masvector;
+    typedef sofa::component::topology::PointData<Masvector> VecMass;
 
     // In case of non 3D template
     typedef sofa::defaulttype::Vec<3,Real> Vec3;
@@ -84,7 +84,7 @@ public:
     } TopologyType;
 
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::VecMass VecMass;
-    typedef typename DiagonalMassInternalData<DataTypes,TMassType>::MassVector MassVector;
+    typedef typename DiagonalMassInternalData<DataTypes,TMassType>::Masvector Masvector;
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
 
     VecMass d_vertexMass; ///< values of the particles masses
@@ -101,18 +101,18 @@ public:
     typedef core::topology::BaseMeshTopology::Hexahedron Hexahedron;
     typedef core::topology::BaseMeshTopology::HexahedronID HexahedronID;
 
-    class DMassPointHandler : public topology::TopologyDataHandler<Point,MassVector>
+    class DMassPointHandler : public topology::TopologyDataHandler<Point,Masvector>
     {
     public:
-        typedef typename DiagonalMass<DataTypes,TMassType>::MassVector MassVector;
-        DMassPointHandler(DiagonalMass<DataTypes,TMassType>* _dm, sofa::component::topology::PointData<MassVector>* _data)
-            : topology::TopologyDataHandler<Point,MassVector>(_data), dm(_dm)
+        typedef typename DiagonalMass<DataTypes,TMassType>::Masvector Masvector;
+        DMassPointHandler(DiagonalMass<DataTypes,TMassType>* _dm, sofa::component::topology::PointData<Masvector>* _data)
+            : topology::TopologyDataHandler<Point,Masvector>(_data), dm(_dm)
         {}
 
         void applyCreateFunction(PointID pointIndex, TMassType& m, const Point&, const sofa::helper::vector< PointID > &,
                                  const sofa::helper::vector< double > &);
 
-        using topology::TopologyDataHandler<Point,MassVector>::ApplyTopologyChange;
+        using topology::TopologyDataHandler<Point,Masvector>::ApplyTopologyChange;
 
         ///////////////////////// Functions on Points //////////////////////////////////////
         /// Apply removing points.

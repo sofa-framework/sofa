@@ -25,7 +25,7 @@
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/vectorData.h>
 
 
@@ -48,7 +48,7 @@ public:
 
     //Input
     Data<unsigned int> d_nbLabels; ///< number of label lists
-    typedef helper::vector<helper::SVector<T> > VecVLabels;
+    typedef helper::vector<helper::vector<T> > VecVLabels;
     helper::vectorData<VecVLabels> d_labels;
     Data<helper::vector<T> > d_connectLabels; ///< Pairs of label to be connected accross different label lists
 

@@ -43,20 +43,20 @@ set(HEADER_FILES
     ${SRC_ROOT}/typeinfo/DataTypeInfo.h
     ${SRC_ROOT}/typeinfo/NoTypeInfo.h
     ${SRC_ROOT}/typeinfo/NameOnlyTypeInfo.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_Bool.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_BoundingBox.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_FixedArray.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_Integer.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_Mat.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_Quat.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_RigidTypes.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_RGBAColor.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_Set.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_Scalar.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_Text.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_Vector.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_Vec.h
-    ${SRC_ROOT}/typeinfo/TypeInfo_VecTypes.h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[bool].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[BoundingBox].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[fixed_array].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[Integer].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[Mat].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[Quat].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[RigidTypes].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[RGBAColor].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[set].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[Scalar].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[string].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[vector].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[Vec].h
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[VecTypes].h
 
     ${SRC_ROOT}/typeinfo/models/IncompleteTypeInfo.h
     ${SRC_ROOT}/typeinfo/models/BoolTypeInfo.h
@@ -80,20 +80,20 @@ set(SOURCE_FILES
     ${SRC_ROOT}/TypeInfoRegistryTools.cpp
     ${SRC_ROOT}/init.cpp
 
-    ${SRC_ROOT}/typeinfo/TypeInfo_Bool.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_BoundingBox.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_FixedArray.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Integer.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Mat.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Quat.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_RGBAColor.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_RigidTypes.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Set.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Scalar.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Text.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Vector.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Vec.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_VecTypes.cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[bool].cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[BoundingBox].cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[fixed_array].cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[Integer].cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[Mat].cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[Quat].cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[RGBAColor].cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[RigidTypes].cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[set].cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[Scalar].cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[string].cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[vector].cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[Vec].cpp
+    ${SRC_ROOT}/typeinfo/DataTypeInfo[VecTypes].cpp
 )
 
 find_package(Eigen3 REQUIRED)

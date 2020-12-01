@@ -23,6 +23,11 @@
 #include <SofaBoundaryCondition/SphereForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/DataTypeInfoHelper.h>
+
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::component::forcefield::SphereForceField<sofa::defaulttype::Vec3Types>::Contact);
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::component::forcefield::SphereForceField<sofa::defaulttype::Vec2Types>::Contact);
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::component::forcefield::SphereForceField<sofa::defaulttype::Vec1Types>::Contact);
 
 namespace sofa::component::forcefield
 {
@@ -33,11 +38,9 @@ using namespace sofa::defaulttype;
 int SphereForceFieldClass = core::RegisterObject("Repulsion applied by a sphere toward the exterior")
         .add< SphereForceField<Vec3Types> >()
         .add< SphereForceField<Vec2Types> >()
-        .add< SphereForceField<Vec1Types> >()
+        .add< SphereForceField<Vec1Types> >();
 
-        ;
 template class SOFA_SOFABOUNDARYCONDITION_API SphereForceField<Vec3Types>;
 template class SOFA_SOFABOUNDARYCONDITION_API SphereForceField<Vec2Types>;
 template class SOFA_SOFABOUNDARYCONDITION_API SphereForceField<Vec1Types>;
-
 } // namespace sofa::component::forcefield

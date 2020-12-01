@@ -104,7 +104,7 @@ public:
     }
 
     //const sofa::gpu::opencl::OpenCLVector< unsigned int >& getParticleIndexVector() const { return particleIndex; }
-    const sofa::gpu::opencl::OpenCLVector< int >& getCellsVector() const { return cells; }
+    const sofa::gpu::opencl::OpenCLVector< int >& getCellvector() const { return cells; }
     const sofa::gpu::opencl::OpenCLVector< int >& getCellGhostVector() const { return cellGhost; }
 
 protected:

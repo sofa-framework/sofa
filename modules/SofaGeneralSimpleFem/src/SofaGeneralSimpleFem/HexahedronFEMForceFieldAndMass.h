@@ -56,7 +56,7 @@ public:
     typedef typename HexahedronFEMForceFieldT::VecElement VecElement;
     typedef typename HexahedronFEMForceFieldT::VecElementStiffness VecElementMass;
     typedef typename HexahedronFEMForceFieldT::ElementStiffness ElementMass;
-    typedef helper::vector<Real> MassVector;
+    typedef helper::vector<Real> Masvector;
     using Index = sofa::Index;
 
 protected:
@@ -130,7 +130,7 @@ protected :
     Data<Real> d_density; ///< density == volumetric mass in english (kg.m-3)
     Data<bool> d_lumpedMass; ///< Does it use lumped masses?
 
-    MassVector _particleMasses; ///< masses per particle in order to compute gravity
+    Masvector _particleMasses; ///< masses per particle in order to compute gravity
     helper::vector<Coord> _lumpedMasses; ///< masses per particle computed by lumping mass matrices
 
 

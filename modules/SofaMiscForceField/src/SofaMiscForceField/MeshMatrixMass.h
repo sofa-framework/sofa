@@ -77,8 +77,8 @@ public:
     typedef core::objectmodel::Data<VecCoord>               DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>               DataVecDeriv;
     typedef TMassType                                       MassType;
-    typedef helper::vector<MassType>                        MassVector;
-    typedef helper::vector<MassVector>                      MassVectorVector;
+    typedef helper::vector<MassType>                        Masvector;
+    typedef helper::vector<Masvector>                      MasvectorVector;
 
     using Index = sofa::Index;
 
@@ -250,7 +250,7 @@ public:
 
 protected:
 
-    class VertexMassHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point,MassVector>
+    class VertexMassHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point,Masvector>
     {
     public:
         VertexMassHandler(MeshMatrixMass<DataTypes,TMassType>* _m, topology::PointData<helper::vector<TMassType> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point,helper::vector<TMassType> >(_data), m(_m) {}
@@ -274,7 +274,7 @@ protected:
         /// Vertex coefficient of mass matrix destruction function to handle creation of new triangles
         void applyTriangleDestruction(const sofa::helper::vector<Index> & /*indices*/);
 
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point,MassVector>::ApplyTopologyChange;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point,Masvector>::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.
@@ -339,7 +339,7 @@ protected:
     };
     VertexMassHandler* m_vertexMassHandler;
 
-    class EdgeMassHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,MassVector>
+    class EdgeMassHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,Masvector>
     {
     public:
         EdgeMassHandler(MeshMatrixMass<DataTypes,TMassType>* _m, topology::EdgeData<helper::vector<TMassType> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<TMassType> >(_data), m(_m) {}
@@ -350,7 +350,7 @@ protected:
                 const sofa::helper::vector< Index > &,
                 const sofa::helper::vector< double >&);
 
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,MassVector>::ApplyTopologyChange;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,Masvector>::ApplyTopologyChange;
 
         ///////////////////////// Functions on Triangles //////////////////////////////////////
 

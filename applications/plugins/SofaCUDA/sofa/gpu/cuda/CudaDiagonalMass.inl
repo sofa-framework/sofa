@@ -65,7 +65,7 @@ void DiagonalMass<CudaVec3fTypes, float>::addMDx(const core::MechanicalParams* /
     const VecDeriv& dx = d_dx.getValue();
 
     DiagonalMassCuda_addMDxf(dx.size(),(float) d_factor, d_vertexMass.getValue().deviceRead() , dx.deviceRead(), f.deviceWrite());
-//     const MassVector &masses= d_vertexMass.getValue();
+//     const Masvector &masses= d_vertexMass.getValue();
 //     for (unsigned int i=0;i<dx.size();i++) {
 // 	res[i] += dx[i] * masses[i] * (Real)factor;
 //     }
@@ -80,7 +80,7 @@ void DiagonalMass<CudaVec3fTypes, float>::accFromF(const core::MechanicalParams*
     const VecDeriv& f = d_f.getValue();
 
     DiagonalMassCuda_accFromFf(f.size(),  d_vertexMass.getValue().deviceRead(), f.deviceRead(), a.deviceWrite());
-//     const MassVector &masses= d_vertexMass.getValue();
+//     const Masvector &masses= d_vertexMass.getValue();
 //     for (unsigned int i=0;i<f.size();i++) {
 //         a[i] = f[i] / masses[i];
 //     }
@@ -96,7 +96,7 @@ void DiagonalMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams*
     //const VecDeriv& v = d_v.getValue();
 
     defaulttype::Vec3d g ( this->getContext()->getGravity() );
-    const MassVector &masses= d_vertexMass.getValue();
+    const Masvector &masses= d_vertexMass.getValue();
     DiagonalMassCuda_addForcef(masses.size(),masses.deviceRead(),g.ptr(), f.deviceWrite());
 
 //     // gravity
@@ -145,7 +145,7 @@ void DiagonalMass<CudaVec3dTypes, double>::addForce(const core::MechanicalParams
     //const VecDeriv& v = d_v.getValue();
 
     Vec3d g ( this->getContext()->getGravity() );
-    const MassVector &masses= d_vertexMass.getValue();
+    const Masvector &masses= d_vertexMass.getValue();
     DiagonalMassCuda_addForced(masses.size(),masses.deviceRead(),g.ptr(), f.deviceWrite());
 
     d_f.endEdit();

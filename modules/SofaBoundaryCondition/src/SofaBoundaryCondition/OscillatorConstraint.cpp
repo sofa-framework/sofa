@@ -24,7 +24,11 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/objectmodel/DataTypeInfoHelper.h>
 #include <sstream>
+
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::component::projectiveconstraintset::OscillatorConstraint<sofa::defaulttype::Rigid3Types>::Oscillator);
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::component::projectiveconstraintset::OscillatorConstraint<sofa::defaulttype::Vec3Types>::Oscillator);
 
 namespace sofa::component::projectiveconstraintset
 {

@@ -800,8 +800,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                                     currentSkinningMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
 
-                                    helper::vector<helper::SVector<SkinningMapping<Rigid3Types, Vec3Types>::InReal> > weights;
-                                    helper::vector<helper::SVector<unsigned int> > indices;
+                                    helper::vector<helper::vector<SkinningMapping<Rigid3Types, Vec3Types>::InReal> > weights;
+                                    helper::vector<helper::vector<unsigned int> > indices;
                                     helper::vector<unsigned int> nbref;
 
                                     indices.resize(vertexMap.size());

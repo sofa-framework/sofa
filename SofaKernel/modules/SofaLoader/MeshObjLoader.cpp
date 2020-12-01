@@ -116,9 +116,9 @@ void MeshObjLoader::doClearBuffers()
 
     getWriteAccessor(d_material)->activated = false;
     getWriteOnlyAccessor(d_materials).clear();
-    getWriteOnlyAccessor(d_faceList)->clear();
-    getWriteOnlyAccessor(d_normalsIndexList)->clear();
-    getWriteOnlyAccessor(d_texIndexList)->clear();
+    getWriteOnlyAccessor(d_faceList).clear();
+    getWriteOnlyAccessor(d_normalsIndexList).clear();
+    getWriteOnlyAccessor(d_texIndexList).clear();
 }
 
 void MeshObjLoader::addGroup (const PrimitiveGroup& g)
@@ -169,9 +169,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     my_texCoords.clear();
     my_normals.clear();
     my_materials.clear();
-    my_faceList->clear();
-    my_normalsList->clear();
-    my_texturesList->clear();
+    my_faceList.clear();
+    my_normalsList.clear();
+    my_texturesList.clear();
     my_edges.clear();
     my_triangles.clear();
     my_quads.clear();
@@ -318,9 +318,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 nIndices.push_back(vtn[2]);
             }
 
-            my_faceList->push_back(nodes);
-            my_normalsList->push_back(nIndices);
-            my_texturesList->push_back(tIndices);
+            my_faceList.push_back(nodes);
+            my_normalsList.push_back(nIndices);
+            my_texturesList.push_back(tIndices);
 
             if (nodes.size() == 2) // Edge
             {
@@ -396,11 +396,11 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         {
             vNormals.resize(0);
         }
-        for (size_t fi=0; fi<my_faceList->size(); ++fi)
+        for (size_t fi=0; fi<my_faceList.size(); ++fi)
         {
-            const helper::SVector<int>& nodes = (*my_faceList)[fi];
-            const helper::SVector<int>& nIndices = (*my_normalsList)[fi];
-            const helper::SVector<int>& tIndices = (*my_texturesList)[fi];
+            const helper::vector<int>& nodes = my_faceList[fi];
+            const helper::vector<int>& nIndices = my_normalsList[fi];
+            const helper::vector<int>& tIndices = my_texturesList[fi];
             for (size_t i = 0; i < nodes.size(); ++i)
             {
                 unsigned int pi = nodes[i];
@@ -428,11 +428,11 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         // The map store the final index of each combinaison
         std::vector< std::map< std::pair<int,int>, int > > vertTexNormMap;
         vertTexNormMap.resize(nbVIn);
-        for (size_t fi=0; fi<my_faceList->size(); ++fi)
+        for (size_t fi=0; fi<my_faceList.size(); ++fi)
         {
-            const helper::SVector<int>& nodes = (*my_faceList)[fi];
-            const helper::SVector<int>& nIndices = (*my_normalsList)[fi];
-            const helper::SVector<int>& tIndices = (*my_texturesList)[fi];
+            const helper::vector<int>& nodes = my_faceList[fi];
+            const helper::vector<int>& nIndices = my_normalsList[fi];
+            const helper::vector<int>& tIndices = my_texturesList[fi];
             for (size_t i = 0; i < nodes.size(); ++i)
             {
                 unsigned int pi = nodes[i];
@@ -512,11 +512,11 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
         // Then we create the triangles and quads
         
-        for (size_t fi=0; fi<my_faceList->size(); ++fi)
+        for (size_t fi=0; fi<my_faceList.size(); ++fi)
         {
-            const helper::SVector<int>& verts = (*my_faceList)[fi];
-            const helper::SVector<int>& nIndices = (*my_normalsList)[fi];
-            const helper::SVector<int>& tIndices = (*my_texturesList)[fi];
+            const helper::vector<int>& verts = my_faceList[fi];
+            const helper::vector<int>& nIndices = my_normalsList[fi];
+            const helper::vector<int>& tIndices = my_texturesList[fi];
             std::vector<int> nodes;
             nodes.resize(verts.size());
             for (size_t i = 0; i < verts.size(); ++i)

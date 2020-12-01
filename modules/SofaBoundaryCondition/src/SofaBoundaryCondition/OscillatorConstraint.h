@@ -54,7 +54,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
 
-protected:
+public:
     struct Oscillator
     {
         unsigned int index;
@@ -81,8 +81,7 @@ protected:
         }
     };
 
-    Data< helper::vector< Oscillator > > constraints; ///< constrained particles
-
+    Data<helper::vector< Oscillator >> constraints; ///< constrained particles
 
 public:
     OscillatorConstraint(core::behavior::MechanicalState<TDataTypes>* mstate=nullptr);

@@ -32,7 +32,7 @@
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 
 
 namespace sofa::component::engine

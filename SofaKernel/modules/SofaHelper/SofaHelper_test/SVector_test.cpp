@@ -19,19 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 #include <gtest/gtest.h>
 #include <cstdlib>
 
-using sofa::helper::SVector;
+using sofa::helper::vector;
 
 
-/// testing SVector::read/write
+/// testing vector::read/write
 /// (other vector functions should be tested in helper::vector)
 template<class T>
-struct SVector_test : public ::testing::Test
+struct vector_test : public ::testing::Test
 {
-    SVector<T> m_vec; ///< tested SVector
+    vector<T> m_vec; ///< tested vector
 
     /// reading directly from a string
     void read(const std::string& s)
@@ -62,8 +62,8 @@ private:
 
 
 
-typedef SVector_test<int> SVector_test_int;
-TEST_F(SVector_test_int, int_simple)
+typedef vector_test<int> vector_test_int;
+TEST_F(vector_test_int, int_simple)
 {
     // simple
     read( "[0,1,2]" );
@@ -78,7 +78,7 @@ TEST_F(SVector_test_int, int_simple)
 
 }
 
-TEST_F(SVector_test_int, int_extraspace)
+TEST_F(vector_test_int, int_extraspace)
 {
     // with spaces
     read( "  [  0  ,  1  ,  2  ]  " );
@@ -95,8 +95,8 @@ TEST_F(SVector_test_int, int_extraspace)
 
 
 
-typedef SVector_test<std::string> SVector_test_string;
-TEST_F(SVector_test_string, string_simple)
+typedef vector_test<std::string> vector_test_string;
+TEST_F(vector_test_string, string_simple)
 {
     // simple
     read( "['string0','string1','string2']" );
@@ -120,7 +120,7 @@ TEST_F(SVector_test_string, string_simple)
 }
 
 
-TEST_F(SVector_test_string, string_extraspace)
+TEST_F(vector_test_string, string_extraspace)
 {
     // with extra spaces
     read( "   [     'string0'   ,   'string1'   ,   'string2'   ]    " );
@@ -144,7 +144,7 @@ TEST_F(SVector_test_string, string_extraspace)
 }
 
 
-TEST_F(SVector_test_string, string_simplespace)
+TEST_F(vector_test_string, string_simplespace)
 {
     // simple with strings containing spaces
     read( "[' string 0',' string 1',' string 2']" );
@@ -168,7 +168,7 @@ TEST_F(SVector_test_string, string_simplespace)
 
 
 
-TEST_F(SVector_test_string, string_spaceextraspace)
+TEST_F(vector_test_string, string_spaceextraspace)
 {
     // with extra spaces and with strings containing spaces
     read( "   [     'string 0 '  ,    'string 1 '  ,   'string 2 '  ]    " );
@@ -209,7 +209,7 @@ TEST_F(SVector_test_string, string_spaceextraspace)
     }
 }
 
-TEST_F(SVector_test_string, string_empty)
+TEST_F(vector_test_string, string_empty)
 {
     read( "[]" );
     ASSERT_EQ(m_vec.size(),0u);

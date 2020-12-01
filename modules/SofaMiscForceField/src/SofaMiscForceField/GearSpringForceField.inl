@@ -116,10 +116,10 @@ void GearSpringForceField<DataTypes>::reinit()
 {
     const VecCoord& x1=this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x2=this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-    sofa::helper::vector<Spring> &springsVector=*(springs.beginEdit());
+    sofa::helper::vector<Spring> &springvector=*(springs.beginEdit());
     for (unsigned int i=0; i<springs.getValue().size(); ++i)
     {
-        Spring &s=springsVector[i];
+        Spring &s=springvector[i];
         if(s.p1==s.m1) { s.angle1 = s.previousAngle1 = 0.0; s.ini1 = x1[s.p1]; }
         else s.angle1 = s.previousAngle1 = getAngleAroundAxis(x1[s.p1],x1[s.m1],s.freeAxis[0]);
         if(s.p2==s.m2) { s.angle2 = s.previousAngle2 = 0.0; s.ini2 = x2[s.p2]; }

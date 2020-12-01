@@ -26,8 +26,8 @@
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/topology/Topology.h>
 
-#include <sofa/core/datatypes/DataPrimitiveGroup.h>
-#include <sofa/core/topology/datatype/DataTopology.h>
+#include <sofa/core/datatype/Data[PrimitiveGroup].h>
+#include <sofa/core/topology/datatype/Data[Topology].h>
 
 namespace sofa
 {

@@ -8,7 +8,7 @@ set(SOURCE_FILES
     KdTree_test.cpp
     Utils_test.cpp
     Quater_test.cpp
-    SVector_test.cpp
+    vector_test.cpp
     vector_test.cpp
     io/MeshOBJ_test.cpp
     io/XspLoader_test.cpp

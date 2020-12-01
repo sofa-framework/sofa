@@ -66,7 +66,7 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
     const Real& defaultModulus =  p_defaultModulus.getValue();
 
     //Output
-    helper::vector<Real>& youngModulusVector = *f_youngModulus.beginWriteOnly();
+    helper::vector<Real>& youngModuluvector = *f_youngModulus.beginWriteOnly();
 
     //1st method : with Group definition
     if (!groups.empty())
@@ -119,9 +119,9 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
                 }
             }
             //build YM vector
-            youngModulusVector.clear();
-            youngModulusVector.resize(maxSize);
-            std::fill(youngModulusVector.begin(), youngModulusVector.end(), defaultModulus);
+            youngModuluvector.clear();
+            youngModuluvector.resize(maxSize);
+            std::fill(youngModuluvector.begin(), youngModuluvector.end(), defaultModulus);
 
             typename std::map<sofa::core::loader::PrimitiveGroup, Real>::const_iterator itMapMG;
             for (itMapMG = mapMG.begin() ; itMapMG != mapMG.end() ; itMapMG++)
@@ -130,17 +130,17 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
                 Real ym = (*itMapMG).second;
 
                 for (int i=pg.p0 ; i<pg.p0+pg.nbp ; i++)
-                    youngModulusVector[i] = ym;
+                    youngModuluvector[i] = ym;
             }
         } else {
-            youngModulusVector.clear();
+            youngModuluvector.clear();
             unsigned sz = p_groupMod.getValue().size();
             for (unsigned i=0;i<groups.size();i++) {
                 Real ym;
                 if (i<sz) ym = p_groupMod.getValue()[i];
                 else ym = defaultModulus;
 
-                for (int j=0;j<groups[i].nbp;j++) youngModulusVector.push_back(ym);
+                for (int j=0;j<groups[i].nbp;j++) youngModuluvector.push_back(ym);
             }
         }
     }
@@ -152,7 +152,7 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
         Real youngModulus;
 
         helper::vector<Real> mapMG;
-        youngModulusVector.resize(1);
+        youngModuluvector.resize(1);
 
         //read string and tokenize
         while(end != std::string::npos )
@@ -169,12 +169,12 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
             mapMG[gid] = youngModulus;
         }
 
-        youngModulusVector.resize(elementsGroup.size());
+        youngModuluvector.resize(elementsGroup.size());
         for (unsigned int i=0 ; i<elementsGroup.size() ; i++)
         {
 
             int elem = elementsGroup[i];
-            youngModulusVector[i] = mapMG[elem];
+            youngModuluvector[i] = mapMG[elem];
         }
     }
     f_youngModulus.endEdit();

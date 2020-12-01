@@ -24,6 +24,7 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[string].h>
 
 namespace sofa
 {
@@ -284,11 +285,6 @@ bool BaseData::copyValue(const BaseData* parent)
     if (updateFromParentValue(parent))
         return true;
     return false;
-}
-
-std::string BaseData::decodeTypeName(const std::type_info& t)
-{
-    return sofa::helper::NameDecoder::decodeTypeName(t);
 }
 
 } // namespace objectmodel

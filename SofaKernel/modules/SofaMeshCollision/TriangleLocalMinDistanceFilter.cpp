@@ -25,6 +25,8 @@
 #include <SofaBaseTopology/TopologyData.inl>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/DataTypeInfoHelper.h>
+REGISTER_TYPE_WITHOUT_DATATYPEINFO(sofa::helper::vector<sofa::component::collision::TriangleInfo>);
 
 
 namespace sofa

@@ -28,7 +28,7 @@
 #include <iostream> //for debugging
 #include <vector>
 #include <sofa/defaulttype/VecTypes.h>
-
+#include <sofa/core/objectmodel/DataTypeAutomaticRegistrationHelper.h>
 
 namespace sofa::component::forcefield
 {

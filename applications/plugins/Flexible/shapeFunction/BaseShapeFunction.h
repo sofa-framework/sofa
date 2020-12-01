@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/MatSym.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
 
@@ -203,10 +203,10 @@ struct ShapeFunctionTypes
 	typedef int Cell;
     typedef helper::vector<Cell> VCell;
 
-    typedef helper::vector< helper::SVector<unsigned int> > VecVRef;
-    typedef helper::vector< helper::SVector<Real> > VecVReal;
-    typedef helper::vector< helper::SVector<Gradient> > VecVGradient;
-    typedef helper::vector< helper::SVector<Hessian> > VecVHessian;
+    typedef helper::vector< helper::vector<unsigned int> > VecVRef;
+    typedef helper::vector< helper::vector<Real> > VecVReal;
+    typedef helper::vector< helper::vector<Gradient> > VecVGradient;
+    typedef helper::vector< helper::vector<Hessian> > VecVHessian;
 
     static const std::size_t spatial_dimensions=spatial_dimensions_ ;
     static const char* Name();

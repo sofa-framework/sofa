@@ -309,7 +309,7 @@ public:
 
     /// Display parameters
     Data<bool> showStressValue;
-    Data<bool> showStressVector; ///< Flag activating rendering of stress directions within each triangle
+    Data<bool> showStresvector; ///< Flag activating rendering of stress directions within each triangle
     Data<bool> showFracturableTriangles; ///< Flag activating rendering of triangles to fracture
 
     Data<bool> f_computePrincipalStress; ///< Compute principal stress for each triangle

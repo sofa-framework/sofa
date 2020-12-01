@@ -65,8 +65,6 @@ public:
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TrianglePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-  
-protected:
 
     class TrianglePressureInformation
     {
@@ -92,6 +90,8 @@ protected:
             return in;
         }
     };
+
+protected:
 
     component::topology::TriangleSparseData<sofa::helper::vector<TrianglePressureInformation> > trianglePressureMap; ///< map between edge indices and their pressure
 

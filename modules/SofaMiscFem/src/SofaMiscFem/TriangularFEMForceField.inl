@@ -96,7 +96,7 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , hosfordExponant(initData(&hosfordExponant, (Real)1.0, "hosfordExponant","Exponant in the Hosford yield criteria"))
     , criteriaValue(initData(&criteriaValue, (Real)1e15, "criteriaValue","Fracturable threshold used to draw fracturable triangles"))
     , showStressValue(initData(&showStressValue,false,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
-    , showStressVector(initData(&showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
+    , showStresvector(initData(&showStresvector,false,"showStresvector","Flag activating rendering of stress directions within each triangle"))
     , showFracturableTriangles(initData(&showFracturableTriangles,false,"showFracturableTriangles","Flag activating rendering of triangles to fracture"))
     , f_computePrincipalStress(initData(&f_computePrincipalStress,false,"computePrincipalStress","Compute principal stress for each triangle"))
     , l_topology(initLink("topology", "link to the topology container"))
@@ -1444,13 +1444,13 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
 
-    if (showStressVector.getValue() || showStressValue.getValue() || showFracturableTriangles.getValue())
+    if (showStresvector.getValue() || showStressValue.getValue() || showFracturableTriangles.getValue())
     {
         for(unsigned int i=0; i<nbTriangles; ++i)
             computePrincipalStress(i, triangleInf[i].stress);
     }
 
-    if (showStressVector.getValue())
+    if (showStresvector.getValue())
     {
         color = sofa::helper::types::RGBAColor(1,0,1,1);
         for(unsigned int i=0; i<nbTriangles; ++i)

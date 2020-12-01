@@ -22,7 +22,7 @@
 #define SOFA_JOINTSPRING_CPP
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaRigid/JointSpring.inl>
-
+#include <sofa/core/objectmodel/DataTypeAutomaticRegistrationHelper.h>
 namespace sofa
 {
 

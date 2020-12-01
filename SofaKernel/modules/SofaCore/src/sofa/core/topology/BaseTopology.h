@@ -24,7 +24,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
-#include <sofa/core/datatypes/DataList.h>
+#include <sofa/core/datatype/Data[List].h>
 #include <sofa/core/VecId.h>
 
 

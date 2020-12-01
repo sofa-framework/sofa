@@ -73,7 +73,7 @@
 #include <ShapeAnalysis_Surface.hxx>
 
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

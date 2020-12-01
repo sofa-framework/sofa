@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/helper/vector.h>
 #include <type_traits>
 
 namespace sofa::component::projectiveconstraintset
@@ -102,9 +102,9 @@ protected:
 
 protected:
 	// every nodes needed in the animation chain
-    Data<helper::SVector<SkeletonJoint<TDataTypes> > >	skeletonJoints; ///< skeleton joints
+    Data<helper::vector<SkeletonJoint<TDataTypes> > >	skeletonJoints; ///< skeleton joints
     // mesh skeleton bones which need to be updated according to the animated nodes, we use them to fill the mechanical object
-    Data<helper::SVector<SkeletonBone> >				skeletonBones; ///< skeleton bones
+    Data<helper::vector<SkeletonBone> >				skeletonBones; ///< skeleton bones
 
 	// control how fast the animation is played since animation time is not simulation time
 	Data<float>											animationSpeed; ///< animation speed
