@@ -25,5 +25,6 @@
 namespace sofa::component
 {
 
+void SOFA_SOFAEIGEN2SOLVER_API initSofaEigen2Solver();
 
 } // namespace sofa::component

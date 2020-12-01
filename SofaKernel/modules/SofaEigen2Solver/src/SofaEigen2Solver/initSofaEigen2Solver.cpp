@@ -28,6 +28,15 @@ using sofa::core::ObjectFactory;
 namespace sofa::component
 {
 
+void initSofaEigen2Solver()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
 extern "C" {
     SOFA_SOFAEIGEN2SOLVER_API void initExternalModule();
     SOFA_SOFAEIGEN2SOLVER_API const char* getModuleName();
@@ -39,11 +48,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    initSofaEigen2Solver();
 }
 
 const char* getModuleName()
