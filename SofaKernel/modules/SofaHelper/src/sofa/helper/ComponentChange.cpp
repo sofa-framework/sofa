@@ -473,6 +473,16 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     // SofaEigen2Solver was pluginized in #1635
     { "SVDLinearSolver", Pluginized("v20.12", "SofaEigen2Solver") },
 
+    // SofaBaseUtils was packaged in #1640
+    //{ "AddResourceRepository", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "AddPluginRepository", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "InfoComponent", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "MakeAliasComponent", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "MakeDataAliasComponent", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "MessageHandlerComponent", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "FileMessageHandlerComponent", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "RequiredPlugin", Pluginized("v20.12", "SofaBaseUtils") },
+
     /***********************/
     // REMOVED SINCE v20.12
     { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
