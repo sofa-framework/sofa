@@ -22,16 +22,7 @@
 #pragma once
 #include <SofaMeshCollision/config.h>
 
-#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
-#include <sofa/defaulttype/TypeInfoRegistry.h>
-
 namespace sofa::component
 {
 
 } // namespace sofa::component
-
-namespace sofa::defaulttype
-{
-
-
-} /// namespace sofa::defaulttype
