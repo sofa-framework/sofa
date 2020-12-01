@@ -437,7 +437,7 @@ void SurfacePressureForceField<DataTypes>::addQuadSurfacePressure(unsigned int q
 template <class DataTypes>
 bool SurfacePressureForceField<DataTypes>::isInPressuredBox(const Coord &x) const
 {
-    if ( (m_max == Coord()) && (m_min == Coord()) )
+    if ( (m_max.getValue() == Coord()) && (m_min.getValue() == Coord()) )
         return true;
 
     return ( (x[0] >= m_min.getValue()[0])
