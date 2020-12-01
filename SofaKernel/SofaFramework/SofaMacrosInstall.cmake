@@ -255,7 +255,9 @@ macro(sofa_auto_set_target_properties)
         #get_target_property(target_include_dirs ${target} "INCLUDE_DIRECTORIES")
         #message("${ARG_PACKAGE_NAME}: target_include_dirs = ${target_include_dirs}")
 
-        set_target_properties(${target} PROPERTIES RELOCATABLE_INSTALL_DIR "${ARG_RELOCATABLE}/${ARG_PACKAGE_NAME}")
+        if(ARG_RELOCATABLE)
+            set_target_properties(${target} PROPERTIES RELOCATABLE_INSTALL_DIR "${ARG_RELOCATABLE}/${ARG_PACKAGE_NAME}")
+        endif()
 
         get_target_property(target_deps ${target} "LINK_LIBRARIES")
         get_target_property(target_rpath ${target} "INSTALL_RPATH")
@@ -275,12 +277,14 @@ macro(sofa_auto_set_target_properties)
                             list(APPEND target_rpath
                                 "$ORIGIN/../../../${dep_reloc_install_dir}/lib"
                                 "$$ORIGIN/../../../${dep_reloc_install_dir}/lib"
+                                "@loader_path/../../../${dep_reloc_install_dir}/lib"
                                 )
                         else()
                             # current target is NOT relocatable
                             list(APPEND target_rpath
                                 "$ORIGIN/../${dep_reloc_install_dir}/lib"
                                 "$$ORIGIN/../${dep_reloc_install_dir}/lib"
+                                "@loader_path/../${dep_reloc_install_dir}/lib"
                                 )
                         endif()
                     else()
