@@ -25,8 +25,7 @@
 #include <SofaBaseCollision/initBaseCollision.h>
 #include <SofaBaseLinearSolver/initBaseLinearSolver.h>
 #include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initBaseUtils.h>
-
+#include <SofaBaseUtils/initSofaBaseUtils.h>
 #include <SofaEigen2Solver/initSofaEigen2Solver.h>
 
 namespace sofa
@@ -46,7 +45,7 @@ void initSofaBase()
         initBaseCollision();
         initBaseLinearSolver();
         initBaseVisual();
-        initBaseUtils();
+        initSofaBaseUtils();
         initSofaEigen2Solver();
 
         first = false;

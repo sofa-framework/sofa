@@ -25,4 +25,6 @@
 namespace sofa::component
 {
 
+void SOFA_SOFABASEUTILS_API initSofaBaseUtils();
+
 } // namespace sofa::component
