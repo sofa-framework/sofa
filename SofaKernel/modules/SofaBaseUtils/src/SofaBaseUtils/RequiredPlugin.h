@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef REQUIREDPLUGIN_H_
-#define REQUIREDPLUGIN_H_
-
+#pragma once
 #include <SofaBaseUtils/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -35,16 +33,10 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
+namespace sofa::component::misc
 {
 
-namespace component
-{
-
-namespace misc
-{
-
-class SOFA_BASE_UTILS_API RequiredPlugin : public core::objectmodel::BaseObject
+class SOFA_SOFABASEUTILS_API RequiredPlugin : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
@@ -70,10 +62,4 @@ public:
 
 };
 
-}
-
-}
-
-}
-
-#endif /* REQUIREDPLUGIN_H_ */
+} // namespace sofa::component::misc

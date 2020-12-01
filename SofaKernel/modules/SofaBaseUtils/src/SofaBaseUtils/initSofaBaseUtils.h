@@ -22,16 +22,7 @@
 #pragma once
 #include <SofaBaseUtils/config.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
-
-void SOFA_BASE_UTILS_API initBaseUtils();
-
-} // namespace component
-
-} // namespace sofa
-
-
+} // namespace sofa::component

@@ -29,20 +29,16 @@
 
 #include <string>
 
-namespace sofa
-{
-namespace component
+namespace sofa::component::makealiascomponent
 {
 
 /// I use a per-file namespace so that I can employ the 'using' keywords without
 /// fearing it will leack names into the global namespace. When closing this namespace
 /// selected object from this per-file namespace are then imported into their parent namespace.
 /// for ease of use
-namespace makealiascomponent
-{
-
+/// 
 /// A component to add alias to other components.
-class SOFA_BASE_UTILS_API MakeAliasComponent : public core::objectmodel::BaseObject
+class SOFA_SOFABASEUTILS_API MakeAliasComponent : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(MakeAliasComponent, core::objectmodel::BaseObject);
@@ -67,10 +63,11 @@ public:
     }
 };
 
-}
+} // namespace sofa::component::makealiascomponent
 
+namespace sofa::component
+{
 /// Import the component from the per-file namespace.
 using makealiascomponent::MakeAliasComponent ;
 
-}
-}
+} // namespace sofa::component

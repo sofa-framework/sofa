@@ -21,11 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaBase/config.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_BASE_UTILS
-#  define SOFA_TARGET SofaBaseUtils
-#  define SOFA_BASE_UTILS_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFABASEUTILS_VERSION @PROJECT_VERSION@
+
+#ifdef SOFA_BUILD_SOFABASEUTILS
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFABASEUTILS_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_BASE_UTILS_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_SOFABASEUTILS_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif

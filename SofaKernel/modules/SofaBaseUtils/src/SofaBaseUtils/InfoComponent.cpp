@@ -22,16 +22,10 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::RegisterObject ;
 
-#include "InfoComponent.h"
+#include <SofaBaseUtils/InfoComponent.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace infocomponent
+namespace sofa::component::infocomponent
 {
 int InfoComponentClass = RegisterObject("This object retain the info/error message")
         .add< InfoComponent >();
-}
-}
-}
+} // namespace sofa::component::infocomponent
