@@ -17,6 +17,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE SOFA_BUILD_SOFA_TYPE) # To re
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaFramework"
