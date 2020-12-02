@@ -113,19 +113,19 @@ typedef unsigned __int64	uint64_t;
 #define sofa_do_tostring(a) #a
 #define sofa_tostring(a) sofa_do_tostring(a)
 
-///////////////////// These two macro can be used to convert deprecation attributes as error.
+///////////////////// These macros can be used to convert deprecation attributes as error.
 #if defined(_MSC_VER)
-#define BEGIN_DEPRECATION_AS_ERROR _Pragma("warning( push )") \
+#define SOFA_BEGIN_DEPRECATION_AS_ERROR _Pragma("warning( push )") \
                                    _Pragma("warning(error: 4996)")
-#define END_DEPRECATION_AS_ERROR _Pragma("warning( pop )")
+#define SOFA_END_DEPRECATION_AS_ERROR _Pragma("warning( pop )")
 #elif defined(__GNU__)
-#define BEGIN_DEPRECATION_AS_ERROR _Pragma("GCC push_options") \
+#define SOFA_BEGIN_DEPRECATION_AS_ERROR _Pragma("GCC push_options") \
                                    _Pragma("GCC diagnostic error \"-Wdeprecated-declarations\"")
-#define END_DEPRECATION_AS_ERROR _Pragma("GCC pop_options")
+#define SOFA_END_DEPRECATION_AS_ERROR _Pragma("GCC pop_options")
 #else /// clang
-#define BEGIN_DEPRECATION_AS_ERROR _Pragma("clang diagnostic push") \
+#define SOFA_BEGIN_DEPRECATION_AS_ERROR _Pragma("clang diagnostic push") \
                                    _Pragma("clang diagnostic error \"-Wdeprecated-declarations\"")
-#define END_DEPRECATION_AS_ERROR _Pragma("clang diagnostic pop")
+#define SOFA_END_DEPRECATION_AS_ERROR _Pragma("clang diagnostic pop")
 #endif
 
 
