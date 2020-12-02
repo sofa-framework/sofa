@@ -33,8 +33,8 @@ public:
     static AbstractTypeInfo* Get(){ static NoTypeInfo t; return &t; }
 
     /// \brief Returns the name of this type.
-    std::string name() const  {return "NoTypeInfo"; }
-    std::string getTypeName() const  {return "NoTypeInfo"; }
+    std::string name() const override {return "NoTypeInfo"; }
+    std::string getTypeName() const override {return "NoTypeInfo"; }
 
     /// True iff the TypeInfo for this type contains valid information.
     /// A Type is considered "Valid" if there's at least one specialization of the ValueType
