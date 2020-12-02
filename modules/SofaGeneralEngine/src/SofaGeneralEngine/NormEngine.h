@@ -25,6 +25,8 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Vec].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
 
 namespace sofa::component::engine
 {
@@ -56,7 +58,7 @@ public:
     /// More details on the name customization infrastructure is in NameDecoder.h
     static const std::string GetCustomTemplateName()
     {
-        return defaulttype::DataTypeInfo<TDataType>::name();
+        return sofa::defaulttype::DataTypeInfo<TDataType>::name();
     }
 
 

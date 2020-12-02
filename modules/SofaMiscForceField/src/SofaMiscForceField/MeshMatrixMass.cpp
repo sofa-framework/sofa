@@ -24,6 +24,9 @@
 #include <SofaMiscForceField/MeshMatrixMass.inl>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Vec].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
+
 namespace sofa::component::mass
 {
 

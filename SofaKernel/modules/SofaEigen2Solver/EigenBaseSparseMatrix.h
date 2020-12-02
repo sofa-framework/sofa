@@ -28,9 +28,10 @@
 #include <sofa/helper/SortedPermutation.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
+
 #include <map>
 #include <Eigen/Sparse>
-
 #if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
 #include "EigenBaseSparseMatrix_MT.h"
 #endif

@@ -24,6 +24,9 @@
 #include <sofa/helper/Quater.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[VecTypes].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[RigidTypes].h>
+
 
 namespace sofa
 {

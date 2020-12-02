@@ -26,7 +26,6 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <fstream>

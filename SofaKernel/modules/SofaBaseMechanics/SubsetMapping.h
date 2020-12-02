@@ -36,6 +36,10 @@
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[VecTypes].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[RigidTypes].h>
+
+
 namespace sofa
 {
 

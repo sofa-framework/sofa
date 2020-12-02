@@ -25,6 +25,9 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include "BarycentricMapperRegularGridTopology.h"
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Vec].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
+
 
 namespace sofa
 {

@@ -22,6 +22,7 @@
 #define SOFA_CORE_DATATYPES_DATAMAT_DEFINITION
 #include <sofa/core/datatype/Data[Mat].h>
 #include <sofa/core/objectmodel/Data.inl>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[Mat].h>
 
 namespace sofa::core::objectmodel

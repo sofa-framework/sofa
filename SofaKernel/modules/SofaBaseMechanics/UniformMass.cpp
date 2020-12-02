@@ -29,6 +29,7 @@
 #include <sofa/helper/system/Locale.h>
 #include <sstream>
 
+
 using sofa::helper::system::TemporaryLocale ;
 using std::string ;
 using std::ostringstream ;

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
 #include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
 #include <sofa/helper/types/RGBAColor.h>

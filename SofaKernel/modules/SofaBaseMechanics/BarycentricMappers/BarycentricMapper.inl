@@ -23,6 +23,8 @@
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_INL
 
 #include "BarycentricMapper.h"
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[VecTypes].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
 
 namespace sofa
 {

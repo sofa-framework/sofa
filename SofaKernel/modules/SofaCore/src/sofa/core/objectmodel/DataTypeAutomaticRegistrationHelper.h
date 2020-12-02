@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
+#include <sofa/defaulttype/typeinfo/models/IncompleteTypeInfo.h>
 
 template<class T>
 const sofa::defaulttype::AbstractTypeInfo* sofa::core::objectmodel::Data<T>::GetValueTypeInfoValidTypeInfo()

@@ -21,7 +21,9 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[Vec].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[RigidTypes].h>
 
 namespace sofa::core::behavior
 {

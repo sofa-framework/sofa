@@ -26,6 +26,7 @@
 #include <sofa/core/objectmodel/DataTypeInfoHelper.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[Mat].h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[vector].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
 
 typedef sofa::defaulttype::Mat<24, 24, SReal> Mat24x24Real;
 REGISTER_DATATYPEINFO(Mat24x24Real);

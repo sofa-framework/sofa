@@ -21,7 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/defaulttype/typeinfo/NameOnlyTypeInfo.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
+#include <sofa/defaulttype/typeinfo/models/IncompleteTypeInfo.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <list>
 

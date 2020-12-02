@@ -23,7 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASEDATA_H
 
 #include <sofa/core/config.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/defaulttype/AbstractTypeInfo.h>
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/DataLink.h>
 

@@ -22,6 +22,7 @@
 #define SOFA_CORE_TOPOLOGY_DATATYPE_DATATOPOLOGY_DEFINITION
 #include <sofa/core/topology/datatype/Data[Topology].h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[vector].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Integer].h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[fixed_array].h>
 #include <sofa/core/objectmodel/Data.inl>
 namespace sofa::defaulttype

@@ -27,7 +27,6 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -35,6 +34,9 @@
 
 #include <iostream>
 #include <cstring>
+
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[VecTypes].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[RigidTypes].h>
 
 
 namespace sofa::component::mass

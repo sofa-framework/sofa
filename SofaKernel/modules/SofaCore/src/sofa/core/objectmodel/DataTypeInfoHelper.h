@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/defaulttype/TypeInfoRegistry.h>
+#include <sofa/defaulttype/typeinfo/models/IncompleteTypeInfo.h>
 
 #define REGISTER_TYPE_WITHOUT_DATATYPEINFO(P_DATATYPE) \
     template<> \

@@ -67,7 +67,7 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
 {
     if (simulation::CollisionBeginEvent::checkEventType(_event))
     {
-        m_ContactsVector.clear();
+        m_Contactvector.clear();
     }
 
     else if (simulation::CollisionEndEvent::checkEventType(_event))
@@ -93,7 +93,7 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
                 {
                     if ( const helper::vector<DetectionOutput>* contacts = dynamic_cast<helper::vector<DetectionOutput>*>(it->second) )
                     {
-                        m_ContactsVector.push_back( contacts );
+                        m_Contactvector.push_back( contacts );
                     }
                 }
             }
@@ -110,12 +110,12 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
                 {
                     if ( const helper::vector<DetectionOutput>* contacts = dynamic_cast<helper::vector<DetectionOutput>*>(it->second) )
                     {
-                        m_ContactsVector.push_back( contacts );
+                        m_Contactvector.push_back( contacts );
                     }
                 }
             }
         }
-        beginContact(m_ContactsVector);
+        beginContact(m_Contactvector);
     }
 }
 

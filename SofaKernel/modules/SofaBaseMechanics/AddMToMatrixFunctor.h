@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <iostream>
 
 namespace sofa

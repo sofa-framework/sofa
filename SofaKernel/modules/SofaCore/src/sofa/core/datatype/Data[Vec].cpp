@@ -2,6 +2,8 @@
 #include <sofa/core/datatype/Data[Vec].h>
 #include <sofa/core/objectmodel/Data.inl>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[Vec].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Integer].h>
 
 REGISTER_DATATYPEINFO(sofa::defaulttype::Vec1d);
 REGISTER_DATATYPEINFO(sofa::defaulttype::Vec2d);

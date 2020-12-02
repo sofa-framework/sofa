@@ -23,5 +23,6 @@
 #include <SofaBaseUtils/datatype/DataSuffixMap.h>
 #include <sofa/core/objectmodel/Data.inl>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[string].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[fixed_array].h>
 
 REGISTER_DATATYPEINFO(sofabaseutils::SuffixMap)

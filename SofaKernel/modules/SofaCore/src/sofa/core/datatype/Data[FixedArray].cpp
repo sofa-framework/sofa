@@ -22,6 +22,9 @@
 #include <sofa/core/datatype/Data[FixedArray].h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[fixed_array].h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[vector].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Integer].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[bool].h>
 #include <sofa/core/objectmodel/Data.inl>
 
 namespace sofa::core::objectmodel

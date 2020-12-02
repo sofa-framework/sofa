@@ -21,7 +21,11 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/Data.inl>
 #include <sofa/core/typeinfo/DataTypeInfo[MapMapSparseMatrix].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Vec].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[RigidTypes].h>
 #include <sofa/core/datatype/Data[MapMapSparseMatrix].h>
+
 
 
 namespace sofa::core::objectmodel

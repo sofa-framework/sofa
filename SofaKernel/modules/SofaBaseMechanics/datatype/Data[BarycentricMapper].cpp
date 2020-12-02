@@ -21,6 +21,10 @@
 ******************************************************************************/
 #define SOFABASEMECHANICS_DATATYPE_DATABARYCENTRICMAPPER_DEFINITION
 #include <SofaBaseMechanics/datatype/Data[BarycentricMapper].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Vec].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
+
+
 #include <sofa/core/objectmodel/Data.inl>
 
 namespace sofa::defaulttype

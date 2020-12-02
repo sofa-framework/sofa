@@ -31,6 +31,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 #include <vector>
 #include <fstream>

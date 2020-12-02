@@ -21,32 +21,32 @@
 ******************************************************************************/
 #pragma once
 
-#include <vector>
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/set.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/types/RGBAColor.h>
-#include <sstream>
-#include <typeinfo>
-#include <sofa/helper/logging/Messaging.h>
-#include "AbstractTypeInfo.h"
-#include "typeinfo/DataTypeInfoDynamicWrapper.h"
-#include "typeinfo/DataTypeInfo.h"
-#include "typeinfo/DataTypeInfo[bool].h"
-#include "typeinfo/DataTypeInfo[Integer].h"
-#include "typeinfo/DataTypeInfo[Mat].h"
+//#include <vector>
+//#include <sofa/helper/fixed_array.h>
+//#include <sofa/helper/vector.h>
+//#include <sofa/helper/set.h>
+//#include <sofa/helper/vector.h>
+//#include <sofa/helper/types/RGBAColor.h>
+//#include <sstream>
+//#include <typeinfo>
+//#include <sofa/helper/logging/Messaging.h>
+//#include "AbstractTypeInfo.h"
+//#include "typeinfo/DataTypeInfoDynamicWrapper.h"
+//#include "typeinfo/DataTypeInfo.h"
+//#include "typeinfo/DataTypeInfo[bool].h"
+//#include "typeinfo/DataTypeInfo[Integer].h"
+//#include "typeinfo/DataTypeInfo[Mat].h"
 #include "typeinfo/DataTypeInfo[Scalar].h"
-#include "typeinfo/DataTypeInfo[set].h"
+//#include "typeinfo/DataTypeInfo[set].h"
 ///#include "typeinfo/DataTypeInfo[string].h"
-#include "typeinfo/DataTypeInfo[Vec].h"
-#include "typeinfo/DataTypeInfo[fixed_array].h"
+//#include "typeinfo/DataTypeInfo[Vec].h"
+//#include "typeinfo/DataTypeInfo[fixed_array].h"
 //////#include "typeinfo/DataTypeInfo[BoundingBox].h"
-#include "typeinfo/DataTypeInfo[RGBAColor].h"
+//#include "typeinfo/DataTypeInfo[RGBAColor].h"
 //////#include "typeinfo/DataTypeInfo[Vec]tor].h"
-#include "typeinfo/DataTypeInfo[RigidTypes].h"
-#include "typeinfo/DataTypeInfo[VecTypes].h"
-#include "typeinfo/models/IncompleteTypeInfo.h"
+//#include "typeinfo/DataTypeInfo[RigidTypes].h"
+//#include "typeinfo/DataTypeInfo[VecTypes].h"
+//#include "typeinfo/models/IncompleteTypeInfo.h"
 
 //namespace sofa::defaulttype
 //{

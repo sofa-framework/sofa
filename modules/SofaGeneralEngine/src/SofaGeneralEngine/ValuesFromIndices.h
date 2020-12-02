@@ -28,7 +28,10 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[string].h>
-
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Integer].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Vec].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[RigidTypes].h>
 
 namespace sofa::component::engine
 {

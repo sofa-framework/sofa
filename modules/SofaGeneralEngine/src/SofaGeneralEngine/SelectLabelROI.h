@@ -29,6 +29,9 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/vector.h>
 
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Integer].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Vec].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
 
 namespace sofa::component::engine
 {

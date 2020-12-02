@@ -28,6 +28,8 @@
 #include <iostream> //for debugging
 #include <vector>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[VecTypes].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
 
 namespace sofa
 {

@@ -24,6 +24,9 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Vec].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Integer].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
 
 namespace sofa::component::engine
 {

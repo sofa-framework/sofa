@@ -24,6 +24,7 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/helper/set.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/core/objectmodel/DataContentValue.h>

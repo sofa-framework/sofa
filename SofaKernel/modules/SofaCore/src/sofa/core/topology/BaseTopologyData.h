@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYDATA_H
 
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/fixed_array.h>
 
 namespace sofa
 {

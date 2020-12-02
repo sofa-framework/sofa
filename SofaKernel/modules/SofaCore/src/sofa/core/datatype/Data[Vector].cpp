@@ -5,6 +5,7 @@
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[string].h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[vector].h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[Vec].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Integer].h>
 #include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa::core::objectmodel

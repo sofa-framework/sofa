@@ -29,7 +29,6 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/Mapping.inl>
 
-#include <sofa/defaulttype/DataTypeInfo.h>
 
 #include <sofa/helper/accessor.h>
 

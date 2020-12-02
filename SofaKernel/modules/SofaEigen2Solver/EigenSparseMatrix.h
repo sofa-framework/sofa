@@ -31,6 +31,8 @@
 #include <Eigen/Core>
 #include <Eigen/Sparse>
 #include <sofa/helper/OwnershipSPtr.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Vec].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
 
 namespace sofa
 {

@@ -31,6 +31,11 @@
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseMechanics/UniformMass.h>
 
+
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[VecTypes].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[RigidTypes].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
+
 namespace sofa
 {
 

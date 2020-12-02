@@ -24,7 +24,7 @@
 
 #include "system/gl.h"
 #include <sofa/helper/vector.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
 
 // maximum number of bytes we allow to increase the size when of a vector in a single step when we reserve on the host or device
 #define SOFA_VECTOR_HOST_STEP_SIZE 32768

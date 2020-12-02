@@ -2,6 +2,7 @@
 #include <sofa/core/datatype/Data[Set].h>
 #include <sofa/core/objectmodel/Data.inl>
 #include <sofa/core/objectmodel/Tag.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Integer].h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[set].h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo[string].h>
 

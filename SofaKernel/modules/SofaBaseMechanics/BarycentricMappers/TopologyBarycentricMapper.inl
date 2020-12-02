@@ -23,6 +23,9 @@
 #define SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_INL
 
 #include "TopologyBarycentricMapper.h"
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Vec].h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo[Scalar].h>
+
 
 namespace sofa::component::mapping
 {
