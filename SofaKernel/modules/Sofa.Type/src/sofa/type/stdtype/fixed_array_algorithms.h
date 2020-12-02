@@ -21,11 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/types/config.h>
+#include <sofa/type/config.h>
 
-#include <sofa/types/stdtypes/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 
-namespace sofa::types::stdtypes::pairwise
+namespace sofa::type::stdtype::pairwise
 {
 
 /// @brief clamp a single value. This function should be removed when std::clamp will be available
@@ -97,5 +97,5 @@ T operator/(const T& r, const typename T::value_type& f)
 }
 
 
-} /// namespace sofa::types::stdtypes::pairwise
+} /// namespace sofa::type::stdtype::pairwise
 

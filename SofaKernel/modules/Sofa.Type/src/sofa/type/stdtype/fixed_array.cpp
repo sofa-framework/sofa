@@ -21,28 +21,28 @@
 ******************************************************************************/
 #define FIXED_ARRAY_CPP
 
-#include <sofa/types/stdtypes/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 
-namespace sofa::types::stdtypes
+namespace sofa::type::stdtype
 {
 
-template class SOFA_SOFATYPES_API fixed_array<float, 2>;
-template class SOFA_SOFATYPES_API fixed_array<double, 2>;
+template class SOFA_SOFATYPE_API fixed_array<float, 2>;
+template class SOFA_SOFATYPE_API fixed_array<double, 2>;
 
-template class SOFA_SOFATYPES_API fixed_array<float, 3>;
-template class SOFA_SOFATYPES_API fixed_array<double, 3>;
+template class SOFA_SOFATYPE_API fixed_array<float, 3>;
+template class SOFA_SOFATYPE_API fixed_array<double, 3>;
 
-template class SOFA_SOFATYPES_API fixed_array<float, 4>;
-template class SOFA_SOFATYPES_API fixed_array<double, 4>;
+template class SOFA_SOFATYPE_API fixed_array<float, 4>;
+template class SOFA_SOFATYPE_API fixed_array<double, 4>;
 
-template class SOFA_SOFATYPES_API fixed_array<float, 5>;
-template class SOFA_SOFATYPES_API fixed_array<double, 5>;
+template class SOFA_SOFATYPE_API fixed_array<float, 5>;
+template class SOFA_SOFATYPE_API fixed_array<double, 5>;
 
-template class SOFA_SOFATYPES_API fixed_array<float, 6>;
-template class SOFA_SOFATYPES_API fixed_array<double, 6>;
+template class SOFA_SOFATYPE_API fixed_array<float, 6>;
+template class SOFA_SOFATYPE_API fixed_array<double, 6>;
 
-template class SOFA_SOFATYPES_API fixed_array<float, 7>;
-template class SOFA_SOFATYPES_API fixed_array<double, 7>;
+template class SOFA_SOFATYPE_API fixed_array<float, 7>;
+template class SOFA_SOFATYPE_API fixed_array<double, 7>;
 
-} // namespace sofa::helper::stdtypes
+} // namespace sofa::helper::stdtype
 

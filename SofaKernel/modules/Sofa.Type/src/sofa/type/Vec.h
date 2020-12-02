@@ -21,9 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/types/config.h>
+#include <sofa/type/config.h>
 
-#include <sofa/types/stdtypes/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 #include <cstdlib>
 #include <functional>
 #include <limits>
@@ -31,7 +31,7 @@
 
 #define EQUALITY_THRESHOLD 1e-6
 
-namespace sofa::types
+namespace sofa::type
 {
 
 namespace // anonymous
@@ -52,7 +52,7 @@ struct NoInit {};
 constexpr NoInit NOINIT;
 
 template < sofa::Size N, typename ValueType=float>
-class Vec : public sofa::types::stdtypes::fixed_array<ValueType,size_t(N)>
+class Vec : public sofa::type::stdtype::fixed_array<ValueType,size_t(N)>
 {
 
     static_assert( N > 0, "" );
@@ -296,7 +296,7 @@ public:
         set( v, r1 );
     }
 
-    Vec(const sofa::types::stdtypes::fixed_array<ValueType, N>& p)
+    Vec(const sofa::type::stdtype::fixed_array<ValueType, N>& p)
     {
         for(Size i=0; i<N; i++)
             this->elems[i] = p[i];
@@ -458,9 +458,9 @@ public:
     // LINEAR ALGEBRA
 
     // BUG (J.A. 12/31/2010): gcc 4.0 does not support templated
-    // operators that are restricted to scalar types using static_assert.
+    // operators that are restricted to scalar type using static_assert.
     // So for now we are defining them as templated method, and the
-    // operators then simply call them with the right types.
+    // operators then simply call them with the right type.
 
     Vec<N,ValueType> mulscalar(ValueType f) const
     {
@@ -682,7 +682,7 @@ public:
             ValueType n = 0;
             for( Size i=0; i<N; i++ )
                 n += pow( rabs( this->elems[i] ), l );
-            return pow( n, ValueType(1.0)/(real)l );
+            return pow( n, ValueType(1.0)/(ValueType)l );
         }
     }
 
@@ -833,7 +833,7 @@ inline Vec<3,real1> cross(const Vec<3,real1>& a, const Vec<3,real2>& b)
 
 /// Cross product for 2-elements vectors.
 template <typename real1, typename real2>
-real1 cross(const types::Vec<2,real1>& a, const types::Vec<2,real2>& b )
+real1 cross(const type::Vec<2,real1>& a, const type::Vec<2,real2>& b )
 {
     return (real1)(a[0]*b[1] - a[1]*b[0]);
 }
@@ -895,7 +895,7 @@ typedef Vec3d Vector3; ///< alias
 typedef Vec4d Vector4; ///< alias
 typedef Vec6d Vector6; ///< alias
 
-} // namespace sofa::types
+} // namespace sofa::type
 
 // Specialization of the std comparison function, to use Vec as std::map key
 namespace std
@@ -903,9 +903,9 @@ namespace std
 
 // template <>
 template<sofa::Size N, class T>
-struct less< sofa::types::Vec<N,T> >
+struct less< sofa::type::Vec<N,T> >
 {
-    bool operator()(const  sofa::types::Vec<N,T>& x, const  sofa::types::Vec<N,T>& y) const
+    bool operator()(const  sofa::type::Vec<N,T>& x, const  sofa::type::Vec<N,T>& y) const
     {
         //msg_info()<<"specialized std::less, x = "<<x<<", y = "<<y<<std::endl;
         for(sofa::Size i=0; i<N; ++i )
