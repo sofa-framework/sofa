@@ -19,26 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_BVH_BVHJOINT_H
-#define SOFA_HELPER_IO_BVH_BVHJOINT_H
+#pragma once
+#include <SofaGeneralRigid/config.h>
 
-#include <sofa/helper/io/bvh/BVHChannels.h>
-#include <sofa/helper/io/bvh/BVHOffset.h>
-#include <sofa/helper/io/bvh/BVHMotion.h>
+#include <SofaGeneralRigid/bvh/BVHChannels.h>
+#include <SofaGeneralRigid/bvh/BVHOffset.h>
+#include <SofaGeneralRigid/bvh/BVHMotion.h>
 #include <cstdio>		// fopen and friends
 #include <cstring>
-#include <sofa/helper/config.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
-{
-
-namespace bvh
+namespace sofa::helper::io::bvh
 {
 
 /**
@@ -48,7 +38,7 @@ namespace bvh
 *		A Motion that contains a set of key positions. Each of them contains the channels value that must be set at the current timestep.
 *		The EndOfSite Flag is set to true if the Joint is a Leaf.
 */
-class SOFA_HELPER_API BVHJoint
+class SOFA_SOFAGENERALRIGID_API BVHJoint
 {
 public:
     BVHJoint(const char *_name, bool _endSite=false, BVHJoint *_parent=nullptr);
@@ -120,12 +110,4 @@ private:
     double matrix[16];
 };
 
-} // namespace bvh
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::helper::io::bvh

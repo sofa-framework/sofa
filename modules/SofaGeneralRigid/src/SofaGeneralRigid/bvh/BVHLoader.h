@@ -19,23 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_BVH_BVHLOADER_H
-#define SOFA_HELPER_IO_BVH_BVHLOADER_H
+#pragma once
+#include <SofaGeneralRigid/config.h>
 
-#include <sofa/helper/io/bvh/BVHJoint.h>
-#include <sofa/helper/io/bvh/BVHMotion.h>
-#include <sofa/helper/config.h>
+#include <SofaGeneralRigid/bvh/BVHJoint.h>
+#include <SofaGeneralRigid/bvh/BVHMotion.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
-{
-
-namespace bvh
+namespace sofa::helper::io::bvh
 {
 
 /**
@@ -43,7 +33,7 @@ namespace bvh
 *	This files describe a hierarchical articulated model and also an associated motion
 *	see http://www.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html for the file format specification
 */
-class SOFA_HELPER_API BVHLoader
+class SOFA_SOFAGENERALRIGID_API BVHLoader
 {
 public:
     BVHLoader() {};
@@ -61,12 +51,4 @@ private:
     void parseFrames(BVHJoint *j, unsigned int frameIndex, FILE *f);
 };
 
-} // namespace bvh
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::helper::io::bvh

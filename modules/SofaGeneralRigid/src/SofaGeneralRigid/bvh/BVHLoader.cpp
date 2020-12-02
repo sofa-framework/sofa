@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/io/bvh/BVHLoader.h>
+#include <SofaGeneralRigid/bvh/BVHLoader.h>
+
 #include <sofa/helper/system/Locale.h>
 #include <iostream>
 #include <sstream>
@@ -27,16 +28,7 @@
 
 MSG_REGISTER_CLASS(sofa::helper::io::bvh::BVHLoader, "BVHLoader")
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
-{
-
-namespace bvh
+namespace sofa::helper::io::bvh
 {
 
 BVHJoint *BVHLoader::load(const char *filename)
@@ -231,10 +223,4 @@ void BVHLoader::parseFrames(BVHJoint *joint, unsigned int frameIndex, FILE *f)
         parseFrames(joint->getChildren()[i], frameIndex, f);
 }
 
-} // namespace bvh
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper::io::bvh

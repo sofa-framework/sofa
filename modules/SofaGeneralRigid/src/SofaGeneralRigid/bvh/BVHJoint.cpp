@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/io/bvh/BVHJoint.h>
+#include <SofaGeneralRigid/bvh/BVHJoint.h>
 
 #include <sofa/helper/config.h>
 #include <sofa/helper/logging/Messaging.h>
@@ -31,16 +31,7 @@
 #include <sstream>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
-{
-
-namespace bvh
+namespace sofa::helper::io::bvh
 {
 
 int BVHJoint::lastId = 0;
@@ -417,10 +408,4 @@ BVHOffset* BVHJoint::getOffset()
     return offset;
 }
 
-} // namespace bvh
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper::io::bvh

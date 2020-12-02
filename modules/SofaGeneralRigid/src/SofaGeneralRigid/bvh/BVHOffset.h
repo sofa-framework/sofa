@@ -19,24 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_BVH_BVHOFFSET_H
-#define SOFA_HELPER_IO_BVH_BVHOFFSET_H
+#pragma once
 
-#include <sofa/helper/config.h>
+#include <SofaGeneralRigid/config.h>
 
-namespace sofa
+namespace sofa::helper::io::bvh
 {
 
-namespace helper
-{
-
-namespace io
-{
-
-namespace bvh
-{
-
-class SOFA_HELPER_API BVHOffset
+class SOFA_SOFAGENERALRIGID_API BVHOffset
 {
 public:
     BVHOffset(double _x, double _y, double _z)
@@ -47,12 +37,4 @@ public:
     double x,y,z;
 };
 
-} // namespace bvh
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::helper::io::bvh

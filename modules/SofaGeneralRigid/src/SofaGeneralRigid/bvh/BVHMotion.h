@@ -19,25 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_BVH_BVHMOTION_H
-#define SOFA_HELPER_IO_BVH_BVHMOTION_H
+#pragma once
+#include <SofaGeneralRigid/config.h>
 
 #include <vector>
-#include <sofa/helper/config.h>
 
-namespace sofa
+namespace sofa::helper::io::bvh
 {
 
-namespace helper
-{
-
-namespace io
-{
-
-namespace bvh
-{
-
-class SOFA_HELPER_API BVHMotion
+class SOFA_SOFAGENERALRIGID_API BVHMotion
 {
 public:
     BVHMotion()
@@ -60,12 +50,4 @@ public:
     void debug(void);
 };
 
-} // namespace bvh
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::helper::io::bvh
