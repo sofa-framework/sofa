@@ -90,31 +90,31 @@ public:
     ///   abstraction;
     ///
     /// Returns true iff the data was resizable
-    virtual bool setSize(void* data, sofa::Size size) const { return false; };
+    virtual bool setSize(void*, sofa::Size) const { return false; };
 
     /// Get the value at \a index of \a data as an integer.
     /// Relevant only if this type can be casted to `long long`.
-    virtual long long   getIntegerValue(const void* data, Index index) const {return 0;}
+    virtual long long   getIntegerValue(const void*, Index) const {return 0;}
     /// Get the value at \a index of \a data as a scalar.
     /// Relevant only if this type can be casted to `double`.
-    virtual double      getScalarValue (const void* data, Index index) const {return 0;}
+    virtual double      getScalarValue (const void*, Index) const {return 0;}
     /// Get the value at \a index of \a data as a string.
-    virtual std::string getTextValue   (const void* data, Index index) const {return 0;}
+    virtual std::string getTextValue   (const void*, Index) const {return 0;}
 
     /// Set the value at \a index of \a data from an integer value.
-    virtual void setIntegerValue(void* data, Index index, long long value) const {return;}
+    virtual void setIntegerValue(void*, Index, long longvalue) const {return;}
     /// Set the value at \a index of \a data from a scalar value.
-    virtual void setScalarValue (void* data, Index index, double value) const {return;}
+    virtual void setScalarValue (void*, Index, doublevalue) const {return;}
     /// Set the value at \a index of \a data from a string value.
-    virtual void setTextValue(void* data, Index index, const std::string& value) const {return;}
+    virtual void setTextValue(void*, Index, const std::string&value) const {return;}
 
     /// Get a read pointer to the underlying memory
     /// Relevant only if this type is SimpleLayout
-    virtual const void* getValuePtr(const void* type) const {return 0;}
+    virtual const void* getValuePtr(const void*) const {return 0;}
 
     /// Get a write pointer to the underlying memory
     /// Relevant only if this type is SimpleLayout
-    virtual void* getValuePtr(void* type) const {return 0;}
+    virtual void* getValuePtr(void*) const {return 0;}
 
     /// Get the type_info for this type.
     virtual const std::type_info* type_info() const {return &typeid(this); }
