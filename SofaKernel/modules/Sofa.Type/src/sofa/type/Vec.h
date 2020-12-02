@@ -642,7 +642,7 @@ public:
     /// Euclidean norm.
     ValueType norm() const
     {
-        return std::sqrt(norm2());
+        return ValueType(std::sqrt(norm2()));
     }
 
     /// l-norm of the vector
@@ -681,8 +681,8 @@ public:
         {
             ValueType n = 0;
             for( Size i=0; i<N; i++ )
-                n += pow( rabs( this->elems[i] ), l );
-            return pow( n, ValueType(1.0)/(ValueType)l );
+                n += ValueType(pow( rabs( this->elems[i] ), l ));
+            return ValueType(pow( n, ValueType(1.0)/(ValueType)l ));
         }
     }
 
@@ -744,7 +744,7 @@ public:
     /// sum of all elements of the vector
     ValueType sum() const
     {
-        ValueType sum = 0.0;
+        ValueType sum = ValueType(0.0);
         for (Size i=0; i<N; i++)
             sum += this->elems[i];
         return sum;
