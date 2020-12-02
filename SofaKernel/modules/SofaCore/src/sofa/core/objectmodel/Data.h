@@ -330,6 +330,20 @@ public:
         return out;
     }
 
+BEGIN_DEPRECATION_AS_ERROR
+    [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData == aAlue' with 'myData.getValue() == aValue'")]]
+    inline bool operator ==( const T& value ) const
+    {
+            return getValue()==value;
+    }
+
+    [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData != aAlue' with 'myData.getValue() != aValue'")]]
+    inline bool operator !=( const T& value ) const
+    {
+            return getValue()!=value;
+    }
+END_DEPRECATION_AS_ERROR
+
     inline void operator =( const T& value )
     {
         this->setValue(value);
