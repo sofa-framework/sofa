@@ -118,7 +118,7 @@ typedef unsigned __int64	uint64_t;
 #define SOFA_BEGIN_DEPRECATION_AS_ERROR _Pragma("warning( push )") \
                                    _Pragma("warning(error: 4996)")
 #define SOFA_END_DEPRECATION_AS_ERROR _Pragma("warning( pop )")
-#elif defined(__GNU__)
+#elif defined(__GNUC__)
 #define SOFA_BEGIN_DEPRECATION_AS_ERROR _Pragma("GCC push_options") \
                                    _Pragma("GCC diagnostic error \"-Wdeprecated-declarations\"")
 #define SOFA_END_DEPRECATION_AS_ERROR _Pragma("GCC pop_options")
