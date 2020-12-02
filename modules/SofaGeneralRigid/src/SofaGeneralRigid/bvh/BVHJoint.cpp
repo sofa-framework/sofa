@@ -23,10 +23,8 @@
 
 #include <sofa/helper/config.h>
 #include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
 #include <sofa/helper/fixed_array.h>
-#include <sofa/helper/gl/BasicShapes.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sstream>
 #include <iostream>
@@ -75,18 +73,16 @@ void BVHJoint::initMotion(double fTime, unsigned int fCount)
 
 void BVHJoint::display(int frameNum)
 {
-#ifndef SOFA_NO_OPENGL
-    glPushMatrix();
-    glDisable(GL_LIGHTING);
-    glColor3f(0.0, 0.0, 0.0);
-    glBegin(GL_LINES);
-    glVertex3d(0.0, 0.0, 0.0);
-    glVertex3d(offset->x, offset->y, offset->z);
-    glEnd();
-    glTranslatef((float)offset->x, (float)offset->y, (float)offset->z);
+    auto drawtool = core::visual::VisualParams::defaultInstance()->drawTool();
 
-    glGetDoublev(GL_MODELVIEW_MATRIX,matrix);
+    drawtool->pushMatrix();
+    drawtool->disableLighting();
+    drawtool->drawLine({ 0.0f, 0.0f, 0.0f }, { float(offset->x), float(offset->y), float(offset->z) }, helper::types::RGBAColor::black());
 
+    core::visual::VisualParams::defaultInstance()->getModelViewMatrix(matrix);
+
+    defaulttype::Quatf q;
+    float rotmat[16];
     if (channels != nullptr)
     {
         for (unsigned int i=0; i<channels->size; i++)
@@ -94,22 +90,28 @@ void BVHJoint::display(int frameNum)
             switch (channels->channels[i])
             {
             case BVHChannels::Xposition:
-                glTranslatef((float)motion->frames[frameNum][i],0,0);
+                drawtool->translate(float(motion->frames[frameNum][i]), 0.0f, 0.0f);
                 break;
             case BVHChannels::Yposition:
-                glTranslatef(0,(float)motion->frames[frameNum][i],0);
+                drawtool->translate(0.0f, float(motion->frames[frameNum][i]), 0.0f);
                 break;
             case BVHChannels::Zposition:
-                glTranslatef(0,0,(float)motion->frames[frameNum][i]);
+                drawtool->translate(0.0f, 0.0f, float(motion->frames[frameNum][i]));
                 break;
             case BVHChannels::Xrotation:
-                glRotatef((float)motion->frames[frameNum][i],1,0,0);
+                q = q.axisToQuat({ 1.0f,0.0f,0.0f }, float(motion->frames[frameNum][i] * M_PI / 180));
+                q.writeOpenGlMatrix(rotmat);
+                drawtool->multMatrix(rotmat);
                 break;
             case BVHChannels::Yrotation:
-                glRotatef((float)motion->frames[frameNum][i],0,1,0);
+                q = q.axisToQuat({ 0.0f,1.0f,0.0f }, float(motion->frames[frameNum][i] * M_PI / 180));
+                q.writeOpenGlMatrix(rotmat);
+                drawtool->multMatrix(rotmat);
                 break;
             case BVHChannels::Zrotation:
-                glRotatef((float)motion->frames[frameNum][i],0,0,1);
+                q = q.axisToQuat({ 0.0f,0.0f,1.0f }, float(motion->frames[frameNum][i] * M_PI / 180));
+                q.writeOpenGlMatrix(rotmat);
+                drawtool->multMatrix(rotmat);
                 break;
             default:
                 break;
@@ -117,40 +119,35 @@ void BVHJoint::display(int frameNum)
         }
     }
 
-    glColor3f(1.0,0.0,0.0);
-
-    sofa::helper::fixed_array<float, 3> center(0.0, 0.0, 0.0);
-    helper::gl::drawSphere(center, 0.01f);
+    drawtool->setMaterial({ 1.0,0.0,0.0,1.0f });
+    drawtool->drawSphere({ 0.0f, 0.0f, 0.0f }, 0.01f);
 
     for (unsigned int i=0; i<children.size(); i++)
     {
         children[i]->display(frameNum);
     }
-
-    glPopMatrix();
-#endif /* SOFA_NO_OPENGL */
 }
 
 void BVHJoint::displayInGlobalFrame(void)
 {
-#ifndef SOFA_NO_OPENGL
-    glPushMatrix();
-    glLoadIdentity();
-    glTranslatef(0.0,0.0,-4.0);
-    glMultMatrixd(matrix);
-    glDisable(GL_LIGHTING);
-    glColor3f(1.0, 0.0, 0.0);
+    auto drawtool = core::visual::VisualParams::defaultInstance()->drawTool();
 
-    sofa::helper::fixed_array<float, 3> center(0.0, 0.0, 0.0);
-    helper::gl::drawSphere(center, 0.005f);
+    drawtool->pushMatrix();
+    drawtool->translate(0.0f, 0.0f, -4.0f);
+    float matf[16];
+    for (auto i = 0 ; i < 16; i++)
+        matf[i] = float(matrix[i]);
+    drawtool->multMatrix(matf);
 
-    glPopMatrix();
+    drawtool->disableLighting();
+
+    drawtool->setMaterial({ 1.0,0.0,0.0,1.0f });
+    drawtool->drawSphere({ 0.0f, 0.0f, 0.0f }, 0.005f);
 
     for (unsigned int i=0; i<children.size(); i++)
     {
         children[i]->displayInGlobalFrame();
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 
