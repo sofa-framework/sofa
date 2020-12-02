@@ -96,11 +96,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/io/MeshTopologyLoader.h
     ${SRC_ROOT}/io/SphereLoader.h
     ${SRC_ROOT}/io/TriangleLoader.h
-    ${SRC_ROOT}/io/bvh/BVHChannels.h
-    ${SRC_ROOT}/io/bvh/BVHJoint.h
-    ${SRC_ROOT}/io/bvh/BVHLoader.h
-    ${SRC_ROOT}/io/bvh/BVHMotion.h
-    ${SRC_ROOT}/io/bvh/BVHOffset.h
     ${SRC_ROOT}/kdTree.h
     ${SRC_ROOT}/kdTree.inl
     ${SRC_ROOT}/list.h
@@ -201,9 +196,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/io/SphereLoader.cpp
     ${SRC_ROOT}/io/TriangleLoader.cpp
     ${SRC_ROOT}/io/XspLoader.cpp
-    ${SRC_ROOT}/io/bvh/BVHJoint.cpp
-    ${SRC_ROOT}/io/bvh/BVHLoader.cpp
-    ${SRC_ROOT}/io/bvh/BVHMotion.cpp
     ${SRC_ROOT}/kdTree.cpp
     ${SRC_ROOT}/polygon_cube_intersection/fast_polygon_cube_intersection.cpp
     ${SRC_ROOT}/polygon_cube_intersection/polygon_cube_intersection.cpp
