@@ -35,8 +35,13 @@ sofa_set_01(SOFA_WITH_DEPRECATED_COMPONENTS_ VALUE ${SOFA_WITH_DEPRECATED_COMPON
 sofa_set_01(SOFA_NO_UPDATE_BBOX_ VALUE ${SOFA_NO_UPDATE_BBOX}) # build_option_bbox.h.in
 
 # Package install include directory
-set(SOFAFRAMEWORK_TARGETS SofaCore SofaDefaultType SofaHelper SofaSimulationCore)
+set(SOFAFRAMEWORK_TARGETS SofaCore SofaDefaultType SofaHelper SofaSimulationCore )
+if(NOT SOFA_NO_OPENGL)
+    list(APPEND SOFAFRAMEWORK_TARGETS Sofa.GL)
+endif()
+
 foreach(TARGET ${SOFAFRAMEWORK_TARGETS})
+    message("Adding ${TARGET}")
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
     if(SOFA_BUILD_TESTS)
         target_compile_options(${TARGET} PUBLIC "-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources/tests\"")

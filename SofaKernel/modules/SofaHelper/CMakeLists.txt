@@ -15,11 +15,6 @@ if(SOFAHELPER_HAVE_BOOST_SYSTEM
 else()
     sofa_set_01(SOFAHELPER_HAVE_BOOST VALUE FALSE BOTH_SCOPES)
 endif()
-# OpenGL (gl, glu) + GLEW
-if(NOT SOFA_NO_OPENGL)
-    sofa_find_package(OpenGL REQUIRED BOTH_SCOPES)
-    sofa_find_package(GLEW BOTH_SCOPES)
-endif()
 # GTest
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     sofa_find_package(GTest CONFIG BOTH_SCOPES)
@@ -79,8 +74,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/fixed_array.h
     ${SRC_ROOT}/fixed_array_algorithms.h
     ${SRC_ROOT}/hash.h
-    ${SRC_ROOT}/gl/Trackball.h
-    ${SRC_ROOT}/gl/Transformation.h
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/integer_id.h
     ${SRC_ROOT}/io/BaseFileAccess.h
@@ -120,8 +113,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/config.h
     ${SRC_ROOT}/system/console.h
     ${SRC_ROOT}/system/console_internal.h
-    ${SRC_ROOT}/system/gl.h
-    ${SRC_ROOT}/system/glu.h
     ${SRC_ROOT}/system/thread/CTime.h
     ${SRC_ROOT}/system/thread/CircularQueue.h
     ${SRC_ROOT}/system/thread/CircularQueue.inl
@@ -180,8 +171,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/UnitTest.cpp
     ${SRC_ROOT}/Utils.cpp
     ${SRC_ROOT}/decompose.cpp
-    ${SRC_ROOT}/gl/Trackball.cpp
-    ${SRC_ROOT}/gl/Transformation.cpp
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/io/BaseFileAccess.cpp
     ${SRC_ROOT}/io/FileAccess.cpp
@@ -259,52 +248,6 @@ if(Boost_FILESYSTEM_FOUND)
     list(APPEND HEADER_FILES ${SRC_ROOT}/system/FileRepository.h)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/system/FileRepository.cpp)
 endif()
-set(SHADER_FILES "")
-if(NOT SOFA_NO_OPENGL)
-    list(APPEND HEADER_FILES
-        ${SRC_ROOT}/gl/Capture.h
-        ${SRC_ROOT}/gl/Color.h
-        ${SRC_ROOT}/gl/RAII.h
-        ${SRC_ROOT}/gl/template.h
-        ${SRC_ROOT}/system/gl.h
-        ${SRC_ROOT}/system/glu.h
-        ${SRC_ROOT}/gl/Axis.h
-        ${SRC_ROOT}/gl/BasicShapes.h
-        ${SRC_ROOT}/gl/BasicShapesGL.h
-        ${SRC_ROOT}/gl/BasicShapesGL.inl
-        ${SRC_ROOT}/gl/Cylinder.h
-        ${SRC_ROOT}/gl/Texture.h
-        ${SRC_ROOT}/gl/Trackball.h
-        ${SRC_ROOT}/gl/Transformation.h
-        ${SRC_ROOT}/gl/VideoRecorderFFMPEG.h
-        ${SRC_ROOT}/gl/glText.h
-        ${SRC_ROOT}/gl/glText.inl
-    )
-    list(APPEND SOURCE_FILES
-        ${SRC_ROOT}/gl/Axis.cpp
-        ${SRC_ROOT}/gl/BasicShapesGL.cpp
-        ${SRC_ROOT}/gl/Cylinder.cpp
-        ${SRC_ROOT}/gl/glText.cpp
-        ${SRC_ROOT}/gl/Capture.cpp
-        ${SRC_ROOT}/gl/Texture.cpp
-        ${SRC_ROOT}/gl/VideoRecorderFFMPEG.cpp
-        ${SRC_ROOT}/gl/Color.cpp
-        ${SRC_ROOT}/system/gl.cpp
-    )
-    if(GLEW_FOUND)
-        list(APPEND HEADER_FILES
-            ${SRC_ROOT}/gl/FrameBufferObject.h
-            ${SRC_ROOT}/gl/GLSLShader.h
-        )
-        list(APPEND SOURCE_FILES
-            ${SRC_ROOT}/gl/FrameBufferObject.cpp
-            ${SRC_ROOT}/gl/GLSLShader.cpp
-        )
-        list(APPEND SHADER_FILES
-            ${SRC_ROOT}/gl/shaders/generateSphere.cppglsl
-        )
-    endif()
-endif()
 
 # Create build and install versions of etc/sofa.ini:
 #   - In build dir, sofa.ini contains absolute paths to distant (in source) share/ and examples/ dirs
@@ -318,7 +261,7 @@ configure_file("etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini COMPONENT applications)
 
 # LIBRARY
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaSimulationCore/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaDefaultType/src>")
@@ -360,29 +303,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     # Windows library, used in system::FileSystem
     target_link_libraries(${PROJECT_NAME} PRIVATE Shlwapi)
-endif()
-
-# OpenGL (gl, glu) + GLEW
-if(NOT SOFA_NO_OPENGL)
-    if(TARGET OpenGL::GL AND TARGET OpenGL::GLU) # Imported targets defined since CMake 3.8
-        target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL OpenGL::GLU)
-    else()
-        target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENGL_LIBRARIES})
-        target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${OPENGL_INCLUDE_DIR})
-    endif()
-    if(CMAKE_SYSTEM_NAME STREQUAL Linux AND SOFA_BUILD_RELEASE_PACKAGE AND OPENGL_GLU_FOUND)
-        # Add GLU to Linux binaries
-        sofa_install_libraries(PATHS ${OPENGL_glu_LIBRARY})
-    endif()
-
-    if(GLEW_FOUND)
-        target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW)
-        if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
-            sofa_install_libraries(TARGETS GLEW::GLEW)
-        endif()
-    else()
-        message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
-    endif()
 endif()
 
 # Boost
