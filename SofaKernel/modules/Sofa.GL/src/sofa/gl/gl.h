@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_SYSTEM_GL_H
-#define SOFA_HELPER_SYSTEM_GL_H
+#pragma once
+#include <sofa/gl/config.h>
 
-#include <sofa/helper/config.h>
-
-#ifndef SOFA_NO_OPENGL
 
 #include <string>
+#include <GL/glew.h>
 
-#  include <GL/glew.h>
+extern SOFA_SOFA_GL_API const char* GetGlExtensionsList();
 
-extern SOFA_HELPER_API const char* GetGlExtensionsList();
-
-extern SOFA_HELPER_API bool CanUseGlExtension(const std::string& ext);
-
-#endif // SOFA_NO_OPENGL
-
-#endif
+extern SOFA_SOFA_GL_API bool CanUseGlExtension(const std::string& ext);

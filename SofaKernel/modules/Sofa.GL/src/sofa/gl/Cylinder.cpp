@@ -19,20 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/gl/Cylinder.h>
+#include <sofa/gl/Cylinder.h>
 
 #include <cassert>
 #include <algorithm>
 #include <iostream>
 
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 static const int quadricDiscretisation = 16;
@@ -253,9 +247,4 @@ void Cylinder::draw(const double *mat, SReal len)
     a->draw();
 }
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
+} // namespace sofa::gl

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
+#include <sofa/gl/VideoRecorderFFMPEG.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -32,13 +32,7 @@
 using sofa::helper::system::FileSystem;
 #include <sofa/helper/Utils.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 VideoRecorderFFMPEG::VideoRecorderFFMPEG()
@@ -101,7 +95,7 @@ bool VideoRecorderFFMPEG::init(const std::string& ffmpeg_exec_filepath, const st
 #ifdef WIN32
         extension = ".exe";
 #endif
-        m_ffmpegExecPath = Utils::getExecutablePath() + "/ffmpeg" + extension;
+        m_ffmpegExecPath = helper::Utils::getExecutablePath() + "/ffmpeg" + extension;
         if(!FileSystem::isFile(m_ffmpegExecPath))
         {
             // Fallback to a relative FFMPEG (may be in system or exposed in PATH)
@@ -219,9 +213,4 @@ std::string VideoRecorderFFMPEG::findFilename(const unsigned int framerate, cons
     return filename;
 }
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
+} // namespace sofa::gl

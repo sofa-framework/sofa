@@ -19,17 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/gl/Transformation.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/Transformation.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/template.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 // --------------------------------------------------------------------------------------
@@ -97,9 +91,9 @@ Transformation& Transformation::operator=(const Transformation& transform)
 void Transformation::Apply()
 {
 #ifndef SOFA_NO_OPENGL
-    helper::gl::glTranslate(translation[0], translation[1], translation[2]);
-    helper::gl::glMultMatrix((SReal *)rotation);
-    helper::gl::glScale(scale[0], scale[1], scale[2]);
+    gl::glTranslate(translation[0], translation[1], translation[2]);
+    gl::glMultMatrix((SReal *)rotation);
+    gl::glScale(scale[0], scale[1], scale[2]);
 #endif /* SOFA_NO_OPENGL */
 }
 
@@ -112,7 +106,7 @@ void Transformation::ApplyWithCentring()
     Apply();
 
 #ifndef SOFA_NO_OPENGL
-    helper::gl::glTranslate(-objectCenter[0], -objectCenter[1], -objectCenter[2]);
+    gl::glTranslate(-objectCenter[0], -objectCenter[1], -objectCenter[2]);
 #endif /* SOFA_NO_OPENGL */
 }
 
@@ -127,9 +121,9 @@ void Transformation::ApplyInverse()
     InvertTransRotMatrix(rotation, iRotation);
 
 #ifndef SOFA_NO_OPENGL
-    helper::gl::glScale((SReal)1.0 / scale[0], (SReal)1.0 / scale[1], (SReal)1.0 / scale[2]);
-    helper::gl::glMultMatrix((SReal *)rotation);
-    helper::gl::glTranslate(-translation[0], -translation[1], -translation[2]);
+    gl::glScale((SReal)1.0 / scale[0], (SReal)1.0 / scale[1], (SReal)1.0 / scale[2]);
+    gl::glMultMatrix((SReal *)rotation);
+    gl::glTranslate(-translation[0], -translation[1], -translation[2]);
 #endif /* SOFA_NO_OPENGL */
 }
 
@@ -180,9 +174,4 @@ void Transformation::InvertTransRotMatrix(SReal sMatrix[4][4],
     InvertTransRotMatrix(dMatrix);
 }
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
+} // namespace sofa::gl

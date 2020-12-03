@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_TRANSFORMATION_H
-#define SOFA_HELPER_GL_TRANSFORMATION_H
+#pragma once
+#include <sofa/gl/config.h>
 
-#include <sofa/helper/config.h>
-
-namespace sofa
+namespace sofa::gl
 {
 
-namespace helper
-{
-
-namespace gl
-{
-
-class SOFA_HELPER_API Transformation
+class SOFA_SOFA_GL_API Transformation
 {
 public:
     SReal			translation[3];
@@ -69,10 +61,4 @@ private:
             SReal dMatrix[4][4]);
 };
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif // __TRANSFORMATION_H__
+} // namespace sofa::gl

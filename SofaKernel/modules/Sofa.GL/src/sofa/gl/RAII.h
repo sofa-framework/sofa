@@ -19,24 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_RAII_H
-#define SOFA_HELPER_GL_RAII_H
-
-#ifndef SOFA_NO_OPENGL
-
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/config.h>
+#pragma once
+#include <sofa/gl/gl.h>
+#include <sofa/gl/config.h>
 
 /* Opengl Resource Acquisition Is Initialisation */
 /* with this tool, we know at any moment what is the state of the openGL machine */
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 template <GLenum Flag>
@@ -82,12 +72,4 @@ struct Disable
     };
 };
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
-
-#endif
+} // namespace sofa::gl

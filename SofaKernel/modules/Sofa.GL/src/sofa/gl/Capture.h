@@ -19,25 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_CAPTURE_H
-#define SOFA_HELPER_GL_CAPTURE_H
-
-#ifndef SOFA_NO_OPENGL
-
-#include <sofa/helper/system/gl.h>
+#pragma once
+#include <sofa/gl/gl.h>
 #include <sofa/helper/io/Image.h>
-#include <sofa/helper/config.h>
+#include <sofa/gl/config.h>
 
-namespace sofa
+namespace sofa::gl
 {
 
-namespace helper
-{
-
-namespace gl
-{
-
-class SOFA_HELPER_API Capture
+class SOFA_SOFA_GL_API Capture
 {
 protected:
     std::string prefix;
@@ -59,12 +49,4 @@ public:
     bool saveScreen(int compression_level = -1);
 };
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
-
-#endif
+} // namespace sofa::gl

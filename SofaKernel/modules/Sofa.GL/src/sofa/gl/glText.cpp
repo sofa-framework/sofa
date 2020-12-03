@@ -19,22 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/gl/glText.inl>
+#include <sofa/gl/glText.inl>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 using namespace sofa::defaulttype;
 using std::string;
 
-SOFA_HELPER_API const std::string GlText::ASCII_TEXTURE_PATH("textures/texture_ascii_smooth.png");
-SOFA_HELPER_API sofa::helper::io::Image *GlText::s_asciiImage = nullptr;
-SOFA_HELPER_API sofa::helper::gl::Texture* GlText::s_asciiTexture = nullptr;
+SOFA_SOFA_GL_API const std::string GlText::ASCII_TEXTURE_PATH("textures/texture_ascii_smooth.png");
+SOFA_SOFA_GL_API sofa::helper::io::Image *GlText::s_asciiImage = nullptr;
+SOFA_SOFA_GL_API sofa::gl::Texture* GlText::s_asciiTexture = nullptr;
 
 void GlText::initTexture()
 {
@@ -44,7 +38,7 @@ void GlText::initTexture()
     }
     if (s_asciiTexture == nullptr && s_asciiImage != nullptr)
     {
-        s_asciiTexture = new sofa::helper::gl::Texture(s_asciiImage, false, true, false );
+        s_asciiTexture = new sofa::gl::Texture(s_asciiImage, false, true, false );
     }
 }
 
@@ -277,8 +271,4 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
 
 
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::gl

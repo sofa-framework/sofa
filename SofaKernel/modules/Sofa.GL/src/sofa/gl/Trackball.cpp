@@ -68,16 +68,10 @@
  *     June 1998
  */
 
-#include <sofa/helper/gl/Trackball.h>
+#include <sofa/gl/Trackball.h>
 #include <cmath>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 using namespace sofa::defaulttype;
@@ -202,9 +196,4 @@ static double tb_project_to_sphere(double r, double x, double y)
     return z;
 }
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
+} // namespace sofa::gl

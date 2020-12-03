@@ -19,64 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_GLSLSHADER_H
-#define SOFA_HELPER_GL_GLSLSHADER_H
-
-#include <sofa/helper/config.h>
-
-
-/// Forward declaration.
-namespace sofa {
-    namespace helper {
-        namespace system {
-            class FileEventListener ;
-        }
-    }
-}
-
-
-
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
-
-#include <string>
-#include <cstring>
+#pragma once
+#include <sofa/gl/config.h>
 
 #include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/config.h>
-#include <vector>
-#include <map>
-#include <iostream>
-
 #include <sofa/helper/system/FileMonitor.h>
-using sofa::helper::system::FileEventListener ;
-using sofa::helper::system::FileMonitor ;
+#include <sofa/gl/gl.h>
+#include <map>
 
-#include <memory>
-
-////////////////////////////// FORWARD DEFINITION //////////////////////////////////////////////////
-namespace sofa {
-    namespace helper {
-        namespace gl {
-            class GLSLShader ;
-        }
-    }
+/// Forward declaration.
+namespace sofa::gl 
+{
+    class GLSLShader ;
 }
 
-MSG_REGISTER_CLASS(sofa::helper::gl::GLSLShader, "GLSLShader")
+MSG_REGISTER_CLASS(sofa::gl::GLSLShader, "GLSLShader")
 
 
 ////////////////////////////////////// DEFINITION //////////////////////////////////////////////////
-namespace sofa
+namespace sofa::gl
 {
 
-namespace helper
-{
-
-namespace gl
-{
-
-class SOFA_HELPER_API GLSLShader
+class SOFA_SOFA_GL_API GLSLShader
 {
 public:
 
@@ -284,11 +248,4 @@ protected:
     std::shared_ptr<sofa::helper::system::FileEventListener> m_filelistener ;
 };
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-
-#endif /* SOFA_HELPER_GL_GLSLSHADER_H */
+} // namespace sofa::gl

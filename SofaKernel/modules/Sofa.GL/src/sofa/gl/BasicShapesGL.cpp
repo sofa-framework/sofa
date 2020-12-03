@@ -21,24 +21,14 @@
 ******************************************************************************/
 #define SOFA_HELPER_GL_BASICSHAPESGL_CPP
 
-#include <sofa/helper/gl/BasicShapesGL.inl>
+#include <sofa/gl/BasicShapesGL.inl>
 
-namespace sofa
+namespace sofa::gl
 {
 
-namespace helper
-{
+template class SOFA_SOFA_GL_API BasicShapesGL_Sphere<helper::fixed_array< float, 3 > >;
+template class SOFA_SOFA_GL_API BasicShapesGL_Sphere<helper::fixed_array< double, 3 > >;
+template class SOFA_SOFA_GL_API BasicShapesGL_FakeSphere<helper::fixed_array< float, 3 > >;
+template class SOFA_SOFA_GL_API BasicShapesGL_FakeSphere<helper::fixed_array< double, 3 > >;
 
-namespace gl
-{
-
-template class SOFA_HELPER_API BasicShapesGL_Sphere<helper::fixed_array< float, 3 > >;
-template class SOFA_HELPER_API BasicShapesGL_Sphere<helper::fixed_array< double, 3 > >;
-template class SOFA_HELPER_API BasicShapesGL_FakeSphere<helper::fixed_array< float, 3 > >;
-template class SOFA_HELPER_API BasicShapesGL_FakeSphere<helper::fixed_array< double, 3 > >;
-
-} //gl
-} //helper
-} //sofa
-
-
+} // namespace sofa::gl

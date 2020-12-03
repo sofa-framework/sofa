@@ -1,10 +1,4 @@
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 const std::string generateSphereVS = R"SHADER_DELIM(
@@ -92,8 +86,4 @@ void main()
 }
 )SHADER_DELIM";
 
-} //gl
-
-} //helper
-
-} //sofa
+} // namespace sofa::gl

@@ -20,16 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <cassert>
-#include <sofa/helper/gl/FrameBufferObject.h>
+#include <sofa/gl/FrameBufferObject.h>
 
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
     
 FrameBufferObject::FrameBufferObject(bool depthTexture, bool enableDepth, bool enableColor, bool enableMipMap, GLint defaultWindowFramebuffer)
@@ -320,8 +314,4 @@ void FrameBufferObject::initColorBuffer()
 }
 
 
-} //namespace gl
-
-} //namespace helper
-
-} //namespace sofa
+} // namespace sofa::gl

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/gl/GLSLShader.h>
 
 #include <cstdlib>
 #include <cmath>
@@ -29,16 +29,10 @@
 
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
+namespace sofa::gl
 {
 
-namespace helper
-{
-
-namespace gl
-{
-
-class GLSLFileListener : public FileEventListener
+class GLSLFileListener : public helper::system::FileEventListener
 {
 public:
     /// This attribute is not owning the pointer.
@@ -102,7 +96,7 @@ GLSLShader::GLSLShader()
     geometry_vertices_out = -1;
 #endif
     header = "";
-    m_filelistener = std::shared_ptr<FileEventListener>(new GLSLFileListener(this)) ;
+    m_filelistener = std::shared_ptr<helper::system::FileEventListener>(new GLSLFileListener(this)) ;
 }
 
 GLSLShader::~GLSLShader()
@@ -110,7 +104,7 @@ GLSLShader::~GLSLShader()
     // BUGFIX: if the GL context is gone, this can crash the application on exit -- Jeremie A.
     //Release();
     if(m_filelistener){
-        FileMonitor::removeListener(m_filelistener.get());
+        helper::system::FileMonitor::removeListener(m_filelistener.get());
     }
 }
 
@@ -131,7 +125,7 @@ void GLSLShader::SetShaderFileName(GLint target, const std::string& filename)
     if (filename.empty())
     {
         if(m_filelistener && !m_hShaderContents[target].filename.empty())
-            FileMonitor::removeFileListener(m_hShaderContents[target].filename, m_filelistener.get()) ;
+            helper::system::FileMonitor::removeFileListener(m_hShaderContents[target].filename, m_filelistener.get()) ;
         m_hShaderContents.erase(target);
     }else{
         ShaderContents sc;
@@ -139,7 +133,7 @@ void GLSLShader::SetShaderFileName(GLint target, const std::string& filename)
         sc.text = LoadTextFile(filename);
         m_hShaderContents[target] = sc;
         if(m_filelistener)
-            FileMonitor::addFile(filename, m_filelistener.get()) ;
+            helper::system::FileMonitor::addFile(filename, m_filelistener.get()) ;
     }
 }
 
@@ -505,8 +499,4 @@ void GLSLShader::Release()
     }
 }
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::gl

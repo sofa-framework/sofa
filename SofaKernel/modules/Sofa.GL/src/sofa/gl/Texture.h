@@ -19,28 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_TEXTURE_H
-#define SOFA_HELPER_GL_TEXTURE_H
-
-#ifndef SOFA_NO_OPENGL
-
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/config.h>
+#pragma once
+#include <sofa/gl/gl.h>
+#include <sofa/gl/config.h>
 #include <sofa/helper/io/Image.h>
 
-namespace sofa
+namespace sofa::gl
 {
 
-namespace helper
-{
-
-namespace gl
-{
-
-class SOFA_HELPER_API Texture
+class SOFA_SOFA_GL_API Texture
 {
 private:
-    io::Image *image;
+    helper::io::Image *image;
     GLuint id, target;
     bool repeat, linearInterpolation, generateMipmaps, srgbColorspace;
     float minLod, maxLod;
@@ -52,13 +42,13 @@ public:
     {
     }
 
-    Texture (io::Image *img, bool repeat = true, bool linearInterpolation = true, bool generateMipmaps = true,
+    Texture (helper::io::Image *img, bool repeat = true, bool linearInterpolation = true, bool generateMipmaps = true,
             bool srgbColorspace = false, float minLod = -1000, float maxLod = 1000)
         :image(img),id(0),repeat(repeat), linearInterpolation(linearInterpolation), generateMipmaps(generateMipmaps),
          srgbColorspace(srgbColorspace), minLod(minLod), maxLod(maxLod)
     {}
 
-    io::Image* getImage(void);
+    helper::io::Image* getImage(void);
     GLuint getTarget() const { return target; }
     void   bind(void);
     void   unbind(void);
@@ -73,12 +63,4 @@ private:
     Texture operator=(const Texture& ) { return Texture(); }
 };
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
-
-#endif
+} // namespace sofa::gl

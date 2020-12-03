@@ -19,26 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_GLTEXT_INL
-#define SOFA_HELPER_GL_GLTEXT_INL
+#pragma once
+#include <sofa/gl/glText.h>
 
-#ifndef SOFA_NO_OPENGL
-
-#include <sofa/helper/gl/glText.h>
-
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 
 #include <cassert>
 #include <algorithm>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 template <typename T>
@@ -152,12 +142,4 @@ void GlText::draw(const T& text, const defaulttype::Vector3& position, const dou
     glEnable(GL_LIGHTING);
 }
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
-
-#endif
+} // namespace sofa::gl

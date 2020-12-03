@@ -19,23 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_BASICSHAPES_H
-#define SOFA_HELPER_GL_BASICSHAPES_H
-
-#ifndef SOFA_NO_OPENGL
-
-#include <sofa/helper/gl/template.h>
+#pragma once
+#include <sofa/gl/template.h>
 #include <sofa/helper/fixed_array.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/glu.h>
 #include <cmath>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 static GLUquadricObj* quadric = gluNewQuadric();
@@ -71,15 +61,15 @@ void drawCone(const V& p1, const V& p2, const float& radius1, const float& radiu
         /* construct normal */
         tmp = p*ct+q*st;
         /* set the normal for the two subseqent points */
-        helper::gl::glNormalT(tmp);
+        gl::glNormalT(tmp);
         /* point on disk 1 */
         V w(p1);
         w += tmp*radius1;
-        helper::gl::glVertexT(w);
+        gl::glVertexT(w);
         /* point on disk 2 */
         w=p2;
         w += tmp*radius2;
-        helper::gl::glVertexT(w);
+        gl::glVertexT(w);
     }
     glEnd();
 }
@@ -108,7 +98,7 @@ void drawSphere(const V& center, const float& rad, const int subd1=8, const int 
     gluQuadricOrientation(quadric, GLU_OUTSIDE);
     gluQuadricNormals(quadric, GLU_SMOOTH);
     glPushMatrix();
-    helper::gl::glTranslateT( center );
+    gl::glTranslateT( center );
     gluSphere(quadric,rad,subd1,subd2);
     glPopMatrix();
 }
@@ -120,8 +110,8 @@ void drawEllipsoid(const V& center, const float& radx, const float& rady, const 
     gluQuadricOrientation(quadric, GLU_OUTSIDE);
     gluQuadricNormals(quadric, GLU_SMOOTH);
     glPushMatrix();
-    helper::gl::glTranslateT(center);
-    helper::gl::glScale(radx,rady,radz);
+    gl::glTranslateT(center);
+    gl::glScale(radx,rady,radz);
     gluSphere(quadric, 1.0, subd1, subd2);
     glPopMatrix();
 }
@@ -132,7 +122,7 @@ void drawWireSphere(const V& center, const float& rad, const int subd1=8, const 
     gluQuadricDrawStyle(quadric, GLU_LINE);
     gluQuadricOrientation(quadric, GLU_OUTSIDE);
     glPushMatrix();
-    helper::gl::glTranslateT( center );
+    gl::glTranslateT( center );
     gluSphere(quadric,rad,subd1,subd2);
     glPopMatrix();
 }
@@ -226,10 +216,4 @@ void drawEmptyParallelepiped(const V& vert1, const V& vert2, const V& vert3, con
 	glPopMatrix();
 }
 
-} //gl
-} //helper
-} //sofa
-
-#endif /* SOFA_NO_OPENGL */
-
-#endif
+} // namespace sofa::gl

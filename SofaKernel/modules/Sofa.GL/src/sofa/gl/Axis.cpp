@@ -19,22 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/gl/Axis.h>
+#include <sofa/gl/Axis.h>
 
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 
 #include <cassert>
 #include <algorithm>
 #include <iostream>
 
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 static const int quadricDiscretisation = 16;
@@ -394,9 +388,4 @@ void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r1, const do
 
 }
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
+} // namespace sofa::gl

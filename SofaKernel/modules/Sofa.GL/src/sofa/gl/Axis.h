@@ -19,31 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_AXIS_H
-#define SOFA_HELPER_GL_AXIS_H
-
-#ifndef SOFA_NO_OPENGL
-
+#pragma once
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/glu.h>
 
 #include <map>
 
-#include <sofa/helper/config.h>
+#include <sofa/gl/config.h>
 
-namespace sofa
+namespace sofa::gl
 {
 
-namespace helper
-{
-
-namespace gl
-{
-
-class SOFA_HELPER_API Axis
+class SOFA_SOFA_GL_API Axis
 {
 public:
     typedef sofa::defaulttype::Vector3 Vector3;
@@ -95,12 +85,4 @@ public:
 
 };
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
-
-#endif
+} // namespace sofa::gl

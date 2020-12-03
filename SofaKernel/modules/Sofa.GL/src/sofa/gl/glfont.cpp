@@ -35,13 +35,7 @@
 extern "C" Display * glXGetCurrentDisplayEXT (void);
 #endif
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 #if __APPLE__

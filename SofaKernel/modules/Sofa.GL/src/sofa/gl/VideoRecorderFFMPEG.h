@@ -19,28 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_VIDEORECORDER_FFMPEG_H
-#define SOFA_HELPER_GL_VIDEORECORDER_FFMPEG_H
-
-#ifndef SOFA_NO_OPENGL
-
-#include <sofa/helper/config.h>
-#include <sofa/helper/gl/template.h>
+#pragma once
+#include <sofa/gl/config.h>
+#include <sofa/gl/template.h>
 
 #include <string>
 #include <iostream>
 
 
-namespace sofa
+namespace sofa::gl
 {
 
-namespace helper
-{
-
-namespace gl
-{
-
-class SOFA_HELPER_API VideoRecorderFFMPEG
+class SOFA_SOFA_GL_API VideoRecorderFFMPEG
 {
 protected:
 
@@ -82,12 +72,4 @@ public:
 
 };
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
-
-#endif //SOFA_HELPER_GL_VIDEORECORDER_FFMPEG_H
+} // namespace sofa::gl

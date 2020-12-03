@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/gl/Capture.h>
+#include <sofa/gl/Capture.h>
 #include <sofa/helper/system/SetDirectory.h>
 
 #include <sys/types.h>
@@ -28,13 +28,7 @@
 #include <cstdio>		// sprintf and friends
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 Capture::Capture()
@@ -61,7 +55,7 @@ bool Capture::saveScreen(const std::string& filename, int compression_level)
     {
         GLint viewport[4];
         glGetIntegerv(GL_VIEWPORT, viewport);
-        img->init(viewport[2], viewport[3], 1, 1, io::Image::UNORM8, io::Image::RGB);
+        img->init(viewport[2], viewport[3], 1, 1, helper::io::Image::UNORM8, helper::io::Image::RGB);
         glReadBuffer(GL_FRONT);
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
         glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, img->getPixels());
@@ -133,9 +127,4 @@ bool Capture::saveScreen(int compression_level)
     return saveScreen(findFilename(), compression_level);
 }
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
+} // namespace sofa::gl

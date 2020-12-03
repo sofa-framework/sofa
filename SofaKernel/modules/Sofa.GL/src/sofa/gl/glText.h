@@ -19,11 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_TEXT_H
-#define SOFA_HELPER_GL_TEXT_H
-
-#ifndef SOFA_NO_OPENGL
-
+#pragma once
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -31,20 +27,14 @@
 #include <string>
 #include <sstream>
 
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/glu.h>
 #include <sofa/helper/fixed_array.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/gl/Texture.h>
 
-#include <sofa/helper/config.h>
+#include <sofa/gl/config.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 
@@ -53,7 +43,7 @@ namespace gl
  * in 2D (screen) or in 3D (world coordinates)
 */
 
-class SOFA_HELPER_API GlText
+class SOFA_SOFA_GL_API GlText
 {
 public:
     typedef sofa::helper::fixed_array<float, 3> Vector3;
@@ -103,19 +93,11 @@ private:
     static const std::string ASCII_TEXTURE_PATH;
 
     static sofa::helper::io::Image *s_asciiImage;
-    static sofa::helper::gl::Texture* s_asciiTexture;
+    static sofa::gl::Texture* s_asciiTexture;
 
     double scale;
     std::string text;
     defaulttype::Vector3 position;
 };
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
-
-#endif
+} // namespace sofa::gl

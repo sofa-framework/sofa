@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gl/initSofa.GL.h
+#include <sofa/gl/initSofa.GL.h>
 
 #include <sofa/defaulttype/init.h>
 #include <sofa/helper/init.h>
@@ -64,7 +64,7 @@ static const struct CleanupCheck
     CleanupCheck() {}
     ~CleanupCheck()
     {
-        if (core::isInitialized() && !core::isCleanedUp())
+        if (gl::isInitialized() && !gl::isCleanedUp())
             helper::printLibraryNotCleanedUpWarning("Sofa.GL", "sofa::gl::cleanup()");
     }
 } check;

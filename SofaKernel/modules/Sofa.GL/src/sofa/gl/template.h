@@ -19,21 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_TEMPLATE_H
-#define SOFA_HELPER_GL_TEMPLATE_H
+#pragma once
+#include <sofa/gl/gl.h>
+#include <sofa/gl/config.h>
 
-#ifndef SOFA_NO_OPENGL
-
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/config.h>
-
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 template<int N>
@@ -318,12 +308,4 @@ inline void glMultMatrix(const double* p)
     glMultMatrixd(p);
 }
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
-
-#endif
+} // namespace sofa::gl

@@ -19,16 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_SYSTEM_GLU_H
-#define SOFA_HELPER_SYSTEM_GLU_H
+#pragma once
 
-#if !defined(SOFA_NO_OPENGL)
 #if defined (__APPLE__)
 #include <OpenGL/glu.h>
 #else
 #include <GL/glu.h>
 #endif
-#endif
-
-
-#endif /* SOFA_NO_OPENGL */

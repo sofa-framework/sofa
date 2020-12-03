@@ -19,20 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_GLFONT_H
-#define SOFA_HELPER_GL_GLFONT_H
-
-#ifndef SOFA_NO_OPENGL
-
+#pragma once
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 SOFA_HELPER_API void glfntInit(void);

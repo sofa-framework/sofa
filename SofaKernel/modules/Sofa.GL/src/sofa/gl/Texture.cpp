@@ -20,17 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/gl/Texture.h>
 #include <cassert>
 #include <cstdio>
 
-namespace sofa
+namespace sofa::gl
 {
-namespace helper
-{
-namespace gl
-{
-static unsigned int targetTable[io::Image::COUNT_OF_TEXTURE_TYPES] =
+static unsigned int targetTable[helper::io::Image::COUNT_OF_TEXTURE_TYPES] =
 {
     GL_TEXTURE_2D,
 #if defined(GL_VERSION_1_2)
@@ -43,7 +39,7 @@ static unsigned int targetTable[io::Image::COUNT_OF_TEXTURE_TYPES] =
 #endif
 };
 
-static unsigned int typeTable[io::Image::COUNT_OF_DATA_TYPES] =
+static unsigned int typeTable[helper::io::Image::COUNT_OF_DATA_TYPES] =
 {
     GL_UNSIGNED_BYTE,     // UNORM8
     GL_UNSIGNED_SHORT,    // UNORM16
@@ -57,7 +53,7 @@ static unsigned int typeTable[io::Image::COUNT_OF_DATA_TYPES] =
     GL_UNSIGNED_BYTE      // UCOMPRESSED
 };
 
-static unsigned int formatTable[io::Image::COUNT_OF_CHANNEL_FORMATS] =
+static unsigned int formatTable[helper::io::Image::COUNT_OF_CHANNEL_FORMATS] =
 {
     GL_LUMINANCE,       // L
     GL_LUMINANCE_ALPHA, // LA
@@ -75,7 +71,7 @@ static unsigned int formatTable[io::Image::COUNT_OF_CHANNEL_FORMATS] =
 #endif
 };
 
-static unsigned int internalFormatTable[io::Image::COUNT_OF_DATA_TYPES][io::Image::COUNT_OF_CHANNEL_FORMATS] =
+static unsigned int internalFormatTable[helper::io::Image::COUNT_OF_DATA_TYPES][helper::io::Image::COUNT_OF_CHANNEL_FORMATS] =
 {
     // UNORM8
     {
@@ -179,7 +175,7 @@ static unsigned int internalFormatTable[io::Image::COUNT_OF_DATA_TYPES][io::Imag
     }
 };
 
-static unsigned int internalFormatTableSRGB[io::Image::COUNT_OF_DATA_TYPES][io::Image::COUNT_OF_CHANNEL_FORMATS] =
+static unsigned int internalFormatTableSRGB[helper::io::Image::COUNT_OF_DATA_TYPES][helper::io::Image::COUNT_OF_CHANNEL_FORMATS] =
 {
 #if defined(GL_EXT_texture_sRGB)
     // UNORM8
@@ -225,7 +221,7 @@ static bool isPowerOfTwo(unsigned a)
 
 void Texture::update()
 {
-    io::Image::TextureType textureType = image->getTextureType();
+    helper::io::Image::TextureType textureType = image->getTextureType();
     target = targetTable[textureType];
     unsigned format = formatTable[image->getChannelFormat()];
     unsigned type = typeTable[image->getDataType()];
@@ -258,9 +254,9 @@ void Texture::update()
     glPixelStorei(GL_PACK_ALIGNMENT,1);
     switch (textureType)
     {
-    case io::Image::TEXTURE_2D:
+    case helper::io::Image::TEXTURE_2D:
 #if defined(GLEW_VERSION_1_3)
-        if (image->getDataType() == io::Image::UCOMPRESSED)
+        if (image->getDataType() == helper::io::Image::UCOMPRESSED)
             for (unsigned i = 0; i < mipmaps; i++)
                 glCompressedTexImage2D(target, i, internalFormat, image->getWidth(i), image->getHeight(i), 0,
                         image->getMipmapSize(i), image->getMipmapPixels(i));
@@ -271,10 +267,10 @@ void Texture::update()
                         format, type, image->getMipmapPixels(i));
         break;
 
-    case io::Image::TEXTURE_3D:
+    case helper::io::Image::TEXTURE_3D:
 #if defined(GLEW_VERSION_1_2)
 #if defined(GLEW_VERSION_1_3)
-        if (image->getDataType() == io::Image::UCOMPRESSED)
+        if (image->getDataType() == helper::io::Image::UCOMPRESSED)
             for (unsigned i = 0; i < mipmaps; i++)
                 glCompressedTexImage3D(target, i, internalFormat, image->getWidth(i), image->getHeight(i),
                         image->getDepth(i), 0, image->getMipmapSize(i), image->getMipmapPixels(i));
@@ -286,9 +282,9 @@ void Texture::update()
 #endif
         break;
 
-    case io::Image::TEXTURE_CUBE:
+    case helper::io::Image::TEXTURE_CUBE:
 #if defined(GLEW_VERSION_1_3)
-        if (image->getDataType() == io::Image::UCOMPRESSED)
+        if (image->getDataType() == helper::io::Image::UCOMPRESSED)
             for (unsigned j = 0; j < 6; j++)
                 for (unsigned i = 0; i < mipmaps; i++)
                     glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, i, internalFormat,
@@ -311,7 +307,7 @@ void Texture::update()
 
 void Texture::init()
 {
-    io::Image::TextureType textureType = image->getTextureType();
+    helper::io::Image::TextureType textureType = image->getTextureType();
     target = GL_TEXTURE_2D; // Default value in case the format is not supported.
 
     // Check OpenGL support.
@@ -331,11 +327,11 @@ void Texture::init()
 
     switch (textureType)
     {
-    case io::Image::TEXTURE_INVALID:
+    case helper::io::Image::TEXTURE_INVALID:
          msg_error("Texture") << "invalid texture type.";
         return;
 
-    case io::Image::TEXTURE_3D:
+    case helper::io::Image::TEXTURE_3D:
 #if defined(GLEW_VERSION_1_2)
         if (!GLEW_VERSION_1_2)
 #endif
@@ -345,7 +341,7 @@ void Texture::init()
         }
         break;
 
-    case io::Image::TEXTURE_CUBE:
+    case helper::io::Image::TEXTURE_CUBE:
 #if defined(GLEW_VERSION_1_3)
         if (!GLEW_VERSION_1_3)
 #endif
@@ -360,8 +356,8 @@ void Texture::init()
 
     switch (image->getDataType())
     {
-    case io::Image::UINT32:
-        if (image->getChannelFormat() <= io::Image::LA)
+    case helper::io::Image::UINT32:
+        if (image->getChannelFormat() <= helper::io::Image::LA)
         {
 #if defined(GLEW_EXT_texture_integer)
             if (!GLEW_EXT_texture_integer)
@@ -381,7 +377,7 @@ void Texture::init()
             }
         break;
 
-    case io::Image::HALF:
+    case helper::io::Image::HALF:
 #if defined(GLEW_VERSION_3_0)
         if (!GLEW_VERSION_3_0)
 #endif
@@ -391,8 +387,8 @@ void Texture::init()
         }
         /* Pass through (no break!) */
         [[fallthrough]];
-    case io::Image::FLOAT:
-        if (image->getChannelFormat() <= io::Image::LA)
+    case helper::io::Image::FLOAT:
+        if (image->getChannelFormat() <= helper::io::Image::LA)
         {
 #if defined(GLEW_ARB_texture_float)
             if (!GLEW_ARB_texture_float)
@@ -412,11 +408,11 @@ void Texture::init()
             }
         break;
 
-    case io::Image::UCOMPRESSED:
+    case helper::io::Image::UCOMPRESSED:
         switch (image->getChannelFormat())
         {
-        case io::Image::L:
-        case io::Image::LA:
+        case helper::io::Image::L:
+        case helper::io::Image::LA:
 #if defined(GLEW_EXT_texture_compression_latc)
             if (!GLEW_EXT_texture_compression_latc)
 #endif
@@ -426,8 +422,8 @@ void Texture::init()
             }
             break;
 
-        case io::Image::R:
-        case io::Image::RG:
+        case helper::io::Image::R:
+        case helper::io::Image::RG:
 #if defined(GLEW_VERSION_3_0)
             if (!GLEW_VERSION_3_0)
 #endif
@@ -437,8 +433,8 @@ void Texture::init()
             }
             break;
 
-        case io::Image::RGB:
-        case io::Image::RGBA:
+        case helper::io::Image::RGB:
+        case helper::io::Image::RGBA:
 #if defined(GLEW_EXT_texture_compression_s3tc)
             if (!GLEW_EXT_texture_compression_s3tc)
 #endif
@@ -490,7 +486,7 @@ void Texture::init()
         glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
-    if (repeat && textureType != io::Image::TEXTURE_CUBE)
+    if (repeat && textureType != helper::io::Image::TEXTURE_CUBE)
     {
         glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_REPEAT );
         glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_REPEAT );
@@ -509,7 +505,7 @@ void Texture::init()
 
 #if defined(GLEW_ARB_seamless_cube_map)
     // This is a global state so probably should be moved to a more appropriate location.
-    if (textureType == io::Image::TEXTURE_CUBE)
+    if (textureType == helper::io::Image::TEXTURE_CUBE)
         if (GLEW_ARB_seamless_cube_map)
             glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 #endif
@@ -535,7 +531,7 @@ void Texture::unbind(void)
     glBindTexture(target, 0);
 }
 
-io::Image* Texture::getImage(void)
+helper::io::Image* Texture::getImage(void)
 {
     return image;
 }
@@ -545,6 +541,5 @@ Texture::~Texture(void)
     if (id) glDeleteTextures(1, &id);
     delete image; image=nullptr;
 }
-} // namespace gl
-} // namespace helper
-} // namespace sofa
+
+} // namespace sofa::gl

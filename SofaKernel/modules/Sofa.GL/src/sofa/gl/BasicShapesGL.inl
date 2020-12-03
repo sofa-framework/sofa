@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_BASICSHAPESGL_INL
-#define SOFA_HELPER_GL_BASICSHAPESGL_INL
+#pragma once
+#include <sofa/gl/BasicShapesGL.h>
+#include <sofa/gl/template.h>
+#include <sofa/gl/shaders/generateSphere.cppglsl>
 
-#include <sofa/helper/gl/BasicShapesGL.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/shaders/generateSphere.cppglsl>
-
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 template<class VertexType>
@@ -151,7 +143,7 @@ template<class VertexType>
 void BasicShapesGL_Sphere<VertexType>::internalDraw(const GLBuffers &buffer, const VertexType& center, const float& radius)
 {
     glPushMatrix();
-    helper::gl::glTranslate(center[0], center[1], center[2]);
+    gl::glTranslate(center[0], center[1], center[2]);
     glScalef(radius, radius, radius);
 
     glDrawElements(GL_QUADS, GLsizei(buffer.indicesSize), GL_UNSIGNED_INT, nullptr);
@@ -260,13 +252,13 @@ void BasicShapesGL_FakeSphere<VertexType>::init()
 {
     if (!b_isInit)
     {
-        if (!sofa::helper::gl::GLSLShader::InitGLSL())
+        if (!sofa::gl::GLSLShader::InitGLSL())
         {
             msg_info("BasicShapesGL") << "InitGLSL failed" ;
             return;
         }
-        std::string vertexShaderContent = sofa::helper::gl::generateSphereVS;
-        std::string fragmentShaderContent = sofa::helper::gl::generateSphereFS;
+        std::string vertexShaderContent = sofa::gl::generateSphereVS;
+        std::string fragmentShaderContent = sofa::gl::generateSphereFS;
 
         m_shader = new GLSLShader();
         m_shader->SetVertexShaderFromString(vertexShaderContent);
@@ -479,11 +471,4 @@ void BasicShapesGL_FakeSphere<VertexType>::draw(const helper::vector<VertexType>
 }
 
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-
-#endif // SOFA_HELPER_GL_BASICSHAPESGL_INL
+} // namespace sofa::gl

@@ -19,25 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_BASICSHAPESGL_H
-#define SOFA_HELPER_GL_BASICSHAPESGL_H
-
-#ifndef SOFA_NO_OPENGL
-
-#include <sofa/helper/system/gl.h>
+#pragma once
+#include <sofa/gl/gl.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/gl/GLSLShader.h>
 #include <cmath>
 #include <map>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 
 class BasicShapesGL
@@ -127,18 +117,10 @@ private:
 };
 
 #if  !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
-extern template class SOFA_HELPER_API BasicShapesGL_Sphere<helper::fixed_array< float, 3 > >;
-extern template class SOFA_HELPER_API BasicShapesGL_Sphere<helper::fixed_array< double, 3 > >;
-extern template class SOFA_HELPER_API BasicShapesGL_FakeSphere<helper::fixed_array< float, 3 > >;
-extern template class SOFA_HELPER_API BasicShapesGL_FakeSphere<helper::fixed_array< double, 3 > >;
+extern template class SOFA_SOFA_GL_API BasicShapesGL_Sphere<helper::fixed_array< float, 3 > >;
+extern template class SOFA_SOFA_GL_API BasicShapesGL_Sphere<helper::fixed_array< double, 3 > >;
+extern template class SOFA_SOFA_GL_API BasicShapesGL_FakeSphere<helper::fixed_array< float, 3 > >;
+extern template class SOFA_SOFA_GL_API BasicShapesGL_FakeSphere<helper::fixed_array< double, 3 > >;
 #endif //  !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
 
-} //gl
-
-} //helper
-
-} //sofa
-
-#endif /* SOFA_NO_OPENGL */
-
-#endif // SOFA_HELPER_GL_BASICSHAPESGL_H
+} // namespace sofa::gl

@@ -19,19 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/gl/Color.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/Color.h>
+#include <sofa/gl/gl.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <cmath>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace gl
+namespace sofa::gl
 {
 using sofa::helper::types::RGBAColor ;
 
@@ -60,9 +54,4 @@ void Color::getHSVA( float* rgba, float h, float s, float v, float a )
 }
 
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
+} // namespace sofa::gl

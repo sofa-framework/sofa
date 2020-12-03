@@ -19,31 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_CYLINDER_H
-#define SOFA_HELPER_GL_CYLINDER_H
-
-#ifndef SOFA_NO_OPENGL
-
+#pragma once
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/glu.h>
 
-#include <sofa/helper/config.h>
+#include <sofa/gl/config.h>
 
 #include <map>
 
-namespace sofa
+namespace sofa::gl
 {
 
-namespace helper
-{
-
-namespace gl
-{
-
-class SOFA_HELPER_API Cylinder
+class SOFA_SOFA_GL_API Cylinder
 {
 public:
     typedef sofa::defaulttype::Vector3 Vector3;
@@ -88,12 +78,4 @@ public:
     static void clear() { CylinderMap.clear(); } // need to be called when display list has been created in another opengl context
 };
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
-
-#endif
+} // namespace sofa::gl

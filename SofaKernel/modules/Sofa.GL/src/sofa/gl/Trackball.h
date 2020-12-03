@@ -69,23 +69,15 @@
  * first paramater.
  */
 
-#ifndef SOFA_HELPER_GL_TRACKBALL_H
-#define SOFA_HELPER_GL_TRACKBALL_H
-
+#pragma once
 #include <sofa/defaulttype/Quat.h>
 
-#include <sofa/helper/config.h>
+#include <sofa/gl/config.h>
 
-namespace sofa
+namespace sofa::gl
 {
 
-namespace helper
-{
-
-namespace gl
-{
-
-class SOFA_HELPER_API Trackball
+class SOFA_SOFA_GL_API Trackball
 {
 public:
 // 	typedef Quater<double> Quaternion;
@@ -112,10 +104,4 @@ private:
     sofa::defaulttype::Quaternion	_quat;
 };
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gl

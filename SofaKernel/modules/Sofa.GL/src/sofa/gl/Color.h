@@ -19,33 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_COLOR_H
-#define SOFA_HELPER_GL_COLOR_H
+#pragma once
+#include <sofa/gl/config.h>
 
-#ifndef SOFA_NO_OPENGL
-
-#include <sofa/helper/config.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 /// Forward declaration
-namespace sofa {
-    namespace helper {
-        namespace types {
-            class RGBAColor;
-        }
-    }
-}
-
-
-namespace sofa
+namespace sofa::gl
 {
 
-namespace helper
-{
-
-namespace gl
-{
-
-class SOFA_HELPER_API Color
+class SOFA_SOFA_GL_API Color
 {
 public:
     static void set(const sofa::helper::types::RGBAColor& color) ;
@@ -58,12 +41,4 @@ private:
     ~Color();
 };
 
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
-
-#endif
+} // namespace sofa::gl

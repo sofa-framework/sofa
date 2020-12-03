@@ -19,24 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FRAMEBUFFEROBJECT_H_
-#define FRAMEBUFFEROBJECT_H_
-
-#include <sofa/helper/config.h>
+#pragma once
+#include <sofa/gl/config.h>
 
 
-#include <sofa/helper/config.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/config.h>
+#include <sofa/gl/gl.h>
 
 
-namespace sofa
-{
-namespace helper
-{
-namespace gl
+namespace sofa::gl
 {
 
-struct SOFA_HELPER_API fboParameters
+struct SOFA_SOFA_GL_API fboParameters
 {
     GLint  depthInternalformat; // GL_DEPTHCOMPONENT16 GL_DEPTHCOMPONENT24...
     GLint  colorInternalformat; // GL_RGB8, GL_RGB16...
@@ -52,7 +46,7 @@ struct SOFA_HELPER_API fboParameters
     }
 };
 
-class SOFA_HELPER_API FrameBufferObject
+class SOFA_SOFA_GL_API FrameBufferObject
 {
 private:
     GLint m_defaultWindowFramebufferID;
@@ -97,11 +91,4 @@ public:
     void initColorBuffer();
 };
 
-} //gl
-
-} //helper
-
-} //sofa
-
-
-#endif /* FRAMEBUFFEROBJECT_H_ */
+} // namespace sofa::gl

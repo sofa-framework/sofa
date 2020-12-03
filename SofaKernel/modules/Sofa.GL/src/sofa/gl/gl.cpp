@@ -21,20 +21,16 @@
 ******************************************************************************/
 #include "gl.h"
 
-#ifndef SOFA_NO_OPENGL
-
-SOFA_HELPER_API const char* GetGlExtensionsList()
+SOFA_SOFA_GL_API const char* GetGlExtensionsList()
 {
     return reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
 }
 
 
-SOFA_HELPER_API bool CanUseGlExtension(const std::string& ext)
+SOFA_SOFA_GL_API bool CanUseGlExtension(const std::string& ext)
 {
     std::string Extensions = GetGlExtensionsList();
     if( Extensions.find( ext ) != std::string::npos )
         return true;
     return false;
 }
-
-#endif
