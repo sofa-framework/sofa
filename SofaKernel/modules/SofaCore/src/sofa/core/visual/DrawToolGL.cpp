@@ -23,19 +23,16 @@
 
 #include <sofa/core/visual/DrawToolGL.h>
 
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/helper/gl/BasicShapesGL.inl>
-#include <sofa/helper/gl/Axis.h>
-#include <sofa/helper/gl/Cylinder.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/glText.inl>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/BasicShapes.h>
+#include <sofa/gl/BasicShapesGL.inl>
+#include <sofa/gl/Axis.h>
+#include <sofa/gl/Cylinder.h>
+#include <sofa/gl/template.h>
+#include <sofa/gl/glText.inl>
 #include <cmath>
 
 namespace sofa
-{
-
-namespace helper
 {
 
 namespace gl
@@ -46,7 +43,6 @@ template class SOFA_CORE_API BasicShapesGL_FakeSphere< sofa::defaulttype::Vector
 
 } // namespace gl
 
-} // namespace helper
 
 namespace core
 {
@@ -55,7 +51,7 @@ namespace visual
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper::gl;
+using namespace sofa::gl;
 
 DrawToolGL::DrawToolGL()
 {
@@ -451,12 +447,12 @@ void DrawToolGL::drawTriangleFan(const std::vector<Vector3> &points,
 void DrawToolGL::drawFrame(const Vector3& position, const Quaternion &orientation, const Vec<3,float> &size)
 {
     setPolygonMode(0,false);
-    helper::gl::Axis::draw(position, orientation, size);
+    gl::Axis::draw(position, orientation, size);
 }
 void DrawToolGL::drawFrame(const Vector3& position, const Quaternion &orientation, const Vec<3,float> &size, const Vec4f &color)
 {
     setPolygonMode(0,false);
-    helper::gl::Axis::draw(position, orientation, size, color, color, color);
+    gl::Axis::draw(position, orientation, size, color, color, color);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1134,7 +1130,7 @@ void DrawToolGL::drawScaledHexahedra(const std::vector<Vector3> &points, const V
 void DrawToolGL::drawSphere( const Vector3 &p, float radius)
 {
     glPushMatrix();
-    helper::gl::drawSphere(p, radius, 32, 16);
+    gl::drawSphere(p, radius, 32, 16);
     glPopMatrix();
 }
 
@@ -1142,7 +1138,7 @@ void DrawToolGL::drawSphere(const Vector3 &p, float radius, const Vec4f &color)
 {
     setMaterial(color);
     glPushMatrix();
-    helper::gl::drawSphere(p, radius, 32, 16);
+    gl::drawSphere(p, radius, 32, 16);
     glPopMatrix();
     resetMaterial(color);
 }
@@ -1150,7 +1146,7 @@ void DrawToolGL::drawSphere(const Vector3 &p, float radius, const Vec4f &color)
 void DrawToolGL::drawEllipsoid(const Vector3 &p, const Vector3 &radii)
 {
     glPushMatrix();
-    helper::gl::drawEllipsoid(p, (float)radii[0], (float)radii[1], (float)radii[2], 32, 16);
+    gl::drawEllipsoid(p, (float)radii[0], (float)radii[1], (float)radii[2], 32, 16);
     glPopMatrix();
 }
 
@@ -1277,8 +1273,8 @@ void DrawToolGL::resetMaterial()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void DrawToolGL::clear()
 {
-    helper::gl::Axis::clear();
-    helper::gl::Cylinder::clear();
+    gl::Axis::clear();
+    gl::Cylinder::clear();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1343,7 +1339,7 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
 
     glScalef( scale, scale, scale );
 
-    helper::gl::GlText::textureDraw_Overlay(text);
+    gl::GlText::textureDraw_Overlay(text);
 
     glPopAttrib(); // GL_ENABLE_BIT
     glPopAttrib(); // GL_LIGHTING_BIT
@@ -1401,14 +1397,14 @@ void DrawToolGL::draw3DText(const Vector3 &p, float scale, const Vec4f &color, c
 {
     glColor4fv(color.ptr());
 
-    sofa::helper::gl::GlText::draw(text, p, (double)scale);
+    sofa::gl::GlText::draw(text, p, (double)scale);
 }
 
 void DrawToolGL::draw3DText_Indices(const std::vector<Vector3> &positions, float scale, const Vec4f &color)
 {
     glColor4f(color[0], color[1], color[2], color[3]);
 
-    sofa::helper::gl::GlText::textureDraw_Indices(positions, scale);
+    sofa::gl::GlText::textureDraw_Indices(positions, scale);
 }
 
 void DrawToolGL::saveLastState()

@@ -261,7 +261,7 @@ if(NOT SOFA_NO_OPENGL)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType Sofa.GL)
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework

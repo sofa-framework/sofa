@@ -25,7 +25,7 @@
 #define SOFA_CORE_VISUAL_DRAWTOOLGL_H
 
 #include <sofa/core/visual/DrawTool.h>
-#include <sofa/helper/gl/BasicShapesGL.h>
+#include <sofa/gl/BasicShapesGL.h>
 
 namespace sofa
 {
@@ -206,8 +206,8 @@ protected:
     int  mPolygonMode;      //0: no cull, 1 front (CULL_CLOCKWISE), 2 back (CULL_ANTICLOCKWISE)
     bool mWireFrameEnabled;
 
-    helper::gl::BasicShapesGL_Sphere<Vector3> m_sphereUtil;
-    helper::gl::BasicShapesGL_FakeSphere<Vector3> m_fakeSphereUtil;
+    gl::BasicShapesGL_Sphere<Vector3> m_sphereUtil;
+    gl::BasicShapesGL_FakeSphere<Vector3> m_fakeSphereUtil;
 
     // utility functions, defining primitives
     virtual void internalDrawPoint(const Vector3 &p, const Vec4f &c);

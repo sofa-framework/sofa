@@ -26,7 +26,8 @@
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/visual/DisplayFlags.h>
-#include <sofa/helper/gl/Transformation.h>
+#include <sofa/gl/Transformation.h>
+#include <sofa/gl/FrameBufferObject.h>
 
 
 
@@ -138,8 +139,8 @@ public:
     DrawTool*& drawTool() { return m_drawTool; }
     DrawTool*& drawTool() const { return m_drawTool; }
 
-    helper::gl::FrameBufferObject*& frameBufferObject() { return m_boundFrameBuffer; }
-    helper::gl::FrameBufferObject*& frameBufferObject() const { return m_boundFrameBuffer; }
+    gl::FrameBufferObject*& frameBufferObject() { return m_boundFrameBuffer; }
+    gl::FrameBufferObject*& frameBufferObject() const { return m_boundFrameBuffer; }
 
     DisplayFlags& displayFlags() { return m_displayFlags; }
     const DisplayFlags& displayFlags() const { return m_displayFlags; }
@@ -160,8 +161,8 @@ public:
     void getProjectionMatrix( double m[16] ) const { for(unsigned i=0; i<16; i++) m[i] = m_projectionMatrix[i]; }
 
     /// @todo clarify what this is with respect to ModelView and Perspective matrices
-    sofa::helper::gl::Transformation& sceneTransform() { return m_sceneTransform; }
-    const sofa::helper::gl::Transformation& sceneTransform() const { return m_sceneTransform; }
+    gl::Transformation& sceneTransform() { return m_sceneTransform; }
+    const gl::Transformation& sceneTransform() const { return m_sceneTransform; }
 
 
     bool isSupported(unsigned int api) const
@@ -179,7 +180,7 @@ public:
 
 protected:
     sofa::defaulttype::BoundingBox      m_sceneBoundingBox;
-    helper::gl::Transformation          m_sceneTransform;
+    gl::Transformation          m_sceneTransform;
     Viewport                            m_viewport;
     SReal                              m_zNear;
     SReal                              m_zFar;
@@ -187,7 +188,7 @@ protected:
     Pass                                m_pass;
     DisplayFlags                        m_displayFlags;
     mutable DrawTool*                   m_drawTool;
-    mutable helper::gl::FrameBufferObject*	m_boundFrameBuffer;
+    mutable gl::FrameBufferObject*	m_boundFrameBuffer;
     /// Ids of position vector
     ConstMultiVecCoordId m_x;
     /// Ids of velocity vector
