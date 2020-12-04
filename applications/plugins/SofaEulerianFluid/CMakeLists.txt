@@ -23,7 +23,7 @@ set(EXTRA_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} SofaCore)
+target_link_libraries(${PROJECT_NAME} SofaCore Sofa.GL)
 #
 #
 ## Install rules for the library and headers; CMake package configurations files
