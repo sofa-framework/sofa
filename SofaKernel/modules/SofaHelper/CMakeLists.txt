@@ -258,6 +258,7 @@ endif()
 set (COMPATSRC_ROOT "compat/")
 set (COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/core/visual/DrawTool.h
+    ${COMPATSRC_ROOT}/sofa/core/visual/DrawToolGL.h
     ${COMPATSRC_ROOT}/sofa/helper/system/gl.h
     ${COMPATSRC_ROOT}/sofa/helper/system/glu.h
     ${COMPATSRC_ROOT}/sofa/helper/gl/Trackball.h
@@ -267,6 +268,12 @@ set (COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/helper/gl/GLSLShader.h
     ${COMPATSRC_ROOT}/sofa/helper/gl/Transformation.h
     ${COMPATSRC_ROOT}/sofa/helper/gl/RAII.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/BasicShapes.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/Capture.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/VideoRecorderFFMPEG.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/Axis.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/glText.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/glText.inl
     )
 
 # Create build and install versions of etc/sofa.ini:

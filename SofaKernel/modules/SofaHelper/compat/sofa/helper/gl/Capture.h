@@ -19,51 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/thread/thread_specific_ptr.h>
-#include <sofa/helper/BackTrace.h>
-#include <cassert>
-#include <iostream>
+#pragma once
 
-namespace sofa
+#include <sofa/helper/config.h>
+
+#if __has_include(<sofa/gl/Capture.h>)
+#include <sofa/gl/Capture.h>
+#define GL_CAPTURE_ENABLE_WRAPPER
+
+SOFA_DEPRECATED_HEADER(v21.06, "sofa/gl/Capture.h")
+
+#else
+#error "OpenGL headers have been moved to Sofa.GL; you will need to link against this library if you need OpenGL, and include <sofa/gl/Capture.h> instead of this one."
+#endif
+
+#ifdef GL_CAPTURE_ENABLE_WRAPPER
+
+namespace sofa::helper::gl
 {
+    using Capture = sofa::gl::Capture;
 
-namespace core
-{
+} // namespace sofa::helper::gl
 
-namespace visual
-{
-
-VisualParams::VisualParams()
-    : m_viewport(sofa::helper::make_array(0,0,0,0))
-    , m_zNear(0)
-    , m_zFar(0)
-    , m_cameraType(PERSPECTIVE_TYPE)
-    , m_pass(Std)
-    , m_drawTool(nullptr)
-    //, m_boundFrameBuffer(nullptr)
-    , m_x (ConstVecCoordId::position())
-    , m_v (ConstVecDerivId::velocity())
-    , m_supportedAPIs(0)
-{
-    m_displayFlags.setShowVisualModels(true); // BUGFIX: visual models are visible by default
-}
-
-/// Get the default VisualParams, to be used to provide a default values for method parameters
-VisualParams* VisualParams::defaultInstance()
-{
-    SOFA_THREAD_SPECIFIC_PTR(VisualParams, threadParams);
-    VisualParams* ptr = threadParams;
-    if (!ptr)
-    {
-        ptr = new VisualParams;
-        threadParams = ptr;
-    }
-    return ptr;
-}
-
-} // namespace visual
-
-} // namespace core
-
-} // namespace sofa
+#endif // GL_CAPTURE_ENABLE_WRAPPER
