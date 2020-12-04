@@ -42,3 +42,5 @@ namespace sofa::helper::gl
 } // namespace sofa::helper::gl
 
 #endif // GL_AXIS_ENABLE_WRAPPER
+
+#undef GL_AXIS_ENABLE_WRAPPER

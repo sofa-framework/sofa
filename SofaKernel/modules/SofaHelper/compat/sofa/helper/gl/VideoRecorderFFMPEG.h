@@ -42,3 +42,5 @@ namespace sofa::helper::gl
 } // namespace sofa::helper::gl
 
 #endif // GL_VIDEORECORDERFFMPEG_ENABLE_WRAPPER
+
+#undef GL_VIDEORECORDERFFMPEG_ENABLE_WRAPPER

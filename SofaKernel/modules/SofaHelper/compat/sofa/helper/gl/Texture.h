@@ -21,9 +21,19 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/helper/config.h>
+
+#if __has_include(<sofa/gl/Texture.h>)
 #include <sofa/gl/Texture.h>
+#define GL_TEXTURE_ENABLE_WRAPPER
 
 SOFA_DEPRECATED_HEADER(v21.06, "sofa/gl/Texture.h")
+
+#else
+#error "OpenGL headers have been moved to Sofa.GL; you will need to link against this library if you need OpenGL, and include <sofa/gl/Texture.h> instead of this one."
+#endif
+
+#ifdef GL_TEXTURE_ENABLE_WRAPPER
 
 namespace sofa::helper::gl
 {
@@ -31,3 +41,6 @@ namespace sofa::helper::gl
 
 } // namespace sofa::helper::gl
 
+#endif // GL_TEXTURE_ENABLE_WRAPPER
+
+#undef GL_TEXTURE_ENABLE_WRAPPER

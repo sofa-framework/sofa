@@ -317,4 +317,6 @@ inline void glMultMatrix(const double* p)
 
 }
 
-#endif // ENABLE_WRAPPER
+#endif // GL_TEMPLATE_ENABLE_WRAPPER
+
+#undef GL_TEMPLATE_ENABLE_WRAPPER

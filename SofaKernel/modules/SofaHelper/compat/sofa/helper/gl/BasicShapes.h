@@ -94,3 +94,5 @@ void drawEmptyParallelepiped(const V& vert1, const V& vert2, const V& vert3, con
 } // namespace sofa::helper::gl
 
 #endif // GL_BASICSHAPES_ENABLE_WRAPPER
+
+#undef GL_BASICSHAPES_ENABLE_WRAPPER

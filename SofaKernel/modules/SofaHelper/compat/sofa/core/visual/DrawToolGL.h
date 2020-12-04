@@ -41,3 +41,6 @@ namespace sofa::core::visual
 } // namespace sofa::core::visual
 
 #endif // GL_DRAWTOOLGL_ENABLE_WRAPPER
+
+#undef GL_DRAWTOOLGL_ENABLE_WRAPPER
+
