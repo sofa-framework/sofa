@@ -19,24 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
+#include <sofa/gl/config.h>
 
-#ifndef SOFA_CORE_VISUAL_DRAWTOOLGL_H
-#define SOFA_CORE_VISUAL_DRAWTOOLGL_H
-
-#include <sofa/core/visual/DrawTool.h>
+#include <sofa/helper/visual/DrawTool.h>
 #include <sofa/gl/BasicShapesGL.h>
 
-namespace sofa
+namespace sofa::gl
 {
 
-namespace core
-{
-
-namespace visual
-{
-
-class SOFA_CORE_API DrawToolGL : public DrawTool
+class SOFA_SOFA_GL_API DrawToolGL : public helper::visual::DrawTool
 {
 
 public:
@@ -249,10 +242,4 @@ public:
     bool getWireFrameEnabled() {return mWireFrameEnabled;}
 };
 
-}//namespace visual
-
-}//namespace core
-
-}//namespace sofa
-
-#endif // SOFA_CORE_VISUAL_DRAWTOOLGL_H
+}//namespace sofa::gl

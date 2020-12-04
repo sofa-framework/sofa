@@ -148,6 +148,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/logging/ExceptionMessageHandler.h
     ${SRC_ROOT}/messaging/FileMessage.h
     ${SRC_ROOT}/visual/Transformation.h
+    ${SRC_ROOT}/visual/DrawTool.h
 )
 set(SOURCE_FILES
     ${SRC_ROOT}/AdvancedTimer.cpp

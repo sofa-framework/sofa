@@ -19,19 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_DRAWTOOL_H
-#define SOFA_HELPER_GL_DRAWTOOL_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/types/RGBAColor.h>
 
 
-namespace sofa
-{
-namespace core
-{
-namespace visual
+namespace sofa::helper::visual
 {
 
 /**
@@ -43,7 +38,7 @@ namespace visual
  *
  */
 
-class SOFA_CORE_API DrawTool
+class DrawTool
 {
 
 public:
@@ -231,10 +226,4 @@ public:
 
 };
 
-} // namespace visual
-
-} // namespace core
-
-} // namespace sofa
-
-#endif //SOFA_CORE_VISUAL_DRAWTOOL_H
+} // namespace sofa::helper::visual

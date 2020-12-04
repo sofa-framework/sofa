@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_HELPER_GL_DRAWTOOLGL_CPP
 
-#include <sofa/core/visual/DrawToolGL.h>
+#include <sofa/gl/DrawToolGL.h>
 
 #include <sofa/gl/gl.h>
 #include <sofa/gl/BasicShapes.h>
@@ -32,26 +32,15 @@
 #include <sofa/gl/glText.inl>
 #include <cmath>
 
-namespace sofa
+namespace sofa::gl
 {
 
-namespace gl
-{
+template class SOFA_SOFA_GL_API BasicShapesGL_Sphere< sofa::defaulttype::Vector3 >;
+template class SOFA_SOFA_GL_API BasicShapesGL_FakeSphere< sofa::defaulttype::Vector3 >;
 
-template class SOFA_CORE_API BasicShapesGL_Sphere< sofa::defaulttype::Vector3 >;
-template class SOFA_CORE_API BasicShapesGL_FakeSphere< sofa::defaulttype::Vector3 >;
-
-} // namespace gl
-
-
-namespace core
-{
-
-namespace visual
-{
 
 using namespace sofa::defaulttype;
-using namespace sofa::gl;
+using sofa::helper::types::RGBAColor;
 
 DrawToolGL::DrawToolGL()
 {
@@ -1426,8 +1415,4 @@ void DrawToolGL::readPixels(int x, int y, int w, int h, float* rgb, float* z)
         glReadPixels(x, y, w, h, GL_DEPTH_COMPONENT, GL_FLOAT, z);
 }
 
-} // namespace visual
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::gl

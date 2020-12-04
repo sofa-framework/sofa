@@ -38,9 +38,9 @@ public:
     virtual ~Transformation();
     Transformation&	operator=(const Transformation& transform);
 
-    virtual void Apply()=0;
-    virtual void ApplyWithCentring()=0;
-    virtual void ApplyInverse()=0;
+    virtual void Apply() {};
+    virtual void ApplyWithCentring() {};
+    virtual void ApplyInverse() {};
 
     template<class Vector>
     Vector operator*(Vector v) const
