@@ -149,6 +149,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/messaging/FileMessage.h
     ${SRC_ROOT}/visual/Transformation.h
     ${SRC_ROOT}/visual/DrawTool.h
+    ${SRC_ROOT}/visual/Trackball.h
 )
 set(SOURCE_FILES
     ${SRC_ROOT}/AdvancedTimer.cpp
@@ -223,6 +224,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/logging/ExceptionMessageHandler.cpp
     ${SRC_ROOT}/messaging/FileMessage.cpp
     ${SRC_ROOT}/visual/Transformation.cpp
+    ${SRC_ROOT}/visual/Trackball.cpp
 )
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_linux.cpp)
@@ -256,6 +258,7 @@ endif()
 set (COMPATSRC_ROOT "compat/")
 set (COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/core/visual/DrawTool.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/Trackball.h
     )
 
 # Create build and install versions of etc/sofa.ini:

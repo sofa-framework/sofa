@@ -21,11 +21,9 @@ set(HEADER_FILES
     ${SOFAGLSRC_ROOT}/BasicShapesGL.inl
     ${SOFAGLSRC_ROOT}/Cylinder.h
     ${SOFAGLSRC_ROOT}/Texture.h
-    ${SOFAGLSRC_ROOT}/Trackball.h
     ${SOFAGLSRC_ROOT}/VideoRecorderFFMPEG.h
     ${SOFAGLSRC_ROOT}/glText.h
     ${SOFAGLSRC_ROOT}/glText.inl
-    ${SOFAGLSRC_ROOT}/Trackball.h
     ${SOFAGLSRC_ROOT}/TransformationGL.h
     ${SOFAGLSRC_ROOT}/DrawToolGL.h
 )
@@ -41,7 +39,6 @@ set(SOURCE_FILES
     ${SOFAGLSRC_ROOT}/VideoRecorderFFMPEG.cpp
     ${SOFAGLSRC_ROOT}/Color.cpp
     ${SOFAGLSRC_ROOT}/gl.cpp
-    ${SOFAGLSRC_ROOT}/Trackball.cpp
     ${SOFAGLSRC_ROOT}/TransformationGL.cpp
     ${SOFAGLSRC_ROOT}/DrawToolGL.cpp
 )

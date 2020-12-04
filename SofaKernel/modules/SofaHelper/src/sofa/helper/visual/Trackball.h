@@ -56,144 +56,52 @@
  * OpenGL(TM) is a trademark of Silicon Graphics, Inc.
  */
 /*
- * Trackball code:
- *
- * Implementation of a virtual trackball.
- * Implemented by Gavin Bell, lots of ideas from Thant Tessman and
- *   the August '88 issue of Siggraph's "Computer Graphics," pp. 121-129.
- *
- * Modified by:
- *     Stephane Cotin
- *     Mitsubish Electric America
- *     June 1998
+ * trackball.h
+ * A virtual trackball implementation
+ * Written by Gavin Bell for Silicon Graphics, November 1988.
  */
-
-#include <sofa/gl/Trackball.h>
-#include <cmath>
-
-namespace sofa::gl
-{
-
-using namespace sofa::defaulttype;
 
 /*
- * This size should really be based on the distance from the center of
- * rotation to the point on the object underneath the mouse.  That
- * point would then track the mouse as closely as possible.  This is a
- * simple example, though, so that is left as an Exercise for the
- * Programmer.
- */
-#define TRACKBALLSIZE  (0.8)
-
-static double	tb_project_to_sphere(double, double, double);
-
-// Constructor
-Trackball::Trackball()
-{
-    _quat[0] = 0.0;
-    _quat[1] = 0.0;
-    _quat[2] = 0.0;
-    _quat[3] = 0.0;
-}
-
-// Destructor
-Trackball::~Trackball()
-{
-}
-
-Quaternion Trackball::GetQuaternion(void)
-{
-    Quaternion	Q;
-
-    Q[0] = _quat[0];
-    Q[1] = _quat[1];
-    Q[2] = _quat[2];
-    Q[3] = _quat[3];
-
-    return Q;
-}
-
-void Trackball::SetQuaternion(Quaternion Q)
-{
-    _quat[0] = Q[0];
-    _quat[1] = Q[1];
-    _quat[2] = Q[2];
-    _quat[3] = Q[3];
-}
-
-/*
- * Ok, simulate a track-ball.  Project the points onto the virtual
- * trackball, then figure out the axis of rotation, which is the cross
- * product of P1 P2 and O P1 (O is the center of the ball, 0,0,0)
- * Note:  This is a deformed trackball-- is a trackball in the center,
- * but is deformed into a hyperbolic sheet of rotation away from the
- * center.  This particular function was chosen after trying out
- * several variations.
+ * Pass the x and y coordinates of the last and current positions of
+ * the mouse, scaled so they are from (-1.0 ... 1.0).
  *
- * It is assumed that the arguments to this routine are in the range
- * (-1.0 ... 1.0)
+ * The resulting rotation is returned as a quaternion rotation in the
+ * first paramater.
  */
 
-void Trackball::ComputeQuaternion(double p1x, double p1y, double p2x,
-        double p2y)
+#pragma once
+#include <sofa/defaulttype/Quat.h>
+
+#include <sofa/helper/config.h>
+
+namespace sofa::helper::visual
 {
-    double	phi;		/* how much to rotate about axis */
-    double	t;
 
-    if (p1x == p2x && p1y == p2y)
-    {
-        /* Zero rotation */
-        _quat[0] = _quat[1] = _quat[2] = 0.0;
-        _quat[3] = 1.0;
-
-        return;
-    }
-
-    // First, figure out z-coordinates for projection of P1 and P2 to deformed sphere
-    Vector3	p1	((SReal)p1x, (SReal)p1y, (SReal)tb_project_to_sphere(TRACKBALLSIZE, p1x, p1y));
-    Vector3	p2	((SReal)p2x, (SReal)p2y, (SReal)tb_project_to_sphere(TRACKBALLSIZE, p2x, p2y));
-
-    // Now, we want the cross product of P1 and P2
-    Vector3	a = cross(p2,p1);
-
-    // Figure out how much to rotate around that axis.
-    Vector3	d	= p1 - p2;
-    t = d.norm() / (2.0 * TRACKBALLSIZE);
-
-    // Avoid problems with out-of-control values...
-    if (t > 1.0)
-    {
-        t = 1.0;
-    }
-    if (t < -1.0)
-    {
-        t = -1.0;
-    }
-    phi = 2.0 * asin(t);
-
-    _quat.axisToQuat(a, (SReal)phi);
-}
-
-
-// Project an x,y pair onto a sphere of radius r OR a hyperbolic sheet
-// if we are away from the center of the sphere.
-static double tb_project_to_sphere(double r, double x, double y)
+class SOFA_HELPER_API Trackball
 {
-    double	d, z;
+public:
+// 	typedef Quater<double> Quaternion;
 
-    d = sqrt(x * x + y * y);
-    if (d < r * 0.70710678118654752440)
-    {
-        /* Inside sphere */
-        z = sqrt(r * r - d * d);
-    }
-    else
-    {
-        /* On hyperbola */
-        double t = r / 1.41421356237309504880;
-        z = t * t / d;
-    }
-    return z;
-}
+    Trackball();
+    ~Trackball();
 
-} // namespace sofa::gl
+    // Accessors
+    void SetQuaternion(sofa::defaulttype::Quaternion Q);
+    sofa::defaulttype::Quaternion GetQuaternion(void);
+
+    // Pass the x and y coordinates of the last and current positions of
+    // the mouse, scaled so they are from (-1.0 ... 1.0).
+    // The resulting rotation is returned as a quaternion rotation
+    void ComputeQuaternion(double p1x, double p1y, double p2x,
+            double p2y);
+
+    // This function computes a quaternion based on an axis (defined by
+    // the given vector) and an angle about which to rotate.  The angle is
+    // expressed in radians.  The result is put into the third argument.
+    void AxisToQuat(double a[3], double phi, double q[4]);
+
+private:
+    sofa::defaulttype::Quaternion	_quat;
+};
+
+} // namespace sofa::helper::visual

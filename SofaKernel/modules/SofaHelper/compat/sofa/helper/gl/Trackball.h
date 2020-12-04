@@ -70,38 +70,14 @@
  */
 
 #pragma once
-#include <sofa/defaulttype/Quat.h>
 
-#include <sofa/gl/config.h>
+#include <sofa/helper/visual/Trackball.h>
 
-namespace sofa::gl
+SOFA_DEPRECATED_HEADER(v21.06, "sofa/helper/visual/Trackball.h")
+
+namespace sofa::helper::gl
 {
+    using Trackball = sofa::helper::visual::Trackball;
 
-class SOFA_SOFA_GL_API Trackball
-{
-public:
-// 	typedef Quater<double> Quaternion;
+} // namespace sofa::helper::gl
 
-    Trackball();
-    ~Trackball();
-
-    // Accessors
-    void SetQuaternion(sofa::defaulttype::Quaternion Q);
-    sofa::defaulttype::Quaternion GetQuaternion(void);
-
-    // Pass the x and y coordinates of the last and current positions of
-    // the mouse, scaled so they are from (-1.0 ... 1.0).
-    // The resulting rotation is returned as a quaternion rotation
-    void ComputeQuaternion(double p1x, double p1y, double p2x,
-            double p2y);
-
-    // This function computes a quaternion based on an axis (defined by
-    // the given vector) and an angle about which to rotate.  The angle is
-    // expressed in radians.  The result is put into the third argument.
-    void AxisToQuat(double a[3], double phi, double q[4]);
-
-private:
-    sofa::defaulttype::Quaternion	_quat;
-};
-
-} // namespace sofa::gl
