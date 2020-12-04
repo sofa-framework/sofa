@@ -26,7 +26,7 @@
 #include <sofa/simulation/Simulation.h>
 #include "DistanceGridForceField.h"
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 #include <cassert>
 #include <iostream>
 

@@ -190,7 +190,7 @@ find_package(SofaMeshCollision REQUIRED)
 find_package(SofaGeneralMeshCollision REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision Sofa.GL) # Needs OpenGL for TextureInterpolation
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

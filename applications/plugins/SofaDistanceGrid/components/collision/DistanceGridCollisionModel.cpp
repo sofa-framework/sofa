@@ -26,7 +26,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/Factory.inl>
 #include <SofaBaseCollision/CubeModel.h>

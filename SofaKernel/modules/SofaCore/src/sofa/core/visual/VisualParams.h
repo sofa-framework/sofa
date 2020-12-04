@@ -28,24 +28,16 @@
 #include <sofa/helper/visual/Transformation.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
+//
+//#if not __has_include(<sofa/helper/gl/FrameBufferObject.h>)
+//namespace sofa::helper::gl
+//{
+//class FrameBufferObject;
+//} // namespace sofa::helper::gl
+//#endif
 
-
-namespace sofa
+namespace sofa::core::visual
 {
-
-namespace helper
-{
-namespace gl
-{
-class FrameBufferObject;
-} // namespace gl
-} // namespace helper
-
-namespace core
-{
-namespace visual
-{
-
 /// The enumeration used to describe potentially supported graphics API.
 enum
 {
@@ -161,11 +153,11 @@ public:
     [[deprecated("sceneTransform in DrawTool is removed from VisualParam, use with the ModelView and Perspective Matrices instead.")]]
     const helper::visual::Transformation& sceneTransform() const { return m_sceneTransform; }
 
-    [[deprecated("frameBufferObject in DrawTool is removed from VisualParam, use your rendering API instead.")]]
-    helper::gl::FrameBufferObject*& frameBufferObject() { return m_boundFrameBuffer; }
+    //[[deprecated("frameBufferObject in DrawTool is removed from VisualParam, use your rendering API instead.")]]
+    //helper::gl::FrameBufferObject*& frameBufferObject() { return m_boundFrameBuffer; }
 
-    [[deprecated("frameBufferObject in DrawTool is removed from VisualParam, use your rendering API instead.")]]
-    helper::gl::FrameBufferObject*& frameBufferObject() const { return m_boundFrameBuffer; }
+    //[[deprecated("frameBufferObject in DrawTool is removed from VisualParam, use your rendering API instead.")]]
+    //helper::gl::FrameBufferObject*& frameBufferObject() const { return m_boundFrameBuffer; }
 
     bool isSupported(unsigned int api) const
     {
@@ -190,7 +182,7 @@ protected:
     Pass                                m_pass;
     DisplayFlags                        m_displayFlags;
     mutable helper::visual::DrawTool*   m_drawTool;
-    mutable helper::gl::FrameBufferObject*	m_boundFrameBuffer;
+    //mutable helper::gl::FrameBufferObject*	m_boundFrameBuffer;
     /// Ids of position vector
     ConstMultiVecCoordId m_x;
     /// Ids of velocity vector
@@ -202,8 +194,7 @@ protected:
     SReal m_projectionMatrix[16]; ///< projection matrix.
 };
 
-} // namespace visual
-} // namespace core
-} // namespace sofa
+} // namespace sofa::core::visual
+
 
 #endif // SOFA_CORE_VISUAL_VISUALPARAMS_H

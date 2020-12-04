@@ -19,41 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OglRenderingSRGB.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
+#include <sofa/helper/config.h>
 
-namespace sofa
-{
+#if __has_include(<sofa/gl/RAII.h>)
+#include <sofa/gl/RAII.h>
 
-namespace component
-{
+SOFA_DEPRECATED_HEADER(v21.06, "sofa/gl/RAII.h")
+#define GL_RAII_ENABLE_WRAPPER
 
-namespace visualmodel
-{
-
-using namespace simulation;
-
-//Register RenderingSRGB in the Object Factory
-int OglRenderingSRGBClass = core::RegisterObject("OglRenderingSRGB")
-        .add< OglRenderingSRGB >()
-        ;
-
-void OglRenderingSRGB::fwdDraw(core::visual::VisualParams* /*vp*/)
-{
-#if defined(GL_FRAMEBUFFER_SRGB)
-    glEnable(GL_FRAMEBUFFER_SRGB);
+#else
+#error "OpenGL headers have been moved to Sofa.GL; you will need to link against your library if you need OpenGL, and include <sofa/gl/RAII.h> instead of this one."
 #endif
-}
 
-void OglRenderingSRGB::bwdDraw(core::visual::VisualParams* /*vp*/)
+#ifdef GL_RAII_ENABLE_WRAPPER
+
+namespace sofa::helper::gl
 {
-#if defined(GL_FRAMEBUFFER_SRGB)
-    glDisable(GL_FRAMEBUFFER_SRGB);
-#endif
-}
+    template <GLenum Flag>
+    using Enable = sofa::gl::Enable<Flag>;
 
-}
-}
-}
+    template <GLenum Flag>
+    using Disable = sofa::gl::Disable<Flag>;
+
+
+} // namespace sofa::helper::gl
+
+#endif // GL_RAII_ENABLE_WRAPPER

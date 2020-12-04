@@ -22,8 +22,6 @@
 #pragma once
 #include <sofa/gl/config.h>
 
-
-#include <sofa/gl/config.h>
 #include <sofa/gl/gl.h>
 
 

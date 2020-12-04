@@ -19,41 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OglRenderingSRGB.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
+#include <sofa/helper/visual/Transformation.h>
 
-namespace sofa
+SOFA_DEPRECATED_HEADER(v21.06, "sofa/helper/visual/Transformation.h")
+
+SOFA_PRAGMA_WARNING("Transformation has been stripped of its OpenGL code, use sofa::gl::TransformationGL if you need its OpenGL implementation.")
+
+namespace sofa::helper::gl
 {
+    using Transformation = sofa::helper::visual::Transformation;
 
-namespace component
-{
-
-namespace visualmodel
-{
-
-using namespace simulation;
-
-//Register RenderingSRGB in the Object Factory
-int OglRenderingSRGBClass = core::RegisterObject("OglRenderingSRGB")
-        .add< OglRenderingSRGB >()
-        ;
-
-void OglRenderingSRGB::fwdDraw(core::visual::VisualParams* /*vp*/)
-{
-#if defined(GL_FRAMEBUFFER_SRGB)
-    glEnable(GL_FRAMEBUFFER_SRGB);
-#endif
-}
-
-void OglRenderingSRGB::bwdDraw(core::visual::VisualParams* /*vp*/)
-{
-#if defined(GL_FRAMEBUFFER_SRGB)
-    glDisable(GL_FRAMEBUFFER_SRGB);
-#endif
-}
-
-}
-}
-}
+} // namespace sofa::helper::gl

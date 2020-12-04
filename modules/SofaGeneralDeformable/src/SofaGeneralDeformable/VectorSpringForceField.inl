@@ -26,7 +26,6 @@
 #include <sofa/helper/io/XspLoader.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <sofa/helper/system/gl.h>
 #include <sofa/simulation/Simulation.h>
 #include <cassert>
 #include <iostream>

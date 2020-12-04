@@ -38,7 +38,7 @@ set(EXTRA_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision)
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction Sofa.GL)
 
 if(MiniFlowVR_FOUND)
     target_link_libraries(${PROJECT_NAME} PRIVATE miniFlowVR) # Private because not exported in API

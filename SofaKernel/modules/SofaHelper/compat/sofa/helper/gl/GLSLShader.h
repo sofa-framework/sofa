@@ -19,41 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OglRenderingSRGB.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
+#include <sofa/gl/GLSLShader.h>
 
-namespace sofa
+SOFA_DEPRECATED_HEADER(v21.06, "sofa/gl/GLSLShader.h")
+
+namespace sofa::helper::gl
 {
+    using GLSLShader = sofa::gl::GLSLShader;
 
-namespace component
-{
-
-namespace visualmodel
-{
-
-using namespace simulation;
-
-//Register RenderingSRGB in the Object Factory
-int OglRenderingSRGBClass = core::RegisterObject("OglRenderingSRGB")
-        .add< OglRenderingSRGB >()
-        ;
-
-void OglRenderingSRGB::fwdDraw(core::visual::VisualParams* /*vp*/)
-{
-#if defined(GL_FRAMEBUFFER_SRGB)
-    glEnable(GL_FRAMEBUFFER_SRGB);
-#endif
-}
-
-void OglRenderingSRGB::bwdDraw(core::visual::VisualParams* /*vp*/)
-{
-#if defined(GL_FRAMEBUFFER_SRGB)
-    glDisable(GL_FRAMEBUFFER_SRGB);
-#endif
-}
-
-}
-}
-}
+} // namespace sofa::helper::gl

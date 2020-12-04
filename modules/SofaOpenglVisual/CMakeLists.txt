@@ -83,7 +83,7 @@ set(EXTRA_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCommon Sofa.GL)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
