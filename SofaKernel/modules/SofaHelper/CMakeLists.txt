@@ -147,6 +147,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/logging/DefaultStyleMessageFormatter.h
     ${SRC_ROOT}/logging/ExceptionMessageHandler.h
     ${SRC_ROOT}/messaging/FileMessage.h
+    ${SRC_ROOT}/visual/Transformation.h
 )
 set(SOURCE_FILES
     ${SRC_ROOT}/AdvancedTimer.cpp
@@ -220,6 +221,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/logging/RoutingMessageHandler.cpp
     ${SRC_ROOT}/logging/ExceptionMessageHandler.cpp
     ${SRC_ROOT}/messaging/FileMessage.cpp
+    ${SRC_ROOT}/visual/Transformation.cpp
 )
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_linux.cpp)

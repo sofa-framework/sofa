@@ -22,12 +22,11 @@ set(HEADER_FILES
     ${SOFAGLSRC_ROOT}/Cylinder.h
     ${SOFAGLSRC_ROOT}/Texture.h
     ${SOFAGLSRC_ROOT}/Trackball.h
-    ${SOFAGLSRC_ROOT}/Transformation.h
     ${SOFAGLSRC_ROOT}/VideoRecorderFFMPEG.h
     ${SOFAGLSRC_ROOT}/glText.h
     ${SOFAGLSRC_ROOT}/glText.inl
     ${SOFAGLSRC_ROOT}/Trackball.h
-    ${SOFAGLSRC_ROOT}/Transformation.h
+    ${SOFAGLSRC_ROOT}/TransformationGL.h
 )
 
 set(SOURCE_FILES
@@ -42,7 +41,7 @@ set(SOURCE_FILES
     ${SOFAGLSRC_ROOT}/Color.cpp
     ${SOFAGLSRC_ROOT}/gl.cpp
     ${SOFAGLSRC_ROOT}/Trackball.cpp
-    ${SOFAGLSRC_ROOT}/Transformation.cpp
+    ${SOFAGLSRC_ROOT}/TransformationGL.cpp
 )
 
 if(GLEW_FOUND)

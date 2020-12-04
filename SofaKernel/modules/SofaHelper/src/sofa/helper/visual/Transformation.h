@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/gl/config.h>
+#include <sofa/helper/config.h>
 
-namespace sofa::gl
+namespace sofa::helper::visual
 {
 
-class SOFA_SOFA_GL_API Transformation
+class SOFA_HELPER_API Transformation
 {
 public:
     SReal			translation[3];
@@ -34,13 +34,13 @@ public:
     SReal			objectCenter[3];
 
 public:
-    Transformation();	// constructor
-    ~Transformation();	// destructor
+    Transformation();
+    virtual ~Transformation();
     Transformation&	operator=(const Transformation& transform);
 
-    void Apply();
-    void ApplyWithCentring();
-    void ApplyInverse();
+    virtual void Apply()=0;
+    virtual void ApplyWithCentring()=0;
+    virtual void ApplyInverse()=0;
 
     template<class Vector>
     Vector operator*(Vector v) const
@@ -55,10 +55,10 @@ public:
         return r;
     }
 
-private:
+protected:
     void InvertTransRotMatrix(SReal matrix[4][4]);
     void InvertTransRotMatrix(SReal sMatrix[4][4],
             SReal dMatrix[4][4]);
 };
 
-} // namespace sofa::gl
+} // namespace sofa::helper::visual

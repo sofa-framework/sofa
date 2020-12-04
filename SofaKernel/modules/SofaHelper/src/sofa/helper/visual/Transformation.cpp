@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gl/Transformation.h>
-#include <sofa/gl/gl.h>
-#include <sofa/gl/template.h>
+#include <sofa/helper/visual/Transformation.h>
 
-namespace sofa::gl
+namespace sofa::helper::visual
 {
 
 // --------------------------------------------------------------------------------------
@@ -85,49 +83,6 @@ Transformation& Transformation::operator=(const Transformation& transform)
 }
 
 
-// --------------------------------------------------------------------------------------
-// --- Apply the transformation
-// --------------------------------------------------------------------------------------
-void Transformation::Apply()
-{
-#ifndef SOFA_NO_OPENGL
-    gl::glTranslate(translation[0], translation[1], translation[2]);
-    gl::glMultMatrix((SReal *)rotation);
-    gl::glScale(scale[0], scale[1], scale[2]);
-#endif /* SOFA_NO_OPENGL */
-}
-
-
-// --------------------------------------------------------------------------------------
-// --- First center the object, then apply the transformation (to align with the corresponding texture)
-// --------------------------------------------------------------------------------------
-void Transformation::ApplyWithCentring()
-{
-    Apply();
-
-#ifndef SOFA_NO_OPENGL
-    gl::glTranslate(-objectCenter[0], -objectCenter[1], -objectCenter[2]);
-#endif /* SOFA_NO_OPENGL */
-}
-
-
-// --------------------------------------------------------------------------------------
-// --- Apply the inverse transformation
-// --------------------------------------------------------------------------------------
-void Transformation::ApplyInverse()
-{
-    SReal	iRotation[4][4];
-
-    InvertTransRotMatrix(rotation, iRotation);
-
-#ifndef SOFA_NO_OPENGL
-    gl::glScale((SReal)1.0 / scale[0], (SReal)1.0 / scale[1], (SReal)1.0 / scale[2]);
-    gl::glMultMatrix((SReal *)rotation);
-    gl::glTranslate(-translation[0], -translation[1], -translation[2]);
-#endif /* SOFA_NO_OPENGL */
-}
-
-
 //----------------------------------------------------------------------------
 //--- Inversion for 4x4 matrix only containing rotations and translations
 //--- Transpose rotation matrix and mutiple by -1 translation row
@@ -174,4 +129,4 @@ void Transformation::InvertTransRotMatrix(SReal sMatrix[4][4],
     InvertTransRotMatrix(dMatrix);
 }
 
-} // namespace sofa::gl
+} // namespace sofa::helper::visual
