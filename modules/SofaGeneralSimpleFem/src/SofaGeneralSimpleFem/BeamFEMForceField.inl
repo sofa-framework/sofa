@@ -29,7 +29,6 @@
 #include <cassert>
 #include <iostream>
 #include <set>
-#include <sofa/helper/system/gl.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>

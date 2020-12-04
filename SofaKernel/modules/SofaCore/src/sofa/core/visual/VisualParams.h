@@ -46,8 +46,6 @@ namespace core
 namespace visual
 {
 
-class DrawTool;
-
 /// The enumeration used to describe potentially supported graphics API.
 enum
 {
@@ -135,8 +133,8 @@ public:
     const Pass& pass() const { return m_pass; }
     Pass& pass() { return m_pass; }
 
-    DrawTool*& drawTool() { return m_drawTool; }
-    DrawTool*& drawTool() const { return m_drawTool; }
+    helper::visual::DrawTool*& drawTool() { return m_drawTool; }
+    helper::visual::DrawTool*& drawTool() const { return m_drawTool; }
 
     DisplayFlags& displayFlags() { return m_displayFlags; }
     const DisplayFlags& displayFlags() const { return m_displayFlags; }
@@ -191,7 +189,7 @@ protected:
     CameraType                          m_cameraType;
     Pass                                m_pass;
     DisplayFlags                        m_displayFlags;
-    mutable DrawTool*                   m_drawTool;
+    mutable helper::visual::DrawTool*   m_drawTool;
     mutable helper::gl::FrameBufferObject*	m_boundFrameBuffer;
     /// Ids of position vector
     ConstMultiVecCoordId m_x;

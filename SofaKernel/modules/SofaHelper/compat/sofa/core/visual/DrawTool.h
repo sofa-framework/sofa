@@ -19,21 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_ANGULARSPRINGFORCEFIELD_CPP
+#pragma once
 
-#include <SofaDeformable/AngularSpringForceField.inl>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/visual/DrawTool.h>
 
-namespace sofa::component::forcefield
+
+SOFA_DEPRECATED_HEADER(v21.06, "sofa/helper/visual/DrawTool.h")
+
+namespace sofa::core::visual
 {
+    using DrawTool = sofa::helper::visual::DrawTool;
 
-using namespace sofa::defaulttype;
-
-
-int AngularSpringForceFieldClass = core::RegisterObject("Angular springs applied to rotational degrees of freedom of a rigid body or frame")
-        .add< AngularSpringForceField<Rigid3Types> >()
-        ;
-
-template class SOFA_SOFADEFORMABLE_API AngularSpringForceField<Rigid3Types>;
-
-} // namespace sofa::component::forcefield
+} // namespace sofa::core::visual
