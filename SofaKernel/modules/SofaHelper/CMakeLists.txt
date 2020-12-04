@@ -274,6 +274,7 @@ set (COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/helper/gl/Axis.h
     ${COMPATSRC_ROOT}/sofa/helper/gl/glText.h
     ${COMPATSRC_ROOT}/sofa/helper/gl/glText.inl
+    ${COMPATSRC_ROOT}/sofa/helper/gl/Color.h
     )
 
 # Create build and install versions of etc/sofa.ini:
