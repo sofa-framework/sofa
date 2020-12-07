@@ -82,13 +82,19 @@ else()
     message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
 endif()
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaFramework
+# own include dir, the macro does not handle "independent" package for SofaFramework-style include 
+# i.e NOT the name of package first (sofa/gl is wanted, instead of Sofa.GL/)
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/${PROJECT_NAME}>")
+
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaFramework"
-    )
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "SofaFramework"
+)
+
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled

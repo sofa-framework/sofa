@@ -3,6 +3,7 @@ project(SofaDistanceGrid VERSION 1.0)
 
 find_package(SofaMiscCollision REQUIRED)
 sofa_find_package(MiniFlowVR QUIET)
+find_package(Sofa.GL REQUIRED)
 
 set(HEADER_FILES
     config.h.in

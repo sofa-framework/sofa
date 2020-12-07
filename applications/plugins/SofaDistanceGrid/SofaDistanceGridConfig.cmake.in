@@ -5,6 +5,7 @@
 
 find_package(SofaFramework REQUIRED)
 find_package(SofaMiscCollision REQUIRED)
+find_package(Sofa.GL REQUIRED)
 
 if(NOT TARGET SofaDistanceGrid)
     include("${CMAKE_CURRENT_LIST_DIR}/SofaDistanceGridTargets.cmake")
