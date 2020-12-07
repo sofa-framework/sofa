@@ -51,7 +51,6 @@ using sofa::simulation::scenechecking::SceneCheckerListener;
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
 
-#include <SofaGeneralLoader/ReadState.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/cast.h>
 #include <sofa/helper/BackTrace.h>
@@ -72,7 +71,6 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/system/console.h>
 using sofa::helper::Utils;
 
-using sofa::component::misc::ReadStateActivator;
 using sofa::simulation::tree::TreeSimulation;
 using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
