@@ -23,8 +23,6 @@
 #define SOFA_COMPONENT_VISUALMODEL_OGLCOLORMAP_H
 #include "config.h"
 
-#ifndef SOFA_NO_OPENGL
-
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/OptionsGroup.h>
@@ -126,7 +124,5 @@ public:
 } // namespace component
 
 } // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
 
 #endif
