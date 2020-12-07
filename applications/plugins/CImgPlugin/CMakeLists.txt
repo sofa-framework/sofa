@@ -25,6 +25,7 @@ set(CMAKE_FIND_FRAMEWORK LAST)
 sofa_find_package(TIFF QUIET)
 sofa_find_package(JPEG QUIET)
 sofa_find_package(PNG QUIET)
+sofa_find_package(ZLIB QUIET)
 
 # Configure Paths according to detected packages
 set(EXTERNAL_LIBS "")
@@ -57,6 +58,9 @@ if(PNG_FOUND)
     list(APPEND EXTERNAL_LIBS PNG::PNG)
 else()
     message(STATUS "CImgPlugin: PNG Image Format disabled")
+endif()
+if(ZLIB_FOUND)
+    list(APPEND EXTERNAL_LIBS ZLIB::ZLIB)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
