@@ -30,5 +30,5 @@
 SOFA_DEPRECATED_HEADER(v21.06, "sofa/gl/glText.inl")
 
 #else
-#error "OpenGL headers have been moved to Sofa.GL; you will need to link against this library if you need OpenGL, and include <sofa/gl/glText.inl> instead of this one."
+#error "OpenGL headers have been moved to Sofa.GL. Therefore you will need to link against Sofa.GL if you need OpenGL (PR1649), and include <sofa/gl/glText.inl> instead of this one."
 #endif
