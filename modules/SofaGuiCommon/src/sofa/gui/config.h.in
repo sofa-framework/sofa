@@ -19,16 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_CONFIG_H
-#define SOFA_GUI_CONFIG_H
+#pragma once
 
 #include <SofaGui/config.h>
 
+#define SOFAGUICOMMON_HAVE_SOFA_GL @SOFAGUICOMMON_HAVE_SOFA.GL@
+
+#define SOFAGUICOMMON_VERSION @PROJECT_VERSION@
+
 #ifdef SOFA_BUILD_SOFAGUICOMMON
-#  define SOFA_TARGET SofaGuiCommon
+#  define SOFA_TARGET @PROJECT_NAME@
 #  define SOFA_SOFAGUICOMMON_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_SOFAGUICOMMON_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
 #endif
