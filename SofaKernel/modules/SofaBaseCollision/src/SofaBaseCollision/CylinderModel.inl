@@ -171,7 +171,7 @@ template<class DataTypes>
 void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, Index i)
 {
     using namespace sofa::defaulttype;
-    Vec<4,float> colour(getColor4f());
+    sofa::helper::types::RGBAColor colour(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
     SReal h2 = height(i)/2.0;
 
     Vector3 p1(center(i));

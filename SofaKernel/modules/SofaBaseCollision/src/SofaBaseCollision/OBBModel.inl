@@ -143,17 +143,13 @@ void OBBCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparam
     std::vector<Coord> p;
     vertices(index,p);
 
-    Vec4f col4f(getColor4f());
+    sofa::helper::types::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
 
     std::vector<Vector3> n;
     n.push_back(axis(index,1));
-    //n.push_back(n.back());
     n.push_back(axis(index,0));
-    //n.push_back(n.back());
     n.push_back(-n[0]);
-//    n.push_back(n.back());
     n.push_back(-n[2]);
-//    n.push_back(n.back());
     n.push_back(n.front());
 
     std::vector<Vector3> points;
@@ -168,7 +164,7 @@ void OBBCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparam
     points.push_back(p[3]);
     points.push_back(p[0]);
 
-    vparams->drawTool()->drawTriangleStrip(points,n,col4f);
+    vparams->drawTool()->drawTriangleStrip(points,n, col4f);
 
     n.clear();
     points.clear();

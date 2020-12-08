@@ -147,9 +147,9 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
 
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
         if(d_showImpostors.getValue())
-            vparams->drawTool()->drawFakeSpheres(points, radius, Vec<4,float>(getColor4f()));
+            vparams->drawTool()->drawFakeSpheres(points, radius, sofa::helper::types::RGBAColor(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]));
         else
-            vparams->drawTool()->drawSpheres(points, radius, Vec<4, float>(getColor4f()));
+            vparams->drawTool()->drawSpheres(points, radius, sofa::helper::types::RGBAColor(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]));
         vparams->drawTool()->setLightingEnabled(false); //Disable lightning
 
     }

@@ -166,7 +166,7 @@ void CapsuleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 template<class DataTypes>
 void CapsuleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, Index index)
 {
-    sofa::defaulttype::Vec<4,float> col4f(getColor4f());
+    sofa::helper::types::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
     vparams->drawTool()->drawCapsule(point1(index),point2(index),(float)radius(index),col4f);
 }
 
@@ -175,7 +175,7 @@ void CapsuleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vp
 {
     if (vparams->displayFlags().getShowCollisionModels())
     {
-        sofa::defaulttype::Vec<4,float> col4f(getColor4f());
+        sofa::helper::types::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());//maybe ??
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
 
