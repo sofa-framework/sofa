@@ -108,7 +108,7 @@ void CapsuleCollisionModel<DataTypes>::init()
 template <class DataTypes>
 Size CapsuleCollisionModel<DataTypes>::nbCap()const
 {
-    return _capsule_radii.getValue().size();
+    return Size(_capsule_radii.getValue().size());
 }
 
 template <class DataTypes>

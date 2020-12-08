@@ -99,7 +99,7 @@ void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::init()
 template <class MyReal>
 Size CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::nbCap()const
 {
-    return d_capsule_radii.getValue().size();
+    return Size(d_capsule_radii.getValue().size());
 }
 
 template <class MyReal>
