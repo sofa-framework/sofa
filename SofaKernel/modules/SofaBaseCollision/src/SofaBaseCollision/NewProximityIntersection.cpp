@@ -28,6 +28,11 @@
 #include <iostream>
 #include <algorithm>
 
+namespace sofa::core::collision
+{
+    template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
+} // namespace sofa::core::collision
+
 namespace sofa::component::collision
 {
 

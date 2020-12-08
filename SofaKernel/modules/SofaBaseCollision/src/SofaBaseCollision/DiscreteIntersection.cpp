@@ -32,6 +32,11 @@
 #include <SofaBaseCollision/BaseIntTool.h>
 #include <SofaBaseCollision/RigidCapsuleModel.h>
 
+namespace sofa::core::collision
+{
+    template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
+} // namespace sofa::core::collision
+
 namespace sofa::component::collision
 {
 
@@ -41,7 +46,6 @@ using namespace sofa::core::collision;
 int DiscreteIntersectionClass = core::RegisterObject("TODO-DiscreteIntersectionClass")
         .add< DiscreteIntersection >()
         ;
-
 
 DiscreteIntersection::DiscreteIntersection()
 {
