@@ -4,7 +4,9 @@ project(SofaOpenCL)
 set(SOFAOPENCL_VERSION 0.1)
 
 find_package(OpenCL REQUIRED)
-find_package(SofaGeneral REQUIRED)
+find_package(SofaGeneralObjectInteraction REQUIRED)
+find_package(SofaGeneralDeformable REQUIRED)
+find_package(SofaUserInteraction REQUIRED)
 sofa_find_package(SofaSphFluid QUIET)
 
 set(HEADER_FILES
@@ -103,7 +105,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${OTHER_FILES
 add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
 
 add_definitions("-DSOFA_BUILD_GPU_OPENCL")
-target_link_libraries(${PROJECT_NAME} ${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaUserInteraction csparse) # taucs taucs_mt system-taucs)
+target_link_libraries(${PROJECT_NAME} ${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaUserInteraction csparse SofaGeneralObjectInteraction SofaGeneralDeformable) # taucs taucs_mt system-taucs)
 if(SofaSphFluid_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaSphFluid) # taucs taucs_mt system-taucs)
 endif()
