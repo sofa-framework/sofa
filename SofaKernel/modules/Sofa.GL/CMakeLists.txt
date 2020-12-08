@@ -95,6 +95,7 @@ sofa_create_package_with_targets(
     RELOCATABLE "SofaFramework"
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaFramework)
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
