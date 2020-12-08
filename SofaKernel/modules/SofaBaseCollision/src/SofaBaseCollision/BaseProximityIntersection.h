@@ -23,7 +23,6 @@
 #include <SofaBaseCollision/config.h>
 
 #include <SofaBaseCollision/DiscreteIntersection.h>
-#include <SofaBaseCollision/BaseIntTool.h>
 
 namespace sofa::component::collision
 {

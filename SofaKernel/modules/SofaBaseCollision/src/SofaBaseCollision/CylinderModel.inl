@@ -20,11 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseCollision/CylinderModel.h>
-#include <sofa/helper/proximity.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/Simulation.h>
 
 namespace sofa::component::collision
 {

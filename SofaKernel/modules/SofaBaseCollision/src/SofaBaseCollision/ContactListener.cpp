@@ -22,7 +22,6 @@
 #include <SofaBaseCollision/ContactListener.h>
 
 #include <sofa/core/collision/NarrowPhaseDetection.h>
-#include <sofa/core/collision/ContactManager.h>
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/ObjectFactory.h>

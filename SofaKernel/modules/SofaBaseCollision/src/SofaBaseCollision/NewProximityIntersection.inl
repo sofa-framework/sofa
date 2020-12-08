@@ -22,11 +22,7 @@
 #pragma once
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/proximity.h>
-#include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include <iostream>
-#include <algorithm>
 
 
 namespace sofa::component::collision

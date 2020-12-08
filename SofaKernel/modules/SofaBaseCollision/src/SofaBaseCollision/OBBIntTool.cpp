@@ -21,7 +21,8 @@
 ******************************************************************************/
 #include <SofaBaseCollision/OBBIntTool.h>
 
-namespace sofa::component::collision{
+namespace sofa::component::collision
+{
 
 
 int OBBIntTool::computeIntersection(OBB & box0, OBB & box1,SReal alarmDist,SReal contactDist,OutputVector* contacts){

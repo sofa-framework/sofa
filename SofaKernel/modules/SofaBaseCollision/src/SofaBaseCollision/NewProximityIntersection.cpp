@@ -21,12 +21,9 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_CPP
 #include <SofaBaseCollision/NewProximityIntersection.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+
 #include <sofa/core/collision/Intersection.inl>
-#include <iostream>
-#include <algorithm>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::core::collision
 {

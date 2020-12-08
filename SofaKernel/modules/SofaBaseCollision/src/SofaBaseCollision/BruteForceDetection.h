@@ -25,13 +25,13 @@
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/vector.h>
 
 
 namespace sofa::component::collision
 {
 
+class CubeCollisionModel;
 
 class SOFA_SOFABASECOLLISION_API MirrorIntersector : public core::collision::ElementIntersector
 {
@@ -84,7 +84,7 @@ private:
 
     Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
-    CubeCollisionModel::SPtr boxModel;
+    sofa::core::sptr<CubeCollisionModel> boxModel;
 
 
 protected:

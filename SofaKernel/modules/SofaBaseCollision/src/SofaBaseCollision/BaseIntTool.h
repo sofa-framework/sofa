@@ -29,7 +29,8 @@
 namespace sofa::component::collision
 {
 
-class SOFA_SOFABASECOLLISION_API BaseIntTool : public CapsuleIntTool,public OBBIntTool{
+class SOFA_SOFABASECOLLISION_API BaseIntTool : public CapsuleIntTool,public OBBIntTool
+{
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
 
@@ -48,10 +49,6 @@ public:
         typename TSphere<DataTypes1>::Real r = sph1.r() + sph2.r() + alarmDist;
         return ( sph1.center() - sph2.center() ).norm2() <= r*r;
     }
-
-
-
-
 
     template <class DataTypes1,class DataTypes2>
     static int computeIntersection(TSphere<DataTypes1>& sph1, TSphere<DataTypes2>& sph2,SReal alarmDist,SReal contactDist,OutputVector* contacts)

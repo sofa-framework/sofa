@@ -21,18 +21,8 @@
 ******************************************************************************/
 #include <SofaBaseCollision/RigidCapsuleModel.h>
 
-#include <sofa/helper/proximity.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
-#include <iostream>
-#include <algorithm>
-
-#include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <sofa/core/ObjectFactory.h>
-
-#include <sofa/simulation/Simulation.h>
 
 namespace sofa::component::collision
 {

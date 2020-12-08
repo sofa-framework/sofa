@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseProximityIntersection.h"
+#include <SofaBaseCollision/BaseProximityIntersection.h>
 
 namespace sofa::component::collision
 {

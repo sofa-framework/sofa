@@ -31,9 +31,8 @@
 #include <SofaBaseCollision/RigidCapsuleModel.h>
 #include <SofaBaseCollision/OBBModel.h>
 
-namespace sofa::component::collision{
-
-
+namespace sofa::component::collision
+{
 /**
   *TDataTypes is the capsule type and TDataTypes2 the OBB type.
   */

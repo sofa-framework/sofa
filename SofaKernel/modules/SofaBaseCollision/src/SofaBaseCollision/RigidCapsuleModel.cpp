@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_RIGIDCAPSULECOLLISIONMODEL_CPP
-#include "RigidCapsuleModel.inl"
+#include <SofaBaseCollision/RigidCapsuleModel.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::collision
 {

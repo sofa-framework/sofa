@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseCollision/config.h>
 
-#include <sofa/core/collision/Intersection.h>
+#include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaBaseCollision/OBBModel.h>
@@ -30,7 +30,8 @@
 
 namespace sofa::component::collision
 {
-class SOFA_SOFABASECOLLISION_API CapsuleIntTool{
+class SOFA_SOFABASECOLLISION_API CapsuleIntTool
+{
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
 

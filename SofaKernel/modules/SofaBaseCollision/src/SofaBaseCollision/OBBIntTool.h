@@ -29,7 +29,8 @@
 #include <SofaBaseCollision/IntrSphereOBB.h>
 namespace sofa::component::collision{
 
-class SOFA_SOFABASECOLLISION_API OBBIntTool{
+class SOFA_SOFABASECOLLISION_API OBBIntTool
+{
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
     typedef sofa::core::collision::DetectionOutput DetectionOutput;

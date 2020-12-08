@@ -33,9 +33,6 @@ namespace sofa::component::collision
 template<class DataTypes>
 class SphereCollisionModel;
 
-//template <class TDataTypes>
-//class TSphere;
-
 template<class TDataTypes>
 class TSphere : public core::TCollisionElementIterator< SphereCollisionModel<TDataTypes> >
 {

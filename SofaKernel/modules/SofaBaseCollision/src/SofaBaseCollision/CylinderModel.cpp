@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_CPP
-#include "CylinderModel.inl"
+#include <SofaBaseCollision/CylinderModel.inl>
 
 namespace sofa::component::collision
 {

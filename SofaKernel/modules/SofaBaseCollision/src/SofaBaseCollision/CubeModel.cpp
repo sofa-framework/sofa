@@ -22,10 +22,8 @@
 #include <SofaBaseCollision/CubeModel.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
-#include <cmath>
 
 namespace sofa::component::collision
 {
@@ -178,12 +176,7 @@ void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
         ++level;
         color *= 0.8f;
     }
-    Vec<4,float> c;
-    if (isSimulated())
-        c=Vec<4,float>(1.0f, 1.0f, 1.0f, color);
-    else
-        c=Vec<4,float>(1.0f, 1.0f, 1.0f, color);
-
+    sofa::helper::types::RGBAColor c{ 1.0f, 1.0f, 1.0f, color };
 
     std::vector< Vector3 > points;
     for (Index i=0; i<size; i++)
@@ -219,7 +212,7 @@ void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
         points.push_back(Vector3(vmax[0], vmax[1], vmax[2]));
     }
 
-    vparams->drawTool()->drawLines(points, 1, Vec<4,float>(c));
+    vparams->drawTool()->drawLines(points, 1, c);
 
 
     if (getPrevious()!=nullptr)
@@ -234,18 +227,6 @@ std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeCol
 std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeCollisionModel::getExternalChildren(Index index) const
 {
     return elems[index].children;
-    /*
-        core::CollisionElementIterator i1 = elems[index].leaf;
-        if (!i1.valid())
-        {
-            return std::make_pair(core::CollisionElementIterator(),core::CollisionElementIterator());
-        }
-        else
-        {
-            core::CollisionElementIterator i2 = i1; ++i2;
-            return std::make_pair(i1,i2);
-        }
-    */
 }
 
 bool CubeCollisionModel::isLeaf(Index index ) const
@@ -255,8 +236,6 @@ bool CubeCollisionModel::isLeaf(Index index ) const
 
 void CubeCollisionModel::computeBoundingTree(int maxDepth)
 {
-//    if(maxDepth <= 0)
-//        return;
 
     dmsg_info() << ">CubeCollisionModel::computeBoundingTree(" << maxDepth << ")";
     std::list<CubeCollisionModel*> levels;
@@ -264,7 +243,6 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
     for (int i=0; i<maxDepth; i++)
         levels.push_front(levels.front()->createPrevious<CubeCollisionModel>());
     CubeCollisionModel* root = levels.front();
-    //if (isStatic() && root->getPrevious() == nullptr && !root->empty()) return; // No need to recompute BBox if immobile
 
     if (root->empty() || root->getPrevious() != nullptr)
     {

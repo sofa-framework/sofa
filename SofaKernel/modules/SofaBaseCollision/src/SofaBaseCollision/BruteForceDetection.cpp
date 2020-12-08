@@ -20,14 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseCollision/BruteForceDetection.h>
-#include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/helper/FnDispatcher.h>
+#include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
-#include <map>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/AdvancedTimer.h>
 #include <queue>
 #include <stack>
-#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa::component::collision
 {

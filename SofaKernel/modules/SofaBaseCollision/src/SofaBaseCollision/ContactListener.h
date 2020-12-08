@@ -23,7 +23,7 @@
 #include <SofaBaseCollision/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/collision/Contact.h>
+#include <sofa/core/collision/DetectionOutput.h>
 
 namespace sofa::core
 {
