@@ -20,21 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_COLLISION_OBBMODEL_H
-#define SOFA_COMPONENT_COLLISION_OBBMODEL_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/CollisionModel.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template<class DataTypes>
@@ -277,15 +270,9 @@ using OBBModel [[deprecated("The OBBModel is now deprecated, please use OBBColli
 using OBB = TOBB<sofa::defaulttype::Rigid3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_OBBMODEL_CPP)
-extern template class SOFA_BASE_COLLISION_API TOBB<defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_COLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API TOBB<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;
 
 #endif
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_COLLISION_OBBMODEL_H
+} // namespace sofa::component::collision

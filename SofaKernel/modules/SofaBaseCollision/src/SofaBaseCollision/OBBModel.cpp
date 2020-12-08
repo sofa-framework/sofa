@@ -23,13 +23,7 @@
 #include <SofaBaseCollision/OBBModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -44,12 +38,7 @@ int OBBModelClass = core::RegisterObject("Collision model which represents a set
         .addAlias("TOBBModel")
         ;
 
-template class SOFA_BASE_COLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;
-template class SOFA_BASE_COLLISION_API TOBB<defaulttype::Rigid3Types>;
+template class SOFA_SOFABASECOLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;
+template class SOFA_SOFABASECOLLISION_API TOBB<defaulttype::Rigid3Types>;
 
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision

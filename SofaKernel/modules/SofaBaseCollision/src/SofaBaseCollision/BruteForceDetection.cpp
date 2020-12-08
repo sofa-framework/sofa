@@ -29,13 +29,7 @@
 #include <stack>
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -378,9 +372,4 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     }
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::collision

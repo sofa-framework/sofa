@@ -25,13 +25,7 @@
 #include <sofa/core/objectmodel/Tag.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 int DefaultContactManagerClass = core::RegisterObject("Default class to create reactions to the collisions")
@@ -367,8 +361,4 @@ void DefaultContactManager::setContactTags(core::CollisionModel* model1, core::C
         contact->addTag(*it);
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision

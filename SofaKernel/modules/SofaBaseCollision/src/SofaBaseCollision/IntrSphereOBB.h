@@ -19,18 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_H
-#define SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/IntrUtility3.h>
 #include <SofaBaseCollision/Intersector.h>
 
-namespace sofa{
-namespace component{
-namespace collision{
+namespace sofa::component::collision{
 
 /**
   *TDataTypes is the sphere type and TDataTypes2 the OBB type.
@@ -70,12 +67,9 @@ private:
 typedef TIntrSphereOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types> IntrSphereOBB;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_CPP)
-extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<defaulttype::Rigid3Types,defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API TIntrSphereOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API TIntrSphereOBB<defaulttype::Rigid3Types,defaulttype::Rigid3Types>;
 
 #endif
 
-}
-}
-}
-#endif // SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_H
+} // namespace sofa::component::collision

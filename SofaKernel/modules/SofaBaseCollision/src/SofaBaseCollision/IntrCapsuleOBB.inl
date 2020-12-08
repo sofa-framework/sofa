@@ -30,9 +30,7 @@
 #include <SofaBaseCollision/IntrUtility3.h>
 #include <SofaBaseCollision/IntrCapsuleOBB.h>
 
-namespace sofa{
-namespace component{
-namespace collision{
+namespace sofa::component::collision{
 
 
 //----------------------------------------------------------------------------
@@ -136,6 +134,4 @@ bool TIntrCapsuleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
     return true;
 }
 
-}
-}
-}
+} // namespace sofa::component::collision

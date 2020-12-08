@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_H
-#define SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <sofa/core/CollisionModel.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template<class DataTypes>
@@ -168,14 +161,8 @@ using CylinderModel [[deprecated("The CylinderModel is now deprecated, please us
 using Cylinder = TCylinder<sofa::defaulttype::Rigid3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_CPP)
-extern template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_COLLISION_API CylinderCollisionModel<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API TCylinder<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API CylinderCollisionModel<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

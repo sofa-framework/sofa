@@ -21,7 +21,8 @@
 ******************************************************************************/
 #include <SofaBaseCollision/BaseIntTool.h>
 
-namespace sofa{namespace component{namespace collision{
+namespace sofa::component::collision
+{
 
 //template<>
 bool BaseIntTool::testIntersection(Cube &cube1, Cube &cube2,SReal alarmDist)
@@ -48,6 +49,6 @@ bool BaseIntTool::testIntersection(Cube &cube1, Cube &cube2,SReal alarmDist)
     return true;
 }
 
-class SOFA_BASE_COLLISION_API BaseIntTool;
+class SOFA_SOFABASECOLLISION_API BaseIntTool;
 
-}}}
+} // namespace sofa::component::collision

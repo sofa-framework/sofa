@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_RIGIDCAPSULECOLLISIONMODEL_H
-#define SOFA_COMPONENT_COLLISION_RIGIDCAPSULECOLLISIONMODEL_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <sofa/core/CollisionModel.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template<class DataTypes>
@@ -196,15 +188,9 @@ using RigidCapsuleCollisionModel  [[deprecated("The RigidCapsuleCollisionModel i
 using RigidCapsule = TCapsule<sofa::defaulttype::Rigid3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_RIGIDCAPSULECOLLISIONMODEL_CPP)
-extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_COLLISION_API CapsuleCollisionModel<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API TCapsule<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API CapsuleCollisionModel<defaulttype::Rigid3Types>;
 
 #endif
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

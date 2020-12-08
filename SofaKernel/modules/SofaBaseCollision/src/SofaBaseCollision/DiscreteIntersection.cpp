@@ -32,22 +32,7 @@
 #include <SofaBaseCollision/BaseIntTool.h>
 #include <SofaBaseCollision/RigidCapsuleModel.h>
 
-namespace sofa
-{
-
-namespace core
-{
-    namespace collision
-    {
-        template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
-    }
-}
-
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -91,10 +76,4 @@ ElementIntersector* DiscreteIntersection::findIntersector(core::CollisionModel* 
     return intersectors.get(object1, object2, swapModels);
 }
 
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::collision

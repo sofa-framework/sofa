@@ -40,13 +40,7 @@ using sofa::helper::AdvancedTimer ;
 using sofa::helper::ScopedAdvancedTimer ;
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace core;
@@ -286,37 +280,6 @@ void DefaultPipeline::draw(const core::visual::VisualParams* )
 {
     if (!d_doDebugDraw.getValue()) return;
     if (!narrowPhaseDetection) return;
-
-//TODO(dmarchal 2017-05-17): remove this code or reactivate or do a proper #ifdef
-//TODO(dmarchal): it makes also no sense to keep a 'draw' attribute while nothing is displayed.
-#if 0
-    glDisable(GL_LIGHTING);
-    glLineWidth(2);
-    glBegin(GL_LINES);
-    DetectionOutputMap& outputsMap = narrowPhaseDetection->getDetectionOutputs();
-    for (DetectionOutputMap::iterator it = outputsMap.begin(); it!=outputsMap.end(); it++)
-    {
-        /*
-        DetectionOutputVector& outputs = it->second;
-        for (DetectionOutputVector::iterator it2 = outputs.begin(); it2!=outputs.end(); it2++)
-        {
-            DetectionOutput* d = &*it2;
-            if (d->distance<0)
-                glColor3f(1.0f,0.5f,0.5f);
-            else
-                glColor3f(0.5f,1.0f,0.5f);
-            glVertex3dv(d->point[0].ptr());
-            glVertex3dv(d->point[1].ptr());
-        }
-        */
-    }
-    glEnd();
-    glLineWidth(1);
-#endif
 }
-} // namespace collision
 
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::collision

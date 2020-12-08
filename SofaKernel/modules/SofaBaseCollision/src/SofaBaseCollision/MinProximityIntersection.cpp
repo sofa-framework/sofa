@@ -33,21 +33,7 @@
 
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 
-namespace sofa
-{
-
-namespace core
-{
-	namespace collision
-    {
-        template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
-    }
-}
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -98,9 +84,4 @@ void MinProximityIntersection::draw(const core::visual::VisualParams* vparams)
         return;
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::collision

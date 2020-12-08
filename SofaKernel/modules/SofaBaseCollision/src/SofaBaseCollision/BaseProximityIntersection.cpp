@@ -21,13 +21,7 @@
 ******************************************************************************/
 #include "BaseProximityIntersection.h"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 BaseProximityIntersection::BaseProximityIntersection()
     : alarmDistance(initData(&alarmDistance, (SReal)1.0, "alarmDistance","Proximity detection distance"))
@@ -37,8 +31,4 @@ BaseProximityIntersection::BaseProximityIntersection()
 	contactDistance.setRequired(true);
 }
 
-} // namespace collision
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::component::collision

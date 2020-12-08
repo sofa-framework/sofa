@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_DEFAULTCONTACTMANAGER_H
-#define SOFA_COMPONENT_COLLISION_DEFAULTCONTACTMANAGER_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/simulation/Node.h>
@@ -29,16 +28,10 @@
 #include <sofa/helper/map_ptr_stable_compare.h>
 
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
-
-namespace collision
-{
-
-class SOFA_BASE_COLLISION_API DefaultContactManager : public core::collision::ContactManager
+class SOFA_SOFABASECOLLISION_API DefaultContactManager : public core::collision::ContactManager
 {
 public :
     SOFA_CLASS(DefaultContactManager,sofa::core::collision::ContactManager);
@@ -108,10 +101,4 @@ protected:
     std::map<std::pair<std::string,std::pair<std::string,std::string> >, int> errorMsgCount;
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

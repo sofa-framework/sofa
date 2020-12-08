@@ -23,18 +23,15 @@
 // http://www.geometrictools.com/
 
 
-#ifndef SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_H
-#define SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <SofaBaseCollision/Intersector.h>
 #include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaBaseCollision/RigidCapsuleModel.h>
 #include <SofaBaseCollision/OBBModel.h>
 
-namespace sofa{
-namespace component{
-namespace collision{
+namespace sofa::component::collision{
 
 
 /**
@@ -69,13 +66,9 @@ private:
 typedef TIntrCapsuleOBB<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types> IntrCapsuleOBB;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_CPP)
-extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types>;
 
 #endif
 
-}
-}
-}
-
-#endif
+} // namespace sofa::component::collision

@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <SofaBaseCollision/CapsuleModel.h>
+
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
@@ -30,16 +32,9 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-namespace sofa
-{
 
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template<class DataTypes>
@@ -336,6 +331,4 @@ Data<typename CapsuleCollisionModel<DataTypes>::VecReal > & CapsuleCollisionMode
     return _capsule_radii;
 }
 
-}
-}
-}
+} // namespace sofa::component::collision

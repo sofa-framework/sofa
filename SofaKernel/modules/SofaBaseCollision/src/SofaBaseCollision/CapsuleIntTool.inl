@@ -21,14 +21,8 @@
 ******************************************************************************/
 #include "CapsuleIntTool.h"
 
-namespace sofa
+namespace sofa::component::collision
 {
-namespace component
-{
-namespace collision
-{
-
-
 
 template <class DataTypes1,class DataTypes2>
 int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & e1,TCapsule<DataTypes2> & e2,SReal alarmDist,SReal contactDist,OutputVector * contacts){
@@ -245,4 +239,4 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes> & cap, OBB& obb,SRea
     return 0;
 }
 
-}}}
+} // namespace sofa::component::collision

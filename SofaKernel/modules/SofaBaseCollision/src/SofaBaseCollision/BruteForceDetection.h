@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_BRUTEFORCEDETECTION_H
-#define SOFA_COMPONENT_COLLISION_BRUTEFORCEDETECTION_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
@@ -30,17 +29,11 @@
 #include <sofa/defaulttype/Vec.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 
-class SOFA_BASE_COLLISION_API MirrorIntersector : public core::collision::ElementIntersector
+class SOFA_SOFABASECOLLISION_API MirrorIntersector : public core::collision::ElementIntersector
 {
 public:
     core::collision::ElementIntersector* intersector;
@@ -78,7 +71,7 @@ public:
 };
 
 
-class SOFA_BASE_COLLISION_API BruteForceDetection :
+class SOFA_SOFABASECOLLISION_API BruteForceDetection :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {
@@ -120,10 +113,4 @@ public:
     inline bool needsDeepBoundingTree()const override {return true;}
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_DEFAULTPIPELINE_H
-#define SOFA_COMPONENT_COLLISION_DEFAULTPIPELINE_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <sofa/simulation/PipelineImpl.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
-
-namespace collision
-{
-
-class SOFA_BASE_COLLISION_API DefaultPipeline : public sofa::simulation::PipelineImpl
+class SOFA_SOFABASECOLLISION_API DefaultPipeline : public sofa::simulation::PipelineImpl
 {
 public:
     SOFA_CLASS(DefaultPipeline,sofa::simulation::PipelineImpl);
@@ -62,10 +55,4 @@ protected:
     virtual void checkDataValues() ;
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

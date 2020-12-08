@@ -30,12 +30,7 @@
 #include <sofa/simulation/CollisionEndEvent.h>
 
 
-namespace sofa
-{
-namespace core
-{
-
-namespace collision
+namespace sofa::core::collision
 {
 
 int ContactListenerClass = core::RegisterObject("ContactListener .. ").add< ContactListener >();
@@ -120,8 +115,4 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
 }
 
 
-} // namespace collision
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::collision

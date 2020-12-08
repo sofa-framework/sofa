@@ -19,23 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_BASEPROXIMITYINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_BASEPROXIMITYINTERSECTION_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <SofaBaseCollision/BaseIntTool.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
-
-namespace collision
-{
-
-class SOFA_BASE_COLLISION_API BaseProximityIntersection : public DiscreteIntersection
+class SOFA_SOFABASECOLLISION_API BaseProximityIntersection : public DiscreteIntersection
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseProximityIntersection,DiscreteIntersection);
@@ -61,10 +54,4 @@ public:
     void setContactDistance(SReal v) override { contactDistance.setValue(v); }
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_COLLISION_BASEPROXIMITYINTERSECTION_H
+} // namespace sofa::component::collision

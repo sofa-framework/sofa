@@ -19,10 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CUBE_H
-#define SOFA_COMPONENT_COLLISION_CUBE_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <SofaBaseCollision/CubeModel.h>
 
-#endif

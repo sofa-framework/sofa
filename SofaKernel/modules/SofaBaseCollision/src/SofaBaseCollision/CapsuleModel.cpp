@@ -23,13 +23,7 @@
 #include <SofaBaseCollision/CapsuleModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -43,14 +37,7 @@ int CapsuleCollisionModelClass = core::RegisterObject("Collision model which rep
 
         ;
 
-template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3Types>;
-template class SOFA_BASE_COLLISION_API CapsuleCollisionModel<defaulttype::Vec3Types>;
+template class SOFA_SOFABASECOLLISION_API TCapsule<defaulttype::Vec3Types>;
+template class SOFA_SOFABASECOLLISION_API CapsuleCollisionModel<defaulttype::Vec3Types>;
 
-
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::collision

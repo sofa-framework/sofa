@@ -26,13 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -310,6 +304,4 @@ Data< typename CylinderCollisionModel<DataTypes>::VecAxisCoord > & CylinderColli
     return d_cylinder_local_axes;
 }
 
-}
-}
-}
+} // namespace sofa::component::collision

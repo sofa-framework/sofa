@@ -22,16 +22,14 @@
 // File modified from GeometricTools
 // http://www.geometrictools.com/
 
-#ifndef SOFA_COMPONENT_COLLISION_INTROBBOBB_H
-#define SOFA_COMPONENT_COLLISION_INTROBBOBB_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <SofaBaseCollision/Intersector.h>
 #include <SofaBaseCollision/OBBModel.h>
 
-namespace sofa{
-namespace component{
-namespace collision{
+namespace sofa::component::collision
+{
 
 template <class TDataTypes>
 class TIntrOBBOBB : public Intersector<typename TDataTypes::Real>
@@ -91,12 +89,8 @@ private:
 typedef TIntrOBBOBB<sofa::defaulttype::RigidTypes> IntrOBBOBB;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTROBBOBB_CPP)
-extern template class SOFA_BASE_COLLISION_API TIntrOBBOBB<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API TIntrOBBOBB<defaulttype::Rigid3Types>;
 
 #endif
 
-}
-}
-}
-
-#endif
+} // namespace sofa::component::collision

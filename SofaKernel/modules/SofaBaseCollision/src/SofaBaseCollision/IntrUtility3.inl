@@ -21,14 +21,11 @@
 ******************************************************************************/
 // File modified from GeometricTools
 // http://www.geometrictools.com/
-#ifndef INTRUTILITY3_INL
-#define INTRUTILITY3_INL
+#pragma once
 #include "IntrUtility3.h"
 
 
-namespace sofa{
-namespace component{
-namespace collision{
+namespace sofa::component::collision{
 
 template <typename Real>
 IntrConfiguration<Real> & IntrConfiguration<Real>::operator=(const IntrConfiguration & other){
@@ -2062,8 +2059,4 @@ void MyBox<TReal>::showVertices()const{
     }
 }
 
-}
-}
-}
-
-#endif // INTRUTILITY3_INL
+} // namespace sofa::component::collision

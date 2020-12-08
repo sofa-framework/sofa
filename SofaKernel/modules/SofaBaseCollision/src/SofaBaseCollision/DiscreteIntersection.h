@@ -19,23 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <SofaBaseCollision/BaseIntTool.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
-
-namespace component
-{
-
-namespace collision
-{
-class SOFA_BASE_COLLISION_API DiscreteIntersection : public core::collision::Intersection, public core::collision::BaseIntersector
+class SOFA_SOFABASECOLLISION_API DiscreteIntersection : public core::collision::Intersection, public core::collision::BaseIntersector
 {
 public:
     SOFA_CLASS(DiscreteIntersection,sofa::core::collision::Intersection);
@@ -62,20 +55,11 @@ public:
     }
 };
 
-} // namespace collision
+} // namespace sofa::component::collision
 
-} // namespace component
-
-namespace core
-{
-namespace collision
+namespace sofa::core::collision
 {
 #if  !defined(SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_CPP)
-extern template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
+extern template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
 #endif
-}
-}
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::collision

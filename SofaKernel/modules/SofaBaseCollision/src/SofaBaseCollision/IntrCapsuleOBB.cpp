@@ -22,22 +22,14 @@
 #define SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_CPP
 #include <SofaBaseCollision/IntrCapsuleOBB.inl>
 
-namespace sofa{
-
-using namespace defaulttype;
-
-namespace component{
-
-namespace collision{
-
+namespace sofa::component::collision
+{
+using namespace sofa::defaulttype;
 //----------------------------------------------------------------------------
 // Explicit instantiation.
 //----------------------------------------------------------------------------
-template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<Vec3Types,Rigid3Types>;
-template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<Rigid3Types,Rigid3Types>;
+template class SOFA_SOFABASECOLLISION_API TIntrCapsuleOBB<Vec3Types,Rigid3Types>;
+template class SOFA_SOFABASECOLLISION_API TIntrCapsuleOBB<Rigid3Types,Rigid3Types>;
 
 //----------------------------------------------------------------------------
-
-}
-}
-}
+} // namespace sofa::component::collision

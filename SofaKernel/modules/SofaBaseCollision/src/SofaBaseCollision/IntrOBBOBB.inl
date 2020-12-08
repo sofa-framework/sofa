@@ -26,9 +26,7 @@
 #include "IntrUtility3.h"
 #include <limits>
 
-namespace sofa{
-namespace component{
-namespace collision{
+namespace sofa::component::collision{
 
 //----------------------------------------------------------------------------
 template <class TDataTypes>
@@ -740,8 +738,4 @@ bool TIntrOBBOBB<TDataTypes>::IsSeparated (Real min0, Real max0, Real min1,
     return false;
 }
 
-//----------------------------------------------------------------------------
-
-}
-}
-}
+} // namespace sofa::component::collision

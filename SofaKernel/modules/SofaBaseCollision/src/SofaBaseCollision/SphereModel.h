@@ -19,21 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_H
-#define SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <sofa/core/CollisionModel.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template<class DataTypes>
@@ -81,9 +75,9 @@ public:
 };
 
 // Specializations
-template <> SOFA_BASE_COLLISION_API
+template <> SOFA_SOFABASECOLLISION_API
 sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const sofa::defaulttype::Vector3& /*contactNormal*/ );
-template <> SOFA_BASE_COLLISION_API
+template <> SOFA_SOFABASECOLLISION_API
 sofa::defaulttype::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const sofa::defaulttype::Vector3& );
 
 
@@ -224,16 +218,10 @@ typedef SphereCollisionModel<sofa::defaulttype::Rigid3Types> RigidSphereModel;
 typedef TSphere<sofa::defaulttype::Rigid3Types> RigidSphere;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_CPP)
-extern template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_COLLISION_API SphereCollisionModel<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_COLLISION_API SphereCollisionModel<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API TSphere<defaulttype::Vec3Types>;
+extern template class SOFA_SOFABASECOLLISION_API SphereCollisionModel<defaulttype::Vec3Types>;
+extern template class SOFA_SOFABASECOLLISION_API SphereCollisionModel<defaulttype::Rigid3Types>;
 
 #endif
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

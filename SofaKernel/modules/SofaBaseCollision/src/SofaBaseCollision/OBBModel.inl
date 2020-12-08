@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OBBMODEL_INL
-#define OBBMODEL_INL
-
+#pragma once
 #include <SofaBaseCollision/OBBModel.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -37,13 +35,7 @@
 
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template<class DataTypes>
@@ -474,8 +466,4 @@ void OBBCollisionModel<DataTypes>::computeBBox(const core::ExecParams*, bool onl
 
 }
 
-
-}
-}
-}
-#endif // OBBMODEL_INL
+} // namespace sofa::component::collision

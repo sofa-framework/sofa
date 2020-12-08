@@ -22,32 +22,26 @@
 #define SOFA_COMPONENT_COLLISION_INTRUTILITY3_CPP
 #include <SofaBaseCollision/IntrUtility3.inl>
 
+namespace sofa::component::collision
+{
 
-namespace sofa{
-using namespace defaulttype;
-namespace component{
-namespace collision{
-
-//----------------------------------------------------------------------------
+using namespace sofa::defaulttype;
 
 //----------------------------------------------------------------------------
 // Explicit instantiation.
 //----------------------------------------------------------------------------
-template struct SOFA_BASE_COLLISION_API IntrUtil<double>;
+template struct SOFA_SOFABASECOLLISION_API IntrUtil<double>;
 
-template struct SOFA_BASE_COLLISION_API IntrUtil<TOBB<RigidTypes> >;
-template class SOFA_BASE_COLLISION_API IntrConfiguration<double>;
-template struct SOFA_BASE_COLLISION_API IntrConfigManager<double>;
-template struct SOFA_BASE_COLLISION_API IntrConfigManager<TOBB<Rigid3Types> >;
-template class SOFA_BASE_COLLISION_API IntrAxis<TOBB<Rigid3Types> >;
-template class SOFA_BASE_COLLISION_API FindContactSet<TOBB<Rigid3Types> >;
-template SOFA_BASE_COLLISION_API void ClipConvexPolygonAgainstPlane<double> (const Vec<3,double>&, double,int&, Vec<3,double>*);
-template SOFA_BASE_COLLISION_API Vec<3,double> GetPointFromIndex<double> (int, const MyBox<double>&);
-template SOFA_BASE_COLLISION_API Vec<3,Rigid3Types::Real> getPointFromIndex<Rigid3Types> (int index, const TOBB<Rigid3Types>& box);
-template class SOFA_BASE_COLLISION_API CapIntrConfiguration<double>;
+template struct SOFA_SOFABASECOLLISION_API IntrUtil<TOBB<RigidTypes> >;
+template class SOFA_SOFABASECOLLISION_API IntrConfiguration<double>;
+template struct SOFA_SOFABASECOLLISION_API IntrConfigManager<double>;
+template struct SOFA_SOFABASECOLLISION_API IntrConfigManager<TOBB<Rigid3Types> >;
+template class SOFA_SOFABASECOLLISION_API IntrAxis<TOBB<Rigid3Types> >;
+template class SOFA_SOFABASECOLLISION_API FindContactSet<TOBB<Rigid3Types> >;
+template SOFA_SOFABASECOLLISION_API void ClipConvexPolygonAgainstPlane<double> (const Vec<3,double>&, double,int&, Vec<3,double>*);
+template SOFA_SOFABASECOLLISION_API Vec<3,double> GetPointFromIndex<double> (int, const MyBox<double>&);
+template SOFA_SOFABASECOLLISION_API Vec<3,Rigid3Types::Real> getPointFromIndex<Rigid3Types> (int index, const TOBB<Rigid3Types>& box);
+template class SOFA_SOFABASECOLLISION_API CapIntrConfiguration<double>;
 
 //----------------------------------------------------------------------------
-
-}
-}
-}
+} // namespace sofa::component::collision

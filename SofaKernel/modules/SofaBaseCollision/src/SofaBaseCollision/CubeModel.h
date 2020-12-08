@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CUBECOLLISIONMODEL_H
-#define SOFA_COMPONENT_COLLISION_CUBECOLLISIONMODEL_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <sofa/core/CollisionModel.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 class CubeCollisionModel;
@@ -56,7 +48,7 @@ public:
     const sofa::defaulttype::Vector3& getConeAxis() const;
 };
 
-class SOFA_BASE_COLLISION_API CubeCollisionModel : public core::CollisionModel
+class SOFA_SOFABASECOLLISION_API CubeCollisionModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(CubeCollisionModel,sofa::core::CollisionModel);
@@ -192,10 +184,4 @@ inline const sofa::defaulttype::Vector3& Cube::getConeAxis() const
 
 using CubeModel [[deprecated("The CubeModel is now deprecated, please use CubeCollisionModel instead. Compatibility stops at v20.06")]] = CubeCollisionModel;
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

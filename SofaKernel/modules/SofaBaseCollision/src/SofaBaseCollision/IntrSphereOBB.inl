@@ -19,13 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INTRSPHEREOBB_INL
-#define INTRSPHEREOBB_INL
+#pragma once
 #include <SofaBaseCollision/IntrSphereOBB.h>
 
-namespace sofa{
-namespace component{
-namespace collision{
+namespace sofa::component::collision{
 
 template <class TDataTypes,class TDataTypes2>
 TIntrSphereOBB<TDataTypes,TDataTypes2>::TIntrSphereOBB (const IntrSph& sphere, const Box & box) : _sph(&sphere),mBox(&box){this->_is_colliding = false;}
@@ -104,8 +101,4 @@ typename TIntrSphereOBB<TDataTypes,TDataTypes2>::Real TIntrSphereOBB<TDataTypes,
 }
 
 
-}
-}
-}
-
-#endif // INTRSPHEREOBB_INL
+} // namespace sofa::component::collision

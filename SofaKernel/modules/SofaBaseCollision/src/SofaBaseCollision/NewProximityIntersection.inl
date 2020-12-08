@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_INL
-#define SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_INL
-
+#pragma once
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/proximity.h>
@@ -31,13 +29,7 @@
 #include <algorithm>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id)
@@ -63,10 +55,4 @@ inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2, const
 }
 
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

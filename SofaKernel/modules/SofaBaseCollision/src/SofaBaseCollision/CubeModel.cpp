@@ -27,13 +27,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
@@ -366,9 +360,4 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
     dmsg_info() << "<CubeCollisionModel::computeBoundingTree(" << maxDepth << ")";
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::collision

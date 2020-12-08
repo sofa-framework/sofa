@@ -19,20 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OBBINTTOOL_H
-#define OBBINTTOOL_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/IntrOBBOBB.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaBaseCollision/IntrSphereOBB.h>
-namespace sofa{
-namespace component{
-namespace collision{
+namespace sofa::component::collision{
 
-class SOFA_BASE_COLLISION_API OBBIntTool{
+class SOFA_SOFABASECOLLISION_API OBBIntTool{
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
     typedef sofa::core::collision::DetectionOutput DetectionOutput;
@@ -76,8 +73,4 @@ int OBBIntTool::computeIntersection(TSphere<DataTypes> & sphere,OBB & box,SReal 
     return 0;
 }
 
-
-}
-}
-}
-#endif // OBBINTTOOL_H
+} // namespace sofa::component::collision

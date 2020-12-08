@@ -19,16 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INTERSECTOR_H
-#define INTERSECTOR_H
-#include "config.h"
+#pragma once
+#include <SofaBaseCollision/config.h>
 
 #include <sofa/defaulttype/Vec.h>
 
-namespace sofa{
-namespace component{
-namespace collision{
-
+namespace sofa::component::collision
+{
 
 template <class Real>
 class Intersector{
@@ -58,7 +55,4 @@ protected:
     bool _is_colliding;
 };
 
-}
-}
-}
-#endif // INTERSECTOR_H
+} // namespace sofa::component::collision

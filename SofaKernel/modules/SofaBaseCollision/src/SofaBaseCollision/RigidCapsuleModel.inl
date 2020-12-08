@@ -34,13 +34,7 @@
 
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template<class MyReal>
@@ -289,6 +283,4 @@ Data<typename CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >
     return d_capsule_radii;
 }
 
-}
-}
-}
+} // namespace sofa::component::collision
