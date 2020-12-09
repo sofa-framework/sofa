@@ -498,6 +498,9 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     //{ "RigidCapsuleCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
     //{ "SphereCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
 
+    // SofaBaseLinearSolver was packaged in #1655
+    //{ "CGLinearSolver", Pluginized("v20.12", "SofaBaseLinearSolver") },
+
     /***********************/
     // REMOVED SINCE v20.12
     { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
