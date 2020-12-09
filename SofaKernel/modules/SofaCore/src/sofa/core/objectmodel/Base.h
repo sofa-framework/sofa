@@ -510,7 +510,7 @@ public:
     /// @{
 
     ComponentState getComponentState() const { return d_componentState.getValue() ; }
-    bool isComponentStateValid() const { return d_componentState == ComponentState::Valid; }
+    bool isComponentStateValid() const { return d_componentState.getValue() == ComponentState::Valid; }
 
     ///@}
 
