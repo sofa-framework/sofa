@@ -22,8 +22,6 @@
 #pragma once
 #include <SofaBaseLinearSolver/config.h>
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 namespace sofa::component::linearsolver

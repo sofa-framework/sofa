@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseLinearSolver/config.h>
 
-#include "MatrixExpr.h"
+#include <SofaBaseLinearSolver/MatrixExpr.h>
 #include <SofaBaseLinearSolver/matrix_bloc_traits.h>
 
 namespace sofa::component::linearsolver

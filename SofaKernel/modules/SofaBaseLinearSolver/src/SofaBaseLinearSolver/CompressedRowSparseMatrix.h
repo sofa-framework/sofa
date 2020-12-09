@@ -25,8 +25,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseLinearSolver/MatrixExpr.h>
 #include <SofaBaseLinearSolver/matrix_bloc_traits.h>
-#include "FullVector.h"
-#include <algorithm>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 
 namespace sofa::component::linearsolver
 {

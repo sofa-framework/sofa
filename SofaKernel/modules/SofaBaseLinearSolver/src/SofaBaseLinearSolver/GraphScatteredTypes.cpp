@@ -20,11 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
 
-#include <cstdlib>
-#include <cmath>
+#include <sofa/simulation/MechanicalOperations.h>
+
 
 namespace sofa::component::linearsolver
 {

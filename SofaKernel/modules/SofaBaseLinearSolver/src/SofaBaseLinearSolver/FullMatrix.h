@@ -23,9 +23,8 @@
 #include <SofaBaseLinearSolver/config.h>
 
 #include <sofa/defaulttype/BaseMatrix.h>
-#include "FullVector.h"
+#include <SofaBaseLinearSolver/FullVector.h>
 
-#include <map>
 
 namespace sofa::component::linearsolver
 {

@@ -19,9 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
+
 #include <sofa/core/visual/VisualParams.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 using sofa::core::behavior::BaseMechanicalState;
 

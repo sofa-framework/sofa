@@ -23,11 +23,7 @@
 #include <SofaBaseLinearSolver/config.h>
 
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-
 #include <sofa/helper/map.h>
-
-#include <cmath>
-
 
 namespace sofa::component::linearsolver
 {

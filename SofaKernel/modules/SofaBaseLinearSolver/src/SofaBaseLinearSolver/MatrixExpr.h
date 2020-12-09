@@ -22,7 +22,6 @@
 #pragma once
 #include <SofaBaseLinearSolver/config.h>
 
-#include <sofa/defaulttype/BaseMatrix.h>
 #include <sstream>
 
 namespace sofa::component::linearsolver

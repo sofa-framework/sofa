@@ -22,7 +22,6 @@
 #pragma once
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
-#include <sofa/helper/BackTrace.h>
 
 namespace sofa::component::linearsolver {
 

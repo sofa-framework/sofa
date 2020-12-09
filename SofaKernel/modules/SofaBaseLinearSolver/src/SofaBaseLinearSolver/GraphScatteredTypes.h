@@ -22,10 +22,13 @@
 #pragma once
 #include <SofaBaseLinearSolver/config.h>
 
-#include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/core/behavior/MultiVec.h>
-#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/MechanicalParams.h>
 
+namespace sofa::simulation::common
+{
+    class MechanicalOperations;
+}
 
 namespace sofa::component::linearsolver
 {

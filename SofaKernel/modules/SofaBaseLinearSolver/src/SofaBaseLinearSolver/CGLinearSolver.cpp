@@ -22,8 +22,10 @@
 #define SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_CPP
 #include <SofaBaseLinearSolver/CGLinearSolver.inl>
 
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
-#include <iostream>
 
 namespace sofa::component::linearsolver
 {

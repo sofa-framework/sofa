@@ -21,16 +21,11 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP
 #include <SofaBaseLinearSolver/FullVector.h>
-#include <sofa/core/visual/VisualParams.h>
+
+#include <sofa/helper/rmath.h>
 
 namespace sofa::component::linearsolver
 {
-/*
-template<> FullVector<bool>::FullVector()
-: data(nullptr), cursize(0), allocsize(0)
-{
-}
-*/
 template<> void FullVector<bool>::set(Index i, SReal v)
 {
     data[i] = (v!=0);

@@ -21,16 +21,9 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP
 #include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
-#include <sofa/simulation/MechanicalVPrintVisitor.h>
-#include <sofa/simulation/VelocityThresholdVisitor.h>
+
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
-
-#include <cstdlib>
-#include <cmath>
 
 namespace sofa::component::linearsolver
 {
