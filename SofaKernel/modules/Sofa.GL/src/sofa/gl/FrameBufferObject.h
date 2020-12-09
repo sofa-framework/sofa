@@ -28,7 +28,7 @@
 namespace sofa::gl
 {
 
-struct SOFA_SOFA_GL_API fboParameters
+struct SOFA_GL_API fboParameters
 {
     GLint  depthInternalformat; // GL_DEPTHCOMPONENT16 GL_DEPTHCOMPONENT24...
     GLint  colorInternalformat; // GL_RGB8, GL_RGB16...
@@ -44,7 +44,7 @@ struct SOFA_SOFA_GL_API fboParameters
     }
 };
 
-class SOFA_SOFA_GL_API FrameBufferObject
+class SOFA_GL_API FrameBufferObject
 {
 private:
     GLint m_defaultWindowFramebufferID;

@@ -27,7 +27,7 @@
 namespace sofa::gl
 {
 
-class SOFA_SOFA_GL_API Capture
+class SOFA_GL_API Capture
 {
 protected:
     std::string prefix;

@@ -35,8 +35,8 @@
 namespace sofa::gl
 {
 
-template class SOFA_SOFA_GL_API BasicShapesGL_Sphere< sofa::defaulttype::Vector3 >;
-template class SOFA_SOFA_GL_API BasicShapesGL_FakeSphere< sofa::defaulttype::Vector3 >;
+template class SOFA_GL_API BasicShapesGL_Sphere< sofa::defaulttype::Vector3 >;
+template class SOFA_GL_API BasicShapesGL_FakeSphere< sofa::defaulttype::Vector3 >;
 
 
 using namespace sofa::defaulttype;

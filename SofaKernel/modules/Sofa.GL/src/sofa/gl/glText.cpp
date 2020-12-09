@@ -26,9 +26,9 @@ namespace sofa::gl
 using namespace sofa::defaulttype;
 using std::string;
 
-SOFA_SOFA_GL_API const std::string GlText::ASCII_TEXTURE_PATH("textures/texture_ascii_smooth.png");
-SOFA_SOFA_GL_API sofa::helper::io::Image *GlText::s_asciiImage = nullptr;
-SOFA_SOFA_GL_API sofa::gl::Texture* GlText::s_asciiTexture = nullptr;
+SOFA_GL_API const std::string GlText::ASCII_TEXTURE_PATH("textures/texture_ascii_smooth.png");
+SOFA_GL_API sofa::helper::io::Image *GlText::s_asciiImage = nullptr;
+SOFA_GL_API sofa::gl::Texture* GlText::s_asciiTexture = nullptr;
 
 void GlText::initTexture()
 {

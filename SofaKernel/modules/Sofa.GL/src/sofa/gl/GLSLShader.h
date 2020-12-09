@@ -40,7 +40,7 @@ MSG_REGISTER_CLASS(sofa::gl::GLSLShader, "GLSLShader")
 namespace sofa::gl
 {
 
-class SOFA_SOFA_GL_API GLSLShader
+class SOFA_GL_API GLSLShader
 {
 public:
 

@@ -43,7 +43,7 @@ namespace sofa::gl
  * in 2D (screen) or in 3D (world coordinates)
 */
 
-class SOFA_SOFA_GL_API GlText
+class SOFA_GL_API GlText
 {
 public:
     typedef sofa::helper::fixed_array<float, 3> Vector3;

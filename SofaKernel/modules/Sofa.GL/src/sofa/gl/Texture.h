@@ -27,7 +27,7 @@
 namespace sofa::gl
 {
 
-class SOFA_SOFA_GL_API Texture
+class SOFA_GL_API Texture
 {
 private:
     helper::io::Image *image;

@@ -30,7 +30,7 @@ namespace sofa::gl
 static bool s_initialized = false;
 static bool s_cleanedUp = false;
 
-SOFA_SOFA_GL_API void init()
+SOFA_GL_API void init()
 {
     if (!s_initialized)
     {
@@ -39,12 +39,12 @@ SOFA_SOFA_GL_API void init()
     }
 }
 
-SOFA_SOFA_GL_API bool isInitialized()
+SOFA_GL_API bool isInitialized()
 {
     return s_initialized;
 }
 
-SOFA_SOFA_GL_API void cleanup()
+SOFA_GL_API void cleanup()
 {
     if (!s_cleanedUp)
     {
@@ -53,7 +53,7 @@ SOFA_SOFA_GL_API void cleanup()
     }
 }
 
-SOFA_SOFA_GL_API bool isCleanedUp()
+SOFA_GL_API bool isCleanedUp()
 {
     return s_cleanedUp;
 }

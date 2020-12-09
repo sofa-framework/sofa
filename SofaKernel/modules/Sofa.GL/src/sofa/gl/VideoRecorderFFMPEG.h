@@ -30,7 +30,7 @@
 namespace sofa::gl
 {
 
-class SOFA_SOFA_GL_API VideoRecorderFFMPEG
+class SOFA_GL_API VideoRecorderFFMPEG
 {
 protected:
 

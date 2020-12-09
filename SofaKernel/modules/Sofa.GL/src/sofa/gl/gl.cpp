@@ -21,13 +21,13 @@
 ******************************************************************************/
 #include "gl.h"
 
-SOFA_SOFA_GL_API const char* GetGlExtensionsList()
+SOFA_GL_API const char* GetGlExtensionsList()
 {
     return reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
 }
 
 
-SOFA_SOFA_GL_API bool CanUseGlExtension(const std::string& ext)
+SOFA_GL_API bool CanUseGlExtension(const std::string& ext)
 {
     std::string Extensions = GetGlExtensionsList();
     if( Extensions.find( ext ) != std::string::npos )

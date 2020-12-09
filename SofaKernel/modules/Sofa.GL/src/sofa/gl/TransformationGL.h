@@ -27,7 +27,7 @@
 namespace sofa::gl
 {
 
-class SOFA_SOFA_GL_API TransformationGL : public helper::visual::Transformation
+class SOFA_GL_API TransformationGL : public helper::visual::Transformation
 {
 public:
     TransformationGL();

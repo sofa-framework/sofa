@@ -33,7 +33,7 @@
 namespace sofa::gl
 {
 
-class SOFA_SOFA_GL_API Cylinder
+class SOFA_GL_API Cylinder
 {
 public:
     typedef sofa::defaulttype::Vector3 Vector3;

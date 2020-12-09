@@ -29,7 +29,7 @@
 namespace sofa::gl
 {
 
-class SOFA_SOFA_GL_API DrawToolGL : public helper::visual::DrawTool
+class SOFA_GL_API DrawToolGL : public helper::visual::DrawTool
 {
 
 public:

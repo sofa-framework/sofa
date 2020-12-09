@@ -27,17 +27,17 @@ namespace sofa::gl
 {
 /// @brief Initialize the Sofa.GL library, as well as its dependencies:
 /// SofaDefaultType, SofaHelper.
-SOFA_SOFA_GL_API void init();
+SOFA_GL_API void init();
 
 /// @brief Return true if and only if the Sofa.GL library has been initialized.
-SOFA_SOFA_GL_API bool isInitialized();
+SOFA_GL_API bool isInitialized();
 
 /// @brief Clean up the resources used by the Sofa.GL library, as well as its
 /// dependencies: SofaDefaultType, SofaHelper.
-SOFA_SOFA_GL_API void cleanup();
+SOFA_GL_API void cleanup();
 
 /// @brief Return true if and only if the Sofa.GL library has been cleaned
 /// up.
-SOFA_SOFA_GL_API bool isCleanedUp();
+SOFA_GL_API bool isCleanedUp();
 
 } // namespace sofa::gl

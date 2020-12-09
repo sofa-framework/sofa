@@ -33,7 +33,7 @@
 namespace sofa::gl
 {
 
-class SOFA_SOFA_GL_API Axis
+class SOFA_GL_API Axis
 {
 public:
     typedef sofa::defaulttype::Vector3 Vector3;

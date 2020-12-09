@@ -28,7 +28,7 @@
 namespace sofa::gl
 {
 
-class SOFA_SOFA_GL_API Color
+class SOFA_GL_API Color
 {
 public:
     static void set(const sofa::helper::types::RGBAColor& color) ;

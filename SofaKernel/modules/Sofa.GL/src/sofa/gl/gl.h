@@ -26,6 +26,6 @@
 #include <string>
 #include <GL/glew.h>
 
-extern SOFA_SOFA_GL_API const char* GetGlExtensionsList();
+extern SOFA_GL_API const char* GetGlExtensionsList();
 
-extern SOFA_SOFA_GL_API bool CanUseGlExtension(const std::string& ext);
+extern SOFA_GL_API bool CanUseGlExtension(const std::string& ext);
