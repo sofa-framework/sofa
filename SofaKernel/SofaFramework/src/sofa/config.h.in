@@ -128,19 +128,6 @@ typedef unsigned __int64	uint64_t;
 #define SOFA_END_DEPRECATION_AS_ERROR _Pragma("clang diagnostic pop")
 #endif
 
-///////////////////// Disable some warnings.
-/// On  gcc the -Wattributes is very verbose and results from how we set the visibility attributed as if it were equivalent
-/// to the dllspec one on MSVC. In one case this mismatch and this is why gcc issue a warning.
-/// Because there is a lot of them that prevent spotting more manageable issue i decided to remove it.
-#if defined(_MSC_VER)
-
-#elif defined(__GNUC__)
-    _Pragma("GCC diagnostic ignored \"-Wattributes\"")
-#else /// clang
-    _Pragma("clang diagnostic ignored \"-Wattributes\"")
-#endif
-
-
 #ifdef _WIN32
 #  define SOFA_PRAGMA_MESSAGE(text) __pragma(message(__FILE__ "(" sofa_tostring(__LINE__) "): " #text))
 #  define SOFA_PRAGMA_WARNING(text) __pragma(message(__FILE__ "(" sofa_tostring(__LINE__) "): warning: " #text))
