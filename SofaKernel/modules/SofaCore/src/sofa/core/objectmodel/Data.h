@@ -330,15 +330,19 @@ public:
         return out;
     }
 
+SOFA_BEGIN_DEPRECATION_AS_ERROR
+    [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")]]
     inline bool operator ==( const T& value ) const
     {
-        return getValue()==value;
+            return getValue()==value;
     }
 
+    [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")]]
     inline bool operator !=( const T& value ) const
     {
-        return getValue()!=value;
+            return getValue()!=value;
     }
+SOFA_END_DEPRECATION_AS_ERROR
 
     inline void operator =( const T& value )
     {

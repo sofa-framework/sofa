@@ -131,7 +131,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::parseNode(sofa::simulation:
     msg_info() << "parsing node:";
     for(BaseForceField* forcefield : node->forceField)
     {
-        if (forcefield->name != massName)
+        if (forcefield->name.getValue() != massName)
         {
             bool found = true;
             if (!empty)
