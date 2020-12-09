@@ -76,8 +76,6 @@ void SphereLoader::applyTransform()
     const Vec3& scale = d_scale.getValue();
     const Vec3& rotation = d_rotation.getValue();
     const Vec3& translation = d_translation.getValue();
-    m_internalEngine["updateTransformPosition"].cleanDirty();
-
 
     if (scale != Vec3(1.0, 1.0, 1.0) || rotation != Vec3(0.0, 0.0, 0.0) || translation != Vec3(0.0, 0.0, 0.0))
     {
@@ -105,7 +103,6 @@ void SphereLoader::applyTransform()
 
 bool SphereLoader::load()
 {
-    m_internalEngine["filename"].cleanDirty();
     auto my_radius = getWriteOnlyAccessor(d_radius);
     auto my_positions = getWriteOnlyAccessor(d_positions);
     my_radius.clear();
