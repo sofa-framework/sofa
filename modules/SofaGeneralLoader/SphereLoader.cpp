@@ -50,20 +50,24 @@ SphereLoader::SphereLoader()
     addAlias(&d_positions,"sphere_centers");
     addAlias(&d_scale, "scale3d");
 
-    addUpdateCallback("filename", { &m_filename }, [this](const core::DataTracker& )
+    addUpdateCallback("updateFileNameAndTransformPosition", { &m_filename, &d_translation, &d_rotation, &d_scale}, [this](const core::DataTracker& tracker)
     {
-        if (load()) {
-            clearLoggedMessages();
+        if(tracker.hasChanged(m_filename))
+        {
+            if (load()) {
+                clearLoggedMessages();
+                applyTransform();
+                return sofa::core::objectmodel::ComponentState::Valid;
+            }
+        }
+        else
+        {
+            applyTransform();
             return sofa::core::objectmodel::ComponentState::Valid;
         }
+
         return sofa::core::objectmodel::ComponentState::Invalid;
     }, { &d_positions, &d_radius });
-
-    addUpdateCallback("updateTransformPosition", { &d_translation, &d_rotation, &d_scale}, [this](const core::DataTracker&)
-    {
-        applyTransform();
-        return sofa::core::objectmodel::ComponentState::Valid;
-    }, { &d_positions });
 
     d_positions.setReadOnly(true);
     d_radius.setReadOnly(true);
@@ -78,16 +82,25 @@ void SphereLoader::applyTransform()
     m_internalEngine["updateTransformPosition"].cleanDirty();
 
 
-    if (d_scale != Vec3(1.0, 1.0, 1.0) || d_rotation != Vec3(0.0, 0.0, 0.0) || d_translation != Vec3(0.0, 0.0, 0.0))
+    if (scale != Vec3(1.0, 1.0, 1.0) || rotation != Vec3(0.0, 0.0, 0.0) || translation != Vec3(0.0, 0.0, 0.0))
     {
+        if(scale != Vec3(1.0, 1.0, 1.0)) {
+            if(scale[0] == 0.0 || scale[1] == 0.0 || scale[2] == 0.0) {
+                msg_warning() << "Data scale should not be set to zero";
+            }
+        }
         Matrix4 transformation = Matrix4::transformTranslation(translation) *
             Matrix4::transformRotation(helper::Quater< SReal >::createQuaterFromEuler(rotation * M_PI / 180.0)) *
             Matrix4::transformScale(scale);
 
-        sofa::helper::WriteAccessor <Data< helper::vector<sofa::defaulttype::Vec<3, SReal> > > > my_positions = d_positions;
-        for (size_t i = 0; i < my_positions.size(); i++)
-        {
-            my_positions[i] = transformation.transform(my_positions[i]);
+        auto my_positions = getWriteOnlyAccessor(d_positions);
+
+        if(my_positions.size() != m_savedPositions.size()) {
+            msg_error() << "Position size mismatch";
+        }
+
+        for (size_t i = 0; i < my_positions.size(); i++) {
+            my_positions[i] = transformation.transform(m_savedPositions[i]);
         }
     }
 }
@@ -107,7 +120,8 @@ bool SphereLoader::load()
     const char* filename = m_filename.getFullPath().c_str();
     std::string fname = std::string(filename);
 
-    if (!sofa::helper::system::DataRepository.findFile(fname)) return false;
+    if (!sofa::helper::system::DataRepository.findFile(fname))
+        return false;
 
     char cmd[64];
     FILE* file;
@@ -163,42 +177,15 @@ bool SphereLoader::load()
         }
     }
 
+    m_savedPositions.clear();
+    m_savedPositions.resize(my_positions.size());
+    for (size_t i = 0; i < my_positions.size(); i++)
+    {
+        m_savedPositions[i] = my_positions[i];
+    }
+
+
     (void) fclose(file);
-
-    if (d_scale.isSet())
-    {
-        const SReal sx = d_scale.getValue()[0];
-        const SReal sy = d_scale.getValue()[1];
-        const SReal sz = d_scale.getValue()[2];
-
-        for (unsigned int i = 0; i < my_radius.size(); i++)
-        {
-            my_radius[i] *= sx;
-        }
-
-        for (unsigned int i = 0; i < my_positions.size(); i++)
-        {
-            my_positions[i].x() *= sx;
-            my_positions[i].y() *= sy;
-            my_positions[i].z() *= sz;
-        }
-    }
-
-    if (d_translation.isSet())
-    {
-        const SReal dx = d_translation.getValue()[0];
-        const SReal dy = d_translation.getValue()[1];
-        const SReal dz = d_translation.getValue()[2];
-
-        for (unsigned int i = 0; i < my_positions.size(); i++)
-        {
-            my_positions[i].x() += dx;
-            my_positions[i].y() += dy;
-            my_positions[i].z() += dz;
-        }
-    }
-
-    applyTransform();
 
     return true;
 }
