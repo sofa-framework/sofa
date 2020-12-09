@@ -64,6 +64,9 @@ SphereLoader::SphereLoader()
         applyTransform();
         return sofa::core::objectmodel::ComponentState::Valid;
     }, { &d_positions });
+
+    d_positions.setReadOnly(true);
+    d_radius.setReadOnly(true);
 }
 
 
