@@ -159,10 +159,7 @@ void BaseData::update()
     cleanDirty();
     for(DDGLinkIterator it=inputs.begin(); it!=inputs.end(); ++it)
     {
-        if ((*it)->isDirty())
-        {
-            (*it)->update();
-        }
+        (*it)->updateIfDirty();
     }
     auto parent = parentData.resolvePathAndGetTarget();
     if (parent)

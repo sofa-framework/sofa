@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaSparseSolver VERSION 1.0 LANGUAGES CXX)
+project(SofaSparseSolver LANGUAGES CXX)
 
 # Dependencies
 find_package(SofaBase REQUIRED) # SofaGeneralLinearSolver
 find_package(SofaCommon REQUIRED) # SofaImplicitOdeSolver SofaSimpleFem
-find_package(SofaGeneral REQUIRED) # SofaGeneralLinearSolver
+find_package(SofaGeneralLinearSolver REQUIRED)
 
 add_subdirectory(extlibs/csparse)
 sofa_set_01(SOFASPARSESOLVER_HAVE_CSPARSE VALUE TRUE)
@@ -43,7 +43,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC metis csparse)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME SofaSparseSolver
-    PACKAGE_VERSION ${PROJECT_VERSION}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS SofaSparseSolver AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaSparseSolver"

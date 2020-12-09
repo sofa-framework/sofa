@@ -21,6 +21,14 @@ endif()
 list(APPEND CMAKE_INCLUDE_PATH "${SOFA_ROOT}/include/extlibs/WinDepPack")
 list(APPEND CMAKE_MODULE_PATH "${SOFA_ROOT}/lib/cmake/Modules")
 
+# Help RELOCATABLE plugins to resolve their dependencies.
+# See SofaMacrosInstall.cmake for usage of this property.
+define_property(TARGET
+    PROPERTY "RELOCATABLE_INSTALL_DIR"
+    BRIEF_DOCS "Install directory of RELOCATABLE target"
+    FULL_DOCS "Install directory of RELOCATABLE target"
+    )
+
 include(SofaMacros)
 
 set(SOFAFRAMEWORK_TARGETS @SOFAFRAMEWORK_TARGETS@)
@@ -66,5 +74,7 @@ foreach(target ${SOFAFRAMEWORK_TARGETS})
         break()
     endif()
 endforeach()
-
-check_required_components(${SOFAFRAMEWORK_TARGETS})
+if(NOT TARGET @PROJECT_NAME@)
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+endif()
+check_required_components(@PROJECT_NAME@)

@@ -21,69 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_H
-#include "config.h"
 
-#include <sofa/core/topology/BaseTopology.h>
-#include <sofa/helper/vector.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
-{
-class PointSetTopologyContainer;
-
-class PointSetTopologyModifier;
-
-template < class DataTypes >
-class PointSetGeometryAlgorithms;
-
-/** A class that performs complex algorithms on a PointSet.
-*
-*/
-template<class DataTypes>
-class PointSetTopologyAlgorithms : public core::topology::TopologyAlgorithms
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(PointSetTopologyAlgorithms,DataTypes), core::topology::TopologyAlgorithms);
-protected:
-    PointSetTopologyAlgorithms()
-        : TopologyAlgorithms()
-    {}
-
-    ~PointSetTopologyAlgorithms() override {}
-public:
-    void init() override;
-
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
-private:
-    PointSetTopologyContainer*					m_container;
-    PointSetTopologyModifier*					m_modifier;
-    PointSetGeometryAlgorithms< DataTypes >*	m_geometryAlgorithms;
-};
-
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYALGORITHMS_CPP)
-extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Vec1Types>;
-extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Rigid3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API PointSetTopologyAlgorithms<defaulttype::Rigid2Types>;
-#endif
-
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
+#error This class has been removed in PR #1546. PointSetGeometryAlgorithms or PointSetTopologyModifier should be used.
 
 #endif // SOFA_COMPONENTS_POINTSETTOPOLOGYALGORITHMS_H

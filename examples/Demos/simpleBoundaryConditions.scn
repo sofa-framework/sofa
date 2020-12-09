@@ -1,6 +1,7 @@
 <!--Decompose a hexahedral grid in tetrahedra and triangles, then stretch the object using a TrianglePressureForceField -->
 
 <Node name="SimpleBoundaryConditions demo" gravity="0 0 0" dt="0.1">
+    <RequiredPlugin name='SofaTopologyMapping'/>  
     <VisualStyle displayFlags="showBehavior hideVisual" />
     <Node name="Cube grid" >
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -28,7 +29,6 @@
         <Node name="Tetra" >
             <TetrahedronSetTopologyContainer name="TetraContainer" />
             <TetrahedronSetTopologyModifier />
-            <TetrahedronSetTopologyAlgorithms template="Vec3d" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" />
             <Hexa2TetraTopologicalMapping name="default28" input="@grid" output="@TetraContainer" />
             <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.4" youngModulus="1000" />
@@ -37,7 +37,6 @@
             <Node name="Triangles" >
                 <TriangleSetTopologyContainer name="TriangleContainer" />
                 <TriangleSetTopologyModifier />
-                <TriangleSetTopologyAlgorithms template="Vec3d" />
                 <TriangleSetGeometryAlgorithms template="Vec3d" />
                 <Tetra2TriangleTopologicalMapping input="@TetraContainer" output="@TriangleContainer" />
 

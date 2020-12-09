@@ -13,7 +13,6 @@
 		<MechanicalObject template="Vec3d" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="@loader.translation"  rotation="@loader.rotation"  scale3d="@loader.scale3d" />
 		<TriangleSetTopologyContainer name="Container"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles" />
 		<TriangleSetTopologyModifier name="Modifier" />
-		<TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 		<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 		<DiagonalMass template="Vec3d" name="diagonalMass1"  massDensity="0.15" />
 
@@ -28,7 +27,6 @@
 		<Node 	name="Edge Mesh"  >
 			<EdgeSetTopologyContainer name="Container" />
 			<EdgeSetTopologyModifier name="Modifier" />
-			<EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 			<EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  drawEdges="1" />
 			<Triangle2EdgeTopologicalMapping name="Mapping"  input="@../Container"  output="@Container" />
 			<EdgePressureForceField template="Vec3d" name="edgePressureFF0"  edges="@Container.edges" pressure="0 0 -0.1" normal="0 0 1"  p_intensity="1" arrowSizeCoef="10"/>

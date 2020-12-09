@@ -31,7 +31,7 @@ struct MonitorTest : public Monitor<Rigid3Types>
         EXPECT_TRUE(i1.size() == i2.size());
         for (size_t i = 0; i < i1.size(); ++i) EXPECT_EQ(i1[i], i2[i]);
 
-        EXPECT_EQ(d_fileName, std::string("./") + getName());
+        EXPECT_EQ(d_fileName.getValue(), std::string("./") + getName());
     }
 
     void testModif(MechanicalObject<Rigid3Types>* mo)

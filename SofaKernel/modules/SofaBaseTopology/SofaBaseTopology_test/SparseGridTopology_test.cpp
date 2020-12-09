@@ -6,15 +6,8 @@ using sofa::Sofa_test;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository;
 
-#ifdef SOFABASETOPOLOGY_TEST_WITH_COMMON_LOADERS
-#include <SofaLoader/MeshObjLoader.h>
-using sofa::component::loader::MeshObjLoader;
-#endif
-
-#ifdef SOFABASETOPOLOGY_TEST_WITH_GENERAL_LOADERS
 #include <SofaGeneralLoader/MeshSTLLoader.h>
 using sofa::component::loader::MeshSTLLoader;
-#endif
 
 using sofa::core::objectmodel::New ;
 using sofa::defaulttype::Vector3 ;

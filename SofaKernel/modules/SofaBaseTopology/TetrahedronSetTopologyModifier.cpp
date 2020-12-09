@@ -115,7 +115,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
 		assert(t[2] != t[3]);
 
 		// check if there already exists a tetrahedron with the same indices
-        assert(m_container->getTetrahedronIndex(t[0], t[1], t[2], t[3]) == InvalidID);
+        assert(m_container->getTetrahedronIndex(t[0], t[1], t[2], t[3]) == sofa::InvalidID);
 	}
     helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = m_container->d_tetrahedron;
     const TetrahedronID tetrahedronIndex = (TetrahedronID)m_tetrahedron.size();

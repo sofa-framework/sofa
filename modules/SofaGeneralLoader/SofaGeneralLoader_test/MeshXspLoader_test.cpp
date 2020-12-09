@@ -35,6 +35,7 @@ public:
         auto simulation = sofa::simpleapi::createSimulation();
         Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
 
+        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","SofaGeneralLoader" } });
         auto loader = sofa::simpleapi::createObject(root, "MeshXspLoader",
                                       {{"filename", std::string(SOFAGENERALLOADER_TESTFILES_DIR)+"test.xs3"}});
         simulation->init(root.get());

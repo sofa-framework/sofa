@@ -12,7 +12,6 @@
         <TriangleSetTopologyContainer name="Container" src="@../loaderSquare" />
         <MechanicalObject name="DOFs" src="@../loaderSquare" scale="100"  />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         <DiagonalMass massDensity="0.005" />
         <FixedConstraint indices="0 1 2" />
@@ -29,7 +28,6 @@
         <TriangleSetTopologyContainer name="Container" src="@../loaderSquare" />
         <MechanicalObject name="DOFs" src="@../loaderSquare" scale="100"  />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         <DiagonalMass massDensity="0.005" />
         <FixedConstraint indices="0 1 2" />

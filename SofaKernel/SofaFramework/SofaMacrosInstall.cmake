@@ -183,21 +183,32 @@ macro(sofa_auto_set_target_properties)
     string(TOUPPER "${ARG_PACKAGE_NAME}" SOFA_PACKAGE_NAME_UPPER)
 
     foreach(target ${ARG_TARGETS}) # Most of the time there is only one target
+        # Handle eventual alias
+        get_target_property(aliased_target ${target} ALIASED_TARGET)
+        if(aliased_target)
+            set(target ${aliased_target})
+        endif()
+
+        string(TOUPPER "${target}" sofa_target_name_upper)
+        set(${sofa_target_name_upper}_TARGET "${sofa_target_name_upper}")
+
         # Set target properties
         if(NOT "${target}" STREQUAL "${ARG_PACKAGE_NAME}") # Target is inside a package
             set_target_properties(${target} PROPERTIES FOLDER ${ARG_PACKAGE_NAME}) # IDE folder
         endif()
         set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")
-        set(version ${${target}_VERSION})
-        if(version VERSION_GREATER "0.0")
-            set_target_properties(${target} PROPERTIES VERSION "${version}")
-        elseif(target MATCHES "^Sofa" AND NOT PLUGIN_${SOFA_PACKAGE_NAME_UPPER} AND Sofa_VERSION)
+        set(version "")
+        if(${target}_VERSION VERSION_GREATER "0.0")
+            set(version ${${target}_VERSION})
+        elseif(ARG_PACKAGE_VERSION VERSION_GREATER "0.0")
+            set(version ${ARG_PACKAGE_VERSION})
+        elseif(Sofa_VERSION VERSION_GREATER "0.0")
             # Default to Sofa_VERSION for all SOFA modules
-            set_target_properties(${target} PROPERTIES VERSION "${Sofa_VERSION}")
+            set(version ${Sofa_VERSION})
         endif()
-        set(SOFA_TARGET_VERSION ${${target}_VERSION})
-        set(SOFA_TARGET_NAME "${target}")
-        string(TOUPPER "${target}" SOFA_TARGET_NAME_UPPER)
+        set_target_properties(${target} PROPERTIES VERSION "${version}")
+        set(${sofa_target_name_upper}_VERSION "${version}")
+        set(PROJECT_VERSION "${version}") # warning: dangerous to touch this variable?
 
         if(target MATCHES "^Sofa")
             # TODO: Deprecate this backward compatibility and replace all the macros
@@ -208,7 +219,7 @@ macro(sofa_auto_set_target_properties)
             string(TOUPPER "${sofa_target_oldname}" sofa_target_oldname_upper)
             target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD${sofa_target_oldname_upper}")
         endif()
-        target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD_${SOFA_TARGET_NAME_UPPER}")
+        target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD_${sofa_target_name_upper}")
 
         # Set target include directories (if not already set manually)
         set(include_source_root "${CMAKE_CURRENT_SOURCE_DIR}/..") # default but bad practice
@@ -243,6 +254,55 @@ macro(sofa_auto_set_target_properties)
         endif()
         #get_target_property(target_include_dirs ${target} "INCLUDE_DIRECTORIES")
         #message("${ARG_PACKAGE_NAME}: target_include_dirs = ${target_include_dirs}")
+
+        if(ARG_RELOCATABLE)
+            set_target_properties(${target} PROPERTIES RELOCATABLE_INSTALL_DIR "${ARG_RELOCATABLE}/${ARG_PACKAGE_NAME}")
+        endif()
+
+        get_target_property(target_deps ${target} "LINK_LIBRARIES")
+        get_target_property(target_rpath ${target} "INSTALL_RPATH")
+        foreach(dep ${target_deps})
+            if(TARGET ${dep})
+                get_target_property(aliased_dep ${dep} ALIASED_TARGET)
+                if(aliased_dep)
+                    set(dep ${aliased_dep})
+                endif()
+                get_target_property(dep_type ${dep} TYPE)
+                if("${dep_type}" STREQUAL "SHARED_LIBRARY")
+                    get_target_property(dep_reloc_install_dir ${dep} "RELOCATABLE_INSTALL_DIR")
+                    if(dep_reloc_install_dir)
+                        # the dependency is relocatable
+                        if(ARG_RELOCATABLE) 
+                            # current target is relocatable
+                            list(APPEND target_rpath
+                                "$ORIGIN/../../../${dep_reloc_install_dir}/lib"
+                                "$$ORIGIN/../../../${dep_reloc_install_dir}/lib"
+                                "@loader_path/../../../${dep_reloc_install_dir}/lib"
+                                )
+                        else()
+                            # current target is NOT relocatable
+                            list(APPEND target_rpath
+                                "$ORIGIN/../${dep_reloc_install_dir}/lib"
+                                "$$ORIGIN/../${dep_reloc_install_dir}/lib"
+                                "@loader_path/../${dep_reloc_install_dir}/lib"
+                                )
+                        endif()
+                    else()
+                        # the dependency is NOT relocatable
+                        if(ARG_RELOCATABLE)
+                            # current target is relocatable
+                            list(APPEND target_rpath
+                                "$ORIGIN/../../../lib"
+                                "$$ORIGIN/../../../lib"
+                                )
+                        endif()
+                    endif()
+                endif()
+            endif()
+        endforeach()
+        list(REMOVE_DUPLICATES target_rpath)
+        set_target_properties(${target} PROPERTIES INSTALL_RPATH "${target_rpath}")
+
     endforeach()
 endmacro()
 

@@ -22,13 +22,7 @@
 #define SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_CPP
 #include "TopologyBarycentricMapper.inl"
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 namespace _topologybarycentricmapper_
@@ -36,16 +30,9 @@ namespace _topologybarycentricmapper_
 
 using namespace sofa::defaulttype;
 
-
 template class SOFA_BASE_MECHANICS_API TopologyBarycentricMapper< Vec3dTypes, Vec3dTypes >;
-
-
 
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::mapping
 

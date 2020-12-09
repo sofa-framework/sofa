@@ -13,7 +13,6 @@
         
             <TetrahedronSetTopologyContainer name="Container" src="@loader" />
             <TetrahedronSetTopologyModifier name="Modifier" />
-            <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
             <MeshMatrixMass name="mass" lumping="1" printMass="0" massDensity="965" />
 

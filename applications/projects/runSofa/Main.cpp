@@ -50,9 +50,7 @@ using sofa::simulation::scenechecking::SceneCheckerListener;
 
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
-#include <SofaGeneral/initSofaGeneral.h>
 
-#include <SofaGeneralLoader/ReadState.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/cast.h>
 #include <sofa/helper/BackTrace.h>
@@ -73,7 +71,6 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/system/console.h>
 using sofa::helper::Utils;
 
-using sofa::component::misc::ReadStateActivator;
 using sofa::simulation::tree::TreeSimulation;
 using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
@@ -135,12 +132,6 @@ int main(int argc, char** argv)
         {
             sofa::gui::GuiDataRepository.addFirstPath(dir);
         }
-    }
-
-    // Add plugins dir to PluginRepository
-    if ( FileSystem::isDirectory(Utils::getSofaPathPrefix()+"/plugins") )
-    {
-        PluginRepository.addFirstPath(Utils::getSofaPathPrefix()+"/plugins");
     }
 
     sofa::helper::BackTrace::autodump();
@@ -356,7 +347,6 @@ int main(int argc, char** argv)
 #endif
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
 
 #ifdef SOFA_HAVE_DAG
     if (simulationType == "tree")

@@ -66,33 +66,27 @@ struct FlexibleDataEngine_test : public DataEngine_test<DataEngineType>
         for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
         {
             core::objectmodel::BaseData* data = static_cast<core::objectmodel::BaseData*>(parent_inputs[i]);
+            /// Get the general type info describing what is in the data field
+            auto typeinfo = data->getValueTypeInfo();
 
-            const defaulttype::AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-
-            if( typeinfo->name().find("Image") != std::string::npos || typeinfo->name().find("BranchingImage") != std::string::npos )
+            /// To detect that the object in the typeinfo is in fact a BaseImageTypeInfo and thus
+            /// the data field contains something inheriting from BaseImage.
+            auto imgInfo = dynamic_cast<const defaulttype::BaseImageTypeInfo*>(typeinfo);
+            if( imgInfo != nullptr && !data->isSet())
             {
-                if( !data->isSet() )
-                {
-                    defaulttype::BaseImage* img = static_cast<defaulttype::BaseImage*>( data->beginEditVoidPtr() );
-    //                std::cerr<<data->getName()<<" is a Data<Image>\n";
-                    // allocate input
-                    img->setDimensions( defaulttype::BaseImage::imCoord(1,1,1,1,1) );
-                    data->endEditVoidPtr();
-                }
+                defaulttype::BaseImage* img = static_cast<defaulttype::BaseImage*>( data->beginEditVoidPtr() );
+                img->setDimensions( defaulttype::BaseImage::imCoord(1,1,1,1,1) );
+                data->endEditVoidPtr();
             }
         }
-
-
         if( this->root ) modeling::initScene(this->root);
     }
-
 
     void openScene( const std::string& fileName )
     {
         this->root = modeling::clearScene();
         this->root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
     }
-
 };
 
 

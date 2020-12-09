@@ -45,7 +45,6 @@ FEM force field of the tongue
             <Node name="TongueCollisionModel">
 	            <TriangleSetTopologyContainer name="TriContainer" />
                 <TriangleSetTopologyModifier name="Modifier" />
-                <TriangleSetTopologyAlgorithms name="TopoAlgo" />
                 <TriangleSetGeometryAlgorithms name="GeomAlgo" />
                 <Tetra2TriangleTopologicalMapping name="mapping" input="@../volume" output="@TriContainer" flipNormals="true" />
                 <MechanicalObject name="colTongue" />

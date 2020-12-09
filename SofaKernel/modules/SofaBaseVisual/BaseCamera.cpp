@@ -576,7 +576,7 @@ void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const Vec3 &point, Quat 
 
 BaseCamera::Vec3 BaseCamera::screenToViewportPoint(const BaseCamera::Vec3& p) const
 {
-    if (p_widthViewport == 0 || p_heightViewport == 0)
+    if (p_widthViewport.getValue() == 0 || p_heightViewport.getValue() == 0)
         return Vec3(0, 0, p.z());
     return Vec3(p.x() / this->p_widthViewport.getValue(),
                 p.y() / this->p_heightViewport.getValue(),

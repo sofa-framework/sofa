@@ -4,6 +4,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaMiscFem'/>
     <RequiredPlugin name='SofaMiscTopology'/>
+    <RequiredPlugin name='SofaTopologyMapping'/>  
     
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline verbose="0" />
@@ -17,7 +18,6 @@
         <MechanicalObject name="dofs" src="@loader" template="Vec3" />
         <TriangleSetTopologyContainer src="@loader" name="Triangle_topo" />
         <TriangleSetTopologyModifier name="Triangle_mod" />
-        <TriangleSetTopologyAlgorithms template="Vec3" name="TopoAlgo" />
         <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
         <DiagonalMass template="Vec3" name="mass" massDensity="1.0" />
         <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
@@ -26,7 +26,6 @@
         <Node name="Edge Mesh"  >
 			<EdgeSetTopologyContainer name="Edge_topo" />
 			<EdgeSetTopologyModifier name="Edge_mod" />
-			<EdgeSetTopologyAlgorithms template="Vec3" name="TopoAlgo" />
 			<EdgeSetGeometryAlgorithms template="Vec3" name="GeomAlgo"  drawEdges="1" />
 			<Triangle2EdgeTopologicalMapping name="Mapping"  input="@../Triangle_topo"  output="@Edge_topo" />
 			<EdgePressureForceField template="Vec3" name="edgePressureFF0"  edges="@Edge_topo.edges" pressure="0 0 1" normal="0 0 1"  p_intensity="1" arrowSizeCoef="10" showForces="1" mstate="@../dofs"/>

@@ -96,4 +96,4 @@ extern template class SOFA_SOFAMISCFORCEFIELD_API LennardJonesForceField<default
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP)
 
-} // namespace namespace sofa::component::forcefield
+} // namespace sofa::component::forcefield

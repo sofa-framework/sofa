@@ -9,6 +9,8 @@ set(FLEXIBLE_HAVE_SOFAHIGHORDERTOPOLOGY @FLEXIBLE_HAVE_SOFAHIGHORDERTOPOLOGY@)
 find_package(SofaMiscMapping REQUIRED)
 find_package(Eigen3 QUIET REQUIRED)
 find_package(SofaValidation REQUIRED)
+find_package(SofaGeneralEngine QUIET REQUIRED)
+find_package(SofaBoundaryCondition QUIET REQUIRED)
 
 if(FLEXIBLE_HAVE_SOFAPYTHON)
     find_package(SofaPython QUIET REQUIRED)

@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaValidation VERSION 1.0 LANGUAGES CXX)
-
-find_package(SofaBase REQUIRED)
-find_package(SofaCommon REQUIRED)
-find_package(SofaGeneral REQUIRED)
+project(SofaValidation LANGUAGES CXX)
 
 set(SOFAVALIDATION_SRC "src/${PROJECT_NAME}")
 
@@ -45,15 +41,20 @@ set(SOURCE_FILES
     ${SOFAVALIDATION_SRC}/Monitor.cpp
     )
 
+find_package(SofaBase REQUIRED) # SofaBaseCollision
+find_package(SofaCommon REQUIRED) # SofaMeshCollision SofaLoader
+find_package(SofaGeneralLoader REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseCollision SofaLoader SofaMeshCollision SofaGeneralLoader)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
-    PACKAGE_VERSION ${PROJECT_VERSION}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
 )
 
 ## Tests

@@ -40,7 +40,7 @@ if(NOT SOFA_NO_OPENGL)
     if(SOFAGUI_QGLVIEWER)
         find_package(QGLViewer QUIET)
         if(NOT QGLViewer_FOUND)
-            add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.7.1/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
+            add_subdirectory(libQGLViewer-2.7.1/QGLViewer)
         endif()
     endif()
 else()
@@ -260,6 +260,8 @@ qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
 set(MOC_FILES_GROUP "Generated")
 qt5_wrap_ui(FORM_FILES ${UI_FILES})
 set(FORM_FILES_GROUP "Generated")
+
+find_package(SofaMiscForceField REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 

@@ -232,15 +232,15 @@ public:
     /// @{
 
     /// BeginEdit method if it is only to write the value
+    /// checking that current value is up to date
     inline T* beginEdit()
     {
         updateIfDirty();
-        m_counter++;
-        m_isSet = true;
-        BaseData::setDirtyOutputs();
-        return m_value.beginEdit();
+        return beginWriteOnly();
     }
 
+    /// beginWriteOnly method if it is only to write the value
+    /// regardless of the current status of this value: no dirtiness check
     inline T* beginWriteOnly()
     {
         m_counter++;
@@ -330,15 +330,19 @@ public:
         return out;
     }
 
+SOFA_BEGIN_DEPRECATION_AS_ERROR
+    [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")]]
     inline bool operator ==( const T& value ) const
     {
-        return getValue()==value;
+            return getValue()==value;
     }
 
+    [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")]]
     inline bool operator !=( const T& value ) const
     {
-        return getValue()!=value;
+            return getValue()!=value;
     }
+SOFA_END_DEPRECATION_AS_ERROR
 
     inline void operator =( const T& value )
     {

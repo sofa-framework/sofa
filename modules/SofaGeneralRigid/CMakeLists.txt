@@ -1,36 +1,52 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaGeneralRigid)
+project(SofaGeneralRigid LANGUAGES CXX)
+
+set(SOFAGENERALRIGID_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-    config.h
-    initGeneralRigid.h
+    ${SOFAGENERALRIGID_SRC}/config.h.in
+    ${SOFAGENERALRIGID_SRC}/initSofaGeneralRigid.h
     )
 
 set(SOURCE_FILES
-    initGeneralRigid.cpp
+    ${SOFAGENERALRIGID_SRC}/initSofaGeneralRigid.cpp
     )
 
 list(APPEND HEADER_FILES
-    ArticulatedHierarchyContainer.h
-    ArticulatedHierarchyContainer.inl
-    ArticulatedSystemMapping.h
-    ArticulatedSystemMapping.inl
-    LineSetSkinningMapping.h
-    LineSetSkinningMapping.inl
-    SkinningMapping.h
-    SkinningMapping.inl
+    ${SOFAGENERALRIGID_SRC}/ArticulatedHierarchyContainer.h
+    ${SOFAGENERALRIGID_SRC}/ArticulatedHierarchyContainer.inl
+    ${SOFAGENERALRIGID_SRC}/ArticulatedSystemMapping.h
+    ${SOFAGENERALRIGID_SRC}/ArticulatedSystemMapping.inl
+    ${SOFAGENERALRIGID_SRC}/LineSetSkinningMapping.h
+    ${SOFAGENERALRIGID_SRC}/LineSetSkinningMapping.inl
+    ${SOFAGENERALRIGID_SRC}/SkinningMapping.h
+    ${SOFAGENERALRIGID_SRC}/SkinningMapping.inl
     )
 list(APPEND SOURCE_FILES
-    ArticulatedHierarchyContainer.cpp
-    ArticulatedSystemMapping.cpp
-    LineSetSkinningMapping.cpp
-    SkinningMapping.cpp
+    ${SOFAGENERALRIGID_SRC}/ArticulatedHierarchyContainer.cpp
+    ${SOFAGENERALRIGID_SRC}/ArticulatedSystemMapping.cpp
+    ${SOFAGENERALRIGID_SRC}/LineSetSkinningMapping.cpp
+    ${SOFAGENERALRIGID_SRC}/SkinningMapping.cpp
     )
+
+find_package(SofaBase REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseMechanics)
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaGeneral
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
-    )
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+)
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+# cmake_dependent_option(SOFAGENERALRIGID_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+# if(SOFAGENERALRIGID_BUILD_TESTS)
+#     enable_testing()
+#     add_subdirectory(${PROJECT_NAME}_test)
+# endif()

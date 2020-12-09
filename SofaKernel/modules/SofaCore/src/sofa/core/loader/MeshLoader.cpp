@@ -207,7 +207,7 @@ void MeshLoader::reinit()
 
     if (transformation != Matrix4::s_identity)
     {
-        if (d_scale != Vec3(1.0, 1.0, 1.0) || d_rotation != Vec3(0.0, 0.0, 0.0) || d_translation != Vec3(0.0, 0.0, 0.0))
+        if (d_scale.getValue() != Vec3(1.0, 1.0, 1.0) || d_rotation.getValue() != Vec3(0.0, 0.0, 0.0) || d_translation.getValue() != Vec3(0.0, 0.0, 0.0))
         {
             msg_info() << "Parameters scale, rotation, translation ignored in favor of transformation matrix";
         }
@@ -796,20 +796,6 @@ void MeshLoader::addTriangle(helper::vector<Triangle >* pTriangles, const Triang
     else
     {
         pTriangles->push_back(p);
-    }
-}
-
-void MeshLoader::addTriangle(helper::WriteOnlyAccessor<Data<helper::vector<Triangle>>>& pTriangles, const Triangle& p)
-{
-    if (d_flipNormals.getValue())
-    {
-        Triangle revertP;
-        std::reverse_copy(p.begin(), p.end(), revertP.begin());
-        pTriangles.push_back(revertP);
-    }
-    else
-    {
-        pTriangles.push_back(p);
     }
 }
 
