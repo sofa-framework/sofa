@@ -23,7 +23,7 @@
 #include <SofaBaseTopology/initBaseTopology.h>
 #include <SofaBaseMechanics/initBaseMechanics.h>
 #include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
+#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
 #include <SofaBaseVisual/initBaseVisual.h>
 #include <SofaBaseUtils/initSofaBaseUtils.h>
 #include <SofaEigen2Solver/initSofaEigen2Solver.h>
@@ -43,7 +43,7 @@ void initSofaBase()
         initBaseTopology();
         initBaseMechanics();
         initSofaBaseCollision();
-        initBaseLinearSolver();
+        initSofaBaseLinearSolver();
         initBaseVisual();
         initSofaBaseUtils();
         initSofaEigen2Solver();
