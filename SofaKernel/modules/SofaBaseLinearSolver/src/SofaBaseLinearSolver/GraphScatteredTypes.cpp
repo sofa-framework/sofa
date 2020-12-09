@@ -26,13 +26,7 @@
 #include <cstdlib>
 #include <cmath>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 using sofa::core::behavior::LinearSolver;
@@ -70,8 +64,4 @@ void GraphScatteredVector::operator=(const MultExpr<GraphScatteredMatrix,GraphSc
     expr.a.apply(*this,expr.b);
 }
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver

@@ -23,13 +23,7 @@
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 /*
 template<> FullVector<bool>::FullVector()
@@ -63,10 +57,6 @@ template<> double FullVector<bool>::norm() const
     return helper::rsqrt(r);
 }
 
-template class SOFA_BASE_LINEAR_SOLVER_API FullVector<bool>;
+template class SOFA_SOFABASELINEARSOLVER_API FullVector<bool>;
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver

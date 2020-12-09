@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIX_H
-#define SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIX_H
-#include "config.h"
+#pragma once
+#include <SofaBaseLinearSolver/config.h>
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseLinearSolver/MatrixExpr.h>
@@ -29,13 +28,7 @@
 #include "FullVector.h"
 #include <algorithm>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 //#define SPARSEMATRIX_CHECK
@@ -1833,10 +1826,4 @@ public:
 #undef SPARSEMATRIX_VERBOSE
 #endif
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver

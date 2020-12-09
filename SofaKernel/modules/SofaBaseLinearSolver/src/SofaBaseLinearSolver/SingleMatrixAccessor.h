@@ -19,25 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_SingleMatrixAccessor_H
-#define SOFA_CORE_BEHAVIOR_SingleMatrixAccessor_H
-#include "config.h"
+#pragma once
+#include <SofaBaseLinearSolver/config.h>
 
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 /** Special case to access a single square matrix.
 */
-class SOFA_BASE_LINEAR_SOLVER_API SingleMatrixAccessor : public core::behavior::MultiMatrixAccessor
+class SOFA_SOFABASELINEARSOLVER_API SingleMatrixAccessor : public core::behavior::MultiMatrixAccessor
 {
 public:
     typedef defaulttype::BaseMatrix BaseMatrix;
@@ -63,10 +56,4 @@ protected:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver

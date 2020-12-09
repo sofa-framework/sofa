@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_GRAPHSCATTEREDTYPES_H
-#define SOFA_COMPONENT_LINEARSOLVER_GRAPHSCATTEREDTYPES_H
-#include "config.h"
+#pragma once
+#include <SofaBaseLinearSolver/config.h>
 
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 class GraphScatteredMatrix;
@@ -48,7 +41,7 @@ public:
     MultExpr(T1& a, T2& b) : a(a), b(b) {}
 };
 
-class SOFA_BASE_LINEAR_SOLVER_API GraphScatteredMatrix
+class SOFA_SOFABASELINEARSOLVER_API GraphScatteredMatrix
 {
 public:
     typedef SReal Real;
@@ -75,7 +68,7 @@ public:
     static const char* Name() { return "GraphScattered"; }
 };
 
-class SOFA_BASE_LINEAR_SOLVER_API GraphScatteredVector : public sofa::core::behavior::MultiVecDeriv
+class SOFA_SOFABASELINEARSOLVER_API GraphScatteredVector : public sofa::core::behavior::MultiVecDeriv
 {
 public:
     typedef sofa::core::behavior::MultiVecDeriv Inherit;
@@ -131,10 +124,4 @@ public:
 };
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver

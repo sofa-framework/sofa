@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_INL
-#define SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_INL
-
+#pragma once
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
@@ -34,13 +32,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 /// Linear system solver using the conjugate gradient iterative algorithm
@@ -382,10 +374,4 @@ inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(const core::ExecParams
     r.peq(q,-alpha);
 }
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_INL
+} // namespace sofa::component::linearsolver

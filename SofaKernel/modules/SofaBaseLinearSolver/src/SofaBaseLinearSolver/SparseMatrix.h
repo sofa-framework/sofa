@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSEMATRIX_H
-#define SOFA_COMPONENT_LINEARSOLVER_SPARSEMATRIX_H
-#include "config.h"
+#pragma once
+#include <SofaBaseLinearSolver/config.h>
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include "FullVector.h"
@@ -33,26 +32,18 @@
 #define SPARSEMATRIX_VERBOSE false
 
 //////////////////// FORWARD DEFINITION ////////////////////////////////////////////////////////////
-namespace sofa {
-namespace component {
-namespace linearsolver {
-        template<typename T>
-        class SparseMatrix ;
-        }
-    }
+namespace sofa::component::linearsolver 
+{
+    template<typename T>
+    class SparseMatrix ;
 }
+
 MSG_REGISTER_CLASS(sofa::component::linearsolver::SparseMatrix<float>, "SparseMatrix<float>")
 MSG_REGISTER_CLASS(sofa::component::linearsolver::SparseMatrix<double>, "SparseMatrix<double>")
 
 
 ///////////////////////////  DEFINITION ////////////////////////////////////////////////////////////
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 /** This is basically a map of map of T, wrapped in a defaulttype::BaseMatrix interface.
@@ -555,18 +546,4 @@ public:
 
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-
-#ifdef SPARSEMATRIX_CHECK
-#undef SPARSEMATRIX_CHECK
-#endif
-#ifdef SPARSEMATRIX_VERBOSE
-#undef SPARSEMATRIX_VERBOSE
-#endif
-
-#endif
+} // namespace sofa::component::linearsolver

@@ -29,13 +29,7 @@ using sofa::core::behavior::BaseMechanicalState;
 /// allowing to use msg_info() instead of msg_info("DefaultMultiMatrixAccessor")
 MSG_REGISTER_CLASS(sofa::component::linearsolver::DefaultMultiMatrixAccessor, "DefaultMultiMatrixAccessor")
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 
@@ -930,8 +924,4 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
 #endif
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver

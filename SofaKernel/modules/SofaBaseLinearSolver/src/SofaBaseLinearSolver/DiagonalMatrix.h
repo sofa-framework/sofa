@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_DIAGONALMATRIX_H
-#define SOFA_COMPONENT_LINEARSOLVER_DIAGONALMATRIX_H
-#include "config.h"
+#pragma once
+#include <SofaBaseLinearSolver/config.h>
 
 #include "MatrixExpr.h"
 #include <SofaBaseLinearSolver/matrix_bloc_traits.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 /// Simple full matrix container
@@ -652,10 +645,4 @@ public:
     }
 };
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver

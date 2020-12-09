@@ -19,22 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_BASE_LINEAR_SOLVER_INIT_H
-#define SOFA_COMPONENT_BASE_LINEAR_SOLVER_INIT_H
-#include "config.h"
+#pragma once
+#include <SofaBaseLinearSolver/config.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+void SOFA_SOFABASELINEARSOLVER_API initSofaBaseLinearSolver();
 
-
-void SOFA_BASE_LINEAR_SOLVER_API initBaseLinearSolver();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component::linearsolver
