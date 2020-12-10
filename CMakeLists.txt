@@ -237,6 +237,7 @@ add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 sofa_add_module(SofaKernel/modules/SofaSimpleFem SofaSimpleFem ON)
 sofa_add_module(SofaKernel/modules/SofaRigid SofaRigid ON)
 sofa_add_module(SofaKernel/modules/SofaDeformable SofaDeformable ON)
+sofa_add_module(SofaKernel/modules/SofaObjectInteraction SofaObjectInteraction ON)
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 

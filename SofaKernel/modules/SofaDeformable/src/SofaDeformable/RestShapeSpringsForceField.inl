@@ -25,6 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa::component::forcefield
 {
