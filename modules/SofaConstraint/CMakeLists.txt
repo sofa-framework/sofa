@@ -21,7 +21,6 @@ list(APPEND HEADER_FILES
     ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.inl
     ${SOFACONSTRAINT_SRC}/ConstraintSolverImpl.h
     ${SOFACONSTRAINT_SRC}/ConstraintStoreLambdaVisitor.h
-    ${SOFACONSTRAINT_SRC}/ContactDescription.h
     ${SOFACONSTRAINT_SRC}/ContactIdentifier.h
     ${SOFACONSTRAINT_SRC}/FreeMotionAnimationLoop.h
     ${SOFACONSTRAINT_SRC}/FrictionContact.h
@@ -51,18 +50,6 @@ list(APPEND HEADER_FILES
     ${SOFACONSTRAINT_SRC}/UniformConstraint.inl
     ${SOFACONSTRAINT_SRC}/UnilateralInteractionConstraint.h
     ${SOFACONSTRAINT_SRC}/UnilateralInteractionConstraint.inl
-    ${SOFACONSTRAINT_SRC}/BarycentricDistanceLMConstraintContact.h
-    ${SOFACONSTRAINT_SRC}/BarycentricDistanceLMConstraintContact.inl
-    ${SOFACONSTRAINT_SRC}/DOFBlockerLMConstraint.h
-    ${SOFACONSTRAINT_SRC}/DOFBlockerLMConstraint.inl
-    ${SOFACONSTRAINT_SRC}/FixedLMConstraint.h
-    ${SOFACONSTRAINT_SRC}/FixedLMConstraint.inl
-    ${SOFACONSTRAINT_SRC}/DistanceLMContactConstraint.h
-    ${SOFACONSTRAINT_SRC}/DistanceLMContactConstraint.inl
-    ${SOFACONSTRAINT_SRC}/DistanceLMConstraint.h
-    ${SOFACONSTRAINT_SRC}/DistanceLMConstraint.inl
-    ${SOFACONSTRAINT_SRC}/LMConstraintSolver.h
-    ${SOFACONSTRAINT_SRC}/LMConstraintDirectSolver.h
     )
 list(APPEND SOURCE_FILES
     ${SOFACONSTRAINT_SRC}/BilateralInteractionConstraint.cpp
@@ -87,13 +74,6 @@ list(APPEND SOURCE_FILES
     ${SOFACONSTRAINT_SRC}/UncoupledConstraintCorrection.cpp
     ${SOFACONSTRAINT_SRC}/UniformConstraint.cpp
     ${SOFACONSTRAINT_SRC}/UnilateralInteractionConstraint.cpp
-    ${SOFACONSTRAINT_SRC}/BarycentricDistanceLMConstraintContact.cpp
-    ${SOFACONSTRAINT_SRC}/DOFBlockerLMConstraint.cpp
-    ${SOFACONSTRAINT_SRC}/FixedLMConstraint.cpp
-    ${SOFACONSTRAINT_SRC}/DistanceLMContactConstraint.cpp
-    ${SOFACONSTRAINT_SRC}/DistanceLMConstraint.cpp
-    ${SOFACONSTRAINT_SRC}/LMConstraintSolver.cpp
-    ${SOFACONSTRAINT_SRC}/LMConstraintDirectSolver.cpp
     )
 
 find_package(SofaBase REQUIRED) # SofaBaseLinearSolver

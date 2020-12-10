@@ -389,17 +389,11 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     // SofaConstraint was pluginized in #1592
     { "BilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
     { "ConstraintAnimationLoop", Pluginized("v20.12", "SofaConstraint") },
-    { "DistanceLMConstraint", Pluginized("v20.12", "SofaConstraint") },
-    { "DistanceLMContactConstraint", Pluginized("v20.12", "SofaConstraint") },
-    { "DOFBlockerLMConstraint", Pluginized("v20.12", "SofaConstraint") },
-    { "FixedLMConstraint", Pluginized("v20.12", "SofaConstraint") },
     { "FreeMotionAnimationLoop", Pluginized("v20.12", "SofaConstraint") },
     { "GenericConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
     { "GenericConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
     { "LCPConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
     { "LinearSolverConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
-    { "LMConstraintDirectSolver", Pluginized("v20.12", "SofaConstraint") },
-    { "LMConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
     { "LMDNewProximityIntersection", Pluginized("v20.12", "SofaConstraint") },
     { "LocalMinDistance", Pluginized("v20.12", "SofaConstraint") },
     { "MappingGeometricStiffnessForceField", Pluginized("v20.12", "SofaConstraint") },
@@ -409,6 +403,21 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "UncoupledConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
     { "UniformConstraint", Pluginized("v20.12", "SofaConstraint") },
     { "UnilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
+
+    // LMConstraint was pluginized in #1592
+    { "BaseLMConstraint", Pluginized("v20.12", "LMConstraint") },
+    { "LMConstraint", Pluginized("v20.12", "LMConstraint") },
+    { "TetrahedronBarycentricDistanceLMConstraintContact", Pluginized("v20.12", "LMConstraint") },
+    { "BarycentricDistanceLMConstraintContact_DistanceGrid", Pluginized("v20.12", "LMConstraint") },
+    { "BarycentricDistanceLMConstraintContact", Pluginized("v20.12", "LMConstraint") },
+    { "DistanceLMConstraint", Pluginized("v20.12", "LMConstraint") },
+    { "DistanceLMContactConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "DOFBlockerLMConstraint", Pluginized("v20.12", "LMConstraint") },
+    { "FixedLMConstraint", Pluginized("v20.12", "LMConstraint") },
+    { "LMConstraintSolver", Pluginized("v20.12", "LMConstraint") },
+    { "LMConstraintDirectSolver", Pluginized("v20.12", "LMConstraint") },
+
+
 
     // SofaGeneralLoader was pluginized in #1595
     { "GIDMeshLoader", Pluginized("v20.12", "SofaGeneralLoader") },
