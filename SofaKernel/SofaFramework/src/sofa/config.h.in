@@ -128,7 +128,6 @@ typedef unsigned __int64	uint64_t;
 #define SOFA_END_DEPRECATION_AS_ERROR _Pragma("clang diagnostic pop")
 #endif
 
-
 #ifdef _WIN32
 #  define SOFA_PRAGMA_MESSAGE(text) __pragma(message(__FILE__ "(" sofa_tostring(__LINE__) "): " #text))
 #  define SOFA_PRAGMA_WARNING(text) __pragma(message(__FILE__ "(" sofa_tostring(__LINE__) "): warning: " #text))
