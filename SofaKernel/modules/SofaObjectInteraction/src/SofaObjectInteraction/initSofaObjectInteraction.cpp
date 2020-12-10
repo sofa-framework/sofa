@@ -19,16 +19,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAOBJECTINTERACTION_CONFIG_H
-#define SOFAOBJECTINTERACTION_CONFIG_H
+#include <SofaObjectInteraction/initSofaObjectInteraction.h>
 
-#include <SofaCommon/config.h>
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-#ifdef SOFA_BUILD_OBJECT_INTERACTION
-#  define SOFA_TARGET SofaObjectInteraction
-#  define SOFA_OBJECT_INTERACTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_OBJECT_INTERACTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa::component
+{
 
-#endif
+extern "C" {
+    SOFA_SOFAOBJECTINTERACTION_API void initExternalModule();
+    SOFA_SOFAOBJECTINTERACTION_API const char* getModuleName();
+    SOFA_SOFAOBJECTINTERACTION_API const char* getModuleVersion();
+    SOFA_SOFAOBJECTINTERACTION_API const char* getModuleLicense();
+    SOFA_SOFAOBJECTINTERACTION_API const char* getModuleDescription();
+    SOFA_SOFAOBJECTINTERACTION_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
+
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAOBJECTINTERACTION_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Object Interaction.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaObjectInteraction/config.h>
 
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -30,13 +29,7 @@
 #include <vector>
 #include <sofa/core/MechanicalParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 /** Distance-based, frictionless penalty force. The force is applied to vertices attached to collision elements.
@@ -66,15 +59,15 @@ protected:
     {
     public:
 
-        int m1, m2;         ///< the indices of the vertices the force is applied to
-        int index1, index2; ///< the indices of the two collision elements (currently unused)
+        sofa::Index m1, m2;         ///< the indices of the vertices the force is applied to
+        sofa::Index index1, index2; ///< the indices of the two collision elements (currently unused)
         Deriv norm;         ///< contact normal, from m1 to m2
         Real dist;          ///< distance threshold below which a repulsion force is applied
         Real ks;            ///< spring stiffness
         Real pen;           ///< current penetration depth
         int age;            ///< how old is this contact
 
-        Contact(int _m1=0, int _m2=0, int _index1=0, int _index2=0, Deriv _norm=Deriv(), Real _dist=(Real)0, Real _ks=(Real)0, Real /*_mu_s*/=(Real)0, Real /*_mu_v*/=(Real)0, Real _pen=(Real)0, int _age=0)
+        Contact(sofa::Index _m1=0, sofa::Index _m2=0, sofa::Index _index1=0, sofa::Index _index2=0, Deriv _norm=Deriv(), Real _dist=(Real)0, Real _ks=(Real)0, Real /*_mu_s*/=(Real)0, Real /*_mu_v*/=(Real)0, Real _pen=(Real)0, int _age=0)
             : m1(_m1),m2(_m2),index1(_index1),index2(_index2),norm(_norm),dist(_dist),ks(_ks),/*mu_s(_mu_s),mu_v(_mu_v),*/pen(_pen),age(_age)
         {
         }
@@ -109,9 +102,9 @@ protected:
     }
 
 public:
-    void clear(int reserve = 0);
+    void clear(sofa::Size reserve = 0);
 
-    void addContact(int m1, int m2, int index1, int index2, const Deriv& norm, Real dist, Real ks, Real mu_s = 0.0f, Real mu_v = 0.0f, int oldIndex = 0);
+    void addContact(sofa::Index m1, sofa::Index m2, sofa::Index index1, sofa::Index index2, const Deriv& norm, Real dist, Real ks, Real mu_s = 0.0f, Real mu_v = 0.0f, sofa::Index oldIndex = 0);
 
     void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
 
@@ -123,10 +116,10 @@ public:
 
     // -- tool grabing utility
     void grabPoint( const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
-            const helper::vector< unsigned int > &index,
+            const helper::vector< sofa::Index > &index,
             helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
-            helper::vector< unsigned int > &triangle,
-            helper::vector< unsigned int > &index_point) ;
+            helper::vector< sofa::Index > &triangle,
+            helper::vector< sofa::Index > &index_point) ;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -134,14 +127,8 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)
-extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAOBJECTINTERACTION_API PenalityContactForceField<defaulttype::Vec3Types>;
 
 #endif
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_H */
+} // namespace sofa::component::interactionforcefield

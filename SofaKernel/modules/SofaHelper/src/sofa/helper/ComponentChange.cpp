@@ -445,6 +445,9 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "SpringForceField", Pluginized("v20.12", "SofaDeformable") },
     { "StiffSpringForceField", Pluginized("v20.12", "SofaDeformable") },
 
+    // SofaObjectInteraction was pluginized in #1601
+    { "PenalityContactForceField", Pluginized("v20.12", "SofaObjectInteraction") },
+
     /***********************/
     // REMOVED SINCE v20.12
     { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
