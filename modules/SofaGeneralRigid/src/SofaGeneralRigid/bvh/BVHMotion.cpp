@@ -19,21 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/io/bvh/BVHMotion.h>
+#include <SofaGeneralRigid/bvh/BVHMotion.h>
 #include <sofa/helper/logging/Messaging.h>
 
 #include <iostream>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
-{
-
-namespace bvh
+namespace sofa::helper::io::bvh
 {
 
 void BVHMotion::init(double _fTime, unsigned int _fCount, unsigned int _fSize)
@@ -58,10 +49,4 @@ void BVHMotion::debug(void)
     }
 }
 
-} // namespace bvh
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper::io::bvh

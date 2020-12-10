@@ -19,5 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <SofaGeneralRigid/config.h>
 
-#error "The BVH IO features have been moved to SofaGeneralRigid. Refer to PR1644 for more information." 
+#include <vector>
+
+namespace sofa::helper::io::bvh
+{
+
+class SOFA_SOFAGENERALRIGID_API BVHMotion
+{
+public:
+    BVHMotion()
+    {
+        frameCount = 0;
+        frameTime = 0.0;
+    };
+
+    virtual ~BVHMotion()
+    {
+        delete[] &frames;
+    };
+
+    void init(double _fTime, unsigned int _fCount, unsigned int _fSize);
+
+    int frameCount;
+    double frameTime;
+    std::vector< std::vector<double> > frames;
+
+    void debug(void);
+};
+
+} // namespace sofa::helper::io::bvh

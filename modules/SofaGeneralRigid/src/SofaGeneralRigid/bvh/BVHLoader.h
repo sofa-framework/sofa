@@ -19,5 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <SofaGeneralRigid/config.h>
 
-#error "The BVH IO features have been moved to SofaGeneralRigid. Refer to PR1644 for more information." 
+#include <SofaGeneralRigid/bvh/BVHJoint.h>
+#include <SofaGeneralRigid/bvh/BVHMotion.h>
+
+namespace sofa::helper::io::bvh
+{
+
+/**
+*	This class defines a BVH File Loader
+*	This files describe a hierarchical articulated model and also an associated motion
+*	see http://www.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html for the file format specification
+*/
+class SOFA_SOFAGENERALRIGID_API BVHLoader
+{
+public:
+    BVHLoader() {};
+    virtual ~BVHLoader() {};
+
+    BVHJoint *load(const char *filename);
+
+private:
+    BVHJoint *parseJoint(FILE *f, bool isEndSite=false, BVHJoint *parent=nullptr);
+    BVHOffset *parseOffset(FILE *f);
+    BVHChannels *parseChannels(FILE *f);
+
+    void parseMotion(FILE *f, BVHJoint *j);
+    void setFrameTime(BVHJoint *j, double _frameTime);
+    void parseFrames(BVHJoint *j, unsigned int frameIndex, FILE *f);
+};
+
+} // namespace sofa::helper::io::bvh

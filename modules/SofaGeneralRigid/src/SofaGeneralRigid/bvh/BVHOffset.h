@@ -19,5 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#error "The BVH IO features have been moved to SofaGeneralRigid. Refer to PR1644 for more information." 
+#include <SofaGeneralRigid/config.h>
+
+namespace sofa::helper::io::bvh
+{
+
+class SOFA_SOFAGENERALRIGID_API BVHOffset
+{
+public:
+    BVHOffset(double _x, double _y, double _z)
+        :x(_x),y(_y),z(_z) {}
+
+    virtual ~BVHOffset() {};
+
+    double x,y,z;
+};
+
+} // namespace sofa::helper::io::bvh

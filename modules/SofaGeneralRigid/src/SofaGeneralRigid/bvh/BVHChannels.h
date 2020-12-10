@@ -19,5 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <SofaGeneralRigid/config.h>
 
-#error "The BVH IO features have been moved to SofaGeneralRigid. Refer to PR1644 for more information." 
+#include <vector>
+
+namespace sofa::helper::io::bvh
+{
+
+class SOFA_SOFAGENERALRIGID_API BVHChannels
+{
+public:
+    BVHChannels(unsigned int _size)
+        :size(_size) {};
+
+    virtual ~BVHChannels() {};
+
+    enum BVHChannelType { Xposition, Yposition, Zposition, Xrotation, Yrotation, Zrotation, NOP };
+
+    void addChannel(BVHChannelType cType)
+    {
+        channels.push_back(cType);
+    }
+
+    std::vector<BVHChannelType> channels;
+
+    unsigned int size;
+};
+
+} // namespace sofa::helper::io::bvh
