@@ -232,6 +232,10 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     add_subdirectory(tools/SofaGTestMain)
 endif()
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
+
+# Temporary compatibility while modularizing SofaCommon
+sofa_add_module(SofaKernel/modules/SofaSimpleFem SofaSimpleFem ON)
+
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 
 ## Modules

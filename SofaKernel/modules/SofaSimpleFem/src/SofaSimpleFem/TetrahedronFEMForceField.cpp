@@ -19,21 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_SIMPLE_FEM_INIT_H
-#define SOFA_COMPONENT_SIMPLE_FEM_INIT_H
-#include "config.h"
+#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_CPP
+#include <SofaSimpleFem/TetrahedronFEMForceField.inl>
 
-namespace sofa
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
+
+
+namespace sofa::component::forcefield
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
 
-void SOFA_SIMPLE_FEM_API initSimpleFEM();
 
-} // namespace component
+// Register in the Factory
+int TetrahedronFEMForceFieldClass = core::RegisterObject("Tetrahedral finite elements")
+        .add< TetrahedronFEMForceField<Vec3Types> >()
 
-} // namespace sofa
+        ;
 
-#endif
+template class SOFA_SOFASIMPLEFEM_API TetrahedronFEMForceField<Vec3Types>;
 
+
+} //namespace sofa::component::forcefield

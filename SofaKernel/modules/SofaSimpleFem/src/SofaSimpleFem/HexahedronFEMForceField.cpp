@@ -19,16 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFASIMPLEFEM_CONFIG_H
-#define SOFASIMPLEFEM_CONFIG_H
+#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP
+#include <SofaSimpleFem/HexahedronFEMForceField.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-#include <SofaCommon/config.h>
 
-#ifdef SOFA_BUILD_SIMPLE_FEM
-#  define SOFA_TARGET SofaSimpleFem
-#  define SOFA_SIMPLE_FEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SIMPLE_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa::component::forcefield
+{
 
-#endif
+using namespace sofa::defaulttype;
+
+
+// Register in the Factory
+int HexahedronFEMForceFieldClass = core::RegisterObject("Hexahedral finite elements")
+        .add< HexahedronFEMForceField<Vec3Types> >()
+
+        ;
+
+template class SOFA_SOFASIMPLEFEM_API HexahedronFEMForceField<Vec3Types>;
+
+
+} //namespace sofa::component::forcefield
