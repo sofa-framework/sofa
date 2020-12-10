@@ -19,22 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_DEFORMABLE_INIT_H
-#define SOFA_COMPONENT_DEFORMABLE_INIT_H
-#include "config.h"
+#define SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_CPP
+#include <SofaDeformable/MeshSpringForceField.inl>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::interactionforcefield
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
 
 
-void SOFA_DEFORMABLE_API initDeformable();
+int MeshSpringForceFieldClass = core::RegisterObject("Spring force field acting along the edges of a mesh")
+        .add< MeshSpringForceField<Vec3Types> >()
+        .add< MeshSpringForceField<Vec2Types> >()
+        .add< MeshSpringForceField<Vec1Types> >()
 
-} // namespace component
+        ;
 
-} // namespace sofa
+template class SOFA_SOFADEFORMABLE_API MeshSpringForceField<Vec3Types>;
+template class SOFA_SOFADEFORMABLE_API MeshSpringForceField<Vec2Types>;
+template class SOFA_SOFADEFORMABLE_API MeshSpringForceField<Vec1Types>;
 
-#endif
-
+} //namespace sofa::component::interactionforcefield

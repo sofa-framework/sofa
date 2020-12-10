@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaDeformable/config.h>
 
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -31,13 +30,7 @@
 
 #include <sofa/core/objectmodel/DataFileName.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 /// This class contains the description of one linear spring
@@ -46,14 +39,14 @@ class LinearSpring
 {
 public:
     typedef T Real;
-    int  m1, m2;            ///< the two extremities of the spring: masses m1 and m2
+    sofa::Index  m1, m2;    ///< the two extremities of the spring: masses m1 and m2
     Real ks;                ///< spring stiffness
     Real kd;                ///< damping factor
     Real initpos;           ///< rest length of the spring
     bool elongationOnly;    ///< only forbid elongation, not compression
     bool enabled;           ///< false to disable this spring (i.e. broken)
 
-    LinearSpring(int m1=0, int m2=0, Real ks=0.0, Real kd=0.0, Real initpos=0.0, bool noCompression=false, bool enabled=true)
+    LinearSpring(sofa::Index m1=0, sofa::Index m2=0, Real ks=0.0, Real kd=0.0, Real initpos=0.0, bool noCompression=false, bool enabled=true)
         : m1(m1), m2(m2), ks(ks), kd(kd), initpos(initpos), elongationOnly(noCompression), enabled(enabled)
     {
     }
@@ -122,7 +115,7 @@ protected:
     SpringForceFieldInternalData<DataTypes> data;
     friend class SpringForceFieldInternalData<DataTypes>;
 
-    virtual void addSpringForce(Real& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring);
+    virtual void addSpringForce(Real& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, sofa::Index /*i*/, const Spring& spring);
 
     SpringForceField(SReal _ks=100.0, SReal _kd=5.0);
     SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=100.0, SReal _kd=5.0);
@@ -161,7 +154,7 @@ public:
 
     // -- Modifiers
 
-    void clear(int reserve=0)
+    void clear(sofa::Size reserve=0)
     {
         sofa::helper::vector<Spring>& springs = *this->springs.beginEdit();
         springs.clear();
@@ -169,7 +162,7 @@ public:
         this->springs.endEdit();
     }
 
-    void removeSpring(unsigned int idSpring)
+    void removeSpring(sofa::Index idSpring)
     {
         if (idSpring >= (this->springs.getValue()).size())
             return;
@@ -179,7 +172,7 @@ public:
         this->springs.endEdit();
     }
 
-    void addSpring(int m1, int m2, SReal ks, SReal kd, SReal initlen)
+    void addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen)
     {
         springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
         springs.endEdit();
@@ -207,18 +200,12 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
-extern template class SOFA_DEFORMABLE_API LinearSpring<double>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec3Types>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec2Types>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec1Types>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Vec6Types>;
-extern template class SOFA_DEFORMABLE_API SpringForceField<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFADEFORMABLE_API LinearSpring<double>;
+extern template class SOFA_SOFADEFORMABLE_API SpringForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFADEFORMABLE_API SpringForceField<defaulttype::Vec2Types>;
+extern template class SOFA_SOFADEFORMABLE_API SpringForceField<defaulttype::Vec1Types>;
+extern template class SOFA_SOFADEFORMABLE_API SpringForceField<defaulttype::Vec6Types>;
+extern template class SOFA_SOFADEFORMABLE_API SpringForceField<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_H */
+} // namespace sofa::component::interactionforcefield

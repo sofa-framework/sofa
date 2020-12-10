@@ -29,16 +29,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-
-namespace sofa
+namespace sofa::component::interactionforcefield
 {
-
-namespace component
-{
-
-namespace interactionforcefield
-{
-
 
 template<class DataTypes>
 PolynomialSpringsForceField<DataTypes>::PolynomialSpringsForceField()
@@ -579,11 +571,4 @@ double PolynomialSpringsForceField<DataTypes>::PolynomialDerivativeValue(unsigne
     return result;
 }
 
-
-
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::interactionforcefield

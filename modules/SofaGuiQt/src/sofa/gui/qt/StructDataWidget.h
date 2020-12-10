@@ -403,8 +403,8 @@ public:
     }
 };
 
-template<class T> STRUCT_DATA_VAR(CLASS, 0, "Index 1", "Index 1", int, m1);
-template<class T> STRUCT_DATA_VAR(CLASS, 1, "Index 2", "Index 2", int, m2);
+template<class T> STRUCT_DATA_VAR(CLASS, 0, "Index 1", "Index 1", sofa::Index, m1);
+template<class T> STRUCT_DATA_VAR(CLASS, 1, "Index 2", "Index 2", sofa::Index, m2);
 template<class T> STRUCT_DATA_VAR(CLASS, 2, "Stiffness", "Ks", T, ks);
 template<class T> STRUCT_DATA_VAR(CLASS, 3, "Damping", "Kd", T, kd);
 template<class T> STRUCT_DATA_VAR(CLASS, 4, "Rest Length", "L", T, initpos);

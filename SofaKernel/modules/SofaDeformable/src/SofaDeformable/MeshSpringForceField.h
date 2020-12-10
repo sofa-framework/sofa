@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_MESHSPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_MESHSPRINGFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaDeformable/config.h>
 
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <set>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 template<class DataTypes>
@@ -71,12 +64,12 @@ protected:
     Data< Real >  d_drawSpringSize; ///< Size of drawed lines
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > d_localRange;
+    Data< defaulttype::Vec<2, sofa::Index> > d_localRange;
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<MeshSpringForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    void addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping);
+    void addSpring(std::set<std::pair<sofa::Index, sofa::Index> >& sset, sofa::Index m1, sofa::Index m2, Real stiffness, Real damping);
 
     MeshSpringForceField() ;
     virtual ~MeshSpringForceField();
@@ -157,16 +150,10 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_CPP)
-extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec3Types>;
-extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec2Types>;
-extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec1Types>;
+extern template class SOFA_SOFADEFORMABLE_API MeshSpringForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFADEFORMABLE_API MeshSpringForceField<defaulttype::Vec2Types>;
+extern template class SOFA_SOFADEFORMABLE_API MeshSpringForceField<defaulttype::Vec1Types>;
 
 #endif
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_MESHSPRINGFORCEFIELD_H */
+} // namespace sofa::component::interactionforcefield

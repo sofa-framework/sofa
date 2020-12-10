@@ -436,6 +436,15 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "RigidMapping", Pluginized("v20.12", "SofaRigid") },
     { "RigidRigidMapping", Pluginized("v20.12", "SofaRigid") },
 
+    // SofaDeformable was pluginized in #1600
+    { "AngularSpringForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "MeshSpringForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "PolynomialRestShapeSpringsForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "PolynomialSpringsForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "RestShapeSpringsForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "SpringForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "StiffSpringForceField", Pluginized("v20.12", "SofaDeformable") },
+
     /***********************/
     // REMOVED SINCE v20.12
     { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },

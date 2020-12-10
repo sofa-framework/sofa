@@ -24,125 +24,119 @@
 ******************************************************************************/
 #pragma once
 #include <SofaDeformable/config.h>
-#include <sofa/core/behavior/PairInteractionForceField.h>
+#include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
+namespace sofa::core::behavior
 {
 
-namespace component
-{
+template< class T > class MechanicalState;
 
-namespace interactionforcefield
+} // namespace sofa::core::behavior
+
+namespace sofa::component::forcefield
 {
 
 /**
-* @brief This class describes a polynomial elastic springs ForceField
+* @brief This class describes a polynomial elastic springs ForceField between DOFs positions and rest positions.
 *
+* Springs are applied to given degrees of freedom between their current positions and their rest shape positions.
+* An external MechanicalState reference can also be passed to the ForceField as rest shape position.
 */
 template<class DataTypes>
-class PolynomialSpringsForceField : public core::behavior::PairInteractionForceField<DataTypes>
+class PolynomialRestShapeSpringsForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PolynomialSpringsForceField, DataTypes), SOFA_TEMPLATE(core::behavior::PairInteractionForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(PolynomialRestShapeSpringsForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
-    typedef typename core::behavior::PairInteractionForceField<DataTypes> Inherit;
+    typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef helper::vector<unsigned int> VecIndex;
+    typedef helper::vector<sofa::Index> VecIndex;
     typedef helper::vector<Real> VecReal;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 
-    // connected objects indices
-    Data<VecIndex> d_firstObjectPoints;
-    Data<VecIndex> d_secondObjectPoints;
+    Data< helper::vector<sofa::Index> > d_points;
+    Data< helper::vector<sofa::Index> > d_external_points;
 
-    // polynomial data
+    /// polynomial data
     /// Describe set of polynomial coefficients combines in one array.
     /// The coefficients are put from smaller degree to bigger one, and the free polynomial parameter is also zero
-    /// (for zero strain we have zero stress).
+    /// (for zero strain we have zero stress)
     /// For examples the coeffiencts for polynomials with degrees [3, 2, 4] will be put as [ a1, a2, a3, b1, b2, c1, c2, c3, c4]
-    Data<VecReal> d_polynomialStiffness;
+    Data< VecReal > d_polynomialStiffness;
     /// Describe set of polynomial degrees fro every spring
-    Data< helper::vector<unsigned int> > d_polynomialDegree;
+    Data< helper::vector<sofa::Size> > d_polynomialDegree;
 
-    Data<int> d_computeZeroLength;                    /// Flag to verify if initial length has to be computed during the first iteration
-    Data<VecReal> d_zeroLength;                       /// Springs initial lengths
+
     Data<bool> d_recomputeIndices;
-
-    Data <bool> d_compressible;                       /// flag to put compressible springs
-
-    Data<int> d_drawMode;                             /// Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
-    Data<float> d_showArrowSize;                      ///< size of the axis
+    Data<bool> d_drawSpring;                      ///< draw Spring
     Data<sofa::helper::types::RGBAColor> d_springColor;
     Data<float> d_showIndicesScale;
 
+    Data<VecReal> d_zeroLength;       /// Springs initial lengths
+    Data<double> d_smoothShift;
+    Data<double> d_smoothScale;
+
+    SingleLink<PolynomialRestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState<DataTypes>,
+        BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> d_restMState;
 
     // data to compute spring derivatives
-    typedef defaulttype::Mat<Coord::total_size, Coord::total_size, Real> JacobianMatrix;
+    typedef defaulttype::Vec<Coord::total_size, Real> JacobianVector;
 
 
 protected:
-    PolynomialSpringsForceField();
-    PolynomialSpringsForceField(MechanicalState* object1, MechanicalState* object2);
+    PolynomialRestShapeSpringsForceField();
 
     void recomputeIndices();
 
-    VecIndex m_firstObjectIndices;
-    VecIndex m_secondObjectIndices;
+    VecIndex m_indices;
+    VecIndex m_ext_indices;
 
-    helper::vector<JacobianMatrix> m_differential;
+    helper::vector<JacobianVector> m_differential;
 
-    VecReal m_springLength;
+    VecReal m_directionSpringLength;
     VecReal m_strainValue;
     VecCoord m_weightedCoordinateDifference;
+    VecReal m_coordinateSquaredNorm;
 
-    helper::vector<helper::vector<unsigned int>> m_polynomialsMap;
+    helper::vector<helper::vector<sofa::Size>> m_polynomialsMap;
 
-    VecReal m_initialSpringLength;
-    VecReal m_strainSign;
-    std::vector<int> m_computeSpringsZeroLength;
+    bool m_useRestMState; /// Indicator whether an external MechanicalState is used as rest reference.
 
 
-    const unsigned int m_dimension;
-    static double constexpr MATH_PI = 3.14159265;
-
-    void ComputeJacobian(unsigned int stiffnessIndex, unsigned int springIndex);
-    double PolynomialValue(unsigned int springIndex, double strainValue);
-    double PolynomialDerivativeValue(unsigned int springIndex, double strainValue);
+    void ComputeJacobian(sofa::Index stiffnessIndex, sofa::Index springIndex);
+    double PolynomialValue(sofa::Index springIndex, double strainValue);
+    double PolynomialDerivativeValue(sofa::Index springIndex, double strainValue);
 
 public:
     void bwdInit() override;
 
     /// Add the forces.
-    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2,
-                  const DataVecCoord& data_p1, const DataVecCoord& data_p2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2) override;
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2,
-                   const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
 
     /// Brings ForceField contribution to the global system stiffness matrix.
-    virtual void addKToMatrix(const core::MechanicalParams* mparams, const core::behavior::MultiMatrixAccessor* matrix) override;
+    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
     virtual void addSubKToMatrix(const core::MechanicalParams* mparams,
                                  const sofa::core::behavior::MultiMatrixAccessor* matrix,
-                                 const helper::vector<unsigned> & addSubIndex ) override;
+                                 const helper::vector<sofa::Index> & addSubIndex ) override;
 
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
-                                     const DataVecCoord& /*x1*/, const DataVecCoord& /*x2*/) const override
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& /* x */) const override
     {
-        msg_error() << "Get potentialEnergy not implemented";
+        serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
 
@@ -158,23 +152,18 @@ public:
             this->addBToMatrix(mparams, matrix);
     }
 
-    const VecIndex& getFirstObjectIndices() const { return m_firstObjectIndices; }
-    const VecIndex& getSecondObjectIndices() const { return m_secondObjectIndices; }
 
-    core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
-    core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
+    const DataVecCoord* getExtPosition() const;
+    const VecIndex& getIndices() const { return m_indices; }
+    const VecIndex& getExtIndices() const { return (m_useRestMState ? m_ext_indices : m_indices); }
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_POLYNOMIAL_RESTSHAPESPRINGSFORCEFIELD_CPP)
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_CPP)
+using namespace sofa::defaulttype;
 
-extern template class SOFA_DEFORMABLE_API PolynomialSpringsForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFADEFORMABLE_API PolynomialRestShapeSpringsForceField<Vec3Types>;
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_CPP)
+#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_POLYNOMIAL_RESTSHAPESPRINGFORCEFIELD_CPP)
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::forcefield
