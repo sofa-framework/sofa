@@ -115,7 +115,7 @@ typedef unsigned __int64	uint64_t;
 
 ///////////////////// Remove the -Wattribute warning on gcc that is causing lot of troubles
 #if defined(__GNUC__)
-_Pragma("GCC diagnostic error \"-Wattributes\"")
+_Pragma("GCC diagnostic ignored \"-Wattributes\"")
 #endif
 
 ///////////////////// These macros can be used to convert deprecation attributes as error.
