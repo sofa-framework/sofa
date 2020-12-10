@@ -113,6 +113,11 @@ typedef unsigned __int64	uint64_t;
 #define sofa_do_tostring(a) #a
 #define sofa_tostring(a) sofa_do_tostring(a)
 
+///////////////////// Remove the -Wattribute warning on gcc that is causing lot of troubles
+#if defined(__GNUC__)
+_Pragma("GCC diagnostic error \"-Wattributes\"")
+#endif
+
 ///////////////////// These macros can be used to convert deprecation attributes as error.
 #if defined(_MSC_VER)
 #define SOFA_BEGIN_DEPRECATION_AS_ERROR __pragma("warning( push )") \
