@@ -35,4 +35,3 @@ add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaExplicitOdeSolver/SofaExp
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaImplicitOdeSolver/SofaImplicitOdeSolver_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaImplicitOdeSolver/SofaImplicitOdeSolver_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaLoader/SofaLoader_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaLoader/SofaLoader_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaMeshCollision/SofaMeshCollision_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaMeshCollision/SofaMeshCollision_test)
-add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaRigid/SofaRigid_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaCommon/SofaRigid/SofaRigid_test)

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_H
-#define SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_H
-#include "config.h"
+#pragma once
+#include <SofaRigid/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -29,15 +28,9 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
@@ -77,10 +70,10 @@ protected:
     /// given in the "index" attribute. If one value, each parent frame drives
     /// the given number of children frames. Otherwise, the values are the number
     /// of child frames driven by each parent frame.
-    Data< sofa::helper::vector<unsigned int> >  repartition;
+    Data< sofa::helper::vector<sofa::Size> >  repartition;
 
 public:
-    Data<unsigned> index; ///< input frame index
+    Data<sofa::Index> index; ///< input frame index
     sofa::core::objectmodel::DataFileName fileRigidRigidMapping; ///< Filename
 
     /// axis length for display
@@ -116,10 +109,10 @@ public:
 
     void clear();
 
-    sofa::helper::vector<unsigned int> getRepartition() {return repartition.getValue(); }
+    sofa::helper::vector<sofa::Size> getRepartition() {return repartition.getValue(); }
 
-    void setRepartition(unsigned int value);
-    void setRepartition(sofa::helper::vector<unsigned int> values);
+    void setRepartition(sofa::Size value);
+    void setRepartition(sofa::helper::vector<sofa::Size> values);
 
 protected:
 
@@ -131,13 +124,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP)
-extern template class SOFA_RIGID_API RigidRigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
+extern template class SOFA_SOFARIGID_API RigidRigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 #endif
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

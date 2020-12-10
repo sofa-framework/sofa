@@ -19,46 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_JOINTSPRING_INL
-#define SOFA_JOINTSPRING_INL
+#define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP
+#include <SofaRigid/RigidMapping.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <SofaRigid/JointSpring.h>
-
-namespace sofa
+namespace sofa::component::mapping
 {
 
-namespace component
-{
+using namespace defaulttype;
 
-namespace interactionforcefield
-{
+// Register in the Factory
+int RigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
+        .add< RigidMapping< Rigid3Types, Vec3dTypes > >()
+        .add< RigidMapping< Rigid2Types, Vec2Types > >()
+        ;
 
-template<class DataTypes>
-JointSpring<DataTypes>::JointSpring(int m1 , int m2,
-                                    Real softKst, Real hardKst , Real softKsr , Real hardKsr , Real blocKsr,
-                                    Real axmin , Real axmax , Real aymin , Real aymax , Real azmin , Real azmax,
-                                    Real kd):
-                                      m1(m1), m2(m2), kd(kd)
-                                    , torsion(0,0,0), lawfulTorsion(0,0,0), KT(0,0,0) , KR(0,0,0)
-                                    , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), blocStiffnessRot(blocKsr)
-                                    , needToInitializeTrans(true), needToInitializeRot(true)
+template class SOFA_SOFARIGID_API RigidMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_SOFARIGID_API RigidMapping< Rigid2Types, Vec2Types >;
+
+
+template<>
+void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
+{}
+template<>
+const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK()
 {
-    limitAngles = sofa::defaulttype::Vec<6,Real>(axmin,axmax,aymin,aymax,azmin,azmax);
-    freeMovements = sofa::defaulttype::Vec<6,bool>(false, false, false, true, true, true);
-    for (unsigned int i=0; i<3; i++)
-    {
-        if(limitAngles[2*i]==limitAngles[2*i+1])
-            freeMovements[3+i] = false;
-    }
-    initTrans = Vector(0,0,0);
-    initRot = defaulttype::Quat(0,0,0,1);
+    msg_error() << "TODO: assembled geometric stiffness not implemented";
+    return nullptr;
 }
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_JOINTSPRING_INL */
-
+} // namespace sofa::component::mapping

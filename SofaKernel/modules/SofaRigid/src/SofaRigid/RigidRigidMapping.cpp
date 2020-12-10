@@ -19,56 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP
-#include <SofaRigid/RigidMapping.inl>
+#define SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP
+
+#include <SofaRigid/RigidRigidMapping.inl>
+
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace defaulttype;
 
 // Register in the Factory
-int RigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
-        .add< RigidMapping< Rigid3Types, Vec3dTypes > >()
-        .add< RigidMapping< Rigid2Types, Vec2Types > >()
+int RigidRigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
+        .add< RigidRigidMapping< Rigid3Types, Rigid3Types > >();
 
+template class SOFA_SOFARIGID_API RigidRigidMapping< Rigid3Types, Rigid3Types >;
 
-
-        ;
-
-template class SOFA_RIGID_API RigidMapping< Rigid3Types, Vec3dTypes >;
-template class SOFA_RIGID_API RigidMapping< Rigid2Types, Vec2Types >;
-
-
-
-
-
-
-
-
-template<>
-void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
-{}
-template<>
-const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK()
-{
-    msg_error() << "TODO: assembled geometric stiffness not implemented";
-    return nullptr;
-}
-
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mapping
