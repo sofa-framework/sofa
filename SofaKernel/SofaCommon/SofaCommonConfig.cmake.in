@@ -3,12 +3,17 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-set(SOFACOMMON_TARGETS @SOFACOMMON_TARGETS@)
+set(SOFACOMMON_TARGETS @SOFACOMMON_TARGETS@ @SOFACOMMON_MODULES@)
+set(SOFACOMMON_MODULES @SOFACOMMON_MODULES@)
 
 find_package(SofaBase QUIET REQUIRED)
 
 # Eigen3 is required by SofaRigid
 find_package(Eigen3 QUIET REQUIRED)
+
+foreach(module ${SOFACOMMON_MODULES})
+    find_package(${module} QUIET REQUIRED)
+endforeach()
 
 foreach(target ${SOFACOMMON_TARGETS})
     if(NOT TARGET ${target})

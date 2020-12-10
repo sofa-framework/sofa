@@ -19,36 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP
-#include "HexahedronFEMForceField.inl"
-#include <sofa/defaulttype/VecTypes.h>
+#include <SofaSimpleFem/initSofaSimpleFem.h>
+
+
 #include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
+extern "C" {
+    SOFA_SOFASIMPLEFEM_API void initExternalModule();
+    SOFA_SOFASIMPLEFEM_API const char* getModuleName();
+    SOFA_SOFASIMPLEFEM_API const char* getModuleVersion();
+    SOFA_SOFASIMPLEFEM_API const char* getModuleLicense();
+    SOFA_SOFASIMPLEFEM_API const char* getModuleDescription();
+    SOFA_SOFASIMPLEFEM_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-namespace forcefield
+const char* getModuleName()
 {
+    return sofa_tostring(SOFA_TARGET);
+}
 
-using namespace sofa::defaulttype;
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFASIMPLEFEM_VERSION);
+}
 
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-// Register in the Factory
-int HexahedronFEMForceFieldClass = core::RegisterObject("Hexahedral finite elements")
-        .add< HexahedronFEMForceField<Vec3Types> >()
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Simple Fem.";
+}
 
-        ;
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
 
-template class SOFA_SIMPLE_FEM_API HexahedronFEMForceField<Vec3Types>;
-
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::forcefield

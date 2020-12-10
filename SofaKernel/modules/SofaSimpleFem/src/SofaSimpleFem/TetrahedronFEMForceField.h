@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaSimpleFem/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -29,7 +28,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
-#include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/helper/OptionsGroup.h>
 
 #include <sofa/helper/ColorMap.h>
@@ -47,13 +45,7 @@
 // }
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 
@@ -98,7 +90,6 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
-    typedef core::topology::BaseMeshTopology::Index Index;
     typedef core::topology::BaseMeshTopology::Tetra Element;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
     typedef core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
@@ -178,7 +169,7 @@ public:
     Real getRestVolume() {return m_restVolume;}
 
     //For a faster contact handling with simplified compliance
-    void getRotation(Transformation& R, unsigned int nodeIdx);
+    void getRotation(Transformation& R, Index nodeIdx);
     void getRotations(VecReal& vecR) ;
     void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override ;
     Data< VecCoord > _initialPoints; ///< the initial positions of the points
@@ -245,8 +236,8 @@ public:
     void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
 
     //for tetra mapping, should be removed in future
-    Transformation getActualTetraRotation(unsigned int index);
-    Transformation getInitialTetraRotation(unsigned int index);
+    Transformation getActualTetraRotation(Index index);
+    Transformation getInitialTetraRotation(Index index);
 
     void setMethod(std::string methodName);
     void setMethod(int val);
@@ -277,7 +268,7 @@ public:
 
 
     // Getting the stiffness matrix of index i
-    void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
+    void getElementStiffnessMatrix(Real* stiffness, Index nodeIdx);
     void getElementStiffnessMatrix(Real* stiffness, Tetrahedron& te);
     virtual void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d);
 
@@ -287,7 +278,7 @@ protected:
 
     void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot );
 
-    virtual void computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d);
+    virtual void computeMaterialStiffness(Index i, Index&a, Index&b, Index&c, Index&d);
 
 
     void computeForce( Displacement &F, const Displacement &Depl, VoigtTensor &plasticStrain, const MaterialStiffness &K, const StrainDisplacement &J );
@@ -295,28 +286,28 @@ protected:
 
 
     ////////////// small displacements method
-    void initSmall(int i, Index&a, Index&b, Index&c, Index&d);
+    void initSmall(Index i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSmall( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void applyStiffnessSmall( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
+    void applyStiffnessSmall( Vector& f, const Vector& x, Index i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
 
     ////////////// large displacements method
     helper::vector<helper::fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
     helper::vector<Transformation> _initialRotations;
-    void initLarge(int i, Index&a, Index&b, Index&c, Index&d);
+    void initLarge(Index i, Index&a, Index&b, Index&c, Index&d);
     void computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
 
     ////////////// polar decomposition method
     helper::vector<unsigned int> _rotationIdx;
-    void initPolar(int i, Index&a, Index&b, Index&c, Index&d);
+    void initPolar(Index i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForcePolar( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
 
     ////////////// svd decomposition method
     helper::vector<Transformation>  _initialTransformation;
-    void initSVD(int i, Index&a, Index&b, Index&c, Index&d);
+    void initSVD(Index i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSVD( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
 
-    void applyStiffnessCorotational( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
+    void applyStiffnessCorotational( Vector& f, const Vector& x, Index i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
 
     void handleTopologyChange() override { needUpdateTopology = true; }
 
@@ -325,13 +316,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_CPP)
-extern template class SOFA_SIMPLE_FEM_API TetrahedronFEMForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFASIMPLEFEM_API TetrahedronFEMForceField<defaulttype::Vec3Types>;
 #endif
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::forcefield

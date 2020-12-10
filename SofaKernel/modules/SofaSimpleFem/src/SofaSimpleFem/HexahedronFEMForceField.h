@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaSimpleFem/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -31,18 +30,10 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/helper/decompose.h>
-#include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/helper/OptionsGroup.h>
 
-namespace sofa
+namespace sofa::component::forcefield
 {
-
-namespace component
-{
-
-namespace forcefield
-{
-
 
 template<class DataTypes>
 class HexahedronFEMForceField;
@@ -155,9 +146,9 @@ public:
     // getPotentialEnergy is implemented for polar method
     SReal getPotentialEnergy(const core::MechanicalParams*) const override;
 
-    const Transformation& getElementRotation(const unsigned elemidx);
+    const Transformation& getElementRotation(const sofa::Index elemidx);
 
-    void getNodeRotation(Transformation& R, unsigned int nodeIdx) ;
+    void getNodeRotation(Transformation& R, sofa::Index nodeIdx) ;
     void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override ;
 
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
@@ -203,12 +194,12 @@ protected:
     inline const VecElement *getIndexedElements(){ return & (m_topology->getHexahedra()); }
 
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M,
-                                          const helper::fixed_array<Coord,8> &nodes, const int elementIndice,
+                                          const helper::fixed_array<Coord,8> &nodes, const sofa::Index elementIndice,
                                           double stiffnessFactor=1.0);
     Mat33 integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1,
                               const Real u, const Real v, const Real w, const Mat33& J_1  );
 
-    void computeMaterialStiffness(int i);
+    void computeMaterialStiffness(sofa::Index i);
 
     void computeForce( Displacement &F, const Displacement &Depl, const ElementStiffness &K );
 
@@ -219,29 +210,23 @@ protected:
     helper::vector<Transformation> _initialrotations;
     void initLarge(int i, const Element&elem);
     void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);
-    virtual void accumulateForceLarge( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem  );
+    virtual void accumulateForceLarge( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem  );
 
     ////////////// polar decomposition method
     void initPolar(int i, const Element&elem);
     void computeRotationPolar( Transformation &r, defaulttype::Vec<8,Coord> &nodes);
-    virtual void accumulateForcePolar( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem  );
+    virtual void accumulateForcePolar( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem  );
 
     ////////////// small decomposition method
     void initSmall(int i, const Element&elem);
-    virtual void accumulateForceSmall( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem  );
+    virtual void accumulateForceSmall( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem  );
 
     bool _alreadyInit;
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP)
-extern template class SOFA_SIMPLE_FEM_API HexahedronFEMForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFASIMPLEFEM_API HexahedronFEMForceField<defaulttype::Vec3Types>;
 
 #endif
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_H
+} //namespace sofa::component::forcefield
