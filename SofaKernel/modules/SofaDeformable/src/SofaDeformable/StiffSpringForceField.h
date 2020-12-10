@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaDeformable/config.h>
 
 #include <SofaDeformable/SpringForceField.h>
 #include <sofa/defaulttype/Mat.h>
@@ -29,13 +28,7 @@
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <SofaBaseTopology/TopologySubsetData.inl> 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 /** SpringForceField able to evaluate and apply its stiffness.
@@ -59,7 +52,7 @@ public:
 
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
-    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef helper::vector<sofa::Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 
@@ -77,10 +70,10 @@ protected:
     sofa::helper::vector<Mat>  dfdx;
 
     /// Accumulate the spring force and compute and store its stiffness
-    void addSpringForce(Real& potentialEnergy, VecDeriv& f1,const  VecCoord& p1,const VecDeriv& v1, VecDeriv& f2,const  VecCoord& p2,const  VecDeriv& v2, int i, const Spring& spring) override;
+    void addSpringForce(Real& potentialEnergy, VecDeriv& f1,const  VecCoord& p1,const VecDeriv& v1, VecDeriv& f2,const  VecCoord& p2,const  VecDeriv& v2, sofa::Index i, const Spring& spring) override;
 
     /// Apply the stiffness, i.e. accumulate df given dx
-    virtual void addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, int i, const Spring& spring, double kFactor, double bFactor);
+    virtual void addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, sofa::Index i, const Spring& spring, double kFactor, double bFactor);
 
     StiffSpringForceField(double ks=100.0, double kd=5.0);
     StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);
@@ -95,31 +88,18 @@ public:
 
     /// Accumulate f corresponding to x,v
     void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
-    ///SOFA_DEPRECATED_ForceField <<<virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-
     /// Accumulate df corresponding to dx
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
-    ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
-
-    // getPotentialEnergy of base class SpringForceField.
-   ///SOFA_DEPRECATED_ForceField <<<virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact);
-
     using Inherit::addKToMatrix;
     void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_CPP)
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec3Types>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec2Types>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec1Types>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec6Types>;
-extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Rigid3Types>;
+#if !defined(SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_CPP)
+extern template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<defaulttype::Vec2Types>;
+extern template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<defaulttype::Vec1Types>;
+extern template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<defaulttype::Vec6Types>;
+extern template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_H */
+} // namespace sofa::component::interactionforcefield

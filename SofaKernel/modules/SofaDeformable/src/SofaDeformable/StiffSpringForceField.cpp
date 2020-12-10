@@ -19,44 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP
-#include <SofaDeformable/SpringForceField.inl>
+#define SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_CPP
+#include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
 
 
-//Register in the Factory
-int SpringForceFieldClass = core::RegisterObject("Springs")
-        .add< SpringForceField<Vec3Types> >()
-        .add< SpringForceField<Vec2Types> >()
-        .add< SpringForceField<Vec1Types> >()
-        .add< SpringForceField<Vec6Types> >()
-        .add< SpringForceField<Rigid3Types> >()
+// Register in the Factory
+int StiffSpringForceFieldClass = core::RegisterObject("Stiff springs for implicit integration")
+        .add< StiffSpringForceField<Vec3Types> >()
+        .add< StiffSpringForceField<Vec2Types> >()
+        .add< StiffSpringForceField<Vec1Types> >()
+        .add< StiffSpringForceField<Vec6Types> >()
+        .add< StiffSpringForceField<Rigid3Types> >()
         ;
+template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<Vec3Types>;
+template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<Vec2Types>;
+template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<Vec1Types>;
+template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<Vec6Types>;
+template class SOFA_SOFADEFORMABLE_API StiffSpringForceField<Rigid3Types>;
 
-template class SOFA_DEFORMABLE_API LinearSpring<double>;
-template class SOFA_DEFORMABLE_API SpringForceField<Vec3Types>;
-template class SOFA_DEFORMABLE_API SpringForceField<Vec2Types>;
-template class SOFA_DEFORMABLE_API SpringForceField<Vec1Types>;
-template class SOFA_DEFORMABLE_API SpringForceField<Vec6Types>;
-template class SOFA_DEFORMABLE_API SpringForceField<Rigid3Types>;
-
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::interactionforcefield

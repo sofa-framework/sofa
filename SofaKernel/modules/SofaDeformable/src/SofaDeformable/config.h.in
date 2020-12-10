@@ -19,41 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_CPP
-#include <SofaDeformable/StiffSpringForceField.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-namespace sofa
-{
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace component
-{
+#define SOFADEFORMABLE_VERSION @PROJECT_VERSION@
 
-namespace interactionforcefield
-{
-
-using namespace sofa::defaulttype;
-
-
-// Register in the Factory
-int StiffSpringForceFieldClass = core::RegisterObject("Stiff springs for implicit integration")
-        .add< StiffSpringForceField<Vec3Types> >()
-        .add< StiffSpringForceField<Vec2Types> >()
-        .add< StiffSpringForceField<Vec1Types> >()
-        .add< StiffSpringForceField<Vec6Types> >()
-        .add< StiffSpringForceField<Rigid3Types> >()
-        ;
-template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec3Types>;
-template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec2Types>;
-template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec1Types>;
-template class SOFA_DEFORMABLE_API StiffSpringForceField<Vec6Types>;
-template class SOFA_DEFORMABLE_API StiffSpringForceField<Rigid3Types>;
-
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+#ifdef SOFA_BUILD_SOFADEFORMABLE
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFADEFORMABLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFADEFORMABLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif

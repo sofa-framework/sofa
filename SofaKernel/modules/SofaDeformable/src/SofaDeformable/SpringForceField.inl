@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_INL
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_INL
-
+#pragma once
 #include <SofaDeformable/SpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -32,13 +30,7 @@
 #include <iostream>
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 template<class DataTypes>
@@ -69,7 +61,7 @@ public:
     void addSpring(size_t m1, size_t m2, SReal ks, SReal kd, SReal initpos) override
     {
         helper::vector<Spring>& springs = *dest->springs.beginEdit();
-        springs.push_back(Spring(m1,m2,ks,kd,initpos));
+        springs.push_back(Spring(sofa::Index(m1), sofa::Index(m2),ks,kd,initpos));
         dest->springs.endEdit();
     }
 };
@@ -91,7 +83,7 @@ bool SpringForceField<DataTypes>::load(const char *filename)
 template <class DataTypes>
 void SpringForceField<DataTypes>::reinit()
 {
-    for (unsigned int i=0; i<springs.getValue().size(); ++i)
+    for (sofa::Index i=0; i<springs.getValue().size(); ++i)
     {
         (*springs.beginEdit())[i].ks = (Real) ks.getValue();
         (*springs.beginEdit())[i].kd = (Real) kd.getValue();
@@ -108,10 +100,10 @@ void SpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring)
+void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, sofa::Index /*i*/, const Spring& spring)
 {
-    int a = spring.m1;
-    int b = spring.m2;
+    sofa::Index a = spring.m1;
+    sofa::Index b = spring.m2;
     typename DataTypes::CPos u = DataTypes::getCPos(p2[b])-DataTypes::getCPos(p1[a]);
     Real d = u.norm();
     if( spring.enabled && d<1.0e-4 ) // null length => no force
@@ -173,10 +165,10 @@ SReal SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
 
     SReal ener = 0;
 
-    for (unsigned int i=0; i<springs.size(); i++)
+    for (sofa::Index i=0; i<springs.size(); i++)
     {
-        int a = springs[i].m1;
-        int b = springs[i].m2;
+        sofa::Index a = springs[i].m1;
+        sofa::Index b = springs[i].m2;
         Coord u = p2[b]-p1[a];
         Real d = u.norm();
         Real elongation = (Real)(d - springs[i].initpos);
@@ -199,25 +191,26 @@ template<class DataTypes>
 void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     using namespace sofa::defaulttype;
+    using namespace sofa::helper::types;
 
-    if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
-    const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    if (!((this->mstate1 == this->mstate2) ? vparams->displayFlags().getShowForceFields() : vparams->displayFlags().getShowInteractionForceFields())) return;
+    const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
     std::vector< Vector3 > points[4];
-    bool external = (this->mstate1!=this->mstate2);
+    bool external = (this->mstate1 != this->mstate2);
     const helper::vector<Spring>& springs = this->springs.getValue();
-    for (unsigned int i=0; i<springs.size(); i++)
+    for (sofa::Index i = 0; i < springs.size(); i++)
     {
         if (!springs[i].enabled) continue;
-        Real d = (p2[springs[i].m2]-p1[springs[i].m1]).norm();
-        Vector3 point2,point1;
+        Real d = (p2[springs[i].m2] - p1[springs[i].m1]).norm();
+        Vector3 point2, point1;
         point1 = DataTypes::getCPos(p1[springs[i].m1]);
         point2 = DataTypes::getCPos(p2[springs[i].m2]);
 
         if (external)
         {
-            if (d<springs[i].initpos*0.9999)
+            if (d < springs[i].initpos * 0.9999)
             {
                 points[0].push_back(point1);
                 points[0].push_back(point2);
@@ -230,7 +223,7 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
         }
         else
         {
-            if (d<springs[i].initpos*0.9999)
+            if (d < springs[i].initpos * 0.9999)
             {
                 points[2].push_back(point1);
                 points[2].push_back(point2);
@@ -242,12 +235,10 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
             }
         }
     }
-
-    const Vec<4,float> c0(1,0,0,1);
-    const Vec<4,float> c1(0,1,0,1);
-    const Vec<4,float> c2(1,0.5,0,1);
-    const Vec<4,float> c3(0,1,0.5,1);
-
+    const RGBAColor c0 = RGBAColor::red();
+    const RGBAColor c1 = RGBAColor::green();
+    const RGBAColor c2 {1.0f, 0.5f, 0.0f, 1.0f };
+    const RGBAColor c3{ 0.0f, 1.0f, 0.5f, 1.0f };
 
     if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)
     {
@@ -258,10 +249,10 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     }
     else if (drawMode.getValue() == 1)
     {
-        const unsigned int numLines0=points[0].size()/2;
-        const unsigned int numLines1=points[1].size()/2;
-        const unsigned int numLines2=points[2].size()/2;
-        const unsigned int numLines3=points[3].size()/2;
+        const auto numLines0=points[0].size()/2;
+        const auto numLines1=points[1].size()/2;
+        const auto numLines2=points[2].size()/2;
+        const auto numLines3=points[3].size()/2;
 
         for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawCylinder(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
         for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawCylinder(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
@@ -271,10 +262,10 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     }
     else if (drawMode.getValue() == 2)
     {
-        const unsigned int numLines0=points[0].size()/2;
-        const unsigned int numLines1=points[1].size()/2;
-        const unsigned int numLines2=points[2].size()/2;
-        const unsigned int numLines3=points[3].size()/2;
+        const auto numLines0=points[0].size()/2;
+        const auto numLines1=points[1].size()/2;
+        const auto numLines2=points[2].size()/2;
+        const auto numLines3=points[3].size()/2;
 
         for (unsigned int i=0; i<numLines0; ++i) vparams->drawTool()->drawArrow(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
         for (unsigned int i=0; i<numLines1; ++i) vparams->drawTool()->drawArrow(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
@@ -337,18 +328,18 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
                 {
                 case core::topology::POINTSREMOVED:
                 {
-                    int nbPoints = _topology->getNbPoints();
+                    auto nbPoints = _topology->getNbPoints();
                     const auto& tab = (static_cast<const sofa::core::topology::PointsRemoved *>(*changeIt))->getArray();
 
                     helper::vector<Spring>& springs = *this->springs.beginEdit();
                     // springs.push_back(Spring(m1,m2,ks,kd,initpos));
 
-                    for(unsigned int i=0; i<tab.size(); ++i)
+                    for(sofa::Index i=0; i<tab.size(); ++i)
                     {
-                        int pntId = tab[i];
+                        sofa::Index pntId = tab[i];
                         nbPoints -= 1;
 
-                        for(unsigned int j=0; j<springs.size(); ++j)
+                        for(sofa::Index j=0; j<springs.size(); ++j)
                         {
                             Spring& spring = springs[j];
                             if(spring.m2 == pntId)
@@ -385,7 +376,7 @@ void SpringForceField<DataTypes>::updateForceMask()
 {
     const helper::vector<Spring>& springs= this->springs.getValue();
 
-    for( unsigned int i=0, iend=springs.size() ; i<iend ; ++i )
+    for(sofa::Index i=0, iend = sofa::Size(springs.size()) ; i<iend ; ++i )
     {
         const Spring& s = springs[i];
         this->mstate1->forceMask.insertEntry(s.m1);
@@ -417,10 +408,4 @@ void SpringForceField<DataTypes>::exportGnuplot(SReal time)
     }
 }
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_INL */
+} // namespace sofa::component::interactionforcefield

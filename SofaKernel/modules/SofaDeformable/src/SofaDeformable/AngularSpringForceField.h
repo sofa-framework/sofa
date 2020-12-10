@@ -19,35 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_ANGULARSPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_ANGULARSPRINGFORCEFIELD_H
-#include "config.h"
+#pragma once
+#include <SofaDeformable/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 
-namespace sofa
+namespace sofa::core::behavior
 {
-namespace core
-{
-namespace behavior
-{
+
 template< class T > class MechanicalState;
 
-} // namespace behavior
-} // namespace core
-} // namespace sofa
+} // namespace sofa::core::behavior
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 /**
@@ -69,17 +58,17 @@ public:
     typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef helper::vector< unsigned int > VecIndex;
+    typedef helper::vector< sofa::Index > VecIndex;
     typedef helper::vector< Real >	 VecReal;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< helper::vector< unsigned int > > indices; ///< index of nodes controlled by the angular springs
+    Data< helper::vector< sofa::Index > > indices; ///< index of nodes controlled by the angular springs
     Data< VecReal > angularStiffness; ///< angular stiffness for the controlled nodes
     Data<VecReal> angularLimit; ///< angular limit (max; min) values where the force applies
     Data< bool > drawSpring; ///< draw Spring
-    Data< sofa::defaulttype::Vec4f > springColor; ///< spring color
+    Data< helper::types::RGBAColor > springColor; ///< spring color
 
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
@@ -110,17 +99,7 @@ protected :
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_AngularSpringForceField_CPP)
-
-extern template class SOFA_DEFORMABLE_API AngularSpringForceField<sofa::defaulttype::Rigid3Types>;
-//extern template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid2Types>;
-
-
+extern template class SOFA_SOFADEFORMABLE_API AngularSpringForceField<sofa::defaulttype::Rigid3Types>;
 #endif
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_ANGULARSPRINGFORCEFIELD_H
+} // namespace sofa::component::forcefield

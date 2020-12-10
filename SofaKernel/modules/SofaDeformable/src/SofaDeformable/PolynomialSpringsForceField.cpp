@@ -29,31 +29,17 @@
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/ObjectFactory.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
 
-
 SOFA_DECL_CLASS(PolynomialSpringsForceField)
-
 
 int PolynomialSpringsForceFieldClass = core::RegisterObject("Simple elastic springs applied to given degrees of freedom between their current and rest shape position")
         .add< PolynomialSpringsForceField<Vec3Types> >()
         ;
 
-template class SOFA_DEFORMABLE_API PolynomialSpringsForceField<Vec3Types>;
+template class SOFA_SOFADEFORMABLE_API PolynomialSpringsForceField<Vec3Types>;
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::interactionforcefield

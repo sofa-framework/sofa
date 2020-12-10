@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_MESHSPRINGFORCEFIELD_INL
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_MESHSPRINGFORCEFIELD_INL
-
+#pragma once
 #include <SofaDeformable/MeshSpringForceField.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 template <class DataTypes>
@@ -53,7 +46,7 @@ MeshSpringForceField<DataTypes>::MeshSpringForceField()
     , d_drawMinElongationRange(initData(&d_drawMinElongationRange, Real(8.), "drawMinElongationRange","Min range of elongation (red eongation - blue neutral - green compression)"))
     , d_drawMaxElongationRange(initData(&d_drawMaxElongationRange, Real(15.), "drawMaxElongationRange","Max range of elongation (red eongation - blue neutral - green compression)"))
     , d_drawSpringSize(initData(&d_drawSpringSize, Real(8.), "drawSpringSize","Size of drawed lines"))
-    , d_localRange( initData(&d_localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , d_localRange( initData(&d_localRange, defaulttype::Vec<2, sofa::Index>(sofa::InvalidID, sofa::InvalidID), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     , l_topology(initLink("topology", "link to the topology container"))
 {
 	this->ks.setDisplayed(false);
@@ -73,15 +66,16 @@ MeshSpringForceField<DataTypes>::~MeshSpringForceField()
 }
 
 template<class DataTypes>
-void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping)
+void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<sofa::Index, sofa::Index> >& sset, sofa::Index m1, sofa::Index m2, Real stiffness, Real damping)
 {
-    if (d_localRange.getValue()[0] >= 0)
+    const auto& localRange = d_localRange.getValue();
+    if (localRange[0] != sofa::InvalidID)
     {
-        if (m1 < d_localRange.getValue()[0] || m2 < d_localRange.getValue()[0]) return;
+        if (m1 < localRange[0] || m2 < localRange[0]) return;
     }
-    if (d_localRange.getValue()[1] >= 0)
+    if (localRange[1] != sofa::InvalidID)
     {
-        if (m1 > d_localRange.getValue()[1] && m2 > d_localRange.getValue()[1]) return;
+        if (m1 > localRange[1] && m2 > localRange[1]) return;
     }
 
     if (m1<m2)
@@ -125,15 +119,15 @@ void MeshSpringForceField<DataTypes>::init()
             return;
         }
         
-        std::set< std::pair<int,int> > sset;
-        size_t n;
+        std::set< std::pair<sofa::Index, sofa::Index> > sset;
+        sofa::Size n;
         Real s, d;
         if (d_linesStiffness.getValue() != 0.0 || d_linesDamping.getValue() != 0.0)
         {
             s = d_linesStiffness.getValue();
             d = d_linesDamping.getValue();
             n = _topology->getNbLines();
-            for (size_t i=0; i<n; ++i)
+            for (sofa::Index i=0; i<n; ++i)
             {
                 sofa::core::topology::BaseMeshTopology::Line e = _topology->getLine(i);
                 addSpring(sset, e[0], e[1], s, d);
@@ -144,7 +138,7 @@ void MeshSpringForceField<DataTypes>::init()
             s = d_trianglesStiffness.getValue();
             d = d_trianglesDamping.getValue();
             n = _topology->getNbTriangles();
-            for (size_t i=0; i<n; ++i)
+            for (sofa::Index i=0; i<n; ++i)
             {
                 sofa::core::topology::BaseMeshTopology::Triangle e = _topology->getTriangle(i);
                 addSpring(sset, e[0], e[1], s, d);
@@ -157,7 +151,7 @@ void MeshSpringForceField<DataTypes>::init()
             s = d_quadsStiffness.getValue();
             d = d_quadsDamping.getValue();
             n = _topology->getNbQuads();
-            for (size_t i=0; i<n; ++i)
+            for (sofa::Index i=0; i<n; ++i)
             {
                 sofa::core::topology::BaseMeshTopology::Quad e = _topology->getQuad(i);
                 addSpring(sset, e[0], e[1], s, d);
@@ -173,7 +167,7 @@ void MeshSpringForceField<DataTypes>::init()
             s = d_tetrahedraStiffness.getValue();
             d = d_tetrahedraDamping.getValue();
             n = _topology->getNbTetrahedra();
-            for (size_t i=0; i<n; ++i)
+            for (sofa::Index i=0; i<n; ++i)
             {
                 sofa::core::topology::BaseMeshTopology::Tetra e = _topology->getTetrahedron(i);
                 addSpring(sset, e[0], e[1], s, d);
@@ -191,13 +185,13 @@ void MeshSpringForceField<DataTypes>::init()
             d = d_cubesDamping.getValue();
 
             n = _topology->getNbHexahedra();
-            for (size_t i=0; i<n; ++i)
+            for (sofa::Index i=0; i<n; ++i)
             {
                 sofa::core::topology::BaseMeshTopology::Hexa e = _topology->getHexahedron(i);
 
-                for (int k=0; k<8; k++)
+                for (sofa::Index k=0; k<8; k++)
                 {
-                    for (int j=k+1; j<8; j++)
+                    for (sofa::Index j=k+1; j<8; j++)
                     {
                         addSpring(sset, e[k], e[j], s, d);
                     }
@@ -223,7 +217,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         
         Real minElongation = std::numeric_limits<Real>::max();
         Real maxElongation = 0.;
-        for (size_t i=0; i<ss.size(); ++i)
+        for (sofa::Index i=0; i<ss.size(); ++i)
         {
             const Spring& s = ss[i];
             Deriv v = p1[s.m1] - p2[s.m2];
@@ -238,7 +232,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         range = (range < 0.) ? 1. : range;
         const Real drawSpringSize = d_drawSpringSize.getValue();
 
-        for (size_t i=0; i<ss.size(); ++i)
+        for (sofa::Index i=0; i<ss.size(); ++i)
         {
             const Spring& s = ss[i];
             const Coord pa[2] = {p1[s.m1], p2[s.m2]};
@@ -262,15 +256,9 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
                 G = 1. - B;
             }
 
-            vparams->drawTool()->drawLines(points, drawSpringSize, sofa::defaulttype::Vec4f(R, G, B, 1.f));
+            vparams->drawTool()->drawLines(points, float(drawSpringSize), { float(R), float(G), float(B), 1.f });
         }
     }
 }
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_MESHSPRINGFORCEFIELD_INL */
+} // namespace sofa::component::interactionforcefield
