@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_RIGIDMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_INL
-
+#pragma once
 #include <SofaRigid/RigidMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -36,26 +34,13 @@
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/decompose.h>
 
-#include <sofa/simulation/Simulation.h>
-
 #include <Eigen/Dense>
 
 #include <cstring>
-#include <iostream>
-#include <cassert>
-#include <numeric>
 #include <istream>
 
-namespace sofa
+namespace sofa::component::mapping
 {
-
-namespace component
-{
-
-namespace mapping
-{
-
-
 
 template <class TIn, class TOut>
 class RigidMapping<TIn, TOut>::Loader :
@@ -145,7 +130,7 @@ RigidMapping<TIn, TOut>::RigidMapping()
 }
 
 template <class TIn, class TOut>
-unsigned int RigidMapping<TIn, TOut>::getRigidIndex( unsigned int pointIndex ) const
+sofa::Index RigidMapping<TIn, TOut>::getRigidIndex(sofa::Index pointIndex ) const
 {
     // do we really need this crap?
     if( points.getValue().size() == rigidIndexPerPoint.getValue().size() ) return rigidIndexPerPoint.getValue()[pointIndex];
@@ -157,19 +142,19 @@ unsigned int RigidMapping<TIn, TOut>::getRigidIndex( unsigned int pointIndex ) c
 }
 
 template <class TIn, class TOut>
-int RigidMapping<TIn, TOut>::addPoint(const Coord& c)
+sofa::Size RigidMapping<TIn, TOut>::addPoint(const Coord& c)
 {
     helper::WriteAccessor<Data<VecCoord> > points = this->points;
-    int i = points.size();
+    sofa::Size i = sofa::Size(points.size());
     points.push_back(c);
     return i;
 }
 
 template <class TIn, class TOut>
-int RigidMapping<TIn, TOut>::addPoint(const Coord& c, unsigned int indexFrom)
+sofa::Size RigidMapping<TIn, TOut>::addPoint(const Coord& c, sofa::Index indexFrom)
 {
     VecCoord& points = *this->points.beginEdit();
-    unsigned int i = points.size();
+    sofa::Size i = sofa::Size(points.size());
     points.push_back(c);
     this->points.endEdit();
 
@@ -232,7 +217,7 @@ void RigidMapping<TIn, TOut>::init()
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::clear(int reserve)
+void RigidMapping<TIn, TOut>::clear(sofa::Size reserve)
 {
     helper::WriteOnlyAccessor<Data<VecCoord> > points = this->points;
     points.clear();
@@ -243,7 +228,7 @@ void RigidMapping<TIn, TOut>::clear(int reserve)
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::setRepartition(unsigned int value)
+void RigidMapping<TIn, TOut>::setRepartition(sofa::Size value)
 {
     msg_deprecated()<<"setRepartition function. Fill rigidIndexPerPoint instead.";
 
@@ -267,8 +252,7 @@ void RigidMapping<TIn, TOut>::setRepartition(unsigned int value)
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<
-                                             unsigned int> values)
+void RigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<sofa::Size> values)
 {
     msg_deprecated()<<"setRepartition function. Fill rigidIndexPerPoint instead.";
 
@@ -321,9 +305,9 @@ void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, 
     rotatedPoints.resize(pts.size());
     out.resize(pts.size());
 
-    for (unsigned int i = 0; i < pts.size(); i++)
+    for (sofa::Index i = 0; i < sofa::Size(pts.size()); i++)
     {
-        unsigned int rigidIndex = getRigidIndex(i);
+        sofa::Index rigidIndex = getRigidIndex(i);
 
         rotatedPoints[i] = in[rigidIndex].rotate( pts[i] );
         out[i] = in[rigidIndex].translate( rotatedPoints[i] );
@@ -339,11 +323,11 @@ void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/,
     const VecCoord& pts = this->getPoints();
     out.resize(pts.size());
 
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    for(sofa::Index i=0 ; i<this->maskTo->size() ; ++i)
     {
         if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
-        unsigned int rigidIndex = getRigidIndex(i);
+        sofa::Index rigidIndex = getRigidIndex(i);
         out[i] = velocityAtRotatedPoint( in[rigidIndex], rotatedPoints[i] );
     }
 }
@@ -356,11 +340,11 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
 
     ForceMask &mask = *this->maskFrom;
 
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    for(sofa::Index i=0 ; i<this->maskTo->size() ; ++i)
     {
         if( !this->maskTo->getEntry(i) ) continue;
 
-        unsigned int rigidIndex = getRigidIndex(i);
+        sofa::Index rigidIndex = getRigidIndex(i);
 
         getVCenter(out[rigidIndex]) += in[i];
         getVOrientation(out[rigidIndex]) += (typename InDeriv::Rot)cross(rotatedPoints[i], in[i]);
@@ -402,11 +386,11 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
             helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
             InReal kfactor = (InReal)mparams->kFactor();
 
-            for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+            for(sofa::Index i=0 ; i<this->maskTo->size() ; ++i)
             {
                 if( !this->maskTo->getEntry(i) ) continue;
 
-                unsigned int rigidIndex = getRigidIndex(i);
+                sofa::Index rigidIndex = getRigidIndex(i);
 
                 typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[rigidIndex]);
                 const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[rigidIndex]);
@@ -539,12 +523,12 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 
 
 
-        for( size_t outIdx=0 ; outIdx<this->maskTo->size() ; ++outIdx)
+        for(sofa::Index outIdx=0 ; outIdx<this->maskTo->size() ; ++outIdx)
         {
             if( !this->maskTo->getEntry(outIdx) )
             {
                 // do not forget to add empty rows (mandatory for Eigen)
-                for(unsigned i = 0; i < NOut; ++i)
+                for(sofa::Index i = 0; i < NOut; ++i)
                 {
                     unsigned row = outIdx * NOut + i;
                     J.startVec( row );
@@ -553,7 +537,7 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
             }
 
 
-            unsigned int inIdx = getRigidIndex(outIdx);
+            sofa::Index inIdx = getRigidIndex(outIdx);
 
             const Coord& v = rotatedPoints[outIdx];
 
@@ -608,7 +592,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
     in_out_type in_out;
 
     // wahoo it is heavy, can't we find lighter?
-    for(unsigned i = 0, n = rotatedPoints.size(); i < n; ++i)
+    for(sofa::Index i = 0, n = rotatedPoints.size(); i < n; ++i)
         in_out[ getRigidIndex(i) ].push_back(i);
 
     for( in_out_type::const_iterator it = in_out.begin(), end = in_out.end() ; it != end; ++it )
@@ -766,10 +750,4 @@ void RigidMapping<TIn, TOut>::parse(core::objectmodel::BaseObjectDescription* ar
     }
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

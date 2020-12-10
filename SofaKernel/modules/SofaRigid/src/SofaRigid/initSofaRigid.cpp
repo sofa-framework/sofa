@@ -19,23 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_RIGID_INIT_H
-#define SOFA_COMPONENT_RIGID_INIT_H
-#include "config.h"
+#include <SofaRigid/initSofaRigid.h>
 
 
-namespace sofa
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
+
+namespace sofa::component
 {
 
-namespace component
+extern "C" {
+    SOFA_SOFARIGID_API void initExternalModule();
+    SOFA_SOFARIGID_API const char* getModuleName();
+    SOFA_SOFARIGID_API const char* getModuleVersion();
+    SOFA_SOFARIGID_API const char* getModuleLicense();
+    SOFA_SOFARIGID_API const char* getModuleDescription();
+    SOFA_SOFARIGID_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-void SOFA_RIGID_API initRigid();
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFASIMPLEFEM_VERSION);
+}
 
-} // namespace component
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-} // namespace sofa
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Rigid.";
+}
 
-#endif
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
 
+} //namespace sofa::component

@@ -9,7 +9,6 @@ set(SOFACOMMON_TARGETS
     SofaLoader
     SofaMeshCollision
     SofaObjectInteraction
-    SofaRigid
     )
 
 foreach(TARGET ${SOFACOMMON_TARGETS})
@@ -19,6 +18,7 @@ endforeach()
 # Modules
 set(SOFACOMMON_MODULES
     SofaSimpleFem
+    SofaRigid
 )
 
 foreach(MODULE ${SOFACOMMON_MODULES})

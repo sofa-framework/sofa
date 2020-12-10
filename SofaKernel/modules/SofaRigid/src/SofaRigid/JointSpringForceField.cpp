@@ -19,25 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaRigid/initRigid.h>
+#define SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP
+
+#include <SofaRigid/JointSpringForceField.inl>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
+namespace sofa::component::interactionforcefield
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
 
 
-void initRigid()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+// Register in the Factory
+int JointSpringForceFieldClass = core::RegisterObject("Springs for Rigids")
+        .add< JointSpringForceField<Rigid3Types> >()
 
-} // namespace component
+        ;
 
-} // namespace sofa
+template class SOFA_SOFARIGID_API JointSpringForceField<defaulttype::Rigid3Types>;
+
+
+} // namespace sofa::component::interactionforcefield

@@ -19,16 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFARIGID_CONFIG_H
-#define SOFARIGID_CONFIG_H
+#define SOFA_JOINTSPRING_CPP
+#include <sofa/defaulttype/RigidTypes.h>
+#include <SofaRigid/JointSpring.inl>
 
-#include <SofaCommon/config.h>
+namespace sofa::component::interactionforcefield
+{
 
-#ifdef SOFA_BUILD_RIGID
-#  define SOFA_TARGET SofaRigid
-#  define SOFA_RIGID_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_RIGID_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+using namespace sofa::defaulttype;
 
-#endif
+template class SOFA_SOFARIGID_API JointSpring<defaulttype::Rigid3Types>;
+
+} // namespace sofa::component::interactionforcefield

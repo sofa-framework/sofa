@@ -19,36 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP
+#pragma once
+#include <SofaRigid/config.h>
 
-#include <SofaRigid/RigidRigidMapping.inl>
 
-#include <sofa/core/ObjectFactory.h>
-
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
-
-namespace mapping
-{
-
-using namespace defaulttype;
-
-// Register in the Factory
-int RigidRigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
-        .add< RigidRigidMapping< Rigid3Types, Rigid3Types > >();
-
-template class SOFA_RIGID_API RigidRigidMapping< Rigid3Types, Rigid3Types >;
-
-
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component
 

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
-#define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
-#include "config.h"
+#pragma once
+#include <SofaRigid/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -32,16 +31,9 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <vector>
-#include <memory>
+#include <sofa/helper/vector.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -95,7 +87,7 @@ public:
     Data<VecCoord> points;    ///< mapped points in local coordinates
     VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
     RigidMappingInternalData<In, Out> data;
-    Data<unsigned int> index; ///< input DOF index
+    Data<sofa::Index> index; ///< input DOF index
     sofa::core::objectmodel::DataFileName fileRigidMapping; ///< Filename
     Data<bool> useX0; ///< Use x0 instead of local copy of initial positions (to support topo changes)
     Data<bool> indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
@@ -112,8 +104,8 @@ protected:
     unsigned int getRigidIndex( unsigned int pointIndex ) const;
 
 public:
-    int addPoint(const Coord& c);
-    int addPoint(const Coord& c, unsigned int indexFrom);
+    sofa::Size addPoint(const Coord& c);
+    sofa::Size addPoint(const Coord& c, sofa::Index indexFrom);
 
     void init() override;
 
@@ -140,13 +132,13 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void clear(int reserve = 0);
+    void clear(sofa::Size reserve = 0);
 
     /// to give the number of mapped points attached to each rigid frame
     /// @warning the mapped points must be sorted by their parent frame indices
     /// for backward compatibility with previous data structure
-    void setRepartition(unsigned int value);
-    void setRepartition(sofa::helper::vector<unsigned int> values);
+    void setRepartition(sofa::Size value);
+    void setRepartition(sofa::helper::vector<sofa::Size> values);
 
     void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
@@ -155,7 +147,7 @@ protected:
 
     void load(const char* filename);
     const VecCoord& getPoints();
-    void setJMatrixBlock(unsigned outIdx, unsigned inIdx);
+    void setJMatrixBlock(sofa::Index outIdx, sofa::Index inIdx);
 
     std::unique_ptr<MatrixType> matrixJ;
     bool updateJ;
@@ -171,28 +163,14 @@ protected:
 template <std::size_t N, class Real>
 struct RigidMappingMatrixHelper;
 
-
-
 template<>
 void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
 template<>
 const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK();
 
-
-
-
 #if  !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3dTypes >;
-extern template class SOFA_RIGID_API RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
-
-
-
+extern template class SOFA_SOFARIGID_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_SOFARIGID_API RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
 #endif
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

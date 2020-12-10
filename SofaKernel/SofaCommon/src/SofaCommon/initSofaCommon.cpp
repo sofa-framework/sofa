@@ -23,7 +23,6 @@
 
 #include <SofaLoader/initLoader.h>
 #include <SofaEngine/initEngine.h>
-#include <SofaRigid/initRigid.h>
 #include <SofaDeformable/initDeformable.h>
 #include <SofaObjectInteraction/initObjectInteraction.h>
 #include <SofaMeshCollision/initMeshCollision.h>
@@ -49,7 +48,6 @@ void initSofaCommon()
 
     initLoader();
     initEngine();
-    initRigid();
     initDeformable();
     initObjectInteraction();
     initMeshCollision();

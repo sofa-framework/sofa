@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_JOINTSPRINGFORCEFIELD_INL
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_JOINTSPRINGFORCEFIELD_INL
-
+#pragma once
 #include <SofaRigid/JointSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using sofa::defaulttype::Vec4f;
@@ -108,7 +100,7 @@ void JointSpringForceField<DataTypes>::bwdInit()
 
     const VecCoord& x2= this->mstate2->read(core::ConstVecCoordId::position())->getValue();
     helper::vector<Spring> &springsVector=*(d_springs.beginEdit());
-    for (unsigned int i=0; i<d_springs.getValue().size(); ++i)
+    for (sofa::Index i=0; i<d_springs.getValue().size(); ++i)
     {
         Spring &s=springsVector[i];
         if (s.needToInitializeTrans)
@@ -126,7 +118,7 @@ void JointSpringForceField<DataTypes>::bwdInit()
 template<class DataTypes>
 void JointSpringForceField<DataTypes>::projectTorsion(Spring& spring)
 {
-    for (unsigned int i=0; i<3; i++)
+    for (sofa::Index i=0; i<3; i++)
     {
         if (!spring.freeMovements[3+i]) // hard constraint
         {
@@ -158,7 +150,7 @@ void JointSpringForceField<DataTypes>::projectTorsion(Spring& spring)
 }
 
 template<class DataTypes>
-void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , /*const*/ Spring& spring)
+void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, sofa::Index, /*const*/ Spring& spring)
 {
 
     Deriv constantForce;
@@ -171,8 +163,8 @@ void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*
     }
 
 
-    int a = spring.m1;
-    int b = spring.m2;
+    sofa::Index a = spring.m1;
+    sofa::Index b = spring.m2;
 
     spring.ref = p1[a].getOrientation();
 
@@ -195,15 +187,15 @@ void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*
     spring.torsion*=phi;
 
     //compute forces
-    for (unsigned int i=0; i<3; i++) spring.KT[i]=spring.freeMovements[i]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans;
+    for (sofa::Index i=0; i<3; i++) spring.KT[i]=spring.freeMovements[i]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans;
     Vector fT0 = spring.ref.rotate(getVCenter(constantForce) + spring.KT.linearProduct(spring.ref.inverseRotate(Mp1p2.getCenter()))) + getVCenter(Vp1p2)*spring.kd;
 
     // comput torques
-    for (unsigned int i=0; i<3; i++) spring.KR[i]=spring.freeMovements[3+i]==0?spring.hardStiffnessRot:spring.softStiffnessRot;
+    for (sofa::Index i=0; i<3; i++) spring.KR[i]=spring.freeMovements[3+i]==0?spring.hardStiffnessRot:spring.softStiffnessRot;
     Vector fR0;
     if(!spring.freeMovements[3] && !spring.freeMovements[4] && !spring.freeMovements[5]) // encastrement
     {
-        for (unsigned int i=0; i<3; i++) fR0[i]=spring.torsion[i]*spring.KR[i];
+        for (sofa::Index i=0; i<3; i++) fR0[i]=spring.torsion[i]*spring.KR[i];
     }
     else if(spring.freeMovements[3] && !spring.freeMovements[4] && !spring.freeMovements[5] && spring.torsion[0]>spring.limitAngles[0] && spring.torsion[0]<spring.limitAngles[1]) // pivot /x
     {
@@ -246,7 +238,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*
         while(psi>M_PI) psi-=2*M_PI;
         extraTorsion*=psi;
 
-        for (unsigned int i=0; i<3; i++)
+        for (sofa::Index i=0; i<3; i++)
             if(spring.freeMovements[3+i] && spring.torsion[i]!=spring.lawfulTorsion[i]) // outside limits
             {
                 spring.KR[i]=spring.blocStiffnessRot;
@@ -299,7 +291,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*
 
 
 template<class DataTypes>
-void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDeriv& dx1, VecDeriv& f2, const VecDeriv& dx2, int , /*const*/ Spring& spring, Real kFactor)
+void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDeriv& dx1, VecDeriv& f2, const VecDeriv& dx2, sofa::Index, /*const*/ Spring& spring, Real kFactor)
 {
     const Deriv Mdx1dx2 = dx2[spring.m2]-dx1[spring.m1];
 
@@ -328,7 +320,7 @@ void JointSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*
     f1.resize(x1.size());
     f2.resize(x2.size());
     m_potentialEnergy = 0;
-    for (unsigned int i=0; i<springs.size(); i++)
+    for (sofa::Index i=0; i<springs.size(); i++)
     {
         this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
     }
@@ -353,7 +345,7 @@ void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *m
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     helper::vector<Spring>& springs = *d_springs.beginEdit();
-    for (unsigned int i=0; i<springs.size(); i++)
+    for (sofa::Index i=0; i<springs.size(); i++)
     {
         this->addSpringDForce(df1, dx1, df2, dx2, i, springs[i], kFactor);
     }
@@ -381,7 +373,7 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 
     Vec4f yellow(1.0,1.0,0.0,1.0);
 
-    for (unsigned int i=0; i<springs.size(); i++)
+    for (sofa::Index i=0; i<springs.size(); i++)
     {
         Vec4f color;
 
@@ -409,19 +401,20 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         colors.push_back(color);
 
         sofa::defaulttype::Quaternion q0 = p1[springs[i].m1].getOrientation();
+        const float cylinderSize = float(d_showFactorSize.getValue() / 15.0f);
         if(springs[i].freeMovements[3] == 1)
         {
             Vector3 axis((Real)(1.0*d_showFactorSize.getValue()),0,0);
             Vector3 vrot = v0 + q0.rotate(axis);
 
-            vparams->drawTool()->drawCylinder(v0, vrot, d_showFactorSize.getValue()/15.0,yellow );
+            vparams->drawTool()->drawCylinder(v0, vrot, cylinderSize,yellow );
         }
         if(springs[i].freeMovements[4] == 1)
         {
             Vector3 axis(0,(Real)(1.0*d_showFactorSize.getValue()),0);
             Vector3 vrot = v0 + q0.rotate(axis);
 
-            vparams->drawTool()->drawCylinder(v0, vrot, d_showFactorSize.getValue()/15.0,yellow );
+            vparams->drawTool()->drawCylinder(v0, vrot, cylinderSize,yellow );
 
         }
         if(springs[i].freeMovements[5] == 1)
@@ -429,23 +422,24 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
             Vector3 axis(0,0,(Real)(1.0*d_showFactorSize.getValue()));
             Vector3 vrot = v0 + q0.rotate(axis);
 
-            vparams->drawTool()->drawCylinder(v0, vrot, d_showFactorSize.getValue()/15.0,yellow );
+            vparams->drawTool()->drawCylinder(v0, vrot, cylinderSize,yellow );
         }
 
         //---debugging
+        const float arrowSize = float(0.5 * d_showFactorSize.getValue());
         if (d_showLawfulTorsion.getValue())
         {
             Vector vtemp = p1[springs[i].m1].projectPoint(springs[i].lawfulTorsion);
             v1 = Vector3(vtemp[0], vtemp[1], vtemp[2]);
 
-            vparams->drawTool()->drawArrow(v0, v1, (float)(0.5*d_showFactorSize.getValue()), yellow );
+            vparams->drawTool()->drawArrow(v0, v1, arrowSize, yellow );
         }
         if (d_showExtraTorsion.getValue())
         {
             Vector vtemp =  p1[springs[i].m1].projectPoint(springs[i].torsion-springs[i].lawfulTorsion);
             v1 = Vector3(vtemp[0], vtemp[1], vtemp[2]);
 
-            vparams->drawTool()->drawArrow(v0, v1, (float)(0.5*d_showFactorSize.getValue()), yellow );
+            vparams->drawTool()->drawArrow(v0, v1, arrowSize, yellow );
         }
     }
     vparams->drawTool()->drawLines(vertices,1, colors);
@@ -468,14 +462,14 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
 
     const helper::vector<Spring>& springs = d_springs.getValue();
 
-    for (unsigned int i = 0, iend = springs.size(); i<iend; ++i)
+    for (sofa::Index i = 0, iend = sofa::Size(springs.size()); i<iend; ++i)
     {
         const Spring& s = springs[i];
 
         Vector3 v0 = p1[s.m1].getCenter();
         Vector3 v1 = p2[s.m2].getCenter();
 
-        for (int c = 0; c<3; c++)
+        for (sofa::Index c = 0; c<3; c++)
         {
             if (v0[c] > maxBBox[c]) maxBBox[c] = (Real)v0[c];
             if (v0[c] < minBBox[c]) minBBox[c] = (Real)v0[c];
@@ -491,7 +485,7 @@ void JointSpringForceField<DataTypes>::updateForceMask()
 {
     const helper::vector<Spring>& springs= d_springs.getValue();
 
-    for( unsigned int i=0, iend=springs.size() ; i<iend ; ++i )
+    for(sofa::Index i=0, iend= sofa::Size(springs.size()) ; i<iend ; ++i )
     {
         const Spring& s = springs[i];
         this->mstate1->forceMask.insertEntry(s.m1);
@@ -500,7 +494,7 @@ void JointSpringForceField<DataTypes>::updateForceMask()
 }
 
 template <class DataTypes>
-void JointSpringForceField<DataTypes>::clear(int reserve)
+void JointSpringForceField<DataTypes>::clear(sofa::Size reserve)
 {
     helper::vector<Spring>& springs = *d_springs.beginEdit();
     springs.clear();
@@ -516,7 +510,7 @@ void JointSpringForceField<DataTypes>::addSpring(const Spring& s)
 }
 
 template <class DataTypes>
-void JointSpringForceField<DataTypes>::addSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr,
+void JointSpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr,
                                                  Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd)
 {
     Spring s(m1,m2,softKst,hardKst,softKsr,hardKsr, blocKsr, axmin, axmax, aymin, aymax, azmin, azmax, kd);
@@ -531,11 +525,4 @@ void JointSpringForceField<DataTypes>::addSpring(int m1, int m2, Real softKst, R
     d_springs.endEdit();
 }
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_INTERACTIONFORCEFIELD_JOINTSPRINGFORCEFIELD_INL */
-
+} // namespace sofa::component::interactionforcefield
