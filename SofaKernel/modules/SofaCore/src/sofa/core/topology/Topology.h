@@ -51,6 +51,20 @@ enum class TopologyElementType
 };
 
 
+enum [[deprecated("This enum has been deprecated in PR #1593 and will be removed in release 21.06. Please use TopologyElementType instead.")]] TopologyObjectType
+{
+    POINT,
+    EDGE,
+    TRIANGLE,
+    QUAD,
+    TETRAHEDRON,
+    HEXAHEDRON,
+    PENTAHEDRON,
+    PYRAMID
+};
+
+
+
 SOFA_CORE_API TopologyElementType parseTopologyElementTypeFromString(const std::string& s);
 SOFA_CORE_API std::string parseTopologyElementTypeToString(TopologyElementType t);
 
