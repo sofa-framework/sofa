@@ -240,7 +240,7 @@ public:
 
     /// @name Optimized edition and retrieval API (for multi-threading performances)
     /// @{
-
+    //SOFA_BEGIN_DEPRECATION_AS_ERROR
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)s
@@ -263,7 +263,7 @@ public:
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     int getCounter(const core::ExecParams*) const { return getCounter(); }
     int getCounter() const { return m_counter; }
-
+    //SOFA_END_DEPRECATION_AS_ERROR
     /// @}
 
     /// Link to a parent data. The value of this data will automatically duplicate the value of the parent data.

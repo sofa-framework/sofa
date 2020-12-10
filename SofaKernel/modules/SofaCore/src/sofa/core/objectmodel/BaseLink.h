@@ -47,6 +47,7 @@ class BaseObjectDescription;
 class SOFA_CORE_API BaseLink
 {
 public:
+    SOFA_BEGIN_DEPRECATION_AS_ERROR
     enum LinkFlagsEnum
     {
         FLAG_NONE       = 0,
@@ -182,7 +183,8 @@ public:
     static std::string CreateString(Base* object, BaseData* data, Base* from);
 
     /// @}
-
+    ///
+    SOFA_END_DEPRECATION_AS_ERROR
 protected:
     unsigned int m_flags;
     std::string m_name;
