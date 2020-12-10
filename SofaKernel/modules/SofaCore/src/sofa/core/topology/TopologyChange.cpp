@@ -35,16 +35,16 @@ SOFA_CORE_API TopologyElementType parseTopologyElementTypeFromString(const std::
     std::string sUP = s;
     std::transform( sUP.begin(), sUP.end(), sUP.begin(), ::tolower);
 #define SOFA_ENUM_CASE(e) if (sUP == sofa_tostring(e)) return e
-    SOFA_ENUM_CASE(POINT);
-    SOFA_ENUM_CASE(EDGE);
-    SOFA_ENUM_CASE(TRIANGLE);
-    SOFA_ENUM_CASE(QUAD);
-    SOFA_ENUM_CASE(TETRAHEDRON);
-    SOFA_ENUM_CASE(HEXAHEDRON);
+    SOFA_ENUM_CASE(TopologyElementType::POINT);
+    SOFA_ENUM_CASE(TopologyElementType::EDGE);
+    SOFA_ENUM_CASE(TopologyElementType::TRIANGLE);
+    SOFA_ENUM_CASE(TopologyElementType::QUAD);
+    SOFA_ENUM_CASE(TopologyElementType::TETRAHEDRON);
+    SOFA_ENUM_CASE(TopologyElementType::HEXAHEDRON);
 #undef SOFA_ENUM_CASE
     msg_error("TopologyElementType")
             << "unable to parse '" << s << "' as TopologyElementType, defaulting to POINT" ;
-    return POINT;
+    return TopologyElementType::POINT;
 }
 
 SOFA_CORE_API std::string parseTopologyElementTypeToString(TopologyElementType t)
@@ -52,12 +52,12 @@ SOFA_CORE_API std::string parseTopologyElementTypeToString(TopologyElementType t
     switch (t)
     {
 #define SOFA_ENUM_CASE(e) case e: return sofa_tostring(e);
-    SOFA_ENUM_CASE(POINT);
-    SOFA_ENUM_CASE(EDGE);
-    SOFA_ENUM_CASE(TRIANGLE);
-    SOFA_ENUM_CASE(QUAD);
-    SOFA_ENUM_CASE(TETRAHEDRON);
-    SOFA_ENUM_CASE(HEXAHEDRON);
+    SOFA_ENUM_CASE(TopologyElementType::POINT);
+    SOFA_ENUM_CASE(TopologyElementType::EDGE);
+    SOFA_ENUM_CASE(TopologyElementType::TRIANGLE);
+    SOFA_ENUM_CASE(TopologyElementType::QUAD);
+    SOFA_ENUM_CASE(TopologyElementType::TETRAHEDRON);
+    SOFA_ENUM_CASE(TopologyElementType::HEXAHEDRON);
 #undef SOFA_ENUM_CASE
     default: return std::string("UNKNOWN");
     }
