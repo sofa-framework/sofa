@@ -19,22 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCommon/initSofaCommon.h>
+#include <SofaMeshCollision/initSofaMeshCollision.h>
+#include <SofaMeshCollision/MeshNewProximityIntersection.h>
 
-#include <SofaLoader/initLoader.h>
-#include <SofaEngine/initEngine.h>
-#include <SofaExplicitOdeSolver/initExplicitODESolver.h>
-#include <SofaImplicitOdeSolver/initImplicitODESolver.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+using namespace sofa::defaulttype;
+using namespace sofa::core::collision;
+using namespace sofa::component::collision;
+
+namespace sofa::component
 {
 
-namespace component
-{
+extern "C" {
+    SOFA_SOFAMESHCOLLISION_API void initExternalModule();
+    SOFA_SOFAMESHCOLLISION_API const char* getModuleName();
+    SOFA_SOFAMESHCOLLISION_API const char* getModuleVersion();
+    SOFA_SOFAMESHCOLLISION_API const char* getModuleLicense();
+    SOFA_SOFAMESHCOLLISION_API const char* getModuleDescription();
+    SOFA_SOFAMESHCOLLISION_API const char* getModuleComponentList();
+}
 
-
-void initSofaCommon()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -42,13 +49,35 @@ void initSofaCommon()
         first = false;
     }
 
-    initLoader();
-    initEngine();
-    initExplicitODESolver();
-    initImplicitODESolver();
-    initEigen2Solver();
+    core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>("Mesh");
+    (void)pMeshNewProximityIntersectors;
 }
 
-} // namespace component
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace sofa
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFACONSTRAINT_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Mesh Collision.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

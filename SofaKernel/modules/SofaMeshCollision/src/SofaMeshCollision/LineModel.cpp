@@ -19,36 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCommon/initSofaCommon.h>
+#define SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP
+#include <SofaMeshCollision/LineModel.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <SofaLoader/initLoader.h>
-#include <SofaEngine/initEngine.h>
-#include <SofaExplicitOdeSolver/initExplicitODESolver.h>
-#include <SofaImplicitOdeSolver/initImplicitODESolver.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
-
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
+int LineCollisionModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
+        .add< LineCollisionModel<sofa::defaulttype::Vec3Types> >()
+
+        .addAlias("TLineModel")
+        .addAlias("Line")
+        .addAlias("LineMeshModel")
+        .addAlias("LineSetModel")
+        .addAlias("LineMesh")
+        .addAlias("LineSet")
+        .addAlias("LineModel")
+        ;
 
 
-void initSofaCommon()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+template class SOFA_SOFAMESHCOLLISION_API LineCollisionModel<defaulttype::Vec3Types>;
 
-    initLoader();
-    initEngine();
-    initExplicitODESolver();
-    initImplicitODESolver();
-    initEigen2Solver();
-}
 
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

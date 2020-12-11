@@ -19,36 +19,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCommon/initSofaCommon.h>
+#pragma once
+#include <SofaMeshCollision/config.h>
 
-#include <SofaLoader/initLoader.h>
-#include <SofaEngine/initEngine.h>
-#include <SofaExplicitOdeSolver/initExplicitODESolver.h>
-#include <SofaImplicitOdeSolver/initImplicitODESolver.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
+#include <sofa/helper/Factory.h>
+#include <SofaBaseMechanics/SubsetMapping.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/simulation/Node.h>
+#include <SofaBaseCollision/BaseContactMapper.h>
 
-namespace sofa
+
+namespace sofa::component::collision
 {
 
-namespace component
+
+/// Base class for all mappers using SubsetMapping
+template < class TCollisionModel, class DataTypes >
+class SubsetContactMapper : public BaseContactMapper<DataTypes>
 {
+public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef TCollisionModel MCollisionModel;
+    typedef typename MCollisionModel::InDataTypes InDataTypes;
+    typedef core::behavior::MechanicalState<InDataTypes> InMechanicalState;
+    typedef core::behavior::MechanicalState<typename SubsetContactMapper::DataTypes> MMechanicalState;
+    typedef component::container::MechanicalObject<typename SubsetContactMapper::DataTypes> MMechanicalObject;
+    typedef mapping::SubsetMapping< InDataTypes, typename SubsetContactMapper::DataTypes > MMapping;
+    MCollisionModel* model;
+    simulation::Node::SPtr child;
+    typename MMapping::SPtr mapping;
+    typename MMechanicalState::SPtr outmodel;
+    using Index = sofa::Index;
 
+    Size nbp;
+    bool needInit;
 
-void initSofaCommon()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    SubsetContactMapper();
 
-    initLoader();
-    initEngine();
-    initExplicitODESolver();
-    initImplicitODESolver();
-    initEigen2Solver();
-}
+    void setCollisionModel(MCollisionModel* model);
 
-} // namespace component
+    MMechanicalState* createMapping(const char* name="contactPoints");
 
-} // namespace sofa
+    void cleanup();
+    void resize(Size size);
+    Index addPoint(const Coord& P, Index index, Real&);
+    void update();
+    void updateXfree();
+};
+
+} //namespace sofa::component::collision

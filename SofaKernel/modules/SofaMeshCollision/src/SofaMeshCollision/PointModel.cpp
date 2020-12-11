@@ -19,36 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCommon/initSofaCommon.h>
+#define SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_CPP
+#include <SofaMeshCollision/PointModel.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <SofaLoader/initLoader.h>
-#include <SofaEngine/initEngine.h>
-#include <SofaExplicitOdeSolver/initExplicitODESolver.h>
-#include <SofaImplicitOdeSolver/initImplicitODESolver.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
-
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
+int PointCollisionModelClass = core::RegisterObject("Collision model which represents a set of points")
+        .add< PointCollisionModel<defaulttype::Vec3Types> >()
+
+        .addAlias("TPointModel")
+        .addAlias("Point")
+        .addAlias("PointModel")
+        .addAlias("PointMesh")
+        .addAlias("PointSet")
+        ;
+
+template class SOFA_SOFAMESHCOLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
 
 
-void initSofaCommon()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initLoader();
-    initEngine();
-    initExplicitODESolver();
-    initImplicitODESolver();
-    initEigen2Solver();
-}
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

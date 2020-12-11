@@ -19,36 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCommon/initSofaCommon.h>
+#pragma once
+#include <SofaMeshCollision/IdentityContactMapper.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/DeleteVisitor.h>
 
-#include <SofaLoader/initLoader.h>
-#include <SofaEngine/initEngine.h>
-#include <SofaExplicitOdeSolver/initExplicitODESolver.h>
-#include <SofaImplicitOdeSolver/initImplicitODESolver.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
-
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
+template < class TCollisionModel, class DataTypes >
+void IdentityContactMapper<TCollisionModel,DataTypes>::cleanup()
 {
-
-
-void initSofaCommon()
-{
-    static bool first = true;
-    if (first)
+    if (mapping!=nullptr)
     {
-        first = false;
+        simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
+        if (parent!=nullptr)
+        {
+            simulation::Node::SPtr child = dynamic_cast<simulation::Node*>(mapping->getContext());
+            child->detachFromGraph();
+            child->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+            child.reset(); //delete child;
+            mapping = nullptr;
+        }
     }
-
-    initLoader();
-    initEngine();
-    initExplicitODESolver();
-    initImplicitODESolver();
-    initEigen2Solver();
+}
+template < class TCollisionModel, class DataTypes >
+typename IdentityContactMapper<TCollisionModel,DataTypes>::MMechanicalState* IdentityContactMapper<TCollisionModel,DataTypes>::createMapping(const char* name)
+{
+    if (model==nullptr) return nullptr;
+    simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
+    if (parent==nullptr)
+    {
+        msg_error("IdentityContactMapper") << "IdentityContactMapper only works for scenegraph scenes.";
+        return nullptr;
+    }
+    simulation::Node::SPtr child = parent->createChild(name);
+    typename MMechanicalState::SPtr mstate = sofa::core::objectmodel::New<MMechanicalObject>(); child->addObject(mstate);
+    mapping = sofa::core::objectmodel::New<MMapping>(model->getMechanicalState(), mstate); child->addObject(mapping);
+    return mstate.get();
 }
 
-} // namespace component
 
-} // namespace sofa
+} //namespace sofa::component::collision

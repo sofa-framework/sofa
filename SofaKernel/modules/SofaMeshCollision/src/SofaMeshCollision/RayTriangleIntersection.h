@@ -19,36 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCommon/initSofaCommon.h>
+#pragma once
+#include <SofaMeshCollision/config.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-#include <SofaLoader/initLoader.h>
-#include <SofaEngine/initEngine.h>
-#include <SofaExplicitOdeSolver/initExplicitODESolver.h>
-#include <SofaImplicitOdeSolver/initImplicitODESolver.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
-
-namespace sofa
+namespace sofa::component::collision
 {
+template <class DataTypes>
+class TTriangle;
 
-namespace component
+/// this class computes if a Triangle P intersects a line segment
+class SOFA_SOFAMESHCOLLISION_API RayTriangleIntersection
 {
+public:
+    RayTriangleIntersection(); // start a Proximity solver
+    ~RayTriangleIntersection();
 
+    bool NewComputation( const sofa::defaulttype::Vector3 &p1, const sofa::defaulttype::Vector3 &p2, const sofa::defaulttype::Vector3 &p3, const sofa::defaulttype::Vector3 &origin, const sofa::defaulttype::Vector3 &direction,  SReal &t,  SReal &u, SReal &v);
+    bool NewComputation(TTriangle<sofa::defaulttype::Vec3Types>* triP, const sofa::defaulttype::Vector3& origin, const sofa::defaulttype::Vector3& direction, SReal& t, SReal& u, SReal& v);
+};
 
-void initSofaCommon()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initLoader();
-    initEngine();
-    initExplicitODESolver();
-    initImplicitODESolver();
-    initEigen2Solver();
-}
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::collision

@@ -19,36 +19,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCommon/initSofaCommon.h>
+#pragma once
+#include <SofaMeshCollision/config.h>
 
-#include <SofaLoader/initLoader.h>
-#include <SofaEngine/initEngine.h>
-#include <SofaExplicitOdeSolver/initExplicitODESolver.h>
-#include <SofaImplicitOdeSolver/initImplicitODESolver.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
+#include <sofa/core/collision/Intersection.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMeshCollision/IntrMeshUtility.h>
+#include <SofaBaseCollision/Intersector.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
+/**
+  *TDataTypes is the sphere type and TDataTypes2 the OBB type.
+  */
+template <class TDataTypes,class TDataTypes2>
+class TIntrTriangleOBB : public Intersector<typename TDataTypes::Real>
 {
+public:
+    typedef TTriangle<TDataTypes> IntrTri;
+    typedef typename TDataTypes::Real Real;
+    typedef typename IntrTri::Coord Coord;
+    typedef TOBB<TDataTypes2> Box;
+    typedef defaulttype::Vec<3,Real> Vec3;
 
+    TIntrTriangleOBB (const IntrTri& tri, const Box & box);
 
-void initSofaCommon()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    bool Find(Real tmax,int tri_flg);
 
-    initLoader();
-    initEngine();
-    initExplicitODESolver();
-    initImplicitODESolver();
-    initEigen2Solver();
-}
+    bool Find(Real tmax);
+private:
+    using Intersector<Real>::_is_colliding;
+    using Intersector<Real>::_pt_on_first;
+    using Intersector<Real>::_pt_on_second;
+    using Intersector<Real>::mContactTime;
+    using Intersector<Real>::_sep_axis;
 
-} // namespace component
+    // The objects to intersect.
+    const IntrTri* _tri;
+    const Box * mBox;
+};
 
-} // namespace sofa
+typedef TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types> IntrTriangleOBB;
+
+#if  !defined(SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_CPP)
+extern template class SOFA_SOFAMESHCOLLISION_API TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
+
+#endif
+
+} // namespace sofa::component::collision
