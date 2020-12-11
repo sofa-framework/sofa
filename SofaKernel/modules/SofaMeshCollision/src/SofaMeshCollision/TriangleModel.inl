@@ -19,8 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//#pragma once
+#pragma once
 #include <SofaMeshCollision/TriangleModel.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaMeshCollision/TriangleLocalMinDistanceFilter.h>
