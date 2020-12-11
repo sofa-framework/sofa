@@ -112,6 +112,23 @@ MeshLoader::MeshLoader() : BaseLoader()
     d_pentahedraGroups.setGroup("Groups");
     d_tetrahedraGroups.setGroup("Groups");
 
+    d_positions.setReadOnly(true);
+    d_polylines.setReadOnly(true);
+    d_edges.setReadOnly(true);
+    d_triangles.setReadOnly(true);
+    d_quads.setReadOnly(true);
+    d_polygons.setReadOnly(true);
+    d_highOrderEdgePositions.setReadOnly(true);
+    d_highOrderTrianglePositions.setReadOnly(true);
+    d_highOrderQuadPositions.setReadOnly(true);
+    d_tetrahedra.setReadOnly(true);
+    d_hexahedra.setReadOnly(true);
+    d_pentahedra.setReadOnly(true);
+    d_highOrderTetrahedronPositions.setReadOnly(true);
+    d_highOrderHexahedronPositions.setReadOnly(true);
+    d_pyramids.setReadOnly(true);
+    d_normals.setReadOnly(true);
+
     /// name filename => component state update + change of all data field...but not visible ?
     addUpdateCallback("filename", {&m_filename}, [this](const core::DataTracker& t)
     {
