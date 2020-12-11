@@ -22,7 +22,6 @@
 #include <SofaCommon/initSofaCommon.h>
 
 #include <SofaLoader/initLoader.h>
-#include <SofaEngine/initEngine.h>
 #include <SofaExplicitOdeSolver/initExplicitODESolver.h>
 #include <SofaImplicitOdeSolver/initImplicitODESolver.h>
 #include <SofaEigen2Solver/initEigen2Solver.h>
@@ -43,7 +42,6 @@ void initSofaCommon()
     }
 
     initLoader();
-    initEngine();
     initExplicitODESolver();
     initImplicitODESolver();
     initEigen2Solver();

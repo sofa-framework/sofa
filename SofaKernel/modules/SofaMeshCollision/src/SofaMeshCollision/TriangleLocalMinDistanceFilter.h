@@ -31,6 +31,7 @@
 
 namespace sofa::component::collision
 {
+    
 /**
  * @brief LocalMinDistance cone information class for a Triangle collision primitive.
  */

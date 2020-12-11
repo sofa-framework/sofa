@@ -22,6 +22,10 @@
 #include <SofaMeshCollision/initSofaMeshCollision.h>
 #include <SofaMeshCollision/MeshNewProximityIntersection.h>
 
+#include <type_traits>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
