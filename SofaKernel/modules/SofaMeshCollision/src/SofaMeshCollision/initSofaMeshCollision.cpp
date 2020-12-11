@@ -64,7 +64,7 @@ const char* getModuleName()
 
 const char* getModuleVersion()
 {
-    return sofa_tostring(SOFACONSTRAINT_VERSION);
+    return sofa_tostring(SOFAMESHCOLLISION_VERSION);
 }
 
 const char* getModuleLicense()

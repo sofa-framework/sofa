@@ -21,25 +21,15 @@
 ******************************************************************************/
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/helper/Quater.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MultiVec.h>
-#include <cmath>
-#include <iostream>
 #include <sofa/helper/AdvancedTimer.h>
 
 //#define SOFA_NO_VMULTIOP
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace odesolver
+namespace sofa::component::odesolver
 {
 
 using namespace sofa::defaulttype;
@@ -61,8 +51,6 @@ EulerExplicitSolver::EulerExplicitSolver()
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
-
-typedef simulation::Visitor::ctime_t ctime_t;
 
 void EulerExplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
@@ -194,8 +182,4 @@ void EulerExplicitSolver::init()
 }
 
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace namespace sofa::component::odesolver

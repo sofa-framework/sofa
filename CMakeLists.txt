@@ -240,6 +240,7 @@ sofa_add_module(SofaKernel/modules/SofaDeformable SofaDeformable ON)
 sofa_add_module(SofaKernel/modules/SofaObjectInteraction SofaObjectInteraction ON)
 sofa_add_module(SofaKernel/modules/SofaMeshCollision SofaMeshCollision ON)
 sofa_add_module(SofaKernel/modules/SofaEngine SofaEngine ON)
+sofa_add_module(SofaKernel/modules/SofaExplicitOdeSolver SofaExplicitOdeSolver ON)
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 
