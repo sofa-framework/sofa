@@ -131,14 +131,14 @@ class SOFA_CORE_API HexahedraRenumbering;
 /// Topology identification of a primitive element
 struct TopologyElemID
 {
-    TopologyElemID() : type(POINT), index((Topology::ElemID)-1) {}
+    TopologyElemID() : type(TopologyElementType::POINT), index((Topology::ElemID)-1) {}
 
-    TopologyElemID(TopologyObjectType _type, Topology::ElemID _index)
+    TopologyElemID(TopologyElementType _type, Topology::ElemID _index)
         : type(_type)
         , index(_index)
     {}
 
-    TopologyObjectType type;
+    TopologyElementType type;
     Topology::ElemID index;
 };
 
@@ -150,15 +150,15 @@ struct PointAncestorElem
 {
     typedef defaulttype::Vec<3, double> LocalCoords;
 
-    PointAncestorElem() : type(POINT), index((Topology::ElemID)-1) {}
+    PointAncestorElem() : type(TopologyElementType::POINT), index((Topology::ElemID)-1) {}
 
-    PointAncestorElem(TopologyObjectType _type, Topology::ElemID _index, const LocalCoords& _localCoords)
+    PointAncestorElem(TopologyElementType _type, Topology::ElemID _index, const LocalCoords& _localCoords)
         : type(_type)
         , index(_index)
         , localCoords(_localCoords)
     {}
     
-    TopologyObjectType type;
+    TopologyElementType type;
     Topology::ElemID index;
     LocalCoords localCoords;
 };
