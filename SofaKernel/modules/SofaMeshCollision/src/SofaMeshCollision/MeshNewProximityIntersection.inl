@@ -27,7 +27,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/collision/Intersection.inl>
 
-
 namespace sofa::component::collision
 {
 

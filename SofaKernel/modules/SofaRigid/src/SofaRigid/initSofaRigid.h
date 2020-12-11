@@ -27,4 +27,3 @@ namespace sofa::component
 {
 
 } // namespace sofa::component
-

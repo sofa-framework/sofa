@@ -2,6 +2,8 @@
 
 <Node name="SimpleBoundaryConditions demo" gravity="0 0 0" dt="0.1">
     <RequiredPlugin name='SofaTopologyMapping'/>  
+    <RequiredPlugin name='SofaEngine'/>
+    
     <VisualStyle displayFlags="showBehavior hideVisual" />
     <Node name="Cube grid" >
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />

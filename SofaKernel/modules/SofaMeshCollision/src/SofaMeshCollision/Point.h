@@ -23,4 +23,5 @@
 #include <SofaMeshCollision/config.h>
 
 #include <SofaMeshCollision/PointModel.h>
+
 SOFA_DEPRECATED_HEADER(v21.12, "SofaMeshCollision/PointModel.h")

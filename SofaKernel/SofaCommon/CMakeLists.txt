@@ -2,11 +2,10 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaCommon)
 
 set(SOFACOMMON_TARGETS
-    SofaEngine
     SofaExplicitOdeSolver
     SofaImplicitOdeSolver
     SofaLoader
-    )
+)
 
 foreach(TARGET ${SOFACOMMON_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
@@ -19,6 +18,7 @@ set(SOFACOMMON_MODULES
     SofaDeformable
     SofaObjectInteraction
     SofaMeshCollision
+    SofaEngine
 )
 
 foreach(MODULE ${SOFACOMMON_MODULES})

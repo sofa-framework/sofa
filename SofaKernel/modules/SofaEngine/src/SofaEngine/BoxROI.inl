@@ -19,29 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_BOXROI_INL
-#define SOFA_COMPONENT_ENGINE_BOXROI_INL
-
+#pragma once
 #include <SofaEngine/BoxROI.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <limits>
 #include <sofa/core/topology/BaseTopology.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/core/loader/MeshLoader.h>
 #include <sofa/helper/accessor.h>
 
-namespace sofa
+namespace sofa::component::engine::boxroi
 {
 
-namespace component
-{
-
-namespace engine
-{
-
-namespace boxroi
-{
-using simulation::AnimateBeginEvent ;
 using core::behavior::BaseMechanicalState ;
 using core::topology::TopologyContainer ;
 using core::topology::BaseMeshTopology ;
@@ -722,7 +711,7 @@ void BoxROI<DataTypes>::doUpdate()
         }
 
 
-        d_nbIndices.setValue(indices.size());
+        d_nbIndices.setValue(sofa::Size(indices.size()));
     }
 }
 
@@ -1112,12 +1101,4 @@ void BoxROI<DataTypes>::handleEvent(Event *event)
     SOFA_UNUSED(event);
 }
 
-} // namespace boxroi
-
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::engine::boxroi

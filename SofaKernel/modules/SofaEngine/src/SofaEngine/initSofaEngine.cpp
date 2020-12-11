@@ -19,16 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAENGINE_CONFIG_H
-#define SOFAENGINE_CONFIG_H
+#include <SofaEngine/initSofaEngine.h>
 
-#include <SofaCommon/config.h>
 
-#ifdef SOFA_BUILD_ENGINE
-#  define SOFA_TARGET SofaEngine
-#  define SOFA_ENGINE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_ENGINE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-#endif
+namespace sofa::component
+{
+
+extern "C" {
+    SOFA_SOFAENGINE_API void initExternalModule();
+    SOFA_SOFAENGINE_API const char* getModuleName();
+    SOFA_SOFAENGINE_API const char* getModuleVersion();
+    SOFA_SOFAENGINE_API const char* getModuleLicense();
+    SOFA_SOFAENGINE_API const char* getModuleDescription();
+    SOFA_SOFAENGINE_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
+
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAENGINE_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Engine.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

@@ -19,36 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_BOXROI_H
-#define SOFA_COMPONENT_ENGINE_BOXROI_H
-#include "config.h"
-
-
+#pragma once
+#include <SofaEngine/config.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/loader/MeshLoader.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine::boxroi
 {
 
 /// This namespace is used to avoid the leaking of the 'using' on includes.
 /// BoxROI is defined in namespace in sofa::component::engine::boxroi:BoxROI
 /// It is then import into sofa::component::engine::BoxROI to not break the
 /// API.
-namespace boxroi
-{
+
     using core::objectmodel::BaseObjectDescription ;
     using sofa::core::behavior::MechanicalState ;
     using core::topology::BaseMeshTopology ;
@@ -157,7 +146,7 @@ public:
     Data<vector<Tetra> > d_tetrahedraInROI; ///< Tetrahedra contained in the ROI
     Data<vector<Hexa> > d_hexahedraInROI; ///< Hexahedra contained in the ROI
     Data<vector<Quad> > d_quadInROI; ///< Quad contained in the ROI
-    Data< unsigned int > d_nbIndices; ///< Number of selected indices
+    Data< sofa::Size > d_nbIndices; ///< Number of selected indices
 
     //Parameter
     Data<bool> d_drawBoxes; ///< Draw Boxes. (default = false)
@@ -208,22 +197,19 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec3Types>;
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Rigid3Types>;
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6Types>;
+extern template class SOFA_SOFAENGINE_API BoxROI<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAENGINE_API BoxROI<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAENGINE_API BoxROI<defaulttype::Vec6Types>;
  
 #endif
 
-} // namespace boxroi
+} // namespace sofa::component::engine::boxroi
+
+namespace sofa::component::engine
+{
 
 /// Import sofa::component::engine::boxroi::BoxROI into
 /// into the sofa::component::engine namespace.
 using boxroi::BoxROI ;
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::engine

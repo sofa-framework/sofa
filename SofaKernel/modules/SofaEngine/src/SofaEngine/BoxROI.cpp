@@ -24,18 +24,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
+namespace sofa::component::engine::boxroi
 {
-
-namespace component
-{
-
-namespace engine
-{
-
-namespace boxroi
-{
-
 
 using namespace sofa::defaulttype;
 
@@ -46,16 +36,9 @@ int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangl
  
         ;
 
-template class SOFA_ENGINE_API BoxROI<Vec3Types>;
-template class SOFA_ENGINE_API BoxROI<Rigid3Types>;
-template class SOFA_ENGINE_API BoxROI<Vec6Types>;
+template class SOFA_SOFAENGINE_API BoxROI<Vec3Types>;
+template class SOFA_SOFAENGINE_API BoxROI<Rigid3Types>;
+template class SOFA_SOFAENGINE_API BoxROI<Vec6Types>;
  
 
-} // namespace boxroi
-
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::engine::boxroi
