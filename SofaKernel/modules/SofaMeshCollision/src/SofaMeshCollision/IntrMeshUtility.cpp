@@ -19,36 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCommon/initSofaCommon.h>
+#define SOFA_COMPONENT_COLLISION_INTRMESHUTILITY_CPP
+#include <SofaMeshCollision/IntrMeshUtility.inl>
 
-#include <SofaLoader/initLoader.h>
-#include <SofaEngine/initEngine.h>
-#include <SofaExplicitOdeSolver/initExplicitODESolver.h>
-#include <SofaImplicitOdeSolver/initImplicitODESolver.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
-
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
+template struct SOFA_SOFAMESHCOLLISION_API IntrUtil<TTriangle<defaulttype::Vec3Types> >;
+template class SOFA_SOFAMESHCOLLISION_API FindContactSet<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
+template class SOFA_SOFAMESHCOLLISION_API IntrAxis<TTriangle<defaulttype::Vec3Types>,TOBB<defaulttype::Rigid3Types> >;
+template struct SOFA_SOFAMESHCOLLISION_API IntrConfigManager<TTriangle<defaulttype::Vec3Types> >;
 
-
-void initSofaCommon()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initLoader();
-    initEngine();
-    initExplicitODESolver();
-    initImplicitODESolver();
-    initEigen2Solver();
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision

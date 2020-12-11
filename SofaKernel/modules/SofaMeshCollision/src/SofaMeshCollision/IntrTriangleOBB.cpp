@@ -19,36 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCommon/initSofaCommon.h>
+#define SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_CPP
+#include <SofaMeshCollision/IntrTriangleOBB.inl>
 
-#include <SofaLoader/initLoader.h>
-#include <SofaEngine/initEngine.h>
-#include <SofaExplicitOdeSolver/initExplicitODESolver.h>
-#include <SofaImplicitOdeSolver/initImplicitODESolver.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
+namespace sofa::component::collision{
 
-namespace sofa
-{
+//----------------------------------------------------------------------------
+// Explicit instantiation.
+//----------------------------------------------------------------------------
+template class SOFA_SOFAMESHCOLLISION_API TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
 
-namespace component
-{
+//----------------------------------------------------------------------------
 
-
-void initSofaCommon()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initLoader();
-    initEngine();
-    initExplicitODESolver();
-    initImplicitODESolver();
-    initEigen2Solver();
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision

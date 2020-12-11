@@ -22,6 +22,7 @@
 #include "TopologicalChangeManager.h"
 
 #include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
