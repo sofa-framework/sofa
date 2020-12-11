@@ -156,13 +156,13 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
     // - STEP 1: Looking for current topology type
     topo_curr = picked.body->getCollisionTopology();
     if (topo_curr->getNbHexahedra())
-        topoType = sofa::core::topology::HEXAHEDRON;
+        topoType = core::topology::TopologyElementType::HEXAHEDRON;
     else if (topo_curr->getNbTetrahedra())
-        topoType = sofa::core::topology::TETRAHEDRON;
+        topoType = sofa::core::topology::TopologyElementType::TETRAHEDRON;
     else if (topo_curr->getNbQuads())
-        topoType = sofa::core::topology::QUAD;
+        topoType = sofa::core::topology::TopologyElementType::QUAD;
     else if (topo_curr->getNbTriangles())
-        topoType = sofa::core::topology::TRIANGLE;
+        topoType = sofa::core::topology::TopologyElementType::TRIANGLE;
     else
     {
         msg_error("RemovePrimitivePerformer") << "No topology has been found." ;
@@ -178,10 +178,10 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
     if (!volumicMesh) // Surfacique case
     {
         volumeOnSurface = false;
-        sofa::core::topology::TopologyObjectType topoTypeTmp = topoType;
+        sofa::core::topology::TopologyElementType topoTypeTmp = topoType;
 
         // - STEP 3: Looking for tricky case
-        if (topoType == sofa::core::topology::TETRAHEDRON || topoType == sofa::core::topology::HEXAHEDRON) // special case: removing a surface volume on the mesh (tetra only for the moment)
+        if (topoType == sofa::core::topology::TopologyElementType::TETRAHEDRON || topoType == sofa::core::topology::TopologyElementType::HEXAHEDRON) // special case: removing a surface volume on the mesh (tetra only for the moment)
         {
             // looking for mapping VolumeToSurface
             simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
@@ -220,7 +220,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
                     selectedElem[0] = (unsigned int)volTmp;
                     volumeOnSurface = true;
                     topo_curr = topoMap->getTo();
-                    topoType = sofa::core::topology::TRIANGLE;
+                    topoType = sofa::core::topology::TopologyElementType::TRIANGLE;
                 }
             }
 
@@ -265,7 +265,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
 
                 switch ( topoType ) // Get surfacique elements as array of vertices
                 {
-                case sofa::core::topology::QUAD:
+                case sofa::core::topology::TopologyElementType::QUAD:
                 {
                     const sofa::core::topology::BaseMeshTopology::Quad& quad = topo_curr->getQuad(selectedElem[i]);
                     elem.resize(4);
@@ -273,7 +273,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
                         elem[j] = quad[j];
                     break;
                 }
-                case sofa::core::topology::TRIANGLE:
+                case sofa::core::topology::TopologyElementType::TRIANGLE:
                 {
                     const sofa::core::topology::BaseMeshTopology::Triangle& tri = topo_curr->getTriangle(selectedElem[i]);
                     elem.resize(3);
@@ -315,7 +315,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
 
                 switch ( topoType )
                 {
-                case sofa::core::topology::HEXAHEDRON:
+                case sofa::core::topology::TopologyElementType::HEXAHEDRON:
                 {
                     const sofa::core::topology::BaseMeshTopology::HexahedraAroundVertex& hexaV = topo_curr->getHexahedraAroundVertex(tmp2[i]);
                     for (unsigned int j = 0; j<hexaV.size(); ++j)
@@ -323,7 +323,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
 
                     break;
                 }
-                case sofa::core::topology::TETRAHEDRON:
+                case sofa::core::topology::TopologyElementType::TETRAHEDRON:
                 {
                     const sofa::core::topology::BaseMeshTopology::TetrahedraAroundVertex& tetraV = topo_curr->getTetrahedraAroundVertex(tmp2[i]);
                     for (unsigned int j = 0; j<tetraV.size(); ++j)
@@ -360,7 +360,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
         surfaceOnVolume = false;
 
         // - STEP 3: Looking for tricky case
-        if (topoType == sofa::core::topology::TRIANGLE || topoType == sofa::core::topology::QUAD) // Special case: removing a volumique zone on the mesh while starting at the surface
+        if (topoType == sofa::core::topology::TopologyElementType::TRIANGLE || topoType == sofa::core::topology::TopologyElementType::QUAD) // Special case: removing a volumique zone on the mesh while starting at the surface
         {
             // looking for mapping VolumeToSurface
             simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
@@ -377,7 +377,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
                     topo_curr = topoMap->getFrom();
                     selectedElem[0] = topo_curr->getTetrahedraAroundTriangle(volTmp)[0];
                     surfaceOnVolume = true;
-                    topoType = sofa::core::topology::TETRAHEDRON;
+                    topoType = sofa::core::topology::TopologyElementType::TETRAHEDRON;
                 }
             }
 
@@ -432,7 +432,7 @@ typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<Da
 
         switch ( topoType ) // Get element as array of vertices
         {
-        case sofa::core::topology::HEXAHEDRON:
+        case sofa::core::topology::TopologyElementType::HEXAHEDRON:
         {
             const sofa::core::topology::BaseMeshTopology::Hexa& hexa = topo_curr->getHexahedron(elementsToTest[i]);
             elem.resize(8);
@@ -440,7 +440,7 @@ typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<Da
                 elem[j] = hexa[j];
             break;
         }
-        case sofa::core::topology::TETRAHEDRON:
+        case sofa::core::topology::TopologyElementType::TETRAHEDRON:
         {
             const sofa::core::topology::BaseMeshTopology::Tetra& tetra = topo_curr->getTetrahedron(elementsToTest[i]);
             elem.resize(4);
@@ -448,7 +448,7 @@ typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<Da
                 elem[j] = tetra[j];
             break;
         }
-        case sofa::core::topology::QUAD:
+        case sofa::core::topology::TopologyElementType::QUAD:
         {
             const sofa::core::topology::BaseMeshTopology::Quad& quad = topo_curr->getQuad(elementsToTest[i]);
             elem.resize(4);
@@ -456,7 +456,7 @@ typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<Da
                 elem[j] = quad[j];
             break;
         }
-        case sofa::core::topology::TRIANGLE:
+        case sofa::core::topology::TopologyElementType::TRIANGLE:
         {
             const sofa::core::topology::BaseMeshTopology::Triangle& tri = topo_curr->getTriangle(elementsToTest[i]);
             elem.resize(3);
@@ -493,22 +493,22 @@ typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<Da
 
         switch ( topoType ) // Get elements around vertices as array of ID
         {
-        case sofa::core::topology::HEXAHEDRON:
+        case sofa::core::topology::TopologyElementType::HEXAHEDRON:
         {
             elemAroundV = topo_curr->getHexahedraAroundVertex (vertexList[i]);
             break;
         }
-        case sofa::core::topology::TETRAHEDRON:
+        case sofa::core::topology::TopologyElementType::TETRAHEDRON:
         {
             elemAroundV = topo_curr->getTetrahedraAroundVertex (vertexList[i]);
             break;
         }
-        case sofa::core::topology::QUAD:
+        case sofa::core::topology::TopologyElementType::QUAD:
         {
             elemAroundV = topo_curr->getQuadsAroundVertex (vertexList[i]);
             break;
         }
-        case sofa::core::topology::TRIANGLE:
+        case sofa::core::topology::TopologyElementType::TRIANGLE:
         {
             elemAroundV = topo_curr->getTrianglesAroundVertex (vertexList[i]);
             break;
@@ -579,7 +579,7 @@ typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<Da
 
         switch ( topoType ) // get element as array of vertices and sum the coordinates
         {
-        case sofa::core::topology::HEXAHEDRON:
+        case sofa::core::topology::TopologyElementType::HEXAHEDRON:
         {
             const sofa::core::topology::BaseMeshTopology::Hexa& hexa = topo_curr->getHexahedron(elementsToTest[i]);
             baryCoord[i] = X[hexa[0]] + X[hexa[1]] + X[hexa[2]] + X[hexa[3]] +
@@ -588,7 +588,7 @@ typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<Da
 
             break;
         }
-        case sofa::core::topology::TETRAHEDRON:
+        case sofa::core::topology::TopologyElementType::TETRAHEDRON:
         {
             const sofa::core::topology::BaseMeshTopology::Tetra& tetra = topo_curr->getTetrahedron(elementsToTest[i]);
             baryCoord[i] = X[tetra[0]] + X[tetra[1]] + X[tetra[2]] + X[tetra[3]];
@@ -596,7 +596,7 @@ typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<Da
 
             break;
         }
-        case sofa::core::topology::QUAD:
+        case sofa::core::topology::TopologyElementType::QUAD:
         {
             const sofa::core::topology::BaseMeshTopology::Quad& quad = topo_curr->getQuad(elementsToTest[i]);
             baryCoord[i] = X[quad[0]] + X[quad[1]] + X[quad[2]] + X[quad[3]];
@@ -604,7 +604,7 @@ typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<Da
 
             break;
         }
-        case sofa::core::topology::TRIANGLE:
+        case sofa::core::topology::TopologyElementType::TRIANGLE:
         {
             const sofa::core::topology::BaseMeshTopology::Triangle& tri = topo_curr->getTriangle(elementsToTest[i]);
             baryCoord[i] = X[tri[0]] + X[tri[1]] + X[tri[2]];
@@ -663,7 +663,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
         switch ( topoType )
         {
-        case sofa::core::topology::HEXAHEDRON:
+        case sofa::core::topology::TopologyElementType::HEXAHEDRON:
         {
             const sofa::core::topology::BaseMeshTopology::Hexa& hexa = topo_curr->getHexahedron(selectedElem[i]);
             Coord coordP[8];
@@ -680,7 +680,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
             }
             break;
         }
-        case sofa::core::topology::TETRAHEDRON:
+        case sofa::core::topology::TopologyElementType::TETRAHEDRON:
         {
             const sofa::core::topology::BaseMeshTopology::Tetra& tetra = topo_curr->getTetrahedron(selectedElem[i]);
             Coord coordP[4];
@@ -696,7 +696,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
             }
             break;
         }
-        case sofa::core::topology::QUAD:
+        case sofa::core::topology::TopologyElementType::QUAD:
         {
             const sofa::core::topology::BaseMeshTopology::Quad& quad = topo_curr->getQuad(selectedElem[i]);
 
@@ -707,7 +707,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
             }
             break;
         }
-        case sofa::core::topology::TRIANGLE:
+        case sofa::core::topology::TopologyElementType::TRIANGLE:
         {
             const sofa::core::topology::BaseMeshTopology::Triangle& tri = topo_curr->getTriangle(selectedElem[i]);
 

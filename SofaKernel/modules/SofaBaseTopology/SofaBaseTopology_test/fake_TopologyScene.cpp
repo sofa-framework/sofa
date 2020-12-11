@@ -29,7 +29,7 @@ using namespace sofa::simpleapi;
 using namespace sofa::simpleapi::components;
 using namespace sofa::core::topology;
 
-fake_TopologyScene::fake_TopologyScene(const std::string& filename, TopologyObjectType topoType, bool staticTopo)
+fake_TopologyScene::fake_TopologyScene(const std::string& filename, TopologyElementType topoType, bool staticTopo)
     : m_topoType(topoType)
     , m_filename(filename)
     , m_staticTopology(staticTopo)
@@ -45,7 +45,7 @@ bool fake_TopologyScene::loadMeshFile()
     m_root = createRootNode(m_simu, "root");
 
     std::string loaderType = "MeshObjLoader";
-    if (m_topoType == TopologyObjectType::TETRAHEDRON || m_topoType == TopologyObjectType::HEXAHEDRON)
+    if (m_topoType == TopologyElementType::TETRAHEDRON || m_topoType == TopologyElementType::HEXAHEDRON)
         loaderType = "MeshGmshLoader";
 
 
@@ -68,17 +68,17 @@ bool fake_TopologyScene::loadMeshFile()
     else
     {
         std::string topoType = "";
-        if (m_topoType == TopologyObjectType::POINT)
+        if (m_topoType == TopologyElementType::POINT)
             topoType = "Point";
-        else if (m_topoType == TopologyObjectType::EDGE)
+        else if (m_topoType == TopologyElementType::EDGE)
             topoType = "Edge";
-        else if (m_topoType == TopologyObjectType::TRIANGLE)
+        else if (m_topoType == TopologyElementType::TRIANGLE)
             topoType = "Triangle";
-        else if (m_topoType == TopologyObjectType::QUAD)
+        else if (m_topoType == TopologyElementType::QUAD)
             topoType = "Quad";
-        else if (m_topoType == TopologyObjectType::TETRAHEDRON)
+        else if (m_topoType == TopologyElementType::TETRAHEDRON)
             topoType = "Tetrahedron";
-        else if (m_topoType == TopologyObjectType::HEXAHEDRON)
+        else if (m_topoType == TopologyElementType::HEXAHEDRON)
             topoType = "Hexahedron";
 
         // create topology components
