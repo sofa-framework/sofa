@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <LMConstraint/config.h>
+#include <LMConstraint/DistanceLMContactConstraint.h>
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
-#include <SofaConstraint/DistanceLMContactConstraint.h>
 #include <sofa/helper/Factory.h>
 
 #include <SofaMeshCollision/BarycentricContactMapper.h>

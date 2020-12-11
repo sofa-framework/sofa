@@ -20,15 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <LMConstraint/config.h>
 
-#include <SofaConstraint/LMConstraintSolver.h>
+#include <LMConstraint/LMConstraintSolver.h>
 #include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::component::constraintset
 {
 
-class SOFA_SOFACONSTRAINT_API LMConstraintDirectSolver : public LMConstraintSolver
+class LMCONSTRAINT_API LMConstraintDirectSolver : public LMConstraintSolver
 {
     typedef Eigen::SparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
     typedef helper::vector<linearsolver::LLineManipulator> JacobianRows;

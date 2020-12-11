@@ -5,16 +5,15 @@ find_package(SofaFramework REQUIRED)
 find_package(SofaBase REQUIRED)
 find_package(SofaCommon REQUIRED) 
 find_package(SofaConstraint REQUIRED) 
+find_package(SofaDistanceGrid QUIET) 
 
 # List all files
 set(LMCONSTRAINT_SRC_DIR src/LMConstraint)
 set(HEADER_FILES
     ${LMCONSTRAINT_SRC_DIR}/config.h.in
-    ${LMCONSTRAINT_SRC_DIR}/behavior/BaseLMConstraint.h
-    ${LMCONSTRAINT_SRC_DIR}/behavior/LMConstraint.h
-    ${LMCONSTRAINT_SRC_DIR}/behavior/LMConstraint.inl
-    ${LMCONSTRAINT_SRC_DIR}/BarycentricDistanceLMConstraintContact.h
-    ${LMCONSTRAINT_SRC_DIR}/BarycentricDistanceLMConstraintContact.inl
+    ${LMCONSTRAINT_SRC_DIR}/BaseLMConstraint.h
+    ${LMCONSTRAINT_SRC_DIR}/LMConstraint.h
+    ${LMCONSTRAINT_SRC_DIR}/LMConstraint.inl
     ${LMCONSTRAINT_SRC_DIR}/ContactDescription.h
     ${LMCONSTRAINT_SRC_DIR}/DOFBlockerLMConstraint.h
     ${LMCONSTRAINT_SRC_DIR}/DOFBlockerLMConstraint.inl
@@ -34,11 +33,8 @@ set(HEADER_FILES_TO_MOC
     )
 set(SOURCE_FILES
     ${LMCONSTRAINT_SRC_DIR}/initLMConstraint.cpp
-    ${LMCONSTRAINT_SRC_DIR}/behavior/BaseLMConstraint.cpp
-    ${LMCONSTRAINT_SRC_DIR}/behavior/LMConstraint.cpp
-    ${LMCONSTRAINT_SRC_DIR}/TetrahedronBarycentricDistanceLMConstraintContact.cpp
-    ${LMCONSTRAINT_SRC_DIR}/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp
-    ${LMCONSTRAINT_SRC_DIR}/BarycentricDistanceLMConstraintContact.cpp
+    ${LMCONSTRAINT_SRC_DIR}/BaseLMConstraint.cpp
+    ${LMCONSTRAINT_SRC_DIR}/LMConstraint.cpp
     ${LMCONSTRAINT_SRC_DIR}/DOFBlockerLMConstraint.cpp
     ${LMCONSTRAINT_SRC_DIR}/FixedLMConstraint.cpp
     ${LMCONSTRAINT_SRC_DIR}/DistanceLMContactConstraint.cpp
@@ -50,10 +46,31 @@ set(SOURCE_FILES
     )
 
 
+if(SofaDistanceGrid_FOUND)
+    list(APPEND HEADER_FILES
+
+        ${LMCONSTRAINT_SRC_DIR}/BarycentricDistanceLMConstraintContact.h
+        ${LMCONSTRAINT_SRC_DIR}/BarycentricDistanceLMConstraintContact.inl
+    )
+    list(APPEND SOURCE_FILES
+
+        ${LMCONSTRAINT_SRC_DIR}/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp
+        ${LMCONSTRAINT_SRC_DIR}/BarycentricDistanceLMConstraintContact.cpp
+        ${LMCONSTRAINT_SRC_DIR}/TetrahedronBarycentricDistanceLMConstraintContact.cpp
+
+    )
+else()
+    message(STATUS "SofaDistanceGrid not found: DistanceLM codes will not be compiled")
+endif()
+
+
 # Create the plugin library
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES_TO_MOC} ${MOCCED_HEADER_FILES} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-target_link_libraries(${PROJECT_NAME} SofaCore SofaHelper SofaDefaultType SofaConstraint)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaBaseLinearSolver SofaImplicitOdeSolver SofaHelper SofaDefaultType SofaConstraint)
 
+if(SofaDistanceGrid_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC SofaDistanceGrid)
+endif()
 
 # Create package Config, Version & Target files.
 sofa_create_package_with_targets(
@@ -64,11 +81,3 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     RELOCATABLE "plugins"
     )
-
-# Tests
-# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-cmake_dependent_option(PLUGINEXAMPLE_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-if(PLUGINEXAMPLE_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(PluginExample_test)
-endif()

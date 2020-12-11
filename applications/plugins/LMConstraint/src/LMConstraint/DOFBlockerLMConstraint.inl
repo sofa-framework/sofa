@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/DOFBlockerLMConstraint.h>
+#include <LMConstraint/DOFBlockerLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>

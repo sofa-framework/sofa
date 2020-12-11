@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINTSET_DistanceLMContactConstraint_CPP
-#include <SofaConstraint/DistanceLMContactConstraint.inl>
+#include <LMConstraint/DistanceLMContactConstraint.inl>
 
-#include <sofa/core/behavior/LMConstraint.inl>
+#include <LMConstraint/LMConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -37,7 +37,7 @@ int DistanceLMContactConstraintClass = core::RegisterObject("Maintain a minimum 
 
         ;
 
-template class SOFA_SOFACONSTRAINT_API DistanceLMContactConstraint<Vec3Types>;
+template class LMCONSTRAINT_API DistanceLMContactConstraint<Vec3Types>;
 
 
 

@@ -20,15 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <LMConstraint/config.h>
+#include <SofaConstraint/PrecomputedConstraintCorrection.h>
 
-#include <sofa/core/behavior/ConstraintCorrection.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-
-#include <SofaBaseLinearSolver/FullMatrix.h>
-
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
 
 namespace sofa::component::constraintset
 {
@@ -37,10 +31,10 @@ namespace sofa::component::constraintset
  *  \brief Component computing constraint forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
-class PrecomputedConstraintCorrection : public sofa::core::behavior::ConstraintCorrection< TDataTypes >
+class PrecomputedLMConstraintCorrection : public sofa::component::constraintset::PrecomputedConstraintCorrection< TDataTypes >
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PrecomputedConstraintCorrection,TDataTypes), SOFA_TEMPLATE(core::behavior::ConstraintCorrection, TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(PrecomputedLMConstraintCorrection,TDataTypes), SOFA_TEMPLATE(sofa::component::constraintset::PrecomputedConstraintCorrection, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -67,158 +61,20 @@ public:
 	Data<std::string> fileDir; ///< If not empty, the compliance will be saved in this repertory
     
 protected:
-    PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);
+    PrecomputedLMConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr){};
 
-    virtual ~PrecomputedConstraintCorrection();
 public:
     void bwdInit() override;
-
-    void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W) override;
-
-    void getComplianceMatrix(defaulttype::BaseMatrix* m) const override;
-
-    void computeMotionCorrection(const core::ConstraintParams*, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
-
-    void applyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::Data< VecCoord > &x, sofa::Data< VecDeriv > &v, sofa::Data< VecDeriv > &dx , const sofa::Data< VecDeriv > & correction) override;
-
-    void applyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::Data< VecCoord > &x, sofa::Data< VecDeriv > &dx, const sofa::Data< VecDeriv > & correction) override;
-
-    void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::Data< VecDeriv > &v, sofa::Data< VecDeriv > &dv, const sofa::Data< VecDeriv > & correction) override;
-
-    /// @name Deprecated API
-    /// @{
-
-    void applyContactForce(const defaulttype::BaseVector *f) override;
-
-    void resetContactForce() override;
-
-    /// @}
-
-    virtual void rotateConstraints(bool back);
-
-    virtual void rotateResponse();
-
-    void draw(const core::visual::VisualParams* vparams) override;
-
-    /// @name Unbuilt constraint system during resolution
-    /// @{
-
-    void resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/) override;
-
-    bool hasConstraintNumber(int index) override;  // virtual ???
-
-    void addConstraintDisplacement(double *d, int begin,int end) override;
-
-    void setConstraintDForce(double *df, int begin, int end, bool update) override;
-
-    void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) override;
-
-    /// @}
-
-public:
-
-    struct InverseStorage
-    {
-        Real* data;
-        int nbref;
-        InverseStorage() : data(nullptr), nbref(0) {}
-    };
-
-    std::string invName;
-    InverseStorage* invM;
-    Real* appCompliance;
-    unsigned int dimensionAppCompliance;
-
-    static std::map<std::string, InverseStorage>& getInverseMap()
-    {
-        static std::map<std::string, InverseStorage> registry;
-        return registry;
-    }
-
-    static InverseStorage* getInverse(std::string name);
-
-    static void releaseInverse(std::string name, InverseStorage* inv);
-
-    unsigned int nbRows, nbCols, dof_on_node, nbNodes;
-    helper::vector<int> _indexNodeSparseCompliance;
-    helper::vector<Deriv> _sparseCompliance;
-    Real Fbuf[6], DXbuf;
-
-    // new :  for non building the constraint system during solving process //
-    //VecDeriv constraint_disp, constraint_force;
-    helper::vector<int> id_to_localIndex;	// table that gives the local index of a constraint given its id
-    helper::vector<unsigned int> localIndex_to_id; //inverse table that gives the id of a constraint given its local index
-    std::list<unsigned int> active_local_force; // table of local index of the non-null forces;
-    linearsolver::FullMatrix< Real > localW;
-    double* constraint_force;
-
-    // NEW METHOD FOR UNBUILT
-    // new :  for non building the constraint system during solving process //
-    VecDeriv constraint_D, constraint_F;
-    std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
-
-public:
-    Real* getInverse()
-    {
-        if (invM->data)
-            return invM->data;
-        else
-            msg_error() << "Inverse is not computed yet";
-        return nullptr;
-    }
-
-protected:
-    /**
-     * @brief Load compliance matrix from memory or external file according to fileName.
-     *
-     * @return Loading success.
-     */
-    bool loadCompliance(std::string fileName);
-
-    /**
-     * @brief Save compliance matrix into a file.
-     */
-    void saveCompliance(const std::string& fileName);
-
-    /**
-     * @brief Builds the compliance file name using the SOFA component internal data.
-     */
-    std::string buildFileName();
-
-    /**
-     * @brief Compute dx correction from motion space force vector.
-     */
-    void computeDx(Data<VecDeriv>& dx, const Data< VecDeriv > &f, const std::list< int > &activeDofs);
-
-    std::list< int > m_activeDofs;
 };
 
 
 
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::rotateConstraints(bool back);
-
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1Types>::rotateConstraints(bool back);
-
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::rotateResponse();
-
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1Types>::rotateResponse();
-
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::draw(const core::visual::VisualParams* vparams);
-
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1Types>::draw(const core::visual::VisualParams* vparams);
 
 
-
-#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_PRECOMPUTEDCONSTRAINTCORRECTION_CPP)
-extern template class SOFA_SOFACONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec3Types>;
-extern template class SOFA_SOFACONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec1Types>;
-extern template class SOFA_SOFACONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Rigid3Types>;
+#if  !defined(LMCONSTRAINT_PRECOMPUTEDLMCONSTRAINTCORRECTION_CPP)
+extern template class LMCONSTRAINT_API PrecomputedLMConstraintCorrection<defaulttype::Vec3Types>;
+extern template class LMCONSTRAINT_API PrecomputedLMConstraintCorrection<defaulttype::Vec1Types>;
+extern template class LMCONSTRAINT_API PrecomputedLMConstraintCorrection<defaulttype::Rigid3Types>;
 
 #endif
 

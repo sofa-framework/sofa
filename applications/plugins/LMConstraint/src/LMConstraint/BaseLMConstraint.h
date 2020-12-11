@@ -22,8 +22,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_BASELMCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_BASELMCONSTRAINT_H
 
+#include <LMConstraint/config.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/config.h>
 
 namespace sofa
 {
@@ -44,7 +44,7 @@ namespace behavior
 * @param correction           right hand term of the equation: corresponds to a correction we have to apply to the system
 * @param constraintId         actual index of the line corresponding to the constraint equation in the whole system: can be different from idx
 **/
-struct  SOFA_CORE_API ConstraintEquation
+struct  LMCONSTRAINT_API ConstraintEquation
 {
     int idx;
     SReal correction;
@@ -62,7 +62,7 @@ struct  SOFA_CORE_API ConstraintEquation
  * @see ConstraintEquation
  * @see ConstOrder
  **/
-class SOFA_CORE_API  ConstraintGroup
+class LMCONSTRAINT_API  ConstraintGroup
 {
     typedef sofa::helper::vector< ConstraintEquation > VecEquations;
 public:
@@ -132,11 +132,11 @@ protected:
  *        They can be constraint on acceleration, velocity, or position.
  *        They can be grouped or individual. The resolution is then done in the OdeSolver.
  **/
-class SOFA_CORE_API BaseLMConstraint: public BaseConstraintSet
+class LMCONSTRAINT_API BaseLMConstraint: public BaseConstraintSet
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseLMConstraint, BaseConstraintSet);
-    SOFA_BASE_CAST_IMPLEMENTATION(BaseLMConstraint)
+//    SOFA_BASE_CAST_IMPLEMENTATION(BaseLMConstraint)
 
 protected:
     BaseLMConstraint();

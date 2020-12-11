@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <LMConstraint/config.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/LMConstraint.h>
+#include <LMConstraint/LMConstraint.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/simulation/Node.h>
 

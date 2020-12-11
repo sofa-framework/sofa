@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <LMConstraint/config.h>
 
-#include <sofa/core/behavior/BaseLMConstraint.h>
+#include <LMConstraint/BaseLMConstraint.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa::component::constraintset

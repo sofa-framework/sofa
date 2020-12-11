@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaConstraint/BarycentricDistanceLMConstraintContact.inl>
+#include <LMConstraint/BarycentricDistanceLMConstraintContact.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
-#include <SofaVolumetricData/RigidDistanceGridDiscreteIntersection.h>
-
+#include <SofaDistanceGrid/components/collision/DistanceGridCollisionModel.h>
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
@@ -47,7 +46,6 @@ Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<FFDDistanceGrid
 Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<FFDDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridPointDistanceLMConstraintContactClass("distanceLMConstraint",true);
 Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<FFDDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridSphereDistanceLMConstraintContactClass("distanceLMConstraint",true);
 Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<FFDDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridTriangleDistanceLMConstraintContactClass("distanceLMConstraint",true);
-
 
 } // namespace collision
 

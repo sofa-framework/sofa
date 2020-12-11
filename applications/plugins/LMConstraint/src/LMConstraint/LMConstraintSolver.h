@@ -20,10 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <LMConstraint/config.h>
 
 #include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/core/behavior/BaseLMConstraint.h>
+#include <LMConstraint/BaseLMConstraint.h>
+#include <LMConstraint/MechanicalWriteLMConstraint.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/MechanicalVisitor.h>
@@ -35,7 +36,7 @@
 namespace sofa::component::constraintset
 {
 
-class SOFA_SOFACONSTRAINT_API LMConstraintSolver : public sofa::core::behavior::ConstraintSolver
+class LMCONSTRAINT_API LMConstraintSolver : public sofa::core::behavior::ConstraintSolver
 {
 protected:
     typedef sofa::core::VecId VecId;

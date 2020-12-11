@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/BarycentricDistanceLMConstraintContact.h>
+#include <LMConstraint/BarycentricDistanceLMConstraintContact.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::collision

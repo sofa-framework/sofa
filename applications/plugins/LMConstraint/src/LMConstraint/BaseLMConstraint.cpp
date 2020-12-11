@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/behavior/BaseLMConstraint.h>
+#include <LMConstraint/BaseLMConstraint.h>
 namespace sofa
 {
 

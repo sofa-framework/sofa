@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_LMCONSTRAINT_INL
 #define SOFA_CORE_BEHAVIOR_LMCONSTRAINT_INL
 
-#include <sofa/core/behavior/LMConstraint.h>
+#include <LMConstraint/LMConstraint.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 

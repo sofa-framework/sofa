@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <LMConstraint/config.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/LMConstraint.h>
+#include <LMConstraint/LMConstraint.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/simulation/Node.h>
 
@@ -133,8 +133,8 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_FIXEDLMCONSTRAINT_CPP)
-extern template class SOFA_SOFACONSTRAINT_API FixedLMConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_SOFACONSTRAINT_API FixedLMConstraint<defaulttype::Rigid3Types>;
+extern template class LMCONSTRAINT_API FixedLMConstraint<defaulttype::Vec3Types>;
+extern template class LMCONSTRAINT_API FixedLMConstraint<defaulttype::Rigid3Types>;
 
 #endif
 
