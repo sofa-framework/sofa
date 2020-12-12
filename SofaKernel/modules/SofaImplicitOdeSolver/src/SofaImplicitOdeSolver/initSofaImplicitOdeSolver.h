@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+
 #include <SofaImplicitOdeSolver/config.h>
 
 namespace sofa::component

@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <SofaCommon/initSofaCommon.h>
 
-#include <SofaLoader/initLoader.h>
 #include <SofaEigen2Solver/initEigen2Solver.h>
 
 namespace sofa
@@ -39,7 +38,6 @@ void initSofaCommon()
         first = false;
     }
 
-    initLoader();
     initEigen2Solver();
 }
 

@@ -4,6 +4,7 @@
     <RequiredPlugin name="SofaMiscCollision" />
     <RequiredPlugin name='SofaNonUniformFem'/>
     <RequiredPlugin name='SofaEngine'/>
+    <RequiredPlugin name='SofaLoader'/>
 
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />

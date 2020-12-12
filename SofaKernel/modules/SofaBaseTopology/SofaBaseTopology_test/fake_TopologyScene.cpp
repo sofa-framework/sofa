@@ -44,6 +44,9 @@ bool fake_TopologyScene::loadMeshFile()
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
 
+    createObject(m_root, "RequiredPlugin", {
+        { "name", "SofaLoader" } });
+
     std::string loaderType = "MeshObjLoader";
     if (m_topoType == TopologyElementType::TETRAHEDRON || m_topoType == TopologyElementType::HEXAHEDRON)
         loaderType = "MeshGmshLoader";

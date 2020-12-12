@@ -24,12 +24,13 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/helper/types/Material.h>
+
 namespace sofa::component::loader
 {
 
 using sofa::core::objectmodel::BaseData;
 
-class SOFA_LOADER_API MeshObjLoader : public sofa::core::loader::MeshLoader
+class SOFA_SOFALOADER_API MeshObjLoader : public sofa::core::loader::MeshLoader
 {
 public:
     enum FaceType { EDGE, TRIANGLE, QUAD, NBFACETYPE };
@@ -80,4 +81,3 @@ public:
 
 
 } // namespace sofa::component::loader
-

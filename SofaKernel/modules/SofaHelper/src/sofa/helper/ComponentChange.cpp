@@ -458,13 +458,17 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
 
     // SofaEngine was pluginized in #1603
     { "BoxROI", Pluginized("v20.12", "SofaEngine") },
-    
+
     // SofaExplicitOdeSolver was pluginized in #1606
     { "EulerExplicitSolver", Pluginized("v20.12", "SofaExplicitOdeSolver") },
 
     // SofaImplicitOdeSolver was pluginized in #1607
     { "EulerImplicitSolver", Pluginized("v20.12", "SofaImplicitOdeSolver") },
     { "StaticSolver", Pluginized("v20.12", "SofaImplicitOdeSolver") },
+
+    // SofaLoader was pluginized in #1608
+    { "MeshObjLoader", Pluginized("v20.12", "SofaLoader") },
+    { "MeshVTKLoader", Pluginized("v20.12", "SofaLoader") },
 
     /***********************/
     // REMOVED SINCE v20.12
@@ -475,7 +479,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "TriangleSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
     { "EdgeSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
     { "PointSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
-
+    
     /***********************/
     // REMOVED SINCE v20.06
 

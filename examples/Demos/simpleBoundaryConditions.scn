@@ -3,6 +3,7 @@
 <Node name="SimpleBoundaryConditions demo" gravity="0 0 0" dt="0.1">
     <RequiredPlugin name='SofaTopologyMapping'/>  
     <RequiredPlugin name='SofaEngine'/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
     
     <VisualStyle displayFlags="showBehavior hideVisual" />
     <Node name="Cube grid" >
