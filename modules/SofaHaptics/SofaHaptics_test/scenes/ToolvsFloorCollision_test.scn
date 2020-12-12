@@ -4,6 +4,7 @@
     <RequiredPlugin name='SofaHaptics'/>
     <RequiredPlugin name='SofaSparseSolver'/>
     <RequiredPlugin name='SofaConstraint'/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
     
     <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
     <BruteForceDetection name="detection" />

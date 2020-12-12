@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <SofaImplicitOdeSolver/StaticSolver.h>
+
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/simulation/PropagateEventVisitor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace odesolver
+namespace sofa::component::odesolver
 {
 
 using sofa::core::VecId;
@@ -214,9 +207,4 @@ int StaticSolverClass = sofa::core::RegisterObject("Static ODE Solver")
     .add< StaticSolver >()
 ;
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::odesolver

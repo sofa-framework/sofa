@@ -20,24 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/core/ObjectFactory.h>
-#include <cmath>
-#include <iostream>
-#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace odesolver
+namespace sofa::component::odesolver
 {
 using core::VecId;
 using namespace sofa::defaulttype;
@@ -344,9 +335,4 @@ int EulerImplicitSolverClass = core::RegisterObject("Time integrator using impli
         .addAlias("ImplicitEuler")
         ;
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::odesolver

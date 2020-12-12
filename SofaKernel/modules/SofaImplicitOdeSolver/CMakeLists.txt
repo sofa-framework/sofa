@@ -1,23 +1,39 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaImplicitOdeSolver)
+project(SofaImplicitOdeSolver LANGUAGES CXX)
+
+set(SOFAIMPLICITEODESOLVER_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-    EulerImplicitSolver.h
-    StaticSolver.h
-    config.h
-    initImplicitODESolver.h
+    ${SOFAIMPLICITEODESOLVER_SRC}/config.h.in
+    ${SOFAIMPLICITEODESOLVER_SRC}/initSofaImplicitOdeSolver.h
+    ${SOFAIMPLICITEODESOLVER_SRC}/EulerImplicitSolver.h
+    ${SOFAIMPLICITEODESOLVER_SRC}/StaticSolver.h
 )
 
 set(SOURCE_FILES
-    EulerImplicitSolver.cpp
-    StaticSolver.cpp
-    initImplicitODESolver.cpp
+    ${SOFAIMPLICITEODESOLVER_SRC}/initSofaImplicitOdeSolver.cpp
+    ${SOFAIMPLICITEODESOLVER_SRC}/EulerImplicitSolver.cpp
+    ${SOFAIMPLICITEODESOLVER_SRC}/StaticSolver.cpp
 )
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)
+find_package(SofaFramework REQUIRED) # SofaCore SofaSimulationCore
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaCommon
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
+
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
-    )
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+)
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFAIMPLICITEODESOLVER_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFAIMPLICITEODESOLVER_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(${PROJECT_NAME}_test)
+endif()
