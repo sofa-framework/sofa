@@ -19,27 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <SofaImplicitOdeSolver/config.h>
 
-#ifndef SOFA_COMPONENT_ODESOLVER_STATICSOLVER_H
-#define SOFA_COMPONENT_ODESOLVER_STATICSOLVER_H
-
-#include "config.h"
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/MechanicalMatrixVisitor.h>
 #include <sofa/core/behavior/MultiVec.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace odesolver
+namespace sofa::component::odesolver
 {
 
 using sofa::core::objectmodel::Data;
 
-class SOFA_IMPLICIT_ODE_SOLVER_API StaticSolver : public sofa::core::behavior::OdeSolver
+class SOFA_SOFAIMPLICITODESOLVER_API StaticSolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(StaticSolver, sofa::core::behavior::OdeSolver);
@@ -134,10 +126,4 @@ protected:
     Data<bool> d_should_diverge_when_residual_is_growing; ///< Divergence criterion: The newton iterations will stop when the residual is greater than the one from the previous iteration.
 };
 
-} // namespace odesolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::odesolver

@@ -136,4 +136,4 @@ extern template class SOFA_SOFAMESHCOLLISION_API BarycentricPenalityContact<Cyli
 extern template class SOFA_SOFAMESHCOLLISION_API BarycentricPenalityContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 #endif
 
-} // namespace sofa::component::collision
+} //namespace sofa::component::collision

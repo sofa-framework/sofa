@@ -19,22 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_IMPLICIT_ODE_SOLVER_INIT_H
-#define SOFA_COMPONENT_IMPLICIT_ODE_SOLVER_INIT_H
-#include "config.h"
+#pragma once
+#include <SofaImplicitOdeSolver/config.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
-
-
-void SOFA_IMPLICIT_ODE_SOLVER_API initImplicitODESolver();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component

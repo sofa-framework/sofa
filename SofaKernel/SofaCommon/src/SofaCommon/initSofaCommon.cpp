@@ -22,7 +22,6 @@
 #include <SofaCommon/initSofaCommon.h>
 
 #include <SofaLoader/initLoader.h>
-#include <SofaImplicitOdeSolver/initImplicitODESolver.h>
 #include <SofaEigen2Solver/initEigen2Solver.h>
 
 namespace sofa
@@ -41,7 +40,6 @@ void initSofaCommon()
     }
 
     initLoader();
-    initImplicitODESolver();
     initEigen2Solver();
 }
 
