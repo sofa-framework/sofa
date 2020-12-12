@@ -38,5 +38,4 @@ int PointCollisionModelClass = core::RegisterObject("Collision model which repre
 
 template class SOFA_SOFAMESHCOLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
 
-
 } //namespace sofa::component::collision

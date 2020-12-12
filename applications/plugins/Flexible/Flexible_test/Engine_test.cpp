@@ -60,6 +60,7 @@ struct FlexibleDataEngine_test : public DataEngine_test<DataEngineType>
     virtual void init()
     {
         sofa::simpleapi::importPlugin("SofaOpenglVisual");
+        sofa::simpleapi::importPlugin("SofaLoader");
         DataEngine_test<DataEngineType>::init();
 
         const DDGLinkContainer& parent_inputs = this->m_engineInput->DDGNode::getInputs();

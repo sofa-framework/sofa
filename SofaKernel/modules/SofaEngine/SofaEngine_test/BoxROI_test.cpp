@@ -194,6 +194,7 @@ struct BoxROITest :  public ::testing::Test
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >   "
                 "   <Node name='Level 1'>                                      "
+                "       <RequiredPlugin  name='SofaLoader' />                  "
                 "       <TriangleSetTopologyContainer  name='Container' />     "
                 "       <MeshObjLoader filename='mesh/single_triangle.obj'/>                   "
                 "       <BoxROI name='myBoxROI'/>                              "

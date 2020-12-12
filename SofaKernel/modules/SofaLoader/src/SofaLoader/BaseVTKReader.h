@@ -19,33 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_BASEVTKREADER_H
-#define SOFA_COMPONENT_LOADER_BASEVTKREADER_H
-#include "config.h"
+#pragma once
+#include <SofaLoader/config.h>
 
 #include <string>
-#include <istream>
-#include <fstream>
+#include <iosfwd>
 
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
+namespace sofa::component::loader::basevtkreader
 {
-
-namespace component
-{
-
-namespace loader
-{
-
 /// Use a per-file namespace. The role of this per-file namespace contain the names to make
 /// them private. Outside of this namespace the fully qualified name have to be used.
 /// At the end of this namespace only a subset of the names are imported into the parent namespace.
 /// So that you can access to BaseVTKReader with
 /// sofa::component::loader::BaseVTKReader or sofa::component::loader::basevtkreader::BaseVTKReader
-namespace basevtkreader
-{
+
 using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::BaseData ;
 
@@ -127,8 +117,10 @@ public:
     virtual bool readFile(const char* filename) = 0;
 };
 
-} // basevtkreader
+} // namespace sofa::component::loader::basevtkreader
 
+namespace sofa::component::loader
+{
 /// Importing the names defined in the per-file namespace into the classical
 /// sofa namespace structre so that the classes are accessible with
 /// sofa::component::loader::BaseVTKReader instead of
@@ -136,10 +128,4 @@ public:
 using basevtkreader::VTKDatasetFormat ;
 using basevtkreader::BaseVTKReader ;
 
-} // namespace loader
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::loader
