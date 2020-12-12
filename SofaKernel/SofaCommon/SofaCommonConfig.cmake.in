@@ -7,7 +7,7 @@ set(SOFACOMMON_MODULES @SOFACOMMON_MODULES@)
 message(DEPRECATION
     " @PROJECT_NAME@ is deprecated.\n"
     " You must now explicitely find (find_package) and link (target_link_library) the modules you need within: \n"
-    " ${SOFAGENERAL_MODULES}"
+    " ${SOFACOMMON_MODULES}"
 )
 
 foreach(module ${SOFACOMMON_MODULES})
