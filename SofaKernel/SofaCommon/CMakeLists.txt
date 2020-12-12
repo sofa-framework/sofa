@@ -14,12 +14,6 @@ set(SOFACOMMON_MODULES
     SofaLoader
 )
 
-message(DEPRECATION
-    " ${PROJECT_NAME} is deprecated.\n"
-    " You should now explicitely find (find_package) and link (target_link_library) each module you need within: \n"
-    " ${SOFACOMMON_MODULES}"
-    )
-
 foreach(module ${SOFACOMMON_MODULES})
     find_package(${module} QUIET)
     if(NOT ${module}_FOUND)
