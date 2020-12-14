@@ -7,14 +7,12 @@ set(HEADER_FILES
     EdgeSetGeometryAlgorithms.h
     EdgeSetGeometryAlgorithms.inl
     EdgeSetTopologyAlgorithms.h
-    EdgeSetTopologyAlgorithms.inl
     EdgeSetTopologyContainer.h
     EdgeSetTopologyModifier.h
     GridTopology.h
     HexahedronSetGeometryAlgorithms.h
     HexahedronSetGeometryAlgorithms.inl
     HexahedronSetTopologyAlgorithms.h
-    HexahedronSetTopologyAlgorithms.inl
     HexahedronSetTopologyContainer.h
     HexahedronSetTopologyModifier.h
     MeshTopology.h
@@ -23,13 +21,11 @@ set(HEADER_FILES
     PointSetGeometryAlgorithms.h
     PointSetGeometryAlgorithms.inl
     PointSetTopologyAlgorithms.h
-    PointSetTopologyAlgorithms.inl
     PointSetTopologyContainer.h
     PointSetTopologyModifier.h
     QuadSetGeometryAlgorithms.h
     QuadSetGeometryAlgorithms.inl
     QuadSetTopologyAlgorithms.h
-    QuadSetTopologyAlgorithms.inl
     QuadSetTopologyContainer.h
     QuadSetTopologyModifier.h
     RegularGridTopology.h
@@ -37,7 +33,6 @@ set(HEADER_FILES
     TetrahedronSetGeometryAlgorithms.h
     TetrahedronSetGeometryAlgorithms.inl
     TetrahedronSetTopologyAlgorithms.h
-    TetrahedronSetTopologyAlgorithms.inl
     TetrahedronSetTopologyContainer.h
     TetrahedronSetTopologyModifier.h
     TopologyData.h
@@ -57,7 +52,6 @@ set(HEADER_FILES
     TriangleSetGeometryAlgorithms.h
     TriangleSetGeometryAlgorithms.inl
     TriangleSetTopologyAlgorithms.h
-    TriangleSetTopologyAlgorithms.inl
     TriangleSetTopologyContainer.h
     TriangleSetTopologyModifier.h
     config.h
@@ -66,32 +60,26 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     EdgeSetGeometryAlgorithms.cpp
-    EdgeSetTopologyAlgorithms.cpp
     EdgeSetTopologyContainer.cpp
     EdgeSetTopologyModifier.cpp
     GridTopology.cpp
     HexahedronSetGeometryAlgorithms.cpp
-    HexahedronSetTopologyAlgorithms.cpp
     HexahedronSetTopologyContainer.cpp
     HexahedronSetTopologyModifier.cpp
     MeshTopology.cpp
     NumericalIntegrationDescriptor.cpp
     PointSetGeometryAlgorithms.cpp
-    PointSetTopologyAlgorithms.cpp
     PointSetTopologyContainer.cpp
     PointSetTopologyModifier.cpp
     QuadSetGeometryAlgorithms.cpp
-    QuadSetTopologyAlgorithms.cpp
     QuadSetTopologyContainer.cpp
     QuadSetTopologyModifier.cpp
     RegularGridTopology.cpp
     SparseGridTopology.cpp
     TetrahedronSetGeometryAlgorithms.cpp
-    TetrahedronSetTopologyAlgorithms.cpp
     TetrahedronSetTopologyContainer.cpp
     TetrahedronSetTopologyModifier.cpp
     TriangleSetGeometryAlgorithms.cpp
-    TriangleSetTopologyAlgorithms.cpp
     TriangleSetTopologyContainer.cpp
     TriangleSetTopologyModifier.cpp
     initBaseTopology.cpp

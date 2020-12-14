@@ -22,7 +22,6 @@
 #ifndef SOFA_HELPER_VECTOR_DEVICE_H
 #define SOFA_HELPER_VECTOR_DEVICE_H
 
-#include "system/gl.h"
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
@@ -54,7 +53,7 @@ namespace helper
 
 DEBUG_OUT_V(extern SOFA_HELPER_API int cptid;)
 
-template <class T, class MemoryManager >
+template <class T, class MemoryManager>
 class vector
 {
 public:
@@ -65,6 +64,7 @@ public:
     typedef T*     iterator;
     typedef const T* const_iterator;
     typedef typename MemoryManager::device_pointer device_pointer;
+    typedef typename MemoryManager::buffer_id_type buffer_id_type;
 
     typedef MemoryManager memory_manager;
     template<class T2> struct rebind
@@ -85,10 +85,9 @@ protected:
     T*            hostPointer;    ///< Pointer to the data on the CPU side
     mutable int   deviceIsValid;  ///< True if the data on the GPU is currently valid (up to the given deviceVectorSize of each device, i.e. additionnal space may need to be allocated and/or initialized)
     mutable bool  hostIsValid;    ///< True if the data on the CPU is currently valid
-    mutable bool  bufferIsRegistered;  ///< True if the OpenGL buffer is registered with CUDA
-#ifndef SOFA_NO_OPENGL
-    GLuint        bufferObject;   ///< Optionnal associated OpenGL buffer ID
-#endif
+    mutable bool  bufferIsRegistered;  ///< True if the buffer is registered with CUDA
+    buffer_id_type  bufferObject;   ///< Optionnal associated buffer ID
+
     enum { ALL_DEVICE_VALID = 0xFFFFFFFF };
 
     DEBUG_OUT_V(int id;)
@@ -98,9 +97,7 @@ public:
 
     vector()
         : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
-#ifndef SOFA_NO_OPENGL
-    , bufferObject(0)
-#endif // SOFA_NO_OPENGL
+        , bufferObject(0)
     {
         DEBUG_OUT_V(id = cptid);
         DEBUG_OUT_V(cptid++);
@@ -118,9 +115,7 @@ public:
     }
     vector ( Size n )
         : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
-#ifndef SOFA_NO_OPENGL
         , bufferObject(0)
-#endif // SOFA_NO_OPENGL
     {
         DEBUG_OUT_V(id = cptid);
         DEBUG_OUT_V(cptid++);
@@ -139,9 +134,7 @@ public:
     }
     vector ( const vector<T,MemoryManager >& v )
         : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
-#ifndef SOFA_NO_OPENGL
         , bufferObject(0)
-#endif // SOFA_NO_OPENGL
     {
         DEBUG_OUT_V(id = cptid);
         DEBUG_OUT_V(cptid++);
@@ -201,13 +194,12 @@ public:
             clearSize = v.clearSize;
             if (v.deviceIsValid)
             {
-#ifndef SOFA_NO_OPENGL
                 if (MemoryManager::SUPPORT_GL_BUFFER)
                 {
                     if (bufferObject) mapBuffer();//COMM : necessaire????
                     if (v.bufferObject) v.mapBuffer();
                 }
-#endif // SOFA_NO_OPENGL
+
                 deviceIsValid = 0; /// we specify that we don't want to copy previous value of the current vector
                 for (int d=0; d<MemoryManager::numDevices(); d++)
                 {
@@ -242,7 +234,7 @@ public:
     ~vector()
     {
         if ( hostPointer!=nullptr ) MemoryManager::hostFree ( hostPointer );
-#ifndef SOFA_NO_OPENGL
+
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject )
         {
             unregisterBuffer();
@@ -250,7 +242,6 @@ public:
             devicePointer[MemoryManager::getBufferDevice()] = MemoryManager::null(); // already free
         }
         else
-#endif // SOFA_NO_OPENGL
         {
             for (int d=0; d<MemoryManager::numDevices(); d++)
             {
@@ -301,20 +292,18 @@ public:
         // always allocate multiples of WARP_SIZE values
         allocSize = ((allocSize+WARP_SIZE-1 ) / WARP_SIZE) * WARP_SIZE;
 
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject)
         {
             DEBUG_OUT_V(SPACEN << "BUFFEROBJ " << std::endl);
-            //COMM : if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)nullptr)<<"> : GL reserve("<<s<<")"<<std::endl;
+
             hostRead(); // make sure the host copy is valid
             unregisterBuffer();
-            //COMM fct opengl
-            glBindBuffer( GL_ARRAY_BUFFER, bufferObject);
-            glBufferData( GL_ARRAY_BUFFER, allocSize*sizeof ( T ), 0, GL_DYNAMIC_DRAW);
-            glBindBuffer( GL_ARRAY_BUFFER, 0);
+
+            MemoryManager::bufferAlloc(&bufferObject, allocSize * sizeof(T), false);
+
             if ( vectorSize > 0 ) deviceIsValid = 0;
         }
-#endif // SOFA_NO_OPENGL
+
         T* prevHostPointer = hostPointer;
         void* newHostPointer = nullptr;
         DEBUG_OUT_V(SPACEN<< "MemoryManager::hostAlloc " << allocSize << std::endl);
@@ -443,9 +432,7 @@ public:
                 }
                 else
                 {
-#ifndef SOFA_NO_OPENGL
                     if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject) mapBuffer();
-#endif // SOFA_NO_OPENGL
 
                     for (int d=0; d<MemoryManager::numDevices(); d++)
                     {
@@ -507,9 +494,7 @@ public:
             VSWAP ( int    ,  deviceAllocSize[d] );
         }
         VSWAP ( T*       , hostPointer );
-#ifndef SOFA_NO_OPENGL
-        VSWAP ( GLuint   , bufferObject );
-#endif // SOFA_NO_OPENGL
+        VSWAP ( buffer_id_type, bufferObject );
         VSWAP ( int      , deviceIsValid );
         VSWAP ( bool     , hostIsValid );
         VSWAP ( bool     , bufferIsRegistered );
@@ -570,9 +555,8 @@ public:
         return hostPointer+i;
     }
 
-    /// Get the OpenGL Buffer Object ID for reading
-#ifndef SOFA_NO_OPENGL
-    GLuint bufferRead(bool create = false)
+    /// Get the Buffer Object ID for reading
+    buffer_id_type bufferRead(bool create = false)
     {
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
@@ -588,11 +572,9 @@ public:
         }
         return 0;
     }
-#endif
 
-    /// Get the OpenGL Buffer Object ID for writing
-#ifndef SOFA_NO_OPENGL
-    GLuint bufferWrite(bool create = false)
+    /// Get the Buffer Object ID for writing
+    buffer_id_type bufferWrite(bool create = false)
     {
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
@@ -610,7 +592,6 @@ public:
         }
         else return 0;
     }
-#endif
 
     void push_back ( const T& t )
     {
@@ -760,9 +741,7 @@ protected:
         if ( hostIsValid ) return;
         DEBUG_OUT_V(SPACEP << "copyToHost " << std::endl);
 
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject) mapBuffer();
-#endif // SOFA_NO_OPENGL
 
         /// if host is not valid data are valid and allocated on a device
         for (int d=0; d<MemoryManager::numDevices(); d++)
@@ -799,9 +778,7 @@ protected:
     void copyToDevice(int d = 0) const
     {
         allocate(d);
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject) mapBuffer();
-#endif // SOFA_NO_OPENGL
         if (isDeviceValid(d)) return;
         DEBUG_OUT_V(SPACEP << "copyToDevice " << std::endl);
 
@@ -817,9 +794,7 @@ protected:
     {
         if ( hostIsValid ) return;
         DEBUG_OUT_V(SPACEP << "copyToHostSingle " << std::endl);
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject) mapBuffer();
-#endif // SOFA_NO_OPENGL
         for (int d=0; d<MemoryManager::numDevices(); d++)
         {
             if (isDeviceValid(d))
@@ -850,7 +825,6 @@ protected:
 
     void registerBuffer() const
     {
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
             if (allocSize > 0 && !bufferIsRegistered)
@@ -858,12 +832,10 @@ protected:
                 bufferIsRegistered = MemoryManager::bufferRegister(bufferObject);
             }
         }
-#endif // SOFA_NO_OPENGL
     }
 
     void mapBuffer() const
     {
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
             registerBuffer();
@@ -877,15 +849,13 @@ protected:
             }
             else
             {
-                std::cout << "CUDA: Unable to map buffer to opengl" << std::endl;
+                msg_error("vector (with gl buffer)") << " Unable to map buffer to opengl";
             }
         }
-#endif // SOFA_NO_OPENGL
     }
 
     void unmapBuffer() const
     {
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
             int dev = MemoryManager::getBufferDevice();
@@ -895,12 +865,10 @@ protected:
                 *((device_pointer*) &(devicePointer[dev])) = MemoryManager::null();
             }
         }
-#endif // SOFA_NO_OPENGL
     }
 
     void unregisterBuffer() const
     {
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
             unmapBuffer();
@@ -911,12 +879,10 @@ protected:
                 bufferIsRegistered = false;
             }
         }
-#endif // SOFA_NO_OPENGL
     }
 
     void createBuffer()
     {
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
             if (bufferObject) return;
@@ -940,7 +906,6 @@ protected:
                     MemoryManager::deviceFree(dev, prevDevicePointer);
             }
         }
-        #endif // SOFA_NO_OPENGL
     }
 };
 

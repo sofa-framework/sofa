@@ -33,7 +33,6 @@
 					quads="@../../subset_head.quadsInROI"
 					 />
 				<QuadSetTopologyModifier   name="Modifier" />
-				<QuadSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
 				<QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" drawEdges="0" />		                    
 				<MechanicalObject name="CollisModel" />
 				<BarycentricMapping input="@.." output="@CollisModel" />

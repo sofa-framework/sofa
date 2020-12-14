@@ -147,6 +147,14 @@ public:
      */
     int getEdgeIndexInTriangle(const EdgesInTriangle &t, EdgeID edgeIndex) const override;
 
+    /** \brief Returns the global point index of third point of a triangle given the 2 others.
+     *
+     * @param Ref to an Triangle.
+     * @param 2 point indices of this triangle.
+     * @return third point index.
+     */
+    PointID getOtherPointInTriangle(const Triangle& t, PointID p1, PointID p2) const;
+
     /// @}
 
 
@@ -255,6 +263,9 @@ public:
 
     /// Will change order of vertices in triangle: t[1] <=> t[2]
     void reOrientateTriangle(TriangleID id) override;
+
+    /** \brief Returns the type of the topology */
+    sofa::core::topology::TopologyElementType getTopologyType() const override { return sofa::core::topology::TopologyElementType::TRIANGLE; }
 
 protected:
 

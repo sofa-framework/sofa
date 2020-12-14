@@ -3,6 +3,9 @@
 <Node name="root" gravity="0 -1000 0" dt="0.04">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="SofaNonUniformFem"/>
+    <RequiredPlugin name='SofaConstraint'/>  
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name='SofaLoader'/>
     
     <RequiredPlugin pluginName="CImgPlugin"/>
     <VisualStyle displayFlags="showVisual  " /> <!--showBehaviorModels showCollisionModels-->

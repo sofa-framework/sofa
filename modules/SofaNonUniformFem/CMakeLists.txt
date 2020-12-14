@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaNonUniformFem LANGUAGES CXX)
 
 find_package(SofaBase REQUIRED)
-find_package(SofaGeneral REQUIRED)
+find_package(SofaGeneralSimpleFem REQUIRED)
 
 set(SOFANONUNIFORMFEM_SRC "src/${PROJECT_NAME}")
 
@@ -33,7 +33,6 @@ list(APPEND HEADER_FILES
     )
 list(APPEND SOURCE_FILES
     ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridGeometryAlgorithms.cpp
-    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyAlgorithms.cpp
     ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyContainer.cpp
     ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyModifier.cpp
     ${SOFANONUNIFORMFEM_SRC}/MultilevelHexahedronSetTopologyContainer.cpp

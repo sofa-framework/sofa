@@ -21,7 +21,6 @@
 
             <TetrahedronSetTopologyContainer name="tetras" src="@loader"/>
             <TetrahedronSetTopologyModifier   name="Modifier" />
-            <TetrahedronSetTopologyAlgorithms name="TopoAlgo"  template="Vec3d" />
             <TetrahedronSetGeometryAlgorithms name="GeomAlgo"  template="Vec3d" />
 
             <MechanicalObject name="meca"/>

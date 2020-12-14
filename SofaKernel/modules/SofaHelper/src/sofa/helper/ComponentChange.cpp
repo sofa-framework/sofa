@@ -379,6 +379,107 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "Tetra2TriangleTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
     { "Triangle2EdgeTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
 
+    // SofaUserInteraction was pluginized in #1588
+    { "MechanicalStateController", Pluginized("v20.12", "SofaUserInteraction") },
+    { "MouseInteractor", Pluginized("v20.12", "SofaUserInteraction") },
+    { "RayModel", Pluginized("v20.12", "SofaUserInteraction") },
+    { "RayTraceDetection", Pluginized("v20.12", "SofaUserInteraction") },
+    { "SleepController", Pluginized("v20.12", "SofaUserInteraction") },
+
+    // SofaConstraint was pluginized in #1592
+    { "BilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "ConstraintAnimationLoop", Pluginized("v20.12", "SofaConstraint") },
+    { "DistanceLMConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "DistanceLMContactConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "DOFBlockerLMConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "FixedLMConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "FreeMotionAnimationLoop", Pluginized("v20.12", "SofaConstraint") },
+    { "GenericConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "GenericConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LCPConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LinearSolverConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "LMConstraintDirectSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LMConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LMDNewProximityIntersection", Pluginized("v20.12", "SofaConstraint") },
+    { "LocalMinDistance", Pluginized("v20.12", "SofaConstraint") },
+    { "MappingGeometricStiffnessForceField", Pluginized("v20.12", "SofaConstraint") },
+    { "PrecomputedConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "SlidingConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "StopperConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "UncoupledConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "UniformConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "UnilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
+
+    // SofaGeneralLoader was pluginized in #1595
+    { "GIDMeshLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "GridMeshCreator", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "InputEventReader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshGmshLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshOffLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshSTLLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshTrianLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshXspLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "OffSequenceLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "ReadState", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "ReadTopology", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "SphereLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "StringMeshCreator", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "VoxelGridLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+
+     // SofaSimpleFem was pluginized in #1598
+    { "HexahedronFEMForceField", Pluginized("v20.12", "SofaSimpleFem") },
+    { "TetrahedronDiffusionFEMForceField", Pluginized("v20.12", "SofaSimpleFem") },
+    { "TetrahedronFEMForceField", Pluginized("v20.12", "SofaSimpleFem") },
+
+    // SofaRigid was pluginized in #1599
+    { "JointSpringForceField", Pluginized("v20.12", "SofaRigid") },
+    { "RigidMapping", Pluginized("v20.12", "SofaRigid") },
+    { "RigidRigidMapping", Pluginized("v20.12", "SofaRigid") },
+
+    // SofaDeformable was pluginized in #1600
+    { "AngularSpringForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "MeshSpringForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "PolynomialRestShapeSpringsForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "PolynomialSpringsForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "RestShapeSpringsForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "SpringForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "StiffSpringForceField", Pluginized("v20.12", "SofaDeformable") },
+
+    // SofaObjectInteraction was pluginized in #1601
+    { "PenalityContactForceField", Pluginized("v20.12", "SofaObjectInteraction") },
+
+    // SofaMeshCollision was pluginized in #1602
+    { "LineLocalMinDistanceFilter", Pluginized("v20.12", "SofaMeshCollision") },
+    { "LineCollisionModel", Pluginized("v20.12", "SofaMeshCollision") },
+    { "PointLocalMinDistanceFilter", Pluginized("v20.12", "SofaMeshCollision") },
+    { "PointCollisionModel", Pluginized("v20.12", "SofaMeshCollision") },
+    { "TriangleLocalMinDistanceFilter", Pluginized("v20.12", "SofaMeshCollision") },
+    { "TriangleCollisionModel", Pluginized("v20.12", "SofaMeshCollision") },
+
+    // SofaEngine was pluginized in #1603
+    { "BoxROI", Pluginized("v20.12", "SofaEngine") },
+
+    // SofaExplicitOdeSolver was pluginized in #1606
+    { "EulerExplicitSolver", Pluginized("v20.12", "SofaExplicitOdeSolver") },
+
+    // SofaImplicitOdeSolver was pluginized in #1607
+    { "EulerImplicitSolver", Pluginized("v20.12", "SofaImplicitOdeSolver") },
+    { "StaticSolver", Pluginized("v20.12", "SofaImplicitOdeSolver") },
+
+    // SofaLoader was pluginized in #1608
+    { "MeshObjLoader", Pluginized("v20.12", "SofaLoader") },
+    { "MeshVTKLoader", Pluginized("v20.12", "SofaLoader") },
+
+    /***********************/
+    // REMOVED SINCE v20.12
+    { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "HexahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "TetrahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "QuadSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "TriangleSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "EdgeSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "PointSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    
     /***********************/
     // REMOVED SINCE v20.06
 

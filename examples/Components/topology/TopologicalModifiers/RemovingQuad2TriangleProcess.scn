@@ -3,7 +3,9 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="SofaMiscCollision" />
     <RequiredPlugin name='SofaMiscTopology'/>
-    <RequiredPlugin name='SofaTopologyMapping'/>  
+    <RequiredPlugin name='SofaTopologyMapping'/>
+    <RequiredPlugin name='SofaMiscFem'/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
 
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline verbose="0" />
@@ -18,7 +20,6 @@
         <MechanicalObject src="@loader" name="Quads" />
         <QuadSetTopologyContainer name="Quad_topo" src="@loader" />
         <QuadSetTopologyModifier name="Modifier" />
-        <QuadSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
         <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         <TopologicalChangeProcessor listening="1" filename="RemovingQuad2TriangleProcess.txt" />
         <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
@@ -28,7 +29,6 @@
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
             <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
             <Quad2TriangleTopologicalMapping input="@../Quad_topo" output="@Triangle_topo" name="mapping_topo" />
             <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />

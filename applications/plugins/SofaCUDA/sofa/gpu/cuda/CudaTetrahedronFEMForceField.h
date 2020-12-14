@@ -67,7 +67,6 @@ public:
 
     typedef typename Main::Element Element;
     typedef typename Main::VecElement VecElement;
-    typedef typename Main::Index Index;
     typedef Mat<6, 6, Real> MaterialStiffness;
     typedef Mat<12, 6, Real> StrainDisplacement;
 

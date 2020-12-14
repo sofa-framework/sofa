@@ -21,64 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYALGORITHMS_H
-#include "config.h"
 
-#include <SofaBaseTopology/QuadSetTopologyAlgorithms.h>
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
-{
-class HexahedronSetTopologyContainer;
-
-class HexahedronSetTopologyModifier;
-
-template < class DataTypes >
-class HexahedronSetGeometryAlgorithms;
-
-/**
-* A class that performs topology algorithms on an HexahedronSet.
-*/
-template < class DataTypes >
-class HexahedronSetTopologyAlgorithms : public QuadSetTopologyAlgorithms<DataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(HexahedronSetTopologyAlgorithms,DataTypes),SOFA_TEMPLATE(QuadSetTopologyAlgorithms,DataTypes));
-
-    typedef typename DataTypes::Real Real;
-protected:
-    HexahedronSetTopologyAlgorithms()
-        : QuadSetTopologyAlgorithms<DataTypes>()
-    { }
-
-    virtual ~HexahedronSetTopologyAlgorithms() {}
-public:
-    void init() override;
-
-private:
-    HexahedronSetTopologyContainer*						m_container;
-    HexahedronSetTopologyModifier*						m_modifier;
-    HexahedronSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
-};
-
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYALGORITHMS_CPP)
-extern template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<defaulttype::Vec1Types>;
-//extern template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<defaulttype::Rigid3Types>;
-//extern template class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyAlgorithms<defaulttype::Rigid2Types>;
-
-
-#endif
-
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
+#error This class has been removed in PR #1546. HexahedronSetGeometryAlgorithms or HexahedronSetTopologyModifier should be used.
 
 #endif

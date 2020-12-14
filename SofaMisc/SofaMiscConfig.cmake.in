@@ -4,6 +4,12 @@
 
 set(SOFAMISC_MODULES @SOFAMISC_MODULES@)
 
+message(DEPRECATION
+    " @PROJECT_NAME@ is deprecated.\n"
+    " You must now explicitely find (find_package) and link (target_link_library) the modules you need within: \n"
+    " ${SOFAMISC_MODULES}"
+    )
+
 foreach(module ${SOFAMISC_MODULES})
     find_package(${module} QUIET REQUIRED)
 endforeach()

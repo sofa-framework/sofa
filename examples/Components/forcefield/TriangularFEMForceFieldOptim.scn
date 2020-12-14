@@ -1,6 +1,8 @@
 <!-- Mechanical TriangularFEMForceFieldOptim Example -->
 <Node name="root" dt="0.05" gravity="0 10 10" showBoundingTree="0">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showWireframe" />
     <!-- Activate this loader to use a square mesh with only two triangles (useful to debug base equations) -->
     <!--<MeshGmshLoader name="loaderSquare" triangles="0 1 3  1 2 3" position="0 0 0  1 0 0  1 1 0  0 1 0" />-->
@@ -12,7 +14,6 @@
         <TriangleSetTopologyContainer name="Container" src="@../loaderSquare" />
         <MechanicalObject name="DOFs" src="@../loaderSquare" scale="100"  />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         <DiagonalMass massDensity="0.005" />
         <FixedConstraint indices="0 1 2" />
@@ -29,7 +30,6 @@
         <TriangleSetTopologyContainer name="Container" src="@../loaderSquare" />
         <MechanicalObject name="DOFs" src="@../loaderSquare" scale="100"  />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         <DiagonalMass massDensity="0.005" />
         <FixedConstraint indices="0 1 2" />

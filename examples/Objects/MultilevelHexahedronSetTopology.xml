@@ -1,7 +1,6 @@
 <Node name="Group"> 
   <MultilevelHexahedronSetTopologyContainer  name="Container" src="" level="0"/>
   <MultilevelHexahedronSetTopologyModifier   name="Modifier" />
-  <MultilevelHexahedronSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
   <MultilevelHexahedronSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
 </Node>
 <!-- 

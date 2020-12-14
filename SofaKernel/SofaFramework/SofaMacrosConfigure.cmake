@@ -349,3 +349,21 @@ macro(sofa_find_package name)
         endif()
     endif()
 endmacro()
+
+
+# sofa_set_targets_release_only
+#
+# Force dependency targets to link with their Release version
+# (even if we are building in Debug mode).
+# It eases deps management, especially on Windows with the WinDepPack.
+macro(sofa_set_targets_release_only)
+    foreach(target ${ARGN})
+        if(TARGET ${target})
+            set_target_properties(${target} PROPERTIES
+                MAP_IMPORTED_CONFIG_MINSIZEREL Release
+                MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release
+                MAP_IMPORTED_CONFIG_DEBUG Release
+                )
+        endif()
+    endforeach()
+endmacro()

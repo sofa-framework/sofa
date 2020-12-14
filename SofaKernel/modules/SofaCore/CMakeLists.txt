@@ -169,8 +169,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MultiMapping.cpp
     ${SRC_ROOT}/ObjectFactory.cpp
     ${SRC_ROOT}/PathResolver.cpp
-    # ${SRC_ROOT}/Plugin.cpp
-    # ${SRC_ROOT}/PluginManager.cpp
     ${SRC_ROOT}/SofaLibrary.cpp
     ${SRC_ROOT}/State.cpp
     ${SRC_ROOT}/behavior/BaseAnimationLoop.cpp

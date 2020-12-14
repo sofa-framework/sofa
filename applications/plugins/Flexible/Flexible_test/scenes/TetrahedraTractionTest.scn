@@ -34,7 +34,6 @@
   <Node name="Triangles" >
     <TriangleSetTopologyContainer name="triangleContainer" triangles="1 7 3 5 1 7"/>
     <TriangleSetTopologyModifier />
-    <TriangleSetTopologyAlgorithms template="Vec3d" />
     <TriangleSetGeometryAlgorithms template="Vec3d" />
     <TrianglePressureForceField normal="1 0 0" dmin="0.99" dmax="1.01" showForces="1"/>
   </Node>
