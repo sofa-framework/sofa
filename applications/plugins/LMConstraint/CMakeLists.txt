@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.12)
 project(LMConstraint VERSION 1.0 LANGUAGES CXX)
 
-find_package(SofaFramework REQUIRED)
-find_package(SofaBase REQUIRED)
-find_package(SofaCommon REQUIRED) 
-find_package(SofaConstraint REQUIRED) 
-find_package(SofaDistanceGrid QUIET) 
+sofa_find_package(SofaFramework REQUIRED)
+sofa_find_package(SofaBase REQUIRED)
+sofa_find_package(SofaCommon REQUIRED) 
+sofa_find_package(SofaConstraint REQUIRED) 
+sofa_find_package(SofaDistanceGrid QUIET) 
 
 # List all files
 set(LMCONSTRAINT_SRC_DIR src/LMConstraint)
@@ -29,8 +29,7 @@ set(HEADER_FILES
     ${LMCONSTRAINT_SRC_DIR}/PrecomputedLMConstraintCorrection.h
     ${LMCONSTRAINT_SRC_DIR}/PrecomputedLMConstraintCorrection.inl
     )
-set(HEADER_FILES_TO_MOC
-    )
+
 set(SOURCE_FILES
     ${LMCONSTRAINT_SRC_DIR}/initLMConstraint.cpp
     ${LMCONSTRAINT_SRC_DIR}/BaseLMConstraint.cpp
@@ -65,7 +64,7 @@ endif()
 
 
 # Create the plugin library
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES_TO_MOC} ${MOCCED_HEADER_FILES} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} )
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaBaseLinearSolver SofaImplicitOdeSolver SofaHelper SofaDefaultType SofaConstraint)
 
 if(SofaDistanceGrid_FOUND)
