@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaSparseSolver LANGUAGES CXX)
 
 # Dependencies
-find_package(SofaBase REQUIRED) # SofaGeneralLinearSolver
-find_package(SofaCommon REQUIRED) # SofaImplicitOdeSolver SofaSimpleFem
+find_package(SofaBase REQUIRED)
+find_package(SofaImplicitOdeSolver REQUIRED) 
+find_package(SofaSimpleFem REQUIRED)
 find_package(SofaGeneralLinearSolver REQUIRED)
 
 add_subdirectory(extlibs/csparse)

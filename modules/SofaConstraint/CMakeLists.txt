@@ -97,7 +97,9 @@ list(APPEND SOURCE_FILES
     )
 
 find_package(SofaBase REQUIRED) # SofaBaseLinearSolver
-find_package(SofaCommon REQUIRED) # SofaImplicitOdeSolver SofaMeshCollision SofaSimpleFem
+find_package(SofaImplicitOdeSolver REQUIRED)  
+find_package(SofaMeshCollision REQUIRED)
+find_package(SofaSimpleFem REQUIRED)
 find_package(SofaUserInteraction REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

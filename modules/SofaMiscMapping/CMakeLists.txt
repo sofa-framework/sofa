@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMiscMapping LANGUAGES CXX)
 
-find_package(SofaCommon REQUIRED) # SofaSimpleFem SofaRigid
-find_package(SofaGeneralSimpleFem REQUIRED)
-
 set(SOFAMISCMAPPING_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
@@ -60,6 +57,10 @@ list(APPEND SOURCE_FILES
     ${SOFAMISCMAPPING_SRC}/TubularMapping.cpp
     ${SOFAMISCMAPPING_SRC}/VoidMapping.cpp
     )
+
+find_package(SofaSimpleFem REQUIRED)
+find_package(SofaRigid REQUIRED) 
+find_package(SofaGeneralSimpleFem REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaRigid SofaGeneralSimpleFem)

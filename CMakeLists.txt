@@ -233,22 +233,10 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
 endif()
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 
-# Temporary compatibility while modularizing SofaCommon
-sofa_add_module(SofaKernel/modules/SofaSimpleFem SofaSimpleFem ON)
-sofa_add_module(SofaKernel/modules/SofaRigid SofaRigid ON)
-sofa_add_module(SofaKernel/modules/SofaDeformable SofaDeformable ON)
-sofa_add_module(SofaKernel/modules/SofaObjectInteraction SofaObjectInteraction ON)
-sofa_add_module(SofaKernel/modules/SofaMeshCollision SofaMeshCollision ON)
-sofa_add_module(SofaKernel/modules/SofaEngine SofaEngine ON)
-sofa_add_module(SofaKernel/modules/SofaExplicitOdeSolver SofaExplicitOdeSolver ON)
-sofa_add_module(SofaKernel/modules/SofaImplicitOdeSolver SofaImplicitOdeSolver ON)
-sofa_add_module(SofaKernel/modules/SofaLoader SofaLoader ON)
-    
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
-
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that
 ## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
+add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules)
 add_subdirectory(modules)
 
 # This is all the applications GUI stuff. As there is a dependency to this one
@@ -265,7 +253,7 @@ endif()
 ## Collections
 ## A collection is a "meta module" and containing several modules (usable at find level [find_package] and include/link level [add_library])
 # SofaAdvanced is legacy and deprecated since 20.06
-set(SOFA_LIST_OF_DEPRECATED_COLLECTIONS SofaGeneral SofaAdvanced SofaMisc)
+set(SOFA_LIST_OF_DEPRECATED_COLLECTIONS ${SOFA_KERNEL_SOURCE_DIR}/SofaCommon SofaGeneral SofaAdvanced SofaMisc)
 option(SOFA_BUILD_DEPRECATED_COLLECTIONS "Build legacy collections (${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})." ON)
 if(SOFA_BUILD_DEPRECATED_COLLECTIONS)
     foreach(deprecated_collection ${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})
