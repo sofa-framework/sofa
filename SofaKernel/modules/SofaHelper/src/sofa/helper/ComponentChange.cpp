@@ -404,7 +404,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "UniformConstraint", Pluginized("v20.12", "SofaConstraint") },
     { "UnilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
 
-    // LMConstraint was pluginized in #1592
+    // LMConstraint was pluginized in #1659
     { "BaseLMConstraint", Pluginized("v20.12", "LMConstraint") },
     { "LMConstraint", Pluginized("v20.12", "LMConstraint") },
     { "TetrahedronBarycentricDistanceLMConstraintContact", Pluginized("v20.12", "LMConstraint") },
