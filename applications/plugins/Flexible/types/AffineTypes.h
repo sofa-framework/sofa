@@ -29,9 +29,6 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/random.h>
-#ifdef SOFA_SMP
-#include <sofa/defaulttype/SharedTypes.h>
-#endif /* SOFA_SMP */
 
 #include "DeformableFrameMass.h"
 

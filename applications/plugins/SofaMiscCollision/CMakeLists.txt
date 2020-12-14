@@ -55,11 +55,6 @@ else()
     message(STATUS "SofaMiscCollision: optional dependency SofaSphFluid not found de-activing: <SpatialGridPointModel>")
 endif()
 
-if(SOFA_HAVE_SMP)
-    list(APPEND HEADER_FILES ${SRC_ROOT}/ParallelCollisionPipeline.h)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/ParallelCollisionPipeline.cpp)
-endif()
-
 if(SofaDistanceGrid_FOUND)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/FrictionContact_DistanceGrid.cpp)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp)
