@@ -44,6 +44,9 @@ public:
     bool load() override;
 
     void applyTransform();
+
+protected:
+    helper::vector<sofa::defaulttype::Vec<3,SReal> > m_savedPositions;
 };
 
 } //namespace sofa::component::loader
