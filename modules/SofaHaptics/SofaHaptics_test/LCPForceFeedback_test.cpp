@@ -23,9 +23,7 @@
 #include <sofa/helper/testing/BaseTest.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 
-#include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
-#include <SofaGeneral/initSofaGeneral.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaHaptics/LCPForceFeedback.h>
@@ -137,8 +135,6 @@ void LCPForceFeedback_test::HapticsThread(std::atomic<bool>& terminate, void * p
 void LCPForceFeedback_test::loadTestScene(const std::string& filename)
 {
     sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
 
     simulation::Simulation* simu;
     sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());

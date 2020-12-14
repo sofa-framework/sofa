@@ -37,7 +37,6 @@ using sofa::helper::testing::BaseTest;
 #include <SofaExporter/WriteState.h>
 
 #include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
 
 namespace sofa {
 
@@ -76,7 +75,6 @@ namespace sofa {
         void SetUp()
         {
             sofa::component::initSofaBase();
-            sofa::component::initSofaCommon();
             // Init simulation
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
             root = simulation::getSimulation()->createNewGraph("root");

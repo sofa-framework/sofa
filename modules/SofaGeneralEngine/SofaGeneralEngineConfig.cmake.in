@@ -3,7 +3,7 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaCommon QUIET REQUIRED)
+find_package(SofaMeshCollision QUIET REQUIRED)
 find_package(SofaGeneralMeshCollision QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)

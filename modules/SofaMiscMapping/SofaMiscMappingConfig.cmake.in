@@ -2,7 +2,8 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaCommon QUIET REQUIRED) # SofaSimpleFem, SofaRigid
+find_package(SofaSimpleFem QUIET REQUIRED)
+find_package(SofaRigid QUIET REQUIRED) 
 find_package(SofaGeneralSimpleFem QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
