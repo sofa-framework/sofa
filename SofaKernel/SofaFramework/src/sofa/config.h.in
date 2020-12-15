@@ -120,9 +120,9 @@ _Pragma("GCC diagnostic ignored \"-Wattributes\"")
 
 ///////////////////// These macros can be used to convert deprecation attributes as error.
 #if defined(_MSC_VER)
-#define SOFA_BEGIN_DEPRECATION_AS_ERROR __pragma("warning( push )") \
-                                        __pragma("warning(error: 4996)")
-#define SOFA_END_DEPRECATION_AS_ERROR __pragma("warning( pop )")
+#define SOFA_BEGIN_DEPRECATION_AS_ERROR __pragma(warning( push )) \
+                                        __pragma(warning(error: 4996))
+#define SOFA_END_DEPRECATION_AS_ERROR __pragma(warning( pop ))
 #elif defined(__GNUC__)
 #define SOFA_BEGIN_DEPRECATION_AS_ERROR _Pragma("GCC diagnostic push") \
                                    _Pragma("GCC diagnostic error \"-Wdeprecated-declarations\"")

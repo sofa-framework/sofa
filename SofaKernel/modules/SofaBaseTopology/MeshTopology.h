@@ -626,7 +626,7 @@ public:
     Edge getLocalEdgesInHexahedron (const HexahedronID i) const override;
 
   	/** \ brief returns the topologyType */
-	  sofa::core::topology::TopologyObjectType getTopologyType() const override {return UpperTopology;}
+    sofa::core::topology::TopologyElementType getTopologyType() const override { return m_upperElementType; }
   
     int revision;
 
@@ -643,8 +643,8 @@ public:
     virtual void updateHexahedra();
 
 protected:
-
-    sofa::core::topology::TopologyObjectType UpperTopology;
+    /// Type of higher topology element contains in this container @see TopologyElementType
+    sofa::core::topology::TopologyElementType m_upperElementType;
 };
 
 } // namespace topology
