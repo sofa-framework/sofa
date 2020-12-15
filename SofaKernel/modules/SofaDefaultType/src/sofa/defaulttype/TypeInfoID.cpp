@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 #include "TypeInfoID.h"
 #include "TypeInfoRegistry.h"
 

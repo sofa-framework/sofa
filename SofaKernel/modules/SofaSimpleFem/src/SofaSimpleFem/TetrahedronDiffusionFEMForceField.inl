@@ -30,7 +30,6 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
-#include <SofaSimulationTree/GNode.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa::component::forcefield

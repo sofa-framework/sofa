@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "GenGraphForm.h"
-#include <SofaSimulationTree/ExportDotVisitor.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -36,6 +35,7 @@
 #include <QHeaderView>
 #include <QComboBox>
 #include <QRadioButton>
+#include <sofa/simulation/ExportDotVisitor.h>
 
 namespace sofa
 {
@@ -244,7 +244,7 @@ void GenGraphForm::doExport()
         return;
     }
     {
-        sofa::simulation::tree::ExportDotVisitor act(sofa::core::ExecParams::defaultInstance(), &fdot);
+        sofa::simulation::graph::ExportDotVisitor act(sofa::core::ExecParams::defaultInstance(), &fdot);
         act.showNode = this->showNodes->isChecked();
         act.showObject = this->showObjects->isChecked();
         act.showBehaviorModel = this->showBehaviorModels->isChecked();
