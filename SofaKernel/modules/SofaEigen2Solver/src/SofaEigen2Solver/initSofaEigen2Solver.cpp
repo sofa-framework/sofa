@@ -19,66 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaEigen2Solver/EigenMatrixManipulator.h>
-#include <sofa/core/visual/VisualParams.h>
+#include <SofaEigen2Solver/initSofaEigen2Solver.h>
 
-namespace sofa
+
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
+
+namespace sofa::component
 {
 
-namespace component
+void initSofaEigen2Solver()
 {
-
-namespace linearsolver
-{
-
-LLineManipulator& LLineManipulator::addCombination(unsigned int idxConstraint, SReal factor)
-{
-    _data.push_back(std::make_pair(idxConstraint, factor));
-    return *this;
-}
-
-void LMatrixManipulator::init(const SparseMatrixEigen& L)
-{
-    const unsigned int numConstraint=L.rows();
-    const unsigned int numDofs=L.cols();
-    LMatrix.resize(numConstraint,SparseVectorEigen(numDofs));
-    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].reserve(numDofs*3/10);
-    for (int k=0; k<L.outerSize(); ++k)
+    static bool first = true;
+    if (first)
     {
-        for (SparseMatrixEigen::InnerIterator it(L,k); it; ++it)
-        {
-            const unsigned int row=it.row();
-            const unsigned int col=it.col();
-            const SReal value=it.value();
-            LMatrix[row].insert(col)=value;
-        }
-    }
-    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].finalize();
-}
-
-
-
-void LMatrixManipulator::buildLMatrix(const helper::vector<LLineManipulator> &lines, SparseMatrixEigen& matrix) const
-{
-    for (unsigned int l=0; l<lines.size(); ++l)
-    {
-        const LLineManipulator& lManip=lines[l];
-        SparseVectorEigen vector;
-        lManip.buildCombination(LMatrix,vector);
-        matrix.startVec(l);
-        for (SparseVectorEigen::InnerIterator it(vector); it; ++it)
-        {
-            matrix.insertBack(l,it.index())=it.value();
-        }
+        first = false;
     }
 }
 
-
-helper::vector< SparseVectorEigen > LMatrix;
-
-
-
-
+extern "C" {
+    SOFA_SOFAEIGEN2SOLVER_API void initExternalModule();
+    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleName();
+    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleVersion();
+    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleLicense();
+    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleDescription();
+    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleComponentList();
 }
+
+void initExternalModule()
+{
+    initSofaEigen2Solver();
 }
+
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
 }
+
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAEIGEN2SOLVER_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Eigen2 Solver.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component

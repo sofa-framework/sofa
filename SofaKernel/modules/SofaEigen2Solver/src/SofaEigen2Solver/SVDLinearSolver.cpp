@@ -20,23 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaEigen2Solver/SVDLinearSolver.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
-#include <iostream>
 #include <Eigen/Dense>
 #include <Eigen/Core>
 
-namespace sofa
-{
-namespace component
-{
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 using core::VecId;
 using namespace sofa::defaulttype;
@@ -129,9 +121,4 @@ int SVDLinearSolverClass = core::RegisterObject("Linear system solver using the 
         .addAlias("SVD")
         ;
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::linearsolver

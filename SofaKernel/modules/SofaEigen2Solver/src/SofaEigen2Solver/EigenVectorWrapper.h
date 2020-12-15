@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_EigenVectorWrapper_H
-#define SOFA_COMPONENT_LINEARSOLVER_EigenVectorWrapper_H
+#pragma once
+#include <SofaEigen2Solver/config.h>
 
 #include <sofa/defaulttype/BaseVector.h>
-#include <sofa/defaulttype/Vec.h>
 #include <Eigen/Dense>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 //#define EigenVector_CHECK
@@ -156,15 +149,4 @@ public:
 
 };
 
-//  template<> const char* EigenVectorWrapper<defaulttype::float>::Name();
-//  template<> const char* EigenVectorWrapper<defaulttype::double>::Name();
-
-
-
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver

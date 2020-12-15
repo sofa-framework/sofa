@@ -19,21 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_EigenVector_H
-#define SOFA_COMPONENT_LINEARSOLVER_EigenVector_H
+#pragma once
+#include <SofaEigen2Solver/config.h>
 
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <Eigen/Dense>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 //#define EigenVector_CHECK
@@ -42,7 +36,7 @@ namespace linearsolver
 /** Container of a vector of the Eigen library. Not an eigenvector of a matrix.
   */
 template<class InDataTypes>
-class EigenVector : public defaulttype::BaseVector
+class SOFA_SOFAEIGEN2SOLVER_API EigenVector : public defaulttype::BaseVector
 {
 
 protected:
@@ -69,7 +63,7 @@ public:
         resize(nbRow);
     }
 
-    Index size() const override { return eigenVector.size(); }
+    Index size() const override { return Index(eigenVector.size()); }
 
     /// Resize the matrix without preserving the data (the matrix is set to zero)
     void resize(Index nbRow) override
@@ -183,7 +177,7 @@ template<> const char* EigenVector<defaulttype::Vec3Types>::Name();
 /** Container of an Eigen vector.
   */
 template<>
-class EigenVector<double> : public defaulttype::BaseVector
+class SOFA_SOFAEIGEN2SOLVER_API EigenVector<double> : public defaulttype::BaseVector
 {
 
 protected:
@@ -202,7 +196,7 @@ public:
     const VectorEigen& getVectorEigen() const { return eigenVector; }
 
 
-    Index size() const override { return eigenVector.size(); }
+    Index size() const override { return Index(eigenVector.size()); }
 
     EigenVector(Index nbRow=0)
     {
@@ -282,10 +276,4 @@ public:
 };
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver

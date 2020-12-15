@@ -19,11 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
-#define SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
-
+#pragma once
 #include <SofaEigen2Solver/config.h>
-#include "EigenBaseSparseMatrix.h"
+
+#include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/SortedPermutation.h>
@@ -32,13 +31,7 @@
 #include <Eigen/Sparse>
 #include <sofa/helper/OwnershipSPtr.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 using helper::vector;
 
@@ -547,15 +540,10 @@ private:
 
 template<> inline const char* EigenSparseMatrix<defaulttype::Vec3Types, defaulttype::Vec1Types >::Name() { return "EigenSparseMatrix3d1d"; }
 
+} // namespace sofa::component::linearsolver
 
-// max: much cleaner like this :)
-
-
-} // namespace linearsolver
-
-} // namespace component
-
-
+namespace sofa
+{
 
     /// Converts a BaseMatrix to a eigen sparse matrix encapsulted in a OwnershipSPtr.
     /// It the conversion needs to create a temporary matrix, it will be automatically deleted
@@ -607,9 +595,10 @@ template<> inline const char* EigenSparseMatrix<defaulttype::Vec3Types, defaultt
         // a temporary matrix is created, the SPtr takes its ownership, so its deletion will be transparent
         return helper::OwnershipSPtr<mat>(res, true);
     }
+} // namespace sofa
 
-
-namespace defaulttype {
+namespace sofa::defaulttype
+{
 
 template<class TIn, class TOut>
 struct DataTypeInfo< component::linearsolver::EigenSparseMatrix<TIn, TOut> > 
@@ -617,8 +606,4 @@ struct DataTypeInfo< component::linearsolver::EigenSparseMatrix<TIn, TOut> >
     
 };
 
-}
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::defaulttype

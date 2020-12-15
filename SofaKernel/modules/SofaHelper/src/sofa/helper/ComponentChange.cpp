@@ -470,6 +470,9 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "MeshObjLoader", Pluginized("v20.12", "SofaLoader") },
     { "MeshVTKLoader", Pluginized("v20.12", "SofaLoader") },
 
+    // SofaEigen2Solver was pluginized in #1635
+    { "SVDLinearSolver", Pluginized("v20.12", "SofaEigen2Solver") },
+
     /***********************/
     // REMOVED SINCE v20.12
     { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
