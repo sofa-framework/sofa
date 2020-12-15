@@ -46,7 +46,7 @@ int SOFA_HELPER_API getInteger(const std::string& s, std::stringstream& msg, uns
 /// is incremented.
 unsigned int SOFA_HELPER_API getUnsignedInteger(const std::string& s, std::stringstream& msg, unsigned int& numErrors) ;
 
-constexpr bool isEnabledVectorAccessChecking {SOFA_VECTOR_CHECK_ACCESS};
+static constexpr bool isEnabledVectorAccessChecking {SOFA_VECTOR_CHECK_ACCESS};
 
 /// Regular vector
 /// Using CPUMemoryManager, it has the same behavior as std::helper with extra conveniences:

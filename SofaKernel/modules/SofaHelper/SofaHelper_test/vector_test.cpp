@@ -102,6 +102,7 @@ TEST_P(vector_test_int, checkReadWriteBehavior)
 std::vector<std::vector<std::string>> intvalues={
     /// First test valid values
     {"0 1 2 3 4 5 6", "0 1 2 3 4 5 6", "None"},
+    {" 0  1   2 3 4 5 6", "0 1 2 3 4 5 6", "None"},
     {"0 -1 2 -3 4 5 6", "0 -1 2 -3 4 5 6", "None"},
     {"100", "100", "None"},
     {"-100", "-100", "None"},
@@ -134,7 +135,12 @@ std::vector<std::vector<std::string>> intvalues={
     {"5 6 - 10 0", "5 6 0 10 0", "Warning"},
     {"5 6---10 0", "5 0 0", "Warning"},
     {"zero 1 2 trois quatre cinq 6", "0 1 2 0 0 0 6", "Warning"},
-    {"3.14 4.15 5.16", "0 0 0", "Warning"}
+    {"3.14 4.15 5.16", "0 0 0", "Warning"},
+
+    /// Python style string representation
+    {"[0, -1, 2, 3, 4, -5, 6]", "[0, -1, 2, 3, 4, -5, 6]", "None"},
+    {"   [   0, -1, 2, 3   , 4, -5, 6]", "[0, -1, 2, 3, 4, -5, 6]", "None"}
+
 };
 INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
                         vector_test_int,
@@ -181,7 +187,11 @@ std::vector<std::vector<std::string>> uintvalues={
     {"5 6 - 10 0", "5 6 0 10 0", "Warning"},
     {"zero 1 2 trois quatre cinq 6", "0 1 2 0 0 0 6", "Warning"},
     {"3.14 4.15 5.16", "0 0 0", "Warning"},
-    {"5 6---10 0", "5 0 0", "Warning"}
+    {"5 6---10 0", "5 0 0", "Warning"},
+
+    /// Python style string representation
+    {"[0, 1, 2, 3, 4, 5, 6]", "[0, 1, 2, 3, 4, 5, 6]", "None"},
+    {"  [0,    1, 2, 3, 4, 5,  6 ]", "[0, 1, 2, 3, 4, 5, 6]", "None"}
 };
 INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
                         vector_test_unsigned_int,

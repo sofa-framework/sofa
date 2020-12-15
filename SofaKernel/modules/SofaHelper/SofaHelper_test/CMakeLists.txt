@@ -10,6 +10,7 @@ set(SOURCE_FILES
     Quater_test.cpp
     SVector_test.cpp
     vector_test.cpp
+    vector_string_test.cpp
     io/MeshOBJ_test.cpp
     io/XspLoader_test.cpp
     system/FileMonitor_test.cpp
@@ -17,7 +18,6 @@ set(SOURCE_FILES
     system/FileSystem_test.cpp
     system/PluginManager_test.cpp
     system/atomic_test.cpp
-    #system/thread/CircularQueue_test.cpp
     logging/logging_test.cpp
     testing/TestMessageHandler_test.cpp
 )
