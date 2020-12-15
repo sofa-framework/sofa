@@ -100,7 +100,6 @@ void BeamFEMForceField<DataTypes>::bwdInit()
 {
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
-    m_matS.resize(state->getMatrixSize(),state->getMatrixSize());
     m_lastUpdatedStep=-1.0;
 }
 

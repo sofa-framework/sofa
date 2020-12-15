@@ -19,22 +19,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_EIGEN2_SOLVER_INIT_H
-#define SOFA_COMPONENT_EIGEN2_SOLVER_INIT_H
-#include <SofaEigen2Solver/config.h>
+#include <SofaEigen2Solver/EigenMatrixManipulator.h>
+#include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
+namespace sofa::component::linearsolver
 {
 
-namespace component
+LLineManipulator& LLineManipulator::addCombination(unsigned int idxConstraint, SReal factor)
 {
+    _data.push_back(std::make_pair(idxConstraint, factor));
+    return *this;
+}
+
+void LMatrixManipulator::init(const SparseMatrixEigen& L)
+{
+    const auto numConstraint = L.rows();
+    const auto numDofs = L.cols();
+    LMatrix.resize(numConstraint,SparseVectorEigen(numDofs));
+    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].reserve(numDofs*3/10);
+    for (int k=0; k<L.outerSize(); ++k)
+    {
+        for (SparseMatrixEigen::InnerIterator it(L,k); it; ++it)
+        {
+            const auto row=it.row();
+            const auto col=it.col();
+            const SReal value=it.value();
+            LMatrix[row].insert(col)=value;
+        }
+    }
+    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].finalize();
+}
 
 
-void SOFA_EIGEN2_SOLVER_API initEigen2Solver();
 
-} // namespace component
+void LMatrixManipulator::buildLMatrix(const helper::vector<LLineManipulator> &lines, SparseMatrixEigen& matrix) const
+{
+    for (unsigned int l=0; l<lines.size(); ++l)
+    {
+        const LLineManipulator& lManip=lines[l];
+        SparseVectorEigen vector;
+        lManip.buildCombination(LMatrix,vector);
+        matrix.startVec(l);
+        for (SparseVectorEigen::InnerIterator it(vector); it; ++it)
+        {
+            matrix.insertBack(l,it.index())=it.value();
+        }
+    }
+}
 
-} // namespace sofa
+helper::vector< SparseVectorEigen > LMatrix;
 
-#endif
-
+} // namespace sofa::component::linearsolver

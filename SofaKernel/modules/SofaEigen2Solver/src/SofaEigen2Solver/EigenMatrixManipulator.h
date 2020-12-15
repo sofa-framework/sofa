@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_EIGENMATRIXMANIPULATOR_H
-#define SOFA_COMPONENT_LINEARSOLVER_EIGENMATRIXMANIPULATOR_H
+#pragma once
 #include <SofaEigen2Solver/config.h>
 
 #include <sofa/helper/vector.h>
@@ -31,13 +30,7 @@
 #endif
 #include <Eigen/Sparse>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 typedef Eigen::SparseMatrix<SReal>    SparseMatrixEigen;
@@ -46,7 +39,7 @@ typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>       VectorEigen;
 
 struct LMatrixManipulator;
 
-struct SOFA_EIGEN2_SOLVER_API LLineManipulator
+struct SOFA_SOFAEIGEN2SOLVER_API LLineManipulator
 {
     typedef std::pair<unsigned int, SReal> LineCombination;
     typedef helper::vector< LineCombination > InternalData;
@@ -80,7 +73,7 @@ protected:
     InternalData _data;
 };
 
-struct SOFA_EIGEN2_SOLVER_API LMatrixManipulator
+struct SOFA_SOFAEIGEN2SOLVER_API LMatrixManipulator
 {
     void init(const SparseMatrixEigen& L);
 
@@ -89,8 +82,4 @@ struct SOFA_EIGEN2_SOLVER_API LMatrixManipulator
     helper::vector< SparseVectorEigen > LMatrix;
 };
 
-}
-}
-}
-
-#endif
+} // namespace sofa::component::linearsolver
