@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMisc)
 
-## Dependencies
-find_package(SofaGeneral REQUIRED)
-
 ## Version
 set(SOFAMISC_VERSION ${SofaFramework_VERSION})
 
@@ -16,12 +13,6 @@ set(SOFAMISC_MODULES
     SofaMiscMapping
     SofaMiscSolver
     SofaMiscTopology
-    )
-
-message(DEPRECATION
-    " ${PROJECT_NAME} is deprecated.\n"
-    " You should now explicitely find (find_package) and link (target_link_library) each module you need within: \n"
-    " ${SOFAMISC_MODULES}"
     )
 
 foreach(module ${SOFAMISC_MODULES})

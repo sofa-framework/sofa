@@ -4,7 +4,9 @@
 @PACKAGE_INIT@
 
 find_package(SofaBase QUIET REQUIRED)
-find_package(SofaCommon QUIET REQUIRED)
+find_package(SofaImplicitOdeSolver QUIET REQUIRED)  
+find_package(SofaMeshCollision QUIET REQUIRED)
+find_package(SofaSimpleFem QUIET REQUIRED)
 find_package(SofaUserInteraction QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)

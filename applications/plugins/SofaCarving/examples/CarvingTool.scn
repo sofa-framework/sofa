@@ -3,7 +3,9 @@
   <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin name="Carving" pluginName="SofaCarving" />
   <RequiredPlugin name='SofaGeneralSimpleFem'/>
-  <RequiredPlugin name='SofaTopologyMapping'/>   
+  <RequiredPlugin name='SofaTopologyMapping'/>
+  <RequiredPlugin name='SofaEngine'/>
+  <RequiredPlugin name='SofaImplicitOdeSolver'/>
 
   <VisualStyle displayFlags="" />
   <DefaultPipeline verbose="0" />

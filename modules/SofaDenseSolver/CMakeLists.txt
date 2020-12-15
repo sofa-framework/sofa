@@ -3,7 +3,7 @@ project(SofaDenseSolver LANGUAGES CXX)
 
 sofa_find_package(Newmat REQUIRED BOTH_SCOPES)
 sofa_find_package(SofaBase REQUIRED)
-sofa_find_package(SofaGeneral REQUIRED)
+sofa_find_package(SofaGeneralLinearSolver REQUIRED)
 
 set(SOFADENSESOLVER_SRC "src/${PROJECT_NAME}")
 

@@ -19,40 +19,5 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_BVH_BVHOFFSET_H
-#define SOFA_HELPER_IO_BVH_BVHOFFSET_H
 
-#include <sofa/helper/config.h>
-
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
-{
-
-namespace bvh
-{
-
-class SOFA_HELPER_API BVHOffset
-{
-public:
-    BVHOffset(double _x, double _y, double _z)
-        :x(_x),y(_y),z(_z) {}
-
-    virtual ~BVHOffset() {};
-
-    double x,y,z;
-};
-
-} // namespace bvh
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif
+#error "The BVH IO features have been moved to SofaGeneralRigid. Refer to PR1644 for more information." 

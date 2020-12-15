@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaPreconditioner)
 
-# Dependencies
-find_package(SofaCommon REQUIRED) # SofaImplicitOdeSolver SofaSimpleFem
-find_package(SofaGeneral REQUIRED) # SofaGeneralLinearSolver
-sofa_find_package(SofaSparseSolver QUIET) # Soft dependency of PrecomputedWarpPreconditioner
-
 set(SRC_ROOT src/SofaPreconditioner)
 
 # Config
@@ -38,6 +33,12 @@ list(APPEND SOURCE_FILES
     ${SRC_ROOT}/ShewchukPCGLinearSolver.cpp
     ${SRC_ROOT}/WarpPreconditioner.cpp
     )
+
+# Dependencies
+find_package(SofaImplicitOdeSolver REQUIRED)
+find_package(SofaSimpleFem REQUIRED)
+find_package(SofaGeneralLinearSolver REQUIRED)
+sofa_find_package(SofaSparseSolver QUIET) # Soft dependency of PrecomputedWarpPreconditioner
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaImplicitOdeSolver SofaGeneralLinearSolver SofaSimpleFem)

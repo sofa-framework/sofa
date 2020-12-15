@@ -85,7 +85,7 @@ void SceneCheckMissingRequiredPlugin::doPrintSummary()
             {
                 tmp << name << ", ";
             }
-            tmp <<"]-->";
+            tmp <<"]-->" << msgendl;
         }
         msg_warning(this->getName())
                 << "This scene is using component defined in plugins but is not importing the required plugins." << msgendl

@@ -1,0 +1,474 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#pragma once
+#include <SofaMeshCollision/PointModel.h>
+
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
+#include <SofaBaseCollision/CubeModel.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/simulation/Node.h>
+#include <vector>
+
+namespace sofa::component::collision
+{
+
+template<class DataTypes>
+PointCollisionModel<DataTypes>::PointCollisionModel()
+    : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
+    , mstate(nullptr)
+    , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
+    , m_lmdFilter( nullptr )
+    , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
+    , l_topology(initLink("topology", "link to the topology container"))
+{
+    enum_type = POINT_TYPE;
+}
+
+template<class DataTypes>
+void PointCollisionModel<DataTypes>::resize(Size size)
+{
+    this->core::CollisionModel::resize(size);
+}
+
+template<class DataTypes>
+void PointCollisionModel<DataTypes>::init()
+{
+    this->CollisionModel::init();
+    mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
+
+    if (mstate==nullptr)
+    {
+        msg_error() << "PointModel requires a Vec3 Mechanical Model";
+        return;
+    }
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    simulation::Node* node = dynamic_cast< simulation::Node* >(this->getContext());
+    if (node != 0)
+    {
+        m_lmdFilter = node->getNodeObject< PointLocalMinDistanceFilter >();
+    }
+
+    const int npoints = mstate->getSize();
+    resize(npoints);
+    if (computeNormals.getValue()) updateNormals();
+}
+
+
+template<class DataTypes>
+bool PointCollisionModel<DataTypes>::canCollideWithElement(Index index, CollisionModel* model2, Index index2)
+{
+
+    if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
+    if (this->getContext() != model2->getContext()) return true;
+
+    if (model2 == this)
+    {
+
+        if (index<=index2) // to avoid to have two times the same auto-collision we only consider the case when index > index2
+            return false;
+
+        sofa::core::topology::BaseMeshTopology* topology = l_topology.get();
+
+        // in the neighborhood, if we find a point in common, we cancel the collision
+        const auto& verticesAroundVertex1 =topology->getVerticesAroundVertex(index);
+        const auto& verticesAroundVertex2 =topology->getVerticesAroundVertex(index2);
+
+        for (Index i1=0; i1<verticesAroundVertex1.size(); i1++)
+        {
+
+            Index v1 = verticesAroundVertex1[i1];
+
+            for (Index i2=0; i2<verticesAroundVertex2.size(); i2++)
+            {
+
+                if (v1 == verticesAroundVertex2[i2] || v1 == index2 || index == verticesAroundVertex2[i2])
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    else
+        return model2->canCollideWithElement(index2, this, index);
+}
+
+template<class DataTypes>
+void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
+{
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
+    const auto npoints = mstate->getSize();
+    bool updated = false;
+    if (npoints != size)
+    {
+        resize(npoints);
+        updated = true;
+    }
+    if (updated) cubeModel->resize(0);
+    if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
+
+    if (computeNormals.getValue()) updateNormals();
+
+    cubeModel->resize(size);
+    if (!empty())
+    {
+        //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+        const SReal distance = this->proximity.getValue();
+        for (Size i=0; i<size; i++)
+        {
+            TPoint<DataTypes> p(this,i);
+            const defaulttype::Vector3& pt = p.p();
+            cubeModel->setParentOf(i, pt - defaulttype::Vector3(distance,distance,distance), pt + defaulttype::Vector3(distance,distance,distance));
+        }
+        cubeModel->computeBoundingTree(maxDepth);
+    }
+
+    if (m_lmdFilter != 0)
+    {
+        m_lmdFilter->invalidate();
+    }
+}
+
+template<class DataTypes>
+void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
+{
+    CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
+    const auto npoints = mstate->getSize();
+    bool updated = false;
+    if (npoints != size)
+    {
+        resize(npoints);
+        updated = true;
+    }
+    if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
+
+    if (computeNormals.getValue()) updateNormals();
+
+    defaulttype::Vector3 minElem, maxElem;
+
+    cubeModel->resize(size);
+    if (!empty())
+    {
+        //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+        //VecDeriv& v = mstate->read(core::ConstVecDerivId::velocity())->getValue();
+        const SReal distance = (SReal)this->proximity.getValue();
+        for (Size i=0; i<size; i++)
+        {
+            TPoint<DataTypes> p(this,i);
+            const defaulttype::Vector3& pt = p.p();
+            const defaulttype::Vector3 ptv = pt + p.v()*dt;
+
+            for (int c = 0; c < 3; c++)
+            {
+                minElem[c] = pt[c];
+                maxElem[c] = pt[c];
+                if (ptv[c] > maxElem[c]) maxElem[c] = ptv[c];
+                else if (ptv[c] < minElem[c]) minElem[c] = ptv[c];
+                minElem[c] -= distance;
+                maxElem[c] += distance;
+            }
+            cubeModel->setParentOf(i, minElem, maxElem);
+        }
+        cubeModel->computeBoundingTree(maxDepth);
+    }
+}
+
+template<class DataTypes>
+void PointCollisionModel<DataTypes>::updateNormals()
+{
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    auto n = x.size();
+    normals.resize(n);
+    for (int i=0; i<n; ++i)
+    {
+        normals[i].clear();
+    }
+    core::topology::BaseMeshTopology* mesh = l_topology.get();
+    if (mesh->getNbTetrahedra()+mesh->getNbHexahedra() > 0)
+    {
+        if (mesh->getNbTetrahedra()>0)
+        {
+            const core::topology::BaseMeshTopology::SeqTetrahedra &elems = mesh->getTetrahedra();
+            for (Index i=0; i < elems.size(); ++i)
+            {
+                const core::topology::BaseMeshTopology::Tetra &e = elems[i];
+                const Coord& p1 = x[e[0]];
+                const Coord& p2 = x[e[1]];
+                const Coord& p3 = x[e[2]];
+                const Coord& p4 = x[e[3]];
+                Coord& n1 = normals[e[0]];
+                Coord& n2 = normals[e[1]];
+                Coord& n3 = normals[e[2]];
+                Coord& n4 = normals[e[3]];
+                Coord n;
+                n = cross(p3-p1,p2-p1); n.normalize();
+                n1 += n;
+                n2 += n;
+                n3 += n;
+                n = cross(p4-p1,p3-p1); n.normalize();
+                n1 += n;
+                n3 += n;
+                n4 += n;
+                n = cross(p2-p1,p4-p1); n.normalize();
+                n1 += n;
+                n4 += n;
+                n2 += n;
+                n = cross(p3-p2,p4-p2); n.normalize();
+                n2 += n;
+                n4 += n;
+                n3 += n;
+            }
+        }
+        /// @todo Hexahedra
+    }
+    else if (mesh->getNbTriangles()+mesh->getNbQuads() > 0)
+    {
+        if (mesh->getNbTriangles()>0)
+        {
+            const core::topology::BaseMeshTopology::SeqTriangles &elems = mesh->getTriangles();
+            for (Index i=0; i < elems.size(); ++i)
+            {
+                const core::topology::BaseMeshTopology::Triangle &e = elems[i];
+                const Coord& p1 = x[e[0]];
+                const Coord& p2 = x[e[1]];
+                const Coord& p3 = x[e[2]];
+                Coord& n1 = normals[e[0]];
+                Coord& n2 = normals[e[1]];
+                Coord& n3 = normals[e[2]];
+                Coord n;
+                n = cross(p2-p1,p3-p1); n.normalize();
+                n1 += n;
+                n2 += n;
+                n3 += n;
+            }
+        }
+        if (mesh->getNbQuads()>0)
+        {
+            const core::topology::BaseMeshTopology::SeqQuads &elems = mesh->getQuads();
+            for (Index i=0; i < elems.size(); ++i)
+            {
+                const core::topology::BaseMeshTopology::Quad &e = elems[i];
+                const Coord& p1 = x[e[0]];
+                const Coord& p2 = x[e[1]];
+                const Coord& p3 = x[e[2]];
+                const Coord& p4 = x[e[3]];
+                Coord& n1 = normals[e[0]];
+                Coord& n2 = normals[e[1]];
+                Coord& n3 = normals[e[2]];
+                Coord& n4 = normals[e[3]];
+                Coord n;
+                n = cross(p3-p1,p4-p2); n.normalize();
+                n1 += n;
+                n2 += n;
+                n3 += n;
+                n4 += n;
+            }
+        }
+    }
+    for (int i=0; i<n; ++i)
+    {
+        SReal l = normals[i].norm();
+        if (l > 1.0e-3)
+            normals[i] *= 1/l;
+        else
+            normals[i].clear();
+    }
+}
+
+template<class DataTypes>
+bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFactor, double &coneExtension)
+{
+
+    defaulttype::Vector3 pt = p();
+
+    sofa::core::topology::BaseMeshTopology* mesh = this->model->l_topology.get();
+    const typename DataTypes::VecCoord& x = (*this->model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue());
+
+    const auto& trianglesAroundVertex = mesh->getTrianglesAroundVertex(this->index);
+    const auto& edgesAroundVertex = mesh->getEdgesAroundVertex(this->index);
+
+    defaulttype::Vector3 nMean;
+
+    for (Index i=0; i<trianglesAroundVertex.size(); i++)
+    {
+        Index t = trianglesAroundVertex[i];
+        const auto& ptr = mesh->getTriangle(t);
+        defaulttype::Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
+        nCur.normalize();
+        nMean += nCur;
+    }
+
+    if (trianglesAroundVertex.size()==0)
+    {
+        for (Index i=0; i<edgesAroundVertex.size(); i++)
+        {
+            Index e = edgesAroundVertex[i];
+            const auto& ped = mesh->getEdge(e);
+            defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
+            l.normalize();
+            nMean += l;
+        }
+    }
+
+    if (nMean.norm()> 0.0000000001)
+        nMean.normalize();
+
+
+    for (Index i=0; i<edgesAroundVertex.size(); i++)
+    {
+        Index e = edgesAroundVertex[i];
+        const auto& ped = mesh->getEdge(e);
+        defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
+        l.normalize();
+        double computedAngleCone = dot(nMean , l) * coneFactor;
+        if (computedAngleCone<0)
+            computedAngleCone=0.0;
+        computedAngleCone+=coneExtension;
+        if (dot(l , PQ) < -computedAngleCone*PQ.norm())
+            return false;
+    }
+    return true;
+
+
+}
+
+template<class DataTypes>
+PointLocalMinDistanceFilter *PointCollisionModel<DataTypes>::getFilter() const
+{
+    return m_lmdFilter;
+}
+
+template<class DataTypes>
+void PointCollisionModel<DataTypes>::setFilter(PointLocalMinDistanceFilter *lmdFilter)
+{
+    m_lmdFilter = lmdFilter;
+}
+
+
+template<class DataTypes>
+void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    SOFA_UNUSED(params);
+
+    if( !onlyVisible ) return;
+
+    const auto npoints = mstate->getSize();
+    if (npoints != size)
+        return;
+
+    static const Real max_real = std::numeric_limits<Real>::max();
+    static const Real min_real = std::numeric_limits<Real>::lowest();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
+
+    for (Size i=0; i<size; i++)
+    {
+        Element e(this,i);
+        const defaulttype::Vector3& p = e.p();
+
+        for (int c=0; c<3; c++)
+        {
+            if (p[c] > maxBBox[c]) maxBBox[c] = (Real)p[c];
+            else if (p[c] < minBBox[c]) minBBox[c] = (Real)p[c];
+        }
+    }
+
+    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+}
+
+
+
+template<class DataTypes>
+void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams*, Index index)
+{
+    SOFA_UNUSED(index);
+    //TODO(fred roy 2018-06-21)...please implement.
+}
+
+
+template<class DataTypes>
+void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
+{
+    if (vparams->displayFlags().getShowCollisionModels())
+    {
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, true);
+
+        // Check topological modifications
+        const auto npoints = mstate->getSize();
+        if (npoints != size)
+            return;
+
+        std::vector< defaulttype::Vector3 > pointsP;
+        std::vector< defaulttype::Vector3 > pointsL;
+        for (Size i = 0; i < size; i++)
+        {
+            TPoint<DataTypes> p(this, i);
+            if (p.isActive())
+            {
+                pointsP.push_back(p.p());
+                if (i < Size(normals.size()))
+                {
+                    pointsL.push_back(p.p());
+                    pointsL.push_back(p.p() + normals[i] * 0.1f);
+                }
+            }
+        }
+
+        vparams->drawTool()->drawPoints(pointsP, 3, defaulttype::Vec<4, float>(getColor4f()));
+        vparams->drawTool()->drawLines(pointsL, 1, defaulttype::Vec<4, float>(getColor4f()));
+
+        if (m_displayFreePosition.getValue())
+        {
+            std::vector< defaulttype::Vector3 > pointsPFree;
+
+            for (Size i = 0; i < size; i++)
+            {
+                TPoint<DataTypes> p(this, i);
+                if (p.isActive())
+                {
+                    pointsPFree.push_back(p.pFree());
+                }
+            }
+
+            vparams->drawTool()->drawPoints(pointsPFree, 3, defaulttype::Vec<4, float>(0.0f, 1.0f, 0.2f, 1.0f));
+        }
+
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, false);
+    }
+
+    if (getPrevious() != nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
+        getPrevious()->draw(vparams);
+}
+
+
+} //namespace sofa::component::collision
