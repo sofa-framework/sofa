@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_HELPER_VECTOR_SCALAR_DEFINITION
 #include <sofa/helper/vector[scalar].h>
-#include <sofa/helper/vector[default].inl>
+#include <sofa/helper/vector[T].inl>
 
 namespace sofa::helper
 {

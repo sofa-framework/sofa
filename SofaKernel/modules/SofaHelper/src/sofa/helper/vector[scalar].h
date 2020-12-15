@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/helper/vector[default].h>
+#include <sofa/helper/vector[T].h>
 
 /// All integral types are considered as extern templates.
 #ifndef SOFA_HELPER_VECTOR_SCALAR_DEFINITION

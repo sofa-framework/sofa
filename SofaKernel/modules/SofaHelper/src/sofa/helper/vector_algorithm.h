@@ -22,7 +22,7 @@
 #pragma once
 
 #include <algorithm>
-#include <sofa/helper/vector[default].h>
+#include <sofa/helper/vector[T].h>
 
 namespace sofa::helper
 {

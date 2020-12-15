@@ -130,8 +130,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/FileMonitor.h
     ${SRC_ROOT}/system/FileRepository.h
     ${SRC_ROOT}/vector.h
-    ${SRC_ROOT}/vector[default].inl
-    ${SRC_ROOT}/vector[default].h
+    ${SRC_ROOT}/vector[T].inl
+    ${SRC_ROOT}/vector[T].h
     ${SRC_ROOT}/vector[integral].h
     ${SRC_ROOT}/vector[scalar].h
     ${SRC_ROOT}/vector[string].h
