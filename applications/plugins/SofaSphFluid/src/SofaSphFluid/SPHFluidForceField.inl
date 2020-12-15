@@ -473,7 +473,7 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
                 vertices.clear();
                 colorVector.clear();
 
-                colorVector.push_back(sofa::helper::types::RGBAColor::yellow());
+                colorVector.push_back(sofa::helper::types::RGBAColor::magenta());
                 for (unsigned int j = 0; j < Pi.neighbors2.size(); j++)
                 {
                     int index = Pi.neighbors2[j].first;
