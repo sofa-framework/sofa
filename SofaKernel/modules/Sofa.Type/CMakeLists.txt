@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.12)
 project(Sofa.Type LANGUAGES CXX)
 
-set(SRC_ROOT "src/sofa/type")
+set(SOFATYPESRC_ROOT "src/sofa/type")
 
 set(HEADER_FILES
-    ${SRC_ROOT}/config.h.in
-    ${SRC_ROOT}/init.h
+    ${SOFATYPESRC_ROOT}/config.h.in
+    ${SOFATYPESRC_ROOT}/init.h
 )
 
 set(SOURCE_FILES
-    ${SRC_ROOT}/init.cpp
+    ${SOFATYPESRC_ROOT}/init.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
@@ -29,5 +29,3 @@ sofa_add_targets_to_package(
 #     enable_testing()
 #     add_subdirectory(${PROJECT_NAME}_test)
 # endif()
-
-

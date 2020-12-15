@@ -29,27 +29,27 @@ namespace sofa::type
 {
 
 /// @brief Initialize the SofaHelper library.
-SOFA_SOFATYPE_API void init();
+SOFA_TYPE_API void init();
 
 /// @brief Return true if and only if the SofaHelper library has been
 /// initialized.
-SOFA_SOFATYPE_API bool isInitialized();
+SOFA_TYPE_API bool isInitialized();
 
 /// @brief Clean up the resources used by the SofaHelper library.
-SOFA_SOFATYPE_API void cleanup();
+SOFA_TYPE_API void cleanup();
 
 /// @brief Return true if and only if the SofaHelper library has been cleaned
 /// up.
-SOFA_SOFATYPE_API bool isCleanedUp();
+SOFA_TYPE_API bool isCleanedUp();
 
 /// @brief Print a warning about a library not being initialized (meant for
 /// internal use).
-SOFA_SOFATYPE_API void printUninitializedLibraryWarning(const std::string& library,
+SOFA_TYPE_API void printUninitializedLibraryWarning(const std::string& library,
                                                       const std::string& initFunction);
 
 /// @brief Print a warning about a library not being cleaned up (meant for
 /// internal use).
-SOFA_SOFATYPE_API void printLibraryNotCleanedUpWarning(const std::string& library,
+SOFA_TYPE_API void printLibraryNotCleanedUpWarning(const std::string& library,
                                                      const std::string& cleanupFunction);
 
 } // namespace sofa::type

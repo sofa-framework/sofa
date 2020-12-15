@@ -29,7 +29,7 @@ namespace sofa::type
 static bool s_initialized = false;
 static bool s_cleanedUp = false;
 
-SOFA_SOFATYPE_API void init()
+SOFA_TYPE_API void init()
 {
     if (!s_initialized)
     {
@@ -37,12 +37,12 @@ SOFA_SOFATYPE_API void init()
     }
 }
 
-SOFA_SOFATYPE_API bool isInitialized()
+SOFA_TYPE_API bool isInitialized()
 {
     return s_initialized;
 }
 
-SOFA_SOFATYPE_API void cleanup()
+SOFA_TYPE_API void cleanup()
 {
     if (!s_cleanedUp)
     {
@@ -50,12 +50,12 @@ SOFA_SOFATYPE_API void cleanup()
     }
 }
 
-SOFA_SOFATYPE_API bool isCleanedUp()
+SOFA_TYPE_API bool isCleanedUp()
 {
     return s_cleanedUp;
 }
 
-SOFA_SOFATYPE_API void printUninitializedLibraryWarning(const std::string& library,
+SOFA_TYPE_API void printUninitializedLibraryWarning(const std::string& library,
                                                       const std::string& initFunction)
 {
     std::cerr << "WARNING: " << library << " : the library has not been initialized ("
@@ -63,7 +63,7 @@ SOFA_SOFATYPE_API void printUninitializedLibraryWarning(const std::string& libra
               << std::endl;
 }
 
-SOFA_SOFATYPE_API void printLibraryNotCleanedUpWarning(const std::string& library,
+SOFA_TYPE_API void printLibraryNotCleanedUpWarning(const std::string& library,
                                                      const std::string& cleanupFunction)
 {
     std::cerr << "WARNING: " << library << " : the library has not been cleaned up ("
