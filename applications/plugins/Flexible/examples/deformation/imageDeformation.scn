@@ -62,7 +62,7 @@
 	<Node name="Visual"  >
 	     <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
 	     <OglModel src="@meshLoader_0" color="0.5 0.5 1 1"/>
-             <LinearMapping template="Vec3d,ExtVec3f"/>
+             <LinearMapping template="Vec3d,Vec3d"/>
 	</Node>
   </Node>
 
