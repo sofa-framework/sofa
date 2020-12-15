@@ -268,6 +268,7 @@ public:
         return m_value.getValue();
     }
 
+    SOFA_BEGIN_DEPRECATION_AS_ERROR
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     inline void endEdit(const core::ExecParams*)
     {
@@ -297,6 +298,8 @@ public:
     {
         return getValue();
     }
+    SOFA_END_DEPRECATION_AS_ERROR
+
 
 
     /// @}
@@ -330,15 +333,19 @@ public:
         return out;
     }
 
+SOFA_BEGIN_DEPRECATION_AS_ERROR
+    [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")]]
     inline bool operator ==( const T& value ) const
     {
-        return getValue()==value;
+            return getValue()==value;
     }
 
+    [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")]]
     inline bool operator !=( const T& value ) const
     {
-        return getValue()!=value;
+            return getValue()!=value;
     }
+SOFA_END_DEPRECATION_AS_ERROR
 
     inline void operator =( const T& value )
     {

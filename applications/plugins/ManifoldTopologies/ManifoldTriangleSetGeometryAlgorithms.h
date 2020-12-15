@@ -74,7 +74,7 @@ public:
      * @returns the indice of the end point, or -1 if the incision failed.
      */
     virtual int SplitAlongPath(Index pa, Coord& a, Index pb, Coord& b,
-            sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
+            sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
             sofa::helper::vector<Index>& indices_list,
             sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
             sofa::helper::vector<core::topology::BaseMeshTopology::EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0) override;

@@ -1,5 +1,7 @@
 <Node dt="0.01" name="root">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name='SofaLoader'/>
+    
     <DefaultPipeline depth="6" draw="0" verbose="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection alarmDistance="0.3" contactDistance="0.2" name="Proximity" />

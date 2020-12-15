@@ -28,6 +28,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>

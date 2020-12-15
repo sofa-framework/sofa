@@ -4,7 +4,7 @@ project(SofaGui)
 ### Dependencies
 
 ## Sofa
-find_package(SofaGeneral REQUIRED)
+find_package(SofaFramework REQUIRED)
 
 set(SOFAGUI_TARGETS "")
 

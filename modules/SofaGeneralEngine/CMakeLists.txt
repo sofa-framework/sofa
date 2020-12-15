@@ -186,7 +186,7 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALENGINE_SRC}/Vertex2Frame.cpp
     )
 
-find_package(SofaCommon REQUIRED) # SofaMeshCollision
+find_package(SofaMeshCollision REQUIRED)
 find_package(SofaGeneralMeshCollision REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

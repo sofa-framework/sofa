@@ -4,6 +4,9 @@
     <RequiredPlugin name='SofaMiscCollision' />
     <RequiredPlugin name='SofaMiscTopology'/>
     <RequiredPlugin name='SofaTopologyMapping'/>  
+    <RequiredPlugin name='SofaEngine'/>
+    <RequiredPlugin name='SofaLoader'/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
     
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline verbose="0" />

@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.02" showBoundingTree="0">		
         <RequiredPlugin name="SofaSparseSolver"/>       
-        <RequiredPlugin name="SofaMiscFem"/>
+        <RequiredPlugin name="SofaMiscFem"/>      
+        <RequiredPlugin name="SofaLoader"/>
         <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
 
         <Node name="MooneyRivlin-Model" activated="1">

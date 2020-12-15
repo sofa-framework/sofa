@@ -73,16 +73,6 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef TMassType MassType;
 
-    typedef enum
-    {
-        TOPOLOGY_UNKNOWN=0,
-        TOPOLOGY_EDGESET=1,
-        TOPOLOGY_TRIANGLESET=2,
-        TOPOLOGY_TETRAHEDRONSET=3,
-        TOPOLOGY_QUADSET=4,
-        TOPOLOGY_HEXAHEDRONSET=5
-    } TopologyType;
-
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::VecMass VecMass;
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::MassVector MassVector;
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
@@ -214,7 +204,7 @@ protected:
 
     class Loader;
     /// The type of topology to build the mass from the topology
-    TopologyType m_topologyType;
+    sofa::core::topology::TopologyElementType m_massTopologyType;
 
     /// Pointer to the topology container. Will be set by link @sa l_topology
     sofa::core::topology::BaseMeshTopology* m_topology;
@@ -241,9 +231,9 @@ public:
 
     void doUpdateInternal() override;
 
-    TopologyType getMassTopologyType() const
+    sofa::core::topology::TopologyElementType getMassTopologyType() const
     {
-        return m_topologyType;
+        return m_massTopologyType;
     }
 
     Real getMassDensity() const

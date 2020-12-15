@@ -3,6 +3,7 @@
   <RequiredPlugin pluginName="Flexible"/>
   <RequiredPlugin pluginName="Compliant"/>
   <RequiredPlugin pluginName="image"/>
+  <RequiredPlugin pluginName="SofaLoader"/>
   <DefaultAnimationLoop />
 
 
