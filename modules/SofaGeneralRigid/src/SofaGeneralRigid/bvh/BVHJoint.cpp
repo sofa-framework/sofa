@@ -119,7 +119,7 @@ void BVHJoint::display(int frameNum)
         }
     }
 
-    drawtool->setMaterial({ 1.0,0.0,0.0,1.0f });
+    drawtool->setMaterial( sofa::helper::types::RGBAColor{ 1.0,0.0,0.0,1.0f });
     drawtool->drawSphere({ 0.0f, 0.0f, 0.0f }, 0.01f);
 
     for (unsigned int i=0; i<children.size(); i++)
@@ -141,7 +141,7 @@ void BVHJoint::displayInGlobalFrame(void)
 
     drawtool->disableLighting();
 
-    drawtool->setMaterial({ 1.0,0.0,0.0,1.0f });
+    drawtool->setMaterial(sofa::helper::types::RGBAColor{ 1.0,0.0,0.0,1.0f });
     drawtool->drawSphere({ 0.0f, 0.0f, 0.0f }, 0.005f);
 
     for (unsigned int i=0; i<children.size(); i++)
