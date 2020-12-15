@@ -130,9 +130,15 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/FileMonitor.h
     ${SRC_ROOT}/system/FileRepository.h
     ${SRC_ROOT}/vector.h
+    ${SRC_ROOT}/vector[default].inl
+    ${SRC_ROOT}/vector[default].h
+    ${SRC_ROOT}/vector[integral].h
+    ${SRC_ROOT}/vector[scalar].h
+    ${SRC_ROOT}/vector[string].h
     ${SRC_ROOT}/vectorData.h
     ${SRC_ROOT}/vectorLinks.h
     ${SRC_ROOT}/vector_algebra.h
+    ${SRC_ROOT}/vector_algorithm.h
     ${SRC_ROOT}/vector_device.h
     ${SRC_ROOT}/types/RGBAColor.h
     ${SRC_ROOT}/types/RGBAColor_fwd.h
@@ -213,6 +219,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/system/thread/debug.cpp
     ${SRC_ROOT}/system/FileRepository.cpp
     ${SRC_ROOT}/vector.cpp
+    ${SRC_ROOT}/vector[integral].cpp
+    ${SRC_ROOT}/vector[scalar].cpp
+    ${SRC_ROOT}/vector[string].cpp
     ${SRC_ROOT}/types/fixed_array.cpp
     ${SRC_ROOT}/types/RGBAColor.cpp
     ${SRC_ROOT}/types/Material.cpp

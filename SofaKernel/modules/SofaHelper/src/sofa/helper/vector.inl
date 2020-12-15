@@ -20,10 +20,4 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
-#include "vector[default].h"        ///< Declaration of the class vector       (the interface)
-#include "vector[default].inl"      ///< Definition of the default vector      (the default implementation)
-#include "vector[integral].h"       ///< Extern declaration for integral types (the specialization)
-#include "vector[string].h"         ///< Extern declaration for string types   (the specialization)
-#include "vector[scalar].h"         ///< Extern declaration for scalar types   (the specialization)
-
+#include <sofa/helper/vector.h>

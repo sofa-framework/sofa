@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-
+#include <sofa/helper/vector_algorithm.h>
 
 namespace sofa::component::constraintset
 {

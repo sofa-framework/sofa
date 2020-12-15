@@ -28,7 +28,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
 #include <sofa/helper/cast.h>
-
+#include <sofa/helper/vector_algorithm.h>
 namespace sofa::component::projectiveconstraintset
 {
 

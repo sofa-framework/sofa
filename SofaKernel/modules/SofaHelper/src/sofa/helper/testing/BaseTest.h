@@ -23,6 +23,7 @@
 #define SOFA_BASETEST_H
 
 #include <gtest/gtest.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/testing/TestMessageHandler.h>
 
 namespace sofa {

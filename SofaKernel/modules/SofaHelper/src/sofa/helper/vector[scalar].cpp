@@ -19,11 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_HELPER_VECTOR_SCALAR_DEFINITION
+#include <sofa/helper/vector[scalar].h>
+#include <sofa/helper/vector[default].inl>
 
-#include "vector[default].h"        ///< Declaration of the class vector       (the interface)
-#include "vector[default].inl"      ///< Definition of the default vector      (the default implementation)
-#include "vector[integral].h"       ///< Extern declaration for integral types (the specialization)
-#include "vector[string].h"         ///< Extern declaration for string types   (the specialization)
-#include "vector[scalar].h"         ///< Extern declaration for scalar types   (the specialization)
-
+namespace sofa::helper
+{
+template class vector<float>;
+template class vector<double>;
+}

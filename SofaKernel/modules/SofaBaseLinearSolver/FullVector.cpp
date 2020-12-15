@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP
+#include <sofa/helper/logging/Messaging.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/core/visual/VisualParams.h>
 

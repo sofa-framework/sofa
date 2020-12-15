@@ -22,7 +22,6 @@
 #ifndef SOFA_HELPER_VECTOR_DEVICE_H
 #define SOFA_HELPER_VECTOR_DEVICE_H
 
-#include <sofa/helper/vector.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 // maximum number of bytes we allow to increase the size when of a vector in a single step when we reserve on the host or device
@@ -54,7 +53,7 @@ namespace helper
 DEBUG_OUT_V(extern SOFA_HELPER_API int cptid;)
 
 template <class T, class MemoryManager>
-class vector
+class host_vector
 {
 public:
     typedef T      value_type;
@@ -69,7 +68,7 @@ public:
     typedef MemoryManager memory_manager;
     template<class T2> struct rebind
     {
-        typedef vector<T2, typename memory_manager::template rebind<T2>::other > other;
+        typedef host_vector<T2, typename memory_manager::template rebind<T2>::other > other;
     };
 
 protected:
@@ -95,7 +94,7 @@ protected:
 
 public:
 
-    vector()
+    host_vector()
         : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
         , bufferObject(0)
     {
@@ -113,7 +112,7 @@ public:
 #endif
         clearSize = 0;
     }
-    vector ( Size n )
+    host_vector ( Size n )
         : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
         , bufferObject(0)
     {
@@ -132,7 +131,7 @@ public:
         clearSize = 0;
         resize ( n );
     }
-    vector ( const vector<T,MemoryManager >& v )
+    host_vector ( const host_vector<T,MemoryManager >& v )
         : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
         , bufferObject(0)
     {
@@ -173,7 +172,7 @@ public:
         DEBUG_OUT_V(SPACEM << "clear vector " << std::endl);
     }
 
-    void operator= ( const vector<T,MemoryManager >& v )
+    void operator= ( const host_vector<T,MemoryManager >& v )
     {
         if (&v == this)
         {
@@ -231,7 +230,7 @@ public:
         DEBUG_OUT_V(SPACEM << "operator= " << std::endl);
     }
 
-    ~vector()
+    ~host_vector()
     {
         if ( hostPointer!=nullptr ) MemoryManager::hostFree ( hostPointer );
 

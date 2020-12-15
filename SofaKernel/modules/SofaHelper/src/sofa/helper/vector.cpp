@@ -19,19 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_VECTOR_CPP
+#define SOFA_HELPER_VECTOR_DEFINITION
 #include <sofa/helper/vector.h>
-#include <sofa/helper/vector_device.h>
+
 #include <sofa/helper/integer_id.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <cassert>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 #ifdef DEBUG_OUT_VECTOR
@@ -111,5 +108,4 @@ unsigned int SOFA_HELPER_API getUnsignedInteger(const std::string& s, std::strin
 
 
 
-} // namespace helper
-} // namespace sofa
+} // namespace sofa::helper
