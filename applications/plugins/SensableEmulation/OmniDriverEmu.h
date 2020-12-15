@@ -122,7 +122,6 @@ public:
 
     void init() override;
     void bwdInit() override;
-    void reset() override;
     void reinit() override;
     void cleanup() override;
     void draw(const core::visual::VisualParams*) override;

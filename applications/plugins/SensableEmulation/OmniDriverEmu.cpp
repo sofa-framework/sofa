@@ -304,11 +304,11 @@ void *hapticSimuExecute( void *ptr )
 
             endTime = (double)omniDrv->thTimer->getTime();  //[s]
             totalTime = (endTime - startTime);  // [us]
-            timeToSleep = int( ((requiredTime - totalTime) - timeCorrection) * timeScale); //  [us]
+            timeToSleep = int( ((requiredTime - totalTime) - timeCorrection) ); //  [us]
 
             if (timeToSleep > 0)
             {
-                std::this_thread::sleep_for(std::chrono::seconds(timeToSleep));
+                std::this_thread::sleep_for(std::chrono::seconds(int(timeToSleep * timeScale)));
             }
             else
             {
@@ -394,13 +394,6 @@ void OmniDriverEmu::setDataValue()
     data.endOmni_H_virtualTool.set(positionTool.getValue(), q);
     data.permanent_feedback = permanent.getValue();
 }
-
-void OmniDriverEmu::reset()
-{
-    msg_info()<<"OmniDriverEmu::reset() is called.";
-    this->reinit();
-}
-
 
 void OmniDriverEmu::reinit()
 {
