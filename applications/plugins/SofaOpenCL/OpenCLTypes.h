@@ -42,7 +42,7 @@ namespace opencl
 {
 
 template<class T>
-class OpenCLVector : public helper::vector<T,OpenCLMemoryManager<T> >
+class OpenCLVector : public helper::vector_device<T,OpenCLMemoryManager<T> >
 {
 public :
     typedef size_t size_type;

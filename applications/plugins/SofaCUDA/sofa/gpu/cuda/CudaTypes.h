@@ -49,7 +49,7 @@ namespace cuda
 {
 
 template<class T>
-class CudaVector : public helper::vector<T,CudaMemoryManager<T> >
+class CudaVector : public helper::vector_device<T,CudaMemoryManager<T> >
 {
 public :
     typedef size_t Size;
