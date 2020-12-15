@@ -45,20 +45,9 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
 #include <chrono>
-#include <thread>
-
-#ifndef WIN32
-#  include <pthread.h>
-#else
-#  include <boost/thread/thread.hpp>
-#endif
 
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-
-#ifdef WIN32
-#  include <windows.h>
-#endif
 
 #include <sofa/helper/rmath.h>
 
@@ -100,6 +89,7 @@ OmniDriverEmu::OmniDriverEmu()
     moveOmniBase = false;
     executeAsynchro = false;
     omniSimThreadCreated = false;
+    m_terminate = true;
 }
 
 
@@ -121,26 +111,12 @@ void OmniDriverEmu::setForceFeedbacks(vector<ForceFeedback*> ffs)
 
 void OmniDriverEmu::cleanup()
 {
-    msg_info() << "cleanup()" ;
-
-    // If the thread is still running stop it
-    if (omniSimThreadCreated)
+    if (m_terminate == false && omniSimThreadCreated)
     {
-#ifndef WIN32
-        int err = pthread_cancel(hapSimuThread);
-
-        // no error: thread cancel
-        if(err==0)
-        {
-            msg_info() << "Haptic thread has been cancelled in cleanup without error.";
-        }
-
-        // error
-        else
-        {
-            msg_error() << "Haptic thread cancel in cleanup failed with error code = "  << err  ;
-        }
-#endif
+        m_terminate = true;
+        hapSimuThread.join();
+        omniSimThreadCreated = false;
+        msg_info() << "Haptic thread has been cancelled in cleanup without error.";
     }
 }
 
@@ -161,7 +137,7 @@ void OmniDriverEmu::init()
 /**
  function that is used to emulate a haptic device by interpolating the position of the tool between several points.
 */
-void *hapticSimuExecute( void *ptr )
+void hapticSimuExecute(std::atomic<bool>& terminate, void *ptr )
 {
     assert(ptr!=nullptr);
 
@@ -175,7 +151,7 @@ void *hapticSimuExecute( void *ptr )
     if (pts.empty())
     {
         msg_error(omniDrv) << "Bad trajectory specification : there are no points for interpolation. ";
-        return nullptr;
+        return;
     }
 
     // Add a first point ( 0 0 0 0 0 0 1 ) if the first "key time" is not 0
@@ -192,7 +168,7 @@ void *hapticSimuExecute( void *ptr )
     if (numSegs != numPts)
     {
         msg_error(omniDrv) << "Bad trajectory specification : the number of trajectory timing does not match the number of trajectory points. ";
-        return nullptr;
+        return;
     }
 
     helper::vector< unsigned int > stepNum;
@@ -219,7 +195,7 @@ void *hapticSimuExecute( void *ptr )
 
     int oneTimeMessage = 0;
     // loop that updates the position tool.
-    while (true)
+    while (!terminate)
     {
         if (omniDrv->executeAsynchro)
         {
@@ -258,12 +234,7 @@ void *hapticSimuExecute( void *ptr )
             else
             {
                 msg_info(omniDrv) << "End of the movement!" ;
-                omniDrv->setOmniSimThreadCreated(false);
-#ifndef WIN32
-                pthread_exit(0);
-#else
-                return 0;
-#endif
+                return;
             }
 
             // Update the position of the tool
@@ -348,35 +319,17 @@ void OmniDriverEmu::bwdInit()
     if (omniSimThreadCreated)
     {
         msg_warning() << "Emulating thread already running" ;
-
-#ifndef WIN32
-        int err = pthread_cancel(hapSimuThread);
-
-        // no error: thread cancel
-        if(err==0)
-        {
-            msg_info() << "OmniDriverEmu: Haptic thread has been cancelled without error.";
-        }
-        else
-        {
-            msg_warning() << "thread cancel failed with error code = "  << err ;
-        }
-#endif
+        m_terminate = false;
+        cleanup();
     }
 
     if (thTimer == nullptr)
         thTimer = new(helper::system::thread::CTime);
 
-#ifndef WIN32
-    if ( pthread_create( &hapSimuThread, nullptr, hapticSimuExecute, static_cast<void*>(this)) == 0 )
-    {
-        msg_info() << "OmniDriver : Thread created for Omni simulation." ;
-        omniSimThreadCreated=true;
-    }
-#else
-    boost::thread hapSimuThread(hapticSimuExecute, this);
+    m_terminate = false;
+    hapSimuThread = std::thread(hapticSimuExecute, std::ref(this->m_terminate), this);
     setOmniSimThreadCreated(true);
-#endif
+    msg_info() << "OmniDriver : Thread created for Omni simulation.";
 }
 
 
