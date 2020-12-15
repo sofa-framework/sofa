@@ -67,6 +67,7 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
         "<?xml version='1.0'?>"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
         "   <Node name='node'>                                          "
+        "       <RequiredPlugin name='SofaLoader' />                       "
         "       <MeshObjLoader name='loader' filename='mesh/cube.obj'/>    "
         "       <Mesh name='topology' src='@loader'/>                      "
         "       <MeshROI template='Vec3d' name='MeshROI'/>                 "

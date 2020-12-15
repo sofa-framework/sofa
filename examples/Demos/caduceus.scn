@@ -4,6 +4,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="SofaNonUniformFem"/>
     <RequiredPlugin name='SofaConstraint'/>  
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name='SofaLoader'/>
     
     <RequiredPlugin pluginName="CImgPlugin"/>
     <VisualStyle displayFlags="showVisual  " /> <!--showBehaviorModels showCollisionModels-->
