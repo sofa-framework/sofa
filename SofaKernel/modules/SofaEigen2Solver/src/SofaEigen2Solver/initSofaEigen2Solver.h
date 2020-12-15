@@ -19,40 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initBaseUtils.h>
+#pragma once
+#include <SofaEigen2Solver/config.h>
 
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
-
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+void SOFA_SOFAEIGEN2SOLVER_API initSofaEigen2Solver();
 
-
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component

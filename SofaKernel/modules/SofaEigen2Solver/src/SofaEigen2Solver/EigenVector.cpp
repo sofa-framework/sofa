@@ -19,40 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initBaseUtils.h>
 
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#include <SofaEigen2Solver/EigenVector.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
+
+namespace sofa::component::linearsolver
 {
 
-namespace component
-{
+template<>
+const char* EigenVector<defaulttype::Vec3Types>::Name() { return "EigenVector3d"; }
 
+const char* EigenVector<double>::Name() { return "EigenVectord"; }
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver

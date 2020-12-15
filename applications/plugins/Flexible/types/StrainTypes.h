@@ -32,9 +32,6 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/random.h>
-#ifdef SOFA_SMP
-#include <sofa/defaulttype/SharedTypes.h>
-#endif /* SOFA_SMP */
 
 namespace sofa
 {

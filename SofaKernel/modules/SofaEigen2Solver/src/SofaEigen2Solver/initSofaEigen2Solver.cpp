@@ -19,40 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initBaseUtils.h>
-
 #include <SofaEigen2Solver/initSofaEigen2Solver.h>
 
-namespace sofa
+
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
+
+namespace sofa::component
 {
 
-namespace component
-{
-
-
-void initSofaBase()
+void initSofaEigen2Solver()
 {
     static bool first = true;
     if (first)
     {
-        initBaseTopology();
-        initBaseMechanics();
-        initBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initBaseUtils();
-        initSofaEigen2Solver();
-
         first = false;
     }
 }
 
-} // namespace component
+extern "C" {
+    SOFA_SOFAEIGEN2SOLVER_API void initExternalModule();
+    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleName();
+    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleVersion();
+    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleLicense();
+    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleDescription();
+    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleComponentList();
+}
 
-} // namespace sofa
+void initExternalModule()
+{
+    initSofaEigen2Solver();
+}
+
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
+
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFAEIGEN2SOLVER_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Eigen2 Solver.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component
