@@ -783,7 +783,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
         if(extTriangles) nb+=extTriangles->size();
 
         std::vector< defaulttype::Vector3 > points(3*nb),normals;
-        std::vector< defaulttype::Vec<4,float> > colors(3*nb);
+        std::vector< sofa::helper::types::RGBAColor > colors(3*nb);
         size_t count=0;
 
         if(triangles)
@@ -792,7 +792,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
                 {
                     size_t index = (*triangles)[i][j];
                     if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                    sofa::helper::gl::Color::getHSVA(&colors[count][0],val[index],1.,.8,1.);
+                    colors[count] = sofa::helper::types::RGBAColor::fromHSVA(float(val[index]),1.f,.8f,1.f);
                     count++;
                 }
         if(extTriangles)
@@ -802,7 +802,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
                     size_t index = (*extTriangles)[i][j];
                     if(this->extvertPosIdx) index=(*extvertPosIdx)[index];
                     if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                    sofa::helper::gl::Color::getHSVA(&colors[count][0],val[index],1.,.8,1.);
+                    colors[count] = sofa::helper::types::RGBAColor::fromHSVA(float(val[index]),1.f,.8f,1.f);
                     count++;
                 }
 
