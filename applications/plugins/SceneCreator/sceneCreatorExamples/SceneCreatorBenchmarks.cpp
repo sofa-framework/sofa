@@ -29,7 +29,6 @@
 #include <SofaSimulationTree/init.h>
 #include <SofaSimulationTree/TreeSimulation.h>
 
-#include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
 
 #include <boost/program_options.hpp>
@@ -103,7 +102,6 @@ int main(int argc, char** argv)
 {
     sofa::simulation::tree::init();
     sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
 
     bool showHelp = false;
     unsigned int idExample = 0;

@@ -68,7 +68,7 @@ bool QuadSetTopology_test::testEmptyContainer()
 
 bool QuadSetTopology_test::testQuadBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyObjectType::QUAD);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyElementType::QUAD);
     QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
@@ -137,7 +137,7 @@ bool QuadSetTopology_test::testQuadBuffers()
 
 bool QuadSetTopology_test::testEdgeBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyObjectType::QUAD);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyElementType::QUAD);
     QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
@@ -232,7 +232,7 @@ bool QuadSetTopology_test::testEdgeBuffers()
 
 bool QuadSetTopology_test::testVertexBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyObjectType::QUAD);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyElementType::QUAD);
     QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
@@ -279,7 +279,7 @@ bool QuadSetTopology_test::testVertexBuffers()
 
 bool QuadSetTopology_test::checkTopology()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyObjectType::QUAD);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyElementType::QUAD);
     QuadSetTopologyContainer* topoCon = dynamic_cast<QuadSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)

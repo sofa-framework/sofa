@@ -13,6 +13,7 @@ set(SOFABASE_TARGETS
 
 foreach(TARGET ${SOFABASE_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+    set_target_properties(${TARGET} PROPERTIES FOLDER SofaBase)
 endforeach()
 
 set(SOFABASE_SRC src/${PROJECT_NAME})

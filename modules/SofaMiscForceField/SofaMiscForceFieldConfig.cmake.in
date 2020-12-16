@@ -3,7 +3,7 @@
 @PACKAGE_INIT@
 
 find_package(SofaFramework QUIET REQUIRED) # SofaHelper
-find_package(SofaCommon QUIET REQUIRED) # SofaDeformable
+find_package(SofaDeformable QUIET REQUIRED)
 find_package(SofaBoundaryCondition QUIET REQUIRED)
 find_package(SofaGeneralTopology QUIET REQUIRED) 
 find_package(SofaMiscTopology QUIET REQUIRED)

@@ -51,7 +51,7 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     , d_fileMass( initData(&d_fileMass,  "filename", "Xsp3.0 file to specify the mass parameters" ) )
     , m_pointHandler(nullptr)
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_topologyType(TOPOLOGY_UNKNOWN)
+    , m_massTopologyType(TopologyElementType::UNKNOWN)
     , m_topology(nullptr)
 {
     this->addAlias(&d_fileMass,"fileMass");
@@ -131,7 +131,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeCreation(cons
         const sofa::helper::vector< sofa::helper::vector< EdgeID > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
 {
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
+    if (dm->getMassTopologyType() == TopologyElementType::EDGE)
     {
         helper::WriteAccessor<Data<MassVector> > masses(dm->d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(dm->d_totalMass);
@@ -161,7 +161,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeCreation(cons
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyEdgeDestruction(const sofa::helper::vector<EdgeID> & edgeRemoved)
 {
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
+    if (dm->getMassTopologyType() == TopologyElementType::EDGE)
     {
         helper::WriteAccessor<Data<MassVector> > masses(dm->d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(dm->d_totalMass);
@@ -236,7 +236,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleCreation(
         const sofa::helper::vector< sofa::helper::vector< TriangleID > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
 {
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
+    if (dm->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         helper::WriteAccessor<Data<MassVector> > masses(dm->d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(dm->d_totalMass);
@@ -267,7 +267,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleCreation(
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleDestruction(const sofa::helper::vector<TriangleID > & triangleRemoved)
 {
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
+    if (dm->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         helper::WriteAccessor<Data<MassVector> > masses(dm->d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(dm->d_totalMass);
@@ -344,7 +344,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronCreati
         const sofa::helper::vector< sofa::helper::vector< TetrahedronID > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
 {
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
+    if (dm->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         helper::WriteAccessor<Data<MassVector> > masses(dm->d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(dm->d_totalMass);
@@ -379,7 +379,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronCreati
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronDestruction(const sofa::helper::vector<TetrahedronID> & tetrahedronRemoved)
 {
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
+    if (dm->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         helper::WriteAccessor<Data<MassVector> > masses(dm->d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(dm->d_totalMass);
@@ -456,7 +456,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronCreatio
         const sofa::helper::vector< sofa::helper::vector< HexahedronID > >& /*ancestors*/,
         const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
 {
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
+    if (dm->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         helper::WriteAccessor<Data<MassVector> > masses(dm->d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(dm->d_totalMass);
@@ -487,7 +487,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronCreatio
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyHexahedronDestruction(const sofa::helper::vector<HexahedronID> & hexahedronRemoved)
 {
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
+    if (dm->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         helper::WriteAccessor<Data<MassVector> > masses(dm->d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(dm->d_totalMass);
@@ -999,7 +999,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
         {
 
             MassVector& masses = *d_vertexMass.beginEdit();
-            m_topologyType=TOPOLOGY_HEXAHEDRONSET;
+            m_massTopologyType = TopologyElementType::HEXAHEDRON;
 
             masses.resize(this->mstate->getSize());
             for(unsigned int i=0; i<masses.size(); ++i)
@@ -1035,7 +1035,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
         {
 
             MassVector& masses = *d_vertexMass.beginEdit();
-            m_topologyType=TOPOLOGY_TETRAHEDRONSET;
+            m_massTopologyType = TopologyElementType::TETRAHEDRON;
 
             // resize array
             clear();
@@ -1069,7 +1069,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
         }
         else if (m_topology->getNbQuads()>0 && quadGeo) {
             MassVector& masses = *d_vertexMass.beginEdit();
-            m_topologyType=TOPOLOGY_QUADSET;
+            m_massTopologyType = TopologyElementType::QUAD;
 
             // resize array
             clear();
@@ -1104,7 +1104,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
         else if (m_topology->getNbTriangles()>0 && triangleGeo)
         {
             MassVector& masses = *d_vertexMass.beginEdit();
-            m_topologyType=TOPOLOGY_TRIANGLESET;
+            m_massTopologyType = TopologyElementType::TRIANGLE;
 
             // resize array
             clear();
@@ -1140,7 +1140,7 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
         {
 
             MassVector& masses = *d_vertexMass.beginEdit();
-            m_topologyType=TOPOLOGY_EDGESET;
+            m_massTopologyType = TopologyElementType::EDGE;
 
             // resize array
             clear();
