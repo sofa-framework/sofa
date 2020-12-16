@@ -941,15 +941,15 @@ void BaseCamera::drawCamera(const core::visual::VisualParams* vparams)
     p3 = viewportToWorldPoint(Vec3(1,1,0.994));
     p4 = viewportToWorldPoint(Vec3(0,1,0.994));
 
-    dt->drawLine(camPos, p1, Vec4(0,0,0,1));
-    dt->drawLine(camPos, p2, Vec4(0,0,0,1));
-    dt->drawLine(camPos, p3, Vec4(0,0,0,1));
-    dt->drawLine(camPos, p4, Vec4(0,0,0,1));
+    dt->drawLine(camPos, p1, sofa::helper::types::RGBAColor::black());
+    dt->drawLine(camPos, p2, sofa::helper::types::RGBAColor::black());
+    dt->drawLine(camPos, p3, sofa::helper::types::RGBAColor::black());
+    dt->drawLine(camPos, p4, sofa::helper::types::RGBAColor::black());
 
-    dt->drawLine(p1, p2, Vec4(0,0,0,1));
-    dt->drawLine(p2, p3, Vec4(0,0,0,1));
-    dt->drawLine(p3, p4, Vec4(0,0,0,1));
-    dt->drawLine(p4, p1, Vec4(0,0,0,1));
+    dt->drawLine(p1, p2, sofa::helper::types::RGBAColor::black());
+    dt->drawLine(p2, p3, sofa::helper::types::RGBAColor::black());
+    dt->drawLine(p3, p4, sofa::helper::types::RGBAColor::black());
+    dt->drawLine(p4, p1, sofa::helper::types::RGBAColor::black());
 
     dt->setPolygonMode(0, false);
     dt->drawTriangles({camPos, p1, p2}, RGBAColor::black());

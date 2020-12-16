@@ -117,7 +117,7 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
 
     helper::vector<Vector3> points;
     helper::vector<Vector3> normals;
-    helper::vector< Vec<4,float> > colours;
+    std::vector<sofa::helper::types::RGBAColor> colours;
     helper::vector<core::CollisionModel*> listCollisionModel;
     helper::vector<core::CollisionModel*>::iterator iter;
     float r,g;

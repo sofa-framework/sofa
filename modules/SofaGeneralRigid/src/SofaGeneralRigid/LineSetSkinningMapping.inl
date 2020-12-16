@@ -198,7 +198,7 @@ void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* v
     const OutVecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::helper::types::RGBAColor> colorVector;
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     for (unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
