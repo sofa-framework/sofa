@@ -1,6 +1,26 @@
 # These are real modules. If you need components from there you
 # need to first add find_package(XXX) in your CMakeLists.txt
 
+# General
+sofa_add_module(SofaGeneralVisual SofaGeneralVisual ON)
+sofa_add_module(SofaGraphComponent SofaGraphComponent ON)
+sofa_add_module(SofaGeneralMeshCollision SofaGeneralMeshCollision ON)
+sofa_add_module(SofaBoundaryCondition SofaBoundaryCondition ON)
+sofa_add_module(SofaGeneralAnimationLoop SofaGeneralAnimationLoop ON)
+sofa_add_module(SofaGeneralDeformable SofaGeneralDeformable ON)
+sofa_add_module(SofaGeneralEngine SofaGeneralEngine ON)
+sofa_add_module(SofaGeneralExplicitOdeSolver SofaGeneralExplicitOdeSolver ON)
+sofa_add_module(SofaGeneralImplicitOdeSolver SofaGeneralImplicitOdeSolver ON)
+sofa_add_module(SofaGeneralLinearSolver SofaGeneralLinearSolver ON)
+sofa_add_module(SofaGeneralRigid SofaGeneralRigid ON)
+sofa_add_module(SofaGeneralObjectInteraction SofaGeneralObjectInteraction ON)
+sofa_add_module(SofaGeneralSimpleFem SofaGeneralSimpleFem ON)
+sofa_add_module(SofaGeneralTopology SofaGeneralTopology ON)
+sofa_add_module(SofaTopologyMapping SofaTopologyMapping ON)
+sofa_add_module(SofaUserInteraction SofaUserInteraction ON)
+sofa_add_module(SofaConstraint SofaConstraint ON)
+sofa_add_module(SofaGeneralLoader SofaGeneralLoader ON)
+
 if(NOT SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
     sofa_add_module(SofaExporter SofaExporter ON)
 endif()

@@ -225,7 +225,7 @@ public:
     /// @}
 
     /** \brief Returns the type of the topology */
-    sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::QUAD;}
+    sofa::core::topology::TopologyElementType getTopologyType() const override {return sofa::core::topology::TopologyElementType::QUAD;}
 
 protected:
 

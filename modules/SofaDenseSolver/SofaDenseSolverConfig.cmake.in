@@ -4,6 +4,7 @@
 
 find_package(Newmat QUIET REQUIRED)
 find_package(SofaBase QUIET REQUIRED)
+find_package(SofaGeneralLinearSolver QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

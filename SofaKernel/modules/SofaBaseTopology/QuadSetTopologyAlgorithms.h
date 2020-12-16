@@ -21,62 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYALGORITHMS_H
-#include "config.h"
 
-#include <SofaBaseTopology/EdgeSetTopologyAlgorithms.h>
-
-namespace sofa
-{
-namespace component
-{
-namespace topology
-{
-class QuadSetTopologyContainer;
-
-class QuadSetTopologyModifier;
-
-template < class DataTypes >
-class QuadSetGeometryAlgorithms;
-
-/**
-* A class that performs topology algorithms on an QuadSet.
-*/
-template < class DataTypes >
-class QuadSetTopologyAlgorithms : public EdgeSetTopologyAlgorithms<DataTypes>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(QuadSetTopologyAlgorithms,DataTypes),SOFA_TEMPLATE(EdgeSetTopologyAlgorithms,DataTypes));
-
-    typedef typename DataTypes::Real Real;
-protected:
-    QuadSetTopologyAlgorithms()
-        : EdgeSetTopologyAlgorithms<DataTypes>()
-    { };
-
-    virtual ~QuadSetTopologyAlgorithms() {}
-public:
-    void init() override;
-
-private:
-    QuadSetTopologyContainer*					m_container;
-    QuadSetTopologyModifier*					m_modifier;
-    QuadSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
-};
-
-#if  !defined(SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYALGORITHMS_CPP)
-extern template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Vec1Types>;
-//extern template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Rigid3Types>;
-//extern template class SOFA_BASE_TOPOLOGY_API QuadSetTopologyAlgorithms<defaulttype::Rigid2Types>;
-
-
-#endif
-
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
+#error This class has been removed in PR #1546. QuadSetGeometryAlgorithms or QuadSetTopologyModifier should be used.
 
 #endif

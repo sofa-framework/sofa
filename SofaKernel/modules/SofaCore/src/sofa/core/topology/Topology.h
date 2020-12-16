@@ -37,7 +37,21 @@ namespace topology
 {
 
 /// The enumeration used to give unique identifiers to Topological objects.
-enum TopologyObjectType
+enum class TopologyElementType
+{
+    UNKNOWN,
+    POINT,
+    EDGE,
+    TRIANGLE,
+    QUAD,
+    TETRAHEDRON,
+    HEXAHEDRON,
+    PENTAHEDRON,
+    PYRAMID    
+};
+
+
+enum [[deprecated("This enum has been deprecated in PR #1593 and will be removed in release 21.06. Please use TopologyElementType instead.")]] TopologyObjectType
 {
     POINT,
     EDGE,
@@ -50,8 +64,9 @@ enum TopologyObjectType
 };
 
 
-SOFA_CORE_API TopologyObjectType parseTopologyObjectTypeFromString(const std::string& s);
-SOFA_CORE_API std::string parseTopologyObjectTypeToString(TopologyObjectType t);
+
+SOFA_CORE_API TopologyElementType parseTopologyElementTypeFromString(const std::string& s);
+SOFA_CORE_API std::string parseTopologyElementTypeToString(TopologyElementType t);
 
 class SOFA_CORE_API Topology : public virtual core::objectmodel::BaseObject
 {
@@ -174,56 +189,56 @@ struct TopologyElementInfo;
 template<>
 struct TopologyElementInfo<Topology::Point>
 {
-    static TopologyObjectType type() { return POINT; }
+    static TopologyElementType type() { return TopologyElementType::POINT; }
     static const char* name() { return "Point"; }
 };
 
 template<>
 struct TopologyElementInfo<Topology::Edge>
 {
-    static TopologyObjectType type() { return EDGE; }
+    static TopologyElementType type() { return TopologyElementType::EDGE; }
     static const char* name() { return "Edge"; }
 };
 
 template<>
 struct TopologyElementInfo<Topology::Triangle>
 {
-    static TopologyObjectType type() { return TRIANGLE; }
+    static TopologyElementType type() { return TopologyElementType::TRIANGLE; }
     static const char* name() { return "Triangle"; }
 };
 
 template<>
 struct TopologyElementInfo<Topology::Quad>
 {
-    static TopologyObjectType type() { return QUAD; }
+    static TopologyElementType type() { return TopologyElementType::QUAD; }
     static const char* name() { return "Quad"; }
 };
 
 template<>
 struct TopologyElementInfo<Topology::Tetrahedron>
 {
-    static TopologyObjectType type() { return TETRAHEDRON; }
+    static TopologyElementType type() { return TopologyElementType::TETRAHEDRON; }
     static const char* name() { return "Tetrahedron"; }
 };
 
 template<>
 struct TopologyElementInfo<Topology::Pyramid>
 {
-    static TopologyObjectType type() { return PYRAMID; }
+    static TopologyElementType type() { return TopologyElementType::PYRAMID; }
     static const char* name() { return "Pyramid"; }
 };
 
 template<>
 struct TopologyElementInfo<Topology::Pentahedron>
 {
-    static TopologyObjectType type() { return PENTAHEDRON; }
+    static TopologyElementType type() { return TopologyElementType::PENTAHEDRON; }
     static const char* name() { return "Pentahedron"; }
 };
 
 template<>
 struct TopologyElementInfo<Topology::Hexahedron>
 {
-    static TopologyObjectType type() { return HEXAHEDRON; }
+    static TopologyElementType type() { return TopologyElementType::HEXAHEDRON; }
     static const char* name() { return "Hexahedron"; }
 };
 

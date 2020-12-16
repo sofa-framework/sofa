@@ -24,8 +24,6 @@
 #include "GUIManager.h"
 #include "BaseGUI.h"
 #include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
 #include <SofaSimulationCommon/init.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
@@ -196,8 +194,6 @@ int GUIManager::Init(const char* argv0, const char* name)
     if (first)
     {
         sofa::component::initSofaBase();
-        sofa::component::initSofaCommon();
-        sofa::component::initSofaGeneral();
 
         first = false;
     }

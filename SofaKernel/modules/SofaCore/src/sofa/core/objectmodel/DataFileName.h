@@ -87,11 +87,14 @@ public:
     {
     }
 
+    SOFA_BEGIN_DEPRECATION_AS_ERROR
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]    
     void endEdit(const core::ExecParams*)
     {
         endEdit();
     }
+    SOFA_END_DEPRECATION_AS_ERROR
+
 
     void endEdit()
     {

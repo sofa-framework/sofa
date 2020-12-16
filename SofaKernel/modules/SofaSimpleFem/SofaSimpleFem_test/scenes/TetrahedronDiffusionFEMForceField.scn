@@ -2,6 +2,7 @@
     <VisualStyle displayFlags="showBehaviorModels"/>
     <RequiredPlugin name='SofaBoundaryCondition'/>
     <RequiredPlugin name='SofaTopologyMapping'/>
+    <RequiredPlugin name='SofaLoader'/>
 
     <MeshObjLoader name="temperatureLoader" filename="beamTemperatures.obj" />
     <RegularGridTopology name="grid" n="21 11 11"  p0="0 0 0" min="0 0 0" max="1 0.5 0.5" drawHexahedra="1" tags="geom"/>
@@ -12,7 +13,6 @@
     <Node name="Tetra" gravity="0 0 0" >
         <TetrahedronSetTopologyContainer name="Container" tags="meca"/>
         <TetrahedronSetTopologyModifier name="Modifier" tags="meca"/>
-        <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" tags="meca"/>
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  tags="meca"/>
         <Hexa2TetraTopologicalMapping name="default28" swapping="0" tags="meca"/>
         <TriangleCollisionModel name="collisionmodel" />

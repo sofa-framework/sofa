@@ -28,9 +28,6 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/decompose.h>
-#ifdef SOFA_SMP
-#include <sofa/defaulttype/SharedTypes.h>
-#endif /* SOFA_SMP */
 
 #include <sofa/defaulttype/Quat.h>
 

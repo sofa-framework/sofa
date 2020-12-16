@@ -18,13 +18,11 @@
         <Node name="Tetra" gravity="0 -9.81 0">
             <TetrahedronSetTopologyContainer name="Tetra_topo" />
             <TetrahedronSetTopologyModifier name="Modifier" />
-            <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
             <Hexa2TetraTopologicalMapping name="default28" input="@../grid" output="@Tetra_topo" />
             <Node name="Triangles" gravity="0 -9.81 0">
                 <TriangleSetTopologyContainer name="Triangle_topo" />
                 <TriangleSetTopologyModifier name="Modifier" />
-                <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                 <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
                 <Tetra2TriangleTopologicalMapping name="default29" input="@../Tetra_topo" output="@Triangle_topo" />
                 <TriangleCollisionModel name="default30" />

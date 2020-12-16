@@ -22,7 +22,6 @@
 #pragma once
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologyData.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <SofaGeneralSimpleFem/config.h>
 
@@ -163,7 +162,6 @@ protected:
     //just for draw forces
     VecDeriv m_forces;
     EdgeData<helper::vector<BeamInfo> > m_beamsData; ///< Internal element data
-    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> m_matS;
 
     const VecElement *m_indexedElements;
 
