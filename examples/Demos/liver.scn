@@ -3,6 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaImplicitOdeSolver'/>
     <RequiredPlugin name='SofaLoader'/>
+    <RequiredPlugin name='SofaGeneralSimpleFem'/>
     
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
