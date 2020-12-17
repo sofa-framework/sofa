@@ -19,39 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#define SOFA_COMPONENT_COLLISION_SPHERECOLLISIONMODEL_CPP
+#include <SofaBaseCollision/SphereModel.inl>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
+using namespace sofa::defaulttype;
+using namespace sofa::core::collision;
+using namespace helper;
+
+
+
+template <> SOFA_SOFABASECOLLISION_API
+Vector3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const Vector3& )
 {
-
-
-void initSofaBase()
+    return center();
+}
+template <> SOFA_SOFABASECOLLISION_API
+Vector3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const Vector3& )
 {
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
+    return center();
 }
 
-} // namespace component
+int SphereModelClass = core::RegisterObject("Collision model which represents a set of Spheres")
+        .add<  SphereCollisionModel<Vec3Types> >()
+        .add<SphereCollisionModel<Rigid3Types> >()
 
-} // namespace sofa
+        .addAlias("TSphereModel")
+        .addAlias("Sphere")
+        .addAlias("SphereModel")
+        ;
+
+template class SOFA_SOFABASECOLLISION_API TSphere<defaulttype::Vec3Types>;
+//template class SOFA_SOFABASECOLLISION_API TSphere<defaulttype::Rigid3Types>; // Can't compile due to type mismatches in pFree() method.
+template class SOFA_SOFABASECOLLISION_API SphereCollisionModel<defaulttype::Vec3Types>;
+template class SOFA_SOFABASECOLLISION_API SphereCollisionModel<defaulttype::Rigid3Types>;
+
+} // namespace sofa::component::collision

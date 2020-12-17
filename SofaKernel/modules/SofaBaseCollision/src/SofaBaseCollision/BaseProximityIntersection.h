@@ -19,39 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#pragma once
+#include <SofaBaseCollision/config.h>
 
-namespace sofa
+#include <SofaBaseCollision/DiscreteIntersection.h>
+
+namespace sofa::component::collision
 {
 
-namespace component
+class SOFA_SOFABASECOLLISION_API BaseProximityIntersection : public DiscreteIntersection
 {
+public:
+    SOFA_ABSTRACT_CLASS(BaseProximityIntersection,DiscreteIntersection);
+    Data<SReal> alarmDistance; ///< Proximity detection distance
+    Data<SReal> contactDistance; ///< Distance below which a contact is created
+protected:
+    BaseProximityIntersection();
+    ~BaseProximityIntersection() override { }
+public:
+    /// Returns true if algorithm uses proximity
+    bool useProximity() const override { return true; }
 
+    /// Returns the alarm distance (must returns 0 if useProximity() is false)
+    SReal getAlarmDistance() const override { return alarmDistance.getValue(); }
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
+    /// Returns the contact distance (must returns 0 if useProximity() is false)
+    SReal getContactDistance() const override { return contactDistance.getValue(); }
 
-        first = false;
-    }
-}
+    /// Sets the alarm distance (if useProximity() is false, the alarm distance is equal to 0)
+    void setAlarmDistance(SReal v) override { alarmDistance.setValue(v); }
 
-} // namespace component
+    /// Sets the contact distance (if useProximity() is false, the contact distance is equal to 0)
+    void setContactDistance(SReal v) override { contactDistance.setValue(v); }
+};
 
-} // namespace sofa
+} // namespace sofa::component::collision

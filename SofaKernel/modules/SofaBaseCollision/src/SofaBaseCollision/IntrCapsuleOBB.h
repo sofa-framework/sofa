@@ -19,39 +19,55 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+// File modified from GeometricTools
+// http://www.geometrictools.com/
 
-namespace sofa
+
+#pragma once
+#include <SofaBaseCollision/config.h>
+
+#include <SofaBaseCollision/Intersector.h>
+#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaBaseCollision/RigidCapsuleModel.h>
+#include <SofaBaseCollision/OBBModel.h>
+
+namespace sofa::component::collision
 {
-
-namespace component
+/**
+  *TDataTypes is the capsule type and TDataTypes2 the OBB type.
+  */
+template <typename TDataTypes,typename TDataTypes2>
+class TIntrCapsuleOBB : public Intersector<typename TDataTypes::Real>
 {
+public:
+    typedef TCapsule<TDataTypes> IntrCap;
+    typedef typename IntrCap::Real Real;
+    typedef typename IntrCap::Coord Coord;
+    typedef TOBB<TDataTypes2> Box;
+    typedef sofa::defaulttype::Vec<3,Real> Vec3;
 
+    TIntrCapsuleOBB (const IntrCap& capsule, const Box & box);
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
+    bool Find (Real dmax);
+private:
+    // The objects to intersect.
+    const IntrCap* _cap;
+    const Box * mBox;
 
-        first = false;
-    }
-}
+    // Information about the intersection set.
+    using Intersector<Real>::_is_colliding;
+    using Intersector<Real>::_pt_on_first;
+    using Intersector<Real>::_pt_on_second;
+    using Intersector<Real>::mContactTime;
+    using Intersector<Real>::_sep_axis;
+};
 
-} // namespace component
+typedef TIntrCapsuleOBB<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types> IntrCapsuleOBB;
 
-} // namespace sofa
+#if  !defined(SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_CPP)
+extern template class SOFA_SOFABASECOLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types>;
+
+#endif
+
+} // namespace sofa::component::collision

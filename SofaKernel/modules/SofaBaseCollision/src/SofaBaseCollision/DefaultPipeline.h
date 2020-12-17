@@ -19,39 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#pragma once
+#include <SofaBaseCollision/config.h>
 
-namespace sofa
+#include <sofa/simulation/PipelineImpl.h>
+
+namespace sofa::component::collision
 {
 
-namespace component
+class SOFA_SOFABASECOLLISION_API DefaultPipeline : public sofa::simulation::PipelineImpl
 {
+public:
+    SOFA_CLASS(DefaultPipeline,sofa::simulation::PipelineImpl);
 
+    Data<bool> d_doPrintInfoMessage;
+    Data<bool> d_doDebugDraw;
+    Data<int>  d_depth;
+protected:
+    DefaultPipeline();
+public:
+    void init() override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
+    /// get the set of response available with the current collision pipeline
+    std::set< std::string > getResponseList() const override;
+protected:
+    // -- Pipeline interface
+    /// Remove collision response from last step
+    void doCollisionReset() override;
+    /// Detect new collisions. Note that this step must not modify the simulation graph
+    void doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels) override;
+    /// Add collision response in the simulation graph
+    void doCollisionResponse() override;
 
-        first = false;
-    }
-}
+    virtual void checkDataValues() ;
+};
 
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision

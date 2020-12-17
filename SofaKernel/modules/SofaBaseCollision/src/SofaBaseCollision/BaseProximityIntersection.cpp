@@ -19,39 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#include <SofaBaseCollision/BaseProximityIntersection.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
-
-namespace component
+BaseProximityIntersection::BaseProximityIntersection()
+    : alarmDistance(initData(&alarmDistance, (SReal)1.0, "alarmDistance","Proximity detection distance"))
+    , contactDistance(initData(&contactDistance, (SReal)0.5, "contactDistance","Distance below which a contact is created"))
 {
-
-
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
+	alarmDistance.setRequired(true);
+	contactDistance.setRequired(true);
 }
 
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision

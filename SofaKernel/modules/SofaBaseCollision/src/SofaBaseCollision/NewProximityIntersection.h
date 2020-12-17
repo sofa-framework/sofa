@@ -19,39 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#pragma once
+#include <SofaBaseCollision/config.h>
 
-namespace sofa
+#include <SofaBaseCollision/BaseProximityIntersection.h>
+
+namespace sofa::component::collision
 {
 
-namespace component
+class SOFA_SOFABASECOLLISION_API NewProximityIntersection : public BaseProximityIntersection
 {
+public:
+    SOFA_CLASS(NewProximityIntersection,BaseProximityIntersection);
 
+    Data<bool> useLineLine; ///< Line-line collision detection enabled
+protected:
+    NewProximityIntersection();
+public:
 
-void initSofaBase()
+    typedef core::collision::IntersectorFactory<NewProximityIntersection> IntersectorFactory;
+
+    void init() override;
+
+    static inline int doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id);
+
+};
+
+} // namespace sofa::component::collision
+
+namespace sofa::core::collision
 {
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
+#if  !defined(SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_CPP)
+extern template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
+#endif
 
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::core::collision

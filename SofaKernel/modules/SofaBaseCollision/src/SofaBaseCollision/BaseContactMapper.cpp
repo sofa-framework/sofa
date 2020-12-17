@@ -19,39 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#define SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP
 
-namespace sofa
+#include <SofaBaseCollision/BaseContactMapper.h>
+
+#include <sofa/helper/Factory.inl>
+
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::component::collision
 {
 
-namespace component
-{
+using namespace defaulttype;
 
+std::string GenerateStringID::generate(){
+    static std::string alphanum = "0123456789!@#$%^&*ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    std::string result;
+    result.resize(length);
+    for (int i = 0; i < length; i++)
+        result[i] = alphanum[rand() % length];
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
+    return result;
 }
 
-} // namespace component
 
-} // namespace sofa
+//template class SOFA_SOFABASECOLLISION_API BaseContactMapper<defaulttype::Vec2Types>;
+template class SOFA_SOFABASECOLLISION_API BaseContactMapper<defaulttype::Vec3Types>;
+template class SOFA_SOFABASECOLLISION_API BaseContactMapper<defaulttype::Rigid3Types>;
+
+
+} // namespace sofa::component::collision
+
+namespace sofa::helper
+{
+template class SOFA_SOFABASECOLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
+template class SOFA_SOFABASECOLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3Types>, core::CollisionModel* >;
+} // namespace sofa::helper

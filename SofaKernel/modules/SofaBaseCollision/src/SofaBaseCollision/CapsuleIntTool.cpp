@@ -19,39 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#define SOFA_COMPONENT_COLLISION_CAPSULEINTTOOL_CPP
+#include <SofaBaseCollision/CapsuleIntTool.inl>
 
-namespace sofa
+namespace sofa::component::collision
 {
+using namespace sofa::defaulttype;
+using namespace sofa::core::collision;
 
-namespace component
-{
-
-
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
+bool CapsuleIntTool::shareSameVertex(const Capsule & c1,const Capsule & c2){
+    return c1.shareSameVertex(c2);
 }
 
-} // namespace component
+template SOFA_SOFABASECOLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<Vec3Types>&, TCapsule<Vec3Types>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template SOFA_SOFABASECOLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<Vec3Types>&, TCapsule<RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template SOFA_SOFABASECOLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<RigidTypes>&, TCapsule<RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template SOFA_SOFABASECOLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<RigidTypes> & cap, OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template SOFA_SOFABASECOLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<Vec3Types> & cap, OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
-} // namespace sofa
+class SOFA_SOFABASECOLLISION_API CapsuleIntTool;
+} // namespace sofa::component::collision
