@@ -319,8 +319,8 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     )
 
-# Propagate variable (which were in Sofa's global cmakelist)
-# put instead into a target_property ?
+# Propagate variables (which were in Sofa's global cmakelist)
+# Put instead into a target_property ?
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
 set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH}" PARENT_SCOPE)
 set(Sofa_VERSION "${Sofa_VERSION}" PARENT_SCOPE)
