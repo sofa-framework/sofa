@@ -12,12 +12,6 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-include(CMakeDependentOption)
-
-# Enable the organisation in folders for generators that support
-# it. (E.g. some versions of Visual Studio have 'solution folders')
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
 # Option for packaging
 option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 
@@ -42,24 +36,7 @@ file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/cmake)
 # adding paths to disabled plugins.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 
-set(ARCHIVE_OUTPUT_DIRECTORY lib)
-set(RUNTIME_OUTPUT_DIRECTORY bin)
-
-if(WIN32)
-    set(LIBRARY_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
-else()
-    set(LIBRARY_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
-endif()
-
-## Set the output directories globally
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
-
 ## Environment
-list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/cmake")
-list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/cmake/Modules")
-list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/SofaFramework")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
@@ -74,36 +51,6 @@ install(FILES
     )
 
 include(SofaMacros)
-
-## RPATH
-if(UNIX)
-    # RPATH is a field in ELF binaries that is used as a hint by the system
-    # loader to find needed shared libraries.
-    #
-    # In the build directory, cmake creates binaries with absolute paths in
-    # RPATH.  And by default, it strips RPATH from installed binaries.  Here we
-    # use CMAKE_INSTALL_RPATH to set a relative RPATH.  By doing so, we avoid
-    # the need to play with LD_LIBRARY_PATH to get applications to run.
-
-    # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
-    set(CMAKE_INSTALL_RPATH
-        "$ORIGIN/../lib"
-        "$$ORIGIN/../lib"
-        )
-
-    if(APPLE)
-        set(CMAKE_MACOSX_RPATH ON)
-        list(APPEND CMAKE_INSTALL_RPATH
-            "@loader_path/../lib"
-            "@executable_path/../lib"
-            "@loader_path/../../Frameworks"
-            "@executable_path/../../Frameworks"
-            )
-        set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-    endif()
-endif(UNIX)
-
-include(CompilerOptions)
 
 ## Boost (1.54.0 or higher) is now mandatory.
 set(BOOST_MIN_VERSION "1.54.0")
@@ -169,37 +116,6 @@ option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit 
 # This option is useful to compile SOFA + internal plugins without SofaPython soft dependencies (SofaExporter, SofaTest, Compliant, image, ...)
 # it simplifies binaries generation and future cohabitation between SofaPython and SofaPython3
 option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to SofaPython" ON)
-
-### Sofa using type double or float or both
-set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
-    "Type used for floating point values in SOFA. It actually determines:
-    - what template instanciations will be compiled (via the definition of the
-    SOFA_FLOAT and SOFA_DOUBLE macros)
-    - what is the type behind the 'SReal' typedef used throughout SOFA. (If 'both'
-    is selected, SReal defaults to double.)")
-set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
-
-if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
-    set(SOFA_DOUBLE 1)          # Used in sofa/config.h.in
-elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
-    set(SOFA_FLOAT 1)           # Used in sofa/config.h.in
-endif()
-
-# If you really don't understand the negated logics of SOFA_DOUBLE and
-# SOFA_FLOAT please consider using SOFA_WITH_FLOAT and SOFA_WITH_DOUBLE.
-# Eg: SOFA_WITH_FLOAT indicate that you need to generate the
-# float code and SOFA_WITH_DOUBLE indicates that you
-# nedd to generate the double related code.
-if(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
-    set(SOFA_WITH_FLOAT 1)
-endif()
-if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
-    set(SOFA_WITH_DOUBLE 1)
-endif()
-if(${SOFA_FLOATING_POINT_TYPE} STREQUAL both)
-    set(SOFA_WITH_FLOAT 1)
-    set(SOFA_WITH_DOUBLE 1)
-endif()
 
 ### Deprecated components
 option(SOFA_WITH_DEPRECATED_COMPONENTS "Compile SOFA with all deprecated components" ON)

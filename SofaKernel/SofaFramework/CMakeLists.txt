@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaFramework)
 
+
+add_subdirectory(../modules/Sofa.Config ${CMAKE_CURRENT_BINARY_DIR}/Sofa.Config)
+
 # Version
 set(SOFAFRAMEWORK_VERSION "${Sofa_VERSION}")
 
