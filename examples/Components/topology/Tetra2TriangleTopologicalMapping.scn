@@ -3,7 +3,9 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaMiscFem'/>
     <RequiredPlugin name='SofaTopologyMapping'/>
-    <RequiredPlugin name='SofaImplicitOdeSolver'/>    
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name='SofaGeneralSimpleFem'/>
+    <RequiredPlugin name='SofaGeneralDeformable'/>
     
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline verbose="0" />

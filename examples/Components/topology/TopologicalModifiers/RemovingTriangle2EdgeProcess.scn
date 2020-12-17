@@ -5,7 +5,9 @@
     <RequiredPlugin name='SofaMiscFem'/>
     <RequiredPlugin name='SofaMiscTopology'/>
     <RequiredPlugin name='SofaTopologyMapping'/>
-    <RequiredPlugin name='SofaImplicitOdeSolver'/>  
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name='SofaGeneralSimpleFem'/>
+    <RequiredPlugin name='SofaGeneralDeformable'/>
     
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline verbose="0" />
