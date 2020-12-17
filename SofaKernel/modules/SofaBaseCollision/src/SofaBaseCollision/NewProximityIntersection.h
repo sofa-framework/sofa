@@ -45,7 +45,7 @@ public:
 
 };
 
-} // namespace sofa::core::collision
+} // namespace sofa::component::collision
 
 namespace sofa::core::collision
 {
