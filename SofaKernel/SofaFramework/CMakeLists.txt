@@ -13,8 +13,9 @@ foreach(TARGET ${SOFAFRAMEWORK_TARGETS})
     endif()
 endforeach()
 
-set(SOFAFRAMEWORK_SRC src/sofa)
+set(SOFAFRAMEWORK_SRC src/SofaFramework)
 set(HEADER_FILES
+    ${SOFAFRAMEWORK_SRC}/config.h.in
     ${SOFAFRAMEWORK_SRC}/initSofaFramework.h
     )
 set(SOURCE_FILES

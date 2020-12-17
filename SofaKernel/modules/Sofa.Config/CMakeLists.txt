@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(Sofa.Config)
+project(Sofa.Config LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
@@ -146,6 +146,9 @@ set(HEADER_FILES
     ${SOFACONFIGSRC_ROOT}/config.h.in
     ${SOFACONFIGSRC_ROOT}/version.h.in
 )
+set(SOURCE_FILES
+    ${SOFACONFIGSRC_ROOT}/config.cpp # necessary to build a library
+    )
 set(SOFACONFIG_BUILD_OPTIONS_SRC
     ${SOFACONFIGSRC_ROOT}/config/sharedlibrary_defines.h.in
     ${SOFACONFIGSRC_ROOT}/config/build_option_deprecated_components.h.in
@@ -155,30 +158,36 @@ set(SOFACONFIG_BUILD_OPTIONS_SRC
     ${SOFACONFIGSRC_ROOT}/config/build_option_bbox.h.in
 )
 
-# Header-only library
-add_library(${PROJECT_NAME} INTERFACE)
-target_sources(${PROJECT_NAME} INTERFACE "$<BUILD_INTERFACE:${HEADER_FILES};${SOFACONFIG_BUILD_OPTIONS_SRC}>")
+# Header-only library (not handled well by macros & stuff so commented)
+# add_library(${PROJECT_NAME} INTERFACE)
+# target_sources(${PROJECT_NAME} INTERFACE "$<BUILD_INTERFACE:${HEADER_FILES};${SOFACONFIG_BUILD_OPTIONS_SRC}>")
 
-target_include_directories(${PROJECT_NAME} INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+# Library
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOFACONFIG_BUILD_OPTIONS_SRC} ${SOURCE_FILES})
+
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-    target_include_directories(${PROJECT_NAME} SYSTEM INTERFACE "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
+    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
 endif()
 
 # Compile options
 if(CMAKE_SYSTEM_NAME STREQUAL Linux AND NOT CMAKE_BUILD_TYPE MATCHES "Debug")
-    target_compile_definitions(${PROJECT_NAME} INTERFACE "NDEBUG")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC "NDEBUG")
     # On Windows and MacOS, NDEBUG and _DEBUG are automatically
     # set in the default c/cxx flags of the right configurations
 endif()
 if(MSVC)
     # Increase Number of Sections in .Obj file
-    target_compile_options(${PROJECT_NAME} INTERFACE "/bigobj")
+    target_compile_options(${PROJECT_NAME} PUBLIC "/bigobj")
     if(SOFA_VECTORIZE)
         # SSE2 flags
-        target_compile_options(${PROJECT_NAME} INTERFACE "/arch:SSE2 /fp:fast")
+        target_compile_options(${PROJECT_NAME} PUBLIC "/arch:SSE2 /fp:fast")
     endif()
 endif()
+
+set_target_properties(${TARGET} PROPERTIES FOLDER SofaFramework) # IDE folder
 
 # CMakeParseLibraryList.cmake
 configure_file(cmake/CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/cmake/CMakeParseLibraryList.cmake COPYONLY)
