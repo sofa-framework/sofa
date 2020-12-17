@@ -1,12 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(Sofa) # Cannot use VERSION with patch like "00"
 
-# Manually define VERSION
-set(Sofa_VERSION_MAJOR 20)
-set(Sofa_VERSION_MINOR 06)
-set(Sofa_VERSION_PATCH 99)
-set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
-
 set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel")
 if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR})
     message(WARNING "SofaKernel is not present or is inaccessible. Check if ${SOFA_KERNEL_SOURCE_DIR} exists or is accessible. Backing up to default value.")
@@ -145,14 +139,6 @@ if(MSVC)
     install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
 endif()
 
-### Mask
-option(SOFA_USE_MASK "Use mask optimization" OFF)
-
-### SOFA_DEV_TOOL
-option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
-
-### Threading
-option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL/EXPERIMENTAL)" ON)
 
 ### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
