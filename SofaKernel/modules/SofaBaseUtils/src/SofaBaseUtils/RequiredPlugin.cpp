@@ -31,13 +31,7 @@ using sofa::helper::system::FileSystem;
 using sofa::helper::system::PluginManager;
 using sofa::helper::system::Plugin;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::misc
 {
 
 int RequiredPluginClass = core::RegisterObject("Load the required plugins")
@@ -161,6 +155,4 @@ bool RequiredPlugin::loadPlugin()
     return !hasFailed;
 }
 
-} // namespace misc
-} // namespace component
-} // namespace sofa
+} // namespace sofa::component::misc

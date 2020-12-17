@@ -29,11 +29,7 @@ using sofa::core::objectmodel::ComponentState ;
 
 using std::string;
 
-namespace sofa
-{
-namespace component
-{
-namespace makedataaliascomponent
+namespace sofa::component::makedataaliascomponent
 {
 
 MakeDataAliasComponent::MakeDataAliasComponent() :
@@ -100,8 +96,4 @@ int MakeDataAliasComponentClass = RegisterObject("This object create an alias to
         .add< MakeDataAliasComponent >()
         ;
 
-}
-}
-}
-
-
+} // namespace sofa::component::makedataaliascomponent
