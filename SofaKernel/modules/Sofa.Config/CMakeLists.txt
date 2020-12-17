@@ -36,19 +36,6 @@ define_property(TARGET
 # it. (E.g. some versions of Visual Studio have 'solution folders')
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-# Output Directories definition
-set(ARCHIVE_OUTPUT_DIRECTORY lib)
-set(RUNTIME_OUTPUT_DIRECTORY bin)
-if(WIN32)
-    set(LIBRARY_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
-else()
-    set(LIBRARY_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
-endif()
-## Set the output directories globally
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
-
 ## RPATH
 if(UNIX)
     # RPATH is a field in ELF binaries that is used as a hint by the system
@@ -169,7 +156,6 @@ set(SOFACONFIG_BUILD_OPTIONS_SRC
 
 # Library
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOFACONFIG_BUILD_OPTIONS_SRC} ${SOURCE_FILES})
-
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 
