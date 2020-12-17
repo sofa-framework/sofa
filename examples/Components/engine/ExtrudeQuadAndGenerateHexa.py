@@ -6,8 +6,6 @@ def createScene(rootNode):
     rootNode.createObject('RequiredPlugin', pluginName='SofaBoundaryCondition SofaGeneralEngine SofaTopologyMapping SofaPython SofaOpenglVisual SofaMiscMapping')
 
     rootNode.gravity = [0,-9810,0]
-    rootNode.createObject('EulerImplicitSolver')
-    rootNode.createObject('CGLinearSolver')
 
     positions = [[0,0,0],[15,0,0],[30,0,0],[45,0,0]]
     edgetopo = rootNode.createChild('Edge')
@@ -26,10 +24,12 @@ def createScene(rootNode):
     quadtopo.createObject('OglModel', color=[1,1,1,1])
 
     hexatopo = quadtopo.createChild('Hexa')
+    hexatopo.createObject('EulerImplicitSolver')
+    hexatopo.createObject('CGLinearSolver')
     hexatopo.createObject('ExtrudeQuadsAndGenerateHexas', name='extruder',
                             surfaceVertices=quadtopo.MechanicalObject.findData('position').getLinkPath(),
                             surfaceQuads=quadtopo.QuadSetTopologyContainer.findData('quads').getLinkPath(),
-                            thicknessIn=5, thicknessOut=5, numberOfSlices=2)
+                            thicknessIn=5, thicknessOut=5, numberOfSlices=2, flipNormals=True)
 
     hexatopo.createObject('HexahedronSetTopologyContainer',
                             points=hexatopo.extruder.findData('extrudedVertices').getLinkPath(),

@@ -69,6 +69,7 @@ public:
     Data<Real>                                       f_thicknessIn; ///< Thickness of the extruded volume in the opposite direction of the normals
     Data<Real>                                       f_thicknessOut; ///< Thickness of the extruded volume in the direction of the normals
     Data<int>                                        f_numberOfSlices; ///< Number of slices / steps in the extrusion
+    Data<bool>                                       f_flipNormals;
     Data<VecCoord>                                   f_surfaceVertices; ///< Position coordinates of the surface
     Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_surfaceQuads; ///< Indices of the quads of the surface to extrude
     Data<VecCoord>                                   f_extrudedVertices; ///< Coordinates of the extruded vertices
