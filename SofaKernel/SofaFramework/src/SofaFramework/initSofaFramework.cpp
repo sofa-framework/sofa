@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSofaFramework.h"
+#include <SofaFramework/initSofaFramework.h>
 
 #include <sofa/core/init.h>
 #include <sofa/defaulttype/init.h>

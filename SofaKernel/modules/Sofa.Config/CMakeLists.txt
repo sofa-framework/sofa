@@ -173,6 +173,100 @@ if(CMAKE_SYSTEM_NAME STREQUAL Windows)
 endif()
 
 # Compile options
+# Set C++17
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+
+set(SOFACONFIG_COMPILE_OPTIONS_DEBUG "")
+set(SOFACONFIG_COMPILE_OPTIONS_RELEASE "")
+set(SOFACONFIG_COMPILE_OPTIONS "")
+set(SOFACONFIG_LINK_OPTIONS "")
+set(SOFACONFIG_LINK_OPTIONS_DEBUG "")
+set(SOFACONFIG_LINK_OPTIONS_RELEASE "")
+
+## GCC-specific
+if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
+    ## Find out the version of g++ (and save it in GCXX_VERSION)
+    if(CMAKE_CXX_COMPILER_ARG1) # CXX="ccache g++"
+        string(STRIP ${CMAKE_CXX_COMPILER_ARG1} CMAKE_CXX_COMPILER_ARG1_stripped)
+        execute_process(COMMAND ${CMAKE_CXX_COMPILER_ARG1_stripped} -dumpversion OUTPUT_VARIABLE GCXX_VERSION)
+    else()
+        execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCXX_VERSION)
+    endif()
+
+    ## Disable partial inlining under gcc 4.6 (Why? -> the memory was exploding)
+    if("${GCXX_VERSION}" VERSION_EQUAL 4.6)
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS_RELEASE "-fno-partial-inlining")
+    endif()
+
+    # stack-protector
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS_RELEASE "-fstack-protector;--param=ssp-buffer-size=4")
+    # _FORTIFY_SOURCE
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS_RELEASE "-D_FORTIFY_SOURCE=2")
+
+    if(CMAKE_BUILD_TYPE MATCHES "Release")
+        # ???
+        list(APPEND SOFACONFIG_LINK_OPTIONS "-Wl,--no-undefined;-lc")
+    endif()
+
+endif()
+
+## GCC/Clang-specific
+if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+    # Warnings
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "-Wall;-W;-Wno-padded")
+endif()
+
+## Windows-specific
+if(WIN32)    
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_USE_MATH_DEFINES")
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/MP;/wd4250;/wd4251;/wd4275;/wd4675;/wd4996")
+
+    if(MSVC_TOOLSET_VERSION GREATER 140) # > VS 2015
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "/Zc:__cplusplus")
+    endif()
+
+    # Focus on max speed in Release Mode with link-time optimization
+    option(SOFA_ENABLE_LINK_TIME_OPTIMIZATION "Enable LTCG IN release mode (MSVC only for now) [Warning, use a lot of disk space!]" OFF)
+
+    if(SOFA_ENABLE_LINK_TIME_OPTIMIZATION)
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS_RELEASE "/GL")
+        list(APPEND SOFACONFIG_LINK_OPTIONS_RELEASE "/LTCG")
+    endif()
+endif()
+
+# Mac specific
+if(APPLE)
+    #remove OpenGL deprecation message
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "-DGL_SILENCE_DEPRECATION")
+endif()
+
+
+## OpenMP
+option(SOFA_OPENMP "Compile Sofa with OpenMP multithreading." OFF)
+if(SOFA_OPENMP)
+    find_package(OpenMP QUIET)
+    if (OPENMP_FOUND)
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "${OpenMP_CXX_FLAGS}")
+        list(APPEND SOFACONFIG_LINK_OPTIONS "${OpenMP_CXX_FLAGS}")
+    else()
+        message("WARNING: Your compiler does not implement OpenMP.")
+    endif()
+endif()
+
+# An important C++11 feature may be not enabled due to
+# the compiler being built without the --enable-libstdcxx-time option.
+if(CMAKE_COMPILER_IS_GNUCXX)
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_GLIBCXX_USE_NANOSLEEP -D_GLIBCXX_USE_SCHED_YIELD")
+    endif()
+endif()
+
+# hack for clang on old macosx (version < 10.9, such as the dashboard servers)
+# that is using, by default at that time, a libstdc++ that did not fully implement c++11
+if(APPLE AND ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND CMAKE_SYSTEM_VERSION VERSION_LESS "10.9" AND ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" )
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "-stdlib=libc++")
+endif()
+
 if(CMAKE_SYSTEM_NAME STREQUAL Linux AND NOT CMAKE_BUILD_TYPE MATCHES "Debug")
     target_compile_definitions(${PROJECT_NAME} PUBLIC "NDEBUG")
     # On Windows and MacOS, NDEBUG and _DEBUG are automatically
@@ -180,14 +274,27 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux AND NOT CMAKE_BUILD_TYPE MATCHES "Debug")
 endif()
 if(MSVC)
     # Increase Number of Sections in .Obj file
-    target_compile_options(${PROJECT_NAME} PUBLIC "/bigobj")
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/bigobj")
     if(SOFA_VECTORIZE)
         # SSE2 flags
-        target_compile_options(${PROJECT_NAME} PUBLIC "/arch:SSE2 /fp:fast")
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "/arch:SSE2;/fp:fast")
     endif()
 endif()
 
-set_target_properties(${TARGET} PROPERTIES FOLDER SofaFramework) # IDE folder
+# Use Release flags for MinSizeRel and RelWithDebInfo build types:
+set_target_properties(${PROJECT_NAME} PROPERTIES
+  MAP_IMPORTED_CONFIG_MINSIZEREL Release
+  MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release
+  )
+target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELEASE>:${SOFACONFIG_COMPILE_OPTIONS_RELEASE}>")
+target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${SOFACONFIG_COMPILE_OPTIONS_DEBUG}>")
+target_compile_options(${PROJECT_NAME} PUBLIC "${SOFACONFIG_COMPILE_OPTIONS}")
+
+target_link_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELEASE>:${SOFACONFIG_LINK_OPTIONS_RELEASE}>")
+target_link_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${SOFACONFIG_LINK_OPTIONS_DEBUG}>")
+target_link_options(${PROJECT_NAME} PUBLIC "${SOFACONFIG_LINK_OPTIONS}")
+
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaFramework) # IDE folder
 
 # CMakeParseLibraryList.cmake
 configure_file(cmake/CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/cmake/CMakeParseLibraryList.cmake COPYONLY)
@@ -200,10 +307,14 @@ foreach(macro_file ${macro_files})
     install(FILES ${macro_file} DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
 endforeach()
 
+# own include dir, the macro does not handle "independent" package for SofaFramework-style include 
+# i.e NOT the name of package first (sofa/ is wanted, instead of Sofa.Config/sofa)
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/${PROJECT_NAME}>")
+
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}
-    TARGETS ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     )

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
+#include <SofaFramework/config.h>
 
 namespace sofa
 {

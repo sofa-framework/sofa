@@ -306,6 +306,9 @@ if(NOT SOFA_NO_OPENGL)
     endif()
 endif()
 
+
+find_package(Sofa.Config REQUIRED)
+
 # LIBRARY
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
@@ -337,6 +340,8 @@ if(MSVC)
 endif()
 
 # DEPENDENCY LINKS AND INCLUDE DIRS
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config )
+
 # System libs
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)

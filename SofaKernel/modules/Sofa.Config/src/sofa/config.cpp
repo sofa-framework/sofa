@@ -20,3 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
+
+namespace sofa
+{
+
+// this is obviously useless
+// but it forces MSVC to generate a .lib file.
+// once Sofa.Config becomes a header-only library, this can be deleted.
+SOFA_EXPORT_DYNAMIC_LIBRARY void initConfig()
+{
+    ;
+}
+
+} // namespace sofa
