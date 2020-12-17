@@ -19,10 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*****************************************************************************
-* User of this library should read the documentation
-* in the messaging.h file.
-******************************************************************************/
 #pragma once
 
 #include <SofaBaseUtils/config.h>
@@ -33,67 +29,45 @@
 
 #include <string>
 
-namespace sofa
-{
-namespace helper
-{
-namespace logging
-{
-    class MessageHandler ;
-}
-}
-}
-
-namespace sofa
-{
-namespace component
-{
-namespace logging
+namespace sofa::component::makealiascomponent
 {
 
-/// A sofa component to add a MessageHandler to the main logger
-class SOFA_BASE_UTILS_API MessageHandlerComponent : public core::objectmodel::BaseObject
+/// I use a per-file namespace so that I can employ the 'using' keywords without
+/// fearing it will leack names into the global namespace. When closing this namespace
+/// selected object from this per-file namespace are then imported into their parent namespace.
+/// for ease of use
+/// 
+/// A component to add alias to other components.
+class SOFA_SOFABASEUTILS_API MakeAliasComponent : public core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(MessageHandlerComponent, core::objectmodel::BaseObject);
+    SOFA_CLASS(MakeAliasComponent, core::objectmodel::BaseObject);
 
-    MessageHandlerComponent() ;
-    ~MessageHandlerComponent() override{}
+    MakeAliasComponent() ;
+    ~MakeAliasComponent() override{}
 
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
     /// potentially other parameters.
     void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
-    Data<std::string>        d_type       ;
-    bool                m_isValid    ;
+    Data<std::string>   d_targetcomponent       ; ///< The component class for which to create an alias.
+    Data<std::string>   d_alias                 ; ///< The new alias of the component.
 
-    bool isValid(){ return m_isValid; }
+    /// Returns the sofa class name. By default the name of the c++ class is exposed... but
+    /// Here we want it to be MakeAlias so we need to customize it.
+    /// More details on the name customization infrastructure is in NameDecoder.h
+    static std::string GetCustomClassName()
+    {
+        return "MakeAlias" ;
+    }
 };
 
+} // namespace sofa::component::makealiascomponent
 
-/// A sofa component to add a FileMessageHandlerComponent to the main logger
-class SOFA_BASE_UTILS_API FileMessageHandlerComponent : public core::objectmodel::BaseObject
+namespace sofa::component
 {
-public:
-    SOFA_CLASS(FileMessageHandlerComponent, core::objectmodel::BaseObject) ;
+/// Import the component from the per-file namespace.
+using makealiascomponent::MakeAliasComponent ;
 
-    FileMessageHandlerComponent() ;
-    ~FileMessageHandlerComponent() override ;
-
-    /// Inherited from BaseObject.
-    /// Parse the given description to assign values to this object's fields and
-    /// potentially other parameters.
-    void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
-
-    Data<std::string>        d_filename        ; ///< Name of the file into which the message will be saved in.
-    helper::logging::MessageHandler*     m_handler         ;
-
-
-    bool                m_isValid    ;
-    bool isValid(){ return m_isValid; }
-};
-
-}
-}
-}
+} // namespace sofa::component

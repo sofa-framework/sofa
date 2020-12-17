@@ -29,13 +29,8 @@ using sofa::core::objectmodel::ComponentState ;
 
 using std::string;
 
-namespace sofa
+namespace sofa::component::makealiascomponent
 {
-namespace component
-{
-namespace makealiascomponent
-{
-
 
 MakeAliasComponent::MakeAliasComponent() :
    d_targetcomponent(initData(&d_targetcomponent, "targetcomponent", "The component class for which to create an alias."))
@@ -85,8 +80,4 @@ int MakeAliasComponentClass = RegisterObject("This object create an alias to a c
         .add< MakeAliasComponent >()
         ;
 
-}
-}
-}
-
-
+} // namespace sofa::component::makealiascomponent

@@ -28,11 +28,7 @@
 using sofa::helper::system::FileSystem;
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace misc
+namespace sofa::component::misc
 {
 
 BaseAddResourceRepository::BaseAddResourceRepository()
@@ -121,6 +117,4 @@ static int AddPluginRepositoryClass = core::RegisterObject("Add a path to Plugin
     .add< AddPluginRepository >();
 
 
-} // namespace misc
-} // namespace component
-} // namespace sofa
+} // namespace sofa::component::misc

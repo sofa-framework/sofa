@@ -19,25 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseUtils/initBaseUtils.h>
+#pragma once
+#include <SofaBaseUtils/config.h>
 
-
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+void SOFA_SOFABASEUTILS_API initSofaBaseUtils();
 
-
-void initBaseUtils()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component

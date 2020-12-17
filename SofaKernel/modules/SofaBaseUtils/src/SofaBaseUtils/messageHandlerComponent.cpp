@@ -26,9 +26,6 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::RegisterObject ;
 
-//#include <sofa/helper/logging/LoggerMessageHandler.h>
-//using sofa::helper::logging::LoggerMessageHandler ;
-
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
 
@@ -50,15 +47,11 @@ using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher;
 
-#include "messageHandlerComponent.h"
+#include <SofaBaseUtils/messageHandlerComponent.h>
 
 using std::string;
 
-namespace sofa
-{
-namespace component
-{
-namespace logging
+namespace sofa::component::logging
 {
 
 MessageHandlerComponent::MessageHandlerComponent() :
@@ -88,8 +81,6 @@ void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* 
         MessageDispatcher::addHandler(new ConsoleMessageHandler()) ;
     }else if(stype=="clang"){
         MessageDispatcher::addHandler(new ClangMessageHandler()) ;
-//    }else if(stype=="log"){
-//        MessageDispatcher::addHandler(new LoggerMessageHandler()) ;
     }else if(stype=="rich"){
          MessageDispatcher::addHandler(new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance())) ;
     }else if(stype=="silent"){
@@ -165,8 +156,4 @@ int FileMessageHandlerComponentClass = RegisterObject("This component dump all t
                                                       "a file.")
         .add< FileMessageHandlerComponent >()
         ;
-}
-}
-}
-
-
+} // namespace sofa::component::logging
