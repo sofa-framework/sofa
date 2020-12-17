@@ -64,7 +64,7 @@ struct VectorTypeInfo
     static sofa::Size size(const DataType& data)
     {
         if (BaseTypeInfo::FixedSize)
-            return data.size()*BaseTypeInfo::size();
+            return sofa::Size(data.size()*BaseTypeInfo::size());
         else
         {
             sofa::Size n = data.size();

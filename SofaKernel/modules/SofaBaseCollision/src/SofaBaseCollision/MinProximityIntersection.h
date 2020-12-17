@@ -19,39 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#pragma once
+#include <SofaBaseCollision/config.h>
 
-namespace sofa
+#include <SofaBaseCollision/BaseProximityIntersection.h>
+
+namespace sofa::component::collision
 {
 
-namespace component
+class SOFA_SOFABASECOLLISION_API MinProximityIntersection : public BaseProximityIntersection
 {
+public:
+    SOFA_CLASS(MinProximityIntersection,BaseProximityIntersection);
+    Data<bool> useSphereTriangle; ///< activate Sphere-Triangle intersection tests
+    Data<bool> usePointPoint; ///< activate Point-Point intersection tests
+    Data<bool> useSurfaceNormals; ///< Compute the norms of the Detection Outputs by considering the normals of the surfaces involved.
+    Data<bool> useLinePoint; ///< activate Line-Point intersection tests
+    Data<bool> useLineLine; ///< activate Line-Line  intersection tests
+    Data<bool> useTriangleLine;
 
+protected:
+    MinProximityIntersection();
+public:
+    typedef core::collision::IntersectorFactory<MinProximityIntersection> IntersectorFactory;
 
-void initSofaBase()
+    void init() override;
+
+    bool getUseSurfaceNormals();
+
+    void draw(const core::visual::VisualParams* vparams) override;
+
+private:
+    SReal mainAlarmDistance;
+    SReal mainContactDistance;
+};
+
+} // namespace sofa::component::collision
+
+namespace sofa::core::collision
 {
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+#if  !defined(SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_CPP)
+extern template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
+#endif
+} // namespace sofa::core::collision

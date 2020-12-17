@@ -19,39 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#define SOFA_COMPONENT_COLLISION_OBBMODEL_CPP
+#include <SofaBaseCollision/OBBModel.inl>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
+using namespace sofa::core::collision;
+using namespace helper;
 
+int OBBModelClass = core::RegisterObject("Collision model which represents a set of OBBs")
+        .add<  OBBCollisionModel<Rigid3Types> >()
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
+        .addAlias("OBB")
+        .addAlias("OBBModel")
+        .addAlias("TOBBModel")
+        ;
 
-        first = false;
-    }
-}
+template class SOFA_SOFABASECOLLISION_API OBBCollisionModel<defaulttype::Rigid3Types>;
+template class SOFA_SOFABASECOLLISION_API TOBB<defaulttype::Rigid3Types>;
 
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision

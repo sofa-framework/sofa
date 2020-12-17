@@ -19,39 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#include <SofaBaseCollision/BaseIntTool.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
+//template<>
+bool BaseIntTool::testIntersection(Cube &cube1, Cube &cube2,SReal alarmDist)
 {
-
-
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
+    if (cube1 == cube2)
     {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
+        if (cube1.getConeAngle() < M_PI / 2)
+            return false;
+        else
+            return true;
     }
+
+    const defaulttype::Vector3& minVect1 = cube1.minVect();
+    const defaulttype::Vector3& minVect2 = cube2.minVect();
+    const defaulttype::Vector3& maxVect1 = cube1.maxVect();
+    const defaulttype::Vector3& maxVect2 = cube2.maxVect();
+
+    for (int i = 0; i < 3; i++)
+    {
+        if ( minVect1[i] > maxVect2[i] + alarmDist || minVect2[i] > maxVect1[i] + alarmDist )
+            return false;
+    }
+
+    return true;
 }
 
-} // namespace component
+class SOFA_SOFABASECOLLISION_API BaseIntTool;
 
-} // namespace sofa
+} // namespace sofa::component::collision

@@ -19,39 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#pragma once
+#include <SofaBaseCollision/NewProximityIntersection.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/Vec.h>
 
-namespace sofa
+
+namespace sofa::component::collision
 {
 
-namespace component
+inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id)
 {
+    defaulttype::Vector3 pq = q-p;
 
+    SReal norm2 = pq.norm2();
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
+    if ( norm2 >= dist2)
+        return 0;
 
-        first = false;
-    }
+    //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    contacts->resize(contacts->size()+1);
+    sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
+    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->id = id;
+    detection->point[0]=p;
+    detection->point[1]=q;
+    detection->value = helper::rsqrt(norm2);
+    detection->normal=pq/detection->value;
+    //detection->value -= contactDist;
+    return 1;
 }
 
-} // namespace component
 
-} // namespace sofa
+} // namespace sofa::component::collision

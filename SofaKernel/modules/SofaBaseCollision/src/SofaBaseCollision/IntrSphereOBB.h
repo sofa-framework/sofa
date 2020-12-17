@@ -20,39 +20,56 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <SofaBaseCollision/config.h>
 
-#include <SofaConstraint/LMConstraintSolver.h>
-#include <sofa/helper/OptionsGroup.h>
-#include <sofa/core/MultiVecId.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/IntrUtility3.h>
+#include <SofaBaseCollision/Intersector.h>
 
-namespace sofa::component::constraintset
+namespace sofa::component::collision{
+
+/**
+  *TDataTypes is the sphere type and TDataTypes2 the OBB type.
+  */
+template <typename TDataTypes,typename TDataTypes2>
+class TIntrSphereOBB : public Intersector<typename TDataTypes::Real>
 {
-
-class SOFA_SOFACONSTRAINT_API LMConstraintDirectSolver : public LMConstraintSolver
-{
-    typedef Eigen::SparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
-    typedef helper::vector<linearsolver::LLineManipulator> JacobianRows;
-    using MultiVecId = sofa::core::MultiVecId;
-
 public:
-    SOFA_CLASS(LMConstraintDirectSolver, LMConstraintSolver);
-protected:
-    LMConstraintDirectSolver();
-public:
-    bool buildSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-    bool solveSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    typedef TSphere<TDataTypes> IntrSph;
+    typedef typename IntrSph::Real Real;
+    typedef typename IntrSph::Coord Coord;
+    typedef TOBB<TDataTypes2> Box;
+    typedef defaulttype::Vec<3,Real> Vec3;
 
-protected:
+    TIntrSphereOBB (const IntrSph& sphere, const Box & box);
 
-    void analyseConstraints(const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints, core::ConstraintParams::ConstOrder order,
-            JacobianRows &rowsL,JacobianRows &rowsLT, helper::vector< unsigned int > &rightHandElements) const;
+    /**
+      *The idea of finding contact points is simple : project
+      *the sphere center on the OBB and find the intersection point
+      *on the OBB. Once we have this point we project it on the sphere.
+      */
+    bool Find ();
 
-    void buildLeftRectangularMatrix(const DofToMatrix& invMassMatrix,
-            DofToMatrix& LMatrix, DofToMatrix& LTMatrix,
-            SparseColMajorMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const;
+    Real distance()const;
+private:
+    using Intersector<Real>::_is_colliding;
+    using Intersector<Real>::_pt_on_first;
+    using Intersector<Real>::_pt_on_second;
+    using Intersector<Real>::mContactTime;
+    using Intersector<Real>::_sep_axis;
 
-    Data<sofa::helper::OptionsGroup> solverAlgorithm; ///< Algorithm used to solve the system W.Lambda=c
+    // The objects to intersect.
+    const IntrSph* _sph;
+    const Box * mBox;
 };
 
-} //namespace sofa::component::constraintset
+typedef TIntrSphereOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types> IntrSphereOBB;
+
+#if  !defined(SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_CPP)
+extern template class SOFA_SOFABASECOLLISION_API TIntrSphereOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASECOLLISION_API TIntrSphereOBB<defaulttype::Rigid3Types,defaulttype::Rigid3Types>;
+
+#endif
+
+} // namespace sofa::component::collision

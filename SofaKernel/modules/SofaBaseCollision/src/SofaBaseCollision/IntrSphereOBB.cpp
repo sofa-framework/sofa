@@ -19,39 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#define SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_CPP
+#include <SofaBaseCollision/IntrSphereOBB.inl>
 
-namespace sofa
+namespace sofa::component::collision
 {
+using namespace sofa::defaulttype;
+//----------------------------------------------------------------------------
+// Explicit instantiation.
+//----------------------------------------------------------------------------
+template class SOFA_SOFABASECOLLISION_API TIntrSphereOBB<Vec3Types,Rigid3Types>;
+template class SOFA_SOFABASECOLLISION_API TIntrSphereOBB<Rigid3Types,Rigid3Types>;
 
-namespace component
-{
+//----------------------------------------------------------------------------
+} // namespace sofa::component::collision
 
-
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa

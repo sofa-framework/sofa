@@ -19,39 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#pragma once
+#include <SofaBaseCollision/config.h>
 
-namespace sofa
+#include <sofa/defaulttype/Vec.h>
+
+namespace sofa::component::collision
 {
 
-namespace component
-{
+template <class Real>
+class Intersector{
+public:
+    typedef sofa::defaulttype::Vec<3,Real> Vec3;
 
-
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
+    inline const Vec3 & separatingAxis()const{
+        return _sep_axis;
     }
-}
 
-} // namespace component
+    inline const Vec3 & pointOnFirst()const{
+        return _pt_on_first;
+    }
 
-} // namespace sofa
+    inline const Vec3 & pointOnSecond()const{
+        return _pt_on_second;
+    }
+
+    inline bool colliding()const{
+        return _is_colliding;
+    }
+protected:
+    Vec3 _sep_axis;
+    Vec3 _pt_on_first;
+    Vec3 _pt_on_second;
+    Real mContactTime;
+    bool _is_colliding;
+};
+
+} // namespace sofa::component::collision
