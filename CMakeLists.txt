@@ -12,6 +12,8 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Config ${CMAKE_CURRENT_BINARY_DIR}/Sofa.Config)
+
 # Option for packaging
 option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 

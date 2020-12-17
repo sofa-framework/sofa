@@ -2,9 +2,13 @@ cmake_minimum_required(VERSION 3.12)
 project(Sofa.Config)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
 
 include(SofaMacros)
 include(CMakeDependentOption)
+
+message("Adding Sofa.Config")
 
 # Manually define VERSION
 set(Sofa_VERSION_MAJOR 20)
@@ -137,7 +141,7 @@ set(EXAMPLES_DIR "../share/sofa/examples")
 configure_file("etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini COMPONENT applications)
 
-set(SOFACONFIGSRC_ROOT "src/sofa/config")
+set(SOFACONFIGSRC_ROOT "src/sofa")
 set(HEADER_FILES
     ${SOFACONFIGSRC_ROOT}/config.h.in
     ${SOFACONFIGSRC_ROOT}/version.h.in
@@ -175,11 +179,11 @@ if(MSVC)
 endif()
 
 # CMakeParseLibraryList.cmake
-configure_file(CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/cmake/CMakeParseLibraryList.cmake COPYONLY)
-install(FILES CMakeParseLibraryList.cmake DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
+configure_file(cmake/CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/cmake/CMakeParseLibraryList.cmake COPYONLY)
+install(FILES cmake/CMakeParseLibraryList.cmake DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
 
 # SofaMacros*.cmake
-file(GLOB macro_files RELATIVE ${CMAKE_CURRENT_LIST_DIR} LIST_DIRECTORIES FALSE "SofaMacros*.cmake")
+file(GLOB macro_files RELATIVE ${CMAKE_CURRENT_LIST_DIR}/cmake LIST_DIRECTORIES FALSE "SofaMacros*.cmake")
 foreach(macro_file ${macro_files})
     configure_file(${macro_file} ${CMAKE_BINARY_DIR}/cmake/${macro_file} COPYONLY)
     install(FILES ${macro_file} DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
