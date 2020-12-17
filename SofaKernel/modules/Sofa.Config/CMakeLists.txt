@@ -124,6 +124,11 @@ option(SOFA_USE_MASK "Use mask optimization" OFF)
 option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
 ### Threading
 option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL/EXPERIMENTAL)" ON)
+### Deprecated components
+option(SOFA_WITH_DEPRECATED_COMPONENTS "Compile SOFA with all deprecated components" ON)
+if(SOFA_WITH_DEPRECATED_COMPONENTS)
+    message(DEPRECATION "Deprecated components are activated (SOFA_WITH_DEPRECATED_COMPONENTS variable is ON)")
+endif()
 
 # Variables to expose in configured files
 sofa_set_01(SOFA_WITH_THREADING_ VALUE ${SOFA_WITH_THREADING}) # build_option_threading.h.in
@@ -292,9 +297,18 @@ target_compile_options(${PROJECT_NAME} PUBLIC "${SOFACONFIG_COMPILE_OPTIONS}")
 
 # target_link_option only available with cmake >= 3.13
 if(${CMAKE_VERSION} VERSION_LESS "3.13.0")
-    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_RELEASE "${SOFACONFIG_LINK_OPTIONS_RELEASE}")
-    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_DEBUG "${SOFACONFIG_LINK_OPTIONS_DEBUG}")
-    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "${SOFACONFIG_LINK_OPTIONS}")
+    if(NOT SOFACONFIG_LINK_OPTIONS_RELEASE STREQUAL "")
+        string(REPLACE ";" " " SOFACONFIG_LINK_OPTIONS_RELEASE "${SOFACONFIG_LINK_OPTIONS_RELEASE}")
+        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_RELEASE "${SOFACONFIG_LINK_OPTIONS_RELEASE}")
+    endif()
+    if(NOT SOFACONFIG_LINK_OPTIONS_DEBUG STREQUAL "")
+        string(REPLACE ";" " " SOFACONFIG_LINK_OPTIONS_DEBUG "${SOFACONFIG_LINK_OPTIONS_DEBUG}")
+        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_DEBUG "${SOFACONFIG_LINK_OPTIONS_DEBUG}")
+    endif()
+    if(NOT SOFACONFIG_LINK_OPTIONS STREQUAL "")
+        string(REPLACE ";" " " SOFACONFIG_LINK_OPTIONS "${SOFACONFIG_LINK_OPTIONS}")
+        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "${SOFACONFIG_LINK_OPTIONS}")
+    endif()
 else()
     target_link_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELEASE>:${SOFACONFIG_LINK_OPTIONS_RELEASE}>")
     target_link_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${SOFACONFIG_LINK_OPTIONS_DEBUG}>")

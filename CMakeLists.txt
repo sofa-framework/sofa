@@ -120,12 +120,6 @@ option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit 
 # it simplifies binaries generation and future cohabitation between SofaPython and SofaPython3
 option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to SofaPython" ON)
 
-### Deprecated components
-option(SOFA_WITH_DEPRECATED_COMPONENTS "Compile SOFA with all deprecated components" ON)
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    message(DEPRECATION "Deprecated components are activated (SOFA_WITH_DEPRECATED_COMPONENTS variable is ON)")
-endif()
-
 ### Extlibs
 add_subdirectory(extlibs)
 
