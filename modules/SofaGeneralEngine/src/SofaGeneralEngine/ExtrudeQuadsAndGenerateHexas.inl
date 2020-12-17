@@ -170,8 +170,8 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::doUpdate()
     {
         for (int n=0; n<nSlices; n++)
         {
-            BaseMeshTopology::Hexa hexa = BaseMeshTopology::Hexa(surfaceQuads[q][3]*(nSlices+1)+n,   surfaceQuads[q][2]*(nSlices+1)+n,   surfaceQuads[q][1]*(nSlices+1)+n,   surfaceQuads[q][0]*(nSlices+1)+n,
-                    surfaceQuads[q][3]*(nSlices+1)+n+1, surfaceQuads[q][2]*(nSlices+1)+n+1, surfaceQuads[q][1]*(nSlices+1)+n+1, surfaceQuads[q][0]*(nSlices+1)+n+1);
+            BaseMeshTopology::Hexa hexa = BaseMeshTopology::Hexa(surfaceQuads[q][0]*(nSlices+1)+n,   surfaceQuads[q][1]*(nSlices+1)+n,   surfaceQuads[q][2]*(nSlices+1)+n,   surfaceQuads[q][3]*(nSlices+1)+n,
+                    surfaceQuads[q][0]*(nSlices+1)+n+1, surfaceQuads[q][1]*(nSlices+1)+n+1, surfaceQuads[q][2]*(nSlices+1)+n+1, surfaceQuads[q][3]*(nSlices+1)+n+1);
             extrudedHexas->push_back(hexa);
         }
     }
