@@ -3,7 +3,7 @@ project(Sofa.Config)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/lib/cmake")
 
 include(SofaMacros)
 include(CMakeDependentOption)
@@ -155,26 +155,28 @@ set(SOFACONFIG_BUILD_OPTIONS_SRC
     ${SOFACONFIGSRC_ROOT}/config/build_option_bbox.h.in
 )
 
-# LIBRARY
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES} ${SOFA_BUILD_OPTIONS_SRC})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+# Header-only library
+add_library(${PROJECT_NAME} INTERFACE)
+target_sources(${PROJECT_NAME} INTERFACE "$<BUILD_INTERFACE:${HEADER_FILES};${SOFACONFIG_BUILD_OPTIONS_SRC}>")
+
+target_include_directories(${PROJECT_NAME} INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
+    target_include_directories(${PROJECT_NAME} SYSTEM INTERFACE "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
 endif()
 
 # Compile options
 if(CMAKE_SYSTEM_NAME STREQUAL Linux AND NOT CMAKE_BUILD_TYPE MATCHES "Debug")
-    target_compile_definitions(${PROJECT_NAME} PUBLIC "NDEBUG")
+    target_compile_definitions(${PROJECT_NAME} INTERFACE "NDEBUG")
     # On Windows and MacOS, NDEBUG and _DEBUG are automatically
     # set in the default c/cxx flags of the right configurations
 endif()
 if(MSVC)
     # Increase Number of Sections in .Obj file
-    target_compile_options(${PROJECT_NAME} PUBLIC "/bigobj")
+    target_compile_options(${PROJECT_NAME} INTERFACE "/bigobj")
     if(SOFA_VECTORIZE)
         # SSE2 flags
-        target_compile_options(${PROJECT_NAME} PUBLIC "/arch:SSE2 /fp:fast")
+        target_compile_options(${PROJECT_NAME} INTERFACE "/arch:SSE2 /fp:fast")
     endif()
 endif()
 
@@ -192,7 +194,15 @@ endforeach()
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}
-    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    TARGETS ${PROJECT_NAME}
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     )
+
+# Propagate variable (which were in Sofa's global cmakelist)
+# put instead into a target_property ?
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
+set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH}" PARENT_SCOPE)
+set(Sofa_VERSION "${Sofa_VERSION}" PARENT_SCOPE)
+set(SOFA_VERSION_STR "${SOFA_VERSION_STR}" PARENT_SCOPE)
+set(SOFA_VERSION "${SOFA_VERSION}" PARENT_SCOPE)

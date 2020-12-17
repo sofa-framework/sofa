@@ -15,7 +15,6 @@ endforeach()
 
 set(SOFAFRAMEWORK_SRC src/sofa)
 set(HEADER_FILES
-    ${SOFAFRAMEWORK_SRC}/config.h.in
     ${SOFAFRAMEWORK_SRC}/initSofaFramework.h
     )
 set(SOURCE_FILES
