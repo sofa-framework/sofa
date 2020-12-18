@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_INL
-#define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_INL
-
+#pragma once
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
-#include <sofa/helper/BackTrace.h>
 
-namespace sofa {
-
-namespace component {
-
-namespace linearsolver {
+namespace sofa::component::linearsolver {
 
 
 template<class Matrix, class Vector>
@@ -354,10 +347,4 @@ void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* 
 
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver

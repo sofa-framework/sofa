@@ -19,44 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SingleMatrixAccessor.h"
-#include <iostream>
+#pragma once
 
-namespace sofa
-{
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace component
-{
+#define SOFABASELINEARSOLVER_VERSION @PROJECT_VERSION@
 
-namespace linearsolver
-{
-
-SingleMatrixAccessor::~SingleMatrixAccessor()
-{
-}
-
-
-void SingleMatrixAccessor::setMatrix( BaseMatrix* m )
-{
-    matrix = m;
-    matRef.matrix = m;
-}
-
-SingleMatrixAccessor::InteractionMatrixRef SingleMatrixAccessor::getMatrix(const core::behavior::BaseMechanicalState*, const core::behavior::BaseMechanicalState* ) const
-{
-    assert(false);
-    InteractionMatrixRef ref;
-    return ref;
-}
-
-SingleMatrixAccessor::MatrixRef SingleMatrixAccessor::getMatrix(const core::behavior::BaseMechanicalState*) const
-{
-    return matRef;
-}
-
-
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+#ifdef SOFA_BUILD_SOFABASELINEARSOLVER
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFABASELINEARSOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFABASELINEARSOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif

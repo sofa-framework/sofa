@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_MATRIXBLOCTRAITS_H
-#define SOFA_COMPONENT_LINEARSOLVER_MATRIXBLOCTRAITS_H
-#include "config.h"
+#pragma once
+#include <SofaBaseLinearSolver/config.h>
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 template<Size TN, typename T> class bloc_index_func
@@ -235,10 +228,4 @@ public:
     static const char* Name() { return "f"; }
 };
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver

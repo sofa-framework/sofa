@@ -19,59 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseLinearSolver/GraphScatteredTypes.h>
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
+#define SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP
+#include <SofaBaseLinearSolver/FullVector.h>
 
-#include <cstdlib>
-#include <cmath>
+#include <sofa/helper/rmath.h>
 
-namespace sofa
+namespace sofa::component::linearsolver
 {
-
-namespace component
+template<> void FullVector<bool>::set(Index i, SReal v)
 {
-
-namespace linearsolver
-{
-
-using sofa::core::behavior::LinearSolver;
-using sofa::core::objectmodel::BaseContext;
-
-void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector& x)
-{
-    // matrix-vector product through visitors
-    parent->propagateDxAndResetDf(x,res);
-    parent->addMBKdx(res,parent->mparams.mFactor(),parent->mparams.bFactor(),parent->mparams.kFactor(), false); // df = (m M + b B + k K) dx
-
-    // filter the product to take the constraints into account
-    //
-    parent->projectResponse(res);     // q is projected to the constrained space
+    data[i] = (v!=0);
 }
 
-sofa::Size GraphScatteredMatrix::rowSize()
+template<> void FullVector<bool>::add(Index i, SReal v)
 {
-    sofa::Size nbRow=0, nbCol=0;
-    this->parent->getMatrixDimension(&nbRow, &nbCol);
-    return nbRow;
-
+    data[i] |= (v!=0);
 }
 
-sofa::Size GraphScatteredMatrix::colSize()
+template<> bool FullVector<bool>::dot(const FullVector<Real>& a) const
 {
-    sofa::Size nbRow=0, nbCol=0;
-    this->parent->getMatrixDimension(&nbRow, &nbCol);
-    return nbCol;
+    Real r = false;
+    for(Index i=0; i<cursize && !r; ++i)
+        r = (*this)[i] && a[i];
+    return r;
 }
 
-
-void GraphScatteredVector::operator=(const MultExpr<GraphScatteredMatrix,GraphScatteredVector>& expr)
+template<> double FullVector<bool>::norm() const
 {
-    expr.a.apply(*this,expr.b);
+    double r = 0.0;
+    for(Index i=0; i<cursize; ++i)
+        r += (*this)[i] ? 1.0 : 0.0;
+    return helper::rsqrt(r);
 }
 
-} // namespace linearsolver
+template class SOFA_SOFABASELINEARSOLVER_API FullVector<bool>;
 
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver
