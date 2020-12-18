@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
+#include <SofaBaseTopology/initSofaBaseTopology.h>
 #include <SofaBaseMechanics/initBaseMechanics.h>
 #include <SofaBaseCollision/initSofaBaseCollision.h>
 #include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
@@ -40,7 +40,7 @@ void initSofaBase()
     static bool first = true;
     if (first)
     {
-        initBaseTopology();
+        initSofaBaseTopology();
         initBaseMechanics();
         initSofaBaseCollision();
         initSofaBaseLinearSolver();
