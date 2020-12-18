@@ -283,7 +283,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeLength( BasicArrayInterfac
     const sofa::helper::vector<Edge> &ea = this->m_topology->getEdges();
     const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    for (size_t i=0; i<ea.size(); ++i)
+    for (Index i=0; i<ea.size(); ++i)
     {
         const Edge &e = ea[i];
         ai[i] = (DataTypes::getCPos(p[e[0]])-DataTypes::getCPos(p[e[1]])).norm();
@@ -769,7 +769,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
     {
         EdgesAroundVertex ve = this->m_topology->getEdgesAroundVertex(pointId);
         edgeVec.resize(ve.size());
-        numEdges.push_back(ve.size());            // number of edges attached to this point
+        numEdges.push_back(sofa::Size(ve.size()));            // number of edges attached to this point
         sofa::defaulttype::Matrix3 EEt,L;
 
         // Solve E.W = I , where each column of E is an adjacent edge vector, W are the desired weights, and I is the 3x3 identity

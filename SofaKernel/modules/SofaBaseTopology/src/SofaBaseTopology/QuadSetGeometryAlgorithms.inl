@@ -101,11 +101,11 @@ void QuadSetGeometryAlgorithms<DataTypes>::computeQuadArea( BasicArrayInterface<
     size_t nb_quads = this->m_topology->getNbQuads();
     const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    for(size_t i=0; i<nb_quads; ++i)
+    for(sofa::Index i=0; i<nb_quads; ++i)
     {
         // ta.size()
         const Quad &t = this->m_topology->getQuad(i);  //ta[i];
-        ai[i] = (Real)((areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])
+        ai[i] = Real((areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])
                 + areaProduct(p[t[3]]-p[t[2]],p[t[0]]-p[t[2]])) * (Real) 0.5);
     }
 }

@@ -80,7 +80,7 @@ public:
      *
      * \sa addTrianglesProcess
      */
-    void addTrianglesWarning(const size_t nTriangles,
+    void addTrianglesWarning(const sofa::Size nTriangles,
             const sofa::helper::vector< Triangle >& trianglesList,
             const sofa::helper::vector< TriangleID >& trianglesIndexList) ;
 
@@ -88,7 +88,7 @@ public:
      *
      * \sa addTrianglesProcess
      */
-    void addTrianglesWarning(const size_t nTriangles,
+    void addTrianglesWarning(const sofa::Size nTriangles,
             const sofa::helper::vector< Triangle >& trianglesList,
             const sofa::helper::vector< TriangleID >& trianglesIndexList,
             const sofa::helper::vector< sofa::helper::vector< TriangleID > > & ancestors,
@@ -106,13 +106,13 @@ public:
      *
      * \sa addPointsWarning
      */
-    void addPointsProcess(const size_t nPoints) override;
+    void addPointsProcess(const sofa::Size nPoints) override;
 
     /** \brief Sends a message to warn that some edges were added in this topology.
      *
      * \sa addEdgesProcess
      */
-    void addEdgesWarning(const size_t nEdges,
+    void addEdgesWarning(const sofa::Size nEdges,
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< EdgeID >& edgesIndexList) override
     {
@@ -123,7 +123,7 @@ public:
      *
      * \sa addEdgesProcess
      */
-    void addEdgesWarning(const size_t nEdges,
+    void addEdgesWarning(const sofa::Size nEdges,
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< EdgeID >& edgesIndexList,
             const sofa::helper::vector< sofa::helper::vector< EdgeID > > & ancestors,
@@ -192,7 +192,7 @@ public:
      * @param baryCoefs - their barycoefs related to these ancestors.
      * @param trianglesIndex2remove - List of triangle indices to remove.
      */
-    virtual void addRemoveTriangles(const size_t nTri2Add,
+    virtual void addRemoveTriangles(const sofa::Size nTri2Add,
             const sofa::helper::vector< Triangle >& triangles2Add,
             const sofa::helper::vector< TriangleID >& trianglesIndex2Add,
             const sofa::helper::vector< sofa::helper::vector< TriangleID > > & ancestors,

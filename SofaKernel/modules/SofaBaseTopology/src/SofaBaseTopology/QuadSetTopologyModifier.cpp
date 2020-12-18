@@ -165,7 +165,7 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
 
             sofa::helper::vector< EdgeID > edgeIndexList;
             edgeIndexList.push_back((EdgeID) edgeIndex);
-            addEdgesWarning(v.size(), v, edgeIndexList);
+            addEdgesWarning(sofa::Size(v.size()), v, edgeIndexList);
         }
 
         // update m_edgesInQuad
@@ -341,7 +341,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<Quad
     }
 }
 
-void QuadSetTopologyModifier::addPointsProcess(const size_t nPoints)
+void QuadSetTopologyModifier::addPointsProcess(const sofa::Size nPoints)
 {
     // start by calling the parent's method.
     EdgeSetTopologyModifier::addPointsProcess( nPoints );

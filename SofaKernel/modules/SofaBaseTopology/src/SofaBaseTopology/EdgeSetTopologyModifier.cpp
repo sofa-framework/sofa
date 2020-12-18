@@ -86,7 +86,7 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
     if (m_container->m_edgesAroundVertex.size() != nbrP)
         m_container->m_edgesAroundVertex.resize(nbrP);
 
-    size_t edgeId = m_container->getNumberOfEdges();
+    sofa::Index edgeId = m_container->getNumberOfEdges();
 
     sofa::helper::vector< EdgeID > &shell0 = m_container->m_edgesAroundVertex[e[0]];
     shell0.push_back((EdgeID)edgeId);
@@ -101,14 +101,14 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 
 void EdgeSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
 {
-    for (size_t i=0; i<edges.size(); ++i)
+    for (sofa::Index i=0; i<edges.size(); ++i)
     {
         addEdgeProcess(edges[i]);
     }
 }
 
 
-void EdgeSetTopologyModifier::addEdgesWarning(const size_t nEdges)
+void EdgeSetTopologyModifier::addEdgesWarning(const sofa::Size nEdges)
 {
     m_container->setEdgeTopologyToDirty();
 
@@ -118,7 +118,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const size_t nEdges)
 }
 
 
-void EdgeSetTopologyModifier::addEdgesWarning(const size_t nEdges,
+void EdgeSetTopologyModifier::addEdgesWarning(const sofa::Size nEdges,
         const sofa::helper::vector< Edge >& edgesList,
         const sofa::helper::vector< EdgeID >& edgesIndexList)
 {
@@ -130,7 +130,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const size_t nEdges,
 }
 
 
-void EdgeSetTopologyModifier::addEdgesWarning(const size_t nEdges,
+void EdgeSetTopologyModifier::addEdgesWarning(const sofa::Size nEdges,
         const sofa::helper::vector< Edge >& edgesList,
         const sofa::helper::vector< EdgeID >& edgesIndexList,
         const sofa::helper::vector< sofa::helper::vector< EdgeID > > & ancestors)
@@ -143,7 +143,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const size_t nEdges,
 }
 
 
-void EdgeSetTopologyModifier::addEdgesWarning(const size_t nEdges,
+void EdgeSetTopologyModifier::addEdgesWarning(const sofa::Size nEdges,
         const sofa::helper::vector< Edge >& edgesList,
         const sofa::helper::vector< EdgeID >& edgesIndexList,
         const sofa::helper::vector< sofa::helper::vector< EdgeID > > & ancestors,
@@ -156,7 +156,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const size_t nEdges,
     addTopologyChange(e);
 }
 
-void EdgeSetTopologyModifier::addEdgesWarning(const size_t nEdges,
+void EdgeSetTopologyModifier::addEdgesWarning(const sofa::Size nEdges,
         const sofa::helper::vector< Edge >& edgesList,
         const sofa::helper::vector< EdgeID >& edgesIndexList,
         const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems)
@@ -271,7 +271,7 @@ void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<Edge
     }
 }
 
-void EdgeSetTopologyModifier::addPointsProcess(const size_t nPoints)
+void EdgeSetTopologyModifier::addPointsProcess(const sofa::Size nPoints)
 {
     // start by calling the parent's method.
     PointSetTopologyModifier::addPointsProcess( nPoints );
@@ -411,7 +411,7 @@ void EdgeSetTopologyModifier::swapEdgesProcess(const sofa::helper::vector< sofa:
     addEdgesProcess( v );
 
     // now warn about the creation
-    addEdgesWarning(v.size(), v, edgeIndexList, ancestorsArray);
+    addEdgesWarning(sofa::Size(v.size()), v, edgeIndexList, ancestorsArray);
 
     // now warn about the destruction of the old edges
     sofa::helper::vector< EdgeID > indices;
@@ -478,7 +478,7 @@ void EdgeSetTopologyModifier::fuseEdgesProcess(const sofa::helper::vector< sofa:
     addEdgesProcess( v );
 
     // now warn about the creation
-    addEdgesWarning(v.size(), v, edgeIndexList, ancestorsArray);
+    addEdgesWarning(sofa::Size(v.size()), v, edgeIndexList, ancestorsArray);
 
     // now warn about the destruction of the old edges
     sofa::helper::vector< EdgeID > indices;
@@ -538,14 +538,14 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<EdgeID> &in
         defaultBaryCoefs[i].resize(2, 0.5f);
     }
 
-    addPointsProcess(indices.size());
+    addPointsProcess(sofa::Size(indices.size()));
 
     addEdgesProcess( edges );
 
     // warn about added points and edges
-    addPointsWarning(indices.size(), v, defaultBaryCoefs);
+    addPointsWarning(sofa::Size(indices.size()), v, defaultBaryCoefs);
 
-    addEdgesWarning(edges.size(), edges, edgesIndex);
+    addEdgesWarning(sofa::Size(edges.size()), edges, edgesIndex);
 
     // warn about old edges about to be removed
     removeEdgesWarning( indices );
@@ -593,14 +593,14 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<EdgeID> &in
         edgesIndex.push_back((EdgeID)nbEdges++);
     }
 
-    addPointsProcess(indices.size());
+    addPointsProcess(sofa::Size(indices.size()));
 
     addEdgesProcess( edges );
 
     // warn about added points and edges
-    addPointsWarning(indices.size(), v, baryCoefs);
+    addPointsWarning(sofa::Size(indices.size()), v, baryCoefs);
 
-    addEdgesWarning(edges.size(), edges, edgesIndex);
+    addEdgesWarning(sofa::Size(edges.size()), edges, edgesIndex);
 
     // warn about old edges about to be removed
     removeEdgesWarning( indices );
@@ -666,7 +666,7 @@ void EdgeSetTopologyModifier::renumberPoints( const sofa::helper::vector<EdgeID>
 void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges)
 {
     sofa::helper::AdvancedTimer::stepBegin("addEdges");
-    size_t nEdges = m_container->getNumberOfEdges();
+    sofa::Size nEdges = m_container->getNumberOfEdges();
 
     // actually add edges in the topology container
     sofa::helper::AdvancedTimer::stepBegin("addEdgesProcess");
@@ -675,14 +675,14 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
     sofa::helper::vector<EdgeID> edgesIndex;
     edgesIndex.reserve(edges.size());
 
-    for (size_t i=0; i<edges.size(); ++i)
+    for (sofa::Index i=0; i<edges.size(); ++i)
     {
         edgesIndex.push_back((EdgeID)(nEdges+i));
     }
 
     // add topology event in the stack of topological events
     sofa::helper::AdvancedTimer::stepNext ("addEdgesProcess", "addEdgesWarning");
-    addEdgesWarning(edges.size(), edges, edgesIndex);
+    addEdgesWarning(sofa::Size(edges.size()), edges, edgesIndex);
 
     // inform other objects that the edges are already added
     sofa::helper::AdvancedTimer::stepNext ("addEdgesWarning", "propagateTopologicalChanges");
@@ -697,7 +697,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
         const sofa::helper::vector< sofa::helper::vector< SReal > >& baryCoefs)
 {
     sofa::helper::AdvancedTimer::stepBegin("addEdges with ancestors");
-    size_t nEdges = m_container->getNumberOfEdges();
+    sofa::Index nEdges = m_container->getNumberOfEdges();
 
     /// actually add edges in the topology container
     sofa::helper::AdvancedTimer::stepBegin("addEdgesProcess");
@@ -706,14 +706,14 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
     sofa::helper::vector<EdgeID> edgesIndex;
     edgesIndex.reserve(edges.size());
 
-    for (size_t i=0; i<edges.size(); ++i)
+    for (sofa::Index i=0; i<edges.size(); ++i)
     {
         edgesIndex.push_back((EdgeID)(nEdges+i));
     }
 
     // add topology event in the stack of topological events
     sofa::helper::AdvancedTimer::stepNext ("addEdgesProcess", "addEdgesWarning");
-    addEdgesWarning(edges.size(), edges, edgesIndex, ancestors, baryCoefs);
+    addEdgesWarning(sofa::Size(edges.size()), edges, edgesIndex, ancestors, baryCoefs);
 
     // inform other objects that the edges are already added
     sofa::helper::AdvancedTimer::stepNext ("addEdgesWarning", "propagateTopologicalChanges");
@@ -726,7 +726,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
 void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges,
         const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems)
 {
-    size_t nEdge = m_container->getNumberOfEdges();
+    sofa::Size nEdge = m_container->getNumberOfEdges();
 
     assert(ancestorElems.size() == edges.size());
 
@@ -735,13 +735,13 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
 
     sofa::helper::vector<EdgeID> edgesIndex;
     edgesIndex.resize(edges.size());
-    for (size_t i=0; i<edges.size(); ++i)
+    for (sofa::Index i=0; i<edges.size(); ++i)
     {
         edgesIndex[i] = (EdgeID)(nEdge + i);
     }
 
     // add topology event in the stack of topological events
-    addEdgesWarning(edges.size(), edges, edgesIndex, ancestorElems);
+    addEdgesWarning(sofa::Size(edges.size()), edges, edgesIndex, ancestorElems);
 
     // inform other objects that the edges are already added
     propagateTopologicalChanges();
@@ -913,7 +913,7 @@ bool EdgeSetTopologyModifier::removeIsolatedElements()
 }
 
 
-bool EdgeSetTopologyModifier::removeIsolatedElements(size_t scaleElem)
+bool EdgeSetTopologyModifier::removeIsolatedElements(sofa::Size scaleElem)
 {
     if(!m_container)
     {
@@ -921,7 +921,7 @@ bool EdgeSetTopologyModifier::removeIsolatedElements(size_t scaleElem)
         return false;
     }
 
-    size_t nbr = this->m_container->getNumberOfElements();
+    sofa::Size nbr = this->m_container->getNumberOfElements();
     sofa::helper::vector <EdgeID> elemAll = m_container->getConnectedElement(0);
     sofa::helper::vector <EdgeID> elem, elemMax, elemToRemove;
 

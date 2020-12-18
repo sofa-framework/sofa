@@ -765,32 +765,32 @@ void MeshTopology::setNbPoints(Size n)
 
 Size MeshTopology::getNbEdges()
 {
-    return getEdges().size();
+    return Size(getEdges().size());
 }
 
 Size MeshTopology::getNbTriangles()
 {
-    return getTriangles().size();
+    return Size(getTriangles().size());
 }
 
 Size MeshTopology::getNbQuads()
 {
-    return getQuads().size();
+    return Size(getQuads().size());
 }
 
 Size MeshTopology::getNbTetrahedra()
 {
-    return getTetrahedra().size();
+    return Size(getTetrahedra().size());
 }
 
 Size MeshTopology::getNbHexahedra()
 {
-    return getHexahedra().size();
+    return Size(getHexahedra().size());
 }
 
 Size MeshTopology::getNbUVs()
 {
-    return getUVs().size();
+    return Size(getUVs().size());
 }
 
 const MeshTopology::Edge MeshTopology::getEdge(Index i)
@@ -2417,7 +2417,7 @@ Size MeshTopology::getNumberOfConnectedComponent()
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        Index other_ID = elemAll.size();
+        Index other_ID = Index(elemAll.size());
 
         for (Size i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)

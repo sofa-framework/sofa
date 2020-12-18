@@ -60,13 +60,13 @@ public:
     *
     * \sa addPointsProcess
     */
-    void addPointsWarning(const size_t nPoints, const bool addDOF = true);
+    void addPointsWarning(const sofa::Size nPoints, const bool addDOF = true);
 
     /** \brief Sends a message to warn that some points were added in this topology.
     *
     * \sa addPointsProcess
     */
-    void addPointsWarning(const size_t nPoints,
+    void addPointsWarning(const sofa::Size nPoints,
             const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
             const bool addDOF = true);
@@ -75,7 +75,7 @@ public:
     *
     * \sa addPointsProcess
     */
-    void addPointsWarning(const size_t nPoints,
+    void addPointsWarning(const sofa::Size nPoints,
             const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
             const bool addDOF = true);
 
@@ -84,19 +84,19 @@ public:
     *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const size_t nPoints);
+    virtual void addPointsProcess(const sofa::Size nPoints);
 
     /** \brief Add a set of points
     * 
     * \sa addPoints
     */
-    virtual void addPoints(const size_t nPoints, const bool addDOF = true);
+    virtual void addPoints(const sofa::Size nPoints, const bool addDOF = true);
  
     /** \brief Add a set of points
     * 
     * \sa addPoints
     */
-    virtual void addPoints(const size_t nPoints,
+    virtual void addPoints(const sofa::Size nPoints,
                            const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
                            const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
                            const bool addDOF = true);
@@ -105,7 +105,7 @@ public:
      *
      * \sa addPoints
      */
-    void addPoints( const size_t nPoints,
+    void addPoints( const sofa::Size nPoints,
                     const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
                     const bool addDOF = true);
 

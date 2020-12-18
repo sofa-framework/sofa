@@ -109,7 +109,7 @@ void PointSetTopologyContainer::addPoint(double px, double py, double pz)
     initPoints.push_back(InitTypes::Coord((SReal)px, (SReal)py, (SReal)pz));
     if (initPoints.size() > nbPoints.getValue())
     {
-        setNbPoints(initPoints.size());
+        setNbPoints(Size(initPoints.size()));
     }
 }
 

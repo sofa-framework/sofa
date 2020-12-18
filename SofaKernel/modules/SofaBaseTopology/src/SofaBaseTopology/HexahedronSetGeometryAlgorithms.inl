@@ -313,7 +313,7 @@ template< class DataTypes>
 typename DataTypes::Coord HexahedronSetGeometryAlgorithms< DataTypes >::computeNodalValue(const HexaID hx,const LocalCoord nc,const VecCoord& p) const
 {
 	 const Hexahedron &h = this->m_topology->getHexahedron(hx);
-	 size_t i,j,k;
+	 sofa::Index i,j,k;
 	 Coord pos[8];
 	 for (i=0;i<8;++i) 
 		 pos[i]=p[h[i]];
@@ -343,8 +343,8 @@ template< class DataTypes>
 void HexahedronSetGeometryAlgorithms< DataTypes >::computePositionDerivative(const HexaID hx,const LocalCoord nc,const VecCoord& p,  Coord dpos[3]) const
 {
 	 const Hexahedron &h = this->m_topology->getHexahedron(hx);
-	 size_t i,j,k;
-	 size_t ind[3];
+	 sofa::Index i,j,k;
+	 sofa::Index ind[3];
 
 	 Coord pos[8];
 	 for (i=0;i<8;++i) 
@@ -637,10 +637,10 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeEl
 template< class DataTypes>
 int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElement(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const
 {
-    int index=-1;
-    distance = 1e10;
+	sofa::Index index = sofa::InvalidID;
+    distance = std::numeric_limits<Real>::max();
 
-    for(size_t c=0; c<this->m_topology->getNbHexahedra(); ++c)
+    for(sofa::Index c=0; c<this->m_topology->getNbHexahedra(); ++c)
     {
         const Real d = computeElementDistanceMeasure(c, pos);
 
@@ -672,10 +672,10 @@ void HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElements(const Vec
 template< class DataTypes>
 int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const
 {
-    int index=-1;
-    distance = 1e10;
+	sofa::Index index = sofa::InvalidID;
+	distance = std::numeric_limits<Real>::max();
 
-    for(size_t c=0; c<this->m_topology->getNbHexahedra(); ++c)
+    for(sofa::Index c=0; c<this->m_topology->getNbHexahedra(); ++c)
     {
         const Real d = computeElementRestDistanceMeasure(c, pos);
 
@@ -772,10 +772,10 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronVolume( BasicA
 {
     //const sofa::helper::vector<Hexahedron> &ta=this->m_topology->getHexahedra();
     //const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
-    for(size_t i=0; i<this->m_topology->getNbHexahedra(); ++i)
+    for(sofa::Index i=0; i<this->m_topology->getNbHexahedra(); ++i)
     {
         //const Hexahedron &t=this->m_topology->getHexahedron(i); //ta[i];
-        ai[i]=(Real)(0.0); /// @todo : implementation of computeHexahedronVolume
+        ai[i]=Real(0.0); /// @todo : implementation of computeHexahedronVolume
     }
 }
 

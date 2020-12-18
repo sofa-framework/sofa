@@ -158,7 +158,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
 
             sofa::helper::vector< TriangleID > triangleIndexList;
             triangleIndexList.push_back(triangleIndex);
-            addTrianglesWarning(v.size(), v, triangleIndexList);
+            addTrianglesWarning(sofa::Size(v.size()), v, triangleIndexList);
         }
 
         // update m_trianglesInTetrahedron
@@ -215,7 +215,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
 
             sofa::helper::vector< EdgeID > edgeIndexList;
             edgeIndexList.push_back(edgeIndex);
-            addEdgesWarning(v.size(), v, edgeIndexList);
+            addEdgesWarning(sofa::Size(v.size()), v, edgeIndexList);
         }
 
         // udpate m_edgesInTetrahedron
@@ -440,7 +440,7 @@ void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::helper
     }
 }
 
-void TetrahedronSetTopologyModifier::addPointsProcess(const size_t nPoints)
+void TetrahedronSetTopologyModifier::addPointsProcess(const sofa::Size nPoints)
 {
     // start by calling the parent's method.
     TriangleSetTopologyModifier::addPointsProcess( nPoints );

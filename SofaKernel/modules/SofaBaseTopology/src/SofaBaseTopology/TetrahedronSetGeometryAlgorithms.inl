@@ -64,7 +64,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
     qpa.clear();
     Real a=(5-sqrt((Real)5))/20;
     Real b=1-3*a;
-    size_t i;
+    sofa::Size i;
     for (i=0;i<4;++i) {
         v=BarycentricCoordinatesType(a,a,a,a);
         v[i]=b;
@@ -666,9 +666,9 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
             TetrahedronID ind_t = ind2ask[t];
             core::topology::BaseMeshTopology::TrianglesInTetrahedron adjacent_triangles = this->m_topology->getTrianglesInTetrahedron(ind_t);
 
-            for (size_t i=0; i<adjacent_triangles.size(); i++)
+            for (sofa::Index i=0; i<adjacent_triangles.size(); i++)
             {
-                sofa::helper::vector< TetrahedronID > tetrahedra_to_remove = this->m_topology->getTetrahedraAroundTriangle(adjacent_triangles[i]);
+                const auto& tetrahedra_to_remove = this->m_topology->getTetrahedraAroundTriangle(adjacent_triangles[i]);
 
                 if(tetrahedra_to_remove.size()==2)
                 {
@@ -728,7 +728,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
     pa[0] = (Real) (c[0]);
     pa[1] = (Real) (c[1]);
     pa[2] = (Real) (c[2]);
-    for(size_t i = 0; i < this->m_topology->getNbTetrahedra(); ++i)
+    for(sofa::Size i = 0; i < this->m_topology->getNbTetrahedra(); ++i)
     {
         if(isPointInTetrahedron(i, pa))
         {
@@ -757,12 +757,12 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
     while(ind2test.size()>0)
     {
         ind2test.clear();
-        for (size_t t=0; t<ind2ask.size(); t++)
+        for (sofa::Index t=0; t<ind2ask.size(); t++)
         {
             TetrahedronID ind_t = ind2ask[t];
             core::topology::BaseMeshTopology::TrianglesInTetrahedron adjacent_triangles = this->m_topology->getTrianglesInTetrahedron(ind_t);
 
-            for (size_t i=0; i<adjacent_triangles.size(); i++)
+            for (sofa::Index i=0; i<adjacent_triangles.size(); i++)
             {
                 sofa::helper::vector< TetrahedronID > tetrahedra_to_remove = this->m_topology->getTetrahedraAroundTriangle(adjacent_triangles[i]);
 
@@ -975,7 +975,7 @@ template <typename DataTypes>
 const sofa::helper::vector <BaseMeshTopology::TetraID>& TetrahedronSetGeometryAlgorithms<DataTypes>::computeBadTetrahedron(SReal minAngle, SReal maxAngle, SReal factorLength)
 {
     m_badTetraIds.clear();
-    for (size_t i = 0; i < this->m_topology->getNbTetrahedra(); ++i)
+    for (sofa::Index i = 0; i < this->m_topology->getNbTetrahedra(); ++i)
     {
         // test orientation first
         if (checkNodeSequence(i) == false)
@@ -1055,15 +1055,15 @@ template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronsWithPlane(sofa::helper::vector< sofa::helper::vector<double> >& coefs, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
 {
     //Current topological state
-    int nbPoint=this->m_container->getNbPoints();
+    sofa::Size nbPoint=this->m_container->getNbPoints();
     TetrahedronID nbTetra = (TetrahedronID)this->m_container->getNbTetrahedra();
 
     //Number of to be added points
-    size_t nbTobeAddedPoints = intersectedEdgeID.size()*2;
+    sofa::Size nbTobeAddedPoints = sofa::Size(intersectedEdgeID.size()*2);
 
     //barycentric coodinates of to be added points
     sofa::helper::vector< sofa::helper::vector<PointID> > ancestors;
-    for( size_t i=0; i<intersectedEdgeID.size(); i++)
+    for(sofa::Index i=0; i<intersectedEdgeID.size(); i++)
     {
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
         sofa::helper::vector< EdgeID > ancestor;
@@ -1158,11 +1158,11 @@ template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronsWithPlane(sofa::helper::vector<Coord>& intersectedPoints, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
 {
     //Current topological state
-    int nbPoint=this->m_container->getNbPoints();
+    sofa::Size nbPoint=this->m_container->getNbPoints();
     TetrahedronID nbTetra = (TetrahedronID)this->m_container->getNbTetrahedra();
 
     //Number of to be added points
-   size_t nbTobeAddedPoints = intersectedEdgeID.size()*2;
+    sofa::Size nbTobeAddedPoints = sofa::Size(intersectedEdgeID.size()*2);
 
     //barycentric coodinates of to be added points
     sofa::helper::vector< sofa::helper::vector<PointID> > ancestors;
@@ -2166,11 +2166,11 @@ template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithPlane(sofa::helper::vector< sofa::helper::vector<double> >& coefs, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
 {
     //Current topological state
-    int nbPoint=this->m_container->getNbPoints();
+    sofa::Size nbPoint=this->m_container->getNbPoints();
     TetrahedronID nbTetra = (TetrahedronID)this->m_container->getNbTetrahedra();
 
     //Number of to be added points
-    size_t nbTobeAddedPoints = intersectedEdgeID.size()*2;
+    sofa::Size nbTobeAddedPoints = sofa::Size(intersectedEdgeID.size()*2);
 
     //barycentric coodinates of to be added points
     sofa::helper::vector< sofa::helper::vector<PointID> > ancestors;
@@ -2183,7 +2183,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithP
     }
 
     //Number of to be added tetras
-    int nbTobeAddedTetras=0;
+    sofa::Size nbTobeAddedTetras=0;
 
     //To be added components
     sofa::helper::vector<Tetra>			toBeAddedTetra;
@@ -2248,7 +2248,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithP
         toBeRemovedTetraIndex.push_back(intersectedTetras[i]);
     }
 
-    for(int i=0; i<nbTobeAddedTetras; i++)
+    for(sofa::Index i=0; i<nbTobeAddedTetras; i++)
         toBeAddedTetraIndex.push_back(nbTetra+i);
 
     //tetrahedron addition
@@ -2269,16 +2269,16 @@ template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithPlane(sofa::helper::vector<Coord>& intersectedPoints, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
 {
     //Current topological state
-    int nbPoint=this->m_container->getNbPoints();
+    sofa::Size nbPoint=this->m_container->getNbPoints();
     TetrahedronID nbTetra = (TetrahedronID)this->m_container->getNbTetrahedra();
 
     //Number of to be added points
-    size_t nbTobeAddedPoints = intersectedEdgeID.size()*2;
+    sofa::Size nbTobeAddedPoints = sofa::Size(intersectedEdgeID.size()*2);
 
     //barycentric coodinates of to be added points
     sofa::helper::vector< sofa::helper::vector<PointID> > ancestors;
     sofa::helper::vector< sofa::helper::vector<double> > coefs;
-    for( size_t i=0; i<intersectedPoints.size(); i++)
+    for(sofa::Index i=0; i<intersectedPoints.size(); i++)
     {
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
         sofa::defaulttype::Vec<3,double> p;

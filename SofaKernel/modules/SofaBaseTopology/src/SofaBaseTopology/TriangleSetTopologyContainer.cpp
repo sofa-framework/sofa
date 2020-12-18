@@ -116,7 +116,7 @@ void TriangleSetTopologyContainer::createTrianglesAroundVertexArray()
 
     int nbPoints = getNbPoints();
     if (nbPoints == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
-        this->setNbPoints(d_initPoints.getValue().size());
+        this->setNbPoints(sofa::Size(d_initPoints.getValue().size()));
 
     m_trianglesAroundVertex.resize(getNbPoints());
     for (size_t i = 0; i < m_triangle.size(); ++i)
@@ -485,7 +485,7 @@ TriangleSetTopologyContainer::TriangleID TriangleSetTopologyContainer::getTriang
 
 Size TriangleSetTopologyContainer::getNumberOfTriangles() const
 {
-    return d_triangle.getValue().size();
+    return sofa::Size(d_triangle.getValue().size());
 }
 
 Size TriangleSetTopologyContainer::getNumberOfElements() const
@@ -762,14 +762,14 @@ Size TriangleSetTopologyContainer::getNumberOfConnectedComponent()
     }
 
     VecTriangleID elemAll = this->getConnectedElement(0);
-    size_t cpt = 1;
+    sofa::Size cpt = 1;
 
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        size_t other_triangleID = elemAll.size();
+        sofa::Index other_triangleID = sofa::Index(elemAll.size());
 
-        for (size_t i = 0; i<elemAll.size(); ++i)
+        for (sofa::Index i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)
             {
                 other_triangleID = i;

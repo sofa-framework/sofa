@@ -335,7 +335,7 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray()
     clearTetrahedraAroundVertex();
 
     if (getNbPoints() == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
-        this->setNbPoints(d_initPoints.getValue().size());
+        this->setNbPoints(sofa::Size(d_initPoints.getValue().size()));
 
     m_tetrahedraAroundVertex.resize( getNbPoints() );
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
@@ -481,7 +481,7 @@ TetrahedronSetTopologyContainer::TetrahedronID TetrahedronSetTopologyContainer::
 Size TetrahedronSetTopologyContainer::getNumberOfTetrahedra() const
 {
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
-    return m_tetrahedron.size();
+    return sofa::Size(m_tetrahedron.size());
 }
 
 Size TetrahedronSetTopologyContainer::getNumberOfElements() const
@@ -867,7 +867,7 @@ Size TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
     }
 
     VecTetraID elemAll = this->getConnectedElement(0);
-    size_t cpt = 1;
+    sofa::Size cpt = 1;
 
     while (elemAll.size() < nbr)
     {

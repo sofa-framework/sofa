@@ -501,7 +501,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     // SofaBaseLinearSolver was packaged in #1655
     //{ "CGLinearSolver", Pluginized("v20.12", "SofaBaseLinearSolver") },
 
-    // SofaBaseTopology was packaged in #16XX
+    // SofaBaseTopology was packaged in #1675
     //{ "EdgeSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
     //{ "EdgeSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
     //{ "EdgeSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },

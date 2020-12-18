@@ -62,7 +62,7 @@ void EdgeSetTopologyContainer::init()
     {
         for (size_t i=0; i<m_edge.size(); ++i)
         {
-            for(size_t j=0; j<2; ++j)
+            for(sofa::Index j=0; j<2; ++j)
             {
                 EdgeID a = m_edge[i][j];
                 if (a >= getNbPoints()) setNbPoints(a+1);
@@ -112,7 +112,7 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
 
     std::size_t nbPoints = getNbPoints();
     if (nbPoints == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
-        this->setNbPoints(d_initPoints.getValue().size());
+        this->setNbPoints(sofa::Size(d_initPoints.getValue().size()));
 
     m_edgesAroundVertex.resize(getNbPoints());
     for (unsigned int edgeId=0; edgeId<edges.size(); ++edgeId)
@@ -291,7 +291,7 @@ Size EdgeSetTopologyContainer::getNumberOfConnectedComponent()
     }
 
     VecEdgeID elemAll = this->getConnectedElement(0);
-    size_t cpt = 1;
+    Size cpt = 1;
 
     while (elemAll.size() < nbr)
     {
@@ -390,7 +390,7 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 
     Edge the_edge = this->getEdge(elem);
 
-    for(size_t i = 0; i<2; ++i) // for each node of the edge
+    for(sofa::Index i = 0; i<2; ++i) // for each node of the edge
     {
         const EdgesAroundVertex& edgeAV = this->getEdgesAroundVertex(the_edge[i]);
         if (edgeAV.empty()) {
@@ -477,7 +477,7 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 Size EdgeSetTopologyContainer::getNumberOfEdges() const
 {
     d_edge.updateIfDirty();
-    return d_edge.getValue().size();
+    return Size(d_edge.getValue().size());
 }
 
 Size EdgeSetTopologyContainer::getNumberOfElements() const

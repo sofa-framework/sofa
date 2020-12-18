@@ -66,7 +66,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoints
     qpa.clear();
     Real a=1/(Real)6;
     Real b=(Real) (2.0/3.0);
-    size_t i;
+    sofa::Index i;
     for (i=0;i<3;++i) {
         v=BarycentricCoordinatesType(a,a,a);
         v[i]=b;
@@ -2496,11 +2496,10 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
     const Triangle &ta = m_container->getTriangle(ind_ta);
     const Triangle &tb = m_container->getTriangle(ind_tb);
 
-    //const typename DataTypes::VecCoord& vect_c =topology->getDOF()->read(core::ConstVecCoordId::position())->getValue();
-    const size_t nb_points = m_container->getTrianglesAroundVertexArray().size() - 1; //vect_c.size() -1;
+    const sofa::Size nb_points = sofa::Size(m_container->getTrianglesAroundVertexArray().size() - 1); 
 
     const sofa::helper::vector<Triangle> &vect_t = m_container->getTriangleArray();
-    const size_t nb_triangles = vect_t.size() - 1;
+    const sofa::Size nb_triangles = sofa::Size(vect_t.size() - 1);
 
     // Variables to accumulate the number of elements registered to be created (so as to remember their indices)
     PointID acc_nb_points = (PointID)nb_points;
@@ -3003,7 +3002,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
         m_modifier->addTrianglesProcess((const sofa::helper::vector< Triangle > &) triangles_to_create); // WARNING called after the creation process by the method "addTrianglesProcess"
 
         // Warn for the creation of all the triangles registered to be created
-        m_modifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList);
+        m_modifier->addTrianglesWarning(sofa::Size(triangles_to_create.size()), triangles_to_create, trianglesIndexList);
 
         // Propagate the topological changes *** not necessary
         //m_modifier->propagateTopologicalChanges();
@@ -3734,7 +3733,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
     // FINAL STEP : Apply changes
     PointID newP0 = next_point - (PointID)srcElems.size();
-    m_modifier->addPoints(srcElems.size(), srcElems);
+    m_modifier->addPoints(sofa::Size(srcElems.size()), srcElems);
 
     // m_modifier->propagateTopologicalChanges();
 
@@ -3798,12 +3797,12 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
     }
     m_modifier->addEdges(edges_added, edges_src);
 
-    size_t nbEdges = m_container->getNbEdges();
+    sofa::Size nbEdges = m_container->getNbEdges();
 
     //Add and remove triangles lists
-    m_modifier->addRemoveTriangles(new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
+    m_modifier->addRemoveTriangles(sofa::Size(new_triangles.size()), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
 
-    size_t nbEdges2 = m_container->getNbEdges();
+    sofa::Size nbEdges2 = m_container->getNbEdges();
 
     if (nbEdges2 > nbEdges)
     {
@@ -4523,13 +4522,13 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
 
     // FINAL STEP : Apply changes
     // Create all the points registered to be created
-    m_modifier->addPointsProcess(p_ancestors.size());
+    m_modifier->addPointsProcess(sofa::Size(p_ancestors.size()));
 
     // Warn for the creation of all the points registered to be created
-    m_modifier->addPointsWarning(p_ancestors.size(), p_ancestors, p_baryCoefs);
+    m_modifier->addPointsWarning(sofa::Size(p_ancestors.size()), p_ancestors, p_baryCoefs);
 
     //Add and remove triangles lists
-    m_modifier->addRemoveTriangles(new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
+    m_modifier->addRemoveTriangles(sofa::Size(new_triangles.size()), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
 
     return true;
 }

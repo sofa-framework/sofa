@@ -83,13 +83,13 @@ public:
     *
     * \sa addEdgesProcess
     */
-    virtual void addEdgesWarning(const size_t nEdges);
+    virtual void addEdgesWarning(const sofa::Size nEdges);
 
     /** \brief Sends a message to warn that some edges were added in this topology.
     *
     * \sa addEdgesProcess
     */
-    virtual void addEdgesWarning(const size_t nEdges,
+    virtual void addEdgesWarning(const sofa::Size nEdges,
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< EdgeID >& edgesIndexList);
 
@@ -97,7 +97,7 @@ public:
     *
     * \sa addEdgesProcess
     */
-    virtual void addEdgesWarning(const size_t nEdges,
+    virtual void addEdgesWarning(const sofa::Size nEdges,
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< EdgeID >& edgesIndexList,
             const sofa::helper::vector< sofa::helper::vector< EdgeID > > & ancestors);
@@ -106,7 +106,7 @@ public:
     *
     * \sa addEdgesProcess
     */
-    virtual void addEdgesWarning(const size_t nEdges,
+    virtual void addEdgesWarning(const sofa::Size nEdges,
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< EdgeID >& edgesIndexList,
             const sofa::helper::vector< sofa::helper::vector< EdgeID > > & ancestors,
@@ -116,7 +116,7 @@ public:
     *
     * \sa addEdgesProcess
     */
-    virtual void addEdgesWarning(const size_t nEdges,
+    virtual void addEdgesWarning(const sofa::Size nEdges,
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< EdgeID >& edgesIndexList,
             const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems);
@@ -181,7 +181,7 @@ public:
     *
     * \sa addPointsWarning
     */
-    void addPointsProcess(const size_t nPoints) override;
+    void addPointsProcess(const sofa::Size nPoints) override;
 
     /** \brief Remove a subset of points
     *
@@ -294,7 +294,7 @@ public:
     * @param scaleElem: threshold number size under which connected component will be removed.
     * @return false if something goes wrong during the process.
     */
-    virtual bool removeIsolatedElements(size_t scaleElem);
+    virtual bool removeIsolatedElements(sofa::Size scaleElem);
 
 private:
     EdgeSetTopologyContainer* 	m_container;

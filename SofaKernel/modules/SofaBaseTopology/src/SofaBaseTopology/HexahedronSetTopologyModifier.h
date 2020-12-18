@@ -165,7 +165,7 @@ public:
     *
     * \sa addPointsWarning
     */
-    void addPointsProcess(const size_t nPoints) override;
+    void addPointsProcess(const sofa::Size nPoints) override;
 
     /** \brief Remove a subset of points
     *

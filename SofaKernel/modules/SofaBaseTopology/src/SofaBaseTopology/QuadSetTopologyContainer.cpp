@@ -108,13 +108,13 @@ void QuadSetTopologyContainer::createQuadsAroundVertexArray()
     }
 
     if (getNbPoints() == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
-        this->setNbPoints(d_initPoints.getValue().size());
+        this->setNbPoints(sofa::Size(d_initPoints.getValue().size()));
 
     m_quadsAroundVertex.resize(getNbPoints());
-    for (size_t i=0; i<m_quad.size(); ++i)
+    for (sofa::Index i=0; i<m_quad.size(); ++i)
     {
         // adding quad i in the quad shell of all points
-        for (size_t j=0; j<4; ++j)
+        for (sofa::Index j=0; j<4; ++j)
         {
             m_quadsAroundVertex[ m_quad[i][j] ].push_back((QuadID)i);
         }
@@ -142,7 +142,7 @@ void QuadSetTopologyContainer::createQuadsAroundEdgeArray()
     if(!hasEdges()) // this method should only be called when edges exist
         createEdgeSetArray();
 
-    const size_t numEdges = getNumberOfEdges();
+    const auto numEdges = getNumberOfEdges();
     if (numEdges == 0)
     {
         msg_warning() << "QuadsAroundEdge buffer can't be created as no edges are present in this topology.";
@@ -159,10 +159,10 @@ void QuadSetTopologyContainer::createQuadsAroundEdgeArray()
     }
 
     m_quadsAroundEdge.resize(numEdges);
-    for (size_t i=0; i<numQuads; ++i)
+    for (sofa::Index i=0; i<numQuads; ++i)
     {
         // adding quad i in the quad shell of all edges
-        for (size_t j=0; j<4; ++j)
+        for (sofa::Index j=0; j<4; ++j)
         {
             m_quadsAroundEdge[ m_edgesInQuad[i][j] ].push_back((QuadID)i);
         }
@@ -233,15 +233,15 @@ void QuadSetTopologyContainer::createEdgesInQuadArray()
         return;
     }
 
-    const size_t numQuads = getNumberOfQuads();
+    const auto numQuads = getNumberOfQuads();
     m_edgesInQuad.resize( numQuads );
     helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
 
-    for(size_t i=0; i<numQuads; ++i)
+    for(sofa::Index i=0; i<numQuads; ++i)
     {
         const Quad &t = m_quad[i];
         // adding edge i in the edge shell of both points
-        for (size_t j=0; j<4; ++j)
+        for (sofa::Index j=0; j<4; ++j)
         {
             EdgeID edgeIndex = getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
             assert(edgeIndex != InvalidID);
@@ -308,7 +308,7 @@ QuadSetTopologyContainer::QuadID QuadSetTopologyContainer::getQuadIndex(PointID 
 Size QuadSetTopologyContainer::getNumberOfQuads() const
 {
     helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
-    return m_quad.size();
+    return sofa::Size(m_quad.size());
 }
 
 
@@ -498,7 +498,7 @@ Size QuadSetTopologyContainer::getNumberOfConnectedComponent()
     }
 
     VecQuadID elemAll = this->getConnectedElement(0);
-    size_t cpt = 1;
+    sofa::Size cpt = 1;
 
     while (elemAll.size() < nbr)
     {
@@ -597,7 +597,7 @@ const QuadSetTopologyContainer::VecQuadID QuadSetTopologyContainer::getElementAr
 
     Quad the_quad = this->getQuad(elem);
 
-    for(size_t i = 0; i<4; ++i) // for each node of the Quad
+    for(sofa::Index i = 0; i<4; ++i) // for each node of the Quad
     {
         QuadsAroundVertex quadAV = this->getQuadsAroundVertex(the_quad[i]);
 

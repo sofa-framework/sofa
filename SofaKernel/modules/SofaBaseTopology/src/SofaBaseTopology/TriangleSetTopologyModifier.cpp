@@ -100,7 +100,7 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
             trianglesIndex.push_back((TriangleID)(nTriangles+i));
 
         // add topology event in the stack of topological events
-        addTrianglesWarning(triangles.size(), triangles, trianglesIndex);
+        addTrianglesWarning(sofa::Size(triangles.size()), triangles, trianglesIndex);
 
         // inform other objects that the edges are already added
         propagateTopologicalChanges();
@@ -136,7 +136,7 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
             trianglesIndex.push_back((TriangleID)(nTriangles+i));
 
         // add topology event in the stack of topological events
-        addTrianglesWarning(triangles.size(), triangles, trianglesIndex, ancestors, baryCoefs);
+        addTrianglesWarning(sofa::Size(triangles.size()), triangles, trianglesIndex, ancestors, baryCoefs);
 
         // inform other objects that the edges are already added
         propagateTopologicalChanges();
@@ -230,7 +230,7 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 
             sofa::helper::vector< EdgeID > edgeIndexList;
             edgeIndexList.push_back((EdgeID) edgeIndex);
-            addEdgesWarning( v.size(), v, edgeIndexList);
+            addEdgesWarning(sofa::Size(v.size()), v, edgeIndexList);
         }
 
         // update m_edgesInTriangle
@@ -248,7 +248,7 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 }
 
 
-void TriangleSetTopologyModifier::addTrianglesWarning(const size_t nTriangles,
+void TriangleSetTopologyModifier::addTrianglesWarning(const sofa::Size nTriangles,
         const sofa::helper::vector< Triangle >& trianglesList,
         const sofa::helper::vector< TriangleID >& trianglesIndexList)
 {
@@ -260,7 +260,7 @@ void TriangleSetTopologyModifier::addTrianglesWarning(const size_t nTriangles,
 }
 
 
-void TriangleSetTopologyModifier::addTrianglesWarning(const size_t nTriangles,
+void TriangleSetTopologyModifier::addTrianglesWarning(const sofa::Size nTriangles,
         const sofa::helper::vector< Triangle >& trianglesList,
         const sofa::helper::vector< TriangleID >& trianglesIndexList,
         const sofa::helper::vector< sofa::helper::vector< TriangleID > > & ancestors,
@@ -274,7 +274,7 @@ void TriangleSetTopologyModifier::addTrianglesWarning(const size_t nTriangles,
 }
 
 
-void TriangleSetTopologyModifier::addPointsProcess(const size_t nPoints)
+void TriangleSetTopologyModifier::addPointsProcess(const sofa::Size nPoints)
 {
     // start by calling the parent's method.
     EdgeSetTopologyModifier::addPointsProcess( nPoints );
@@ -292,9 +292,6 @@ void TriangleSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Ed
     if(m_container->hasTrianglesAroundEdge())
         m_container->m_trianglesAroundEdge.resize( m_container->m_trianglesAroundEdge.size() + edges.size() );
 }
-
-
-
 
 void TriangleSetTopologyModifier::removeItems(const sofa::helper::vector<TriangleID> &items)
 {
@@ -570,14 +567,14 @@ void TriangleSetTopologyModifier::renumberPointsProcess( const sofa::helper::vec
         if(m_container->hasTrianglesAroundVertex())
         {
             sofa::helper::vector< sofa::helper::vector< TriangleID > > trianglesAroundVertex_cp = m_container->m_trianglesAroundVertex;
-            for(size_t i=0; i<index.size(); ++i)
+            for(sofa::Index i=0; i<index.size(); ++i)
             {
                 m_container->m_trianglesAroundVertex[i] = trianglesAroundVertex_cp[ index[i] ];
             }
         }
         helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
 
-        for(size_t i=0; i<m_triangle.size(); ++i)
+        for(sofa::Index i=0; i<m_triangle.size(); ++i)
         {
             m_triangle[i][0] = inv_index[ m_triangle[i][0] ];
             m_triangle[i][1] = inv_index[ m_triangle[i][1] ];
@@ -608,7 +605,7 @@ void TriangleSetTopologyModifier::renumberPoints( const sofa::helper::vector<Poi
 
 
 
-void TriangleSetTopologyModifier::addRemoveTriangles( const size_t nTri2Add,
+void TriangleSetTopologyModifier::addRemoveTriangles( const sofa::Size nTri2Add,
         const sofa::helper::vector< Triangle >& triangles2Add,
         const sofa::helper::vector< TriangleID >& trianglesIndex2Add,
         const sofa::helper::vector< sofa::helper::vector< TriangleID > > & ancestors,
@@ -800,10 +797,9 @@ int TriangleSetTopologyModifier::InciseAlongEdge(EdgeID ind_edge, int* createdPo
     /// force the creation of TrianglesAroundVertexArray
     m_container->getTrianglesAroundVertexArray();
 
-    //const typename DataTypes::VecCoord& vect_c =topology->getDOF()->read(core::ConstVecCoordId::position())->getValue();
-    const size_t nb_points = m_container->getTrianglesAroundVertexArray().size(); //vect_c.size();
+    const sofa::Size nb_points = sofa::Size(m_container->getTrianglesAroundVertexArray().size());
     const sofa::helper::vector<Triangle> &vect_t = m_container->getTriangleArray();
-    const size_t nb_triangles = vect_t.size();
+    const sofa::Size nb_triangles = sofa::Size(vect_t.size());
 
     // Variables to accumulate the number of elements registered to be created (so as to remember their indices)
     PointID acc_nb_points = (PointID)nb_points;
@@ -908,7 +904,7 @@ int TriangleSetTopologyModifier::InciseAlongEdge(EdgeID ind_edge, int* createdPo
     addTrianglesProcess((const sofa::helper::vector< Triangle > &) triangles_to_create); // WARNING called after the creation process by the method "addTrianglesProcess"
 
     // Warn for the creation of all the triangles registered to be created
-    addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList);
+    addTrianglesWarning(sofa::Size(triangles_to_create.size()), triangles_to_create, trianglesIndexList);
 
     // Propagate the topological changes *** not necessary
     //propagateTopologicalChanges();

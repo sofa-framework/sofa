@@ -199,7 +199,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
 
             sofa::helper::vector< EdgeID > edgeIndexList;
             edgeIndexList.push_back(edgeIndex);
-            addEdgesWarning(v.size(), v, edgeIndexList);
+            addEdgesWarning(sofa::Size(v.size()), v, edgeIndexList);
         }
 
         // udpate m_edgesInHexahedron
@@ -423,7 +423,7 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
     }
 }
 
-void HexahedronSetTopologyModifier::addPointsProcess(const size_t nPoints)
+void HexahedronSetTopologyModifier::addPointsProcess(const sofa::Size nPoints)
 {
     // start by calling the parent's method.
     QuadSetTopologyModifier::addPointsProcess( nPoints );
