@@ -23,6 +23,7 @@
 #include <SofaBaseTopology/config.h>
 
 #include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/helper/MarchingCubeUtility.h>
 #include <sofa/defaulttype/Vec.h>
 

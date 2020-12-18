@@ -28,7 +28,6 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/polygon_cube_intersection/polygon_cube_intersection.h>
 #include <sofa/core/loader/VoxelLoader.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
 
 #include <fstream>
 #include <string>
