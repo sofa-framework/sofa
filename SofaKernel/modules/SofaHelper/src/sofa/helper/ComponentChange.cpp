@@ -501,6 +501,30 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     // SofaBaseLinearSolver was packaged in #1655
     //{ "CGLinearSolver", Pluginized("v20.12", "SofaBaseLinearSolver") },
 
+    // SofaBaseTopology was packaged in #16XX
+    //{ "EdgeSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "EdgeSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "EdgeSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "GridTopology", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "HexahedronSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "HexahedronSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "HexahedronSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "MeshTopology", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "PointSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "PointSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "PointSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "QuadSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "QuadSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "QuadSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "RegularGridTopology", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "SparseGridTopology", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "TetrahedronSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "TetrahedronSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "TetrahedronSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "TriangleSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "TriangleSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "TriangleSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },
+        
     /***********************/
     // REMOVED SINCE v20.12
     { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
