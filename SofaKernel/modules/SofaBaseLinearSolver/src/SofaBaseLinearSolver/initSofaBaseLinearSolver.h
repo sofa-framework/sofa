@@ -19,54 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP
-#include <SofaBaseLinearSolver/FullVector.h>
-#include <sofa/core/visual/VisualParams.h>
+#pragma once
+#include <SofaBaseLinearSolver/config.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+void SOFA_SOFABASELINEARSOLVER_API initSofaBaseLinearSolver();
 
-namespace linearsolver
-{
-/*
-template<> FullVector<bool>::FullVector()
-: data(nullptr), cursize(0), allocsize(0)
-{
-}
-*/
-template<> void FullVector<bool>::set(Index i, SReal v)
-{
-    data[i] = (v!=0);
-}
-
-template<> void FullVector<bool>::add(Index i, SReal v)
-{
-    data[i] |= (v!=0);
-}
-
-template<> bool FullVector<bool>::dot(const FullVector<Real>& a) const
-{
-    Real r = false;
-    for(Index i=0; i<cursize && !r; ++i)
-        r = (*this)[i] && a[i];
-    return r;
-}
-
-template<> double FullVector<bool>::norm() const
-{
-    double r = 0.0;
-    for(Index i=0; i<cursize; ++i)
-        r += (*this)[i] ? 1.0 : 0.0;
-    return helper::rsqrt(r);
-}
-
-template class SOFA_BASE_LINEAR_SOLVER_API FullVector<bool>;
-
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver

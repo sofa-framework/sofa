@@ -19,54 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_SingleMatrixAccessor_H
-#define SOFA_CORE_BEHAVIOR_SingleMatrixAccessor_H
-#include "config.h"
+#include "SingleMatrixAccessor.h"
+#include <iostream>
 
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-
-namespace sofa
+namespace sofa::component::linearsolver
 {
 
-namespace component
+SingleMatrixAccessor::~SingleMatrixAccessor()
 {
+}
 
-namespace linearsolver
+
+void SingleMatrixAccessor::setMatrix( BaseMatrix* m )
 {
+    matrix = m;
+    matRef.matrix = m;
+}
 
-/** Special case to access a single square matrix.
-*/
-class SOFA_BASE_LINEAR_SOLVER_API SingleMatrixAccessor : public core::behavior::MultiMatrixAccessor
+SingleMatrixAccessor::InteractionMatrixRef SingleMatrixAccessor::getMatrix(const core::behavior::BaseMechanicalState*, const core::behavior::BaseMechanicalState* ) const
 {
-public:
-    typedef defaulttype::BaseMatrix BaseMatrix;
+    assert(false);
+    InteractionMatrixRef ref;
+    return ref;
+}
 
-    SingleMatrixAccessor( BaseMatrix* m=nullptr ) { setMatrix(m); }
-    ~SingleMatrixAccessor() override;
-
-    void setMatrix( BaseMatrix* m );
-    BaseMatrix* getMatrix() { return matrix; }
-    const BaseMatrix* getMatrix() const { return matrix; }
-
-
-    BaseMatrix::Index getGlobalDimension() const override { return matrix->rowSize(); }
-    int getGlobalOffset(const core::behavior::BaseMechanicalState*) const override { return 0; }
-    MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const override;
+SingleMatrixAccessor::MatrixRef SingleMatrixAccessor::getMatrix(const core::behavior::BaseMechanicalState*) const
+{
+    return matRef;
+}
 
 
-    InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* mstate1, const core::behavior::BaseMechanicalState* mstate2) const override;
-
-protected:
-    BaseMatrix* matrix;   ///< The single matrix
-    MatrixRef matRef; ///< The accessor to the single matrix
-
-};
-
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver

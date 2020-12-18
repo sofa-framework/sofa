@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_FULLMATRIX_H
-#define SOFA_COMPONENT_LINEARSOLVER_FULLMATRIX_H
-#include "config.h"
+#pragma once
+#include <SofaBaseLinearSolver/config.h>
 
 #include <sofa/defaulttype/BaseMatrix.h>
-#include "FullVector.h"
+#include <SofaBaseLinearSolver/FullVector.h>
 
-#include <map>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 //#define FULLMATRIX_CHECK
@@ -460,10 +452,4 @@ public:
 
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver
