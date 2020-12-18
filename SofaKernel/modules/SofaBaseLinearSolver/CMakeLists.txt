@@ -52,5 +52,5 @@ sofa_create_package_with_targets(
 cmake_dependent_option(SOFABASELINEARSOLVER_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
 if(SOFABASELINEARSOLVER_BUILD_TESTS)
     enable_testing()
-    add_subdirectory(SofaBaseLinearSolver_test)
+    add_subdirectory(${PROJECT_NAME}_test)
 endif()
