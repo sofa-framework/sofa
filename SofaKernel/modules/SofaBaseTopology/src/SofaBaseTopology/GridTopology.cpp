@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/GridTopology.h>
-#include <sofa/core/visual/VisualParams.h>
+
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec.h>
 

@@ -22,21 +22,23 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <string>
-
-
 #include <SofaBaseTopology/MeshTopology.h>
 #include <sofa/helper/MarchingCubeUtility.h>
 #include <sofa/defaulttype/Vec.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
 
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/core/loader/VoxelLoader.h>
 #include <stack>
+#include <string>
+
+namespace sofa::core::loader
+{
+    class VoxelLoader;
+}
 
 namespace sofa::component::topology
 {
 
+class RegularGridTopology;
 
 /** A sparse grid topology. Like a sparse FFD building from the bounding box of the object. Starting from a RegularGrid, only valid cells containing matter (ie intersecting the original surface mesh or totally inside the object) are considered.
  * Valid cells are tagged by a Type BOUNDARY or INSIDE
@@ -162,7 +164,7 @@ public:
 
     void updateMesh();
 
-    RegularGridTopology::SPtr _regularGrid; ///< based on a corresponding RegularGrid
+    sofa::core::sptr<RegularGridTopology> _regularGrid; ///< based on a corresponding RegularGrid
     helper::vector< Index > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
     helper::vector< Index > _indicesOfCubeinRegularGrid; ///< to redirect an indice of a cube in the sparse grid to its indice in the regular grid
 
@@ -227,13 +229,13 @@ protected:
 
     /// start from a seed cell (i,j,k) the OUTSIDE filling is propagated to neighboor cells until meet a BOUNDARY cell (this function is called from all border cells of the RegularGrid)
     void launchPropagationFromSeed(const Vec3i& point,
-            RegularGridTopology::SPtr regularGrid,
+            sofa::core::sptr<RegularGridTopology> regularGrid,
             helper::vector<Type>& regularGrdidTypes,
             helper::vector<bool>& alreadyTested,
             std::stack<Vec3i>& seed) const;
 
     void propagateFrom(  const Vec3i& point,
-            RegularGridTopology::SPtr regularGrid,
+            sofa::core::sptr<RegularGridTopology> regularGrid,
             helper::vector<Type>& regularGridTypes,
             helper::vector<bool>& alreadyTested,
             std::stack< sofa::defaulttype::Vec<3,int> > &seed) const;
@@ -244,12 +246,12 @@ protected:
             SReal& zmin, SReal& zmax) const;
 
     void voxelizeTriangleMesh(helper::io::Mesh* mesh,
-            RegularGridTopology::SPtr regularGrid,
+            sofa::core::sptr<RegularGridTopology> regularGrid,
             helper::vector<Type>& regularGridTypes) const;
 
     void buildFromTriangleMesh(sofa::helper::io::Mesh* mesh);
 
-    void buildFromRegularGridTypes(RegularGridTopology::SPtr regularGrid, const helper::vector<Type>& regularGridTypes);
+    void buildFromRegularGridTypes(sofa::core::sptr<RegularGridTopology> regularGrid, const helper::vector<Type>& regularGridTypes);
 
 
 

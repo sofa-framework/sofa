@@ -22,8 +22,6 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <sofa/helper/vector.h>
-
 #include <sofa/core/topology/BaseTopologyData.h>
 #include <SofaBaseTopology/TopologyEngine.h>
 #include <SofaBaseTopology/TopologySubsetDataHandler.h>

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/RegularGridTopology.h>
-#include <sofa/core/visual/VisualParams.h>
+
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::topology

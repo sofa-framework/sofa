@@ -19,24 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/Node.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
-#include <sofa/core/visual/VisualParams.h>
+
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/core/loader/MeshLoader.h>
-#include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/polygon_cube_intersection/polygon_cube_intersection.h>
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/loader/VoxelLoader.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 
 #include <fstream>
 #include <string>
 #include <cmath>
-
-
 
 using std::pair;
 using sofa::core::loader::VoxelLoader;
@@ -576,7 +572,6 @@ void SparseGridTopology::updateMesh()
     _max.setValue( voxelSize.getValue().linearProduct(dataResolution.getValue())*(1));
 
     //Creating if needed collision models and visual models
-    // 	    using sofa::simulation::Node;
     sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_mesh;
     sofa::helper::vector< Data< sofa::defaulttype::Vec3Types::VecCoord >* > list_X;
 
@@ -704,7 +699,7 @@ void SparseGridTopology::buildFromTriangleMesh(sofa::helper::io::Mesh* mesh)
 
 
 void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
-        RegularGridTopology::SPtr regularGrid,
+        sofa::core::sptr<RegularGridTopology> regularGrid,
         vector<Type>& regularGridTypes) const
 {
     regularGridTypes.resize(regularGrid->getNbHexahedra(), INSIDE);
@@ -870,7 +865,7 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
 
 
 void SparseGridTopology::launchPropagationFromSeed(const Vec3i &point,
-        RegularGridTopology::SPtr regularGrid,
+        sofa::core::sptr<RegularGridTopology> regularGrid,
         vector<Type>& regularGridTypes,
         vector<bool>& alreadyTested,
         std::stack<Vec3i> &seed) const
@@ -884,7 +879,7 @@ void SparseGridTopology::launchPropagationFromSeed(const Vec3i &point,
     }
 }
 
-void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology::SPtr regularGrid, const vector<Type>& regularGridTypes)
+void SparseGridTopology::buildFromRegularGridTypes(sofa::core::sptr<RegularGridTopology> regularGrid, const vector<Type>& regularGridTypes)
 {
     vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
     MapBetweenCornerPositionAndIndice cubeCornerPositionIndiceMap; // to compute cube corner indice values
@@ -1421,7 +1416,7 @@ void SparseGridTopology::updateQuads()
 
 
 void SparseGridTopology::propagateFrom( const Vec3i &point,
-        RegularGridTopology::SPtr regularGrid,
+        sofa::core::sptr<RegularGridTopology> regularGrid,
         vector<Type>& regularGridTypes,
         vector<bool>& alreadyTested,
         std::stack< Vec<3,int> > &seed) const

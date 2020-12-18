@@ -29,10 +29,6 @@
 namespace sofa::component::topology
 {
 class PointSetTopologyModifier;
-//using core::topology::BaseMeshTopology;
-
-//typedef core::topology::BaseMeshTopology::PointID PointID;
-//typedef Data< sofa::helper::vector < void* > > t_topologicalData;
 
 /** The container class that stores a set of points and provides access
 to each point. This set of point may be a subset of the DOF of the mechanical model */

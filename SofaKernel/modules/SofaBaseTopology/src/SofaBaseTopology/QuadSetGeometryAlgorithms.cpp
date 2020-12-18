@@ -22,8 +22,10 @@
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
+
 namespace sofa::component::topology
 {
 using namespace sofa::defaulttype;

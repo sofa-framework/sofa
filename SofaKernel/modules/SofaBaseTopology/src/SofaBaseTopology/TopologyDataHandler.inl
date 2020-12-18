@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseTopology/TopologyDataHandler.h>
-//#include <sofa/core/topology/TopologyHandler.inl>
 
 namespace sofa::component::topology
 {

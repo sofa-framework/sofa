@@ -133,9 +133,6 @@ inline Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec
 extern template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec2Types>;
 extern template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec1Types>;
-//extern template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid3Types>;
-//extern template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Rigid2Types>;
-
 
 #endif
 

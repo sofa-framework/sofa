@@ -21,8 +21,10 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
+
 namespace sofa::component::topology
 {
 using namespace sofa::defaulttype;

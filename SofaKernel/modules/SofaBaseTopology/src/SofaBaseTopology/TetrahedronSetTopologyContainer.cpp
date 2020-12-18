@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
 
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::topology
 {

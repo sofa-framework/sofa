@@ -21,7 +21,10 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
+
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+
 namespace sofa::component::topology
 {
 

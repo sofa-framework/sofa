@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP
 #include <SofaBaseTopology/NumericalIntegrationDescriptor.inl>
+
 namespace sofa::component::topology
 {
 using namespace sofa::defaulttype;

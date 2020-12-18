@@ -21,12 +21,14 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <SofaBaseTopology/NumericalIntegrationDescriptor.inl>
 #include <fstream>
+
 namespace sofa::component::topology
 {
 

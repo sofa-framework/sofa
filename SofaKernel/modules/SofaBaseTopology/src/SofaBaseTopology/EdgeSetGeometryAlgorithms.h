@@ -24,7 +24,7 @@
 
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/NumericalIntegrationDescriptor.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/Vec.h>
 
 #include <sofa/helper/types/RGBAColor.h>
 namespace sofa::component::topology

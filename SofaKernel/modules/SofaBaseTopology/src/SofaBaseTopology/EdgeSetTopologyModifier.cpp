@@ -20,25 +20,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/topology/TopologyChange.h>
+
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <algorithm>
-#include <functional>
-#include <iostream>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-// Use BOOST GRAPH LIBRARY :
-
-#include <SofaBaseTopology/config.h>
-#include <iostream>
-#include <vector>
+#include <algorithm>
 #include <utility>
 
+// Use BOOST GRAPH LIBRARY :
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/connected_components.hpp>
-
 #include <boost/graph/cuthill_mckee_ordering.hpp>
 #include <boost/graph/bandwidth.hpp>
 

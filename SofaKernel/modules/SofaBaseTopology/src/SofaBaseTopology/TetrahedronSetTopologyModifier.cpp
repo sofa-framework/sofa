@@ -20,14 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/topology/TopologyChange.h>
+
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <algorithm>
-#include <functional>
-#include <iostream>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
+
+#include <algorithm>
 
 namespace sofa::component::topology
 {

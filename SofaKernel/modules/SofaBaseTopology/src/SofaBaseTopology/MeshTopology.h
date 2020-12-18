@@ -22,20 +22,14 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <cstdlib>
-#include <string>
-#include <iostream>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa::component::topology
 {
 
 class MeshTopology;
-
-
 
 class SOFA_SOFABASETOPOLOGY_API MeshTopology : public core::topology::BaseMeshTopology
 {

@@ -22,14 +22,11 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <sofa/helper/map.h>
-
 #include <sofa/core/topology/BaseTopologyData.h>
 #include <SofaBaseTopology/TopologyEngine.h>
 #include <SofaBaseTopology/TopologySparseDataHandler.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <map>
 
 namespace sofa::component::topology
 {
