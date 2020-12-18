@@ -24,13 +24,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 using namespace std;
 using namespace sofa::defaulttype;
@@ -1056,8 +1050,4 @@ void TriangleSetTopologyContainer::updateTopologyEngineGraph()
 
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::topology

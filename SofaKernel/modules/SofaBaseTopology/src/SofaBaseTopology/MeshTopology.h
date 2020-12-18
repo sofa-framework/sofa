@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_MESHTOPOLOGY_H
-#define SOFA_COMPONENT_TOPOLOGY_MESHTOPOLOGY_H
-#include "config.h"
+#pragma once
+#include <SofaBaseTopology/config.h>
 
 #include <cstdlib>
 #include <string>
@@ -31,21 +30,14 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-
-namespace topology
+namespace sofa::component::topology
 {
 
 class MeshTopology;
 
 
 
-class SOFA_BASE_TOPOLOGY_API MeshTopology : public core::topology::BaseMeshTopology
+class SOFA_SOFABASETOPOLOGY_API MeshTopology : public core::topology::BaseMeshTopology
 {
 public:
     SOFA_CLASS(MeshTopology,core::topology::BaseMeshTopology);
@@ -647,10 +639,4 @@ protected:
     sofa::core::topology::TopologyElementType m_upperElementType;
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::topology

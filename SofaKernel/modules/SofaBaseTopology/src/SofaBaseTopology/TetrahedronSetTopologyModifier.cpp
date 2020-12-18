@@ -29,13 +29,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 int TetrahedronSetTopologyModifierClass = core::RegisterObject("Tetrahedron set topology modifier")
         .add< TetrahedronSetTopologyModifier >();
@@ -673,9 +667,4 @@ void TetrahedronSetTopologyModifier::propagateTopologicalEngineChanges()
     TriangleSetTopologyModifier::propagateTopologicalEngineChanges();
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

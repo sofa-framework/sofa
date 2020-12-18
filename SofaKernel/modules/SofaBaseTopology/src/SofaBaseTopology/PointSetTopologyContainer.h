@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYCONTAINER_H
-#define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYCONTAINER_H
-#include "config.h"
+#pragma once
+#include <SofaBaseTopology/config.h>
 
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseTopology.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 class PointSetTopologyModifier;
 //using core::topology::BaseMeshTopology;
@@ -43,7 +36,7 @@ class PointSetTopologyModifier;
 
 /** The container class that stores a set of points and provides access
 to each point. This set of point may be a subset of the DOF of the mechanical model */
-class SOFA_BASE_TOPOLOGY_API PointSetTopologyContainer : public core::topology::TopologyContainer
+class SOFA_SOFABASETOPOLOGY_API PointSetTopologyContainer : public core::topology::TopologyContainer
 {
 public:
     SOFA_CLASS(PointSetTopologyContainer,core::topology::TopologyContainer);
@@ -196,10 +189,4 @@ private:
     Data<sofa::helper::vector<PointID> > points; ///< List of point indices
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENTS_POINTSETTOPOLOGYCONTAINER_H
+} //namespace sofa::component::topology

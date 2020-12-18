@@ -42,13 +42,8 @@ using std::pair;
 using sofa::core::loader::VoxelLoader;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
-namespace sofa
-{
 
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
@@ -1452,8 +1447,4 @@ void SparseGridTopology::propagateFrom( const Vec3i &point,
     if(z<regularGrid->getNz()-2) seed.push(Vec3i(x,y,z+1));
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::topology

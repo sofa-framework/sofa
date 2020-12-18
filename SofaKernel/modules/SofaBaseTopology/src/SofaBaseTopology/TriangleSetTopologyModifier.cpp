@@ -30,13 +30,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 int TriangleSetTopologyModifierClass = core::RegisterObject("Triangle set topology modifier")
         .add< TriangleSetTopologyModifier >()
@@ -979,10 +973,4 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
     sofa::helper::AdvancedTimer::stepEnd("TriangleSetTopologyModifier::propagateTopologicalEngineChanges");
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-
+} //namespace sofa::component::topology

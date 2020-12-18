@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYMODIFIER_H
-#define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYMODIFIER_H
-#include "config.h"
+#pragma once
+#include <SofaBaseTopology/config.h>
 
 #include <sofa/helper/vector.h>
 #include <sofa/core/topology/BaseTopology.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 class PointSetTopologyContainer;
 
@@ -40,7 +33,7 @@ class PointSetTopologyContainer;
 /**
 * A class that can apply basic topology transformations on a set of points.
 */
-class SOFA_BASE_TOPOLOGY_API PointSetTopologyModifier : public core::topology::TopologyModifier
+class SOFA_SOFABASETOPOLOGY_API PointSetTopologyModifier : public core::topology::TopologyModifier
 {
 public:
     SOFA_CLASS(PointSetTopologyModifier,core::topology::TopologyModifier);
@@ -218,10 +211,4 @@ private:
     PointSetTopologyContainer* 	m_container;
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENTS_POINTSETTOPOLOGYMODIFIER_H
+} //namespace sofa::component::topology

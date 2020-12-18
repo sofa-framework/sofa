@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATA_H
-#define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATA_H
-#include "config.h"
+#pragma once
+#include <SofaBaseTopology/config.h>
 
 #include <sofa/helper/vector.h>
 
@@ -29,13 +28,7 @@
 #include <SofaBaseTopology/TopologyEngine.h>
 #include <SofaBaseTopology/TopologySubsetDataHandler.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -213,10 +206,4 @@ public:
 };
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATA_H
+} //namespace sofa::component::topology

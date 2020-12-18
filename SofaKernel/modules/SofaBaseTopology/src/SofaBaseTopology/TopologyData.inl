@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_INL
-#define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_INL
-
+#pragma once
 #include <SofaBaseTopology/TopologyData.h>
 #include <SofaBaseTopology/TopologyEngine.inl>
 #include <SofaBaseTopology/TopologyDataHandler.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,10 +144,4 @@ void TopologyDataImpl <TopologyElementType, VecT>::linkToHexahedronDataArray()
 }
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_INL
+} //namespace sofa::component::topology

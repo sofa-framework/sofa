@@ -28,11 +28,7 @@
 #include <iostream>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+namespace sofa::component::topology
 {
 int QuadSetTopologyModifierClass = core::RegisterObject("Quad set topology modifier")
         .add< QuadSetTopologyModifier >();
@@ -532,9 +528,4 @@ void QuadSetTopologyModifier::propagateTopologicalEngineChanges()
 }
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

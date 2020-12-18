@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYMODIFIER_H
-#define SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYMODIFIER_H
-#include "config.h"
+#pragma once
+#include <SofaBaseTopology/config.h>
 
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 class EdgeSetTopologyContainer;
 
@@ -39,7 +32,7 @@ class EdgeSetTopologyContainer;
 /**
  * A class that can apply basic transformations on a set of edges.
  */
-class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyModifier : public PointSetTopologyModifier
+class SOFA_SOFABASETOPOLOGY_API EdgeSetTopologyModifier : public PointSetTopologyModifier
 {
 public:
     SOFA_CLASS(EdgeSetTopologyModifier,PointSetTopologyModifier);
@@ -307,10 +300,4 @@ private:
     EdgeSetTopologyContainer* 	m_container;
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::topology

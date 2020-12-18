@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATAHANDLER_H
-#define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATAHANDLER_H
-#include "config.h"
+#pragma once
+#include <SofaBaseTopology/config.h>
 
 #include <sofa/core/topology/TopologyElementHandler.h>
 #include <sofa/core/topology/BaseTopologyData.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 
@@ -149,11 +142,4 @@ protected:
 };
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif // SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATAHANDLER_H
+} //namespace sofa::component::topology

@@ -22,13 +22,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
 #include <sofa/core/ObjectFactory.h>
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 using namespace sofa::defaulttype;
@@ -39,16 +33,11 @@ int PointSetGeometryAlgorithmsClass = core::RegisterObject("Point set geometry a
 
         ;
 
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Vec2Types>;
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Vec1Types>;
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Rigid3Types>;
-template class SOFA_BASE_TOPOLOGY_API PointSetGeometryAlgorithms<Rigid2Types>;
+template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Vec1Types>;
+template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Rigid3Types>;
+template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Rigid2Types>;
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

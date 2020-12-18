@@ -24,11 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+namespace sofa::component::topology
 {
 
 using namespace std;
@@ -1232,9 +1228,4 @@ void HexahedronSetTopologyContainer::updateTopologyEngineGraph()
     QuadSetTopologyContainer::updateTopologyEngineGraph();
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

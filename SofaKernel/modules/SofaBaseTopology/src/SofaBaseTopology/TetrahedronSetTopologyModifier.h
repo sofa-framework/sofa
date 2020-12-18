@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYMODIFIER_H
-#define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYMODIFIER_H
-#include "config.h"
+#pragma once
+#include <SofaBaseTopology/config.h>
 
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 class TetrahedronSetTopologyContainer;
 
@@ -39,7 +32,7 @@ class TetrahedronSetTopologyContainer;
 /**
 * A class that modifies the topology by adding and removing tetrahedra
 */
-class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyModifier : public TriangleSetTopologyModifier
+class SOFA_SOFABASETOPOLOGY_API TetrahedronSetTopologyModifier : public TriangleSetTopologyModifier
 {
 public:
     SOFA_CLASS(TetrahedronSetTopologyModifier,TriangleSetTopologyModifier);
@@ -219,10 +212,4 @@ private:
     TetrahedronSetTopologyContainer* 	m_container;
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::topology

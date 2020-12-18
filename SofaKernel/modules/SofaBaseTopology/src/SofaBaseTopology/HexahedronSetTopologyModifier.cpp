@@ -28,11 +28,7 @@
 #include <iostream>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+namespace sofa::component::topology
 {
 int HexahedronSetTopologyModifierClass = core::RegisterObject("Hexahedron set topology modifier")
         .add< HexahedronSetTopologyModifier >();
@@ -649,9 +645,4 @@ void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
 }
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

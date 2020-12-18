@@ -19,17 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseTopology/initBaseTopology.h>
+#include <SofaBaseTopology/initSofaBaseTopology.h>
 
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
-
-
-void initBaseTopology()
+void initSofaBaseTopology()
 {
     static bool first = true;
     if (first)
@@ -38,6 +36,45 @@ void initBaseTopology()
     }
 }
 
-} // namespace component
+extern "C" {
+    SOFA_SOFABASETOPOLOGY_API void initExternalModule();
+    SOFA_SOFABASETOPOLOGY_API const char* getModuleName();
+    SOFA_SOFABASETOPOLOGY_API const char* getModuleVersion();
+    SOFA_SOFABASETOPOLOGY_API const char* getModuleLicense();
+    SOFA_SOFABASETOPOLOGY_API const char* getModuleDescription();
+    SOFA_SOFABASETOPOLOGY_API const char* getModuleComponentList();
+}
 
-} // namespace sofa
+void initExternalModule()
+{
+    initSofaBaseTopology();
+}
+
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
+
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFABASETOPOLOGY_VERSION);
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Base Topology.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} //namespace sofa::component::topology

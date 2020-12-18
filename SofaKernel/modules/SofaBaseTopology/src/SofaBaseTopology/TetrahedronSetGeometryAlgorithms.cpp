@@ -23,13 +23,7 @@
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 using namespace sofa::defaulttype;
 int TetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("Tetrahedron set geometry algorithms")
@@ -39,14 +33,9 @@ int TetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("Tetrahedron se
 
         ;
 
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec2Types>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec1Types>;
+template class SOFA_SOFABASETOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_SOFABASETOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_SOFABASETOPOLOGY_API TetrahedronSetGeometryAlgorithms<Vec1Types>;
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

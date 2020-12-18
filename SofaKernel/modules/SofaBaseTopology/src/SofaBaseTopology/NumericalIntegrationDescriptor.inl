@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_INL
-#define SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_INL
-
+#pragma once
 #include <SofaBaseTopology/NumericalIntegrationDescriptor.h>
 #include <map>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 template< typename Real, int N>
@@ -75,10 +67,4 @@ void NumericalIntegrationDescriptor<Real,N>::addQuadratureMethod(const Quadratur
 	quadratureMap.insert(std::pair<QuadratureMethodKey,QuadraturePointArray>(QuadratureMethodKey(qt,order),qpa));
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::topology

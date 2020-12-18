@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_INL
-#define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_INL
-
+#pragma once
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 template< class DataTypes>
@@ -457,10 +449,4 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 }
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENTS_QUADSETGEOMETRYALGORITHMS_INL
+} //namespace sofa::component::topology

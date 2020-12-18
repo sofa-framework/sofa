@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSPARSEDATAHANDLER_INL
-#define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSPARSEDATAHANDLER_INL
-
+#pragma once
 #include <SofaBaseTopology/TopologySparseDataHandler.h>
 #include <SofaBaseTopology/TopologySparseData.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 ///////////////////// Private functions on TopologySparseDataHandler changes /////////////////////////////
@@ -171,11 +163,4 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::removeOnMovedPositio
 
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif // SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSPARSEDATAHANDLER_INL
+} //namespace sofa::component::topology

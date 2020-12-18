@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_COMMONALGORITHMS_H
-#define SOFA_COMPONENT_TOPOLOGY_COMMONALGORITHMS_H
-#include "config.h"
+#pragma once
+#include <SofaBaseTopology/config.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 
@@ -184,10 +177,5 @@ Real binomialVector(const sofa::defaulttype::Vec<N,unsigned char>  tbi1,const so
     }
     return(result);
 }
-} // namespace topology
 
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::topology

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYENGINE_H
-#define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYENGINE_H
-#include "config.h"
+#pragma once
+#include <SofaBaseTopology/config.h>
 
 #include <sofa/core/topology/BaseTopologyEngine.h>
 #include <sofa/core/topology/TopologyHandler.h>
@@ -33,13 +32,7 @@
 #include <sofa/helper/list.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 
@@ -112,11 +105,4 @@ public:
 };
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif // SOFA_COMPONENT_TOPOLOGY_TOPOLOGYENGINE_H
+} //namespace sofa::component::topology

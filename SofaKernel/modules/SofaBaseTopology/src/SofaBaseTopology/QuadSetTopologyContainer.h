@@ -19,17 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYCONTAINER_H
-#define SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYCONTAINER_H
-#include "config.h"
+#pragma once
+#include <SofaBaseTopology/config.h>
 
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+namespace sofa::component::topology
 {
 class QuadSetTopologyModifier;
 
@@ -37,7 +32,7 @@ class QuadSetTopologyModifier;
 
 /** Object that stores a set of quads and provides access
 to each quad and its edges and vertices */
-class SOFA_BASE_TOPOLOGY_API QuadSetTopologyContainer : public EdgeSetTopologyContainer
+class SOFA_SOFABASETOPOLOGY_API QuadSetTopologyContainer : public EdgeSetTopologyContainer
 {
     friend class QuadSetTopologyModifier;
 
@@ -331,10 +326,4 @@ protected:
     sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::topology

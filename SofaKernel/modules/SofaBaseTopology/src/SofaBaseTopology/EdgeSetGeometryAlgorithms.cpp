@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 using namespace sofa::defaulttype;
 int EdgeSetGeometryAlgorithmsClass = core::RegisterObject("Edge set geometry algorithms")
@@ -43,16 +37,11 @@ int EdgeSetGeometryAlgorithmsClass = core::RegisterObject("Edge set geometry alg
 
         ;
 
-template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec2Types>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<Vec1Types>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<Rigid3Types>;
-template class SOFA_BASE_TOPOLOGY_API EdgeSetGeometryAlgorithms<Rigid2Types>;
+template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<Vec1Types>;
+template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<Rigid3Types>;
+template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<Rigid2Types>;
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

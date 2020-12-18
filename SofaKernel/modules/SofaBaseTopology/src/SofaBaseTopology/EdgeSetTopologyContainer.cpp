@@ -25,7 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 // Use BOOST GRAPH LIBRARY :
 
-#include <boost/config.hpp>
+#include <SofaBaseTopology/config.h>
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -38,13 +38,7 @@
 
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 using namespace std;
@@ -589,9 +583,4 @@ void EdgeSetTopologyContainer::updateTopologyEngineGraph()
 }
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
-#define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
-
+#pragma once
 #include <fstream>
 
 #include <Eigen/Dense>
@@ -34,21 +32,9 @@
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
 
-namespace sofa
+namespace sofa::component::topology
 {
 
-namespace component
-{
-
-namespace topology
-{
-
-/*template<class DataTypes>
-    void EdgeSetGeometryAlgorithms< DataTypes>::reinit()
-    {
-       P
-    }
-*/
 template< class DataTypes>
 NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1> &EdgeSetGeometryAlgorithms< DataTypes >::getEdgeNumericalIntegrationDescriptor()
 {
@@ -914,10 +900,4 @@ void EdgeSetGeometryAlgorithms<DataTypes>::initPointAdded(PointID index, const c
 }
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENTS_EDGESETGEOMETRYALGORITHMS_INL
+} //namespace sofa::component::topology

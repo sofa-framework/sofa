@@ -19,26 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYCONTAINER_H
-#define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYCONTAINER_H
-#include "config.h"
+#pragma once
+#include <SofaBaseTopology/config.h>
 
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 class TetrahedronSetTopologyModifier;
 
 
 
 /** a class that stores a set of tetrahedra and provides access with adjacent triangles, edges and vertices */
-class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
+class SOFA_SOFABASETOPOLOGY_API TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
 {
     friend class TetrahedronSetTopologyModifier;
 
@@ -505,10 +498,4 @@ protected:
     sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::topology

@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 int GridTopologyClass = core::RegisterObject("Base class fo a regular grid in 3D")
@@ -431,9 +425,4 @@ GridTopology::Quad GridTopology::getQuad(int x, int y, int z)
                 point(1, y+1, z+1),point(1, y, z+1));
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

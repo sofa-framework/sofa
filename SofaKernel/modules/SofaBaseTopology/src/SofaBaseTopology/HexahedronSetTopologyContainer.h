@@ -41,23 +41,17 @@
 //
 
 
-#ifndef SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYCONTAINER_H
-#define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYCONTAINER_H
-
+#pragma once
 #include <SofaBaseTopology/QuadSetTopologyContainer.h>
 
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+namespace sofa::component::topology
 {
 class HexahedronSetTopologyModifier;
 
 
 /** a class that stores a set of hexahedra and provides access with adjacent quads, edges and vertices */
-class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyContainer : public QuadSetTopologyContainer
+class SOFA_SOFABASETOPOLOGY_API HexahedronSetTopologyContainer : public QuadSetTopologyContainer
 {
     friend class HexahedronSetTopologyModifier;
 
@@ -470,10 +464,4 @@ protected:
     sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::topology

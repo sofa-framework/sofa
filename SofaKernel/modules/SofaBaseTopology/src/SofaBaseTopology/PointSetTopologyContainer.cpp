@@ -27,13 +27,7 @@
 
 #include <algorithm>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 namespace
@@ -396,9 +390,4 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
 }
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

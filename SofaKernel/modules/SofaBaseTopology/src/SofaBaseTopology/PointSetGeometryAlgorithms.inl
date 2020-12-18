@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_INL
-#define SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_INL
-
+#pragma once
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -31,13 +29,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -301,10 +293,4 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 }
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::topology

@@ -19,17 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYMODIFIER_H
-#define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYMODIFIER_H
-#include "config.h"
+#pragma once
+#include <SofaBaseTopology/config.h>
 
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+namespace sofa::component::topology
 {
 class TriangleSetTopologyContainer;
 
@@ -37,7 +32,7 @@ class TriangleSetTopologyContainer;
 /**
  * A class that modifies the topology by adding and removing triangles
  */
-class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyModifier : public EdgeSetTopologyModifier
+class SOFA_SOFABASETOPOLOGY_API TriangleSetTopologyModifier : public EdgeSetTopologyModifier
 {
 public:
     SOFA_CLASS(TriangleSetTopologyModifier,EdgeSetTopologyModifier);
@@ -295,10 +290,4 @@ private:
     TriangleSetTopologyContainer*	m_container;
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::topology

@@ -19,20 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYENGINE_INL
-#define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYENGINE_INL
-
+#pragma once
 #include <SofaBaseTopology/TopologyEngine.h>
 
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace topology
+namespace sofa::component::topology
 {
 
 template <typename VecT>
@@ -252,8 +246,4 @@ void TopologyEngineImpl< VecT>::linkToHexahedronDataArray()
 
 }// namespace topology
 
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYENGINE_INL
+} //namespace sofa::component::topology

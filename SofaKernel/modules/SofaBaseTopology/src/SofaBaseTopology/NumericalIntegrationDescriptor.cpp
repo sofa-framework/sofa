@@ -21,26 +21,15 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP
 #include <SofaBaseTopology/NumericalIntegrationDescriptor.inl>
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 using namespace sofa::defaulttype;
 
 
-template class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double,4>;
-template class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double,3>;
-template class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double,1>;
+template class  SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<double,4>;
+template class  SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<double,3>;
+template class  SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<double,1>;
 
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

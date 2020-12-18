@@ -31,7 +31,7 @@
 
 // Use BOOST GRAPH LIBRARY :
 
-#include <boost/config.hpp>
+#include <SofaBaseTopology/config.h>
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -42,13 +42,7 @@
 #include <boost/graph/cuthill_mckee_ordering.hpp>
 #include <boost/graph/bandwidth.hpp>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 using namespace sofa::defaulttype;
 int EdgeSetTopologyModifierClass = core::RegisterObject("Edge set topology modifier")
@@ -1008,9 +1002,4 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
 }
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

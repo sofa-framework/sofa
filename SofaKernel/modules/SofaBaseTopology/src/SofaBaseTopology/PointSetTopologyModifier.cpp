@@ -29,13 +29,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 int PointSetTopologyModifierClass = core::RegisterObject("Point set topology modifier")
         .add< PointSetTopologyModifier >();
@@ -467,9 +461,4 @@ void PointSetTopologyModifier::notifyEndingEvent()
     m_container->addTopologyChange(e);
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::component::topology

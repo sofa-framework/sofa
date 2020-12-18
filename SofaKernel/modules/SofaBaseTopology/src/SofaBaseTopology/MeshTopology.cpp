@@ -27,13 +27,7 @@
 #include <set>
 #include <cstring>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace topology
+namespace sofa::component::topology
 {
 
 using helper::vector;
@@ -2788,8 +2782,4 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
 
 }
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::topology
