@@ -3249,8 +3249,8 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
     //Draw tetra indices
     if (d_showTetrahedraIndices.getValue() && this->m_topology->getNbTetrahedra() != 0)
     {
-        const sofa::defaulttype::Vec4f& color_tmp = d_drawColorTetrahedra.getValue();
-        defaulttype::Vec4f color4(color_tmp[0] - 0.2f, color_tmp[1] - 0.2f, color_tmp[2] - 0.2f, 1.0);
+        const auto& color_tmp = d_drawColorTetrahedra.getValue();
+        sofa::helper::types::RGBAColor color4(color_tmp[0] - 0.2f, color_tmp[1] - 0.2f, color_tmp[2] - 0.2f, 1.0);
         float scale = this->getIndicesScale();
 
         //for tetra:
@@ -3281,8 +3281,8 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, true);
 
-        const sofa::defaulttype::Vec4f& color_tmp = d_drawColorTetrahedra.getValue();
-        defaulttype::Vec4f color4(color_tmp[0] - 0.2f, color_tmp[1] - 0.2f, color_tmp[2] - 0.2f, 1.0);
+        const auto& color_tmp = d_drawColorTetrahedra.getValue();
+        sofa::helper::types::RGBAColor color4(color_tmp[0] - 0.2f, color_tmp[1] - 0.2f, color_tmp[2] - 0.2f, 1.0);
 
         const sofa::helper::vector<Tetrahedron> &tetraArray = this->m_topology->getTetrahedra();
         std::vector<defaulttype::Vector3>   pos;

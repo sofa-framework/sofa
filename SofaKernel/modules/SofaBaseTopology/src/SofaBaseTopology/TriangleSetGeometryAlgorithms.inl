@@ -4647,7 +4647,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
         size_t nbrTtri = triangleArray.size();
 
-        sofa::defaulttype::Vec4f color;
+        sofa::helper::types::RGBAColor color;
         SReal normalLength = _drawNormalLength.getValue();
 
         sofa::helper::vector<sofa::defaulttype::Vector3> vertices;

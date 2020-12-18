@@ -2683,7 +2683,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
             pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
             pos.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
         }
-        vparams->drawTool()->drawLines(pos, 1.0f, defaulttype::Vec4f(0.4f,1.0f,0.3f,1.0f));
+        vparams->drawTool()->drawLines(pos, 1.0f, sofa::helper::types::RGBAColor(0.4f,1.0f,0.3f,1.0f));
     }
 
     //Draw Triangles
@@ -2698,7 +2698,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
             pos.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
             pos.push_back(defaulttype::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
         }
-        vparams->drawTool()->drawTriangles(pos, defaulttype::Vec4f(0.4f,1.0f,0.3f,1.0f));
+        vparams->drawTool()->drawTriangles(pos, sofa::helper::types::RGBAColor(0.4f,1.0f,0.3f,1.0f));
     }
 
     //Draw Quads
@@ -2714,7 +2714,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
             pos.push_back(defaulttype::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
             pos.push_back(defaulttype::Vector3(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3])));
         }
-        vparams->drawTool()->drawQuads(pos, defaulttype::Vec4f(0.4f,1.0f,0.3f,1.0f));
+        vparams->drawTool()->drawQuads(pos, sofa::helper::types::RGBAColor(0.4f,1.0f,0.3f,1.0f));
     }
 
     //Draw Hexahedron
@@ -2745,8 +2745,8 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
             pos2.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
             pos2.push_back(defaulttype::Vector3(getPosX(c[5]), getPosY(c[5]), getPosZ(c[5])));
         }
-        vparams->drawTool()->drawQuads(pos1, defaulttype::Vec4f(0.4f,1.0f,0.3f,1.0f));
-        vparams->drawTool()->drawLines(pos2, 1.0f, defaulttype::Vec4f(0.4f,1.0f,0.3f,1.0f));
+        vparams->drawTool()->drawQuads(pos1, sofa::helper::types::RGBAColor(0.4f,1.0f,0.3f,1.0f));
+        vparams->drawTool()->drawLines(pos2, 1.0f, sofa::helper::types::RGBAColor(0.4f,1.0f,0.3f,1.0f));
     }
 
     // Draw Tetra
@@ -2775,7 +2775,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
             pos.push_back(defaulttype::Vector3(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2])));
             pos.push_back(defaulttype::Vector3(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3])));
         }
-        vparams->drawTool()->drawLines(pos, 1.0f, defaulttype::Vec4f(1.0f,0.0f,0.0f,1.0f));
+        vparams->drawTool()->drawLines(pos, 1.0f, sofa::helper::types::RGBAColor(1.0f,0.0f,0.0f,1.0f));
     }
 
 }
