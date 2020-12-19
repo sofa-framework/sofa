@@ -524,6 +524,13 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     //{ "TriangleSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
     //{ "TriangleSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
     //{ "TriangleSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },
+
+    // SofaBaseVisual was packaged in #1677
+    //{ "BackgroundSetting", Pluginized("v20.12", "SofaBaseVisual") },
+    //{ "Camera", Pluginized("v20.12", "SofaBaseVisual") },
+    //{ "InteractiveCamera", Pluginized("v20.12", "SofaBaseVisual") },
+    //{ "VisualModelImpl", Pluginized("v20.12", "SofaBaseVisual") },
+    //{ "VisualStyle", Pluginized("v20.12", "SofaBaseVisual") },
         
     /***********************/
     // REMOVED SINCE v20.12
