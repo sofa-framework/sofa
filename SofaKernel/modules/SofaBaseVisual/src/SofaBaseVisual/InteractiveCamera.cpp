@@ -23,13 +23,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::component::visualmodel
 {
 
 int InteractiveCameraClass = core::RegisterObject("InteractiveCamera")
@@ -270,8 +264,4 @@ void InteractiveCamera::processKeyReleasedEvent(core::objectmodel::KeyreleasedEv
 
 }
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::visualmodel

@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <SofaBaseVisual/BackgroundSetting.h>
-#include <sofa/core/visual/VisualParams.h>
+
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace configurationsetting
+namespace sofa::component::configurationsetting
 {
 
 int BackgroundSettingClass = core::RegisterObject("Backgrounds setting")
@@ -44,8 +37,4 @@ BackgroundSetting::BackgroundSetting():
 {
 }
 
-}
-
-}
-
-}
+} // namespace sofa::component::configurationsetting

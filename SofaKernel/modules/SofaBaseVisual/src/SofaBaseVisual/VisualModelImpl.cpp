@@ -46,13 +46,7 @@
 #include <map>
 #include <memory>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::component::visualmodel
 {
 using sofa::helper::types::RGBAColor;
 using namespace sofa::defaulttype;
@@ -1994,18 +1988,15 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     tindex+=nbt;
 }
 
-template class SOFA_BASE_VISUAL_API VisualModelPointHandler< VisualModelImpl::VecCoord>;
-template class SOFA_BASE_VISUAL_API VisualModelPointHandler< VisualModelImpl::VecTexCoord>;
+template class SOFA_SOFABASEVISUAL_API VisualModelPointHandler< VisualModelImpl::VecCoord>;
+template class SOFA_SOFABASEVISUAL_API VisualModelPointHandler< VisualModelImpl::VecTexCoord>;
 
-} // namespace visualmodel
+} // namespace sofa::component::visualmodel
 
-namespace topology
+namespace sofa::component::topology
 {
+
 template class PointData< sofa::defaulttype::Vec3fTypes::VecCoord >;
 template class PointData< sofa::defaulttype::Vec2fTypes::VecCoord >;
-}
 
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::topology

@@ -36,13 +36,7 @@ using sofa::helper::isEqual;
 
 using sofa::helper::types::RGBAColor ;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::component::visualmodel
 {
 
 BaseCamera::BaseCamera()
@@ -956,9 +950,4 @@ void BaseCamera::drawCamera(const core::visual::VisualParams* vparams)
     dt->setLightingEnabled(true);
 }
 
-} // namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
-
+} // namespace sofa::component::visualmodel

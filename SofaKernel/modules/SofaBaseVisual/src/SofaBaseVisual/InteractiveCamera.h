@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_INTERACTIVECAMERA_H
-#define SOFA_COMPONENT_VISUALMODEL_INTERACTIVECAMERA_H
-#include "config.h"
+#pragma once
+#include <SofaBaseVisual/config.h>
 
 #include <SofaBaseVisual/BaseCamera.h>
 #include <sofa/helper/gl/Trackball.h>
@@ -29,16 +28,10 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
-namespace sofa
+namespace sofa::component::visualmodel
 {
 
-namespace component
-{
-
-namespace visualmodel
-{
-
-class SOFA_BASE_VISUAL_API InteractiveCamera : public BaseCamera
+class SOFA_SOFABASEVISUAL_API InteractiveCamera : public BaseCamera
 {
 public:
     SOFA_CLASS(InteractiveCamera, BaseCamera);
@@ -69,10 +62,4 @@ protected:
     void processKeyReleasedEvent(core::objectmodel::KeyreleasedEvent* kre);
 };
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_VISUALMODEL_INTERACTIVECAMERA_H
+} // namespace sofa::component::visualmodel

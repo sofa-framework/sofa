@@ -22,13 +22,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <SofaBaseVisual/Camera.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::component::visualmodel
 {
 
 int CameraClass = core::RegisterObject("A Camera that render the scene from a given location & orientation.")
@@ -43,8 +37,4 @@ Camera::~Camera()
 {
 }
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::visualmodel

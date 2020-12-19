@@ -19,26 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_BACKGROUND_H
-#define SOFA_COMPONENT_CONFIGURATIONSETTING_BACKGROUND_H
-#include "config.h"
+#pragma once
+#include <SofaBaseVisual/config.h>
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace configurationsetting
+namespace sofa::component::configurationsetting
 {
 
 ///Class for the configuration of background settings.
-class SOFA_BASE_VISUAL_API BackgroundSetting: public core::objectmodel::ConfigurationSetting
+class SOFA_SOFABASEVISUAL_API BackgroundSetting: public core::objectmodel::ConfigurationSetting
 {
 public:
     SOFA_CLASS(BackgroundSetting,core::objectmodel::ConfigurationSetting);  ///< Sofa macro to define typedef.
@@ -52,9 +45,4 @@ public:
 
 };
 
-}
-
-}
-
-}
-#endif
+} // namespace sofa::component::configurationsetting
