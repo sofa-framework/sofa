@@ -20,8 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseVisual/InteractiveCamera.h>
-#include <sofa/core/visual/VisualParams.h>
+
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/MouseEvent.h>
 
 namespace sofa::component::visualmodel
 {

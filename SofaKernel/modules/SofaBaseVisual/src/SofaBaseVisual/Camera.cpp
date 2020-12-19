@@ -19,8 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/ObjectFactory.h>
 #include <SofaBaseVisual/Camera.h>
+
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::visualmodel
 {

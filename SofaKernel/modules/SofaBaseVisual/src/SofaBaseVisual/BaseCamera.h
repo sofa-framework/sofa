@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseVisual/config.h>
-#include <SofaBaseVisual/BackgroundSetting.h>
 
+#include <SofaBaseVisual/BackgroundSetting.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Ray.h>

@@ -24,7 +24,6 @@
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa::component::configurationsetting

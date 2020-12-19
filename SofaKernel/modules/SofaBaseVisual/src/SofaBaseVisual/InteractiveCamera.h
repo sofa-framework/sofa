@@ -24,9 +24,13 @@
 
 #include <SofaBaseVisual/BaseCamera.h>
 #include <sofa/helper/gl/Trackball.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/core/objectmodel/MouseEvent.h>
+
+namespace sofa::core::objectmodel
+{
+    class MouseEvent;
+    class KeypressedEvent;
+    class KeyreleasedEvent;
+} // namespace sofa::core::objectmodel
 
 namespace sofa::component::visualmodel
 {

@@ -19,20 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <cmath>
-#include <sofa/helper/rmath.h>
-using sofa::helper::isEqual;
-
 #include <SofaBaseVisual/BaseCamera.h>
+
+
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 
-#include <tinyxml.h>
+#include <sofa/helper/rmath.h>
+using sofa::helper::isEqual;
 
-#include <sofa/core/ObjectFactory.h>
+#include <cmath>
+#include <tinyxml.h>
 
 using sofa::helper::types::RGBAColor ;
 

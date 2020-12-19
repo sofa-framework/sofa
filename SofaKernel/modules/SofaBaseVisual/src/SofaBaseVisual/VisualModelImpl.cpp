@@ -20,28 +20,26 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseVisual/VisualModelImpl.h>
-#include <sofa/core/visual/VisualParams.h>
-
-#include <sofa/core/behavior/MechanicalState.h>
 
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 #include <SofaBaseTopology/QuadSetTopologyModifier.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
 #include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
-
-#include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/TopologyData.inl>
-
 #include <SofaBaseTopology/SparseGridTopology.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Quat.h>
+
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/Quat.h>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/io/MeshOBJ.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
+#include <sofa/helper/system/FileRepository.h>
+
 #include <sstream>
 #include <map>
 #include <memory>

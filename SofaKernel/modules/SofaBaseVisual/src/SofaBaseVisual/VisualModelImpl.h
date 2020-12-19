@@ -32,7 +32,6 @@
 #include <sofa/helper/io/Mesh.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
-#include <map>
 #include <string>
 
 namespace sofa::component::visualmodel
