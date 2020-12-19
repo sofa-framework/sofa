@@ -426,15 +426,15 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         vtexcoords.resize(nbVIn);
     }
 
-    std::size_t nbNOut = 0; /// Number of different normals
-    for (std::size_t i = 0, j = 0; i < nbVIn; i++)
+    sofa::Size nbNOut = 0; /// Number of different normals
+    for (sofa::Index i = 0, j = 0; i < nbVIn; i++)
     {
         positions[i] = verticesImport[i];
 
         if (m_initRestPositions.getValue())
             restPositions[i] = verticesImport[i];
 
-        std::map<std::size_t, std::size_t> normMap;
+        std::map<sofa::Index, sofa::Index> normMap;
         for (auto it = vertTexNormMap[i].begin();
              it != vertTexNormMap[i].end(); ++it)
         {
@@ -792,10 +792,10 @@ public:
             {
                 Coord c0 = x[ancestors[0]];
                 dest = c0*coefs[0];
-                for (std::size_t i=1; i<ancestors.size(); ++i)
+                for (Index i=1; i<ancestors.size(); ++i)
                 {
                     Coord ci = x[ancestors[i]];
-                    for (Size j=0; j<ci.size(); ++j)
+                    for (Index j=0; j<ci.size(); ++j)
                         ci[j] += helper::rnear(c0[j]-ci[j]);
                     dest += ci*coefs[i];
                 }
@@ -1692,7 +1692,7 @@ void VisualModelImpl::handleTopologyChange()
             }
             else if (m_topology->getNbQuads()>0)
             {
-                size_t last = m_topology->getNbPoints() -1;
+                sofa::Index last = m_topology->getNbPoints() -1;
 
                 Index i,j;
 
@@ -1900,25 +1900,25 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
 
     if (vertNormIdx.empty())
     {
-        nbn = vnormals.size();
-        for (std::size_t i=0; i<nbn; i++)
+        nbn = sofa::Size(vnormals.size());
+        for (sofa::Index i=0; i<nbn; i++)
         {
             *out << "vn "<< std::fixed << vnormals[i][0]<<' '<< std::fixed <<vnormals[i][1]<<' '<< std::fixed <<vnormals[i][2]<<'\n';
         }
     }
     else
     {
-        for (std::size_t i = 0; i < vertNormIdx.size(); i++)
+        for (sofa::Index i = 0; i < vertNormIdx.size(); i++)
         {
             if (vertNormIdx[i] >= nbn)
                 nbn = vertNormIdx[i]+1;
         }
         vector<Index> normVertIdx(nbn);
-        for (std::size_t i = 0; i < vertNormIdx.size(); i++)
+        for (sofa::Index i = 0; i < vertNormIdx.size(); i++)
         {
             normVertIdx[vertNormIdx[i]]=i;
         }
-        for (std::size_t i = 0; i < nbn; i++)
+        for (sofa::Index i = 0; i < nbn; i++)
         {
             Index j = normVertIdx[i];
             *out << "vn "<< std::fixed << vnormals[j][0]<<' '<< std::fixed <<vnormals[j][1]<<' '<< std::fixed <<vnormals[j][2]<<'\n';
@@ -1928,7 +1928,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     Size nbt = 0;
     if (!vtexcoords.empty())
     {
-        nbt = vtexcoords.size();
+        nbt = sofa::Size(vtexcoords.size());
         for (std::size_t i=0; i<nbt; i++)
         {
             *out << "vt "<< std::fixed << vtexcoords[i][0]<<' '<< std::fixed <<vtexcoords[i][1]<<'\n';
