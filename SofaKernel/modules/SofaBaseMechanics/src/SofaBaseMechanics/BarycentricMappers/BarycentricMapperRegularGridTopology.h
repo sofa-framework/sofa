@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_H
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_H
-
+#pragma once
 #include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using core::visual::VisualParams;
@@ -96,12 +88,9 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_CPP)
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperRegularGridTopology< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperRegularGridTopology< Vec3dTypes, Vec3dTypes >;
 
 
 #endif
 
-}}}
-
-
-#endif
+} // namespace sofa::component::mapping

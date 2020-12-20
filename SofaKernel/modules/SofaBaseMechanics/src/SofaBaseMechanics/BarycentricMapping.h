@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
-#include "config.h"
+#pragma once
+#include <SofaBaseMechanics/config.h>
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
@@ -38,13 +37,7 @@
 
 #include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using sofa::defaulttype::Vec3dTypes;
@@ -122,15 +115,9 @@ private:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP)
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
 
 
 #endif
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

@@ -20,20 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_CPP
-#include "SubsetMapping.inl"
+#include <SofaBaseMechanics/SubsetMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
@@ -42,21 +36,11 @@ int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
         .add< SubsetMapping< Vec3dTypes, Vec3dTypes > >()
         .add< SubsetMapping< Vec1Types, Vec1Types > >()
         .add< SubsetMapping< Rigid3Types, Rigid3Types > >()
-
-
-
         .addAlias("SurfaceIdentityMapping")
         ;
 
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1Types, Vec1Types >;
-template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3Types, Rigid3Types >;
+template class SOFA_SOFABASEMECHANICS_API SubsetMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_SOFABASEMECHANICS_API SubsetMapping< Vec1Types, Vec1Types >;
+template class SOFA_SOFABASEMECHANICS_API SubsetMapping< Rigid3Types, Rigid3Types >;
 
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::mapping

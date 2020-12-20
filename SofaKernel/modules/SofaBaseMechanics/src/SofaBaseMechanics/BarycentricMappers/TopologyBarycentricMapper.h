@@ -19,15 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_H
-#define SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_H
+#pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapper.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 
-namespace sofa::component::mapping
-{
-
-namespace _topologybarycentricmapper_
+namespace sofa::component::mapping::_topologybarycentricmapper_
 {
 
 using sofa::defaulttype::Vec3dTypes;
@@ -95,16 +91,16 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_CPP)
-extern template class SOFA_BASE_MECHANICS_API TopologyBarycentricMapper< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_SOFABASEMECHANICS_API TopologyBarycentricMapper< Vec3dTypes, Vec3dTypes >;
 
 
 #endif
 
-}
+} // namespace sofa::component::mapping::_topologybarycentricmapper_
+
+namespace sofa::component::mapping
+{
 
 using _topologybarycentricmapper_::TopologyBarycentricMapper;
 
-}
-
-
-#endif
+} // namespace sofa::component::mapping

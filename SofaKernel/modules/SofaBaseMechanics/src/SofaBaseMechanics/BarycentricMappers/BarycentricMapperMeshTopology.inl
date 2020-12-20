@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERMESHTOPOLOGY_INL
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERMESHTOPOLOGY_INL
-
-#include "BarycentricMapperMeshTopology.h"
+#pragma once
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using sofa::defaulttype::Vector3;
@@ -1166,10 +1158,4 @@ std::ostream& operator << ( std::ostream& out, const BarycentricMapperMeshTopolo
     return out;
 }
 
-
-}
-}
-}
-
-
-#endif
+} // namespace sofa::component::mapping

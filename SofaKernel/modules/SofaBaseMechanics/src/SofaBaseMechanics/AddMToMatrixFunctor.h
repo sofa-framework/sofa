@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_ADDMTOMATRIXFUNCTOR_H
-#define SOFA_COMPONENT_MASS_ADDMTOMATRIXFUNCTOR_H
-#include "config.h"
+#pragma once
+#include <SofaBaseMechanics/config.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mass
+namespace sofa::component::mass
 {
 
 template<class Deriv, class MassType>
@@ -102,10 +95,4 @@ public:
     }
 };
 
-} // namespace mass
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mass

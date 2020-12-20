@@ -19,22 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_BASE_MECHANICS_INIT_H
-#define SOFA_COMPONENT_BASE_MECHANICS_INIT_H
-#include "config.h"
+#pragma once
+#include <SofaBaseMechanics/config.h>
 
-namespace sofa
+namespace sofa::component
 {
 
-namespace component
-{
+void SOFA_SOFABASEMECHANICS_API initSofaBaseMechanics();
 
-
-void SOFA_BASE_MECHANICS_API initBaseMechanics();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component
 

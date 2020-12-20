@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPEDOBJECT_H
-#define SOFA_COMPONENT_MAPPEDOBJECT_H
-#include "config.h"
+#pragma once
+#include <SofaBaseMechanics/config.h>
 
 #include <sofa/core/State.h>
 #include <vector>
 #include <cassert>
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 //using core::objectmodel::Data;
 
@@ -139,10 +132,4 @@ extern template class MappedObject<defaulttype::Rigid2Types>;
 
 #endif
 
-} // namespace container
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::container

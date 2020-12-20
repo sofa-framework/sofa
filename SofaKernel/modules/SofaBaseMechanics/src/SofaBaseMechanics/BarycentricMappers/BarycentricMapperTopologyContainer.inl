@@ -19,22 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTOPOLOGYCONTAINER_INL
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTOPOLOGYCONTAINER_INL
+#pragma once
 #include <sofa/core/visual/VisualParams.h>
 
-#include "BarycentricMapperTopologyContainer.h"
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
-{
-
-namespace _barycentricmappertopologycontainer_
+namespace sofa::component::mapping::_barycentricmappertopologycontainer_
 {
 
 using defaulttype::Vec3d;
@@ -459,11 +449,4 @@ std::ostream& operator << ( std::ostream& out, const BarycentricMapperTopologyCo
     return out;
 }
 
-
-
-}
-} //
-} //
-} //
-
-#endif
+} // namespace sofa::component::mapping::_barycentricmappertopologycontainer_

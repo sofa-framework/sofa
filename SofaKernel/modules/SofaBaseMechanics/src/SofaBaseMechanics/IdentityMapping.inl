@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_INL
-
+#pragma once
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 
@@ -167,10 +159,4 @@ void IdentityMapping<TIn, TOut>::updateForceMask()
 
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

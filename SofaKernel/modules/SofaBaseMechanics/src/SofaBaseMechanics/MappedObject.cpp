@@ -25,13 +25,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 
 using namespace defaulttype;
@@ -54,8 +48,4 @@ template class MappedObject<Vec6Types>;
 template class MappedObject<Rigid3Types>;
 template class MappedObject<Rigid2Types>;
 
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::container

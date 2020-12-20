@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_INL
-
+#pragma once
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -56,17 +54,10 @@
 #include <algorithm>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
+namespace sofa::component::mapping
 {
 
 using namespace topology;
-
-namespace mapping
-{
-
 using sofa::defaulttype::Vector3;
 using sofa::defaulttype::Matrix3;
 using sofa::defaulttype::Mat3x3d;
@@ -503,10 +494,4 @@ void BarycentricMapping<TIn, TOut>::updateForceMask()
         d_mapper->updateForceMask();
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

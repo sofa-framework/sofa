@@ -19,18 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTRIANGLESETTOPOLOGY_INL
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTRIANGLESETTOPOLOGY_INL
+#pragma once
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
 
-#include "BarycentricMapperTriangleSetTopology.h"
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class In, class Out>
@@ -131,7 +123,4 @@ void BarycentricMapperTriangleSetTopology<In,Out>::addPointInElement(const Index
     addPointInTriangle(elementIndex,baryCoords);
 }
 
-}}}
-
-
-#endif
+} // namespace sofa::component::mapping

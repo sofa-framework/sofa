@@ -19,17 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERSPARSEGRIDTOPOLOGY_INL
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERSPARSEGRIDTOPOLOGY_INL
-#include "BarycentricMapperSparseGridTopology.h"
+#pragma once
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
 #include <sofa/core/visual/VisualParams.h>
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using sofa::defaulttype::Vector3;
@@ -373,8 +366,4 @@ std::ostream& operator << ( std::ostream& out, const BarycentricMapperSparseGrid
     return out;
 }
 
-} // namespace mapping
-} // namespace component
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

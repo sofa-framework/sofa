@@ -19,10 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTETRAHEDRONSETTOPOLOGY_INL
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTETRAHEDRONSETTOPOLOGY_INL
-
-#include "BarycentricMapperTetrahedronSetTopology.h"
+#pragma once
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
 
 namespace sofa::component::mapping
 {
@@ -199,5 +197,3 @@ void BarycentricMapperTetrahedronSetTopology<In, Out>::processAddPoint(const sof
 }
 
 } // namespace sofa::component::mapping
-
-#endif

@@ -59,8 +59,6 @@ using defaulttype::Vec3d;
 using defaulttype::DataTypeInfo;
 using defaulttype::BaseMatrix;
 
-
-
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
     : d_vertexMass ( initData ( &d_vertexMass, MassType ( 1.0f ), "vertexMass", "Specify one single, positive, real value for the mass of each particle. \n"

@@ -19,15 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_INL
-#define SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_INL
+#pragma once
+#include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
 
-#include "TopologyBarycentricMapper.h"
-
-namespace sofa::component::mapping
-{
-
-namespace _topologybarycentricmapper_
+namespace sofa::component::mapping::_topologybarycentricmapper_
 {
 
 template<class In, class Out>
@@ -167,8 +162,5 @@ TopologyBarycentricMapper<In,Out>::createPointInCube(const typename Out::Coord& 
     return 0;
 }
 
-} // namespace _topologybarycentricmapper_
+} // namespace sofa::component::mapping::_topologybarycentricmapper_
 
-} // namespace sofa::component::mapping
-
-#endif

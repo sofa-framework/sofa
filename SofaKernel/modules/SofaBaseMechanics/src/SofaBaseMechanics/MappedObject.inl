@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPEDOBJECT_INL
-#define SOFA_COMPONENT_MAPPEDOBJECT_INL
-
+#pragma once
 #include <SofaBaseMechanics/MappedObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace container
+namespace sofa::component::container
 {
 
 template <class DataTypes>
@@ -66,11 +58,4 @@ void MappedObject<DataTypes>::init()
     }
 }
 
-}
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component::container

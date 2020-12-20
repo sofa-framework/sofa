@@ -19,19 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERQUADSETTOPOLOGY_INL
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERQUADSETTOPOLOGY_INL
+#pragma once
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperQuadSetTopology.h>
 
-
-#include "BarycentricMapperQuadSetTopology.h"
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class In, class Out>
@@ -135,6 +126,4 @@ void BarycentricMapperQuadSetTopology<In,Out>::addPointInElement(const Index ele
     addPointInQuad(elementIndex,baryCoords);
 }
 
-}}}
-
-#endif
+} // namespace sofa::component::mapping

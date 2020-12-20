@@ -19,21 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_INL
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_INL
+#pragma once
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapper.h>
 
-#include "BarycentricMapper.h"
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
-{
-
-namespace _barycentricmapper_
+namespace sofa::component::mapping::_barycentricmapper_
 {
 
 using sofa::component::linearsolver::CompressedRowSparseMatrix;
@@ -64,6 +53,4 @@ void BarycentricMapper<In,Out>::applyOnePoint( const Index& hexaId, typename Out
     SOFA_UNUSED(in);
 }
 
-}}}}
-
-#endif
+} // namespace sofa::component::mapping::_barycentricmapper_

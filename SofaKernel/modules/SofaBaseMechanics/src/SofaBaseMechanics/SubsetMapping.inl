@@ -19,22 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_SUBSETMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_INL
-
-#include "SubsetMapping.h"
+#pragma once
+#include <SofaBaseMechanics/SubsetMapping.h>
 
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
-namespace sofa
+namespace sofa::component::mapping
 {
-
-namespace component
-{
-
-namespace mapping
-{
-
 
 template <class TIn, class TOut>
 SubsetMapping<TIn, TOut>::SubsetMapping()
@@ -361,10 +352,4 @@ const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJ
     return &js;
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

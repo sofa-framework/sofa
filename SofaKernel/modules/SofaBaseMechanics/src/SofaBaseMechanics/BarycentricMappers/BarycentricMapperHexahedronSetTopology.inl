@@ -19,18 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERHEXAHEDRONSETTOPOLOGY_INL
-#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERHEXAHEDRONSETTOPOLOGY_INL
+#pragma once
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
 
-#include "BarycentricMapperHexahedronSetTopology.h"
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 template <class In, class Out>
@@ -339,6 +331,4 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyOnePoint( const Index&
 }
 
 
-}}}
-
-#endif
+} // namespace sofa::component::mapping
