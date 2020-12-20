@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "sofa/helper/MarchingCubeUtility.h"
 #include "sofa/helper/vector_device.h"
 #include <SofaBaseCollision/ContactListener.h>
 
@@ -31,7 +32,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <sofa/simulation/CollisionEndEvent.h>
-#include <typeinfo>
+#include <tuple>
 
 
 namespace sofa
@@ -135,13 +136,25 @@ int ContactListener::getNumberOfContacts(){
 
 helper::vector<double> ContactListener::getDistances(){
     helper::vector<double> distances;
-
-    if (m_ContactsVectorBuffer.size() != 0){
-            for (size_t i = 0; i< m_ContactsVectorBuffer[0][0].size(); i++){
-                distances.push_back(m_ContactsVectorBuffer[0][0][i].value);
-            }
+    unsigned int numberOfContacts = this->getNumberOfContacts();
+    if (0 < numberOfContacts && ((numberOfContacts <= m_CollisionModel1->getSize()) || (numberOfContacts <= m_CollisionModel2->getSize()))){
+        for (size_t i = 0; i < m_ContactsVectorBuffer[0][0].size(); i++){
+            distances.push_back(m_ContactsVectorBuffer[0][0][i].value);
+        }
     }
     return distances;
+}
+
+std::vector<std::tuple<helper::Vector3, helper::Vector3>> ContactListener::getContactPoints(){
+    std::vector<std::tuple<helper::Vector3, helper::Vector3>> contactPoints;
+    unsigned int numberOfContacts = this->getNumberOfContacts();
+    if (0 < numberOfContacts && ((numberOfContacts <= m_CollisionModel1->getSize()) || (numberOfContacts <= m_CollisionModel2->getSize()))){
+        for (size_t i = 0; i< m_ContactsVectorBuffer[0][0].size(); i++){
+            std::tuple<helper::Vector3, helper::Vector3> pointPair {m_ContactsVectorBuffer[0][0][i].point[0], m_ContactsVectorBuffer[0][0][i].point[1]};
+            contactPoints.push_back(pointPair);
+        }
+    }
+    return contactPoints;
 }
 
 helper::vector<const helper::vector<DetectionOutput>* > ContactListener::getContactsVector(){

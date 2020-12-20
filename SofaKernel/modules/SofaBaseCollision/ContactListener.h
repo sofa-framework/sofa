@@ -22,9 +22,10 @@
 #ifndef SOFA_CONTACT_LISTENER_H
 #define SOFA_CONTACT_LISTENER_H
 #include "config.h"
+#include "sofa/config.h"
 #include "sofa/core/collision/DetectionOutput.h"
 #include "sofa/helper/vector_device.h"
-/* #include "sofa/helper/vector.h" */
+#include "sofa/helper/MarchingCubeUtility.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/collision/Contact.h>
@@ -66,6 +67,7 @@ public:
     int getNumberOfContacts();
     helper::vector<double> getDistances();
     helper::vector<const helper::vector<DetectionOutput>* > getContactsVector();
+    std::vector<std::tuple<helper::Vector3, helper::Vector3>> getContactPoints();
 
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
