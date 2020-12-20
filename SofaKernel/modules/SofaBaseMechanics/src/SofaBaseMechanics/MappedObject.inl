@@ -50,7 +50,7 @@ void MappedObject<DataTypes>::init()
         {
             VecCoord& x = *getX();
             x.resize(nbp);
-            for (std::size_t i=0; i<nbp; i++)
+            for (Index i=0; i<nbp; i++)
             {
                 DataTypes::set(x[i], mstate->getPX(i), mstate->getPY(i), mstate->getPZ(i));
             }

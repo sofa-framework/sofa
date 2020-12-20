@@ -282,7 +282,7 @@ void UniformMass<DataTypes, MassType>::initFromVertexMass()
 {
     //If the vertexMass attribute is set then the totalMass is computed from it
     //using the following formula: totalMass = vertexMass * number of particules
-    int size = d_indices.getValue().size();
+    auto size = d_indices.getValue().size();
     SReal vertexMass = SReal(d_vertexMass.getValue());
     SReal totalMass = vertexMass * SReal(size);
     d_totalMass.setValue(totalMass);
@@ -628,7 +628,7 @@ void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mpa
 
     ReadAccessor<Data<vector<int> > > indices = d_indices;
     for ( unsigned int i=0; i<indices.size(); i++ )
-        calc ( r.matrix, m, r.offset + N*indices[i], mFactor);
+        calc ( r.matrix, m, int(r.offset + N*indices[i]), mFactor);
 }
 
 

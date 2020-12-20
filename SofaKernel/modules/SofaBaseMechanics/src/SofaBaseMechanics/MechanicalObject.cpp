@@ -162,7 +162,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core:
             }
         }
 
-        offset += vDest.size() * coordDim;
+        offset += unsigned(vDest.size() * coordDim);
     }
     else
     {
@@ -177,7 +177,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core:
                 DataTypeInfo<Deriv>::setValue(vDest[i], j, tmp + src->element(offset + i * derivDim + j));
             }
         }
-        offset += vDest.size() * derivDim;
+        offset += unsigned(vDest.size() * derivDim);
     }
 
 }

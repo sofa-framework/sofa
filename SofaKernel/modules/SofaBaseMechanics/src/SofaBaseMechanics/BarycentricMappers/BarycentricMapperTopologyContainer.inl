@@ -289,7 +289,7 @@ const defaulttype::BaseMatrix* BarycentricMapperTopologyContainer<In,Out,Mapping
 
         helper::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[outId].baryCoords);
         for (unsigned int j=0; j<element.size(); j++)
-            this->addMatrixContrib(m_matrixJ, outId, element[j], baryCoef[j]);
+            this->addMatrixContrib(m_matrixJ, int(outId), element[j], baryCoef[j]);
     }
 
     m_matrixJ->compress();
@@ -414,7 +414,7 @@ Vec3i BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::getGri
 {
     Vec3i i_x;
     for(int i=0; i<3; i++)
-        i_x[i]=floor(pos[i]*m_convFactor);
+        i_x[i]=int(std::floor(Real(pos[i]*m_convFactor)));
 
     return i_x;
 }

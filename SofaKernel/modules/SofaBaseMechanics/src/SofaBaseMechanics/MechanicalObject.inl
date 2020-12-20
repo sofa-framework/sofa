@@ -409,18 +409,18 @@ void MechanicalObject<DataTypes>::handleStateChange()
             using sofa::helper::vector;
             const PointsAdded &pointsAdded = *static_cast< const PointsAdded * >( *itBegin );
 
-            unsigned int prevSizeMechObj = getSize();
-            unsigned int nbPoints = pointsAdded.getNbAddedVertices();
+            Size prevSizeMechObj = getSize();
+            Size nbPoints = Size(pointsAdded.getNbAddedVertices());
 
-            if (pointsAdded.pointIndexArray.size() != nbPoints)
+            if (Size(pointsAdded.pointIndexArray.size()) != nbPoints)
             {
                 msg_error() << "TOPO STATE EVENT POINTSADDED SIZE MISMATCH: "
                             << nbPoints << " != " << pointsAdded.pointIndexArray.size();
             }
             for (unsigned int i=0; i<pointsAdded.pointIndexArray.size(); ++i)
             {
-                unsigned int p1 = prevSizeMechObj + i;
-                unsigned int p2 = pointsAdded.pointIndexArray[i];
+                Index p1 = prevSizeMechObj + i;
+                Index p2 = pointsAdded.pointIndexArray[i];
                 if (p1 != p2)
                 {
                     dmsg_error(this) << "TOPO STATE EVENT POINTSADDED INDEX " << i << " MISMATCH: "
@@ -506,7 +506,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
                 --lastIndexMech;
             }
-            resize( prevSizeMechObj - tab.size() );
+            resize( Size(prevSizeMechObj - tab.size()) );
             break;
         }
         case core::topology::POINTSMOVED:
@@ -568,8 +568,8 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::replaceValue (const Index inputIndex, const Index outputIndex)
 {
     //const unsigned int maxIndex = std::max(inputIndex, outputIndex);
-    const unsigned int maxIndex = inputIndex<outputIndex ? outputIndex : inputIndex;
-    const unsigned int vecCoordSize = vectorsCoord.size();
+    const Index maxIndex = inputIndex<outputIndex ? outputIndex : inputIndex;
+    const Size vecCoordSize = Size(vectorsCoord.size());
     for (unsigned int i = 0; i < vecCoordSize; i++)
     {
         if (vectorsCoord[i] != nullptr)
@@ -583,8 +583,8 @@ void MechanicalObject<DataTypes>::replaceValue (const Index inputIndex, const In
         }
     }
 
-    const unsigned int vecDerivSize = vectorsDeriv.size();
-    for (unsigned int i = 0; i < vecDerivSize; i++)
+    const Size vecDerivSize = Size(vectorsDeriv.size());
+    for (Index i = 0; i < vecDerivSize; i++)
     {
         if (vectorsDeriv[i] != nullptr)
         {
@@ -810,15 +810,15 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const Index i, const sof
 {
     // HD interpolate position, speed,force,...
     // assume all coef sum to 1.0
-    unsigned int j;
+    Index j;
 
-    const unsigned int ancestorsSize = ancestors.size();
+    const Size ancestorsSize = Size(ancestors.size());
 
     helper::vector< Coord > ancestorsCoord(ancestorsSize);
     helper::vector< Deriv > ancestorsDeriv(ancestorsSize);
     helper::vector< Real > ancestorsCoefs(ancestorsSize);
 
-    for (unsigned int k = 0; k < vectorsCoord.size(); k++)
+    for (Index k = 0; k < vectorsCoord.size(); k++)
     {
         if (vectorsCoord[k] != nullptr)
         {
@@ -839,7 +839,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const Index i, const sof
         }
     }
 
-    for (unsigned int k = 0; k < vectorsDeriv.size(); k++)
+    for (Index k = 0; k < vectorsDeriv.size(); k++)
     {
         if (vectorsDeriv[k] != nullptr)
         {
@@ -890,7 +890,7 @@ void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * des
             }
         }
 
-        offset += vSrc.size() * coordDim;
+        offset += unsigned(vSrc.size() * coordDim);
     }
     else
     {
@@ -907,7 +907,7 @@ void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * des
             }
         }
 
-        offset += vSrc.size() * derivDim;
+        offset += unsigned(vSrc.size() * derivDim);
     }
 }
 
@@ -929,7 +929,7 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(sofa::core::VecId dest, con
             }
         }
 
-        offset += vDest.size() * coordDim;
+        offset += unsigned(vDest.size() * coordDim);
     }
     else
     {
@@ -946,7 +946,7 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(sofa::core::VecId dest, con
             }
         }
 
-        offset += vDest.size() * derivDim;
+        offset += unsigned(vDest.size() * derivDim);
     }
 }
 
@@ -968,7 +968,7 @@ void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest,
             }
         }
 
-        offset += vSrc.size() * coordDim;
+        offset += unsigned(vSrc.size() * coordDim);
     }
     else
     {
@@ -985,7 +985,7 @@ void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest,
             }
         }
 
-        offset += vSrc.size() * derivDim;
+        offset += unsigned(vSrc.size() * derivDim);
     }
 }
 
@@ -1007,7 +1007,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(sofa::core::VecId de
             }
         }
 
-        offset += vDest.size() * coordDim;
+        offset += unsigned(vDest.size() * coordDim);
     }
     else
     {
@@ -1024,7 +1024,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(sofa::core::VecId de
             }
         }
 
-        offset += vDest.size() * derivDim;
+        offset += unsigned(vDest.size() * derivDim);
     }
 }
 
@@ -1154,7 +1154,7 @@ void MechanicalObject<DataTypes>::init()
           // copy the last specified velocity to all points
             if (v_wA.size() >= 1 && v_wA.size() < (unsigned)nbp)
             {
-                unsigned int i = v_wA.size();
+                auto i = v_wA.size();
                 Deriv v1 = v_wA[i-1];
                 v_wA.resize(nbp);
                 while (i < v_wA.size())
@@ -1179,19 +1179,19 @@ void MechanicalObject<DataTypes>::init()
         // X and/or V were user-specified
         // copy the last specified velocity to all points
 
-        const unsigned int xSize = x_wA.size();
-        const unsigned int vSize = v_wA.size();
+        const Size xSize = Size(x_wA.size());
+        const Size vSize = Size(v_wA.size());
 
         if (vSize >= 1 && vSize < xSize)
         {
-            unsigned int i = vSize;
+            auto i = vSize;
             Deriv v1 = v_wA[i-1];
             v_wA.resize(xSize);
             while (i < xSize)
                 v_wA[i++] = v1;
         }
 
-        resize(xSize > v_wA.size() ? xSize : v_wA.size());
+        resize(xSize > v_wA.size() ? xSize : Size(v_wA.size()));
     }
 
     x_wAData->endEdit();
@@ -2200,7 +2200,7 @@ void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* params, const
         helper::WriteAccessor< Data<VecDeriv> >vv( *this->write(core::VecDerivId(ops[0].first.getId(this))) );
         helper::WriteAccessor< Data<VecCoord> > vx( *this->write(core::VecCoordId(ops[1].first.getId(this))) );
 
-        const unsigned int n = vx.size();
+        const auto n = vx.size();
         const Real f_v_v = (Real)(ops[0].second[0].second);
         const Real f_v_a = (Real)(ops[0].second[1].second);
         const Real f_x_x = (Real)(ops[1].second[0].second);
@@ -2259,7 +2259,7 @@ void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* params, const
         helper::WriteAccessor< Data<VecCoord> > previousPos( *this->write(core::VecCoordId(ops[0].first.getId(this))) );
         helper::WriteAccessor< Data<VecCoord> > newPos( *this->write(core::VecCoordId(ops[1].first.getId(this))) );
 
-        const unsigned int n = v11.size();
+        const auto n = v11.size();
         const Real f_1 = (Real)(ops[1].second[0].second);
         const Real f_2 = (Real)(ops[1].second[1].second);
         const Real f_3 = (Real)(ops[1].second[2].second);
@@ -2422,12 +2422,12 @@ Size MechanicalObject<DataTypes>::vSize(const core::ExecParams* params, core::Co
     if (v.type == sofa::core::V_COORD)
     {
         const VecCoord &vv = this->read(core::ConstVecCoordId(v))->getValue();
-        return vv.size() * Coord::total_size;
+        return Size(vv.size() * Coord::total_size);
     }
     else if (v.type == sofa::core::V_DERIV)
     {
         const VecDeriv &vv = this->read(core::ConstVecDerivId(v))->getValue();
-        return vv.size() * Deriv::total_size;
+        return Size(vv.size() * Deriv::total_size);
     }
     else
     {
@@ -2497,7 +2497,7 @@ unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::ConstVecId v
         }
         out << std::endl << std::endl;
 
-        return x.size();
+        return unsigned(x.size());
     }
     else if (v.type == sofa::core::V_DERIV)
     {
@@ -2511,7 +2511,7 @@ unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::ConstVecId v
         }
         out << std::endl << std::endl;
 
-        return x.size();
+        return unsigned(x.size());
     }
     else
         out << "MechanicalObject<DataTypes>::printDOFWithElapsedTime, unknown v.type = " << v.type << std::endl;
@@ -2650,7 +2650,7 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
                 if( blocks.find( column ) == blocks.end() )
                 {
                     // nope: let's create it
-                    matrix_t* mat = new matrix_t(indices.size(), dimensionDeriv);
+                    matrix_t* mat = new matrix_t(BaseMatrix::Index(indices.size()), BaseMatrix::Index(dimensionDeriv));
                     blocks[column] = mat;
                 }
 
@@ -2727,7 +2727,7 @@ inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualP
     float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
     std::vector<defaulttype::Vector3> positions;
-    for (Size i = 0; i <d_size.getValue(); ++i)
+    for (int i = 0; i <d_size.getValue(); ++i)
         positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
 
     vparams->drawTool()->draw3DText_Indices(positions, scale, d_color.getValue());
@@ -2788,7 +2788,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     {
         const float& scale = showObjectScale.getValue();
         helper::vector<Vector3> positions(d_size.getValue());
-        for (Size i = 0; i < d_size.getValue(); ++i)
+        for (Index i = 0; i < Size(d_size.getValue()); ++i)
             positions[i] = Vector3(getPX(i), getPY(i), getPZ(i));
 
         switch (drawMode.getValue())
@@ -2837,7 +2837,7 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
 
         defaulttype::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
         defaulttype::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
-        for (Size i=0; i< d_size.getValue(); ++i)
+        for (int i=0; i< d_size.getValue(); ++i)
         {
             defaulttype::Vec<3,Real> pos;
             DataTypes::get(pos[0],pos[1],pos[2],x[i]);

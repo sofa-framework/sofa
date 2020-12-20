@@ -63,7 +63,7 @@ BarycentricMapperRegularGridTopology<In,Out>::addPointInCube ( const Index cubeI
     data.baryCoords[0] = ( Real ) baryCoords[0];
     data.baryCoords[1] = ( Real ) baryCoords[1];
     data.baryCoords[2] = ( Real ) baryCoords[2];
-    return m_map.size()-1;
+    return Index(m_map.size()-1);
 }
 
 template <class In, class Out>
@@ -93,7 +93,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::init ( const typename Out::Ve
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::resize( core::State<Out>* toModel )
 {
-    toModel->resize(m_map.size());
+    toModel->resize(sofa::Size(m_map.size()));
 }
 
 template <class In, class Out>
@@ -200,7 +200,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out
 
     for ( size_t i=0; i<m_map.size(); i++ )
     {
-        const Index out = i;
+        const int out = int(i);
 
         const topology::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[i].in_index );
 

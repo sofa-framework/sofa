@@ -66,7 +66,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::clear ( std::size_t size )
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::resize( core::State<Out>* toModel )
 {
-    toModel->resize(m_map.size());
+    toModel->resize(Size(m_map.size()));
 }
 
 
@@ -162,7 +162,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>
 
     for ( size_t i=0; i<m_map.size(); i++ )
     {
-        const Index out = i;
+        const int out = int(i);
 
         const topology::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( this->m_map[i].in_index );
 

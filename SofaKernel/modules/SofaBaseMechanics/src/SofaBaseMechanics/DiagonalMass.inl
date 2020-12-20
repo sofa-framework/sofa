@@ -1506,7 +1506,7 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
             if(i < Coord::spatial_dimensions )
                 temp[i] = gravityCenter[i];
 
-        vparams->drawTool()->drawCross(temp, axisSize, sofa::helper::types::RGBAColor::yellow());
+        vparams->drawTool()->drawCross(temp, float(axisSize), sofa::helper::types::RGBAColor::yellow());
     }
 }
 

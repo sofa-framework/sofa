@@ -50,9 +50,9 @@ void IdentityMapping<TIn, TOut>::init()
         {
             for(unsigned r = 0; r < N; ++r)
             {
-                const unsigned row = NOut * i + r;
+                const auto row = NOut * i + r;
                 J.compressedMatrix.startVec( row );
-                const unsigned col = NIn * i + r;
+                const auto col = NIn * i + r;
                 J.compressedMatrix.insertBack( row, col ) = (OutReal)1;
             }
         }

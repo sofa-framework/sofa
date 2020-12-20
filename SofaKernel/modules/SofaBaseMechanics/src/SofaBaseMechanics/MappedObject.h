@@ -76,7 +76,7 @@ public:
 
     Size getSize() const override
     {
-        return f_X.getValue().size();
+        return Size(f_X.getValue().size());
     }
 
     Data< VecCoord >* write(core::VecCoordId v) override

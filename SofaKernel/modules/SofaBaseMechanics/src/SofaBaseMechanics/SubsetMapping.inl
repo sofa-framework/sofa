@@ -31,8 +31,8 @@ template <class TIn, class TOut>
 SubsetMapping<TIn, TOut>::SubsetMapping()
     : Inherit()
     , f_indices( initData(&f_indices, "indices", "list of input indices"))
-    , f_first( initData(&f_first, -1, "first", "first index (use if indices are sequential)"))
-    , f_last( initData(&f_last, -1, "last", "last index (use if indices are sequential)"))
+    , f_first( initData(&f_first, sofa::InvalidID, "first", "first index (use if indices are sequential)"))
+    , f_last( initData(&f_last, sofa::InvalidID, "last", "last index (use if indices are sequential)"))
     , f_radius( initData(&f_radius, (Real)1.0e-5, "radius", "search radius to find corresponding points in case no indices are given"))
     , f_handleTopologyChange( initData(&f_handleTopologyChange, true, "handleTopologyChange", "Enable support of topological changes for indices (disable if it is linked from SubsetTopologicalMapping::pointD2S)"))
     , f_ignoreNotFound( initData(&f_ignoreNotFound, false, "ignoreNotFound", "True to ignore points that are not found in the input model, they will be treated as fixed points"))
@@ -50,7 +50,7 @@ SubsetMapping<TIn, TOut>::~SubsetMapping()
 
 
 template <class TIn, class TOut>
-void SubsetMapping<TIn, TOut>::clear(int reserve)
+void SubsetMapping<TIn, TOut>::clear(Size reserve)
 {
     IndexArray& indices = *f_indices.beginEdit();
     indices.clear();
@@ -59,10 +59,10 @@ void SubsetMapping<TIn, TOut>::clear(int reserve)
 }
 
 template <class TIn, class TOut>
-int SubsetMapping<TIn, TOut>::addPoint(int index)
+int SubsetMapping<TIn, TOut>::addPoint(Index index)
 {
     IndexArray& indices = *f_indices.beginEdit();
-    int i = indices.size();
+    Size i = Size(indices.size());
     indices.push_back(index);
     f_indices.endEdit();
     return i;
@@ -73,18 +73,18 @@ void SubsetMapping<TIn, TOut>::init()
 {
     const bool ignoreNotFound = f_ignoreNotFound.getValue();
     int numnotfound = 0;
-    unsigned int inSize = this->fromModel->getSize();
-    if (f_indices.getValue().empty() && f_first.getValue() != -1)
+    auto inSize = this->fromModel->getSize();
+    if (f_indices.getValue().empty() && f_first.getValue() != sofa::InvalidID)
     {
         IndexArray& indices = *f_indices.beginEdit();
-        unsigned int first = (unsigned int)f_first.getValue();
-        unsigned int last = (unsigned int)f_last.getValue();
+        Index first = f_first.getValue();
+        Index last = f_last.getValue();
         if (first >= inSize)
             first = 0;
         if (last >= inSize)
             last = inSize-1;
         indices.resize(last-first+1);
-        for (unsigned int i=0; i<indices.size(); ++i)
+        for (Index i=0; i<indices.size(); ++i)
             indices[i] = first+i;
         f_indices.endEdit();
     }
@@ -120,7 +120,7 @@ void SubsetMapping<TIn, TOut>::init()
                 {
                     msg_error() << "Point " << i << "=" << out[i] << " not found in input model within a radius of " << rmax << ".";
                 }
-                indices[i] = (unsigned int)-1;
+                indices[i] = sofa::InvalidID;
             }
         }
         f_indices.endEdit();
@@ -177,7 +177,7 @@ template <class TIn, class TOut>
 void SubsetMapping<TIn, TOut>::postInit()
 {
     const IndexArray& indices = f_indices.getValue();
-    this->toModel->resize(indices.size());
+    this->toModel->resize(Size(indices.size()));
 }
 
 template <class TIn, class TOut>
@@ -189,7 +189,7 @@ void SubsetMapping<TIn, TOut>::apply ( const core::MechanicalParams* /*mparams*/
     { 
         if (this->toModel->getSize() != indices.size()) 
         { 
-            this->toModel->resize(indices.size()); 
+            this->toModel->resize(Size(indices.size())); 
         } 
     }
     
@@ -303,7 +303,7 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
             (unsigned int)matrixJ->rowBSize() != out.size() ||
             (unsigned int)matrixJ->colBSize() != in.size())
         {
-            matrixJ.reset(new MatrixType(out.size() * NOut, in.size() * NIn));
+            matrixJ.reset(new MatrixType(MatrixType::Index(out.size() * NOut), MatrixType::Index(in.size() * NIn)));
         }
         else
         {
@@ -336,12 +336,12 @@ const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJ
         const auto rows = rowsBlock * NOut;
         const auto cols = colsBlock * NIn;
 
-        eigen.resize( rows, cols );
+        eigen.resize(MatrixType::Index(rows), MatrixType::Index(cols) );
 
         for (std::size_t i = 0; i < indices.size(); ++i) {
             for(std::size_t j = 0; j < NOut; ++j) {
-                eigen.beginRow( i*NOut+j );
-                eigen.insertBack( i*NOut+j, indices[i]*NIn+j ,(SReal)1. );
+                eigen.beginRow(MatrixType::Index(i*NOut+j) );
+                eigen.insertBack(MatrixType::Index(i*NOut+j), MatrixType::Index(indices[i]*NIn+j) ,(SReal)1. );
             }
         }
         eigen.compress();
