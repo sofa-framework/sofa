@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaBase/initSofaBase.h>
 #include <SofaBaseTopology/initSofaBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 #include <SofaBaseCollision/initSofaBaseCollision.h>
 #include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
 #include <SofaBaseVisual/initSofaBaseVisual.h>
@@ -41,7 +41,7 @@ void initSofaBase()
     if (first)
     {
         initSofaBaseTopology();
-        initBaseMechanics();
+        initSofaBaseMechanics();
         initSofaBaseCollision();
         initSofaBaseLinearSolver();
         initSofaBaseVisual();
