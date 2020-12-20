@@ -531,6 +531,15 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     //{ "InteractiveCamera", Pluginized("v20.12", "SofaBaseVisual") },
     //{ "VisualModelImpl", Pluginized("v20.12", "SofaBaseVisual") },
     //{ "VisualStyle", Pluginized("v20.12", "SofaBaseVisual") },
+
+    // SofaBaseMechanics was packaged in #1678
+    //{ "BarycentricMapping", Pluginized("v20.12", "SofaBaseMechanics") },
+    //{ "DiagonalMass", Pluginized("v20.12", "SofaBaseMechanics") },
+    //{ "IdentityMapping", Pluginized("v20.12", "SofaBaseMechanics") },
+    //{ "MappedObject", Pluginized("v20.12", "SofaBaseMechanics") },
+    //{ "MechanicalObject", Pluginized("v20.12", "SofaBaseMechanics") },
+    //{ "SubsetMapping", Pluginized("v20.12", "SofaBaseMechanics") },
+    //{ "UniformMass", Pluginized("v20.12", "SofaBaseMechanics") },
         
     /***********************/
     // REMOVED SINCE v20.12
