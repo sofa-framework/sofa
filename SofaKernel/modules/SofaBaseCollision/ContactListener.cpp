@@ -19,8 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "sofa/helper/vector_device.h"
 #include <SofaBaseCollision/ContactListener.h>
 
+#include <cstddef>
+#include <iostream>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/collision/ContactManager.h>
 
@@ -28,6 +31,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <sofa/simulation/CollisionEndEvent.h>
+#include <typeinfo>
 
 
 namespace sofa
@@ -67,6 +71,7 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
 {
     if (simulation::CollisionBeginEvent::checkEventType(_event))
     {
+        m_ContactsVectorBuffer = m_ContactsVector;
         m_ContactsVector.clear();
     }
 
@@ -119,6 +124,29 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
     }
 }
 
+int ContactListener::getNumberOfContacts(){
+    if (m_ContactsVectorBuffer.size() != 0){
+        return m_ContactsVectorBuffer[0][0].size();
+    }
+    else {
+        return 0;
+    }
+}
+
+helper::vector<double> ContactListener::getDistances(){
+    helper::vector<double> distances;
+
+    if (m_ContactsVectorBuffer.size() != 0){
+            for (size_t i = 0; i< m_ContactsVectorBuffer[0][0].size(); i++){
+                distances.push_back(m_ContactsVectorBuffer[0][0][i].value);
+            }
+    }
+    return distances;
+}
+
+helper::vector<const helper::vector<DetectionOutput>* > ContactListener::getContactsVector(){
+    return m_ContactsVector;
+}
 
 } // namespace collision
 
