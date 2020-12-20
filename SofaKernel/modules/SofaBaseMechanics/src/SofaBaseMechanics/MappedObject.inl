@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/MappedObject.h>
-#include <sofa/core/visual/VisualParams.h>
+
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa::component::container
@@ -45,7 +45,7 @@ void MappedObject<DataTypes>::init()
     if (getSize() == 0)
     {        
         sofa::core::behavior::BaseMechanicalState* mstate = this->getContext()->getMechanicalState();
-        std::size_t nbp = mstate->getSize();
+        auto nbp = mstate->getSize();
         if (nbp > 0)
         {
             VecCoord& x = *getX();

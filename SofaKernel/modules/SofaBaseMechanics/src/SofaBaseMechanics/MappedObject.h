@@ -23,9 +23,8 @@
 #include <SofaBaseMechanics/config.h>
 
 #include <sofa/core/State.h>
-#include <vector>
-#include <cassert>
-#include <fstream>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::container
 {

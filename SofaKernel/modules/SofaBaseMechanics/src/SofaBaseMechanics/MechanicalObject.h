@@ -30,8 +30,8 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/vector.h>
 
-#include <vector>
 #include <fstream>
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES

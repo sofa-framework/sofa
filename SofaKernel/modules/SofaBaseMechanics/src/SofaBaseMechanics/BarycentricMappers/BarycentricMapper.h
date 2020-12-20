@@ -21,14 +21,14 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/config.h>
-#include <sofa/core/Mapping.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::mapping::_barycentricmapper_
 {
 
-using core::visual::VisualParams;
 using sofa::defaulttype::BaseMatrix;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
@@ -65,7 +65,7 @@ public:
     virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
 
     using BaseObject::draw;
-    virtual void draw(const VisualParams*, const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
+    virtual void draw(const core::visual::VisualParams*, const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
 
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
     virtual const BaseMatrix* getJ(int outSize, int inSize);

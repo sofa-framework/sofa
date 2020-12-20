@@ -21,8 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/IdentityMapping.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/VecTypes.h>
 
 
 namespace sofa::component::mapping

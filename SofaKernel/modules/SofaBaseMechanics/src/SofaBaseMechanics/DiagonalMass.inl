@@ -20,16 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
 #include <SofaBaseMechanics/DiagonalMass.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/io/XspLoader.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
-#include <sofa/simulation/AnimateEndEvent.h>
 
 namespace sofa::component::mass
 {

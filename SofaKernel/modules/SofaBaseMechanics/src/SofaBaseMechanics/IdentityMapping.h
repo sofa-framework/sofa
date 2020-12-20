@@ -22,13 +22,11 @@
 #pragma once
 #include <SofaBaseMechanics/config.h>
 
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/Mapping.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <vector>
-#include <memory>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/helper/vector.h>
 
 
 namespace sofa::component::mapping

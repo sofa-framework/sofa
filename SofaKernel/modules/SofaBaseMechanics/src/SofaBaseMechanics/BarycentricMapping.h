@@ -22,20 +22,15 @@
 #pragma once
 #include <SofaBaseMechanics/config.h>
 
+#include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MechanicalParams.h>
-
 #include <sofa/core/topology/BaseMeshTopology.h>
-
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
-
 #include <sofa/helper/vector.h>
 
-#include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
 
 namespace sofa::component::mapping
 {

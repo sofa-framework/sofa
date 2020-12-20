@@ -20,19 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
 #include <SofaBaseMechanics/UniformMass.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/helper/accessor.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
-#include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/AnimateEndEvent.h>
-#include <iostream>
-#include <cstring>
 
 
 namespace sofa::component::mass

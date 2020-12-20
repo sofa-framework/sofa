@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
+
 #include <SofaBaseTopology/RegularGridTopology.h>
 
 namespace sofa::component::mapping

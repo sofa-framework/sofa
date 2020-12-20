@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/core/visual/VisualParams.h>
-
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
+
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::mapping::_barycentricmappertopologycontainer_
 {

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP
 #include <SofaBaseMechanics/MappedObject.inl>
+
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>

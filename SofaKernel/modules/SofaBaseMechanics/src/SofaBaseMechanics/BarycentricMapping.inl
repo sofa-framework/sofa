@@ -21,9 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/BarycentricMapping.h>
-#include <sofa/core/visual/VisualParams.h>
-
-#include <sofa/core/behavior/MechanicalState.h>
 
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
@@ -47,12 +44,11 @@
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
 
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
-
 #include <sofa/simulation/Simulation.h>
 
-#include <algorithm>
-#include <iostream>
 
 namespace sofa::component::mapping
 {
