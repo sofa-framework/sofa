@@ -144,7 +144,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw  (const VisualParams* vpa
             }
         }
     }
-    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,0,1,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, sofa::helper::types::RGBAColor::blue());
 }
 
 

@@ -215,27 +215,27 @@ void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::Visual
 
 			if (getContext()->isSleeping())
 			{
-				vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0.5,0.5,0.5,1) );
+				vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::gray());
 			}
 			else switch( drawMode.getValue() )
             {
                 case 1:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,1,0,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::green());
                     break;
                 case 2:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,0,0,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::red());
                     break;
                 case 3:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::blue());
                     break;
                 case 4:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,1,0,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::yellow());
                     break;
                 case 5:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,0,1,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::magenta());
                     break;
                 case 6:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,1,1,1) );
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), sofa::helper::types::RGBAColor::cyan());
                     break;
                 default:
                     vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );

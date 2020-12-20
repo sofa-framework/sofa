@@ -1498,7 +1498,6 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
     if ( d_showCenterOfGravity.getValue() )
     {
         gravityCenter /= totalMass;
-        const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
 
         Real axisSize = d_showAxisSize.getValue();
         sofa::defaulttype::Vector3 temp;
@@ -1507,7 +1506,7 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
             if(i < Coord::spatial_dimensions )
                 temp[i] = gravityCenter[i];
 
-        vparams->drawTool()->drawCross(temp, axisSize, color);
+        vparams->drawTool()->drawCross(temp, axisSize, sofa::helper::types::RGBAColor::yellow());
     }
 }
 

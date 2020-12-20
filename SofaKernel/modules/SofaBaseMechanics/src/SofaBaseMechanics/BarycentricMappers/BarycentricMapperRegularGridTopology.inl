@@ -262,7 +262,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::draw  (const core::visual::Vi
             }
         }
     }
-    vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,0,1,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, sofa::helper::types::RGBAColor::blue());
 }
 
 template <class In, class Out>

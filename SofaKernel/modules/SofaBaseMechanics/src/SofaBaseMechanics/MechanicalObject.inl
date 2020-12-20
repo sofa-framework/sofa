@@ -2753,13 +2753,13 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
         case 0:
             points[0] = p1;
             points[1] = p2;
-            vparams->drawTool()->drawLines(points, 1, defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
+            vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor::white());
             break;
         case 1:
-            vparams->drawTool()->drawCylinder(p1, p2, rad, defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
+            vparams->drawTool()->drawCylinder(p1, p2, rad, sofa::helper::types::RGBAColor::white());
             break;
         case 2:
-            vparams->drawTool()->drawArrow(p1, p2, rad, defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
+            vparams->drawTool()->drawArrow(p1, p2, rad, sofa::helper::types::RGBAColor::white());
             break;
         default:
             msg_error() << "No proper drawing mode found!";
@@ -2794,23 +2794,23 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
         switch (drawMode.getValue())
         {
         case 0:
-            vparams->drawTool()->drawPoints(positions,scale,defaulttype::Vec<4,float>(d_color.getValue()));
+            vparams->drawTool()->drawPoints(positions,scale, d_color.getValue());
             break;
         case 1:
             vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale,defaulttype::Vec<4,float>(d_color.getValue()));
+            vparams->drawTool()->drawSpheres(positions,scale, d_color.getValue());
             break;
         case 2:
             vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale,defaulttype::Vec<4,float>(1.0,0.0,0.0,1.0));
+            vparams->drawTool()->drawSpheres(positions,scale, sofa::helper::types::RGBAColor::red());
             break;
         case 3:
             vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale,defaulttype::Vec<4,float>(0.0,1.0,0.0,1.0));
+            vparams->drawTool()->drawSpheres(positions,scale, sofa::helper::types::RGBAColor::green());
             break;
         case 4:
            vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale,defaulttype::Vec<4,float>(0.0,0.0,1.0,1.0));
+            vparams->drawTool()->drawSpheres(positions,scale, sofa::helper::types::RGBAColor::blue());
             break;
         default:
             msg_error() << "No proper drawing mode found!";

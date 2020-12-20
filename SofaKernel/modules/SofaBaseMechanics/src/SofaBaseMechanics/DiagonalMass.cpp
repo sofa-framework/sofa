@@ -99,9 +99,8 @@ void DiagonalMass<RigidTypes, RigidMass>::drawRigid3dImpl(const VisualParams* vp
     if(d_showCenterOfGravity.getValue())
     {
         gravityCenter /= totalMass;
-        const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
 
-        vparams->drawTool()->drawCross(gravityCenter, d_showAxisSize.getValue(), color);
+        vparams->drawTool()->drawCross(gravityCenter, d_showAxisSize.getValue(), sofa::helper::types::RGBAColor::yellow());
     }
 }
 

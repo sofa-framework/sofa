@@ -252,7 +252,7 @@ void UniformMass<RigidTypes, MassType>::drawRigid3DImpl(const VisualParams* vpar
     for (unsigned int i=0; i<indices.size(); i++)
     {
         if (getContext()->isSleeping())
-            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue(), Vec4f(0.5,0.5,0.5,1) );
+            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue(), sofa::helper::types::RGBAColor::gray());
         else
             vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue() );
         gravityCenter += (x[indices[i]].getCenter());
@@ -269,9 +269,8 @@ void UniformMass<RigidTypes, MassType>::drawRigid3DImpl(const VisualParams* vpar
     if(d_showCenterOfGravity.getValue())
     {
         gravityCenter /= x.size();
-        const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
 
-        vparams->drawTool()->drawCross(gravityCenter, d_showAxisSize.getValue(), color);
+        vparams->drawTool()->drawCross(gravityCenter, d_showAxisSize.getValue(), sofa::helper::types::RGBAColor::yellow());
     }
 }
 

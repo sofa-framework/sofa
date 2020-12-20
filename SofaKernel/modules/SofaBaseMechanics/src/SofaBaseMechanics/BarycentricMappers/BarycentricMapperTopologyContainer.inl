@@ -405,7 +405,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::draw  (
             }
         }
     }
-    vparams->drawTool()->drawLines ( points, 1, defaulttype::Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, sofa::helper::types::RGBAColor::green());
 }
 
 

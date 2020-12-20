@@ -357,7 +357,7 @@ void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpara
     {
         points.push_back ( OutDataTypes::getCPos(out[i]) );
     }
-    vparams->drawTool()->drawPoints ( points, 7, sofa::defaulttype::Vec<4,float> ( 1,1,0,1 ) );
+    vparams->drawTool()->drawPoints ( points, 7, sofa::helper::types::RGBAColor::yellow());
 
     // Draw mapping line between models
     const InVecCoord& in = this->fromModel->read(core::ConstVecCoordId::position())->getValue();

@@ -687,7 +687,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
             }
         }
     }
-    vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines ( points, 1, sofa::helper::types::RGBAColor::green());
 }
 
 template <class In, class Out>
