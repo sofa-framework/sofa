@@ -2647,7 +2647,7 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
                 if( blocks.find( column ) == blocks.end() )
                 {
                     // nope: let's create it
-                    matrix_t* mat = new matrix_t(BaseMatrix::Index(indices.size()), BaseMatrix::Index(dimensionDeriv));
+                    matrix_t* mat = new matrix_t(defaulttype::BaseMatrix::Index(indices.size()), defaulttype::BaseMatrix::Index(dimensionDeriv));
                     blocks[column] = mat;
                 }
 

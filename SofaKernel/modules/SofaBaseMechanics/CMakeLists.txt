@@ -69,9 +69,10 @@ set(SOURCE_FILES
 
 find_package(SofaEigen2Solver REQUIRED)
 find_package(SofaBaseTopology REQUIRED)
+find_package(SofaBaseLinearSolver REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaEigen2Solver)
+target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaEigen2Solver SofaBaseLinearSolver)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

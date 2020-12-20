@@ -38,8 +38,8 @@ using namespace sofa::defaulttype;
 #include <SofaEngine/BoxROI.h>
 using sofa::component::engine::BoxROI;
 
-#include <SofaBaseMechanics/initBaseMechanics.h>
-using sofa::component::initBaseMechanics;
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
+using sofa::component::initSofaBaseMechanics;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation;
@@ -72,7 +72,7 @@ struct BoxROITest :  public ::testing::Test
 
     void SetUp() override
     {
-        initBaseMechanics();
+        initSofaBaseMechanics();
         setSimulation( m_simu = new DAGSimulation() );
         m_root = m_simu->createNewGraph("root");
 

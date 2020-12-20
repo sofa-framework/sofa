@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaBase)
 
 set(SOFABASE_TARGETS
+    SofaBaseLinearSolver
     SofaEigen2Solver
     SofaBaseTopology
     SofaBaseCollision
-    SofaBaseLinearSolver
     SofaBaseMechanics
     SofaBaseVisual
     SofaBaseUtils
