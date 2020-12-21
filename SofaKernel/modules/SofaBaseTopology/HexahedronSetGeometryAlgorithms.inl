@@ -55,7 +55,7 @@ void HexahedronSetGeometryAlgorithms< DataTypes >::defineHexahedronCubaturePoint
 	typedef typename NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3>::QuadraturePoint QuadraturePoint;
 	typedef typename NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3>::BarycentricCoordinatesType BarycentricCoordinatesType;
 	// Gauss method
-	typename NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3>::QuadratureMethod m=NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3>::GAUSS_LEGENDRE_METHOD;
+	typename NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real, 3>::QuadratureMethod m = "Hexahedron Gauss Legendre";
 	typename NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3>::QuadraturePointArray qpa;
 	typename NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::QuadraturePointArray qpa1D;
 
@@ -70,7 +70,7 @@ void HexahedronSetGeometryAlgorithms< DataTypes >::defineHexahedronCubaturePoint
 	size_t o,i,j,k;
 	for (o=1;o<8;++o) {
 		qpa.clear();
-		qpa1D=nide.getQuadratureMethod(NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::GAUSS_LEGENDRE_METHOD,o);
+		qpa1D=nide.getQuadratureMethod("Edge Gauss Legendre",o);
 		for (i=0;i<qpa1D.size();++i) {
 			for (j=0;j<qpa1D.size();++j) {
 				for (k=0;k<qpa1D.size();++k) {

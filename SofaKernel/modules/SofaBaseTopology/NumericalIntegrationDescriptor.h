@@ -45,20 +45,17 @@ public:
     typedef sofa::defaulttype::Vec<N, Real> BarycentricCoordinatesType;
 	typedef std::pair<BarycentricCoordinatesType,Real> QuadraturePoint;
 	typedef sofa::helper::vector<QuadraturePoint> QuadraturePointArray;
-	
-	typedef enum {
-		GAUSS_LEGENDRE_METHOD =0,
-		GAUSS_LOBATO_METHOD=1,
-		NEWTON_COTES_METHOD=2,
-		GAUSS_SIMPLEX_METHOD=3,
-		GAUSS_QUAD_METHOD=4,
-		GAUSS_CUBE_METHOD=5
-	} QuadratureMethod; 
+	typedef std::string QuadratureMethod;
+
 	typedef size_t IntegrationOrder;
 	typedef std::pair<QuadratureMethod,IntegrationOrder> QuadratureMethodKey;
-
+	/// prototype of function to compute on the fly the quadrature at a given order
+	typedef QuadraturePointArray(*QuadratureMethodFunction)(const IntegrationOrder);
 protected:
+	// map which stores the set of quadrature points for a given method and a given order
 	std::map<QuadratureMethodKey, QuadraturePointArray>  quadratureMap;
+	/// map which stores the function computing the quadrature point at a given order for a given  method 
+	std::map<QuadratureMethod, QuadratureMethodFunction>  quadratureFunctionMap;
 public:
 	/// empty constructor
 	NumericalIntegrationDescriptor(){}
@@ -70,6 +67,8 @@ public:
     std::set<IntegrationOrder> getIntegrationOrders(const QuadratureMethod qt) const;
 	/// add a quadrature method in the map
 	void addQuadratureMethod(const QuadratureMethod qt, const IntegrationOrder order, QuadraturePointArray qpa);
+	/// add a quadrature function in the dedicated map
+	void addQuadratureMethodFunction(const QuadratureMethod qt, const QuadratureMethodFunction fn);
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP)
