@@ -303,7 +303,7 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
             (unsigned int)matrixJ->rowBSize() != out.size() ||
             (unsigned int)matrixJ->colBSize() != in.size())
         {
-            matrixJ.reset(new MatrixType(MatrixType::Index(out.size() * NOut), MatrixType::Index(in.size() * NIn)));
+            matrixJ.reset(new MatrixType(typename MatrixType::Index(out.size() * NOut), typename MatrixType::Index(in.size() * NIn)));
         }
         else
         {
@@ -326,6 +326,7 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
 template <class TIn, class TOut>
 const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJs()
 {
+    using MatrixIndex = typename MatrixType::Index;
     if( !eigen.compressedMatrix.nonZeros() || updateJ ) {
         updateJ = false;
 
@@ -336,12 +337,12 @@ const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJ
         const auto rows = rowsBlock * NOut;
         const auto cols = colsBlock * NIn;
 
-        eigen.resize(MatrixType::Index(rows), MatrixType::Index(cols) );
+        eigen.resize(MatrixIndex(rows), MatrixIndex(cols) );
 
         for (std::size_t i = 0; i < indices.size(); ++i) {
             for(std::size_t j = 0; j < NOut; ++j) {
-                eigen.beginRow(MatrixType::Index(i*NOut+j) );
-                eigen.insertBack(MatrixType::Index(i*NOut+j), MatrixType::Index(indices[i]*NIn+j) ,(SReal)1. );
+                eigen.beginRow(MatrixIndex(i*NOut+j) );
+                eigen.insertBack(MatrixIndex(i*NOut+j), MatrixIndex(indices[i]*NIn+j) ,(SReal)1. );
             }
         }
         eigen.compress();

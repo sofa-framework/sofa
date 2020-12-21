@@ -60,7 +60,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(sofa::Size nbEle
             test = this->applyTestCreateFunction(Index(size + i), ancestors[i], coefs[i]);
 
         if (test)
-            data.push_back(container_type::value_type(size+i) );
+            data.push_back((size+i) );
     }
     this->lastElementIndex+=nbElements;
 }
