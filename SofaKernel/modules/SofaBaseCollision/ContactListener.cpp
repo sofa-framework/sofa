@@ -125,9 +125,15 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
     }
 }
 
-int ContactListener::getNumberOfContacts(){
+unsigned int ContactListener::getNumberOfContacts(){
     if (m_ContactsVectorBuffer.size() != 0){
-        return m_ContactsVectorBuffer[0][0].size();
+        unsigned int numberOfContacts = m_ContactsVectorBuffer[0][0].size();
+        if (0 < numberOfContacts && ((numberOfContacts <= m_CollisionModel1->getSize()) || (numberOfContacts <= m_CollisionModel2->getSize()))){
+            return numberOfContacts;
+        }
+        else {
+            return 0;
+        }
     }
     else {
         return 0;
@@ -137,7 +143,7 @@ int ContactListener::getNumberOfContacts(){
 helper::vector<double> ContactListener::getDistances(){
     helper::vector<double> distances;
     unsigned int numberOfContacts = this->getNumberOfContacts();
-    if (0 < numberOfContacts && ((numberOfContacts <= m_CollisionModel1->getSize()) || (numberOfContacts <= m_CollisionModel2->getSize()))){
+    if (0 < numberOfContacts){
         for (size_t i = 0; i < m_ContactsVectorBuffer[0][0].size(); i++){
             distances.push_back(m_ContactsVectorBuffer[0][0][i].value);
         }
@@ -148,7 +154,7 @@ helper::vector<double> ContactListener::getDistances(){
 std::vector<std::tuple<helper::Vector3, helper::Vector3>> ContactListener::getContactPoints(){
     std::vector<std::tuple<helper::Vector3, helper::Vector3>> contactPoints;
     unsigned int numberOfContacts = this->getNumberOfContacts();
-    if (0 < numberOfContacts && ((numberOfContacts <= m_CollisionModel1->getSize()) || (numberOfContacts <= m_CollisionModel2->getSize()))){
+    if (0 < numberOfContacts){
         for (size_t i = 0; i< m_ContactsVectorBuffer[0][0].size(); i++){
             std::tuple<helper::Vector3, helper::Vector3> pointPair {m_ContactsVectorBuffer[0][0][i].point[0], m_ContactsVectorBuffer[0][0][i].point[1]};
             contactPoints.push_back(pointPair);

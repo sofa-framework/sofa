@@ -64,7 +64,7 @@ public:
 
     void handleEvent( core::objectmodel::Event* event ) override;
 
-    int getNumberOfContacts();
+    unsigned int getNumberOfContacts();
     helper::vector<double> getDistances();
     helper::vector<const helper::vector<DetectionOutput>* > getContactsVector();
     std::vector<std::tuple<helper::Vector3, helper::Vector3>> getContactPoints();
