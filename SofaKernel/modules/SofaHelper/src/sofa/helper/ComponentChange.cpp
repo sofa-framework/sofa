@@ -532,7 +532,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     //{ "VisualModelImpl", Pluginized("v20.12", "SofaBaseVisual") },
     //{ "VisualStyle", Pluginized("v20.12", "SofaBaseVisual") },
 
-    // SofaBaseMechanics was packaged in #1678
+    // SofaBaseMechanics was packaged in #1680
     //{ "BarycentricMapping", Pluginized("v20.12", "SofaBaseMechanics") },
     //{ "DiagonalMass", Pluginized("v20.12", "SofaBaseMechanics") },
     //{ "IdentityMapping", Pluginized("v20.12", "SofaBaseMechanics") },
