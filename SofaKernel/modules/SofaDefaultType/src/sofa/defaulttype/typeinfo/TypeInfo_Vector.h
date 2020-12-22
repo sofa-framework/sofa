@@ -49,13 +49,13 @@ struct DataTypeInfo< sofa::helper::vector<std::string,Alloc> > : public VectorTy
     static sofa::Size size() { return 1; }
 
     // Total number of elements in the vector
-    static sofa::Size size(const sofa::helper::vector<std::string,Alloc>& data) { return data.size(); }
+    static sofa::Size size(const sofa::helper::vector<std::string,Alloc>& data) { return sofa::Size(data.size()); }
 
     // Resizes the vector
     static bool setSize(sofa::helper::vector<std::string,Alloc>& data, sofa::Size size) { data.resize(size); return true; }
 
     // Sets the value for element at index `index`
-    static void setValueString(sofa::helper::vector<std::string,Alloc>& data, sofa::Size index, const std::string& value)
+    static void setValueString(sofa::helper::vector<std::string,Alloc>& data, sofa::Index index, const std::string& value)
     {
         if (data.size() <= index)
             data.resize(index + 1);
@@ -63,7 +63,7 @@ struct DataTypeInfo< sofa::helper::vector<std::string,Alloc> > : public VectorTy
     }
 
     // Gets the value for element at index `index`
-    static void getValueString(const sofa::helper::vector<std::string,Alloc>& data, sofa::Size index, std::string& value)
+    static void getValueString(const sofa::helper::vector<std::string,Alloc>& data, sofa::Index index, std::string& value)
     {
         if (data.size() <= index)
             msg_error("DataTypeInfo<helper::vector<std::string>") << "Index out of bounds for getValueString";
