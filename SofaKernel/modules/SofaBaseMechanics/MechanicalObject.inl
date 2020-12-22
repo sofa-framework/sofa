@@ -76,7 +76,9 @@ namespace container
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x(initData(&x, "position", "position coordinates of the degrees of freedom"))
+    : d_init_size(initData(&d_init_size, "init_size", "Size of the vectors, as provided during initialization"))
+    , d_init_x(initData(&d_init_x, "init_position", "position coordinates of the degrees of freedom, as provided during initialization"))
+    , x(initData(&x, "position", "position coordinates of the degrees of freedom (modified during simulation. do not use this field to initialize your MechanicalObject, use init_position instead!)"))
     , v(initData(&v, "velocity", "velocity coordinates of the degrees of freedom"))
     , f(initData(&f, "force", "force vector of the degrees of freedom"))
     , x0(initData(&x0, "rest_position", "rest position coordinates of the degrees of freedom"))
@@ -169,8 +171,59 @@ MechanicalObject<DataTypes>::MechanicalObject()
 
     // default size is 1
     resize(1);
+
+    this->addUpdateCallback("initSizeChanged", {&d_init_size},
+                      [&](const core::DataTracker& tracker) -> core::objectmodel::ComponentState
+    {
+        SOFA_UNUSED(tracker);
+        // Initial size determines the size of the MechanicalObject's buffers.
+        // If init_position's size is larger than init_size, values will be clamped to init_size
+        // Changing init_size resizes all buffers in the MechanicalObject (position, velocity forces etc.) but doesn't change the size of the init_position.
+        resize(d_init_size.getValue());
+        return core::objectmodel::ComponentState::Valid;
+    }, {&this->d_componentState, &d_size, &x, &v, &f, &externalForces});
+
+    this->addUpdateCallback("initPositionChanged", {&d_init_x},
+                      [&](const core::DataTracker& tracker) -> core::objectmodel::ComponentState
+    {
+        SOFA_UNUSED(tracker);
+        // changing init_position will update the values in position, while cropping to init_size.
+        x.setValue(d_init_x.getValue());
+        return core::objectmodel::ComponentState::Valid;
+    }, {&this->d_componentState, &x});
+
+    this->addUpdateCallback("sizeChanged", {&d_size},
+                      [&](const core::DataTracker& tracker) -> core::objectmodel::ComponentState
+    {
+        SOFA_UNUSED(tracker);
+        // when size changes, call resize to update the dimensions of coupled buffers accordingly
+        resize(d_size.getValue());
+        return core::objectmodel::ComponentState::Valid;
+    }, {&this->d_componentState, &x, &v, &f, &externalForces});
+
+    this->addUpdateCallback("buffersChanged", {&x, &v, &f, &externalForces},
+                      [&](const core::DataTracker& tracker) -> core::objectmodel::ComponentState
+    {
+        clip(this, &x, tracker, d_size.getValue());
+        clip(this, &v, tracker, d_size.getValue());
+        clip(this, &f, tracker, d_size.getValue());
+        clip(this, &externalForces, tracker, d_size.getValue());
+        return core::objectmodel::ComponentState::Valid;
+    }, {&this->d_componentState});
 }
 
+template <class DataTypes>
+void clip(const MechanicalObject<DataTypes>* _this, core::objectmodel::BaseData* data, const core::DataTracker& tracker, size_t size)
+{
+    const defaulttype::AbstractTypeInfo* typeinfo = data->getValueTypeInfo();
+    // when buffer's size changes, calling resize to clip extra rows, insert missing rows with 0-value vectors
+    if (tracker.hasChanged(*data) && typeinfo->byteSize() / typeinfo->BaseType()->size() != size)
+    {
+        msg_warning(_this) << "can't resize buffers directly because of coupling between position, forces, velocity and external_forces.\n"
+                             "First edit the `size` datafield, then update your buffer's values";
+        typeinfo->setSize(data->beginEditVoidPtr(), size * typeinfo->BaseType()->size());
+    }
+}
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::~MechanicalObject()
