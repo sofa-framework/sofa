@@ -127,7 +127,6 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
 }
 
 unsigned int ContactListener::getNumberOfContacts() const {
-    // Returns the number of stored contacts.
     if (m_ContactsVectorBuffer.size() != 0){
         unsigned int numberOfContacts = m_ContactsVectorBuffer[0][0].size();
         if (0 < numberOfContacts && ((numberOfContacts <= m_CollisionModel1->getSize()) || (numberOfContacts <= m_CollisionModel2->getSize()))){
@@ -143,55 +142,40 @@ unsigned int ContactListener::getNumberOfContacts() const {
 }
 
 helper::vector<double> ContactListener::getDistances() const {
-    // Returns the distances between the stored contacts as a vector.
     helper::vector<double> distances;
-    unsigned int numberOfContacts = this->getNumberOfContacts();
+    unsigned int numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
-        for (size_t i = 0; i < m_ContactsVectorBuffer[0][0].size(); i++){
-            distances.push_back(m_ContactsVectorBuffer[0][0][i].value);
+        distances.reserve(numberOfContacts);
+        for (const auto& c: m_ContactsVectorBuffer[0][0]){
+            distances.emplace_back(c.value);
         }
     }
     return distances;
 }
 
 std::vector<std::tuple<unsigned int, helper::Vector3, unsigned int, helper::Vector3>> ContactListener::getContactPoints() const {
-    // Returns the contact points in the form of a vector of tuples containing two positive integers and two Vector3.
-    // The Vector3 store the X, Y, Z coordinates of the points in contact
-    // The integers specify to which collision models the points belong. (e.g. (collModel2, (3., 5., 7.), collModel1, (3.1, 5., 6.9)))
     std::vector<std::tuple<unsigned int, helper::Vector3, unsigned int, helper::Vector3>> contactPoints;
-    unsigned int numberOfContacts = this->getNumberOfContacts();
+    const unsigned int numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
-        for (size_t i = 0; i< m_ContactsVectorBuffer[0][0].size(); i++){
-            unsigned int first_id = m_CollisionModel1 == m_ContactsVectorBuffer[0][0][i].elem.first.getCollisionModel() ? 0 : 1;
-            unsigned int second_id = first_id == 0 ? 1 : 0;
-            std::tuple<unsigned int, helper::Vector3, unsigned int, helper::Vector3> pointPair {
-                                                                first_id,
-                                                                m_ContactsVectorBuffer[0][0][i].point[0],
-                                                                second_id,
-                                                                m_ContactsVectorBuffer[0][0][i].point[1]};
-            contactPoints.push_back(pointPair);
+        contactPoints.reserve(numberOfContacts);
+        for (const auto& c: m_ContactsVectorBuffer[0][0]){
+            unsigned int firstID = m_CollisionModel1 != c.elem.first.getCollisionModel();
+            unsigned int secondID = !firstID;
+            contactPoints.emplace_back(firstID, c.point[0], secondID, c.point[1]);
         }
     }
     return contactPoints;
 }
 
 std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> ContactListener::getContactElements() const {
-    // Returns the collision elements in the form of a vector of tuples containing four positive integers.
-    // The second and fourth integer represent the id of the collision element in the collision models (from a topology)
-    // The first and third integer specify to which collision models the ids belong. (e.g. (collModel2, 58, collModel1, 67))
     std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> contactElements;
-    unsigned int numberOfContacts = this->getNumberOfContacts();
+    const unsigned int numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
-        for (size_t i = 0; i< m_ContactsVectorBuffer[0][0].size(); i++){
-           unsigned int first_id = m_CollisionModel1 == m_ContactsVectorBuffer[0][0][i].elem.first.getCollisionModel() ? 0 : 1;
-           unsigned int second_id = first_id == 0 ? 1 : 0;
-
-            std::tuple<unsigned int, unsigned int, unsigned int, unsigned int> contactTuple {
-                                                               first_id,
-                                                               m_ContactsVectorBuffer[0][0][i].elem.first.getIndex(),
-                                                               second_id,
-                                                               m_ContactsVectorBuffer[0][0][i].elem.second.getIndex()};
-            contactElements.push_back(contactTuple);
+        contactElements.reserve(numberOfContacts);
+        for (const auto& c: m_ContactsVectorBuffer[0][0]){
+            unsigned int firstID = m_CollisionModel1 != c.elem.first.getCollisionModel();
+            unsigned int secondID = !firstID;
+            contactElements.emplace_back(firstID, c.elem.first.getIndex(), secondID, c.elem.second.getIndex());
         }
     }
     return contactElements;

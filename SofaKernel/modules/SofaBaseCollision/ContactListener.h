@@ -64,10 +64,25 @@ public:
 
     void handleEvent( core::objectmodel::Event* event ) override;
 
+    // Returns the number of stored contacts.
     unsigned int getNumberOfContacts() const;
+
+    // Returns the distances between the stored contacts as a vector.
     helper::vector<double> getDistances() const;
+
+    // Returns the full ContactsVector
     helper::vector<const helper::vector<DetectionOutput>* > getContactsVector() const;
+
+    // Returns the contact points in the form of a vector of tuples containing two positive integers and two Vector3.
+    // The Vector3 store the X, Y, Z coordinates of the points in contact
+    // The integers specify to which collision models the points belong. (e.g. (collModel2, (3., 5., 7.), collModel1, (3.1, 5., 6.9)))
+    // TODO: replace the tuple with a struct to avoid forgetting which element refers to what.
     std::vector<std::tuple<unsigned int, helper::Vector3, unsigned int, helper::Vector3>> getContactPoints() const; // model, position, model, position
+
+    // Returns the collision elements in the form of a vector of tuples containing four positive integers.
+    // The second and fourth integer represent the id of the collision element in the collision models (from a topology)
+    // The first and third integer specify to which collision models the ids belong. (e.g. (collModel2, 58, collModel1, 67))
+    // TODO: replace the tuple with a struct to avoid forgetting which element refers to what.
     std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> getContactElements() const; // model, id, model, id
 
     template<class T>
