@@ -19,39 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initSofaBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#pragma once
 
-namespace sofa
-{
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace component
-{
+#define SOFABASETOPOLOGY_VERSION @PROJECT_VERSION@
 
-
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initSofaBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initSofaBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+#ifdef SOFA_BUILD_SOFABASETOPOLOGY
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFABASETOPOLOGY_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFABASETOPOLOGY_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif

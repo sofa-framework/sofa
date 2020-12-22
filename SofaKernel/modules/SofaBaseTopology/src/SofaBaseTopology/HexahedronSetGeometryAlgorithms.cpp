@@ -19,39 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initSofaBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP
+#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
 
-namespace sofa
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::topology
 {
+using namespace sofa::defaulttype;
+int HexahedronSetGeometryAlgorithmsClass = core::RegisterObject("Hexahedron set geometry algorithms")
+        .add< HexahedronSetGeometryAlgorithms<Vec3Types> >(true) // default template
+        .add< HexahedronSetGeometryAlgorithms<Vec2Types> >()
+        .add< HexahedronSetGeometryAlgorithms<Vec1Types> >()
 
-namespace component
-{
+        ;
+
+template class SOFA_SOFABASETOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_SOFABASETOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_SOFABASETOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec1Types>;
 
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initSofaBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initSofaBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::topology

@@ -19,39 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initSofaBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP
+#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
 
-namespace sofa
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::topology
 {
+using namespace sofa::defaulttype;
+int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry algorithms")
+        .add< QuadSetGeometryAlgorithms<Vec3Types> >(true) // default template
+        .add< QuadSetGeometryAlgorithms<Vec2Types> >()
+        .add< QuadSetGeometryAlgorithms<Vec1Types> >()
 
-namespace component
-{
+        ;
+
+template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec1Types>;
 
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initSofaBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initSofaBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::topology

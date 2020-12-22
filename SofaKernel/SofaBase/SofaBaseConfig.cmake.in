@@ -9,13 +9,13 @@ find_package(SofaFramework QUIET REQUIRED)
 find_package(SofaSimulation QUIET REQUIRED)
 
 # Temporary list while doing packaging
-set(SOFABASE_MODULES SofaBaseLinearSolver SofaEigen2Solver SofaBaseCollision SofaBaseUtils)
+set(SOFABASE_MODULES SofaBaseLinearSolver SofaEigen2Solver SofaBaseTopology SofaBaseCollision SofaBaseUtils)
 
 foreach(module ${SOFABASE_MODULES})
     find_package(${module} QUIET REQUIRED)
 endforeach()
 
-set(SOFABASE_TARGETS SofaBaseTopology SofaBaseVisual SofaBaseMechanics)
+set(SOFABASE_TARGETS SofaBaseVisual SofaBaseMechanics)
 
 foreach(target ${SOFABASE_TARGETS})
     if(NOT TARGET ${target})
