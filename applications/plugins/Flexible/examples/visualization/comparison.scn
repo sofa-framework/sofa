@@ -16,7 +16,7 @@
   <Node 	name="ref_highresFEM"   >
     <VisualStyle displayFlags="hideWireframe" />
     <MeshObjLoader name="meshLoader_0" filename="../beam/refBeam_Flex.obj" translation="-0.5 0 0" handleSeams="1" />
-    <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.5 0.5 0.5"/>
+    <OglModel template="Vec3d" name="Visual" src="@meshLoader_0" color="0.5 0.5 0.5"/>
   </Node>
 
 
