@@ -19,39 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initSofaBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#define SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP
+#include <SofaBaseTopology/NumericalIntegrationDescriptor.inl>
 
-namespace sofa
+namespace sofa::component::topology
 {
-
-namespace component
-{
+using namespace sofa::defaulttype;
 
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initSofaBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initSofaBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
+template class  SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal,4>;
+template class  SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal,3>;
+template class  SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal,1>;
 
-        first = false;
-    }
-}
 
-} // namespace component
 
-} // namespace sofa
+} //namespace sofa::component::topology

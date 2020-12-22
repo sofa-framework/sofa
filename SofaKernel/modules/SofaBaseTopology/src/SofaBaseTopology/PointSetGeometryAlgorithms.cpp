@@ -19,39 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initSofaBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#define SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP
+#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
 
-namespace sofa
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::component::topology
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
+int PointSetGeometryAlgorithmsClass = core::RegisterObject("Point set geometry algorithms")
+        .add< PointSetGeometryAlgorithms<Vec3Types> >(true) // default template
+        .add< PointSetGeometryAlgorithms<Vec2Types> >()
+        .add< PointSetGeometryAlgorithms<Vec1Types> >()
+
+        ;
+
+template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Vec1Types>;
+template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Rigid3Types>;
+template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Rigid2Types>;
 
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initSofaBaseTopology();
-        initBaseMechanics();
-        initSofaBaseCollision();
-        initSofaBaseLinearSolver();
-        initBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+} //namespace sofa::component::topology

@@ -40,13 +40,13 @@ list(APPEND SOURCE_FILES
 
     )
 
-find_package(SofaBase REQUIRED) # SofaBaseTopology 
+find_package(SofaBase REQUIRED) # SofaBaseTopology SofaBaseMechanics
 find_package(SofaSimpleFem REQUIRED)
 find_package(SofaBaseLinearSolver REQUIRED)
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaSimpleFem SofaBaseLinearSolver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaSimpleFem SofaBaseLinearSolver SofaBaseMechanics)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
