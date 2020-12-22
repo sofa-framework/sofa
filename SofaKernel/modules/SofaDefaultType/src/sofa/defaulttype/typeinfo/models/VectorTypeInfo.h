@@ -67,7 +67,7 @@ struct VectorTypeInfo
             return sofa::Size(data.size()*BaseTypeInfo::size());
         else
         {
-            sofa::Size n = data.size();
+            sofa::Size n = sofa::Size(data.size());
             sofa::Size s = 0;
             for (sofa::Size i=0; i<n; ++i)
                 s+= BaseTypeInfo::size(data[i]);
