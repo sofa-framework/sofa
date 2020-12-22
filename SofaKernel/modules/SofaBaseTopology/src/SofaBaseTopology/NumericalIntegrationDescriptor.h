@@ -66,9 +66,9 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP)
-extern template class SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<double, 4>;
-extern template class SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<double, 3>;
-extern template class SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<double, 1>;
+extern template class SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal, 4>;
+extern template class SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal, 3>;
+extern template class SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal, 1>;
 
 #endif
 

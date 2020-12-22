@@ -51,6 +51,9 @@ TopologyEngineImpl< VecT>::TopologyEngineImpl(t_topologicalData *_topologicalDat
 template <typename VecT>
 void TopologyEngineImpl< VecT>::init()
 {
+    // A pointData is by default child of positionSet Data
+    //this->linkToPointDataArray();  // already done while creating engine
+
     // Name creation
     if (m_prefix.empty()) m_prefix = "TopologyEngine_";
     m_data_name = this->m_topologicalData->getName();
@@ -58,6 +61,10 @@ void TopologyEngineImpl< VecT>::init()
 
     sofa::core::topology::TopologyEngine::init();
 
+    // Register Engine in containter list
+    //if (m_topology)
+    //   m_topology->addTopologyEngine(this);
+    //this->registerTopology(m_topology);
 }
 
 
