@@ -64,10 +64,11 @@ public:
 
     void handleEvent( core::objectmodel::Event* event ) override;
 
-    unsigned int getNumberOfContacts();
-    helper::vector<double> getDistances();
-    helper::vector<const helper::vector<DetectionOutput>* > getContactsVector();
-    std::vector<std::tuple<helper::Vector3, helper::Vector3>> getContactPoints();
+    unsigned int getNumberOfContacts() const;
+    helper::vector<double> getDistances() const;
+    helper::vector<const helper::vector<DetectionOutput>* > getContactsVector() const;
+    std::vector<std::tuple<unsigned int, helper::Vector3, unsigned int, helper::Vector3>> getContactPoints() const; // model, position, model, position
+    std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> getContactElements() const; // model, id, model, id
 
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
