@@ -62,8 +62,8 @@
     </Node>
     <Node 	name="visual"   >
       <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
-      <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="1 0.8 0.8 "/>
-      <LinearMapping template="Quadratic,ExtVec3f"/>
+      <OglModel template="Vec3d" name="Visual" src="@meshLoader_0" color="1 0.8 0.8 "/>
+      <LinearMapping template="Quadratic,Vec3d"/>
     </Node>
   </Node>
 
@@ -121,8 +121,8 @@
 
     <Node 	name="visual"   >
       <MeshObjLoader name="meshLoader_2" filename="mesh/torus.obj" handleSeams="1" />
-      <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_2" color="0.2 0.2 1 "/>
-      <LinearMapping template="Quadratic,ExtVec3f"/>
+      <OglModel template="Vec3d" name="Visual" src="@meshLoader_2" color="0.2 0.2 1 "/>
+      <LinearMapping template="Quadratic,Vec3d"/>
     </Node>
   </Node>
 
@@ -174,8 +174,8 @@
 
     <Node 	name="visual"   >
       <MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" />
-      <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_3" color="1 1 0 "/>
-      <LinearMapping template="Quadratic,ExtVec3f"/>
+      <OglModel template="Vec3d" name="Visual" src="@meshLoader_3" color="1 1 0 "/>
+      <LinearMapping template="Quadratic,Vec3d"/>
     </Node>
   </Node>
 
@@ -226,8 +226,8 @@
 
     <Node 	name="visual"   >
       <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
-      <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" color="0.2 1 0.8 "/>
-      <LinearMapping template="Quadratic,ExtVec3f"/>
+      <OglModel template="Vec3d" name="Visual" src="@meshLoader_1" color="0.2 1 0.8 "/>
+      <LinearMapping template="Quadratic,Vec3d"/>
     </Node>
   </Node>
 

@@ -10,7 +10,7 @@
     <Node 	name="ref_highresFEM"   >
 	<VisualStyle displayFlags="hideWireframe" />
         <MeshObjLoader name="meshLoader_1" filename="refBeam_Flex.obj" translation="-0.5 0 0" handleSeams="1" />
-        <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" color="0.5 0.5 0.5"/>
+        <OglModel template="Vec3d" name="Visual" src="@meshLoader_1" color="0.5 0.5 0.5"/>
     </Node>
 
   <Node name="Affine"   >
@@ -60,8 +60,8 @@
 
     <Node 	name="visual"   >
         <MeshObjLoader name="meshLoader_2" filename="beam.obj" handleSeams="1" />
-        <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_2" color="1 0.8 0.8"/>
-	<LinearMapping template="Affine,ExtVec3f"/>
+        <OglModel template="Vec3d" name="Visual" src="@meshLoader_2" color="1 0.8 0.8"/>
+	<LinearMapping template="Affine,Vec3d"/>
     </Node>
 </Node>
 
@@ -111,8 +111,8 @@
 
     <Node 	name="visual"   >
         <MeshObjLoader name="meshLoader_3" filename="beam.obj" handleSeams="1" />
-        <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_3" color="0.8 1 0.8"/>
-	<LinearMapping template="Rigid,ExtVec3f"/>
+        <OglModel template="Vec3d" name="Visual" src="@meshLoader_3" color="0.8 1 0.8"/>
+	<LinearMapping template="Rigid,Vec3d"/>
     </Node>
 </Node>
 
@@ -164,8 +164,8 @@
 
     <Node 	name="visual"   >
         <MeshObjLoader name="meshLoader_0" filename="beam.obj" handleSeams="1" />
-        <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.8 0.8 1"/>
-	<LinearMapping template="Quadratic,ExtVec3f"/>
+        <OglModel template="Vec3d" name="Visual" src="@meshLoader_0" color="0.8 0.8 1"/>
+	<LinearMapping template="Quadratic,Vec3d"/>
     </Node>
 </Node>
 

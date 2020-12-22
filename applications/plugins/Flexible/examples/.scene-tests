@@ -42,3 +42,6 @@ ignore "shapeFunction/BezierTetrahedron.scn"
 
 # CatmullRomSplineMapping was removed in v18.12 (deprecated since v17.12)
 ignore "deformation/edgeDeformationMapping.scn"
+
+# This scene needs time to much time to load
+ignore "demos/steak_diffusion.scn"
