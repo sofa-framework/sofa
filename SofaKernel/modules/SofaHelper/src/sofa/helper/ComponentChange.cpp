@@ -483,6 +483,24 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     //{ "FileMessageHandlerComponent", Pluginized("v20.12", "SofaBaseUtils") },
     //{ "RequiredPlugin", Pluginized("v20.12", "SofaBaseUtils") },
 
+    // SofaBaseCollision was packaged in #1653
+    //{ "BruteForceDetection", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "CapsuleCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "ContactListener", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "CubeCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "CylinderCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "DefaultContactManager", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "DefaultPipeline", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "DiscreteIntersection", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "MinProximityIntersection", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "NewProximityIntersection", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "OBBCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "RigidCapsuleCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "SphereCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
+
+    // SofaBaseLinearSolver was packaged in #1655
+    //{ "CGLinearSolver", Pluginized("v20.12", "SofaBaseLinearSolver") },
+
     /***********************/
     // REMOVED SINCE v20.12
     { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },

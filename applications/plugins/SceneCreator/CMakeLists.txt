@@ -21,7 +21,7 @@ set(SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationGraph SofaEigen2Solver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationGraph SofaEigen2Solver SofaBaseMechanics)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SCENECREATOR")
 
