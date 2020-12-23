@@ -15,7 +15,7 @@
         
         <MechanicalObject template="Affine" name="dof" position="0 0 -0.9 [1 0 0,0 1 0,0 0 1] 0 0 0.9 [1 0 0,0 1 0,0 0 1]" showObject="true" showObjectScale=".1"/>
         
-        <VoronoiShapeFunction template="ShapeFunctiond,ImageD" name="SF" position="@dof.rest_position" src="@image" method="0" nbRef="2" />
+        <VoronoiShapeFunction template="ShapeFunction3d,ImageD" name="SF" position="@dof.rest_position" src="@image" method="0" nbRef="2" />
         <Node name="visual" activated="false">
             <OglModel name="Visual" src="@../mesh" color="1 0.8 0.8 0.5"/>
         </Node>

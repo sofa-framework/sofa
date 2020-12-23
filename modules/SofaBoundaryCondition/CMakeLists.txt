@@ -123,10 +123,12 @@ list(APPEND SOURCE_FILES
     ${SOFABOUNDARYCONDITION_SRC}/ProjectDirectionConstraint.cpp
     )
 
-find_package(SofaBase REQUIRED) # SofaBaseTopology and SofaEigen2Solver
+find_package(SofaBase REQUIRED) # SofaBaseMechanics  
+find_package(SofaEigen2Solver REQUIRED)
+find_package(SofaBaseTopology REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaBaseMechanics)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaEigen2Solver)
 
 sofa_create_package_with_targets(

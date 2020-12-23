@@ -31,7 +31,7 @@
             <MechanicalObject template="Affine" name="parent"  showObject="true" src="@merged" showObjectScale="1"/>
 	    <FixedConstraint indices="0" />
 
-    <VoronoiShapeFunction name="SF" template="ShapeFunctiond,ImageD" image="@../youngM.outputImage" transform="@../extruder.outputTransform" nbRef="2" method="0" bias="true" printLog="false" />
+    <VoronoiShapeFunction name="SF" template="ShapeFunction3d,ImageD" image="@../youngM.outputImage" transform="@../extruder.outputTransform" nbRef="2" method="0" bias="true" printLog="false" />
    	<!--   <ImageViewer template="ImageUI" name="viewer" image="@SF.indices" transform="@SF.transform" plane="-1 -1 4"/>  -->
 	<!--   <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="-1 -1 4"/>   -->
 
@@ -41,7 +41,7 @@
     </Node>-->
     
     
-   <ImageDensityMass  template="Affine" densityImage="@../densityTF.outputImage" transform="@../extruder.outputTransform" lumping="0" /> 
+   <ImageDensityMass  template="Affine,ShapeFunction3d" densityImage="@../densityTF.outputImage" transform="@../extruder.outputTransform" lumping="0" /> 
 
     <Node 	name="behavior"   >
 
@@ -73,7 +73,7 @@
 		<Node name="Visu">
 			<MeshObjLoader name="meshLoader_0" filename="../data/mesh/steak.obj" handleSeams="1" />
 			<OglModel name="Beam" src="@meshLoader_0" texturename="../data/mesh/steak.png" normals="0" />
-			<LinearMapping template="Affine,ExtVec3f"/>
+			<LinearMapping template="Affine,Vec3d"/>
 		</Node>
     </Node>
 </Node>

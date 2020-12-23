@@ -22,9 +22,10 @@ set(SOURCE_FILES
 )
 
 find_package(SofaBase REQUIRED) # SofaBaseTopology
+find_package(SofaBaseLinearSolver REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaBaseLinearSolver)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

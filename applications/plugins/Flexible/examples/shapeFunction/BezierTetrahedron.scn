@@ -43,7 +43,7 @@
 
 	 	<Node name="visu"> 
 			<OglModel filename="mesh/liver-smooth.obj"/> 
-			<LinearMapping template="Vec3d,ExtVec3f"/> 
+			<LinearMapping template="Vec3d,Vec3d"/> 
 		</Node>
 
 <!--            <SphereCollisionModel radius="0.05" />-->

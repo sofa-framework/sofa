@@ -375,7 +375,7 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
         const unsigned int nbp = currentPositions.size();
 
         std::vector<sofa::defaulttype::Vector3> vertices;
-        std::vector<sofa::defaulttype::Vec4f> colors;
+        std::vector<sofa::helper::types::RGBAColor> colors;
         vparams->drawTool()->disableLighting();
         
         float r, g, b;

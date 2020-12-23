@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 3.12)
 
 project(SofaOpenglVisual_test)
 
-find_package(SofaBase REQUIRED)
-find_package(SofaOpenglVisual REQUIRED)
-
 set(SOURCE_FILES
     OglLabel_test.cpp
     )
@@ -16,6 +13,10 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL Darwin)
      LightManager_test.cpp
      ClipPlane_test.cpp)
 endif()
+
+find_package(SofaBase REQUIRED)
+find_package(SofaOpenglVisual REQUIRED)
+find_package(SofaBaseMechanics REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaOpenglVisual SofaBaseMechanics)
