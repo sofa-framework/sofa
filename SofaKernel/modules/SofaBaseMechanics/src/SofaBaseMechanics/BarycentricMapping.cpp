@@ -19,39 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initSofaBaseTopology.h>
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
-#include <SofaBaseVisual/initSofaBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP
+#include <SofaBaseMechanics/BarycentricMapping.inl>
 
-namespace sofa
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::mapping
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
+
+// Register in the Factory
+int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
+        .add< BarycentricMapping< Vec3dTypes, Vec3dTypes > >(true)
 
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initSofaBaseTopology();
-        initSofaBaseMechanics();
-        initSofaBaseCollision();
-        initSofaBaseLinearSolver();
-        initSofaBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
+        ;
 
-        first = false;
-    }
-}
+template class SOFA_SOFABASEMECHANICS_API BarycentricMapping< Vec3dTypes, Vec3dTypes >;
 
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::mapping

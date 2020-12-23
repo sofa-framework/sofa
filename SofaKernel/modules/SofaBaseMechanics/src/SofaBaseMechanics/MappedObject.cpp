@@ -19,39 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initSofaBaseTopology.h>
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
-#include <SofaBaseVisual/initSofaBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#define SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP
+#include <SofaBaseMechanics/MappedObject.inl>
 
-namespace sofa
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::component::container
 {
 
-namespace component
-{
+using namespace defaulttype;
 
+int MappedObjectClass = core::RegisterObject("Mapped state vectors")
+        .add< MappedObject<Vec1Types> >()
+        .add< MappedObject<Vec3Types> >(true) // default template
+        .add< MappedObject<Vec2Types> >()
+        .add< MappedObject<Vec6Types> >()
+        .add< MappedObject<Rigid3Types> >()
+        .add< MappedObject<Rigid2Types> >()
+        ;
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initSofaBaseTopology();
-        initSofaBaseMechanics();
-        initSofaBaseCollision();
-        initSofaBaseLinearSolver();
-        initSofaBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
+// template specialization must be in the same namespace as original namespace for GCC 4.1
+// g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
+template class MappedObject<Vec1Types>;
+template class MappedObject<Vec2Types>;
+template class MappedObject<Vec3Types>;
+template class MappedObject<Vec6Types>;
+template class MappedObject<Rigid3Types>;
+template class MappedObject<Rigid2Types>;
 
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::container
