@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/config.h>
 #include <SofaBaseCollision/ContactListener.h>
 
 #include <sofa/core/collision/NarrowPhaseDetection.h>
@@ -114,9 +115,10 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
     }
 }
 
-unsigned int ContactListener::getNumberOfContacts() const {
+sofa::Size ContactListener::getNumberOfContacts() const
+{
     if (m_ContactsVectorBuffer.size() != 0){
-        unsigned int numberOfContacts = m_ContactsVectorBuffer[0][0].size();
+        const sofa::Size numberOfContacts = m_ContactsVectorBuffer[0][0].size();
         if (0 < numberOfContacts && ((numberOfContacts <= m_CollisionModel1->getSize()) || (numberOfContacts <= m_CollisionModel2->getSize()))){
             return numberOfContacts;
         }
@@ -129,9 +131,10 @@ unsigned int ContactListener::getNumberOfContacts() const {
     }
 }
 
-helper::vector<double> ContactListener::getDistances() const {
+helper::vector<double> ContactListener::getDistances() const
+{
     helper::vector<double> distances;
-    unsigned int numberOfContacts = getNumberOfContacts();
+    const sofa::Size numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
         distances.reserve(numberOfContacts);
         for (const auto& c: m_ContactsVectorBuffer[0][0]){
@@ -141,9 +144,10 @@ helper::vector<double> ContactListener::getDistances() const {
     return distances;
 }
 
-std::vector<std::tuple<unsigned int, sofa::defaulttype::Vector3, unsigned int, sofa::defaulttype::Vector3>> ContactListener::getContactPoints() const {
+std::vector<std::tuple<unsigned int, sofa::defaulttype::Vector3, unsigned int, sofa::defaulttype::Vector3>> ContactListener::getContactPoints() const
+{
     std::vector<std::tuple<unsigned int, sofa::defaulttype::Vector3, unsigned int, sofa::defaulttype::Vector3>> contactPoints;
-    const unsigned int numberOfContacts = getNumberOfContacts();
+    const sofa::Size numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
         contactPoints.reserve(numberOfContacts);
         for (const auto& c: m_ContactsVectorBuffer[0][0]){
@@ -155,9 +159,10 @@ std::vector<std::tuple<unsigned int, sofa::defaulttype::Vector3, unsigned int, s
     return contactPoints;
 }
 
-std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> ContactListener::getContactElements() const {
+std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> ContactListener::getContactElements() const
+{
     std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> contactElements;
-    const unsigned int numberOfContacts = getNumberOfContacts();
+    const sofa::Size numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
         contactElements.reserve(numberOfContacts);
         for (const auto& c: m_ContactsVectorBuffer[0][0]){
@@ -169,7 +174,8 @@ std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> 
     return contactElements;
 }
 
-helper::vector<const helper::vector<DetectionOutput>* > ContactListener::getContactsVector() const{
+helper::vector<const helper::vector<DetectionOutput>* > ContactListener::getContactsVector() const
+{
     return m_ContactsVector;
 }
 

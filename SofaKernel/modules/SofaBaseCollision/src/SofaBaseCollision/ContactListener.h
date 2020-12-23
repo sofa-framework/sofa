@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include "sofa/config.h"
 #include <SofaBaseCollision/config.h>
 #include <sofa/defaulttype/Vec.h>
 
@@ -59,7 +60,7 @@ public:
     void handleEvent( core::objectmodel::Event* event ) override;
 
     // Returns the number of stored contacts.
-    unsigned int getNumberOfContacts() const;
+    sofa::Size getNumberOfContacts() const;
 
     // Returns the distances between the stored contacts as a vector.
     helper::vector<double> getDistances() const;
