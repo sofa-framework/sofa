@@ -19,39 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initSofaBaseTopology.h>
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
-#include <SofaBaseVisual/initSofaBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#pragma once
+#include <SofaBaseMechanics/MappedObject.h>
 
-namespace sofa
+#include <sofa/core/behavior/BaseMechanicalState.h>
+
+namespace sofa::component::container
 {
 
-namespace component
+template <class DataTypes>
+MappedObject<DataTypes>::MappedObject()
+    : f_X( initData(&f_X, "position", "position vector") )
+    , f_V( initData(&f_V, "velocity", "velocity vector") )
 {
+}
 
-
-void initSofaBase()
+template <class DataTypes>
+MappedObject<DataTypes>::~MappedObject()
 {
-    static bool first = true;
-    if (first)
-    {
-        initSofaBaseTopology();
-        initSofaBaseMechanics();
-        initSofaBaseCollision();
-        initSofaBaseLinearSolver();
-        initSofaBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
+}
 
-        first = false;
+template <class DataTypes>
+void MappedObject<DataTypes>::init()
+{
+    if (getSize() == 0)
+    {        
+        sofa::core::behavior::BaseMechanicalState* mstate = this->getContext()->getMechanicalState();
+        auto nbp = mstate->getSize();
+        if (nbp > 0)
+        {
+            VecCoord& x = *getX();
+            x.resize(nbp);
+            for (Index i=0; i<nbp; i++)
+            {
+                DataTypes::set(x[i], mstate->getPX(i), mstate->getPY(i), mstate->getPZ(i));
+            }
+        }
     }
 }
 
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::container

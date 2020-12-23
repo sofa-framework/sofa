@@ -19,39 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initSofaBaseTopology.h>
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
-#include <SofaBaseVisual/initSofaBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#pragma once
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapper.h>
 
-namespace sofa
+namespace sofa::component::mapping::_barycentricmapper_
 {
 
-namespace component
+using sofa::component::linearsolver::CompressedRowSparseMatrix;
+
+template<class In, class Out>
+void BarycentricMapper<In,Out>::addMatrixContrib(CompressedRowSparseMatrix<MBloc>* m, int row, int col, Real value)
 {
-
-
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initSofaBaseTopology();
-        initSofaBaseMechanics();
-        initSofaBaseCollision();
-        initSofaBaseLinearSolver();
-        initSofaBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
+    MBloc* b = m->wbloc(row, col, true); // get write access to a matrix bloc, creating it if not found
+    for (int i=0; i < ((int)NIn < (int)NOut ? (int)NIn : (int)NOut); ++i)
+        (*b)[i][i] += value;
 }
 
-} // namespace component
 
-} // namespace sofa
+template<class In, class Out>
+const sofa::defaulttype::BaseMatrix* BarycentricMapper<In,Out>::getJ(int outSize, int inSize)
+{
+    SOFA_UNUSED(outSize);
+    SOFA_UNUSED(inSize);
+    dmsg_error() << " getJ() NOT IMPLEMENTED BY " << sofa::helper::NameDecoder::decodeClassName(typeid(*this)) ;
+    return nullptr;
+}
+
+template<class In, class Out>
+void BarycentricMapper<In,Out>::applyOnePoint( const Index& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in)
+{
+    SOFA_UNUSED(hexaId);
+    SOFA_UNUSED(out);
+    SOFA_UNUSED(in);
+}
+
+} // namespace sofa::component::mapping::_barycentricmapper_

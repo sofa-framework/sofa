@@ -19,39 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initSofaBaseTopology.h>
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
-#include <SofaBaseVisual/initSofaBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#pragma once
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.inl>
 
-namespace sofa
+namespace sofa::component::mapping
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
 
+template class SOFA_SOFABASEMECHANICS_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, Vec3dTypes >;
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initSofaBaseTopology();
-        initSofaBaseMechanics();
-        initSofaBaseCollision();
-        initSofaBaseLinearSolver();
-        initSofaBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
-
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::mapping

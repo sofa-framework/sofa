@@ -22,7 +22,7 @@ set(SOURCE_FILES
 )
 
 find_package(Eigen3 REQUIRED)
-#find_package(SofaBaseLinearSolver REQUIRED)
+find_package(SofaBaseLinearSolver REQUIRED)
 
 if (SOFA_OPENMP AND "${EIGEN3_VERSION}" VERSION_LESS 3.2.9)
     sofa_find_package(OpenMP BOTH_SCOPES) # will set/update SOFAEIGEN2SOLVER_HAVE_OPENMP

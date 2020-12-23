@@ -22,7 +22,7 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
 
-#include <SofaBaseMechanics/initBaseMechanics.h>
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
@@ -43,7 +43,7 @@ class TestClipPlane : public BaseTest {
 public:
     void SetUp() override
     {
-        sofa::component::initBaseMechanics();
+        sofa::component::initSofaBaseMechanics();
         sofa::simulation::setSimulation(new DAGSimulation());
     }
 

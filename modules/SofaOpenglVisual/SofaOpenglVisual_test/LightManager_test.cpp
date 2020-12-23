@@ -47,7 +47,7 @@ using sofa::helper::logging::MessageDispatcher ;
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;
 
-#include <SofaBaseMechanics/initBaseMechanics.h>
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
@@ -57,7 +57,7 @@ struct TestLightManager : public BaseTest
 {
     void SetUp() override
     {
-        sofa::component::initBaseMechanics();
+        sofa::component::initSofaBaseMechanics();
         sofa::simulation::setSimulation(new DAGSimulation());
     }
 };

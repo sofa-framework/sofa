@@ -19,39 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initSofaBaseTopology.h>
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
-#include <SofaBaseVisual/initSofaBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_CPP
+#include <SofaBaseMechanics/SubsetMapping.inl>
 
-namespace sofa
+#include <sofa/core/ObjectFactory.h>
+
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
+namespace sofa::component::mapping
 {
 
-namespace component
-{
+using namespace sofa::defaulttype;
 
+int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
+        .add< SubsetMapping< Vec3dTypes, Vec3dTypes > >()
+        .add< SubsetMapping< Vec1Types, Vec1Types > >()
+        .add< SubsetMapping< Rigid3Types, Rigid3Types > >()
+        .addAlias("SurfaceIdentityMapping")
+        ;
 
-void initSofaBase()
-{
-    static bool first = true;
-    if (first)
-    {
-        initSofaBaseTopology();
-        initSofaBaseMechanics();
-        initSofaBaseCollision();
-        initSofaBaseLinearSolver();
-        initSofaBaseVisual();
-        initSofaBaseUtils();
-        initSofaEigen2Solver();
+template class SOFA_SOFABASEMECHANICS_API SubsetMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_SOFABASEMECHANICS_API SubsetMapping< Vec1Types, Vec1Types >;
+template class SOFA_SOFABASEMECHANICS_API SubsetMapping< Rigid3Types, Rigid3Types >;
 
-        first = false;
-    }
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::mapping
