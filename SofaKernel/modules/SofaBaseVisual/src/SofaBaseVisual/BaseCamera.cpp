@@ -19,30 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <cmath>
-#include <sofa/helper/rmath.h>
-using sofa::helper::isEqual;
-
 #include <SofaBaseVisual/BaseCamera.h>
+
+
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 
-#include <tinyxml.h>
+#include <sofa/helper/rmath.h>
+using sofa::helper::isEqual;
 
-#include <sofa/core/ObjectFactory.h>
+#include <cmath>
+#include <tinyxml.h>
 
 using sofa::helper::types::RGBAColor ;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::component::visualmodel
 {
 
 BaseCamera::BaseCamera()
@@ -956,9 +951,4 @@ void BaseCamera::drawCamera(const core::visual::VisualParams* vparams)
     dt->setLightingEnabled(true);
 }
 
-} // namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
-
+} // namespace sofa::component::visualmodel

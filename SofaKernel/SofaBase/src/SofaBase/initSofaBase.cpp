@@ -24,7 +24,7 @@
 #include <SofaBaseMechanics/initBaseMechanics.h>
 #include <SofaBaseCollision/initSofaBaseCollision.h>
 #include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
+#include <SofaBaseVisual/initSofaBaseVisual.h>
 #include <SofaBaseUtils/initSofaBaseUtils.h>
 #include <SofaEigen2Solver/initSofaEigen2Solver.h>
 
@@ -44,7 +44,7 @@ void initSofaBase()
         initBaseMechanics();
         initSofaBaseCollision();
         initSofaBaseLinearSolver();
-        initBaseVisual();
+        initSofaBaseVisual();
         initSofaBaseUtils();
         initSofaEigen2Solver();
 
