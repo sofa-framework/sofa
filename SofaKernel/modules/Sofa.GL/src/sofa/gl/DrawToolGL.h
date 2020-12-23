@@ -26,7 +26,7 @@
 #include <sofa/core/visual/DrawTool.h>
 
 #include <sofa/helper/types/RGBAColor.h>
-#include <sofa/helper/gl/BasicShapesGL.h>
+#include <sofa/gl/BasicShapesGL.h>
 
 namespace sofa::gl
 {
