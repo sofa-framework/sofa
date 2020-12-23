@@ -3,8 +3,9 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaEigen2Solver REQUIRED)
-find_package(SofaBaseTopology REQUIRED)
+find_package(SofaBaseLinearSolver QUIET REQUIRED)
+find_package(SofaEigen2Solver QUIET REQUIRED)
+find_package(SofaBaseTopology QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
