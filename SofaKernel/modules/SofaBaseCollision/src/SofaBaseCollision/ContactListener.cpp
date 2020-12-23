@@ -27,16 +27,14 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <sofa/simulation/CollisionEndEvent.h>
+#include <sofa/defaulttype/Vec.h>
 
 #include <tuple>
-#include "sofa/helper/MarchingCubeUtility.h"
 
 namespace sofa::core::collision
 {
 
 int ContactListenerClass = core::RegisterObject("ContactListener .. ").add< ContactListener >();
-
-
 
 ContactListener::ContactListener(  CollisionModel* collModel1 , CollisionModel* collModel2 )
     :  m_NarrowPhase(nullptr)
@@ -143,8 +141,8 @@ helper::vector<double> ContactListener::getDistances() const {
     return distances;
 }
 
-std::vector<std::tuple<unsigned int, helper::Vector3, unsigned int, helper::Vector3>> ContactListener::getContactPoints() const {
-    std::vector<std::tuple<unsigned int, helper::Vector3, unsigned int, helper::Vector3>> contactPoints;
+std::vector<std::tuple<unsigned int, sofa::defaulttype::Vector3, unsigned int, sofa::defaulttype::Vector3>> ContactListener::getContactPoints() const {
+    std::vector<std::tuple<unsigned int, sofa::defaulttype::Vector3, unsigned int, sofa::defaulttype::Vector3>> contactPoints;
     const unsigned int numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
         contactPoints.reserve(numberOfContacts);

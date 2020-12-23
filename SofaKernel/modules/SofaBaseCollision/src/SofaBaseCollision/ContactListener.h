@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseCollision/config.h>
-#include <sofa/helper/MarchingCubeUtility.h>
+#include <sofa/defaulttype/Vec.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/collision/DetectionOutput.h>
@@ -71,7 +71,7 @@ public:
     // The Vector3 store the X, Y, Z coordinates of the points in contact
     // The integers specify to which collision models the points belong. (e.g. (collModel2, (3., 5., 7.), collModel1, (3.1, 5., 6.9)))
     // TODO: replace the tuple with a struct to avoid forgetting which element refers to what.
-    std::vector<std::tuple<unsigned int, helper::Vector3, unsigned int, helper::Vector3>> getContactPoints() const; // model, position, model, position
+    std::vector<std::tuple<unsigned int, sofa::defaulttype::Vector3, unsigned int, sofa::defaulttype::Vector3>> getContactPoints() const; // model, position, model, position
 
     // Returns the collision elements in the form of a vector of tuples containing four positive integers.
     // The second and fourth integer represent the id of the collision element in the collision models (from a topology)
