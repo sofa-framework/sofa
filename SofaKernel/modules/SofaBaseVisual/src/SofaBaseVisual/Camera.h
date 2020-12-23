@@ -19,60 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_INTERACTIVECAMERA_H
-#define SOFA_COMPONENT_VISUALMODEL_INTERACTIVECAMERA_H
-#include "config.h"
+#pragma once
+#include <SofaBaseVisual/config.h>
 
 #include <SofaBaseVisual/BaseCamera.h>
-#include <sofa/helper/gl/Trackball.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/core/objectmodel/MouseEvent.h>
 
-namespace sofa
+namespace sofa::component::visualmodel
 {
 
-namespace component
-{
-
-namespace visualmodel
-{
-
-class SOFA_BASE_VISUAL_API InteractiveCamera : public BaseCamera
+class SOFA_SOFABASEVISUAL_API Camera : public BaseCamera
 {
 public:
-    SOFA_CLASS(InteractiveCamera, BaseCamera);
-
-    enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
-    enum  { CAMERA_LOOKAT_PIVOT = 0, CAMERA_POSITION_PIVOT = 1, SCENE_CENTER_PIVOT = 2, WORLD_CENTER_PIVOT = 3};
-
-    Data<double> p_zoomSpeed; ///< Zoom Speed
-    Data<double> p_panSpeed; ///< Pan Speed
-    Data<int> p_pivot; ///< Pivot (0 => Camera lookAt, 1 => Camera position, 2 => Scene center, 3 => World center
+    SOFA_CLASS(Camera, BaseCamera);
 
 protected:
-    InteractiveCamera();
-    ~InteractiveCamera() override;
+    Camera();
+    ~Camera() override;
+
 public:
+    void manageEvent(core::objectmodel::Event* e) override { SOFA_UNUSED(e); }
+
 private:
-    int currentMode;
-    bool isMoving;
-    int lastMousePosX, lastMousePosY;
-    helper::gl::Trackball currentTrackball;
 
-    void internalUpdate() override;
-protected:
-    void moveCamera(int x, int y);
-    void manageEvent(core::objectmodel::Event* e) override;
-    void processMouseEvent(core::objectmodel::MouseEvent* me);
-    void processKeyPressedEvent(core::objectmodel::KeypressedEvent* kpe);
-    void processKeyReleasedEvent(core::objectmodel::KeyreleasedEvent* kre);
 };
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_VISUALMODEL_INTERACTIVECAMERA_H
+} // namespace sofa::component::visualmodel

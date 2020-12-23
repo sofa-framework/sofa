@@ -19,41 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_CAMERA_H
-#define SOFA_COMPONENT_VISUALMODEL_CAMERA_H
-#include "config.h"
+#include <SofaBaseVisual/BackgroundSetting.h>
 
-#include <SofaBaseVisual/BaseCamera.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::configurationsetting
 {
 
-namespace component
+int BackgroundSettingClass = core::RegisterObject("Backgrounds setting")
+        .add< BackgroundSetting >()
+        .addAlias("Background")
+        ;
+
+BackgroundSetting::BackgroundSetting():
+      color(initData(&color, "color", "Color of the background"))
+    , image(initData(&image, "image", "Image to be used as background"))
 {
+}
 
-namespace visualmodel
-{
-
-class SOFA_BASE_VISUAL_API Camera : public BaseCamera
-{
-public:
-    SOFA_CLASS(Camera, BaseCamera);
-
-protected:
-    Camera();
-    ~Camera() override;
-
-public:
-    void manageEvent(core::objectmodel::Event* e) override { SOFA_UNUSED(e); }
-
-private:
-
-};
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_VISUALMODEL_CAMERA_H
+} // namespace sofa::component::configurationsetting

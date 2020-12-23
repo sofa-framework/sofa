@@ -19,16 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFABASEVISUAL_CONFIG_H
-#define SOFABASEVISUAL_CONFIG_H
+#pragma once
+#include <SofaBaseVisual/config.h>
 
-#include <SofaBase/config.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/helper/types/RGBAColor.h>
 
-#ifdef SOFA_BUILD_BASE_VISUAL
-#  define SOFA_TARGET SofaBaseVisual
-#  define SOFA_BASE_VISUAL_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_BASE_VISUAL_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa::component::configurationsetting
+{
 
-#endif
+///Class for the configuration of background settings.
+class SOFA_SOFABASEVISUAL_API BackgroundSetting: public core::objectmodel::ConfigurationSetting
+{
+public:
+    SOFA_CLASS(BackgroundSetting,core::objectmodel::ConfigurationSetting);  ///< Sofa macro to define typedef.
+
+protected:
+    BackgroundSetting();                                         ///< Default constructor
+
+public:
+    Data<sofa::helper::types::RGBAColor> color;                          ///< Color of the Background of the Viewer.
+    sofa::core::objectmodel::DataFileName image;                 ///< Image to be used as background of the viewer.
+
+};
+
+} // namespace sofa::component::configurationsetting

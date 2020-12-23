@@ -19,19 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_VISUALSTYLE_H
-#define SOFA_COMPONENT_VISUALMODEL_VISUALSTYLE_H
-#include "config.h"
+#pragma once
+#include <SofaBaseVisual/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+namespace sofa::component::visualmodel
 {
 /** \brief VisualStyle component controls the DisplayFlags state
 * embedded in the VisualParams for the current subgraph.
@@ -59,7 +54,7 @@ namespace visualmodel
 *   showNormals hideNormals
 *   showWireframe hideWireframe
 */
-class SOFA_BASE_VISUAL_API VisualStyle : public sofa::core::visual::VisualModel
+class SOFA_SOFABASEVISUAL_API VisualStyle : public sofa::core::visual::VisualModel
 {
 public:
     SOFA_CLASS(VisualStyle,sofa::core::visual::VisualModel);
@@ -78,13 +73,7 @@ protected:
     DisplayFlags backupFlags;
 };
 
-SOFA_BASE_VISUAL_API helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulation::Node::SPtr node );
+SOFA_SOFABASEVISUAL_API helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulation::Node::SPtr node );
 
 
-} // visual
-
-} // component
-
-} // sofa
-
-#endif // SOFA_COMPONENT_VISUALMODEL_VISUALSTYLE_H
+} // namespace sofa::component::visualmodel

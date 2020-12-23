@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_BASECAMERA_H
-#define SOFA_COMPONENT_VISUALMODEL_BASECAMERA_H
-#include "config.h"
+#pragma once
+#include <SofaBaseVisual/config.h>
 
+#include <SofaBaseVisual/BackgroundSetting.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Ray.h>
@@ -32,18 +32,11 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/OptionsGroup.h>
 
-#include "BackgroundSetting.h"
 
-namespace sofa
+namespace sofa::component::visualmodel
 {
 
-namespace component
-{
-
-namespace visualmodel
-{
-
-class SOFA_BASE_VISUAL_API BaseCamera : public core::objectmodel::BaseObject
+class SOFA_SOFABASEVISUAL_API BaseCamera : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
@@ -291,12 +284,4 @@ protected:
     double currentZNear, currentZFar;
 };
 
-
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_VISUALMODEL_BASECAMERA_H
+} // namespace sofa::component::visualmodel

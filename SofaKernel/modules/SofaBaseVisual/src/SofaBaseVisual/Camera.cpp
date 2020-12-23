@@ -19,25 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseVisual/initBaseVisual.h>
+#include <SofaBaseVisual/Camera.h>
 
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::visualmodel
 {
 
-namespace component
-{
+int CameraClass = core::RegisterObject("A Camera that render the scene from a given location & orientation.")
+                    .add<Camera>() ;
 
-
-void initBaseVisual()
+Camera::Camera()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    p_computeZClip.setValue(false) ;
 }
 
-} // namespace component
+Camera::~Camera()
+{
+}
 
-} // namespace sofa
+} // namespace sofa::component::visualmodel

@@ -19,32 +19,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/ObjectFactory.h>
-#include <SofaBaseVisual/Camera.h>
+#pragma once
+#include <SofaBaseVisual/config.h>
 
-namespace sofa
+#include <SofaBaseVisual/BaseCamera.h>
+#include <sofa/helper/gl/Trackball.h>
+
+namespace sofa::core::objectmodel
+{
+    class MouseEvent;
+    class KeypressedEvent;
+    class KeyreleasedEvent;
+} // namespace sofa::core::objectmodel
+
+namespace sofa::component::visualmodel
 {
 
-namespace component
+class SOFA_SOFABASEVISUAL_API InteractiveCamera : public BaseCamera
 {
+public:
+    SOFA_CLASS(InteractiveCamera, BaseCamera);
 
-namespace visualmodel
-{
+    enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
+    enum  { CAMERA_LOOKAT_PIVOT = 0, CAMERA_POSITION_PIVOT = 1, SCENE_CENTER_PIVOT = 2, WORLD_CENTER_PIVOT = 3};
 
-int CameraClass = core::RegisterObject("A Camera that render the scene from a given location & orientation.")
-                    .add<Camera>() ;
+    Data<double> p_zoomSpeed; ///< Zoom Speed
+    Data<double> p_panSpeed; ///< Pan Speed
+    Data<int> p_pivot; ///< Pivot (0 => Camera lookAt, 1 => Camera position, 2 => Scene center, 3 => World center
 
-Camera::Camera()
-{
-    p_computeZClip.setValue(false) ;
-}
+protected:
+    InteractiveCamera();
+    ~InteractiveCamera() override;
+public:
+private:
+    int currentMode;
+    bool isMoving;
+    int lastMousePosX, lastMousePosY;
+    helper::gl::Trackball currentTrackball;
 
-Camera::~Camera()
-{
-}
+    void internalUpdate() override;
+protected:
+    void moveCamera(int x, int y);
+    void manageEvent(core::objectmodel::Event* e) override;
+    void processMouseEvent(core::objectmodel::MouseEvent* me);
+    void processKeyPressedEvent(core::objectmodel::KeypressedEvent* kpe);
+    void processKeyReleasedEvent(core::objectmodel::KeyreleasedEvent* kre);
+};
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::visualmodel

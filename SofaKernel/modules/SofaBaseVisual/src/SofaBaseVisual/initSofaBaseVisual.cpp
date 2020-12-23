@@ -19,22 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_BASE_VISUAL_INIT_H
-#define SOFA_COMPONENT_BASE_VISUAL_INIT_H
-#include "config.h"
+#include <SofaBaseVisual/initSofaBaseVisual.h>
 
-namespace sofa
+
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
+
+namespace sofa::component
 {
 
-namespace component
+void initSofaBaseVisual()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
+extern "C" {
+    SOFA_SOFABASEVISUAL_API void initExternalModule();
+    SOFA_SOFABASEVISUAL_API const char* getModuleName();
+    SOFA_SOFABASEVISUAL_API const char* getModuleVersion();
+    SOFA_SOFABASEVISUAL_API const char* getModuleLicense();
+    SOFA_SOFABASEVISUAL_API const char* getModuleDescription();
+    SOFA_SOFABASEVISUAL_API const char* getModuleComponentList();
+}
 
-void SOFA_BASE_VISUAL_API initBaseVisual();
+void initExternalModule()
+{
+    initSofaBaseVisual();
+}
 
-} // namespace component
+const char* getModuleName()
+{
+    return sofa_tostring(SOFA_TARGET);
+}
 
-} // namespace sofa
+const char* getModuleVersion()
+{
+    return sofa_tostring(SOFABASEVISUAL_VERSION);
+}
 
-#endif
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
+const char* getModuleDescription()
+{
+    return "This plugin contains contains features about Base Visual.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+} // namespace sofa::component
