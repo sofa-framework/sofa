@@ -630,18 +630,18 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
                 points[g2].push_back(center - d2);
                 points[g2].push_back(center + d2);
             }
-            vparams->drawTool()->drawLines(points[0], 2, Vec4f(1,1,0,1));
-            vparams->drawTool()->drawLines(points[1], 2, Vec4f(1,0,1,1));
+            vparams->drawTool()->drawLines(points[0], 2, sofa::helper::types::RGBAColor::yellow());
+            vparams->drawTool()->drawLines(points[1], 2, sofa::helper::types::RGBAColor::magenta());
         }
     }
     else
     {
         std::vector< Vector3 > points[4];
 
-        const Vec4f c0(1,0,0,1);
-        const Vec4f c1(0,1,0,1);
-        const Vec4f c2(1,0.5,0,1);
-        const Vec4f c3(0,0,1,1);
+        const sofa::helper::types::RGBAColor c0(1,0,0,1);
+        const sofa::helper::types::RGBAColor c1(0,1,0,1);
+        const sofa::helper::types::RGBAColor c2(1,0.5,0,1);
+        const sofa::helper::types::RGBAColor c3(0,0,1,1);
 
         points[0].reserve(nbTriangles*2);
         points[1].reserve(nbTriangles*2);

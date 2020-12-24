@@ -41,6 +41,7 @@
 #include <qevent.h>
 
 #include <sofa/helper/gl/glText.inl>
+#include <memory>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/RAII.h>
 
@@ -95,11 +96,11 @@ QGLFormat QtGLViewer::setupGLFormat(const unsigned int nbMSAASamples)
 }
 
 QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbMSAASamples)
-    : QGLViewer(setupGLFormat(nbMSAASamples), parent)
+    : QGLViewer(setupGLFormat(nbMSAASamples), parent, nullptr, Qt::WindowType::Widget)
 {
     this->setObjectName(name);
 
-    m_backend.reset(new GLBackend());
+    m_backend = std::make_unique<GLBackend>();
     pick = new GLPickHandler();
 
     groot = nullptr;
@@ -966,7 +967,11 @@ void QtGLViewer::wheelEvent(QWheelEvent* e)
     {
         if (groot)
         {
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
             sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Wheel, e->delta());
+#else
+            sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Wheel, e->angleDelta().y());
+#endif
             groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
         }
     }

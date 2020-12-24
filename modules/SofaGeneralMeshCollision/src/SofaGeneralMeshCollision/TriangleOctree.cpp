@@ -22,13 +22,8 @@
 #include <SofaMeshCollision/TriangleModel.inl>
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaMeshCollision/RayTriangleIntersection.h>
 #include <SofaMeshCollision/RayTriangleIntersection.h>
 
-#include <SofaMeshCollision/Triangle.h>
-#include <sofa/core/CollisionElement.h>
-#include <sofa/core/ObjectFactory.h>
 #include <vector>
 #include <sofa/helper/system/thread/CTime.h>
 
@@ -63,7 +58,7 @@ void TriangleOctree::draw (const core::visual::VisualParams* vparams)
         vparams->drawTool()->pushMatrix();
         vparams->drawTool()->translate((float)center[0], (float)center[1], (float)center[2]);
         vparams->drawTool()->setPolygonMode(0, false);
-        vparams->drawTool()->drawCube(size, sofa::defaulttype::Vec4f(0.5, 0.5, 0.5, 1.0)); 
+        vparams->drawTool()->drawCube(size, sofa::helper::types::RGBAColor(0.5, 0.5, 0.5, 1.0));
         vparams->drawTool()->popMatrix();
 
         vparams->drawTool()->setPolygonMode(0, true);
@@ -415,6 +410,7 @@ int TriangleOctree::trace (const defaulttype::Vector3 & origin,
                 if (idxMin != -1)
                     return nearestTriangle (idxMin, origin1, direction1,result);
             }
+            [[fallthrough]];
         case END:
             if(idxMin==-1&&objects.size())
                 return nearestTriangle (objects[0], origin1, direction1,result);
@@ -701,6 +697,7 @@ void TriangleOctree::traceAll (const defaulttype::Vector3 & origin,
                 childVec[7 ^ a]->traceAll (origin, direction, txm, tym,
                         tzm, tx1, ty1, tz1, a, b,origin1,direction1,results);
             }
+            [[fallthrough]];
         case END:
             allTriangles (origin1, direction1, results);
             return;

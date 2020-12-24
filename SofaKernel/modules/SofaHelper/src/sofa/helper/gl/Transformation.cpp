@@ -56,6 +56,9 @@ Transformation::Transformation()
     }
 }
 
+Transformation::Transformation(const Transformation & other) {
+    *this = other;
+}
 
 // --------------------------------------------------------------------------------------
 // --- Destructor

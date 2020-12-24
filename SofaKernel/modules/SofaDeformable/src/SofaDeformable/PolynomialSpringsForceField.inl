@@ -373,7 +373,7 @@ void PolynomialSpringsForceField<DataTypes>::draw(const core::visual::VisualPara
     }
 
     // draw connected point indices
-    defaulttype::Vec4f color(1.0, 1.0, 1.0, 1.0);
+    auto color = sofa::helper::types::RGBAColor::white();
 
     Real scale = (vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * d_showIndicesScale.getValue();
 

@@ -87,7 +87,7 @@ Node::SPtr GNode::createChild(const std::string& nodeName)
     else
         newchild = sofa::core::objectmodel::New<GNode>(nodeName);
     this->addChild(newchild); newchild->updateSimulationContext();
-    return std::move(newchild);
+    return newchild;
 }
 
 void GNode::moveChild(BaseNode::SPtr node)

@@ -83,7 +83,7 @@ public:
     /// The size of \a data, in number of iterable elements
     /// (For containers, that'll be the number of elements in the 1st dimension).
     /// For example, with type == `
-    sofa::Size size(const void* data) const override {return -1;}
+    sofa::Size size(const void* /*data*/) const override {return -1;}
     /// Resize \a data to \a size elements, if relevant.
 
     /// But resizing is not always relevant, for example:
