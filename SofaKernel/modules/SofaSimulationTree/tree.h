@@ -19,4 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#error "SofaSimulationTree was removed at release 21.06. You need to update your code by replacing #include<SofaSimulationTree/ExportDotVisitor.h> with #include<sofa/simulation/ExportDotVisitor.h>
+#ifndef SOFA_SIMULATION_TREE_TREE_H
+#define SOFA_SIMULATION_TREE_TREE_H
+
+// Backward compatibility header
+
+#include <SofaSimulationTree/config.h>
+
+SOFA_DEPRECATED_HEADER(v21.06, "SofaSimulationTree/config.h")
+
+#endif

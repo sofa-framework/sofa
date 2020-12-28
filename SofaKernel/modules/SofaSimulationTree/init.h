@@ -19,4 +19,4 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#error "SofaSimulationTree was removed at release 21.06. You need to update your code by replacing #include<SofaSimulationTree/ExportDotVisitor.h> with #include<sofa/simulation/ExportDotVisitor.h>
+#error "SofaSimulationTree was removed at release 21.06. You need to update your code by replacing #include<SofaSimulationTree/init.h> with #include<SofaSimulationGraph/init.h>

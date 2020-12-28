@@ -55,7 +55,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SPH_FLUID")
 
 # Link the plugin library to its dependencies (other libraries).
-target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaBaseMechanics)
+target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaBaseMechanics tbb)
 
 if(SofaOpenglVisual_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)

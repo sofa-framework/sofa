@@ -4,6 +4,7 @@ project(SofaSimulation)
 set(SOFASIMULATION_TARGETS
     SofaSimulationCommon
     SofaSimulationGraph
+    SofaSimulationTree
     )
 
 foreach(TARGET ${SOFASIMULATION_TARGETS})
