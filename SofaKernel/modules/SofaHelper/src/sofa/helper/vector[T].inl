@@ -28,7 +28,7 @@ namespace sofa::helper
 {
 
 template<class T, class MemoryManager>
-void vector<T, MemoryManager>::fill( const T& value )
+void SOFA_HELPER_API vector<T, MemoryManager>::fill( const T& value )
 {
     std::fill( this->begin(), this->end(), value );
 }
@@ -36,14 +36,14 @@ void vector<T, MemoryManager>::fill( const T& value )
 /// this function is usefull for vector_device because it resize the vector without device operation (if device is not valid).
 /// Therefore the function is used in asynchronous code to safly resize a vector which is either cuda of helper::vector
 template<class T, class MemoryManager>
-void vector<T, MemoryManager>::fastResize(Size n)
+void SOFA_HELPER_API vector<T, MemoryManager>::fastResize(Size n)
 {
     this->resize(n);
 }
 
 /// Read/write random access
 template<class T, class MemoryManager>
-typename vector<T, MemoryManager>::reference vector<T, MemoryManager>::operator[](Size n)
+typename vector<T, MemoryManager>::reference SOFA_HELPER_API vector<T, MemoryManager>::operator[](Size n)
 {
     if constexpr(sofa::helper::isEnabledVectorAccessChecking)
     {
@@ -55,7 +55,7 @@ typename vector<T, MemoryManager>::reference vector<T, MemoryManager>::operator[
 
 /// Read-only random access
 template<class T, class MemoryManager>
-typename vector<T, MemoryManager>::const_reference vector<T, MemoryManager>::operator[](Size n) const
+typename vector<T, MemoryManager>::const_reference SOFA_HELPER_API vector<T, MemoryManager>::operator[](Size n) const
 {
     if constexpr (sofa::helper::isEnabledVectorAccessChecking)
     {
@@ -66,7 +66,7 @@ typename vector<T, MemoryManager>::const_reference vector<T, MemoryManager>::ope
 }
 
 template<class T, class MemoryManager>
-std::ostream& vector<T, MemoryManager>::write(std::ostream& os) const
+std::ostream& SOFA_HELPER_API vector<T, MemoryManager>::write(std::ostream& os) const
 {
     if( this->size()>0 )
     {
@@ -78,7 +78,7 @@ std::ostream& vector<T, MemoryManager>::write(std::ostream& os) const
 }
 
 template<class T, class MemoryManager>
-std::istream& vector<T, MemoryManager>::read(std::istream& in)
+std::istream& SOFA_HELPER_API vector<T, MemoryManager>::read(std::istream& in)
 {
     T t=T();
     this->clear();
