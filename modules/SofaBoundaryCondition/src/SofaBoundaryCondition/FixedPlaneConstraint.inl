@@ -290,7 +290,7 @@ void FixedPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
         points.push_back({x[index][0], x[index][1], x[index][2]});
     }
 
-    vparams->drawTool()->drawPoints(points, 10, {1,1.0,0.5,1});
+    vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor{1,1.0,0.5,1});
 }
 
 /// This function are there to provide kind of type translation to the vector one so we can

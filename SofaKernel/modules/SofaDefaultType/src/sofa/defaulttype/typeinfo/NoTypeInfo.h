@@ -30,6 +30,10 @@ class SOFA_DEFAULTTYPE_API NoTypeInfo : public AbstractTypeInfo
 {
 public:
     NoTypeInfo(){ setCompilationTarget("SofaDefaultType"); }
+
+    const AbstractTypeInfo* BaseType() const override { return Get(); }
+    const AbstractTypeInfo* ValueType() const override { return Get(); }
+
     static AbstractTypeInfo* Get(){ static NoTypeInfo t; return &t; }
 
     /// \brief Returns the name of this type.

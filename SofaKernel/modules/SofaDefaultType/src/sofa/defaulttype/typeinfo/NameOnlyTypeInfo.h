@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/defaulttype/AbstractTypeInfo.h>
 #include <sofa/defaulttype/TypeInfoID.h>
+#include <sofa/defaulttype/typeinfo/NoTypeInfo.h>
 
 namespace sofa::defaulttype
 {
@@ -29,6 +30,9 @@ namespace sofa::defaulttype
 class SOFA_DEFAULTTYPE_API NameOnlyTypeInfo : public AbstractTypeInfo
 {
 public:
+    const AbstractTypeInfo* BaseType() const override { return NoTypeInfo::Get(); }
+    const AbstractTypeInfo* ValueType() const override { return NoTypeInfo::Get(); }
+
     NameOnlyTypeInfo(const std::string& name, const std::string& typeName)
     {
         m_name = name;

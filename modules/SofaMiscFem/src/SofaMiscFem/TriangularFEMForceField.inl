@@ -1416,7 +1416,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     vparams->drawTool()->disableLighting();
 
     sofa::helper::types::RGBAColor color;
-    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::helper::types::RGBAColor> colorVector;
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();

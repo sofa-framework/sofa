@@ -22,6 +22,8 @@
 #include <SofaGeneralLoader/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
+#include <sofa/helper/Quater.h>
+#include <sofa/defaulttype/Mat.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sstream>
 
@@ -36,19 +38,75 @@ int SphereLoaderClass = core::RegisterObject("Loader for sphere model descriptio
 
 SphereLoader::SphereLoader()
     :BaseLoader(),
-     positions(initData(&positions,"position","Sphere centers")),
-     radius(initData(&radius,"listRadius","Radius of each sphere")),
-     d_scale(initData(&d_scale,"scale","Scale applied to sphere positions & radius")),
-     d_translation(initData(&d_translation,"translation","Translation applied to sphere positions"))
-
+     d_positions(initData(&d_positions,"position","Sphere centers")),
+     d_radius(initData(&d_radius,"listRadius","Radius of each sphere")),
+     d_scale(initData(&d_scale, Vec3(1.0, 1.0, 1.0), "scale","Scale applied to sphere positions & radius")),
+     d_rotation(initData(&d_rotation, Vec3(), "rotation", "Rotation of the DOFs")),
+     d_translation(initData(&d_translation, Vec3(),"translation","Translation applied to sphere positions"))
 {
-    addAlias(&positions,"sphere_centers");
+    addAlias(&d_positions,"sphere_centers");
+    addAlias(&d_scale, "scale3d");
+
+    addUpdateCallback("updateFileNameAndTransformPosition", { &m_filename, &d_translation, &d_rotation, &d_scale}, [this](const core::DataTracker& tracker)
+    {
+        if(tracker.hasChanged(m_filename))
+        {
+            if (load()) {
+                clearLoggedMessages();
+                applyTransform();
+                return sofa::core::objectmodel::ComponentState::Valid;
+            }
+        }
+        else
+        {
+            applyTransform();
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }
+
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }, { &d_positions, &d_radius });
+
+    d_positions.setReadOnly(true);
+    d_radius.setReadOnly(true);
 }
+
+
+void SphereLoader::applyTransform()
+{
+    const Vec3& scale = d_scale.getValue();
+    const Vec3& rotation = d_rotation.getValue();
+    const Vec3& translation = d_translation.getValue();
+
+    if (scale != Vec3(1.0, 1.0, 1.0) || rotation != Vec3(0.0, 0.0, 0.0) || translation != Vec3(0.0, 0.0, 0.0))
+    {
+        if(scale != Vec3(1.0, 1.0, 1.0)) {
+            if(scale[0] == 0.0 || scale[1] == 0.0 || scale[2] == 0.0) {
+                msg_warning() << "Data scale should not be set to zero";
+            }
+        }
+        Matrix4 transformation = Matrix4::transformTranslation(translation) *
+            Matrix4::transformRotation(helper::Quater< SReal >::createQuaterFromEuler(rotation * M_PI / 180.0)) *
+            Matrix4::transformScale(scale);
+
+        auto my_positions = getWriteOnlyAccessor(d_positions);
+
+        if(my_positions.size() != m_savedPositions.size()) {
+            msg_error() << "Position size mismatch";
+        }
+
+        for (size_t i = 0; i < my_positions.size(); i++) {
+            my_positions[i] = transformation.transform(m_savedPositions[i]);
+        }
+    }
+}
+
 
 bool SphereLoader::load()
 {
-    radius.beginEdit()->clear();
-    radius.endEdit();
+    auto my_radius = getWriteOnlyAccessor(d_radius);
+    auto my_positions = getWriteOnlyAccessor(d_positions);
+    my_radius.clear();
+    my_positions.clear();
 
     // Make sure that fscanf() uses a dot '.' as the decimal separator.
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
@@ -56,7 +114,8 @@ bool SphereLoader::load()
     const char* filename = m_filename.getFullPath().c_str();
     std::string fname = std::string(filename);
 
-    if (!sofa::helper::system::DataRepository.findFile(fname)) return false;
+    if (!sofa::helper::system::DataRepository.findFile(fname))
+        return false;
 
     char cmd[64];
     FILE* file;
@@ -68,9 +127,6 @@ bool SphereLoader::load()
         msg_error("SphereLoader") << "cannot read file '" << filename << "'. ";
         return false;
     }
-
-    helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_positions = *positions.beginEdit();
-    helper::vector<SReal>& my_radius = *radius.beginEdit();
 
     int totalNumSpheres=0;
 
@@ -115,43 +171,15 @@ bool SphereLoader::load()
         }
     }
 
+    m_savedPositions.clear();
+    m_savedPositions.resize(my_positions.size());
+    for (size_t i = 0; i < my_positions.size(); i++)
+    {
+        m_savedPositions[i] = my_positions[i];
+    }
+
+
     (void) fclose(file);
-
-    if (d_scale.isSet())
-    {
-        const SReal sx = d_scale.getValue()[0];
-        const SReal sy = d_scale.getValue()[1];
-        const SReal sz = d_scale.getValue()[2];
-
-        for (unsigned int i = 0; i < my_radius.size(); i++)
-        {
-            my_radius[i] *= sx;
-        }
-
-        for (unsigned int i = 0; i < my_positions.size(); i++)
-        {
-            my_positions[i].x() *= sx;
-            my_positions[i].y() *= sy;
-            my_positions[i].z() *= sz;
-        }
-    }
-
-    if (d_translation.isSet())
-    {
-        const SReal dx = d_translation.getValue()[0];
-        const SReal dy = d_translation.getValue()[1];
-        const SReal dz = d_translation.getValue()[2];
-
-        for (unsigned int i = 0; i < my_positions.size(); i++)
-        {
-            my_positions[i].x() += dx;
-            my_positions[i].y() += dy;
-            my_positions[i].z() += dz;
-        }
-    }
-
-    positions.endEdit();
-    radius.endEdit();
 
     return true;
 }

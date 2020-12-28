@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.12)
 
 project(SofaBaseTopology_test)
 
-find_package(SofaGeneralLoader REQUIRED)
-
 set(SOURCE_FILES
     fake_TopologyScene.h
     fake_TopologyScene.cpp

@@ -1,79 +1,91 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaBaseMechanics)
+project(SofaBaseMechanics LANGUAGES CXX)
+
+set(SOFABASEMECHANICS_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-
-    BarycentricMappers/BarycentricMapper.h
-    BarycentricMappers/BarycentricMapper.inl
-    BarycentricMappers/TopologyBarycentricMapper.h
-    BarycentricMappers/TopologyBarycentricMapper.inl
-    BarycentricMappers/BarycentricMapperMeshTopology.h
-    BarycentricMappers/BarycentricMapperMeshTopology.inl
-    BarycentricMappers/BarycentricMapperRegularGridTopology.h
-    BarycentricMappers/BarycentricMapperRegularGridTopology.inl
-    BarycentricMappers/BarycentricMapperSparseGridTopology.h
-    BarycentricMappers/BarycentricMapperSparseGridTopology.inl
-    BarycentricMappers/BarycentricMapperTopologyContainer.h
-    BarycentricMappers/BarycentricMapperTopologyContainer.inl
-    BarycentricMappers/BarycentricMapperEdgeSetTopology.h
-    BarycentricMappers/BarycentricMapperEdgeSetTopology.inl
-    BarycentricMappers/BarycentricMapperTriangleSetTopology.h
-    BarycentricMappers/BarycentricMapperTriangleSetTopology.inl
-    BarycentricMappers/BarycentricMapperQuadSetTopology.h
-    BarycentricMappers/BarycentricMapperQuadSetTopology.inl
-    BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h
-    BarycentricMappers/BarycentricMapperTetrahedronSetTopology.inl
-    BarycentricMappers/BarycentricMapperHexahedronSetTopology.h
-    BarycentricMappers/BarycentricMapperHexahedronSetTopology.inl
-
-    AddMToMatrixFunctor.h
-    BarycentricMapping.h
-    BarycentricMapping.inl
-    DiagonalMass.h
-    DiagonalMass.inl
-    IdentityMapping.h
-    IdentityMapping.inl
-    MappedObject.h
-    MappedObject.inl
-    MechanicalObject.h
-    MechanicalObject.inl
-    SubsetMapping.h
-    SubsetMapping.inl
-    UniformMass.h
-    UniformMass.inl
-    config.h
-    initBaseMechanics.h
+    ${SOFABASEMECHANICS_SRC}/config.h.in
+    ${SOFABASEMECHANICS_SRC}/initSofaBaseMechanics.h
+    ${SOFABASEMECHANICS_SRC}/AddMToMatrixFunctor.h
+    ${SOFABASEMECHANICS_SRC}/BarycentricMapping.h
+    ${SOFABASEMECHANICS_SRC}/BarycentricMapping.inl
+    ${SOFABASEMECHANICS_SRC}/DiagonalMass.h
+    ${SOFABASEMECHANICS_SRC}/DiagonalMass.inl
+    ${SOFABASEMECHANICS_SRC}/IdentityMapping.h
+    ${SOFABASEMECHANICS_SRC}/IdentityMapping.inl
+    ${SOFABASEMECHANICS_SRC}/MappedObject.h
+    ${SOFABASEMECHANICS_SRC}/MappedObject.inl
+    ${SOFABASEMECHANICS_SRC}/MechanicalObject.h
+    ${SOFABASEMECHANICS_SRC}/MechanicalObject.inl
+    ${SOFABASEMECHANICS_SRC}/SubsetMapping.h
+    ${SOFABASEMECHANICS_SRC}/SubsetMapping.inl
+    ${SOFABASEMECHANICS_SRC}/UniformMass.h
+    ${SOFABASEMECHANICS_SRC}/UniformMass.inl
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapper.h
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapper.inl
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/TopologyBarycentricMapper.h
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/TopologyBarycentricMapper.inl
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperMeshTopology.h
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperMeshTopology.inl
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperRegularGridTopology.h
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperRegularGridTopology.inl
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperSparseGridTopology.h
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperSparseGridTopology.inl
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperTopologyContainer.h
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperTopologyContainer.inl
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperEdgeSetTopology.h
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperEdgeSetTopology.inl
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperTriangleSetTopology.h
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperTriangleSetTopology.inl
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperQuadSetTopology.h
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperQuadSetTopology.inl
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.inl
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperHexahedronSetTopology.inl
 )
 
 set(SOURCE_FILES
-
-    BarycentricMappers/BarycentricMapper.cpp
-    BarycentricMappers/TopologyBarycentricMapper.cpp
-    BarycentricMappers/BarycentricMapperMeshTopology.cpp
-    BarycentricMappers/BarycentricMapperRegularGridTopology.cpp
-    BarycentricMappers/BarycentricMapperSparseGridTopology.cpp
-    BarycentricMappers/BarycentricMapperTopologyContainer.cpp
-    BarycentricMappers/BarycentricMapperEdgeSetTopology.cpp
-    BarycentricMappers/BarycentricMapperTriangleSetTopology.cpp
-    BarycentricMappers/BarycentricMapperQuadSetTopology.cpp
-    BarycentricMappers/BarycentricMapperTetrahedronSetTopology.cpp
-    BarycentricMappers/BarycentricMapperHexahedronSetTopology.cpp
-
-    BarycentricMapping.cpp
-    DiagonalMass.cpp
-    IdentityMapping.cpp
-    MappedObject.cpp
-    MechanicalObject.cpp
-    SubsetMapping.cpp
-    UniformMass.cpp
-    initBaseMechanics.cpp
+    ${SOFABASEMECHANICS_SRC}/initSofaBaseMechanics.cpp
+    ${SOFABASEMECHANICS_SRC}/BarycentricMapping.cpp
+    ${SOFABASEMECHANICS_SRC}/DiagonalMass.cpp
+    ${SOFABASEMECHANICS_SRC}/IdentityMapping.cpp
+    ${SOFABASEMECHANICS_SRC}/MappedObject.cpp
+    ${SOFABASEMECHANICS_SRC}/MechanicalObject.cpp
+    ${SOFABASEMECHANICS_SRC}/SubsetMapping.cpp
+    ${SOFABASEMECHANICS_SRC}/UniformMass.cpp
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapper.cpp
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/TopologyBarycentricMapper.cpp
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperMeshTopology.cpp
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperRegularGridTopology.cpp
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperSparseGridTopology.cpp
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperTopologyContainer.cpp
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperEdgeSetTopology.cpp
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperTriangleSetTopology.cpp
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperQuadSetTopology.cpp
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.cpp
+    ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperHexahedronSetTopology.cpp
 )
 
+find_package(SofaEigen2Solver REQUIRED)
+find_package(SofaBaseTopology REQUIRED)
+find_package(SofaBaseLinearSolver REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaEigen2Solver)
+target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaEigen2Solver SofaBaseLinearSolver)
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaBase
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
-    )
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFABASETOPOLOGY_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFABASEMECHANICS_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(${PROJECT_NAME}_test)
+endif()
