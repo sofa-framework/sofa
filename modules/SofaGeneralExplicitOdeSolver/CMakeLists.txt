@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGeneralExplicitOdeSolver LANGUAGES CXX)
 
-find_package(SofaSimulationCommon REQUIRED)
+find_package(SofaSimulation REQUIRED)
 set(SOFAGENERALEXPLICITODESOLVER_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
