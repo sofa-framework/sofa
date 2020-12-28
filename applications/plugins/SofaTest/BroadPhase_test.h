@@ -4,6 +4,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <sofa/simulation/Node.h>
+#include <SofaSimulationGraph/DAGNode.h>
 
 #include <gtest/gtest.h>
 
