@@ -26,6 +26,7 @@
 #include <iostream>
 
 #include <sofa/helper/vector.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #include <QHeaderView>
 #include <QImage>
