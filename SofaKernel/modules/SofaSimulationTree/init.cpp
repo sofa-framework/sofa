@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "tree.h"
-
+#include <SofaSimulationTree/config.h>
 #include <sofa/simulation/init.h>
 #include <sofa/helper/init.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace tree
+namespace sofa::simulation::tree
 {
 
 static bool s_initialized = false;
@@ -74,9 +67,5 @@ static const struct CleanupCheck
             helper::printLibraryNotCleanedUpWarning("SofaSimulationTree", "sofa::simulation::tree::cleanup()");
     }
 } check;
-
-} // namespace tree
-
-} // namespace simulation
 
 } // namespace sofa

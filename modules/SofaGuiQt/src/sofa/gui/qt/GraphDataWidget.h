@@ -89,7 +89,7 @@ public:
         m_xMin = m_yMin = 1000000000.0;
         m_xMax = m_yMax = -1000000000.0;
 
-        for (auto i = 0; i < this->size(); i++)
+        for (sofa::Index i = 0; i < this->size(); i++)
         {
             QPointF data = sample(i);
             append(data);
@@ -199,7 +199,6 @@ public:
         double maxY = -1000000000.0;
         currentData=d0;
         const data_type& d = currentData;
-        auto nbCurves = m_curves.size();
         auto nbData = trait::size(d);
 
         for (int i = 0; i < nbData; ++i)
@@ -261,9 +260,6 @@ public:
     void exportImage(const std::string &baseFileName) const
     {
         const std::string filename= baseFileName + ".png";
-
-        const float resolution = 72.f; // dpi
-        const float inch2mm = 25.4f;
 
         QPixmap p(w->size());
         QPainter *paint = new QPainter(&p);

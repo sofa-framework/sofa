@@ -52,12 +52,6 @@ void CGLinearSolver<TMatrix,TVector>::init()
         this->f_printLog.setValue(true);
     }
 
-    if(f_maxIter.getValue() < 0)
-    {
-        msg_warning() << "'iterations' must be a positive value" << msgendl
-                      << "default value used: 25";
-        f_maxIter.setValue(25);
-    }
     if(f_tolerance.getValue() < 0.0)
     {
         msg_warning() << "'tolerance' must be a positive value" << msgendl

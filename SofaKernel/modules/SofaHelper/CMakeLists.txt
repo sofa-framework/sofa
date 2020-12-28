@@ -322,6 +322,11 @@ if(MSVC)
     endif()
 endif()
 
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
+
 # DEPENDENCY LINKS AND INCLUDE DIRS
 # System libs
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)

@@ -36,6 +36,8 @@ public:
 public:
     Transformation();
     virtual ~Transformation();
+    Transformation(const Transformation & other);
+
     Transformation&	operator=(const Transformation& transform);
 
     virtual void Apply() {};

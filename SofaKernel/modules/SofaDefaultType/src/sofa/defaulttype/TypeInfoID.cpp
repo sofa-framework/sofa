@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include "TypeInfoID.h"
-#include "TypeInfoRegistry.h"
+#include <sofa/defaulttype/TypeInfoID.h>
+#include <sofa/defaulttype/TypeInfoRegistry.h>
 
 namespace sofa::defaulttype
 {

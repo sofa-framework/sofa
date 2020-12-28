@@ -411,7 +411,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
         {
             curIndex = m_indices[index];
 
-            for(int i = 0; i < N; i++)
+            for(sofa::Index i = 0; i < N; i++)
             {
                 mat->add(offset + N * curIndex + i, offset + N * curIndex + i, k0);
             }
@@ -423,7 +423,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
         {
             curIndex = m_indices[index];
 
-            for(int i = 0; i < N; i++)
+            for(sofa::Index i = 0; i < N; i++)
             {
                 mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
             }
@@ -455,7 +455,7 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalPara
             if (std::find(addSubIndex.begin(), addSubIndex.end(), curIndex) == addSubIndex.end())
                 continue;
 
-            for(int i = 0; i < N; i++)
+            for(sofa::Index i = 0; i < N; i++)
             {
                 mat->add(offset + N * curIndex + i, offset + N * curIndex + i, k0);
             }
@@ -470,7 +470,7 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalPara
             if (std::find(addSubIndex.begin(), addSubIndex.end(), curIndex) == addSubIndex.end())
                 continue;
 
-            for(int i = 0; i < N; i++)
+            for(sofa::Index i = 0; i < N; i++)
             {
                 mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
             }

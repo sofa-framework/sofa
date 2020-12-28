@@ -423,7 +423,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     { // handleSeam mode : vertices are duplicated in case they have different texcoords and/or normals
         // This code was initially in VisualModelImpl::setMesh()
 
-        int nbVIn = (int)my_positions.size();
+        auto nbVIn = my_positions.size();
         // First we compute for each point how many pair of normal/texcoord indices are used
         // The map store the final index of each combinaison
         std::vector< std::map< std::pair<int,int>, int > > vertTexNormMap;
@@ -445,9 +445,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         // Then we can compute how many vertices are created
         sofa::Size nbVOut = 0;
         bool vsplit = false;
-        for (int i = 0; i < nbVIn; i++)
+        for (sofa::Index i = 0; i < nbVIn; i++)
         {
-            sofa::Size s = sofa::Size(vertTexNormMap[i].size());
+            auto s = sofa::Size(vertTexNormMap[i].size());
             nbVOut += s;
         }
 
@@ -472,11 +472,11 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             vertNormIdx.resize(nbVOut);
         }
 
-        int nbNOut = 0; /// Number of different normals
-        for (int i = 0, j = 0; i < nbVIn; i++)
+        sofa::Size nbNOut = 0; /// Number of different normals
+        for (sofa::Index i = 0, j = 0; i < nbVIn; i++)
         {
             std::map<int, int> normMap;
-            for (std::map<std::pair<int, int>, int>::iterator it = vertTexNormMap[i].begin();
+            for (auto it = vertTexNormMap[i].begin();
                  it != vertTexNormMap[i].end(); ++it)
             {
                 int t = it->first.first;

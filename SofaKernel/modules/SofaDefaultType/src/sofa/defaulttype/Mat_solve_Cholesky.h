@@ -76,7 +76,7 @@ void cholBksb(Vec<n,real>& x, const Mat<n,n,real>& L, const Vec<n,real>& b)
     }
 
     //Solve L^t x = u
-    for (Size j=n-1; j>=0; j--)
+    for (int j=n-1; j>=0; j--)
     {
         double temp = 0.0;
         double d = 1.0 / L[j][j];

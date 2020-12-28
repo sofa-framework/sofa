@@ -1407,8 +1407,8 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
         }
     }
 
-    vparams->drawTool()->drawTriangles(trianglesToDraw, Vec<4,float>(0.0,0.0,1.0,1.0));
-    vparams->drawTool()->drawPoints(pointsToDraw, 15.0,  Vec<4,float>(1.0,0.0,1.0,1.0));
+    vparams->drawTool()->drawTriangles(trianglesToDraw, sofa::helper::types::RGBAColor::blue());
+    vparams->drawTool()->drawPoints(pointsToDraw, 15.0,  sofa::helper::types::RGBAColor::magenta());
 
     if (!errorTrianglesIndices.empty())
     {
@@ -1416,17 +1416,17 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
         /* initialize random seed: */
         srand ( (unsigned int)time(nullptr) );
 
-        for (size_t i = 0 ; i < errorTrianglesIndices.size() ; i++)
+        for (unsigned int errorTrianglesIndex : errorTrianglesIndices)
         {
             Vec3Types::Coord coord[3];
-            triangleGeo->getTriangleVertexCoordinates(errorTrianglesIndices[i], coord);
+            triangleGeo->getTriangleVertexCoordinates(errorTrianglesIndex, coord);
 
-            for(unsigned int k = 0 ; k < 3 ; k++)
-                trianglesToDraw.push_back(coord[k]);
+            for(auto & k : coord)
+                trianglesToDraw.push_back(k);
         }
 
         vparams->drawTool()->drawTriangles(trianglesToDraw,
-                Vec<4,float>(1.0f,(float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, 1.0f));
+                sofa::helper::types::RGBAColor(1.0f,(float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, 1.0f));
     }
 }
 
