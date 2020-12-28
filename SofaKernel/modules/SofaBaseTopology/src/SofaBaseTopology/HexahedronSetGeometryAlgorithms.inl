@@ -651,7 +651,7 @@ int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElement(const Coord
         }
     }
 
-    if(index != -1)
+    if(index != sofa::InvalidID)
         baryC = computeHexahedronBarycentricCoeficients(index, pos);
 
     return index;
@@ -686,7 +686,7 @@ int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementInRestPos(co
         }
     }
 
-    if(index != -1)
+    if(index != sofa::InvalidID)
         baryC = computeHexahedronRestBarycentricCoeficients(index, pos);
 
     return index;

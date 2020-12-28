@@ -337,7 +337,7 @@ public:
 
 protected:
     std::vector< Bloc > data;
-    Index cSize;
+    sofa::Index cSize;
 
 public:
 
@@ -452,23 +452,23 @@ public:
     void clearRow(Index i) override
     {
         Index bi=0; traits::split_row_index(i, bi);
-        for (Index bj=0; bj<LC; ++bj)
+        for (Index bj=0; bj<Index(LC); ++bj)
             traits::v(data[i], bi, bj) = (Real)0;
     }
 
     void clearCol(Index j) override
     {
         Index bj=0; traits::split_col_index(j, bj);
-        for (Index bi=0; bi<LC; ++bi)
+        for (Index bi=0; bi<Index(LC); ++bi)
             traits::v(data[j], bi, bj) = (Real)0;
     }
 
     void clearRowCol(Index i) override
     {
         Index bi=0; traits::split_row_index(i, bi);
-        for (Index bj=0; bj<LC; ++bj)
+        for (Index bj=0; bj<Index(LC); ++bj)
             traits::v(data[i], bi, bj) = (Real)0;
-        for (Index bj=0; bj<LC; ++bj)
+        for (Index bj=0; bj<Index(LC); ++bj)
             traits::v(data[i], bj, bi) = (Real)0;
     }
 
@@ -494,13 +494,13 @@ public:
         Index nblocs = cSize;
         Index szlast = 0;
         traits::split_row_index(nblocs, szlast);
-        for (Index b=0; b<nblocs; b++)
+        for (sofa::Index b=0; b<(sofa::Size) nblocs; b++)
         {
-            Index i = b*LC;
-            for (Index bj=0; bj<LC; bj++)
+            sofa::Index i = b*LC;
+            for (sofa::Index bj=0; bj<LC; bj++)
             {
                 Real2 r = 0;
-                for (Index bi=0; bi<LC; bi++)
+                for (sofa::Index bi=0; bi<LC; bi++)
                 {
                     r += (Real2)(traits::v(data[b],bi,bj) * v[i+bi]);
                 }
@@ -509,12 +509,12 @@ public:
         }
         if (szlast)
         {
-            Index b = nblocs;
-            Index i = b*LC;
-            for (Index bj=0; bj<szlast; bj++)
+            sofa::Size b = nblocs;
+            sofa::Index i = b*LC;
+            for (sofa::Index bj=0; bj<(sofa::Size) szlast; bj++)
             {
                 Real2 r = 0;
-                for (Index bi=0; bi<szlast; bi++)
+                for (sofa::Index bi=0; bi<(sofa::Size) szlast; bi++)
                 {
                     r += (Real2)(traits::v(data[b],bi,bj) * v[i+bi]);
                 }

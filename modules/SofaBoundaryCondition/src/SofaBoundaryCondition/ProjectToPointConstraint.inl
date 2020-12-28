@@ -319,34 +319,30 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
                 points.push_back(point);
             }
         else
-            for (SetIndexArray::const_iterator it = indices.begin();
-                    it != indices.end();
-                    ++it)
+            for (unsigned int index : indices)
             {
-                point = DataTypes::getCPos(x[*it]);
+                point = DataTypes::getCPos(x[index]);
                 points.push_back(point);
             }
-        vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        if( f_fixAll.getValue()==true )
+        if(f_fixAll.getValue())
             for (unsigned i=0; i<x.size(); i++ )
             {
                 point = DataTypes::getCPos(x[i]);
                 points.push_back(point);
             }
         else
-            for (SetIndexArray::const_iterator it = indices.begin();
-                    it != indices.end();
-                    ++it)
+            for (unsigned int index : indices)
             {
-                point = DataTypes::getCPos(x[*it]);
+                point = DataTypes::getCPos(x[index]);
                 points.push_back(point);
             }
-        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::helper::types::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
 
     vparams->drawTool()->restoreLastState();

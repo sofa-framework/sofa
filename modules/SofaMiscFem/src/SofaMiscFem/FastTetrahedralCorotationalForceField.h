@@ -152,10 +152,10 @@ protected:
     Real mu;    /// second Lame coefficient
 
     Data<bool> f_drawing; ///<  draw the forcefield if true
-    Data<defaulttype::Vec4f> drawColor1; ///<  draw color for faces 1
-    Data<defaulttype::Vec4f> drawColor2; ///<  draw color for faces 2
-    Data<defaulttype::Vec4f> drawColor3; ///<  draw color for faces 3
-    Data<defaulttype::Vec4f> drawColor4; ///<  draw color for faces 4
+    Data<sofa::helper::types::RGBAColor> drawColor1; ///<  draw color for faces 1
+    Data<sofa::helper::types::RGBAColor> drawColor2; ///<  draw color for faces 2
+    Data<sofa::helper::types::RGBAColor> drawColor3; ///<  draw color for faces 3
+    Data<sofa::helper::types::RGBAColor> drawColor4; ///<  draw color for faces 4
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<FastTetrahedralCorotationalForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

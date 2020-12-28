@@ -542,14 +542,14 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
     std::vector< sofa::defaulttype::Vector3 > points;
     std::vector< sofa::defaulttype::Vector3 > pointsLine;
 
-    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    auto ac = articulationCenters.begin();
+    auto acEnd = articulationCenters.end();
     unsigned int i=0;
     for (; ac != acEnd; ac++)
     {
         helper::vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
-        helper::vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
-        helper::vector< sofa::component::container::Articulation* >::const_iterator aEnd = articulations.end();
+        auto a = articulations.begin();
+        auto aEnd = articulations.end();
         for (; a != aEnd; a++)
         {
 
@@ -565,8 +565,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
         }
     }
 
-    vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
-    vparams->drawTool()->drawLines(pointsLine, 1, sofa::defaulttype::Vec<4,float>(0,0,1,1));
+    vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
+    vparams->drawTool()->drawLines(pointsLine, 1, sofa::helper::types::RGBAColor::blue());
 
     vparams->drawTool()->restoreLastState();
 }

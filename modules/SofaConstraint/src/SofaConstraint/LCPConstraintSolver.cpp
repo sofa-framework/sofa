@@ -1371,30 +1371,33 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
                 for (int i=0; i<3; ++i) centerFine[i] += ((posFine[i]+0.5)*coordFact + coord0) * showCellWidth;
                 double radius = sqrt(area*0.5);
 
-                int colid = (level * 12 + ((int)level < merge_local_levels ? (cb % 2) : 0)) % 72;
-                color.i = colors[colid + 0];
+                unsigned int colid = (level * 12 + ((int)level < merge_local_levels ? (cb % 2) : 0)) % 72;
+                color.i = (int) colors[colid + 0];
                 vparams->drawTool()->drawArrow(
                     centerFine,centerFine+dirFineN*radius*2.0f,
                     (float)radius*2.0f*0.03f,
-                    defaulttype::Vec<4,float>((float)(color.b[0]) * (1.0f/255.0f),
+                    sofa::helper::types::RGBAColor(
+                            (float)(color.b[0]) * (1.0f/255.0f),
                             (float)(color.b[1]) * (1.0f/255.0f),
                             (float)(color.b[2]) * (1.0f/255.0f),
                             1.0f));
                 if (_mu > 1.0e-6)
                 {
-                    color.i = colors[colid + 2];
+                    color.i = (int) colors[colid + 2];
                     vparams->drawTool()->drawArrow(
                         centerFine-dirFineT1*radius*_mu,centerFine+dirFineT1*radius*_mu,
                         (float)(radius*_mu*0.03f),
-                        defaulttype::Vec<4,float>((float)(color.b[0]) * (1.0f/255.0f),
+                        sofa::helper::types::RGBAColor(
+                                (float)(color.b[0]) * (1.0f/255.0f),
                                 (float)(color.b[1]) * (1.0f/255.0f),
                                 (float)(color.b[2]) * (1.0f/255.0f),
                                 1.0f));
-                    color.i = colors[colid + 4];
+                    color.i = (int) colors[colid + 4];
                     vparams->drawTool()->drawArrow(
                         centerFine-dirFineT2*radius*_mu,centerFine+dirFineT2*radius*_mu,
                         (float)(radius*_mu*0.03f),
-                        defaulttype::Vec<4,float>(color.b[0] * (1.0f/255.0f),
+                        sofa::helper::types::RGBAColor(
+                                color.b[0] * (1.0f/255.0f),
                                 color.b[1] * (1.0f/255.0f),
                                 color.b[2] * (1.0f/255.0f),
                                 1.0f));

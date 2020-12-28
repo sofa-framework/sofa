@@ -150,7 +150,7 @@ namespace sofa
                             ReadVecCoord posData = mmodel->readPositions();
 
 
-                            for(auto i=size-1; i>=0; i--)
+                            for(int i=size-1; i>=0; i--)
                             {
                                 //create an additional point for root tangent
                                 if((simulationType.getValue() == Hair && (i%nbPtsByHair.getValue()==0)))

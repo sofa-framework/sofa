@@ -126,16 +126,16 @@ protected:
     {
         colorsContactState.clear();
         //Vanishing
-        colorsContactState.push_back(defaulttype::Vec<4,float>(0.0f,1.0f,0.0f,1.0));
+        colorsContactState.push_back(sofa::helper::types::RGBAColor(0.0f,1.0f,0.0f,1.0));
         //Sticking
-        colorsContactState.push_back(defaulttype::Vec<4,float>(1.0f,0.0f,0.0f,1.0));
+        colorsContactState.push_back(sofa::helper::types::RGBAColor(1.0f,0.0f,0.0f,1.0));
         //Sliding
-        colorsContactState.push_back(defaulttype::Vec<4,float>(1.0f,1.0f,0.0f,1.0));
+        colorsContactState.push_back(sofa::helper::types::RGBAColor(1.0f,1.0f,0.0f,1.0));
         //Sliding Direction
-        colorsContactState.push_back(defaulttype::Vec<4,float>(1.0f,0.0f,1.0f,1.0));
+        colorsContactState.push_back(sofa::helper::types::RGBAColor(1.0f,0.0f,1.0f,1.0));
     }
 
-    helper::vector< defaulttype::Vec<4,float> > colorsContactState;
+    helper::vector< sofa::helper::types::RGBAColor > colorsContactState;
 };
 
 

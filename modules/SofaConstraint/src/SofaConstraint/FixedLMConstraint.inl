@@ -234,20 +234,18 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
 
     std::vector< defaulttype::Vector3 > points;
     defaulttype::Vector3 point;
-    for (SetIndexArray::const_iterator it = indices.begin();
-            it != indices.end();
-            ++it)
+    for (unsigned int index : indices)
     {
-        point = DataTypes::getCPos(x[*it]);
+        point = DataTypes::getCPos(x[index]);
         points.push_back(point);
     }
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
-        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
     }
     else
     {
-        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), sofa::helper::types::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
 }
 
