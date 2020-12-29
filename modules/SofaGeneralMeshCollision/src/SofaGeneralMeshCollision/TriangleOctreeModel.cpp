@@ -23,13 +23,10 @@
 #include <SofaGeneralMeshCollision/TriangleOctreeModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <SofaMeshCollision/Triangle.h>
-#include <sofa/core/CollisionElement.h>
+#include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
 #include <sofa/helper/system/thread/CTime.h>
-
-#include <cmath>
 
 namespace sofa::component::topology
 {
@@ -61,8 +58,7 @@ void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
 
         vparams->drawTool()->enableLighting();
         const float* getCol = getColor4f();
-        sofa::defaulttype::Vec4f color;
-        color[0] = getCol[0]; color[1] = getCol[1]; color[2] = getCol[2]; color[3] = getCol[3];
+        auto color = sofa::helper::types::RGBAColor(getCol[0], getCol[1], getCol[2], getCol[3]);
         vparams->drawTool()->setMaterial(color);
 
         if(octreeRoot)

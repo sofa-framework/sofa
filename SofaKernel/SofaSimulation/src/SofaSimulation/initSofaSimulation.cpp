@@ -23,7 +23,6 @@
 
 #include <SofaSimulationCommon/init.h>
 #include <SofaSimulationGraph/init.h>
-#include <SofaSimulationTree/init.h>
 
 namespace sofa
 {
@@ -38,7 +37,6 @@ void initSofaSimulation()
 
     sofa::simulation::common::init();
     sofa::simulation::graph::init();
-    sofa::simulation::tree::init();
 }
 
 } // namespace sofa

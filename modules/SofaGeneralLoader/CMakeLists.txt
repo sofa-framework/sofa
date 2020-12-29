@@ -49,11 +49,11 @@ list(APPEND SOURCE_FILES
 
 sofa_find_package(ZLIB REQUIRED BOTH_SCOPES)
 
-find_package(SofaSimulation REQUIRED) # SofaSimulationTree
+find_package(SofaSimulation REQUIRED)
 find_package(SofaFramework REQUIRED) # SofaCore SofaHelper
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationTree SofaHelper)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaHelper SofaSimulationCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     sofa_install_libraries(TARGETS ZLIB::ZLIB)

@@ -486,7 +486,8 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
         }
 
         vparams->drawTool()->setLightingEnabled(true);
-        vparams->drawTool()->drawTriangles(points, indices, normals, defaulttype::Vec<4,float>(getColor4f()));
+        auto c = getColor4f();
+        vparams->drawTool()->drawTriangles(points, indices, normals, sofa::helper::types::RGBAColor(c[0], c[1], c[2], c[3]));
         vparams->drawTool()->setLightingEnabled(false);
         vparams->drawTool()->setPolygonMode(0,false);
 
@@ -501,7 +502,7 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
                 points.push_back(points.back()+t.n());
             }
 
-            vparams->drawTool()->drawLines(points, 1, defaulttype::Vec<4,float>(1,1,1,1));
+            vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor::white());
 
         }
     }

@@ -820,7 +820,6 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(
     sofa::helper::vector< sofa::defaulttype::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge)
 {
     const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::position())->getValue());
-    const Tetrahedron& ta = this->m_topology->getTetrahedron(ind_ta);
     const EdgesInTetrahedron& edgesInTetra = this->m_topology->getEdgesInTetrahedron(ind_ta);
     const SeqEdges& edges = this->m_topology->getEdges();
 

@@ -90,7 +90,7 @@ public:
     Data< Real > m_currentSurfaceArea;  ///< OUT: Current surface area, as computed from the last surface position
 
     Data< Real > m_drawForceScale;  ///< DEBUG: scale used to render force vectors
-    Data< defaulttype::Vec4f > m_drawForceColor;  ///< DEBUG: color used to render force vectors
+    Data< sofa::helper::types::RGBAColor > m_drawForceColor;  ///< DEBUG: color used to render force vectors
 
     Data< Real > m_volumeAfterTC;  ///< OUT: Volume after a topology change
     Data< Real > m_surfaceAreaAfterTC;  ///< OUT: Surface area after a topology change

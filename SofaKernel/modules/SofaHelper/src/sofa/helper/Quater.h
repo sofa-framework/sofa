@@ -166,13 +166,13 @@ public:
 
     Real& operator[](Size index)
     {
-        assert(index >= 0 && index < 4);
+        assert(index < 4);
         return _q[index];
     }
 
     const Real& operator[](Size index) const
     {
-        assert(index >= 0 && index < 4);
+        assert(index < 4);
         return _q[index];
     }
 

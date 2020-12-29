@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(Modeler)
 
+
 if(APPLE)
     set(RC_FILES "../Modeler.icns")
 else()
@@ -8,6 +9,7 @@ else()
 endif()
 
 find_package(Qt5 COMPONENTS Core REQUIRED)
+find_package(SofaSimulation REQUIRED)
 
 if(Qt5Core_FOUND)
     message("Modeler executable: Using Qt5")
@@ -15,6 +17,6 @@ if(Qt5Core_FOUND)
 endif()
 
 add_executable(${PROJECT_NAME} Main.cpp ${RC_FILES} ${RESOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaModeler SofaBase SofaCommon SofaGeneral SofaMisc)
+target_link_libraries(${PROJECT_NAME} SofaModeler SofaBase SofaCommon SofaGeneral SofaMisc SofaSimulationGraph)
 
 sofa_install_targets(SofaModeler Modeler "Modeler")

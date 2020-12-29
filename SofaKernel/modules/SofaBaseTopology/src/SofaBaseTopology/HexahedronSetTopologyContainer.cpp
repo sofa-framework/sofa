@@ -812,8 +812,9 @@ HexahedronSetTopologyContainer::HexahedraAroundQuad &HexahedronSetTopologyContai
 
 bool HexahedronSetTopologyContainer::checkTopology() const
 {
-    if (!d_checkTopology.getValue())
+    if (!d_checkTopology.getValue()) {
         return true;
+    }
 
 	bool ret = true;
 	helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;

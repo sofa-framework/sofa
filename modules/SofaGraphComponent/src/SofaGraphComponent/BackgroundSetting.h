@@ -19,4 +19,4 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#error "This file has been moved to a new location for release 19.06. You need to update your code by replacing #include<SofaGrapComponent/BackgroundSetting.h> by #include<SofaBaseVisual/BackgroundSetting.h"
+#error This file has been moved to a new location for release 19.06. You need to update your code by replacing #include<SofaGrapComponent/BackgroundSetting.h> by #include<SofaBaseVisual/BackgroundSetting.h

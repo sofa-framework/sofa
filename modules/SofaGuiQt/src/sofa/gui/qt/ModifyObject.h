@@ -122,9 +122,9 @@ public:
             QTreeWidgetItem* item_clicked,
             QWidget* parent,
             const ModifyObjectFlags& dialogFlags,
-            const char* name= 0,
+            const char* name= nullptr,
             bool  modal= false,
-            Qt::WindowFlags f= 0 );
+            Qt::WindowFlags f= Qt::WindowType::Widget );
 
     ~ModifyObject() override
     {

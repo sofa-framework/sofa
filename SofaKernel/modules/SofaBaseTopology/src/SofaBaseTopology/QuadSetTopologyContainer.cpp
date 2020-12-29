@@ -412,8 +412,9 @@ QuadSetTopologyContainer::QuadsAroundVertex &QuadSetTopologyContainer::getQuadsA
 
 bool QuadSetTopologyContainer::checkTopology() const
 {
-    if (!d_checkTopology.getValue())
+    if (!d_checkTopology.getValue()) {
         return true;
+    }
 
 	bool ret = true;
 	helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;

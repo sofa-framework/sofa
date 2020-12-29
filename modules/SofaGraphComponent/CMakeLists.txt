@@ -58,7 +58,7 @@ list(APPEND SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationCore SofaSimulationTree SofaBaseUtils)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationCore SofaBaseUtils)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
