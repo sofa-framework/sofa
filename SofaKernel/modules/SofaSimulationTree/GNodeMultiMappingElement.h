@@ -19,44 +19,4 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_GNODEMULTIMAPPINGELEMENT_H
-#define SOFA_SIMULATION_TREE_GNODEMULTIMAPPINGELEMENT_H
-
-#include <SofaSimulationCommon/xml/BaseMultiMappingElement.h>
-
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace tree
-{
-
-class GNodeMultiMappingElement : public sofa::simulation::xml::BaseMultiMappingElement
-{
-public:
-    GNodeMultiMappingElement(const std::string& name,
-            const std::string& type,
-            BaseElement* parent =nullptr);
-
-    const char* getClass() const override;
-
-protected:
-    void updateSceneGraph(
-        sofa::core::BaseMapping* multiMapping,
-        const helper::vector<simulation::Node*>& ancestorInputs,
-        helper::vector<simulation::Node*>& otherInputs,
-        helper::vector<simulation::Node*>& outputs) override;
-};
-
-
-
-}
-
-}
-
-}
-
-
-#endif // SOFA_SIMULATION_TREE_GNODEMULTIMAPPINGELEMENT_H
+#error SofaSimulationTree was removed at release 21.06. You need to update your code by replacing #include<SofaSimulationTree/GNodeMultiMappingElement.h> with #include<SofaSimulationGraph/DAGNodeMultiMappingElement.h>

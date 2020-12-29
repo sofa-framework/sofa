@@ -19,41 +19,4 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_INIT_H
-#define SOFA_SIMULATION_TREE_INIT_H
-
-#include <SofaSimulationTree/config.h>
-
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace tree
-{
-
-/// @brief Initialize the SofaSimulationTree library, as well as its
-/// dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType, SofaHelper.
-SOFA_SIMULATION_TREE_API void init();
-
-/// @brief Return true if and only if the SofaSimulationTree library has been
-/// initialized.
-SOFA_SIMULATION_TREE_API bool isInitialized();
-
-/// @brief Clean up the resources used by the SofaSimulationTree library, as
-/// well as its dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType,
-/// SofaHelper.
-SOFA_SIMULATION_TREE_API void cleanup();
-
-/// @brief Return true if and only if the SofaSimulationTree library has been
-/// cleaned up.
-SOFA_SIMULATION_TREE_API bool isCleanedUp();
-
-} // namespace tree
-
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
+#error SofaSimulationTree was removed at release 21.06. You need to update your code by replacing #include<SofaSimulationTree/init.h> with #include<SofaSimulationGraph/init.h>

@@ -61,7 +61,7 @@ else()
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree SofaBaseVisual)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual)
 target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     sofa_install_libraries(TARGETS ZLIB::ZLIB)
