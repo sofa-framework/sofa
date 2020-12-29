@@ -31,8 +31,13 @@ set(HEADER_FILES
     ${SRC_ROOT}/TypeInfoRegistryTools.h
     ${SRC_ROOT}/TopologyTypes.h
     ${SRC_ROOT}/Vec.h
+    ${SRC_ROOT}/Vec[T].h
+    ${SRC_ROOT}/Vec[T].inl
+    ${SRC_ROOT}/Vec[real].h
+    ${SRC_ROOT}/Vec[integral].h
+    ${SRC_ROOT}/Vec[T]_json.h
+    ${SRC_ROOT}/Vec[T]_json.inl
     ${SRC_ROOT}/Ray.h
-    ${SRC_ROOT}/Vec3Types.h
     ${SRC_ROOT}/VecTypes.h
     ${SRC_ROOT}/defaulttype.h
     ${SRC_ROOT}/config.h.in
@@ -79,7 +84,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/TypeInfoRegistry.cpp
     ${SRC_ROOT}/TypeInfoRegistryTools.cpp
     ${SRC_ROOT}/init.cpp
-
+    ${SRC_ROOT}/Vec[real].cpp
+    ${SRC_ROOT}/Vec[integral].cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_Bool.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_BoundingBox.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_FixedArray.cpp

@@ -78,6 +78,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/deque.h
     ${SRC_ROOT}/fixed_array.h
     ${SRC_ROOT}/fixed_array_algorithms.h
+    ${SRC_ROOT}/fixed_array_json.h
     ${SRC_ROOT}/hash.h
     ${SRC_ROOT}/gl/Trackball.h
     ${SRC_ROOT}/gl/Transformation.h
@@ -143,6 +144,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/types/RGBAColor.h
     ${SRC_ROOT}/types/RGBAColor_fwd.h
     ${SRC_ROOT}/types/Material.h
+    ${SRC_ROOT}/types/PrimitiveGroup.h
     ${SRC_ROOT}/logging/Messaging.h
     ${SRC_ROOT}/logging/Message.h
     ${SRC_ROOT}/logging/ComponentInfo.h
@@ -223,8 +225,10 @@ set(SOURCE_FILES
     ${SRC_ROOT}/vector[scalar].cpp
     ${SRC_ROOT}/vector[string].cpp
     ${SRC_ROOT}/types/fixed_array.cpp
+    ${SRC_ROOT}/types/fixed_array_json.cpp
     ${SRC_ROOT}/types/RGBAColor.cpp
     ${SRC_ROOT}/types/Material.cpp
+    ${SRC_ROOT}/types/PrimitiveGroup.cpp
     ${SRC_ROOT}/logging/Message.cpp
     ${SRC_ROOT}/logging/MessageDispatcher.cpp
     ${SRC_ROOT}/logging/MessageFormatter.cpp
