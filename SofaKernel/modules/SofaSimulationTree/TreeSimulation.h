@@ -19,4 +19,4 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#error "SofaSimulationTree was removed at release 21.06. You need to update your code by replacing #include<SofaSimulationTree/TreeSimulation.h> with #include<SofaSimulationGraph/DAGSimulation.h>
+#error SofaSimulationTree was removed at release 21.06. You need to update your code by replacing #include<SofaSimulationTree/TreeSimulation.h> with #include<SofaSimulationGraph/DAGSimulation.h>
