@@ -324,21 +324,6 @@ endif()
 # SofaFramework/config.h
 set_property(SOURCE ${SRC_ROOT}/system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
 
-# Compile options
-if(CMAKE_SYSTEM_NAME STREQUAL Linux AND NOT CMAKE_BUILD_TYPE MATCHES "Debug")
-    target_compile_definitions(${PROJECT_NAME} PUBLIC "NDEBUG")
-    # On Windows and MacOS, NDEBUG and _DEBUG are automatically
-    # set in the default c/cxx flags of the right configurations
-endif()
-if(MSVC)
-    # Increase Number of Sections in .Obj file
-    target_compile_options(${PROJECT_NAME} PUBLIC "/bigobj")
-    if(SOFA_VECTORIZE)
-        # SSE2 flags
-        target_compile_options(${PROJECT_NAME} PUBLIC "/arch:SSE2 /fp:fast")
-    endif()
-endif()
-
 # DEPENDENCY LINKS AND INCLUDE DIRS
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config )
 

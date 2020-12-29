@@ -53,8 +53,6 @@ file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 # Sofa.Config sets the environment (options, compiler flags, global variables)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Config ${CMAKE_CURRENT_BINARY_DIR}/Sofa.Config)
 
-include(CompilerOptions)
-
 ## Custom Environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
