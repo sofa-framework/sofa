@@ -23,6 +23,7 @@
 #include <cassert>
 #include <iostream>
 #include<sofa/helper/vector[T].h>
+#include<json.h>
 
 namespace sofa::helper
 {
@@ -36,14 +37,14 @@ void SOFA_HELPER_API vector<T, MemoryManager>::fill( const T& value )
 /// this function is usefull for vector_device because it resize the vector without device operation (if device is not valid).
 /// Therefore the function is used in asynchronous code to safly resize a vector which is either cuda of helper::vector
 template<class T, class MemoryManager>
-void SOFA_HELPER_API vector<T, MemoryManager>::fastResize(Size n)
+SOFA_HELPER_API void vector<T, MemoryManager>::fastResize(Size n)
 {
     this->resize(n);
 }
 
 /// Read/write random access
 template<class T, class MemoryManager>
-typename vector<T, MemoryManager>::reference SOFA_HELPER_API vector<T, MemoryManager>::operator[](Size n)
+SOFA_HELPER_API typename vector<T, MemoryManager>::reference vector<T, MemoryManager>::operator[](Size n)
 {
     if constexpr(sofa::helper::isEnabledVectorAccessChecking)
     {
@@ -55,7 +56,7 @@ typename vector<T, MemoryManager>::reference SOFA_HELPER_API vector<T, MemoryMan
 
 /// Read-only random access
 template<class T, class MemoryManager>
-typename vector<T, MemoryManager>::const_reference SOFA_HELPER_API vector<T, MemoryManager>::operator[](Size n) const
+SOFA_HELPER_API typename vector<T, MemoryManager>::const_reference vector<T, MemoryManager>::operator[](Size n) const
 {
     if constexpr (sofa::helper::isEnabledVectorAccessChecking)
     {
@@ -66,7 +67,7 @@ typename vector<T, MemoryManager>::const_reference SOFA_HELPER_API vector<T, Mem
 }
 
 template<class T, class MemoryManager>
-std::ostream& SOFA_HELPER_API vector<T, MemoryManager>::write(std::ostream& os) const
+SOFA_HELPER_API std::ostream& vector<T, MemoryManager>::write(std::ostream& os) const
 {
     if( this->size()>0 )
     {
@@ -78,16 +79,46 @@ std::ostream& SOFA_HELPER_API vector<T, MemoryManager>::write(std::ostream& os) 
 }
 
 template<class T, class MemoryManager>
-std::istream& SOFA_HELPER_API vector<T, MemoryManager>::read(std::istream& in)
+SOFA_HELPER_API std::istream& vector<T, MemoryManager>::readFromJSONRepr(std::istream& in)
+{
+    std::string s(std::istreambuf_iterator<char>(in), {});
+    std::replace( s.begin(), s.end(), '\'', '"');
+    json j = json::parse(s);
+    if(!j.is_array())
+    {
+        std::cout << "BRIN CA MARCHE PAS " << j.type_name() <<  std::endl;
+    }
+    j.get_to(*this);
+    return in;
+}
+
+template<class T, class MemoryManager>
+SOFA_HELPER_API std::istream& vector<T, MemoryManager>::readFromSofaRepr(std::istream& in)
 {
     T t=T();
-    this->clear();
     while(in>>t)
     {
         this->push_back(t);
     }
     if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
     return in;
+}
+
+template<class T, class MemoryManager>
+SOFA_HELPER_API std::istream& vector<T, MemoryManager>::read(std::istream& in)
+{
+    std::streampos pos = in.tellg();
+    char c;
+    this->clear();
+    if (!(in >> c) || in.eof())
+        return in; // empty stream
+
+    in.seekg(pos); // coming-back to the previous character
+    if (c == '[') {
+        return this->readFromJSONRepr(in);
+    }
+
+    return this->readFromSofaRepr(in);
 }
 
 }

@@ -19,3 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <iostream>
+#include <sstream>
+#include <sofa/helper/vector[T].inl>
+
+/// All integral types are considered as extern templates.
+namespace sofa::helper
+{
+
+/// Output stream
+/// Specialization for writing vectors of unsigned char
+template<>
+std::ostream& vector<std::string>::write(std::ostream& os) const
+{
+    std::string separator = "";
+    os << "[";
+    for(auto& v : (*this))
+    {
+        os << separator << '"' << v << '"';
+        separator = ", ";
+    }
+    os << "]";
+    return os;
+}
+
+
+template class sofa::helper::vector<std::string>;
+}

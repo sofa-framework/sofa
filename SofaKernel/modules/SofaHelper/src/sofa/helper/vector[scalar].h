@@ -23,10 +23,8 @@
 #include <sofa/helper/vector[T].h>
 
 /// All integral types are considered as extern templates.
-#ifndef SOFA_HELPER_VECTOR_SCALAR_DEFINITION
 namespace sofa::helper
 {
 extern template class vector<float>;
 extern template class vector<double>;
 }
-#endif ///

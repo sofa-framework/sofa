@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_VECTOR_INTEGRAL_DEFINITION
-#include <sofa/helper/vector.h>
-#include <sofa/helper/vector.inl>
+#include <sofa/helper/vector[T].inl>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa::helper
@@ -30,7 +28,7 @@ namespace sofa::helper
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
 template<>
-std::istream& vector<int>::read( std::istream& in )
+std::istream& vector<int>::readFromSofaRepr( std::istream& in )
 {
     int t;
     this->clear();
@@ -109,7 +107,7 @@ std::istream& vector<int>::read( std::istream& in )
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
 template<>
-std::istream& vector<unsigned int>::read( std::istream& in )
+std::istream& vector<unsigned int>::readFromSofaRepr( std::istream& in )
 {
     std::stringstream errmsg ;
     unsigned int errcnt = 0 ;
@@ -117,6 +115,7 @@ std::istream& vector<unsigned int>::read( std::istream& in )
 
     this->clear();
     std::string s;
+
     while(in>>s)
     {
         std::string::size_type hyphen = s.find_first_of('-',1);
@@ -196,7 +195,7 @@ std::ostream& vector<unsigned char>::write(std::ostream& os) const
 /// Input stream
 /// Specialization for reading vectors of unsigned char
 template<>
-std::istream& vector<unsigned char>::read(std::istream& in)
+std::istream& vector<unsigned char>::readFromSofaRepr(std::istream& in)
 {
     int t;
     this->clear();

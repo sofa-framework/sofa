@@ -20,5 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
 #include <sofa/helper/vector[T].h>
+
+/// All integral types are considered as extern templates.
+namespace sofa::helper
+{
+    extern template class sofa::helper::vector<std::string>;
+}

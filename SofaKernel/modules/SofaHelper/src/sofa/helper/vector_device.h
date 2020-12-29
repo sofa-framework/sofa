@@ -709,7 +709,6 @@ protected:
         {
             DEBUG_OUT_V(SPACEP << "allocate device=" << d << " " << deviceAllocSize[d] << "->" << alloc << std::endl);
             device_pointer prevDevicePointer = devicePointer[d];
-            //COMM : if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)nullptr)<<"> : reserve("<<s<<")"<<std::endl;
             MemoryManager::deviceAlloc(d, &devicePointer[d], alloc*sizeof ( T ) );
             deviceAllocSize[d] = alloc;
             if (isDeviceValid(d))

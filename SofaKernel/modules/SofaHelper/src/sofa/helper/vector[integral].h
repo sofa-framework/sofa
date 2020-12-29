@@ -23,7 +23,6 @@
 #include <sofa/helper/vector[T].h>
 
 /// All integral types are considered as extern templates.
-#ifndef SOFA_HELPER_VECTOR_INTEGRAL_DEFINITION
 namespace sofa::helper
 {
 extern template class vector<bool>;
@@ -36,4 +35,3 @@ extern template class vector<unsigned long>;
 extern template class vector<long long>;
 extern template class vector<unsigned long long>;
 }
-#endif ///

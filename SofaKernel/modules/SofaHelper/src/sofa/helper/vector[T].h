@@ -104,6 +104,8 @@ public:
 
     std::ostream& write(std::ostream& os) const ;
     std::istream& read(std::istream& in) ;
+    std::istream& readFromJSONRepr(std::istream& in) ;
+    std::istream& readFromSofaRepr(std::istream& in) ;
 
     /// Output stream
     friend std::ostream& operator<< ( std::ostream& os, const vector<T>& vec ) { return vec.write(os); }
