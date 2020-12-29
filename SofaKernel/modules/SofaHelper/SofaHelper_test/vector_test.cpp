@@ -69,7 +69,12 @@ void vector_test<T>::checkVector(const std::vector<std::string>& params)
         numMessage += counter.getMessageCountFor(Message::Error) ;
     }
     MessageDispatcher::addHandler( &counter ) ;
-    v.read(in) ;
+
+    if(errtype == "Exception")
+        ASSERT_ANY_THROW(v.read(in));
+    else
+        v.read(in);
+
     v.write(out) ;
 
     /// If the parsed version is different that the written version & there is no warning...this
@@ -137,10 +142,13 @@ std::vector<std::vector<std::string>> intvalues={
     {"zero 1 2 trois quatre cinq 6", "0 1 2 0 0 0 6", "Warning"},
     {"3.14 4.15 5.16", "0 0 0", "Warning"},
 
-    /// Python style string representation
-    {"[0, -1, 2, 3, 4, -5, 6]", "[0, -1, 2, 3, 4, -5, 6]", "None"},
-    {"   [   0, -1, 2, 3   , 4, -5, 6]", "[0, -1, 2, 3, 4, -5, 6]", "None"}
+    /// Valid JSON style string representation
+    {"[0, -1, 2, 3, 4, -5, 6]", "0 -1 2 3 4 -5 6", "None"},
+    {"   [   0, -1, 2, 3   , 4, -5, 6]", "0 -1 2 3 4 -5 6", "None"},
 
+    /// Invalid JSON style string representation
+    {"[0.15, 3]", "0 3", "None"},
+    {"   [\"hello world\"]", "", "Exception"}
 };
 INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
                         vector_test_int,
@@ -189,9 +197,16 @@ std::vector<std::vector<std::string>> uintvalues={
     {"3.14 4.15 5.16", "0 0 0", "Warning"},
     {"5 6---10 0", "5 0 0", "Warning"},
 
-    /// Python style string representation
-    {"[0, 1, 2, 3, 4, 5, 6]", "[0, 1, 2, 3, 4, 5, 6]", "None"},
-    {"  [0,    1, 2, 3, 4, 5,  6 ]", "[0, 1, 2, 3, 4, 5, 6]", "None"}
+    /// Valid JSON style string representation
+    {"[0, 1, 2, 3, 4, 5, 6]", "0 1 2 3 4 5 6", "None"},
+    {"  [0,    1, 2, 3, 4, 5,  6 ]", "0 1 2 3 4 5 6", "None"},
+    {"[0.15, 3]", "0 3", "None"},
+
+    /// Invalid JSON style representation
+    {"[0, -1, 2, 3, 4, -5, 6]", "0 -1 2 3 4 -5 6", "None"},
+    {"   [   0, -1, 2, 3   , 4, -5, 6]", "0 -1 2 3 4 -5 6", "None"},
+
+    {"   [\"hello world\"]", "", "Exception"}
 };
 INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
                         vector_test_unsigned_int,
