@@ -26,6 +26,7 @@
 #include <sofa/helper/list.h>
 #include <sofa/defaulttype/TopologyTypes.h>
 #include <climits>
+#include <json.h>
 
 namespace sofa
 {
@@ -243,7 +244,13 @@ struct TopologyElementInfo<Topology::Hexahedron>
 };
 
 
-
+void from_json(const sofa::helper::json& t, Topology::Pyramid& p);
+void from_json(const sofa::helper::json& t, Topology::Pentahedron& p);
+void from_json(const sofa::helper::json& t, Topology::Tetrahedron& p);
+void from_json(const sofa::helper::json& t, Topology::Hexahedron& p);
+void from_json(const sofa::helper::json& t, Topology::Quad& p);
+void from_json(const sofa::helper::json& t, Topology::Triangle p);
+void from_json(const sofa::helper::json& t, Topology::Edge p);
 
 } // namespace topology
 

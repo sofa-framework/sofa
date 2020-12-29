@@ -54,6 +54,13 @@ const Topology::Pyramid Topology::InvalidPyramid;
 const Topology::Pentahedron Topology::InvalidPentahedron;
 const Topology::Hexahedron Topology::InvalidHexahedron;
 
+void from_json(const sofa::helper::json& t, Topology::Pyramid& p){}
+void from_json(const sofa::helper::json& t, Topology::Pentahedron& p){}
+void from_json(const sofa::helper::json& t, Topology::Tetrahedron& p){}
+void from_json(const sofa::helper::json& t, Topology::Hexahedron& p){}
+void from_json(const sofa::helper::json& t, Topology::Quad& p){}
+void from_json(const sofa::helper::json& t, Topology::Triangle p){}
+void from_json(const sofa::helper::json& t, Topology::Edge p){}
 
 } // namespace topology
 
