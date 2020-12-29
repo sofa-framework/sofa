@@ -40,6 +40,11 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaGraphComponent SofaUserInteraction)
 
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
+
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaGui
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES

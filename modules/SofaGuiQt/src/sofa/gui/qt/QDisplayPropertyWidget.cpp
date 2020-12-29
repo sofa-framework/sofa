@@ -468,7 +468,11 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
         QPushButton* clearButton = new QPushButton("Clear output", clearWidget);
         clearButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         clearButton->setFixedHeight(200);
+#if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
         clearButton->setProperty("base", qVariantFromValue((void*) base));
+#else
+        clearButton->setProperty("base", QVariant::fromValue((void*) base));
+#endif
         clearLayout->addWidget(clearButton);
 
         clearWidget->setContentsMargins(0, 0, 0, 0);
@@ -515,7 +519,11 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
         QPushButton* clearButton = new QPushButton("Clear warning", clearWidget);
         clearButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         clearButton->setFixedHeight(200);
+#if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
         clearButton->setProperty("base", qVariantFromValue((void*) base));
+#else
+        clearButton->setProperty("base", QVariant::fromValue((void*) base));
+#endif
         clearLayout->addWidget(clearButton);
 
         clearWidget->setContentsMargins(0, 0, 0, 0);

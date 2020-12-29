@@ -71,7 +71,7 @@ void DistanceLMConstraint<Rigid3Types>::draw(const core::visual::VisualParams* v
             points.push_back(x1[edges[i][0]].getCenter());
             points.push_back(x2[edges[i][1]].getCenter());
         }
-        vparams->drawTool()->drawLines(points, 1, Vec<4,float>(0.0,1.0,0.0f,1.0f));
+        vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor::green());
     }
 }
 

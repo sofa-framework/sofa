@@ -317,7 +317,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 
     vparams->drawTool()->setPolygonMode(2,false); //Cull Front face
 
-    vparams->drawTool()->drawTriangles(points, defaulttype::Vec<4,float>(d_drawColor.getValue()[0],d_drawColor.getValue()[1],d_drawColor.getValue()[2],0.5));
+    vparams->drawTool()->drawTriangles(points, sofa::helper::types::RGBAColor(d_drawColor.getValue()[0],d_drawColor.getValue()[1],d_drawColor.getValue()[2],0.5));
     vparams->drawTool()->setPolygonMode(0,false); //No Culling
 
     std::vector< defaulttype::Vector3 > pointsLine;
@@ -346,7 +346,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
             pointsLine.push_back(point2);
         }
     }
-    vparams->drawTool()->drawLines(pointsLine, 1, defaulttype::Vec<4,float>(1,0,0,1));
+    vparams->drawTool()->drawLines(pointsLine, 1, sofa::helper::types::RGBAColor(1,0,0,1));
     vparams->drawTool()->restoreLastState();
 }
 

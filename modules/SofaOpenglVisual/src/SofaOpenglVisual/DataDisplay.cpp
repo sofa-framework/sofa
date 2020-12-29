@@ -260,7 +260,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             size_t nbTriangles = m_topology->getNbTriangles();
             for (unsigned int i=0; i<nbTriangles; i++)
             {
-                Vec4f color = isnan(triData[i])
+                sofa::helper::types::RGBAColor color = isnan(triData[i])
                     ? f_colorNaN.getValue()
                     : sofa::helper::types::RGBAColor::fromVec4(eval(triData[i]));
                 const Triangle& t = m_topology->getTriangle(i);
@@ -278,27 +278,27 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             glBegin(GL_TRIANGLES);
             for (unsigned int i=0; i<nbTriangles; i++)
             {
-                Vec4f color0 = isnan(pointTriData[i*3])
+                sofa::helper::types::RGBAColor color0 = isnan(pointTriData[i*3])
                     ? f_colorNaN.getValue()
                     : sofa::helper::types::RGBAColor::fromVec4(eval(pointTriData[i*3]));
-                Vec4f color1 = isnan(pointTriData[i*3+1])
+                sofa::helper::types::RGBAColor color1 = isnan(pointTriData[i*3+1])
                         ? f_colorNaN.getValue()
                         : sofa::helper::types::RGBAColor::fromVec4(eval(pointTriData[i*3+1]));
-                Vec4f color2 = isnan(pointTriData[i*3+2])
+                sofa::helper::types::RGBAColor color2 = isnan(pointTriData[i*3+2])
                     ? f_colorNaN.getValue()
                     : sofa::helper::types::RGBAColor::fromVec4(eval(pointTriData[i*3+2]));
                 const Triangle& t = m_topology->getTriangle(i);
 
                 glNormal3fv(m_normals[t[0]].ptr());
-                glMaterialfv(GL_FRONT,GL_DIFFUSE,color0.ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color0.data());
                 helper::gl::glVertexNv<3>(x[t[0]].ptr());
 
                 glNormal3fv(m_normals[t[1]].ptr());
-                glMaterialfv(GL_FRONT,GL_DIFFUSE,color1.ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color1.data());
                 helper::gl::glVertexNv<3>(x[t[1]].ptr());
 
                 glNormal3fv(m_normals[t[2]].ptr());
-                glMaterialfv(GL_FRONT,GL_DIFFUSE,color2.ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color2.data());
                 helper::gl::glVertexNv<3>(x[t[2]].ptr());
 
             }
@@ -311,7 +311,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             size_t nbQuads = m_topology->getNbQuads();
             for (unsigned int i=0; i<nbQuads; i++)
             {
-                Vec4f color = isnan(quadData[i])
+                sofa::helper::types::RGBAColor color = isnan(quadData[i])
                     ? f_colorNaN.getValue()
                     : sofa::helper::types::RGBAColor::fromVec4(eval(quadData[i]));
                 const Quad& t = m_topology->getQuad(i);
@@ -328,34 +328,34 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             glBegin(GL_QUADS);
             for (unsigned int i=0; i<nbQuads; i++)
             {
-                Vec4f color0 = isnan(pointQuadData[i*4])
+                sofa::helper::types::RGBAColor color0 = isnan(pointQuadData[i*4])
                     ? f_colorNaN.getValue()
                     : sofa::helper::types::RGBAColor::fromVec4(eval(pointQuadData[i*4]));
-                Vec4f color1 = isnan(pointQuadData[i*4+1])
+                sofa::helper::types::RGBAColor color1 = isnan(pointQuadData[i*4+1])
                         ? f_colorNaN.getValue()
                         : sofa::helper::types::RGBAColor::fromVec4(eval(pointQuadData[i*4+1]));
-                Vec4f color2 = isnan(pointQuadData[i*4+2])
+                sofa::helper::types::RGBAColor color2 = isnan(pointQuadData[i*4+2])
                     ? f_colorNaN.getValue()
                     : sofa::helper::types::RGBAColor::fromVec4(eval(pointQuadData[i*4+2]));
-                Vec4f color3 = isnan(pointQuadData[i*4+3])
+                sofa::helper::types::RGBAColor color3 = isnan(pointQuadData[i*4+3])
                     ? f_colorNaN.getValue()
                     : sofa::helper::types::RGBAColor::fromVec4(eval(pointQuadData[i*4+3]));
                 const Quad& q = m_topology->getQuad(i);
 
                 glNormal3fv(m_normals[q[0]].ptr());
-                glMaterialfv(GL_FRONT,GL_DIFFUSE,color0.ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color0.data());
                 helper::gl::glVertexNv<3>(x[q[0]].ptr());
 
                 glNormal3fv(m_normals[q[1]].ptr());
-                glMaterialfv(GL_FRONT,GL_DIFFUSE,color1.ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color1.data());
                 helper::gl::glVertexNv<3>(x[q[1]].ptr());
 
                 glNormal3fv(m_normals[q[2]].ptr());
-                glMaterialfv(GL_FRONT,GL_DIFFUSE,color2.ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color2.data());
                 helper::gl::glVertexNv<3>(x[q[2]].ptr());
 
                 glNormal3fv(m_normals[q[3]].ptr());
-                glMaterialfv(GL_FRONT,GL_DIFFUSE,color3.ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color3.data());
                 helper::gl::glVertexNv<3>(x[q[3]].ptr());
 
             }
@@ -369,7 +369,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         glPointSize(10);
         for (unsigned int i=0; i<x.size(); ++i)
         {
-            Vec4f color = isnan(ptData[i])
+            sofa::helper::types::RGBAColor color = isnan(ptData[i])
                 ? f_colorNaN.getValue()
                 : sofa::helper::types::RGBAColor::fromVec4(eval(ptData[i]));
             vparams->drawTool()->drawPoint(x[i], color);
@@ -385,7 +385,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         for (sofa::core::topology::Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
         {
             const Triangle &t = m_topology->getTriangle(i);
-            Vec4f color[3];
+            sofa::helper::types::RGBAColor color[3];
             for (int j=0; j<3; j++) {
                 color[j] = isnan(ptData[t[j]])
                     ? f_colorNaN.getValue()
@@ -393,15 +393,15 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             }
 
             glNormal3fv(m_normals[t[0]].ptr());
-            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[0].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[0].data());
             helper::gl::glVertexNv<3>(x[t[0]].ptr());
 
             glNormal3fv(m_normals[t[1]].ptr());
-            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[1].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[1].data());
             helper::gl::glVertexNv<3>(x[t[1]].ptr());
 
             glNormal3fv(m_normals[t[2]].ptr());
-            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[2].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[2].data());
             helper::gl::glVertexNv<3>(x[t[2]].ptr());
 
         }
@@ -412,7 +412,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         for (sofa::core::topology::Topology::QuadID i=0; i<m_topology->getNbQuads(); ++i)
         {
             const Quad &q = m_topology->getQuad(i);
-            Vec4f color[4];
+            sofa::helper::types::RGBAColor color[4];
             for (int j=0; j<4; j++)
             {
                 color[j] = isnan(ptData[q[j]])
@@ -421,19 +421,19 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             }
 
             glNormal3fv(m_normals[q[0]].ptr());
-            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[0].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[0].data());
             helper::gl::glVertexNv<3>(x[q[0]].ptr());
 
             glNormal3fv(m_normals[q[1]].ptr());
-            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[1].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[1].data());
             helper::gl::glVertexNv<3>(x[q[1]].ptr());
 
             glNormal3fv(m_normals[q[2]].ptr());
-            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[2].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[2].data());
             helper::gl::glVertexNv<3>(x[q[2]].ptr());
 
             glNormal3fv(m_normals[q[3]].ptr());
-            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[3].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[3].data());
             helper::gl::glVertexNv<3>(x[q[3]].ptr());
 
         }

@@ -332,7 +332,8 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
             }
         }
 
-        vparams->drawTool()->drawLines(points, 1, defaulttype::Vec<4,float>(getColor4f()));
+        auto c = getColor4f();
+        vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor(c[0], c[1], c[2], c[3]));
 
         if (m_displayFreePosition.getValue())
         {
@@ -347,7 +348,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
                 }
             }
 
-            vparams->drawTool()->drawLines(pointsFree, 1, defaulttype::Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
+            vparams->drawTool()->drawLines(pointsFree, 1, sofa::helper::types::RGBAColor(0.0f,1.0f,0.2f,1.0f));
         }
 
         if (vparams->displayFlags().getShowWireFrame())

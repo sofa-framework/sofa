@@ -4,6 +4,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaMiscTopology'/>
     <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name='SofaGeneralSimpleFem'/>
 
     <VisualStyle displayFlags="showBehaviorModels showVisual showWireframe showForceFields" />
     <DefaultPipeline verbose="0" />

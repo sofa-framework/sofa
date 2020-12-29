@@ -78,8 +78,9 @@ bool SphereGridTopology_test::SphereGridPosition()
 
         for (int j=0; j<3; ++j)
         {
-            if (p0[j]+p1[j] > 0.001) // real numerical error
-                EXPECT_EQ(p0[j]+p1[j], 0.0);
+            if (p0[j]+p1[j] > 0.001) { // real numerical error
+                EXPECT_EQ(p0[j] + p1[j], 0.0);
+            }
         }
     }
 

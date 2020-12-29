@@ -61,7 +61,7 @@ public:
     };
 
 
-    DisplayFlagWidget(QWidget* parent, const char* name= 0, Qt::WindowFlags f= 0 );
+    DisplayFlagWidget(QWidget* parent, const char* name= nullptr, Qt::WindowFlags f = Qt::WindowType::Widget );
 
     bool getFlag(int idx) {return itemShowFlag[idx]->checkState(0) == Qt::Checked;}
     void setFlag(int idx, bool value)

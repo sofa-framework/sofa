@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma
+#pragma once
 
 #include <SofaMiscMapping/config.h>
 

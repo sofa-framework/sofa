@@ -52,7 +52,7 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     m_initialSurfaceArea(initData(&m_initialSurfaceArea, (Real)0.0, "initialSurfaceArea", "OUT: Initial surface area, as computed from the surface rest position")),
     m_currentSurfaceArea(initData(&m_currentSurfaceArea, (Real)0.0, "currentSurfaceArea", "OUT: Current surface area, as computed from the last surface position")),
     m_drawForceScale(initData(&m_drawForceScale, (Real)0.001, "drawForceScale", "DEBUG: scale used to render force vectors")),
-    m_drawForceColor(initData(&m_drawForceColor, defaulttype::Vec4f(0,1,1,1), "drawForceColor", "DEBUG: color used to render force vectors")),
+    m_drawForceColor(initData(&m_drawForceColor, sofa::helper::types::RGBAColor(0,1,1,1), "drawForceColor", "DEBUG: color used to render force vectors")),
     m_volumeAfterTC(initData(&m_volumeAfterTC, "volumeAfterTC", "OUT: Volume after a topology change")),
     m_surfaceAreaAfterTC(initData(&m_surfaceAreaAfterTC, (Real)0.0, "surfaceAreaAfterTC", "OUT: Surface area after a topology change")),
     l_topology(initLink("topology", "link to the topology container")),

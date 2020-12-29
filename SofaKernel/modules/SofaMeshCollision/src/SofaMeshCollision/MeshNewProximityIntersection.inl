@@ -30,7 +30,7 @@
 namespace sofa::component::collision
 {
 
-inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id, const defaulttype::Vector3& n, bool useNormal)
+inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id, const defaulttype::Vector3& /*n*/, bool /*useNormal*/)
 {  
     defaulttype::Vector3 p,q;
     IntrUtil<SReal>::segNearestPoints(p1,p2,q1,q2,p,q);
@@ -185,7 +185,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist
 
 
 
-inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& n, const defaulttype::Vector3& q, OutputVector* contacts, int id, bool swapElems, bool useNormal)
+inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& /*n*/, const defaulttype::Vector3& q, OutputVector* contacts, int id, bool swapElems, bool /*useNormal*/)
 {
     const defaulttype::Vector3 AB = p2-p1;
     const defaulttype::Vector3 AC = p3-p1;

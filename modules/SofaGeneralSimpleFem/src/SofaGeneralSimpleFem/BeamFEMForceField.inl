@@ -682,9 +682,9 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
         for (unsigned int i=0; i<m_indexedElements->size(); ++i)
             drawElement(i, points, x);
     }
-    vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(1,0,0,1));
-    vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0,1,0,1));
-    vparams->drawTool()->drawLines(points[2], 1, defaulttype::Vec<4,float>(0,0,1,1));
+    vparams->drawTool()->drawLines(points[0], 1, sofa::helper::types::RGBAColor::red());
+    vparams->drawTool()->drawLines(points[1], 1, sofa::helper::types::RGBAColor::green());
+    vparams->drawTool()->drawLines(points[2], 1, sofa::helper::types::RGBAColor::blue());
 
     vparams->drawTool()->restoreLastState();
 }

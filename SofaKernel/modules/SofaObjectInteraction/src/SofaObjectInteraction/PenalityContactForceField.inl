@@ -56,7 +56,7 @@ void PenalityContactForceField<DataTypes>::addContact(sofa::Index m1, sofa::Inde
     c.dist = dist;
     c.ks = ks;
     c.pen = 0;
-    if (oldIndex > 0 && oldIndex <= (int)prevContacts.size())
+    if (oldIndex > 0 && oldIndex <= prevContacts.size())
     {
         c.age = prevContacts[oldIndex-1].age+1;
     }
