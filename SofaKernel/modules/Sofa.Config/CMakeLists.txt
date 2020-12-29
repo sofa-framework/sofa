@@ -205,6 +205,9 @@ endif()
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     # Warnings
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-Wall;-W;-Wno-padded")
+
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PUBLIC -Wno-attributes)
 endif()
 
 ## Windows-specific
