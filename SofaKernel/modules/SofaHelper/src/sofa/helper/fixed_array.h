@@ -518,3 +518,5 @@ extern template class SOFA_HELPER_API fixed_array<double, 7>;
 } // namespace sofa
 
 #endif
+
+#include <sofa/helper/fixed_array_json.h>
