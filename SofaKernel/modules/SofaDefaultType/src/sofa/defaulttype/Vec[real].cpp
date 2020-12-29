@@ -19,9 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_DEFAULTTYPE_VEC_CPP
 
-#include <sofa/defaulttype/Vec[T].h>
-#include <sofa/defaulttype/Vec[T]_json.h>
-#include <sofa/defaulttype/Vec[real].h>
-#include <sofa/defaulttype/Vec[integral].h>
+#include <sofa/defaulttype/Vec.h>
+
+namespace sofa
+{
+namespace defaulttype
+{
+
+ template class Vec<2,float>;
+ template class Vec<2,int>;
+ template class Vec<2,double>;
+ template class Vec<2,unsigned>;
+
+ template class Vec<3,float>;
+ template class Vec<3,int>;
+ template class Vec<3,double>;
+ template class Vec<3,unsigned>;
+
+ template class Vec<4,float>;
+ template class Vec<4,int>;
+ template class Vec<4,double>;
+ template class Vec<4,unsigned>;
+
+ template class Vec<6,float>;
+ template class Vec<6,int>;
+ template class Vec<6,double>;
+ template class Vec<6,unsigned>;
+
+
+} // namespace defaulttype
+} // namespace sofa
+

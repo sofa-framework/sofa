@@ -19,9 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+/******************************************************************************
+* Contributors:
+*   - damien.marchal@univ-lille.fr (USTL/CNRS)
+******************************************************************************/
 #pragma once
+#include <sofa/config.h>
+#include <json.h>
 
-#include <sofa/defaulttype/Vec[T].h>
-#include <sofa/defaulttype/Vec[T]_json.h>
-#include <sofa/defaulttype/Vec[real].h>
-#include <sofa/defaulttype/Vec[integral].h>
+namespace sofa::defaulttype
+{
+
+template<sofa::Size N, class T>
+class Vec;
+
+template<class T, sofa::Size N>
+void from_json(const sofa::helper::json& j, Vec<N, T>& p)
+{}
+
+} /// namespace sofa::helper

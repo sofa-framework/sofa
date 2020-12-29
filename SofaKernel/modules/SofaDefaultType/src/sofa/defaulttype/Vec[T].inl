@@ -19,9 +19,5 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <sofa/defaulttype/Vec[T].h>
-#include <sofa/defaulttype/Vec[T]_json.h>
-#include <sofa/defaulttype/Vec[real].h>
-#include <sofa/defaulttype/Vec[integral].h>
+
