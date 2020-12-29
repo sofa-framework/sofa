@@ -31,7 +31,7 @@ template <typename TopologyElementType, typename VecT>
 void TopologySparseDataHandler <TopologyElementType, VecT>::swap( Index i1, Index i2 )
 {
     // get access to data and its map
-    sofa::component::topology::TopologySparseDataImpl<TopologyElementType, VecT>* _topologyData = dynamic_cast<sofa::component::topology::TopologySparseDataImpl<TopologyElementType, VecT>* >(m_topologyData);    
+    auto* _topologyData = dynamic_cast<sofa::component::topology::TopologySparseDataImpl<TopologyElementType, VecT>* >(m_topologyData);
     container_type& data = *(_topologyData->beginEdit());
     sofa::helper::vector <Index>& keys = _topologyData->getMap2Elements();
 

@@ -666,9 +666,8 @@ void MechanicalObject<DataTypes>::resize(const Size size)
 
     if(size>0)
     {
-        //if (size!=d_size.getValue())
         {
-            if (d_size.getValue() != size)
+            if (d_size.getValue() != static_cast<int>(size))
                 d_size.setValue( size );
             for (unsigned int i = 0; i < vectorsCoord.size(); i++)
             {
@@ -1171,7 +1170,7 @@ void MechanicalObject<DataTypes>::init()
             resize(0);
         }
     }
-    else if (x_wA.size() != d_size.getValue() || v_wA.size() != d_size.getValue())
+    else if ((int) x_wA.size() != d_size.getValue() || (int) v_wA.size() != d_size.getValue())
     {
         // X and/or V were user-specified
         // copy the last specified velocity to all points

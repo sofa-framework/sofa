@@ -66,6 +66,10 @@ if(SofaDenseSolver_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaDenseSolver)
 endif()
 
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

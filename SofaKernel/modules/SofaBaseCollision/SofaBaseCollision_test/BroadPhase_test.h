@@ -136,7 +136,7 @@ void getMyBoxes(sofa::core::CollisionModel * cm,std::vector<MyBox> & my_boxes){
     sofa::component::collision::CubeCollisionModel * cbm = dynamic_cast<sofa::component::collision::CubeCollisionModel*>(cm->getLast()->getPrevious());
     assert(cbm != 0x0);
 
-    for(int i = 0 ; i < cbm->getSize() ; ++i)
+    for(sofa::Index i = 0 ; i < cbm->getSize() ; ++i)
         my_boxes.push_back(MyBox(sofa::component::collision::Cube(cbm,i)));
 }
 

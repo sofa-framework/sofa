@@ -353,7 +353,7 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 
         if( d_fixAll.getValue() )
         {
-            for(Size i=0; i<vect->size(); i++ )
+            for(sofa::Size i=0; i < (sofa::Size) vect->size(); i++ )
             {
                 for (unsigned int c=0; c<N; ++c)
                     vect->clear(offset + N * i + c);
@@ -362,10 +362,10 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
         else
         {
             const SetIndexArray & indices = d_indices.getValue();
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (const auto & index : indices)
             {
                 for (unsigned int c=0; c<N; ++c)
-                    vect->clear(offset + N * (*it) + c);
+                    vect->clear(offset + N * index + c);
             }
         }
     }
@@ -403,7 +403,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 points.push_back(point);
             }
         }
-        vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
@@ -425,7 +425,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 points.push_back(point);
             }
         }
-        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::helper::types::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
 
     vparams->drawTool()->restoreLastState();

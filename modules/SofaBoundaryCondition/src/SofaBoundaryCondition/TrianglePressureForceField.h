@@ -75,10 +75,19 @@ protected:
         Deriv force;
 		Mat33 DfDx[3];
 
-        TrianglePressureInformation() {}
+        TrianglePressureInformation() = default;
         TrianglePressureInformation(const TrianglePressureInformation &e)
             : area(e.area),force(e.force)
         { }
+
+        TrianglePressureInformation & operator= (const TrianglePressureInformation & other) {
+            area = other.area;
+            force = other.force;
+            DfDx[0] = other.DfDx[0];
+            DfDx[1] = other.DfDx[1];
+            DfDx[2] = other.DfDx[2];
+            return *this;
+        }
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TrianglePressureInformation& /*ei*/ )

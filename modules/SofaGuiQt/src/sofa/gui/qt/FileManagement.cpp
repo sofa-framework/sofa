@@ -35,24 +35,31 @@ namespace qt
 QString getExistingDirectory ( QWidget* parent, const QString & dir, const char * name, const QString & caption)
 {
     QFileDialog::Options options = QFileDialog::ShowDirsOnly;
-    //	options |= QFileDialog::DontUseNativeDialog;
+#if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
     options |= QFileDialog::DontUseSheet;
+#endif
     return QFileDialog::getExistingDirectory ( parent, name?QString(name):caption, dir, options );
 }
 
 QString getOpenFileName ( QWidget* parent, const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
 {
+#if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
     QFileDialog::Options options = 0;
-    //	options |= QFileDialog::DontUseNativeDialog;
     options |= QFileDialog::DontUseSheet;
+#else
+    QFileDialog::Options options;
+#endif
     return QFileDialog::getOpenFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
 }
 
 QString getSaveFileName ( QWidget* parent, const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
 {
+#if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
     QFileDialog::Options options = 0;
-    //	options |= QFileDialog::DontUseNativeDialog;
     options |= QFileDialog::DontUseSheet;
+#else
+    QFileDialog::Options options;
+#endif
     return QFileDialog::getSaveFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
 }
 

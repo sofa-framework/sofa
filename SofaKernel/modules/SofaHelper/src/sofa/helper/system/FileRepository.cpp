@@ -248,7 +248,7 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
     {
         locale = std::locale("en_US.UTF-8");
     }
-    catch (std::exception& e)
+    catch (const std::exception & e)
     {
         locale = std::locale("");
     }

@@ -166,7 +166,6 @@ void BilateralInteractionConstraint_test<Rigid3fTypes>::checkRigid3fFixForBackwa
                                                       scene.str().size()) ;
     root->init(ExecParams::defaultInstance()) ;
 
-    return ;
 }
 
 

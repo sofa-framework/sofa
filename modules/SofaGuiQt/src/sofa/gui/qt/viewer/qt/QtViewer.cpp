@@ -1385,7 +1385,11 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
                 _mouseInteractorSavedPosY = eventY;
             }
             // Mouse middle button is pushed
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
             else if (e->button() == Qt::MidButton)
+#else
+            else if (e->button() == Qt::MiddleButton)
+#endif
             {
                 _navigationMode = BTMIDDLE_MODE;
                 _mouseInteractorMoving = true;
@@ -1416,7 +1420,11 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
                 }
             }
             // Mouse middle button is released
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
             else if (e->button() == Qt::MidButton)
+#else
+            else if (e->button() == Qt::MiddleButton)
+#endif
             {
                 if (_mouseInteractorMoving)
                 {

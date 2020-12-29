@@ -413,10 +413,14 @@ void GenGraphForm::runTask()
     QString cmd = argv.join(QString(" "));
     std::cout << "STARTING TASK " << cmd.toStdString() << std::endl;
 
-    QProcess* p = new QProcess(this);
+    auto* p = new QProcess(this);
     QString program = argv.front();
     argv.pop_front();
+#if (QT_VERSION < QT_VERSION_CHECK(5, 13, 0))
     p->setReadChannelMode(QProcess::ForwardedChannels);
+#else
+    p->setProcessChannelMode(QProcess::ForwardedChannels);
+#endif
     connect(p,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(taskFinished()));
     p->start(program, argv);
     currentTask = p;
