@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <string>
+#include <json.h>
 
 namespace sofa::helper::types
 {
@@ -40,5 +41,7 @@ public:
     PrimitiveGroup();
     PrimitiveGroup(int p0, int nbp, std::string materialName, std::string groupName, int materialId);
 };
+
+void from_json(const sofa::helper::json& j, PrimitiveGroup& p);
 
 } // namespace sofa

@@ -24,4 +24,10 @@ PrimitiveGroup::PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
 
 PrimitiveGroup::PrimitiveGroup(int p0, int nbp, std::string materialName, std::string groupName, int materialId) : p0(p0), nbp(nbp), materialName(materialName), groupName(groupName), materialId(materialId) {}
 
+void from_json(const sofa::helper::json& j, PrimitiveGroup& p)
+{
+
+}
+
+
 } /// namespace sofa::helper::types
