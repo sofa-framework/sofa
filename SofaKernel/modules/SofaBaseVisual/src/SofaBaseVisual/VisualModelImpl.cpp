@@ -39,6 +39,7 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/types/Material.h>
 
 #include <sstream>
 #include <map>
@@ -47,9 +48,10 @@
 namespace sofa::component::visualmodel
 {
 using sofa::helper::types::RGBAColor;
+using sofa::helper::types::Material;
+using sofa::helper::types::PrimitiveGroup;
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
-using namespace sofa::core::loader;
 using helper::vector;
 
 Vec3State::Vec3State()
