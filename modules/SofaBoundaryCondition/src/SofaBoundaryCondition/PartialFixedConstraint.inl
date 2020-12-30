@@ -183,7 +183,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
 
     if( this->d_fixAll.getValue() )
     {
-        for(Size i=0; i<vect->size(); i++ )
+        for(sofa::Index i=0; i<(sofa::Size) vect->size(); i++ )
         {
             for (unsigned int c = 0; c < N; ++c)
             {
@@ -197,13 +197,13 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
     else
     {
         const SetIndexArray & indices = this->d_indices.getValue();
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for (unsigned int index : indices)
         {
             for (unsigned int c = 0; c < N; ++c)
             {
                 if (blockedDirection[c])
                 {
-                    vect->clear(offset + N * (*it) + c);
+                    vect->clear(offset + N * index + c);
                 }
             }
         }

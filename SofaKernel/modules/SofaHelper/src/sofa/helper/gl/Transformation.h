@@ -44,6 +44,7 @@ public:
 public:
     Transformation();	// constructor
     ~Transformation();	// destructor
+    Transformation(const Transformation & other);
     Transformation&	operator=(const Transformation& transform);
 
     void Apply();

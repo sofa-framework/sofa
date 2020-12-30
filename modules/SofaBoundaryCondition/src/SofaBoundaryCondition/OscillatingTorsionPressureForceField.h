@@ -55,10 +55,15 @@ protected:
     public:
         Real area {0.0};
 
-        TrianglePressureInformation() {}
+        TrianglePressureInformation() = default;
         TrianglePressureInformation(const TrianglePressureInformation &e)
             : area(e.area)
         { }
+
+        TrianglePressureInformation & operator= (const TrianglePressureInformation & other) {
+            area = other.area;
+            return *this;
+        }
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TrianglePressureInformation& /*ei*/ )

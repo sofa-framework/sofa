@@ -64,8 +64,8 @@
 
 
        <Node 	name="VisualNode">
-            <OglModel template="ExtVec3f" name="Visual" color="red" />
-            <IdentityMapping template="Vec3d,ExtVec3f" name="default1"  input="@../Triangles"  output="@Visual" />
+            <OglModel template="Vec3d" name="Visual" color="red" />
+            <IdentityMapping template="Vec3d,Vec3d" name="default1"  input="@../Triangles"  output="@Visual" />
        </Node>
   </Node>
 
@@ -115,8 +115,8 @@
 
 	    <Node 	name="visual"   >
 		<MeshObjLoader name="meshLoader_1" filename="beam.obj" handleSeams="1" />
-		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_1" color="1 0.8 0.8 "/>
-	    	<LinearMapping template="Quadratic,ExtVec3f"/>
+		<OglModel template="Vec3d" name="Visual" src="@meshLoader_1" color="1 0.8 0.8 "/>
+	    	<LinearMapping template="Quadratic,Vec3d"/>
 	    </Node>
     </Node>
 </Node>

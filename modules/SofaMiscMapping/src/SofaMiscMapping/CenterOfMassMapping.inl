@@ -156,7 +156,7 @@ void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpar
         points.push_back(point2);
     }
 
-    vparams->drawTool()->drawLines(points, 1, sofa::defaulttype::Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor::yellow());
 
     vparams->drawTool()->restoreLastState();
 }

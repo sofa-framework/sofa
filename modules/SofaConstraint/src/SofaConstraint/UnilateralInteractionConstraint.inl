@@ -400,7 +400,7 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
 
     std::vector<sofa::defaulttype::Vector3> redVertices;
     std::vector<sofa::defaulttype::Vector3> otherVertices;
-    std::vector<sofa::defaulttype::Vec4f> otherColors;
+    std::vector<sofa::helper::types::RGBAColor> otherColors;
 
     for (unsigned int i=0; i<contacts.size(); i++)
     {

@@ -1522,14 +1522,14 @@ template <typename Real>
 template <sofa::Size iSize>
 void Decompose<Real>::QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaulttype::Vec<iSize,Real> &subDiag, defaulttype::Mat<iSize,iSize,Real> &V )
 {
-    static const int iMaxIter = 32;
+    static const sofa::Index iMaxIter = 32;
 
-    for (int i0 = 0; i0 < iSize; ++i0)
+    for (sofa::Index i0 = 0; i0 < iSize; ++i0)
     {
-        int i1;
+        sofa::Index i1;
         for (i1 = 0; i1 < iMaxIter; ++i1)
         {
-            int i2;
+            sofa::Index i2;
             for (i2 = i0; i2 <= iSize-2; ++i2)
             {
                 Real fTmp = helper::rabs(diag[i2]) + helper::rabs(diag[i2+1]);
@@ -1549,7 +1549,7 @@ void Decompose<Real>::QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaultty
             Real fCos = 1.0;
             Real fP   = 0.0;
 
-            for (int i3 = i2-1; i3 >= i0; --i3)
+            for (int i3 = i2-1; i3 >= (int)i0; --i3)
             {
                 Real fF = fSin*subDiag[i3];
                 Real fB = fCos*subDiag[i3];
@@ -1574,7 +1574,7 @@ void Decompose<Real>::QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaultty
                 fP = fSin*fR;
                 diag[i3+1] = fG+fP;
                 fG = fCos*fR-fB;
-                for (int i4 = 0; i4 < iSize; ++i4)
+                for (sofa::Index i4 = 0; i4 < iSize; ++i4)
                 {
                     fF = V[i4][i3+1];
                     V[i4][i3+1] = fSin*V[i4][i3]+fCos*fF;

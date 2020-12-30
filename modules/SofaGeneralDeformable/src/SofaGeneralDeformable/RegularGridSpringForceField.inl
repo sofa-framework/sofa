@@ -509,7 +509,7 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
         }
     }
 
-    vparams->drawTool()->drawLines(points, 1, Vec<4,float>(0.5,0.5,0.5,1));
+    vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor(0.5,0.5,0.5,1));
     vparams->drawTool()->restoreLastState();
 }
 

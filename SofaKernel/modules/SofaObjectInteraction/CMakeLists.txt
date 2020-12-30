@@ -15,7 +15,7 @@ set(SOURCE_FILES
     ${SOFAOBJECTINTERACTION_SRC}/PenalityContactForceField.cpp
 )
 
-
+find_package(SofaDeformable REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaDeformable)
 

@@ -25,6 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
+#include <sofa/helper/types/RGBAColor.h>
 #include <iostream>
 
 namespace sofa::component::interactionforcefield
@@ -256,7 +257,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
                 G = 1. - B;
             }
 
-            vparams->drawTool()->drawLines(points, float(drawSpringSize), { float(R), float(G), float(B), 1.f });
+            vparams->drawTool()->drawLines(points, float(drawSpringSize), sofa::helper::types::RGBAColor{ float(R), float(G), float(B), 1.f });
         }
     }
 }

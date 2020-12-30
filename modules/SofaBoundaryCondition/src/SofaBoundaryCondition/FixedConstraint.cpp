@@ -91,9 +91,9 @@ void FixedConstraint<Rigid3Types>::draw(const core::visual::VisualParams* vparam
     }
 
     if( d_drawSize.getValue() == 0) // old classical drawing by points
-        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
     else
-        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::helper::types::RGBAColor(1.0f,0.35f,0.35f,1.0f));
 }
 
 template <>
@@ -110,10 +110,10 @@ void FixedConstraint<Rigid2Types>::draw(const core::visual::VisualParams* vparam
 
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     vparams->drawTool()->setLightingEnabled(false);
-    sofa::defaulttype::Vec4f color (1,0.5,0.5,1);
+    sofa::helper::types::RGBAColor color (1,0.5,0.5,1);
     std::vector<sofa::defaulttype::Vector3> vertices;
 
-    if( d_fixAll.getValue()==true )
+    if(d_fixAll.getValue())
     {
         for (unsigned i=0; i<x.size(); i++ )
             vertices.push_back(sofa::defaulttype::Vector3(x[i].getCenter()[0],

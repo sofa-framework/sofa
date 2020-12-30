@@ -903,13 +903,13 @@ void MeshTetraStuffing::draw(const core::visual::VisualParams* vparams)
         return;
 
     const SeqPoints& outP = outputPoints.getValue();
-    vparams->drawTool()->drawPoints(intersections, 2, Vec<4,float>(1,0,0,1));
-    vparams->drawTool()->drawPoints(outP, 1, Vec<4,float>(0,1,0,1));
+    vparams->drawTool()->drawPoints(intersections, 2, sofa::helper::types::RGBAColor::red());
+    vparams->drawTool()->drawPoints(outP, 1, sofa::helper::types::RGBAColor::green());
     if (!diags.empty())
-        vparams->drawTool()->drawLines(diags, 1, Vec<4,float>(0,1,1,1));
+        vparams->drawTool()->drawLines(diags, 1, sofa::helper::types::RGBAColor::cyan());
 
     if (!snaps.empty())
-        vparams->drawTool()->drawPoints(snaps, 4, Vec<4,float>(0,0,1,1));
+        vparams->drawTool()->drawPoints(snaps, 4, sofa::helper::types::RGBAColor::blue());
 }
 
 } //  sofa::component::misc

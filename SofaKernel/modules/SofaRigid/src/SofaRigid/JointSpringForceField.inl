@@ -369,9 +369,9 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     const helper::vector<Spring>& springs = d_springs.getValue();
 
     helper::vector<Vector3> vertices;
-    helper::vector<Vec4f> colors;
+    std::vector<sofa::helper::types::RGBAColor> colors;
 
-    Vec4f yellow(1.0,1.0,0.0,1.0);
+    auto yellow = sofa::helper::types::RGBAColor::yellow();
 
     for (sofa::Index i=0; i<springs.size(); i++)
     {

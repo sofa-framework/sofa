@@ -75,6 +75,15 @@ class DataTypeInfoDynamicWrapper : public AbstractTypeInfo, public Info
 public:
     typedef typename Info::DataType DataType;
 
+    const AbstractTypeInfo* BaseType() const override
+    {
+        return DataTypeInfoDynamicWrapper<DataTypeInfo<typename Info::BaseType>>::get();
+    }
+    const AbstractTypeInfo* ValueType() const override
+    {
+        return DataTypeInfoDynamicWrapper<DataTypeInfo<typename Info::ValueType>>::get();
+    }
+
     static AbstractTypeInfo* get() { static DataTypeInfoDynamicWrapper<Info> t; return &t; }
 
     const TypeInfoId& getBaseTypeId() const override { return TypeInfoId::GetTypeId<typename Info::BaseType>(); }

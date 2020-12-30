@@ -299,7 +299,7 @@ bool MeshVTKLoader::setInputsMesh()
             {
                 if (nv == 4)
                 {
-                    addQuad(&my_quads.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 2]), unsigned(inFP[i + 3]));
+                    addQuad(my_quads.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 2]), unsigned(inFP[i + 3]));
                 }
                 else if (nv >= 3)
                 {
@@ -309,7 +309,7 @@ bool MeshVTKLoader::setInputsMesh()
                     for (int j = 2; j < nv; j++)
                     {
                         f[2] = inFP[i + j];
-                        addTriangle(&my_triangles.wref(), unsigned(f[0]), unsigned(f[1]), unsigned(f[2]));
+                        addTriangle(my_triangles.wref(), unsigned(f[0]), unsigned(f[1]), unsigned(f[2]));
                         f[1] = f[2];
                     }
                 }
@@ -358,7 +358,7 @@ bool MeshVTKLoader::setInputsMesh()
             case 2: // POLY_VERTEX
                 break;
             case 3: // LINE
-                addEdge(&my_edges.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]));
+                addEdge(my_edges.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]));
                 break;
             case 4: // POLY_LINE
             {
@@ -368,48 +368,48 @@ bool MeshVTKLoader::setInputsMesh()
                 {
                     points.push_back(unsigned(inFP[i + v]));
                 }
-                addPolyline(&my_polylines.wref(), points);
+                addPolyline(my_polylines.wref(), points);
             }
                 break;
             case 5: // TRIANGLE
-                addTriangle(&my_triangles.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 2]));
+                addTriangle(my_triangles.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 2]));
                 break;
             case 6: // TRIANGLE_STRIP
                 for (int j = 0; j < nv - 2; j++)
                     if (j & 1)
                     {
-                        addTriangle(&my_triangles.wref(), unsigned(inFP[i + j + 0]), unsigned(inFP[i + j + 1]), unsigned(inFP[i + j + 2]));
+                        addTriangle(my_triangles.wref(), unsigned(inFP[i + j + 0]), unsigned(inFP[i + j + 1]), unsigned(inFP[i + j + 2]));
                     }
                     else
                     {
-                        addTriangle(&my_triangles.wref(), unsigned(inFP[i + j + 0]), unsigned(inFP[i + j + 2]), unsigned(inFP[i + j + 1]));
+                        addTriangle(my_triangles.wref(), unsigned(inFP[i + j + 0]), unsigned(inFP[i + j + 2]), unsigned(inFP[i + j + 1]));
                     }
                 break;
             case 7: // POLYGON
                 for (int j = 2; j < nv; j++)
                 {
-                    addTriangle(&my_triangles.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + j - 1]), unsigned(inFP[i + j]));
+                    addTriangle(my_triangles.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + j - 1]), unsigned(inFP[i + j]));
                 }
                 break;
             case 8: // PIXEL
-                addQuad(&my_quads.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 3]), unsigned(inFP[i + 2]));
+                addQuad(my_quads.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 3]), unsigned(inFP[i + 2]));
                 break;
             case 9: // QUAD
-                addQuad(&my_quads.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 2]), unsigned(inFP[i + 3]));
+                addQuad(my_quads.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 2]), unsigned(inFP[i + 3]));
                 break;
             case 10: // TETRA
-                addTetrahedron(&my_tetrahedra.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 2]), unsigned(inFP[i + 3]));
+                addTetrahedron(my_tetrahedra.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 2]), unsigned(inFP[i + 3]));
                 break;
             case 11: // VOXEL
-                addHexahedron(&my_hexahedra.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 3]), unsigned(inFP[i + 2]),
+                addHexahedron(my_hexahedra.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 3]), unsigned(inFP[i + 2]),
                         unsigned(inFP[i + 4]), unsigned(inFP[i + 5]), unsigned(inFP[i + 7]), unsigned(inFP[i + 6]));
                 break;
             case 12: // HEXAHEDRON
-                addHexahedron(&my_hexahedra.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 2]), unsigned(inFP[i + 3]),
+                addHexahedron(my_hexahedra.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 2]), unsigned(inFP[i + 3]),
                         unsigned(inFP[i + 4]), unsigned(inFP[i + 5]), unsigned(inFP[i + 6]), unsigned(inFP[i + 7]));
                 break;
             case 21: // QUADRATIC Edge
-                addEdge(&my_edges.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]));
+                addEdge(my_edges.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]));
             {
                 HighOrderEdgePosition hoep;
                 hoep[0] = unsigned(inFP[i + 2]);
@@ -420,7 +420,7 @@ bool MeshVTKLoader::setInputsMesh()
             }
                 break;
             case 22: // QUADRATIC Triangle
-                addTriangle(&my_triangles.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 2]));
+                addTriangle(my_triangles.wref(), unsigned(inFP[i + 0]), unsigned(inFP[i + 1]), unsigned(inFP[i + 2]));
             {
                 HighOrderEdgePosition hoep;
                 for(j = 0; j < 3; ++j)
@@ -433,7 +433,7 @@ bool MeshVTKLoader::setInputsMesh()
                     if (edgeSet.find(e) == edgeSet.end())
                     {
                         edgeSet.insert(e);
-                        addEdge(&my_edges.wref(), v0, v1);
+                        addEdge(my_edges.wref(), v0, v1);
                         hoep[0] = inFP[i + j + 3];
                         hoep[1] = sofa::Size(my_edges.size()) - 1;
                         hoep[2] = 1;
@@ -444,7 +444,7 @@ bool MeshVTKLoader::setInputsMesh()
             }
                 break;
             case 24: // QUADRATIC Tetrahedron
-                addTetrahedron(&my_tetrahedra.wref(), inFP[i + 0], inFP[i + 1], inFP[i + 2], inFP[i + 3]);
+                addTetrahedron(my_tetrahedra.wref(), inFP[i + 0], inFP[i + 1], inFP[i + 2], inFP[i + 3]);
             {
                 HighOrderEdgePosition hoep;
                 for(j = 0; j < 6; ++j)
@@ -457,7 +457,7 @@ bool MeshVTKLoader::setInputsMesh()
                     if (edgeSet.find(e) == edgeSet.end())
                     {
                         edgeSet.insert(e);
-                        addEdge(&my_edges.wref(), v0, v1);
+                        addEdge(my_edges.wref(), v0, v1);
                         hoep[0] = inFP[i + j + 4];
                         hoep[1] = sofa::Size(my_edges.size()) - 1;
                         hoep[2] = 1;
