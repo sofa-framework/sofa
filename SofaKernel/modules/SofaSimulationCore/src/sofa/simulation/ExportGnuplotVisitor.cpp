@@ -23,7 +23,8 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <iostream>
-
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
 namespace sofa
 {
 

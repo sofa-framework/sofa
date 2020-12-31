@@ -27,7 +27,18 @@
 
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
-
+#include <sofa/core/behavior/BaseInteractionConstraint.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/ProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/topology/Topology.h>
 namespace sofa::simulation::graph
 {
 

@@ -26,6 +26,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <SofaConstraint/ConstraintStoreLambdaVisitor.h>
+#include <sofa/core/behavior/MultiVec.h>
 #include <algorithm>
 
 namespace sofa::component::constraintset

@@ -26,7 +26,7 @@
 #include <sofa/helper/system/gl.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
-
+#include <sofa/core/behavior/BaseForceField.h>
 namespace sofa::component::mapping
 {
 

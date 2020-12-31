@@ -26,6 +26,7 @@
 
 #include "Sofa_test.h"
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/Mapping.h>
 #include <sofa/simulation/VectorOperations.h>
 
 #include <SceneCreator/SceneCreator.h>

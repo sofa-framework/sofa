@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
-
+#include <sofa/core/State.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::mapping::_barycentricmappertopologycontainer_

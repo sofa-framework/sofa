@@ -24,6 +24,8 @@
 #include <sofa/simulation/Colors.h>
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
+#include <sofa/core/behavior/BaseInteractionConstraint.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <SofaBaseUtils/InfoComponent.h>
 using sofa::component::InfoComponent ;

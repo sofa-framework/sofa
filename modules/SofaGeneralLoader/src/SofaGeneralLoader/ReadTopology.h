@@ -24,6 +24,8 @@
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Visitor.h>
 
 #if SOFAGENERALLOADER_HAVE_ZLIB

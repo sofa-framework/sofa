@@ -26,7 +26,7 @@
 #include <SofaUserInteraction/RayModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/simulation/Node.h>
-
+#include <sofa/core/BehaviorModel.h>
 
 namespace sofa::component::collision
 {

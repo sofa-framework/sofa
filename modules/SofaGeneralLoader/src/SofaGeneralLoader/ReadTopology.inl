@@ -25,7 +25,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/helper/system/FileSystem.h>
-
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <cstring>
 #include <sstream>
 

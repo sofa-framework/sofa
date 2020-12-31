@@ -29,6 +29,27 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/simulation/MutationListener.h>
+#include <sofa/core/behavior/BaseInteractionConstraint.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseTopology.h>
+#include <sofa/core/visual/Shader.h>
+#include <sofa/core/visual/VisualLoop.h>
+#include <sofa/core/visual/VisualManager.h>
+#include <sofa/core/behavior/ProjectiveConstraintSet.h>
+#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>

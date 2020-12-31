@@ -24,63 +24,80 @@
 
 #include <sofa/simulation/config.h>
 
-#include <sofa/core/ExecParams.h>
-#include <sofa/core/objectmodel/Context.h>
-// moved from GNode (27/04/08)
-#include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/core/objectmodel/ContextObject.h>
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/visual/VisualManager.h>
-#include <sofa/core/visual/Shader.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.h>
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/Mass.h>
-#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
-#include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/BaseTopologyObject.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/visual/VisualLoop.h>
-#include <sofa/core/collision/Pipeline.h>
-#include <sofa/core/loader/BaseLoader.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/MutationListener.h>
-#include <sofa/simulation/VisitorScheduler.h>
-
-#include <type_traits>
-
-namespace sofa
-{
-namespace simulation
-{
-class Visitor;
-}
-}
-
-#include <sofa/helper/system/thread/CTime.h>
 #include <string>
 #include <stack>
+#include <type_traits>
+
+#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/helper/system/thread/CTime.h>
+
+namespace sofa::core
+{
+    class BaseMapping;
+    class Event;
+    class CollisionModel;
+    class ExecParams;
+}
+
+namespace sofa::core::objectmodel
+{
+    class ContextObject;
+    class ConfigurationSetting;
+}
+
+namespace sofa::core::visual
+{
+    class Shader;
+    class VisualManager;
+    class VisualModel;
+    class VisualLoop;
+}
+
+namespace sofa::core::loader
+{
+    class BaseLoader;
+}
+
+namespace sofa::core::behavior
+{
+    class BehaviorModel;
+    class BaseMechanicalState;
+    class BaseForceField;
+    class BaseMass;
+    class BaseInteractionForceField;
+    class BaseProjectiveConstraintSet;
+    class BaseConstraintSet;
+    class LinearSolver;
+    class OdeSolver;
+    class ConstraintSolver;
+    class BaseAnimationLoop;
+}
+
+
+namespace sofa::core::topology
+{
+    class Topology;
+    class BaseMeshTopology;
+    class BaseTopologyObject;
+}
+
+namespace sofa::core::collision
+{
+    class Pipeline;
+}
+
+namespace sofa::simulation
+{
+    class MutationListener;
+    class Visitor;
+    class VisitorScheduler;
+}
+
 
 namespace sofa
 {
-
-namespace core
-{
-namespace visual
-{
-class VisualParams;
-} // namespace visual
-} // namespace core
 
 namespace simulation
 {

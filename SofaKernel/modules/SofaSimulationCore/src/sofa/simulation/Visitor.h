@@ -31,7 +31,7 @@
 
 #include <sofa/helper/set.h>
 #include <iostream>
-
+#include <sofa/core/BehaviorModel.h>
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include <sofa/helper/system/thread/CTime.h>
 #endif
