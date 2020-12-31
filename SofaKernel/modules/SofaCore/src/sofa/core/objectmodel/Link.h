@@ -491,7 +491,7 @@ public:
             {
                 return false;
             }
-            else if (m_owner && !PathResolver::FindLinkDest(m_owner, ptr, str, this))
+            else if (m_owner && !PathResolver::FindLinkDest(reinterpret_cast<Base*>(m_owner), ptr, str, this))
             {
                 // This is not an error, as the destination can be added later in the graph
                 // instead, we will check for failed links after init is completed
