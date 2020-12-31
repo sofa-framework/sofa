@@ -520,7 +520,7 @@ public:
             while (istr >> path)
             {
                 DestType *ptr = nullptr;
-                if (m_owner && !PathResolver::FindLinkDest(m_owner, ptr, path, this))
+                if (m_owner && !PathResolver::FindLinkDest(reinterpret_cast<Base*>(m_owner), ptr, path, this))
                 {
                     // This is not an error, as the destination can be added later in the graph
                     // instead, we will check for failed links after init is completed
