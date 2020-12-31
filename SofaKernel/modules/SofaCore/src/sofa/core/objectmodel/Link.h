@@ -427,12 +427,12 @@ public:
 
     const BaseClass* getDestClass() const override
     {
-        return DestType::GetClass();
+        return nullptr; //DestType::GetClass();
     }
 
     const BaseClass* getOwnerClass() const override
     {
-        return OwnerType::GetClass();
+        return nullptr; //
     }
 
     size_t getSize() const override

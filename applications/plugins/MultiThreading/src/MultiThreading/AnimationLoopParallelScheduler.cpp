@@ -31,6 +31,7 @@
 #include <sofa/simulation/CleanupVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
 
 #include <sofa/helper/system/SetDirectory.h>
