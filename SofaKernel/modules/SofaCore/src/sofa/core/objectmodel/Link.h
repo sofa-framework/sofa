@@ -26,6 +26,7 @@
 #include <sofa/helper/stable_vector.h>
 
 #include <sofa/core/PathResolver.h>
+#include <sofa/core/sptr.h>
 #include <sstream>
 #include <utility>
 #include <vector>
@@ -56,7 +57,7 @@ template<class TDestType>
 class LinkTraitsDestPtr<TDestType, true>
 {
 public:
-    typedef typename TDestType::SPtr T;
+    typedef typename sofa::core::sptr<TDestType> T;
     static TDestType* get(const T& p) { return p.get(); }
 };
 
@@ -456,7 +457,7 @@ public:
 
     Base* getLinkedBase(std::size_t index=0) const override
     {
-        return getIndex(index);
+        return reinterpret_cast<Base*>(getIndex(index));
     }
 
     [[deprecated("This function has been deprecated in PR#1503 and will be removed soon. Link<> cannot hold BaseData anymore. To make link between Data use DataLink instead.")]]
