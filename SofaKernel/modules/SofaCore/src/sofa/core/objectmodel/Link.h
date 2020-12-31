@@ -448,7 +448,7 @@ public:
         const ValueType& value = m_value[index];
         if (!TraitsValueType::path(value, path))
         {
-            DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
+            Base* ptr = reinterpret_cast<Base*>(TraitsDestPtr::get(TraitsValueType::get(value)));
             if (ptr)
                 path = BaseLink::CreateString(ptr, nullptr, m_owner);
         }
