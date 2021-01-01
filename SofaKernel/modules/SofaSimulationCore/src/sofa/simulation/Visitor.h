@@ -105,8 +105,8 @@ public:
 #endif
 
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
-    template < class Visit, class VContext, class Container, class Object >
-    void for_each(Visit* visitor, VContext* ctx, const Container& list, void (Visit::*fn)(VContext*, Object*))
+    template < class Visit, class VContext, class Container >
+    void for_each(Visit* visitor, VContext* ctx, const Container& list, void (Visit::*fn)(VContext*, typename Container::pointed_type*))
     {
         for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
         {
@@ -123,8 +123,8 @@ public:
     }
 
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
-    template < class Visit, class VContext, class Container, class Object >
-    Visitor::Result for_each_r(Visit* visitor, VContext* ctx, const Container& list, Visitor::Result (Visit::*fn)(VContext*, Object*))
+    template < class Visit, class VContext, class Container>
+    Visitor::Result for_each_r(Visit* visitor, VContext* ctx, const Container& list, Visitor::Result (Visit::*fn)(VContext*, typename Container::pointed_type*))
     {
         Visitor::Result res = Visitor::RESULT_CONTINUE;
         for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
