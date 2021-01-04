@@ -64,6 +64,7 @@ DataDisplay::DataDisplay()
     , d_currentMin(initData(&d_currentMin, Real(0.0), "currentMin", "Current min range"))
     , d_currentMax(initData(&d_currentMax, Real(0.0), "currentMax", "Current max range"))
     , d_shininess(initData(&d_shininess, -1.f, "shininess", "Shininess for rendering point-based data [0,128].  <0 means no specularity"))
+    , d_transparency(initData(&d_transparency, Real(1.0), "transparency", "transparency draw objects with transparency "))
     , state(nullptr)
     , m_topology(nullptr)
     , l_topology(initLink("topology", "link to the topology container"))
@@ -115,6 +116,12 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     const VecCellData &quadData = f_quadData.getValue();
     const VecPointData &pointTriData = f_pointTriangleData.getValue();
     const VecPointData &pointQuadData = f_pointQuadData.getValue();
+    typedef sofa::helper::types::RGBAColor RGBAColor;
+    const float& transparency = d_transparency.getValue();
+
+    glEnable ( GL_LIGHTING );
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     bool bDrawPointData = false;
     bool bDrawCellData = false;
@@ -260,9 +267,9 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             size_t nbTriangles = m_topology->getNbTriangles();
             for (unsigned int i=0; i<nbTriangles; i++)
             {
-                Vec4f color = isnan(triData[i])
+                RGBAColor color = isnan(triData[i])
                     ? f_colorNaN.getValue()
-                    : sofa::helper::types::RGBAColor::fromVec4(eval(triData[i]));
+                    : RGBAColor::fromVec4(eval(triData[i]));
                 const Triangle& t = m_topology->getTriangle(i);
                 vparams->drawTool()->drawTriangle(
                     x[ t[0] ], x[ t[1] ], x[ t[2] ],
@@ -274,19 +281,20 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         {
             glEnable( GL_LIGHTING );
             // Triangles
+
             size_t nbTriangles = m_topology->getNbTriangles();
             glBegin(GL_TRIANGLES);
             for (unsigned int i=0; i<nbTriangles; i++)
             {
                 Vec4f color0 = isnan(pointTriData[i*3])
                     ? f_colorNaN.getValue()
-                    : sofa::helper::types::RGBAColor::fromVec4(eval(pointTriData[i*3]));
+                    : RGBAColor::fromVec4(eval(pointTriData[i*3]));
                 Vec4f color1 = isnan(pointTriData[i*3+1])
                         ? f_colorNaN.getValue()
-                        : sofa::helper::types::RGBAColor::fromVec4(eval(pointTriData[i*3+1]));
+                        : RGBAColor::fromVec4(eval(pointTriData[i*3+1]));
                 Vec4f color2 = isnan(pointTriData[i*3+2])
                     ? f_colorNaN.getValue()
-                    : sofa::helper::types::RGBAColor::fromVec4(eval(pointTriData[i*3+2]));
+                    : RGBAColor::fromVec4(eval(pointTriData[i*3+2]));
                 const Triangle& t = m_topology->getTriangle(i);
 
                 glNormal3fv(m_normals[t[0]].ptr());
@@ -311,9 +319,9 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             size_t nbQuads = m_topology->getNbQuads();
             for (unsigned int i=0; i<nbQuads; i++)
             {
-                Vec4f color = isnan(quadData[i])
+                RGBAColor color = isnan(quadData[i])
                     ? f_colorNaN.getValue()
-                    : sofa::helper::types::RGBAColor::fromVec4(eval(quadData[i]));
+                    : RGBAColor::fromVec4(eval(quadData[i]));
                 const Quad& t = m_topology->getQuad(i);
                 vparams->drawTool()->drawQuad(
                     x[ t[0] ], x[ t[1] ], x[ t[2] ], x[ t[3] ],
@@ -330,16 +338,16 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             {
                 Vec4f color0 = isnan(pointQuadData[i*4])
                     ? f_colorNaN.getValue()
-                    : sofa::helper::types::RGBAColor::fromVec4(eval(pointQuadData[i*4]));
+                    : RGBAColor::fromVec4(eval(pointQuadData[i*4]));
                 Vec4f color1 = isnan(pointQuadData[i*4+1])
                         ? f_colorNaN.getValue()
-                        : sofa::helper::types::RGBAColor::fromVec4(eval(pointQuadData[i*4+1]));
+                        : RGBAColor::fromVec4(eval(pointQuadData[i*4+1]));
                 Vec4f color2 = isnan(pointQuadData[i*4+2])
                     ? f_colorNaN.getValue()
-                    : sofa::helper::types::RGBAColor::fromVec4(eval(pointQuadData[i*4+2]));
+                    : RGBAColor::fromVec4(eval(pointQuadData[i*4+2]));
                 Vec4f color3 = isnan(pointQuadData[i*4+3])
                     ? f_colorNaN.getValue()
-                    : sofa::helper::types::RGBAColor::fromVec4(eval(pointQuadData[i*4+3]));
+                    : RGBAColor::fromVec4(eval(pointQuadData[i*4+3]));
                 const Quad& q = m_topology->getQuad(i);
 
                 glNormal3fv(m_normals[q[0]].ptr());
@@ -369,16 +377,15 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         glPointSize(10);
         for (unsigned int i=0; i<x.size(); ++i)
         {
-            Vec4f color = isnan(ptData[i])
+            RGBAColor color = isnan(ptData[i])
                 ? f_colorNaN.getValue()
-                : sofa::helper::types::RGBAColor::fromVec4(eval(ptData[i]));
+                : RGBAColor::fromVec4(eval(ptData[i]));
             vparams->drawTool()->drawPoint(x[i], color);
         }
 
     } else if (bDrawPointData) {
         helper::ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
 
-        glEnable ( GL_LIGHTING );
 
         // Triangles
         glBegin(GL_TRIANGLES);
@@ -388,10 +395,10 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             Vec4f color[3];
             for (int j=0; j<3; j++) {
                 color[j] = isnan(ptData[t[j]])
-                    ? f_colorNaN.getValue()
-                    : sofa::helper::types::RGBAColor::fromVec4(eval(ptData[t[j]]));
+                        ? f_colorNaN.getValue()
+                        : RGBAColor::fromVec4(eval(ptData[t[j]]));
+                color[j][3] = transparency;
             }
-
             glNormal3fv(m_normals[t[0]].ptr());
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[0].ptr());
             helper::gl::glVertexNv<3>(x[t[0]].ptr());

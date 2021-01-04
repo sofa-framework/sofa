@@ -63,6 +63,7 @@ public:
     Data<Real> d_currentMin; ///< Current min range
     Data<Real> d_currentMax; ///< Current max range
     Data<float> d_shininess; ///< Shininess for rendering point-based data [0,128].  <0 means no specularity
+    Data<Real> d_transparency; ///< transparency in can you want to see inside the volume . [0,1]
 
     visualmodel::OglColorMap *colorMap;
     core::State<DataTypes> *state;
@@ -83,6 +84,7 @@ public:
 protected:
     void computeNormals();
     helper::vector<defaulttype::Vec3f> m_normals;
+    helper::ColorMap m_ColorMap;
 
     DataDisplay();
 };
