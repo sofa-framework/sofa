@@ -19,18 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COMMON_INIT_H
-#define SOFA_SIMULATION_COMMON_INIT_H
-
+#pragma once
 #include <SofaSimulationCommon/config.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace common
+namespace sofa::simulation::common
 {
 
 /// @brief Initialize the SofaSimulationCommon library, as well as its
@@ -49,10 +41,4 @@ SOFA_SOFASIMULATIONCOMMON_API void cleanup();
 /// cleaned up.
 SOFA_SOFASIMULATIONCOMMON_API bool isCleanedUp();
 
-} // namespace common
-
-} // namespace simulation
-
-} // namespace sofa
-
-#endif // SOFA_SIMULATION_CORE_INIT_H
+} // namespace sofa::simulation::common

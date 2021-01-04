@@ -18,6 +18,8 @@ set(HEADER_FILES
     ${SOFASIMULATIONCOMMON_SRC}/xml/BaseMultiMappingElement.h
     ${SOFASIMULATIONCOMMON_SRC}/xml/DataElement.h
     ${SOFASIMULATIONCOMMON_SRC}/xml/ElementNameHelper.h
+    ${SOFASIMULATIONCOMMON_SRC}/xml/Element.h
+    ${SOFASIMULATIONCOMMON_SRC}/xml/Element.inl
     ${SOFASIMULATIONCOMMON_SRC}/xml/NodeElement.h
     ${SOFASIMULATIONCOMMON_SRC}/xml/ObjectElement.h
     ${SOFASIMULATIONCOMMON_SRC}/xml/XML.h

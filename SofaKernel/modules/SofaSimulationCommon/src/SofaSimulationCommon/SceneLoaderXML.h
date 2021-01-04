@@ -19,17 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_SCENELOADERXML_H
-#define SOFA_SIMULATION_SCENELOADERXML_H
-
+#pragma once
 #include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 #include <SofaSimulationCommon/xml/BaseElement.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 class SOFA_SOFASIMULATIONCOMMON_API SceneLoaderXML : public SceneLoader
@@ -63,10 +58,4 @@ public:
     static bool loadSucceed;
 };
 
-} // namespace simulation
-
-} // namespace sofa
-
-
-
-#endif // SOFA_SIMULATION_SCENELOADERXML_H
+} // namespace sofa::simulation

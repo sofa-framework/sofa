@@ -19,19 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_FINDBYTYPE_VISITOR_H
-#define SOFA_SIMULATION_TREE_FINDBYTYPE_VISITOR_H
-
+#pragma once
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Visitor.h>
 #include <iostream>
 #include <typeinfo>
 #include <sofa/helper/Factory.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -62,8 +57,4 @@ public:
 };
 
 
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::simulation

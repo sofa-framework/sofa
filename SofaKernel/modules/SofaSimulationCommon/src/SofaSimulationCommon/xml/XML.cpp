@@ -35,13 +35,7 @@
 /* For loading the scene */
 
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace xml
+namespace sofa::simulation::xml
 {
 
 using std::cout;
@@ -453,9 +447,4 @@ void recursiveMergeNode(BaseElement* destNode, BaseElement* srcNode)
 }
 
 
-} // namespace xml
-
-} // namespace simulation
-
-} // namespace sofa
-
+} // namespace sofa::simulation::xml

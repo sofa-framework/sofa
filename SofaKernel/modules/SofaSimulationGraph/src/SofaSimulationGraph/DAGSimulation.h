@@ -19,22 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_GRAPH_DAGSIMULATION_H
-#define SOFA_SIMULATION_GRAPH_DAGSIMULATION_H
-
+#pragma once
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/config.h>
 #include <memory>
 
 
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace graph
+namespace sofa::simulation::graph
 {
 
 /** Main controller of the scene.
@@ -63,10 +55,4 @@ public:
 Automatically creates one if no Simulation has been set.
  */
 SOFA_SOFASIMULATIONGRAPH_API Simulation* getSimulation();
-} // namespace graph
-
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::simulation::graph

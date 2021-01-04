@@ -23,13 +23,7 @@
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace graph
+namespace sofa::simulation::graph
 {
 
 /// get all down objects respecting specified class_info and tags
@@ -871,9 +865,4 @@ void DAGNode::getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_i
 //helper::Creator<xml::NodeElement::Factory, DAGNode> DAGNodeDefaultClass("default");
 static helper::Creator<xml::NodeElement::Factory, DAGNode> DAGNodeClass("DAGNode");
 
-} // namespace graph
-
-} // namespace simulation
-
-} // namespace sofa
-
+} // namespace sofa::simulation::graph

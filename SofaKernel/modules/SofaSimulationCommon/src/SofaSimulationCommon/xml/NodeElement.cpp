@@ -24,14 +24,7 @@
 #include <SofaSimulationCommon/xml/Element.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-
-namespace xml
+namespace sofa::simulation::xml
 {
 
 using namespace sofa::defaulttype;
@@ -95,9 +88,4 @@ const char* NodeElement::getClass() const
     return NodeNodeClass.c_str();
 }
 
-} // namespace xml
-
-} // namespace simulation
-
-} // namespace sofa
-
+} // namespace sofa::simulation::xml

@@ -19,19 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_TESTING_BASESIMULATIONTEST_H
-#define SOFA_HELPER_TESTING_BASESIMULATIONTEST_H
+#pragma once
 
 #include <SofaSimulationGraph/config.h>
 #include <sofa/helper/testing/BaseTest.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa
-{
-namespace helper
-{
-namespace testing
+namespace sofa::helper::testing
 {
 using sofa::simulation::Node ;
 using sofa::simulation::Simulation ;
@@ -61,8 +56,4 @@ public:
     } ;
 };
 
-} ///testing
-} ///helper
-} ///sofa
-
-#endif /// SOFA_HELPER_TESTING_BASESIMULATIONTEST_H
+} // namespace sofa::helper::testing

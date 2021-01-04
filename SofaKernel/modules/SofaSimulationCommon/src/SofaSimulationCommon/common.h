@@ -19,11 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COMMON_COMMON_H
-#define SOFA_SIMULATION_COMMON_COMMON_H
-
-// Backward compatibility header
-
+#pragma once
 #include <SofaSimulationCommon/config.h>
 
 SOFA_DEPRECATED_HEADER(v21.06, "SofaSimulationCommon/config.h")

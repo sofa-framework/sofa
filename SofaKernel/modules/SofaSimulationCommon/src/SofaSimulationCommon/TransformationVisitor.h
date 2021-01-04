@@ -19,20 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_INSTRUMENTACTION_H
-#define SOFA_SIMULATION_INSTRUMENTACTION_H
-
-
+#pragma once
 #include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/visual/VisualModel.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 
@@ -65,8 +59,4 @@ protected:
     Vector3 scale;
 };
 
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::simulation

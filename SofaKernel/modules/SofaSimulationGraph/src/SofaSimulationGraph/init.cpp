@@ -68,4 +68,4 @@ static const struct CleanupCheck
     }
 } check;
 
-} // namespace sofa
+} // namespace sofa::simulation::graph

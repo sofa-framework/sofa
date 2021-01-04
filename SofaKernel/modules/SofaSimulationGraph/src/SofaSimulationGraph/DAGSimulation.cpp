@@ -29,13 +29,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/init.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace graph
+namespace sofa::simulation::graph
 {
 
 using namespace sofa::defaulttype;
@@ -86,9 +80,4 @@ Node::SPtr DAGSimulation::createNewNode(const std::string& name)
 //;
 
 
-} // namespace graph
-
-} // namespace simulation
-
-} // namespace sofa
-
+} // namespace sofa::simulation::graph

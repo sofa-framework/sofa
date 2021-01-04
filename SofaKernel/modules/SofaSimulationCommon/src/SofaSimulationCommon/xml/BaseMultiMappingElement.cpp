@@ -27,11 +27,7 @@
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <SofaSimulationCommon/xml/Element.h>
 
-namespace sofa
-{
-namespace simulation
-{
-namespace xml
+namespace sofa::simulation::xml
 {
 BaseMultiMappingElement::BaseMultiMappingElement(const std::string& name, const std::string& type, BaseElement* parent/* =nullptr */)
     :ObjectElement(name,type,parent)
@@ -100,6 +96,4 @@ bool BaseMultiMappingElement::initNode()
     return result;
 }
 
-}
-}
-}
+} // namespace sofa::simulation::xml

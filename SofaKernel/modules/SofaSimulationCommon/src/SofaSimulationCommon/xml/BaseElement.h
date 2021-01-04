@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COMMON_XML_BASEELEMENT_H
-#define SOFA_SIMULATION_COMMON_XML_BASEELEMENT_H
-
+#pragma once
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
@@ -32,13 +30,7 @@
 #include <list>
 #include <map>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace xml
+namespace sofa::simulation::xml
 {
 
 /// Flags indicating when an element is from an included file that should be treated specifically
@@ -247,18 +239,11 @@ public:
 
 };
 
-} // namespace xml
+} // namespace sofa::simulation::xml
 
-} // namespace simulation
-
-namespace helper
+namespace sofa::helper
 {
 #if  !defined(SOFA_SIMULATION_COMMON_XML_BASEELEMENT_CPP)
-extern template class SOFA_SOFASIMULATIONCOMMON_API Factory< std::string, sofa::simulation::xml::BaseElement, std::pair<std::string, std::string> >;
+    extern template class SOFA_SOFASIMULATIONCOMMON_API Factory< std::string, sofa::simulation::xml::BaseElement, std::pair<std::string, std::string> >;
 #endif
-} // namespace helper
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::helper

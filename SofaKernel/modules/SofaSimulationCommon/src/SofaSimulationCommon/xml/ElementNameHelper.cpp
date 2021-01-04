@@ -22,11 +22,7 @@
 #include <SofaSimulationCommon/xml/ElementNameHelper.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-namespace simulation
-{
-namespace xml
+namespace sofa::simulation::xml
 {
 
 
@@ -71,6 +67,4 @@ void ElementNameHelper::registerName(const std::string& name)
     }
 }
 
-}
-}
-}
+} // namespace sofa::simulation::xml

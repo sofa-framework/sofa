@@ -19,20 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COMMON_XML_MUTLIMAPPINGELEMENT_H
-#define SOFA_SIMULATION_COMMON_XML_MUTLIMAPPINGELEMENT_H
+#pragma once
 #include <SofaSimulationCommon/xml/ObjectElement.h>
 
-namespace sofa
+namespace sofa::core
 {
-namespace core
+    class BaseMapping;
+
+} // namespace sofa::core
+
+namespace sofa::simulation
 {
-class BaseMapping;
-}
-namespace simulation
-{
-class Node;
-namespace xml
+    class Node;
+
+} // namespace sofa::simulation
+
+namespace sofa::simulation::xml
 {
 
 class SOFA_SOFASIMULATIONCOMMON_API BaseMultiMappingElement : public ObjectElement
@@ -49,9 +51,5 @@ protected:
         helper::vector<simulation::Node*>& outputs
     ) = 0;
 };
-}
-}
-}
 
-#endif // SOFA_SIMULATION_COMMON_XML_MUTLIMAPPINGELEMENT_H
-
+} // namespace sofa::simulation::xml

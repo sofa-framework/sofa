@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_GRAPH_DAGNODE_H
-#define SOFA_SIMULATION_GRAPH_DAGNODE_H
-
+#pragma once
 #include <SofaSimulationGraph/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/simulation/Visitor.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-namespace graph
+namespace sofa::simulation::graph
 {
 
 /** Define the structure of the scene as a Directed Acyclic Graph. Contains component objects (as pointer lists) and parents/childs (as DAGNode objects).
@@ -226,11 +219,4 @@ protected:
     /// @}
 };
 
-} // namespace graph
-
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::simulation::graph

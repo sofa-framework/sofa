@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#include <SofaSimulationCommon/init.h>
 
 #include <sofa/core/init.h>
 #include <sofa/helper/init.h>
@@ -28,13 +28,7 @@
 #include <sofa/simulation/Node.inl>
 #include <SofaSimulationCommon/xml/NodeElement.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace common
+namespace sofa::simulation::common
 {
 
 static bool s_initialized = false;
@@ -82,8 +76,4 @@ static const struct CleanupCheck
     }
 } check;
 
-} // namespace common
-
-} // namespace simulation
-
-} // namespace sofa
+} // namespace sofa::simulation::common

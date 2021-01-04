@@ -21,10 +21,7 @@
 ******************************************************************************/
 #include <SofaSimulationCommon/TransformationVisitor.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 TransformationVisitor::TransformationVisitor(const sofa::core::ExecParams* params)
@@ -60,6 +57,4 @@ Visitor::Result TransformationVisitor::processNodeTopDown(simulation::Node* node
     return RESULT_CONTINUE;
 }
 
-} // namespace simulation
-
-} // namespace sofa
+} // namespace sofa::simulation

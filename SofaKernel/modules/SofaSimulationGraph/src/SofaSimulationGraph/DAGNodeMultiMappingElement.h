@@ -19,18 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_GRAPH_DAGNODEMULTIMAPPINGELEMENT_H
-#define SOFA_SIMULATION_GRAPH_DAGNODEMULTIMAPPINGELEMENT_H
-
+#pragma once
 #include <SofaSimulationCommon/xml/BaseMultiMappingElement.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace graph
+namespace sofa::simulation::graph
 {
 
 class DAGNodeMultiMappingElement : public sofa::simulation::xml::BaseMultiMappingElement
@@ -52,11 +44,4 @@ protected:
 
 
 
-}
-
-}
-
-}
-
-
-#endif // SOFA_SIMULATION_GRAPH_DAGNODEMULTIMAPPINGELEMENT_H
+} // namespace sofa::simulation::graph

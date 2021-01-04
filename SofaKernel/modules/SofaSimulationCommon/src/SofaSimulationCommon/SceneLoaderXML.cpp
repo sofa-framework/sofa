@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneLoaderXML.h"
+#include <SofaSimulationCommon/SceneLoaderXML.h>
 
 #include <sofa/helper/system/Locale.h>
 #include <sofa/helper/cast.h>
@@ -28,10 +28,7 @@
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 // register the loader in the factory
@@ -153,7 +150,4 @@ Node::SPtr SceneLoaderXML::loadFromMemory ( const char *filename, const char *da
 }
 
 
-} // namespace simulation
-
-} // namespace sofa
-
+} // namespace sofa::simulation

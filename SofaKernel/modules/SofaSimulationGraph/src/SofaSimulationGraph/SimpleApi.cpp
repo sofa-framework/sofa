@@ -25,7 +25,7 @@ using sofa::core::ObjectFactory ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
-#include "SimpleApi.h"
+#include <SofaSimulationGraph/SimpleApi.h>
 using sofa::core::objectmodel::BaseObjectDescription ;
 
 #include <sofa/simulation/XMLPrintVisitor.h>
@@ -34,9 +34,7 @@ using sofa::simulation::XMLPrintVisitor ;
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
-namespace sofa
-{
-namespace simpleapi
+namespace sofa::simpleapi
 {
 
 bool importPlugin(const std::string& name)
@@ -124,5 +122,4 @@ Node::SPtr createChild(Node::SPtr node, BaseObjectDescription& desc)
     return tmp;
 }
 
-} /// simpleapi
-} /// sofa
+} // namespace sofa::simpleapi

@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COMMON_XML_ELEMENT_INL
-#define SOFA_SIMULATION_COMMON_XML_ELEMENT_INL
+#pragma once
 
 #include <sofa/helper/Factory.inl>
 
-namespace sofa
+namespace sofa::simulation::xml
 {
-
-namespace simulation
-{
-
-namespace xml
-{
-
 
 template<class Object>
 Element<Object>::Element(const std::string& name, const std::string& type, BaseElement* newParent)
@@ -68,10 +60,4 @@ core::objectmodel::Base* Element<Object>::getObject()
 //template<class Object> class Factory< std::string, Object, Node<Object>* >;
 
 
-} // namespace xml
-
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::simlation::xml

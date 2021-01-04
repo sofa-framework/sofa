@@ -19,18 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_GRAPH_INIT_H
-#define SOFA_SIMULATION_GRAPH_INIT_H
-
+#pragma once
 #include <SofaSimulationGraph/config.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace graph
+namespace sofa::simulation::graph
 {
 
 /// @brief Initialize the SofaSimulationGraph library, as well as its
@@ -50,10 +42,4 @@ SOFA_SOFASIMULATIONGRAPH_API void cleanup();
 /// cleaned up.
 SOFA_SOFASIMULATIONGRAPH_API bool isCleanedUp();
 
-} // namespace graph
-
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::simulation::graph

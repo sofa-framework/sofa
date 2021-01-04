@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COMMON_XML_XML_H
-#define SOFA_SIMULATION_COMMON_XML_XML_H
-
+#pragma once
 #include <SofaSimulationCommon/config.h>
 #include <SofaSimulationCommon/xml/Element.h>
 
 class TiXmlDocument;
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace xml
+namespace sofa::simulation::xml
 {
 
 SOFA_SOFASIMULATIONCOMMON_API BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, bool fromMem=false);
@@ -47,10 +39,4 @@ SOFA_SOFASIMULATIONCOMMON_API bool save(const char *filename, BaseElement* root)
 
 extern int SOFA_SOFASIMULATIONCOMMON_API numDefault;
 
-} // namespace xml
-
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::simulation::xml

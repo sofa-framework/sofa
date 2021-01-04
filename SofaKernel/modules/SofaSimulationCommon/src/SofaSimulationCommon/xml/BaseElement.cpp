@@ -20,25 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_SIMULATION_COMMON_XML_BASEELEMENT_CPP
-#include "BaseElement.h"
+#include <SofaSimulationCommon/xml/BaseElement.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/system/SetDirectory.h>
 #include <cstring>
 
-namespace sofa
+namespace sofa::simulation::xml
 {
 
-namespace helper
-{
-template class SOFA_SOFASIMULATIONCOMMON_API Factory< std::string, simulation::xml::BaseElement, std::pair<std::string, std::string> >;
-}
-
-namespace simulation
-{
-
-
-namespace xml
-{
+template class SOFA_SOFASIMULATIONCOMMON_API sofa::helper::Factory< std::string, sofa::simulation::xml::BaseElement, std::pair<std::string, std::string> >;
 
 BaseElement::BaseElement(const std::string& name, const std::string& type, BaseElement* newParent)
     : BaseObjectDescription(name.c_str(), type.c_str()), parent(nullptr), includeNodeType(INCLUDE_NODE_CHILD)
@@ -196,8 +186,4 @@ BaseElement* BaseElement::findNode(const char* nodeName, bool absolute)
         return nullptr;
 }
 
-} // namespace xml
-
-} // namespace simulation
-
-} // namespace sofa
+} // namespace sofa::simulation::xml

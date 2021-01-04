@@ -26,13 +26,7 @@
 
 #include <SofaSimulationCommon/xml/Element.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace graph
+namespace sofa::simulation::graph
 {
 DAGNodeMultiMappingElement::DAGNodeMultiMappingElement(const std::string &name,
         const std::string &type, BaseElement *parent /*= 0*/)
@@ -65,8 +59,4 @@ const char* DAGNodeMultiMappingElement::getClass() const
 }
 
 
-} // namespace graph
-
-} // namespace simulation
-
-} // namespace sofa
+} // namespace sofa::simulation::graph

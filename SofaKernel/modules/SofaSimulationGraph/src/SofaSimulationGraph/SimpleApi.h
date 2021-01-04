@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMPLEAPI_H
-#define SOFA_SIMPLEAPI_H
+#pragma once
 
 #include <SofaSimulationGraph/config.h>
 #include <string>
@@ -30,9 +29,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa
-{
-namespace simpleapi
+namespace sofa::simpleapi
 {
 
 using sofa::core::objectmodel::BaseObject;
@@ -76,12 +73,11 @@ std::string str(const T& t)
     s << t;
     return s.str() ;
 }
-} /// simpleapi
+} // namespace sofa::simpleapi
 
 
-namespace simpleapi
+namespace sofa::simpleapi::components 
 {
-namespace components {
 
 namespace BaseObject
 {
@@ -110,14 +106,7 @@ namespace VisualModel
     }
 }
 
-}
+} // namespace sofa::simpleapi::components
 
-namespace meca   { using namespace simpleapi::components::MechanicalObject ; }
-namespace visual { using namespace simpleapi::components::VisualModel ; }
-
-}
-
-
-} /// sofa
-
-#endif /// SOFA_SIMPLEAPI
+namespace sofa::meca   { using namespace sofa::simpleapi::components::MechanicalObject ; }
+namespace sofa::visual { using namespace sofa::simpleapi::components::VisualModel ; }

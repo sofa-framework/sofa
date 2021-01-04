@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_XML_ELEMENTNAMEHELPER
-#define SOFA_SIMULATION_XML_ELEMENTNAMEHELPER
-
-
+#pragma once
 #include <map>
 #include <string>
 
-namespace sofa
-{
-namespace simulation
-{
-namespace xml
+namespace sofa::simulation::xml
 {
 
 
@@ -47,9 +40,4 @@ public:
     std::string resolveName(const std::string& type, const std::string& name);
 };
 
-}
-}
-}
-
-
-#endif // SOFA_SIMULATION_XML_ELEMENTNAMEHELPER
+} // namespace sofa::simulation::xml

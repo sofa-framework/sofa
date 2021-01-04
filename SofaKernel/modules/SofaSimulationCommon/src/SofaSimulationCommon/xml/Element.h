@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COMMON_XML_ELEMENT_H
-#define SOFA_SIMULATION_COMMON_XML_ELEMENT_H
-
+#pragma once
 #include <vector>
 #include <SofaSimulationCommon/xml/BaseElement.h>
 #include <sofa/helper/Factory.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace xml
+namespace sofa::simulation::xml
 {
 
 template<class Object>
@@ -55,13 +47,6 @@ public:
     typedef helper::Factory< std::string, Object, Element<Object>*, typename Object::SPtr > Factory;
 };
 
+} // namespace sofa::simulation::xml
 
-} // namespace xml
-
-} // namespace simulation
-
-} // namespace sofa
-
-#include "Element.inl"
-
-#endif
+#include <SofaSimulationCommon/xml/Element.inl>

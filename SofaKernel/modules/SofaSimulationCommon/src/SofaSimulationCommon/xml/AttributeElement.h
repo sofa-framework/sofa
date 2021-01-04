@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COMMON_XML_ATTRIBUTEELEMENT_H
-#define SOFA_SIMULATION_COMMON_XML_ATTRIBUTEELEMENT_H
-
+#pragma once
 #include <SofaSimulationCommon/xml/Element.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace xml
+namespace sofa::simulation::xml
 {
 
 class SOFA_SOFASIMULATIONCOMMON_API AttributeElement : public Element<core::objectmodel::BaseObject>
@@ -53,10 +45,4 @@ private:
     std::string value;
 };
 
-} // namespace xml
-
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::simulation::xml

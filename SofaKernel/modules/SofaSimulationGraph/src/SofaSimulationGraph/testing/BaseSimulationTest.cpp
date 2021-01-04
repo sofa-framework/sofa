@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseSimulationTest.h"
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
 
 #include <sofa/core/ExecParams.h>
 using sofa::core::ExecParams ;
@@ -35,11 +35,7 @@ using sofa::simulation::SceneLoaderXML ;
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
-namespace sofa
-{
-namespace helper
-{
-namespace testing
+namespace sofa::helper::testing
 {
 
 bool BaseSimulationTest::importPlugin(const std::string& name)
@@ -109,6 +105,4 @@ BaseSimulationTest::BaseSimulationTest()
     simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
 }
 
-} ///testing
-} ///helper
-} ///sofa
+} // namespace sofa::helper::testing

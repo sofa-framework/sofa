@@ -19,17 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneLoaderPHP.h"
+#include <SofaSimulationCommon/SceneLoaderPHP.h>
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 #include <sofa/helper/system/PipeProcess.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <sofa/helper/system/FileRepository.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 // register the loader in the factory
@@ -105,7 +102,4 @@ sofa::simulation::Node::SPtr SceneLoaderPHP::doLoad(const std::string& filename,
 }
 
 
-} // namespace simulation
-
-} // namespace sofa
-
+} // namespace sofa::simulation

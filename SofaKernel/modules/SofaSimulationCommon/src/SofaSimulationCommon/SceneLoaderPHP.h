@@ -19,16 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_SCENELOADERPHP_H
-#define SOFA_SIMULATION_SCENELOADERPHP_H
-
+#pragma once
 #include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 class SOFA_SOFASIMULATIONCOMMON_API SceneLoaderPHP : public SceneLoader
@@ -47,9 +42,4 @@ public:
     void getExtensionList(ExtensionList* list) override;
 };
 
-} // namespace simulation
-
-} // namespace sofa
-
-
-#endif // SOFA_SIMULATION_SCENELOADERPHP_H
+} // namespace sofa::simulation
