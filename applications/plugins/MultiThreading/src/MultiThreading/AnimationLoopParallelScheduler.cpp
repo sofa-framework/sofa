@@ -43,6 +43,7 @@
 
 #include <sofa/helper/AdvancedTimer.h>
 
+#include <sofa/core/behavior/LinearSolver.h>
 #include <cstdlib>
 #include <cmath>
 #include <algorithm>
