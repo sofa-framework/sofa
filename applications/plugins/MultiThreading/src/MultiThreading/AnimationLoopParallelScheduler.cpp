@@ -42,6 +42,7 @@
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/CollisionElement.h>
+#include <sofa/core/CollisionModel.h>
 
 #include <cstdlib>
 #include <cmath>
