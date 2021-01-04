@@ -71,44 +71,109 @@ namespace simulation
 using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;
 
+class NodeInternalData
+{
+public:
+    SequenceNodeLink<Node,true> child;
+    SequenceNodeLink<sofa::core::objectmodel::BaseObject,true> object;
+
+    SingleNodeLink<sofa::core::behavior::BaseAnimationLoop> animationManager;
+    SingleNodeLink<sofa::core::visual::VisualLoop> visualLoop;
+
+    SequenceNodeLink<sofa::core::BehaviorModel> behaviorModel;
+    SequenceNodeLink<sofa::core::BaseMapping> mapping;
+
+    SequenceNodeLink<sofa::core::behavior::OdeSolver> solver;
+    SequenceNodeLink<sofa::core::behavior::ConstraintSolver> constraintSolver;
+    SequenceNodeLink<sofa::core::behavior::BaseLinearSolver> linearSolver;
+
+    SingleNodeLink<sofa::core::topology::Topology> topology;
+    SingleNodeLink<sofa::core::topology::BaseMeshTopology> meshTopology;
+    SequenceNodeLink<sofa::core::topology::BaseTopologyObject> topologyObject;
+
+    SingleNodeLink<sofa::core::BaseState> state;
+    SingleNodeLink<sofa::core::behavior::BaseMechanicalState> mechanicalState;
+    SingleNodeLink<sofa::core::BaseMapping> mechanicalMapping;
+    SingleNodeLink<sofa::core::behavior::BaseMass> mass;
+    SequenceNodeLink<sofa::core::behavior::BaseForceField> forceField;
+    SequenceNodeLink<sofa::core::behavior::BaseInteractionForceField> interactionForceField;
+    SequenceNodeLink<sofa::core::behavior::BaseProjectiveConstraintSet> projectiveConstraintSet;
+    SequenceNodeLink<sofa::core::behavior::BaseConstraintSet> constraintSet;
+    SequenceNodeLink<sofa::core::objectmodel::ContextObject> contextObject;
+    SequenceNodeLink<sofa::core::objectmodel::ConfigurationSetting> configurationSetting;
+
+    SequenceNodeLink<sofa::core::visual::Shader> shaders;
+    SequenceNodeLink<sofa::core::visual::VisualModel> visualModel;
+    SequenceNodeLink<sofa::core::visual::VisualManager> visualManager;
+
+    SequenceNodeLink<sofa::core::CollisionModel> collisionModel;
+    SingleNodeLink<sofa::core::collision::Pipeline> collisionPipeline;
+
+    SequenceNodeLink<sofa::core::objectmodel::BaseObject> unsorted;
+    NodeInternalData(Node* self) :
+        animationManager(self->initLink("visualLoop", "The VisualLoop attached to this node (only valid for root node)"))
+      , child(self->initLink("child", "Child nodes"))
+      , object(self->initLink("object","All objects attached to this node"))
+      , visualLoop(self->initLink("visualLoop", "The VisualLoop attached to this node (only valid for root node)"))
+      , behaviorModel(self->initLink("behaviorModel", "The BehaviorModel attached to this node (only valid for root node)"))
+      , mapping(self->initLink("mapping", "The (non-mechanical) Mapping(s) attached to this node (only valid for root node)"))
+      , solver(self->initLink("odeSolver", "The OdeSolver(s) attached to this node (controlling the mechanical time integration of this branch)"))
+      , constraintSolver(self->initLink("constraintSolver", "The ConstraintSolver(s) attached to this node"))
+      , linearSolver(self->initLink("linearSolver", "The LinearSolver(s) attached to this node"))
+      , topology(self->initLink("topology", "The Topology attached to this node"))
+      , meshTopology(self->initLink("meshTopology", "The MeshTopology / TopologyContainer attached to this node"))
+      , topologyObject(self->initLink("topologyObject", "The topology-related objects attached to this node"))
+      , state(self->initLink("state", "The State attached to this node (storing vectors such as position, velocity)"))
+      , mechanicalState(self->initLink("mechanicalState", "The MechanicalState attached to this node (storing all state vectors)"))
+      , mechanicalMapping(self->initLink("mechanicalMapping", "The MechanicalMapping attached to this node"))
+      , mass(self->initLink("mass", "The Mass attached to this node"))
+      , forceField(self->initLink("forceField", "The (non-interaction) ForceField(s) attached to this node"))
+      , interactionForceField(self->initLink("interactionForceField", "The InteractionForceField(s) attached to this node"))
+      , projectiveConstraintSet(self->initLink("projectiveConstraintSet", "The ProjectiveConstraintSet(s) attached to this node"))
+      , constraintSet(self->initLink("constraintSet", "The ConstraintSet(s) attached to this node"))
+      , contextObject(self->initLink("contextObject", "The ContextObject(s) attached to this node"))
+      , configurationSetting(self->initLink("configurationSetting", "The ConfigurationSetting(s) attached to this node"))
+      , shaders(self->initLink("shaders", "The shaders attached to this node"))
+      , visualModel(self->initLink("visualModel", "The VisualModel(s) attached to this node"))
+      , visualManager(self->initLink("visualManager", "The VisualManager(s) attached to this node"))
+      , collisionModel(self->initLink("collisionModel", "The CollisionModel(s) attached to this node"))
+      , collisionPipeline(self->initLink("collisionPipeline", "The collision Pipeline attached to this node"))
+      , unsorted(self->initLink("unsorted", "The remaining objects attached to this node"))
+    {}
+};
+
 Node::Node(const std::string& name)
     : core::objectmodel::BaseNode()
     , sofa::core::objectmodel::Context()
-    , child(initLink("child", "Child nodes"))
-    , object(initLink("object","All objects attached to this node"))
-
-    , animationManager(initLink("animationLoop","The AnimationLoop attached to this node (only valid for root node)"))
-    , visualLoop(initLink("visualLoop", "The VisualLoop attached to this node (only valid for root node)"))
-
-    , behaviorModel(initLink("behaviorModel", "The BehaviorModel attached to this node (only valid for root node)"))
-    , mapping(initLink("mapping", "The (non-mechanical) Mapping(s) attached to this node (only valid for root node)"))
-
-    , solver(initLink("odeSolver", "The OdeSolver(s) attached to this node (controlling the mechanical time integration of this branch)"))
-    , constraintSolver(initLink("constraintSolver", "The ConstraintSolver(s) attached to this node"))
-    , linearSolver(initLink("linearSolver", "The LinearSolver(s) attached to this node"))
-    , topology(initLink("topology", "The Topology attached to this node"))
-    , meshTopology(initLink("meshTopology", "The MeshTopology / TopologyContainer attached to this node"))
-    , topologyObject(initLink("topologyObject", "The topology-related objects attached to this node"))
-    , state(initLink("state", "The State attached to this node (storing vectors such as position, velocity)"))
-    , mechanicalState(initLink("mechanicalState", "The MechanicalState attached to this node (storing all state vectors)"))
-    , mechanicalMapping(initLink("mechanicalMapping", "The MechanicalMapping attached to this node"))
-    , mass(initLink("mass", "The Mass attached to this node"))
-    , forceField(initLink("forceField", "The (non-interaction) ForceField(s) attached to this node"))
-    , interactionForceField(initLink("interactionForceField", "The InteractionForceField(s) attached to this node"))
-    , projectiveConstraintSet(initLink("projectiveConstraintSet", "The ProjectiveConstraintSet(s) attached to this node"))
-    , constraintSet(initLink("constraintSet", "The ConstraintSet(s) attached to this node"))
-    , contextObject(initLink("contextObject", "The ContextObject(s) attached to this node"))
-    , configurationSetting(initLink("configurationSetting", "The ConfigurationSetting(s) attached to this node"))
-
-    , shaders(initLink("shaders", "The shaders attached to this node"))
-    , visualModel(initLink("visualModel", "The VisualModel(s) attached to this node"))
-    , visualManager(initLink("visualManager", "The VisualManager(s) attached to this node"))
-
-    , collisionModel(initLink("collisionModel", "The CollisionModel(s) attached to this node"))
-    , collisionPipeline(initLink("collisionPipeline", "The collision Pipeline attached to this node"))
-
-    , unsorted(initLink("unsorted", "The remaining objects attached to this node"))
-
+    , m_internalData{new NodeInternalData(this)}
+    , child{m_internalData->child}
+    , object{m_internalData->object}
+    , animationManager{m_internalData->animationManager}
+    , visualLoop{m_internalData->visualLoop}
+    , behaviorModel{m_internalData->behaviorModel}
+    , mapping{m_internalData->mapping}
+    , solver{m_internalData->solver}
+    , constraintSolver{m_internalData->constraintSolver}
+    , linearSolver{m_internalData->linearSolver}
+    , topology{m_internalData->topology}
+    , meshTopology{m_internalData->meshTopology}
+    , topologyObject{m_internalData->topologyObject}
+    , state{m_internalData->state}
+    , mechanicalState{m_internalData->mechanicalState}
+    , mechanicalMapping{m_internalData->mechanicalMapping}
+    , mass{m_internalData->mass}
+    , forceField{m_internalData->forceField}
+    , interactionForceField{m_internalData->interactionForceField}
+    , projectiveConstraintSet{m_internalData->projectiveConstraintSet}
+    , constraintSet{m_internalData->constraintSet}
+    , contextObject{m_internalData->contextObject}
+    , configurationSetting{m_internalData->configurationSetting}
+    , shaders{m_internalData->shaders}
+    , visualModel{m_internalData->visualModel}
+    , visualManager{m_internalData->visualManager}
+    , collisionModel{m_internalData->collisionModel}
+    , collisionPipeline{m_internalData->collisionPipeline}
+    , unsorted{m_internalData->unsorted}
     , debug_(false)
     , initialized(false)
     , depend(initData(&depend,"depend","Dependencies between the nodes.\nname 1 name 2 name3 name4 means that name1 must be initialized before name2 and name3 before name4"))
@@ -419,7 +484,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         int index = atoi(pathStr.c_str()+ppos+1);
 
         if(DEBUG_LINK)
-           dmsg_info() << "  index-based path to " << index ;
+            dmsg_info() << "  index-based path to " << index ;
 
         ObjectReverseIterator it = object.rbegin();
         ObjectReverseIterator itend = object.rend();
@@ -456,7 +521,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
     while(ppos < psize)
     {
         if ((ppos+1 < psize && pathStr.substr(ppos,2) == "./")
-            || pathStr.substr(ppos) == ".")
+                || pathStr.substr(ppos) == ".")
         {
             // this must be this node
             if(DEBUG_LINK)
@@ -466,7 +531,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             based = true;
         }
         else if ((ppos+2 < psize && pathStr.substr(ppos,3) == "../") // relative
-                || pathStr.substr(ppos) == "..")
+                 || pathStr.substr(ppos) == "..")
         {
             ppos += 3;
             if (master)

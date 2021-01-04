@@ -5,7 +5,6 @@
 #include <sofa/simulation/InitTasks.h>
 #include "DataExchange.h"
 
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/PrintVisitor.h>
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
@@ -31,7 +30,6 @@
 #include <sofa/simulation/CleanupVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <sofa/core/behavior/ConstraintSolver.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
 
 #include <sofa/helper/system/SetDirectory.h>
@@ -39,15 +37,15 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/atomic.h>
 
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-
-#include <sofa/helper/AdvancedTimer.h>
-
+#include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/CollisionElement.h>
+
 #include <cstdlib>
 #include <cmath>
 #include <algorithm>
-
 
 #include <boost/pool/pool.hpp>
 

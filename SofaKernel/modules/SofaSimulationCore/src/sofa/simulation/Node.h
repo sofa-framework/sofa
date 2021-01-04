@@ -102,6 +102,80 @@ namespace sofa
 namespace simulation
 {
 
+class Node;
+
+/// Sequence class to hold a list of objects. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end).
+/// UPDATE: it is now an alias for the Link pointer container
+template < class T, bool strong = false >
+class SequenceNodeLink : public MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)>
+{
+public:
+    typedef MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)> Inherit;
+    typedef T pointed_type;
+    typedef typename Inherit::DestPtr value_type;
+    //typedef TPtr value_type;
+    typedef typename Inherit::const_iterator const_iterator;
+    typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
+    typedef const_iterator iterator;
+    typedef const_reverse_iterator reverse_iterator;
+
+    SequenceNodeLink(const BaseLink::InitLink<Node>& init)
+        : Inherit(init)
+    {
+    }
+
+    value_type operator[](std::size_t i) const
+    {
+        return this->get(i);
+    }
+
+    /// Swap two values in the list. Uses a const_cast to violate the read-only iterators.
+    void swap( iterator a, iterator b )
+    {
+        value_type& wa = const_cast<value_type&>(*a);
+        value_type& wb = const_cast<value_type&>(*b);
+        value_type tmp = *a;
+        wa = *b;
+        wb = tmp;
+    }
+};
+
+/// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
+/// UPDATE: it is now an alias for the Link pointer container
+template < class T, bool duplicate = true >
+class SingleNodeLink : public SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)>
+{
+public:
+    typedef SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)> Inherit;
+    typedef T pointed_type;
+    typedef typename Inherit::DestPtr value_type;
+    //typedef TPtr value_type;
+    typedef typename Inherit::const_iterator const_iterator;
+    typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
+    typedef const_iterator iterator;
+    typedef const_reverse_iterator reverse_iterator;
+
+    SingleNodeLink(const BaseLink::InitLink<Node>& init)
+        : Inherit(init)
+    {
+    }
+
+    T* operator->() const
+    {
+        return this->get();
+    }
+    T& operator*() const
+    {
+        return *this->get();
+    }
+    operator T*() const
+    {
+        return this->get();
+    }
+};
+
+class NodeInternalData;
+
 /**
    Implements the object (component) management of the core::Context.
    Contains objects in lists and provides accessors.
@@ -120,7 +194,10 @@ protected:
     Node(const std::string& name="");
 
     virtual ~Node() override;
+    NodeInternalData* m_internalData;
+
 public:
+
     /// Create, add, then return the new child of this Node
     virtual Node::SPtr createChild(const std::string& nodeName)=0;
 
@@ -192,116 +269,52 @@ public:
     /// @{
     // methods moved from GNode (27/04/08)
 
-    /// Sequence class to hold a list of objects. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end).
-    /// UPDATE: it is now an alias for the Link pointer container
-    template < class T, bool strong = false >
-    class Sequence : public MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)>
-    {
-    public:
-        typedef MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)> Inherit;
-        typedef T pointed_type;
-        typedef typename Inherit::DestPtr value_type;
-        //typedef TPtr value_type;
-        typedef typename Inherit::const_iterator const_iterator;
-        typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
-        typedef const_iterator iterator;
-        typedef const_reverse_iterator reverse_iterator;
+    template<class A, bool B=false>
+    using Sequence = SequenceNodeLink<A,B>;
 
-        Sequence(const BaseLink::InitLink<Node>& init)
-            : Inherit(init)
-        {
-        }
+    template<class A, bool B=true>
+    using Single = SingleNodeLink<A,B>;
 
-        value_type operator[](std::size_t i) const
-        {
-            return this->get(i);
-        }
-
-        /// Swap two values in the list. Uses a const_cast to violate the read-only iterators.
-        void swap( iterator a, iterator b )
-        {
-            value_type& wa = const_cast<value_type&>(*a);
-            value_type& wb = const_cast<value_type&>(*b);
-            value_type tmp = *a;
-            wa = *b;
-            wb = tmp;
-        }
-    };
-
-    /// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
-    /// UPDATE: it is now an alias for the Link pointer container
-    template < class T, bool duplicate = true >
-    class Single : public SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)>
-    {
-    public:
-        typedef SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)> Inherit;
-        typedef T pointed_type;
-        typedef typename Inherit::DestPtr value_type;
-        //typedef TPtr value_type;
-        typedef typename Inherit::const_iterator const_iterator;
-        typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
-        typedef const_iterator iterator;
-        typedef const_reverse_iterator reverse_iterator;
-
-        Single(const BaseLink::InitLink<Node>& init)
-            : Inherit(init)
-        {
-        }
-
-        T* operator->() const
-        {
-            return this->get();
-        }
-        T& operator*() const
-        {
-            return *this->get();
-        }
-        operator T*() const
-        {
-            return this->get();
-        }
-    };
-
-    Sequence<Node,true> child;
+    Sequence<Node,true>& child;
     typedef Sequence<Node,true>::iterator ChildIterator;
 
-    Sequence<sofa::core::objectmodel::BaseObject,true> object;
+    Sequence<sofa::core::objectmodel::BaseObject,true>& object;
     typedef Sequence<sofa::core::objectmodel::BaseObject,true>::iterator ObjectIterator;
     typedef Sequence<sofa::core::objectmodel::BaseObject,true>::reverse_iterator ObjectReverseIterator;
 
-    Single<sofa::core::behavior::BaseAnimationLoop> animationManager;
-    Single<sofa::core::visual::VisualLoop> visualLoop;
+    Single<sofa::core::behavior::BaseAnimationLoop>& animationManager;
+    Single<sofa::core::visual::VisualLoop>& visualLoop;
 
-    Sequence<sofa::core::BehaviorModel> behaviorModel;
-    Sequence<sofa::core::BaseMapping> mapping;
+    Sequence<sofa::core::BehaviorModel>& behaviorModel;
+    Sequence<sofa::core::BaseMapping>& mapping;
 
-    Sequence<sofa::core::behavior::OdeSolver> solver;
-    Sequence<sofa::core::behavior::ConstraintSolver> constraintSolver;
-    Sequence<sofa::core::behavior::BaseLinearSolver> linearSolver;
+    Sequence<sofa::core::behavior::OdeSolver>& solver;
+    Sequence<sofa::core::behavior::ConstraintSolver>& constraintSolver;
+    Sequence<sofa::core::behavior::BaseLinearSolver>& linearSolver;
 
-    Single<sofa::core::topology::Topology> topology;
-    Single<sofa::core::topology::BaseMeshTopology> meshTopology;
-    Sequence<sofa::core::topology::BaseTopologyObject> topologyObject;
+    Single<sofa::core::topology::Topology>& topology;
+    Single<sofa::core::topology::BaseMeshTopology>& meshTopology;
+    Sequence<sofa::core::topology::BaseTopologyObject>& topologyObject;
 
-    Single<sofa::core::BaseState> state;
-    Single<sofa::core::behavior::BaseMechanicalState> mechanicalState;
-    Single<sofa::core::BaseMapping> mechanicalMapping;
-    Single<sofa::core::behavior::BaseMass> mass;
-    Sequence<sofa::core::behavior::BaseForceField> forceField;
-    Sequence<sofa::core::behavior::BaseInteractionForceField> interactionForceField;
-    Sequence<sofa::core::behavior::BaseProjectiveConstraintSet> projectiveConstraintSet;
-    Sequence<sofa::core::behavior::BaseConstraintSet> constraintSet;
-    Sequence<sofa::core::objectmodel::ContextObject> contextObject;
-    Sequence<sofa::core::objectmodel::ConfigurationSetting> configurationSetting;
+    Single<sofa::core::BaseState>& state;
+    Single<sofa::core::behavior::BaseMechanicalState>& mechanicalState;
+    Single<sofa::core::BaseMapping>& mechanicalMapping;
+    Single<sofa::core::behavior::BaseMass>& mass;
+    Sequence<sofa::core::behavior::BaseForceField>& forceField;
+    Sequence<sofa::core::behavior::BaseInteractionForceField>& interactionForceField;
+    Sequence<sofa::core::behavior::BaseProjectiveConstraintSet>& projectiveConstraintSet;
+    Sequence<sofa::core::behavior::BaseConstraintSet>& constraintSet;
+    Sequence<sofa::core::objectmodel::ContextObject>& contextObject;
+    Sequence<sofa::core::objectmodel::ConfigurationSetting>& configurationSetting;
 
-    Sequence<sofa::core::visual::Shader> shaders;
-    Sequence<sofa::core::visual::VisualModel> visualModel;
-    Sequence<sofa::core::visual::VisualManager> visualManager;
+    Sequence<sofa::core::visual::Shader>& shaders;
+    Sequence<sofa::core::visual::VisualModel>& visualModel;
+    Sequence<sofa::core::visual::VisualManager>& visualManager;
 
-    Sequence<sofa::core::CollisionModel> collisionModel;
-    Single<sofa::core::collision::Pipeline> collisionPipeline;
+    Sequence<sofa::core::CollisionModel>& collisionModel;
+    Single<sofa::core::collision::Pipeline>& collisionPipeline;
 
-    Sequence<sofa::core::objectmodel::BaseObject> unsorted;
+    Sequence<sofa::core::objectmodel::BaseObject>& unsorted;
 
     /// @}
 
