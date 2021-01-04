@@ -20,12 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/helper/config.h>
 #include <string>
 
 namespace sofa::helper::types
 {
 
-class PrimitiveGroup
+class SOFA_HELPER_API PrimitiveGroup
 {
 public:
     int p0, nbp;
@@ -33,12 +34,14 @@ public:
     std::string groupName;
     int materialId;
 
-    friend std::ostream& operator << (std::ostream& out, const PrimitiveGroup &g);
-    friend std::istream& operator >> (std::istream& in, PrimitiveGroup &g);
-    bool operator <(const PrimitiveGroup& p) const;
+    friend SOFA_HELPER_API std::ostream& operator<<(std::ostream& out, const PrimitiveGroup &g);
+    friend SOFA_HELPER_API std::istream& operator>>(std::istream& in, PrimitiveGroup &g);
+
+    bool operator<(const PrimitiveGroup& p) const;
 
     PrimitiveGroup();
     PrimitiveGroup(int p0, int nbp, std::string materialName, std::string groupName, int materialId);
 };
+
 
 } // namespace sofa
