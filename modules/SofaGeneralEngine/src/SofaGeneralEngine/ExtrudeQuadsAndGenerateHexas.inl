@@ -169,14 +169,14 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::doUpdate()
     // compute indices of newly created hexas
     for (unsigned int q=0; q<surfaceQuads.size(); q++)
     {
-        for (int n=0; n<nSlices; n++)
-        {
-            if (f_flipNormals.getValue())
-            {
+        if (f_flipNormals.getValue()) {
+            for (int n=0; n<nSlices; n++) {
                 BaseMeshTopology::Hexa hexa = BaseMeshTopology::Hexa(surfaceQuads[q][0]*(nSlices+1)+n,   surfaceQuads[q][1]*(nSlices+1)+n,   surfaceQuads[q][2]*(nSlices+1)+n,   surfaceQuads[q][3]*(nSlices+1)+n,
                         surfaceQuads[q][0]*(nSlices+1)+n+1, surfaceQuads[q][1]*(nSlices+1)+n+1, surfaceQuads[q][2]*(nSlices+1)+n+1, surfaceQuads[q][3]*(nSlices+1)+n+1);
                 extrudedHexas->push_back(hexa);
-            } else {
+            }
+        } else {
+            for (int n=0; n<nSlices; n++) {
                 BaseMeshTopology::Hexa hexa = BaseMeshTopology::Hexa(surfaceQuads[q][3]*(nSlices+1)+n,   surfaceQuads[q][2]*(nSlices+1)+n,   surfaceQuads[q][1]*(nSlices+1)+n,   surfaceQuads[q][0]*(nSlices+1)+n,
                         surfaceQuads[q][3]*(nSlices+1)+n+1, surfaceQuads[q][2]*(nSlices+1)+n+1, surfaceQuads[q][1]*(nSlices+1)+n+1, surfaceQuads[q][0]*(nSlices+1)+n+1);
                 extrudedHexas->push_back(hexa);
