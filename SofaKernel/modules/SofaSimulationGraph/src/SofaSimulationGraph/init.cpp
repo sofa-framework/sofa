@@ -29,7 +29,7 @@ namespace sofa::simulation::graph
 static bool s_initialized = false;
 static bool s_cleanedUp = false;
 
-SOFA_SIMULATION_GRAPH_API void init()
+SOFA_SOFASIMULATIONGRAPH_API void init()
 {
     if (!s_initialized)
     {
@@ -38,12 +38,12 @@ SOFA_SIMULATION_GRAPH_API void init()
     }
 }
 
-SOFA_SIMULATION_GRAPH_API bool isInitialized()
+SOFA_SOFASIMULATIONGRAPH_API bool isInitialized()
 {
     return s_initialized;
 }
 
-SOFA_SIMULATION_GRAPH_API void cleanup()
+SOFA_SOFASIMULATIONGRAPH_API void cleanup()
 {
     if (!s_cleanedUp)
     {
@@ -52,7 +52,7 @@ SOFA_SIMULATION_GRAPH_API void cleanup()
     }
 }
 
-SOFA_SIMULATION_GRAPH_API bool isCleanedUp()
+SOFA_SOFASIMULATIONGRAPH_API bool isCleanedUp()
 {
     return s_cleanedUp;
 }

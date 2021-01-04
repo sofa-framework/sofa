@@ -35,19 +35,19 @@ namespace common
 
 /// @brief Initialize the SofaSimulationCommon library, as well as its
 /// dependencies: SofaCore, SofaDefaultType, SofaHelper.
-SOFA_SIMULATION_COMMON_API void init();
+SOFA_SOFASIMULATIONCOMMON_API void init();
 
 /// @brief Return true if and only if the SofaSimulationCommon library has been
 /// initialized.
-SOFA_SIMULATION_COMMON_API bool isInitialized();
+SOFA_SOFASIMULATIONCOMMON_API bool isInitialized();
 
 /// @brief Clean up the resources used by the SofaSimulationCommon library, as
 /// well as its dependencies: SofaCore, SofaDefaultType, SofaHelper.
-SOFA_SIMULATION_COMMON_API void cleanup();
+SOFA_SOFASIMULATIONCOMMON_API void cleanup();
 
 /// @brief Return true if and only if the SofaSimulationCommon library has been
 /// cleaned up.
-SOFA_SIMULATION_COMMON_API bool isCleanedUp();
+SOFA_SOFASIMULATIONCOMMON_API bool isCleanedUp();
 
 } // namespace common
 

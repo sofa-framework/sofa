@@ -36,7 +36,7 @@ namespace simulation
 namespace xml
 {
 
-class SOFA_SIMULATION_COMMON_API NodeElement : public Element<core::objectmodel::BaseNode>
+class SOFA_SOFASIMULATIONCOMMON_API NodeElement : public Element<core::objectmodel::BaseNode>
 {
 public:
     NodeElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);

@@ -49,7 +49,7 @@ enum IncludeNodeType
     INCLUDE_NODE_MERGE, ///< indicating a node that should be merged with its parent, and any child node with the same name as an existing child should be recursively merged
 };
 
-class SOFA_SIMULATION_COMMON_API BaseElement : public core::objectmodel::BaseObjectDescription
+class SOFA_SOFASIMULATIONCOMMON_API BaseElement : public core::objectmodel::BaseObjectDescription
 {
 private:
     std::string basefile;
@@ -254,7 +254,7 @@ public:
 namespace helper
 {
 #if  !defined(SOFA_SIMULATION_COMMON_XML_BASEELEMENT_CPP)
-extern template class SOFA_SIMULATION_COMMON_API Factory< std::string, sofa::simulation::xml::BaseElement, std::pair<std::string, std::string> >;
+extern template class SOFA_SOFASIMULATIONCOMMON_API Factory< std::string, sofa::simulation::xml::BaseElement, std::pair<std::string, std::string> >;
 #endif
 } // namespace helper
 

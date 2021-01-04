@@ -35,20 +35,20 @@ namespace graph
 
 /// @brief Initialize the SofaSimulationGraph library, as well as its
 /// dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType, SofaHelper.
-SOFA_SIMULATION_GRAPH_API void init();
+SOFA_SOFASIMULATIONGRAPH_API void init();
 
 /// @brief Return true if and only if the SofaSimulationGraph library has been
 /// initialized.
-SOFA_SIMULATION_GRAPH_API bool isInitialized();
+SOFA_SOFASIMULATIONGRAPH_API bool isInitialized();
 
 /// @brief Clean up the resources used by the SofaSimulationGraph library, as
 /// well as its dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType,
 /// SofaHelper.
-SOFA_SIMULATION_GRAPH_API void cleanup();
+SOFA_SOFASIMULATIONGRAPH_API void cleanup();
 
 /// @brief Return true if and only if the SofaSimulationGraph library has been
 /// cleaned up.
-SOFA_SIMULATION_GRAPH_API bool isCleanedUp();
+SOFA_SOFASIMULATIONGRAPH_API bool isCleanedUp();
 
 } // namespace graph
 

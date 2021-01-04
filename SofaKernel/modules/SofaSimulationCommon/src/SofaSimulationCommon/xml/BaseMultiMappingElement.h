@@ -35,7 +35,7 @@ class Node;
 namespace xml
 {
 
-class SOFA_SIMULATION_COMMON_API BaseMultiMappingElement : public ObjectElement
+class SOFA_SOFASIMULATIONCOMMON_API BaseMultiMappingElement : public ObjectElement
 {
 public:
     BaseMultiMappingElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);

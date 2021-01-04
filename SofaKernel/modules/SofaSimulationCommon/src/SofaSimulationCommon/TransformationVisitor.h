@@ -36,7 +36,7 @@ namespace simulation
 {
 
 
-class SOFA_SIMULATION_COMMON_API TransformationVisitor : public Visitor
+class SOFA_SOFASIMULATIONCOMMON_API TransformationVisitor : public Visitor
 {
 public:
     using Vector3 = sofa::defaulttype::Vector3;

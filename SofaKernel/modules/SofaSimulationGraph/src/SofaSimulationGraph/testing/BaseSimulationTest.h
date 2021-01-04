@@ -36,14 +36,14 @@ namespace testing
 using sofa::simulation::Node ;
 using sofa::simulation::Simulation ;
 
-class SOFA_SIMULATION_GRAPH_API BaseSimulationTest : public virtual BaseTest
+class SOFA_SOFASIMULATIONGRAPH_API BaseSimulationTest : public virtual BaseTest
 {
 public:
     BaseSimulationTest() ;
 
     bool importPlugin(const std::string& name) ;
 
-    class SOFA_SIMULATION_GRAPH_API SceneInstance
+    class SOFA_SOFASIMULATIONGRAPH_API SceneInstance
     {
     public:
          SceneInstance(const std::string& rootname="root") ;

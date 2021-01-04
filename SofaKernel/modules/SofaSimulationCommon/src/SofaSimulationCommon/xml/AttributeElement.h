@@ -34,7 +34,7 @@ namespace simulation
 namespace xml
 {
 
-class SOFA_SIMULATION_COMMON_API AttributeElement : public Element<core::objectmodel::BaseObject>
+class SOFA_SOFASIMULATIONCOMMON_API AttributeElement : public Element<core::objectmodel::BaseObject>
 {
 public:
     AttributeElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);
