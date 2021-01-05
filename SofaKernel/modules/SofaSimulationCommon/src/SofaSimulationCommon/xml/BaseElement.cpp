@@ -25,10 +25,10 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <cstring>
 
+template class SOFA_SOFASIMULATIONCOMMON_API sofa::helper::Factory< std::string, sofa::simulation::xml::BaseElement, std::pair<std::string, std::string> >;
+
 namespace sofa::simulation::xml
 {
-
-template class SOFA_SOFASIMULATIONCOMMON_API sofa::helper::Factory< std::string, sofa::simulation::xml::BaseElement, std::pair<std::string, std::string> >;
 
 BaseElement::BaseElement(const std::string& name, const std::string& type, BaseElement* newParent)
     : BaseObjectDescription(name.c_str(), type.c_str()), parent(nullptr), includeNodeType(INCLUDE_NODE_CHILD)
