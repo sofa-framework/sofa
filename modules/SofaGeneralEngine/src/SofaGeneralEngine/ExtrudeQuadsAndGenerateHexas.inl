@@ -34,6 +34,7 @@ ExtrudeQuadsAndGenerateHexas<DataTypes>::ExtrudeQuadsAndGenerateHexas()
     , f_thicknessIn( initData (&f_thicknessIn, Real (0.0), "thicknessIn", "Thickness of the extruded volume in the opposite direction of the normals") )
     , f_thicknessOut( initData (&f_thicknessOut, Real (1.0), "thicknessOut", "Thickness of the extruded volume in the direction of the normals") )
     , f_numberOfSlices( initData (&f_numberOfSlices, int (1), "numberOfSlices", "Number of slices / steps in the extrusion") )
+    , f_flipNormals(initData(&f_flipNormals, bool(false), "flipNormals", "If true, will inverse point order when creating hexa"))
     , f_surfaceVertices( initData (&f_surfaceVertices, "surfaceVertices", "Position coordinates of the surface") )
     , f_surfaceQuads( initData (&f_surfaceQuads, "surfaceQuads", "Indices of the quads of the surface to extrude") )
     , f_extrudedVertices( initData (&f_extrudedVertices, "extrudedVertices", "Coordinates of the extruded vertices") )
@@ -168,11 +169,18 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::doUpdate()
     // compute indices of newly created hexas
     for (unsigned int q=0; q<surfaceQuads.size(); q++)
     {
-        for (int n=0; n<nSlices; n++)
-        {
-            BaseMeshTopology::Hexa hexa = BaseMeshTopology::Hexa(surfaceQuads[q][3]*(nSlices+1)+n,   surfaceQuads[q][2]*(nSlices+1)+n,   surfaceQuads[q][1]*(nSlices+1)+n,   surfaceQuads[q][0]*(nSlices+1)+n,
-                    surfaceQuads[q][3]*(nSlices+1)+n+1, surfaceQuads[q][2]*(nSlices+1)+n+1, surfaceQuads[q][1]*(nSlices+1)+n+1, surfaceQuads[q][0]*(nSlices+1)+n+1);
-            extrudedHexas->push_back(hexa);
+        if (f_flipNormals.getValue()) {
+            for (int n=0; n<nSlices; n++) {
+                BaseMeshTopology::Hexa hexa = BaseMeshTopology::Hexa(surfaceQuads[q][0]*(nSlices+1)+n,   surfaceQuads[q][1]*(nSlices+1)+n,   surfaceQuads[q][2]*(nSlices+1)+n,   surfaceQuads[q][3]*(nSlices+1)+n,
+                        surfaceQuads[q][0]*(nSlices+1)+n+1, surfaceQuads[q][1]*(nSlices+1)+n+1, surfaceQuads[q][2]*(nSlices+1)+n+1, surfaceQuads[q][3]*(nSlices+1)+n+1);
+                extrudedHexas->push_back(hexa);
+            }
+        } else {
+            for (int n=0; n<nSlices; n++) {
+                BaseMeshTopology::Hexa hexa = BaseMeshTopology::Hexa(surfaceQuads[q][3]*(nSlices+1)+n,   surfaceQuads[q][2]*(nSlices+1)+n,   surfaceQuads[q][1]*(nSlices+1)+n,   surfaceQuads[q][0]*(nSlices+1)+n,
+                        surfaceQuads[q][3]*(nSlices+1)+n+1, surfaceQuads[q][2]*(nSlices+1)+n+1, surfaceQuads[q][1]*(nSlices+1)+n+1, surfaceQuads[q][0]*(nSlices+1)+n+1);
+                extrudedHexas->push_back(hexa);
+            }
         }
     }
 
