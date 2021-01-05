@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SceneCreator VERSION 0.1)
 
-find_package(SofaSimulation REQUIRED)
+find_package(SofaSimulationGraph REQUIRED)
 sofa_find_package(SofaSparseSolver QUIET)
 find_package(Eigen3 REQUIRED)
 

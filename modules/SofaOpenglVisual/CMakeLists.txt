@@ -5,8 +5,8 @@ if(SOFA_NO_OPENGL)
     message(FATAL_ERROR "SOFA_NO_OPENGL flag prevents from using the SofaOpenglVisual plugin")
 endif()
 
-find_package(SofaBase REQUIRED)
-find_package(SofaSimulation REQUIRED)
+find_package(SofaFramework REQUIRED) # SofaSimulationCore
+find_package(SofaBaseVisual REQUIRED)
 
 set(HEADER_FILES
     src/SofaOpenglVisual/config.h
@@ -83,7 +83,7 @@ set(EXTRA_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCore)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
