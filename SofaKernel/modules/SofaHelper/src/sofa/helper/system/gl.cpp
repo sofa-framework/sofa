@@ -31,8 +31,8 @@ SOFA_HELPER_API const char* GetGlExtensionsList()
 
 SOFA_HELPER_API bool CanUseGlExtension(const std::string& ext)
 {
-    std::string Extensions = GetGlExtensionsList();
-    if( Extensions.find( ext ) != std::string::npos )
+    const char * extensions = GetGlExtensionsList();
+    if( extensions && std::string(extensions).find( ext ) != std::string::npos )
         return true;
     return false;
 }
