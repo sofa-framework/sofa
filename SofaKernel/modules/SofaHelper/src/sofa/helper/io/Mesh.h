@@ -149,7 +149,7 @@ protected:
     helper::vector< PrimitiveGroup > m_polygonsGroups; ///< Groups of Polygons
     helper::vector< PrimitiveGroup > m_tetrahedraGroups; ///< Groups of Tetrahedra
     helper::vector< PrimitiveGroup > m_hexahedraGroups; ///< Groups of Hexahedra
-    helper::vector< PrimitiveGroup >     m_pentahedraGroups; ///< Groups of Pentahedra
+    helper::vector< PrimitiveGroup > m_pentahedraGroups; ///< Groups of Pentahedra
     helper::vector< PrimitiveGroup > m_pyramidsGroups; ///< Groups of Pyramids
 
 
