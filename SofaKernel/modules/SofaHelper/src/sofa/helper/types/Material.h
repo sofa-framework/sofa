@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_HELPER_TYPES_MATERIAL_H_
-#define SOFA_HELPER_TYPES_MATERIAL_H_
+#pragma once
 
 #include <sofa/helper/config.h>
 #include <sofa/helper/types/RGBAColor.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace types
+namespace sofa::helper::types
 {
 
 class SOFA_HELPER_API Material
@@ -55,19 +47,15 @@ public:
     std::string   textureFilename; // path to the texture linked to the material
     std::string   bumpTextureFilename; // path to the bump texture linked to the material
 
-    void setColor(float r, float g, float b, float a) ;
-
     friend SOFA_HELPER_API std::ostream& operator << (std::ostream& out, const Material& m ) ;
     friend SOFA_HELPER_API std::istream& operator >> (std::istream& in, Material &m ) ;
+
+    void setColor(float r, float g, float b, float a) ;
+
     Material() ;
     Material(const Material& mat) ;
     Material & operator= (const Material& other);
 };
 
-} // namespace types
+} /// namespace sofa::helper::types
 
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_HELPER_TYPES_MATERIAL_H_ */
