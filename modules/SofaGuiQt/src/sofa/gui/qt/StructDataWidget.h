@@ -180,6 +180,11 @@ public:
         return true;
     }
 
+    void setNoValue()
+    {
+        //vhelper::setNoValue(w);
+    }
+
     void setReadOnly(bool readOnly)
     {
         p.setReadOnly(readOnly);

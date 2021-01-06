@@ -219,13 +219,26 @@ void QDataSimpleEdit::setDataReadOnly(bool readOnly)
 
 void QDataSimpleEdit::readFromData()
 {
+    if(!getBaseData())
+        return ;
+
     QString str = QString( getBaseData()->getValueString().c_str() );
     if(innerWidget_.type == TEXTEDIT)
     {
+        if(!getBaseData()->isRequired() && !getBaseData()->isSet())
+        {
+             innerWidget_.widget.textEdit->setText("<not-set>");
+             return;
+        }
         innerWidget_.widget.textEdit->setText(str);
     }
     else if(innerWidget_.type == LINEEDIT)
     {
+        if(!getBaseData()->isRequired() && !getBaseData()->isSet())
+        {
+             innerWidget_.widget.lineEdit->setText("<not-set>");
+             return;
+        }
         innerWidget_.widget.lineEdit->setText(str);
     }
 }

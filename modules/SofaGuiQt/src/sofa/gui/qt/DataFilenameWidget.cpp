@@ -66,6 +66,11 @@ void DataFileNameWidget::setDataReadOnly(bool readOnly)
 
 void DataFileNameWidget::readFromData()
 {
+    if(!baseData->isRequired() && !baseData->isSet())
+    {
+        openFilePath->setText("<optional>");
+    }
+
     const std::string& filepath = this->getData()->getValue();
     if (openFilePath->text().toStdString() != filepath)
         openFilePath->setText(QString(filepath.c_str()) );

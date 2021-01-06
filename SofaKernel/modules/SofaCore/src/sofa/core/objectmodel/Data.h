@@ -167,11 +167,11 @@ public:
     class InitData : public BaseData::BaseInitData
     {
     public:
-        InitData() : value(T()) {}
+        InitData() : value({}) {}
         InitData(const T& v) : value(v) {}
         InitData(const BaseData::BaseInitData& i) : BaseData::BaseInitData(i), value(T()) {}
 
-        T value;
+        std::optional<T> value;
     };
 
     static std::string templateName()
@@ -192,7 +192,14 @@ public:
     explicit Data(const InitData& init)
         : TData<T>(init)
     {
-        m_value = ValueType(init.value);
+        if(init.value)
+        {
+            m_isSet = true;
+            m_value = ValueType(init.value.value());
+        }
+        else
+            m_isSet = false;
+
     }
 
     /** \copydoc BaseData(const char*, bool, bool) */
@@ -204,6 +211,7 @@ public:
     Data( const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
     {
+        m_isSet = false;
         m_value = ValueType();
     }
 
@@ -220,6 +228,7 @@ public:
     Data( const T& value, const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
     {
+        m_isSet = true;
         m_value = ValueType(value);
     }
 

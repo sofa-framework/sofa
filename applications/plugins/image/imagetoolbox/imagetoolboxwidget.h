@@ -133,6 +133,10 @@ public:
         return true;
     }
 
+    void setNoValue(){
+        std::cout << "NO NO FIXME" << std::endl;
+
+    }
     void setReadOnly(bool /*readOnly*/) { }
     void readFromData(const ImageToolBoxDataType& d0)
     { 

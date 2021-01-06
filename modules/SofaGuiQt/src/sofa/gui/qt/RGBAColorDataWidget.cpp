@@ -34,7 +34,6 @@ helper::Creator<DataWidgetFactory, RGBAColorDataWidget> DWClass("default",true);
 
 bool RGBAColorDataWidget::createWidgets()
 {
-
     m_colorPicker = new QRGBAColorPicker(this);
 
     QHBoxLayout* hlayout = new QHBoxLayout(this);
@@ -54,6 +53,10 @@ void RGBAColorDataWidget::setDataReadOnly(bool readOnly)
 
 void RGBAColorDataWidget::readFromData()
 {
+    if(!getData()->isRequired() && !getData()->isSet())
+    {
+        m_colorPicker->setBackgroundRole(QPalette::Dark);
+    }
     m_colorPicker->setColor( getData()->getValue() );
 }
 

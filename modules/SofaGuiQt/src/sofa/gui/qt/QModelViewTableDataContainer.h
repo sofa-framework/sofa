@@ -466,6 +466,10 @@ public:
         return true;
     }
 
+    void setNoValue()
+    {
+
+    }
 
     void setReadOnly(bool readOnly)
     {

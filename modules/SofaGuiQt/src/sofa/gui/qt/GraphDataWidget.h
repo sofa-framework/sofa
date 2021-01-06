@@ -338,6 +338,11 @@ public:
         w->readFromData(d);
         return true;
     }
+
+    void setNoValue()
+    {
+        std::cout << " FIX ME " << std::endl;
+    }
     void setReadOnly(bool /*readOnly*/)
     {
     }
