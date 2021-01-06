@@ -32,7 +32,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/TopologyTypes.h
     ${SRC_ROOT}/Vec.h
     ${SRC_ROOT}/Ray.h
-    ${SRC_ROOT}/Vec3Types.h
     ${SRC_ROOT}/VecTypes.h
     ${SRC_ROOT}/defaulttype.h
     ${SRC_ROOT}/config.h.in
@@ -79,7 +78,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/TypeInfoRegistry.cpp
     ${SRC_ROOT}/TypeInfoRegistryTools.cpp
     ${SRC_ROOT}/init.cpp
-
     ${SRC_ROOT}/typeinfo/TypeInfo_Bool.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_BoundingBox.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_FixedArray.cpp

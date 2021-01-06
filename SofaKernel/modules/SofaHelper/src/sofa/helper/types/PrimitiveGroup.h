@@ -19,4 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#error This file will be removed after sofa 21.06 release. Update your code by replacing #include<sofa/defaulttype/Vec3Types.h> with #include<sofa/defaulttype/VecTypes.h>
+#pragma once
+#include <sofa/helper/config.h>
+#include <string>
+
+namespace sofa::helper::types
+{
+
+class SOFA_HELPER_API PrimitiveGroup
+{
+public:
+    int p0, nbp;
+    std::string materialName;
+    std::string groupName;
+    int materialId;
+
+    friend SOFA_HELPER_API std::ostream& operator<<(std::ostream& out, const PrimitiveGroup &g);
+    friend SOFA_HELPER_API std::istream& operator>>(std::istream& in, PrimitiveGroup &g);
+
+    bool operator<(const PrimitiveGroup& p) const;
+
+    PrimitiveGroup();
+    PrimitiveGroup(int p0, int nbp, std::string materialName, std::string groupName, int materialId);
+};
+
+
+} // namespace sofa

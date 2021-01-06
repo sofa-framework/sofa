@@ -22,7 +22,7 @@
 #ifndef MATERIAL_DATAWIDGET_H
 #define MATERIAL_DATAWIDGET_H
 #include "DataWidget.h"
-#include <sofa/core/loader/Material.h>
+#include <sofa/helper/types/Material.h>
 #include <sofa/defaulttype/Vec.h>
 
 #include <QColorDialog>
@@ -52,7 +52,7 @@ namespace qt
 namespace materialdatawidget_h
 {
 using sofa::gui::qt::QRGBAColorPicker ;
-using sofa::core::loader::Material ;
+using sofa::helper::types::Material ;
 using sofa::core::objectmodel::Data ;
 
 class MaterialDataWidget : public TDataWidget<Material>
