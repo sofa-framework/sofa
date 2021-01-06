@@ -29,10 +29,6 @@
 #include <iostream>
 #include <sofa/helper/AdvancedTimer.h>
 
-#if __has_include(<execution>) && !defined(__APPLE__)
-#include <execution>
-#endif
-
 namespace sofa
 {
 
@@ -152,24 +148,6 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
     // This is an O(n2) step, except if a hash-grid is used to optimize it
     if (m_grid == nullptr)
     {
-#if __has_include(<execution>) && !defined(__APPLE__)
-        std::for_each(std::execution::par, x.begin(), x.end(), [&](const auto& ri)
-        {
-            auto i = &ri - &x[0]; // only possible with vector, etc.
-
-            for (size_t j = i + 1; j<n; j++)
-            {
-                const Coord& rj = x[j];
-                Real r2 = (rj - ri).norm2();
-                if (r2 < h2)
-                {
-                    Real r_h = (Real)sqrt(r2 / h2);
-                    m_particles[i].neighbors.push_back(std::make_pair(j, r_h));
-                }
-            }
-
-        });
-#else
         for (size_t i = 0; i<n; i++)
         {
             const Coord& ri = x[i];
@@ -185,7 +163,6 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
                 }
             }
         }
-#endif
     }
     else
     {

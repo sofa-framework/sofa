@@ -3,8 +3,8 @@ project(image VERSION 0.1)
 
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneralVisual REQUIRED)
+find_package(Sofa.GL REQUIRED)
 
-sofa_find_package(OpenGL QUIET)
 sofa_find_package(SofaGui QUIET)
 sofa_find_package(CImgPlugin REQUIRED)
 sofa_find_package(Newmat REQUIRED)
@@ -41,6 +41,8 @@ set(SOURCE_FILES
     MeshToImageEngine.cpp
     TransferFunction.cpp
     VoronoiToMeshEngine.cpp
+    DepthMapToMeshEngine.cpp
+    ImageViewer.cpp
     initImage.cpp
     )
 set(HEADER_FILES
@@ -68,19 +70,12 @@ set(HEADER_FILES
     TransferFunction.h
     VectorVis.h
     VoronoiToMeshEngine.h
+    DepthMapToMeshEngine.h
+    ImageViewer.h
     )
 set(README_FILES
     image.txt
     )
-
-
-if(OpenGL_FOUND)
-    list(APPEND SOURCE_FILES DepthMapToMeshEngine.cpp)
-    list(APPEND HEADER_FILES DepthMapToMeshEngine.h)
-else()
-    message(STATUS "image: could not find OpenGL library, won't build the DepthMapToMeshEngine")
-endif()
-
 
 if(SofaPython_FOUND)
     set(PYTHON_FILES
@@ -94,10 +89,7 @@ if(SofaPython_FOUND)
     sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 endif()
 
-if(NOT ${SOFA_NO_OPENGL})
-    list(APPEND HEADER_FILES ImageViewer.h)
-    list(APPEND SOURCE_FILES ImageViewer.cpp)
-
+if(Sofa.GL_FOUND)
     if(FREENECT_FOUND)
         list(APPEND HEADER_FILES Kinect.h)
         list(APPEND SOURCE_FILES Kinect.cpp)
@@ -125,7 +117,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_IMAGE")
-target_link_libraries(${PROJECT_NAME} SofaCore SofaBase SofaGeneralVisual CImgPlugin)
+target_link_libraries(${PROJECT_NAME} SofaCore SofaBase Sofa.GL SofaGeneralVisual CImgPlugin)
 target_link_libraries(${PROJECT_NAME} DiffusionSolver)
 target_link_libraries(${PROJECT_NAME} newmat)
 

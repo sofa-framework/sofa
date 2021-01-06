@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaOpenglVisual LANGUAGES CXX)
 
-if(SOFA_NO_OPENGL)
-    message(FATAL_ERROR "SOFA_NO_OPENGL flag prevents from using the SofaOpenglVisual plugin")
-endif()
-
 find_package(SofaBase REQUIRED)
 find_package(SofaSimulation REQUIRED)
+find_package(Sofa.GL REQUIRED)
+
+if(NOT Sofa.GL_FOUND)
+    message(FATAL_ERROR "Sofa.GL not enabled, cannot build the SofaOpenglVisual plugin")
+endif()
 
 set(HEADER_FILES
     src/SofaOpenglVisual/config.h
@@ -83,7 +84,7 @@ set(EXTRA_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCommon Sofa.GL)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

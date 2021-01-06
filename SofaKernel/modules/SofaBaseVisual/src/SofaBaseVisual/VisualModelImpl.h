@@ -185,7 +185,7 @@ public:
     /// @}
 
     sofa::defaulttype::Vec3f bbox[2];
-    Data< sofa::core::loader::Material > material;
+    Data< sofa::helper::types::Material > material;
     Data< bool > putOnlyTexCoords;
     Data< bool > srgbTexturing;
 
@@ -221,7 +221,7 @@ public:
         }
     };
 
-    Data< helper::vector<sofa::core::loader::Material> > materials;
+    Data< helper::vector<sofa::helper::types::Material> > materials;
     Data< helper::vector<FaceGroup> > groups;
 
     /// Link to be set to the topology container in the component graph.

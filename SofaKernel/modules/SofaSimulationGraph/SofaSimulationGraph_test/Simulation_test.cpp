@@ -29,7 +29,6 @@ using sofa::defaulttype::Vec3Types ;
 typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SceneCreator/SceneCreator.h>

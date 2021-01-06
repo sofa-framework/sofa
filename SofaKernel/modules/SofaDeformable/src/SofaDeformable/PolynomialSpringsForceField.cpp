@@ -26,7 +26,6 @@
 
 #include "PolynomialSpringsForceField.inl"
 
-#include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::interactionforcefield

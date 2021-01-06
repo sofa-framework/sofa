@@ -163,7 +163,7 @@ static void setDirectoryPath(std::string& outputVariable, const std::string& pat
         if (!pathExists)
         {
             FileSystem::createDirectory(path);
-            std::cout << "Created directory: " << path << std::endl;
+            msg_error("BaseGUI") << "Created directory: " << path;
         }
         outputVariable = path;
     }
