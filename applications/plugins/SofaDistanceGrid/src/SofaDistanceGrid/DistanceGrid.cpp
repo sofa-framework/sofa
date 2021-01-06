@@ -23,8 +23,8 @@
 
 #include <SofaDistanceGrid/DistanceGrid.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/template.h>
 
 #include <sofa/helper/io/Mesh.h>
 

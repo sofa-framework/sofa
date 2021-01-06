@@ -221,9 +221,6 @@ void OglViewport::postDrawScene(core::visual::VisualParams* vp)
 void OglViewport::renderToViewport(core::visual::VisualParams* vp)
 {
     const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
-    helper::gl::Transformation vp_sceneTransform = vp->sceneTransform();
-//    double vp_zNear = vp->zNear();
-//    double vp_zFar = vp->zFar();
 
     const Viewport viewport = vp->viewport();
     //Launch FBO process

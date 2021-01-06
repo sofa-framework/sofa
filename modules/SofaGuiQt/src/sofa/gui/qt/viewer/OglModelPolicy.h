@@ -27,6 +27,8 @@
 #include <sofa/gui/qt/viewer/SofaViewer.h>
 #include <sofa/gui/qt/viewer/VisualModelPolicy.h>
 
+#include <sofa/helper/visual/DrawTool.h>
+
 namespace sofa
 {
 namespace gui
@@ -40,7 +42,7 @@ class SOFA_SOFAGUIQT_API OglModelPolicy : public VisualModelPolicy
 {
 protected:
     sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
-    std::unique_ptr<sofa::core::visual::DrawTool> drawTool;
+    std::unique_ptr<sofa::helper::visual::DrawTool> drawTool;
 public:
     void load() override;
     void unload() override;

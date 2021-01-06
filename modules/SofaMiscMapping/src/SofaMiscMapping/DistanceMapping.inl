@@ -23,7 +23,6 @@
 
 #include "DistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/gl.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
