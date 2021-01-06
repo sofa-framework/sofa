@@ -920,9 +920,9 @@ public:
 int FlowVRInputDistanceGridClass = sofa::core::RegisterObject("Import a distance field from a FlowVR InputPort")
         .add< FlowVRInputDistanceGrid<sofa::component::collision::RigidDistanceGridCollisionModel,sofa::component::collision::DistanceGrid> >()
 #ifdef SOFA_GPU_CUDA
-        .add< FlowVRInputDistanceGrid<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,sofa::gpu::cuda::CudaDistanceGrid> >()
+.add< FlowVRInputDistanceGrid<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,sofa::gpu::cuda::CudaDistanceGrid> >()
 #endif
-        ;
+;
 
 class FlowVRRenderEvent : public FlowVREvent
 {
@@ -1254,9 +1254,6 @@ public:
         : vShader(initData(&vShader, std::string(""), "vshader", "vertex shader name"))
         , pShader(initData(&pShader, std::string(""), "pshader", "pixel shader name"))
         , useTangent(initData(&useTangent, false, "useTangent", "enable computation of texture tangent space vectors (for normal mapping)"))
-//    , color(initData(&color, Vec4f(1, 1, 1, 0.5f), "color", "RGBA color value"))
-//    , topology(NULL)
-//    , mmodel(NULL)
         , idP(0)
         , idVB(0)
         , idVBN(0)
@@ -1268,7 +1265,6 @@ public:
         , idTex(0)
         , posModified(true)
         , meshModified(true)
-//    , lastMeshRev(-1)
         , lastPosRev(-1)
     {
     }
@@ -1391,7 +1387,6 @@ public:
             if (material.getValue().useDiffuse) for (int i=0; i<3; i++) diffuse[i] = (float)material.getValue().diffuse[i];
             if (material.getValue().useSpecular) for (int i=0; i<3; i++) specular[i] = (float)material.getValue().specular[i];
             specular[3] = material.getValue().shininess;
-            //scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "color", color); //ftl::Vec4f(1, 1, 1, 0.5));
             scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "mat_ambient" , ambient );
             scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "mat_diffuse" , diffuse );
             if (useSpecular)
@@ -1453,9 +1448,6 @@ public:
                 }
             }
 
-            // SOFA = trans + scale * FLOWVR
-            // FLOWVR = SOFA * 1/scale - trans * 1/scale
-
             const Vec3f trans = mod->f_trans.getValue();
             const float scale = mod->f_scale.getValue();
             const float inv_scale = 1/scale;
@@ -1486,7 +1478,6 @@ public:
                 if (!idVBN)
                 {
                     *scratch = false;
-                    //idVBN = module->generateID();
                     idVBN = addVertexBuffer(scene);
                     scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "normal", idVBN);
                     scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "normal", 0);
@@ -1500,17 +1491,13 @@ public:
             const sofa::helper::vector<TexCoord>& t = vtexcoords;
             if (!t.empty() && !idVBT) // only send texcoords once
             {
-                if (!idVBT)
-                {
-                    *scratch = false;
-                    //idVBT = module->generateID();
-                    idVBT = addVertexBuffer(scene);
-                    scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "texcoord0", idVBT);
-                    scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "texcoord0", 0);
-                }
+                *scratch = false;
+                idVBT = addVertexBuffer(scene);
+                scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "texcoord0", idVBT);
+                scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "texcoord0", 0);
+
                 int types[1] = { ftl::Type::get(t[0]) };
                 flowvr::render::ChunkVertexBuffer* vb = scene->addVertexBuffer(idVBT, n.size(), 1, types, bb);
-                //vb->gen = lastPosRev;
                 memcpy(vb->data(), &(t[0]), vb->dataSize());
             }
 
@@ -1529,7 +1516,6 @@ public:
                 sofa::helper::vector<Coord> tangent2; tangent2.resize(t.size());
 
                 // see http://www.terathon.com/code/tangent.php
-
                 for (unsigned int i=0; i<triangles.size(); i++)
                 {
                     int i1 = triangles[i][0];
@@ -1713,10 +1699,6 @@ public:
             matrix[1][3] = position[1];
             matrix[2][3] = position[2];
 
-            // SOFA = trans + scale * FLOWVR
-            // FLOWVR = (SOFA - trans) * 1/scale
-            // FLOWVR = SOFA * 1/scale - trans * 1/scale
-
             Vec3f trans = mod->f_trans.getValue();
             const float scale = mod->f_scale.getValue();
             const float inv_scale = 1/scale;
@@ -1727,9 +1709,6 @@ public:
 
             matrix *= inv_scale;
 
-            // TODO: use xforms
-            //scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_POSITION, "", ftl::Vec3f(trans.ptr())*(-inv_scale));
-            //scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_SCALE, "", ftl::Vec3f(inv_scale,inv_scale,inv_scale));
             scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM, "", ftl::Mat4x4f(matrix.ptr()));
 
             xformsModified = false;
@@ -1793,15 +1772,15 @@ int main(int argc, char** argv)
     gui_help += ")";
 
     sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
-    .option(&startAnim,'s',"start","start the animation loop")
-    .option(&printFactory,'p',"factory","print factory logs")
-    .option(&gui,'g',"gui",gui_help.c_str())
-    .option(&plugins,'l',"load","load given plugins")
-    .option(&loadRecent,'r',"recent","load most recently opened file")
-    .option(&dimension,'d',"dimension","width and height of the viewer")
-    .option(&fullScreen,'f',"fullScreen","start in full screen")
-    .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
-    (argc,argv);
+            .option(&startAnim,'s',"start","start the animation loop")
+            .option(&printFactory,'p',"factory","print factory logs")
+            .option(&gui,'g',"gui",gui_help.c_str())
+            .option(&plugins,'l',"load","load given plugins")
+            .option(&loadRecent,'r',"recent","load most recently opened file")
+            .option(&dimension,'d',"dimension","width and height of the viewer")
+            .option(&fullScreen,'f',"fullScreen","start in full screen")
+            .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
+            (argc,argv);
 
     if(gui!="batch") glutInit(&argc,argv);
 
