@@ -41,7 +41,6 @@ if(NOT SOFA_NO_OPENGL)
 endif()
 
 foreach(TARGET ${SOFAFRAMEWORK_TARGETS})
-    message("Adding ${TARGET}")
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
     if(SOFA_BUILD_TESTS)
         target_compile_options(${TARGET} PUBLIC "-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources/tests\"")
