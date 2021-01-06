@@ -9,7 +9,7 @@ find_package(GTest CONFIG REQUIRED)
 set(SOFAGTESTMAIN_VERSION ${SofaSimulation_VERSION})
 
 add_library(${PROJECT_NAME} SofaGTestMain.cpp)
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationTree SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationGraph)
 target_link_libraries(${PROJECT_NAME} PUBLIC gtest)
 
 ## Install rules for the library; CMake package configurations files

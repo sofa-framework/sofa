@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGeneralImplicitOdeSolver LANGUAGES CXX)
 
+find_package(SofaSimulation REQUIRED)
 set(SOFAGENERALIMPLICITODESOLVER_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
@@ -22,7 +23,7 @@ list(APPEND SOURCE_FILES
 find_package(SofaSimulation REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCommon)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

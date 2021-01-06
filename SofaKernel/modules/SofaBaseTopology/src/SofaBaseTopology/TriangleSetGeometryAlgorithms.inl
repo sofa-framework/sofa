@@ -1276,9 +1276,6 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
 
             if(value_test<=0.0)
             {
-                //msg_info() << "INFO_print : CONVEXE, value_test = " << value_test <<  sendl;
-                //msg_info() << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  sendl;
-
                 while(i < shell.size())
                 {
                     ind_triangle=shell[i];
@@ -1302,9 +1299,6 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
             }
             else // value_test>0.0
             {
-                //msg_info() << "INFO_print : CONCAVE, value_test = " << value_test <<  sendl;
-                //msg_info() << "INFO_print : shell.size() = " << shell.size() << ", ind_t_from = " << ind_t_from << ", ind_t_to = " << ind_t_to <<  sendl;
-
                 while(i < shell.size())
                 {
                     ind_triangle=shell[i];
@@ -1349,11 +1343,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 {
     // HYP : point a is in triangle indexed by t
     // is_entered == true => indices.size() == 2
-
-
-
-
-
     TriangleID ind_first=0;
     TriangleID ind_second=0;
 
@@ -1402,8 +1391,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     pb[2] = (Real) (b[2]);
 
     sofa::defaulttype::Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
-    //Vec<3,Real> v_normal = (Vec<3,Real>) computeTriangleNormal(ind_t);
-
     Real norm_v_normal = v_normal.norm(); // WARN : square root COST
 
     if(norm_v_normal != 0.0)
@@ -1446,9 +1433,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 /// Test of edge (p0,p1) :
                 s_t = (p0-p1)*n_proj;
                 s_k = (pa-pb_proj)*n_01;
-
-                // s_t == 0.0 iff s_k == 0.0
-
                 if(s_t==0.0) // (pa,pb_proj) and (p0,p1) are parallel
                 {
                     if((p0-pa)*(n_proj)==0.0) // (pa,pb_proj) and (p0,p1) are on the same line
@@ -1628,13 +1612,11 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
         }
         else
         {
-            //std::cout << "points a and b are projected to the same point on triangle t" << std::endl;
             is_validated = false; // points a and b are projected to the same point on triangle t
         }
     }
     else
     {
-        //std::cout << "triangle t is flat" << std::endl;
         is_validated = false; // triangle t is flat
     }
 

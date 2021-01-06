@@ -25,7 +25,7 @@
 #include <SofaGeneralMeshCollision/DirectSAP.h>
 #include <SofaGeneralMeshCollision/IncrSAP.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>
-#include <SofaSimulationTree/GNode.h>
+#include <SofaSimulationGraph/DAGNode.h>
 
 #include <gtest/gtest.h>
 
@@ -458,7 +458,7 @@ bool BroadPhaseTest<BroadPhase>::randTest(int seed,int nb1,int nb2,const Vector3
     for(int i = 0 ; i < nb2 ; ++i)
         secondCollision.push_back(randVect(min,max));
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbm1,obbm2;
     obbm1 = makeOBBModel(firstCollision,scn,getExtent());
     obbm2 = makeOBBModel(secondCollision,scn,getExtent());

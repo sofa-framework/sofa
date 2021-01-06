@@ -28,8 +28,6 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/VecId.h>
 
-#include <SofaSimulationTree/TreeSimulation.h>
-
 #include <iostream>
 #include <fstream>
 

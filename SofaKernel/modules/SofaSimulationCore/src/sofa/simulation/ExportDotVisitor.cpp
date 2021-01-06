@@ -19,25 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationTree/ExportDotVisitor.h>
+
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Colors.h>
+#include <sofa/simulation/ExportDotVisitor.h>
 
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace tree
+namespace sofa::simulation::graph
 {
 
 ExportDotVisitor::ExportDotVisitor(const sofa::core::ExecParams* params, std::ostream* out)
-    : GNodeVisitor(params),
+    : Visitor(params),
       out(out),
       showNode(true),
       showObject(true),
@@ -61,8 +56,6 @@ ExportDotVisitor::ExportDotVisitor(const sofa::core::ExecParams* params, std::os
       labelObjectClass(true)
 {
     *out << "digraph G {" << std::endl;
-    //*out << "graph [concentrate=true]" << std::endl;
-    //*out << "graph [splines=curved]" << std::endl;
 }
 
 ExportDotVisitor::~ExportDotVisitor()
@@ -71,7 +64,7 @@ ExportDotVisitor::~ExportDotVisitor()
 }
 
 /// Test if a node should be displayed
-bool ExportDotVisitor::display(GNode* node, const char **color)
+bool ExportDotVisitor::display(Node* node, const char **color)
 {
     using namespace Colors;
     if (!node) return false;
@@ -181,7 +174,7 @@ bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **
 std::string ExportDotVisitor::getParentName(core::objectmodel::BaseObject* obj)
 {
     if (!obj) return "";
-    GNode* node = dynamic_cast<GNode*>(obj->getContext());
+    Node* node = dynamic_cast<Node*>(obj->getContext());
     if (!node) return "";
     if (display(node))
         return getName(node);
@@ -202,10 +195,10 @@ std::string ExportDotVisitor::getParentName(core::objectmodel::BaseObject* obj)
         return getName(node->solver[0]);
     if (!node->animationManager.empty() && node->animationManager!=obj && display(node->solver[0]))
         return getName(node->animationManager);
-    if ((node->mechanicalState==obj || node->solver[0]==obj) && !node->mechanicalMapping && node->getFirstParent() && display(static_cast<GNode*>(node->getFirstParent())->solver[0]))
-        return getName(static_cast<GNode*>(node->getFirstParent())->solver[0]);
-    if ((node->mechanicalState==obj || node->solver[0]==obj || node->animationManager==obj) && !node->mechanicalMapping && node->getFirstParent() && display(static_cast<GNode*>(node->getFirstParent())->animationManager))
-        return getName(static_cast<GNode*>(node->getFirstParent())->animationManager);
+    if ((node->mechanicalState==obj || node->solver[0]==obj) && !node->mechanicalMapping && node->getFirstParent() && display(static_cast<Node*>(node->getFirstParent())->solver[0]))
+        return getName(static_cast<Node*>(node->getFirstParent())->solver[0]);
+    if ((node->mechanicalState==obj || node->solver[0]==obj || node->animationManager==obj) && !node->mechanicalMapping && node->getFirstParent() && display(static_cast<Node*>(node->getFirstParent())->animationManager))
+        return getName(static_cast<Node*>(node->getFirstParent())->animationManager);
     return "";
 }
 
@@ -249,7 +242,7 @@ std::string ExportDotVisitor::getName(core::objectmodel::BaseObject* obj)
     return getName(obj, "o_");
 }
 
-void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObject* obj)
+void ExportDotVisitor::processObject(Node* /*node*/, core::objectmodel::BaseObject* obj)
 {
     //std::cout << ' ' << obj->getName() << '(' << sofa::helper::gettypename(typeid(*obj)) << ')';
     const char* color=nullptr;
@@ -286,22 +279,6 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
                 *out << "[weight=10]";
             *out << ";" << std::endl;
         }
-        /*
-        core::behavior::BaseMechanicalState* bms = dynamic_cast<core::behavior::BaseMechanicalState*>(obj);
-        if (bms!=nullptr)
-        {
-            core::objectmodel::BaseLink* l_topology = bms->findLink("topology");
-            if (l_topology)
-            {
-                core::topology::BaseMeshTopology* topo = dynamic_cast<core::topology::BaseMeshTopology*>(l_topology->getLinkedBase());
-                if (topo)
-                {
-                    if (display(topo))
-                        *out << name << " -> " << getName(topo) << " [style=\"dashed\",constraint=false,color=\"#808080\",arrowhead=\"none\"];" << std::endl;
-                }
-            }
-        }
-        */
         core::behavior::BaseInteractionForceField* iff = obj->toBaseInteractionForceField();
         if (iff!=nullptr)
         {
@@ -337,7 +314,7 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
     }
 }
 
-simulation::Visitor::Result ExportDotVisitor::processNodeTopDown(GNode* node)
+simulation::Visitor::Result ExportDotVisitor::processNodeTopDown(Node* node)
 {
     const char* color=nullptr;
     if (display(node,&color))
@@ -367,7 +344,7 @@ simulation::Visitor::Result ExportDotVisitor::processNodeTopDown(GNode* node)
         }
     }
 
-    for (GNode::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    for (Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         this->processObject(node, it->get());
     }
@@ -375,13 +352,9 @@ simulation::Visitor::Result ExportDotVisitor::processNodeTopDown(GNode* node)
     return RESULT_CONTINUE;
 }
 
-void ExportDotVisitor::processNodeBottomUp(GNode* /*node*/)
+void ExportDotVisitor::processNodeBottomUp(Node* /*node*/)
 {
 }
-
-} // namespace tree
-
-} // namespace simulation
 
 } // namespace sofa
 

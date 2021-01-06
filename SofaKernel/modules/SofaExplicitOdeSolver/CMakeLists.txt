@@ -3,6 +3,8 @@ project(SofaExplicitOdeSolver LANGUAGES CXX)
 
 set(SOFAEXPLICITEODESOLVER_SRC "src/${PROJECT_NAME}")
 
+find_package(SofaFramework REQUIRED)
+
 set(HEADER_FILES
     ${SOFAEXPLICITEODESOLVER_SRC}/config.h.in
     ${SOFAEXPLICITEODESOLVER_SRC}/initSofaExplicitOdeSolver.h
