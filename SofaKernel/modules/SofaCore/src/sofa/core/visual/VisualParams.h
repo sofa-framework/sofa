@@ -28,14 +28,6 @@
 #include <sofa/helper/visual/Transformation.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
-//
-//#if not __has_include(<sofa/helper/gl/FrameBufferObject.h>)
-//namespace sofa::helper::gl
-//{
-//class FrameBufferObject;
-//} // namespace sofa::helper::gl
-//#endif
-
 namespace sofa::core::visual
 {
 /// The enumeration used to describe potentially supported graphics API.
