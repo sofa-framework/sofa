@@ -54,8 +54,8 @@ set(EXTRA_FILES
 
 
 sofa_find_package(MiniFlowVR QUIET)
-find_package(SofaCommon REQUIRED) # SofaMeshCollision
-find_package(SofaGeneral REQUIRED) # SofaUserInteraction
+find_package(SofaMeshCollision REQUIRED)
+find_package(SofaUserInteraction REQUIRED)
 find_package(SofaMiscCollision REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})

@@ -4,8 +4,8 @@
 @PACKAGE_INIT@
 
 find_package(SofaFramework QUIET REQUIRED)
-find_package(SofaCommon QUIET REQUIRED)
-find_package(SofaGeneral QUIET REQUIRED)
+find_package(SofaMeshCollision QUIET REQUIRED)
+find_package(SofaUserInteraction QUIET REQUIRED)
 find_package(SofaMiscCollision QUIET REQUIRED)
 
 set(SOFADISTANCEGRID_HAVE_MINIFLOWVR @SOFADISTANCEGRID_HAVE_MINIFLOWVR@)
