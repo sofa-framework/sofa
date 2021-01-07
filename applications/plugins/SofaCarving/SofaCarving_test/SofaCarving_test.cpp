@@ -27,6 +27,7 @@
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaGeneral/initSofaGeneral.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 using namespace sofa::helper::testing;
 using namespace sofa::component::collision;
