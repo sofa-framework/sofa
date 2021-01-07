@@ -8,18 +8,6 @@ list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/lib/cmake")
 include(SofaMacros)
 include(CMakeDependentOption)
 
-message("Adding Sofa.Config")
-
-# Manually define VERSION
-set(Sofa_VERSION_MAJOR 20)
-set(Sofa_VERSION_MINOR 06)
-set(Sofa_VERSION_PATCH 99)
-set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
-
-set(SOFA_VERSION_STR "\"${Sofa_VERSION}\"")
-set(SOFA_VERSION "${Sofa_VERSION_MAJOR}${Sofa_VERSION_MINOR}${Sofa_VERSION_PATCH}")
-
-
 # Clear internal target list (set by the macro sofa_add_generic() )
 set_property(GLOBAL PROPERTY __GlobalTargetList__ "")
 set_property(GLOBAL PROPERTY __GlobalTargetNameList__ "")
@@ -63,8 +51,6 @@ if(UNIX)
         set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
     endif()
 endif(UNIX)
-
-include(CompilerOptions)
 
 ### Sofa using type double or float or both
 set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
@@ -306,6 +292,11 @@ endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaFramework) # IDE folder
 
+# Attach Sofa Version into properties
+set_target_properties(${PROJECT_NAME} PROPERTIES Sofa_VERSION "${Sofa_VERSION}")
+set_target_properties(${PROJECT_NAME} PROPERTIES SOFA_VERSION_STR "${SOFA_VERSION_STR}")
+set_target_properties(${PROJECT_NAME} PROPERTIES SOFA_VERSION "${SOFA_VERSION}")
+
 # CMakeParseLibraryList.cmake
 configure_file(cmake/CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/cmake/CMakeParseLibraryList.cmake COPYONLY)
 install(FILES cmake/CMakeParseLibraryList.cmake DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
@@ -333,8 +324,5 @@ sofa_create_package_with_targets(
 # Put instead into a target_property ?
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
 set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH}" PARENT_SCOPE)
-set(Sofa_VERSION "${Sofa_VERSION}" PARENT_SCOPE)
-set(SOFA_VERSION_STR "${SOFA_VERSION_STR}" PARENT_SCOPE)
-set(SOFA_VERSION "${SOFA_VERSION}" PARENT_SCOPE)
 set(SOFA_WITH_FLOAT "${SOFA_WITH_FLOAT}" PARENT_SCOPE)
 set(SOFA_WITH_DOUBLE "${SOFA_WITH_DOUBLE}" PARENT_SCOPE)
