@@ -30,42 +30,42 @@ namespace helper
 namespace types
 {
 
-    void Material::setColor(float r, float g, float b, float a)
-    {
-        ambient = RGBAColor(r*0.2f,g*0.2f,b*0.2f,a);
-        diffuse = RGBAColor(r,g,b,a);
-        specular = RGBAColor(r,g,b,a);
-        emissive = RGBAColor(r,g,b,a);
-    }
+void Material::setColor(float r, float g, float b, float a)
+{
+    ambient = RGBAColor(r*0.2f,g*0.2f,b*0.2f,a);
+    diffuse = RGBAColor(r,g,b,a);
+    specular = RGBAColor(r,g,b,a);
+    emissive = RGBAColor(r,g,b,a);
+}
 
-    SOFA_HELPER_API std::ostream&  operator << (std::ostream& out, const Material& m )
-    {
-        out   << m.name         << " ";
-        out  << "Diffuse"       << " " <<  m.useDiffuse   << " " <<  m.diffuse      << " ";
-        out  << "Ambient"       << " " <<  m.useAmbient   << " " <<  m.ambient      << " ";
-        out  << "Specular"      << " " <<  m.useSpecular  << " " <<  m.specular     << " ";
-        out  << "Emissive"      << " " <<  m.useEmissive  << " " <<  m.emissive     << " ";
-        out  << "Shininess"     << " " <<  m.useShininess << " " <<  m.shininess   << " ";
-        return out;
-    }
+std::ostream&  operator << (std::ostream& out, const Material& m )
+{
+    out   << m.name         << " ";
+    out  << "Diffuse"       << " " <<  m.useDiffuse   << " " <<  m.diffuse      << " ";
+    out  << "Ambient"       << " " <<  m.useAmbient   << " " <<  m.ambient      << " ";
+    out  << "Specular"      << " " <<  m.useSpecular  << " " <<  m.specular     << " ";
+    out  << "Emissive"      << " " <<  m.useEmissive  << " " <<  m.emissive     << " ";
+    out  << "Shininess"     << " " <<  m.useShininess << " " <<  m.shininess   << " ";
+    return out;
+}
 
-    SOFA_HELPER_API std::istream&  operator >> (std::istream& in, Material &m )
+std::istream&  operator >> (std::istream& in, Material &m )
+{
+    std::string element;
+    in  >>  m.name ;
+    for (unsigned int i=0; i<5; ++i)
     {
-        std::string element;
-        in  >>  m.name ;
-        for (unsigned int i=0; i<5; ++i)
-        {
-            in  >>  element;
-            if      (element == std::string("Diffuse")   || element == std::string("diffuse")   ) { in  >>  m.useDiffuse   ; in >> m.diffuse;   }
-            else if (element == std::string("Ambient")   || element == std::string("ambient")   ) { in  >>  m.useAmbient   ; in >> m.ambient;   }
-            else if (element == std::string("Specular")  || element == std::string("specular")  ) { in  >>  m.useSpecular  ; in >> m.specular;  }
-            else if (element == std::string("Emissive")  || element == std::string("emissive")  ) { in  >>  m.useEmissive  ; in >> m.emissive;  }
-            else if (element == std::string("Shininess") || element == std::string("shininess") ) { in  >>  m.useShininess ; in >> m.shininess; }
-        }
-        return in;
+        in  >>  element;
+        if      (element == std::string("Diffuse")   || element == std::string("diffuse")   ) { in  >>  m.useDiffuse   ; in >> m.diffuse;   }
+        else if (element == std::string("Ambient")   || element == std::string("ambient")   ) { in  >>  m.useAmbient   ; in >> m.ambient;   }
+        else if (element == std::string("Specular")  || element == std::string("specular")  ) { in  >>  m.useSpecular  ; in >> m.specular;  }
+        else if (element == std::string("Emissive")  || element == std::string("emissive")  ) { in  >>  m.useEmissive  ; in >> m.emissive;  }
+        else if (element == std::string("Shininess") || element == std::string("shininess") ) { in  >>  m.useShininess ; in >> m.shininess; }
     }
+    return in;
+}
 
-     Material::Material()
+Material::Material()
 {
     ambient =  RGBAColor( 0.2f,0.2f,0.2f,1.0f);
     diffuse =  RGBAColor( 0.75f,0.75f,0.75f,1.0f);

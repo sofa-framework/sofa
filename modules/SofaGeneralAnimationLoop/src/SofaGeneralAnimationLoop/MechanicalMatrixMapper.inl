@@ -23,7 +23,6 @@
 
 #include "MechanicalMatrixMapper.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/helper/rmath.h>
 
 // accumulate jacobian

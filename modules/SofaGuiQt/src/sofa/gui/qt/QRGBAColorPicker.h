@@ -22,7 +22,7 @@
 #ifndef QRGBACOLORPICKER_H
 #define QRGBACOLORPICKER_H
 #include "DataWidget.h"
-#include <sofa/core/loader/Material.h>
+#include <sofa/helper/types/Material.h>
 #include <sofa/defaulttype/Vec.h>
 
 #include <QColorDialog>
