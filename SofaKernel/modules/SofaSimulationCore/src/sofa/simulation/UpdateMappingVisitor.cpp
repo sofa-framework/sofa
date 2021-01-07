@@ -50,15 +50,6 @@ Visitor::Result UpdateMappingVisitor::processNodeTopDown(simulation::Node* node)
     for_each(this, node, node->mapping, &UpdateMappingVisitor::processMapping);
     for_each(this, node, node->mechanicalMapping, &UpdateMappingVisitor::processMechanicalMapping);
 
-//    {
-//            if (!node->nodeInVisualGraph.empty()) node->nodeInVisualGraph->execute<UpdateMappingVisitor>();
-//            for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
-//            {
-//                simulation::Node *child=*itChild;
-//                child->execute<UpdateMappingVisitor>();
-//            }
-//    }
-
     return RESULT_CONTINUE;
 }
 
