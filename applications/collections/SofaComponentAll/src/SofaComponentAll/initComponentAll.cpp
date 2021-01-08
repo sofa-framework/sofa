@@ -22,16 +22,11 @@
 #include <SofaComponentAll/initComponentAll.h>
 
 #include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
-#include <SofaMisc/initSofaMisc.h>
 
+#include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace component
+namespace sofa::component
 {
 
 /// Convenient functions to help user to know what contains the plugin
@@ -51,9 +46,20 @@ void initExternalModule()
     first = false;
 
     sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
-    sofa::component::initSofaMisc();
+
+    //load all other modules
+    auto moduleList = sofa_tostring(MODULE_LIST);
+    if (moduleList != nullptr)
+    {
+        std::string moduleListString(moduleList);
+        std::stringstream moduleListStream(moduleListString);
+        std::string moduleName;
+        while (std::getline(moduleListStream, moduleName, ';'))
+        {
+            sofa::helper::system::PluginManager::getInstance().loadPlugin(moduleName);
+        }
+    }
+
 }
 
 const char* getModuleName()
@@ -82,6 +88,4 @@ const char* getModuleComponentList()
 }
 
 
-} /// namespace component
-
-} /// namespace sofa
+} /// namespace sofa::component

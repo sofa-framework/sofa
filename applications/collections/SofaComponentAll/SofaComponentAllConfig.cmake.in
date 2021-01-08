@@ -3,11 +3,11 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-set(LIST_MODULES @LIST_MODULES@)
+set(MODULE_LIST @MODULE_LIST@)
 
 find_package(SofaFramework QUIET REQUIRED)
 find_package(SofaBase QUIET REQUIRED)
-foreach(module ${LIST_MODULES})
+foreach(module ${MODULE_LIST})
 	find_package(${module} QUIET REQUIRED)
 endforeach()
 

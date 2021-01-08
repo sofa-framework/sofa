@@ -19,13 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_PACKAGE_ALLCOMMONCOMPONENTS_CONFIG_H
-#define SOFA_PACKAGE_ALLCOMMONCOMPONENTS_CONFIG_H
+#pragma once
 
-#ifdef SOFA_BUILD_MISC_COLLISION
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
+
+#define SOFACOMPONENTALL_VERSION @PROJECT_VERSION@
+#define MODULE_LIST @MODULE_LIST@
+
+#ifdef SOFA_BUILD_SOFACOMPONENTALL
+#  define SOFA_TARGET @PROJECT_NAME@
 #  define SOFA_SOFACOMPONENTALL_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_SOFACOMPONENTALL_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
 #endif

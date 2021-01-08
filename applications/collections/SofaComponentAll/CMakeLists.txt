@@ -12,30 +12,32 @@ list(LENGTH _allTargets nbTargets)
 math(EXPR len "${nbTargets} - 1")
 
 set(_modulePrefix "MODULE")
-set(LIST_MODULES "")
+set(MODULE_LIST "")
 foreach(counter RANGE ${len})
     list(GET _allTargets ${counter} _target)
     list(GET _allTargetNames ${counter} _targetName)
     string(SUBSTRING "${_targetName}" 0 6 _testPrefix)
     if(${_testPrefix} MATCHES "${_modulePrefix}.*")
         find_package(${_target} REQUIRED)
-        list(APPEND LIST_MODULES ${_target})
+        list(APPEND MODULE_LIST ${_target})
     endif()
 endforeach()
 
+set(SOFACOMPONENTALL_SRC_DIR src/${PROJECT_NAME})
+
 set(HEADER_FILES
-    config.h
-    initComponentAll.h
+    ${SOFACOMPONENTALL_SRC_DIR}/config.h.in
+    ${SOFACOMPONENTALL_SRC_DIR}/initComponentAll.h
     )
 set(SOURCE_FILES
-    initComponentAll.cpp
+    ${SOFACOMPONENTALL_SRC_DIR}/initComponentAll.cpp
     )
 set(EXTRA_FILES
     README.md
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBase ${LIST_MODULES})
+target_link_libraries(${PROJECT_NAME} SofaBase ${MODULE_LIST})
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package_with_targets(
@@ -43,4 +45,5 @@ sofa_create_package_with_targets(
     PACKAGE_VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_INSTALL_DIR "SofaComponentAll"
+    INCLUDE_SOURCE_DIR "src"
     )
