@@ -631,6 +631,8 @@ public:
 
     typedef void (OwnerType::*ValidatorFn)(DestPtr v, std::size_t index, bool add);
 
+    MultiLink() : m_validator{nullptr} {}
+
     MultiLink(const BaseLink::InitLink<OwnerType>& init)
         : Inherit(init), m_validator(nullptr)
     {
