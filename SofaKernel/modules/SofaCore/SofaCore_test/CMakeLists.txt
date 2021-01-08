@@ -13,6 +13,8 @@ set(SOURCE_FILES
     objectmodel/DataFileName_test.cpp
     objectmodel/DataCallback_test.cpp
     objectmodel/DDGNode_test.cpp
+    objectmodel/MultiLink_test.cpp
+    objectmodel/SingleLink_test.cpp
     DataEngine_test.cpp
     TrackedData_test.cpp
     PathResolver_test.cpp
