@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.12)
 find_package(SofaFramework)
 
 sofa_add_subdirectory_external(SofaHighOrder SofaHighOrder)
-sofa_add_subdirectory_external(SofaPython3 SofaPython3)
 
 sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default and first as it is used by other plugins.
 sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)
@@ -20,6 +19,8 @@ if(NOT SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
     # Added here because all plugins above may have a soft dependency on SofaPython
     sofa_add_plugin(SofaPython SofaPython)
 endif()
+
+sofa_add_subdirectory_external(SofaPython3 SofaPython3)
 
 sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image
 sofa_add_plugin(Flexible Flexible)     # Depends on image, CImgPlugin, SofaHighOrderTopology (soft)
