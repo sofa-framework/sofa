@@ -390,9 +390,7 @@ protected:
 
     Base* dynamicCast(Base* obj) const override
     {
-        T* ptr = nullptr;
-        T::dynamicCast(ptr, obj);
-        return ptr;
+        return dynamic_cast<T*>(obj);
     }
 
     bool isInstance(Base* obj) const override

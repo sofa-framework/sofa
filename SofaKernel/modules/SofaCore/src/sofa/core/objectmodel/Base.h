@@ -135,12 +135,6 @@ public:
     static const BaseClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
 
-    template<class T>
-    static void dynamicCast(T*& ptr, Base* b)
-    {
-        ptr = dynamic_cast<T*>(b);
-    }
-
 protected:
     /// Constructor cannot be called directly
     /// Use the New() method instead
