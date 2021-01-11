@@ -24,7 +24,7 @@
 
 #include <sofa/gui/qt/config.h>
 
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <qgl.h>
 #include <qtimer.h>
 #include <cmath>
@@ -37,10 +37,10 @@
 #include <sofa/gui/ViewerFactory.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/gl/Transformation.h>
-#include <sofa/helper/gl/Trackball.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/helper/visual/Transformation.h>
+#include <sofa/helper/visual/Trackball.h>
 #include <sofa/helper/system/thread/CTime.h>
+#include <sofa/gl/Texture.h>
 #include <SofaSimulationCommon/xml/Element.h>
 
 
