@@ -350,7 +350,7 @@ public:
     const MapLink& getLinkAliases() const { return m_aliasLink; }
 
     virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
-    virtual void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
+    virtual Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
     template<class T>
     bool findLinkDest(T*& ptr, const std::string& path, const BaseLink* link)
     {
