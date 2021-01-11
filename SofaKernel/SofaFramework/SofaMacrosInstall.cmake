@@ -210,7 +210,7 @@ endmacro()
 #   Use AUTO_SET_TARGET_PROPERTIES to enable default properties setting
 #   on all targets (see sofa_auto_set_target_properties).
 macro(sofa_add_targets_to_package)
-    set(oneValueArgs PACKAGE_NAME PACKAGE_VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE)
+    set(oneValueArgs PACKAGE_NAME PACKAGE_VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE OPTIMIZE_BUILD_DIR)
     set(multiValueArgs TARGETS)
     set(optionalArgs AUTO_SET_TARGET_PROPERTIES)
     cmake_parse_arguments("ARG" "${optionalArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -481,7 +481,7 @@ endmacro()
 # INCLUDE_INSTALL_DIR <include_install_dir>
 #   Directory in which headers will be copied into <CMAKE_INSTALL_PREFIX>/include/<include_install_dir>
 macro(sofa_install_targets_in_package)
-    set(oneValueArgs PACKAGE_NAME PACKAGE_VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE)
+    set(oneValueArgs PACKAGE_NAME PACKAGE_VERSION INCLUDE_ROOT_DIR INCLUDE_INSTALL_DIR INCLUDE_SOURCE_DIR EXAMPLE_INSTALL_DIR RELOCATABLE OPTIMIZE_BUILD_DIR)
     set(multiValueArgs TARGETS)
     set(optionalArgs AUTO_SET_TARGET_PROPERTIES)
     cmake_parse_arguments("ARG" "${optionalArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -541,14 +541,17 @@ macro(sofa_install_targets_in_package)
             # Optimize build dir
             set(header_relative_dir_for_build "${header_relative_dir}")
             string(REPLACE "../" "" header_relative_dir_for_build "${header_relative_dir_for_build}") # keep out-of-tree headers
-            if("${target}" STREQUAL "${ARG_PACKAGE_NAME}") # Target is a package
-                if("${header_relative_dir_for_build}" STREQUAL "") # Headers are not in a subdirectory
-                    set(header_relative_dir_for_build "${target}")
-                endif()
-                if(NOT "${target}" STREQUAL "SofaFramework" AND
-                   NOT "${ARG_INCLUDE_INSTALL_DIR}/${header_relative_dir_for_build}" MATCHES "${target}/${target}")
-                    # Force include/PackageName/PackageName/... layout for package headers in build directory
-                    set(header_relative_dir_for_build "${target}/${header_relative_dir_for_build}")
+            set(optimize_build_dir ${ARG_OPTIMIZE_BUILD_DIR})
+            if(optimize_build_dir OR NOT DEFINED optimize_build_dir)
+                if("${target}" STREQUAL "${ARG_PACKAGE_NAME}") # Target is a package
+                    if("${header_relative_dir_for_build}" STREQUAL "") # Headers are not in a subdirectory
+                        set(header_relative_dir_for_build "${target}")
+                    endif()
+                    if(NOT "${target}" STREQUAL "SofaFramework" AND
+                       NOT "${ARG_INCLUDE_INSTALL_DIR}/${header_relative_dir_for_build}" MATCHES "${target}/${target}")
+                        # Force include/PackageName/PackageName/... layout for package headers in build directory
+                        set(header_relative_dir_for_build "${target}/${header_relative_dir_for_build}")
+                    endif()
                 endif()
             endif()
 
