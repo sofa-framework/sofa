@@ -348,8 +348,8 @@ public:
     template<class T>
     bool findLinkDest(T*& ptr, const std::string& path, const BaseLink* link)
     {
-        void* result = findLinkDestClass(T::GetClass(), path, link);
-        ptr = reinterpret_cast<T*>(result);
+        Base* result = findLinkDestClass(T::GetClass(), path, link);
+        ptr = dynamic_cast<T*>(result);
         return (result != nullptr);
     }
 
