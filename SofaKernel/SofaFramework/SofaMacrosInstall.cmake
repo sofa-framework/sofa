@@ -217,9 +217,13 @@ macro(sofa_auto_set_target_properties)
             string(REGEX REPLACE "([^A-Z])([A-Z])" "\\1_\\2" sofa_target_oldname "${target}")
             string(REPLACE "Sofa" "" sofa_target_oldname "${sofa_target_oldname}")
             string(TOUPPER "${sofa_target_oldname}" sofa_target_oldname_upper)
-            target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD${sofa_target_oldname_upper}")
+            string(REPLACE "." "_" sofa_oldname_preprocessor "${sofa_target_oldname_upper}")
+            target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD${sofa_oldname_preprocessor}")
         endif()
-        target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD_${sofa_target_name_upper}")
+
+        # C Preprocessor definitions do not handle dot character, so it is replaced with an underscore
+        string(REPLACE "." "_" sofa_name_preprocessor "${sofa_target_name_upper}")
+        target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD_${sofa_name_preprocessor}")
 
         # Set target include directories (if not already set manually)
         set(include_source_root "${CMAKE_CURRENT_SOURCE_DIR}/..") # default but bad practice
