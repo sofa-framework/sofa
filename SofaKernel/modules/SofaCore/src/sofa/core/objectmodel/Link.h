@@ -802,12 +802,7 @@ public:
 
     void reset()
     {
-        ValueType& value = m_value.get();
-        const DestPtr before = TraitsValueType::get(value);
-        if (!before) return;
-        TraitsValueType::set(value, nullptr);
-        updateCounter();
-        changed(before, nullptr);
+        set(nullptr);
     }
 
     void set(DestPtr v)
@@ -834,7 +829,12 @@ public:
 
     void setPath(const std::string& path)
     {
-        if (path.empty()) { reset(); return; }
+        if (path.empty())
+        {
+            set(nullptr);
+            return;
+        }
+
         DestType* ptr = nullptr;
         if (m_owner)
             PathResolver::FindLinkDest(m_owner, ptr, path, this);
@@ -868,8 +868,7 @@ public:
         return ok;
     }
 
-#ifndef SOFA_MAYBE_DEPRECATED
-    // Convenient operators to make a SingleLink appear as a regular pointer
+    /// Convenient operators to make a SingleLink appear as a regular pointer
     operator DestType*() const
     {
         return get();
@@ -888,7 +887,6 @@ public:
         set(v);
         return v;
     }
-#endif
 
 protected:
     ValidatorFn m_validator;
