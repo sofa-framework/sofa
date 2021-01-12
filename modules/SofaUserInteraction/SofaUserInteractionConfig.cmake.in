@@ -3,7 +3,8 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaCommon QUIET REQUIRED)
+find_package(SofaMeshCollision QUIET REQUIRED)
+find_package(SofaDeformable QUIET REQUIRED)
 find_package(SofaGeneralMeshCollision QUIET REQUIRED)
 find_package(SofaGeneralVisual QUIET REQUIRED)
 find_package(SofaTopologyMapping QUIET REQUIRED)

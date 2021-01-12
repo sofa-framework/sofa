@@ -97,8 +97,8 @@ QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
     //Multisampling
     if(nbMSAASamples > 1)
     {
-        std::cout <<"QtViewer: Set multisampling anti-aliasing (MSSA) with " << nbMSAASamples << " samples." << std::endl;
-        f.setSamples(nbMSAASamples);
+        msg_info("QtViewer") <<"QtViewer: Set multisampling anti-aliasing (MSSA) with " << nbMSAASamples << " samples." ;
+        f.setSamples(static_cast<int>(nbMSAASamples));
     }
 
     if(!SOFAGUIQT_ENABLE_VSYNC)
@@ -109,6 +109,7 @@ QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
     int vmajor = 3, vminor = 2;
     f.setVersion(vmajor,vminor);
     f.setProfile(QSurfaceFormat::CompatibilityProfile);
+    f.setOption(QSurfaceFormat::DeprecatedFunctions, true);
 
     f.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
 
@@ -154,9 +155,6 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     : QOpenGLWidget(setupGLFormat(nbMSAASamples), parent)
 #endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 {
-#ifdef __linux__
-    ::setenv("MESA_GL_VERSION_OVERRIDE", "3.0", 1);
-#endif // __linux
     m_backend.reset(new GLBackend());
     pick = new GLPickHandler();
 
@@ -220,18 +218,16 @@ QtViewer::~QtViewer()
 // -----------------------------------------------------------------
 void QtViewer::initializeGL(void)
 {
-    std::cout << "QtViewer: OpenGL " << glGetString(GL_VERSION)
-              << " context created." << std::endl;
-    if (std::string((const char*)glGetString(GL_VENDOR)).find("Intel") !=
-            std::string::npos)
+    msg_info("QtViewer") << "OpenGL version: " << glGetString(GL_VERSION) << " (" << glGetString(GL_VENDOR) << ")";
+    if (std::string((const char*)glGetString(GL_VENDOR)).find("Intel") != std::string::npos)
     {
         const char* mesaEnv = ::getenv("MESA_GL_VERSION_OVERRIDE");
         if ( !mesaEnv || std::string(mesaEnv) != "3.0")
-            msg_error("runSofa") << "QtViewer is not compatible with Intel drivers on "
-                                    "Linux. To use runSofa, either change the gui to "
-                                    "qglviewer (runSofa -g qglviewer) or set the "
-                                    "environment variable \"MESA_GL_VERSION_OVERRIDE\" "
-                                    "to the value \"3.0\"";
+            msg_warning("QtViewer") << "QtViewer might not be compatible with Intel drivers on "
+                                       "Linux. If you run into rendering issues, try changing "
+                                       "the gui to qglviewer (runSofa -g qglviewer) or set the "
+                                       "environment variable \"MESA_GL_VERSION_OVERRIDE\" "
+                                       "to the value \"3.0\"";
     }
 
     static GLfloat specref[4];
@@ -1385,7 +1381,11 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
                 _mouseInteractorSavedPosY = eventY;
             }
             // Mouse middle button is pushed
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
             else if (e->button() == Qt::MidButton)
+#else
+            else if (e->button() == Qt::MiddleButton)
+#endif
             {
                 _navigationMode = BTMIDDLE_MODE;
                 _mouseInteractorMoving = true;
@@ -1416,7 +1416,11 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
                 }
             }
             // Mouse middle button is released
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
             else if (e->button() == Qt::MidButton)
+#else
+            else if (e->button() == Qt::MiddleButton)
+#endif
             {
                 if (_mouseInteractorMoving)
                 {

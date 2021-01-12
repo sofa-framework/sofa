@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 #include <SofaGeneralEngine/DilateEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 

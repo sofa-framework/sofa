@@ -68,7 +68,8 @@ list(APPEND SOURCE_FILES
     ${SOFAUSERINTERACTION_SRC}/SuturePointPerformer.cpp
     )
 
-find_package(SofaCommon REQUIRED) # SofaMeshCollision SofaDeformable
+find_package(SofaMeshCollision REQUIRED)
+find_package(SofaDeformable REQUIRED)
 find_package(SofaGeneralMeshCollision REQUIRED)
 find_package(SofaGeneralVisual REQUIRED)
 find_package(SofaTopologyMapping REQUIRED)
@@ -77,6 +78,11 @@ find_package(SofaGraphComponent REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision SofaGeneralVisual SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent)
+
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

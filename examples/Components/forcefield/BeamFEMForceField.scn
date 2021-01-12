@@ -5,7 +5,9 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaMiscMapping'/> 
     <RequiredPlugin name='SofaGeneralLinearSolver'/>
-    <RequiredPlugin name='SofaGeneralTopology'/>  
+    <RequiredPlugin name='SofaGeneralTopology'/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name='SofaGeneralSimpleFem'/>
     
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />

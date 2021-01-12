@@ -20,12 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBase/initSofaBase.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-#include <SofaBaseMechanics/initBaseMechanics.h>
-#include <SofaBaseCollision/initBaseCollision.h>
-#include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseVisual/initBaseVisual.h>
-#include <SofaBaseUtils/initBaseUtils.h>
+#include <SofaBaseTopology/initSofaBaseTopology.h>
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
+#include <SofaBaseCollision/initSofaBaseCollision.h>
+#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
+#include <SofaBaseVisual/initSofaBaseVisual.h>
+#include <SofaBaseUtils/initSofaBaseUtils.h>
+#include <SofaEigen2Solver/initSofaEigen2Solver.h>
 
 namespace sofa
 {
@@ -39,12 +40,14 @@ void initSofaBase()
     static bool first = true;
     if (first)
     {
-        initBaseTopology();
-        initBaseMechanics();
-        initBaseCollision();
-        initBaseLinearSolver();
-        initBaseVisual();
-        initBaseUtils();
+        initSofaBaseTopology();
+        initSofaBaseMechanics();
+        initSofaBaseCollision();
+        initSofaBaseLinearSolver();
+        initSofaBaseVisual();
+        initSofaBaseUtils();
+        initSofaEigen2Solver();
+
         first = false;
     }
 }

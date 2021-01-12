@@ -22,6 +22,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/DefaultAnimationLoop.h
     ${SRC_ROOT}/DefaultVisualManagerLoop.h
     ${SRC_ROOT}/DeleteVisitor.h
+    ${SRC_ROOT}/ExportDotVisitor.h
     ${SRC_ROOT}/ExportGnuplotVisitor.h
     ${SRC_ROOT}/ExportOBJVisitor.h
     ${SRC_ROOT}/InitVisitor.h
@@ -92,6 +93,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/DefaultAnimationLoop.cpp
     ${SRC_ROOT}/DefaultVisualManagerLoop.cpp
     ${SRC_ROOT}/DeleteVisitor.cpp
+    ${SRC_ROOT}/ExportDotVisitor.cpp
     ${SRC_ROOT}/ExportGnuplotVisitor.cpp
     ${SRC_ROOT}/ExportOBJVisitor.cpp
     ${SRC_ROOT}/InitVisitor.cpp

@@ -47,6 +47,7 @@
 #include <sofa/simulation/Node.h>
 #endif
 
+#include <QScreen>
 #include "QSofaListView.h"
 #include "QDisplayPropertyWidget.h"
 #include "FileManagement.h"
@@ -393,7 +394,11 @@ RealGUI::RealGUI ( const char* viewername)
     }
 
     this->setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowTabbedDocks);
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     dockWidget->setFeatures(QDockWidget::AllDockWidgetFeatures);
+#else
+    dockWidget->setFeatures(QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
+#endif
     dockWidget->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
 
     connect(dockWidget, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(toolsDockMoved()));
@@ -452,7 +457,11 @@ RealGUI::RealGUI ( const char* viewername)
     SofaVideoRecorderManager::getInstance()->hide();
 
     //Center the application
+#if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
+#else
+    const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();
+#endif
     this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
 
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
@@ -1225,8 +1234,11 @@ void RealGUI::setViewerResolution ( int w, int h )
         QSize winSize = size();
         QSize viewSize = ( getViewer() ) ? getQtViewer()->getQWidget()->size() : QSize(0,0);
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
         const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
-
+#else
+        const QRect screen = QGuiApplication::screens().at(QApplication::desktop()->screenNumber(this))->availableGeometry();
+#endif
         QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
         if (newWinSize.width() > screen.width()) newWinSize.setWidth(screen.width()-20);
         if (newWinSize.height() > screen.height()) newWinSize.setHeight(screen.height()-20);

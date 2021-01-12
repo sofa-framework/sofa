@@ -12,17 +12,11 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    ExportDotVisitor.cpp
-    GNode.cpp
-    GNodeMultiMappingElement.cpp
-    GNodeVisitor.cpp
-    TreeSimulation.cpp
     init.cpp
-)
-
+    )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC)
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaSimulation

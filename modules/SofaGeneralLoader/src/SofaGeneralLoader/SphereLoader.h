@@ -36,11 +36,17 @@ protected:
 
 public:
     // Point coordinates in 3D in double.
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions; ///< Sphere centers
-    Data< helper::vector<SReal> > radius; ///< Radius of each sphere
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_positions; ///< Sphere centers
+    Data< helper::vector<SReal> > d_radius; ///< Radius of each sphere
     Data< defaulttype::Vector3 > d_scale; ///< Scale applied to sphere positions
+    Data< defaulttype::Vector3 > d_rotation; ///< Rotation of the DOFs
     Data< defaulttype::Vector3 > d_translation; ///< Translation applied to sphere positions
     bool load() override;
+
+    void applyTransform();
+
+protected:
+    helper::vector<sofa::defaulttype::Vec<3,SReal> > m_savedPositions;
 };
 
 } //namespace sofa::component::loader

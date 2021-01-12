@@ -23,8 +23,6 @@
 #define SOFA_COMPONENT_VISUALMODEL_OGLCOLORMAP_H
 #include "config.h"
 
-#ifndef SOFA_NO_OPENGL
-
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/OptionsGroup.h>
@@ -51,7 +49,7 @@ public:
     SOFA_CLASS(OglColorMap, sofa::core::visual::VisualModel);
 
     typedef defaulttype::Vec3f Color3;  // Color tripplet
-    typedef defaulttype::Vec4f Color;   // ... with alpha value
+    typedef sofa::helper::types::RGBAColor Color;   // ... with alpha value
     typedef sofa::helper::vector<Color> VecColor;
     
 protected:
@@ -126,7 +124,5 @@ public:
 } // namespace component
 
 } // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
 
 #endif

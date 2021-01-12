@@ -38,8 +38,8 @@ using namespace sofa::defaulttype;
 #include <SofaEngine/BoxROI.h>
 using sofa::component::engine::BoxROI;
 
-#include <SofaBaseMechanics/initBaseMechanics.h>
-using sofa::component::initBaseMechanics;
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
+using sofa::component::initSofaBaseMechanics;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation;
@@ -72,7 +72,7 @@ struct BoxROITest :  public ::testing::Test
 
     void SetUp() override
     {
-        initBaseMechanics();
+        initSofaBaseMechanics();
         setSimulation( m_simu = new DAGSimulation() );
         m_root = m_simu->createNewGraph("root");
 
@@ -194,6 +194,7 @@ struct BoxROITest :  public ::testing::Test
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >   "
                 "   <Node name='Level 1'>                                      "
+                "       <RequiredPlugin  name='SofaLoader' />                  "
                 "       <TriangleSetTopologyContainer  name='Container' />     "
                 "       <MeshObjLoader filename='mesh/single_triangle.obj'/>                   "
                 "       <BoxROI name='myBoxROI'/>                              "

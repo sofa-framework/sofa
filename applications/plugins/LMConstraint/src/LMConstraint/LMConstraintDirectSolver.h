@@ -24,6 +24,7 @@
 
 #include <LMConstraint/LMConstraintSolver.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/core/MultiVecId.h>
 
 namespace sofa::component::constraintset
 {
@@ -32,6 +33,7 @@ class LMCONSTRAINT_API LMConstraintDirectSolver : public LMConstraintSolver
 {
     typedef Eigen::SparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
     typedef helper::vector<linearsolver::LLineManipulator> JacobianRows;
+    using MultiVecId = sofa::core::MultiVecId;
 
 public:
     SOFA_CLASS(LMConstraintDirectSolver, LMConstraintSolver);

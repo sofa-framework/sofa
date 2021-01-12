@@ -42,7 +42,8 @@ set(SOURCE_FILES
     )
 
 find_package(SofaBase REQUIRED) # SofaBaseCollision
-find_package(SofaCommon REQUIRED) # SofaMeshCollision SofaLoader
+find_package(SofaMeshCollision REQUIRED)
+find_package(SofaLoader REQUIRED)
 find_package(SofaGeneralLoader REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

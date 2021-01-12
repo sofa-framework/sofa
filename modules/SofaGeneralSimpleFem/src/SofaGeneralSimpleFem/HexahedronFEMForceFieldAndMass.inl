@@ -317,13 +317,13 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
     // since drawTool requires a std::vector<Vector3> we have to convert x in an ugly way
     std::vector<defaulttype::Vector3> pos;
     pos.resize(x.size());
-    std::vector<defaulttype::Vector3>::iterator posIT = pos.begin();
+    auto posIT = pos.begin();
     typename VecCoord::const_iterator xIT = x.begin();
     for(; posIT != pos.end() ; ++posIT, ++xIT)
     {
         *posIT = *xIT;
     }
-    vparams->drawTool()->drawPoints(pos,2.0f, defaulttype::Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
+    vparams->drawTool()->drawPoints(pos,2.0f, sofa::helper::types::RGBAColor::white());
 }
 
 } // namespace sofa::component::forcefield

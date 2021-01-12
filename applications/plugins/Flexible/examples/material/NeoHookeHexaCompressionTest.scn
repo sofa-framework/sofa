@@ -30,7 +30,7 @@
     <ProjectToPlaneConstraint normal="1 0 0" indices="@[-1].indices" />
 
     <!--Shape function-->
-    <BarycentricShapeFunction template="ShapeFunctiond" />
+    <BarycentricShapeFunction template="ShapeFunction3d" />
     
     <!--Decomposition of the cubes in tetrahedra -->
     <Node name="Tetra" >

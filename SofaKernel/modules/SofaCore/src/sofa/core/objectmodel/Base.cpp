@@ -454,7 +454,6 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
             if (!dataVec[d]->setParent(value))
             {
                 BaseData* data = nullptr;
-                BaseLink* bl = nullptr;
 
                 PathResolver::FindBaseDataFromPath(dataVec[d] , value);
 

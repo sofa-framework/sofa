@@ -19,6 +19,7 @@ find_package(SofaFramework QUIET REQUIRED)
 find_package(SofaUserInteraction QUIET REQUIRED)
 find_package(SofaGraphComponent QUIET REQUIRED)
 find_package(SofaMiscForceField QUIET REQUIRED) # SofaGuiQt
+find_package(SofaLoader QUIET REQUIRED)
 
 if(SOFAGUI_HAVE_SOFAGUIQT)
     if(SOFAGUIQT_HAVE_QTVIEWER)

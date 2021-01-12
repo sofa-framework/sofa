@@ -2,6 +2,8 @@
 <!-- Automatic Tetrahedron adding example: Element added are define in: ./AddingTetrahedraProcess.txt -->
 <Node name="root" gravity="0 0 -9" dt="0.01">
     <RequiredPlugin name='SofaMiscTopology'/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name='SofaGeneralSimpleFem'/>
     
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showWireframe" />
     <DefaultPipeline verbose="0" />

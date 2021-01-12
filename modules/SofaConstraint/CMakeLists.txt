@@ -77,12 +77,19 @@ list(APPEND SOURCE_FILES
     )
 
 find_package(SofaBase REQUIRED) # SofaBaseLinearSolver
-find_package(SofaCommon REQUIRED) # SofaImplicitOdeSolver SofaMeshCollision SofaSimpleFem
+find_package(SofaImplicitOdeSolver REQUIRED)  
+find_package(SofaMeshCollision REQUIRED)
+find_package(SofaSimpleFem REQUIRED)
 find_package(SofaUserInteraction REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
+
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

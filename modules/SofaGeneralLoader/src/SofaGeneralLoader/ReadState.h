@@ -64,6 +64,8 @@ protected:
 public:
     void init() override;
 
+    void bwdInit() override;
+
     void reset() override;
 
     void setTime(double time);

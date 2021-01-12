@@ -22,7 +22,6 @@
 #pragma once
 #include <SofaUserInteraction/MouseInteractor.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/gl.h>
 
 #include <map>
 namespace sofa::component::collision

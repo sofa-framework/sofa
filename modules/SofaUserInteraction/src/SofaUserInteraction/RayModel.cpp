@@ -113,7 +113,7 @@ void RayCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (vparams->displayFlags().getShowCollisionModels())
     {       
-        for (int i=0; i<size; i++)
+        for (sofa::Index i=0; i<size; i++)
         {
             draw(vparams,i);
         }
@@ -135,7 +135,7 @@ void RayCollisionModel::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        for (int i=0; i<size; i++)
+        for (sofa::Index i=0; i<size; i++)
         {
             Ray r(this, i);
             const Vector3& o = r.origin();

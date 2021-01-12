@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/defaulttype/AbstractTypeInfo.h>
 #include <sofa/defaulttype/TypeInfoID.h>
+#include <sofa/defaulttype/typeinfo/NoTypeInfo.h>
 
 namespace sofa::defaulttype
 {
@@ -29,7 +30,10 @@ namespace sofa::defaulttype
 class SOFA_DEFAULTTYPE_API NameOnlyTypeInfo : public AbstractTypeInfo
 {
 public:
-    NameOnlyTypeInfo(const std::string& name, const std::string& typeName)
+    const AbstractTypeInfo* BaseType() const override { return NoTypeInfo::Get(); }
+    const AbstractTypeInfo* ValueType() const override { return NoTypeInfo::Get(); }
+
+    NameOnlyTypeInfo(const std::string& name, const std::string& /*typeName*/)
     {
         m_name = name;
         m_typeName = name;
@@ -37,53 +41,53 @@ public:
     }
 
     /// \brief Returns the name of this type.
-    virtual std::string name() const  {return m_name; }
-    virtual std::string getTypeName() const  {return m_typeName; }
+    std::string name() const override  {return m_name; }
+    std::string getTypeName() const override  {return m_typeName; }
 
     /// True iff the TypeInfo for this type contains valid information.
     /// A Type is considered "Valid" if there's at least one specialization of the ValueType
-    virtual bool ValidInfo() const { return false; }
+    bool ValidInfo() const override { return false; }
 
     /// True iff this type has a fixed size.
     ///  (It cannot be resized)
-    virtual bool FixedSize() const {return false;}
+    bool FixedSize() const override {return false;}
     /// True iff the default constructor of this type is equivalent to setting the memory to 0.
-    virtual bool ZeroConstructor() const {return false;}
+    bool ZeroConstructor() const override {return false;}
     /// True iff copying the data can be done with a memcpy().
-    virtual bool SimpleCopy() const {return false;}
+    bool SimpleCopy() const override {return false;}
     /// True iff the layout in memory is simply N values of the same base type.
     /// It means that you can use the abstract index system to iterate over the elements of the type.
     /// (It doesn't mean that the BaseType is of a fixed size)
-    virtual bool SimpleLayout() const {return false;}
+    bool SimpleLayout() const override {return false;}
     /// True iff this type uses integer values.
-    virtual bool Integer() const {return false;}
+    bool Integer() const override {return false;}
     /// True iff this type uses scalar values.
-    virtual bool Scalar() const {return false;}
+    bool Scalar() const override {return false;}
     /// True iff this type uses text values.
-    virtual bool Text() const {return false;}
+    bool Text() const override {return false;}
     /// True iff this type uses copy-on-write.
-    virtual bool CopyOnWrite() const {return false;}
+    bool CopyOnWrite() const override {return false;}
     /// True iff this type is a container of some sort.
     ///
     /// That is, if it can contain several values. In particular, strings are
     /// not considered containers.
-    virtual bool Container() const {return false;}
+    bool Container() const override {return false;}
 
     /// The size of this type, in number of elements.
     /// For example, the size of a `fixed_array<fixed_array<int, 2>, 3>` is 6,
     /// and those six elements are conceptually numbered from 0 to 5.  This is
     /// relevant only if FixedSize() is true. I FixedSize() is false,
     /// the return value will be equivalent to the one of byteSize()
-    virtual sofa::Size size() const {return -1;}
+    sofa::Size size() const override {return -1;}
     /// The size in bytes of the ValueType
     /// For example, the size of a fixed_array<fixed_array<int, 2>, 3>` is 4 on most systems,
     /// as it is the byte size of the smallest dimension in the array (int -> 32bit)
-    virtual sofa::Size byteSize() const {return -1;}
+    sofa::Size byteSize() const override {return -1;}
 
     /// The size of \a data, in number of iterable elements
     /// (For containers, that'll be the number of elements in the 1st dimension).
     /// For example, with type == `
-    virtual sofa::Size size(const void* data) const {return -1;}
+    sofa::Size size(const void* /*data*/) const override {return -1;}
     /// Resize \a data to \a size elements, if relevant.
 
     /// But resizing is not always relevant, for example:
@@ -94,34 +98,34 @@ public:
     ///   abstraction;
     ///
     /// Returns true iff the data was resizable
-    virtual bool setSize(void* data, sofa::Size size) const { return false; };
+    bool setSize(void* /*data*/, sofa::Size /*size*/) const override { return false; };
 
     /// Get the value at \a index of \a data as an integer.
     /// Relevant only if this type can be casted to `long long`.
-    virtual long long   getIntegerValue(const void* data, Index index) const {return 0;}
+    long long   getIntegerValue(const void* /*data*/, Index /*index*/) const override {return 0;}
     /// Get the value at \a index of \a data as a scalar.
     /// Relevant only if this type can be casted to `double`.
-    virtual double      getScalarValue (const void* data, Index index) const {return 0;}
+    double      getScalarValue (const void* /*data*/, Index /*index*/) const override {return 0;}
     /// Get the value at \a index of \a data as a string.
-    virtual std::string getTextValue   (const void* data, Index index) const {return 0;}
+    std::string getTextValue   (const void* /*data*/, Index /*index*/) const override {return "";}
 
     /// Set the value at \a index of \a data from an integer value.
-    virtual void setIntegerValue(void* data, Index index, long long value) const {return;}
+    void setIntegerValue(void* /*data*/, Index /*index*/, long long /*value*/) const override {}
     /// Set the value at \a index of \a data from a scalar value.
-    virtual void setScalarValue (void* data, Index index, double value) const {return;}
+    void setScalarValue (void* /*data*/, Index /*index*/, double /*value*/) const override {}
     /// Set the value at \a index of \a data from a string value.
-    virtual void setTextValue(void* data, Index index, const std::string& value) const {return;}
+    void setTextValue(void* /*data*/, Index /*index*/, const std::string& /*value*/) const override {}
 
     /// Get a read pointer to the underlying memory
     /// Relevant only if this type is SimpleLayout
-    virtual const void* getValuePtr(const void* type) const {return 0;}
+    const void* getValuePtr(const void* /*type*/) const override {return nullptr;}
 
     /// Get a write pointer to the underlying memory
     /// Relevant only if this type is SimpleLayout
-    virtual void* getValuePtr(void* type) const {return 0;}
+    void* getValuePtr(void* /*type*/) const override {return nullptr;}
 
     /// Get the type_info for this type.
-    virtual const std::type_info* type_info() const {return &typeid(this); }
+    const std::type_info* type_info() const override {return &typeid(this); }
 
 protected:
     const TypeInfoId& getBaseTypeId() const override { return TypeInfoId::GetTypeId<NoTypeInfo>(); }

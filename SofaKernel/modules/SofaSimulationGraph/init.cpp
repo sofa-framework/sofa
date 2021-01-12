@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "graph.h"
-
+#include <SofaSimulationGraph/config.h>
 #include <sofa/simulation/init.h>
 #include <sofa/helper/init.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace graph
+namespace sofa::simulation::graph
 {
 
 static bool s_initialized = false;
@@ -74,9 +67,5 @@ static const struct CleanupCheck
             helper::printLibraryNotCleanedUpWarning("SofaSimulationGraph", "sofa::simulation::graph::cleanup()");
     }
 } check;
-
-} // namespace graph
-
-} // namespace simulation
 
 } // namespace sofa
