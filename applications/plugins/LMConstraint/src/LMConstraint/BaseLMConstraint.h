@@ -136,7 +136,6 @@ class LMCONSTRAINT_API BaseLMConstraint: public BaseConstraintSet
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseLMConstraint, BaseConstraintSet);
-//    SOFA_BASE_CAST_IMPLEMENTATION(BaseLMConstraint)
 
 protected:
     BaseLMConstraint();
