@@ -38,7 +38,7 @@ std::map<std::string, Deprecated> deprecatedComponents = {
 
 std::map<std::string, ComponentChange> uncreatableComponents = {
     // SofaDistanceGrid was pluginized in #389
-    {"BarycentricPenalityContact", Pluginized("v17.12", "SofaDistanceGrid")},
+    {"BarycentricPenalityContact", Pluginized("v17.12", "SofaMeshCollision")},
     {"DistanceGridCollisionModel", Pluginized("v17.12", "SofaDistanceGrid")},
     {"FFDDistanceGridDiscreteIntersection", Pluginized("v17.12", "SofaDistanceGrid")},
     {"RayDistanceGridContact", Pluginized("v17.12", "SofaDistanceGrid")},
