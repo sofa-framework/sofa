@@ -353,10 +353,10 @@ public:
     }
     SOFA_END_DEPRECATION_AS_ERROR
 
-
     bool add(DestPtr v)
     {
-        if (!v) return false;
+        if (!v)
+            return false;
         std::size_t index = TraitsContainer::add(m_value,v);
         updateCounter();
         added(v, index);
@@ -365,7 +365,8 @@ public:
 
     bool add(DestPtr v, const std::string& path)
     {
-        if (!v && path.empty()) return false;
+        if (!v && path.empty())
+            return false;
         std::size_t index = TraitsContainer::add(m_value,v);
         TraitsValueType::setPath(m_value[index],path);
         updateCounter();
@@ -375,7 +376,8 @@ public:
 
     bool addPath(const std::string& path)
     {
-        if (path.empty()) return false;
+        if (path.empty())
+            return false;
         DestType* ptr = nullptr;
         if (m_owner)
             PathResolver::FindLinkDest(m_owner, ptr, path, this);
@@ -384,13 +386,9 @@ public:
 
     bool remove(DestPtr v)
     {
-        if (!v) return false;
-        std::size_t index = TraitsContainer::find(m_value,v);
-        if (index >= m_value.size()) return false;
-        TraitsContainer::remove(m_value,index);
-        updateCounter();
-        removed(v, index);
-        return true;
+        if (!v)
+            return false;
+        return removeAt(TraitsContainer::find(m_value,v));
     }
 
     bool removeAt(std::size_t index)
@@ -399,8 +397,8 @@ public:
             return false;
 
         TraitsContainer::remove(m_value,index);
-        updateCounter();
         DestPtr v=m_value[index];
+        updateCounter();
         removed(v, index);
         return true;
     }
@@ -413,13 +411,7 @@ public:
         {
             std::string p = getPath(index);
             if (p == path)
-            {
-                DestPtr v = m_value[index];
-                TraitsContainer::remove(m_value,index);
-                updateCounter();
-                removed(v, index);
-                return true;
-            }
+                return removeAt(index);
         }
         return false;
     }
