@@ -31,6 +31,8 @@ using sofa::core::objectmodel::BaseLink ;
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;
 
+#include "BaseLink_test.h"
+
 class EmptyObject : public BaseObject
 {
 public:
@@ -134,3 +136,9 @@ TEST_F(SingleLink_test, checkValidReadWithoutStorePath )
     EXPECT_EQ(slink.get(), nullptr);
     EXPECT_EQ(slink.getSize(), 0);
 }
+
+
+TYPED_TEST_SUITE_P(BaseLinkTests);
+
+using SingleLinkInterfacesTests = ::testing::Types<SingleLink<BaseObject, BaseObject, BaseLink::FLAG_STOREPATH>>;
+TYPED_TEST_SUITE(BaseLinkTests, SingleLinkInterfacesTests);

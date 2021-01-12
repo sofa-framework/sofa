@@ -31,5 +31,15 @@ using sofa::core::objectmodel::BaseLink ;
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;
 
+/***********************************************************************************
+ * This is checking that the predicates about BaseLink are still valid in an
+ * inhertited type
+ ***********************************************************************************/
+template<class Link>
+class BaseLinkTests : public BaseTest
+{
+public:
 
-
+private:
+    Link m_link;
+};
