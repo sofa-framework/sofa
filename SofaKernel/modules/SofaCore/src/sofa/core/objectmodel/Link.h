@@ -396,8 +396,8 @@ public:
         if (index >= m_value.size())
             return false;
 
+        DestPtr v = TraitsDestPtr::get(TraitsValueType::get(m_value[index]));
         TraitsContainer::remove(m_value,index);
-        DestPtr v=m_value[index];
         updateCounter();
         removed(v, index);
         return true;
@@ -879,7 +879,6 @@ public:
         set(v);
         return v;
     }
-
 protected:
     ValidatorFn m_validator;
 
