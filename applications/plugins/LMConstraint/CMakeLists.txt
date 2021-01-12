@@ -3,7 +3,7 @@ project(LMConstraint VERSION 1.0 LANGUAGES CXX)
 
 sofa_find_package(SofaFramework REQUIRED)
 sofa_find_package(SofaBase REQUIRED)
-sofa_find_package(SofaCommon REQUIRED) 
+sofa_find_package(SofaImplicitOdeSolver REQUIRED) 
 sofa_find_package(SofaConstraint REQUIRED) 
 sofa_find_package(SofaDistanceGrid QUIET) 
 

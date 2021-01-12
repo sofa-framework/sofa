@@ -7,12 +7,12 @@ set(LMCONSTRAINT_HAVE_SOFADISTANCEGRID @LMCONSTRAINT_HAVE_SOFADISTANCEGRID@)
 
 find_package(SofaFramework REQUIRED)
 find_package(SofaBase REQUIRED)
-find_package(SofaCommon REQUIRED) 
+find_package(SofaImplicitOdeSolver REQUIRED) 
 find_package(SofaConstraint REQUIRED) 
 
 
 if(LMCONSTRAINT_HAVE_SOFADISTANCEGRID)
-    find_package(SofaDistanceGrid QUIET) 
+    find_package(SofaDistanceGrid REQUIRED) 
 endif()
 
 

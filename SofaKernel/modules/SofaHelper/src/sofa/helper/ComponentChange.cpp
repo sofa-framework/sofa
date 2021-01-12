@@ -411,7 +411,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "BarycentricDistanceLMConstraintContact_DistanceGrid", Pluginized("v20.12", "LMConstraint") },
     { "BarycentricDistanceLMConstraintContact", Pluginized("v20.12", "LMConstraint") },
     { "DistanceLMConstraint", Pluginized("v20.12", "LMConstraint") },
-    { "DistanceLMContactConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "DistanceLMContactConstraint", Pluginized("v20.12", "LMConstraint") },
     { "DOFBlockerLMConstraint", Pluginized("v20.12", "LMConstraint") },
     { "FixedLMConstraint", Pluginized("v20.12", "LMConstraint") },
     { "LMConstraintSolver", Pluginized("v20.12", "LMConstraint") },
