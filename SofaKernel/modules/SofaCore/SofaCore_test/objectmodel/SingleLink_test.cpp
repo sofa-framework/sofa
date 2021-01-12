@@ -59,7 +59,6 @@ public:
     }
 };
 
-
 TEST_F(SingleLink_test, checkAccess  )
 {
     ASSERT_EQ(m_link.get(), m_dst.get()) ;
@@ -117,28 +116,3 @@ TEST_F(SingleLink_test, getOwnerBase)
     m_link.setOwner(aBaseObject.get());
     ASSERT_EQ(m_link.getOwnerBase(), aBaseObject.get());
 }
-
-TEST_F(SingleLink_test, checkValidReadWithStorePath )
-{
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_STOREPATH> slink ;
-    /// this should not return an error as the link resolution can be done in a lazy way;
-    EXPECT_TRUE(slink.read("@/node/object"));
-    EXPECT_EQ(slink.getSize(), 1);
-    EXPECT_NE(slink.get(), nullptr);
-    EXPECT_EQ(slink.getPath(), "/node/object");
-}
-
-TEST_F(SingleLink_test, checkValidReadWithoutStorePath )
-{
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE> slink ;
-    /// this should not return an error as the link resolution can be done in a lazy way;
-    EXPECT_TRUE(slink.read("@/node/object"));
-    EXPECT_EQ(slink.get(), nullptr);
-    EXPECT_EQ(slink.getSize(), 0);
-}
-
-
-TYPED_TEST_SUITE_P(BaseLinkTests);
-
-using SingleLinkInterfacesTests = ::testing::Types<SingleLink<BaseObject, BaseObject, BaseLink::FLAG_STOREPATH>>;
-TYPED_TEST_SUITE(BaseLinkTests, SingleLinkInterfacesTests);

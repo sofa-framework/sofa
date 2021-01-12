@@ -20,7 +20,11 @@ set(SOURCE_FILES
     PathResolver_test.cpp
 )
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+set(HEADER_FILES
+    objectmodel/BaseLink_test.h
+    )
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaCore)
 
 add_test(NAME SofaCore_test COMMAND SofaCore_test)

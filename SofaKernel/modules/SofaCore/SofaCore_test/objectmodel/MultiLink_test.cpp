@@ -37,30 +37,3 @@ class MultiLink_test: public BaseTest
 public:
 };
 
-TEST_F(MultiLink_test, checkValidReadWithStorePath )
-{
-    MultiLink<BaseObject, BaseObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> slink ;
-    /// this should not return an error as the link resolution can be done in a lazy way;
-    EXPECT_TRUE(slink.read("@/node/object"));
-    EXPECT_EQ(slink.getSize(), 1);
-    EXPECT_EQ(slink.getPath(0), "@/node/object");
-    EXPECT_EQ(slink.get(0), nullptr);
-
-    EXPECT_TRUE(slink.read("@/node/object1 @/node/object2"));
-    EXPECT_EQ(slink.getSize(), 2);
-    EXPECT_EQ(slink.getPath(0), "@/node/object1");
-    EXPECT_EQ(slink.getPath(1), "@/node/object2");
-    EXPECT_EQ(slink.get(0), nullptr);
-    EXPECT_EQ(slink.get(1), nullptr);
-}
-
-TEST_F(MultiLink_test, checkValidReadWithoutStorePath )
-{
-    MultiLink<BaseObject, BaseObject, BaseLink::FLAG_STRONGLINK> slink ;
-    /// this should not return an error as the link resolution can be done in a lazy way;
-    EXPECT_TRUE(slink.read("@/node/object"));
-    EXPECT_EQ(slink.getSize(), 0);
-
-    EXPECT_TRUE(slink.read("@/node/object1 @/node/object2"));
-    EXPECT_EQ(slink.getSize(), 0);
-}
