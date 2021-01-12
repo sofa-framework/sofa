@@ -45,9 +45,10 @@ BaseObject::BaseObject()
     , l_slaves(initLink("slaves","Sub-objects used internally by this object"))
     , l_master(initLink("master","nullptr for regular objects, or master object for which this object is one sub-objects"))
 {
-    l_context.setValidator(&sofa::core::objectmodel::BaseObject::changeContextLink);
+    l_context.setNotificationFunction(&sofa::core::objectmodel::BaseObject::changeContextLink);
     l_context.set(BaseContext::getDefault());
-    l_slaves.setValidator(&sofa::core::objectmodel::BaseObject::changeSlavesLink);
+    l_slaves.setNotificationFunction(&sofa::core::objectmodel::BaseObject::changeSlavesLink);
+    //l_slaves.setValidator(&sofa::core::objectmodel::BaseObject::changeSlavesLink);
     f_listening.setAutoLink(false);
 }
 
@@ -63,13 +64,22 @@ BaseObject::~BaseObject()
     }
 }
 
-// This method insures that context is never nullptr (using BaseContext::getDefault() instead)
-// and that all slaves of an object share its context
-void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
+/// This method insures that context is never nullptr (using BaseContext::getDefault() instead)
+/// and that all slaves of an object share its context
+BaseContext* BaseObject::changeContextLink(BaseObject* self, BaseContext* oldvalue, BaseContext* newvalue, size_t index)
 {
-    if (!after) after = BaseContext::getDefault();
-    if (before == after) return;
-    for (auto& slave : l_slaves)
+    SOFA_UNUSED(index);
+    BaseContext* after=newvalue;
+    if (!self)
+        return nullptr;
+
+    if (!after)
+        after = BaseContext::getDefault();
+
+    if (oldvalue == after)
+        return after;
+
+    for (auto& slave : self->l_slaves)
     {
         if (slave.get())
         {
@@ -78,17 +88,25 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
     }
     if (after != BaseContext::getDefault())
     {
-        // update links
-        updateLinks(false);
+        /// update links
+        self->updateLinks(false);
     }
+    return after;
 }
 
 /// This method insures that slaves objects have master and context links set correctly
-void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, std::size_t /*index*/, bool add)
+//void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, std::size_t /*index*/, bool add)
+BaseObject::SPtr BaseObject::changeSlavesLink(BaseObject* self, BaseObject::SPtr oldvalue, BaseObject::SPtr newvalue, size_t index)
 {
-    if (!ptr) return;
-    if (add) { ptr->l_master.set(this); ptr->l_context.set(getContext()); }
-    else     { ptr->l_master.reset(); ptr->l_context.reset(); }
+    SOFA_UNUSED(index);
+    if (!self)
+        return nullptr;
+
+    /// If we add a new link to the set of slaves... this means the oldvalue was nullptr
+    if (newvalue) { newvalue.get()->l_master.set(self); newvalue->l_context.set(self->getContext()); }
+    if (oldvalue) { oldvalue->l_master.set(nullptr); oldvalue->l_context.set(nullptr); }
+
+    return newvalue;
 }
 
 void BaseObject::parse( BaseObjectDescription* arg )
