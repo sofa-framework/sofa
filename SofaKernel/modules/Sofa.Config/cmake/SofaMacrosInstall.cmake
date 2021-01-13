@@ -190,6 +190,8 @@ macro(sofa_auto_set_target_properties)
         endif()
 
         string(TOUPPER "${target}" sofa_target_name_upper)
+        # C Preprocessor definitions do not handle dot character, so it is replaced with an underscore
+        string(REPLACE "." "_" sofa_target_name_upper "${sofa_target_name_upper}")
         set(${sofa_target_name_upper}_TARGET "${sofa_target_name_upper}")
 
         # Set target properties
@@ -217,6 +219,7 @@ macro(sofa_auto_set_target_properties)
             string(REGEX REPLACE "([^A-Z])([A-Z])" "\\1_\\2" sofa_target_oldname "${target}")
             string(REPLACE "Sofa" "" sofa_target_oldname "${sofa_target_oldname}")
             string(TOUPPER "${sofa_target_oldname}" sofa_target_oldname_upper)
+            string(REPLACE "." "_" sofa_target_oldname_upper "${sofa_target_oldname_upper}")
             target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD${sofa_target_oldname_upper}")
         endif()
         target_compile_definitions(${target} PRIVATE "-DSOFA_BUILD_${sofa_target_name_upper}")

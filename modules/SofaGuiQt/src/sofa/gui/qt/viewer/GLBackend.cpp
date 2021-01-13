@@ -79,7 +79,7 @@ void GLBackend::setBackgroundImage(helper::io::Image* image)
         m_texLogo = nullptr;
     }
 
-    m_texLogo = new helper::gl::Texture( image );
+    m_texLogo = new gl::Texture( image );
     m_texLogo->init();
 }
 
