@@ -79,6 +79,12 @@ protected:
             : area(e.area),force(e.force)
         { }
 
+        QuadPressureInformation & operator= (const QuadPressureInformation & other) {
+            area = other.area;
+            force = other.force;
+            return *this;
+        }
+
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const QuadPressureInformation& /*ei*/ )
         {

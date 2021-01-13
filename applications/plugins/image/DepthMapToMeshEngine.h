@@ -252,7 +252,7 @@ protected:
         raTriangles tri(this->triangles);
         raTexture inTex(this->texImage);
 
-        vparams->drawTool()->setMaterial({0.5,0.5,0.5,0.});
+        vparams->drawTool()->setMaterial(sofa::helper::types::RGBAColor{0.5,0.5,0.5,0.});
 
         vparams->drawTool()->enableLighting();
 

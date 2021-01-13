@@ -64,6 +64,12 @@ void ReadState::init()
     reset();
 }
 
+void ReadState::bwdInit()
+{
+    processReadState();
+}
+
+
 void ReadState::reset()
 {
     mmodel = this->getContext()->getMechanicalState();

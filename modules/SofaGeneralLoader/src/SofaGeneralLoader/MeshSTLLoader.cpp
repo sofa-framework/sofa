@@ -212,7 +212,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
             }
         }
 
-        this->addTriangle(&my_triangles.wref(), the_tri);
+        this->addTriangle(my_triangles.wref(), the_tri);
 
         // Attribute byte count
         uint16_t count;
@@ -300,7 +300,7 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
         }
         else if (bufferWord == "endfacet")
         {
-            this->addTriangle(&my_triangles.wref(), the_tri);
+            this->addTriangle(my_triangles.wref(), the_tri);
             vertexCounter = 0;
         }
         else if (bufferWord == "endsolid" || bufferWord == "end")

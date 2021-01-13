@@ -16,6 +16,6 @@ target_link_libraries(${PROJECT_NAME}
     SofaGeneralDeformable SofaGeneralLoader # SofaGeneral
     SofaDeformable SofaSimpleFem # SofaCommon
     SofaBaseMechanics SofaBaseTopology # SofaBase
-    SofaSimulationTree # SofaSimulation
+    SofaSimulationGraph # SofaSimulation
     SofaCore SofaHelper SofaDefaultType # SofaFramework
     )

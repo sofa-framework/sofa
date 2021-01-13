@@ -29,20 +29,20 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/gui/ColourPickingVisitor.h>
-//#include <sofa/helper/system/SetDirectory.h>
 #include <cmath>
 #include <iostream>
 #include <fstream>
 #include <cstring>
 #include <cmath>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/glu.h>
 #include <sofa/gui/BaseGUI.h>
 #include <qevent.h>
 
-#include <sofa/helper/gl/glText.inl>
-#include <sofa/helper/gl/Axis.h>
-#include <sofa/helper/gl/RAII.h>
+#include <sofa/gl/glText.inl>
+#include <memory>
+#include <sofa/gl/Axis.h>
+#include <sofa/gl/RAII.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/gui/qt/GLPickHandler.h>
@@ -65,7 +65,7 @@ namespace qgl
 
 using std::endl;
 using namespace sofa::defaulttype;
-using namespace sofa::helper::gl;
+using namespace sofa::gl;
 using sofa::simulation::getSimulation;
 using namespace sofa::simulation;
 
@@ -95,11 +95,11 @@ QGLFormat QtGLViewer::setupGLFormat(const unsigned int nbMSAASamples)
 }
 
 QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbMSAASamples)
-    : QGLViewer(setupGLFormat(nbMSAASamples), parent)
+    : QGLViewer(setupGLFormat(nbMSAASamples), parent, nullptr, Qt::WindowType::Widget)
 {
     this->setObjectName(name);
 
-    m_backend.reset(new GLBackend());
+    m_backend = std::make_unique<GLBackend>();
     pick = new GLPickHandler();
 
     groot = nullptr;
@@ -322,7 +322,7 @@ void QtGLViewer::init(void)
 // ---------------------------------------------------------
 void QtGLViewer::PrintString(void* /*font*/, char* string)
 {
-    helper::gl::GlText::draw(string);
+    gl::GlText::draw(string);
 
 }
 
@@ -333,7 +333,7 @@ void QtGLViewer::Display3DText(float x, float y, float z, char* string)
 {
     glPushMatrix();
     glTranslatef(x, y, z);
-    helper::gl::GlText::draw(string);
+    gl::GlText::draw(string);
     glPopMatrix();
 }
 
@@ -342,7 +342,7 @@ void QtGLViewer::Display3DText(float x, float y, float z, char* string)
 // ---
 // ---------------------------------------------------
 void QtGLViewer::DrawAxis(double xpos, double ypos, double zpos,
-        double arrowSize)
+                          double arrowSize)
 {
     glPushMatrix();
     glTranslatef(xpos, ypos,zpos);
@@ -368,10 +368,10 @@ void QtGLViewer::DrawBox(Real* minBBox, Real* maxBBox, Real r)
         {
             glVertex3d(           minBBox[0]           ,
                     (corner&1)?minBBox[1]:maxBBox[1],
-                    (corner&2)?minBBox[2]:maxBBox[2]);
+                                          (corner&2)?minBBox[2]:maxBBox[2]);
             glVertex3d(           maxBBox[0]           ,
                     (corner&1)?minBBox[1]:maxBBox[1],
-                    (corner&2)?minBBox[2]:maxBBox[2]);
+                                          (corner&2)?minBBox[2]:maxBBox[2]);
         }
         for (int corner=0; corner<4; ++corner)
         {
@@ -388,10 +388,10 @@ void QtGLViewer::DrawBox(Real* minBBox, Real* maxBBox, Real r)
         {
             glVertex3d((corner&1)?minBBox[0]:maxBBox[0],
                     (corner&2)?minBBox[1]:maxBBox[1],
-                    minBBox[2]           );
+                                          minBBox[2]           );
             glVertex3d((corner&1)?minBBox[0]:maxBBox[0],
                     (corner&2)?minBBox[1]:maxBBox[1],
-                    maxBBox[2]           );
+                                          maxBBox[2]           );
         }
         glEnd();
         return;
@@ -411,7 +411,7 @@ void QtGLViewer::DrawBox(Real* minBBox, Real* maxBBox, Real r)
         glPushMatrix();
         glTranslated((corner&1)?minBBox[0]:maxBBox[0],
                 (corner&2)?minBBox[1]:maxBBox[1],
-                (corner&4)?minBBox[2]:maxBBox[2]);
+                                      (corner&4)?minBBox[2]:maxBBox[2]);
         gluSphere(_sphere,2*r,20,10);
         glPopMatrix();
     }
@@ -423,7 +423,7 @@ void QtGLViewer::DrawBox(Real* minBBox, Real* maxBBox, Real r)
         glPushMatrix();
         glTranslated(           minBBox[0]           ,
                 (corner&1)?minBBox[1]:maxBBox[1],
-                (corner&2)?minBBox[2]:maxBBox[2]);
+                                      (corner&2)?minBBox[2]:maxBBox[2]);
         glRotatef(90,0,1,0);
         gluCylinder(_tube, r, r, maxBBox[0] - minBBox[0], 10, 10);
         glPopMatrix();
@@ -447,7 +447,7 @@ void QtGLViewer::DrawBox(Real* minBBox, Real* maxBBox, Real r)
         glPushMatrix();
         glTranslated((corner&1)?minBBox[0]:maxBBox[0],
                 (corner&2)?minBBox[1]:maxBBox[1],
-                minBBox[2]           );
+                                      minBBox[2]           );
         gluCylinder(_tube, r, r, maxBBox[2] - minBBox[2], 10, 10);
         glPopMatrix();
     }
@@ -459,7 +459,7 @@ void QtGLViewer::DrawBox(Real* minBBox, Real* maxBBox, Real r)
 // --- of the main coordinate system
 // ----------------------------------------------------------------------------------
 void QtGLViewer::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
-        double ymax, double step)
+                             double ymax, double step)
 {
     /*register*/ double x, y;
 
@@ -488,7 +488,7 @@ void QtGLViewer::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
 // --- of the main coordinate system
 // ----------------------------------------------------------------------------------
 void QtGLViewer::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
-        double zmax, double step)
+                             double zmax, double step)
 {
     /*register*/ double y, z;
     Enable<GL_DEPTH_TEST> depth;
@@ -517,7 +517,7 @@ void QtGLViewer::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
 // --- of the main coordinate system
 // ----------------------------------------------------------------------------------
 void QtGLViewer::DrawXZPlane(double yo, double xmin, double xmax, double zmin,
-        double zmax, double step)
+                             double zmax, double step)
 {
     /*register*/ double x, z;
     Enable<GL_DEPTH_TEST> depth;
@@ -619,8 +619,8 @@ void QtGLViewer::DisplayOBJs()
 
 
     {
-		this->setSceneBoundingBox(qglviewer::Vec(vparams->sceneBBox().minBBoxPtr()),
-			qglviewer::Vec(vparams->sceneBBox().maxBBoxPtr()));
+        this->setSceneBoundingBox(qglviewer::Vec(vparams->sceneBBox().minBBoxPtr()),
+                                  qglviewer::Vec(vparams->sceneBBox().maxBBoxPtr()));
 
         //Draw Debug information of the components
         simulation::getSimulation()->draw(vparams,groot.get());
@@ -641,10 +641,10 @@ void QtGLViewer::DisplayOBJs()
             glPushMatrix();
             glLoadIdentity();
             sofa::defaulttype::Quaternion sofaQuat( this->camera()->orientation()[0]
-                                                  , this->camera()->orientation()[1]
-                                                  , this->camera()->orientation()[2]
-                                                  , this->camera()->orientation()[3]);
-            helper::gl::Axis::draw(sofa::defaulttype::Vector3(30.0,30.0,0.0),sofaQuat.inverse(), 25.0);
+                    , this->camera()->orientation()[1]
+                    , this->camera()->orientation()[2]
+                    , this->camera()->orientation()[3]);
+            gl::Axis::draw(sofa::defaulttype::Vector3(30.0,30.0,0.0),sofaQuat.inverse(), 25.0);
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);
@@ -803,25 +803,7 @@ void QtGLViewer::resizeGL(int width, int height)
 // ---------------------------------------------------------
 void QtGLViewer::draw()
 {
-    //	ctime_t beginDisplay;
-    //ctime_t endOfDisplay;
-
-    //	beginDisplay = MesureTemps();
-
-    // valid() is turned off when FLTK creates a new context for this window
-    // or when the window resizes, and is turned on after draw() is called.
-    // Use this to avoid unneccessarily initializing the OpenGL context.
-    //static double lastOrthoTransZ = 0.0;
-    /*
-    if (!valid())
-    {
-    InitGFX();		// this has to be called here since we don't know when the context is created
-    _W = w();
-    _H = h();
-    reshape(_W, _H);
-    }
-    */
-    // clear buffers (color and depth)
+    /// clear buffers (color and depth)
     if (_background==0)
         glClearColor(0.0f,0.0f,0.0f,1.0f);
     else if (_background==1)
@@ -831,7 +813,7 @@ void QtGLViewer::draw()
     glClearDepth(1.0);
     glClear(_clearBuffer);
 
-    // draw the scene
+    /// draw the scene
     drawScene();
 
     if(!captureTimer.isActive())
@@ -966,7 +948,11 @@ void QtGLViewer::wheelEvent(QWheelEvent* e)
     {
         if (groot)
         {
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
             sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Wheel, e->delta());
+#else
+            sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Wheel, e->angleDelta().y());
+#endif
             groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
         }
     }
@@ -1137,7 +1123,7 @@ QString QtGLViewer::helpString() const
 {
 
     static QString text(
-        (QString)"<H1>QtGLViewer</H1><hr>\
+                (QString)"<H1>QtGLViewer</H1><hr>\
                 <ul>\
                 <li><b>Mouse</b>: TO NAVIGATE<br></li>\
                 <li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\

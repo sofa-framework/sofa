@@ -207,7 +207,7 @@ void PointCollisionModel<DataTypes>::updateNormals()
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     auto n = x.size();
     normals.resize(n);
-    for (int i=0; i<n; ++i)
+    for (sofa::Index i=0; i<n; ++i)
     {
         normals[i].clear();
     }
@@ -293,7 +293,7 @@ void PointCollisionModel<DataTypes>::updateNormals()
             }
         }
     }
-    for (int i=0; i<n; ++i)
+    for (sofa::Index i=0; i<n; ++i)
     {
         SReal l = normals[i].norm();
         if (l > 1.0e-3)
@@ -443,8 +443,9 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
             }
         }
 
-        vparams->drawTool()->drawPoints(pointsP, 3, defaulttype::Vec<4, float>(getColor4f()));
-        vparams->drawTool()->drawLines(pointsL, 1, defaulttype::Vec<4, float>(getColor4f()));
+        auto c = getColor4f();
+        vparams->drawTool()->drawPoints(pointsP, 3, sofa::helper::types::RGBAColor(c[0], c[1], c[2], c[3]));
+        vparams->drawTool()->drawLines(pointsL, 1, sofa::helper::types::RGBAColor(c[0], c[1], c[2], c[3]));
 
         if (m_displayFreePosition.getValue())
         {
@@ -459,7 +460,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
                 }
             }
 
-            vparams->drawTool()->drawPoints(pointsPFree, 3, defaulttype::Vec<4, float>(0.0f, 1.0f, 0.2f, 1.0f));
+            vparams->drawTool()->drawPoints(pointsPFree, 3, sofa::helper::types::RGBAColor(0.0f, 1.0f, 0.2f, 1.0f));
         }
 
         if (vparams->displayFlags().getShowWireFrame())

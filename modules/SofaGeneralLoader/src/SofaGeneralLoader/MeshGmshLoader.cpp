@@ -99,7 +99,7 @@ bool MeshGmshLoader::doLoad()
         file.close();
         helper::io::Mesh* _mesh = helper::io::Mesh::Create("gmsh", filename);
 
-        copyMeshToData(_mesh);
+        copyMeshToData(*_mesh);
         delete _mesh;
         return true;
     }
@@ -284,31 +284,31 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
         {
         case 1: // Line
             addInGroup(my_edgesGroups.wref(),tag,my_edges.size());
-            addEdge(&my_edges.wref(), Edge(nodes[0], nodes[1]));
+            addEdge(my_edges.wref(), Edge(nodes[0], nodes[1]));
             ++nlines;
             break;
         case 2: // Triangle
             addInGroup(my_trianglesGroups.wref(),tag,my_triangles.size());
-            addTriangle(&my_triangles.wref(), Triangle(nodes[0], nodes[1], nodes[2]));
+            addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[1], nodes[2]));
             ++ntris;
             break;
         case 3: // Quad
-            addQuad(&my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+            addQuad(my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
             ++nquads;
             break;
         case 4: // Tetra
             addInGroup(my_tetrahedraGroups.wref(),tag,my_tetrahedra.size());
-            addTetrahedron(&my_tetrahedra.wref(), Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+            addTetrahedron(my_tetrahedra.wref(), Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
             ++ntetrahedra;
             break;
         case 5: // Hexa
             addInGroup(my_hexahedraGroups.wref(),tag,my_hexahedra.size());
-            addHexahedron(&my_hexahedra.wref(),Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4],nodes[5],nodes[6],nodes[7]));
+            addHexahedron(my_hexahedra.wref(),Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4],nodes[5],nodes[6],nodes[7]));
             ++ncubes;
             break;
         case 8: // quadratic edge
             addInGroup(my_edgesGroups.wref(),tag,my_edges.size());
-            addEdge(&my_edges.wref(), Edge(nodes[0], nodes[1]));
+            addEdge(my_edges.wref(), Edge(nodes[0], nodes[1]));
             {
                 HighOrderEdgePosition hoep;
                 hoep[0]= nodes[2];
@@ -321,7 +321,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             break;
         case 9: // quadratic triangle
             addInGroup(my_trianglesGroups.wref(),tag,my_triangles.size());
-            addTriangle(&my_triangles.wref(), Triangle(nodes[0], nodes[1], nodes[2]));
+            addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[1], nodes[2]));
             {
                 HighOrderEdgePosition hoep;
                 for(j=0;j<3;++j) {
@@ -332,7 +332,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                     Edge e(v0,v1);
                     if (edgeSet.find(e)==edgeSet.end()) {
                         edgeSet.insert(e);
-                        addEdge(&my_edges.wref(), v0, v1);
+                        addEdge(my_edges.wref(), v0, v1);
                         hoep[0]= nodes[j+3];
                         hoep[1]=my_edges.size()-1;
                         hoep[2]=1;
@@ -345,7 +345,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             break;
         case 11: // quadratic tetrahedron
             addInGroup(my_tetrahedraGroups.wref(),tag,my_tetrahedra.size());
-            addTetrahedron(&my_tetrahedra.wref(), Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+            addTetrahedron(my_tetrahedra.wref(), Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
             {
                 HighOrderEdgePosition hoep;
                 for(j=0;j<6;++j) {
@@ -356,7 +356,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                     Edge e(v0,v1);
                     if (edgeSet.find(e)==edgeSet.end()) {
                         edgeSet.insert(e);
-                        addEdge(&my_edges.wref(), v0, v1);
+                        addEdge(my_edges.wref(), v0, v1);
                         hoep[0]= nodes[j+4];
                         hoep[1]=my_edges.size()-1;
                         hoep[2]=1;

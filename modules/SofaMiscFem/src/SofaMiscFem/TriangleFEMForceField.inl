@@ -664,7 +664,7 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
 
-    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::helper::types::RGBAColor> colorVector;
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();

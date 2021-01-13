@@ -22,13 +22,10 @@
 
 #include <SofaMeshCollision/RayTriangleIntersection.h>
 
-#include <SofaBaseCollision/Sphere.h>
 #include <SofaMeshCollision/TriangleModel.inl>
 #include <SofaGeneralMeshCollision/TriangleOctreeModel.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <SofaMeshCollision/Line.h>
-#include <SofaMeshCollision/Point.h>
-#include <sofa/helper/FnDispatcher.h>
+#include <SofaMeshCollision/PointModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/ObjectFactory.h>
 #include <SofaUserInteraction/RayTraceDetection.h>

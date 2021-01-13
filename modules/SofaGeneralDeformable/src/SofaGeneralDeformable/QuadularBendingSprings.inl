@@ -741,7 +741,7 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
 
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
     std::vector<sofa::defaulttype::Vector3> vertices;
-    std::vector<sofa::defaulttype::Vec4f> colors;
+    std::vector<sofa::helper::types::RGBAColor> colors;
     sofa::helper::types::RGBAColor green_color = sofa::helper::types::RGBAColor::green();
     sofa::helper::types::RGBAColor red_color   = sofa::helper::types::RGBAColor::red();
     sofa::helper::types::RGBAColor color1 = sofa::helper::types::RGBAColor(1,0.5, 0,1);

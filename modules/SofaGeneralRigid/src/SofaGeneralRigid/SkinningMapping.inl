@@ -363,7 +363,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::helper::types::RGBAColor> colorVector;
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     if ( vparams->displayFlags().getShowMappings() )
@@ -397,7 +397,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         {
             std::vector< defaulttype::Vector3 > points;
             std::vector< defaulttype::Vector3 > normals;
-            std::vector< defaulttype::Vec<4,float> > colors;
+            std::vector<sofa::helper::types::RGBAColor> colors;
             for ( unsigned int i = 0; i < triangles.size(); i++)
             {
                 for ( unsigned int j = 0; j < 3; j++)
@@ -413,7 +413,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
                             color = (m_weights[indexPoint][m] - minValue) / (maxValue - minValue);
 
                     points.push_back(defaulttype::Vector3(xto[indexPoint][0],xto[indexPoint][1],xto[indexPoint][2]));
-                    colors.push_back(defaulttype::Vec<4,float>((float)color, 0.0f, 0.0f, 1.0f));
+                    colors.push_back({ float(color), 0.0f, 0.0f, 1.0f });
                 }
             }
             vparams->drawTool()->drawTriangles(points, normals, colors);

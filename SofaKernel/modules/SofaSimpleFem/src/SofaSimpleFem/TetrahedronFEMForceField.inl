@@ -1784,7 +1784,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     vparams->drawTool()->setLightingEnabled(false);
 
     if (_showVonMisesStressPerNode.getValue()) {
-        std::vector<defaulttype::Vec4f> nodeColors(x.size());
+        std::vector<sofa::helper::types::RGBAColor> nodeColors(x.size());
         std::vector<defaulttype::Vector3> pts(x.size());
         helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVMN, maxVMN);
         for (size_t nd = 0; nd < x.size(); nd++) {
@@ -1829,29 +1829,29 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             {
                 float col = (float)((youngModulus[i]-minYoung) / (maxYoung-minYoung));
                 float fac = col * 0.5f;
-                defaulttype::Vec<4,float> color2 = defaulttype::Vec<4,float>(col      , 0.5f - fac , 1.0f-col,1.0f);
-                defaulttype::Vec<4,float> color3 = defaulttype::Vec<4,float>(col      , 1.0f - fac , 1.0f-col,1.0f);
-                defaulttype::Vec<4,float> color4 = defaulttype::Vec<4,float>(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
+                auto color2 = sofa::helper::types::RGBAColor(col      , 0.5f - fac , 1.0f-col,1.0f);
+                auto color3 = sofa::helper::types::RGBAColor(col      , 1.0f - fac , 1.0f-col,1.0f);
+                auto color4 = sofa::helper::types::RGBAColor(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
 
                 vparams->drawTool()->drawLines(points[0],1,color2 );
                 vparams->drawTool()->drawLines(points[1],1,color3 );
                 vparams->drawTool()->drawLines(points[2],1,color4 );
 
-                for(unsigned int i=0 ; i<3 ; i++) points[i].clear();
+                for(auto & point : points) point.clear();
             } else
             {
                 if (_computeVonMisesStress.getValue() > 0)
                 {
-                    for(unsigned int i=0 ; i<3 ; i++) points[i].clear();
+                    for(auto & point : points) point.clear();
                 }
             }
         }
 
         if(!heterogeneous && _computeVonMisesStress.getValue() == 0)
         {
-            vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(0.0,0.5,1.0,1.0));
-            vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0.0,1.0,1.0,1.0));
-            vparams->drawTool()->drawLines(points[2], 1, defaulttype::Vec<4,float>(0.5,1.0,1.0,1.0));
+            vparams->drawTool()->drawLines(points[0], 1, sofa::helper::types::RGBAColor(0.0,0.5,1.0,1.0));
+            vparams->drawTool()->drawLines(points[1], 1, sofa::helper::types::RGBAColor(0.0,1.0,1.0,1.0));
+            vparams->drawTool()->drawLines(points[2], 1, sofa::helper::types::RGBAColor(0.5,1.0,1.0,1.0));
         }
     }
     else
@@ -1892,23 +1892,23 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             {
                 float col = (float)((youngModulus[i]-minYoung) / (maxYoung-minYoung));
                 float fac = col * 0.5f;
-                defaulttype::Vec<4,float> color1 = defaulttype::Vec<4,float>(col      , 0.0f - fac , 1.0f-col,1.0f);
-                defaulttype::Vec<4,float> color2 = defaulttype::Vec<4,float>(col      , 0.5f - fac , 1.0f-col,1.0f);
-                defaulttype::Vec<4,float> color3 = defaulttype::Vec<4,float>(col      , 1.0f - fac , 1.0f-col,1.0f);
-                defaulttype::Vec<4,float> color4 = defaulttype::Vec<4,float>(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
+                auto color1 = sofa::helper::types::RGBAColor(col      , 0.0f - fac , 1.0f-col,1.0f);
+                auto color2 = sofa::helper::types::RGBAColor(col      , 0.5f - fac , 1.0f-col,1.0f);
+                auto color3 = sofa::helper::types::RGBAColor(col      , 1.0f - fac , 1.0f-col,1.0f);
+                auto color4 = sofa::helper::types::RGBAColor(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
 
                 vparams->drawTool()->drawTriangles(points[0],color1 );
                 vparams->drawTool()->drawTriangles(points[1],color2 );
                 vparams->drawTool()->drawTriangles(points[2],color3 );
                 vparams->drawTool()->drawTriangles(points[3],color4 );
 
-                for(unsigned int i=0 ; i<4 ; i++)
-                    points[i].clear();
+                for(auto & point : points)
+                    point.clear();
             } else
             {
                 if (_computeVonMisesStress.getValue() > 0) {
                     helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVM, maxVM);
-                    defaulttype::Vec4f col = evalColor(vM[i]);
+                    auto col = sofa::helper::types::RGBAColor::fromVec4(evalColor(vM[i]));
 
                     col[3] = 1.0f;
                     vparams->drawTool()->drawTriangles(points[0],col);
@@ -1916,17 +1916,17 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                     vparams->drawTool()->drawTriangles(points[2],col);
                     vparams->drawTool()->drawTriangles(points[3],col);
 
-                    for(unsigned int i=0 ; i<4 ; i++) points[i].clear();
+                    for(auto & point : points) point.clear();
                 }
             }
         }
 
         if(!heterogeneous && _computeVonMisesStress.getValue() == 0)
         {
-            vparams->drawTool()->drawTriangles(points[0], defaulttype::Vec<4,float>(0.0,0.0,1.0,1.0));
-            vparams->drawTool()->drawTriangles(points[1], defaulttype::Vec<4,float>(0.0,0.5,1.0,1.0));
-            vparams->drawTool()->drawTriangles(points[2], defaulttype::Vec<4,float>(0.0,1.0,1.0,1.0));
-            vparams->drawTool()->drawTriangles(points[3], defaulttype::Vec<4,float>(0.5,1.0,1.0,1.0));
+            vparams->drawTool()->drawTriangles(points[0], sofa::helper::types::RGBAColor(0.0,0.0,1.0,1.0));
+            vparams->drawTool()->drawTriangles(points[1], sofa::helper::types::RGBAColor(0.0,0.5,1.0,1.0));
+            vparams->drawTool()->drawTriangles(points[2], sofa::helper::types::RGBAColor(0.0,1.0,1.0,1.0));
+            vparams->drawTool()->drawTriangles(points[3], sofa::helper::types::RGBAColor(0.5,1.0,1.0,1.0));
         }
 
     }
@@ -1958,9 +1958,9 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             points[2].push_back(b);
         }
 
-        vparams->drawTool()->drawLines(points[0], 5, defaulttype::Vec<4,float>(1,0,0,1));
-        vparams->drawTool()->drawLines(points[1], 5, defaulttype::Vec<4,float>(0,1,0,1));
-        vparams->drawTool()->drawLines(points[2], 5, defaulttype::Vec<4,float>(0,0,1,1));
+        vparams->drawTool()->drawLines(points[0], 5, sofa::helper::types::RGBAColor::red());
+        vparams->drawTool()->drawLines(points[1], 5, sofa::helper::types::RGBAColor::green());
+        vparams->drawTool()->drawLines(points[2], 5, sofa::helper::types::RGBAColor::blue());
     }
 }
 

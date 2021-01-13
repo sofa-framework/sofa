@@ -11,13 +11,13 @@
         <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" rotation="0 0 0 " scale="1 1 0" />
         <MeshTopology name="mesh" src="@loader" />
         <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
-        <BarycentricShapeFunction template="ShapeFunctiond"  />
+        <BarycentricShapeFunction template="ShapeFunction3d"  />
 
         <!--simple mesh-->
         <!--    <TriangleSetTopologyContainer name="mesh" triangles="0 1 2" />
         <TriangleSetGeometryAlgorithms  drawTriangles="true" drawColorTriangles="0.2 0.2 0.2"/>
         <MechanicalObject name="defoDOF" template="Vec3d"  position="0 0 0  1 0 0  0.1 1 0" />
-        <BarycentricShapeFunction template="ShapeFunctiond" position="0 0  1 0  0 1" />-->
+        <BarycentricShapeFunction template="ShapeFunction3d" position="0 0  1 0  0 1" />-->
 
 
         <BoxConstraint box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
@@ -58,7 +58,7 @@
     <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="1.2 0 0" rotation="0 0 0 " scale="1 1 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
-    <BarycentricShapeFunction template="ShapeFunctiond"  />
+    <BarycentricShapeFunction template="ShapeFunction3d"  />
 
     <BoxConstraint box="1.195 -0.005 -0.005    2.205 0.005 0.005  " />
     <UniformMass  name="mass" totalMass="1"/>

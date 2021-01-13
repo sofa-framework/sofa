@@ -504,29 +504,29 @@ class data_widget_container < CLASS > : public struct_data_widget_container < CL
 
 
 ////////////////////////////////////////////////////////////////
-/// sofa::core::loader::Material support
+/// sofa::helper::types::Material support
 ////////////////////////////////////////////////////////////////
 
 template<>
-class struct_data_trait < sofa::core::loader::Material >
+class struct_data_trait < sofa::helper::types::Material >
 {
 public:
-    typedef sofa::core::loader::Material data_type;
+    typedef sofa::helper::types::Material data_type;
     enum { NVAR = 6 };
     static void set( data_type& /*d*/)
     {
     }
 };
 
-template<> STRUCT_DATA_VAR(sofa::core::loader::Material, 0, "Name", "Name", std::string, name);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 1, "Ambient", "Amb", sofa::helper::types::RGBAColor, ambient, useAmbient);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 2, "Diffuse", "Diff", sofa::helper::types::RGBAColor, diffuse, useDiffuse);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 3, "Specular", "Spec", sofa::helper::types::RGBAColor, specular, useSpecular);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 4, "Emissive", "Emm", sofa::helper::types::RGBAColor, emissive, useEmissive);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 5, "Shininess", "Shin", float, shininess, useShininess);
+template<> STRUCT_DATA_VAR(sofa::helper::types::Material, 0, "Name", "Name", std::string, name);
+template<> STRUCT_DATA_VAR_CHECK(sofa::helper::types::Material, 1, "Ambient", "Amb", sofa::helper::types::RGBAColor, ambient, useAmbient);
+template<> STRUCT_DATA_VAR_CHECK(sofa::helper::types::Material, 2, "Diffuse", "Diff", sofa::helper::types::RGBAColor, diffuse, useDiffuse);
+template<> STRUCT_DATA_VAR_CHECK(sofa::helper::types::Material, 3, "Specular", "Spec", sofa::helper::types::RGBAColor, specular, useSpecular);
+template<> STRUCT_DATA_VAR_CHECK(sofa::helper::types::Material, 4, "Emissive", "Emm", sofa::helper::types::RGBAColor, emissive, useEmissive);
+template<> STRUCT_DATA_VAR_CHECK(sofa::helper::types::Material, 5, "Shininess", "Shin", float, shininess, useShininess);
 
 template<>
-class data_widget_container < sofa::core::loader::Material > : public struct_data_widget_container < sofa::core::loader::Material >
+class data_widget_container < sofa::helper::types::Material > : public struct_data_widget_container < sofa::helper::types::Material >
 {};
 
 } // namespace qt

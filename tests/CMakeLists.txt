@@ -17,13 +17,7 @@ add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimulationCore/SofaSimula
 
 # SofaSimulation tests
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimulationGraph/SofaSimulationGraph_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaSimulation/SofaSimulationGraph/SofaSimulationGraph_test)
-add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimulationTree/SofaSimulationTree_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaSimulation/SofaSimulationTree/SofaSimulationTree_test)
 #add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimulationCommon/SofaSimulationCommon_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaSimulation/SofaSimulationCommon/SofaSimulationCommon_test)
 
 # SofaBase tests
-add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseCollision/SofaBaseCollision_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseCollision/SofaBaseCollision_test)
-add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseLinearSolver/SofaBaseLinearSolver_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseLinearSolver/SofaBaseLinearSolver_test)
-add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseMechanics/SofaBaseMechanics_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseMechanics/SofaBaseMechanics_test)
-add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseTopology/SofaBaseTopology_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseTopology/SofaBaseTopology_test)
-add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseVisual/SofaBaseVisual_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseVisual/SofaBaseVisual_test)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseUtils/SofaBaseUtils_test ${SOFA_KERNEL_MODULES_BINARY_DIR}/SofaBase/SofaBaseVisual/SofaBaseUtils_test)

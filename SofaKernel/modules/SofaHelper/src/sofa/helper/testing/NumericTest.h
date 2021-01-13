@@ -283,14 +283,12 @@ typename DataTypes::Coord createCoord(const sofa::defaulttype::Vector3& pos, con
 
 template <sofa::Size N, class real>
 void EXPECT_VEC_DOUBLE_EQ(sofa::defaulttype::Vec<N, real> const& expected, sofa::defaulttype::Vec<N, real> const& actual) {
-    typedef typename sofa::defaulttype::Vec<N,real>::Size Size;
-    for (Size i=0; i<expected.total_size; ++i)
+    for (sofa::Size i=0; i<expected.total_size; ++i)
         EXPECT_DOUBLE_EQ(expected[i], actual[i]);
 }
 
 template <sofa::Size L, sofa::Size C, class real>
 void EXPECT_MAT_DOUBLE_EQ(sofa::defaulttype::Mat<L,C,real> const& expected, sofa::defaulttype::Mat<L,C,real> const& actual) {
-    typedef typename sofa::defaulttype::Mat<L,C,real>::Size Size;
     for (sofa::Size i=0; i<expected.nbLines; ++i)
         for (sofa::Size j=0; j<expected.nbCols; ++j)
             EXPECT_DOUBLE_EQ(expected(i,j), actual(i,j));
@@ -298,7 +296,6 @@ void EXPECT_MAT_DOUBLE_EQ(sofa::defaulttype::Mat<L,C,real> const& expected, sofa
 
 template <sofa::Size L, sofa::Size C, class real>
 void EXPECT_MAT_NEAR(sofa::defaulttype::Mat<L,C,real> const& expected, sofa::defaulttype::Mat<L,C,real> const& actual, real abs_error) {
-    typedef typename sofa::defaulttype::Mat<L,C,real>::Size Size;
     for (sofa::Size i=0; i<expected.nbLines; ++i)
         for (sofa::Size j=0; j<expected.nbCols; ++j)
             EXPECT_NEAR(expected(i,j), actual(i,j), abs_error);

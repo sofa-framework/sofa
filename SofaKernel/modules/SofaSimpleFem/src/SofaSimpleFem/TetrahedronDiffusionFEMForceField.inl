@@ -30,7 +30,6 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
-#include <SofaSimulationTree/GNode.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa::component::forcefield
@@ -401,7 +400,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addKToMatrix(const core::Mech
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = r.matrix;
 
-    if((mat->colSize()) != (m_topology->getNbPoints()*N) || (mat->rowSize()) != (m_topology->getNbPoints()*N))
+    if((sofa::Size)(mat->colSize()) != (m_topology->getNbPoints()*N) || (sofa::Size)(mat->rowSize()) != (m_topology->getNbPoints()*N))
     {
         msg_error()<<"Wrong size of the input Matrix: need resize in addKToMatrix function.";
         mat->resize(m_topology->getNbPoints()*N,m_topology->getNbPoints()*N);
@@ -456,7 +455,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
                 surfaceTri.push_back(i);
         }
 
-        sofa::defaulttype::Vec4f colorLine(1.0, 0.0, 0.0, 1.0);
+        auto colorLine = sofa::helper::types::RGBAColor::red();
         helper::vector<sofa::defaulttype::Vector3> vertices;
 
         for (sofa::Index i=0; i<surfaceTri.size(); ++i)
@@ -488,7 +487,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
         for (sofa::Index i = 0; i<nbrTetra; ++i)
         {
             Real Ratio = d_tetraDiffusionCoefficient.getValue()[i] / maxDiffusion;
-            sofa::defaulttype::Vec4f tetraColor(0.0f, float(Ratio), 0.5f-float(Ratio), 1.0f);
+            auto tetraColor = sofa::helper::types::RGBAColor(0.0f, float(Ratio), 0.5f-float(Ratio), 1.0f);
 
             Tetrahedron tetra = m_topology->getTetrahedron(i);
             sofa::defaulttype::Vec<3,SReal> point[4];

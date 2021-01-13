@@ -142,7 +142,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologyElementHandler.h
     ${SRC_ROOT}/topology/TopologyHandler.h
     ${SRC_ROOT}/visual/DisplayFlags.h
-    ${SRC_ROOT}/visual/DrawTool.h
     ${SRC_ROOT}/visual/Shader.h
     ${SRC_ROOT}/visual/VisualLoop.h
     ${SRC_ROOT}/visual/VisualManager.h
@@ -255,13 +254,13 @@ set(SOURCE_FILES
     ${SRC_ROOT}/logging/PerComponentLoggingMessageHandler.cpp
 )
 
-if(NOT SOFA_NO_OPENGL)
-    list(APPEND HEADER_FILES ${SRC_ROOT}/visual/DrawToolGL.h)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/visual/DrawToolGL.cpp)
-endif()
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
+
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework

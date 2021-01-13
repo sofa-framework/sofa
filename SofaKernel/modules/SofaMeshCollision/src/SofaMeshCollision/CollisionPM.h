@@ -46,8 +46,6 @@ namespace sofa::component::collision
         }
 
         void init(const core::CollisionElementIterator & elem1_,const core::CollisionElementIterator & elem2_){
-            assert(elem1_.getIndex() >= 0);
-            assert(elem2_.getIndex() >= 0);
             elem1 = elem1_;
             elem2 = elem2_;
         }
@@ -114,8 +112,6 @@ namespace sofa::component::collision
         void add(Index a, Index b,const core::CollisionElementIterator & elem1,const core::CollisionElementIterator & elem2){
             assert(elem1.getIndex() < elem1.getCollisionModel()->getSize());
             assert(elem2.getIndex() < elem2.getCollisionModel()->getSize());
-            assert(elem1.getIndex() >= 0);
-            assert(elem2.getIndex() >= 0);
 
             core::CollisionModel * cm1 = elem1.getCollisionModel();
             core::CollisionModel * cm2 = elem2.getCollisionModel();
@@ -167,8 +163,6 @@ namespace sofa::component::collision
         void remove(int a,int b,const core::CollisionElementIterator & elem1,const core::CollisionElementIterator & elem2){
             assert(elem1.getIndex() < elem1.getCollisionModel()->getSize());
             assert(elem2.getIndex() < elem2.getCollisionModel()->getSize());
-            assert(elem1.getIndex() >= 0);
-            assert(elem2.getIndex() >= 0);
 
             core::CollisionModel * cm1 = elem1.getCollisionModel();
             core::CollisionModel * cm2 = elem2.getCollisionModel();
