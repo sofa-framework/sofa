@@ -25,8 +25,8 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/core/loader/PrimitiveGroup.h>
-#include <sofa/core/loader/Material.h>
+#include <sofa/helper/types/Material.h>
+#include <sofa/helper/types/PrimitiveGroup.h>
 #include <sofa/core/topology/Topology.h>
 
 namespace sofa
@@ -47,8 +47,8 @@ public:
     
 public:
     typedef sofa::defaulttype::Vector3 Vector3;
-    typedef sofa::core::loader::PrimitiveGroup PrimitiveGroup;
-    typedef sofa::core::loader::Material Material;
+    typedef sofa::helper::types::PrimitiveGroup PrimitiveGroup;
+    typedef sofa::helper::types::Material Material;
     typedef Topology::PointID PointID;
 
     /* specify for each control point lying on an edge : the control point index, the index of the  edge,
@@ -156,7 +156,6 @@ protected:
     sofa::helper::vector<Vector3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
     sofa::helper::vector<Vector3> normals;
     sofa::helper::vector< sofa::helper::vector < sofa::helper::vector <PointID> > > facets;
-    //sofa::core::objectmodel::Data< Material > material;
     Material material;
 
     std::vector<Material> materials;

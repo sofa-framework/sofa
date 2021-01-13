@@ -28,9 +28,9 @@
 #include <sofa/gui/PickHandler.h>
 #include <SofaGraphComponent/ViewerSetting.h>
 
-#include <sofa/helper/gl/Capture.h>
-#include <sofa/helper/gl/Texture.h>
-#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
+#include <sofa/gl/Capture.h>
+#include <sofa/gl/Texture.h>
+#include <sofa/gl/VideoRecorderFFMPEG.h>
 
 
 namespace sofa
@@ -63,9 +63,9 @@ public:
     void addFrameRecorder();
 
 private:
-    sofa::helper::gl::Capture m_capture;
-    sofa::helper::gl::Texture* m_texLogo;
-    sofa::helper::gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
+    gl::Capture m_capture;
+    gl::Texture* m_texLogo;
+    gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
 };
 
 } // namespace viewer

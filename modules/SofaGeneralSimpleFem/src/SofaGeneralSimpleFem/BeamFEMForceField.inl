@@ -29,7 +29,6 @@
 #include <cassert>
 #include <iostream>
 #include <set>
-#include <sofa/helper/system/gl.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -99,7 +98,8 @@ template <class DataTypes>
 void BeamFEMForceField<DataTypes>::bwdInit()
 {
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
-    assert(state);
+    if(!state)
+        msg_warning() << "Missing mechanical state";
     m_lastUpdatedStep=-1.0;
 }
 
