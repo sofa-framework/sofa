@@ -104,7 +104,19 @@ macro(sofa_create_package)
     ## <package_name>ConfigVersion.cmake
     set(filename ${ARG_PACKAGE_NAME}ConfigVersion.cmake)
     write_basic_package_version_file(${filename} VERSION ${ARG_PACKAGE_VERSION} COMPATIBILITY ExactVersion)
-    set(PACKAGE_GUARD "include_guard()")
+    string(CONCAT PACKAGE_GUARD
+        "### Expanded from \@PACKAGE_GUARD\@ by SofaMacrosInstall.cmake ###" "\n"
+        "include_guard()"                                                    "\n"
+        )
+    if(ARG_RELOCATABLE)
+        string(CONCAT PACKAGE_GUARD ${PACKAGE_GUARD}
+            "list(APPEND CMAKE_LIBRARY_PATH \"\${CMAKE_CURRENT_LIST_DIR}/../../../bin\")" "\n"
+            "list(APPEND CMAKE_LIBRARY_PATH \"\${CMAKE_CURRENT_LIST_DIR}/../../../lib\")" "\n"
+            )
+    endif()
+    string(CONCAT PACKAGE_GUARD ${PACKAGE_GUARD}
+        "################################################################"
+        )
     configure_file("${CMAKE_CURRENT_BINARY_DIR}/${filename}" "${CMAKE_BINARY_DIR}/cmake/${filename}" COPYONLY)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}" DESTINATION "lib/cmake/${ARG_PACKAGE_NAME}" COMPONENT headers)
 
