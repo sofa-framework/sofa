@@ -40,6 +40,17 @@ Visitor::Result MechanicalWriteLMConstraint::fwdConstraintSet(simulation::Node* 
     return RESULT_CONTINUE;
 }
 
+std::string MechanicalWriteLMConstraint::getInfos() const
+{
+    std::string name;
+    if      (order == core::ConstraintParams::ACC)
+        name= "["+sofa::core::VecId::dx().getName()+"]";
+    else if (order == core::ConstraintParams::VEL)
+        name= "["+sofa::core::VecId::velocity().getName()+"]";
+    else if (order == core::ConstraintParams::POS)
+        name= "["+sofa::core::VecId::position().getName()+"]";
+    return name;
+}
 
 
 
