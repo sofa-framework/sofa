@@ -98,7 +98,8 @@ template <class DataTypes>
 void BeamFEMForceField<DataTypes>::bwdInit()
 {
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
-    assert(state);
+    if(!state)
+        msg_warning() << "Missing mechanical state";
     m_lastUpdatedStep=-1.0;
 }
 

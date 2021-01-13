@@ -29,7 +29,7 @@
 
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/helper/gl/FrameBufferObject.h>
+#include <sofa/gl/FrameBufferObject.h>
 
 namespace sofa
 {
@@ -73,8 +73,8 @@ public:
 
 protected:
     bool _fboAllocated;
-    sofa::helper::gl::FrameBufferObject _fbo;
-    sofa::helper::gl::fboParameters     _fboParams;
+    gl::FrameBufferObject _fbo;
+    gl::fboParameters     _fboParams;
 
 };
 }

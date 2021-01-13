@@ -24,8 +24,8 @@
 
 #include <sofa/gui/qt/config.h>
 
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/glu.h>
 #include <qgl.h>
 #include <qtimer.h>
 #include <cmath>
@@ -48,9 +48,9 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/gl/Transformation.h>
-#include <sofa/helper/gl/Trackball.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/helper/visual/Transformation.h>
+#include <sofa/helper/visual/Trackball.h>
+#include <sofa/gl/Texture.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 #include <SofaSimulationCommon/xml/Element.h>
@@ -76,7 +76,8 @@ namespace qt
 //using namespace sofa::defaulttype;
 using sofa::defaulttype::Vector3;
 using sofa::defaulttype::Quaternion;
-using namespace sofa::helper::gl;
+using namespace sofa::gl;
+using namespace sofa::helper::visual;
 using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 

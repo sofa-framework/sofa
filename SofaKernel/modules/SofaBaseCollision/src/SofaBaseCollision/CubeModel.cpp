@@ -72,7 +72,7 @@ void CubeCollisionModel::setParentOf(Index childIndex, const Vector3& min, const
     elems[i].coneAngle = 2*M_PI;
 }
 
-void CubeModel::setParentOf(Index childIndex, const Vector3& min, const Vector3& max, const Vector3& normal, const SReal angle)
+void CubeCollisionModel::setParentOf(Index childIndex, const Vector3& min, const Vector3& max, const Vector3& normal, const SReal angle)
 {
     Index i = parentOf[childIndex];
     elems[i].minBBox = min;

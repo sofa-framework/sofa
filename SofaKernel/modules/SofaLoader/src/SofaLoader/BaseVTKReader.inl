@@ -110,7 +110,7 @@ bool BaseVTKReader::VTKDataIO<T>::read(const string& s, int binary)
     }
     else
     {
-        n = sizeof(s.c_str())/sizeof(T);
+        n = s.size()/sizeof(T);
     }
     istringstream iss(s);
 
