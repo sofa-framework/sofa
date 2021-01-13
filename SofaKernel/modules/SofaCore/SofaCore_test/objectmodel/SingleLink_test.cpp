@@ -31,6 +31,8 @@ using sofa::core::objectmodel::BaseLink ;
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;
 
+#include "BaseLink_test.h"
+
 class EmptyObject : public BaseObject
 {
 public:
@@ -56,7 +58,6 @@ public:
         m_link.add(m_dst.get());
     }
 };
-
 
 TEST_F(SingleLink_test, checkAccess  )
 {
