@@ -48,7 +48,6 @@ BaseObject::BaseObject()
     l_context.setNotificationFunction(&sofa::core::objectmodel::BaseObject::changeContextLink);
     l_context.set(BaseContext::getDefault());
     l_slaves.setNotificationFunction(&sofa::core::objectmodel::BaseObject::changeSlavesLink);
-    //l_slaves.setValidator(&sofa::core::objectmodel::BaseObject::changeSlavesLink);
     f_listening.setAutoLink(false);
 }
 
@@ -95,9 +94,9 @@ BaseContext* BaseObject::changeContextLink(BaseObject* self, BaseContext* oldval
 }
 
 /// This method insures that slaves objects have master and context links set correctly
-//void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, std::size_t /*index*/, bool add)
 BaseObject::SPtr BaseObject::changeSlavesLink(BaseObject* self, BaseObject::SPtr oldvalue, BaseObject::SPtr newvalue, size_t index)
 {
+
     SOFA_UNUSED(index);
     if (!self)
         return nullptr;

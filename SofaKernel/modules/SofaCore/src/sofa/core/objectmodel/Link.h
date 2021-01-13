@@ -790,16 +790,7 @@ public:
 
     void reset()
     {
-<<<<<<< HEAD
         set(nullptr);
-=======
-        ValueType& value = m_value.get();
-        const DestPtr before = TraitsValueType::get(value);
-        if (!before) return;
-        TraitsValueType::set(value, nullptr);
-        updateCounter();
-        notifyChange( before, nullptr);
->>>>>>> [SofaCore] Factorize the notificationMechanism in Link.h
     }
 
     void set(DestPtr newvalue)
@@ -884,46 +875,6 @@ public:
         set(v);
         return v;
     }
-<<<<<<< HEAD
-protected:
-    ValidatorFn m_validator;
-
-
-    void added(DestPtr val, std::size_t /*index*/)
-    {
-        if (m_validator)
-        {
-            DestPtr after = val;
-            (m_owner->*m_validator)(nullptr, after);
-            if (after != val)
-                TraitsValueType::set(m_value.get(), after);
-        }
-    }
-
-    void removed(DestPtr val, std::size_t /*index*/)
-    {
-        if (m_validator)
-        {
-            DestPtr after = nullptr;
-            (m_owner->*m_validator)(val, after);
-            if (after)
-                TraitsValueType::set(m_value.get(), after);
-        }
-    }
-
-    void changed(DestPtr before, DestPtr val)
-    {
-        if (m_validator)
-        {
-            DestPtr after = val;
-            (m_owner->*m_validator)(before, after);
-            if (after != val)
-                TraitsValueType::set(this->m_value.get(), after);
-        }
-    }
-=======
-#endif
->>>>>>> [SofaCore] Factorize the notificationMechanism in Link.h
 };
 
 } // namespace objectmodel
