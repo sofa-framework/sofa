@@ -35,10 +35,36 @@ using sofa::helper::testing::BaseTest ;
  * This is checking that the predicates about BaseLink are still valid in an
  * inhertited type
  ***********************************************************************************/
+template<class Link>
 class FakeObject : public BaseObject
 {
 public:
-    FakeObject() : BaseObject() {}
+    FakeObject() : BaseObject()
+    {
+        link.setNotificationFunction([](typename Link::OwnerType* self,
+                                        typename Link::DestPtr oldvalue, typename Link::DestPtr newvalue,
+                                        size_t index){
+            /// As the Link is of type Link<BaseObject, BaseObject> we need to dynamic cast it to a FakeObject
+            FakeObject *realSelf = dynamic_cast<FakeObject*>(self);
+
+            if(!realSelf)
+                return newvalue;
+
+            if(oldvalue == nullptr)
+                realSelf->numAdditions++;
+            if(newvalue == nullptr)
+                realSelf->numDeletions++;
+            if(oldvalue != nullptr && newvalue != nullptr)
+                realSelf->numChanges++;
+
+            return newvalue;
+        });
+    }
+
+    int numAdditions {0};
+    int numDeletions {0};
+    int numChanges {0};
+    Link link;
 };
 
 template<class Link>
@@ -47,8 +73,8 @@ class BaseLinkTests : public BaseTest
 public:
     Link link1;
     Link link2;
-    FakeObject object1;
-    FakeObject object2;
+    FakeObject<Link> object1;
+    FakeObject<Link> object2;
 };
 
 TYPED_TEST_SUITE_P(BaseLinkTests);
@@ -99,6 +125,30 @@ TYPED_TEST_P(BaseLinkTests, checkReadWithMultipleLinkPath)
     }
 }
 
+TYPED_TEST_P(BaseLinkTests, checkChangeNotification)
+{
+    EXPECT_EQ(this->object1.numAdditions, 0);
+    EXPECT_EQ(this->object1.numDeletions, 0);
+    EXPECT_EQ(this->object1.numChanges, 0);
 
-REGISTER_TYPED_TEST_SUITE_P(BaseLinkTests, checkOwnerShipTransfer, checkRead, checkReadWithMultipleLinkPath);
+    this->object1.link.add(&this->object2);
+    EXPECT_EQ(this->object1.numAdditions, 1);
+    EXPECT_EQ(this->object1.numDeletions, 0);
+    EXPECT_EQ(this->object1.numChanges, 0);
+
+    this->object1.link.remove(&this->object2);
+    EXPECT_EQ(this->object1.numAdditions, 1);
+    EXPECT_EQ(this->object1.numDeletions, 1);
+    EXPECT_EQ(this->object1.numChanges, 0);
+
+//    this->object1.link.add(nullptr);
+//    this->object1.link.set(&this->object1);
+//    EXPECT_EQ(this->object1.numAdditions, 2);
+//    EXPECT_EQ(this->object1.numDeletions, 1);
+//    EXPECT_EQ(this->object1.numChanges, 1);
+}
+
+REGISTER_TYPED_TEST_SUITE_P(BaseLinkTests,
+                            checkOwnerShipTransfer, checkRead,
+                            checkReadWithMultipleLinkPath, checkChangeNotification);
 
