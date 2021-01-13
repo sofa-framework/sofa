@@ -13,7 +13,6 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_compile_definitions(${PROJECT_NAME} PRIVATE SOFA_BUILD_SOFA_TYPE) # To remove once sofa_add_targets_to_package remove the dot in the generated definition
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework
