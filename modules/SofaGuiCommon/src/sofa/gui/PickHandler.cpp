@@ -27,7 +27,6 @@
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/helper/system/gl.h>
 #include <sofa/simulation/Simulation.h>
 
 #include <SofaMeshCollision/TriangleModel.h>
