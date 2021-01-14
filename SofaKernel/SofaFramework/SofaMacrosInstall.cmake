@@ -166,6 +166,40 @@ macro(sofa_add_targets_to_package)
     sofa_install_targets_in_package(${child_args})
 endmacro()
 
+
+# sofa_get_target_dependencies
+# Get recursively all dependencies of a target
+# See https://stackoverflow.com/a/39127212
+function(sofa_get_target_dependencies OUTPUT_LIST TARGET)
+    get_target_property(aliased_target ${TARGET} ALIASED_TARGET)
+    if(aliased_target)
+        set(TARGET ${aliased_target})
+    endif()
+    list(APPEND VISITED_TARGETS ${TARGET})
+    get_target_property(IMPORTED ${TARGET} IMPORTED)
+    if(IMPORTED)
+        get_target_property(LIBS ${TARGET} INTERFACE_LINK_LIBRARIES)
+    else()
+        get_target_property(LIBS ${TARGET} LINK_LIBRARIES)
+    endif()
+    set(LIB_TARGETS "")
+    foreach(LIB ${LIBS})
+        if(TARGET ${LIB})
+            get_target_property(dep_type ${LIB} TYPE)
+            if("${dep_type}" STREQUAL "SHARED_LIBRARY")
+                list(FIND VISITED_TARGETS ${LIB} VISITED)
+                if (${VISITED} EQUAL -1)
+                    sofa_get_target_dependencies(LINK_LIB_TARGETS ${LIB})
+                    list(APPEND LIB_TARGETS ${LIB} ${LINK_LIB_TARGETS})
+                endif()
+            endif()
+        endif()
+    endforeach()
+    set(VISITED_TARGETS ${VISITED_TARGETS} PARENT_SCOPE)
+    set(${OUTPUT_LIST} ${LIB_TARGETS} PARENT_SCOPE)
+endfunction()
+
+
 # sofa_auto_set_target_properties(
 #     PACKAGE_NAME <package_name>
 #     TARGETS <target1> [<target2>...]
@@ -274,7 +308,7 @@ macro(sofa_auto_set_target_properties)
             set_target_properties(${target} PROPERTIES RELOCATABLE_INSTALL_DIR "${ARG_RELOCATABLE}/${ARG_PACKAGE_NAME}")
         endif()
 
-        get_target_property(target_deps ${target} "LINK_LIBRARIES")
+        sofa_get_target_dependencies(target_deps ${target})
         get_target_property(target_rpath ${target} "INSTALL_RPATH")
         foreach(dep ${target_deps})
             if(TARGET ${dep})
@@ -317,7 +351,6 @@ macro(sofa_auto_set_target_properties)
         endforeach()
         list(REMOVE_DUPLICATES target_rpath)
         set_target_properties(${target} PROPERTIES INSTALL_RPATH "${target_rpath}")
-
     endforeach()
 endmacro()
 
