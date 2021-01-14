@@ -23,7 +23,7 @@
 
 #include <sofa/type/stdtype/fixed_array_algorithms.h>
 
-SOFA_DEPRECATED_HEADER(v21.06, "sofa/type/stdtype/fixed_array_algorithms.h")
+SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/fixed_array_algorithms.h")
 
 namespace sofa::helper::pairwise
 {

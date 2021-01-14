@@ -491,23 +491,23 @@ inline fixed_array<T, 10> make_array(const T& v0, const T& v1, const T& v2, cons
 }
 
 #ifndef FIXED_ARRAY_CPP
-extern template class SOFA_SOFATYPE_API fixed_array<float, 2>;
-extern template class SOFA_SOFATYPE_API fixed_array<double, 2>;
+extern template class SOFA_TYPE_API fixed_array<float, 2>;
+extern template class SOFA_TYPE_API fixed_array<double, 2>;
 
-extern template class SOFA_SOFATYPE_API fixed_array<float, 3>;
-extern template class SOFA_SOFATYPE_API fixed_array<double, 3>;
+extern template class SOFA_TYPE_API fixed_array<float, 3>;
+extern template class SOFA_TYPE_API fixed_array<double, 3>;
 
-extern template class SOFA_SOFATYPE_API fixed_array<float, 4>;
-extern template class SOFA_SOFATYPE_API fixed_array<double, 4>;
+extern template class SOFA_TYPE_API fixed_array<float, 4>;
+extern template class SOFA_TYPE_API fixed_array<double, 4>;
 
-extern template class SOFA_SOFATYPE_API fixed_array<float, 5>;
-extern template class SOFA_SOFATYPE_API fixed_array<double, 5>;
+extern template class SOFA_TYPE_API fixed_array<float, 5>;
+extern template class SOFA_TYPE_API fixed_array<double, 5>;
 
-extern template class SOFA_SOFATYPE_API fixed_array<float, 6>;
-extern template class SOFA_SOFATYPE_API fixed_array<double, 6>;
+extern template class SOFA_TYPE_API fixed_array<float, 6>;
+extern template class SOFA_TYPE_API fixed_array<double, 6>;
 
-extern template class SOFA_SOFATYPE_API fixed_array<float, 7>;
-extern template class SOFA_SOFATYPE_API fixed_array<double, 7>;
+extern template class SOFA_TYPE_API fixed_array<float, 7>;
+extern template class SOFA_TYPE_API fixed_array<double, 7>;
 #endif //
 
 } // namespace sofa::type::stdtype
