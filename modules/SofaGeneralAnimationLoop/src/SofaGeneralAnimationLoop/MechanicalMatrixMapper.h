@@ -272,10 +272,13 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_CPP)
+extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Rigid3Types, defaulttype::Rigid3Types>;
 extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec3Types, defaulttype::Rigid3Types>;
 extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec3Types, defaulttype::Vec3Types>;
 extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Rigid3Types>;
+extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Vec3Types>;
 extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Vec1Types, defaulttype::Vec1Types>;
+extern template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<defaulttype::Rigid3Types, defaulttype::Vec1Types>;
 #endif
 
 } // namespace sofa::component::interactionforcefield

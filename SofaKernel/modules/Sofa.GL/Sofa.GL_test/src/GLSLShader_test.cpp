@@ -1,10 +1,11 @@
 #include <sofa/helper/Utils.h>
 #include <gtest/gtest.h>
 
-#include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/gl/GLSLShader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include "test.cppglsl"
 
+using namespace sofa;
 using sofa::helper::Utils;
 
 /// NOTE: We can only test non-OPenGL operations as the context is not created
@@ -27,7 +28,7 @@ struct GLSLShader_test : public ::testing::Test
 
 TEST(GLSLShader_test, GLSLShader_SetFiles)
 {
-    sofa::helper::gl::GLSLShader glshader;
+    gl::GLSLShader glshader;
     std::string vs("shader/test.vs");
     std::string fs("shader/test.fs");
     std::string gs("shader/test.gs");
@@ -67,7 +68,7 @@ TEST(GLSLShader_test, GLSLShader_SetFiles)
 
 TEST(GLSLShader_test, GLSLShader_SetStrings)
 {
-    sofa::helper::gl::GLSLShader glshader;
+    gl::GLSLShader glshader;
     std::string vs = sofa::helper::gl::shader::testvs;
     std::string fs = sofa::helper::gl::shader::testfs;
     std::string gs = sofa::helper::gl::shader::testgs;
@@ -100,7 +101,7 @@ TEST(GLSLShader_test, GLSLShader_SetStrings)
 
 TEST(GLSLShader_test, GLSLShader_AddHeader)
 {
-    sofa::helper::gl::GLSLShader glshader;
+    gl::GLSLShader glshader;
 
     std::string header = "#HEADER#";
     std::string expectedHeader = "#HEADER#\n";
@@ -111,7 +112,7 @@ TEST(GLSLShader_test, GLSLShader_AddHeader)
 
 TEST(GLSLShader_test, GLSLShader_SetStage)
 {
-    sofa::helper::gl::GLSLShader glshader;
+    gl::GLSLShader glshader;
     EXPECT_TRUE(glshader.GetShaderStageName(GL_VERTEX_SHADER_ARB).compare("Vertex") == 0);
     EXPECT_TRUE(glshader.GetShaderStageName(GL_FRAGMENT_SHADER_ARB).compare("Fragment") == 0);
     EXPECT_TRUE(glshader.GetShaderStageName(GL_GEOMETRY_SHADER_EXT).compare("Geometry") == 0);
@@ -122,7 +123,7 @@ TEST(GLSLShader_test, GLSLShader_SetStage)
 
 TEST(GLSLShader_test, GLSLShader_AddDefineMacro)
 {
-    sofa::helper::gl::GLSLShader glshader;
+    gl::GLSLShader glshader;
 
     std::string define1 = "NUMBER_OF_THINGS";
     std::string value1 = "5";

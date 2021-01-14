@@ -158,10 +158,6 @@ std::string asStr(const QString& s)
     return s.toStdString() ;
 }
 
-const char* asCStr(const QString& s)
-{
-    return s.toStdString().c_str() ;
-}
 
 DocBrowser::~DocBrowser()
 {

@@ -60,8 +60,6 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE SOFA_BUILD_SOFA_GL) # To remove once sofa_add_targets_to_package remove the dot in the generated definition 
-
 if(TARGET OpenGL::GL AND TARGET OpenGL::GLU) # Imported targets defined since CMake 3.8
     target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL OpenGL::GLU)
 else()
