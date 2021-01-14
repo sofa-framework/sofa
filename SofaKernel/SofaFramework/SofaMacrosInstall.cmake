@@ -383,6 +383,8 @@ macro(sofa_auto_set_target_compile_definitions)
         endif()
 
         string(TOUPPER "${target}" sofa_target_name_upper)
+        # C Preprocessor definitions do not handle dot character, so it is replaced with an underscore
+        string(REPLACE "." "_" sofa_target_name_upper "${sofa_target_name_upper}")
         set(${sofa_target_name_upper}_TARGET "${sofa_target_name_upper}")
 
         if(target MATCHES "^Sofa")
