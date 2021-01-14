@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaOpenglVisual LANGUAGES CXX)
 
-find_package(SofaBase REQUIRED)
-find_package(SofaSimulation REQUIRED)
+find_package(SofaFramework REQUIRED) # SofaSimulationCore
+find_package(SofaBaseVisual REQUIRED)
 find_package(Sofa.GL REQUIRED)
 
 if(NOT Sofa.GL_FOUND)
@@ -84,7 +84,8 @@ set(EXTRA_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCommon Sofa.GL)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCore Sofa.GL)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
