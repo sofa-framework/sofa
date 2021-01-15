@@ -494,6 +494,7 @@ macro(sofa_auto_set_target_rpath)
                             "$ORIGIN/../../../${dep_reloc_install_dir}/lib"
                             "$$ORIGIN/../../../${dep_reloc_install_dir}/lib"
                             "@loader_path/../../../${dep_reloc_install_dir}/lib"
+                            "@executable_path/../../../${dep_reloc_install_dir}/lib"
                             )
                     else()
                         # current target is NOT relocatable
@@ -501,6 +502,7 @@ macro(sofa_auto_set_target_rpath)
                             "$ORIGIN/../${dep_reloc_install_dir}/lib"
                             "$$ORIGIN/../${dep_reloc_install_dir}/lib"
                             "@loader_path/../${dep_reloc_install_dir}/lib"
+                            "@executable_path/../${dep_reloc_install_dir}/lib"
                             )
                     endif()
                 else()
@@ -510,6 +512,8 @@ macro(sofa_auto_set_target_rpath)
                         list(APPEND target_rpath
                             "$ORIGIN/../../../lib"
                             "$$ORIGIN/../../../lib"
+                            "@loader_path/../../../lib"
+                            "@executable_path/../../../lib"
                             )
                     endif()
                 endif()
