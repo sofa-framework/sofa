@@ -106,7 +106,8 @@ FixedPlaneConstraint<DataTypes>::~FixedPlaneConstraint()
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::applyConstraint(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix)
 {
-    MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate.get(mparams));
+    SOFA_UNUSED(mparams);
+    MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate.get());
     if(r)
     {
         /// Implement plane constraint only when the direction is along the coordinates directions

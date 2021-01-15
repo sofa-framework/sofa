@@ -573,6 +573,7 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
 {
+    SOFA_UNUSED(mparams);
     unsigned geomStiff = geometricStiffness.getValue();
 
     if( !geomStiff ) { geometricStiffnessMatrix.resize(0,0); return; }
