@@ -778,7 +778,11 @@ function(sofa_install_libraries)
 
         if(parseOk AND NOT CMAKE_CONFIGURATION_TYPES) # Single-config generator
             string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
-            set(lib_paths ${LIBRARIES_${CMAKE_BUILD_TYPE_UPPER}})
+            if(CMAKE_BUILD_TYPE_UPPER STREQUAL "DEBUG")
+                set(lib_paths ${LIBRARIES_DEBUG})
+            else()
+                set(lib_paths ${LIBRARIES_RELEASE})
+            endif()
         endif()
     else()
         message(WARNING "sofa_install_libraries: no lib found with ${ARGV}")
