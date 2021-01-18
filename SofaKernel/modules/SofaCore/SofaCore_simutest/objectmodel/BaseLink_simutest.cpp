@@ -38,13 +38,13 @@ using sofa::defaulttype::Vec3Types;
 namespace
 {
 
-class BaseLink_simutest: public BaseSimulationTest,
+class BaseLink_test : public BaseSimulationTest,
         public ::testing::WithParamInterface<std::vector<std::string>>
 {
 public:
     SceneInstance* c;
     Node* node {nullptr};
-    BaseLink_simutest()
+    BaseLink_test()
     {
         importPlugin("SofaComponentAll") ;
         std::stringstream scene ;
@@ -65,40 +65,60 @@ public:
         node = dynamic_cast<Node*>(b);
     }
 
-    ~BaseLink_simutest() override
+    ~BaseLink_test() override
     {
         delete c;
     }
 };
 
-TEST_F(BaseLink_simutest , testCheckpath )
-{
-    ASSERT_NE(node,nullptr);
-    EXPECT_TRUE(node->object.CheckPaths("@../mstate1", node)) << "The mstate exists so this test should succeed";
-    EXPECT_TRUE(node->object.CheckPaths("@../mstate1 @../../mstate0", node)) << "Unable to parse multiple link's target correctly";
-    EXPECT_FALSE(node->object.CheckPaths("@../mstate", node)) << "The mstate does not exists so the returned value should be false";
 
-    EXPECT_TRUE(node->object.CheckPaths("@/child1/mstate1", node)) << "The mstate exists so this test should succeed";
-    EXPECT_TRUE(node->object.CheckPaths("@/child1/mstate1 @/mstate0", node)) << "Unable to parse multiple link's target correctly";
-    EXPECT_TRUE(node->mechanicalState.CheckPath("@/child1/mstate1", node)) << "The pointed mstate exists and is of right type";
-}
+//////////////////////// Testing valid path //////////////////////////////////////
+class MultiLink_simutest : public BaseLink_test {};
 
-TEST_P(BaseLink_simutest, checkInvalidCheckPath)
+TEST_P(MultiLink_simutest, checkPaths)
 {
     ASSERT_NE(node,nullptr);
     auto& t = GetParam();
-    ASSERT_FALSE(node->object.CheckPaths(t[0], node)) << t[1];
+    if(t[2]=="true")
+        ASSERT_TRUE(node->object.CheckPaths(t[0], node)) << t[1] << " " << t[2];
+    else
+        ASSERT_FALSE(node->object.CheckPaths(t[0], node)) << t[1] << " " << t[2];
 }
 
-std::vector<std::vector<std::string>> invalidValues={
-    {"@/child1", "The types are different so this test should fails"},
-    {"@/obj", "The types are different so this test should fails"},
-    {"@/child1/mstate1 @/child1/mstate1", "A SingleLink should accept two links"}
+std::vector<std::vector<std::string>> multiLinkValues={
+    {"@/child1/mstate1", "The mstate exists, CheckPaths should returns", "true"},
+    {"@/child1/mstate1 @/mstate0", "There is multiple path, the link is a multilink and both pointed object exists. CheckPath should return ", "true"},
+    {"@../mstate1 @../../mstate0", "There is multiple path, the link is a multilink and both pointed object exists. CheckPath should return ", "true"}
 };
 
-INSTANTIATE_TEST_CASE_P(checkInvalidCheckPath,
-                        BaseLink_simutest,
-                        ::testing::ValuesIn(invalidValues));
+INSTANTIATE_TEST_CASE_P(CheckPaths,
+                        MultiLink_simutest,
+                        ::testing::ValuesIn(multiLinkValues));
+
+//////////////////////// Testing invalid path //////////////////////////////////////
+class SingleLink_simutest : public BaseLink_test {};
+
+TEST_P(SingleLink_simutest, CheckPath)
+{
+    ASSERT_NE(node,nullptr);
+    auto& t = GetParam();
+    if(t[2]=="true")
+        ASSERT_TRUE(node->mechanicalState.CheckPath(t[0], node)) << t[1] << " " << t[2];
+    else
+        ASSERT_FALSE(node->mechanicalState.CheckPath(t[0], node)) << t[1] << " " << t[2];
+}
+
+std::vector<std::vector<std::string>> singleLinkValues={
+    {"@/child1", "The linked type is a node, while the link should point to an object. Using two different types should return", "false"},
+    {"@/obj", "The linked type is an InfoComponent type while the link should point to a  object. CheckPath should return", "false"},
+    {"@/child1/mstate1 @/child1/mstate1", "Using multiple link in a SingleLink::CheckPath function should fail and return", "false"},
+    {"@../mstate", "The path is not pointing to a valid mstate. CheckLink shoud return", "false"},
+    {"@../mstate1", "The link's target exists and is of same type. CheckPath should return", "true"}
+};
+
+INSTANTIATE_TEST_CASE_P(CheckPath,
+                        SingleLink_simutest,
+                        ::testing::ValuesIn(singleLinkValues));
 
 
 } /// namespace
