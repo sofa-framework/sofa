@@ -91,7 +91,7 @@ std::vector<std::vector<std::string>> multiLinkValues={
     {"@../mstate1 @../../mstate0", "There is multiple path, the link is a multilink and both pointed object exists. CheckPath should return ", "true"}
 };
 
-INSTANTIATE_TEST_CASE_P(CheckPaths,
+INSTANTIATE_TEST_SUITE_P(CheckPaths,
                         MultiLink_simutest,
                         ::testing::ValuesIn(multiLinkValues));
 
@@ -116,7 +116,7 @@ std::vector<std::vector<std::string>> singleLinkValues={
     {"@../mstate1", "The link's target exists and is of same type. CheckPath should return", "true"}
 };
 
-INSTANTIATE_TEST_CASE_P(CheckPath,
+INSTANTIATE_TEST_SUITE_P(CheckPath,
                         SingleLink_simutest,
                         ::testing::ValuesIn(singleLinkValues));
 
