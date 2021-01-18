@@ -26,7 +26,5 @@
 namespace sofa::defaulttype
 {
 
-const AbstractTypeInfo* AbstractTypeInfo::BaseType() const { return TypeInfoRegistry::Get(getBaseTypeId()); }
-const AbstractTypeInfo* AbstractTypeInfo::ValueType() const { return TypeInfoRegistry::Get(getValueTypeId()); }
 
 } /// namespace sofa::defaulttype

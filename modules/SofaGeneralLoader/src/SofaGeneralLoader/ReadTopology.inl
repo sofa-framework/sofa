@@ -24,6 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/helper/system/FileSystem.h>
 
 #include <cstring>
 #include <sstream>
@@ -93,6 +94,10 @@ void ReadTopology::reset()
     if (filename.empty())
     {
         msg_error() << "Empty filename";
+    }
+    else if (!sofa::helper::system::FileSystem::exists(filename))
+    {
+        msg_error() << "Compressed file doesn't exist:" << filename;
     }
 #if SOFAGENERALLOADER_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")

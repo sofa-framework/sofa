@@ -249,7 +249,7 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /
     }
     else
     {
-        msg_info("PluginManager") << "Plugin not found in loaded plugins: " << plugin << msgendl;
+        msg_info("PluginManager") << "Plugin not found in loaded plugins: " << plugin;
         return nullptr;
     }
 }
@@ -265,7 +265,7 @@ Plugin* PluginManager::getPluginByName(const std::string& pluginName)
         }
     }
 
-    msg_info("PluginManager") << "Plugin not found in loaded plugins: " << pluginName << msgendl;
+    msg_info("PluginManager") << "Plugin not found in loaded plugins: " << pluginName;
     return nullptr;
 }
 

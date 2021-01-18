@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "GenGraphForm.h"
-#include <SofaSimulationTree/ExportDotVisitor.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -36,6 +35,7 @@
 #include <QHeaderView>
 #include <QComboBox>
 #include <QRadioButton>
+#include <sofa/simulation/ExportDotVisitor.h>
 
 namespace sofa
 {
@@ -244,7 +244,7 @@ void GenGraphForm::doExport()
         return;
     }
     {
-        sofa::simulation::tree::ExportDotVisitor act(sofa::core::ExecParams::defaultInstance(), &fdot);
+        sofa::simulation::graph::ExportDotVisitor act(sofa::core::ExecParams::defaultInstance(), &fdot);
         act.showNode = this->showNodes->isChecked();
         act.showObject = this->showObjects->isChecked();
         act.showBehaviorModel = this->showBehaviorModels->isChecked();
@@ -413,10 +413,14 @@ void GenGraphForm::runTask()
     QString cmd = argv.join(QString(" "));
     std::cout << "STARTING TASK " << cmd.toStdString() << std::endl;
 
-    QProcess* p = new QProcess(this);
+    auto* p = new QProcess(this);
     QString program = argv.front();
     argv.pop_front();
+#if (QT_VERSION < QT_VERSION_CHECK(5, 13, 0))
     p->setReadChannelMode(QProcess::ForwardedChannels);
+#else
+    p->setProcessChannelMode(QProcess::ForwardedChannels);
+#endif
     connect(p,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(taskFinished()));
     p->start(program, argv);
     currentTask = p;

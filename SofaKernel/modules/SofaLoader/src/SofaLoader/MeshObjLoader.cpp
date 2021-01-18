@@ -327,9 +327,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 if (!handleSeams) // we have to wait for renumbering vertices if we handle seams
                 {
                     if (nodes[0]<nodes[1])
-                        addEdge(&my_edges.wref(), Edge(nodes[0], nodes[1]));
+                        addEdge(my_edges.wref(), Edge(nodes[0], nodes[1]));
                     else
-                        addEdge(&my_edges.wref(), Edge(nodes[1], nodes[0]));
+                        addEdge(my_edges.wref(), Edge(nodes[1], nodes[0]));
                 }
                 ++nbFaces[MeshObjLoader::EDGE];
                 faceType = MeshObjLoader::EDGE;
@@ -338,7 +338,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             {
                 if (!handleSeams) // we have to wait for renumbering vertices if we handle seams
                 {
-                    addQuad(&my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+                    addQuad(my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
                 }
                 ++nbFaces[MeshObjLoader::QUAD];
                 faceType = MeshObjLoader::QUAD;
@@ -348,7 +348,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 if (!handleSeams) // we have to wait for renumbering vertices if we handle seams
                 {
                     for (size_t j=2; j<nodes.size(); j++)
-                        addTriangle(&my_triangles.wref(), Triangle(nodes[0], nodes[j-1], nodes[j]));
+                        addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[j-1], nodes[j]));
                 }
                 ++nbFaces[MeshObjLoader::TRIANGLE];
                 faceType = MeshObjLoader::TRIANGLE;
@@ -423,7 +423,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     { // handleSeam mode : vertices are duplicated in case they have different texcoords and/or normals
         // This code was initially in VisualModelImpl::setMesh()
 
-        int nbVIn = (int)my_positions.size();
+        auto nbVIn = my_positions.size();
         // First we compute for each point how many pair of normal/texcoord indices are used
         // The map store the final index of each combinaison
         std::vector< std::map< std::pair<int,int>, int > > vertTexNormMap;
@@ -445,9 +445,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         // Then we can compute how many vertices are created
         sofa::Size nbVOut = 0;
         bool vsplit = false;
-        for (int i = 0; i < nbVIn; i++)
+        for (sofa::Index i = 0; i < nbVIn; i++)
         {
-            sofa::Size s = sofa::Size(vertTexNormMap[i].size());
+            auto s = sofa::Size(vertTexNormMap[i].size());
             nbVOut += s;
         }
 
@@ -472,11 +472,11 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             vertNormIdx.resize(nbVOut);
         }
 
-        int nbNOut = 0; /// Number of different normals
-        for (int i = 0, j = 0; i < nbVIn; i++)
+        sofa::Size nbNOut = 0; /// Number of different normals
+        for (sofa::Index i = 0, j = 0; i < nbVIn; i++)
         {
             std::map<int, int> normMap;
-            for (std::map<std::pair<int, int>, int>::iterator it = vertTexNormMap[i].begin();
+            for (auto it = vertTexNormMap[i].begin();
                  it != vertTexNormMap[i].end(); ++it)
             {
                 int t = it->first.first;
@@ -535,18 +535,18 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             if (nodes.size() == 2) // Edge
             {
                 if (nodes[0]<nodes[1])
-                    addEdge(&my_edges.wref(), Edge(nodes[0], nodes[1]));
+                    addEdge(my_edges.wref(), Edge(nodes[0], nodes[1]));
                 else
-                    addEdge(&my_edges.wref(), Edge(nodes[1], nodes[0]));
+                    addEdge(my_edges.wref(), Edge(nodes[1], nodes[0]));
             }
             else if (nodes.size()==4 && !this->d_triangulate.getValue()) // Quad
             {
-                addQuad(&my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+                addQuad(my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
             }
             else // Triangulate
             {
                 for (size_t j=2; j<nodes.size(); j++)
-                    addTriangle(&my_triangles.wref(), Triangle(nodes[0], nodes[j-1], nodes[j]));
+                    addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[j-1], nodes[j]));
             }
         }
         for (size_t i=0; i<vnormals.size(); ++i)

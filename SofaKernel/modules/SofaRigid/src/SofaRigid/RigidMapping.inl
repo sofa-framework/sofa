@@ -728,7 +728,7 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         point = OutDataTypes::getCPos(x[i]);
         points.push_back(point);
     }
-    vparams->drawTool()->drawPoints(points, 7, defaulttype::Vec<4, float>(1, 1, 0,1) );
+    vparams->drawTool()->drawPoints(points, 7, sofa::helper::types::RGBAColor::yellow() );
 }
 
 

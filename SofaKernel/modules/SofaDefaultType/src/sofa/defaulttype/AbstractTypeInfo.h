@@ -73,13 +73,13 @@ public:
     /// values inside this container.
     /// For example, if the type is `fixed_array<fixed_array<int, 2> 3>`, it
     /// returns the TypeInfo for `fixed_array<int, 2>`.
-    const AbstractTypeInfo* BaseType() const;
+    virtual const AbstractTypeInfo* BaseType() const = 0;
 
     /// Returns the TypeInfo for the type of the values accessible by the
     /// get*Value() functions.
     /// For example, if the type is `fixed_array<fixed_array<int, 2> 3>`, it
     /// returns the TypeInfo for `int`.    
-    const AbstractTypeInfo* ValueType() const;
+    virtual const AbstractTypeInfo* ValueType() const = 0;
 
     /// \brief Returns the name of this type.
     virtual std::string name() const = 0;

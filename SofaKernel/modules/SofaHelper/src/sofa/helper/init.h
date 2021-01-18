@@ -46,20 +46,12 @@ namespace helper
 //     └──sofa::defaulttype::init()                     // SofaDefaultType
 //        └──sofa::core::init()                         // SofaCore
 //           └──sofa::simulation::common::init()        // SofaSimulationCommon
-//              ├──sofa::simulation::tree::init()       // SofaSimulationTree
 //              └──sofa::simulation::graph::init()      // SofaSimulationGraph
 //
 // For example:
 //
-// - If an application links against SofaSimulationTree, it only needs to call
-//   sofa::simulation::tree::init().
-//
 // - If it links against SofaCore, it only needs to call sofa::core::init().
-//
-// - If it links against both SofaSimulationTree and SofaSimulationGraph, it
-//   needs to call both sofa::simulation::tree::init() and
-//   sofa::simulation::graph::init().
-//
+///
 //
 // Symmetrically, before exiting, an application needs to call the cleanup()
 // function of the libraries it init()'ed.

@@ -51,7 +51,7 @@ public:
     SOFA_CLASS(OglColorMap, sofa::core::visual::VisualModel);
 
     typedef defaulttype::Vec3f Color3;  // Color tripplet
-    typedef defaulttype::Vec4f Color;   // ... with alpha value
+    typedef sofa::helper::types::RGBAColor Color;   // ... with alpha value
     typedef sofa::helper::vector<Color> VecColor;
     
 protected:

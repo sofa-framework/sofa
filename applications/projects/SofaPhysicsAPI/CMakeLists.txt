@@ -29,7 +29,7 @@ find_package(SceneCreator REQUIRED)
 find_package(SofaValidation REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiMain SofaGeneral SceneCreator SofaValidation)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiMain SofaGeneral SceneCreator SofaValidation SofaSimulationCommon)
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPHYSICSAPI_VERSION})
 
 ## Install rules and CMake package configurations files

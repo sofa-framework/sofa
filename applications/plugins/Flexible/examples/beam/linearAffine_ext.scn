@@ -64,8 +64,8 @@
 
 
        <Node 	name="VisualNode">
-            <OglModel template="ExtVec3f" name="Visual" color="red" />
-            <IdentityMapping template="Vec3d,ExtVec3f" name="default1"  input="@../Triangles"  output="@Visual" />
+            <OglModel template="Vec3d" name="Visual" color="red" />
+            <IdentityMapping template="Vec3d,Vec3d" name="default1"  input="@../Triangles"  output="@Visual" />
        </Node>
   </Node>
 
@@ -115,8 +115,8 @@
 
 	    <Node 	name="visual"   >
 		<MeshObjLoader name="meshLoader_2" filename="beam.obj" handleSeams="1" />
-		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_2" color="1 0.8 0.8 "/>
-	    	<LinearMapping template="Affine,ExtVec3f"/>
+		<OglModel template="Vec3d" name="Visual" src="@meshLoader_2" color="1 0.8 0.8 "/>
+	    	<LinearMapping template="Affine,Vec3d"/>
 	    </Node>
     </Node>
 
@@ -148,7 +148,7 @@
 
 		<Node name="Visual" >
 			<MeshObjLoader name="meshLoader_0" filename="beam.obj" handleSeams="1" />
-			<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0"/>
+			<OglModel template="Vec3d" name="Visual" src="@meshLoader_0"/>
 			<FrameBlendingMapping template="Affine,ExtVec3d"  input="@../DOFs"  output="@Visual" />
 		</Node>
 

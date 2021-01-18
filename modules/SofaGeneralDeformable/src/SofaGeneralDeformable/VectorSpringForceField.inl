@@ -404,7 +404,7 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
             points.push_back(Vector3(x2[e[1]]));
         }
     }
-    vparams->drawTool()->drawLines(points, 3, Vec<4,float>(1,0,0,1));
+    vparams->drawTool()->drawLines(points, 3, sofa::helper::types::RGBAColor::red());
 }
 
 

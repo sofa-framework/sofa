@@ -15,7 +15,7 @@
         <MeshTopology name="mesh" src="@loader" />
 
         <MechanicalObject src="@loader" />
-        <BarycentricShapeFunction template="ShapeFunctiond"  />
+        <BarycentricShapeFunction template="ShapeFunction3d"  />
 
         <UniformMass  totalMass="100"/>
 
@@ -56,7 +56,7 @@
 	<QuadSetTopologyContainer  name="mesh" src="@loader" />
         
 	<MechanicalObject src="@loader" />
-        <BarycentricShapeFunction template="ShapeFunctiond" />
+        <BarycentricShapeFunction template="ShapeFunction3d" />
 
         <UniformMass totalMass="100"/>
 
