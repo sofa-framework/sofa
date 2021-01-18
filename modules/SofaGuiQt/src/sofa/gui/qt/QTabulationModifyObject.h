@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QTABULATIONMODIFYOBJECT_H
-#define SOFA_GUI_QT_QTABULATIONMODIFYOBJECT_H
-
+#pragma once
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/simulation/Node.h>
@@ -33,11 +31,7 @@
 #include <QTreeWidget>
 
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 struct ModifyObjectFlags;
@@ -96,9 +90,4 @@ protected:
 };
 
 
-} // qt
-} // gui
-} //sofa
-
-#endif // SOFA_GUI_QT_QTABULATIONMODIFYOBJECT_H
-
+} //namespace sofa::gui::qt

@@ -31,16 +31,7 @@
 #define SIZE_TEXT     60
 
 
-namespace sofa
-{
-namespace helper
-{
-template class SOFA_SOFAGUIQT_API Factory<std::string, sofa::gui::qt::DataWidget, sofa::gui::qt::DataWidget::CreatorArgument>;
-}
-
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 using namespace core::objectmodel;
@@ -307,11 +298,4 @@ void QPushButtonUpdater::setDisplayed(bool b)
 
 }
 
-
-
-
-
-
-}//qt
-}//gui
-}//sofa
+} // namespace sofa::gui::qt

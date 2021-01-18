@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_GUIMANAGER_H
-#define SOFA_GUI_GUIMANAGER_H
-
+#pragma once
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/gui/config.h>
@@ -31,10 +29,7 @@
 
 using sofa::helper::ArgumentParser;
 
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 class BaseGUI;
 
@@ -105,6 +100,4 @@ public:
     static BaseGUI* getGUI();
 };
 
-}
-}
-#endif
+} // namespace sofa::gui

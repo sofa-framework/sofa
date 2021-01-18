@@ -26,11 +26,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 using namespace QtCharts;
@@ -169,8 +165,4 @@ void QGraphStatWidget::updateYAxisBounds(SReal value)
 }
 
 
-} // qt
-} // gui
-} //sofa
-
-
+} //namespace sofa::gui::qt

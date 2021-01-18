@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QGRAPHSTATWIDGET_H
-#define SOFA_GUI_QT_QGRAPHSTATWIDGET_H
-
+#pragma once
 #include <sofa/simulation/Node.h>
 
 #include <QWidget>
@@ -40,11 +38,7 @@ namespace QtCharts
     class QValueAxis;
 }
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 /// Base class to make graphes in the stat tab of the node widget
@@ -101,9 +95,4 @@ protected:
 };
 
 
-} // qt
-} // gui
-} //sofa
-
-#endif // SOFA_GUI_QT_QGRAPHSTATWIDGET_H
-
+} //namespace sofa::gui::qt

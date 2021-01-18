@@ -21,10 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/system/FileRepository.h>
 
-namespace sofa
-{
-namespace gui
+namespace sofa::gui
 {
     extern SOFA_HELPER_API sofa::helper::system::FileRepository GuiDataRepository;
-}
-}
+} // namespace sofa::gui

@@ -34,7 +34,7 @@
 #include <sofa/gui/qt/QMomentumStatWidget.h>
 #endif
 #include <sofa/helper/logging/Messaging.h>
-using sofa::helper::logging::Message ;
+using sofa::helper::logging::Message;
 
 
 #include <iostream>
@@ -52,15 +52,8 @@ using sofa::helper::logging::Message ;
 // uncomment to show traces of GUI operations in this file
 // #define DEBUG_GUI
 
-namespace sofa
+namespace sofa::gui::qt
 {
-
-namespace gui
-{
-
-namespace qt
-{
-
 
 ModifyObject::ModifyObject(void *Id,
                            QTreeWidgetItem* item_clicked,
@@ -668,8 +661,4 @@ QString ModifyObject::parseDataModified()
     return cat;
 }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} // namespace sofa::gui::qt

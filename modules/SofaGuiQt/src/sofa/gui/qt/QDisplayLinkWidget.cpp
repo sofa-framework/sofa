@@ -30,15 +30,7 @@
 
 #define TEXTSIZE_THRESHOLD 45
 
-namespace sofa
-{
-
-using namespace core::objectmodel;
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
@@ -209,8 +201,4 @@ void QLinkSimpleEdit::writeToLink()
     getBaseLink()->read(value);
 }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

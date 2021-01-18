@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_BASEVIEWER_H
-#define SOFA_GUI_BASEVIEWER_H
-
+#pragma once
 #include "sofa/config.h"
 
 #include <sofa/gui/config.h>
@@ -35,9 +33,6 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-
-//#include <sofa/helper/gl/Capture.h>
-//#include <sofa/helper/gl/Texture.h>
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
@@ -58,11 +53,9 @@
 
 #include <string>
 
-namespace sofa
+namespace sofa::gui
 {
 
-namespace gui
-{
 class PickHandler;
 
 enum
@@ -174,7 +167,4 @@ protected:
     std::string _screenshotDirectory;
 };
 
-}
-}
-
-#endif
+} // namespace sofa::gui

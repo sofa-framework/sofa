@@ -40,13 +40,9 @@ using sofa::component::InfoComponent ;
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message ;
 
-namespace sofa
-{
-using namespace core::objectmodel;
-namespace gui
-{
+using namespace sofa::core::objectmodel;
 
-namespace qt
+namespace sofa::gui::qt
 {
 //***********************************************************************************************************
 
@@ -699,9 +695,4 @@ void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *paren
     }
 }
 
-
-
-
-} //qt
-} //gui
-} //sofa
+} //namespace sofa::gui::qt

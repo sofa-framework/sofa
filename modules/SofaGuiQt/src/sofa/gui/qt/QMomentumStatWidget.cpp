@@ -24,11 +24,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 QMomentumStatWidget::QMomentumStatWidget( QWidget* parent, simulation::Node* node ) : QGraphStatWidget( parent, node, "Momenta", 6, 500 )
@@ -80,8 +76,4 @@ void QMomentumStatWidget::stepImpl()
 
 
 
-} // qt
-} // gui
-} //sofa
-
-
+} //namespace sofa::gui::qt

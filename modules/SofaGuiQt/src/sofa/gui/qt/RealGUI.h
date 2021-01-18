@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_VIEWER_REALGUI_H
-#define SOFA_GUI_VIEWER_REALGUI_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
 #include <string>
@@ -54,25 +52,7 @@
 class WDoubleLineEdit;
 class QDragEnterEvent;
 
-namespace sofa
-{
-#ifdef SOFA_PML
-namespace filemanager
-{
-namespace pml
-{
-class PMLReader;
-class LMLReader;
-}
-}
-#endif
-
-namespace gui
-{
-class CallBackPicker;
-class BaseViewer;
-
-namespace qt
+namespace sofa::gui::qt
 {
 #if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
 class DocBrowser ;
@@ -481,10 +461,4 @@ protected:
     GraphListenerQListView* listener;
 };
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif // SOFA_GUI_VIEWER_REALGUI_H
+} //namespace sofa::gui::qt
