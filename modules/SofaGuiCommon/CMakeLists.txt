@@ -4,12 +4,12 @@ project(SofaGuiCommon)
 find_package(SofaBase REQUIRED)
 find_package(SofaUserInteraction REQUIRED)
 find_package(SofaGraphComponent REQUIRED)
-
+sofa_find_package(Sofa.GL) # ColourPickingVisitor
 
 set(SRC_ROOT src/sofa/gui)
 
 set(HEADER_FILES
-    ${SRC_ROOT}/config.h
+    ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/BaseGUI.h
     ${SRC_ROOT}/BaseViewer.h
     ${SRC_ROOT}/BatchGUI.h
@@ -39,6 +39,9 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBase SofaGraphComponent SofaUserInteraction)
+if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
+endif()
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)

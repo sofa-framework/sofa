@@ -21,6 +21,7 @@
 ******************************************************************************/
 
 #include <sofa/gui/qt/viewer/OglModelPolicy.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/visual/DrawToolGL.h>
 
 namespace sofa

@@ -25,9 +25,11 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/map.h>
+#include <iomanip>
 #include "../../extlibs/json/json.h"
 
 
+#include <iomanip>
 #include <cmath>
 #include <cstdlib>
 #include <stack>
@@ -36,7 +38,6 @@
 
 #define DEFAULT_INTERVAL 100
 
-using namespace sofa::core::objectmodel;
 using json = sofa::helper::json;
 
 

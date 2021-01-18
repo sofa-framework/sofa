@@ -75,8 +75,9 @@ int BatchGUI::mainLoop()
         {
             if (i != nbIter)
             {
-                sofa::helper::ScopedAdvancedTimer("Animate");
+                sofa::helper::AdvancedTimer::begin("Animate");
                 sofa::simulation::getSimulation()->animate(groot.get());
+                sofa::helper::AdvancedTimer::end("Animate");
             }
 
             if ( i == nbIter || (nbIter == -1 && i%1000 == 0) )
