@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaHeadlessRecorder)
 
+find_package(Sofa.GL REQUIRED)
+
 # FFMPEG
 find_package(FFMPEG_exec)
 
@@ -27,7 +29,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon Sofa.GL)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${X11_LIBRARIES})
 
 # Create build and install versions of .ini file for resources finding
@@ -38,4 +40,12 @@ set(FFMPEG_EXEC_PATH "../bin/${FFMPEG_EXEC_FILENAME}") # relative path for insta
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION etc RENAME ${PROJECT_NAME}.ini COMPONENT applications)
 
-sofa_install_targets(SofaGui ${PROJECT_NAME} "SofaGui" "src")
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
+)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaGui")

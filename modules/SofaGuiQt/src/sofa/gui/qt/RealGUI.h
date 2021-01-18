@@ -22,12 +22,12 @@
 #ifndef SOFA_GUI_VIEWER_REALGUI_H
 #define SOFA_GUI_VIEWER_REALGUI_H
 
+#include <sofa/gui/qt/config.h>
+
 #include <string>
 #include <vector>
 
-#include <SofaGui/config.h>
 #include <ui_GUI.h>
-#include <sofa/gui/qt/config.h>
 #include "GraphListenerQListView.h"
 #include "QMenuFilesRecentlyOpened.h"
 #include "PickHandlerCallBacks.h"

@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGui/config.h>
 #include "Main.h"
 #include <sofa/gui/GUIManager.h>
 
