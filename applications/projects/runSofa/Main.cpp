@@ -58,7 +58,7 @@ using sofa::helper::system::FileSystem;
 #include <sofa/gui/GUIManager.h>
 using sofa::gui::GUIManager;
 
-#include <sofa/gui/Main.h>
+#include <SofaGui/initSofaGui.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
 #include <sofa/helper/system/gl.h>
 
@@ -152,7 +152,7 @@ int main(int argc, char** argv)
     }
 #endif
 
-    sofa::gui::initMain();
+    sofa::gui::initSofaGui();
 
     string fileName ;
     bool        startAnim = false;

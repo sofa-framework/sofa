@@ -26,10 +26,6 @@ if(SOFAGUI_HEADLESS_RECORDER)
 endif()
 sofa_set_01(SOFAGUI_HAVE_SOFAHEADLESSRECORDER VALUE ${SOFAGUI_HEADLESS_RECORDER}) # see config.h.in
 
-# SofaGuiMain
-add_subdirectory(../modules/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
-
-list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 foreach(target ${SOFAGUI_TARGETS})
     set_target_properties(${target} PROPERTIES FOLDER SofaGui)
 endforeach()
