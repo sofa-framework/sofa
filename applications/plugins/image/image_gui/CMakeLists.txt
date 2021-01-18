@@ -22,7 +22,7 @@ set(SOURCE_FILES
 
 include(../imagetoolbox/imagetoolbox.cmake)
 
-find_package(SofaGui REQUIRED QUIET)
+find_package(SofaGuiQt REQUIRED QUIET)
 find_package(Qt5 COMPONENTS Core Gui Widgets QUIET)
 
 if(Qt5Core_FOUND)
