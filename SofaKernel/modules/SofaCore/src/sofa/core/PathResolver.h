@@ -85,6 +85,9 @@ public:
 
     static sofa::core::objectmodel::Base* FindLink(sofa::core::objectmodel::Base* base, const std::string& path);
 
+    /// Check that a given set of path is valid, and that the pointed object exists and is of the right type
+    static bool CheckPaths(Base *context, const BaseClass* linktype, const std::string& pathes);
+
     /// Check that a given path is valid, that the pointed object exists and is of the right type
     static bool CheckPath(sofa::core::objectmodel::Base* context, const std::string& path);
 

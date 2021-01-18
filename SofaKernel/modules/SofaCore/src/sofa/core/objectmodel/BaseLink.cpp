@@ -172,22 +172,6 @@ std::string BaseLink::CreateString(const std::string& path, const std::string& d
     return result;
 }
 
-/// Check that a given list of path is valid, that the pointed object exists and is of the right type
-bool BaseLink::CheckPaths( const std::string& str, Base *context, const BaseClass* linktype)
-{
-    if (str.empty())
-        return false;
-    std::istringstream istr( str.c_str() );
-    std::string path;
-    bool ok = true;
-    while (istr >> path)
-    {
-        ok &= (PathResolver::FindLinkDestClass(context, linktype, path, nullptr) != nullptr);
-    }
-    return ok;
-}
-
-
 std::string BaseLink::CreateStringPath(Base* dest, Base* from)
 {
     if (!dest || dest == from) return std::string("[]");

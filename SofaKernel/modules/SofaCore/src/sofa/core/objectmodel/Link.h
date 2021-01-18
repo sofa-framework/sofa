@@ -589,6 +589,7 @@ public:
         m_owner->addLink(this);
     }
 
+    [[deprecated("2021-01-01: CheckPath as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPath(Base*, BaseClass*, string).")]]
     static bool CheckPath(const std::string& path, Base* context)
     {
         return PathResolver::CheckPath(context, GetDestClass(), path);
@@ -687,7 +688,6 @@ public:
     }
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
     DestType* get(std::size_t index, const core::ExecParams*) const { return get(index); }
     DestType* get(std::size_t index) const
     {
@@ -702,9 +702,10 @@ public:
         return get(index);
     }
 
+    [[deprecated("2021-01-01: CheckPaths as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPaths(Base*, BaseClass*, string).")]]
     static bool CheckPaths(const std::string& pathes, Base* context)
     {
-        return BaseLink::CheckPaths(pathes, context, Inherit::GetDestClass());
+        return PathResolver::CheckPaths(context, Inherit::GetDestClass(), pathes);
     }
 
 protected:

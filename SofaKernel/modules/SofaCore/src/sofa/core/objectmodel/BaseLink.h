@@ -182,9 +182,6 @@ public:
     static std::string CreateString(BaseData* data, Base* from);
     static std::string CreateString(Base* object, BaseData* data, Base* from);
 
-    /// Check that a given path is valid, that the pointed object exists and is of the right type
-    static bool CheckPaths( const std::string& str,  Base* context, const BaseClass* targetclass);
-
     /// @}
     ///
     SOFA_END_DEPRECATION_AS_ERROR
