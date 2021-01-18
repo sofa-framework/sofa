@@ -426,6 +426,16 @@ public:
         return OwnerType::GetClass();
     }
 
+    static const BaseClass* GetDestClass()
+    {
+        return DestType::GetClass();
+    }
+
+    static const BaseClass* GetOwnerClass()
+    {
+        return OwnerType::GetClass();
+    }
+
     size_t getSize() const override
     {
         return size();
@@ -559,22 +569,6 @@ public:
     }
 
 
-    /// Check that a given path is valid, that the pointed object exists and is of the right type
-    template <class TContext>
-    static bool CheckPath( const std::string& path, TContext* context)
-    {
-        if (path.empty())
-            return false;
-        if (!context)
-        {
-            std::string p,d;
-            return BaseLink::ParseString(path, &p, nullptr, context);
-        }
-
-        DestType* ptr = nullptr;
-        return context->findLinkDest(ptr, path, nullptr);
-    }
-
     /// @}
 
     sofa::core::objectmodel::Base* getOwnerBase() const override
@@ -593,6 +587,11 @@ public:
         m_owner = owner;
         if (!owner) return;
         m_owner->addLink(this);
+    }
+
+    static bool CheckPath(const std::string& path, Base* context)
+    {
+        return PathResolver::CheckPath(context, GetDestClass(), path);
     }
 
 protected:
@@ -653,22 +652,6 @@ public:
         m_validator = fn;
     }
 
-    /// Check that a given list of path is valid, that the pointed object exists and is of the right type
-    template<class TContext>
-    static bool CheckPaths( const std::string& str, TContext* context)
-    {
-        if (str.empty())
-            return false;
-        std::istringstream istr( str.c_str() );
-        std::string path;
-        bool ok = true;
-        while (istr >> path)
-        {
-            ok &= TLink<TOwnerType,TDestType,TFlags|BaseLink::FLAG_MULTILINK>::CheckPath(path, context);
-        }
-        return ok;
-    }
-
     /// Update pointers in case the pointed-to objects have appeared
     /// @return false if there are broken links
     virtual bool updateLinks()
@@ -717,6 +700,11 @@ public:
     DestType* operator[](std::size_t index) const
     {
         return get(index);
+    }
+
+    static bool CheckPaths(const std::string& pathes, Base* context)
+    {
+        return BaseLink::CheckPaths(pathes, context, Inherit::GetDestClass());
     }
 
 protected:

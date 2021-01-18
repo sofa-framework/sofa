@@ -168,7 +168,7 @@ public:
     /// @name Serialization Helper API
     /// @{
 
-    static bool ParseString(const std::string& text, std::string* path, std::string* data = nullptr, Base* start = nullptr);
+    static bool ParseString(const std::string& text, std::string* path, std::string* data = nullptr, const Base *start = nullptr);
 
     bool parseString(const std::string& text, std::string* path, std::string* data = nullptr) const
     {
@@ -181,6 +181,9 @@ public:
     static std::string CreateString(Base* object, Base* from);
     static std::string CreateString(BaseData* data, Base* from);
     static std::string CreateString(Base* object, BaseData* data, Base* from);
+
+    /// Check that a given path is valid, that the pointed object exists and is of the right type
+    static bool CheckPaths( const std::string& str,  Base* context, const BaseClass* targetclass);
 
     /// @}
     ///
