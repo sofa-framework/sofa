@@ -126,6 +126,24 @@ if [ -e "$INSTALL_DIR/lib/libQt5WebEngineCore.so.5" ] && [ -d "$QT_DIR" ]; then
 	cp -R "$QT_DIR/resources" "$INSTALL_DIR"
 fi
 
+# Fixup RPATH/RUNPATH
+if [ -x "$(command -v patchelf)" ]; then
+    echo "  Fixing RPATH..."
+    SofaHelperRPATH="$(patchelf --print-rpath $INSTALL_DIR/lib/libSofaHelper.so)"    
+    (
+    find "$INSTALL_DIR" -type f -name "*.so.*" 
+    find "$INSTALL_DIR" -type f -name "runSofa" -path "*/bin/*"
+    ) | while read lib; do
+        if [[ "$(patchelf --print-rpath $lib)" == "" ]]; then
+            # use SofaHelper RPATH as default for others
+            echo "    $lib: RPATH = $SofaHelperRPATH"
+            patchelf --set-rpath $SofaHelperRPATH $lib
+        fi
+        patchelf --shrink-rpath $lib
+    done
+    echo "  Done."
+fi
+
 echo "Done."
 rm -f "$OUTPUT_TMP"
 exit 0
