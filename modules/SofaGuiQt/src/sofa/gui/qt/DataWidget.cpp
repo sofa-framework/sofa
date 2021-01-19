@@ -30,6 +30,10 @@
 
 #define SIZE_TEXT     60
 
+namespace sofa::helper
+{
+template class SOFA_SOFAGUIQT_API Factory<std::string, sofa::gui::qt::DataWidget, sofa::gui::qt::DataWidget::CreatorArgument>;
+} // namespace sofa::helper
 
 namespace sofa::gui::qt
 {

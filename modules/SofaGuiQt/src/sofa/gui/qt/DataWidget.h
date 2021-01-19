@@ -267,6 +267,15 @@ protected:
 
 typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument> DataWidgetFactory;
 
-
-
 } //namespace sofa::gui::qt
+
+//MOC_SKIP_BEGIN
+#if  !defined(SOFA_BUILD_SOFAGUIQT)
+namespace sofa::helper
+{
+//delay load of the specialized Factory class. unique definition reside in the cpp file
+extern template class SOFA_SOFAGUIQT_API Factory<std::string, gui::qt::DataWidget, gui::qt::DataWidget::CreatorArgument>;
+} // namespace sofa::helper
+
+#endif
+//MOC_SKIP_END
