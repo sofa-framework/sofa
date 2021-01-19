@@ -32,6 +32,8 @@ public:
     Impl();
     ~Impl();
 
+    std::string m_internalValue; ///< Store the textual representation of the internal value.
+
     const char* getName(); ///< (non-unique) name of this object
     ID          getID();   ///< unique ID of this object
 

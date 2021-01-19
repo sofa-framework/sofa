@@ -21,8 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/gl/config.h>
-
+#include <sofa/helper/visual/DrawTool.h>
 #include <sofa/core/visual/DrawTool.h>
 
 #include <sofa/helper/types/RGBAColor.h>
