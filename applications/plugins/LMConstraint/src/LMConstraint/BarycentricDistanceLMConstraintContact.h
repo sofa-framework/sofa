@@ -35,6 +35,7 @@
 #ifdef __APPLE__
 // a strange behaviour of the mac's linker requires to compile a few stuffs again
 #include <SofaMeshCollision/RigidContactMapper.inl>
+#include <SofaMeshCollision/BarycentricContactMapper.inl>
 #endif
 
 
