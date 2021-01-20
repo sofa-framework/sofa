@@ -127,22 +127,23 @@ if [ -e "$INSTALL_DIR/lib/libQt5WebEngineCore.so.5" ] && [ -d "$QT_DIR" ]; then
 fi
 
 # Fixup RPATH/RUNPATH
+echo "  Fixing RPATH..."
 if [ -x "$(command -v patchelf)" ]; then
-    echo "  Fixing RPATH..."
-    SofaHelperRPATH="$(patchelf --print-rpath $INSTALL_DIR/lib/libSofaHelper.so)"    
+    defaultRPATH='$ORIGIN/../lib:$$ORIGIN/../lib'
     (
     find "$INSTALL_DIR" -type f -name "*.so.*" 
     find "$INSTALL_DIR" -type f -name "runSofa" -path "*/bin/*"
     ) | while read lib; do
         if [[ "$(patchelf --print-rpath $lib)" == "" ]]; then
-            # use SofaHelper RPATH as default for others
-            echo "    $lib: RPATH = $SofaHelperRPATH"
-            patchelf --set-rpath $SofaHelperRPATH $lib
+            echo "    $lib: RPATH = $defaultRPATH"
+            patchelf --set-rpath $defaultRPATH $lib
         fi
         patchelf --shrink-rpath $lib
     done
-    echo "  Done."
+else
+    echo "    WARNING: patchelf command not found, RPATH fixing skipped."
 fi
+echo "  Done."
 
 echo "Done."
 rm -f "$OUTPUT_TMP"
