@@ -13,7 +13,7 @@ set(SOURCE_FILES
 
 
 find_package(SofaPython QUIET)
-if(SofaPython_FOUND)
+if(SofaPython_FOUND AND SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
     add_definitions("-DSOFABASEMECHANICS_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
     list(APPEND SOURCE_FILES python_test_list.cpp)
 endif()
@@ -22,7 +22,7 @@ endif()
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaTest SofaGTestMain)
 
-if(SofaPython_FOUND)
+if(SofaPython_FOUND AND SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
     target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
 

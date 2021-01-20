@@ -70,7 +70,6 @@ namespace behavior {
     class BaseInteractionProjectiveConstraintSet;
     class BaseConstraintSet;
     class BaseConstraint;
-    class BaseLMConstraint;
 } // namespace behavior
 namespace visual {
     class VisualModel;
@@ -593,7 +592,6 @@ public:
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionProjectiveConstraintSet )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraintSet                      )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraint                         )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseLMConstraint                       )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualModel                            )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualManager                          )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualLoop                             )

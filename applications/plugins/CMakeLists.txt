@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.12)
 find_package(SofaFramework)
 
 sofa_add_subdirectory_external(SofaHighOrder SofaHighOrder)
-sofa_add_subdirectory_external(SofaPython3 SofaPython3)
 
 sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default and first as it is used by other plugins.
 sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)
@@ -21,10 +20,13 @@ if(NOT SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
     sofa_add_plugin(SofaPython SofaPython)
 endif()
 
+sofa_add_subdirectory_external(SofaPython3 SofaPython3)
+
 sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image
 sofa_add_plugin(Flexible Flexible)     # Depends on image, CImgPlugin, SofaHighOrderTopology (soft)
 sofa_add_plugin(Registration Registration) # Depends on image, SofaPython, SofaSimpleGUI and #SOFADISTANCEGRID
-sofa_add_plugin(BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant
+sofa_add_plugin(LMConstraint LMConstraint ON)
+sofa_add_plugin(BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant and LMConstraint
 sofa_add_plugin(PreassembledMass PreassembledMass) # Depends on Flexible and Compliant
 sofa_add_plugin(ExternalBehaviorModel ExternalBehaviorModel)
 sofa_add_plugin_external(InvertibleFVM InvertibleFVM)
@@ -47,6 +49,7 @@ sofa_add_plugin(RigidScale RigidScale)
 sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
 sofa_add_plugin(SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
+
 
 sofa_add_plugin_experimental(PSL PSL)
 

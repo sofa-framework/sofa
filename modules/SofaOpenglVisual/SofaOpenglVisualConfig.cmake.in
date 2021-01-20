@@ -2,8 +2,8 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaBase QUIET REQUIRED)
-find_package(SofaSimulation QUIET REQUIRED)
+find_package(SofaFramework QUIET REQUIRED)
+find_package(SofaBaseVisual QUIET REQUIRED)
 find_package(Sofa.GL QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)

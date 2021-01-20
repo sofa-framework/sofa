@@ -35,7 +35,6 @@ using sofa::core::collision::Contact ;
 #include <SofaMeshCollision/IdentityContactMapper.h>
 
 #include <SofaConstraint/FrictionContact.inl>
-#include <SofaConstraint/BarycentricDistanceLMConstraintContact.inl>
 
 #include <SofaMiscCollision/BarycentricStickContact.inl>
 
@@ -82,20 +81,6 @@ Creator<Contact::Factory, FrictionContact<FFDDistanceGridCollisionModel, RigidDi
 Creator<Contact::Factory, FrictionContact<FFDDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridPointFrictionContactClass("FrictionContact", true);
 Creator<Contact::Factory, FrictionContact<FFDDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridSphereFrictionContactClass("FrictionContact", true);
 Creator<Contact::Factory, FrictionContact<FFDDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridTriangleFrictionContactClass("FrictionContact", true);
-
-
-
-/////////////////////////////////////// BarycentricDistanceLMConstraint ///////////////////////////////////
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridPointDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridSphereDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<RigidDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridTriangleDistanceLMConstraintContactClass("distanceLMConstraint",true);
-
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<FFDDistanceGridCollisionModel, FFDDistanceGridCollisionModel> > FFDDistanceGridDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<FFDDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > FFDDistanceGridRigidDistanceGridDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<FFDDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridPointDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<FFDDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridSphereDistanceLMConstraintContactClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<FFDDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridTriangleDistanceLMConstraintContactClass("distanceLMConstraint",true);
 
 
 } /// collision

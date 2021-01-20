@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaSimulationGraph_test)
 
-find_package(SofaGTestMain REQUIRED)
-find_package(SofaTest REQUIRED)
-
 set(SOURCE_FILES
     DAG_test.cpp
     DAGNode_test.cpp
