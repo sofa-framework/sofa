@@ -1181,18 +1181,6 @@ Visitor::Result MechanicalResetConstraintVisitor::fwdConstraintSet(simulation::N
 }
 
 
-
-Visitor::Result MechanicalWriteLMConstraint::fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c)
-{
-    if (core::behavior::BaseLMConstraint* LMc=c->toBaseLMConstraint())
-    {
-        LMc->writeConstraintEquations(offset, id, order);
-        datasC.push_back(LMc);
-    }
-    return RESULT_CONTINUE;
-}
-
-
 Visitor::Result MechanicalAccumulateConstraint::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
 {
     ctime_t t0 = begin(node, c);
@@ -1208,6 +1196,7 @@ void MechanicalAccumulateConstraint::bwdMechanicalMapping(simulation::Node* node
     end(node, map, t0);
 }
 
+
 Visitor::Result MechanicalBuildConstraintMatrix::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
 {
     ctime_t t0 = begin(node, c);
@@ -1215,6 +1204,7 @@ Visitor::Result MechanicalBuildConstraintMatrix::fwdConstraintSet(simulation::No
     end(node, c, t0);
     return RESULT_CONTINUE;
 }
+
 
 void MechanicalAccumulateMatrixDeriv::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
 {
@@ -1602,19 +1592,6 @@ std::string MechanicalVNormVisitor::getInfos() const
    name += a.getName() + "]";
    return name;
 }
-
-std::string MechanicalWriteLMConstraint::getInfos() const
-{
-    std::string name;
-    if      (order == core::ConstraintParams::ACC)
-        name= "["+sofa::core::VecId::dx().getName()+"]";
-    else if (order == core::ConstraintParams::VEL)
-        name= "["+sofa::core::VecId::velocity().getName()+"]";
-    else if (order == core::ConstraintParams::POS)
-        name= "["+sofa::core::VecId::position().getName()+"]";
-    return name;
-}
-
 
 
 template class SOFA_SIMULATION_CORE_API MechanicalVAvailVisitor<V_COORD>;
