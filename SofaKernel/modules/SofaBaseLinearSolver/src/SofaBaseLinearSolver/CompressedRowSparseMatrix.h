@@ -35,11 +35,11 @@ namespace sofa::component::linearsolver
 
 /// This pattern is used to force compilation of code fragment that depend on the definition of
 /// the "define". In the following, use if(EMIT_EXTRA_MESSAGE) instead of #ifdef
-#ifdef SPARSEMATRIX_VERBOSE
+#if defined(SPARSEMATRIX_VERBOSE) && (SPARSEMATRIX_VERBOSE == true)
 #define EMIT_EXTRA_MESSAGE true
 #else
 #define EMIT_EXTRA_MESSAGE false
-#endif
+#endif // defined(SPARSEMATRIX_VERBOSE) && (SPARSEMATRIX_VERBOSE == true)
 
 template<typename TBloc, typename TVecBloc = helper::vector<TBloc>, typename TVecIndex = helper::vector<defaulttype::BaseMatrix::Index> >
 class CompressedRowSparseMatrix : public defaulttype::BaseMatrix

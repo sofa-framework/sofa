@@ -27,10 +27,10 @@ list(APPEND SOURCE_FILES
     )
 
 find_package(SofaBase REQUIRED)
-find_package(SofaSimulation REQUIRED)
+find_package(SofaFramework REQUIRED) # SofaSimulationCore
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaBaseLinearSolver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore SofaBaseLinearSolver)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
