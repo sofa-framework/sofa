@@ -134,7 +134,8 @@ void FixedPlaneConstraint<DataTypes>::applyConstraint(const MechanicalParams* mp
                                                       BaseVector* vect,
                                                       const MultiMatrixAccessor* matrix)
 {
-    int o = matrix->getGlobalOffset(mstate.get(mparams));
+    SOFA_UNUSED(mparams);
+    int o = matrix->getGlobalOffset(mstate.get());
     if (o >= 0)
     {
         unsigned int offset = (unsigned int)o;

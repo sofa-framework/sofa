@@ -276,7 +276,7 @@ public:
     {
         if(BlockType::constant) return;
 
-        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
+        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get()].write();
         const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
         const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
 
@@ -332,9 +332,10 @@ public:
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override
     {
+        SOFA_UNUSED(mparams);
         if( BlockType::constant /*|| !assemble.getValue()*/ ) { K.resize(0,0); return; }
 
-        const OutVecDeriv& childForce = childForceId[this->toModel.get(mparams)].read()->getValue();
+        const OutVecDeriv& childForce = childForceId[this->toModel.get()].read()->getValue();
 
         unsigned int size = this->fromModel->getSize();
         K.resizeBlocks(size,size);

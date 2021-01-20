@@ -270,10 +270,11 @@ const defaulttype::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getK()
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
 {
+    SOFA_UNUSED(mparams);
     const unsigned& geometricStiffness = d_geometricStiffness.getValue();
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get(mparams)].read() );
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );
     helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 

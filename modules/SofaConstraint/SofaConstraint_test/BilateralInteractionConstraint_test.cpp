@@ -144,11 +144,11 @@ struct BilateralInteractionConstraint_test : public NumericTest<>
         return ;
     }
 
-    void checkRigid3fFixForBackwardCompatibility(){}
+    void checkRigid3FixForBackwardCompatibility(){}
  };
 
 template<>
-void BilateralInteractionConstraint_test<Rigid3fTypes>::checkRigid3fFixForBackwardCompatibility(){
+void BilateralInteractionConstraint_test<Rigid3Types>::checkRigid3FixForBackwardCompatibility(){
     EXPECT_MSG_EMIT(Warning) ;
 
     /// I'm using '\n' so that the XML parser correctly report the line number
@@ -233,12 +233,12 @@ bool BilateralInteractionConstraint_test<Vec3Types>::test_Vec3ConstrainedPositio
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef Types<Vec3Types
-              ,Rigid3dTypes
+              ,Rigid3Types
  //
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(BilateralInteractionConstraint_test, DataTypes);
+TYPED_TEST_SUITE(BilateralInteractionConstraint_test, DataTypes);
 
 //TODO(dmarchal): Needs a serious refactor !!!
 TYPED_TEST( BilateralInteractionConstraint_test , checkVec3ConstrainedPositions )
@@ -260,7 +260,7 @@ TYPED_TEST( BilateralInteractionConstraint_test , checkMstateRequiredAssumption 
 
 TYPED_TEST( BilateralInteractionConstraint_test ,  checkRigid3fFixForBackwardCompatibility)
 {
-    ASSERT_NO_THROW(  this->checkRigid3fFixForBackwardCompatibility() );
+    ASSERT_NO_THROW(  this->checkRigid3FixForBackwardCompatibility() );
 }
 
 

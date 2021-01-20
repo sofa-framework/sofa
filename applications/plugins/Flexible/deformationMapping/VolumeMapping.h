@@ -192,7 +192,7 @@ public:
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId ) override
     {
         if( !f_geometricStiffness.getValue() ) return;
-        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
+        Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get()].write();
         const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
         const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
         helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
