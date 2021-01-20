@@ -21,7 +21,9 @@
 ******************************************************************************/
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/system/gl.h>
+#if SOFAGUICOMMON_HAVE_SOFA_GL
+#include <sofa/gl/gl.h>
+#endif // SOFAGUICOMMON_HAVE_SOFA_GL
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/simulation/Simulation.h>
@@ -106,7 +108,7 @@ void ColourPickingVisitor::processCollisionModel(simulation::Node*  node , core:
 
 void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types> * tmodel)
 {
-#ifdef SOFAGUICOMMON_HAVE_SOFA_GL
+#if SOFAGUICOMMON_HAVE_SOFA_GL
     using namespace sofa::core::collision;
     using namespace sofa::defaulttype;
     glDisable(GL_LIGHTING);
@@ -167,7 +169,7 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
 
 void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types> * smodel)
 {
-#ifdef SOFAGUICOMMON_HAVE_SOFA_GL
+#if SOFAGUICOMMON_HAVE_SOFA_GL
     typedef Sphere::Coord Coord;
 
     if( method == ENCODE_RELATIVEPOSITION ) return; // we pick the center of the sphere.
