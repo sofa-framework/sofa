@@ -466,10 +466,10 @@ protected:
 
     /// This method insures that context is never nullptr (using BaseContext::getDefault() instead)
     /// and that all slaves of an object share its context
-    void changeContextLink(BaseContext* before, BaseContext*& after);
+    static BaseContext* changeContextLink(BaseObject* owner, BaseContext* before, BaseContext* after, size_t index);
 
     /// This method insures that slaves objects have master and context links set correctly
-    void changeSlavesLink(BaseObject::SPtr ptr, std::size_t /*index*/, bool add);
+    static BaseObject::SPtr changeSlavesLink(BaseObject* owner, BaseObject::SPtr before, BaseObject::SPtr after, size_t index);
 
     /// BaseNode can set the context of its own objects
     friend class BaseNode;
