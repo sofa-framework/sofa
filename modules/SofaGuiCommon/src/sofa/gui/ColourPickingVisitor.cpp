@@ -206,7 +206,7 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
         glPushMatrix();
         ratio = (float)i / (float)npoints;
         glColor4f(red,ratio,0,1);
-		helper::gl::drawSphere(p, radius[i], 32, 16);
+		sofa::gl::drawSphere(p, radius[i], 32, 16);
 
         glPopMatrix();
     }
