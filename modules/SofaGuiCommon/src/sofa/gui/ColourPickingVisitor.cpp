@@ -21,12 +21,12 @@
 ******************************************************************************/
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/simulation/Simulation.h>
 #if SOFAGUICOMMON_HAVE_SOFA_GL
 #include <sofa/gl/gl.h>
+#include <sofa/gl/BasicShapes.h>
 #endif // SOFAGUICOMMON_HAVE_SOFA_GL
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/simulation/Simulation.h>
 
 namespace sofa
 {
