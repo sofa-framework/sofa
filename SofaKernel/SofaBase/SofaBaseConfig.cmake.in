@@ -3,9 +3,6 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaFramework QUIET REQUIRED)
-find_package(SofaSimulation QUIET REQUIRED)
-
 set(SOFABASE_MODULES @SOFABASE_MODULES@)
 
 foreach(module ${SOFABASE_MODULES})

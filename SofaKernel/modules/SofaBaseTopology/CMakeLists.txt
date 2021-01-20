@@ -86,11 +86,11 @@ set(SOURCE_FILES
     ${SOFABASETOPOLOGY_SRC}/TriangleSetTopologyModifier.cpp
 )
 
-find_package(SofaSimulation REQUIRED)
+find_package(SofaFramework REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")

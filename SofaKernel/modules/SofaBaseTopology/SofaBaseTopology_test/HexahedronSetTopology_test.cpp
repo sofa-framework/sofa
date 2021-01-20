@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaBaseTopology/SofaBaseTopology_test/fake_TopologyScene.h>
+#include "fake_TopologyScene.h"
 #include <sofa/helper/testing/BaseTest.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <sofa/helper/system/FileRepository.h>

@@ -2,7 +2,7 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaSimulation QUIET REQUIRED)
+find_package(SofaSimulationGraph QUIET REQUIRED)
 find_package(GTest CONFIG QUIET REQUIRED)
 
 if(NOT TARGET SofaGTestMain)

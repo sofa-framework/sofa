@@ -217,7 +217,7 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
-if(SOFA_BUILD_TESTS AND PLUGIN_SOFAPYTHON)
+if(SOFA_BUILD_TESTS AND PLUGIN_SOFAPYTHON AND SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
     # SofaPython_test is a special case, because it depends on
     # SofaTest, which may depend on SofaPython...
     add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
