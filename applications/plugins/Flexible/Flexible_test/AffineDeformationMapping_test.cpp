@@ -75,9 +75,9 @@ namespace sofa {
         void SetRandomAffineTransform ()
         {
             // Matrix 3*3
-            for( int j=0; j<testedRotation.nbCols; j++)
+            for(size_t j=0; j<testedRotation.nbCols; j++)
             {
-                for( int i=0; i<testedRotation.nbLines; i++)
+                for(size_t i=0; i<testedRotation.nbLines; i++)
                 {
                     // random value between -1 and 1
                     testedRotation(i,j)=helper::drand(1);
