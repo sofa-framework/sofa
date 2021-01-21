@@ -422,7 +422,7 @@ bool Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseL
     return (ptr != nullptr);
 }
 
-void* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/)
+Base* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/)
 {
     msg_error() << "Base: calling unimplemented findLinkDest method" ;
     return nullptr;

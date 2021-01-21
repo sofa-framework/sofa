@@ -134,12 +134,6 @@ public:
     static const BaseClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
 
-    template<class T>
-    static void dynamicCast(T*& ptr, Base* b)
-    {
-        ptr = dynamic_cast<T*>(b);
-    }
-
 protected:
     /// Constructor cannot be called directly
     /// Use the New() method instead
@@ -349,12 +343,12 @@ public:
     const MapLink& getLinkAliases() const { return m_aliasLink; }
 
     virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
-    virtual void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
+    virtual Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
     template<class T>
     bool findLinkDest(T*& ptr, const std::string& path, const BaseLink* link)
     {
-        void* result = findLinkDestClass(T::GetClass(), path, link);
-        ptr = reinterpret_cast<T*>(result);
+        Base* result = findLinkDestClass(T::GetClass(), path, link);
+        ptr = dynamic_cast<T*>(result);
         return (result != nullptr);
     }
 
