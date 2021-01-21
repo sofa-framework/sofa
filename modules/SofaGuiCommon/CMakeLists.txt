@@ -4,7 +4,12 @@ project(SofaGuiCommon)
 find_package(SofaBase REQUIRED)
 find_package(SofaUserInteraction REQUIRED)
 find_package(SofaGraphComponent REQUIRED)
-sofa_find_package(Sofa.GL) # ColourPickingVisitor
+sofa_find_package(Sofa.GL QUIET) # ColourPickingVisitor
+if(Sofa.GL_FOUND)
+    message("-- ${PROJECT_NAME}: Sofa.GL dependent features enabled.")
+else()
+    message("-- ${PROJECT_NAME}: Sofa.GL dependent features disabled.")
+endif()
 
 set(SRC_ROOT src/sofa/gui)
 
