@@ -126,18 +126,18 @@ public:
     /// Read access to the free (unconstrained) position
     template<class Owner, class S, unsigned int flags>
     const Data<typename S::VecCoord>* readX(const SingleLink<Owner,S,flags>& state) const
-    {   return m_x[state.get(this)].read();    }
+    {   return m_x[state.get()].read();    }
 
     /// Read access to the free (unconstrained) velocity vector
     template<class Owner, class S, unsigned int flags>
     const Data<typename S::VecDeriv>* readV(const SingleLink<Owner,S,flags>& state) const
-    {   return m_v[state.get(this)].read();    }
+    {   return m_v[state.get()].read();    }
 
     /// Read access to the constraint jacobian matrix
     template<class Owner, class S, unsigned int flags>
     const Data<typename S::MatrixDeriv>* readJ(const SingleLink<Owner, S, flags>& state) const
     {
-        return m_j[state.get(this)].read();
+        return m_j[state.get()].read();
     }
 
     /// Read access to the constraint force vector

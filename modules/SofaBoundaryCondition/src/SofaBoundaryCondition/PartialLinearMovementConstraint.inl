@@ -424,8 +424,9 @@ void PartialLinearMovementConstraint<DataTypes>::findKeyTimes()
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
+    SOFA_UNUSED(mparams);
     const SetIndexArray & indices = m_indices.getValue();
-    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
+    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get());
 
     if (r) {
         VecBool movedDirection = movedDirections.getValue();
@@ -448,7 +449,8 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::Mec
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    int o = matrix->getGlobalOffset(this->mstate.get(mparams));
+    SOFA_UNUSED(mparams);
+    int o = matrix->getGlobalOffset(this->mstate.get());
     if (o >= 0) {
         unsigned int offset = (unsigned int)o;
         VecBool movedDirection = movedDirections.getValue();

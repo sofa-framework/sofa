@@ -66,15 +66,10 @@ void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
     const defaulttype::Vec3f& pos = d_position.getValue();
     float scale = d_scale.getValue();
 
-    const bool& depthTest = d_depthTest.getValue();
     vparams->drawTool()->saveLastState();
-
     vparams->drawTool()->disableDepthTest();
-
     vparams->drawTool()->setLightingEnabled(true);
-
     vparams->drawTool()->draw3DText(pos,scale,d_color.getValue(),d_text.getValue().c_str());
-
     vparams->drawTool()->restoreLastState();
 }
 

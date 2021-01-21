@@ -8,7 +8,6 @@
 #include "../utils/map.h"
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/Axis.h>
 
 namespace sofa
 {
@@ -110,7 +109,6 @@ public:
 	typedef core::objectmodel::Data<VecCoord> DataVecCoord;
 	typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-#ifndef SOFA_NO_OPENGL
     void draw(const core::visual::VisualParams* vparams) override {
 		
         if ( !vparams->displayFlags().getShowBehaviorModels() || !_draw.getValue() )
@@ -130,13 +128,10 @@ public:
             len[1] = std::sqrt(m00+m22-m11);
             len[2] = std::sqrt(m00+m11-m22);
 
-#ifndef SOFA_NO_OPENGL
-            helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
-#endif
+            vparams->drawTool()->drawFrame(x[i].getCenter(), x[i].getOrientation(), len);
         }
 		
 	}
-#endif
 
 	void addForce(const core::MechanicalParams* , 
 	              DataVecDeriv& _f, 
