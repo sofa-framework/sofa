@@ -199,7 +199,10 @@ endif()
 ## Windows-specific
 if(WIN32)    
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_USE_MATH_DEFINES")
-    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/MP;/wd4250;/wd4251;/wd4275;/wd4675;/wd4996")
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/MP;/wd4250;/wd4251;/wd4275;/wd4675;/wd4996;/wd4661")
+    # 4661: no suitable definition provided for explicit template instantiation request
+    # it happens because we put explicit instantiation in a separate translation unit
+    # it is by design, so this warning is irrelevant in our project
 
     if(MSVC_TOOLSET_VERSION GREATER 140) # > VS 2015
         list(APPEND SOFACONFIG_COMPILE_OPTIONS "/Zc:__cplusplus")
