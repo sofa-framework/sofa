@@ -21,31 +21,19 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
-
 #include <sofa/core/objectmodel/BaseNode.h>
 using sofa::core::objectmodel::BaseNode ;
 
-#include <sofa/core/objectmodel/BaseLink.h>
-using sofa::core::objectmodel::BaseLink ;
-
 #include <sofa/core/objectmodel/Link.h>
-using sofa::core::objectmodel::SingleLink;
-using sofa::core::objectmodel::MultiLink;
+using sofa::core::objectmodel::MultiLink ;
+using sofa::core::objectmodel::BaseLink ;
 
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;
 
-#include "BaseLink_test.h"
-
-using SingleLinkImplementations = ::testing::Types<
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_STOREPATH>,
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_MULTILINK>>;
-INSTANTIATE_TYPED_TEST_SUITE_P(SingleLink, BaseLinkTests, SingleLinkImplementations);
-
-
-using MultiLinkImplementations = ::testing::Types<
-    MultiLink<BaseObject, BaseObject, BaseLink::FLAG_STOREPATH>,
-    MultiLink<BaseObject, BaseObject, BaseLink::FLAG_MULTILINK>
-    >;
-INSTANTIATE_TYPED_TEST_SUITE_P(MultiLink, BaseLinkTests, MultiLinkImplementations);
+using sofa::core::objectmodel::MultiLink;
+class MultiLink_test: public BaseTest
+{
+public:
+};
 

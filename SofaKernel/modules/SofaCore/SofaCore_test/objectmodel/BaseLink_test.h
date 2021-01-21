@@ -28,24 +28,40 @@ using sofa::core::objectmodel::BaseNode ;
 #include <sofa/core/objectmodel/BaseLink.h>
 using sofa::core::objectmodel::BaseLink ;
 
-#include <sofa/core/objectmodel/Link.h>
-using sofa::core::objectmodel::SingleLink;
-using sofa::core::objectmodel::MultiLink;
-
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;
 
-#include "BaseLink_test.h"
+/***********************************************************************************
+ * This is checking that the predicates about BaseLink are still valid in an
+ * inhertited type
+ ***********************************************************************************/
+template<class Link>
+class FakeObject : public BaseObject
+{
+public:
+    FakeObject() : BaseObject()
+    {       
+    }
+};
 
-using SingleLinkImplementations = ::testing::Types<
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_STOREPATH>,
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_MULTILINK>>;
-INSTANTIATE_TYPED_TEST_SUITE_P(SingleLink, BaseLinkTests, SingleLinkImplementations);
+template<class Link>
+class BaseLinkTests : public BaseTest
+{
+public:
+    Link link1;
+    Link link2;
+    FakeObject<Link> object1;
+    FakeObject<Link> object2;
+};
 
+TYPED_TEST_SUITE_P(BaseLinkTests);
 
-using MultiLinkImplementations = ::testing::Types<
-    MultiLink<BaseObject, BaseObject, BaseLink::FLAG_STOREPATH>,
-    MultiLink<BaseObject, BaseObject, BaseLink::FLAG_MULTILINK>
-    >;
-INSTANTIATE_TYPED_TEST_SUITE_P(MultiLink, BaseLinkTests, MultiLinkImplementations);
+TYPED_TEST_P(BaseLinkTests, checkOwnerSetGet)
+{
+    this->link1.setOwner(&this->object1);
+    EXPECT_EQ(this->link1.getOwnerBase(), &this->object1);
+}
+
+REGISTER_TYPED_TEST_SUITE_P(BaseLinkTests,
+                            checkOwnerSetGet);
 
