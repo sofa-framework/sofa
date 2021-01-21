@@ -73,7 +73,7 @@ void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mpar
 {
     if (mstate1 && mstate2)
     {
-        addForce(mparams, *fId[mstate1.get(mparams)].write(), *fId[mstate2.get(mparams)].write(),
+        addForce(mparams, *fId[mstate1.get()].write(), *fId[mstate2.get()].write(),
             *mparams->readX(mstate1), *mparams->readX(mstate2),
             *mparams->readV(mstate1), *mparams->readV(mstate2));
 
@@ -89,7 +89,7 @@ void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mpa
     if (mstate1 && mstate2)
     {
         addDForce(
-            mparams, *dfId[mstate1.get(mparams)].write(), *dfId[mstate2.get(mparams)].write(),
+            mparams, *dfId[mstate1.get()].write(), *dfId[mstate2.get()].write(),
             *mparams->readDx(mstate1), *mparams->readDx(mstate2));
     }
     else

@@ -75,7 +75,7 @@ void MixedInteractionConstraint<DataTypes1, DataTypes2>::buildConstraintMatrix(c
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams, *cId[mstate1.get(cParams)].write(), *cId[mstate2.get(cParams)].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
+        buildConstraintMatrix(cParams, *cId[mstate1.get()].write(), *cId[mstate2.get()].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
         updateForceMask();
     }
 }

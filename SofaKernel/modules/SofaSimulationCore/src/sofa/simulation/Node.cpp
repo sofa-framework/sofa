@@ -94,6 +94,7 @@ Node::Node(const std::string& name)
 {
     _context = this;
     setName(name);
+    f_printLog.setValue(DEBUG_LINK);
 }
 
 
@@ -358,7 +359,7 @@ core::objectmodel::BaseObject* Node::getObject(const std::string& name) const
     return nullptr;
 }
 
-void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, const std::string& path, const core::objectmodel::BaseLink* link)
+sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, const std::string& path, const core::objectmodel::BaseLink* link)
 {
     std::string pathStr;
     if (link)
@@ -524,7 +525,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
     }
     else
     {
-        void* r = destType->dynamicCast(node);
+        Base* r = destType->dynamicCast(node);
         if (r)
         {
             if(DEBUG_LINK)
@@ -534,7 +535,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         for (ObjectIterator it = node->object.begin(), itend = node->object.end(); it != itend; ++it)
         {
             BaseObject* obj = it->get();
-            void *o = destType->dynamicCast(obj);
+            Base *o = destType->dynamicCast(obj);
             if (!o) continue;
             if(DEBUG_LINK)
                 dmsg_info()  << "  found " << obj->getTypeName() << " " << obj->getName() << "." ;

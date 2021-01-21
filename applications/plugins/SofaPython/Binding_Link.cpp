@@ -130,13 +130,9 @@ static PyObject * Link_getLinkedBase(PyObject *self, PyObject * /*args*/)
 }
 
 
-static PyObject * Link_getLinkedData(PyObject *self, PyObject * /*args*/)
+static PyObject * Link_getLinkedData(PyObject* /*self*/, PyObject * /*args*/)
 {
-    BaseLink* link = get_baselink( self );
-
-    if( link->getLinkedData() )
-        return SP_BUILD_PYPTR(Data,BaseData,link->getLinkedData(),false);
-
+    msg_deprecated("SofaPython") << "Links cannot point to Data anymore.";
     Py_RETURN_NONE;
 }
 

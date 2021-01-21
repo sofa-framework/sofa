@@ -145,8 +145,8 @@ sofa::defaulttype::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behavio
 template <class In, class Out>
 void Mapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
 {
-    State<In>* fromModel = this->fromModel.get(mparams);
-    State<Out>*  toModel = this->toModel.get(mparams);
+    State<In>* fromModel = this->fromModel.get();
+    State<Out>*  toModel = this->toModel.get();
     if(fromModel && toModel)
     {
         OutDataVecCoord* out = outPos[toModel].write();
@@ -165,8 +165,8 @@ void Mapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId out
 template <class In, class Out>
 void Mapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
 {
-    State<In>* fromModel = this->fromModel.get(mparams);
-    State<Out>*  toModel = this->toModel.get(mparams);
+    State<In>* fromModel = this->fromModel.get();
+    State<Out>*  toModel = this->toModel.get();
     if(fromModel && toModel)
     {
         OutDataVecDeriv* out = outVel[toModel].write();
@@ -181,8 +181,8 @@ void Mapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId ou
 template <class In, class Out>
 void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
 {
-    State<In>* fromModel = this->fromModel.get(mparams);
-    State<Out>*  toModel = this->toModel.get(mparams);
+    State<In>* fromModel = this->fromModel.get();
+    State<Out>*  toModel = this->toModel.get();
     if(fromModel && toModel)
     {
         InDataVecDeriv* out = inForce[fromModel].write();
@@ -207,8 +207,8 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId i
 template <class In, class Out>
 void Mapping<In,Out>::applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
 {
-    State<In>* fromModel = this->fromModel.get(cparams);
-    State<Out>*  toModel = this->toModel.get(cparams);
+    State<In>* fromModel = this->fromModel.get();
+    State<Out>*  toModel = this->toModel.get();
     if(fromModel && toModel)
     {
         InDataMatrixDeriv* out = inConst[fromModel].write();
@@ -231,8 +231,8 @@ void Mapping<In,Out>::applyDJT(const MechanicalParams* /*mparams = MechanicalPar
 template <class In, class Out>
 void Mapping<In,Out>::computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
 {
-    State<In>* fromModel = this->fromModel.get(mparams);
-    State<Out>*  toModel = this->toModel.get(mparams);
+    State<In>* fromModel = this->fromModel.get();
+    State<Out>*  toModel = this->toModel.get();
     if(fromModel && toModel)
     {
         OutDataVecDeriv* out = outAcc[toModel].write();
