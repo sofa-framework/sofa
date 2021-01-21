@@ -16,20 +16,28 @@ fi
 
 # Keep plugin_list as short as possible
 echo "" > "$INSTALL_DIR/lib/plugin_list.conf"
+disabled_plugins='plugins_ignored_by_default'
 for plugin in \
-        SofaExporter       \
-        SofaSparseSolver   \
-        SofaPreconditioner \
-        SofaValidation     \
-        SofaDenseSolver    \
-        SofaNonUniformFem  \
-        SofaOpenglVisual   \
-        SofaSphFluid       \
-        CImgPlugin         \
-        SofaMiscCollision  \
+        SofaEulerianFluid     \
+        SofaDistanceGrid      \
+        SofaImplicitField     \
+        MultiThreading        \
+        DiffusionSolver       \
+        image                 \
+        Compliant             \
+        SofaPython            \
+        Flexible              \
+        Registration          \
+        ExternalBehaviorModel \
+        ManifoldTopologies    \
+        ManualMapping         \
+        THMPGSpatialHashing   \
+        SofaCarving           \
+        RigidScale            \
     ; do
-    grep "$plugin" "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
+    disabled_plugins=$disabled_plugins'\|'$plugin
 done
+grep -v $disabled_plugins "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
 
 echo "Fixing up libs..."
 
