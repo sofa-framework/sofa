@@ -115,7 +115,7 @@ mapping::SubsetMultiMapping<defaulttype::Vec3Types,defaulttype::Vec3Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(SubsetMultiMappingTest, DataTypes);
+TYPED_TEST_SUITE(SubsetMultiMappingTest, DataTypes);
 // first test case
 TYPED_TEST( SubsetMultiMappingTest , two_parents_one_child )
 {

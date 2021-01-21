@@ -323,7 +323,7 @@ TestDataEngine< component::engine::DifferenceEngine<defaulttype::Vector3> >
 > TestTypes; // the types to instanciate.
 
 //// ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(DataEngine_test, TestTypes);
+TYPED_TEST_SUITE(DataEngine_test, TestTypes);
 
 //// test number of call to DataEngine::update
 TYPED_TEST( DataEngine_test , basic_test )

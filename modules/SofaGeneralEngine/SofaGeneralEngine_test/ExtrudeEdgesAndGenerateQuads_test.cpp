@@ -174,7 +174,7 @@ struct ExtrudeEdgesAndGenerateQuads_test : public Sofa_test<typename _DataTypes:
 using testing::Types;
 typedef Types<Vec3Types> DataTypes;
 
-TYPED_TEST_CASE(ExtrudeEdgesAndGenerateQuads_test, DataTypes);
+TYPED_TEST_SUITE(ExtrudeEdgesAndGenerateQuads_test, DataTypes);
 
 TYPED_TEST(ExtrudeEdgesAndGenerateQuads_test, NormalBehavior) {
     EXPECT_MSG_NOEMIT(Error) ;
