@@ -35,6 +35,8 @@
 
 using std::pair;
 using sofa::core::loader::VoxelLoader;
+using namespace sofa::type;
+using namespace sofa::type::stdtype;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 

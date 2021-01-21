@@ -24,13 +24,9 @@
 
 namespace sofa::component::topology
 {
-using namespace sofa::defaulttype;
-
 
 template class  SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal,4>;
 template class  SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal,3>;
 template class  SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal,1>;
-
-
 
 } //namespace sofa::component::topology

@@ -26,6 +26,7 @@ namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 //----------------------------------------------------------------------------
 // Explicit instantiation.

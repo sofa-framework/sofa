@@ -12,6 +12,7 @@ namespace defaulttype
 class Ray
 {
 public:
+    using Vec3 = type::Vec3;
     Ray(const Vec3& origin = Vec3(0,0,0), const Vec3& direction = Vec3(0,0,0))
     {
         m_origin = origin;

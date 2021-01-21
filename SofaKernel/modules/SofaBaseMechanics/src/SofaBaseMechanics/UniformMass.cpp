@@ -34,6 +34,7 @@ using std::string ;
 using std::ostringstream ;
 using sofa::component::mass::Vec3d ;
 using sofa::helper::system::DataRepository ;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 namespace sofa::component::mass

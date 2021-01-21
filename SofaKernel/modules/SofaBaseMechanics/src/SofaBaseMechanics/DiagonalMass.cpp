@@ -33,6 +33,7 @@ namespace sofa::component::mass
 
 using sofa::core::objectmodel::ComponentState ;
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 template <class RigidTypes, class RigidMass>

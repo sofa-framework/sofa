@@ -63,7 +63,7 @@ bool cholDcmp(Mat<n,n,real>& L, const Mat<n,n,real>& M)
   \pre L was computed using the Cholesky decomposition of L
   */
 template<Size n, class real>
-void cholBksb(Vec<n,real>& x, const Mat<n,n,real>& L, const Vec<n,real>& b)
+void cholBksb(type::Vec<n,real>& x, const Mat<n,n,real>& L, const type::Vec<n,real>& b)
 {
     //Solve L u = b
     for (Size j=0; j<n; j++)
@@ -94,7 +94,7 @@ void cholBksb(Vec<n,real>& x, const Mat<n,n,real>& L, const Vec<n,real>& b)
   If you have several solutions to perform with the same matrix M and different vectors b, it is more efficient to factor the matrix once and then use back-substitution for each vector.
   */
 template<Size n, class real>
-bool cholSlv(Vec<n,real>& x, const Mat<n,n,real>& M, const Vec<n,real>& b)
+bool cholSlv(type::Vec<n,real>& x, const Mat<n,n,real>& M, const type::Vec<n,real>& b)
 {
     Mat<n,n,real> L;
     if( !cholDcmp(L,M) ) return false;

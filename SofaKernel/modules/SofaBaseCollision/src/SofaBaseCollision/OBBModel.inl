@@ -145,14 +145,14 @@ void OBBCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparam
 
     sofa::helper::types::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
 
-    std::vector<Vector3> n;
+    std::vector<type::Vector3> n;
     n.push_back(axis(index,1));
     n.push_back(axis(index,0));
     n.push_back(-n[0]);
     n.push_back(-n[2]);
     n.push_back(n.front());
 
-    std::vector<Vector3> points;
+    std::vector<type::Vector3> points;
     points.push_back(p[3]);
     points.push_back(p[0]);
     points.push_back(p[2]);

@@ -130,7 +130,7 @@ void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         return; // No need to recompute BBox if immobile
     }
 
-    Vector3 minVec,maxVec;
+    type::Vector3 minVec,maxVec;
     cubeModel->resize(ncyl);
     if (!empty())
     {
@@ -140,10 +140,10 @@ void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
             r = radius(i);
             SReal h2 = height(i)/2.0;
 
-            Vector3 p1(center(i));
-            Vector3 p2(center(i));
+            auto p1 = center(i);
+            auto p2 = center(i);
 
-            Vector3 ax = axis(i);
+            auto ax = axis(i);
 
             p1 += h2 * ax;
             p2 -= h2 * ax;
@@ -174,10 +174,10 @@ void CylinderCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
     sofa::helper::types::RGBAColor colour(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
     SReal h2 = height(i)/2.0;
 
-    Vector3 p1(center(i));
-    Vector3 p2(center(i));
+    auto p1 = (center(i));
+    auto p2 = (center(i));
 
-    Vector3 ax = axis(i);
+    const auto& ax = axis(i);
 
     p1 += h2 * ax;
     p2 -= h2 * ax;

@@ -28,7 +28,7 @@
 namespace sofa::component::collision
 {
 
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 int CubeCollisionModelClass = core::RegisterObject("Collision model representing a cube")
         .add< CubeCollisionModel >()
