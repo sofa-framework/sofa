@@ -31,6 +31,7 @@ namespace sofa::component::topology
 {
 
 using namespace std;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int DynamicSparseGridTopologyContainerClass = core::RegisterObject ( "Hexahedron set topology container" )

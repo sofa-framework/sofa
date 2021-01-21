@@ -28,6 +28,7 @@
 #include <sstream>
 
 using namespace sofa::core::loader;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 namespace sofa::component::loader

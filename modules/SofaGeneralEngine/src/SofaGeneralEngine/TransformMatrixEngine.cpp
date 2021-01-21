@@ -30,6 +30,7 @@
 namespace sofa::component::engine
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int TranslateTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given translation")

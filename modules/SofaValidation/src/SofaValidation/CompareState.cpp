@@ -31,6 +31,8 @@
 
 #include <sstream>
 #include <algorithm>
+
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 namespace sofa::component::misc

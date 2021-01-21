@@ -26,7 +26,7 @@
 namespace sofa::component::engine
 {
 
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 int DifferenceEngineClass = core::RegisterObject("Computing the difference between two vector of dofs")
         .add< DifferenceEngine<Vec1d> >()

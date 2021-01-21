@@ -33,6 +33,7 @@
 namespace sofa::component::collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using sofa::helper::DistanceSegTri;

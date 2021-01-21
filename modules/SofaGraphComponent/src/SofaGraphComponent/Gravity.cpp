@@ -30,7 +30,7 @@
 namespace sofa::component::contextobject
 {
 
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 using namespace core::behavior;
 
 Gravity::Gravity()

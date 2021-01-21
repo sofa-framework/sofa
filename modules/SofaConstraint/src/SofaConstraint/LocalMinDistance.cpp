@@ -41,6 +41,7 @@ namespace sofa::component::collision
 
 using namespace sofa::core::collision;
 using namespace helper;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 using core::topology::BaseMeshTopology;

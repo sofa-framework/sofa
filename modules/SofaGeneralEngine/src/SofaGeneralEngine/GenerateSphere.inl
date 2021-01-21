@@ -277,8 +277,8 @@ void GenerateSphere<DataTypes>::doUpdate()
 		Real w,phi;
 		Coord normal;
 		for (i=0;i<edgeArray.size();++i) {
-            normal=defaulttype::cross(posTrian[edgeArray[i][0]],posTrian[edgeArray[i][1]]);
-			normal=defaulttype::cross(normal,posTrian[edgeArray[i][0]]);
+            normal=cross(posTrian[edgeArray[i][0]],posTrian[edgeArray[i][1]]);
+			normal=cross(normal,posTrian[edgeArray[i][0]]);
 			normal/= normal.norm();
 			phi=acos(dot(posTrian[edgeArray[i][0]],posTrian[edgeArray[i][1]]));
 			for (j=1;j<frequency;++j) {
@@ -467,7 +467,7 @@ void GenerateSphere<DataTypes>::doUpdate()
 					edgeArray.push_back(e);
 					// add Bezier points along the edge
 					phi=acos(dot(posTrian[se[0]],posTrian[se[1]]));
-					normal=defaulttype::cross(posTrian[(*itt)[2]]-posTrian[(*itt)[1]],
+					normal=cross(posTrian[(*itt)[2]]-posTrian[(*itt)[1]],
 						posTrian[(*itt)[2]]-posTrian[(*itt)[0]]);
 					normal/=normal.norm();
 					ctheta=dot(normal,posTrian[(*itt)[1]]);
@@ -525,7 +525,7 @@ void GenerateSphere<DataTypes>::doUpdate()
 			for (itt=trians.begin();itt!=trians.end();++itt) {
 				// add inside points
 				if (degreeTriangle==4) {
-					normal=defaulttype::cross(posTrian[(*itt)[2]]-posTrian[(*itt)[1]],
+					normal=cross(posTrian[(*itt)[2]]-posTrian[(*itt)[1]],
 						posTrian[(*itt)[2]]-posTrian[(*itt)[0]]);
 					normal/=normal.norm();
 					ctheta=dot(normal,posTrian[(*itt)[1]]);
@@ -621,7 +621,7 @@ void GenerateSphere<DataTypes>::doUpdate()
 							assert(fabs(posTetra[nextVertexOnSphere].norm2()-1)<1e-4);
 						}
 						// we have 3 points on the sphere therefore can compute a normal
-						normal=defaulttype::cross(posTetra[nextVertexOnSphere]-posTetra[e[1]],
+						normal=cross(posTetra[nextVertexOnSphere]-posTetra[e[1]],
 							posTetra[nextVertexOnSphere]-posTetra[e[0]]);
 						normal/=normal.norm();
 						ctheta=dot(normal,posTetra[e[1]]);
@@ -722,7 +722,7 @@ void GenerateSphere<DataTypes>::doUpdate()
 									onSphere=false;
 							}
 							if (onSphere) {
-								normal=defaulttype::cross(posTetra[tr[2]]-posTetra[tr[1]],
+								normal=cross(posTetra[tr[2]]-posTetra[tr[1]],
 									posTetra[tr[2]]-posTetra[tr[0]]);
 								normal/=normal.norm();
 								ctheta=dot(normal,posTetra[tr[1]]);

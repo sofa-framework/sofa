@@ -27,6 +27,7 @@
 namespace sofa::component::topology
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int SphereQuadTopologyClass = core::RegisterObject("Sphere topology constructed with deformed quads")

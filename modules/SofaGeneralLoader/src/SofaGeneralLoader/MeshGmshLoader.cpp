@@ -30,6 +30,7 @@
 namespace sofa::component::loader
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using std::string;
 using std::stringstream;

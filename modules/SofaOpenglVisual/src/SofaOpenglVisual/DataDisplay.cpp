@@ -45,6 +45,7 @@ namespace component
 namespace visualmodel
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using sofa::component::visualmodel::OglColorMap;
 

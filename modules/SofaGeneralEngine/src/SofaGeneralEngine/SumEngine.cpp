@@ -26,7 +26,7 @@
 namespace sofa::component::engine
 {
 
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 int SumEngineClass = core::RegisterObject("Computing the Sum between two vector of dofs")
         .add< SumEngine<Vec1d> >()

@@ -29,6 +29,7 @@
 namespace sofa::component::forcefield
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 
@@ -64,7 +65,7 @@ void RestShapeSpringsForceField<Rigid3Types>::addForce(const core::MechanicalPar
         // translation
         if (i >= m_pivots.size())
         {
-            Vec3d dx = p1[index].getCenter() - p0[ext_index].getCenter();
+            auto dx = p1[index].getCenter() - p0[ext_index].getCenter();
             getVCenter(f1[index]) -=  dx * (i < k.size() ? k[i] : k[0]) ;
         }
         else

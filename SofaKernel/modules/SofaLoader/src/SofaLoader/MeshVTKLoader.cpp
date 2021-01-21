@@ -44,6 +44,7 @@ using sofa::component::loader::BaseVTKReader ;
 namespace sofa::component::loader
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using sofa::core::objectmodel::ComponentState;
 using sofa::core::objectmodel::BaseData ;

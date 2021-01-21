@@ -77,7 +77,7 @@ void PositionBasedDynamicsConstraint<Rigid3Types>::projectPosition(const core::M
 		std::copy(res.begin(),res.end(),old_pos.begin());
 	}
 
-    Vec<3,Real> a; Real phi;
+    type::Vec<3,Real> a; Real phi;
 
     Real s = stiffness.getValue();
     for( size_t i=0; i<res.size(); i++ )

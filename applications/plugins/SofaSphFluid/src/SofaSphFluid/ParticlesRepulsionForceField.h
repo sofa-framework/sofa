@@ -105,7 +105,7 @@ public:
 };
 
 using sofa::defaulttype::Vec3dTypes;
-using sofa::type::Vec2dTypes;
+using sofa::defaulttype::Vec2dTypes;
 
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_CPP)

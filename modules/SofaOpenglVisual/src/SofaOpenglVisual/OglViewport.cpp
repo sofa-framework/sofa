@@ -39,6 +39,7 @@ namespace component
 namespace visualmodel
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 //Register OglViewport in the Object Factory

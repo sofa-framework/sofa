@@ -46,6 +46,7 @@
 namespace sofa::component::collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using helper::vector;

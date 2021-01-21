@@ -24,9 +24,10 @@
 
 namespace sofa::component::collision
 {
+
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
-
 
 template SOFA_SOFAMESHCOLLISION_API int MeshIntTool::computeIntersection(TCapsule<Vec3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 template SOFA_SOFAMESHCOLLISION_API int MeshIntTool::doCapPointInt(TCapsule<Vec3Types>& cap, const Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);

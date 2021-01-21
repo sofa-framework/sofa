@@ -1239,7 +1239,7 @@ inline RigidDeriv<2,real> operator/(RigidDeriv<2,real> r, real2 a)
 template<typename R, typename T>
 type::Vec<2,R> velocityAtRotatedPoint(const RigidDeriv<2,T>& v, const type::Vec<2,R>& p)
 {
-    return getVCenter(v) + Vec<2,R>(-p[1], p[0]) * getVOrientation(v);
+    return getVCenter(v) + type::Vec<2,R>(-p[1], p[0]) * getVOrientation(v);
 }
 
 

@@ -34,7 +34,7 @@ namespace sofa::component::loader
 {
 
 using sofa::helper::getWriteOnlyAccessor;
-
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 static int MeshSTLLoaderClass = core::RegisterObject("Loader for the STL file format. STL can be used to represent the surface of object using with a triangulation.")

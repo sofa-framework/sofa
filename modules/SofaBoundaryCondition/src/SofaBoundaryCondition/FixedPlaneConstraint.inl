@@ -304,16 +304,16 @@ sofa::type::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.g
 const sofa::type::Vec3d& getVec(const sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.getCenter(); }
 sofa::type::Vec3d& getVec(sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
 const sofa::type::Vec3d& getVec(const sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
-sofa::type::Vec6d& getVec(sofa::type::Vec6dTypes::Deriv& i){ return i; }
-const sofa::type::Vec6d& getVec(const sofa::type::Vec6dTypes::Deriv& i){ return i; }
+sofa::type::Vec6d& getVec(sofa::defaulttype::Vec6dTypes::Deriv& i){ return i; }
+const sofa::type::Vec6d& getVec(const sofa::defaulttype::Vec6dTypes::Deriv& i){ return i; }
 
 sofa::type::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Deriv& i){ return i.getVCenter(); }
 sofa::type::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
 const sofa::type::Vec3f& getVec(const sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
 sofa::type::Vec3f& getVec(sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
 const sofa::type::Vec3f& getVec(const sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
-sofa::type::Vec6f& getVec(sofa::type::Vec6fTypes::Deriv& i){ return i; }
-const sofa::type::Vec6f& getVec(const sofa::type::Vec6fTypes::Deriv& i){ return i; }
+sofa::type::Vec6f& getVec(sofa::defaulttype::Vec6fTypes::Deriv& i){ return i; }
+const sofa::type::Vec6f& getVec(const sofa::defaulttype::Vec6fTypes::Deriv& i){ return i; }
 
 template<class DataTypes>
 bool FixedPlaneConstraint<DataTypes>::isPointInPlane(Coord p) const

@@ -34,7 +34,7 @@ int RayCollisionModelClass = core::RegisterObject("Collision model representing 
         .addAlias("RayModel")
         ;
 
-
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 RayCollisionModel::RayCollisionModel(SReal length)

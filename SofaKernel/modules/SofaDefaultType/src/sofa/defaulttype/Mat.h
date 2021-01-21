@@ -728,7 +728,7 @@ class MatNoInit : public Mat<L,C,real>
 {
 public:
     MatNoInit()
-        : Mat<L,C,real>(NOINIT)
+        : Mat<L,C,real>(type::NOINIT)
     {
     }
 
@@ -1076,7 +1076,7 @@ void printMaple(std::ostream& o, const Mat<L,C,real>& m)
 template <sofa::Size L, sofa::Size C, typename T>
 inline Mat<L,C,T> dyad( const type::Vec<L,T>& u, const type::Vec<C,T>& v )
 {
-    Mat<L,C,T> res(NOINIT);
+    Mat<L,C,T> res(type::NOINIT);
     for(sofa::Size i=0; i<L; i++ )
         for(sofa::Size j=0; j<C; j++ )
             res[i][j] = u[i]*v[j];

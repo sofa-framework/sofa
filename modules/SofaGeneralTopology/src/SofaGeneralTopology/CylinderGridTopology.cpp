@@ -27,9 +27,8 @@
 namespace sofa::component::topology
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
-
-
 
 int CylinderGridTopologyClass = core::RegisterObject("Cylinder grid in 3D")
         .addAlias("CylinderGrid")

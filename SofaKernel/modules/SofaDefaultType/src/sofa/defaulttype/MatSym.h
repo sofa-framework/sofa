@@ -37,7 +37,7 @@ namespace defaulttype
 ////class for 3*3 symmetric matrix only
 
 template <int D,class real=float>
-class MatSym : public VecNoInit<D*(D+1)/2,real>
+class MatSym : public type::VecNoInit<D*(D+1)/2,real>
 //class Mat : public Vec<L,Vec<C,real> >
 {
 public:
@@ -45,7 +45,7 @@ public:
     // enum { N = L*C };
 
     typedef real Real;
-    typedef Vec<D,Real> Coord;
+    typedef type::Vec<D,Real> Coord;
 
 
     MatSym()
@@ -53,7 +53,7 @@ public:
         clear();
     }
 
-    explicit MatSym(NoInit)
+    explicit MatSym(type::NoInit)
     {
     }
     /// Constructor from 6 elements
@@ -133,9 +133,9 @@ public:
 
     // convert to Voigt notation
 
-    inline Vec<D*(D+1)/2 ,real> getVoigt()
+    inline auto getVoigt()
     {
-        Vec<D*(D+1)/2 ,real> result;
+        type::Vec<D*(D+1)/2 ,real> result;
         if (D==2)
         {
             result[0] = this->elems[0]; result[1] = this->elems[2]; result[2] = 2*this->elems[1];
@@ -202,7 +202,7 @@ public:
     //template <int D>
     Mat<D,D,real> SymSymMultiply(const MatSym<D,real>& m) const
     {
-        Mat<D,D,real> r(NOINIT);
+        Mat<D,D,real> r(type::NOINIT);
 
         for(int i=0; i<D; i++)
         {
@@ -220,7 +220,7 @@ public:
     // template <int D>
     Mat<D,D,real> SymMatMultiply(const Mat<D,D,real>& m) const
     {
-        Mat<D,D,real> r(NOINIT);
+        Mat<D,D,real> r(type::NOINIT);
 
         for(int i=0; i<D; i++)
         {
@@ -240,7 +240,7 @@ public:
     // template <int D>
     Mat<D,D,real> MatSymMultiply(const Mat<D,D,real>& m) const
     {
-        Mat<D,D,real> r(NOINIT);
+        Mat<D,D,real> r(type::NOINIT);
 
         for(int i=0; i<D; i++)
         {
@@ -269,7 +269,7 @@ public:
     /// Matrix addition operator with a non-symmetric matrix
     Mat<D,D,real> operator+(const Mat<D,D,real>& m) const
     {
-        Mat<D,D,real> r(NOINIT);
+        Mat<D,D,real> r(type::NOINIT);
         for(int i = 0; i < D; i++)
         {
             for(int j=0; j<D; j++)
@@ -292,7 +292,7 @@ public:
     /// Matrix substractor operator with a non-symmetric matrix
     Mat<D,D,real> operator-(const Mat<D,D,real>& m) const
     {
-        Mat<D,D,real> r(NOINIT);
+        Mat<D,D,real> r(type::NOINIT);
         for(int i = 0; i < D; i++)
         {
             for(int j=0; j<D; j++)
@@ -310,7 +310,7 @@ public:
     {
 
 
-        Coord r(NOINIT);
+        Coord r(type::NOINIT);
         for(int i=0; i<D; i++)
         {
             r[i]=(*this)(i,0) * v[0];
@@ -324,7 +324,7 @@ public:
     /// Scalar multiplication operator.
     MatSym<D,real> operator*(real f) const
     {
-        MatSym<D,real> r(NOINIT);
+        MatSym<D,real> r(type::NOINIT);
         for(int i=0; i<D*(D+1)/2; i++)
             r[i] = (*this)[i] * f;
         return r;
@@ -339,7 +339,7 @@ public:
     /// Scalar division operator.
     MatSym< D,real> operator/(real f) const
     {
-        MatSym< D,real> r(NOINIT);
+        MatSym< D,real> r(type::NOINIT);
         for(int i=0; i<D*(D+1)/2; i++)
             r[i] = (*this)[i] / f;
         return r;

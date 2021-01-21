@@ -33,6 +33,7 @@ int DevMonitorManagerClass = sofa::core::RegisterObject("DevMonitorManager")
         .add< DevMonitorManager >()
         ;
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 DevMonitorManager::DevMonitorManager()
