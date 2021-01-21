@@ -209,7 +209,7 @@ void UniformMass<RigidTypes, MassType>::drawRigid2DImpl(const VisualParams* vpar
 
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     ReadAccessor<Data<vector<int> > > indices = d_indices;
-    defaulttype::Vec3d len;
+    type::Vec3d len;
 
     len[0] = len[1] = sqrt(d_vertexMass.getValue().inertiaMatrix);
     len[2] = 0;
@@ -233,7 +233,7 @@ void UniformMass<RigidTypes, MassType>::drawRigid3DImpl(const VisualParams* vpar
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     ReadAccessor<Data<vector<int> > > indices = d_indices;
     typename RigidTypes::Vec3 gravityCenter;
-    defaulttype::Vec3d len;
+    type::Vec3d len;
 
     // The moment of inertia of a box is:
     //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
@@ -296,11 +296,11 @@ void UniformMass<Vec6Types, MassType>::drawVec6Impl(const core::visual::VisualPa
 
     for (unsigned int i=0; i<indices.size(); i++)
     {
-        defaulttype::Vec3d len(1,1,1);
+        type::Vec3d len(1,1,1);
         int a = (i<indices.size()-1)?i : i-1;
         int b = a+1;
-        defaulttype::Vec3d dp; dp = x0[b]-x0[a];
-        defaulttype::Vec3d p; p = x[indices[i]];
+        type::Vec3d dp; dp = x0[b]-x0[a];
+        type::Vec3d p; p = x[indices[i]];
         len[0] = dp.norm();
         len[1] = len[0];
         len[2] = len[0];
@@ -331,7 +331,7 @@ Vector6 UniformMass<RigidTypes,MassType>::getMomentumRigid3DImpl( const Mechanic
     Real m = d_vertexMass.getValue().mass;
     const typename MassType::Mat3x3& I = d_vertexMass.getValue().inertiaMassMatrix;
 
-    defaulttype::Vec6d momentum;
+    type::Vec6d momentum;
 
     for ( unsigned int i=0 ; i<indices.size() ; i++ )
     {
@@ -356,7 +356,7 @@ Vector6 UniformMass<Vec3Types, MassType>::getMomentumVec3DImpl ( const Mechanica
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     const MassType& m = d_vertexMass.getValue();
-    defaulttype::Vec6d momentum;
+    type::Vec6d momentum;
 
     for ( unsigned int i=0 ; i<indices.size() ; i++ )
     {

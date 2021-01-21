@@ -29,7 +29,7 @@
 namespace sofa::component::mapping
 {
 
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 
 template <class In, class Out>
 BarycentricMapperRegularGridTopology<In,Out>::BarycentricMapperRegularGridTopology(RegularGridTopology* fromTopology,

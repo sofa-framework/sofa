@@ -44,7 +44,7 @@ public:
     typedef typename DataTypes::VecReal     VecReal     ;
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
-    typedef sofa::defaulttype::Vec3d        Vec3d;
+    typedef sofa::type::Vec3d        Vec3d;
 
     using Index = sofa::Index;
 protected:

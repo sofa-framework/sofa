@@ -78,7 +78,7 @@ public:
 
     /// optional range of local DOF indices. Any computation involving indices outside of this
     /// range are discarded (useful for parallelization using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > d_localRange;
+    Data< type::Vec<2,int> > d_localRange;
 
     Data<bool>                   d_drawIsEnabled; ///< enable/disable drawing of plane. (default=false)
     Data<sofa::helper::types::RGBAColor> d_drawColor; ///< plane color. (default=[0.0,0.5,0.2,1.0])

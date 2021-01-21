@@ -711,7 +711,7 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
     }
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
     std::vector<sofa::helper::types::RGBAColor> colors;
 
     vparams->drawTool()->disableLighting();

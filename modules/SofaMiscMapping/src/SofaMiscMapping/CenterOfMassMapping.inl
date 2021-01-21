@@ -144,8 +144,8 @@ void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpar
 
     const typename Out::VecCoord &X = this->toModel->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< sofa::defaulttype::Vector3 > points;
-    sofa::defaulttype::Vector3 point1,point2;
+    std::vector< sofa::type::Vector3 > points;
+    sofa::type::Vector3 point1,point2;
     for(unsigned int i=0 ; i<OutCoord::spatial_dimensions ; i++)
     {
         OutCoord v;

@@ -94,11 +94,11 @@ TEST_F(MeshVTKLoaderTest, loadLegacy_binary)
 
     BaseData* cVects = this->findData("cVects");
     EXPECT_TRUE(cVects != nullptr);
-    EXPECT_TRUE(dynamic_cast<Data<helper::vector<defaulttype::Vec3f>>*>(cVects) != nullptr);
+    EXPECT_TRUE(dynamic_cast<Data<helper::vector<type::Vec3f>>*>(cVects) != nullptr);
 
     BaseData* cv2 = this->findData("cv2");
     EXPECT_TRUE(cv2 != nullptr);
-    EXPECT_TRUE(dynamic_cast<Data<helper::vector<defaulttype::Vec3f>>*>(cv2) != nullptr);
+    EXPECT_TRUE(dynamic_cast<Data<helper::vector<type::Vec3f>>*>(cv2) != nullptr);
 
     BaseData* mytest = this->findData("mytest");
     EXPECT_TRUE(mytest != nullptr);
@@ -118,11 +118,11 @@ TEST_F(MeshVTKLoaderTest, loadLegacy_binary)
 
     BaseData* outVect = this->findData("outVect");
     EXPECT_TRUE(outVect != nullptr);
-    EXPECT_TRUE(dynamic_cast<Data<helper::vector<defaulttype::Vec3f>>*>(outVect) != nullptr);
+    EXPECT_TRUE(dynamic_cast<Data<helper::vector<type::Vec3f>>*>(outVect) != nullptr);
 
     BaseData* vect2 = this->findData("vect2");
     EXPECT_TRUE(vect2 != nullptr);
-    EXPECT_TRUE(dynamic_cast<Data<helper::vector<defaulttype::Vec3f>>*>(vect2) != nullptr);
+    EXPECT_TRUE(dynamic_cast<Data<helper::vector<type::Vec3f>>*>(vect2) != nullptr);
 }
 
 TEST_F(MeshVTKLoaderTest, loadInvalidFilenames)

@@ -40,7 +40,7 @@ namespace
 template<Size N, typename Real, class VecReal>
 inline double UncoupledConstraintCorrection_computeCompliance(
     Index index,
-    const sofa::defaulttype::Vec<N, Real>& n1, const sofa::defaulttype::Vec<N, Real>& n2,
+    const sofa::type::Vec<N, Real>& n1, const sofa::type::Vec<N, Real>& n2,
     const Real comp0, const VecReal& comp)
 {
     return (n1 * n2) * ((index < comp.size()) ? comp[index] : comp0);
@@ -68,9 +68,9 @@ inline double UncoupledConstraintCorrection_computeCompliance(
 
 /// Compute displacement from constraint force for Vec types
 template<Size N, typename Real, class VecReal>
-inline sofa::defaulttype::Vec<N, Real> UncoupledConstraintCorrection_computeDx(
+inline sofa::type::Vec<N, Real> UncoupledConstraintCorrection_computeDx(
     Index index,
-    const sofa::defaulttype::Vec<N, Real>& f,
+    const sofa::type::Vec<N, Real>& f,
     const Real comp0, const VecReal& comp)
 {
     return (f) * ((index < comp.size()) ? comp[index] : comp0);

@@ -24,7 +24,7 @@
 
 #include <sofa/helper/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
@@ -54,12 +54,12 @@ class Monomial_LD
 
 public :
 
-    typedef sofa::defaulttype::Vec<N,Real> RNpoint;
+    typedef sofa::type::Vec<N,Real> RNpoint;
     ///to define the derivative operator m_mono.d(x), m_mono.d(y)
     enum {x,y,z,xy,yz,zx};
 
     Real coef;
-    sofa::defaulttype::Vec<N,int>  powers;
+    sofa::type::Vec<N,int>  powers;
 
     Monomial_LD();
     Monomial_LD(Real ,...);
@@ -114,7 +114,7 @@ public :
     friend Monomial_LD<FReal,FN> & operator*(const FReal & alpha,Monomial_LD<FReal,FN> & r);
 
 protected :
-    sofa::defaulttype::Vec<N,std::string> variables;
+    sofa::type::Vec<N,std::string> variables;
 };
 
 
@@ -134,7 +134,7 @@ public :
     typedef std::vector< Monomial_LD<Real,N> > MonomialsList;
     typedef typename MonomialsList::const_iterator MonomialConstIterator;
     typedef typename MonomialsList::iterator MonomialIterator;
-    typedef sofa::defaulttype::Vec<N,Real> RNpoint;
+    typedef sofa::type::Vec<N,Real> RNpoint;
 
     unsigned int nbOfMonomial;
     MonomialsList listOfMonoMial;

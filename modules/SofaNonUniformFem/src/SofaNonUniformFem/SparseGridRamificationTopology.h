@@ -89,7 +89,7 @@ public:
     {
         Connexion():_parent(nullptr), _coarsestParent(0), _hexaIdx(0), _nonRamifiedHexaIdx(0), _tmp(0) {};
 
-        helper::fixed_array< std::set<Connexion*>,NUM_CONNECTED_NODES >	_neighbors;	// the connexion graph at a given level (it can have several neighbors in each direction)
+        type::stdtype::fixed_array< std::set<Connexion*>,NUM_CONNECTED_NODES >	_neighbors;	// the connexion graph at a given level (it can have several neighbors in each direction)
 
         typedef std::pair<unsigned,Connexion*> Children; // the unsigned indicates the fine place 0->7 in the coarse element
         std::list<Children> _children;	// the hierarchical graph to finer level
@@ -129,7 +129,7 @@ public :
     helper::vector<helper::vector<Connexion*> >* getConnexions() {return &_connexions;}
 
 
-    typedef std::vector<helper::fixed_array<helper::vector<Index>,8> > HierarchicalCubeMapRamification; ///< a cube indice -> corresponding child indices (possible more than 8 for Ramification)
+    typedef std::vector<type::stdtype::fixed_array<helper::vector<Index>,8> > HierarchicalCubeMapRamification; ///< a cube indice -> corresponding child indices (possible more than 8 for Ramification)
     HierarchicalCubeMapRamification _hierarchicalCubeMapRamification;
 
 

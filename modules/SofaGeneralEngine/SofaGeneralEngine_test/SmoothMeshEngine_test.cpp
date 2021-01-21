@@ -25,7 +25,7 @@ struct SmoothMeshEngine_test : public Sofa_test<typename _DataTypes::Real>,
 	typedef SmoothMeshEngine<_DataTypes> ThisClass ;
 	typedef _DataTypes DataTypes;
 	typedef typename DataTypes::Real Real;
-	typedef sofa::defaulttype::Vec<3,Real> Vec3;
+	typedef sofa::type::Vec<3,Real> Vec3;
 
 	Simulation* m_simu;
 	Node::SPtr m_node;

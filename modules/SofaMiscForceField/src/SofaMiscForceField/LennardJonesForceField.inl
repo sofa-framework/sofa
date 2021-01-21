@@ -209,7 +209,7 @@ void LennardJonesForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
     vparams->drawTool()->saveLastState();
 
-    std::vector< defaulttype::Vector3 > points[2];
+    std::vector< type::Vector3 > points[2];
 
     const Real d02 = this->d0.getValue()*this->d0.getValue();
     for (unsigned int i=0; i<this->dforces.size(); i++)

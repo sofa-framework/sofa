@@ -30,7 +30,7 @@ using sofa::component::engine::RandomPointDistributionInSurface;
 namespace sofa
 {
 
-using defaulttype::Vector3;
+using type::Vector3;
 
 template <typename _DataTypes>
 class RandomPointDistributionInSurface_test : public ::testing::Test

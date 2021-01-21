@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_DUALQUAT_H
 #define SOFA_HELPER_DUALQUAT_H
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
@@ -41,9 +41,9 @@ template<class real>
 class SOFA_HELPER_API DualQuatCoord3
 {
     typedef real value_type;
-    typedef sofa::defaulttype::Vec<3,real> Pos;
-    typedef sofa::defaulttype::Vec<3,real> Vec3;
-    typedef sofa::defaulttype::Vec<4,real> Quat;
+    typedef sofa::type::Vec<3,real> Pos;
+    typedef sofa::type::Vec<3,real> Vec3;
+    typedef sofa::type::Vec<4,real> Quat;
     enum { total_size = 8 };
     enum { spatial_dimensions = 3 };
 
@@ -192,7 +192,7 @@ public:
                 +orientation[2]*a.orientation[2]+orientation[3]*a.orientation[3];
     }
 
-    DualQuatCoord3<real> operator + (const sofa::defaulttype::Vec<6,real>& a)
+    DualQuatCoord3<real> operator + (const sofa::type::Vec<6,real>& a)
     {
         DualQuatCoord3 r;
 
@@ -228,9 +228,9 @@ public:
     // get velocity/quaternion change mapping : dq = J(q) v
     void velocity_getJ( sofa::defaulttype::Mat<4,3,real>& J0, sofa::defaulttype::Mat<4,3,real>& JE);
     // get quaternion change: dq = J(q) v
-    DualQuatCoord3<real> velocity_applyJ( const sofa::defaulttype::Vec<6,real>& a );
+    DualQuatCoord3<real> velocity_applyJ( const sofa::type::Vec<6,real>& a );
     // get velocity : v = JT(q) dq
-    sofa::defaulttype::Vec<6,real> velocity_applyJT( const DualQuatCoord3<real>& dq );
+    sofa::type::Vec<6,real> velocity_applyJT( const DualQuatCoord3<real>& dq );
     // get jacobian of the normalization : dqn = J(q) dq
     void normalize_getJ( sofa::defaulttype::Mat<4,4,real>& J0, sofa::defaulttype::Mat<4,4,real>& JE) ;
     // get normalized quaternion change: dqn = J(q) dq

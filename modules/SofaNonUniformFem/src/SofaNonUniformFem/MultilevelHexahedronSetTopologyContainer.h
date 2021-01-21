@@ -26,7 +26,7 @@
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/core/topology/Topology.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <set>
 
 namespace sofa::core::topology
@@ -49,7 +49,7 @@ class SOFA_SOFANONUNIFORMFEM_API MultilevelHexahedronSetTopologyContainer : publ
 public:
     SOFA_CLASS(MultilevelHexahedronSetTopologyContainer,HexahedronSetTopologyContainer);
 
-    typedef defaulttype::Vec<3,int>			Vec3i;
+    typedef type::Vec<3,int>			Vec3i;
 protected:
     MultilevelHexahedronSetTopologyContainer();
 
@@ -108,7 +108,7 @@ public:
 
     const Vec3i& getCoarseResolution() const { return _coarseResolution; }
 
-    bool getHexaContainsPosition(const Index hexaId, const defaulttype::Vector3& baryC) const;
+    bool getHexaContainsPosition(const Index hexaId, const type::Vector3& baryC) const;
 
     const Vec3i& getHexaIdxInCoarseRegularGrid(const Index hexaId) const;
     int getHexaIdInCoarseRegularGrid(const Index hexaId) const;
@@ -204,7 +204,7 @@ class SOFA_SOFANONUNIFORMFEM_API MultilevelModification : public core::topology:
 public:
     static const int MULTILEVEL_MODIFICATION = core::topology::TOPOLOGYCHANGE_LASTID + 1;
 
-    typedef defaulttype::Vec<3,int>	Vec3i;
+    typedef type::Vec<3,int>	Vec3i;
     using Index = sofa::Index;
 
     MultilevelModification(const sofa::helper::vector<Index>& _tArray,

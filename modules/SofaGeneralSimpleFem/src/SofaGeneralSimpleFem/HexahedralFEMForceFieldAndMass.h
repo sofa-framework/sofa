@@ -114,7 +114,7 @@ public:
 protected:
     virtual void computeElementMasses( ); ///< compute the mass matrices
     Real integrateVolume( int signx, int signy, int signz, Real l0, Real l1, Real l2 );
-    virtual void computeElementMass( ElementMass &Mass, Real& totalMass, const helper::fixed_array<Coord,8> &nodes); ///< compute the mass matrix of an element
+    virtual void computeElementMass( ElementMass &Mass, Real& totalMass, const type::stdtype::fixed_array<Coord,8> &nodes); ///< compute the mass matrix of an element
 
     void computeParticleMasses();
 

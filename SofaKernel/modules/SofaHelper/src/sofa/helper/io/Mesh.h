@@ -23,7 +23,7 @@
 #define SOFA_HELPER_IO_MESH_H
 
 #include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/types/Material.h>
 #include <sofa/helper/types/PrimitiveGroup.h>
@@ -46,26 +46,26 @@ public:
     std::string loaderType;
     
 public:
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::type::Vector3 Vector3;
     typedef sofa::helper::types::PrimitiveGroup PrimitiveGroup;
     typedef sofa::helper::types::Material Material;
     typedef Topology::PointID PointID;
 
     /* specify for each control point lying on an edge : the control point index, the index of the  edge,
     the 2 integers specifying the position within this edge (i.e. 11 for a quadratic edge, 13 within a quartic edge).. */
-    typedef sofa::helper::fixed_array<PointID, 4> HighOrderEdgePosition;
+    typedef sofa::type::stdtype::fixed_array<PointID, 4> HighOrderEdgePosition;
     /* specify for each control point lying on a triangle  : the control point index, the index of the  triangle,
     the 3 integers specifying the position within this triangle (i.e. 111 for a cubic triangle , 121 within a quartic triangle).. */
-    typedef sofa::helper::fixed_array<PointID, 5> HighOrderTrianglePosition;
+    typedef sofa::type::stdtype::fixed_array<PointID, 5> HighOrderTrianglePosition;
     /* specify for each control point lying on a Quad  : the control point index, the index of the  quad,
     the 2 integers specifying the degree of the element in the x and y directions, the 2 integers specifying the position within this quad (i.e. 12 for a cubic triangle ).. */
-    typedef sofa::helper::fixed_array<PointID, 6> HighOrderQuadPosition;
+    typedef sofa::type::stdtype::fixed_array<PointID, 6> HighOrderQuadPosition;
     /* specify for each control point lying on a tetrahedron  : the control point index, the index of the  tetrahedron,
     the 3 integers specifying the position within this tetrahedron (i.e. 1111 for a quartic tetrahedron , 1211 within a quintic tetrahedron).. */
-    typedef sofa::helper::fixed_array<PointID, 6> HighOrderTetrahedronPosition;
+    typedef sofa::type::stdtype::fixed_array<PointID, 6> HighOrderTetrahedronPosition;
     /* specify for each control point lying on a Hexahedron  : the control point index, the index of the  Hexahedron,
     the 3 integers specifying the degree of the element in the x, y and z directions, the 3 integers specifying the position within this hexahedron (i.e. 121  ).. */
-    typedef sofa::helper::fixed_array<PointID, 8> HighOrderHexahedronPosition;
+    typedef sofa::type::stdtype::fixed_array<PointID, 8> HighOrderHexahedronPosition;
 
     sofa::helper::vector<Vector3> & getVertices() { return m_vertices; }
     const sofa::helper::vector<Vector3> & getVertices() const { return m_vertices; }

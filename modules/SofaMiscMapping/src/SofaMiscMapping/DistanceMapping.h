@@ -28,7 +28,7 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/types/RGBAColor.h>
 
 
@@ -80,7 +80,7 @@ public:
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
-    typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
+    typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
     Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
@@ -179,14 +179,14 @@ public:
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
     typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
-    typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
+    typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
     Data< bool >		                       f_computeDistance;	///< computeDistance = true ---> restDistance = 0
     Data< helper::vector< Real > >             f_restLengths;		///< rest length of each link
     Data< Real >                               d_showObjectScale;   ///< drawing size
     Data< sofa::helper::types::RGBAColor >             d_color;         ///< drawing color
-    Data< helper::vector<defaulttype::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
+    Data< helper::vector<type::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
     Data< unsigned >                           d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     /// Link to be set to the topology container in the component graph. 

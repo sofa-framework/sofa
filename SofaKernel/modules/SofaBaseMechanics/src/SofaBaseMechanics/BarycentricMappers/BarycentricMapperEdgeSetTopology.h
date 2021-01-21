@@ -29,7 +29,7 @@ namespace sofa::component::mapping
 {
 
 using sofa::defaulttype::Mat3x3d;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
 
 /////// Class allowing barycentric mapping computation on a EdgeSetTopology

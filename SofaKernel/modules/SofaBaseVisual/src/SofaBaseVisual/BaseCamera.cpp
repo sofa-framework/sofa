@@ -247,7 +247,7 @@ bool glhUnProjectf(Real winx, Real winy, Real winz, Real *modelview, Real *proje
     sofa::defaulttype::Mat<4, 4, Real> matProjection(projection);
 
     sofa::defaulttype::Mat<4, 4, Real> m, A;
-    sofa::defaulttype::Vec<4, Real> in, out;
+    sofa::type::Vec<4, Real> in, out;
 
     A = matProjection * matModelview ;
     sofa::defaulttype::invertMatrix(m, A);
@@ -347,7 +347,7 @@ BaseCamera::Vec2 BaseCamera::worldToScreenCoordinates(const BaseCamera::Vec3& po
     const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
 
     const core::visual::VisualParams::Viewport viewport = vp->viewport();
-    sofa::defaulttype::Vector4 clipSpacePos = {pos.x(), pos.y(), pos.z(), 1.0};
+    sofa::type::Vector4 clipSpacePos = {pos.x(), pos.y(), pos.z(), 1.0};
     sofa::defaulttype::Mat4x4d modelview;
     sofa::defaulttype::Mat4x4d projection;
 
@@ -358,7 +358,7 @@ BaseCamera::Vec2 BaseCamera::worldToScreenCoordinates(const BaseCamera::Vec3& po
     if (isEqual(clipSpacePos.w(), 0.0))
         return Vec2(std::nan(""), std::nan(""));
 
-    sofa::defaulttype::Vec3 ndcSpacePos = sofa::defaulttype::Vec3(clipSpacePos.x(),clipSpacePos.y(), clipSpacePos.z()) * clipSpacePos.w();
+    sofa::type::Vec3 ndcSpacePos = sofa::type::Vec3(clipSpacePos.x(),clipSpacePos.y(), clipSpacePos.z()) * clipSpacePos.w();
     Vec2 screenCoord = Vec2((ndcSpacePos.x() + 1.0) / 2.0 * viewport[2], (ndcSpacePos.y() + 1.0) / 2.0 * viewport[3]);
     return screenCoord + Vec2(viewport[0], viewport[1]);
 }
@@ -930,7 +930,7 @@ void BaseCamera::drawCamera(const core::visual::VisualParams* vparams)
     dt->setLightingEnabled(false);
 
     Vec3 camPos = getPosition();
-    sofa::defaulttype::Vector3 p1, p2, p3, p4;
+    sofa::type::Vector3 p1, p2, p3, p4;
     p1 = viewportToWorldPoint(Vec3(0,0,0.994));
     p2 = viewportToWorldPoint(Vec3(1,0,0.994));
     p3 = viewportToWorldPoint(Vec3(1,1,0.994));

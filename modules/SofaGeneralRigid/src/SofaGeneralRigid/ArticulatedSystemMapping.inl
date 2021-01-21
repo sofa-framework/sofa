@@ -185,11 +185,11 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
             out[child].getOrientation() = out[parent].getOrientation();
             out[child].getCenter() = out[parent].getCenter() + (*ac)->initTranslateChild(out[parent].getOrientation());
 
-            sofa::defaulttype::Vec<3,OutReal> APos;
+            sofa::type::Vec<3,OutReal> APos;
             APos = (*ac)->globalPosition.getValue();
             for (; a != aEnd; a++)
             {
-                sofa::defaulttype::Vec<3,Real> axis = (*a)->axis.getValue();
+                sofa::type::Vec<3,Real> axis = (*a)->axis.getValue();
                 axis.normalize();
                 (*a)->axis.setValue(axis);
 
@@ -224,7 +224,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
                 int ind = (*a)->articulationIndex.getValue();
                 InCoord value = in[ind];
                 InCoord prev_value = CoordinateBuf[ind];
-                sofa::defaulttype::Vec<3,Real> axis = out[parent].getOrientation().rotate((*a)->axis.getValue());
+                sofa::type::Vec<3,Real> axis = out[parent].getOrientation().rotate((*a)->axis.getValue());
                 ArticulationAxis[ind]=axis;
 
                 // the increment of rotation and translation are stored in dq and disp
@@ -253,7 +253,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
 
             for (; a != aEnd; a++)
             {
-                sofa::defaulttype::Vec<3,OutReal> APos;
+                sofa::type::Vec<3,OutReal> APos;
                 APos = (*ac)->globalPosition.getValue();
                 ArticulationPos[(*a)->articulationIndex.getValue()]=APos;
             }
@@ -269,14 +269,14 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
         {
             // no reset of the position of the child its position is corrected at the end to respect the articulation center.
             //Quat dq(0,0,0,1);
-            sofa::defaulttype::Vec<3,Real> disp(0,0,0);
+            sofa::type::Vec<3,Real> disp(0,0,0);
 
             for (; a != aEnd; a++)
             {
                 int ind = (*a)->articulationIndex.getValue();
                 InCoord value = in[ind];
                 InCoord prev_value = CoordinateBuf[ind];
-                sofa::defaulttype::Vec<3,Real> axis = quat_child_buf.rotate((*a)->axis.getValue());
+                sofa::type::Vec<3,Real> axis = quat_child_buf.rotate((*a)->axis.getValue());
                 ArticulationAxis[ind]=axis;
 
 
@@ -296,7 +296,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
 
                 //// in case 2: the rotation of the axis of the articulation follows the child -> translation are treated "after"
                 //// ArticulationPos do not move
-                sofa::defaulttype::Vec<3,OutReal> APos;
+                sofa::type::Vec<3,OutReal> APos;
                 APos = (*ac)->globalPosition.getValue();
                 ArticulationPos[(*a)->articulationIndex.getValue()]=APos;
 
@@ -350,8 +350,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
         int child = (*ac)->childIndex.getValue();
 
         getVOrientation(out[child]) += getVOrientation(out[parent]);
-        sofa::defaulttype::Vec<3,OutReal> P = xto[parent].getCenter();
-        sofa::defaulttype::Vec<3,OutReal> C = xto[child].getCenter();
+        sofa::type::Vec<3,OutReal> P = xto[parent].getCenter();
+        sofa::type::Vec<3,OutReal> C = xto[child].getCenter();
         getVCenter(out[child]) = getVCenter(out[parent]) + cross(P-C, getVOrientation(out[parent]));
 
         helper::vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
@@ -362,8 +362,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
         {
             int ind = (*a)->articulationIndex.getValue();
             InCoord value = in[ind];
-            sofa::defaulttype::Vec<3,OutReal> axis = ArticulationAxis[ind];
-            sofa::defaulttype::Vec<3,OutReal> A = ArticulationPos[ind];
+            sofa::type::Vec<3,OutReal> axis = ArticulationAxis[ind];
+            sofa::type::Vec<3,OutReal> A = ArticulationPos[ind];
 
 
             if ((*a)->rotation.getValue())
@@ -402,8 +402,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
         int child = (*ac)->childIndex.getValue();
 
         getVCenter(fObjects6DBuf[parent]) += getVCenter(fObjects6DBuf[child]);
-        sofa::defaulttype::Vec<3,OutReal> P = xto[parent].getCenter();
-        sofa::defaulttype::Vec<3,OutReal> C = xto[child].getCenter();
+        sofa::type::Vec<3,OutReal> P = xto[parent].getCenter();
+        sofa::type::Vec<3,OutReal> C = xto[child].getCenter();
         getVOrientation(fObjects6DBuf[parent]) += getVOrientation(fObjects6DBuf[child]) + cross(C-P,  getVCenter(fObjects6DBuf[child]));
 
         helper::vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
@@ -416,8 +416,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
             a--;
             i--;
             int ind = (*a)->articulationIndex.getValue();
-            sofa::defaulttype::Vec<3,OutReal> axis = ArticulationAxis[ind];
-            sofa::defaulttype::Vec<3,Real> A = ArticulationPos[ind] ;
+            sofa::type::Vec<3,OutReal> axis = ArticulationAxis[ind];
+            sofa::type::Vec<3,Real> A = ArticulationPos[ind] ;
             OutDeriv T;
             getVCenter(T) = getVCenter(fObjects6DBuf[child]);
             getVOrientation(T) = getVOrientation(fObjects6DBuf[child]) + cross(C-A, getVCenter(fObjects6DBuf[child]));
@@ -473,7 +473,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
                 int childIndex = colIt.index();
                 const OutDeriv valueConst = colIt.val();
 
-                sofa::defaulttype::Vec<3,OutReal> C = xto[childIndex].getCenter();
+                sofa::type::Vec<3,OutReal> C = xto[childIndex].getCenter();
                 helper::vector< sofa::component::container::ArticulationCenter* > ACList = ahc->getAcendantList(childIndex);
 
                 helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = ACList.begin();
@@ -491,8 +491,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
                         int ind = (*a)->articulationIndex.getValue();
                         InDeriv data;
 
-                        sofa::defaulttype::Vec< 3, OutReal > axis = ArticulationAxis[ind]; // xto[parent].getOrientation().rotate((*a)->axis.getValue());
-                        sofa::defaulttype::Vec< 3, Real > A = ArticulationPos[ind] ; // Vec<3,OutReal> posAc = (*ac)->globalPosition.getValue();
+                        sofa::type::Vec< 3, OutReal > axis = ArticulationAxis[ind]; // xto[parent].getOrientation().rotate((*a)->axis.getValue());
+                        sofa::type::Vec< 3, Real > A = ArticulationPos[ind] ; // Vec<3,OutReal> posAc = (*ac)->globalPosition.getValue();
 
                         OutDeriv T;
                         getVCenter(T) = getVCenter(valueConst);
@@ -515,7 +515,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
                 if(m_fromRootModel && outRoot)
                 {
                     unsigned int indexT = m_fromRootModel->getSize() - 1; // On applique sur le dernier noeud
-                    sofa::defaulttype::Vec<3,OutReal> posRoot = xto[indexT].getCenter();
+                    sofa::type::Vec<3,OutReal> posRoot = xto[indexT].getCenter();
 
                     OutDeriv T;
                     getVCenter(T) = getVCenter(valueConst);
@@ -539,8 +539,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
     vparams->drawTool()->saveLastState();
 
     if (!vparams->displayFlags().getShowMappings()) return;
-    std::vector< sofa::defaulttype::Vector3 > points;
-    std::vector< sofa::defaulttype::Vector3 > pointsLine;
+    std::vector< sofa::type::Vector3 > points;
+    std::vector< sofa::type::Vector3 > pointsLine;
 
     auto ac = articulationCenters.begin();
     auto acEnd = articulationCenters.end();
@@ -558,7 +558,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
             points.push_back(ArticulationPos[ind]);
 
             pointsLine.push_back(ArticulationPos[ind]);
-            sofa::defaulttype::Vec<3,OutReal> Pos_axis = ArticulationPos[ind] + ArticulationAxis[ind];
+            sofa::type::Vec<3,OutReal> Pos_axis = ArticulationPos[ind] + ArticulationAxis[ind];
             pointsLine.push_back(Pos_axis);
 
             i++;

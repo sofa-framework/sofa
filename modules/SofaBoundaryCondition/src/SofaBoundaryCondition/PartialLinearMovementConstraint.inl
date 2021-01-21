@@ -477,13 +477,13 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
     if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
         return;
 
-    sofa::helper::vector<defaulttype::Vector3> vertices;
+    sofa::helper::vector<type::Vector3> vertices;
     sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (showMovement.getValue())
     {
         vparams->drawTool()->disableLighting();
-        defaulttype::Vector3 v0, v1;
+        type::Vector3 v0, v1;
 
         const SetIndexArray & indices = m_indices.getValue();
         const VecDeriv& keyMovements = m_keyMovements.getValue();
@@ -504,7 +504,7 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
     {
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-        defaulttype::Vector3 point;
+        type::Vector3 point;
         const SetIndexArray & indices = m_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {

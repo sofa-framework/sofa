@@ -33,8 +33,8 @@ namespace sofa::defaulttype
 struct BoundingBoxTypeInfo
 {
     typedef BoundingBox DataType;
-    typedef Vector3 BaseType;
-    typedef DataTypeInfo<Vec3d> BaseTypeInfo;
+    typedef type::Vector3 BaseType;
+    typedef DataTypeInfo<type::Vec3d> BaseTypeInfo;
     typedef SReal ValueType;
 
     enum

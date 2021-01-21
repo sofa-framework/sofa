@@ -214,7 +214,7 @@ void DistanceLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vpa
         const VecCoord &x1= this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
         const VecCoord &x2= this->constrainedObject2->read(core::ConstVecCoordId::position())->getValue();
 
-        std::vector< sofa::defaulttype::Vector3 > points;
+        std::vector< sofa::type::Vector3 > points;
         const SeqEdges &edges =  vecConstraint.getValue();
         for (unsigned int i=0; i<edges.size(); ++i)
         {

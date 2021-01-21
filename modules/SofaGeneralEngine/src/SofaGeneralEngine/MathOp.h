@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralEngine/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -81,8 +81,8 @@ protected:
 extern template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<int> >;
 extern template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<bool> >;
 extern template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<double> >;
-extern template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<defaulttype::Vec2d> >;
-extern template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<defaulttype::Vec3d> >;
+extern template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<type::Vec2d> >;
+extern template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<type::Vec3d> >;
 extern template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid2Types::VecCoord >;
 extern template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
 extern template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid3Types::VecCoord >;

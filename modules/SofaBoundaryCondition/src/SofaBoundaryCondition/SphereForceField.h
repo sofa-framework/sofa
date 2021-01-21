@@ -94,7 +94,7 @@ public:
     Data<sofa::helper::types::RGBAColor> color; ///< sphere color. (default=[0,0,1,1])
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > localRange;
+    Data< type::Vec<2,int> > localRange;
     /// option bilateral : if true, the force field is applied on both side of the plane
     Data<bool> bilateral;
 protected:

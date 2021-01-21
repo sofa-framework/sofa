@@ -77,7 +77,7 @@ public:
 
     typedef typename core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
 
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::type::Vector3 Vector3;
     using Index = sofa::Index;
 
 protected:

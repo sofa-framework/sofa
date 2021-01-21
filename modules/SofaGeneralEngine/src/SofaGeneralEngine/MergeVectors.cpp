@@ -31,10 +31,10 @@ int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine
     .add< MergeVectors< helper::vector<int> > >()
     .add< MergeVectors< helper::vector<bool> > >()
     //.add< MergeVectors< helper::vector<std::string> > >()
-    .add< MergeVectors< helper::vector<defaulttype::Vec2u> > >()
-    .add< MergeVectors< helper::vector<defaulttype::Vec2d> > >()
-    .add< MergeVectors< helper::vector<defaulttype::Vec3d> > >()
-    .add< MergeVectors< helper::vector<defaulttype::Vec4d> > >()
+    .add< MergeVectors< helper::vector<type::Vec2u> > >()
+    .add< MergeVectors< helper::vector<type::Vec2d> > >()
+    .add< MergeVectors< helper::vector<type::Vec3d> > >()
+    .add< MergeVectors< helper::vector<type::Vec4d> > >()
     .add< MergeVectors< defaulttype::Rigid2Types::VecCoord > >()
     .add< MergeVectors< defaulttype::Rigid2Types::VecDeriv > >()
     .add< MergeVectors< defaulttype::Rigid3Types::VecCoord > >()
@@ -45,12 +45,12 @@ int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine
 template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<int> >;
 template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<bool> >;
 //template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<std::string> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<defaulttype::Vec2u> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<type::Vec2u> >;
 
 template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<double> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<defaulttype::Vec2d> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<defaulttype::Vec3d> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<defaulttype::Vec4d> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<type::Vec2d> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<type::Vec3d> >;
+template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<type::Vec4d> >;
 template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid2Types::VecCoord >;
 template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
 template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;

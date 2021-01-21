@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gl/gl.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <sofa/gl/GLSLShader.h>
 #include <cmath>
@@ -117,10 +117,10 @@ private:
 };
 
 #if  !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
-extern template class SOFA_GL_API BasicShapesGL_Sphere<helper::fixed_array< float, 3 > >;
-extern template class SOFA_GL_API BasicShapesGL_Sphere<helper::fixed_array< double, 3 > >;
-extern template class SOFA_GL_API BasicShapesGL_FakeSphere<helper::fixed_array< float, 3 > >;
-extern template class SOFA_GL_API BasicShapesGL_FakeSphere<helper::fixed_array< double, 3 > >;
+extern template class SOFA_GL_API BasicShapesGL_Sphere<type::stdtype::fixed_array< float, 3 > >;
+extern template class SOFA_GL_API BasicShapesGL_Sphere<type::stdtype::fixed_array< double, 3 > >;
+extern template class SOFA_GL_API BasicShapesGL_FakeSphere<type::stdtype::fixed_array< float, 3 > >;
+extern template class SOFA_GL_API BasicShapesGL_FakeSphere<type::stdtype::fixed_array< double, 3 > >;
 #endif //  !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
 
 } // namespace sofa::gl

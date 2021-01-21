@@ -796,14 +796,14 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
         for (unsigned int bi=0; bi<vb.size(); ++bi)
         {
             const Vec6& b=vb[bi];
-            const sofa::defaulttype::Vector3 minBBox(b[0], b[1], b[2]);
-            const sofa::defaulttype::Vector3 maxBBox(b[3], b[4], b[5]);
+            const sofa::type::Vector3 minBBox(b[0], b[1], b[2]);
+            const sofa::type::Vector3 maxBBox(b[3], b[4], b[5]);
             vparams->drawTool()->setMaterial(color);
             vparams->drawTool()->drawBoundingBox(minBBox, maxBBox, 1.0);
         }
     }
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
     vparams->drawTool()->disableLighting();
 
     if( p_drawPoints.getValue())

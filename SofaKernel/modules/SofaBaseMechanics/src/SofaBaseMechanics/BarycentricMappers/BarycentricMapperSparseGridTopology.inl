@@ -28,9 +28,9 @@
 namespace sofa::component::mapping
 {
 
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 using sofa::core::visual::VisualParams;
-using sofa::defaulttype::Vec;
+using sofa::type::Vec;
 
 template<class In, class Out>
 BarycentricMapperSparseGridTopology<In, Out>::BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,

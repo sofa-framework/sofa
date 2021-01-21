@@ -24,7 +24,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 

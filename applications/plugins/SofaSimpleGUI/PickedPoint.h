@@ -7,7 +7,7 @@
 
 using sofa::core::behavior::BaseMechanicalState;
 typedef std::size_t nat;
-typedef sofa::defaulttype::Vector3 Vec3;
+typedef sofa::type::Vector3 Vec3;
 
 namespace sofa{
 namespace simplegui{

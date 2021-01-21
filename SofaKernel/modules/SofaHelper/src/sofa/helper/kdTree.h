@@ -91,8 +91,8 @@ protected :
 
 
 #if  !defined(SOFA_HELPER_KDTREE_CPP)
-extern template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec2d>;
-extern template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec3d>;
+extern template class SOFA_HELPER_API kdTree<sofa::type::Vec2d>;
+extern template class SOFA_HELPER_API kdTree<sofa::type::Vec3d>;
 
 
 #endif

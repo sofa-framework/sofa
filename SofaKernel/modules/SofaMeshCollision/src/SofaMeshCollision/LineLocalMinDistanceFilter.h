@@ -55,7 +55,7 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to this LineInfo.
      */
-    bool validate(const Index edge_index, const defaulttype::Vector3& PQ) override;
+    bool validate(const Index edge_index, const type::Vector3& PQ) override;
 
     /**
      * @brief Output stream.
@@ -82,10 +82,10 @@ public:
 protected:
 
 
-    sofa::defaulttype::Vector3 m_nMean; ///<
-    sofa::defaulttype::Vector3 m_triangleRight; ///<
-    sofa::defaulttype::Vector3 m_triangleLeft; ///<
-    sofa::defaulttype::Vector3 m_lineVector; ///<
+    sofa::type::Vector3 m_nMean; ///<
+    sofa::type::Vector3 m_triangleRight; ///<
+    sofa::type::Vector3 m_triangleLeft; ///<
+    sofa::type::Vector3 m_lineVector; ///<
     double	m_computedRightAngleCone; ///<
     double	m_computedLeftAngleCone; ///<
     bool	m_twoTrianglesAroundEdge; ///<
@@ -123,14 +123,14 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(const int pointIndex, const defaulttype::Vector3 &PQ);
+    bool validPoint(const int pointIndex, const type::Vector3 &PQ);
 
 
 
     /**
      * @brief Line Collision Primitive validation method.
      */
-    bool validLine(const int /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/);
+    bool validLine(const int /*lineIndex*/, const type::Vector3 &/*PQ*/);
 
     //@}
 

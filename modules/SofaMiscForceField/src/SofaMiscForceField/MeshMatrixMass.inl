@@ -1885,7 +1885,7 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*
     const MassVector &vertexMass= d_vertexMassInfo.getValue();
 
     // gravity
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
@@ -1935,7 +1935,7 @@ SReal MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::Mecha
 
     SReal e = 0;
     // gravity
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
@@ -1948,9 +1948,9 @@ SReal MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::Mecha
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-defaulttype::Vector6 MeshMatrixMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+type::Vector6 MeshMatrixMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
-    return defaulttype::Vector6();
+    return type::Vector6();
 }
 
 
@@ -1963,7 +1963,7 @@ void MeshMatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPa
         VecDeriv& v = *d_v.beginEdit();
 
         // gravity
-        defaulttype::Vec3d g ( this->getContext()->getGravity() );
+        type::Vec3d g ( this->getContext()->getGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
         Deriv hg = theGravity * (typename DataTypes::Real(mparams->dt()));
@@ -2103,10 +2103,10 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
     Coord gravityCenter;
     Real totalMass=0.0;
 
-    std::vector<  defaulttype::Vector3 > points;
+    std::vector<  type::Vector3 > points;
     for (unsigned int i=0; i<x.size(); i++)
     {
-        defaulttype::Vector3 p;
+        type::Vector3 p;
         p = DataTypes::getCPos(x[i]);
 
         points.push_back(p);
@@ -2120,7 +2120,7 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
 
     vparams->drawTool()->drawPoints(points, 2, color);
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     if(d_showCenterOfGravity.getValue())
     {
@@ -2131,9 +2131,9 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
             Coord v, diff;
             v[i] = d_showAxisSize.getValue();
             diff = gravityCenter-v;
-            vertices.push_back(sofa::defaulttype::Vector3(diff));
+            vertices.push_back(sofa::type::Vector3(diff));
             diff = gravityCenter+v;
-            vertices.push_back(sofa::defaulttype::Vector3(diff));
+            vertices.push_back(sofa::type::Vector3(diff));
         }
     }
     vparams->drawTool()->drawLines(vertices,5,color);

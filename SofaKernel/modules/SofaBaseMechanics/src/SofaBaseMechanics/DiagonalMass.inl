@@ -643,7 +643,7 @@ SReal DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechani
     helper::ReadAccessor< DataVecCoord > _x = x;
     SReal e = 0;
     // gravity
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<masses.size(); i++)
@@ -655,10 +655,10 @@ SReal DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechani
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-defaulttype::Vector6
+type::Vector6
 DiagonalMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
-    return defaulttype::Vector6();
+    return type::Vector6();
 }
 
 template <class DataTypes, class MassType>
@@ -1429,7 +1429,7 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPara
     {
         VecDeriv& v = *d_v.beginEdit();
         // gravity
-        sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
+        sofa::type::Vec3d g ( this->getContext()->getGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
         Deriv hg = theGravity * typename DataTypes::Real(mparams->dt());
@@ -1454,7 +1454,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
     helper::WriteAccessor< DataVecDeriv > _f = f;
 
     // gravity
-    sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    sofa::type::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
@@ -1480,11 +1480,11 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
     Coord gravityCenter;
     Real totalMass=0.0;
 
-    std::vector<  sofa::defaulttype::Vector3 > points;
+    std::vector<  sofa::type::Vector3 > points;
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        sofa::defaulttype::Vector3 p;
+        sofa::type::Vector3 p;
         p = DataTypes::getCPos(x[i]);
 
         points.push_back(p);
@@ -1497,7 +1497,7 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
         gravityCenter /= totalMass;
 
         Real axisSize = d_showAxisSize.getValue();
-        sofa::defaulttype::Vector3 temp;
+        sofa::type::Vector3 temp;
 
         for ( unsigned int i=0 ; i<3 ; i++ )
             if(i < Coord::spatial_dimensions )

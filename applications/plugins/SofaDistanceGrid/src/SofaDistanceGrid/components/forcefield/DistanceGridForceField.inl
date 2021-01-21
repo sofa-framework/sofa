@@ -338,7 +338,7 @@ void DistanceGridForceField<DataTypes>::addDForce(const sofa::core::MechanicalPa
     for (unsigned int i=0; i<tcontacts.size(); i++)
     {
         const TContact& c = (this->tcontacts.getValue())[i];
-        const helper::fixed_array<unsigned int,3>& t = c.index;
+        const type::stdtype::fixed_array<unsigned int,3>& t = c.index;
         Coord dB = dx1[t[1]]-dx1[t[0]];
         Coord dC = dx1[t[2]]-dx1[t[0]];
 
@@ -360,7 +360,7 @@ void DistanceGridForceField<DataTypes>::addDForce(const sofa::core::MechanicalPa
     {
         const Real v1_6 = (Real)(1.0/6.0);
         const VContact& c = (this->vcontacts.getValue())[i];
-        const helper::fixed_array<unsigned int,4>& t = c.index;
+        const type::stdtype::fixed_array<unsigned int,4>& t = c.index;
         Coord dA = dx1[t[1]]-dx1[t[0]];
         Coord dB = dx1[t[2]]-dx1[t[0]];
         Coord dC = dx1[t[3]]-dx1[t[0]];
@@ -428,8 +428,8 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
 
     const VecCoord& p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< defaulttype::Vector3 > pointsLineIn;
-    std::vector< defaulttype::Vector3 > pointsLineOut;
+    std::vector< type::Vector3 > pointsLineIn;
+    std::vector< type::Vector3 > pointsLineOut;
     // lines for points penetrating the distancegrid
 
     unsigned int ibegin = 0;
@@ -445,7 +445,7 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
     const Real stiffOut = stiffnessOut.getValue();
     const Real maxdist = maxDist.getValue();
 
-    defaulttype::Vector3 point1,point2;
+    type::Vector3 point1,point2;
     for (unsigned int i=ibegin; i<iend; i++)
     {
         if (i < pOnBorder.size() && !pOnBorder[i]) continue;
@@ -476,18 +476,18 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
         }
     }
     if (!pointsLineIn.empty())
-        vparams->drawTool()->drawLines(pointsLineIn, 1, defaulttype::Vec<4,float>(1,0,0,1));
+        vparams->drawTool()->drawLines(pointsLineIn, 1, type::Vec<4,float>(1,0,0,1));
     if (!pointsLineOut.empty())
-        vparams->drawTool()->drawLines(pointsLineOut, 1, defaulttype::Vec<4,float>(1,0,1,1));
+        vparams->drawTool()->drawLines(pointsLineOut, 1, type::Vec<4,float>(1,0,1,1));
 
     const sofa::helper::vector<TContact>& tcontacts = this->tcontacts.getValue();
     if (!tcontacts.empty())
     {
-        std::vector< defaulttype::Vector3 > pointsTri;
+        std::vector< type::Vector3 > pointsTri;
         for (unsigned int i=0; i<tcontacts.size(); i++)
         {
             const TContact& c = (this->tcontacts.getValue())[i];
-            defaulttype::Vector3 p;
+            type::Vector3 p;
             for (int j=0; j<3; ++j)
             {
                 p = DataTypes::getCPos(p1[c.index[j]]);
@@ -499,12 +499,12 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
     const sofa::helper::vector<VContact>& vcontacts = this->vcontacts.getValue();
     if (!vcontacts.empty())
     {
-        std::vector< defaulttype::Vector3 > pointsTet;
+        std::vector< type::Vector3 > pointsTet;
         for (unsigned int i=0; i<vcontacts.size(); i++)
         {
             const VContact& c = (this->vcontacts.getValue())[i];
-            const helper::fixed_array<unsigned int,4>& t = c.index;
-            defaulttype::Vector3 p[4];
+            const type::stdtype::fixed_array<unsigned int,4>& t = c.index;
+            type::Vector3 p[4];
             Coord pc = (p1[t[0]]+p1[t[1]]+p1[t[2]]+p1[t[3]])*0.25f;
             for (int j=0; j<4; ++j)
             {
@@ -530,8 +530,8 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
 
     if (drawPoints.getValue())
     {
-        std::vector< defaulttype::Vector3 > distancePointsIn;
-        std::vector< defaulttype::Vector3 > distancePointsOut;
+        std::vector< type::Vector3 > distancePointsIn;
+        std::vector< type::Vector3 > distancePointsOut;
 
         for (int i=0; i < grid->getNx(); i++)
             for (int j=0; j < grid->getNy(); j++)

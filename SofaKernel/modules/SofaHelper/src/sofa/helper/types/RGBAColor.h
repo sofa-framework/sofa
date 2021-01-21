@@ -26,7 +26,7 @@
 #include <string>
 
 #include <sofa/helper/config.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 
 namespace sofa
 {
@@ -37,7 +37,7 @@ namespace helper
 namespace types
 {
 
-using sofa::helper::fixed_array ;
+using sofa::type::stdtype::fixed_array ;
 
 
 #define RGBACOLOR_EQUALITY_THRESHOLD 1e-6

@@ -736,7 +736,7 @@ void MarchingCubeUtility::run ( unsigned char *data, const float isolevel,
         sofa::helper::io::Mesh &m ) const
 {
     using sofa::helper::vector;
-    using sofa::defaulttype::Vector3;
+    using sofa::type::Vector3;
 
     msg_info() << "Creating Mesh using Marching Cubes\n";
     vector<Vector3> &vertices                 = m.getVertices();

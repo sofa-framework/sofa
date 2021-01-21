@@ -747,7 +747,7 @@ void TriangularFEMForceField<DataTypes>::computeStiffness(StrainDisplacement &J,
 // --- Strain = StrainDisplacement * Displacement = JtD = Bd
 // --------------------------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStrain(defaulttype::Vec<3,Real> &strain, const StrainDisplacement &J, const Displacement &D)
+void TriangularFEMForceField<DataTypes>::computeStrain(type::Vec<3,Real> &strain, const StrainDisplacement &J, const Displacement &D)
 {
     defaulttype::Mat<3,6,Real> Jt;
     Jt.transpose(J);
@@ -768,7 +768,7 @@ void TriangularFEMForceField<DataTypes>::computeStrain(defaulttype::Vec<3,Real> 
 // --- Stress = K * Strain = KJtD = KBd
 // --------------------------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStress(defaulttype::Vec<3,Real> &stress, MaterialStiffness &K, defaulttype::Vec<3,Real> &strain)
+void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress, MaterialStiffness &K, type::Vec<3,Real> &strain)
 {
     if (_anisotropicMaterial || method == SMALL)
     {
@@ -788,7 +788,7 @@ void TriangularFEMForceField<DataTypes>::computeStress(defaulttype::Vec<3,Real> 
 // ---	Compute direction of maximum strain (strain = JtD = BD)
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementIndex, defaulttype::Vec<3,Real> &strain )
+void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementIndex, type::Vec<3,Real> &strain )
 {
     NEWMAT::SymmetricMatrix e(2);
     e = 0.0;
@@ -823,7 +823,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
 // ---	Compute direction of maximum stress (stress = KJtD = KBD)
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementIndex, defaulttype::Vec<3,Real> &stress)
+void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementIndex, type::Vec<3,Real> &stress)
 {
     NEWMAT::SymmetricMatrix e(2);
     e = 0.0;
@@ -941,8 +941,8 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
     Displacement D;
     StrainDisplacement J;
     Stiffness K;
-    defaulttype::Vec<3,Real> strain;
-    defaulttype::Vec<3,Real> stress;
+    type::Vec<3,Real> strain;
+    type::Vec<3,Real> stress;
     Transformation R_0_2, R_2_0;
 
     Index a = m_topology->getTriangle(elementIndex)[0];
@@ -1015,11 +1015,11 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
 
 /// Compute current stress
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStress(defaulttype::Vec<3,Real> &stress, Index elementIndex)
+void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress, Index elementIndex)
 {
     Displacement D;
     StrainDisplacement J;
-    defaulttype::Vec<3,Real> strain;
+    type::Vec<3,Real> strain;
     Transformation R_0_2, R_2_0;
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Index a = m_topology->getTriangle(elementIndex)[0];
@@ -1072,7 +1072,7 @@ void TriangularFEMForceField<DataTypes>::computeStress(defaulttype::Vec<3,Real> 
 // ---	Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
 // ----------------------------------------------------------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &dir, const defaulttype::Vec<3,Real> &stress)
+void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &dir, const type::Vec<3,Real> &stress)
 {
     defaulttype::Mat<3,3,Real> R, Rt;
 
@@ -1093,7 +1093,7 @@ void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stres
 }
 
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &dir, const defaulttype::Vec<3,Real> &stress)
+void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &dir, const type::Vec<3,Real> &stress)
 {
     Index a = m_topology->getTriangle(elementIndex)[0];
     Index b = m_topology->getTriangle(elementIndex)[1];
@@ -1120,7 +1120,7 @@ void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stre
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &dir)
 {
-    defaulttype::Vec<3,Real> stress;
+    type::Vec<3,Real> stress;
     this->computeStress(stress, elementIndex);
     this->computeStressAlongDirection(stress_along_dir, elementIndex, dir, stress);
 }
@@ -1135,7 +1135,7 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
 {
     defaulttype::Mat<6,3,Real> J;
-    defaulttype::Vec<3,Real> strain, stress;
+    type::Vec<3,Real> strain, stress;
     Displacement D, F;
     unsigned int nbTriangles=m_topology->getNbTriangles();
 
@@ -1185,7 +1185,7 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
 {
     defaulttype::Mat<6,3,Real> J;
-    defaulttype::Vec<3,Real> strain, stress;
+    type::Vec<3,Real> strain, stress;
     MaterialStiffness K;
     Displacement D;
     Coord x_2;
@@ -1417,7 +1417,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     sofa::helper::types::RGBAColor color;
     std::vector<sofa::helper::types::RGBAColor> colorVector;
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     unsigned int nbTriangles=m_topology->getNbTriangles();
@@ -1431,11 +1431,11 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             Index c = m_topology->getTriangle(i)[2];
 
             colorVector.push_back(sofa::helper::types::RGBAColor(0,1,0,1));
-            vertices.push_back(sofa::defaulttype::Vector3(x[a]));
+            vertices.push_back(sofa::type::Vector3(x[a]));
             colorVector.push_back(sofa::helper::types::RGBAColor(0,0.5,0.5,1));
-            vertices.push_back(sofa::defaulttype::Vector3(x[b]));
+            vertices.push_back(sofa::type::Vector3(x[b]));
             colorVector.push_back(sofa::helper::types::RGBAColor(0,0,1,1));
-            vertices.push_back(sofa::defaulttype::Vector3(x[c]));
+            vertices.push_back(sofa::type::Vector3(x[c]));
         }
         vparams->drawTool()->drawTriangles(vertices,colorVector);
         vertices.clear();
@@ -1460,8 +1460,8 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             Index c = m_topology->getTriangle(i)[2];
             Coord center = (x[a]+x[b]+x[c])/3;
             Coord d = triangleInf[i].principalStressDirection*2.5; //was 0.25
-            vertices.push_back(sofa::defaulttype::Vector3(center));
-            vertices.push_back(sofa::defaulttype::Vector3(center+d));
+            vertices.push_back(sofa::type::Vector3(center));
+            vertices.push_back(sofa::type::Vector3(center+d));
         }
         vparams->drawTool()->drawLines(vertices,1,color);
         vertices.clear();
@@ -1503,11 +1503,11 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             Index c = m_topology->getTriangle(i)[2];
 
             colorVector.push_back(evalColor(vertexInf[a].stress));
-            vertices.push_back(sofa::defaulttype::Vector3(x[a]));
+            vertices.push_back(sofa::type::Vector3(x[a]));
             colorVector.push_back(evalColor(vertexInf[b].stress));
-            vertices.push_back(sofa::defaulttype::Vector3(x[b]));
+            vertices.push_back(sofa::type::Vector3(x[b]));
             colorVector.push_back(evalColor(vertexInf[c].stress));
-            vertices.push_back(sofa::defaulttype::Vector3(x[c]));
+            vertices.push_back(sofa::type::Vector3(x[c]));
         }
         vparams->drawTool()->drawTriangles(vertices,colorVector);
         vertices.clear();
@@ -1541,11 +1541,11 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
                 Index c = m_topology->getTriangle(i)[2];
 
                 colorVector.push_back(color);
-                vertices.push_back(sofa::defaulttype::Vector3(x[a]));
+                vertices.push_back(sofa::type::Vector3(x[a]));
                 colorVector.push_back(color);
-                vertices.push_back(sofa::defaulttype::Vector3(x[b]));
+                vertices.push_back(sofa::type::Vector3(x[b]));
                 colorVector.push_back(color);
-                vertices.push_back(sofa::defaulttype::Vector3(x[c]));
+                vertices.push_back(sofa::type::Vector3(x[c]));
             }
             vparams->drawTool()->drawTriangles(vertices,color);
         }

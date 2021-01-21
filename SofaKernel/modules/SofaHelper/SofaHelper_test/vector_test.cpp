@@ -27,7 +27,7 @@ using testing::Types;
 #include <sofa/helper/vector.h>
 using sofa::helper::vector ;
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::Data ;

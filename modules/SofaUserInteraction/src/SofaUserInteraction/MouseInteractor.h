@@ -41,7 +41,7 @@ struct BodyPicked
     sofa::core::CollisionModel *body;
     sofa::core::behavior::BaseMechanicalState *mstate;
     sofa::Index indexCollisionElement;
-    defaulttype::Vector3 point;
+    type::Vector3 point;
     SReal dist;
     SReal rayLength;
     operator bool() { return mstate != nullptr; }

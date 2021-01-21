@@ -44,9 +44,9 @@ using core::MechanicalParams;
 using core::behavior::MultiMatrixAccessor;
 using core::behavior::ForceField;
 using core::topology::BaseMeshTopology;
-using defaulttype::Vec;
+using type::Vec;
 using defaulttype::Mat;
-using defaulttype::Vector3;
+using type::Vector3;
 using defaulttype::Quat;
 using topology::EdgeData;
 

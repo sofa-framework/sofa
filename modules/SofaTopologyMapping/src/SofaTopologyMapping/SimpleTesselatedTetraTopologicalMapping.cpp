@@ -31,7 +31,7 @@
 #include <SofaBaseTopology/TopologyData.inl>
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -40,7 +40,7 @@ namespace sofa::component::topology
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
-using sofa::helper::fixed_array;
+using sofa::type::stdtype::fixed_array;
 
 // Register in the Factory
 int SimpleTesselatedTetraTopologicalMappingClass = core::RegisterObject ( "Special case of mapping where TetrahedronSetTopology is converted into a finer TetrahedronSetTopology" )
@@ -70,7 +70,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
             helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointMappedFromPointData = d_pointMappedFromPoint;
             helper::WriteAccessor< Data< sofa::helper::vector<Index> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
 
-            sofa::helper::vector<helper::fixed_array<Index, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
+            sofa::helper::vector<type::stdtype::fixed_array<Index, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
             helper::vector<Index>& tetraSourceData = *(tetraSource.beginEdit());
 
             TetrahedronSetTopologyContainer *to_tstc;

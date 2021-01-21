@@ -56,8 +56,8 @@ SOFA_SOFACONSTRAINT_API void PrecomputedConstraintCorrection< defaulttype::Rigid
             else
                 q = x[localRowNodeIdx].getOrientation();
 
-            sofa::defaulttype::Vec3d n_i = q.inverseRotate(getVCenter(n));
-            sofa::defaulttype::Vec3d wn_i= q.inverseRotate(getVOrientation(n));
+            sofa::type::Vec3d n_i = q.inverseRotate(getVCenter(n));
+            sofa::type::Vec3d wn_i= q.inverseRotate(getVOrientation(n));
 
             if(back)
             {

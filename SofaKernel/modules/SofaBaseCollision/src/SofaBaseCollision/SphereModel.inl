@@ -202,7 +202,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 template <class DataTypes>
 void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
 {
-    using sofa::defaulttype::Vector3 ;
+    using sofa::type::Vector3 ;
 
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;

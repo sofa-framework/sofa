@@ -260,11 +260,11 @@ void ReadTopology::processReadTopology()
 
             if (nbr != 0)
             {
-                helper::vector<helper::fixed_array <unsigned int,2> >& my_edges = *(edges.beginEdit());
+                helper::vector<type::stdtype::fixed_array <unsigned int,2> >& my_edges = *(edges.beginEdit());
                 std::istringstream Sedges(*it);
                 for (unsigned int i = 0; i<nbr; ++i)
                 {
-                    helper::fixed_array <unsigned int,2> nodes;
+                    type::stdtype::fixed_array <unsigned int,2> nodes;
                     Sedges >> nodes[0] >> nodes[1];
 
                     my_edges.push_back (nodes);
@@ -283,11 +283,11 @@ void ReadTopology::processReadTopology()
 
             if (nbr != 0)
             {
-                helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
+                helper::vector<type::stdtype::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
                 std::istringstream Stri(*it);
                 for (unsigned int i = 0; i<nbr; ++i)
                 {
-                    helper::fixed_array <unsigned int,3> nodes;
+                    type::stdtype::fixed_array <unsigned int,3> nodes;
                     Stri >> nodes[0] >> nodes[1] >> nodes[2];
 
                     my_triangles.push_back (nodes);
@@ -306,11 +306,11 @@ void ReadTopology::processReadTopology()
 
             if (nbr != 0)
             {
-                helper::vector<helper::fixed_array <unsigned int,4> >& my_quads = *(quads.beginEdit());
+                helper::vector<type::stdtype::fixed_array <unsigned int,4> >& my_quads = *(quads.beginEdit());
                 std::istringstream Squads(*it);
                 for (unsigned int i = 0; i<nbr; ++i)
                 {
-                    helper::fixed_array <unsigned int,4> nodes;
+                    type::stdtype::fixed_array <unsigned int,4> nodes;
                     Squads >> nodes[0] >> nodes[1] >> nodes[2] >> nodes[3];
 
                     my_quads.push_back (nodes);
@@ -329,11 +329,11 @@ void ReadTopology::processReadTopology()
 
             if (nbr != 0)
             {
-                helper::vector<helper::fixed_array <unsigned int,4> >& my_tetrahedra = *(tetrahedra.beginEdit());
+                helper::vector<type::stdtype::fixed_array <unsigned int,4> >& my_tetrahedra = *(tetrahedra.beginEdit());
                 std::istringstream Stetra(*it);
                 for (unsigned int i = 0; i<nbr; ++i)
                 {
-                    helper::fixed_array <unsigned int,4> nodes;
+                    type::stdtype::fixed_array <unsigned int,4> nodes;
                     Stetra >> nodes[0] >> nodes[1] >> nodes[2] >> nodes[3];
 
                     my_tetrahedra.push_back (nodes);
@@ -352,11 +352,11 @@ void ReadTopology::processReadTopology()
 
             if (nbr != 0)
             {
-                helper::vector<helper::fixed_array <unsigned int,8> >& my_hexahedra = *(hexahedra.beginEdit());
+                helper::vector<type::stdtype::fixed_array <unsigned int,8> >& my_hexahedra = *(hexahedra.beginEdit());
                 std::istringstream Shexa(*it);
                 for (unsigned int i = 0; i<nbr; ++i)
                 {
-                    helper::fixed_array <unsigned int,8> nodes;
+                    type::stdtype::fixed_array <unsigned int,8> nodes;
                     Shexa >> nodes[0] >> nodes[1] >> nodes[2] >> nodes[3] >> nodes[4] >> nodes[5] >> nodes[6] >> nodes[7];
 
                     my_hexahedra.push_back (nodes);

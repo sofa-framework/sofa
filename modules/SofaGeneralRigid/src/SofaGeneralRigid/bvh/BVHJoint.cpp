@@ -23,7 +23,7 @@
 
 #include <sofa/helper/config.h>
 #include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sstream>

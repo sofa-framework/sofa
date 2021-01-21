@@ -29,7 +29,7 @@ namespace sofa::defaulttype
 {
 
 template<>
-class DataTypeInfo< sofa::helper::types::RGBAColor > : public FixedArrayTypeInfo<sofa::helper::fixed_array<float,4>>
+class DataTypeInfo< sofa::helper::types::RGBAColor > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<float,4>>
 {
     public:
         static std::string name() { return "RGBAColor"; }

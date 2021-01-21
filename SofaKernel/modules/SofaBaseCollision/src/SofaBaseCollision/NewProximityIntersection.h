@@ -41,7 +41,7 @@ public:
 
     void init() override;
 
-    static inline int doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id);
+    static inline int doIntersectionPointPoint(SReal dist2, const type::Vector3& p, const type::Vector3& q, OutputVector* contacts, int id);
 
 };
 

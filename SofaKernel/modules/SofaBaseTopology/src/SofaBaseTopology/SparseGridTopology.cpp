@@ -25,7 +25,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/helper/polygon_cube_intersection/polygon_cube_intersection.h>
 #include <sofa/core/loader/VoxelLoader.h>
 
@@ -927,7 +927,7 @@ void SparseGridTopology::buildFromRegularGridTypes(sofa::core::sptr<RegularGridT
         }
     }
 
-    helper::vector<defaulttype::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    helper::vector<type::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     // compute corner indices
     int cornerCounter=0;
 
@@ -1087,7 +1087,7 @@ void SparseGridTopology::buildFromFiner()
 
     // compute corner indices
     int cornerCounter=0;
-    helper::vector<defaulttype::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    helper::vector<type::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     for(MapBetweenCornerPositionAndIndice::iterator it=cubeCornerPositionIndiceMap.begin(); it!=cubeCornerPositionIndiceMap.end(); ++it,++cornerCounter)
     {
         (*it).second = cornerCounter;
@@ -1185,7 +1185,7 @@ void SparseGridTopology::buildFromFiner()
     _massCoefs.resize( this->getNbHexahedra() );
     for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
-        helper::fixed_array<Index,8> finerChildren = this->_hierarchicalCubeMap[i];
+        type::stdtype::fixed_array<Index,8> finerChildren = this->_hierarchicalCubeMap[i];
         unsigned nbchildren = 0;
         for(int w=0; w<8; ++w)
         {
@@ -1315,11 +1315,11 @@ SparseGridTopology::Index SparseGridTopology::findNearestCube(const Vector3& pos
 }
 
 
-helper::fixed_array<Index,6> SparseGridTopology::findneighboorCubes(Index indice )
+type::stdtype::fixed_array<Index,6> SparseGridTopology::findneighboorCubes(Index indice )
 {
     dmsg_info()<<"SparseGridTopology::findneighboorCubes : "<<indice<<" -> "<<_indicesOfCubeinRegularGrid[indice];
     dmsg_info()<<_indicesOfRegularCubeInSparseGrid[ _indicesOfCubeinRegularGrid[indice] ] ;
-    helper::fixed_array<Index,6> result;
+    type::stdtype::fixed_array<Index,6> result;
     Vector3 c = _regularGrid->getCubeCoordinate( _indicesOfCubeinRegularGrid[indice] );
     dmsg_info()<<c;
     result[0] = c[0]<=0 ? InvalidID : _indicesOfRegularCubeInSparseGrid[ _regularGrid->getCubeIndex( (int)c[0]-1,(int)c[1],(int)c[2] )];

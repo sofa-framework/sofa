@@ -56,16 +56,16 @@ defaulttype::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, Num
 }
 
 template <Size NumRows, class Real>
-defaulttype::Vec<NumRows, Real>  sofaVec( const Eigen::Matrix<Real, NumRows, 1>& evec )
+type::Vec<NumRows, Real>  sofaVec( const Eigen::Matrix<Real, NumRows, 1>& evec )
 {
-    defaulttype::Vec<NumRows, Real> vec;
+    type::Vec<NumRows, Real> vec;
     for(Size i=0; i<NumRows; i++)
         vec[i] = evec(i);
     return vec;
 }
 
 template <Size NumRows, class Real>
-Eigen::Matrix<Real, NumRows, 1>  eigenVec( const defaulttype::Vec<NumRows, Real>& vec )
+Eigen::Matrix<Real, NumRows, 1>  eigenVec( const type::Vec<NumRows, Real>& vec )
 {
     Eigen::Matrix<Real, NumRows, 1> evec;
     for(Size i=0; i<NumRows; i++)

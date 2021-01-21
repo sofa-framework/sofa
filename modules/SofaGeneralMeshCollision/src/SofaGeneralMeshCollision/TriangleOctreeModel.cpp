@@ -89,9 +89,9 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     pNorms.resize(size2);
     for(Size i=0; i<size2; i++)
     {
-        pNorms[i]=defaulttype::Vector3(0,0,0);
+        pNorms[i]=type::Vector3(0,0,0);
     }
-    defaulttype::Vector3 minElem, maxElem;
+    type::Vector3 minElem, maxElem;
     maxElem[0]=minElem[0]=m_mstate->read(core::ConstVecCoordId::position())->getValue()[0][0];
     maxElem[1]=minElem[1]=m_mstate->read(core::ConstVecCoordId::position())->getValue()[0][1];
     maxElem[2]=minElem[2]=m_mstate->read(core::ConstVecCoordId::position())->getValue()[0][2];
@@ -103,7 +103,7 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
         pNorms[tri[i][0]]+=t.n();
         pNorms[tri[i][1]]+=t.n();
         pNorms[tri[i][2]]+=t.n();
-        const defaulttype::Vector3* pt[3];
+        const type::Vector3* pt[3];
         pt[0] = &t.p1();
         pt[1] = &t.p2();
         pt[2] = &t.p3();

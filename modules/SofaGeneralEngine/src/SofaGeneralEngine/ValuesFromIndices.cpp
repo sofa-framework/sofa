@@ -32,15 +32,15 @@ int ValuesFromIndicesClass = core::RegisterObject("Find the values given a list 
         .add< ValuesFromIndices<std::string> >()
         .add< ValuesFromIndices<int> >()
         .add< ValuesFromIndices<unsigned int> >()
-        .add< ValuesFromIndices< helper::fixed_array<unsigned int, 2> > >()
-        .add< ValuesFromIndices< helper::fixed_array<unsigned int, 3> > >()
-        .add< ValuesFromIndices< helper::fixed_array<unsigned int, 4> > >()
-        .add< ValuesFromIndices< helper::fixed_array<unsigned int, 8> > >()
+        .add< ValuesFromIndices< type::stdtype::fixed_array<unsigned int, 2> > >()
+        .add< ValuesFromIndices< type::stdtype::fixed_array<unsigned int, 3> > >()
+        .add< ValuesFromIndices< type::stdtype::fixed_array<unsigned int, 4> > >()
+        .add< ValuesFromIndices< type::stdtype::fixed_array<unsigned int, 8> > >()
         .add< ValuesFromIndices<double> >()
-        .add< ValuesFromIndices<defaulttype::Vec2d> >()
-        .add< ValuesFromIndices<defaulttype::Vec3d> >()
-		.add< ValuesFromIndices<defaulttype::Vec4d> >()
-		.add< ValuesFromIndices<defaulttype::Vec6d> >()
+        .add< ValuesFromIndices<type::Vec2d> >()
+        .add< ValuesFromIndices<type::Vec3d> >()
+		.add< ValuesFromIndices<type::Vec4d> >()
+		.add< ValuesFromIndices<type::Vec6d> >()
         .add< ValuesFromIndices<defaulttype::Rigid2Types::Coord> >()
         .add< ValuesFromIndices<defaulttype::Rigid2Types::Deriv> >()
         .add< ValuesFromIndices<defaulttype::Rigid3Types::Coord> >()
@@ -51,15 +51,15 @@ int ValuesFromIndicesClass = core::RegisterObject("Find the values given a list 
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<std::string>;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<int>;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<unsigned int>;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< helper::fixed_array<unsigned int, 2> >;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< helper::fixed_array<unsigned int, 3> >;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< helper::fixed_array<unsigned int, 4> >;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< helper::fixed_array<unsigned int, 8> >;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::stdtype::fixed_array<unsigned int, 2> >;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::stdtype::fixed_array<unsigned int, 3> >;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::stdtype::fixed_array<unsigned int, 4> >;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices< type::stdtype::fixed_array<unsigned int, 8> >;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<double>;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec2d>;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec3d>;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec4d>;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Vec6d>;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<type::Vec2d>;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<type::Vec3d>;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<type::Vec4d>;
+template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<type::Vec6d>;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Rigid2Types::Coord>;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Rigid2Types::Deriv>;
 template class SOFA_SOFAGENERALENGINE_API ValuesFromIndices<defaulttype::Rigid3Types::Coord>;

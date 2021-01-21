@@ -65,7 +65,7 @@ public:
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Vec<N,Real> Vector;
+    typedef type::Vec<N,Real> Vector;
 
     typedef JointSpring<DataTypes> Spring;
 

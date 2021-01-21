@@ -30,8 +30,8 @@ int MathOpClass = core::RegisterObject("Apply a math operation to combine severa
     .add< MathOp< helper::vector<double> > >(true)
     .add< MathOp< helper::vector<int> > >()
     .add< MathOp< helper::vector<bool> > >()
-    .add< MathOp< helper::vector<defaulttype::Vec2d> > >()
-    .add< MathOp< helper::vector<defaulttype::Vec3d> > >()
+    .add< MathOp< helper::vector<type::Vec2d> > >()
+    .add< MathOp< helper::vector<type::Vec3d> > >()
     .add< MathOp< defaulttype::Rigid2Types::VecCoord > >()
     .add< MathOp< defaulttype::Rigid2Types::VecDeriv > >()
     .add< MathOp< defaulttype::Rigid3Types::VecCoord > >()
@@ -43,8 +43,8 @@ template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<int> >;
 template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<bool> >;
 
 template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<double> >;
-template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<defaulttype::Vec2d> >;
-template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<defaulttype::Vec3d> >;
+template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<type::Vec2d> >;
+template class SOFA_SOFAGENERALENGINE_API MathOp< helper::vector<type::Vec3d> >;
 template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid2Types::VecCoord >;
 template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
 template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid3Types::VecCoord >;

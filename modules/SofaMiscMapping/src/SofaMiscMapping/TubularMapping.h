@@ -74,7 +74,7 @@ public:
     };
 
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Vec<N,Real> Vec;
+    typedef type::Vec<N,Real> Vec;
 
     void init() override;
 

@@ -38,24 +38,24 @@ bool MeshDiscreteIntersection::testIntersection( TSphere<T>& sph, Triangle& tria
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:
-    defaulttype::Vector3 p0 = triangle.p1();
-    defaulttype::Vector3 p1 = triangle.p2();
-    defaulttype::Vector3 p2 = triangle.p3();
+    type::Vector3 p0 = triangle.p1();
+    type::Vector3 p1 = triangle.p2();
+    type::Vector3 p2 = triangle.p3();
 
     // Center of the sphere
-    const defaulttype::Vector3 sphCenter(sph.center());
+    const type::Vector3 sphCenter(sph.center());
     // Radius of the sphere
     const double r = sph.r();
 
     //Normal to the plane (plane spanned by tree points of the triangle)
-    defaulttype::Vector3 normal = cross( (p1 - p0), (p2 - p0) );
+    type::Vector3 normal = cross( (p1 - p0), (p2 - p0) );
     normal.normalize();
 
     //Distance from the center of the sphere to the plane.
     double distance = sphCenter*normal - normal*p0;
 
     //Projection of the center of the sphere onto the plane
-    defaulttype::Vector3 projPoint = sphCenter - normal*distance;
+    type::Vector3 projPoint = sphCenter - normal*distance;
 
     //Distance correction in case is negative.
     if (distance < 0.0)
@@ -89,24 +89,24 @@ int MeshDiscreteIntersection::computeIntersection( TSphere<T>& sph, Triangle& tr
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:
-    defaulttype::Vector3 p0 = triangle.p1();
-    defaulttype::Vector3 p1 = triangle.p2();
-    defaulttype::Vector3 p2 = triangle.p3();
+    type::Vector3 p0 = triangle.p1();
+    type::Vector3 p1 = triangle.p2();
+    type::Vector3 p2 = triangle.p3();
 
     // Center of the sphere
-    const defaulttype::Vector3 sphCenter(sph.center());
+    const type::Vector3 sphCenter(sph.center());
     // Radius of the sphere
     const double r = sph.r();
 
     //Normal to the plane (plane spanned by tree points of the triangle)
-    defaulttype::Vector3 normal = cross( (p1 - p0), (p2 - p0) );
+    type::Vector3 normal = cross( (p1 - p0), (p2 - p0) );
     normal.normalize();
 
     //Distance from the center of the sphere to the plane.
     double distance = sphCenter*normal - normal*p0;
 
     //Projection of the center of the sphere onto the plane
-    defaulttype::Vector3 projPoint = sphCenter - normal*distance;
+    type::Vector3 projPoint = sphCenter - normal*distance;
 
     //Distance correction in case is negative.
     if (distance < 0.0)

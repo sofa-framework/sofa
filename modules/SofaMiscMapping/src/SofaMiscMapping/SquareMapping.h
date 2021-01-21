@@ -65,7 +65,7 @@ public:
     typedef Data<OutVecCoord> OutDataVecCoord;
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
-    typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
+    typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
     Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS)

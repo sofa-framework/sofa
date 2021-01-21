@@ -1334,7 +1334,7 @@ void RealGUI::setBackgroundImage(const std::string& c)
 
 void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf)
 {
-    const defaulttype::Vec<2,int> &res=viewerConf->resolution.getValue();
+    const type::Vec<2,int> &res=viewerConf->resolution.getValue();
 
     if (viewerConf->fullscreen.getValue())
         setFullScreen();

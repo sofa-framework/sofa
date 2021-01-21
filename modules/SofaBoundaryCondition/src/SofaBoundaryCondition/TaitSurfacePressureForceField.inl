@@ -332,7 +332,7 @@ SReal TaitSurfacePressureForceField<DataTypes>::getPotentialEnergy(const core::M
 
 /// Convert a vector cross-product to a to matrix multiplication, i.e. cross(a,b) = matCross(a)*b
 template <typename T>
-inline sofa::defaulttype::Mat<3,3,T> matCross( const sofa::defaulttype::Vec<3,T>& u )
+inline sofa::defaulttype::Mat<3,3,T> matCross( const sofa::type::Vec<3,T>& u )
 {
     sofa::defaulttype::Mat<3,3,T> res(sofa::defaulttype::NOINIT);
     res[0][0] =  0   ; res[0][1] = -u[2]; res[0][2] =  u[1];
@@ -447,9 +447,9 @@ void TaitSurfacePressureForceField<DataTypes>::draw(const core::visual::VisualPa
 
     helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
-    std::vector< sofa::defaulttype::Vector3 > points;
-    std::vector< sofa::defaulttype::Vec3i > indices;
-    std::vector< defaulttype::Vector3 > normals;
+    std::vector< sofa::type::Vector3 > points;
+    std::vector< sofa::type::Vec3i > indices;
+    std::vector< type::Vector3 > normals;
     if (m_drawForceScale.getValue() != (Real)0.0)
     {
         points.clear();
@@ -457,11 +457,11 @@ void TaitSurfacePressureForceField<DataTypes>::draw(const core::visual::VisualPa
         for (unsigned int i=0; i<pressureTriangles.size(); i++)
         {
             Triangle t = pressureTriangles[i];
-            sofa::defaulttype::Vector3 a = x[t[0]];
-            sofa::defaulttype::Vector3 b = x[t[1]];
-            sofa::defaulttype::Vector3 c = x[t[2]];
-            sofa::defaulttype::Vector3 n = cross(b-a,c-a) * fscale;
-            sofa::defaulttype::Vector3 center = (a+b+c)/(Real)3;
+            sofa::type::Vector3 a = x[t[0]];
+            sofa::type::Vector3 b = x[t[1]];
+            sofa::type::Vector3 c = x[t[2]];
+            sofa::type::Vector3 n = cross(b-a,c-a) * fscale;
+            sofa::type::Vector3 center = (a+b+c)/(Real)3;
             points.push_back(center);
             points.push_back(center+n);
         }

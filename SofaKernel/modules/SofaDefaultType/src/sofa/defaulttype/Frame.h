@@ -24,7 +24,7 @@
 
 #include <sofa/defaulttype/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/Quater.h>
 
@@ -45,7 +45,7 @@ The product F1F2 can be seen as a frame displacement F1 starting from the refere
 class SOFA_DEFAULTTYPE_API Frame
 {
 public:
-    typedef Vec<3,SReal> Vec3;
+    typedef type::Vec<3,SReal> Vec3;
     typedef helper::Quater<SReal> Quat;
     typedef Mat<3,3,SReal> Mat33;
 private:

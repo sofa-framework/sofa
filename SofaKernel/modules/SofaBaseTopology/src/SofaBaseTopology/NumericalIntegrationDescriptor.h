@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
@@ -35,7 +35,7 @@ template< typename Real, int N>
 class NumericalIntegrationDescriptor {
  
 public:
-    typedef sofa::defaulttype::Vec<N, Real> BarycentricCoordinatesType;
+    typedef sofa::type::Vec<N, Real> BarycentricCoordinatesType;
 	typedef std::pair<BarycentricCoordinatesType,Real> QuadraturePoint;
 	typedef sofa::helper::vector<QuadraturePoint> QuadraturePointArray;
 	

@@ -37,11 +37,11 @@ struct IntrUtil<TTriangle<DataType> >{
     /**
       *Returns the squared distance between old pt and projected pt.
       */
-    static Real project(defaulttype::Vec<3,Real> & pt,const TTriangle<DataType> & tri);
+    static Real project(type::Vec<3,Real> & pt,const TTriangle<DataType> & tri);
 
-    static SReal triSegNearestPoints(const IntrTri & tri,const defaulttype::Vec<3,Real> seg[2],defaulttype::Vec<3,Real> & pt_on_tri,defaulttype::Vec<3,Real> & pt_on_seg);
+    static SReal triSegNearestPoints(const IntrTri & tri,const type::Vec<3,Real> seg[2],type::Vec<3,Real> & pt_on_tri,type::Vec<3,Real> & pt_on_seg);
 
-    static void triFaceNearestPoints(const IntrTri & tri,const defaulttype::Vec<3,Real> * face,int n,defaulttype::Vec<3,Real> & pt_on_tri,defaulttype::Vec<3,Real> & pt_on_face);
+    static void triFaceNearestPoints(const IntrTri & tri,const type::Vec<3,Real> * face,int n,type::Vec<3,Real> & pt_on_tri,type::Vec<3,Real> & pt_on_face);
 };
 
 
@@ -90,9 +90,9 @@ public:
     typedef TTriangle<TDataTypes1> IntrTri;
 
     FindContactSet (const IntrTri& triangle,
-                    const Box& box,const defaulttype::Vec<3,Real> & axis ,int side, const IntrConfiguration<Real>& triCfg,
+                    const Box& box,const type::Vec<3,Real> & axis ,int side, const IntrConfiguration<Real>& triCfg,
                     const IntrConfiguration<Real>& boxCfg,Real tfirst,
-                    defaulttype::Vec<3,Real> & pt_on_tri,defaulttype::Vec<3,Real> & pt_on_box);
+                    type::Vec<3,Real> & pt_on_tri,type::Vec<3,Real> & pt_on_box);
 
 };
 

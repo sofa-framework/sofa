@@ -47,7 +47,7 @@ MeshSpringForceField<DataTypes>::MeshSpringForceField()
     , d_drawMinElongationRange(initData(&d_drawMinElongationRange, Real(8.), "drawMinElongationRange","Min range of elongation (red eongation - blue neutral - green compression)"))
     , d_drawMaxElongationRange(initData(&d_drawMaxElongationRange, Real(15.), "drawMaxElongationRange","Max range of elongation (red eongation - blue neutral - green compression)"))
     , d_drawSpringSize(initData(&d_drawSpringSize, Real(8.), "drawSpringSize","Size of drawed lines"))
-    , d_localRange( initData(&d_localRange, defaulttype::Vec<2, sofa::Index>(sofa::InvalidID, sofa::InvalidID), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , d_localRange( initData(&d_localRange, type::Vec<2, sofa::Index>(sofa::InvalidID, sofa::InvalidID), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     , l_topology(initLink("topology", "link to the topology container"))
 {
 	this->ks.setDisplayed(false);
@@ -237,7 +237,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         {
             const Spring& s = ss[i];
             const Coord pa[2] = {p1[s.m1], p2[s.m2]};
-            const std::vector<sofa::defaulttype::Vector3> points(pa, pa+2);
+            const std::vector<sofa::type::Vector3> points(pa, pa+2);
             Deriv v = pa[0] - pa[1];
             Real elongation = (s.initpos - v.norm()) / s.initpos;
             Real R = 0.;

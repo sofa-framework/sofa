@@ -431,9 +431,9 @@ void TriangularQuadraticSpringsForceField<DataTypes>::draw(const core::visual::V
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     size_t nbTriangles=m_topology->getNbTriangles();
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
     std::vector<sofa::helper::types::RGBAColor> colors;
-    std::vector<sofa::defaulttype::Vector3> normals;
+    std::vector<sofa::type::Vector3> normals;
 
     vparams->drawTool()->disableLighting();
 

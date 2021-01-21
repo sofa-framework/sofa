@@ -29,7 +29,7 @@ class SOFA_SOFAGENERALTOPOLOGY_API SphereQuadTopology : public CubeTopology
 {
 public:
     SOFA_CLASS(SphereQuadTopology,CubeTopology);
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::type::Vector3 Vector3;
 protected:
     SphereQuadTopology(int nx, int ny, int nz);
     SphereQuadTopology();

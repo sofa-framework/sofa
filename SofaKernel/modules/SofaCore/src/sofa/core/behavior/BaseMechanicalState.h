@@ -26,7 +26,7 @@
 #include <sofa/core/BaseState.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/StateMask.h>
 
@@ -290,7 +290,7 @@ public:
     /// Scale the current state
     virtual void applyScale(const SReal /*sx*/,const SReal /*sy*/,const SReal /*sz*/)=0;
 
-    virtual defaulttype::Vector3 getScale() const { return defaulttype::Vector3(1.0,1.0,1.0); }
+    virtual type::Vector3 getScale() const { return type::Vector3(1.0,1.0,1.0); }
 
     virtual bool addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
     {

@@ -416,7 +416,7 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
     {
         vparams->drawTool()->disableLighting();
 
-        std::vector<sofa::defaulttype::Vector3> vertices;
+        std::vector<sofa::type::Vector3> vertices;
 
         const SetIndexArray & indices = m_indices.getValue();
         const VecDeriv& keyMovements = m_keyMovements.getValue();
@@ -428,8 +428,8 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
                 {
                     auto tmp0 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]);
                     auto tmp1 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]);
-                    sofa::defaulttype::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
-                    sofa::defaulttype::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
+                    sofa::type::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
+                    sofa::type::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
                     vertices.push_back(v0);
                     vertices.push_back(v1);
                 }
@@ -443,8 +443,8 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
                 {
                     auto tmp0 = DataTypes::getDPos(keyMovements[i]);
                     auto tmp1 = DataTypes::getDPos(keyMovements[i + 1]);
-                    sofa::defaulttype::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
-                    sofa::defaulttype::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
+                    sofa::type::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
+                    sofa::type::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
                     vertices.push_back(v0);
                     vertices.push_back(v1);
                 }
@@ -456,8 +456,8 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
     {
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-        sofa::helper::vector<defaulttype::Vector3> points;
-        defaulttype::Vector3 point;
+        sofa::helper::vector<type::Vector3> points;
+        type::Vector3 point;
         const SetIndexArray & indices = m_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {

@@ -28,29 +28,29 @@
 
 using sofa::component::engine::TransformEngine;
 
-sofa::defaulttype::Vector3		nullptr_VEC(0,0,0);
-sofa::defaulttype::Vector3		nullptr_SCALE(1,1,1);
+sofa::type::Vector3		nullptr_VEC(0,0,0);
+sofa::type::Vector3		nullptr_SCALE(1,1,1);
 
-sofa::defaulttype::Vector3		INPUT_POS(1,0,0);
+sofa::type::Vector3		INPUT_POS(1,0,0);
 sofa::helper::Quater<SReal>		INPUT_QUAT(0,0,0,1);
 
-sofa::defaulttype::Vector3		TRANSLATION(1,2,3);
-sofa::defaulttype::Vector3		OUTPUT_TRANSLATION_POS(2,2,3);
+sofa::type::Vector3		TRANSLATION(1,2,3);
+sofa::type::Vector3		OUTPUT_TRANSLATION_POS(2,2,3);
 
-sofa::defaulttype::Vector3		ROTATION(0,0,90);
-sofa::defaulttype::Vector3		OUTPUT_ROTATION_POS(0,1,0);
+sofa::type::Vector3		ROTATION(0,0,90);
+sofa::type::Vector3		OUTPUT_ROTATION_POS(0,1,0);
 sofa::helper::Quater<SReal>		OUTPUT_ROTATION_QUAT(0,0,0.7071,0.7071);
 
-sofa::defaulttype::Vector3		SCALE(5,10,20);
-sofa::defaulttype::Vector3		OUTPUT_SCALE_POS(5,0,0);
+sofa::type::Vector3		SCALE(5,10,20);
+sofa::type::Vector3		OUTPUT_SCALE_POS(5,0,0);
 
-sofa::defaulttype::Vector3		OUTPUT_ROTATION_SCALE_POS(0,5,0);
+sofa::type::Vector3		OUTPUT_ROTATION_SCALE_POS(0,5,0);
 
 
 namespace sofa 
 {
 
-using defaulttype::Vector3;
+using type::Vector3;
 
 template <typename _DataTypes>
 class TransformEngine_test : public ::testing::Test, public TransformEngine<_DataTypes>

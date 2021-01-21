@@ -22,8 +22,8 @@
 #ifndef SOFA_DEFAULTTYPE_MAT_H
 #define SOFA_DEFAULTTYPE_MAT_H
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/rmath.h>
 #include <iostream>
 #include <sofa/defaulttype/config.h>
@@ -36,18 +36,18 @@ namespace defaulttype
 {
 
 template <sofa::Size L, sofa::Size C, class real=float>
-class Mat : public helper::fixed_array<VecNoInit<C,real>, L>
+class Mat : public type::stdtype::fixed_array<type::VecNoInit<C,real>, L>
 {
 public:
 
     enum { N = L*C };
 
-    typedef typename helper::fixed_array<real, N>::size_type Size;
+    typedef typename type::stdtype::fixed_array<real, N>::size_type Size;
 
     typedef real Real;
-    typedef Vec<C,real> Line;
-    typedef VecNoInit<C,real> LineNoInit;
-    typedef Vec<L,real> Col;
+    typedef type::Vec<C,real> Line;
+    typedef type::VecNoInit<C,real> LineNoInit;
+    typedef type::Vec<L,real> Col;
 
     static const Size nbLines = L;
     static const Size nbCols  = C;
@@ -57,7 +57,7 @@ public:
         clear();
     }
 
-    explicit Mat(NoInit)
+    explicit Mat(type::NoInit)
     {
     }
 
@@ -175,7 +175,7 @@ public:
                 this->elems[i+L0][j+C0] = m[i][j];
     }
 
-    template<Size L2> void setsub(Size L0, Size C0, const Vec<L2,real>& v)
+    template<Size L2> void setsub(Size L0, Size C0, const type::Vec<L2,real>& v)
     {
         assert( C0<C );
         assert( L0+L2-1<L );
@@ -350,7 +350,7 @@ public:
     /// Return the transpose of m.
     Mat<C,L,real> transposed() const
     {
-        Mat<C,L,real> m(NOINIT);
+        Mat<C,L,real> m(type::NOINIT);
         for (Size i=0; i<L; i++)
             for (Size j=0; j<C; j++)
                 m[j][i]=this->elems[i][j];
@@ -417,7 +417,7 @@ public:
     template <Size P>
     Mat<L,P,real> operator*(const Mat<C,P,real>& m) const
     {
-        Mat<L,P,real> r(NOINIT);
+        Mat<L,P,real> r(type::NOINIT);
         for(Size i=0; i<L; i++)
             for(Size j=0; j<P; j++)
             {
@@ -431,7 +431,7 @@ public:
     /// Matrix addition operator.
     Mat<L,C,real> operator+(const Mat<L,C,real>& m) const
     {
-        Mat<L,C,real> r(NOINIT);
+        Mat<L,C,real> r(type::NOINIT);
         for(Size i = 0; i < L; i++)
             r[i] = (*this)[i] + m[i];
         return r;
@@ -440,7 +440,7 @@ public:
     /// Matrix subtraction operator.
     Mat<L,C,real> operator-(const Mat<L,C,real>& m) const
     {
-        Mat<L,C,real> r(NOINIT);
+        Mat<L,C,real> r(type::NOINIT);
         for(Size i = 0; i < L; i++)
             r[i] = (*this)[i] - m[i];
         return r;
@@ -449,7 +449,7 @@ public:
     /// Matrix negation operator.
     Mat<L,C,real> operator-() const
     {
-        Mat<L,C,real> r(NOINIT);
+        Mat<L,C,real> r(type::NOINIT);
         for(Size i = 0; i < L; i++)
             r[i] = -(*this)[i];
         return r;
@@ -458,7 +458,7 @@ public:
     /// Multiplication operator Matrix * Line.
     Col operator*(const Line& v) const
     {
-        Col r(NOINIT);
+        Col r(type::NOINIT);
         for(Size i=0; i<L; i++)
         {
             r[i]=(*this)[i][0] * v[0];
@@ -472,7 +472,7 @@ public:
     /// Multiplication with a diagonal Matrix CxC represented as a vector of size C
     Mat<L,C,real> multDiagonal(const Line& d) const
     {
-        Mat<L,C,real> r(NOINIT);
+        Mat<L,C,real> r(type::NOINIT);
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
                 r[i][j]=(*this)[i][j] * d[j];
@@ -482,7 +482,7 @@ public:
     /// Multiplication of the transposed Matrix * Column
     Line multTranspose(const Col& v) const
     {
-        Line r(NOINIT);
+        Line r(type::NOINIT);
         for(Size i=0; i<C; i++)
         {
             r[i]=(*this)[0][i] * v[0];
@@ -497,7 +497,7 @@ public:
     template <Size P>
     Mat<C,P,real> multTranspose(const Mat<L,P,real>& m) const
     {
-        Mat<C,P,real> r(NOINIT);
+        Mat<C,P,real> r(type::NOINIT);
         for(Size i=0; i<C; i++)
             for(Size j=0; j<P; j++)
             {
@@ -512,7 +512,7 @@ public:
     template <Size P>
     Mat<L,P,real> multTransposed(const Mat<P,C,real>& m) const
     {
-        Mat<L,P,real> r(NOINIT);
+        Mat<L,P,real> r(type::NOINIT);
         for(Size i=0; i<L; i++)
             for(Size j=0; j<P; j++)
             {
@@ -526,7 +526,7 @@ public:
     /// Addition with the transposed of the given matrix operator \returns this + mt
     Mat<L,C,real> plusTransposed(const Mat<C,L,real>& m) const
     {
-        Mat<L,C,real> r(NOINIT);
+        Mat<L,C,real> r(type::NOINIT);
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
                 r[i][j] = (*this)[i][j] + m[j][i];
@@ -536,7 +536,7 @@ public:
     /// Substraction with the transposed of the given matrix operator \returns this - mt
     Mat<L,C,real>minusTransposed(const Mat<C,L,real>& m) const
     {
-        Mat<L,C,real> r(NOINIT);
+        Mat<L,C,real> r(type::NOINIT);
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
                 r[i][j] = (*this)[i][j] - m[j][i];
@@ -547,7 +547,7 @@ public:
     /// Scalar multiplication operator.
     Mat<L,C,real> operator*(real f) const
     {
-        Mat<L,C,real> r(NOINIT);
+        Mat<L,C,real> r(type::NOINIT);
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
                 r[i][j] = (*this)[i][j] * f;
@@ -563,7 +563,7 @@ public:
     /// Scalar division operator.
     Mat<L,C,real> operator/(real f) const
     {
-        Mat<L,C,real> r(NOINIT);
+        Mat<L,C,real> r(type::NOINIT);
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
                 r[i][j] = (*this)[i][j] / f;
@@ -637,7 +637,7 @@ public:
         return invertMatrix(*this, m);
     }
 
-    static Mat<L,C,real> transformTranslation(const Vec<C-1,real>& t)
+    static Mat<L,C,real> transformTranslation(const type::Vec<C-1,real>& t)
     {
         Mat<L,C,real> m;
         m.identity();
@@ -655,7 +655,7 @@ public:
         return m;
     }
 
-    static Mat<L,C,real> transformScale(const Vec<C-1,real>& s)
+    static Mat<L,C,real> transformScale(const type::Vec<C-1,real>& s)
     {
         Mat<L,C,real> m;
         m.identity();
@@ -685,9 +685,9 @@ public:
     }
 
     /// Multiplication operator Matrix * Vector considering the matrix as a transformation.
-    Vec<C-1,real> transform(const Vec<C-1,real>& v) const
+    type::Vec<C-1,real> transform(const type::Vec<C-1,real>& v) const
     {
-        Vec<C-1,real> r(NOINIT);
+        type::Vec<C-1,real> r(type::NOINIT);
         for(Size i=0; i<C-1; i++)
         {
             r[i]=(*this)[i][0] * v[0];
@@ -820,7 +820,7 @@ inline real trace(const Mat<N,N,real>& m)
 
 /// diagonal of a square matrix
 template<sofa::Size N, class real>
-inline Vec<N,real> diagonal(const Mat<N,N,real>& m)
+inline type::Vec<N,real> diagonal(const Mat<N,N,real>& m)
 {
     Vec<N,real> v;
     for(sofa::Size i=0 ; i<N ; ++i ) v[i] = m[i][i];
@@ -834,7 +834,7 @@ template<sofa::Size S, class real>
 bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
     sofa::Size i, j, k;
-    Vec<S, sofa::Size> r, c, row, col;
+    type::Vec<S, sofa::Size> r, c, row, col;
 
     Mat<S,S,real> m1 = from;
     Mat<S,S,real> m2;
@@ -1074,7 +1074,7 @@ void printMaple(std::ostream& o, const Mat<L,C,real>& m)
 
 /// Create a matrix as \f$ u v^T \f$
 template <sofa::Size L, sofa::Size C, typename T>
-inline Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v )
+inline Mat<L,C,T> dyad( const type::Vec<L,T>& u, const type::Vec<C,T>& v )
 {
     Mat<L,C,T> res(NOINIT);
     for(sofa::Size i=0; i<L; i++ )
@@ -1098,7 +1098,7 @@ inline real scalarProduct(const Mat<L,C,real>& left,const Mat<L,C,real>& right)
 /// skew-symmetric mapping
 /// crossProductMatrix(v) * x = v.cross(x)
 template<class Real>
-inline defaulttype::Mat<3, 3, Real> crossProductMatrix(const defaulttype::Vec<3, Real>& v)
+inline defaulttype::Mat<3, 3, Real> crossProductMatrix(const type::Vec<3, Real>& v)
 {
     defaulttype::Mat<3, 3, Real> res;
     res[0][0]=0;
@@ -1116,7 +1116,7 @@ inline defaulttype::Mat<3, 3, Real> crossProductMatrix(const defaulttype::Vec<3,
 
 /// return a * b^T
 template<sofa::Size L,class Real>
-static Mat<L,L,Real> tensorProduct(const Vec<L,Real> a, const Vec<L,Real> b )
+static Mat<L,L,Real> tensorProduct(const type::Vec<L,Real> a, const type::Vec<L,Real> b )
 {
     typedef Mat<L,L,Real> Mat;
     Mat m;

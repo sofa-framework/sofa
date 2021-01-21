@@ -287,7 +287,7 @@ TestDataEngine< component::engine::MathOp< helper::vector<int> > >,
 TestDataEngine< component::engine::MergeMeshes<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::MergePoints<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::MergeSets<int> >,
-TestDataEngine< component::engine::MergeVectors< helper::vector<defaulttype::Vector3> > >,
+TestDataEngine< component::engine::MergeVectors< helper::vector<type::Vector3> > >,
 TestDataEngine< component::engine::MergeROIs >,
 //TestDataEngine< component::engine::MeshBarycentricMapperEngine<defaulttype::Vec3Types> >, // require a scene
 TestDataEngine< component::engine::MeshROI<defaulttype::Vec3Types> >,
@@ -314,12 +314,12 @@ TestDataEngine< component::engine::ClusteringEngine<defaulttype::Vec3Types> >,
 //TestDataEngine< component::engine::ShapeMatching<defaulttype::Vec3Types> >, // getObject pb -> require a scene
 TestDataEngine< component::engine::ProximityROI<defaulttype::Vec3Types> >,
 //TestDataEngine< component::engine::HausdorffDistance<defaulttype::Vec3Types> >, // ???
-TestDataEngine< component::engine::NormEngine<defaulttype::Vector3> >,
+TestDataEngine< component::engine::NormEngine<type::Vector3> >,
 TestDataEngine< component::engine::MeshClosingEngine<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::MeshSubsetEngine<defaulttype::Vec3Types> >,
 //TestDataEngine< component::engine::MeshSampler<defaulttype::Vec3Types> > // ???
-TestDataEngine< component::engine::SumEngine<defaulttype::Vector3> >,
-TestDataEngine< component::engine::DifferenceEngine<defaulttype::Vector3> >
+TestDataEngine< component::engine::SumEngine<type::Vector3> >,
+TestDataEngine< component::engine::DifferenceEngine<type::Vector3> >
 > TestTypes; // the types to instanciate.
 
 //// ========= Tests to run for each instanciated type

@@ -291,14 +291,14 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
         Real dcx = ti.cx - ts.frame[0]*ac;
         Real dcy = ti.cy - ts.frame[1]*ac;
 
-        defaulttype::Vec<3,Real> strain (
+        type::Vec<3,Real> strain (
             ti.cy * dbx,                // ( cy,   0,  0,  0) * (dbx, dby, dcx, dcy)
             ti.bx * dcy,                // (  0, -cx,  0, bx) * (dbx, dby, dcx, dcy)
             ti.bx * dcx - ti.cx * dbx); // (-cx,  cy, bx,  0) * (dbx, dby, dcx, dcy)
 
         Real gammaXY = gamma*(strain[0]+strain[1]);
 
-        defaulttype::Vec<3,Real> stress (
+        type::Vec<3,Real> stress (
             mu*strain[0] + gammaXY,    // (gamma+mu, gamma   ,    0) * strain
             mu*strain[1] + gammaXY,    // (gamma   , gamma+mu,    0) * strain
             (Real)(0.5)*mu*strain[2]); // (       0,        0, mu/2) * strain
@@ -349,14 +349,14 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
         Real dcx = ts.frame[0]*dac;
         Real dcy = ts.frame[1]*dac;
 
-        defaulttype::Vec<3,Real> dstrain (
+        type::Vec<3,Real> dstrain (
             ti.cy  * dbx,                             // ( cy,   0,  0,  0) * (dbx, dby, dcx, dcy)
             ti.bx * dcy - ti.cx * dby,                // (  0, -cx,  0, bx) * (dbx, dby, dcx, dcy)
             ti.bx * dcx - ti.cx * dbx + ti.cy * dby); // (-cx,  cy, bx,  0) * (dbx, dby, dcx, dcy)
 
         Real gammaXY = gamma*(dstrain[0]+dstrain[1]);
 
-        defaulttype::Vec<3,Real> dstress (
+        type::Vec<3,Real> dstress (
             mu*dstrain[0] + gammaXY,    // (gamma+mu, gamma   ,    0) * dstrain
             mu*dstrain[1] + gammaXY,    // (gamma   , gamma+mu,    0) * dstrain
             (Real)(0.5)*mu*dstrain[2]); // (       0,        0, mu/2) * dstrain
@@ -490,7 +490,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(Index i
     Real deltaV2 = tr*tr-4*det;
     Real deltaV = helper::rsqrt(std::max((Real)0.0,deltaV2));
     Real eval1, eval2;
-    defaulttype::Vec<2,Real> evec1, evec2;
+    type::Vec<2,Real> evec1, evec2;
     eval1 = (tr + deltaV)/2;
     eval2 = (tr - deltaV)/2;
     if (s[2] == 0)
@@ -540,9 +540,9 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     if (!vparams->displayFlags().getShowForceFields())
         return;
 
-    using defaulttype::Vector3;
-    using defaulttype::Vec3i;
-    using defaulttype::Vec4f;
+    using type::Vector3;
+    using type::Vec3i;
+    using type::Vec4f;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     unsigned int nbTriangles=m_topology->getNbTriangles();

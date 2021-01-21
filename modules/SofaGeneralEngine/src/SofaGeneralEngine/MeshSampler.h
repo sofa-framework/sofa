@@ -24,7 +24,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa::component::engine
@@ -52,7 +52,7 @@ public:
     typedef helper::vector<Real> VD;
     typedef helper::vector<VD> VVD;
 
-    typedef defaulttype::Vec<2,unsigned int> indicesType;
+    typedef type::Vec<2,unsigned int> indicesType;
 
     typedef core::topology::BaseMeshTopology::SeqEdges SeqEdges;
 

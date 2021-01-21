@@ -35,10 +35,10 @@ class SOFA_GL_API DrawToolGL : public helper::visual::DrawTool
 
 public:
     typedef sofa::helper::types::RGBAColor RGBAColor;
-    typedef sofa::defaulttype::Vec3f   Vec3f;
-    typedef sofa::defaulttype::Vector3 Vector3;
-    typedef sofa::defaulttype::Vec<3,int> Vec3i;
-    typedef sofa::defaulttype::Vec<2,int> Vec2i;
+    typedef sofa::type::Vec3f   Vec3f;
+    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec<3,int> Vec3i;
+    typedef sofa::type::Vec<2,int> Vec2i;
     typedef sofa::defaulttype::Quaternion Quaternion;
 
     DrawToolGL();

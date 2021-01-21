@@ -81,8 +81,8 @@ bool EdgeSetTopology_test::testEdgeBuffers()
     EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     //// The first 2 edges in this file should be :
-    sofa::helper::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth0(12, 17);
-    sofa::helper::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth1(4, 12);
+    sofa::type::stdtype::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth0(12, 17);
+    sofa::type::stdtype::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth1(4, 12);
 
 
     //// check edge buffer

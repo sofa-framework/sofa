@@ -26,7 +26,7 @@
 #include <sstream>
 #include <limits>
 #include <cstdlib>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
 

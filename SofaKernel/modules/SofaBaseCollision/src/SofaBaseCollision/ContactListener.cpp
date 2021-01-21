@@ -28,7 +28,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <sofa/simulation/CollisionEndEvent.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <tuple>
 
@@ -144,9 +144,9 @@ helper::vector<double> ContactListener::getDistances() const
     return distances;
 }
 
-std::vector<std::tuple<unsigned int, sofa::defaulttype::Vector3, unsigned int, sofa::defaulttype::Vector3>> ContactListener::getContactPoints() const
+std::vector<std::tuple<unsigned int, sofa::type::Vector3, unsigned int, sofa::type::Vector3>> ContactListener::getContactPoints() const
 {
-    std::vector<std::tuple<unsigned int, sofa::defaulttype::Vector3, unsigned int, sofa::defaulttype::Vector3>> contactPoints;
+    std::vector<std::tuple<unsigned int, sofa::type::Vector3, unsigned int, sofa::type::Vector3>> contactPoints;
     const sofa::Size numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
         contactPoints.reserve(numberOfContacts);

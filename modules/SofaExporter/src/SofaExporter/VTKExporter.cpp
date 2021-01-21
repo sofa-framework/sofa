@@ -177,12 +177,12 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
                 line = "double 1";
                 sizeSeg = 1;
             }
-            if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec2f > >* > (field))
+            if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec2f > >* > (field))
             {
                 line = "float 2";
                 sizeSeg = 2;
             }
-            if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec2d > >* >(field))
+            if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec2d > >* >(field))
             {
                 line = "double 2";
                 sizeSeg = 2;
@@ -198,12 +198,12 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
             else
             {
                 //Vectors
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3f > >* > (field))
+                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec3f > >* > (field))
                 {
                     line = "float";
                     sizeSeg = 3;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3d > >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec3d > >* >(field))
                 {
                     line = "double";
                     sizeSeg = 3;
@@ -273,34 +273,34 @@ void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, con
             //Vectors
             if (type.empty())
             {
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec1f> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec1f> >* >(field))
                 {
                     type = "Float32";
                     sizeSeg = 1;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec1d> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec1d> >* >(field))
                 {
                     type = "Float64";
                     sizeSeg = 1;
                 }
 
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec2f> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec2f> >* >(field))
                 {
                     type = "Float32";
                     sizeSeg = 2;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec2d> >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec2d> >* >(field))
                 {
                     type = "Float64";
                     sizeSeg = 2;
                 }
 
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3f > >* > (field))
+                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec3f > >* > (field))
                 {
                     type = "Float32";
                     sizeSeg = 3;
                 }
-                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3d > >* >(field))
+                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec3d > >* >(field))
                 {
                     type = "Float64";
                     sizeSeg = 3;
@@ -829,12 +829,12 @@ void VTKExporter::writeParallelFile()
                 //Vectors
                 if (type.empty())
                 {
-                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3f > >* > (field))
+                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec3f > >* > (field))
                     {
                         type = "Float32";
                         sizeSeg = 3;
                     }
-                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3d > >* >(field))
+                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec3d > >* >(field))
                     {
                         type = "Float64";
                         sizeSeg = 3;
@@ -902,12 +902,12 @@ void VTKExporter::writeParallelFile()
                 //Vectors
                 if (type.empty())
                 {
-                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3f > >* > (field))
+                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec3f > >* > (field))
                     {
                         type = "Float32";
                         sizeSeg = 3;
                     }
-                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3d > >* >(field))
+                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< type::Vec3d > >* >(field))
                     {
                         type = "Float64";
                         sizeSeg = 3;

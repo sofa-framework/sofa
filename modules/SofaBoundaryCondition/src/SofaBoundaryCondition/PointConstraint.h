@@ -53,7 +53,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename MatrixDeriv::RowType MatrixDerivRowType;
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::type::Vector3 Vector3;
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;

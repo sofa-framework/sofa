@@ -464,7 +464,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
             //Get the 8 indices of the coarser Hexa
             const auto& points = this->_sparseGrid->getHexahedra()[i];
             //Get the 8 points of the coarser Hexa
-            helper::fixed_array<Coord,8> nodes;
+            type::stdtype::fixed_array<Coord,8> nodes;
 
             for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->getPointPos(points[k]);
 
@@ -628,7 +628,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     std::map<Index, Index> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
     Index idxcutass = 0;
     std::map<Index,bool> map_idxq_coarse;
-    helper::fixed_array<Index,8> map_idxcoarse_idxfine;
+    type::stdtype::fixed_array<Index,8> map_idxcoarse_idxfine;
     const SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexahedron( elementIndice );
 
     for(Size i=0; i<sizeass; ++i)
@@ -752,7 +752,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
             Real fz = p*dz*inv_d2[2];
 
 
-            helper::fixed_array<Real,8> baryCoefs;
+            type::stdtype::fixed_array<Real,8> baryCoefs;
             baryCoefs[0] = (1-fx) * (1-fy) * (1-fz);
             baryCoefs[1] = fx * (1-fy) * (1-fz);
             baryCoefs[2] = fx * (fy) * (1-fz);
@@ -845,7 +845,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::findFinestChildren( helper::vec
     }
     else
     {
-        helper::fixed_array<Index,8> finerChildren;
+        type::stdtype::fixed_array<Index,8> finerChildren;
         if (level == 0)
         {
             finerChildren = this->_sparseGrid->_hierarchicalCubeMap[elementIndice];
@@ -875,7 +875,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
     }
     else
     {
-        helper::fixed_array<Index,8> finerChildren;
+        type::stdtype::fixed_array<Index,8> finerChildren;
 
         topology::SparseGridTopology::SPtr sparseGrid, finerSparseGrid;
 
@@ -892,8 +892,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
         finerChildren = sparseGrid->_hierarchicalCubeMap[elementIndice];
 
-        helper::fixed_array<ElementStiffness,8> finerK;
-        helper::fixed_array<ElementMass,8> finerM;
+        type::stdtype::fixed_array<ElementStiffness,8> finerK;
+        type::stdtype::fixed_array<ElementMass,8> finerM;
 
 
         for ( int i=0; i<8; ++i) //for 8 virtual finer element
@@ -1109,14 +1109,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         // trouver les finer elements par ramification
         auto& finerChildrenRamificationOriginal = sparseGrid->_hierarchicalCubeMapRamification[ elementIndice ];
 
-        helper::fixed_array<helper::vector<ElementStiffness>,8> finerK;
-        helper::fixed_array<helper::vector<ElementMass>,8> finerM;
+        type::stdtype::fixed_array<helper::vector<ElementStiffness>,8> finerK;
+        type::stdtype::fixed_array<helper::vector<ElementMass>,8> finerM;
 
 
         const SparseGridTopology::Hexa& coarsehexa = sparseGrid->getHexahedron( elementIndice );
 
 
-        helper::fixed_array< Coord, 27 > finePositions; // coord of each fine positions
+        type::stdtype::fixed_array< Coord, 27 > finePositions; // coord of each fine positions
         for(int i=0; i<27; ++i)
         {
             for(int j=0; j<8; ++j)
@@ -1126,7 +1126,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
 
-        helper::fixed_array< std::set<Index>, 27 > fineNodesPerPositions; // list of fine nodes at each fine positions
+        type::stdtype::fixed_array< std::set<Index>, 27 > fineNodesPerPositions; // list of fine nodes at each fine positions
         for ( int i=0; i<8; ++i) //for 8 virtual finer element positions
         {
             finerK[i].resize( finerChildrenRamificationOriginal[i].size() );
@@ -1162,14 +1162,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
 
-        helper::fixed_array<helper::vector<helper::fixed_array<Index,8 > >,8 > finerChildrenRamification; // listes des hexahedra � chaque position, avec des indices fictifs pour les vides
-        helper::fixed_array<helper::vector<bool>,8 > isFinerChildrenVirtual; // a boolean, true if ficitf, only created for void
+        type::stdtype::fixed_array<helper::vector<type::stdtype::fixed_array<Index,8 > >,8 > finerChildrenRamification; // listes des hexahedra � chaque position, avec des indices fictifs pour les vides
+        type::stdtype::fixed_array<helper::vector<bool>,8 > isFinerChildrenVirtual; // a boolean, true if ficitf, only created for void
         for ( int i=0; i<8; ++i) //for 8 virtual finer element positions
         {
             if( finerChildrenRamificationOriginal[i].empty() ) // vide
             {
                 // construire un element fictif
-                helper::fixed_array<Index,8 > fictifelem;
+                type::stdtype::fixed_array<Index,8 > fictifelem;
                 for(int j=0; j<8; ++j) // fine fictif nodes
                 {
                     fictifelem[j] = *fineNodesPerPositions[FINE_ELEM_IN_COARSE_IN_ASS_FRAME[i][j]].begin();
@@ -1183,7 +1183,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                 for(unsigned j=0; j<finerChildrenRamificationOriginal[i].size(); ++j)
                 {
                     const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexahedron( finerChildrenRamificationOriginal[i][j] );
-                    helper::fixed_array<Index,8 > elem;
+                    type::stdtype::fixed_array<Index,8 > elem;
                     for(int k=0; k<8; ++k) // fine nodes
                     {
                         elem[k] = finehexa[k];
@@ -1263,7 +1263,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         std::map<Index, Index> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
         Index idxcutass = 0,idxcutasscoarse = 0;
         std::map<Index, Index> map_idxq_coarse; // a fine idx -> sofa::InvalidID->non coarse, x-> idx coarse node
-        helper::fixed_array<helper::vector<Index> ,8> map_idxcoarse_idxfine;
+        type::stdtype::fixed_array<helper::vector<Index> ,8> map_idxcoarse_idxfine;
 
         linearsolver::NewMatMatrix  mask;
         mask.resize(sizeass*3,8*3);
@@ -1611,7 +1611,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
     }
     else
     {
-        std::vector< defaulttype::Vector3 > points;
+        std::vector< type::Vector3 > points;
 
         vparams->drawTool()->setLightingEnabled(false);
 
@@ -1631,7 +1631,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
     {
         colour=sofa::helper::types::RGBAColor(0.95f, 0.95f, 0.7f,1.0f);
 
-        std::vector< sofa::defaulttype::Vector3 > points;
+        std::vector< sofa::type::Vector3 > points;
         for(unsigned i=0; i<x.size(); ++i)
             points.push_back( x[i] );
         vparams->drawTool()->drawSpheres(points, d_drawSize.getValue()*1.5f,colour);
@@ -1643,7 +1643,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
 
     {
 
-        std::vector< sofa::defaulttype::Vector3 > points;
+        std::vector< sofa::type::Vector3 > points;
         for(unsigned i=0; i<sgr->getConnexions()->size(); ++i)
         {
             helper::vector< topology::SparseGridRamificationTopology::Connexion *>& con = (*sgr->getConnexions())[i];

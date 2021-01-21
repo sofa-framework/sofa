@@ -123,7 +123,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
     for (unsigned int i=0; i<nbTriangles; ++i)
     {
         Triangle nodes;
-        helper::fixed_array <int,3> ngh;
+        type::stdtype::fixed_array <int,3> ngh;
 
         dataFile >>  nodes[0] >> nodes[1] >> nodes[2] >> ngh[0] >> ngh[1] >> ngh[2];
 

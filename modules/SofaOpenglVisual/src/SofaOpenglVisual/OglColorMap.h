@@ -30,7 +30,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <string>
 
 
@@ -48,7 +48,7 @@ class SOFA_OPENGL_VISUAL_API OglColorMap : public sofa::core::visual::VisualMode
 public:
     SOFA_CLASS(OglColorMap, sofa::core::visual::VisualModel);
 
-    typedef defaulttype::Vec3f Color3;  // Color tripplet
+    typedef type::Vec3f Color3;  // Color tripplet
     typedef sofa::helper::types::RGBAColor Color;   // ... with alpha value
     typedef sofa::helper::vector<Color> VecColor;
     
@@ -61,7 +61,7 @@ public:
     Data<sofa::helper::OptionsGroup> f_colorScheme; ///< Color scheme to use
 
     Data<bool> f_showLegend; ///< Activate rendering of color scale legend on the side
-    Data<defaulttype::Vec2f> f_legendOffset; ///< Draw the legend on screen with an x,y offset
+    Data<type::Vec2f> f_legendOffset; ///< Draw the legend on screen with an x,y offset
     Data<std::string> f_legendTitle; ///< Add a title to the legend
     Data<float> d_min; ///< min value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the min
     Data<float> d_max; ///< max value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the max

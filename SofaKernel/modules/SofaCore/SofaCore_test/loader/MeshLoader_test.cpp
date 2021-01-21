@@ -34,7 +34,7 @@ class MeshTestLoader : public MeshLoader
 {
 public:
     friend class MeshLoader_test;
-    typedef helper::WriteAccessor< Data<helper::vector<sofa::defaulttype::Vector3> > > waPositions;
+    typedef helper::WriteAccessor< Data<helper::vector<sofa::type::Vector3> > > waPositions;
     typedef helper::WriteAccessor< Data< helper::vector< Triangle > > > waTtriangles;
     typedef helper::WriteAccessor< Data< helper::vector< Tetrahedron > > > waTetrahedra;
 

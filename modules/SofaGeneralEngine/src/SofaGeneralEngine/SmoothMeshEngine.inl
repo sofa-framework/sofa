@@ -163,7 +163,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 {    
     if (!vparams->displayFlags().getShowVisualModels() || m_topology == nullptr) return;
 
-    using sofa::defaulttype::Vec;
+    using sofa::type::Vec;
     vparams->drawTool()->saveLastState();
 
     bool wireframe=vparams->displayFlags().getShowWireFrame();
@@ -177,7 +177,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     if (this->showInput.getValue())
     {
-        std::vector<sofa::defaulttype::Vector3> vertices;
+        std::vector<sofa::type::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord> > in(input_position);
 
         sofa::helper::types::RGBAColor color(1.0f, 0.76078431372f, 0.0f, 1.0f);
@@ -197,7 +197,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     if (this->showOutput.getValue())
     {
-        std::vector<sofa::defaulttype::Vector3> vertices;
+        std::vector<sofa::type::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord> > out(output_position);
         sofa::helper::types::RGBAColor color(0.0f, 0.6f, 0.8f, 1.0f);
 

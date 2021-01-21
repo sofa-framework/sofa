@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 
 #include <sofa/gl/gl.h>
@@ -36,9 +36,9 @@ namespace sofa::gl
 class SOFA_GL_API Axis
 {
 public:
-    typedef sofa::defaulttype::Vector3 Vector3;
-    typedef sofa::defaulttype::Vec4f   Vec4f;
-    typedef sofa::defaulttype::Vec3d   Vec3d;
+    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec4f   Vec4f;
+    typedef sofa::type::Vec3d   Vec3d;
     typedef sofa::defaulttype::Quaternion Quaternion;
     Axis(SReal len=(SReal)1);
     Axis(const Vector3& len);

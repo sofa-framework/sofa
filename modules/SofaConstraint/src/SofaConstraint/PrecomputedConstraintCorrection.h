@@ -28,7 +28,7 @@
 #include <SofaBaseLinearSolver/FullMatrix.h>
 
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::constraintset
 {

@@ -29,7 +29,7 @@
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 
@@ -90,8 +90,8 @@ protected:
 
     /// These two buffers are used to convert the data field to float type before being sent to
     /// opengl
-    std::vector<sofa::defaulttype::Vec3f> verticesTmpBuffer;
-    std::vector<sofa::defaulttype::Vec3f> normalsTmpBuffer;
+    std::vector<sofa::type::Vec3f> verticesTmpBuffer;
+    std::vector<sofa::type::Vec3f> normalsTmpBuffer;
 
     void internalDraw(const core::visual::VisualParams* vparams, bool transparent) override;
 
@@ -153,7 +153,7 @@ public:
     void updateQuadsIndicesBuffer();
 };
 
-typedef sofa::defaulttype::Vec<3,GLfloat> GLVec3f;
+typedef sofa::type::Vec<3,GLfloat> GLVec3f;
 
 } // namespace visualmodel
 

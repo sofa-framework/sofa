@@ -40,7 +40,7 @@
 #include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 

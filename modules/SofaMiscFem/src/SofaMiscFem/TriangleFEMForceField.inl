@@ -325,7 +325,7 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
     defaulttype::Mat<3,6,Real> Jt;
     Jt.transpose( J );
 
-    defaulttype::Vec<3,Real> JtD;
+    type::Vec<3,Real> JtD;
 
     // Optimisations: The following values are 0 (per computeStrainDisplacement )
 
@@ -350,7 +350,7 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
     JtD[2] = Jt[2][0] * Depl[0] + Jt[2][1] * Depl[1] + Jt[2][2] * Depl[2] +
             Jt[2][3] * Depl[3] + Jt[2][4] * Depl[4] /* + Jt[2][5] * Depl[5] */ ;
 
-    defaulttype::Vec<3,Real> KJtD;
+    type::Vec<3,Real> KJtD;
 
     //	KJtD = K * JtD;
 
@@ -665,7 +665,7 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         vparams->drawTool()->setPolygonMode(0, true);
 
     std::vector<sofa::helper::types::RGBAColor> colorVector;
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -677,11 +677,11 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         Index c = (*it)[2];
 
         colorVector.push_back(sofa::helper::types::RGBAColor(0,1,0,1));
-        vertices.push_back(sofa::defaulttype::Vector3(x[a]));
+        vertices.push_back(sofa::type::Vector3(x[a]));
         colorVector.push_back(sofa::helper::types::RGBAColor(0,0.5,0.5,1));
-        vertices.push_back(sofa::defaulttype::Vector3(x[b]));
+        vertices.push_back(sofa::type::Vector3(x[b]));
         colorVector.push_back(sofa::helper::types::RGBAColor(0,0,1,1));
-        vertices.push_back(sofa::defaulttype::Vector3(x[c]));
+        vertices.push_back(sofa::type::Vector3(x[c]));
     }
     vparams->drawTool()->drawTriangles(vertices,colorVector);
 

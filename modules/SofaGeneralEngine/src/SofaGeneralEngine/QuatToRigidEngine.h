@@ -44,7 +44,7 @@ public:
     SOFA_CLASS(QuatToRigidEngine,sofa::core::DataEngine);
 
     typedef typename DataTypes::Real Real;
-    typedef sofa::defaulttype::Vec<3,Real> Vec3;
+    typedef sofa::type::Vec<3,Real> Vec3;
     typedef sofa::helper::Quater<Real> Quat;
     typedef typename sofa::defaulttype::StdRigidTypes<3,Real>::Coord RigidVec3;
 protected:

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
 
 namespace sofa::defaulttype

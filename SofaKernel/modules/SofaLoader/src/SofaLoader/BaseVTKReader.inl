@@ -29,7 +29,7 @@ namespace sofa::component::loader::basevtkreader
 {
 
 using std::istringstream ;
-using sofa::defaulttype::Vec ;
+using sofa::type::Vec ;
 
 template<class T>
 const void* BaseVTKReader::VTKDataIO<T>::getData()

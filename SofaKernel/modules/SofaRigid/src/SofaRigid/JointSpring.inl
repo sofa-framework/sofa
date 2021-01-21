@@ -35,8 +35,8 @@ JointSpring<DataTypes>::JointSpring(sofa::Index m1 , sofa::Index m2,
                                     , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), blocStiffnessRot(blocKsr)
                                     , needToInitializeTrans(true), needToInitializeRot(true)
 {
-    limitAngles = sofa::defaulttype::Vec<6,Real>(axmin,axmax,aymin,aymax,azmin,azmax);
-    freeMovements = sofa::defaulttype::Vec<6,bool>(false, false, false, true, true, true);
+    limitAngles = sofa::type::Vec<6,Real>(axmin,axmax,aymin,aymax,azmin,azmax);
+    freeMovements = sofa::type::Vec<6,bool>(false, false, false, true, true, true);
     for (unsigned int i=0; i<3; i++)
     {
         if(limitAngles[2*i]==limitAngles[2*i+1])

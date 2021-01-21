@@ -22,7 +22,7 @@
 
 #include "MapMapSparseMatrix.h"
 #include <Eigen/Sparse>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <cassert>
 #include <type_traits>
@@ -78,8 +78,8 @@ struct MapMapSparseMatrixToEigenSparseVec
 };
 
 template< sofa::Size N, typename Real >
-class MapMapSparseMatrixToEigenSparse< sofa::defaulttype::Vec<N,Real> >
-    : public  MapMapSparseMatrixToEigenSparseVec< sofa::defaulttype::Vec<N, Real>, Real >
+class MapMapSparseMatrixToEigenSparse< sofa::type::Vec<N,Real> >
+    : public  MapMapSparseMatrixToEigenSparseVec< sofa::type::Vec<N, Real>, Real >
 {
 
 };
@@ -153,8 +153,8 @@ struct EigenSparseToMapMapSparseMatrixVec
 };
 
 template< sofa::Size N, typename Real>
-class EigenSparseToMapMapSparseMatrix< sofa::defaulttype::Vec<N, Real> > :
-    public EigenSparseToMapMapSparseMatrixVec<sofa::defaulttype::Vec<N, Real>, Real>
+class EigenSparseToMapMapSparseMatrix< sofa::type::Vec<N, Real> > :
+    public EigenSparseToMapMapSparseMatrixVec<sofa::type::Vec<N, Real>, Real>
 {
 
 };

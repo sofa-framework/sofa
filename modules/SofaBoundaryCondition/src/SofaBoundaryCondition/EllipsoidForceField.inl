@@ -174,8 +174,8 @@ void EllipsoidForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
     DataTypes::get(cx, cy, cz, center.getValue());
     Real rx=1, ry=1, rz=1;
     DataTypes::get(rx, ry, rz, vradius.getValue());
-	sofa::defaulttype::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
-	sofa::defaulttype::Vector3 vCenter(cx, cy, cz);
+	sofa::type::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
+	sofa::type::Vector3 vCenter(cx, cy, cz);
 
     vparams->drawTool()->enableLighting();
     

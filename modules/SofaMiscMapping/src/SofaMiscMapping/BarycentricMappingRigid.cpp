@@ -138,7 +138,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
                 {
                     if ( d_map.getValue()[j].in_index == cubeId ) // invalidate mapping
                     {
-                        sofa::defaulttype::Vector3 coefs;
+                        sofa::type::Vector3 coefs;
                         coefs[0] = d_map.getValue()[j].baryCoords[0];
                         coefs[1] = d_map.getValue()[j].baryCoords[1];
                         coefs[2] = d_map.getValue()[j].baryCoords[2];

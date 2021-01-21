@@ -40,24 +40,24 @@ class SOFA_CORE_API VoxelLoader : public sofa::core::loader::BaseLoader
 public:
     SOFA_ABSTRACT_CLASS(VoxelLoader,BaseLoader);
 
-    typedef defaulttype::Vec<3, int> Vec3i;
-    typedef defaulttype::Vec<6, int> Vec6i;
-    typedef helper::fixed_array<unsigned int,8> Hexahedron;
+    typedef type::Vec<3, int> Vec3i;
+    typedef type::Vec<6, int> Vec6i;
+    typedef type::stdtype::fixed_array<unsigned int,8> Hexahedron;
 protected:
     VoxelLoader();
     ~VoxelLoader() override;
 public:
 
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions; ///< Coordinates of the nodes loaded
+    Data< helper::vector<sofa::type::Vec<3,SReal> > > positions; ///< Coordinates of the nodes loaded
     Data< helper::vector<Hexahedron > > hexahedra; ///< Hexahedra loaded
 
 
-    void addHexahedron(helper::vector< Hexahedron >* pHexahedra, const helper::fixed_array<unsigned int,8> &p);
+    void addHexahedron(helper::vector< Hexahedron >* pHexahedra, const type::stdtype::fixed_array<unsigned int,8> &p);
     void addHexahedron(helper::vector< Hexahedron >* pHexahedra,
             unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
             unsigned int p4, unsigned int p5, unsigned int p6, unsigned int p7);
 
-    virtual defaulttype::Vector3 getVoxelSize () const = 0;
+    virtual type::Vector3 getVoxelSize () const = 0;
 
     virtual helper::vector<unsigned int> getHexaIndicesInGrid() const=0;
 

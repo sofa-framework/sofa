@@ -34,26 +34,26 @@
 namespace sofa::component::engine
 {
 template<class Real>
-inline const defaulttype::Vec<3,Real>& center(const defaulttype::Vec<3,Real>& c)
+inline const type::Vec<3,Real>& center(const type::Vec<3,Real>& c)
 {
     return c;
 }
 
 template<class _Real>
-inline defaulttype::Vec<3,_Real>& center(defaulttype::Vec<3,_Real>& c)
+inline type::Vec<3,_Real>& center(type::Vec<3,_Real>& c)
 {
     return c;
 }
 
 
 template<class Real>
-inline const defaulttype::Vec<3,Real>& center(const defaulttype::RigidCoord<3,Real>& c)
+inline const type::Vec<3,Real>& center(const defaulttype::RigidCoord<3,Real>& c)
 {
     return c.getCenter();
 }
 
 template<class Real>
-inline defaulttype::Vec<3,Real>& center(defaulttype::RigidCoord<3,Real>& c)
+inline type::Vec<3,Real>& center(defaulttype::RigidCoord<3,Real>& c)
 {
     return c.getCenter();
 }

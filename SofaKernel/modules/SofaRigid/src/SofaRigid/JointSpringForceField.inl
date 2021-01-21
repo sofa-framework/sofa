@@ -27,8 +27,8 @@
 namespace sofa::component::interactionforcefield
 {
 
-using sofa::defaulttype::Vec4f;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vec4f;
+using sofa::type::Vector3;
 
 template<class DataTypes>
 JointSpringForceField<DataTypes>::JointSpringForceField()

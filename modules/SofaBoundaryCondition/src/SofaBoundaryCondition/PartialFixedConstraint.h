@@ -63,7 +63,7 @@ public:
 
 public:
     enum { NumDimensions = Deriv::total_size };
-    typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
+    typedef sofa::type::stdtype::fixed_array<bool,NumDimensions> VecBool;
     Data<VecBool> d_fixedDirections;  ///< Defines the directions in which the particles are fixed: true (or 1) for fixed, false (or 0) for free.
 
 protected:

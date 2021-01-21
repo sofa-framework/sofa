@@ -85,7 +85,7 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef Data<typename DataTypes::VecCoord> DataVecCoord;
     typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;
-    typedef typename defaulttype::Vec<3,Real> Vec3;
+    typedef typename type::Vec<3,Real> Vec3;
 
 
 

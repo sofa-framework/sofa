@@ -352,11 +352,11 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     if( d_showObjectScale.getValue() == 0 )
     {
         vparams->drawTool()->disableLighting();
-        helper::vector< defaulttype::Vector3 > points;
+        helper::vector< type::Vector3 > points;
         for(std::size_t i=0; i<links.size(); i++ )
         {
-            points.push_back( sofa::defaulttype::Vector3( TIn::getCPos(pos[links[i][0]]) ) );
-            points.push_back( sofa::defaulttype::Vector3( TIn::getCPos(pos[links[i][1]]) ));
+            points.push_back( sofa::type::Vector3( TIn::getCPos(pos[links[i][0]]) ) );
+            points.push_back( sofa::type::Vector3( TIn::getCPos(pos[links[i][1]]) ));
         }
         vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
     }
@@ -365,8 +365,8 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->enableLighting();
         for(std::size_t i=0; i<links.size(); i++ )
         {
-            defaulttype::Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
-            defaulttype::Vector3 p1 = TIn::getCPos(pos[links[i][1]]);
+            type::Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
+            type::Vector3 p1 = TIn::getCPos(pos[links[i][1]]);
             vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }
@@ -442,8 +442,8 @@ template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::addPoint( int from, int index)
 {
     assert((size_t)from<this->fromModels.size());
-    helper::vector<defaulttype::Vec2i>& indexPairsVector = *d_indexPairs.beginEdit();
-    indexPairsVector.push_back(defaulttype::Vec2i(from,index));
+    helper::vector<type::Vec2i>& indexPairsVector = *d_indexPairs.beginEdit();
+    indexPairsVector.push_back(type::Vec2i(from,index));
     d_indexPairs.endEdit();
 }
 
@@ -472,7 +472,7 @@ void DistanceMultiMapping<TIn, TOut>::init()
 
     this->getToModels()[0]->resize( links.size() );
 
-    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const helper::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
     // only used for warning message
     bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
@@ -486,8 +486,8 @@ void DistanceMultiMapping<TIn, TOut>::init()
         {
             for(unsigned i=0; i<links.size(); i++ )
             {
-                const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-                const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+                const type::Vec2i& pair0 = pairs[ links[i][0] ];
+                const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
                 const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
                 const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
@@ -529,7 +529,7 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
 {
     OutVecCoord& out = *outPos[0];
 
-    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const helper::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
     helper::ReadAccessor<Data<helper::vector<Real> > > restLengths(f_restLengths);
     const SeqEdges& links = m_edgeContainer->getEdges();
 
@@ -551,8 +551,8 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
     {
         Direction& gap = directions[i];
 
-        const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-        const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+        const type::Vec2i& pair0 = pairs[ links[i][0] ];
+        const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
         const InCoord& pos0 = (*inPos[pair0[0]])[pair0[1]];
         const InCoord& pos1 = (*inPos[pair1[0]])[pair1[1]];
@@ -647,7 +647,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
     const SReal kfactor = mparams->kFactor();
     const OutVecDeriv& childForce = this->getToModels()[0]->readForces().ref();
     const SeqEdges& links = m_edgeContainer->getEdges();
-    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const helper::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
     unsigned size = this->getFromModels().size();
 
@@ -668,8 +668,8 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
-            const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-            const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+            const type::Vec2i& pair0 = pairs[ links[i][0] ];
+            const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
 
             InVecDeriv& parentForce0 = *parentForce[pair0[0]];
@@ -732,7 +732,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[(const core::State<TOut>*)this->getToModels()[0]].read() );
     const SeqEdges& links = m_edgeContainer->getEdges();
-    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const helper::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
     for(size_t i=0; i<links.size(); i++)
     {
@@ -756,8 +756,8 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
             b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
 
 
-            const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-            const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+            const type::Vec2i& pair0 = pairs[ links[i][0] ];
+            const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
             // TODO optimize (precompute base Index per mechanicalobject)
             size_t globalIndex0 = 0;
@@ -799,21 +799,21 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 
     const SeqEdges& links = m_edgeContainer->getEdges();
 
-    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const helper::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
     if( d_showObjectScale.getValue() == 0 )
     {
-        helper::vector< defaulttype::Vector3 > points;
+        helper::vector< type::Vector3 > points;
         for(unsigned i=0; i<links.size(); i++ )
         {
-            const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-            const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+            const type::Vec2i& pair0 = pairs[ links[i][0] ];
+            const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
             const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
             const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
 
-            points.push_back( defaulttype::Vector3( TIn::getCPos(pos0) ) );
-            points.push_back( defaulttype::Vector3( TIn::getCPos(pos1) ) );
+            points.push_back( type::Vector3( TIn::getCPos(pos0) ) );
+            points.push_back( type::Vector3( TIn::getCPos(pos1) ) );
         }
         vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
     }
@@ -821,14 +821,14 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
     {
         for(unsigned i=0; i<links.size(); i++ )
         {
-            const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-            const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+            const type::Vec2i& pair0 = pairs[ links[i][0] ];
+            const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
             const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
             const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
 
-            defaulttype::Vector3 p0 = TIn::getCPos(pos0);
-            defaulttype::Vector3 p1 = TIn::getCPos(pos1);
+            type::Vector3 p0 = TIn::getCPos(pos0);
+            type::Vector3 p1 = TIn::getCPos(pos1);
             vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }
@@ -839,14 +839,14 @@ template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::updateForceMask()
 {
     const SeqEdges& links = m_edgeContainer->getEdges();
-    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const helper::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
     for(size_t i=0; i<links.size(); i++ )
     {
         if( this->maskTo[0]->getEntry(i) )
         {
-            const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
-            const defaulttype::Vec2i& pair1 = pairs[ links[i][1] ];
+            const type::Vec2i& pair0 = pairs[ links[i][0] ];
+            const type::Vec2i& pair1 = pairs[ links[i][1] ];
 
             this->maskFrom[pair0[0]]->insertEntry( pair0[1] );
             this->maskFrom[pair1[0]]->insertEntry( pair1[1] );

@@ -63,7 +63,7 @@ struct AffinePatch_sofa_test : public Elasticity_test<_DataTypes>
     typedef typename component::interactionforcefield::MeshSpringForceField<DataTypes> MeshSpringForceField;
     typedef typename component::forcefield::TetrahedronFEMForceField<DataTypes> TetraForceField;
     typedef defaulttype::Quat Quat;
-    typedef defaulttype::Vector3 Vec3;
+    typedef type::Vector3 Vec3;
 
     /// Root of the scene graph
     simulation::Node::SPtr root;

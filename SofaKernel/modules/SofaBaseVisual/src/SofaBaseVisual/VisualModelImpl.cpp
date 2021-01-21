@@ -329,8 +329,8 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         // compute the edge / triangle / quad index corresponding to each facet
         // convert the groups info
         enum { NBE = 0, NBT = 1, NBQ = 2 };
-        helper::fixed_array<visual_index_type, 3> nbf{ 0,0,0 };
-        helper::vector< helper::fixed_array<visual_index_type, 3> > facet2tq;
+        type::stdtype::fixed_array<visual_index_type, 3> nbf{ 0,0,0 };
+        helper::vector< type::stdtype::fixed_array<visual_index_type, 3> > facet2tq;
         facet2tq.resize(facetsImport.size()+1);
         for (std::size_t i = 0; i < facetsImport.size(); i++)
         {
@@ -1997,6 +1997,6 @@ namespace sofa::component::topology
 {
 
 template class PointData< sofa::defaulttype::Vec3fTypes::VecCoord >;
-template class PointData< sofa::defaulttype::Vec2fTypes::VecCoord >;
+template class PointData< sofa::type::Vec2fTypes::VecCoord >;
 
 } // namespace sofa::component::topology

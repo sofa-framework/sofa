@@ -67,7 +67,7 @@ public:
     void reinit( ) override;
 
     virtual void computeElementMasses( ); ///< compute the mass matrices
-    virtual void computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const Index elementIndice, SReal stiffnessFactor=1.0); ///< compute the mass matrix of an element
+    virtual void computeElementMass( ElementMass &Mass, const type::stdtype::fixed_array<Coord,8> &nodes, const Index elementIndice, SReal stiffnessFactor=1.0); ///< compute the mass matrix of an element
     Real integrateMass( int signx, int signy, int signz, Real l0, Real l1, Real l2 );
 
     // -- Mass interface

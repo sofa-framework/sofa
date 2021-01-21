@@ -319,12 +319,12 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
     helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
     helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
 
-    helper::vector< sofa::defaulttype::Vector3 > points;
+    helper::vector< sofa::type::Vector3 > points;
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
-        points.push_back( sofa::defaulttype::Vector3(TIn::getCPos(targetPositions[i]) ) );
-        points.push_back( sofa::defaulttype::Vector3(TIn::getCPos(pos[indices[i]]) ) );
+        points.push_back( sofa::type::Vector3(TIn::getCPos(targetPositions[i]) ) );
+        points.push_back( sofa::type::Vector3(TIn::getCPos(pos[indices[i]]) ) );
     }
 
     if( !arrowsize )

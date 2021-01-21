@@ -25,7 +25,7 @@
 
 
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -47,7 +47,7 @@ public:
     typedef typename Inherit::Spring Spring;
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 
-    typedef defaulttype::Vec<6,Real> Vec6;
+    typedef type::Vec<6,Real> Vec6;
 
     using Index = sofa::Index;
 

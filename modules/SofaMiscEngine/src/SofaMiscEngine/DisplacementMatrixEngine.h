@@ -24,7 +24,7 @@
 #include <SofaMiscEngine/config.h>
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa::component::engine
@@ -109,7 +109,7 @@ public:
     typedef typename DataTypes::Coord Coord; // rigid
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename defaulttype::Mat4x4f Matrix4x4;
-    typedef typename sofa::defaulttype::Vec<4,float> Line;
+    typedef typename sofa::type::Vec<4,float> Line;
 
     // Method
     DisplacementMatrixEngine();
@@ -123,7 +123,7 @@ public:
     static std::string templateName(const DisplacementMatrixEngine<DataTypes>* = nullptr) { return DataTypes::Name(); }
 
     // inputs
-    Data< helper::vector< sofa::defaulttype::Vec<3,Real> > > d_scales; ///< scale matrices
+    Data< helper::vector< sofa::type::Vec<3,Real> > > d_scales; ///< scale matrices
     helper::vector<Matrix4x4> SxInverses;  ///< inverse initial positions
 };
 

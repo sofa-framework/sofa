@@ -40,8 +40,8 @@ int ClipPlaneClass = core::RegisterObject("OpenGL Clipping Plane")
 
 
 ClipPlane::ClipPlane()
-    : position(initData(&position, sofa::defaulttype::Vector3(0,0,0), "position", "Point crossed by the clipping plane"))
-    , normal(initData(&normal, sofa::defaulttype::Vector3(1,0,0), "normal", "Normal of the clipping plane, pointing toward the clipped region"))
+    : position(initData(&position, sofa::type::Vector3(0,0,0), "position", "Point crossed by the clipping plane"))
+    , normal(initData(&normal, sofa::type::Vector3(1,0,0), "normal", "Normal of the clipping plane, pointing toward the clipped region"))
     , id(initData(&id, 0, "id", "Clipping plane OpenGL ID"))
     , active(initData(&active,true,"active","Control whether the clipping plane should be applied or not"))
 {
@@ -81,8 +81,8 @@ void ClipPlane::fwdDraw(core::visual::VisualParams*)
     if (active.getValue())
     {
         glGetClipPlane(GL_CLIP_PLANE0+id.getValue(), saveEq);
-        sofa::defaulttype::Vector3 p = position.getValue();
-        sofa::defaulttype::Vector3 n = normal.getValue();
+        sofa::type::Vector3 p = position.getValue();
+        sofa::type::Vector3 n = normal.getValue();
         GLdouble c[4] = { (GLdouble) -n[0], (GLdouble)-n[1], (GLdouble)-n[2], (GLdouble)(p*n) };
         glClipPlane(GL_CLIP_PLANE0+id.getValue(), c);
         if (!wasActive)

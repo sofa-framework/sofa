@@ -753,7 +753,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::applyRotation (const SReal rx, const SReal ry, const SReal rz)
 {
     sofa::defaulttype::Quaternion q =
-            helper::Quater< SReal >::createQuaterFromEuler(sofa::defaulttype::Vec< 3, SReal >(rx, ry, rz) * M_PI / 180.0);
+            helper::Quater< SReal >::createQuaterFromEuler(sofa::type::Vec< 3, SReal >(rx, ry, rz) * M_PI / 180.0);
     applyRotation(q);
 }
 
@@ -764,9 +764,9 @@ void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
 
     for (unsigned int i = 0; i < x_wA.size(); i++)
     {
-        sofa::defaulttype::Vec<3,Real> pos;
+        sofa::type::Vec<3,Real> pos;
         DataTypes::get(pos[0], pos[1], pos[2], x_wA[i]);
-        sofa::defaulttype::Vec<3,Real> newposition = q.rotate(pos);
+        sofa::type::Vec<3,Real> newposition = q.rotate(pos);
         DataTypes::set(x_wA[i], newposition[0], newposition[1], newposition[2]);
     }
 }
@@ -776,7 +776,7 @@ void MechanicalObject<DataTypes>::applyScale(const SReal sx,const SReal sy,const
 {
     helper::WriteAccessor< Data<VecCoord> > x_wA = this->writePositions();
 
-    const sofa::defaulttype::Vec<3,Real> s((Real)sx, (Real)sy, (Real)sz);
+    const sofa::type::Vec<3,Real> s((Real)sx, (Real)sy, (Real)sz);
     for (unsigned int i=0; i<x_wA.size(); i++)
     {
         x_wA[i][0] = x_wA[i][0] * s[0];
@@ -2722,9 +2722,9 @@ inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualP
 {
     float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
-    std::vector<defaulttype::Vector3> positions;
+    std::vector<type::Vector3> positions;
     for (int i = 0; i <d_size.getValue(); ++i)
-        positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
+        positions.push_back(type::Vector3(getPX(i), getPY(i), getPZ(i)));
 
     vparams->drawTool()->draw3DText_Indices(positions, scale, d_color.getValue());
 }
@@ -2831,18 +2831,18 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
         // seems to be valid DOFs
         const VecCoord& x =this->read(core::ConstVecCoordId::position())->getValue();
 
-        defaulttype::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
-        defaulttype::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
+        type::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
+        type::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
         for (int i=0; i< d_size.getValue(); ++i)
         {
-            defaulttype::Vec<3,Real> pos;
+            type::Vec<3,Real> pos;
             DataTypes::get(pos[0],pos[1],pos[2],x[i]);
 
             if (pos == origin) continue;
             SReal dist = (pos-origin)*direction;
             if (dist < 0) continue; // discard particles behind the camera, such as mouse position
 
-            defaulttype::Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
+            type::Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
             SReal distToRay = vecPoint.norm2();
             SReal maxr = radius0 + dRadius*dist;
             if (distToRay <= maxr*maxr)
@@ -2868,7 +2868,7 @@ bool MechanicalObject<DataTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
     const VecCoord& x = read(core::ConstVecCoordId::position())->getValue();
     for(Size i=0; i<x.size(); i++ )
     {
-        defaulttype::Vec<3,Real> p;
+        type::Vec<3,Real> p;
         DataTypes::get( p[0], p[1], p[2], x[i] );
 
         for( unsigned int j=0 ; j<spatial_dimensions; ++j )

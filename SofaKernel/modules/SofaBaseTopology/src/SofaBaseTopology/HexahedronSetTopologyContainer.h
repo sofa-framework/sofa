@@ -79,7 +79,7 @@ public:
 
 
     typedef Hexa		Hexahedron;
-	typedef sofa::defaulttype::Vec<3,unsigned char> HexahedronBinaryIndex;
+	typedef sofa::type::Vec<3,unsigned char> HexahedronBinaryIndex;
 protected:
     HexahedronSetTopologyContainer();
 

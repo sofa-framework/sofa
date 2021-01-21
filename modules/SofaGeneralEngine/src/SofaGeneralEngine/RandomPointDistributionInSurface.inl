@@ -135,7 +135,7 @@ void RandomPointDistributionInSurface<DataTypes>::generateRandomDirections()
 }
 
 template <class DataTypes>
-defaulttype::Vec<3,typename DataTypes::Real> RandomPointDistributionInSurface<DataTypes>::generateRandomPoint(const Vec3 &minBBox, const Vec3 &maxBBox)
+type::Vec<3,typename DataTypes::Real> RandomPointDistributionInSurface<DataTypes>::generateRandomPoint(const Vec3 &minBBox, const Vec3 &maxBBox)
 {
     Vec3 r;
     for (unsigned int i= 0 ; i<3 ; i++)
@@ -208,7 +208,7 @@ void RandomPointDistributionInSurface<DataTypes>::doUpdate()
     outPoints->clear();
 
 
-    helper::vector<defaulttype::Vector3> verticesD;
+    helper::vector<type::Vector3> verticesD;
     for (unsigned int i=0 ; i<vertices.size() ; i++)
         verticesD.push_back(vertices[i]);
 
@@ -258,7 +258,7 @@ void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::Visua
     const VecCoord& out = f_outPoints.getValue();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     for (unsigned int i=0 ; i<in.size() ; i++)
         vertices.push_back(in[i]);

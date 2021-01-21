@@ -381,7 +381,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
     const VecIndex& indices = m_indices;
     const VecIndex& ext_indices = (m_useRestMState ? m_ext_indices : m_indices);
 
-    std::vector< defaulttype::Vector3 > points;
+    std::vector< type::Vector3 > points;
 
     for (sofa::Index i=0; i<indices.size(); i++)
     {
@@ -401,10 +401,10 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
     // draw connected point indices
     Real scale = (vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * d_showIndicesScale.getValue();
 
-    helper::vector<defaulttype::Vector3> positions;
+    helper::vector<type::Vector3> positions;
     for (sofa::Index i = 0; i < indices.size(); i++) {
         const sofa::Index index = indices[i];
-        positions.push_back(defaulttype::Vector3(p0[index][0], p0[index][1], p0[index][2] ));
+        positions.push_back(type::Vector3(p0[index][0], p0[index][1], p0[index][2] ));
     }
 
     vparams->drawTool()->draw3DText_Indices(positions, float(scale), helper::types::RGBAColor::white());

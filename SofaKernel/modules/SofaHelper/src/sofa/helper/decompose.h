@@ -48,7 +48,7 @@ public:
       The first basis vector is aligned to the first given vector, the second basis vector is in the plane of the two first given vectors, and the third basis vector is orthogonal to the two others.
       Undefined result if one of the vectors is null, or if the two vectors are parallel.
       */
-    static void getRotation( defaulttype::Mat<3,3,Real>& r, defaulttype::Vec<3,Real>& edgex, defaulttype::Vec<3,Real>& edgey );
+    static void getRotation( defaulttype::Mat<3,3,Real>& r, type::Vec<3,Real>& edgex, type::Vec<3,Real>& edgey );
 
     /** QR decomposition
       Compute an orthonormal right-handed 3x3 basis based on a matrix using Gram-Schmidt orthogonalization.
@@ -169,14 +169,14 @@ public:
     /** Polar decomposition rotation gradient, computes the strain gradient dS of a given polar decomposition computed by a SVD such as M = U*Sdiag*V
       * Christopher Twigg, Zoran Kacic-Alesic, "Point Cloud Glue: Constraining simulations using the Procrustes transform", SCA'10
      */
-    static bool polarDecomposition_stable_Gradient_dQ( const defaulttype::Mat<3,3,Real>& U, const defaulttype::Vec<3,Real>& Sdiag, const defaulttype::Mat<3,3,Real>& V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ );
-    static bool polarDecomposition_stable_Gradient_dQOverdM( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &Sdiag, const defaulttype::Mat<3,3,Real> &V, defaulttype::Mat<9,9,Real>& dQOverdM );
+    static bool polarDecomposition_stable_Gradient_dQ( const defaulttype::Mat<3,3,Real>& U, const type::Vec<3,Real>& Sdiag, const defaulttype::Mat<3,3,Real>& V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ );
+    static bool polarDecomposition_stable_Gradient_dQOverdM( const defaulttype::Mat<3,3,Real> &U, const type::Vec<3,Real> &Sdiag, const defaulttype::Mat<3,3,Real> &V, defaulttype::Mat<9,9,Real>& dQOverdM );
 
     /** Polar decomposition rotation gradient, computes the strain gradient dS of a given polar decomposition computed by a SVD such as M = U*Sdiag*V
       * Christopher Twigg, Zoran Kacic-Alesic, "Point Cloud Glue: Constraining simulations using the Procrustes transform", SCA'10
      */
-    static bool polarDecompositionGradient_dQ( const defaulttype::Mat<3,2,Real>& U, const defaulttype::Vec<2,Real>& Sdiag, const defaulttype::Mat<2,2,Real>& V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dQ );
-    static bool polarDecompositionGradient_dQOverdM( const defaulttype::Mat<3,2,Real>& U, const defaulttype::Vec<2,Real>& Sdiag, const defaulttype::Mat<2,2,Real>& V, defaulttype::Mat<6,6,Real>& dQOverdM );
+    static bool polarDecompositionGradient_dQ( const defaulttype::Mat<3,2,Real>& U, const type::Vec<2,Real>& Sdiag, const defaulttype::Mat<2,2,Real>& V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dQ );
+    static bool polarDecompositionGradient_dQOverdM( const defaulttype::Mat<3,2,Real>& U, const type::Vec<2,Real>& Sdiag, const defaulttype::Mat<2,2,Real>& V, defaulttype::Mat<6,6,Real>& dQOverdM );
 
 
     /** @}
@@ -187,22 +187,22 @@ public:
     /** Non-iterative & faster Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 3x3 Real Matrix @param A
       * Derived from Wild Magic Library
       */
-    static void eigenDecomposition( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag );
+    static void eigenDecomposition( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &V, type::Vec<3,Real> &diag );
 
     /// Non-iterative Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 2x2 Real Matrix @param A
     /// @warning this method is instable in specific configurations TODO
-    static void eigenDecomposition( const defaulttype::Mat<2,2,Real> &A, defaulttype::Mat<2,2,Real> &V, defaulttype::Vec<2,Real> &diag );
+    static void eigenDecomposition( const defaulttype::Mat<2,2,Real> &A, defaulttype::Mat<2,2,Real> &V, type::Vec<2,Real> &diag );
 
 
     /** Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 3x3 Real Matrix @param M
       * Derived from Wild Magic Library
       */
-    static void eigenDecomposition_iterative( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag );
+    static void eigenDecomposition_iterative( const defaulttype::Mat<3,3,Real> &M, defaulttype::Mat<3,3,Real> &V, type::Vec<3,Real> &diag );
 
     /** Eigensystem decomposition: eigenvalues @param diag and eigenvectors (columns of @param V) of the 2x2 Real Matrix @param M
       * Derived from Wild Magic Library
       */
-    static void eigenDecomposition_iterative( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &V, defaulttype::Vec<2,Real> &diag );
+    static void eigenDecomposition_iterative( const defaulttype::Mat<2,2,Real> &M, defaulttype::Mat<2,2,Real> &V, type::Vec<2,Real> &diag );
 
     /** @} */
 
@@ -216,41 +216,41 @@ public:
       * all eigenvalues are positive
       * Warning U & V are not guarantee to be rotations (they can be reflexions), eigenvalues are not sorted
       */
-    static void SVD( const defaulttype::Mat<3,3,Real> &F, defaulttype::Mat<3,3,Real> &U, defaulttype::Vec<3,Real> &S, defaulttype::Mat<3,3,Real> &V );
+    static void SVD( const defaulttype::Mat<3,3,Real> &F, defaulttype::Mat<3,3,Real> &U, type::Vec<3,Real> &S, defaulttype::Mat<3,3,Real> &V );
 
     /** SVD based on the Eigensystem decomposition of FtF with robustness against invertion and degenerate configurations
       * \returns true iff the stabilization processed an inverted rotation or a degenerate case
       * U & V are rotations
       * Warning eigenvalues are not guaranteed to be positive, eigenvalues are not sorted
       */
-    static bool SVD_stable( const defaulttype::Mat<3,3,Real> &F, defaulttype::Mat<3,3,Real> &U, defaulttype::Vec<3,Real> &S, defaulttype::Mat<3,3,Real> &V );
-    static bool SVD_stable( const defaulttype::Mat<2,2,Real> &F, defaulttype::Mat<2,2,Real> &U, defaulttype::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V );
+    static bool SVD_stable( const defaulttype::Mat<3,3,Real> &F, defaulttype::Mat<3,3,Real> &U, type::Vec<3,Real> &S, defaulttype::Mat<3,3,Real> &V );
+    static bool SVD_stable( const defaulttype::Mat<2,2,Real> &F, defaulttype::Mat<2,2,Real> &U, type::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V );
 
     /** SVD F = U*F_diagonal*V based on the Eigensystem decomposition of FtF
       * all eigenvalues are positive
       * Warning U & V are not guarantee to be rotations (they can be reflexions), eigenvalues are not sorted
       */
-    static void SVD( const defaulttype::Mat<3,2,Real> &F, defaulttype::Mat<3,2,Real> &U, defaulttype::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V );
+    static void SVD( const defaulttype::Mat<3,2,Real> &F, defaulttype::Mat<3,2,Real> &U, type::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V );
 
     /** SVD based on the Eigensystem decomposition of FtF with robustness against invertion and degenerate configurations
       * \returns true in a degenerate case
       * U & V are rotations
       * Warning eigenvalues are not guaranteed to be positive, eigenvalues are not sorted
       */
-    static bool SVD_stable( const defaulttype::Mat<3,2,Real> &F, defaulttype::Mat<3,2,Real> &U, defaulttype::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V );
+    static bool SVD_stable( const defaulttype::Mat<3,2,Real> &F, defaulttype::Mat<3,2,Real> &U, type::Vec<2,Real> &S, defaulttype::Mat<2,2,Real> &V );
 
 
     /** SVD rotation gradients, computes the rotation gradients dU & dV
       * T. Papadopoulo, M.I.A. Lourakis, "Estimating the Jacobian of the Singular Value Decomposition: Theory and Applications", European Conference on Computer Vision, 2000
      */
-    static bool SVDGradient_dUdV( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dU, defaulttype::Mat<3,3,Real>& dV );
-    static bool SVDGradient_dUdVOverdM( const defaulttype::Mat<3,3,Real> &U, const defaulttype::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, defaulttype::Mat<9,9,Real>& dUOverdM, defaulttype::Mat<9,9,Real>& dVOverdM );
+    static bool SVDGradient_dUdV( const defaulttype::Mat<3,3,Real> &U, const type::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dU, defaulttype::Mat<3,3,Real>& dV );
+    static bool SVDGradient_dUdVOverdM( const defaulttype::Mat<3,3,Real> &U, const type::Vec<3,Real> &S, const defaulttype::Mat<3,3,Real> &V, defaulttype::Mat<9,9,Real>& dUOverdM, defaulttype::Mat<9,9,Real>& dVOverdM );
 
     /** SVD rotation gradients, computes the rotation gradients dU & dV
       * T. Papadopoulo, M.I.A. Lourakis, "Estimating the Jacobian of the Singular Value Decomposition: Theory and Applications", European Conference on Computer Vision, 2000
      */
-    static bool SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, const defaulttype::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dU, defaulttype::Mat<2,2,Real>& dV );
-    static bool SVDGradient_dUdVOverdM( const defaulttype::Mat<3,2,Real> &U, const defaulttype::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, defaulttype::Mat<6,6,Real>& dUOverdM, defaulttype::Mat<4,6,Real>& dVOverdM );
+    static bool SVDGradient_dUdV( const defaulttype::Mat<3,2,Real> &U, const type::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, const defaulttype::Mat<3,2,Real>& dM, defaulttype::Mat<3,2,Real>& dU, defaulttype::Mat<2,2,Real>& dV );
+    static bool SVDGradient_dUdVOverdM( const defaulttype::Mat<3,2,Real> &U, const type::Vec<2,Real> &S, const defaulttype::Mat<2,2,Real> &V, defaulttype::Mat<6,6,Real>& dUOverdM, defaulttype::Mat<4,6,Real>& dVOverdM );
 
 
     /** @}
@@ -260,7 +260,7 @@ public:
 
     /// Diagonalization of a symmetric 3x3 matrix
     /// A = Q.w.Q^{-1} with w the eigenvalues and Q the eigenvectors
-    static int symmetricDiagonalization( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, defaulttype::Vec<3,Real> &w );
+    static int symmetricDiagonalization( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, type::Vec<3,Real> &w );
 
 
     /// project a symmetric 3x3 matrix to a PSD (symmetric, positive semi-definite)
@@ -320,16 +320,16 @@ private:
 //    /** @internal useful for polarDecomposition
 //      * Setup u for Household reflection to zero all v components but first
 //      */
-//    static void make_reflector(const defaulttype::Vec<3,Real>& v, defaulttype::Vec<3,Real>& u);
+//    static void make_reflector(const type::Vec<3,Real>& v, type::Vec<3,Real>& u);
 
 //    /** @internal useful for polarDecomposition
 //      * Apply Householder reflection represented by u to column vectors of M
 //      */
-//    static void reflect_cols(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>& u);
+//    static void reflect_cols(defaulttype::Mat<3,3,Real>& M, const type::Vec<3,Real>& u);
 //    /** @internal useful for polarDecomposition
 //      * Apply Householder reflection represented by u to row vectors of M
 //      */
-//    static void reflect_rows(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>& u);
+//    static void reflect_rows(defaulttype::Mat<3,3,Real>& M, const type::Vec<3,Real>& u);
 
 //    /** @internal useful for polarDecomposition
 //      * Find orthogonal factor Q of rank 1 (or less) M
@@ -344,28 +344,28 @@ private:
     /** @internal useful for polarDecompositionGradient
       * \returns M such as Mu = cross( v, u ), note that M is antisymmetric
       */
-    static defaulttype::Mat<3,3,Real> skewMat( const defaulttype::Vec<3,Real>& v );
+    static defaulttype::Mat<3,3,Real> skewMat( const type::Vec<3,Real>& v );
 
     /** @internal useful for polarDecompositionGradient
       * Returns the "skew part" v of a matrix such as skewMat(v) = 0.5*(M-Mt)
       */
-    static defaulttype::Vec<3,Real> skewVec( const defaulttype::Mat<3,3,Real>& M );
+    static type::Vec<3,Real> skewVec( const defaulttype::Mat<3,3,Real>& M );
 
 
     /// @internal useful for eigenDecomposition
     static void ComputeRoots( const defaulttype::Mat<3,3,Real>& A, double root[3] );
 
     /// @internal useful for eigenDecomposition
-    static bool PositiveRank( defaulttype::Mat<3,3,Real>& M, Real& maxEntry, defaulttype::Vec<3,Real>& maxRow );
+    static bool PositiveRank( defaulttype::Mat<3,3,Real>& M, Real& maxEntry, type::Vec<3,Real>& maxRow );
 
     /// @internal useful for eigenDecomposition
     // Input vec0 must be a unit-length vector.  The output vectors
     // {vec0,vec1} are unit length and mutually perpendicular, and
     // {vec0,vec1,vec2} is an orthonormal basis.
-    static void GenerateComplementBasis( defaulttype::Vec<3,Real>& vec0, defaulttype::Vec<3,Real>& vec1, const defaulttype::Vec<3,Real>& vec2 );
+    static void GenerateComplementBasis( type::Vec<3,Real>& vec0, type::Vec<3,Real>& vec1, const type::Vec<3,Real>& vec2 );
 
     /// @internal useful for eigenDecomposition
-    static void ComputeVectors( const defaulttype::Mat<3,3,Real>& A, defaulttype::Vec<3,Real>& U2, int i0, int i1, int i2, defaulttype::Mat<3,3,Real> &V, defaulttype::Vec<3,Real> &diag );
+    static void ComputeVectors( const defaulttype::Mat<3,3,Real>& A, type::Vec<3,Real>& U2, int i0, int i1, int i2, defaulttype::Mat<3,3,Real> &V, type::Vec<3,Real> &diag );
 
 
     /** @internal useful for iterative eigenDecomposition
@@ -373,7 +373,7 @@ private:
       * Derived from numerical recipies
       */
     template <sofa::Size iSize>
-    static void QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaulttype::Vec<iSize,Real> &subDiag, defaulttype::Mat<iSize,iSize,Real> &V );
+    static void QLAlgorithm( type::Vec<iSize,Real> &diag, type::Vec<iSize,Real> &subDiag, defaulttype::Mat<iSize,iSize,Real> &V );
 
 }; // class Decompose
 

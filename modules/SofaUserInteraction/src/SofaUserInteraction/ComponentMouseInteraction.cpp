@@ -90,7 +90,7 @@ template class TComponentMouseInteraction<defaulttype::Vec3Types>;
 template class TComponentMouseInteraction<defaulttype::Rigid3Types>;
 
 
-helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec2dTypes> > ComponentMouseInteractionVec2dClass ("MouseSpringVec2d",true);
+helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<type::Vec2dTypes> > ComponentMouseInteractionVec2dClass ("MouseSpringVec2d",true);
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3dTypes> > ComponentMouseInteractionVec3dClass ("MouseSpringVec3d",true);
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Rigid3dTypes> > ComponentMouseInteractionRigid3dClass ("MouseSpringRigid3d",true);
 

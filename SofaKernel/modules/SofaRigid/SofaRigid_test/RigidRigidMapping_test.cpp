@@ -31,7 +31,7 @@ namespace sofa {
 namespace {
 using namespace core;
 using namespace component;
-using defaulttype::Vec;
+using type::Vec;
 using defaulttype::Mat;
 
 
@@ -150,7 +150,7 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
         // Expected child coords
         OutVecCoord expectedChildCoords(1);
         //Center
-        defaulttype::Vector3 translationVector (tx,ty,tz);
+        type::Vector3 translationVector (tx,ty,tz);
         expectedChildCoords[0].getCenter() = rot3.rotate(xout[0].getCenter()) + translationVector;
         // Orientation
         expectedChildCoords[0].getOrientation() = xin[0].getOrientation();

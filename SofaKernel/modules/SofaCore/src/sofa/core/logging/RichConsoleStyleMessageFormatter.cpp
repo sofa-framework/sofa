@@ -33,7 +33,7 @@
 using sofa::helper::logging::SofaComponentInfo;
 
 #include <sofa/helper/system/console.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 
 #include <boost/tokenizer.hpp>
 #include <boost/token_functions.hpp>

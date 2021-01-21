@@ -23,7 +23,7 @@
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <algorithm> // for std::min
 
 namespace sofa::component::constraintset::bilateralinteractionconstraint
@@ -32,7 +32,7 @@ namespace sofa::component::constraintset::bilateralinteractionconstraint
 using sofa::core::objectmodel::KeypressedEvent ;
 using sofa::core::objectmodel::Event ;
 using sofa::helper::WriteAccessor ;
-using sofa::defaulttype::Vec;
+using sofa::type::Vec;
 
 template<class DataTypes>
 BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
@@ -128,7 +128,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
             int tm1 = m1Indices[pid];
             int tm2 = m2Indices[pid];
 
-            const defaulttype::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
+            const type::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
 
             cid[pid] = constraintId;
             constraintId += 3;
@@ -215,7 +215,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
             }
             dfree[pid] = dfree_loc;
 
-            const defaulttype::Vec<3, Real> cx(1.0,0,0), cy(0,1.0,0), cz(0,0,1.0);
+            const type::Vec<3, Real> cx(1.0,0,0), cy(0,1.0,0), cz(0,0,1.0);
 
             cid[pid] = constraintId;
 
@@ -513,7 +513,7 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
 
     sofa::helper::types::RGBAColor colorActive = sofa::helper::types::RGBAColor::magenta();
     sofa::helper::types::RGBAColor colorNotActive = sofa::helper::types::RGBAColor::green();
-    std::vector< sofa::defaulttype::Vector3 > vertices;
+    std::vector< sofa::type::Vector3 > vertices;
 
     unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
     for (unsigned i=0; i<minp; i++)

@@ -475,7 +475,7 @@ typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getRestPoi
 
 template<class DataTypes>
 typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getRestPointPositionInHexahedron(const HexaID h,
-        const sofa::defaulttype::Vector3& baryC) const
+        const sofa::type::Vector3& baryC) const
 {
     Coord	p[8];
     getRestHexahedronVertexCoordinates(h, p);
@@ -521,7 +521,7 @@ typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getPointPo
 
 template<class DataTypes>
 typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getPointPositionInHexahedron(const HexaID h,
-        const sofa::defaulttype::Vector3& baryC) const
+        const sofa::type::Vector3& baryC) const
 {
     Coord	p[8];
     getHexahedronVertexCoordinates(h, p);
@@ -543,7 +543,7 @@ typename DataTypes::Coord HexahedronSetGeometryAlgorithms<DataTypes>::getPointPo
 }
 
 template<class DataTypes>
-sofa::defaulttype::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronRestBarycentricCoeficients(const HexaID h,
+sofa::type::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronRestBarycentricCoeficients(const HexaID h,
         const Coord& pos) const
 {
     Coord	p[8];
@@ -551,7 +551,7 @@ sofa::defaulttype::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHe
 
     const unsigned int max_spatial_dimensions = std::min((unsigned int)3,(unsigned int)DataTypes::spatial_dimensions);
 
-    sofa::defaulttype::Vector3 origin, p1, p3, p4, pnt;
+    sofa::type::Vector3 origin, p1, p3, p4, pnt;
     for( unsigned int w=0 ; w<max_spatial_dimensions ; ++w )
     {
         origin[w] = p[0][w];
@@ -572,7 +572,7 @@ sofa::defaulttype::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHe
 }
 
 template<class DataTypes>
-sofa::defaulttype::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronBarycentricCoeficients(const HexaID h,
+sofa::type::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronBarycentricCoeficients(const HexaID h,
         const Coord& pos) const
 {
     // Warning: this is only correct if the hexahedron is not deformed
@@ -584,7 +584,7 @@ sofa::defaulttype::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHe
 
     const unsigned int max_spatial_dimensions = std::min((unsigned int)3,(unsigned int)DataTypes::spatial_dimensions);
 
-    sofa::defaulttype::Vector3 origin, p1, p3, p4, pnt;
+    sofa::type::Vector3 origin, p1, p3, p4, pnt;
     for( unsigned int w=0 ; w<max_spatial_dimensions ; ++w )
     {
         origin[w] = p[0][w];
@@ -609,7 +609,7 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeEl
 {
     typedef typename DataTypes::Real Real;
 
-    const sofa::defaulttype::Vector3 v = computeHexahedronBarycentricCoeficients(h, pos);
+    const sofa::type::Vector3 v = computeHexahedronBarycentricCoeficients(h, pos);
 
     Real d = (Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
 
@@ -624,7 +624,7 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeEl
 {
     typedef typename DataTypes::Real Real;
 
-    const sofa::defaulttype::Vector3 v = computeHexahedronRestBarycentricCoeficients(h, pos);
+    const sofa::type::Vector3 v = computeHexahedronRestBarycentricCoeficients(h, pos);
 
     Real d = (Real) std::max(std::max(-v[0], -v[1]), std::max(std::max(-v[2], v[0]-1), std::max(v[1]-1, v[2]-1)));
 
@@ -635,7 +635,7 @@ typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeEl
 }
 
 template< class DataTypes>
-int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElement(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const
+int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElement(const Coord& pos, sofa::type::Vector3& baryC, Real& distance) const
 {
 	sofa::Index index = sofa::InvalidID;
     distance = std::numeric_limits<Real>::max();
@@ -660,7 +660,7 @@ int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElement(const Coord
 template< class DataTypes>
 void HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElements(const VecCoord& pos,
         helper::vector<int>& elem,
-        helper::vector<defaulttype::Vector3>& baryC,
+        helper::vector<type::Vector3>& baryC,
         helper::vector<Real>& dist) const
 {
     for(size_t i=0; i<pos.size(); ++i)
@@ -670,7 +670,7 @@ void HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElements(const Vec
 }
 
 template< class DataTypes>
-int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const
+int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementInRestPos(const Coord& pos, sofa::type::Vector3& baryC, Real& distance) const
 {
 	sofa::Index index = sofa::InvalidID;
 	distance = std::numeric_limits<Real>::max();
@@ -693,7 +693,7 @@ int HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementInRestPos(co
 }
 
 template< class DataTypes>
-void HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementsInRestPos( const VecCoord& pos, helper::vector<int>& elem, helper::vector<defaulttype::Vector3>& baryC, helper::vector<Real>& dist) const
+void HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementsInRestPos( const VecCoord& pos, helper::vector<int>& elem, helper::vector<type::Vector3>& baryC, helper::vector<Real>& dist) const
 {
     for(size_t i=0; i<pos.size(); ++i)
     {
@@ -838,16 +838,16 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
         const sofa::helper::vector<Hexahedron> &hexaArray = this->m_topology->getHexahedra();
 
-        std::vector<defaulttype::Vector3> positions;
+        std::vector<type::Vector3> positions;
         for (size_t i =0; i<hexaArray.size(); i++)
         {
 
             Hexahedron the_hexa = hexaArray[i];
-            sofa::defaulttype::Vec3f center;
+            sofa::type::Vec3f center;
 
             for (unsigned int j = 0; j<8; j++)
             {
-                defaulttype::Vector3 vertex; vertex = DataTypes::getCPos(coords[ the_hexa[j] ]);
+                type::Vector3 vertex; vertex = DataTypes::getCPos(coords[ the_hexa[j] ]);
                 center += vertex;
             }
 
@@ -868,7 +868,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
         const sofa::helper::vector<Hexahedron> &hexaArray = this->m_topology->getHexahedra();
 
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-        sofa::helper::vector <sofa::defaulttype::Vector3> hexaCoords;
+        sofa::helper::vector <sofa::type::Vector3> hexaCoords;
 
         for (size_t i = 0; i<hexaArray.size(); i++)
         {
@@ -876,7 +876,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
             for (unsigned int j = 0; j<8; j++)
             {
-                sofa::defaulttype::Vector3 p; p = DataTypes::getCPos(coords[H[j]]);
+                sofa::type::Vector3 p; p = DataTypes::getCPos(coords[H[j]]);
 
                 hexaCoords.push_back(p);
             }

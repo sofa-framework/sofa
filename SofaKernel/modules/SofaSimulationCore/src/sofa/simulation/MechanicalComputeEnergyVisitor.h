@@ -23,7 +23,7 @@
 #define SOFA_SIMULATION_MECHANICALCOMPUTEENERGYACTION_H
 
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/MechanicalParams.h>
 namespace sofa
 {

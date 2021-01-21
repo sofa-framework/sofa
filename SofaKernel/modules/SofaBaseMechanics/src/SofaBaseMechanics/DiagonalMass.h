@@ -30,7 +30,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
@@ -52,7 +52,7 @@ public :
     typedef sofa::component::topology::PointData<MassVector> VecMass;
 
     // In case of non 3D template
-    typedef sofa::defaulttype::Vec<3,Real> Vec3;
+    typedef sofa::type::Vec<3,Real> Vec3;
     typedef sofa::defaulttype::StdVectorTypes< Vec3, Vec3, Real > GeometricalTypes ; /// assumes the geometry object type is 3D
 };
 
@@ -297,7 +297,7 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
+    type::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
@@ -337,12 +337,12 @@ private:
     void initRigidImpl() ;
 
     template <class T>
-    defaulttype::Vector6 getMomentumRigid3Impl ( const core::MechanicalParams*,
+    type::Vector6 getMomentumRigid3Impl ( const core::MechanicalParams*,
                                                  const DataVecCoord& vx,
                                                  const DataVecDeriv& vv ) const ;
 
     template <class T>
-    defaulttype::Vector6 getMomentumVec3Impl ( const core::MechanicalParams*,
+    type::Vector6 getMomentumVec3Impl ( const core::MechanicalParams*,
                                                const DataVecCoord& vx,
                                                const DataVecDeriv& vv ) const ;
 };
@@ -366,9 +366,9 @@ void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::init();
 template <>
 void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::draw(const core::visual::VisualParams* vparams);
 template <>
-defaulttype::Vector6 DiagonalMass<defaulttype::Vec3Types, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+type::Vector6 DiagonalMass<defaulttype::Vec3Types, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 template <>
-defaulttype::Vector6 DiagonalMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+type::Vector6 DiagonalMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 
 
 

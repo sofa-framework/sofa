@@ -86,8 +86,8 @@ template<class R>
 typename SolidTypes<R>::SpatialVector SolidTypes<R>::SpatialVector::cross( const SpatialVector& v ) const
 {
     return SpatialVector(
-            defaulttype::cross(lineVec,v.lineVec),
-            defaulttype::cross(freeVec,v.lineVec) + defaulttype::cross(lineVec,v.freeVec)
+            type::cross(lineVec,v.lineVec),
+            type::cross(freeVec,v.lineVec) + type::cross(lineVec,v.freeVec)
             );
 }
 

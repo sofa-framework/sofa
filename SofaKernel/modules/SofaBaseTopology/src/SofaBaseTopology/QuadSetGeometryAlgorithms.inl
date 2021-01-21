@@ -112,7 +112,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::computeQuadArea( BasicArrayInterface<
 
 // Computes the normal vector of a quad indexed by ind_q (not normed)
 template<class DataTypes>
-sofa::defaulttype::Vec<3,double> QuadSetGeometryAlgorithms< DataTypes >::computeQuadNormal(const QuadID ind_q) const
+sofa::type::Vec<3,double> QuadSetGeometryAlgorithms< DataTypes >::computeQuadNormal(const QuadID ind_q) const
 {
     // HYP :  The quad indexed by ind_q is planar
 
@@ -124,18 +124,18 @@ sofa::defaulttype::Vec<3,double> QuadSetGeometryAlgorithms< DataTypes >::compute
     const typename DataTypes::Coord& c2=vect_c[q[2]];
     //const typename DataTypes::Coord& c3=vect_c[q[3]];
 
-    sofa::defaulttype::Vec<3,Real> p0;
+    sofa::type::Vec<3,Real> p0;
     p0[0] = (Real) (c0[0]); p0[1] = (Real) (c0[1]); p0[2] = (Real) (c0[2]);
-    sofa::defaulttype::Vec<3,Real> p1;
+    sofa::type::Vec<3,Real> p1;
     p1[0] = (Real) (c1[0]); p1[1] = (Real) (c1[1]); p1[2] = (Real) (c1[2]);
-    sofa::defaulttype::Vec<3,Real> p2;
+    sofa::type::Vec<3,Real> p2;
     p2[0] = (Real) (c2[0]); p2[1] = (Real) (c2[1]); p2[2] = (Real) (c2[2]);
     //Vec<3,Real> p3;
     //p3[0] = (Real) (c3[0]); p3[1] = (Real) (c3[1]); p3[2] = (Real) (c3[2]);
 
-    sofa::defaulttype::Vec<3,Real> normal_q=(p1-p0).cross( p2-p0);
+    sofa::type::Vec<3,Real> normal_q=(p1-p0).cross( p2-p0);
 
-    return ((sofa::defaulttype::Vec<3,double>) normal_q);
+    return ((sofa::type::Vec<3,double>) normal_q);
 }
 
 
@@ -143,7 +143,7 @@ sofa::defaulttype::Vec<3,double> QuadSetGeometryAlgorithms< DataTypes >::compute
 template<class DataTypes>
 bool QuadSetGeometryAlgorithms< DataTypes >::isQuadInPlane(const QuadID ind_q,
         const PointID ind_p,
-        const sofa::defaulttype::Vec<3,Real>&plane_vect) const
+        const sofa::type::Vec<3,Real>&plane_vect) const
 {
     const Quad &q = this->m_topology->getQuad(ind_q);
 
@@ -186,41 +186,41 @@ bool QuadSetGeometryAlgorithms< DataTypes >::isQuadInPlane(const QuadID ind_q,
     const typename DataTypes::Coord& c2 = vect_c[ind_2];
     const typename DataTypes::Coord& c3 = vect_c[ind_3];
 
-    sofa::defaulttype::Vec<3,Real> p0;
+    sofa::type::Vec<3,Real> p0;
     p0[0] = (Real) (c0[0]); p0[1] = (Real) (c0[1]); p0[2] = (Real) (c0[2]);
-    sofa::defaulttype::Vec<3,Real> p1;
+    sofa::type::Vec<3,Real> p1;
     p1[0] = (Real) (c1[0]); p1[1] = (Real) (c1[1]); p1[2] = (Real) (c1[2]);
-    sofa::defaulttype::Vec<3,Real> p2;
+    sofa::type::Vec<3,Real> p2;
     p2[0] = (Real) (c2[0]); p2[1] = (Real) (c2[1]); p2[2] = (Real) (c2[2]);
-    sofa::defaulttype::Vec<3,Real> p3;
+    sofa::type::Vec<3,Real> p3;
     p3[0] = (Real) (c3[0]); p3[1] = (Real) (c3[1]); p3[2] = (Real) (c3[2]);
 
     return((p1-p0)*( plane_vect)>=0.0 && (p2-p0)*( plane_vect)>=0.0 && (p3-p0)*( plane_vect)>=0.0);
 }
 
 template<class DataTypes>
-bool QuadSetGeometryAlgorithms< DataTypes >::isPointInQuad(const QuadID ind_q, const sofa::defaulttype::Vec<3,Real>& p) const
+bool QuadSetGeometryAlgorithms< DataTypes >::isPointInQuad(const QuadID ind_q, const sofa::type::Vec<3,Real>& p) const
 {
     const double ZERO = 1e-6;
     const Quad &q = this->m_topology->getQuad(ind_q);
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    sofa::defaulttype::Vec<3,Real> ptest = p;
-    sofa::defaulttype::Vec<3,Real> p0(vect_c[q[0]][0], vect_c[q[0]][1], vect_c[q[0]][2]);
-    sofa::defaulttype::Vec<3,Real> p1(vect_c[q[1]][0], vect_c[q[1]][1], vect_c[q[1]][2]);
-    sofa::defaulttype::Vec<3,Real> p2(vect_c[q[2]][0], vect_c[q[2]][1], vect_c[q[2]][2]);
-    sofa::defaulttype::Vec<3,Real> p3(vect_c[q[3]][0], vect_c[q[3]][1], vect_c[q[3]][2]);
+    sofa::type::Vec<3,Real> ptest = p;
+    sofa::type::Vec<3,Real> p0(vect_c[q[0]][0], vect_c[q[0]][1], vect_c[q[0]][2]);
+    sofa::type::Vec<3,Real> p1(vect_c[q[1]][0], vect_c[q[1]][1], vect_c[q[1]][2]);
+    sofa::type::Vec<3,Real> p2(vect_c[q[2]][0], vect_c[q[2]][1], vect_c[q[2]][2]);
+    sofa::type::Vec<3,Real> p3(vect_c[q[3]][0], vect_c[q[3]][1], vect_c[q[3]][2]);
 
-    sofa::defaulttype::Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
+    sofa::type::Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
     Real norm_v_normal = v_normal*(v_normal);
     if(norm_v_normal > ZERO)
     {
         if(fabs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p1,p2)
         {
 
-            sofa::defaulttype::Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
-            sofa::defaulttype::Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
-            sofa::defaulttype::Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+            sofa::type::Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
+            sofa::type::Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
+            sofa::type::Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
 
             if(((ptest-p0)*(n_01) > -ZERO) && ((ptest-p1)*(n_12) > -ZERO) && ((ptest-p2)*(n_20) > -ZERO))
                 return true;
@@ -234,9 +234,9 @@ bool QuadSetGeometryAlgorithms< DataTypes >::isPointInQuad(const QuadID ind_q, c
         if(fabs((ptest-p0)*(v_normal)) < ZERO) // p is in the plane defined by the triangle (p0,p3,p2)
         {
 
-            sofa::defaulttype::Vec<3,Real> n_01 = (p2-p0).cross(v_normal);
-            sofa::defaulttype::Vec<3,Real> n_12 = (p3-p2).cross(v_normal);
-            sofa::defaulttype::Vec<3,Real> n_20 = (p0-p3).cross(v_normal);
+            sofa::type::Vec<3,Real> n_01 = (p2-p0).cross(v_normal);
+            sofa::type::Vec<3,Real> n_12 = (p3-p2).cross(v_normal);
+            sofa::type::Vec<3,Real> n_20 = (p0-p3).cross(v_normal);
 
             if(((ptest-p0)*(n_01) > -ZERO) && ((ptest-p2)*(n_12) > -ZERO) && ((ptest-p3)*(n_20) > -ZERO))
                 return true;
@@ -358,7 +358,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
         const sofa::helper::vector<Quad>& quadArray = this->m_topology->getQuads();
 
-        std::vector<defaulttype::Vector3> positions;
+        std::vector<type::Vector3> positions;
         for (size_t i =0; i<quadArray.size(); i++)
         {
 
@@ -367,7 +367,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             Coord vertex2 = coords[ the_quad[1] ];
             Coord vertex3 = coords[ the_quad[2] ];
             Coord vertex4 = coords[ the_quad[3] ];
-            defaulttype::Vector3 center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
+            type::Vector3 center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
 
             positions.push_back(center);
 
@@ -387,19 +387,19 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         // Draw Quad surfaces
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         { // drawing quads
-            std::vector<defaulttype::Vector3> pos;
+            std::vector<type::Vector3> pos;
             pos.reserve(quadArray.size()*4u);
             for (size_t i=0u; i< quadArray.size(); i++)
             {
                 const Quad& q = quadArray[i];
 
-                defaulttype::Vector3 bary = defaulttype::Vector3(0.0, 0.0, 0.0);
-                std::vector<defaulttype::Vector3> tmpPos;
+                type::Vector3 bary = type::Vector3(0.0, 0.0, 0.0);
+                std::vector<type::Vector3> tmpPos;
                 tmpPos.resize(4);
 
                 for (unsigned int j = 0; j<4; j++)
                 {
-                    tmpPos[j] = defaulttype::Vector3(DataTypes::getCPos(coords[q[j]]));
+                    tmpPos[j] = type::Vector3(DataTypes::getCPos(coords[q[j]]));
                     bary += tmpPos[j];
                 }
                 bary /= 4;
@@ -418,7 +418,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             edge_color[1] -= 0.2f;
             edge_color[2] -= 0.2f;
 
-            std::vector<defaulttype::Vector3> pos;
+            std::vector<type::Vector3> pos;
             pos.reserve(edgeArray.size()*2u);
 
             if (!edgeArray.empty())
@@ -426,8 +426,8 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
                 for (size_t i = 0u; i<edgeArray.size(); i++)
                 {
                     const Edge& e = edgeArray[i];
-                    pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
-                    pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
+                    pos.push_back(type::Vector3(DataTypes::getCPos(coords[e[0]])));
+                    pos.push_back(type::Vector3(DataTypes::getCPos(coords[e[1]])));
                 }
             } else {
                 for (size_t i = 0u; i<quadArray.size(); i++)
@@ -435,8 +435,8 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
                     const Quad& q = quadArray[i];
                     for (unsigned int j = 0; j<4; j++)
                     {
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[j]])));
-                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[(j+1u)%4u]])));
+                        pos.push_back(type::Vector3(DataTypes::getCPos(coords[q[j]])));
+                        pos.push_back(type::Vector3(DataTypes::getCPos(coords[q[(j+1u)%4u]])));
                     }
                 }
             }

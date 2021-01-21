@@ -38,7 +38,7 @@ int Visual3DTextClass = core::RegisterObject("Display 3D camera-oriented text")
 
 Visual3DText::Visual3DText()
     : d_text(initData(&d_text, "text", "Test to display"))
-    , d_position(initData(&d_position, defaulttype::Vec3f(), "position", "3d position"))
+    , d_position(initData(&d_position, type::Vec3f(), "position", "3d position"))
     , d_scale(initData(&d_scale, 1.f, "scale", "text scale"))
     , d_color(initData(&d_color, sofa::helper::types::RGBAColor(1.0,1.0,1.0,1.0), "color", "text color. (default=[1.0,1.0,1.0,1.0])"))
     , d_depthTest(initData(&d_depthTest, true, "depthTest", "perform depth test"))
@@ -63,7 +63,7 @@ void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
 {
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
-    const defaulttype::Vec3f& pos = d_position.getValue();
+    const type::Vec3f& pos = d_position.getValue();
     float scale = d_scale.getValue();
 
     vparams->drawTool()->saveLastState();

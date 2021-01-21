@@ -36,7 +36,7 @@ namespace helper
 namespace io
 {
 
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 using namespace sofa::core::loader;
 
 Creator<Mesh::FactoryMesh,MeshOBJ> MeshOBJClass("obj");

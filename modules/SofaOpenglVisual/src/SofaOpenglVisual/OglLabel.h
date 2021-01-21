@@ -31,7 +31,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <SofaBaseVisual/BackgroundSetting.h>
 
 namespace sofa

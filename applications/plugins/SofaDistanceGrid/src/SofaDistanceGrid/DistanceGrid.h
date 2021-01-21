@@ -54,7 +54,7 @@ namespace container
 namespace _distancegrid_
 {
 using sofa::helper::io::Mesh;
-using sofa::defaulttype::Vector3 ;
+using sofa::type::Vector3 ;
 typedef Vector3 Coord;
 
 class SOFA_SOFADISTANCEGRID_API DistanceGrid

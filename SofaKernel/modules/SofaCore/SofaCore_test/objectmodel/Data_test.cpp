@@ -37,8 +37,8 @@ public:
     Data<int> dataInt;
     Data<float> dataFloat;
     Data<bool> dataBool;
-    Data<sofa::defaulttype::Vec3> dataVec3;
-    Data<sofa::helper::vector<sofa::defaulttype::Vec3>> dataVectorVec3;
+    Data<sofa::type::Vec3> dataVec3;
+    Data<sofa::helper::vector<sofa::type::Vec3>> dataVectorVec3;
     Data<sofa::helper::vector<sofa::helper::types::RGBAColor>> dataVectorColor;
 };
 

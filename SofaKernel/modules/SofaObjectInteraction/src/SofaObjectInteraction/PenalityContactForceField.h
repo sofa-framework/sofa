@@ -117,7 +117,7 @@ public:
     // -- tool grabing utility
     void grabPoint( const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
             const helper::vector< sofa::Index > &index,
-            helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
+            helper::vector< std::pair< core::objectmodel::BaseObject*, type::Vec3f> > &result,
             helper::vector< sofa::Index > &triangle,
             helper::vector< sofa::Index > &index_point) ;
 

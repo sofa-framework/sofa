@@ -91,11 +91,11 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     }
 
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    defaulttype::Vec<8,Coord> nodesCoarse;
+    type::Vec<8,Coord> nodesCoarse;
     for(int w=0; w<8; ++w)
         nodesCoarse[w] = (X0)[this->_topology->getHexahedron(0)[w]];
 
-    defaulttype::Vec<8,Coord> nodesFine;
+    type::Vec<8,Coord> nodesFine;
     for(int w=0; w<8; ++w)
         nodesFine[w] = (nodesCoarse[w] - nodesCoarse[0]) / coarseNodeSize;
 
@@ -429,7 +429,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initLarge( const int i)
 {
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    defaulttype::Vec<8,Coord> nodes;
+    type::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
         nodes[w] = (X0)[this->_topology->getHexahedron(i)[w]];
 
@@ -464,7 +464,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initPolar( const int i)
 {
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    defaulttype::Vec<8,Coord> nodes;
+    type::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
         nodes[j] = (X0)[this->_topology->getHexahedron(i)[j]];
 

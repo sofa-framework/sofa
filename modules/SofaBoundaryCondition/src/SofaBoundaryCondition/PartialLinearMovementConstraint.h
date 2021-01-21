@@ -104,7 +104,7 @@ public :
     Data<Real> Z0; ///< Size of specimen in Z-direction
 
     enum { NumDimensions = Deriv::total_size };
-    typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
+    typedef sofa::type::stdtype::fixed_array<bool,NumDimensions> VecBool;
     core::objectmodel::Data<VecBool> movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
 
     /// Link to be set to the topology container in the component graph.

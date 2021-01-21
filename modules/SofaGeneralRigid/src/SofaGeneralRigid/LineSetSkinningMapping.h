@@ -152,12 +152,12 @@ private:
     /*!
     	Compute the perpendicular distance from a vertice to a line
     */
-    defaulttype::Vec<3,double> projectToSegment(const defaulttype::Vec<3,Real>& first, const defaulttype::Vec<3,Real>& last, const OutCoord& vertice);
+    type::Vec<3,double> projectToSegment(const type::Vec<3,Real>& first, const type::Vec<3,Real>& last, const OutCoord& vertice);
 
     /*!
     	Compute the weight betwewen a vertice and a line
     */
-    double convolutionSegment(const defaulttype::Vec<3,Real>& first, const defaulttype::Vec<3,Real>& last, const OutCoord& vertice);
+    double convolutionSegment(const type::Vec<3,Real>& first, const type::Vec<3,Real>& last, const OutCoord& vertice);
 
     /*!
     	Stores the lines influenced by each vertice

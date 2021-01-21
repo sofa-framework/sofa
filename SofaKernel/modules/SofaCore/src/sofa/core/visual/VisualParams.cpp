@@ -35,7 +35,7 @@ namespace visual
 {
 
 VisualParams::VisualParams()
-    : m_viewport(sofa::helper::make_array(0,0,0,0))
+    : m_viewport(sofa::type::stdtype::make_array(0,0,0,0))
     , m_zNear(0)
     , m_zFar(0)
     , m_cameraType(PERSPECTIVE_TYPE)

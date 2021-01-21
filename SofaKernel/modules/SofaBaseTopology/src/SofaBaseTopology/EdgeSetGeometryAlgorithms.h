@@ -24,7 +24,7 @@
 
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/NumericalIntegrationDescriptor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <sofa/helper/types/RGBAColor.h>
 namespace sofa::component::topology
@@ -58,7 +58,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 
     typedef sofa::helper::types::RGBAColor RGBAColor ;
-    typedef sofa::defaulttype::Vec3d Vec3d;
+    typedef sofa::type::Vec3d Vec3d;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Real Real;
@@ -109,11 +109,11 @@ public:
     void getRestEdgeVertexCoordinates(const EdgeID i, Coord[2]) const;
 
     // test if a point is on the triangle indexed by ind_e
-    bool isPointOnEdge(const sofa::defaulttype::Vec<3, double> &pt, const EdgeID ind_e) const;
+    bool isPointOnEdge(const sofa::type::Vec<3, double> &pt, const EdgeID ind_e) const;
 
     // compute barycentric coefficients
-    sofa::helper::vector< double > compute2PointsBarycoefs(const sofa::defaulttype::Vec<3, double> &p, PointID ind_p1, PointID ind_p2) const;
-    sofa::helper::vector< double > computeRest2PointsBarycoefs(const sofa::defaulttype::Vec<3, double> &p, PointID ind_p1, PointID ind_p2) const;
+    sofa::helper::vector< double > compute2PointsBarycoefs(const sofa::type::Vec<3, double> &p, PointID ind_p1, PointID ind_p2) const;
+    sofa::helper::vector< double > computeRest2PointsBarycoefs(const sofa::type::Vec<3, double> &p, PointID ind_p1, PointID ind_p2) const;
 
     /** \brief Compute the projection coordinate of a point C on the edge i. Using compute2EdgesIntersection().
     * @param i edgeID on which point is projected.
@@ -121,7 +121,7 @@ public:
     * @param intersected bool default value true, changed as false if no intersection is done.
     * @return barycentric coefficient of the projection in edgeID i.
     */
-    sofa::helper::vector< double > computePointProjectionOnEdge (const EdgeID i, sofa::defaulttype::Vec<3,double> coord_x, bool& intersected);
+    sofa::helper::vector< double > computePointProjectionOnEdge (const EdgeID i, sofa::type::Vec<3,double> coord_x, bool& intersected);
 
     /** \brief Compute the intersection coordinate of the 2 input straight lines. Lines vector director are computed using coord given in input.
     * @param edge1 tab Coord[2] from the 2 vertices composing first edge
@@ -131,8 +131,8 @@ public:
     */
     Coord compute2EdgesIntersection (const Coord edge1[2], const Coord edge2[2], bool& intersected);
 
-    bool computeEdgePlaneIntersection (EdgeID edgeID, sofa::defaulttype::Vec<3,Real> pointOnPlane, sofa::defaulttype::Vec<3,Real> normalOfPlane, sofa::defaulttype::Vec<3,Real>& intersection);
-    bool computeRestEdgePlaneIntersection (EdgeID edgeID, sofa::defaulttype::Vec<3,Real> pointOnPlane, sofa::defaulttype::Vec<3,Real> normalOfPlane, sofa::defaulttype::Vec<3,Real>& intersection);
+    bool computeEdgePlaneIntersection (EdgeID edgeID, sofa::type::Vec<3,Real> pointOnPlane, sofa::type::Vec<3,Real> normalOfPlane, sofa::type::Vec<3,Real>& intersection);
+    bool computeRestEdgePlaneIntersection (EdgeID edgeID, sofa::type::Vec<3,Real> pointOnPlane, sofa::type::Vec<3,Real> normalOfPlane, sofa::type::Vec<3,Real>& intersection);
 
     void writeMSHfile(const char *filename) const;
 

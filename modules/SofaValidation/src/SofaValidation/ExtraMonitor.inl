@@ -30,7 +30,7 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <fstream>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <cmath>
 #include <limits>
 

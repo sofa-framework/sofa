@@ -35,7 +35,7 @@
 
 #include <sofa/gui/qt/viewer/OglModelPolicy.h>
 #include <sofa/gui/ViewerFactory.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/visual/Transformation.h>
 #include <sofa/helper/visual/Trackball.h>
@@ -67,7 +67,7 @@ namespace qgl
 
 class SOFA_SOFAGUIQT_API QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::OglModelSofaViewer
 {
-    typedef defaulttype::Vector3::value_type Real;
+    typedef type::Vector3::value_type Real;
     Q_OBJECT
 private:
 
@@ -200,8 +200,8 @@ public slots:
     void setSizeW(int) override;
     void setSizeH(int) override;
 
-    virtual void getView(defaulttype::Vec3d& pos, defaulttype::Quat& ori) const override;
-    virtual void setView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori) override;
+    virtual void getView(type::Vec3d& pos, defaulttype::Quat& ori) const override;
+    virtual void setView(const type::Vec3d& pos, const defaulttype::Quat &ori) override;
     virtual void captureEvent() override { SofaViewer::captureEvent(); }
     void fitObjectBBox(sofa::core::objectmodel::BaseObject* object) override
     {

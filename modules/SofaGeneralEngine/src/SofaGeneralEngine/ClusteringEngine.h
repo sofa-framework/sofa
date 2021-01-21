@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/SVector.h>
 
 
@@ -63,7 +63,7 @@ public:
     typedef helper::vector<Real> VD;
     typedef helper::vector<VD> VVD;
 
-    typedef defaulttype::Vec<2,unsigned int> indicesType;
+    typedef type::Vec<2,unsigned int> indicesType;
 
 public:
 

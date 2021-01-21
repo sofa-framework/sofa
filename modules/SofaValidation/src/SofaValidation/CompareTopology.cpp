@@ -112,7 +112,7 @@ void CompareTopology::processCompareTopology()
                     std::istringstream Sedges(*it);
                     for (unsigned int i = 0; i<nbr; ++i)
                     {
-                        helper::fixed_array <unsigned int,2> nodes;
+                        type::stdtype::fixed_array <unsigned int,2> nodes;
                         Sedges >> nodes[0] >> nodes[1];
 
                         if ( nodes[0] != SeqEdges[i][0] || nodes[1] != SeqEdges[i][1] )
@@ -144,7 +144,7 @@ void CompareTopology::processCompareTopology()
                     std::istringstream Stri(*it);
                     for (unsigned int i = 0; i<nbr; ++i)
                     {
-                        helper::fixed_array <unsigned int,3> nodes;
+                        type::stdtype::fixed_array <unsigned int,3> nodes;
                         Stri >> nodes[0] >> nodes[1] >> nodes[2];
 
                         for (unsigned int j = 0; j<3; ++j)
@@ -180,7 +180,7 @@ void CompareTopology::processCompareTopology()
                     std::istringstream Squads(*it);
                     for (unsigned int i = 0; i<nbr; ++i)
                     {
-                        helper::fixed_array <unsigned int,4> nodes;
+                        type::stdtype::fixed_array <unsigned int,4> nodes;
                         Squads >> nodes[0] >> nodes[1] >> nodes[2] >> nodes[3];
 
                         for (unsigned int j = 0; j<4; ++j)
@@ -216,7 +216,7 @@ void CompareTopology::processCompareTopology()
                     std::istringstream Stetra(*it);
                     for (unsigned int i = 0; i<nbr; ++i)
                     {
-                        helper::fixed_array <unsigned int,4> nodes;
+                        type::stdtype::fixed_array <unsigned int,4> nodes;
                         Stetra >> nodes[0] >> nodes[1] >> nodes[2] >> nodes[3];
 
                         for (unsigned int j = 0; j<4; ++j)
@@ -252,7 +252,7 @@ void CompareTopology::processCompareTopology()
                     std::istringstream Shexa(*it);
                     for (unsigned int i = 0; i<nbr; ++i)
                     {
-                        helper::fixed_array <unsigned int,8> nodes;
+                        type::stdtype::fixed_array <unsigned int,8> nodes;
                         Shexa >> nodes[0] >> nodes[1] >> nodes[2] >> nodes[3] >> nodes[4] >> nodes[5] >> nodes[6] >> nodes[7];
 
                         for (unsigned int j = 0; j<8; ++j)

@@ -38,8 +38,8 @@ using core::behavior::ForceField;
 using defaulttype::BaseMatrix;
 using core::VecCoordId;
 using core::MechanicalParams;
-using defaulttype::Vector3;
-using defaulttype::Vec4f;
+using type::Vector3;
+using type::Vec4f;
 using helper::vector;
 using core::visual::VisualParams;
 

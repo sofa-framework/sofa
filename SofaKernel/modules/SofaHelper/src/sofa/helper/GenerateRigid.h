@@ -26,7 +26,7 @@
 
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
 namespace sofa
@@ -36,20 +36,20 @@ namespace helper
 {
 
 /// base function to compute center of mass, mass and inertia tensor from a mesh
-void SOFA_HELPER_API generateRigid( defaulttype::Rigid3Mass& mass, defaulttype::Vector3& center, const helper::io::Mesh* mesh );
+void SOFA_HELPER_API generateRigid( defaulttype::Rigid3Mass& mass, type::Vector3& center, const helper::io::Mesh* mesh );
 
 /// user friendly function to compute center of mass, mass and inertia tensor from a mesh, a density, a scale and a rotation
-void generateRigid(defaulttype::Rigid3Mass& mass, defaulttype::Vector3& center, io::Mesh *mesh
+void generateRigid(defaulttype::Rigid3Mass& mass, type::Vector3& center, io::Mesh *mesh
                                   , SReal density
-                                  , const defaulttype::Vector3& scale = defaulttype::Vector3(1,1,1)
-                                  , const defaulttype::Vector3& rotation /*Euler angles*/ = defaulttype::Vector3(0,0,0)
+                                  , const type::Vector3& scale = type::Vector3(1,1,1)
+                                  , const type::Vector3& rotation /*Euler angles*/ = type::Vector3(0,0,0)
                                   );
 
 /// user friendly function to compute center of mass, mass and inertia tensor from a mesh file, a density, a scale and a rotation
-bool SOFA_HELPER_API generateRigid( defaulttype::Rigid3Mass& mass, defaulttype::Vector3& center, const std::string& meshFilename
+bool SOFA_HELPER_API generateRigid( defaulttype::Rigid3Mass& mass, type::Vector3& center, const std::string& meshFilename
                                   , SReal density
-                                  , const defaulttype::Vector3& scale = defaulttype::Vector3(1,1,1)
-                                  , const defaulttype::Vector3& rotation /*Euler angles*/ = defaulttype::Vector3(0,0,0)
+                                  , const type::Vector3& scale = type::Vector3(1,1,1)
+                                  , const type::Vector3& rotation /*Euler angles*/ = type::Vector3(0,0,0)
                                   );
 
 
@@ -58,8 +58,8 @@ struct GenerateRigidInfo
 {
     defaulttype::Matrix3 inertia;
     defaulttype::Quaternion inertia_rotation;
-    defaulttype::Vector3 inertia_diagonal;
-    defaulttype::Vector3 com;
+    type::Vector3 inertia_diagonal;
+    type::Vector3 com;
     SReal mass;
 };
 
@@ -68,16 +68,16 @@ void SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
                                   , io::Mesh *mesh
                                   , std::string const& meshName
                                   , SReal density
-                                  , const defaulttype::Vector3& scale = defaulttype::Vector3(1,1,1)
-                                  , const defaulttype::Vector3& rotation /*Euler angles*/ = defaulttype::Vector3(0,0,0)
+                                  , const type::Vector3& scale = type::Vector3(1,1,1)
+                                  , const type::Vector3& rotation /*Euler angles*/ = type::Vector3(0,0,0)
                                   );
 
 /// user friendly function to compute rigid info from a mesh file, a density, a scale
 bool SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
                                   , const std::string& meshFilename
                                   , SReal density
-                                  , const defaulttype::Vector3& scale = defaulttype::Vector3(1,1,1)
-                                  , const defaulttype::Vector3& rotation /*Euler angles*/ = defaulttype::Vector3(0,0,0)
+                                  , const type::Vector3& scale = type::Vector3(1,1,1)
+                                  , const type::Vector3& rotation /*Euler angles*/ = type::Vector3(0,0,0)
                                   );
 }
 

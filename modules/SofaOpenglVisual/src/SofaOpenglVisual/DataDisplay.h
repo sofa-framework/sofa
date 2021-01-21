@@ -59,7 +59,7 @@ public:
     Data<VecPointData> f_pointTriangleData; ///< Data associated with nodes per triangle
     Data<VecPointData> f_pointQuadData; ///< Data associated with nodes per quad
     Data<sofa::helper::types::RGBAColor> f_colorNaN; ///< Color for NaNs
-    Data<defaulttype::Vec2f> d_userRange; ///< Clamp to this values (if max>min)
+    Data<type::Vec2f> d_userRange; ///< Clamp to this values (if max>min)
     Data<Real> d_currentMin; ///< Current min range
     Data<Real> d_currentMax; ///< Current max range
     Data<float> d_shininess; ///< Shininess for rendering point-based data [0,128].  <0 means no specularity
@@ -82,7 +82,7 @@ public:
 
 protected:
     void computeNormals();
-    helper::vector<defaulttype::Vec3f> m_normals;
+    helper::vector<type::Vec3f> m_normals;
 
     DataDisplay();
 };

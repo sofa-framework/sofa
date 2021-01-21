@@ -64,7 +64,7 @@ public:
     /// optional range of local DOF indices. Any computation involving only
     /// indices outside of this range are discarded (useful for parallelization
     /// using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > d_localRange;
+    Data< type::Vec<2,int> > d_localRange;
     Data< helper::vector<int> >     d_indices; ///< optional local DOF indices. Any computation involving only indices outside of this list are discarded
 
     Data<bool> d_handleTopologicalChanges; ///< The mass and totalMass are recomputed on particles add/remove.
@@ -131,7 +131,7 @@ public:
 
     SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& d_v) const override;  ///< vMv/2 using dof->getV() override
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
-    defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
+    type::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
 
     void addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv *dx, SReal mFact, unsigned int& offset);
 
@@ -180,11 +180,11 @@ private:
 
 
     template<class T>
-    defaulttype::Vector6 getMomentumRigid3DImpl(const core::MechanicalParams* mparams,
+    type::Vector6 getMomentumRigid3DImpl(const core::MechanicalParams* mparams,
                                                 const DataVecCoord& x,
                                                 const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
     template<class T>
-    defaulttype::Vector6 getMomentumVec3DImpl(const core::MechanicalParams* mparams,
+    type::Vector6 getMomentumVec3DImpl(const core::MechanicalParams* mparams,
                                               const DataVecCoord& x,
                                               const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
 

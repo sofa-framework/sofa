@@ -24,7 +24,7 @@
 
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -46,8 +46,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    typedef defaulttype::Vec<3,Real> Vec3;
-    typedef defaulttype::Vec<6,Real> Vec6;
+    typedef type::Vec<3,Real> Vec3;
+    typedef type::Vec<6,Real> Vec6;
     typedef helper::vector<sofa::core::topology::BaseMeshTopology::EdgeID> SetEdge;
     typedef helper::vector<sofa::core::topology::BaseMeshTopology::TriangleID> SetTriangle;
     typedef helper::vector<sofa::core::topology::BaseMeshTopology::QuadID> SetQuad;

@@ -29,7 +29,7 @@ using sofa::component::engine::JoinPoints;
 namespace sofa
 {
 
-using defaulttype::Vector3;
+using type::Vector3;
 
 template <typename _DataTypes>
 class JoinPoints_test : public ::testing::Test, public JoinPoints<_DataTypes>

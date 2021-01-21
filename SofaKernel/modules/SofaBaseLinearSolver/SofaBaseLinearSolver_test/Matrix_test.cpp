@@ -35,7 +35,7 @@
 #include <SofaBaseLinearSolver/FullVector.h>
 
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <gtest/gtest.h>
@@ -92,8 +92,8 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockNN> CRSMatrixNN;
 
     // Implementation based on Eigen
-    typedef sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<BCOLS,Real>, sofa::defaulttype::Vec<BCOLS,Real> > InTypes;
-    typedef sofa::defaulttype::StdVectorTypes< sofa::defaulttype::Vec<BROWS,Real>, sofa::defaulttype::Vec<BROWS,Real> > OutTypes;
+    typedef sofa::defaulttype::StdVectorTypes< sofa::type::Vec<BCOLS,Real>, sofa::type::Vec<BCOLS,Real> > InTypes;
+    typedef sofa::defaulttype::StdVectorTypes< sofa::type::Vec<BROWS,Real>, sofa::type::Vec<BROWS,Real> > OutTypes;
     typedef sofa::component::linearsolver::EigenSparseMatrix<InTypes,OutTypes> EigenBlockSparseMatrix;
     typedef sofa::component::linearsolver::EigenBaseSparseMatrix<Real> EigenBaseSparseMatrix;
     typedef Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic> EigenDenseMatrix;
@@ -105,8 +105,8 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     typedef sofa::defaulttype::Mat<NCOLS,NROWS,Real> MatNM;
     typedef sofa::defaulttype::Mat<NROWS,NROWS,Real> MatMM;
     typedef sofa::defaulttype::Mat<NCOLS,NCOLS,Real> MatNN;
-    typedef sofa::defaulttype::Vec<NROWS,Real> VecM;
-    typedef sofa::defaulttype::Vec<NCOLS,Real> VecN;
+    typedef sofa::type::Vec<NROWS,Real> VecM;
+    typedef sofa::type::Vec<NCOLS,Real> VecN;
 
 
     // The matrices used in the tests

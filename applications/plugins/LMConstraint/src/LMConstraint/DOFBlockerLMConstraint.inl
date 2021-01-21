@@ -198,12 +198,12 @@ void DOFBlockerLMConstraint<DataTypes>::draw(const core::visual::VisualParams* v
     {
         Index index=(*it);
         Coord pos=x[index];
-        defaulttype::Vector3 position;
+        type::Vector3 position;
         DataTypes::get(position[0], position[1], position[2], pos);
         const helper::vector<Deriv>& axis=BlockedAxis.getValue();
         for (unsigned int i=0; i<axis.size(); ++i)
         {
-            defaulttype::Vector3 direction;
+            type::Vector3 direction;
             DataTypes::get(direction[0], direction[1], direction[2],axis[i]);
             vparams->drawTool()->drawArrow(position, position+direction*showSizeAxis.getValue(),
                                            showSizeAxis.getValue()*0.03,color);

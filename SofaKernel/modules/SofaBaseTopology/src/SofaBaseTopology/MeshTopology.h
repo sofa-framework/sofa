@@ -115,7 +115,7 @@ public:
 
     // If using STEP loader, include also uv coordinates
     typedef Index					UVID;
-    typedef defaulttype::Vector2						UV;
+    typedef type::Vector2						UV;
     typedef helper::vector<UV>				SeqUV;
     virtual const SeqUV& getUVs();
     virtual Size getNbUVs();
@@ -311,7 +311,7 @@ public:
     //virtual const helper::vector <PointID>& getPointsOnBorder();
 
 public:
-    typedef helper::vector<defaulttype::Vec<3, SReal > > SeqPoints;
+    typedef helper::vector<type::Vec<3, SReal > > SeqPoints;
     Data< SeqPoints > seqPoints; ///< List of point positions
     Data<SeqEdges> seqEdges; ///< List of edge indices
     Data<SeqTriangles> seqTriangles; ///< List of triangle indices

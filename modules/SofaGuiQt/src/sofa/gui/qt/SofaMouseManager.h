@@ -68,7 +68,7 @@ protected:
     PickHandler *pickHandler;
     std::map< int, std::string > mapIndexOperation;
 
-    helper::fixed_array< std::string,NONE > usedOperations;
+    type::stdtype::fixed_array< std::string,NONE > usedOperations;
 };
 
 

@@ -90,10 +90,10 @@ public:
 
     Coord computeTetrahedronCircumcenter(const TetraID i) const;
 
-    bool isPointInTetrahedron(const TetraID i, const sofa::defaulttype::Vec<3,Real>& p) const;
+    bool isPointInTetrahedron(const TetraID i, const sofa::type::Vec<3,Real>& p) const;
 
     /// return (if the point is in the tetrahedron) the barycentric coordinates of the point in the tetrahedron
-    bool isPointInTetrahedron(const TetraID ind_t, const sofa::defaulttype::Vec<3,Real>& pTest, sofa::defaulttype::Vec<4,Real>& barycentricCoordinates) const;
+    bool isPointInTetrahedron(const TetraID ind_t, const sofa::type::Vec<3,Real>& pTest, sofa::type::Vec<4,Real>& barycentricCoordinates) const;
 
     void getTetrahedronVertexCoordinates(const TetraID i, Coord[4]) const;
 
@@ -126,14 +126,14 @@ public:
     void writeMSHfile(const char *filename) const;
 
     /// finds the intersection point with plane which is defined by c and normal
-    void getIntersectionPointWithPlane(const TetraID ind_ta, const sofa::defaulttype::Vec<3,Real>& planP0, const sofa::defaulttype::Vec<3,Real>& normal, sofa::helper::vector< sofa::defaulttype::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge);
+    void getIntersectionPointWithPlane(const TetraID ind_ta, const sofa::type::Vec<3,Real>& planP0, const sofa::type::Vec<3,Real>& normal, sofa::helper::vector< sofa::type::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge);
 
     /// finds the intersection point between edge and plane
-    bool computeIntersectionEdgeWithPlane(const sofa::defaulttype::Vec<3,Real>& edgeP1,
-                                          const sofa::defaulttype::Vec<3,Real>& edgeP2,
-                                          const sofa::defaulttype::Vec<3,Real>& planP0,
-                                          const sofa::defaulttype::Vec<3,Real>& normal,
-                                          sofa::defaulttype::Vec<3,Real>& intersection);
+    bool computeIntersectionEdgeWithPlane(const sofa::type::Vec<3,Real>& edgeP1,
+                                          const sofa::type::Vec<3,Real>& edgeP2,
+                                          const sofa::type::Vec<3,Real>& planP0,
+                                          const sofa::type::Vec<3,Real>& normal,
+                                          sofa::type::Vec<3,Real>& intersection);
     
     /// Method to check if points stored inside the Tetrahedron, given by the tetrahedron id, are in the right order (by checking the cross products between edges).
     bool checkNodeSequence(const TetraID tetraId) const;

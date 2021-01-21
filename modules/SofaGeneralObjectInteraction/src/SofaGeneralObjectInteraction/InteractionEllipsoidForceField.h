@@ -75,7 +75,7 @@ protected:
     public:
         int index;
         Deriv1 pos,force;
-        sofa::defaulttype::Vec<3,SReal> bras_levier;
+        sofa::type::Vec<3,SReal> bras_levier;
         Mat m;
         Contact( int index=0, const Mat& m=Mat())
             : index(index), m(m)

@@ -59,11 +59,11 @@ public:
     Data <helper::vector <sofa::helper::types::Material> > d_materials;
     Data <helper::SVector <helper::SVector <int> > > d_faceList;
     Data <helper::SVector <helper::SVector <int> > > d_texIndexList;
-    Data <helper::vector<sofa::defaulttype::Vector3> > d_positionsList;
-    Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoordsList;
+    Data <helper::vector<sofa::type::Vector3> > d_positionsList;
+    Data< helper::vector<sofa::type::Vector2> > d_texCoordsList;
     Data <helper::SVector<helper::SVector<int> > > d_normalsIndexList;
-    Data <helper::vector<sofa::defaulttype::Vector3> > d_normalsList;
-    Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoords;
+    Data <helper::vector<sofa::type::Vector3> > d_normalsList;
+    Data< helper::vector<sofa::type::Vector2> > d_texCoords;
     Data< bool > d_computeMaterialFaces;
     helper::vector< Data <helper::vector <unsigned int> >* > d_subsets_indices;
 

@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaConstraint/UnilateralInteractionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa::component::constraintset
@@ -398,8 +398,8 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
     vparams->drawTool()->disableLighting();
     vparams->drawTool()->saveLastState();
 
-    std::vector<sofa::defaulttype::Vector3> redVertices;
-    std::vector<sofa::defaulttype::Vector3> otherVertices;
+    std::vector<sofa::type::Vector3> redVertices;
+    std::vector<sofa::type::Vector3> otherVertices;
     std::vector<sofa::helper::types::RGBAColor> otherColors;
 
     for (unsigned int i=0; i<contacts.size(); i++)

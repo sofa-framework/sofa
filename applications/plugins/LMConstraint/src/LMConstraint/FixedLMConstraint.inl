@@ -232,8 +232,8 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     const VecCoord& x =this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
     const SetIndexArray & indices = f_indices.getValue();
 
-    std::vector< defaulttype::Vector3 > points;
-    defaulttype::Vector3 point;
+    std::vector< type::Vector3 > points;
+    type::Vector3 point;
     for (unsigned int index : indices)
     {
         point = DataTypes::getCPos(x[index]);

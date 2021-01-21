@@ -213,9 +213,9 @@ private:
     core::State<Out>* m_toModel;
     core::State<InRoot>* m_fromRootModel;
 
-    sofa::defaulttype::Vec<1,sofa::defaulttype::Quat> Buf_Rotation;
-    std::vector< sofa::defaulttype::Vec<3,OutReal> > ArticulationAxis;
-    std::vector< sofa::defaulttype::Vec<3,OutReal> > ArticulationPos;
+    sofa::type::Vec<1,sofa::defaulttype::Quat> Buf_Rotation;
+    std::vector< sofa::type::Vec<3,OutReal> > ArticulationAxis;
+    std::vector< sofa::type::Vec<3,OutReal> > ArticulationPos;
     InVecCoord CoordinateBuf;
     InVecDeriv dxVec1Buf;
     OutVecDeriv dxRigidBuf;

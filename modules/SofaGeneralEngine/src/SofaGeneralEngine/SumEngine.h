@@ -23,7 +23,7 @@
 #pragma once
 #include <SofaGeneralEngine/config.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::engine
 {
@@ -54,8 +54,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SumEngine_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API SumEngine<defaulttype::Vec1d>;
-extern template class SOFA_SOFAGENERALENGINE_API SumEngine<defaulttype::Vec3d>;
+extern template class SOFA_SOFAGENERALENGINE_API SumEngine<type::Vec1d>;
+extern template class SOFA_SOFAGENERALENGINE_API SumEngine<type::Vec3d>;
 #endif
 
 } //namespace sofa::component::engine

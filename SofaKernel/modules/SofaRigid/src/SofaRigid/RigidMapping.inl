@@ -720,8 +720,8 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings() || this->toModel==nullptr )
         return;
-    std::vector<defaulttype::Vector3> points;
-    defaulttype::Vector3 point;
+    std::vector<type::Vector3> points;
+    type::Vector3 point;
 
     const VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i = 0; i < x.size(); i++)

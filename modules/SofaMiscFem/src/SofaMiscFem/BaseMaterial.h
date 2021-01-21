@@ -24,7 +24,7 @@
 #include <SofaMiscFem/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::fem
 {
@@ -51,8 +51,8 @@ public:
     // The same principe for computing the strain given the displacement
 
 
-    virtual void computeStress (defaulttype::Vector3 & ,defaulttype::Vector3 &,unsigned int &) {}
-    virtual void computeDStress (defaulttype::Vector3 & ,defaulttype::Vector3 &) {}
+    virtual void computeStress (type::Vector3 & ,type::Vector3 &,unsigned int &) {}
+    virtual void computeDStress (type::Vector3 & ,type::Vector3 &) {}
 
     virtual void computeStress (unsigned int /*iElement*/)=0;//to be pure virtual
 	

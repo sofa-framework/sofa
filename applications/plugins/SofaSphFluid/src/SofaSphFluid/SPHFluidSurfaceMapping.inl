@@ -496,7 +496,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
     typename Grid::iterator end = grid->gridEnd();
     typename Grid::iterator it;
 
-    std::vector< sofa::defaulttype::Vector3 > points1;
+    std::vector< sofa::type::Vector3 > points1;
     for (it = grid->gridBegin(); it!=end; ++it)
     {
         typename Grid::Key p0 = it->first;
@@ -513,25 +513,25 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
                 for (x=0; x<GRIDDIM; x++)
                 {
                     if (c->data.val > d_mIsoValue.getValue())
-                        points1.push_back(defaulttype::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z)*scale));
+                        points1.push_back(type::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z)*scale));
                     c+=DX;
                 }
             }
         }
     }
-    vparams->drawTool()->drawPoints(points1, 3, sofa::defaulttype::Vec<4,float>(1,1,1,1));
+    vparams->drawTool()->drawPoints(points1, 3, sofa::type::Vec<4,float>(1,1,1,1));
 
 
-    std::vector< sofa::defaulttype::Vector3 > points2;
+    std::vector< sofa::type::Vector3 > points2;
     const OutVecCoord& out = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<out.size(); ++i)
     {
         points2.push_back(out[i]);
     }
-    vparams->drawTool()->drawPoints(points2, 5, sofa::defaulttype::Vec<4,float>(0.5,1,0.5,1));
+    vparams->drawTool()->drawPoints(points2, 5, sofa::type::Vec<4,float>(0.5,1,0.5,1));
 
 
-    std::vector< sofa::defaulttype::Vector3 > points3;
+    std::vector< sofa::type::Vector3 > points3;
     for (it = grid->gridBegin(); it!=end; ++it)
     {
         typename Grid::Key p0 = it->first;
@@ -549,25 +549,25 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
                 {
                     if (c->data.p[0]>0)
                     {
-                        points3.push_back(defaulttype::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z)*scale));
-                        points3.push_back(defaulttype::Vector3((x0+x+1)*scale,(y0+y)*scale,(z0+z)*scale));
+                        points3.push_back(type::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z)*scale));
+                        points3.push_back(type::Vector3((x0+x+1)*scale,(y0+y)*scale,(z0+z)*scale));
                     }
                     if (c->data.p[1]>0)
                     {
-                        points3.push_back(defaulttype::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z)*scale));
-                        points3.push_back(defaulttype::Vector3((x0+x)*scale,(y0+y+1)*scale,(z0+z)*scale));
+                        points3.push_back(type::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z)*scale));
+                        points3.push_back(type::Vector3((x0+x)*scale,(y0+y+1)*scale,(z0+z)*scale));
                     }
                     if (c->data.p[2]>0)
                     {
-                        points3.push_back(defaulttype::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z)*scale));
-                        points3.push_back(defaulttype::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z+1)*scale));
+                        points3.push_back(type::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z)*scale));
+                        points3.push_back(type::Vector3((x0+x)*scale,(y0+y)*scale,(z0+z+1)*scale));
                     }
                     c+=DX;
                 }
             }
         }
     }
-    vparams->drawTool()->drawLines(points3, 1, sofa::defaulttype::Vec<4,float>(0,1,0,1));
+    vparams->drawTool()->drawLines(points3, 1, sofa::type::Vec<4,float>(0,1,0,1));
 }
 
 } // namespace mapping

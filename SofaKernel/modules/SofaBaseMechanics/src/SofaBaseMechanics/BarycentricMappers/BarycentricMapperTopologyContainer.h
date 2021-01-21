@@ -29,8 +29,8 @@ namespace sofa::component::mapping::_barycentricmappertopologycontainer_
 {
 
 using sofa::defaulttype::Mat3x3d;
-using sofa::defaulttype::Vector3;
-using sofa::defaulttype::Vec3i;
+using sofa::type::Vector3;
+using sofa::type::Vec3i;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
@@ -174,7 +174,7 @@ protected:
 
     // Spacial hashing following paper:
     // M.Teschner et al "Optimized Spatial Hashing for Collision Detection of Deformable Objects" (2003)
-    defaulttype::Vec3i getGridIndices(const Vector3& pos);
+    type::Vec3i getGridIndices(const Vector3& pos);
     void initHashing(const typename In::VecCoord& in);
     void computeHashingCellSize(const typename In::VecCoord& in);
     void computeHashTable(const typename In::VecCoord& in);

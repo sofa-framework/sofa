@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralEngine/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/loader/MeshLoader.h>
@@ -65,22 +65,22 @@ public:
     Data<unsigned int> f_nbMeshes; ///< number of meshes to merge
 
     helper::vector<Data<VecCoord>*> vf_positions;
-    helper::vector< Data< helper::vector< helper::fixed_array <unsigned int,2> > >* > vf_edges;
-    helper::vector< Data< helper::vector< helper::fixed_array <unsigned int,3> > >* > vf_triangles;
-    helper::vector< Data< helper::vector< helper::fixed_array <unsigned int,4> > >* > vf_quads;
+    helper::vector< Data< helper::vector< type::stdtype::fixed_array <unsigned int,2> > >* > vf_edges;
+    helper::vector< Data< helper::vector< type::stdtype::fixed_array <unsigned int,3> > >* > vf_triangles;
+    helper::vector< Data< helper::vector< type::stdtype::fixed_array <unsigned int,4> > >* > vf_quads;
     helper::vector< Data< helper::vector< helper::vector <unsigned int> > >* > vf_polygons;
-    helper::vector< Data< helper::vector< helper::fixed_array<unsigned int,4> > >* > vf_tetrahedra;
-    helper::vector< Data< helper::vector< helper::fixed_array<unsigned int,8> > >* > vf_hexahedra;
+    helper::vector< Data< helper::vector< type::stdtype::fixed_array<unsigned int,4> > >* > vf_tetrahedra;
+    helper::vector< Data< helper::vector< type::stdtype::fixed_array<unsigned int,8> > >* > vf_hexahedra;
 
 
     Data<unsigned> f_output_npoints; ///< Number Of out points
     Data<VecCoord> f_output_positions; ///< Output Vertices of the merged mesh
-    Data< helper::vector< helper::fixed_array <unsigned int,2> > > f_output_edges; ///< Output Edges of the merged mesh
-    Data< helper::vector< helper::fixed_array <unsigned int,3> > > f_output_triangles; ///< Output Triangles of the merged mesh
-    Data< helper::vector< helper::fixed_array <unsigned int,4> > > f_output_quads; ///< Output Quads of the merged mesh
+    Data< helper::vector< type::stdtype::fixed_array <unsigned int,2> > > f_output_edges; ///< Output Edges of the merged mesh
+    Data< helper::vector< type::stdtype::fixed_array <unsigned int,3> > > f_output_triangles; ///< Output Triangles of the merged mesh
+    Data< helper::vector< type::stdtype::fixed_array <unsigned int,4> > > f_output_quads; ///< Output Quads of the merged mesh
     Data< helper::vector< helper::vector <unsigned int> > > f_output_polygons; ///< Output Polygons of the merged mesh
-    Data< helper::vector< helper::fixed_array<unsigned int,4> > > f_output_tetrahedra; ///< Output Tetrahedra of the merged mesh
-    Data< helper::vector< helper::fixed_array<unsigned int,8> > > f_output_hexahedra; ///< Output Hexahedra of the merged mesh
+    Data< helper::vector< type::stdtype::fixed_array<unsigned int,4> > > f_output_tetrahedra; ///< Output Tetrahedra of the merged mesh
+    Data< helper::vector< type::stdtype::fixed_array<unsigned int,8> > > f_output_hexahedra; ///< Output Hexahedra of the merged mesh
 
 protected:
     void createInputMeshesData(int nb = -1);

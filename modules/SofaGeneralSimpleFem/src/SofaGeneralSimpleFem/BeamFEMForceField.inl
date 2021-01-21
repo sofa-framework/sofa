@@ -439,7 +439,7 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 
     m_beamsData.endEdit();
 
-    defaulttype::Vec<3,Real> u, P1P2, P1P2_0;
+    type::Vec<3,Real> u, P1P2, P1P2_0;
 
     // local displacement
     Displacement depl;
@@ -483,11 +483,11 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 
 
     // Apply lambda transpose (we use the rotation value of point a for the beam)
-    Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0],force[1],force[2]));
-    Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3],force[4],force[5]));
+    Vec3 fa1 = x[a].getOrientation().rotate(type::Vec3d(force[0],force[1],force[2]));
+    Vec3 fa2 = x[a].getOrientation().rotate(type::Vec3d(force[3],force[4],force[5]));
 
-    Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6],force[7],force[8]));
-    Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9],force[10],force[11]));
+    Vec3 fb1 = x[a].getOrientation().rotate(type::Vec3d(force[6],force[7],force[8]));
+    Vec3 fb2 = x[a].getOrientation().rotate(type::Vec3d(force[9],force[10],force[11]));
 
     f[a] += Deriv(-fa1, -fa2);
     f[b] += Deriv(-fb1, -fb2);
@@ -498,7 +498,7 @@ template<class DataTypes>
 void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b, double fact)
 {
     Displacement local_depl;
-    defaulttype::Vec<3,Real> u;
+    type::Vec<3,Real> u;
     defaulttype::Quat& q = beamQuat(i);
     q.normalize();
 
@@ -524,10 +524,10 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDe
 
     Displacement local_force = m_beamsData.getValue()[i]._k_loc * local_depl;
 
-    Vec3 fa1 = q.rotate(defaulttype::Vec3d(local_force[0],local_force[1] ,local_force[2] ));
-    Vec3 fa2 = q.rotate(defaulttype::Vec3d(local_force[3],local_force[4] ,local_force[5] ));
-    Vec3 fb1 = q.rotate(defaulttype::Vec3d(local_force[6],local_force[7] ,local_force[8] ));
-    Vec3 fb2 = q.rotate(defaulttype::Vec3d(local_force[9],local_force[10],local_force[11]));
+    Vec3 fa1 = q.rotate(type::Vec3d(local_force[0],local_force[1] ,local_force[2] ));
+    Vec3 fa2 = q.rotate(type::Vec3d(local_force[3],local_force[4] ,local_force[5] ));
+    Vec3 fb1 = q.rotate(type::Vec3d(local_force[6],local_force[7] ,local_force[8] ));
+    Vec3 fb2 = q.rotate(type::Vec3d(local_force[9],local_force[10],local_force[11]));
 
 
     df[a] += Deriv(-fa1,-fa2) * fact;
@@ -670,7 +670,7 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< defaulttype::Vector3 > points[3];
+    std::vector< type::Vector3 > points[3];
 
     if (m_partialListSegment)
     {
@@ -708,7 +708,7 @@ void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, b
 
     for (size_t i=0; i<npoints; i++)
     {
-        const defaulttype::Vector3 &pt = p[i].getCenter();
+        const type::Vector3 &pt = p[i].getCenter();
 
         for (int c=0; c<3; c++)
         {
@@ -722,12 +722,12 @@ void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, b
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 >* points, const VecCoord& x)
+void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< type::Vector3 >* points, const VecCoord& x)
 {
     Index a = (*m_indexedElements)[i][0];
     Index b = (*m_indexedElements)[i][1];
-    defaulttype::Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
-    defaulttype::Vec3d beamVec;
+    type::Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
+    type::Vec3d beamVec;
     beamVec[0]=m_beamsData.getValue()[i]._L*0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;
 
     const defaulttype::Quat& q = beamQuat(i);

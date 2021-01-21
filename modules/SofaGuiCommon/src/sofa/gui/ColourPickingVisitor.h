@@ -37,10 +37,10 @@ namespace sofa
 namespace gui
 {
 
-void SOFA_SOFAGUICOMMON_API decodeCollisionElement( const sofa::defaulttype::Vec4f colour, sofa::component::collision::BodyPicked& body );
-void SOFA_SOFAGUICOMMON_API decodePosition( sofa::component::collision::BodyPicked& body, const sofa::defaulttype::Vec4f colour, const component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
+void SOFA_SOFAGUICOMMON_API decodeCollisionElement( const sofa::type::Vec4f colour, sofa::component::collision::BodyPicked& body );
+void SOFA_SOFAGUICOMMON_API decodePosition( sofa::component::collision::BodyPicked& body, const sofa::type::Vec4f colour, const component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index);
-void SOFA_SOFAGUICOMMON_API decodePosition( sofa::component::collision::BodyPicked& body, const sofa::defaulttype::Vec4f colour, const component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model,
+void SOFA_SOFAGUICOMMON_API decodePosition( sofa::component::collision::BodyPicked& body, const sofa::type::Vec4f colour, const component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index);
 
 

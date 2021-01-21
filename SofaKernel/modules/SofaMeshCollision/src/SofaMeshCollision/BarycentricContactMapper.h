@@ -121,7 +121,7 @@ public:
     {
         return this->mapper->createPointInLine(P, this->model->getElemEdgeIndex(index), &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
     }
-    Index addPointB(const Coord& /*P*/, Index index, Real& /*r*/, const defaulttype::Vector3& baryP)
+    Index addPointB(const Coord& /*P*/, Index index, Real& /*r*/, const type::Vector3& baryP)
     {
         return this->mapper->addPointInLine(this->model->getElemEdgeIndex(index), baryP.ptr());
     }
@@ -157,7 +157,7 @@ public:
             }
         }
     }
-    Index addPointB(const Coord& P, Index index, Real& /*r*/, const defaulttype::Vector3& baryP)
+    Index addPointB(const Coord& P, Index index, Real& /*r*/, const type::Vector3& baryP)
     {
 
         auto nbt = this->model->getCollisionTopology()->getNbTriangles();

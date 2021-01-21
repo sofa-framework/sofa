@@ -27,7 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include "TriangularFEMForceField.h"
 #include <SofaBaseTopology/TopologyData.h>

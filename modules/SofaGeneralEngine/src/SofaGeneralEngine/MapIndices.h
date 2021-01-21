@@ -76,10 +76,10 @@ public:
 #if  !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
 extern template class SOFA_SOFAGENERALENGINE_API MapIndices<int>;
 extern template class SOFA_SOFAGENERALENGINE_API MapIndices<unsigned int>;
-extern template class SOFA_SOFAGENERALENGINE_API MapIndices< helper::fixed_array<unsigned int, 2> >;
-extern template class SOFA_SOFAGENERALENGINE_API MapIndices< helper::fixed_array<unsigned int, 3> >;
-extern template class SOFA_SOFAGENERALENGINE_API MapIndices< helper::fixed_array<unsigned int, 4> >;
-extern template class SOFA_SOFAGENERALENGINE_API MapIndices< helper::fixed_array<unsigned int, 8> >;
+extern template class SOFA_SOFAGENERALENGINE_API MapIndices< type::stdtype::fixed_array<unsigned int, 2> >;
+extern template class SOFA_SOFAGENERALENGINE_API MapIndices< type::stdtype::fixed_array<unsigned int, 3> >;
+extern template class SOFA_SOFAGENERALENGINE_API MapIndices< type::stdtype::fixed_array<unsigned int, 4> >;
+extern template class SOFA_SOFAGENERALENGINE_API MapIndices< type::stdtype::fixed_array<unsigned int, 8> >;
 #endif
 
 } //namespace sofa::component::engine

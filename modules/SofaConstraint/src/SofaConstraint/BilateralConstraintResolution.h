@@ -68,7 +68,7 @@ class BilateralConstraintResolution3Dof : public ConstraintResolution
 {
 public:
 
-    BilateralConstraintResolution3Dof(sofa::defaulttype::Vec3d* vec = nullptr)
+    BilateralConstraintResolution3Dof(sofa::type::Vec3d* vec = nullptr)
         : ConstraintResolution(3)
         , _f(vec)
     {
@@ -125,7 +125,7 @@ public:
 
 protected:
     sofa::defaulttype::Mat<3,3,double> invW;
-    sofa::defaulttype::Vec3d* _f;
+    sofa::type::Vec3d* _f;
 };
 
 class BilateralConstraintResolutionNDof : public ConstraintResolution

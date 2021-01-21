@@ -340,10 +340,10 @@ void DistanceLMContactConstraint<DataTypes>::draw(const core::visual::VisualPara
         const VecCoord &x2= this->constrainedObject2->read(core::ConstVecCoordId::position())->getValue();
 
 
-        sofa::helper::vector< sofa::helper::vector< sofa::defaulttype::Vector3 > > points;
+        sofa::helper::vector< sofa::helper::vector< sofa::type::Vector3 > > points;
         points.resize(3);
         //Sliding: show direction of the new constraint
-        sofa::helper::vector< sofa::defaulttype::Vector3 > slidingConstraints;
+        sofa::helper::vector< sofa::type::Vector3 > slidingConstraints;
 
         const sofa::helper::vector< ConstraintGroup* > &groups = this->getConstraintsOrder(core::ConstraintParams::VEL);
 
@@ -358,7 +358,7 @@ void DistanceLMContactConstraint<DataTypes>::draw(const core::visual::VisualPara
 
             if (contactDescription.state == SLIDING)
             {
-                sofa::defaulttype::Vector3 direction=contactDirection.n *contactDescription.coeff[0] +
+                sofa::type::Vector3 direction=contactDirection.n *contactDescription.coeff[0] +
                         contactDirection.t1*contactDescription.coeff[1]+
                         contactDirection.t2*contactDescription.coeff[2];
 

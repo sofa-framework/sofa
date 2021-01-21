@@ -24,7 +24,7 @@
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <map>
 
@@ -57,7 +57,7 @@ public:
     typedef Coord::value_type Real;
     enum { M=Coord::spatial_dimensions };
     typedef defaulttype::Mat<M,M,Real> Mat;
-    typedef defaulttype::Vec<M,Real> Vec;
+    typedef type::Vec<M,Real> Vec;
     typedef helper::vector<unsigned int> VecIndex;
 
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;

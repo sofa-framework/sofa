@@ -24,7 +24,7 @@
 
 #include <SofaBaseVisual/BackgroundSetting.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Ray.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/Quater.h>
@@ -43,9 +43,9 @@ public:
 
     typedef sofa::core::visual::VisualParams::CameraType CameraType;
     typedef defaulttype::Ray Ray;
-    typedef defaulttype::Vector4 Vec4;
-    typedef defaulttype::Vector3 Vec3;
-    typedef defaulttype::Vector2 Vec2;
+    typedef type::Vector4 Vec4;
+    typedef type::Vector3 Vec3;
+    typedef type::Vector2 Vec2;
     typedef defaulttype::Matrix3 Mat3;
     typedef defaulttype::Matrix4 Mat4;
     typedef defaulttype::Quat Quat;

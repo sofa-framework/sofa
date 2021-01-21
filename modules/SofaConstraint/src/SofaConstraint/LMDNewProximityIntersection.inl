@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <iostream>
 #include <algorithm>
@@ -33,18 +33,18 @@ namespace sofa::component::collision
 {
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id, int indexLine1, int indexLine2,  TFilter1 &f1, TFilter2 &f2)
+inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& q1, const type::Vector3& q2, OutputVector* contacts, int id, int indexLine1, int indexLine2,  TFilter1 &f1, TFilter2 &f2)
 {
     bool debug=false;
     if(indexLine1==-1 || indexLine2==-1)
         debug=true;
 
 
-    const defaulttype::Vector3 AB = p2-p1;
-    const defaulttype::Vector3 CD = q2-q1;
-    const defaulttype::Vector3 AC = q1-p1;
+    const type::Vector3 AB = p2-p1;
+    const type::Vector3 CD = q2-q1;
+    const type::Vector3 AC = q1-p1;
     sofa::defaulttype::Matrix2 A;
-    sofa::defaulttype::Vector2 b;
+    sofa::type::Vector2 b;
     A[0][0] = AB*AB;
     A[1][1] = CD*CD;
     A[0][1] = A[1][0] = -CD*AB;
@@ -68,7 +68,7 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
         }
     }
 
-    defaulttype::Vector3 p,q,pq;
+    type::Vector3 p,q,pq;
     p = p1 + AB * alpha;
     q = q1 + CD * beta;
     pq = q-p;
@@ -86,7 +86,7 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
         return 0;
     }
 
-    defaulttype::Vector3 qp = p-q;
+    type::Vector3 qp = p-q;
     if (!f2.validLine(indexLine2, qp))
     {
         if(debug)
@@ -110,11 +110,11 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
 }
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, OutputVector* contacts, int id, int indexLine1, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
+inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& q, OutputVector* contacts, int id, int indexLine1, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
 {
     std::cout<<"doIntersectionLinePoint is called"<<std::endl;
-    const defaulttype::Vector3 AB = p2-p1;
-    const defaulttype::Vector3 AQ = q -p1;
+    const type::Vector3 AB = p2-p1;
+    const type::Vector3 AQ = q -p1;
     double A;
     double b;
     A = AB*AB;
@@ -126,7 +126,7 @@ inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, co
     if (alpha < 0.0) alpha = 0.0;
     else if (alpha > 1.0) alpha = 1.0;
 
-    defaulttype::Vector3 p,pq, qp;
+    type::Vector3 p,pq, qp;
     p = p1 + AB * alpha;
     pq = q-p;
     qp = p-q;
@@ -161,9 +161,9 @@ inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, co
 }
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id, int indexPoint1, int indexPoint2, TFilter1 &f1, TFilter2 &f2)
+inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, const type::Vector3& p, const type::Vector3& q, OutputVector* contacts, int id, int indexPoint1, int indexPoint2, TFilter1 &f1, TFilter2 &f2)
 {
-    defaulttype::Vector3 pq;
+    type::Vector3 pq;
     pq = q-p;
     if (pq.norm2() >= dist2)
         return 0;
@@ -171,7 +171,7 @@ inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, c
     if (!f1.validPoint(indexPoint1, pq))
         return 0;
 
-    defaulttype::Vector3 qp = p-q;
+    type::Vector3 qp = p-q;
     if (!f2.validPoint(indexPoint2, qp))
         return 0;
 
@@ -187,13 +187,13 @@ inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, c
 }
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& /*n*/, const defaulttype::Vector3& q, OutputVector* contacts, int id,  Triangle &e1, unsigned int *edgesIndices, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
+inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& p3, const type::Vector3& /*n*/, const type::Vector3& q, OutputVector* contacts, int id,  Triangle &e1, unsigned int *edgesIndices, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
 {
-    const defaulttype::Vector3 AB = p2-p1;
-    const defaulttype::Vector3 AC = p3-p1;
-    const defaulttype::Vector3 AQ = q -p1;
+    const type::Vector3 AB = p2-p1;
+    const type::Vector3 AC = p3-p1;
+    const type::Vector3 AQ = q -p1;
     sofa::defaulttype::Matrix2 A;
-    sofa::defaulttype::Vector2 b;
+    sofa::type::Vector2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
@@ -213,8 +213,8 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
 
     alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
     beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-    defaulttype::Vector3 pq;
-    defaulttype::Vector3 p;
+    type::Vector3 pq;
+    type::Vector3 p;
     if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
     {
         // nearest point is on an edge or corner
@@ -334,7 +334,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
     }
 
     p = p1 + AB * alpha + AC * beta;
-    defaulttype::Vector3 qp = p-q;
+    type::Vector3 qp = p-q;
     if (!f2.validPoint(indexPoint2, qp))
         return 0;
 

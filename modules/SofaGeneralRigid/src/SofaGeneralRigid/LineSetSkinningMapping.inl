@@ -29,9 +29,9 @@ namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
-defaulttype::Vec<3,double> LineSetSkinningMapping<TIn, TOut>::projectToSegment(const defaulttype::Vec<3,Real>& first, const defaulttype::Vec<3,Real>& last, const OutCoord& vertice)
+type::Vec<3,double> LineSetSkinningMapping<TIn, TOut>::projectToSegment(const type::Vec<3,Real>& first, const type::Vec<3,Real>& last, const OutCoord& vertice)
 {
-    defaulttype::Vec3d segment,v_f,v_l;
+    type::Vec3d segment,v_f,v_l;
 
     segment = last - first;
     v_f = vertice-first;
@@ -52,11 +52,11 @@ defaulttype::Vec<3,double> LineSetSkinningMapping<TIn, TOut>::projectToSegment(c
 }
 
 template <class TIn, class TOut>
-double LineSetSkinningMapping<TIn, TOut>::convolutionSegment(const defaulttype::Vec<3,Real>& first, const defaulttype::Vec<3,Real>& last, const OutCoord& vertice)
+double LineSetSkinningMapping<TIn, TOut>::convolutionSegment(const type::Vec<3,Real>& first, const type::Vec<3,Real>& last, const OutCoord& vertice)
 {
     int steps = 1000;
     double sum = 0.0;
-    defaulttype::Vec<3,Real> dist, line;
+    type::Vec<3,Real> dist, line;
 
     line=last-first;
 
@@ -199,7 +199,7 @@ void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* v
     const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     std::vector<sofa::helper::types::RGBAColor> colorVector;
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     for (unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
     {
@@ -208,12 +208,12 @@ void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* v
 
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
             const sofa::core::topology::BaseMeshTopology::Line& l = m_topology->getLine(linesInfluencedByVertice[verticeIndex][lineInfluencedIndex].lineIndex);
-            defaulttype::Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
+            type::Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
 
 
             colorVector.push_back(sofa::helper::types::RGBAColor(iline.weight, 0.0, (1.0-iline.weight),1.0));
-            vertices.push_back(sofa::defaulttype::Vector3( xto[verticeIndex] ));
-            vertices.push_back(sofa::defaulttype::Vector3( v ));
+            vertices.push_back(sofa::type::Vector3( xto[verticeIndex] ));
+            vertices.push_back(sofa::type::Vector3( v ));
         }
     }
     vparams->drawTool()->drawLines(vertices,1,colorVector);
@@ -254,7 +254,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalPara
         for (unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
         {
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
-            defaulttype::Vec<3,Real> IP = xfrom[m_topology->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
+            type::Vec<3,Real> IP = xfrom[m_topology->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
             out[verticeIndex] += (getVCenter(in[m_topology->getLine(iline.lineIndex)[0]]) - IP.cross(getVOrientation(in[m_topology->getLine(iline.lineIndex)[0]]))) * iline.weight;
         }
     }
@@ -282,7 +282,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalPar
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
             unsigned int I =m_topology->getLine(iline.lineIndex)[0];
 
-            defaulttype::Vec<3,Real> IP = xfrom[I].getOrientation().rotate(iline.position);
+            type::Vec<3,Real> IP = xfrom[I].getOrientation().rotate(iline.position);
 
             getVCenter(out[I]) += f * iline.weight;
             getVOrientation(out[I]) += IP.cross(f) *  iline.weight;
@@ -338,7 +338,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::ConstraintPar
                 for (unsigned int lineInfluencedIndex = 0; lineInfluencedIndex < linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
                 {
                     influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
-                    defaulttype::Vec<3,Real> IP = xfrom[m_topology->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
+                    type::Vec<3,Real> IP = xfrom[m_topology->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
                     InDeriv direction;
                     getVCenter(direction) = data * iline.weight;
                     //printf("\n Weighted normale : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());

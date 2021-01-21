@@ -126,9 +126,9 @@ void TriangleCollisionModel<DataTypes>::updateNormals()
     for (Size i=0; i<size; i++)
     {
         Element t(this,i);
-        const defaulttype::Vector3& pt1 = t.p1();
-        const defaulttype::Vector3& pt2 = t.p2();
-        const defaulttype::Vector3& pt3 = t.p3();
+        const type::Vector3& pt1 = t.p1();
+        const type::Vector3& pt2 = t.p2();
+        const type::Vector3& pt3 = t.p3();
 
         t.n() = cross(pt2-pt1,pt3-pt1);
         t.n().normalize();
@@ -241,7 +241,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     // set to false to avoid excesive loop
     m_needsUpdate=false;
 
-    defaulttype::Vector3 minElem, maxElem;
+    type::Vector3 minElem, maxElem;
     const VecCoord& x = this->m_mstate->read(core::ConstVecCoordId::position())->getValue();
 
     const bool calcNormals = d_computeNormals.getValue();
@@ -254,9 +254,9 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         {
             Element t(this,i);
 
-            const defaulttype::Vector3& pt1 = x[t.p1Index()];
-            const defaulttype::Vector3& pt2 = x[t.p2Index()];
-            const defaulttype::Vector3& pt3 = x[t.p3Index()];
+            const type::Vector3& pt1 = x[t.p1Index()];
+            const type::Vector3& pt2 = x[t.p2Index()];
+            const type::Vector3& pt3 = x[t.p3Index()];
 
             for (int c = 0; c < 3; c++)
             {
@@ -304,7 +304,7 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt,
     if (!isMoving() && !cubeModel->empty() && !m_needsUpdate) return; // No need to recompute BBox if immobile nor if mesh didn't change.
 
     m_needsUpdate=false;
-    defaulttype::Vector3 minElem, maxElem;
+    type::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
@@ -313,12 +313,12 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt,
         for (Size i=0; i<size; i++)
         {
             Element t(this,i);
-            const defaulttype::Vector3& pt1 = t.p1();
-            const defaulttype::Vector3& pt2 = t.p2();
-            const defaulttype::Vector3& pt3 = t.p3();
-            const defaulttype::Vector3 pt1v = pt1 + t.v1()*dt;
-            const defaulttype::Vector3 pt2v = pt2 + t.v2()*dt;
-            const defaulttype::Vector3 pt3v = pt3 + t.v3()*dt;
+            const type::Vector3& pt1 = t.p1();
+            const type::Vector3& pt2 = t.p2();
+            const type::Vector3& pt3 = t.p3();
+            const type::Vector3 pt1v = pt1 + t.v1()*dt;
+            const type::Vector3 pt2v = pt2 + t.v2()*dt;
+            const type::Vector3 pt3v = pt3 + t.v3()*dt;
 
             for (int c = 0; c < 3; c++)
             {
@@ -420,9 +420,9 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
     for (Size i=0; i<size; i++)
     {
         Element t(this,i);
-        const defaulttype::Vector3& pt1 = t.p1();
-        const defaulttype::Vector3& pt2 = t.p2();
-        const defaulttype::Vector3& pt3 = t.p3();
+        const type::Vector3& pt1 = t.p1();
+        const type::Vector3& pt2 = t.p2();
+        const type::Vector3& pt3 = t.p3();
 
         for (int c=0; c<3; c++)
         {
@@ -470,9 +470,9 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
             vparams->drawTool()->setPolygonMode(1,false);
         }
 
-        std::vector< defaulttype::Vector3 > points;
-        std::vector< defaulttype::Vec<3,int> > indices;
-        std::vector< defaulttype::Vector3 > normals;
+        std::vector< type::Vector3 > points;
+        std::vector< type::Vec<3,int> > indices;
+        std::vector< type::Vector3 > normals;
         int index=0;
         for (Size i=0; i<size; i++)
         {
@@ -481,7 +481,7 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
             points.push_back(t.p1());
             points.push_back(t.p2());
             points.push_back(t.p3());
-            indices.push_back(defaulttype::Vec<3,int>(index,index+1,index+2));
+            indices.push_back(type::Vec<3,int>(index,index+1,index+2));
             index+=3;
         }
 
@@ -494,7 +494,7 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
 
         if (vparams->displayFlags().getShowNormals())
         {
-            std::vector< defaulttype::Vector3 > points;
+            std::vector< type::Vector3 > points;
             for (Size i=0; i<size; i++)
             {
                 Element t(this,i);

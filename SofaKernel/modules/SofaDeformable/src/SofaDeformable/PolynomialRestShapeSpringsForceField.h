@@ -90,7 +90,7 @@ public:
         BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> d_restMState;
 
     // data to compute spring derivatives
-    typedef defaulttype::Vec<Coord::total_size, Real> JacobianVector;
+    typedef type::Vec<Coord::total_size, Real> JacobianVector;
 
 
 protected:

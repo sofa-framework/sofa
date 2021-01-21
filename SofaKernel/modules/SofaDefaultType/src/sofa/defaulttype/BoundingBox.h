@@ -24,7 +24,7 @@
 
 #include <utility> /// for std::pair
 #include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {
@@ -35,6 +35,9 @@ class SOFA_DEFAULTTYPE_API BoundingBox
 {
 
 public:
+    using Vector3 = sofa::type::Vector3;
+    using Vec6f = sofa::type::Vec6f;
+    using Vec6d = sofa::type::Vec6d;
     typedef std::pair< Vector3, Vector3 > bbox_t;
 
     BoundingBox();
@@ -67,19 +70,19 @@ public:
     Vector3& minBBox();
     Vector3& maxBBox();
 
-    bool contains( const sofa::defaulttype::Vector3& point) const;
+    bool contains( const sofa::type::Vector3& point) const;
     bool contains( const BoundingBox& other) const;
 
     bool intersect( const BoundingBox& other) const;
     void intersection( const BoundingBox& other);
 
-    void include( const sofa::defaulttype::Vector3& point);
+    void include( const sofa::type::Vector3& point);
     void include( const BoundingBox& other);
 
     void inflate( SReal amount );
 
     BoundingBox getIntersection( const BoundingBox& other ) const;
-    BoundingBox getInclude( const sofa::defaulttype::Vector3& point ) const;
+    BoundingBox getInclude( const sofa::type::Vector3& point ) const;
     BoundingBox getInclude( const BoundingBox& other ) const;
     BoundingBox getInflate( SReal amount ) const;
 
@@ -119,6 +122,9 @@ class SOFA_DEFAULTTYPE_API BoundingBox2D
 {
 
 public:
+    using Vector2 = sofa::type::Vector2;
+    using Vec4f = sofa::type::Vec4f;
+    using Vec4d = sofa::type::Vec4d;
     typedef std::pair< Vector2, Vector2 > bbox_t;
 
     BoundingBox2D();
@@ -151,19 +157,19 @@ public:
     Vector2& minBBox();
     Vector2& maxBBox();
 
-    bool contains( const sofa::defaulttype::Vector2& point) const;
+    bool contains( const sofa::type::Vector2& point) const;
     bool contains( const BoundingBox2D& other) const;
 
     bool intersect( const BoundingBox2D& other) const;
     void intersection( const BoundingBox2D& other);
 
-    void include( const sofa::defaulttype::Vector2& point);
+    void include( const sofa::type::Vector2& point);
     void include( const BoundingBox2D& other);
 
     void inflate( SReal amount);
 
     BoundingBox2D getIntersection( const BoundingBox2D& other ) const;
-    BoundingBox2D getInclude( const sofa::defaulttype::Vector2& point ) const;
+    BoundingBox2D getInclude( const sofa::type::Vector2& point ) const;
     BoundingBox2D getInclude( const BoundingBox2D& other ) const;
     BoundingBox2D getInflate( SReal amount ) const;
 
@@ -191,6 +197,8 @@ class SOFA_DEFAULTTYPE_API BoundingBox1D
 {
 
 public:
+    using Vec2f = sofa::type::Vec2f;
+    using Vec2d = sofa::type::Vec2d;
     typedef std::pair< SReal, SReal > bbox_t;
 
     BoundingBox1D();

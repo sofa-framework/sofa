@@ -142,7 +142,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 
     for(unsigned int i=0; i<hexahedra.size(); ++i)
     {
-        defaulttype::Vec<8,Coord> nodes;
+        type::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
             nodes[w] = initialPoints[hexahedra[i][w]];
 
@@ -156,7 +156,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, Real& totalMass,
-        const helper::fixed_array<Coord,8> &nodes)
+        const type::stdtype::fixed_array<Coord,8> &nodes)
 {
     // volume of a element
     Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
@@ -227,7 +227,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
         const VecElement& hexahedra = this->_topology->getHexahedra();
         for(unsigned int i=0; i<hexahedra.size(); ++i)
         {
-            defaulttype::Vec<24, Real> actualDx, actualF;
+            type::Vec<24, Real> actualDx, actualF;
 
             for(int k=0 ; k<8 ; ++k )
             {
@@ -460,7 +460,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     // since drawTool requires a std::vector<Vector3> we have to convert x in an ugly way
-    std::vector<defaulttype::Vector3> pos;
+    std::vector<type::Vector3> pos;
     pos.resize(x.size());
     auto posIT = pos.begin();
     typename VecCoord::const_iterator xIT = x.begin();

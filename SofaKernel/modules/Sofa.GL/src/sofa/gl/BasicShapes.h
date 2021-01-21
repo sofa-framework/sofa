@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gl/template.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/gl/glu.h>
 #include <cmath>
 
@@ -129,7 +129,7 @@ void drawWireSphere(const V& center, const float& rad, const int subd1=8, const 
 
 template <typename V>
 void drawTorus(const float* coordinateMatrix, const float& bodyRad=0.0,  const float& rad=1.0, const int precision=20,
-               const V& color=sofa::helper::fixed_array<int,3>(255,215,180))
+               const V& color=sofa::type::stdtype::fixed_array<int,3>(255,215,180))
 {
     glColor3ub(color.x(), color.y(), color.z());
 //    gluQuadricDrawStyle(quadric, GLU_FILL);
@@ -175,7 +175,7 @@ void drawTorus(const float* coordinateMatrix, const float& bodyRad=0.0,  const f
 
 template <typename V>
 void drawEmptyParallelepiped(const V& vert1, const V& vert2, const V& vert3, const V& vert4, const V& vecFromFaceToOppositeFace, const float& rad=1.0, const int precision=8,
-                             const V& color=sofa::helper::fixed_array<int, 3>(255,0,0))
+                             const V& color=sofa::type::stdtype::fixed_array<int, 3>(255,0,0))
 {
     glColor3ub(255, 255, 255);
     gluQuadricDrawStyle(quadric, GLU_FILL);

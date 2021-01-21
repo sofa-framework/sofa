@@ -53,7 +53,7 @@ int SpotLightClass = core::RegisterObject("A spot light illuminating the scene."
         .add< SpotLight >()
         ;
 
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 
 const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER = "shaders/softShadows/VSM/generate_depth_texture.vert";
 const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER = "shaders/softShadows/VSM/generate_depth_texture.frag";
@@ -434,7 +434,7 @@ void DirectionalLight::drawSource(const core::visual::VisualParams* vparams)
     SOFA_UNUSED(vparams);
 }
 
-void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaulttype::Vector3 &direction)
+void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::type::Vector3 &direction)
 {
     //1-compute bounding box
     sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
@@ -691,7 +691,7 @@ SpotLight::~SpotLight()
 void SpotLight::drawLight()
 {
     PositionalLight::drawLight();
-    defaulttype::Vector3 d = d_direction.getValue();
+    type::Vector3 d = d_direction.getValue();
     if (d_lookat.getValue()) d -= d_position.getValue();
     d.normalize();
     GLfloat dir[3]= {(GLfloat)(d[0]), (GLfloat)(d[1]), (GLfloat)(d[2])};
@@ -875,7 +875,7 @@ void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
     glEnable(GL_DEPTH_TEST);
 }
 
-void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaulttype::Vector3 &position, const sofa::defaulttype::Vector3 &direction)
+void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::type::Vector3 &position, const sofa::type::Vector3 &direction)
 {
     double epsilon = 0.0000001;
     Vector3 zAxis = -direction;

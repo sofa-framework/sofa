@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_QUATER_H
 #define SOFA_HELPER_QUATER_H
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <cmath>
 #include <cassert>
@@ -53,12 +53,12 @@ public:
     Quater(const Real2 q[]) { for (int i=0; i<4; i++) _q[i] = Real(q[i]); }
     template<class Real2>
     Quater(const Quater<Real2>& q) { for (int i=0; i<4; i++) _q[i] = Real(q[i]); }
-    Quater( const defaulttype::Vec<3,Real>& axis, Real angle );
+    Quater( const type::Vec<3,Real>& axis, Real angle );
 
     /** Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo.        
         vFrom and vTo are assumed to be normalized.
     */
-    Quater(const defaulttype::Vec<3, Real>& vFrom, const defaulttype::Vec<3, Real>& vTo);
+    Quater(const type::Vec<3, Real>& vFrom, const type::Vec<3, Real>& vTo);
 
     static Quater identity()
     {
@@ -101,7 +101,7 @@ public:
         _q[3]=1.0;
     }
 
-    void fromFrame(defaulttype::Vec<3,Real>& x, defaulttype::Vec<3,Real>&y, defaulttype::Vec<3,Real>&z);
+    void fromFrame(type::Vec<3,Real>& x, type::Vec<3,Real>&y, type::Vec<3,Real>&z);
 
 
     void fromMatrix(const defaulttype::Matrix3 &m);
@@ -160,9 +160,9 @@ public:
 
     /// Given two Quaters, multiply them together to get a third quaternion.
 
-    Quater quatVectMult(const defaulttype::Vec<3,Real>& vect);
+    Quater quatVectMult(const type::Vec<3,Real>& vect);
 
-    Quater vectQuatMult(const defaulttype::Vec<3,Real>& vect);
+    Quater vectQuatMult(const type::Vec<3,Real>& vect);
 
     Real& operator[](Size index)
     {
@@ -179,9 +179,9 @@ public:
     Quater inverse() const;
 
 
-    defaulttype::Vec<3,Real> quatToRotationVector() const;
+    type::Vec<3,Real> quatToRotationVector() const;
 
-    defaulttype::Vec<3,Real> toEulerVector() const;
+    type::Vec<3,Real> toEulerVector() const;
 
 
     /*! Returns the slerp interpolation of Quaternions \p a and \p b, at time \p t.
@@ -203,11 +203,11 @@ public:
     // This function computes a quaternion based on an axis (defined by
     // the given vector) and an angle about which to rotate.  The angle is
     // expressed in radians.
-    Quater axisToQuat(defaulttype::Vec<3,Real> a, Real phi);
-    void quatToAxis(defaulttype::Vec<3,Real> & a, Real &phi) const;
+    Quater axisToQuat(type::Vec<3,Real> a, Real phi);
+    void quatToAxis(type::Vec<3,Real> & a, Real &phi) const;
 
 
-    static Quater createQuaterFromFrame(const defaulttype::Vec<3, Real> &lox, const defaulttype::Vec<3, Real> &loy,const defaulttype::Vec<3, Real> &loz);
+    static Quater createQuaterFromFrame(const type::Vec<3, Real> &lox, const type::Vec<3, Real> &loy,const type::Vec<3, Real> &loz);
 
     /// Create using rotation vector (axis*angle) given in parent coordinates
     template<class V>
@@ -231,7 +231,7 @@ public:
         XYZ, YXZ, ZXY, ZYX, YZX, XZY, NONE
     };
 
-    static Quater createQuaterFromEuler( defaulttype::Vec<3,Real> v, EulerOrder order = EulerOrder::ZYX)
+    static Quater createQuaterFromEuler( type::Vec<3,Real> v, EulerOrder order = EulerOrder::ZYX)
     {
         Real quat[4];
 
@@ -336,7 +336,7 @@ public:
     }
 
     /// Return the eulerian vector resulting of the movement between 2 quaternions
-    defaulttype::Vec<3,Real> angularDisplacement( Quater a, const Quater& b)
+    type::Vec<3,Real> angularDisplacement( Quater a, const Quater& b)
     {
         return quatDiff(a,b).quatToRotationVector();    // Use of quatToRotationVector instead of toEulerVector:
                                                         // this is done to keep the old behavior (before the
@@ -344,7 +344,7 @@ public:
     }
 
     /// Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo. vFrom and vTo are assumed to be normalized.
-    void setFromUnitVectors(const defaulttype::Vec<3, Real>& vFrom, const defaulttype::Vec<3, Real>& vTo);
+    void setFromUnitVectors(const type::Vec<3, Real>& vFrom, const type::Vec<3, Real>& vTo);
 
 
     // Print the quaternion (C style)

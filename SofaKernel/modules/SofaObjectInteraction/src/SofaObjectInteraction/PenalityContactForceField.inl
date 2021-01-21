@@ -152,7 +152,7 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
     const helper::vector<Contact>& cc = contacts.getValue();
 
-    std::vector< defaulttype::Vector3 > points[4];
+    std::vector< type::Vector3 > points[4];
 
     for (sofa::Index i=0; i<cc.size(); i++)
     {
@@ -186,7 +186,7 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
     vparams->drawTool()->drawLines(points[3], 1, RGBAColor::green());
 
 
-    std::vector< defaulttype::Vector3 > pointsN;
+    std::vector< type::Vector3 > pointsN;
     if (vparams->displayFlags().getShowNormals())
     {
         for (unsigned int i=0; i<cc.size(); i++)
@@ -210,7 +210,7 @@ template<class DataTypes>
 void PenalityContactForceField<DataTypes>::grabPoint(
     const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
     const helper::vector< sofa::Index > &index,
-    helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
+    helper::vector< std::pair< core::objectmodel::BaseObject*, type::Vec3f> > &result,
     helper::vector< sofa::Index > &triangle,
     helper::vector< sofa::Index > &index_point)
 {

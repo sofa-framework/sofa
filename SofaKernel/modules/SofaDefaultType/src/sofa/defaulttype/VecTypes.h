@@ -22,7 +22,7 @@
 #ifndef SOFA_DEFAULTTYPE_VECTYPES_H
 #define SOFA_DEFAULTTYPE_VECTYPES_H
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/vector.h>
@@ -201,45 +201,45 @@ public:
 
 
 /// 3D DOFs, double precision
-typedef StdVectorTypes<Vec3d,Vec3d,double> Vec3dTypes;
+typedef StdVectorTypes<type::Vec3d, type::Vec3d,double> Vec3dTypes;
 template<> inline const char* Vec3dTypes::Name() { return "Vec3d"; }
 
 /// 2D DOFs, double precision
-typedef StdVectorTypes<Vec2d,Vec2d,double> Vec2dTypes;
+typedef StdVectorTypes<type::Vec2d, type::Vec2d,double> Vec2dTypes;
 template<> inline const char* Vec2dTypes::Name() { return "Vec2d"; }
 
 /// 1D DOFs, double precision
-typedef StdVectorTypes<Vec1d,Vec1d,double> Vec1dTypes;
+typedef StdVectorTypes<type::Vec1d, type::Vec1d,double> Vec1dTypes;
 template<> inline const char* Vec1dTypes::Name() { return "Vec1d"; }
 
 /// 6D DOFs, double precision
-typedef StdVectorTypes<Vec6d,Vec6d,double> Vec6dTypes;
+typedef StdVectorTypes<type::Vec6d, type::Vec6d,double> Vec6dTypes;
 template<> inline const char* Vec6dTypes::Name() { return "Vec6d"; }
 
 /// 3f DOFs, single precision
-typedef StdVectorTypes<Vec3f,Vec3f,float> Vec3fTypes;
+typedef StdVectorTypes<type::Vec3f, type::Vec3f,float> Vec3fTypes;
 template<> inline const char* Vec3fTypes::Name() { return "Vec3f"; }
 
 /// 2f DOFs, single precision
-typedef StdVectorTypes<Vec2f,Vec2f,float> Vec2fTypes;
+typedef StdVectorTypes<type::Vec2f, type::Vec2f,float> Vec2fTypes;
 template<> inline const char* Vec2fTypes::Name() { return "Vec2f"; }
 
 /// 1f DOFs, single precision
-typedef StdVectorTypes<Vec1f,Vec1f,float> Vec1fTypes;
+typedef StdVectorTypes<type::Vec1f, type::Vec1f,float> Vec1fTypes;
 template<> inline const char* Vec1fTypes::Name() { return "Vec1f"; }
 
 /// 6f DOFs, single precision
-typedef StdVectorTypes<Vec6f,Vec6f,float> Vec6fTypes;
+typedef StdVectorTypes<type::Vec6f, type::Vec6f,float> Vec6fTypes;
 template<> inline const char* Vec6fTypes::Name() { return "Vec6f"; }
 
 /// 6D DOFs, double precision (default)
-typedef StdVectorTypes<Vec6,Vec6,Vec6::value_type> Vec6Types;
+typedef StdVectorTypes<type::Vec6, type::Vec6, type::Vec6::value_type> Vec6Types;
 /// 3D DOFs, double precision (default)
-typedef StdVectorTypes<Vec3,Vec3,Vec3::value_type> Vec3Types;
+typedef StdVectorTypes<type::Vec3, type::Vec3, type::Vec3::value_type> Vec3Types;
 /// 2D DOFs, double precision (default)
-typedef StdVectorTypes<Vec2,Vec2,Vec2::value_type> Vec2Types;
+typedef StdVectorTypes<type::Vec2, type::Vec2, type::Vec2::value_type> Vec2Types;
 /// 1D DOFs, double precision (default)
-typedef StdVectorTypes<Vec1,Vec1,Vec1::value_type> Vec1Types;
+typedef StdVectorTypes<type::Vec1, type::Vec1, type::Vec1::value_type> Vec1Types;
 
 
 } // namespace defaulttype

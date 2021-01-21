@@ -25,7 +25,7 @@
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <set>
 
@@ -51,7 +51,7 @@ class SOFA_SOFATOPOLOGYMAPPING_API Mesh2PointTopologicalMapping : public sofa::c
 {
 public:
     SOFA_CLASS(Mesh2PointTopologicalMapping,sofa::core::topology::TopologicalMapping);
-    typedef sofa::defaulttype::Vec3d Vec3d;
+    typedef sofa::type::Vec3d Vec3d;
 
 protected:
     /** \brief Constructor.
@@ -129,7 +129,7 @@ protected:
     Data< bool > copyTriangles; ///< Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)
 	Data< bool > copyTetrahedra; ///< Activate mapping of input tetrahedras into the output topology (requires at least one item in pointBaryCoords)
 
-    helper::fixed_array< helper::vector< helper::vector<Index> >, NB_ELEMENTS > pointsMappedFrom; ///< Points mapped from the differents elements (see the enum Element declared before)
+    type::stdtype::fixed_array< helper::vector< helper::vector<Index> >, NB_ELEMENTS > pointsMappedFrom; ///< Points mapped from the differents elements (see the enum Element declared before)
 
     helper::vector< std::pair<Element, Index> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
 
@@ -148,11 +148,11 @@ protected:
     void removeOutputPoints( const sofa::helper::vector<Index>& tab );
 
 protected:
-    bool internalCheck(const char* step, const helper::fixed_array <size_t, NB_ELEMENTS >& nbInputRemoved);
+    bool internalCheck(const char* step, const type::stdtype::fixed_array <size_t, NB_ELEMENTS >& nbInputRemoved);
     
     bool internalCheck(const char* step)
     {
-        helper::fixed_array <size_t, NB_ELEMENTS > nbInputRemoved;
+        type::stdtype::fixed_array <size_t, NB_ELEMENTS > nbInputRemoved;
         nbInputRemoved.assign(0);
         return internalCheck(step, nbInputRemoved);
     }

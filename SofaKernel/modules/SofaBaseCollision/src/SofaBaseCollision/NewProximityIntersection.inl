@@ -22,15 +22,15 @@
 #pragma once
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 
 namespace sofa::component::collision
 {
 
-inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id)
+inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2, const type::Vector3& p, const type::Vector3& q, OutputVector* contacts, int id)
 {
-    defaulttype::Vector3 pq = q-p;
+    type::Vector3 pq = q-p;
 
     SReal norm2 = pq.norm2();
 

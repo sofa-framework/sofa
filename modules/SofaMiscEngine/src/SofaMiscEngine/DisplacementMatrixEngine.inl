@@ -109,11 +109,11 @@ void DisplacementMatrixEngine< DataTypes >::init()
 
     // Init of the scale matrices in case if the user did not initialize them
     const VecCoord& x0 = this->d_x0.getValue();
-    helper::vector< sofa::defaulttype::Vec<3,Real> >& scales = *d_scales.beginWriteOnly();
+    helper::vector< sofa::type::Vec<3,Real> >& scales = *d_scales.beginWriteOnly();
     if (scales.size() == 0)
         for( size_t i=0; i<x0.size(); ++i )
         {
-            scales.push_back(sofa::defaulttype::Vec<3,Real>(1,1,1));
+            scales.push_back(sofa::type::Vec<3,Real>(1,1,1));
         }
     d_scales.endEdit();
 
@@ -128,7 +128,7 @@ void DisplacementMatrixEngine< DataTypes >::reinit()
     Inherit::reinit();
 
     const VecCoord& x0 = this->d_x0.getValue();
-    const helper::vector< sofa::defaulttype::Vec<3,Real> >& scales = this->d_scales.getValue();
+    const helper::vector< sofa::type::Vec<3,Real> >& scales = this->d_scales.getValue();
     const size_t size0 = x0.size();
     const size_t sizeS = scales.size();
 
@@ -158,7 +158,7 @@ void DisplacementMatrixEngine< DataTypes >::doUpdate()
 {
     const VecCoord& x = this->d_x.getValue();
     const VecCoord& x0 = this->d_x0.getValue();
-    const helper::vector< sofa::defaulttype::Vec<3,Real> >& scales = this->d_scales.getValue();
+    const helper::vector< sofa::type::Vec<3,Real> >& scales = this->d_scales.getValue();
     const size_t size = x.size();
     const size_t size0 = x0.size();
     const size_t sizeS = scales.size();

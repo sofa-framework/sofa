@@ -23,7 +23,7 @@
 
 #include <SofaGraphComponent/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/objectmodel/ContextObject.h>
 
 namespace sofa::simulation
@@ -42,7 +42,7 @@ public:
 protected:
     Gravity();
 public:
-    Data<sofa::defaulttype::Vector3> f_gravity; ///< Gravity in the world coordinate system
+    Data<sofa::type::Vector3> f_gravity; ///< Gravity in the world coordinate system
 
     /// Modify the context of the Node
     void apply() override;

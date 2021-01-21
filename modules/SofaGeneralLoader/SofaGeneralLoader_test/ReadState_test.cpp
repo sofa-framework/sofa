@@ -25,8 +25,8 @@ using sofa::helper::testing::BaseSimulationTest;
 #include <SofaSimulationGraph/SimpleApi.h>
 using sofa::simulation::Node;
 
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vec3;
+#include <sofa/type/Vec.h>
+using sofa::type::Vec3;
 
 class ReadState_test : public BaseSimulationTest
 {

@@ -99,7 +99,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
     for (unsigned int i=0; i<_p0.size(); i++)
     {
-        sofa::defaulttype::Vector3 coefs;
+        sofa::type::Vector3 coefs;
 // 		int elementIdx = _sparseGrid->findCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
 // 		if (elementIdx==-1)
 // 		{
@@ -121,7 +121,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
             if (elementIdx != sofa::InvalidID)
             {
-                helper::fixed_array<Real, 8> baryCoefs;
+                type::stdtype::fixed_array<Real, 8> baryCoefs;
                 baryCoefs[0] = (Real)((1 - coefs[0]) * (1 - coefs[1]) * (1 - coefs[2]));
                 baryCoefs[1] = (Real)((coefs[0]) * (1 - coefs[1]) * (1 - coefs[2]));
                 baryCoefs[2] = (Real)((coefs[0]) * (coefs[1]) * (1 - coefs[2]));
@@ -131,7 +131,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
                 baryCoefs[6] = (Real)((coefs[0]) * (coefs[1]) * (coefs[2]));
                 baryCoefs[7] = (Real)((1 - coefs[0]) * (coefs[1]) * (coefs[2]));
 
-                _finestBarycentricCoord[i] = std::pair<Index, helper::fixed_array<Real, 8> >(elementIdx, baryCoefs);
+                _finestBarycentricCoord[i] = std::pair<Index, type::stdtype::fixed_array<Real, 8> >(elementIdx, baryCoefs);
             }
             else
                 msg_error() << "HexahedronCompositeFEMMapping::init()   error finding the corresponding finest cube of vertex " << _p0[i];
@@ -191,7 +191,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::Mecha
     const InVecCoord& in = inData.getValue();
 
     // les deplacements des noeuds grossiers
-    helper::vector< sofa::defaulttype::Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
+    helper::vector< sofa::type::Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
     for(topology::MeshTopology::HexahedronID i=0; i<_sparseGrid->getNbHexahedra(); ++i)
     {
         const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron(i);
@@ -270,7 +270,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJ( const sofa::core::Mech
     const InVecDeriv& in = inData.getValue();
 
     // les deplacements des noeuds grossiers
-    helper::vector< sofa::defaulttype::Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
+    helper::vector< sofa::type::Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
     for(topology::MeshTopology::HexahedronID i=0; i<_sparseGrid->getNbHexahedra(); ++i)
     {
         const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron(i);
@@ -349,7 +349,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJT( const sofa::core::Mec
         {
             Transformation& rotation = _rotations[ (*it).first];
 
-            sofa::defaulttype::Vec< 24 > dfplat = (*it).second.multTranspose( rotation * fineForces[i] ) / _finestWeights[i].size();
+            sofa::type::Vec< 24 > dfplat = (*it).second.multTranspose( rotation * fineForces[i] ) / _finestWeights[i].size();
 
             const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron( (*it).first );
             for(int w=0; w<8; ++w)
@@ -369,8 +369,8 @@ void HexahedronCompositeFEMMapping<BasicMapping>::draw(const core::visual::Visua
 {
     if (!vparams->displayFlags().getShowMappings()) return;
 
-    std::vector< sofa::defaulttype::Vector3 > points;
-    sofa::defaulttype::Vector3 point;
+    std::vector< sofa::type::Vector3 > points;
+    sofa::type::Vector3 point;
 
     for(unsigned int i=0; i<_qFine.size(); i++)
     {

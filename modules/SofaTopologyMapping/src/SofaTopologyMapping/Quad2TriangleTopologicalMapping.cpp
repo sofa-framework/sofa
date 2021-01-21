@@ -33,7 +33,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/GridTopology.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/AdvancedTimer.h>

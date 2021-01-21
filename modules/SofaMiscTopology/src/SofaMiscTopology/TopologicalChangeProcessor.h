@@ -138,7 +138,7 @@ protected:
 
     std::vector<SReal> getValuesInLine(std::string line, size_t nbElements);
 
-    void findElementIndex(defaulttype::Vector3 coord, Index& triangleIndex, Index oldTriangleIndex);
+    void findElementIndex(type::Vector3 coord, Index& triangleIndex, Index oldTriangleIndex);
     void saveIndices();//only for incision
     void inciseWithSavedIndices();
 
@@ -152,10 +152,10 @@ public:
     using Index = sofa::Index;
 
     std::vector<Index>      triangleIndices;
-    std::vector<defaulttype::Vector3>                barycentricCoordinates;
+    std::vector<type::Vector3>                barycentricCoordinates;
     SReal                                           timeToIncise;
 
-    std::vector<defaulttype::Vector3>                coordinates;
+    std::vector<type::Vector3>                coordinates;
 
     void display()
     {
@@ -176,7 +176,7 @@ public:
     }
 
 
-    std::vector<defaulttype::Vector3> computeCoordinates(core::topology::BaseMeshTopology *topology)
+    std::vector<type::Vector3> computeCoordinates(core::topology::BaseMeshTopology *topology)
     {
         sofa::component::topology::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* triangleGeo;
         topology->getContext()->get(triangleGeo);

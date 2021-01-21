@@ -193,7 +193,7 @@ void SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<B,B,Real> >
     for (Index jb=nb-1; jb>=0; jb--)
     {
         Index j0 = jb*B;
-        defaulttype::Vec<B,Real> temp;
+        type::Vec<B,Real> temp;
         typename Matrix::Range rowRange = M.getRowRange(jb);
         Index xi = rowRange.begin();
         while (xi < rowRange.end() && colsIndex[xi] < jb) ++xi;
@@ -234,7 +234,7 @@ void SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<B,B,Real> >
     for (Index jb=0; jb<nb; jb++)
     {
         Index j0 = jb*B;
-        defaulttype::Vec<B,Real> temp;
+        type::Vec<B,Real> temp;
         typename Matrix::Range rowRange = M.getRowRange(jb);
         Index xi = rowRange.begin();
         // lower triangle matrix

@@ -3,7 +3,7 @@
 #include <CImgPlugin/SOFACImg.h>
 
 // datatypes
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 
@@ -14,7 +14,7 @@
 // helpers
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/helper/rmath.h>
 
 

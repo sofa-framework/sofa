@@ -53,7 +53,7 @@ using sofa::component::collision::TriangleCollisionModel;
 using sofa::component::collision::RigidSphere;
 using sofa::component::collision::BaseIntTool;
 using sofa::core::collision::DetectionOutput;
-using sofa::defaulttype::Vec3d;
+using sofa::type::Vec3d;
 
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher ;

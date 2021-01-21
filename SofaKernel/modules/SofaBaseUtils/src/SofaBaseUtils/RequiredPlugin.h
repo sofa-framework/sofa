@@ -34,7 +34,7 @@ class SOFA_SOFABASEUTILS_API RequiredPlugin : public core::objectmodel::BaseObje
 public:
     SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
     sofa::core::objectmodel::Data<helper::vector<std::string> > d_pluginName; ///< plugin name (or several names if you need to load different plugins or a plugin with several alternate names)
-    sofa::core::objectmodel::Data<helper::vector<helper::fixed_array<std::string,2> > > d_suffixMap; ///< standard->custom suffixes pairs (to be used if the plugin is compiled outside of Sofa with a non standard way of differenciating versions), using ! to represent empty suffix
+    sofa::core::objectmodel::Data<helper::vector<type::stdtype::fixed_array<std::string,2> > > d_suffixMap; ///< standard->custom suffixes pairs (to be used if the plugin is compiled outside of Sofa with a non standard way of differenciating versions), using ! to represent empty suffix
 
     sofa::core::objectmodel::Data<bool> d_stopAfterFirstNameFound; ///< Stop after the first plugin name that is loaded successfully
     sofa::core::objectmodel::Data<bool> d_stopAfterFirstSuffixFound; ///< For each plugin name, stop after the first suffix that is loaded successfully

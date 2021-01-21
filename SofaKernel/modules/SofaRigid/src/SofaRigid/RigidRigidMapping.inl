@@ -741,7 +741,7 @@ void RigidRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
 	if (!getShow(this,vparams)) return;
 
     const typename Out::VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
-    const defaulttype::Vector3& sizes = defaulttype::Vector3(axisLength.getValue(), axisLength.getValue(), axisLength.getValue());
+    const type::Vector3& sizes = type::Vector3(axisLength.getValue(), axisLength.getValue(), axisLength.getValue());
     for (sofa::Index i=0; i<x.size(); i++)
     {
         vparams->drawTool()->drawFrame(x[i].getCenter(), x[i].getOrientation(), sizes);

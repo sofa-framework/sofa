@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
@@ -64,8 +64,8 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
         const Index rowSize = mat->rowSize();
         const Index colSize = mat->colSize();
         BlockData buffer;
-        Vec<NC,Real> vtmpj;
-        Vec<NL,Real> vtmpi;
+        type::Vec<NC,Real> vtmpj;
+        type::Vec<NL,Real> vtmpi;
         if (!add)
             opVresize(result, (transpose ? colSize : rowSize));
         for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = mat->bRowsRange();
@@ -81,10 +81,10 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
                 const Index j = block.getCol() * NC;
                 if (!transpose)
                 {
-                    VecNoInit<NC,Real> vj;
+                    type::VecNoInit<NC,Real> vj;
                     for (int bj = 0; bj < NC; ++bj)
                         vj[bj] = (Real)opVget(v, j+bj);
-                    Vec<NL,Real> resi;
+                    type::Vec<NL,Real> resi;
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
                             resi[bi] += bdata[bi][bj] * vj[bj];
@@ -93,10 +93,10 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
                 }
                 else
                 {
-                    VecNoInit<NL,Real> vi;
+                    type::VecNoInit<NL,Real> vi;
                     for (int bi = 0; bi < NL; ++bi)
                         vi[bi] = (Real)opVget(v, i+bi);
-                    Vec<NC,Real> resj;
+                    type::Vec<NC,Real> resj;
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
                             resj[bj] += bdata[bi][bj] * vi[bi];
@@ -141,8 +141,8 @@ struct BaseMatrixLinearOpMV_BlockSparse
         const Index rowSize = mat->rowSize();
         const Index colSize = mat->colSize();
         BlockData buffer;
-        Vec<NC,Real> vtmpj;
-        Vec<NL,Real> vtmpi;
+        type::Vec<NC,Real> vtmpj;
+        type::Vec<NL,Real> vtmpi;
         if (!add)
             opVresize(result, (transpose ? colSize : rowSize));
         for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = mat->bRowsRange();

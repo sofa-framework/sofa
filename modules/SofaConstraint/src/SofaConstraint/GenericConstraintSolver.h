@@ -125,8 +125,8 @@ protected:
     void clearConstraintProblemLocks();
 
     enum { CP_BUFFER_SIZE = 10 };
-    sofa::helper::fixed_array<GenericConstraintProblem,CP_BUFFER_SIZE> m_cpBuffer;
-    sofa::helper::fixed_array<bool,CP_BUFFER_SIZE> m_cpIsLocked;
+    sofa::type::stdtype::fixed_array<GenericConstraintProblem,CP_BUFFER_SIZE> m_cpBuffer;
+    sofa::type::stdtype::fixed_array<bool,CP_BUFFER_SIZE> m_cpIsLocked;
     GenericConstraintProblem *current_cp, *last_cp;
     std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
     std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping

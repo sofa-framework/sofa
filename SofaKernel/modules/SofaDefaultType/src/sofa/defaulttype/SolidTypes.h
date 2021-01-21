@@ -24,10 +24,10 @@
 
 #include <sofa/defaulttype/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
 #include <map>
@@ -54,14 +54,14 @@ class SOFA_DEFAULTTYPE_API SolidTypes
 {
 public:
     typedef R Real;
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
     typedef Vec3 Vec;  ///< For compatibility
     typedef helper::Quater<Real> Rot;
     typedef defaulttype::Mat<3,3,Real> Mat3x3;
     typedef Mat3x3 Mat; ///< For compatibility
     typedef defaulttype::Mat<6,6,Real> Mat6x6;
     typedef Mat6x6 Mat66; ///< For compatibility
-    typedef defaulttype::Vec<6,Real> Vec6;
+    typedef type::Vec<6,Real> Vec6;
     typedef Vec6 DOF; ///< For compatibility
 
 

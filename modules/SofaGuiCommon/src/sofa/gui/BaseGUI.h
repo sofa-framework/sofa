@@ -24,7 +24,7 @@
 
 #include <sofa/gui/config.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <SofaGraphComponent/ViewerSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 #include <sofa/helper/ArgumentParser.h>

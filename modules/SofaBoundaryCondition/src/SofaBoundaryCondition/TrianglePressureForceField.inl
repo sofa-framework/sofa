@@ -260,7 +260,7 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
     vparams->drawTool()->disableLighting();
 
     const sofa::helper::types::RGBAColor&  color = sofa::helper::types::RGBAColor::green();
-    std::vector< sofa::defaulttype::Vector3 > vertices;
+    std::vector< sofa::type::Vector3 > vertices;
 
     const sofa::helper::vector <Index>& my_map = trianglePressureMap.getMap2Elements();
 

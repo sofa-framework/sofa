@@ -55,7 +55,7 @@ public:
     {
         SReal r = sph1.r() + sph2.r();
         SReal myAlarmDist = alarmDist + r;
-        defaulttype::Vector3 dist = sph2.center() - sph1.center();
+        type::Vector3 dist = sph2.center() - sph1.center();
         SReal norm2 = dist.norm2();
 
         if (norm2 > myAlarmDist*myAlarmDist)

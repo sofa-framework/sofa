@@ -514,7 +514,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
     if( fabs(aSC)<1.0e-10 )
     {
-        std::vector<defaulttype::Vector3> points;
+        std::vector<type::Vector3> points;
         for (unsigned int i=0; i<indices.size(); i++)
         {
             Real xx = 0.0, xy = 0.0, xz = 0.0, fx = 0.0, fy = 0.0, fz = 0.0;
@@ -543,8 +543,8 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
             }
 
             DataTypes::get(fx,fy,fz, f[i] );
-            points.push_back(defaulttype::Vector3(xx, xy, xz ));
-            points.push_back(defaulttype::Vector3(xx+fx, xy+fy, xz+fz ));
+            points.push_back(type::Vector3(xx, xy, xz ));
+            points.push_back(type::Vector3(xx+fx, xy+fy, xz+fz ));
         }
         vparams->drawTool()->drawLines(points, 2, sofa::helper::types::RGBAColor::green());
     }
@@ -581,8 +581,8 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
             DataTypes::get(fx,fy,fz, f[i] );
 
-            defaulttype::Vector3 p1( xx, xy, xz);
-            defaulttype::Vector3 p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
+            type::Vector3 p1( xx, xy, xz);
+            type::Vector3 p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
 
             float norm = static_cast<float>((p2-p1).norm());
 

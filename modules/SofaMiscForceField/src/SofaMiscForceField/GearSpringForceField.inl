@@ -63,7 +63,7 @@ GearSpring<DataTypes>::GearSpring(unsigned int m1, unsigned  int m2, unsigned in
     , hardStiffnessRot(hardKsr)
     , Ratio(ratio)
 {
-    freeAxis = sofa::defaulttype::Vec<2,unsigned int>(0,0);
+    freeAxis = sofa::type::Vec<2,unsigned int>(0,0);
 }
 
 template<class DataTypes>

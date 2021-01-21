@@ -27,7 +27,7 @@
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/core/objectmodel/Event.h>
@@ -54,7 +54,7 @@ using sofa::core::ConstVecCoordId;
 
 using sofa::defaulttype::BaseVector ;
 using sofa::defaulttype::Quaternion ;
-using sofa::defaulttype::Vec3d ;
+using sofa::type::Vec3d ;
 
 using sofa::defaulttype::Rigid3Types ;
 using sofa::defaulttype::Vec3Types ;

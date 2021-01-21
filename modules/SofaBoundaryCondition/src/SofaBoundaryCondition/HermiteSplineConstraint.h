@@ -56,8 +56,8 @@ public:
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
-    typedef typename defaulttype::Vec<3, Real> Vec3R;
-    typedef typename defaulttype::Vec<2, Real> Vec2R;
+    typedef typename type::Vec<3, Real> Vec3R;
+    typedef typename type::Vec<2, Real> Vec2R;
     typedef typename helper::Quater<Real> QuatR;
 
 public:

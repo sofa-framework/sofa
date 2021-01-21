@@ -28,7 +28,7 @@
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <SofaMeshCollision/EndPoint.h>
 #include <set>
 #include <map>
@@ -212,7 +212,7 @@ private:
 
     Data<bool> bDraw; ///< enable/disable display of results
 
-    Data< helper::fixed_array<defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
+    Data< type::stdtype::fixed_array<type::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
     CubeCollisionModel::SPtr boxModel;
 

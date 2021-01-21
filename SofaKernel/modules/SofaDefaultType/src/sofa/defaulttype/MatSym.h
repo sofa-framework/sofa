@@ -22,7 +22,7 @@
 #ifndef SOFA_DEFAULTTYPE_MATSYM_H
 #define SOFA_DEFAULTTYPE_MATSYM_H
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <cassert>
 #include <iostream>
 #include <sofa/defaulttype/Mat.h>

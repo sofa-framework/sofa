@@ -95,7 +95,7 @@ void AngularSpringForceField<DataTypes>::addForce(const core::MechanicalParams* 
     {
         const sofa::Index index = indices.getValue()[i];
         defaulttype::Quat dq = p1[index].getOrientation() * p1[index-1].getOrientation().inverse();
-        defaulttype::Vec3d axis;
+        type::Vec3d axis;
         double angle = 0.0;
         Real stiffness;
         dq.normalize();
@@ -117,9 +117,9 @@ void AngularSpringForceField<DataTypes>::addForce(const core::MechanicalParams* 
 
         assert(sin_half_theta>=0);
         if (sin_half_theta < std::numeric_limits<Real>::epsilon())
-            axis = defaulttype::Vec<3,Real>(0.0, 1.0, 0.0);
+            axis = type::Vec<3,Real>(0.0, 1.0, 0.0);
         else
-            axis = defaulttype::Vec<3,Real>(dq[0], dq[1], dq[2])/sin_half_theta;
+            axis = type::Vec<3,Real>(dq[0], dq[1], dq[2])/sin_half_theta;
 
 		if (i < this->k.size())
             stiffness = this->k[i] = angularStiffness.getValue()[i];
@@ -172,7 +172,7 @@ void AngularSpringForceField<DataTypes>::draw(const core::visual::VisualParams* 
     vparams->drawTool()->setLightingEnabled(false);
 
     sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
-    sofa::helper::vector< defaulttype::Vec3d > vertices;
+    sofa::helper::vector< type::Vec3d > vertices;
 
     for (sofa::Index i=0; i<indices.getValue().size(); i++)
     {

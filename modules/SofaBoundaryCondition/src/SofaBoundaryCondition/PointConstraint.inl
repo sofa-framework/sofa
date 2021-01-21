@@ -176,8 +176,8 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< sofa::defaulttype::Vector3 > points;
-        sofa::defaulttype::Vector3 point;
+        std::vector< sofa::type::Vector3 > points;
+        sofa::type::Vector3 point;
         for (SetIndexArray::const_iterator it = indices.begin();
                 it != indices.end();
                 ++it)
@@ -189,8 +189,8 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     }
     else // new drawing by spheres
     {
-        std::vector< sofa::defaulttype::Vector3 > points;
-        sofa::defaulttype::Vector3 point;
+        std::vector< sofa::type::Vector3 > points;
+        sofa::type::Vector3 point;
         for (unsigned int index : indices)
         {
             point = DataTypes::getCPos(x[index]);

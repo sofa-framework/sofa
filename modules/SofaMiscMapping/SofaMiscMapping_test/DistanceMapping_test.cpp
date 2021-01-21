@@ -61,7 +61,7 @@ struct DistanceMappingTest : public Mapping_test<DistanceMapping>
 
         // expected child positions
         OutVecCoord expectedoutcoord;
-        expectedoutcoord.push_back( defaulttype::Vector1( std::sqrt(3.0) ) );
+        expectedoutcoord.push_back( type::Vector1( std::sqrt(3.0) ) );
 
         return this->runTest( incoord, expectedoutcoord );
     }

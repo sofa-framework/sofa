@@ -26,7 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/gl/Transformation.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/helper/system/glu.h>
 #include <SofaBaseVisual/VisualStyle.h>
 

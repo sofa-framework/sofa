@@ -39,10 +39,10 @@ class SOFA_CORE_API MechanicalMatrix
 {
 protected:
     enum { MFACT = 0, BFACT = 1, KFACT = 2 };
-    defaulttype::Vec<3,SReal> factors;
+    type::Vec<3,SReal> factors;
 public:
     MechanicalMatrix(SReal m, SReal b, SReal k) : factors(m,b,k) {}
-    explicit MechanicalMatrix(const defaulttype::Vec<3,SReal>& f) : factors(f) {}
+    explicit MechanicalMatrix(const type::Vec<3,SReal>& f) : factors(f) {}
 
     static const MechanicalMatrix M;
     static const MechanicalMatrix B;

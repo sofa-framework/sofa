@@ -25,7 +25,7 @@
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <SofaConstraint/UnilateralInteractionConstraint.h>
 #include <sofa/helper/types/RGBAColor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 namespace sofa::component::constraintset
 {
 
@@ -210,7 +210,7 @@ void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     else
         color = sofa::helper::types::RGBAColor::magenta();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
     vertices.push_back(DataTypes::getCPos((this->mstate1->read(core::ConstVecCoordId::position())->getValue())[d_m1.getValue()]));
 
     vparams->drawTool()->drawPoints(vertices, 10, color);

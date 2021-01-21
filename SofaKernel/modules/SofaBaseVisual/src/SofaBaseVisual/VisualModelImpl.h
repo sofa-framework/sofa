@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
@@ -77,7 +77,7 @@ class SOFA_SOFABASEVISUAL_API VisualModelImpl : public core::visual::VisualModel
 public:
     SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, Vec3State);
 
-    typedef sofa::defaulttype::Vec<2, float> TexCoord;
+    typedef sofa::type::Vec<2, float> TexCoord;
     typedef helper::vector<TexCoord> VecTexCoord;
 
     using Index = sofa::Index;
@@ -85,9 +85,9 @@ public:
     //Indices must be unsigned int for drawing
     using visual_index_type = unsigned int;
 
-    typedef helper::fixed_array<visual_index_type, 2> VisualEdge;
-    typedef helper::fixed_array<visual_index_type, 3> VisualTriangle;
-    typedef helper::fixed_array<visual_index_type, 4> VisualQuad;
+    typedef type::stdtype::fixed_array<visual_index_type, 2> VisualEdge;
+    typedef type::stdtype::fixed_array<visual_index_type, 3> VisualTriangle;
+    typedef type::stdtype::fixed_array<visual_index_type, 4> VisualQuad;
     typedef helper::vector<VisualEdge> VecVisualEdge;
     typedef helper::vector<VisualTriangle> VecVisualTriangle;
     typedef helper::vector<VisualQuad> VecVisualQuad;
@@ -145,7 +145,7 @@ public:
 
     /// @name Initial transformation attributes
     /// @{
-    typedef sofa::defaulttype::Vec<3,Real> Vec3Real;
+    typedef sofa::type::Vec<3,Real> Vec3Real;
     Data< Vec3Real > m_translation; ///< Initial Translation of the object
     Data< Vec3Real > m_rotation; ///< Initial Rotation of the object
     Data< Vec3Real > m_scale; ///< Initial Scale of the object
@@ -184,7 +184,7 @@ public:
     }
     /// @}
 
-    sofa::defaulttype::Vec3f bbox[2];
+    sofa::type::Vec3f bbox[2];
     Data< sofa::helper::types::Material > material;
     Data< bool > putOnlyTexCoords;
     Data< bool > srgbTexturing;

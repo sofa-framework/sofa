@@ -10,7 +10,7 @@ using sofa::helper::system::DataRepository;
 using sofa::component::loader::MeshSTLLoader;
 
 using sofa::core::objectmodel::New ;
-using sofa::defaulttype::Vector3 ;
+using sofa::type::Vector3 ;
 using namespace sofa::component::topology;
 using namespace sofa::helper::testing;
 

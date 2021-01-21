@@ -44,8 +44,8 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef sofa::defaulttype::Vec<3,Real> Vec3;
-    typedef sofa::defaulttype::Vec<3,size_t> Vec3Int;
+    typedef sofa::type::Vec<3,Real> Vec3;
+    typedef sofa::type::Vec<3,size_t> Vec3Int;
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     typedef sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;

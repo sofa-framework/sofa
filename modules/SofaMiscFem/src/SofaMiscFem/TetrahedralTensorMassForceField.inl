@@ -486,7 +486,7 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
         vparams->drawTool()->setPolygonMode(0,true);
 
     sofa::helper::types::RGBAColor color(0,1,0,1);
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     int nbTriangles=m_topology->getNbTriangles();
@@ -497,9 +497,9 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
         int b = m_topology->getTriangle(i)[1];
         int c = m_topology->getTriangle(i)[2];
 
-        vertices.push_back(sofa::defaulttype::Vector3(x[a]));
-        vertices.push_back(sofa::defaulttype::Vector3(x[b]));
-        vertices.push_back(sofa::defaulttype::Vector3(x[c]));
+        vertices.push_back(sofa::type::Vector3(x[a]));
+        vertices.push_back(sofa::type::Vector3(x[b]));
+        vertices.push_back(sofa::type::Vector3(x[c]));
     }
     vparams->drawTool()->drawTriangles(vertices,color);
     vparams->drawTool()->restoreLastState();

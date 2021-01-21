@@ -365,7 +365,7 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
     }
 
     // saving incident hexahedra for each points in order to be able to link or not vertices
-    helper::vector< helper::vector< helper::fixed_array<unsigned,3> > > hexahedraConnectedToThePoint(nbPoints);
+    helper::vector< helper::vector< type::stdtype::fixed_array<unsigned,3> > > hexahedraConnectedToThePoint(nbPoints);
     unsigned c=0;
     for(unsigned i=0 ; i<_connexions.size(); ++i)
     {
@@ -373,13 +373,13 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
         {
             for(unsigned p=0; p<8; ++p)
             {
-                hexahedraConnectedToThePoint[hexahedra[c][p]].push_back( helper::fixed_array<unsigned,3>  (c, p, i) );
+                hexahedraConnectedToThePoint[hexahedra[c][p]].push_back( type::stdtype::fixed_array<unsigned,3>  (c, p, i) );
             }
             c++;
         }
     }
 
-    helper::vector<defaulttype::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    helper::vector<type::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     nbPoints=0;
     for(unsigned i=0; i<hexahedraConnectedToThePoint.size(); ++i)
     {
@@ -452,7 +452,7 @@ void SparseGridRamificationTopology::buildFromFiner()
                 int y = 2*j;
                 int z = 2*k;
 
-                helper::fixed_array<Index,8> fineIndices;
+                type::stdtype::fixed_array<Index,8> fineIndices;
                 for(int idx=0; idx<8; ++idx)
                 {
                     const int idxX = x + (idx & 1);
@@ -700,7 +700,7 @@ void SparseGridRamificationTopology::buildFromFiner()
     }
 
     // saving incident hexahedra for each points in order to be able to link or not vertices
-    helper::vector< helper::vector< helper::fixed_array<unsigned,3> > > hexahedraConnectedToThePoint(nbPoints);
+    helper::vector< helper::vector< type::stdtype::fixed_array<unsigned,3> > > hexahedraConnectedToThePoint(nbPoints);
     unsigned c=0;
     for(unsigned i=0 ; i<_connexions.size(); ++i)
     {
@@ -708,13 +708,13 @@ void SparseGridRamificationTopology::buildFromFiner()
         {
             for(unsigned p=0; p<8; ++p)
             {
-                hexahedraConnectedToThePoint[hexahedra[c][p]].push_back( helper::fixed_array<unsigned,3>  (c, p, i) );
+                hexahedraConnectedToThePoint[hexahedra[c][p]].push_back( type::stdtype::fixed_array<unsigned,3>  (c, p, i) );
             }
             c++;
         }
     }
 
-    helper::vector<defaulttype::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    helper::vector<type::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     nbPoints=0;
     for(unsigned i=0; i<hexahedraConnectedToThePoint.size(); ++i)
     {
@@ -751,7 +751,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 
             for( helper::vector<Connexion*>::iterator it = _connexions[i].begin(); it != _connexions[i].end() ; ++it)
             {
-                helper::fixed_array<Index,8> fineIndices;
+                type::stdtype::fixed_array<Index,8> fineIndices;
 
                 for( std::list<Connexion::Children>::iterator child=(*it)->_children.begin(); child!=(*it)->_children.end(); ++child)
                 {

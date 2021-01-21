@@ -23,9 +23,9 @@
 #include <SofaSimpleFem/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
@@ -49,7 +49,7 @@ class TetrahedronDiffusionFEMForceField : public core::behavior::ForceField<Data
       typedef typename sofa::helper::vector< Real > VectorReal    ;
 
       /// assumes the mechanical object type (3D)
-      typedef defaulttype::Vec<3,Real>                            Vec3;
+      typedef type::Vec<3,Real>                            Vec3;
       typedef defaulttype::StdVectorTypes< Vec3, Vec3, Real >     MechanicalTypes ;
       typedef sofa::core::behavior::MechanicalState<MechanicalTypes>      MechObject;
 

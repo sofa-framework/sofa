@@ -26,7 +26,7 @@
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/helper/map.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::topology
 {
@@ -43,14 +43,14 @@ public:
     typedef EdgesInHexahedron EdgesInHexahedron;
     typedef QuadsInHexahedron QuadsInHexahedron;
 
-    Data<sofa::defaulttype::Vec3i> resolution; ///< voxel grid resolution
+    Data<sofa::type::Vec3i> resolution; ///< voxel grid resolution
 
     Data< sofa::helper::vector<unsigned char> > valuesIndexedInRegularGrid; ///< values indexed in the Regular Grid
     HexahedronData< sofa::helper::vector<unsigned char> > valuesIndexedInTopology; ///< values indexed in the topology
 
     Data< sofa::helper::vector<BaseMeshTopology::HexaID> > idxInRegularGrid; ///< indices in the Regular Grid
     Data< std::map< unsigned int, BaseMeshTopology::HexaID> > idInRegularGrid2IndexInTopo; ///< map between id in the Regular Grid and index in the topology
-    Data< defaulttype::Vector3 > voxelSize; ///< Size of the Voxels
+    Data< type::Vector3 > voxelSize; ///< Size of the Voxels
 protected:
     DynamicSparseGridTopologyContainer();
     ~DynamicSparseGridTopologyContainer() override {}

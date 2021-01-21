@@ -23,7 +23,7 @@
 #define QRGBACOLORPICKER_H
 #include "DataWidget.h"
 #include <sofa/helper/types/Material.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <QColorDialog>
 #include <QPainter>
@@ -49,7 +49,7 @@ namespace qt
 /// Private namespace
 namespace qrgbacolorpicker_h
 {
-using sofa::defaulttype::Vec4f ;
+using sofa::type::Vec4f ;
 
 /**
     @class QRGBAColorPicker

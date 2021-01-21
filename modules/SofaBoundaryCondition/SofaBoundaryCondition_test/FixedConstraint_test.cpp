@@ -87,7 +87,7 @@ struct FixedConstraint_test : public BaseTest
 
         /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");
-        root->setGravity( defaulttype::Vector3(0,0,0) );
+        root->setGravity( type::Vector3(0,0,0) );
 
 #if SOFABOUNDARYCONDITION_TEST_HAVE_SOFASPARSESOLVER
         simpleapi::createObject(root , "RequiredPlugin", {{"name", "SofaSparseSolver"}}) ;

@@ -131,7 +131,7 @@ static inline void clearPos(defaulttype::RigidDeriv<N,T>& v)
 }
 
 template<class T>
-static inline void clearPos(defaulttype::Vec<6,T>& v)
+static inline void clearPos(type::Vec<6,T>& v)
 {
     for (unsigned int i=0; i<3; ++i)
         v[i] = 0;
@@ -205,14 +205,14 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
     sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (f_fixAll.getValue() == true)
     {
         for (unsigned i = 0; i < x.size(); i++)
         {
-            sofa::defaulttype::Vector3 v;
+            sofa::type::Vector3 v;
             const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[i]);
             for(Size j=0 ; j<cpos.size() && j<3; j++)
                 v[j] = cpos[j];
@@ -224,7 +224,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
     {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            sofa::defaulttype::Vector3 v;
+            sofa::type::Vector3 v;
             const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[*it]);
             for(Size j=0 ; j<cpos.size() && j<3; j++)
                 v[j] = cpos[j];

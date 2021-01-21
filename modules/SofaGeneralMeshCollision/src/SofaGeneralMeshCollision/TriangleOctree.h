@@ -70,7 +70,7 @@ public:
 
 protected:
     /// used to add a triangle  to the octree
-    int fillOctree (int t, int d = 0, defaulttype::Vector3 v = defaulttype::Vector3 (0, 0, 0));
+    int fillOctree (int t, int d = 0, type::Vector3 v = type::Vector3 (0, 0, 0));
     /// used to compute the Bounding Box for each triangle
     void calcTriangleAABB(int t, double* bb, double& size);
 };
@@ -118,46 +118,46 @@ public:
     void draw (const core::visual::VisualParams* vparams);
 
     /// Find the nearest triangle intersecting the given ray, or -1 of not found
-    int trace (defaulttype::Vector3 origin, defaulttype::Vector3 direction, traceResult &result);
+    int trace (type::Vector3 origin, type::Vector3 direction, traceResult &result);
 
     /// Find all triangles intersecting the given ray
-    void traceAll (defaulttype::Vector3 origin, defaulttype::Vector3 direction, helper::vector<traceResult>& results);
+    void traceAll (type::Vector3 origin, type::Vector3 direction, helper::vector<traceResult>& results);
 
     /// Find all triangles intersecting the given ray
-    void traceAllCandidates(defaulttype::Vector3 origin, defaulttype::Vector3 direction, std::set<int>& results);
+    void traceAllCandidates(type::Vector3 origin, type::Vector3 direction, std::set<int>& results);
 
     /// Find all triangles intersecting the given ray
-    void bboxAllCandidates(defaulttype::Vector3 bbmin, defaulttype::Vector3 bbmax, std::set<int>& results);
+    void bboxAllCandidates(type::Vector3 bbmin, type::Vector3 bbmax, std::set<int>& results);
 
     friend class TriangleOctreeRoot;
 
 protected:
-    int trace (const defaulttype::Vector3 & origin, const defaulttype::Vector3 & direction,
+    int trace (const type::Vector3 & origin, const type::Vector3 & direction,
             double tx0, double ty0, double tz0, double tx1, double ty1,
-            double tz1, unsigned int a, unsigned int b,defaulttype::Vector3 &origin1,defaulttype::Vector3 &direction1, traceResult &result);
+            double tz1, unsigned int a, unsigned int b,type::Vector3 &origin1,type::Vector3 &direction1, traceResult &result);
 
     template<class Res>
-    void traceAllStart (defaulttype::Vector3 origin, defaulttype::Vector3 direction, Res& results);
+    void traceAllStart (type::Vector3 origin, type::Vector3 direction, Res& results);
 
     template<class Res>
-    void traceAll (const defaulttype::Vector3 & origin, const defaulttype::Vector3 & direction,
+    void traceAll (const type::Vector3 & origin, const type::Vector3 & direction,
             double tx0, double ty0, double tz0, double tx1, double ty1,
-            double tz1, unsigned int a, unsigned int b,defaulttype::Vector3 &origin1,defaulttype::Vector3 &direction1, Res& results);
+            double tz1, unsigned int a, unsigned int b,type::Vector3 &origin1,type::Vector3 &direction1, Res& results);
 
     template<class Res>
-    void bbAll (const defaulttype::Vector3 & bbmin, const defaulttype::Vector3 & bbmax, Res& results);
+    void bbAll (const type::Vector3 & bbmin, const type::Vector3 & bbmax, Res& results);
 
-    int nearestTriangle (int minIndex, const defaulttype::Vector3 & origin,
-            const defaulttype::Vector3 & direction,traceResult &result);
+    int nearestTriangle (int minIndex, const type::Vector3 & origin,
+            const type::Vector3 & direction,traceResult &result);
 
-    void allTriangles (const defaulttype::Vector3 & origin,
-            const defaulttype::Vector3 & direction, helper::vector<traceResult>& results);
+    void allTriangles (const type::Vector3 & origin,
+            const type::Vector3 & direction, helper::vector<traceResult>& results);
 
-    void allTriangles (const defaulttype::Vector3 & origin,
-            const defaulttype::Vector3 & direction, std::set<int>& results);
+    void allTriangles (const type::Vector3 & origin,
+            const type::Vector3 & direction, std::set<int>& results);
 
-    void bbAllTriangles (const defaulttype::Vector3 & bbmin,
-            const defaulttype::Vector3 & bbmax, std::set<int>& results);
+    void bbAllTriangles (const type::Vector3 & bbmin,
+            const type::Vector3 & bbmax, std::set<int>& results);
 
     void insert (double _x, double _y, double _z, double _inc, int t);
 

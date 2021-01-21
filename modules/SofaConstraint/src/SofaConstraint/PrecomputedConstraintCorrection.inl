@@ -226,9 +226,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         invM->data = new Real[nbRows * nbCols];
 
         // for the intial computation, the gravity has to be put at 0
-        const sofa::defaulttype::Vec3d gravity = this->getContext()->getGravity();
+        const sofa::type::Vec3d gravity = this->getContext()->getGravity();
 
-        const sofa::defaulttype::Vec3d gravity_zero(0.0,0.0,0.0);
+        const sofa::type::Vec3d gravity_zero(0.0,0.0,0.0);
         this->getContext()->setGravity(gravity_zero);
 
         sofa::component::odesolver::EulerImplicitSolver* eulerSolver;
@@ -852,7 +852,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
 
         sofa::defaulttype::Quat q;
         q.fromMatrix(RotMat);
-        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[i]), q, sofa::defaulttype::Vec3f(this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue()));
+        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[i]), q, sofa::type::Vec3f(this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue()));
 
     }
 

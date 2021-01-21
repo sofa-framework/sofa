@@ -120,10 +120,10 @@ public:
     const GLfloat* getOpenGLModelViewMatrix();
     virtual GLuint getDepthTexture() { return 0 ;}
     virtual GLuint getColorTexture() { return 0 ;}
-    virtual const sofa::defaulttype::Vector3 getPosition() { return sofa::defaulttype::Vector3(0.0,0.0,0.0); }
+    virtual const sofa::type::Vector3 getPosition() { return sofa::type::Vector3(0.0,0.0,0.0); }
     virtual unsigned short getShadowTextureUnit() { return d_textureUnit.getValue(); }
     virtual void setShadowTextureUnit(const unsigned short unit) { d_textureUnit.setValue(unit); }
-    virtual defaulttype::Vector3 getDirection() { return defaulttype::Vector3(); }
+    virtual type::Vector3 getDirection() { return type::Vector3(); }
     virtual float getShadowFactor() { return d_shadowFactor.getValue(); }
     virtual float getVSMLightBleeding() { return d_VSMLightBleeding.getValue(); }
     virtual float getVSMMinVariance() { return d_VSMMinVariance.getValue(); }
@@ -139,7 +139,7 @@ class SOFA_OPENGL_VISUAL_API DirectionalLight : public Light
 public:
     SOFA_CLASS(DirectionalLight, Light);
 
-    Data<sofa::defaulttype::Vector3> d_direction; ///< Set the direction of the light
+    Data<sofa::type::Vector3> d_direction; ///< Set the direction of the light
 
     DirectionalLight();
     ~DirectionalLight() override;
@@ -149,12 +149,12 @@ public:
     void drawSource(const core::visual::VisualParams* vparams) override;
     GLuint getDepthTexture() override;
     GLuint getColorTexture() override;
-    defaulttype::Vector3 getDirection() override { return d_direction.getValue(); }
+    type::Vector3 getDirection() override { return d_direction.getValue(); }
     LightType getLightType() override { return LightType::DIRECTIONAL; }
 private:
     void computeClippingPlane(const core::visual::VisualParams* vp, float& left, float& right, float& top, float& bottom, float& zNear, float& zFar);
     void computeOpenGLProjectionMatrix(GLfloat mat[16], float& left, float& right, float& top, float& bottom, float& zNear, float& zFar);
-    void computeOpenGLModelViewMatrix(GLfloat lightMatModelview[16], const sofa::defaulttype::Vector3 &direction);
+    void computeOpenGLModelViewMatrix(GLfloat lightMatModelview[16], const sofa::type::Vector3 &direction);
 
 };
 
@@ -164,7 +164,7 @@ public:
     SOFA_CLASS(PositionalLight, Light);
 
     Data<bool> d_fixed; ///< Fix light position from the camera
-    Data<sofa::defaulttype::Vector3> d_position; ///< Set the position of the light
+    Data<sofa::type::Vector3> d_position; ///< Set the position of the light
     Data<float> d_attenuation; ///< Set the attenuation of the light
 
     PositionalLight();
@@ -172,7 +172,7 @@ public:
     void drawLight() override;
     void draw(const core::visual::VisualParams* vparams) override;
     void drawSource(const core::visual::VisualParams*) override;
-    const sofa::defaulttype::Vector3 getPosition() override { return d_position.getValue(); }
+    const sofa::type::Vector3 getPosition() override { return d_position.getValue(); }
     LightType getLightType() override { return LightType::POSITIONAL; }
 };
 
@@ -181,7 +181,7 @@ class SOFA_OPENGL_VISUAL_API SpotLight : public PositionalLight
 public:
     SOFA_CLASS(SpotLight, PositionalLight);
 
-    Data<sofa::defaulttype::Vector3> d_direction; ///< Set the direction of the light
+    Data<sofa::type::Vector3> d_direction; ///< Set the direction of the light
     Data<float> d_cutoff; ///< Set the angle (cutoff) of the spot
     Data<float> d_exponent; ///< Set the exponent of the spot
     Data<bool> d_lookat; ///< If true, direction specify the point at which the spotlight should be pointed to
@@ -195,13 +195,13 @@ public:
     void preDrawShadow(core::visual::VisualParams*  vp) override;
     GLuint getDepthTexture() override;
     GLuint getColorTexture() override;
-    defaulttype::Vector3 getDirection() override { return d_direction.getValue(); }
+    type::Vector3 getDirection() override { return d_direction.getValue(); }
     LightType getLightType() override { return LightType::SPOTLIGHT; }
 
 private:
     void computeClippingPlane(const core::visual::VisualParams* vp, float& zNear, float& zFar);
     void computeOpenGLProjectionMatrix(GLfloat mat[16], float width, float height, float fov, float zNear, float zFar);
-    void computeOpenGLModelViewMatrix(GLfloat lightMatModelview[16], const sofa::defaulttype::Vector3 &position, const sofa::defaulttype::Vector3 &direction);
+    void computeOpenGLModelViewMatrix(GLfloat lightMatModelview[16], const sofa::type::Vector3 &position, const sofa::type::Vector3 &direction);
 
 };
 

@@ -23,7 +23,7 @@
 #define MATERIAL_DATAWIDGET_H
 #include "DataWidget.h"
 #include <sofa/helper/types/Material.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <QColorDialog>
 #include <QPainter>

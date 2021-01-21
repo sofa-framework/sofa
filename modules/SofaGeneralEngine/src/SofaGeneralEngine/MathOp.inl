@@ -242,7 +242,7 @@ struct MathOpTraitsVecReal
 };
 
 template< std::size_t N, typename Real>
-class MathOpTraits< defaulttype::Vec<N,Real> > : public MathOpTraitsVecReal< defaulttype::Vec<N,Real> > {};
+class MathOpTraits< type::Vec<N,Real> > : public MathOpTraitsVecReal< type::Vec<N,Real> > {};
 
 /// Bool-like ops
 template<typename T>

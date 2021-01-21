@@ -148,7 +148,7 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyElemID& d);
 /// Topology change informations related to the ancestor topology element of a point
 struct PointAncestorElem
 {
-    typedef defaulttype::Vec<3, double> LocalCoords;
+    typedef type::Vec<3, double> LocalCoords;
 
     PointAncestorElem() : type(TopologyElementType::POINT), index((Topology::ElemID)-1) {}
 
@@ -174,13 +174,13 @@ struct ElemAncestorElem
     ElemAncestorElem()
     {}
 
-    ElemAncestorElem(const helper::fixed_array<PointAncestorElem,NV>& _pointSrcElems,
+    ElemAncestorElem(const type::stdtype::fixed_array<PointAncestorElem,NV>& _pointSrcElems,
         const helper::vector<TopologyElemID>& _srcElems)
         : pointSrcElems(_pointSrcElems)
         , srcElems(_srcElems)
     {}
     
-    ElemAncestorElem(const helper::fixed_array<PointAncestorElem,NV>& _pointSrcElems,
+    ElemAncestorElem(const type::stdtype::fixed_array<PointAncestorElem,NV>& _pointSrcElems,
         const TopologyElemID& _srcElem)
         : pointSrcElems(_pointSrcElems)
         , srcElems()
@@ -188,7 +188,7 @@ struct ElemAncestorElem
         srcElems.push_back(_srcElem);
     }
     
-    helper::fixed_array<PointAncestorElem,NV> pointSrcElems;
+    type::stdtype::fixed_array<PointAncestorElem,NV> pointSrcElems;
     helper::vector<TopologyElemID> srcElems;
 };
 

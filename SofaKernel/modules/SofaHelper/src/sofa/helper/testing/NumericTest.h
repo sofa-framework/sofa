@@ -23,7 +23,7 @@
 #define SOFA_HELPER_NUMERICTEST_H
 
 #include "BaseTest.h"
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -70,7 +70,7 @@ struct SOFA_HELPER_API NumericTest : public virtual BaseTest
 
     /// return the maximum difference between corresponding entries, or the infinity if the vectors have different sizes
     template< Size N, typename Real, typename Vector2>
-    static Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const Vector2& m2 )
+    static Real vectorMaxDiff( const sofa::type::Vec<N,Real>& m1, const Vector2& m2 )
     {
         if( N !=m2.size() ) {
             ADD_FAILURE() << "Comparison between vectors of different sizes";
@@ -87,7 +87,7 @@ struct SOFA_HELPER_API NumericTest : public virtual BaseTest
 
     /// return the maximum difference between corresponding entries
     template< Size N, typename Real>
-    static Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const sofa::defaulttype::Vec<N,Real>& m2 )
+    static Real vectorMaxDiff( const sofa::type::Vec<N,Real>& m1, const sofa::type::Vec<N,Real>& m2 )
     {
         Real result = 0;
         for( unsigned i=0; i<N; i++ ){
@@ -273,7 +273,7 @@ void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>&
 
 /// Create a coord of the specified type from a Vector3 and a Quater
 template<class DataTypes>
-typename DataTypes::Coord createCoord(const sofa::defaulttype::Vector3& pos, const sofa::helper::Quater<SReal>& rot)
+typename DataTypes::Coord createCoord(const sofa::type::Vector3& pos, const sofa::helper::Quater<SReal>& rot)
 {
     typename DataTypes::Coord temp;
     DataTypes::set(temp, pos[0], pos[1], pos[2]);
@@ -282,7 +282,7 @@ typename DataTypes::Coord createCoord(const sofa::defaulttype::Vector3& pos, con
 }
 
 template <sofa::Size N, class real>
-void EXPECT_VEC_DOUBLE_EQ(sofa::defaulttype::Vec<N, real> const& expected, sofa::defaulttype::Vec<N, real> const& actual) {
+void EXPECT_VEC_DOUBLE_EQ(sofa::type::Vec<N, real> const& expected, sofa::type::Vec<N, real> const& actual) {
     for (sofa::Size i=0; i<expected.total_size; ++i)
         EXPECT_DOUBLE_EQ(expected[i], actual[i]);
 }

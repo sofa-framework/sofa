@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/map.h>
 
@@ -76,7 +76,7 @@ protected:
     /// @{
 
     /// Displacement vector (deformation of the 4 corners of a tetrahedron
-    typedef defaulttype::VecNoInit<12, Real> Displacement;
+    typedef type::VecNoInit<12, Real> Displacement;
 
     /// Material stiffness matrix of a tetrahedron
     typedef defaulttype::Mat<6, 6, Real> MaterialStiffness;
@@ -101,7 +101,7 @@ protected:
         /// the strain-displacement matrices vector
         StrainDisplacementTransposed strainDisplacementTransposedMatrix;
         /// large displacement method
-        helper::fixed_array<Coord,4> rotatedInitialElements;
+        type::stdtype::fixed_array<Coord,4> rotatedInitialElements;
         Transformation rotation;
         /// polar method
         Transformation initialTransformation;

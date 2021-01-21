@@ -22,9 +22,9 @@
 #include <sofa/helper/io/XspLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/rmath.h>
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 
 #include <sofa/core/objectmodel/Base.h>
 #include <cstdio>

@@ -54,10 +54,10 @@ namespace sofa::component::mapping
 {
 
 using namespace topology;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 using sofa::defaulttype::Matrix3;
 using sofa::defaulttype::Mat3x3d;
-using sofa::defaulttype::Vec3d;
+using sofa::type::Vec3d;
 using sofa::core::objectmodel::ComponentState;
 
 // 10/18 E.Coevoet: what's the difference between edge/line, tetra/tetrahedron, hexa/hexahedron?

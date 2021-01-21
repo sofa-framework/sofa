@@ -49,7 +49,7 @@ public:
         TransposedBloc(const sofa::defaulttype::Mat<BSIZE, BSIZE, Real>& m_a) : m(m_a){
 }
 
-        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v)
+        type::Vec<BSIZE,Real> operator*(const type::Vec<BSIZE,Real>& v)
         {
             return m.multTranspose(v);
         }
@@ -81,7 +81,7 @@ public:
         {
             return defaulttype::Mat<BSIZE,BSIZE,Real>::operator-(m);
         }
-        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v)
+        type::Vec<BSIZE,Real> operator*(const type::Vec<BSIZE,Real>& v)
         {
             return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(v);
         }
@@ -217,26 +217,26 @@ public:
     typedef typename Inherit::iterator iterator;
     typedef typename Inherit::const_iterator const_iterator;
 
-    class Bloc : public defaulttype::Vec<N,T>
+    class Bloc : public type::Vec<N,T>
     {
     public:
         Index Nrows() const { return N; }
         void resize(Index) { this->clear(); }
-        void operator=(const defaulttype::Vec<N,T>& v)
+        void operator=(const type::Vec<N,T>& v)
         {
-            defaulttype::Vec<N,T>::operator=(v);
+            type::Vec<N,T>::operator=(v);
         }
         void operator=(int v)
         {
-            defaulttype::Vec<N,T>::fill((float)v);
+            type::Vec<N,T>::fill((float)v);
         }
         void operator=(float v)
         {
-            defaulttype::Vec<N,T>::fill(v);
+            type::Vec<N,T>::fill(v);
         }
         void operator=(double v)
         {
-            defaulttype::Vec<N,T>::fill(v);
+            type::Vec<N,T>::fill(v);
         }
     };
 
@@ -276,7 +276,7 @@ public:
     public:
         const defaulttype::Mat<BSIZE,BSIZE,Real>& m;
         TransposedBloc(const defaulttype::Mat<BSIZE,BSIZE,Real>& m) : m(m) {}
-        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v)
+        type::Vec<BSIZE,Real> operator*(const type::Vec<BSIZE,Real>& v)
         {
             return m.multTranspose(v);
         }
@@ -318,7 +318,7 @@ public:
         {
             return defaulttype::Mat<BSIZE,BSIZE,Real>::operator-(m);
         }
-        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v)
+        type::Vec<BSIZE,Real> operator*(const type::Vec<BSIZE,Real>& v)
         {
             return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(v);
         }

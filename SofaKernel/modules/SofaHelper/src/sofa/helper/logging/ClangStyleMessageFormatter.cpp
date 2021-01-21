@@ -27,7 +27,7 @@
 #include "ClangStyleMessageFormatter.h"
 #include "Message.h"
 
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 
 namespace sofa
 {

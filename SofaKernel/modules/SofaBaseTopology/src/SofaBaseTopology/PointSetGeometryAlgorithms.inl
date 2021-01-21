@@ -269,7 +269,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 {
     if (d_showPointIndices.getValue())
     {
-        sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+        sofa::type::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
         sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
@@ -279,10 +279,10 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 
         float scale = getIndicesScale();
 
-        std::vector<defaulttype::Vector3> positions;
+        std::vector<type::Vector3> positions;
         for (unsigned int i =0; i<coords.size(); i++)
         {
-            defaulttype::Vector3 center; center = DataTypes::getCPos(coords[i]);
+            type::Vector3 center; center = DataTypes::getCPos(coords[i]);
             positions.push_back(center);
 
         }

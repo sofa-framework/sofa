@@ -297,7 +297,7 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
 
     sofa::helper::types::RGBAColor color(1.0, 0.0, 1.0, 1.0);
     vparams->drawTool()->setPolygonMode(0, true);
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     const DetectionOutputMap& outputsMap = this->getDetectionOutputs();
 
@@ -313,8 +313,8 @@ void RayTraceDetection::draw (const core::visual::VisualParams* vparams)
                 TriangleOctreeModel >::iterator it2 = (outputs)->begin ();
                 it2 != outputs->end (); ++it2)
         {
-            vertices.push_back(sofa::defaulttype::Vector3(it2->point[0][0], it2->point[0][1],it2->point[0][2]));
-            vertices.push_back(sofa::defaulttype::Vector3(it2->point[1][0], it2->point[1][1],it2->point[1][2]));
+            vertices.push_back(sofa::type::Vector3(it2->point[0][0], it2->point[0][1],it2->point[0][2]));
+            vertices.push_back(sofa::type::Vector3(it2->point[1][0], it2->point[1][1],it2->point[1][2]));
 
             msg_error() << it2->point[0] << " " << it2->point[0];
 

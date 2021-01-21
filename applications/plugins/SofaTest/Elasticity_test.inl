@@ -79,9 +79,9 @@ Elasticity_test<DataTypes>::createRegularGridScene(
         int numX,
         int numY,
         int numZ,
-        sofa::defaulttype::Vec<6,SReal> entireBoxRoi,
-        sofa::defaulttype::Vec<6,SReal> inclusiveBox,
-        sofa::defaulttype::Vec<6,SReal> includedBox)
+        sofa::type::Vec<6,SReal> entireBoxRoi,
+        sofa::type::Vec<6,SReal> inclusiveBox,
+        sofa::type::Vec<6,SReal> includedBox)
 {
     // Definitions
     PatchTestStruct<DataTypes> patchStruct;
@@ -125,7 +125,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     patchStruct.dofs->setSrc("@"+gridMesh->getName(), gridMesh.get());
 
     //BoxRoi to find all mesh points
-    helper::vector < defaulttype::Vec<6,Real> > vecBox;
+    helper::vector < type::Vec<6,Real> > vecBox;
     vecBox.push_back(entireBoxRoi);
     typename BoxRoi::SPtr boxRoi = modeling::addNew<BoxRoi>(SquareNode,"boxRoi");
     boxRoi->d_alignedBoxes.setValue(vecBox);
@@ -205,8 +205,8 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     mass->d_massDensity.setValue(massDensity);
     mass->d_lumping=false;
     /// box fixed
-    helper::vector < defaulttype::Vec<6,Real> > vecBox;
-    defaulttype::Vec<6,Real> box;
+    helper::vector < type::Vec<6,Real> > vecBox;
+    type::Vec<6,Real> box;
     box[0]= -0.01;box[1]= -0.01;box[2]= -0.01;box[3]= 0.01;box[4]= 0.01;box[5]= 0.01;
     vecBox.push_back(box);
     typename BoxRoi::SPtr boxRoi1 = modeling::addNew<BoxRoi>(root,"boxRoiFix");
@@ -333,12 +333,12 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     double eps = (endPoint[0]-startPoint[0])/(numX*2);
 
     // first box, x=xmin
-    boxes[0] = sofa::defaulttype::BoundingBox(sofa::defaulttype::Vec3d(startPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-            sofa::defaulttype::Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+    boxes[0] = sofa::defaulttype::BoundingBox(sofa::type::Vec3d(startPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
+            sofa::type::Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
 
     // second box, x=xmax
-    boxes[1] = sofa::defaulttype::BoundingBox(sofa::defaulttype::Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-            sofa::defaulttype::Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+    boxes[1] = sofa::defaulttype::BoundingBox(sofa::type::Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
+            sofa::type::Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
     rigid_dof->resize(numRigid);
     MechanicalObjectRigid3::WriteVecCoord xrigid = rigid_dof->writePositions();
     xrigid[0].getCenter()=Coord(startPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));

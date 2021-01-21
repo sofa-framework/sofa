@@ -92,8 +92,8 @@ bool TriangleSetTopology_test::testTriangleBuffers()
     EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 triangles in this file should be :
-    sofa::helper::fixed_array<TriangleSetTopologyContainer::PointID, 3> triTruth0(0, 18, 11);
-    sofa::helper::fixed_array<TriangleSetTopologyContainer::PointID, 3> triTruth1(0, 4, 18);
+    sofa::type::stdtype::fixed_array<TriangleSetTopologyContainer::PointID, 3> triTruth0(0, 18, 11);
+    sofa::type::stdtype::fixed_array<TriangleSetTopologyContainer::PointID, 3> triTruth1(0, 4, 18);
 
 
     // check triangle buffer
@@ -185,7 +185,7 @@ bool TriangleSetTopology_test::testEdgeBuffers()
     for (size_t i = 0; i < edgeInTri.size(); i++)
         EXPECT_EQ(edgeInTri[i], edgeInTriM[i]);
 
-    sofa::helper::fixed_array<int, 3> edgeInTriTruth(5, 6, 3);
+    sofa::type::stdtype::fixed_array<int, 3> edgeInTriTruth(5, 6, 3);
     for (size_t i = 0; i<edgeInTriTruth.size(); ++i)
         EXPECT_EQ(edgeInTri[i], edgeInTriTruth[i]);
     

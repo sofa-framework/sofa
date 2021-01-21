@@ -25,9 +25,9 @@ using sofa::core::objectmodel::Data;
 #include <sofa/helper/testing/BaseTest.h>
 using sofa::helper::testing::BaseTest ;
 
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Vec3f;
+#include <sofa/type/Vec.h>
+using sofa::type::Vec3d;
+using sofa::type::Vec3f;
 
 /**  Test suite for data link.
 Create two datas and a link between them.

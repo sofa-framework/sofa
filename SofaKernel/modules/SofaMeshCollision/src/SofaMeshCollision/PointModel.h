@@ -58,7 +58,7 @@ public:
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
 
-    bool testLMD(const sofa::defaulttype::Vector3 &, double &, double &);
+    bool testLMD(const sofa::type::Vector3 &, double &, double &);
 };
 
 template<class TDataTypes>

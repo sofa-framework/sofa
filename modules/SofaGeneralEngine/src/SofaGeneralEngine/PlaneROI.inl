@@ -52,7 +52,7 @@ PlaneROI<DataTypes>::PlaneROI()
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
     , _drawSize( initData(&_drawSize, 0.0f,"drawSize","rendering size for box and topological elements") )
 {
-    planes.beginEdit()->push_back(Vec10(sofa::defaulttype::Vec<9,Real>(0,0,0,0,0,0,0,0,0),0));
+    planes.beginEdit()->push_back(Vec10(sofa::type::Vec<9,Real>(0,0,0,0,0,0,0,0,0),0));
     planes.endEdit();
 
     addAlias(&f_X0,"rest_position");
@@ -401,7 +401,7 @@ void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     const VecCoord* x0 = &f_X0.getValue();
     const sofa::helper::types::RGBAColor& color = sofa::helper::types::RGBAColor::cyan();
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {

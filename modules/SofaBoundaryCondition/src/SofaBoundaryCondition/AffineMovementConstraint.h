@@ -65,7 +65,7 @@ public:
     typedef helper::vector<Index> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
     typedef defaulttype::Quat Quat;
-    typedef defaulttype::Vector3 Vector3;
+    typedef type::Vector3 Vector3;
 
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;

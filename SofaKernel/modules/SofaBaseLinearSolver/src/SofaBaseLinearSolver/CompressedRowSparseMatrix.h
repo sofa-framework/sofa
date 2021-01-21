@@ -1260,14 +1260,14 @@ protected:
           vresize( res, rowBSize(), rowSize() );
           for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)  // for each non-empty block row
           {
-              defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
+              type::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
 
               // multiply the non-null blocks with the corresponding chunks of the large vector
               Range rowRange(rowBegin[xi], rowBegin[xi+1]);
               for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
               {
                   // transfer a chunk of large vector to a local block-sized vector
-                  defaulttype::Vec<NC,Real2> v;
+                  type::Vec<NC,Real2> v;
                   //Index jN = colsIndex[xj] * NC;    // scalar column index
                   for (Index bj = 0; bj < NC; ++bj)
                       v[bj] = vget(vec,colsIndex[xj],NC,bj);
@@ -1297,14 +1297,14 @@ protected:
           vresize( res, rowBSize(), rowSize() );
           for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)  // for each non-empty block row
           {
-              defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
+              type::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
 
               // multiply the non-null blocks with the corresponding chunks of the large vector
               Range rowRange(rowBegin[xi], rowBegin[xi+1]);
               for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
               {
                   // transfer a chunk of large vector to a local block-sized vector
-                  defaulttype::Vec<NC,Real2> v;
+                  type::Vec<NC,Real2> v;
                   //Index jN = colsIndex[xj] * NC;    // scalar column index
                   for (Index bj = 0; bj < NC; ++bj)
                       v[bj] = vget(vec,colsIndex[xj],NC,bj);
@@ -1334,7 +1334,7 @@ protected:
           vresize( res, rowBSize(), rowSize() );
           for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)  // for each non-empty block row
           {
-              defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
+              type::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
 
               // multiply the non-null blocks with the corresponding chunks of the large vector
               Range rowRange(rowBegin[xi], rowBegin[xi+1]);
@@ -1365,7 +1365,7 @@ protected:
           for (Index xi = 0; xi < rowIndex.size(); ++xi) // for each non-empty block row (i.e. column of the transpose)
           {
               // copy the corresponding chunk of the input to a local vector
-              defaulttype::Vec<NL,Real2> v;
+              type::Vec<NL,Real2> v;
               //Index iN = rowIndex[xi] * NL;    // index of the row in the vector
               for (Index bi = 0; bi < NL; ++bi)
                   v[bi] = vget(vec, rowIndex[xi], NL, bi);
@@ -1376,7 +1376,7 @@ protected:
               {
                   const Bloc& b = colsValue[xj]; // non-empty block
 
-                  defaulttype::Vec<NC,Real2> r;  // local vector to store the product
+                  type::Vec<NC,Real2> r;  // local vector to store the product
                   //Index jN = colsIndex[xj] * NC;
 
                   // columnwise bloc-vector product
@@ -1555,9 +1555,9 @@ public:
     /// result += this * (v,...,v)^T
     /// v has the size of one bloc
     template< typename V, typename Real2 >
-    void addMul_by_line( V& res, const defaulttype::Vec<NC,Real2>& v ) const
+    void addMul_by_line( V& res, const type::Vec<NC,Real2>& v ) const
     {
-        taddMul_by_line< Real2,V,defaulttype::Vec<NC,Real2> >( res, v );
+        taddMul_by_line< Real2,V,type::Vec<NC,Real2> >( res, v );
     }
     template< typename Real, typename V, typename V2 >
     void addMul_by_line( V& res, const V2& v ) const

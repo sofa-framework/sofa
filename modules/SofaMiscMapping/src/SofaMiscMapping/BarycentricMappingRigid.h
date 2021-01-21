@@ -55,7 +55,7 @@ public:
     typedef typename Inherit::OutDeriv  OutDeriv;
     typedef typename Inherit::InDeriv  InDeriv;
     typedef typename Inherit::MappingData3D MappingData;
-    typedef helper::fixed_array<MappingData,3> MappingOrientData;
+    typedef type::stdtype::fixed_array<MappingData,3> MappingOrientData;
 
     typedef typename In::VecCoord VecCoord;
     typedef typename In::VecDeriv VecDeriv;
@@ -108,14 +108,14 @@ public:
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     void resize( core::State<Out>* toModel ) override;
 
-    //virtual int addContactPointFromInputMapping(const typename In::VecDeriv& in, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
+    //virtual int addContactPointFromInputMapping(const typename In::VecDeriv& in, const sofa::type::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
 };
 
 template<class TInReal, class TOutReal>
-class BarycentricMapperTetrahedronSetTopology< sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3,TInReal>,sofa::defaulttype::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> > : public BarycentricMapperTetrahedronSetTopologyRigid< sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3,TInReal>,sofa::defaulttype::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> >
+class BarycentricMapperTetrahedronSetTopology< sofa::defaulttype::StdVectorTypes<sofa::type::Vec<3,TInReal>,sofa::type::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> > : public BarycentricMapperTetrahedronSetTopologyRigid< sofa::defaulttype::StdVectorTypes<sofa::type::Vec<3,TInReal>,sofa::type::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> >
 {
 public:
-    typedef sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3,TInReal>,sofa::defaulttype::Vec<3,TInReal>,TInReal> In;
+    typedef sofa::defaulttype::StdVectorTypes<sofa::type::Vec<3,TInReal>,sofa::type::Vec<3,TInReal>,TInReal> In;
     typedef sofa::defaulttype::StdRigidTypes<3,TOutReal> Out;
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopologyRigid,In,Out));
     typedef BarycentricMapperTetrahedronSetTopologyRigid<In,Out> Inherit;

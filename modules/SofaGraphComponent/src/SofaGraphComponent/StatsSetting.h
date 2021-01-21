@@ -24,7 +24,7 @@
 #include <SofaGraphComponent/config.h>
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::configurationsetting
 {

@@ -28,7 +28,7 @@
 #include <sofa/helper/io/Mesh.h>
 #include <limits>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <string>
 #include <iostream>
@@ -115,7 +115,7 @@ void SkinningMapping<TIn, TOut>::reinit()
             if(nbRef.getValue().size() == m_weights.size())
                 nbref = nbRef.getValue()[i];
 
-            sofa::defaulttype::Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] );
+            sofa::type::Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] );
             f_localPos[i].resize(nbref);
             f_rotatedPos[i].resize(nbref);
 
@@ -146,7 +146,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
     // compute 1/d^2 weights with Euclidean distance
     for (unsigned int i=0; i<xto.size(); i++ )
     {
-        sofa::defaulttype::Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] );
+        sofa::type::Vec<3,InReal> cto; Out::get( cto[0],cto[1],cto[2], xto[i] );
 
         // get the nbRef closest primitives
         index[i].resize( nbref );
@@ -158,7 +158,7 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
         }
         for (unsigned int j=0; j<xfrom.size(); j++ )
         {
-            sofa::defaulttype::Vec<3,InReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
+            sofa::type::Vec<3,InReal> cfrom; In::get( cfrom[0],cfrom[1],cfrom[2], xfrom[j] );
             InReal w=(cto-cfrom)*(cto-cfrom);
             if(w!=0) w=1.0f/w;
             else w=std::numeric_limits<InReal>::max();
@@ -364,7 +364,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::helper::types::RGBAColor> colorVector;
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     if ( vparams->displayFlags().getShowMappings() )
     {
@@ -378,8 +378,8 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
             for ( unsigned int m=0 ; m<nbref && m_weights[i][m]>0.; m++ )
             {
                 colorVector.push_back( sofa::helper::types::RGBAColor( m_weights[i][m],m_weights[i][m],0,1 ));
-                vertices.push_back(sofa::defaulttype::Vector3( xfrom[index[i][m]].getCenter() ));
-                vertices.push_back(sofa::defaulttype::Vector3( xto[i] ));
+                vertices.push_back(sofa::type::Vector3( xfrom[index[i][m]].getCenter() ));
+                vertices.push_back(sofa::type::Vector3( xto[i] ));
             }
         }
         vparams->drawTool()->drawLines(vertices,1,colorVector);
@@ -395,8 +395,8 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 
         if ( ! triangles.empty()) // Show on mesh
         {
-            std::vector< defaulttype::Vector3 > points;
-            std::vector< defaulttype::Vector3 > normals;
+            std::vector< type::Vector3 > points;
+            std::vector< type::Vector3 > normals;
             std::vector<sofa::helper::types::RGBAColor> colors;
             for ( unsigned int i = 0; i < triangles.size(); i++)
             {
@@ -412,7 +412,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
                         if(index[indexPoint][m]==showFromIndex.getValue())
                             color = (m_weights[indexPoint][m] - minValue) / (maxValue - minValue);
 
-                    points.push_back(defaulttype::Vector3(xto[indexPoint][0],xto[indexPoint][1],xto[indexPoint][2]));
+                    points.push_back(type::Vector3(xto[indexPoint][0],xto[indexPoint][1],xto[indexPoint][2]));
                     colors.push_back({ float(color), 0.0f, 0.0f, 1.0f });
                 }
             }
@@ -432,7 +432,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
                         color = (m_weights[i][m] - minValue) / (maxValue - minValue);
 
                 colorVector.push_back(sofa::helper::types::RGBAColor( color, 0.0, 0.0, 1.0 ));
-                vertices.push_back( sofa::defaulttype::Vector3(xto[i][0], xto[i][1], xto[i][2]));
+                vertices.push_back( sofa::type::Vector3(xto[i][0], xto[i][1], xto[i][2]));
             }
             vparams->drawTool()->drawPoints(vertices,10,colorVector);
         }

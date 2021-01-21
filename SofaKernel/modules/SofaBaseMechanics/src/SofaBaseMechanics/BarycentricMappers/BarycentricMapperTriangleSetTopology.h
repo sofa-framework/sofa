@@ -30,7 +30,7 @@ namespace sofa::component::mapping
 
 
 using sofa::defaulttype::Mat3x3d;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 

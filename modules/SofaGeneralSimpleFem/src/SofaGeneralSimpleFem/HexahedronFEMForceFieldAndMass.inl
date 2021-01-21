@@ -51,7 +51,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
     int i=0;
     for(typename VecElement::const_iterator it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
     {
-        defaulttype::Vec<8,Coord> nodes;
+        type::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
             nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
 
@@ -110,7 +110,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
     typename VecElement::const_iterator it;
     for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
     {
-        defaulttype::Vec<8,Coord> nodes;
+        type::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
             nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
 
@@ -124,7 +124,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const Index /*elementIndice*/, SReal stiffnessFactor)
+void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const type::stdtype::fixed_array<Coord,8> &nodes, const Index /*elementIndice*/, SReal stiffnessFactor)
 {
     Real vol = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
@@ -186,7 +186,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
         for(it=this->getIndexedElements()->begin(); it!=this->getIndexedElements()->end(); ++it,++i)
         {
 
-            defaulttype::Vec<24, Real> actualDx, actualF;
+            type::Vec<24, Real> actualDx, actualF;
 
             for(int k=0 ; k<8 ; ++k )
             {
@@ -315,7 +315,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     // since drawTool requires a std::vector<Vector3> we have to convert x in an ugly way
-    std::vector<defaulttype::Vector3> pos;
+    std::vector<type::Vector3> pos;
     pos.resize(x.size());
     auto posIT = pos.begin();
     typename VecCoord::const_iterator xIT = x.begin();

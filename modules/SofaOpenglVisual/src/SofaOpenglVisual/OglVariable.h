@@ -95,11 +95,11 @@ public:
     void initVisual() override;
 };
 
-class SOFA_OPENGL_VISUAL_API OglInt2Variable : public OglVariable<defaulttype::Vec<2, int> >
+class SOFA_OPENGL_VISUAL_API OglInt2Variable : public OglVariable<type::Vec<2, int> >
 {
 
 public:
-    SOFA_CLASS(OglInt2Variable, SOFA_TEMPLATE(OglVariable, SOFA_TEMPLATE2(defaulttype::Vec, 2, int)));
+    SOFA_CLASS(OglInt2Variable, SOFA_TEMPLATE(OglVariable, SOFA_TEMPLATE2(type::Vec, 2, int)));
 
     OglInt2Variable();
     virtual ~OglInt2Variable() { }
@@ -107,10 +107,10 @@ public:
     void initVisual() override;
 };
 
-class SOFA_OPENGL_VISUAL_API OglInt3Variable : public OglVariable<defaulttype::Vec<3, int> >
+class SOFA_OPENGL_VISUAL_API OglInt3Variable : public OglVariable<type::Vec<3, int> >
 {
 public:
-    SOFA_CLASS(OglInt3Variable, SOFA_TEMPLATE(OglVariable, SOFA_TEMPLATE2(defaulttype::Vec, 3, int)));
+    SOFA_CLASS(OglInt3Variable, SOFA_TEMPLATE(OglVariable, SOFA_TEMPLATE2(type::Vec, 3, int)));
 
     OglInt3Variable();
     virtual ~OglInt3Variable() { }
@@ -118,10 +118,10 @@ public:
     void initVisual() override;
 };
 
-class SOFA_OPENGL_VISUAL_API OglInt4Variable : public OglVariable<defaulttype::Vec<4, int> >
+class SOFA_OPENGL_VISUAL_API OglInt4Variable : public OglVariable<type::Vec<4, int> >
 {
 public:
-    SOFA_CLASS(OglInt4Variable, SOFA_TEMPLATE(OglVariable, SOFA_TEMPLATE2(defaulttype::Vec, 4, int)));
+    SOFA_CLASS(OglInt4Variable, SOFA_TEMPLATE(OglVariable, SOFA_TEMPLATE2(type::Vec, 4, int)));
 
     OglInt4Variable();
     virtual ~OglInt4Variable() { }
@@ -142,10 +142,10 @@ public:
     void initVisual() override;
 };
 
-class SOFA_OPENGL_VISUAL_API OglFloat2Variable : public OglVariable<defaulttype::Vec2f>
+class SOFA_OPENGL_VISUAL_API OglFloat2Variable : public OglVariable<type::Vec2f>
 {
 public:
-    SOFA_CLASS(OglFloat2Variable, OglVariable<defaulttype::Vec2f>);
+    SOFA_CLASS(OglFloat2Variable, OglVariable<type::Vec2f>);
 
     OglFloat2Variable();
     virtual ~OglFloat2Variable() { }
@@ -153,10 +153,10 @@ public:
     void initVisual() override;
 };
 
-class SOFA_OPENGL_VISUAL_API OglFloat3Variable : public OglVariable<defaulttype::Vec3f>
+class SOFA_OPENGL_VISUAL_API OglFloat3Variable : public OglVariable<type::Vec3f>
 {
 public:
-    SOFA_CLASS(OglFloat3Variable, OglVariable<defaulttype::Vec3f>);
+    SOFA_CLASS(OglFloat3Variable, OglVariable<type::Vec3f>);
 
     OglFloat3Variable();
     virtual ~OglFloat3Variable() { }
@@ -164,10 +164,10 @@ public:
     void initVisual() override;
 };
 
-class SOFA_OPENGL_VISUAL_API OglFloat4Variable : public OglVariable<defaulttype::Vec4f>
+class SOFA_OPENGL_VISUAL_API OglFloat4Variable : public OglVariable<type::Vec4f>
 {
 public:
-    SOFA_CLASS(OglFloat4Variable, OglVariable<defaulttype::Vec4f>);
+    SOFA_CLASS(OglFloat4Variable, OglVariable<type::Vec4f>);
 
     OglFloat4Variable();
     virtual ~OglFloat4Variable() { }
@@ -238,10 +238,10 @@ public:
     void initVisual() override;
 };
 
-class SOFA_OPENGL_VISUAL_API OglFloatVector2Variable : public OglVariable<helper::vector<defaulttype::Vec2f> >
+class SOFA_OPENGL_VISUAL_API OglFloatVector2Variable : public OglVariable<helper::vector<type::Vec2f> >
 {
 public:
-    SOFA_CLASS(OglFloatVector2Variable, OglVariable<helper::vector<defaulttype::Vec2f> >);
+    SOFA_CLASS(OglFloatVector2Variable, OglVariable<helper::vector<type::Vec2f> >);
 
     OglFloatVector2Variable();
     virtual ~OglFloatVector2Variable() { }
@@ -250,10 +250,10 @@ public:
     void initVisual() override;
 };
 
-class SOFA_OPENGL_VISUAL_API OglFloatVector3Variable : public OglVariable<helper::vector<defaulttype::Vec3f> >
+class SOFA_OPENGL_VISUAL_API OglFloatVector3Variable : public OglVariable<helper::vector<type::Vec3f> >
 {
 public:
-    SOFA_CLASS(OglFloatVector3Variable, OglVariable<helper::vector<defaulttype::Vec3f> >);
+    SOFA_CLASS(OglFloatVector3Variable, OglVariable<helper::vector<type::Vec3f> >);
 
     OglFloatVector3Variable();
     virtual ~OglFloatVector3Variable() { }
@@ -262,10 +262,10 @@ public:
     void initVisual() override;
 };
 
-class SOFA_OPENGL_VISUAL_API OglFloatVector4Variable : public OglVariable<helper::vector<defaulttype::Vec4f> >
+class SOFA_OPENGL_VISUAL_API OglFloatVector4Variable : public OglVariable<helper::vector<type::Vec4f> >
 {
 public:
-    SOFA_CLASS(OglFloatVector4Variable, OglVariable<helper::vector<defaulttype::Vec4f> >);
+    SOFA_CLASS(OglFloatVector4Variable, OglVariable<helper::vector<type::Vec4f> >);
 
     OglFloatVector4Variable();
     virtual ~OglFloatVector4Variable() { }

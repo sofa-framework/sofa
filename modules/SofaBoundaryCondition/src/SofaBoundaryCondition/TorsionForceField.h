@@ -27,14 +27,14 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa::component::forcefield
 {
 
-using sofa::defaulttype::Vec;
+using sofa::type::Vec;
 using sofa::defaulttype::Mat;
 using sofa::core::behavior::ForceField;
 using sofa::core::MechanicalParams;

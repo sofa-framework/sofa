@@ -358,14 +358,14 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    sofa::helper::vector<defaulttype::Vector3> points;
-    sofa::helper::vector<defaulttype::Vector3> linesX;
-    sofa::helper::vector<defaulttype::Vector3> linesY;
-    sofa::helper::vector<defaulttype::Vector3> linesZ;
-    sofa::helper::vector<defaulttype::Vector3> colorFalloff;
+    sofa::helper::vector<type::Vector3> points;
+    sofa::helper::vector<type::Vector3> linesX;
+    sofa::helper::vector<type::Vector3> linesY;
+    sofa::helper::vector<type::Vector3> linesZ;
+    sofa::helper::vector<type::Vector3> colorFalloff;
 
-    defaulttype::Vector3 point;
-    defaulttype::Vector3 line;
+    type::Vector3 point;
+    type::Vector3 line;
 
     // draw joints (not bones we draw them differently later)
     {
@@ -385,15 +385,15 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
             points.push_back(point);
 
             linesX.push_back(point);
-            line = point + DataTypes::getCRot(jointWorldRigid).rotate(defaulttype::Vec3f(0.1f, 0.0f, 0.0f));
+            line = point + DataTypes::getCRot(jointWorldRigid).rotate(type::Vec3f(0.1f, 0.0f, 0.0f));
             linesX.push_back(line);
 
             linesY.push_back(point);
-            line = point + DataTypes::getCRot(jointWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.1f, 0.0f));
+            line = point + DataTypes::getCRot(jointWorldRigid).rotate(type::Vec3f(0.0f, 0.1f, 0.0f));
             linesY.push_back(line);
 
             linesZ.push_back(point);
-            line = point + DataTypes::getCRot(jointWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.0f, 0.1f));
+            line = point + DataTypes::getCRot(jointWorldRigid).rotate(type::Vec3f(0.0f, 0.0f, 0.1f));
             linesZ.push_back(line);
         }
         vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor (1.0f , 0.5f , 0.5f , 1.0f));
@@ -417,15 +417,15 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
             points.push_back(point);
 
             linesX.push_back(point);
-            line = point + DataTypes::getCRot(boneWorldRigid).rotate(defaulttype::Vec3f(0.1f, 0.0f, 0.0f));
+            line = point + DataTypes::getCRot(boneWorldRigid).rotate(type::Vec3f(0.1f, 0.0f, 0.0f));
             linesX.push_back(line);
 
             linesY.push_back(point);
-            line = point + DataTypes::getCRot(boneWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.1f, 0.0f));
+            line = point + DataTypes::getCRot(boneWorldRigid).rotate(type::Vec3f(0.0f, 0.1f, 0.0f));
             linesY.push_back(line);
 
             linesZ.push_back(point);
-            line = point + DataTypes::getCRot(boneWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.0f, 0.1f));
+            line = point + DataTypes::getCRot(boneWorldRigid).rotate(type::Vec3f(0.0f, 0.0f, 0.1f));
             linesZ.push_back(line);
         }
         vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor (1.0f, 0.5f, 0.5f, 1.0f));

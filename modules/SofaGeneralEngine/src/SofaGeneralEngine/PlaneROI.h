@@ -45,14 +45,14 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(PlaneROI,DataTypes),core::DataEngine);
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    typedef defaulttype::Vec<3,Real> Vec3;
-    typedef defaulttype::Vec<6,Real> Vec6;
-    typedef defaulttype::Vec<10,Real> Vec10;
+    typedef type::Vec<3,Real> Vec3;
+    typedef type::Vec<6,Real> Vec6;
+    typedef type::Vec<10,Real> Vec10;
     typedef sofa::core::topology::BaseMeshTopology::SetIndex SetIndex;
 
     typedef typename DataTypes::CPos CPos;
 
-    typedef defaulttype::Vec<3,Real> Point;
+    typedef type::Vec<3,Real> Point;
     typedef unsigned int PointID;
     typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;

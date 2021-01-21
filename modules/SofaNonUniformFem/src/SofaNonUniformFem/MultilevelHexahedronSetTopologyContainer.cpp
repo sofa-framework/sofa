@@ -178,7 +178,7 @@ void MultilevelHexahedronSetTopologyContainer::getHexaVertexNeighbors(const Inde
 }
 
 bool MultilevelHexahedronSetTopologyContainer::getHexaContainsPosition(const Index hexaId,
-        const defaulttype::Vector3& baryC) const
+        const type::Vector3& baryC) const
 {
     const Component& comp = *_coarseComponents.getValue()[hexaId];
     const Vec3i& coarseVoxelId = comp.getVoxelId();

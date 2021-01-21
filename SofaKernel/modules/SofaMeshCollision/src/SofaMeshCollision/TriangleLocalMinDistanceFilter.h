@@ -53,7 +53,7 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to this TriangleInfo.
      */
-    bool validate(const Index /*p*/, const defaulttype::Vector3 & /*PQ*/) override;
+    bool validate(const Index /*p*/, const type::Vector3 & /*PQ*/) override;
     /**
      * @brief Output stream.
      */
@@ -79,7 +79,7 @@ public:
 protected:
 
 
-    sofa::defaulttype::Vector3 m_normal; ///< Stored normal of the triangle.
+    sofa::type::Vector3 m_normal; ///< Stored normal of the triangle.
 };
 
 
@@ -119,17 +119,17 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(const Index pointIndex, const defaulttype::Vector3 &PQ);
+    bool validPoint(const Index pointIndex, const type::Vector3 &PQ);
 
     /**
      * @brief Line Collision Primitive validation method.
      */
-    bool validLine(const Index lineIndex, const defaulttype::Vector3 &PQ);
+    bool validLine(const Index lineIndex, const type::Vector3 &PQ);
 
     /**
      * @brief Triangle Collision Primitive validation method.
      */
-    bool validTriangle(const Index triangleIndex, const defaulttype::Vector3 &PQ);
+    bool validTriangle(const Index triangleIndex, const type::Vector3 &PQ);
 
     //@}
 

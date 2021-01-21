@@ -96,7 +96,7 @@ protected:
     class TContact
     {
     public:
-        helper::fixed_array<unsigned int,3> index;
+        type::stdtype::fixed_array<unsigned int,3> index;
         Coord normal,B,C;
         Real fact;
 
@@ -119,7 +119,7 @@ protected:
     class VContact
     {
     public:
-        helper::fixed_array<unsigned int,4> index;
+        type::stdtype::fixed_array<unsigned int,4> index;
         Coord A,B,C;
         Real fact;
 
@@ -146,7 +146,7 @@ public:
     // Input data parameters
     sofa::core::objectmodel::DataFileName fileDistanceGrid; ///< load distance grid from specified file
     Data< double > scale; ///< scaling factor for input file
-    Data< helper::fixed_array<DistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data< type::stdtype::fixed_array<DistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
     Data< int > nx; ///< number of values on X axis
     Data< int > ny; ///< number of values on Y axis
     Data< int > nz; ///< number of values on Z axis
@@ -167,7 +167,7 @@ public:
     Data<Real> drawSize; ///< display size if draw is enabled
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > localRange;
+    Data< type::Vec<2,int> > localRange;
 protected:
     DistanceGridForceField()
         : grid(NULL)
@@ -189,7 +189,7 @@ protected:
         , bDraw(initData(&bDraw, false, "draw", "enable/disable drawing of distancegrid"))
         , drawPoints(initData(&drawPoints, false, "drawPoints", "enable/disable drawing of distancegrid"))
         , drawSize(initData(&drawSize, (Real)10.0f, "drawSize", "display size if draw is enabled"))
-        , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+        , localRange( initData(&localRange, type::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     {
         this->addAlias(&stiffnessIn,"stiffness");
         this->addAlias(&stiffnessOut,"stiffness");

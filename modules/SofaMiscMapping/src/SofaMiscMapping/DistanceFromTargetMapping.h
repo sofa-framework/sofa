@@ -27,7 +27,7 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -85,7 +85,7 @@ public:
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
-    typedef defaulttype::Vec<In::spatial_dimensions> Direction;
+    typedef type::Vec<In::spatial_dimensions> Direction;
     typedef typename Inherit::ForceMask ForceMask;
 
     Data< helper::vector<unsigned> > f_indices;         ///< indices of the parent points

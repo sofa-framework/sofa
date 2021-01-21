@@ -49,8 +49,8 @@ using core::visual::VisualParams;
 using core::ConstVecCoordId;
 
 using defaulttype::BaseVector;
-using defaulttype::Vec;
-using defaulttype::Vec3d;
+using type::Vec;
+using type::Vec3d;
 using defaulttype::DataTypeInfo;
 using defaulttype::BaseMatrix;
 
@@ -591,7 +591,7 @@ SReal UniformMass<DataTypes, MassType>::getPotentialEnergy ( const MechanicalPar
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-defaulttype::Vector6
+type::Vector6
 UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* params,
                                                 const DataVecCoord& d_x,
                                                 const DataVecDeriv& d_v  ) const
@@ -603,7 +603,7 @@ UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* pa
     msg_warning(this) << "You are using the getMomentum function that has not been implemented"
                          "for the template '"<< this->getTemplateName() << "'.\n" ;
 
-    return defaulttype::Vector6();
+    return type::Vector6();
 }
 
 
@@ -662,10 +662,10 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     Coord gravityCenter;
-    std::vector<  sofa::defaulttype::Vector3 > points;
+    std::vector<  sofa::type::Vector3 > points;
     for ( unsigned int i=0; i<indices.size(); i++ )
     {
-        sofa::defaulttype::Vector3 p;
+        sofa::type::Vector3 p;
         p = DataTypes::getCPos(x[indices[i]]);
 
         points.push_back ( p );
@@ -679,7 +679,7 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
         const sofa::helper::types::RGBAColor color = sofa::helper::types::RGBAColor::yellow();
 
         Real axisSize = d_showAxisSize.getValue();
-        sofa::defaulttype::Vector3 temp;
+        sofa::type::Vector3 temp;
 
         for ( unsigned int i=0 ; i<3 ; i++ )
             if(i < Coord::spatial_dimensions )

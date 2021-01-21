@@ -24,7 +24,7 @@
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <set>
 
@@ -90,7 +90,7 @@ public:
     const helper::vector<Index>& getPointSource() const { return d_pointSource.getValue(); }
 
 protected:
-    TetrahedronData< sofa::helper::vector<sofa::helper::fixed_array<Index, 8> > > tetrahedraMappedFromTetra; ///< Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
+    TetrahedronData< sofa::helper::vector<sofa::type::stdtype::fixed_array<Index, 8> > > tetrahedraMappedFromTetra; ///< Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
     TetrahedronData< sofa::helper::vector<Index> > tetraSource; ///<Which tetra from the input topology map to a given tetra in the output topology (INVALID_INDEX if none)
 
     Data< helper::vector<Index> > d_pointMappedFromPoint; ///< Each point of the input topology is mapped to the same point.

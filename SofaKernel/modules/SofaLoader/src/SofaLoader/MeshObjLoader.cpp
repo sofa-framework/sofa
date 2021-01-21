@@ -407,8 +407,8 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 unsigned int ni = nIndices[i];
                 unsigned int ti = tIndices[i];
                 if (pi >= vertexCount) continue;
-                if (ti < my_texCoords.size() && (vTexCoords[pi] == sofa::defaulttype::Vector2() ||
-                                                 (my_texCoords[ti]-vTexCoords[pi])*sofa::defaulttype::Vector2(-1,1) > 0))
+                if (ti < my_texCoords.size() && (vTexCoords[pi] == sofa::type::Vector2() ||
+                                                 (my_texCoords[ti]-vTexCoords[pi])*sofa::type::Vector2(-1,1) > 0))
                     vTexCoords[pi] = my_texCoords[ti];
                 if (ni < my_normals.size())
                     vNormals[pi] += my_normals[ni];
@@ -457,7 +457,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             vsplit = true;
 
         // Then we can create the final arrays
-        helper::vector<sofa::defaulttype::Vector3> vertices2;
+        helper::vector<sofa::type::Vector3> vertices2;
         auto vnormals = getWriteAccessor(d_normals);
         auto vtexcoords = getWriteAccessor(d_texCoords);
         auto vertPosIdx = getWriteOnlyAccessor(d_vertPosIdx);
@@ -504,7 +504,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
         // replace the original (non duplicated) vector with the new one
         my_positions.clear();
-        for(const sofa::defaulttype::Vector3& c : vertices2)
+        for(const sofa::type::Vector3& c : vertices2)
             my_positions.push_back(c);
 
         if( vsplit && nbNOut == nbVOut )

@@ -26,9 +26,9 @@
 #include <sofa/gui/qt/ModifyObject.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/gui/qt/QTransformationWidget.h>
 #if SOFAGUIQT_HAVE_QT5_CHARTS

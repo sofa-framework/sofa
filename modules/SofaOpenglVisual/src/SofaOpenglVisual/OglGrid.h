@@ -40,7 +40,7 @@ class OglGrid : public core::visual::VisualModel
 public:
     SOFA_CLASS(OglGrid, VisualModel);
 
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::type::Vector3 Vector3;
 
     enum PLANE {PLANE_X, PLANE_Y, PLANE_Z};
 

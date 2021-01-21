@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/vector.h>
 
@@ -56,7 +56,7 @@ public:
     typedef typename Out::Coord::value_type Real;
     enum { N=OutDataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Vec<N,Real> Vector ;
+    typedef type::Vec<N,Real> Vector ;
     typedef typename Inherit::ForceMask ForceMask;
 
 protected:

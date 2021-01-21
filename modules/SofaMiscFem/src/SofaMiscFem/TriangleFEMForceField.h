@@ -27,7 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
 
@@ -77,7 +77,7 @@ public:
     static const int LARGE = 0;										///< Symbol of large displacements triangle solver
 
 protected:
-    typedef defaulttype::Vec<6, Real> Displacement;								///< the displacement vector
+    typedef type::Vec<6, Real> Displacement;								///< the displacement vector
 
     typedef defaulttype::Mat<3, 3, Real> MaterialStiffness;						///< the matrix of material stiffness
     typedef sofa::helper::vector<MaterialStiffness> VecMaterialStiffness;    ///< a vector of material stiffness matrices
@@ -150,7 +150,7 @@ protected :
     void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
 
     ////////////// large displacements method
-    sofa::helper::vector< helper::fixed_array <Coord, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
+    sofa::helper::vector< type::stdtype::fixed_array <Coord, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
     sofa::helper::vector< Transformation > _rotations;
     void initLarge();
     void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);

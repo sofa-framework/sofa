@@ -24,7 +24,7 @@
 
 #include <sofa/helper/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
 #include <sofa/helper/io/Mesh.h>
@@ -34,8 +34,8 @@ namespace sofa
 {
 namespace helper
 {
-using sofa::defaulttype::Vec;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vec;
+using sofa::type::Vector3;
 using sofa::helper::vector;
 
 class SOFA_HELPER_API MarchingCubeUtility

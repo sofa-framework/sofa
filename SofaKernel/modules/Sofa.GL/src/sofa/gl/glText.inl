@@ -40,7 +40,7 @@ void GlText::setText ( const T& text )
 }
 
 template <typename T>
-void GlText::draw(const T& text, const defaulttype::Vector3& position, const double& scale)
+void GlText::draw(const T& text, const type::Vector3& position, const double& scale)
 {
     if (!s_asciiTexture)
     {
@@ -82,7 +82,7 @@ void GlText::draw(const T& text, const defaulttype::Vector3& position, const dou
     glGetFloatv(GL_MODELVIEW_MATRIX, modelviewM.ptr());
     modelviewM.transpose();
 
-    defaulttype::Vec3d temp(position[0], position[1], position[2]);
+    type::Vec3d temp(position[0], position[1], position[2]);
     temp = modelviewM.transform(temp);
 
     glLoadIdentity();

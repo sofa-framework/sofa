@@ -130,9 +130,9 @@ public:
 
     typedef long long PersistentID;
     typedef helper::vector<PersistentID> VecPersistentID;
-    typedef defaulttype::Vec<3,int> ConstCoord;
+    typedef type::Vec<3,int> ConstCoord;
     typedef helper::vector<ConstCoord> VecConstCoord;
-    typedef defaulttype::Vec<3,double> ConstDeriv;
+    typedef type::Vec<3,double> ConstDeriv;
     typedef helper::vector<ConstDeriv> VecConstDeriv;
     typedef double ConstArea;
     typedef helper::vector<ConstArea> VecConstArea;

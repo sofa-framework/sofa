@@ -210,7 +210,7 @@ public:
 
     static Grid emptyGrid;
 
-    class Key : public helper::fixed_array<int, 3>
+    class Key : public type::stdtype::fixed_array<int, 3>
     {
     public:
         Key() {}

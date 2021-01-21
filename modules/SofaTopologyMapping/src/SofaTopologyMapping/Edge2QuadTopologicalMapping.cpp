@@ -29,7 +29,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -37,7 +37,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <cmath>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 

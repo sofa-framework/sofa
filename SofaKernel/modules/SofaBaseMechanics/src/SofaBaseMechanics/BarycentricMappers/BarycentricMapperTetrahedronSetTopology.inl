@@ -163,21 +163,21 @@ void BarycentricMapperTetrahedronSetTopology<In, Out>::processTopologicalChanges
 }
 
 template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In, Out>::processAddPoint(const sofa::defaulttype::Vec3d & pos, const typename In::VecCoord& in, MappingData & vectorData)
+void BarycentricMapperTetrahedronSetTopology<In, Out>::processAddPoint(const sofa::type::Vec3d & pos, const typename In::VecCoord& in, MappingData & vectorData)
 {
     const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
 
-    sofa::defaulttype::Vector3 coefs;
+    sofa::type::Vector3 coefs;
     int index = -1;
     double distance = std::numeric_limits<double>::max();
     for (unsigned int t = 0; t < tetrahedra.size(); t++)
     {
         sofa::defaulttype::Mat3x3d base;
-        sofa::defaulttype::Vector3 center;
+        sofa::type::Vector3 center;
         computeBase(base, in, tetrahedra[t]);
         computeCenter(center, in, tetrahedra[t]);
 
-        sofa::defaulttype::Vec3d v = base * (pos - in[tetrahedra[t][0]]);
+        sofa::type::Vec3d v = base * (pos - in[tetrahedra[t][0]]);
         double d = std::max(std::max(-v[0], -v[1]), std::max(-v[2], v[0] + v[1] + v[2] - 1));
 
         if (d>0) d = (pos - center).norm2();

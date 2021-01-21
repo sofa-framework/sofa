@@ -24,7 +24,7 @@
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 
 #include <sofa/core/BaseMapping.h>

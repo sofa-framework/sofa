@@ -38,7 +38,7 @@ namespace sofa::component::collision
 class SOFA_SOFAMESHCOLLISION_API PointInfo : public InfoFilter //< Point >
 {
 public:
-    typedef std::vector< std::pair< sofa::defaulttype::Vector3, double > > TDataContainer;
+    typedef std::vector< std::pair< sofa::type::Vector3, double > > TDataContainer;
 
     /**
      * @brief Default constructor.
@@ -53,8 +53,8 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to this PointInfo.
      */
-    //virtual bool validate(const Point & /*p*/, const defaulttype::Vector3 & /*PQ*/);
-    bool validate(const Index /*p*/, const defaulttype::Vector3 & /*PQ*/) override;
+    //virtual bool validate(const Point & /*p*/, const type::Vector3 & /*PQ*/);
+    bool validate(const Index /*p*/, const type::Vector3 & /*PQ*/) override;
     /**
      * @brief Output stream.
      */
@@ -119,7 +119,7 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(Index /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validPoint(Index /*pointIndex*/, const type::Vector3 &/*PQ*/)
     {
         return true;
     }

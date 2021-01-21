@@ -223,7 +223,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real*
 
     MaterialStiffness	materialMatrix;
     StrainDisplacement	strainMatrix;
-    helper::fixed_array<Coord,4> rotatedInitialElements;
+    type::stdtype::fixed_array<Coord,4> rotatedInitialElements;
 
     rotatedInitialElements[0] = R_0_1*(X0)[a];
     rotatedInitialElements[1] = R_0_1*(X0)[b];
@@ -502,7 +502,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
     J[11][0]  J[11][1]            J[11][3]
     */
 
-    defaulttype::VecNoInit<6,Real> JtD;
+    type::VecNoInit<6,Real> JtD;
     JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
             J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
             J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
@@ -528,7 +528,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
             J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
             J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
 
-    defaulttype::VecNoInit<6,Real> KJtD;
+    type::VecNoInit<6,Real> KJtD;
     KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
             /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
     KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
@@ -944,7 +944,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
     rotations[elementIndex].transpose(R_0_2);
 
     // positions of the deformed and displaced Tetrahedron in its frame
-    helper::fixed_array<Coord,4> deforme;
+    type::stdtype::fixed_array<Coord,4> deforme;
     for(int i=0; i<4; ++i)
         deforme[i] = R_0_2*p[index[i]];
 
@@ -1102,7 +1102,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f
     rotations[elementIndex].transpose( R_0_2 );
 
     // positions of the deformed and displaced Tetrahedre in its frame
-    helper::fixed_array<Coord, 4>  deforme;
+    type::stdtype::fixed_array<Coord, 4>  deforme;
     for(int i=0; i<4; ++i)
         deforme[i] = R_0_2 * p[index[i]];
 
@@ -1214,7 +1214,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
     rotations[elementIndex].transpose( R_0_2 );
 
     // positions of the deformed and displaced tetrahedron in its frame
-    helper::fixed_array<Coord, 4>  deforme;
+    type::stdtype::fixed_array<Coord, 4>  deforme;
     for(int i=0; i<4; ++i)
         deforme[i] = R_0_2 * p[index[i]];
 
@@ -1785,7 +1785,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     if (_showVonMisesStressPerNode.getValue()) {
         std::vector<sofa::helper::types::RGBAColor> nodeColors(x.size());
-        std::vector<defaulttype::Vector3> pts(x.size());
+        std::vector<type::Vector3> pts(x.size());
         helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVMN, maxVMN);
         for (size_t nd = 0; nd < x.size(); nd++) {
             pts[nd] = x[nd];
@@ -1796,7 +1796,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     if (edges)
     {
-        std::vector< defaulttype::Vector3 > points[3];
+        std::vector< type::Vector3 > points[3];
         typename VecElement::const_iterator it;
         int i;
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
@@ -1857,7 +1857,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     else
     {
 
-        std::vector< defaulttype::Vector3 > points[4];
+        std::vector< type::Vector3 > points[4];
         typename VecElement::const_iterator it;
         int i;
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
@@ -1934,7 +1934,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     ////////////// AFFICHAGE DES ROTATIONS ////////////////////////
     if (vparams->displayFlags().getShowNormals())
     {
-        std::vector< defaulttype::Vector3 > points[3];
+        std::vector< type::Vector3 > points[3];
         for(unsigned ii = 0; ii<  x.size() ; ii++)
         {
             Coord a = x[ii];
@@ -2427,7 +2427,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     helper::WriteAccessor<Data<helper::vector<Real> > > vME =  _vonMisesPerElement;
     for(it = _indexedElements->begin(), el = 0 ; it != _indexedElements->end() ; ++it, ++el)
     {
-        defaulttype::Vec<6,Real> vStrain;
+        type::Vec<6,Real> vStrain;
         Mat33 gradU;
 
         if (_computeVonMisesStress.getValue() == 2) {
@@ -2463,7 +2463,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
                 rotations[elementIndex].transpose(R_0_2);
 
                 // positions of the deformed and displaced Tetrahedron in its frame
-                helper::fixed_array<Coord,4> deforme;
+                type::stdtype::fixed_array<Coord,4> deforme;
                 for(int i=0; i<4; ++i)
                     deforme[i] = R_0_2*X[index[i]];
 
@@ -2498,7 +2498,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
                 rotations[elementIndex].transpose(R_0_2);
 
                 // positions of the deformed and displaced Tetrahedron in its frame
-                helper::fixed_array<Coord,4> deforme;
+                type::stdtype::fixed_array<Coord,4> deforme;
                 for(int i=0; i<4; ++i)
                     deforme[i] = R_0_2*X[index[i]];
 
@@ -2576,7 +2576,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     updateVonMisesStress=false;
 
-    helper::WriteAccessor<Data<helper::vector<defaulttype::Vec4f> > > vonMisesStressColors(_vonMisesStressColors);
+    helper::WriteAccessor<Data<helper::vector<type::Vec4f> > > vonMisesStressColors(_vonMisesStressColors);
     vonMisesStressColors.clear();
     helper::vector<unsigned int> vonMisesStressColorsCoeff;
 
@@ -2599,7 +2599,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
     {
         helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVM, maxVM);
-        defaulttype::Vec4f col = evalColor(vME[i]);
+        type::Vec4f col = evalColor(vME[i]);
         Tetrahedron tetra = (*_indexedElements)[i];
 
         for(unsigned int j=0 ; j<4 ; j++)

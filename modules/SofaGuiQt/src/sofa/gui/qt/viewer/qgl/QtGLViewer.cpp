@@ -644,7 +644,7 @@ void QtGLViewer::DisplayOBJs()
                     , this->camera()->orientation()[1]
                     , this->camera()->orientation()[2]
                     , this->camera()->orientation()[3]);
-            gl::Axis::draw(sofa::defaulttype::Vector3(30.0,30.0,0.0),sofaQuat.inverse(), 25.0);
+            gl::Axis::draw(sofa::type::Vector3(30.0,30.0,0.0),sofaQuat.inverse(), 25.0);
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);

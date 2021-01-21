@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralEngine/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -79,11 +79,11 @@ public:
 extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<int> >;
 extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<bool> >;
 //extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<std::string> >;
-extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<defaulttype::Vec2u> >;
+extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<type::Vec2u> >;
 extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<double> >;
-extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<defaulttype::Vec2d> >;
-extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<defaulttype::Vec3d> >;
-extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<defaulttype::Vec4d> >;
+extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<type::Vec2d> >;
+extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<type::Vec3d> >;
+extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< helper::vector<type::Vec4d> >;
 extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid2Types::VecCoord >;
 extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
 extern template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;

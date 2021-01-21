@@ -35,7 +35,7 @@ namespace qt
 {
 
 using sofa::helper::Creator;
-using sofa::helper::fixed_array;
+using sofa::type::stdtype::fixed_array;
 using namespace sofa::defaulttype;
 
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<int>, TABLE_HORIZONTAL > > DWClass_vectori("default",true);

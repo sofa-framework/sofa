@@ -25,7 +25,7 @@
 
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <vector>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/MechanicalParams.h>
@@ -63,7 +63,7 @@ public:
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Vec<N,Real> VecN;
+    typedef type::Vec<N,Real> VecN;
 
 
     class Spring

@@ -25,7 +25,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 
@@ -51,7 +51,7 @@ public:
 
     using Index = sofa::Index;
 
-    class Mat3 : public sofa::helper::fixed_array<Deriv,3>
+    class Mat3 : public sofa::type::stdtype::fixed_array<Deriv,3>
     {
     public:
         Deriv operator*(const Deriv& v)

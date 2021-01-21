@@ -307,7 +307,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
     {
         vparams->drawTool()->saveLastState();
         sofa::helper::types::RGBAColor color(0, 0, 0, 1.0);
-        std::vector<sofa::defaulttype::Vector3> vertices;
+        std::vector<sofa::type::Vector3> vertices;
 
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         int nbTriangles=m_topology->getNbTriangles();
@@ -324,8 +324,8 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
                 Coord center = (x[a]+x[b]+x[c])/3;
                 Coord d = (x[b]-x[a])*lfd[i][0] + (x[c]-x[a])*lfd[i][1];
                 d*=0.25;
-                vertices.push_back(sofa::defaulttype::Vector3(center-d));
-                vertices.push_back(sofa::defaulttype::Vector3(center+d));
+                vertices.push_back(sofa::type::Vector3(center-d));
+                vertices.push_back(sofa::type::Vector3(center+d));
             }
         }
         vparams->drawTool()->drawLines(vertices,1,color);

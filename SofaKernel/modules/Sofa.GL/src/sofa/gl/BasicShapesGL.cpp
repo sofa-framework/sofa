@@ -26,9 +26,9 @@
 namespace sofa::gl
 {
 
-template class SOFA_GL_API BasicShapesGL_Sphere<helper::fixed_array< float, 3 > >;
-template class SOFA_GL_API BasicShapesGL_Sphere<helper::fixed_array< double, 3 > >;
-template class SOFA_GL_API BasicShapesGL_FakeSphere<helper::fixed_array< float, 3 > >;
-template class SOFA_GL_API BasicShapesGL_FakeSphere<helper::fixed_array< double, 3 > >;
+template class SOFA_GL_API BasicShapesGL_Sphere<type::stdtype::fixed_array< float, 3 > >;
+template class SOFA_GL_API BasicShapesGL_Sphere<type::stdtype::fixed_array< double, 3 > >;
+template class SOFA_GL_API BasicShapesGL_FakeSphere<type::stdtype::fixed_array< float, 3 > >;
+template class SOFA_GL_API BasicShapesGL_FakeSphere<type::stdtype::fixed_array< double, 3 > >;
 
 } // namespace sofa::gl

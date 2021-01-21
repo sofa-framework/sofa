@@ -27,7 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
 #include <sofa/defaulttype/Mat.h>
@@ -95,8 +95,8 @@ protected:
     {
     public:
         enum {A=0,B,C,D};     ///< vertex names as in Volino's paper
-        sofa::defaulttype::Vec<4,unsigned> vid;  ///< vertex indices, in circular order
-        sofa::defaulttype::Vec<4,Real> alpha;    ///< weight of each vertex in the bending vector
+        sofa::type::Vec<4,unsigned> vid;  ///< vertex indices, in circular order
+        sofa::type::Vec<4,Real> alpha;    ///< weight of each vertex in the bending vector
         //mutable Deriv dpKfact[4];
         Real lambda;          ///< bending stiffness
 

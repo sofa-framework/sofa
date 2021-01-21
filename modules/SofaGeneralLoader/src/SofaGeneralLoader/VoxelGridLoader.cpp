@@ -314,13 +314,13 @@ void VoxelGridLoader::getResolution ( Vec3i& res ) const
     res = dataResolution.getValue();
 }
 
-void VoxelGridLoader::setVoxelSize ( const defaulttype::Vector3 vSize )
+void VoxelGridLoader::setVoxelSize ( const type::Vector3 vSize )
 {
     ( *voxelSize.beginEdit() ) = vSize;
     voxelSize.endEdit();
 }
 
-defaulttype::Vector3 VoxelGridLoader::getVoxelSize () const
+type::Vector3 VoxelGridLoader::getVoxelSize () const
 {
     return voxelSize.getValue();
 }

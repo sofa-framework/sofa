@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/ForceField.h>
 
 #include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
@@ -80,7 +80,7 @@ public:
     typedef core::topology::BaseMeshTopology::Hexa Element;
     typedef core::topology::BaseMeshTopology::SeqHexahedra VecElement;
 
-    typedef defaulttype::Vec<24, Real> Displacement;		///< the displacement vector
+    typedef type::Vec<24, Real> Displacement;		///< the displacement vector
 
     typedef defaulttype::Mat<6, 6, Real> MaterialStiffness;	///< the matrix of material stiffness
     typedef helper::vector<MaterialStiffness> VecMaterialStiffness;  ///< a vector of material stiffness matrices
@@ -113,7 +113,7 @@ protected:
         MaterialStiffness materialMatrix;
 
         // large displacement method
-        helper::fixed_array<Coord,8> rotatedInitialElements;
+        type::stdtype::fixed_array<Coord,8> rotatedInitialElements;
 
         Transformation rotation;
         ElementStiffness stiffness;
@@ -162,7 +162,7 @@ public:
 
 protected:
 
-    virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const defaulttype::Vec<8,Coord> &nodes);
+    virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const type::Vec<8,Coord> &nodes);
     Mat33 integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1, const Real u, const Real v, const Real w, const Mat33& J_1  );
 
     /// compute the hookean material matrix
@@ -178,7 +178,7 @@ protected:
 
     ////////////// polar decomposition method
     void initPolar(const int i);
-    void computeRotationPolar( Transformation &r, defaulttype::Vec<8,Coord> &nodes);
+    void computeRotationPolar( Transformation &r, type::Vec<8,Coord> &nodes);
     virtual void accumulateForcePolar( WDataRefVecDeriv& f, RDataRefVecCoord & p, const int i);
 
 public:

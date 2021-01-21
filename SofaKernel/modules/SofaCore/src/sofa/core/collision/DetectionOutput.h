@@ -24,7 +24,7 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/CollisionElement.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
 
@@ -78,7 +78,7 @@ public:
 class DetectionOutput
 {
 public:
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::type::Vector3 Vector3;
     /// Pair of colliding elements.
     std::pair<core::CollisionElementIterator, core::CollisionElementIterator> elem;
     typedef int64_t ContactId;

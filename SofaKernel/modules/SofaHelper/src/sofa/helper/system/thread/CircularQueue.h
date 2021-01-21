@@ -26,7 +26,7 @@
 #include <sofa/helper/config.h>
 
 #include <atomic>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 
 namespace sofa
 {
@@ -99,7 +99,7 @@ struct FixedSize
         static int maxCapacity() { return N; }
 
     private:
-        helper::fixed_array<T, N> array;
+        sofa::type::stdtype::fixed_array<T, N> array;
     };
 };
 
@@ -123,7 +123,7 @@ struct FixedPower2Size
         enum { MaxSize = N };
         enum { MaxCapacity = AlignPow2<MaxSize>::val };
 
-        helper::fixed_array<T, MaxCapacity> array;
+        sofa::type::stdtype::fixed_array<T, MaxCapacity> array;
     };
 };
 

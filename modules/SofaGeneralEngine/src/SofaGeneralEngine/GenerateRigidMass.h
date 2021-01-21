@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::engine
 {
@@ -49,9 +49,9 @@ public:
 
 protected:
 
-    typedef defaulttype::Vector3 Vector3;
-    typedef helper::fixed_array <unsigned int,3> MTriangle;
-    typedef helper::fixed_array <unsigned int,4> MQuad;
+    typedef type::Vector3 Vector3;
+    typedef type::stdtype::fixed_array <unsigned int,3> MTriangle;
+    typedef type::stdtype::fixed_array <unsigned int,4> MQuad;
     typedef helper::vector <unsigned int> MPolygon;
 
     typedef typename DataTypes::Real Real;
@@ -87,7 +87,7 @@ protected:
     /// generates the RigidMass from the mesh integral
     void generateRigid();
 
-    helper::fixed_array<SReal,10> afIntegral;
+    type::stdtype::fixed_array<SReal,10> afIntegral;
 
 public:
     /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters

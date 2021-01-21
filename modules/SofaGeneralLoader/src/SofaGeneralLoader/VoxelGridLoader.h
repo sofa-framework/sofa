@@ -32,9 +32,9 @@ class SOFA_SOFAGENERALLOADER_API VoxelGridLoader : public sofa::core::loader::Vo
 public:
     SOFA_CLASS(VoxelGridLoader,VoxelLoader);
 
-    typedef defaulttype::Vec<3, int> Vec3i;
-    typedef defaulttype::Vec<6, int> Vec6i;
-    typedef helper::fixed_array<unsigned int,8> Hexahedron;
+    typedef type::Vec<3, int> Vec3i;
+    typedef type::Vec<6, int> Vec6i;
+    typedef type::stdtype::fixed_array<unsigned int,8> Hexahedron;
 protected:
     VoxelGridLoader();
     ~VoxelGridLoader() override;
@@ -49,8 +49,8 @@ public:
     bool load() override;
     bool canLoad() override;
 
-    void setVoxelSize ( const defaulttype::Vector3 vSize );
-    defaulttype::Vector3 getVoxelSize () const override;
+    void setVoxelSize ( const type::Vector3 vSize );
+    type::Vector3 getVoxelSize () const override;
 
     void addBackgroundValue ( const int value );
     int getBackgroundValue( const unsigned int idx = 0) const;
@@ -72,7 +72,7 @@ public:
     // fill the texture by 'image' only where there is the 'segmentation' of 'activeValue' and give the 3D texture sizes
     void createSegmentation3DTexture( unsigned char **textureData, int& width, int& height, int& depth) override;
 
-    Data< defaulttype::Vector3 > voxelSize; ///< Dimension of one voxel
+    Data< type::Vector3 > voxelSize; ///< Dimension of one voxel
     Data< Vec3i > dataResolution; ///< Resolution of the voxel file
     Data< Vec6i > roi; ///< Region of interest (xmin, ymin, zmin, xmax, ymax, zmax)
     Data< int > headerSize; ///< Header size in bytes

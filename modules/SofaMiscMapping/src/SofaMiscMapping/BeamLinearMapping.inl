@@ -149,7 +149,7 @@ void BeamLinearMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpara
         // J = [ I -OM^ ]
         //out[i] =  v - cross(rotatedPoints[i],omega);
 
-        defaulttype::Vec<N, typename In::Real> inpos = points[i];
+        type::Vec<N, typename In::Real> inpos = points[i];
         int in0 = helper::rfloor(inpos[0]);
         if (in0<0) in0 = 0; else if (in0 > (int)in.size()-2) in0 = in.size()-2;
         inpos[0] -= in0;
@@ -181,7 +181,7 @@ void BeamLinearMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
         //v += f;
         //omega += cross(rotatedPoints[i],f);
 
-        defaulttype::Vec<N, typename In::Real> inpos = points[i];
+        type::Vec<N, typename In::Real> inpos = points[i];
         int in0 = helper::rfloor(inpos[0]);
         if (in0<0) in0 = 0; else if (in0 > (int)out.size()-2) in0 = out.size()-2;
         inpos[0] -= in0;
@@ -264,8 +264,8 @@ void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
 {
     if (!vparams->displayFlags().getShowMappings()) return;
     vparams->drawTool()->saveLastState();
-    std::vector< sofa::defaulttype::Vector3 > points;
-    sofa::defaulttype::Vector3 point;
+    std::vector< sofa::type::Vector3 > points;
+    sofa::type::Vector3 point;
 
     const typename Out::VecCoord& x = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
@@ -307,7 +307,7 @@ const sofa::defaulttype::BaseMatrix* BeamLinearMapping<TIn, TOut>::getJ()
             // out[i] =  v - cross(rotatedPoints[i],omega);
 
             const unsigned int outIdx = i;
-            defaulttype::Vec<N, typename In::Real> inpos = points[i];
+            type::Vec<N, typename In::Real> inpos = points[i];
             int in0 = helper::rfloor(inpos[0]);
             if (in0<0) in0 = 0; else if (in0 > (int)inStateSize-2) in0 = inStateSize - 2;
             inpos[0] -= in0;

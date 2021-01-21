@@ -43,7 +43,7 @@ namespace
 const float threshold = std::numeric_limits<float>::min();
 }
 
-void decodeCollisionElement(const sofa::defaulttype::Vec4f colour,  sofa::component::collision::BodyPicked& body)
+void decodeCollisionElement(const sofa::type::Vec4f colour,  sofa::component::collision::BodyPicked& body)
 {
 
     if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  ) // make sure we are not picking the background...
@@ -68,7 +68,7 @@ void decodeCollisionElement(const sofa::defaulttype::Vec4f colour,  sofa::compon
 
 }
 
-void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f colour, const TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
+void decodePosition(BodyPicked& body, const sofa::type::Vec4f colour, const TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index)
 {
 
@@ -81,7 +81,7 @@ void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f colour, con
 
 }
 
-void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f /*colour*/, const SphereCollisionModel<sofa::defaulttype::Vec3Types> *model,
+void decodePosition(BodyPicked& body, const sofa::type::Vec4f /*colour*/, const SphereCollisionModel<sofa::defaulttype::Vec3Types> *model,
         const unsigned int index)
 {
     Sphere s(const_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(model),index);

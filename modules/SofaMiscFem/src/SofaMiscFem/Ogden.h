@@ -25,7 +25,7 @@
 
 
 #include <SofaMiscFem/HyperelasticMaterial.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/MatSym.h>
 #include <string>
@@ -53,7 +53,7 @@ class Ogden: public HyperelasticMaterial<DataTypes>
     typedef defaulttype::Mat<3,3,Real> Matrix3;
     typedef defaulttype::Mat<6,6,Real> Matrix6;
     typedef defaulttype::MatSym<3,Real> MatrixSym;
-    typedef defaulttype::Vec<3,Real> Vect;
+    typedef type::Vec<3,Real> Vect;
     typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::MatrixType EigenMatrix;
     typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::RealVectorType CoordEigen;
 

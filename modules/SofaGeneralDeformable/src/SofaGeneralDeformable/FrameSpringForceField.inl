@@ -172,7 +172,7 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
     std::vector<sofa::helper::types::RGBAColor> colors;
 
     bool external = ( this->mstate1!=this->mstate2 );

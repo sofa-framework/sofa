@@ -40,7 +40,7 @@
 #include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -169,17 +169,17 @@ void SubsetTopologicalMapping::init()
         {
             if (fromModel->hasPos() && toModel->hasPos())
             {
-                std::map<sofa::defaulttype::Vec3d,Index> pmapS;
+                std::map<sofa::type::Vec3d,Index> pmapS;
                 for (Index ps = 0; ps < npS; ++ps)
                 {
-                    defaulttype::Vec3d key(fromModel->getPX(ps),fromModel->getPY(ps),fromModel->getPZ(ps));
+                    type::Vec3d key(fromModel->getPX(ps),fromModel->getPY(ps),fromModel->getPZ(ps));
                     pmapS[key] = ps;
                     pS2D[ps] = core::topology::Topology::InvalidID;
                 }
                 for (Index pd = 0; pd < npD; ++pd)
                 {
-                    defaulttype::Vec3d key(toModel->getPX(pd),toModel->getPY(pd),toModel->getPZ(pd));
-                    std::map<sofa::defaulttype::Vec3d,Index>::const_iterator it = pmapS.find(key);
+                    type::Vec3d key(toModel->getPX(pd),toModel->getPY(pd),toModel->getPZ(pd));
+                    std::map<sofa::type::Vec3d,Index>::const_iterator it = pmapS.find(key);
                     if (it == pmapS.end())
                     {
                         msg_error() << "Point " << pd << " not found in source topology";

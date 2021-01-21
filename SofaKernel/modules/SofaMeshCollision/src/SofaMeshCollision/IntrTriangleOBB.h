@@ -42,7 +42,7 @@ public:
     typedef typename TDataTypes::Real Real;
     typedef typename IntrTri::Coord Coord;
     typedef TOBB<TDataTypes2> Box;
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
 
     TIntrTriangleOBB (const IntrTri& tri, const Box & box);
 

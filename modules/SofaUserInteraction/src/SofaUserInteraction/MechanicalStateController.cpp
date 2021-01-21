@@ -46,7 +46,7 @@ template <>
 void MechanicalStateController<Vec1Types>::applyController()
 {
     using sofa::defaulttype::Quat;
-    using sofa::defaulttype::Vec;
+    using sofa::type::Vec;
 
 
     if(mState)

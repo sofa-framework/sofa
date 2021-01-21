@@ -31,7 +31,7 @@ namespace sofa {
   namespace {
 using namespace core;
 using namespace component;
-using defaulttype::Vec;
+using type::Vec;
 using defaulttype::Mat;
 
 

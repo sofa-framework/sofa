@@ -297,11 +297,11 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
     sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        sofa::defaulttype::Vec3d p1 = x[m_topology->getEdge(my_map[i])[0]];
-        sofa::defaulttype::Vec3d p2 = x[m_topology->getEdge(my_map[i])[1]];
-        sofa::defaulttype::Vec3d orig(0,0,0);
+        sofa::type::Vec3d p1 = x[m_topology->getEdge(my_map[i])[0]];
+        sofa::type::Vec3d p2 = x[m_topology->getEdge(my_map[i])[1]];
+        sofa::type::Vec3d orig(0,0,0);
 
-        sofa::defaulttype::Vec3d tang = p2 - p1;
+        sofa::type::Vec3d tang = p2 - p1;
         tang.norm(); /// @todo: shouldn't this be normalize() ?
 
         Deriv myPressure;
@@ -427,17 +427,17 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
     const sofa::helper::types::RGBAColor& color = sofa::helper::types::RGBAColor::yellow();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     const sofa::helper::vector <Index>& my_map = edgePressureMap.getMap2Elements();
     const sofa::helper::vector<EdgePressureInformation>& my_subset = edgePressureMap.getValue();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        sofa::defaulttype::Vector3 p = (x[m_topology->getEdge(my_map[i])[0]] + x[m_topology->getEdge(my_map[i])[1]]) / 2.0;
+        sofa::type::Vector3 p = (x[m_topology->getEdge(my_map[i])[0]] + x[m_topology->getEdge(my_map[i])[1]]) / 2.0;
         vertices.push_back(p);
 
-        sofa::defaulttype::Vec3d f = my_subset[i].force;
+        sofa::type::Vec3d f = my_subset[i].force;
         //f.normalize();
         f *= aSC;
         vertices.push_back(p + f);

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 
 #include <sofa/gl/gl.h>
@@ -36,7 +36,7 @@ namespace sofa::gl
 class SOFA_GL_API Cylinder
 {
 public:
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::type::Vector3 Vector3;
     typedef sofa::defaulttype::Quaternion Quaternion;
     Cylinder(SReal len=(SReal)1);
     Cylinder(const Vector3& len);

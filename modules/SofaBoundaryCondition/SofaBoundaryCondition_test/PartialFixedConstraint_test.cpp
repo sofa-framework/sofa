@@ -71,7 +71,7 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
     typedef typename MechanicalObject::Coord  Coord;
     typedef typename MechanicalObject::VecDeriv  VecDeriv;
     typedef typename MechanicalObject::Deriv  Deriv;
-    typedef sofa::helper::fixed_array<bool,Deriv::total_size> VecBool;
+    typedef sofa::type::stdtype::fixed_array<bool,Deriv::total_size> VecBool;
 
     bool test(double epsilon, const std::string &integrationScheme )
     {
@@ -81,7 +81,7 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         sofa::simulation::Simulation* simulation;
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         simulation::Node::SPtr root = simulation->createNewGraph("root");
-        root->setGravity( defaulttype::Vector3(0,0,0) );
+        root->setGravity( type::Vector3(0,0,0) );
         simulation::Node::SPtr node = createEulerSolverNode(root,"EulerSolver", integrationScheme);
 
         mstate = New<sofa::component::container::MechanicalObject<DataTypes> >();

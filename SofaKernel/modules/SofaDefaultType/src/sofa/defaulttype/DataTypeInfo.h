@@ -22,7 +22,7 @@
 #pragma once
 
 #include <vector>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
 #include <sofa/helper/types/RGBAColor.h>

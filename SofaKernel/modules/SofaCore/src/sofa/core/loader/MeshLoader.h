@@ -44,7 +44,7 @@ namespace core
 namespace loader
 {
 
-using sofa::defaulttype::Vec3;
+using sofa::type::Vec3;
 using topology::Topology;
 
 class SOFA_CORE_API MeshLoader : public BaseLoader
@@ -62,19 +62,19 @@ public:
     typedef topology::Topology::PointID PointID;
     /* specify for each control point lying on an edge : the control point index, the index of the  edge,
      the 2 integers specifying the position within this edge (i.e. 11 for a quadratic edge, 13 within a quartic edge).. */
-    typedef sofa::helper::fixed_array<PointID, 4> HighOrderEdgePosition;
+    typedef sofa::type::stdtype::fixed_array<PointID, 4> HighOrderEdgePosition;
     /* specify for each control point lying on a triangle  : the control point index, the index of the  triangle,
      the 3 integers specifying the position within this triangle (i.e. 111 for a cubic triangle , 121 within a quartic triangle).. */
-    typedef sofa::helper::fixed_array<PointID, 5> HighOrderTrianglePosition;
+    typedef sofa::type::stdtype::fixed_array<PointID, 5> HighOrderTrianglePosition;
     /* specify for each control point lying on a Quad  : the control point index, the index of the  quad,
      the 2 integers specifying the degree of the element in the x and y directions, the 2 integers specifying the position within this quad (i.e. 12 for a cubic triangle ).. */
-    typedef sofa::helper::fixed_array<PointID, 6> HighOrderQuadPosition;
+    typedef sofa::type::stdtype::fixed_array<PointID, 6> HighOrderQuadPosition;
     /* specify for each control point lying on a tetrahedron  : the control point index, the index of the  tetrahedron,
      the 3 integers specifying the position within this tetrahedron (i.e. 1111 for a quartic tetrahedron , 1211 within a quintic tetrahedron).. */
-    typedef sofa::helper::fixed_array<PointID, 6> HighOrderTetrahedronPosition;
+    typedef sofa::type::stdtype::fixed_array<PointID, 6> HighOrderTetrahedronPosition;
     /* specify for each control point lying on a Hexahedron  : the control point index, the index of the  Hexahedron,
      the 3 integers specifying the degree of the element in the x, y and z directions, the 3 integers specifying the position within this hexahedron (i.e. 121  ).. */
-    typedef sofa::helper::fixed_array<PointID, 8> HighOrderHexahedronPosition;
+    typedef sofa::type::stdtype::fixed_array<PointID, 8> HighOrderHexahedronPosition;
 
     typedef sofa::helper::vector<PointID> Polyline;
 
@@ -168,7 +168,7 @@ public:
     // polygons in 3D ?
 
     //Misc
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_normals; ///< Normals per vertex
+    Data< helper::vector<sofa::type::Vec<3,SReal> > > d_normals; ///< Normals per vertex
 
     // Groups
     Data< helper::vector< PrimitiveGroup > > d_edgesGroups; ///< Groups of Edges
@@ -202,8 +202,8 @@ protected:
     defaulttype::Matrix4 d_previousTransformation;
 
 
-    void addPosition(helper::vector< sofa::defaulttype::Vec<3, SReal> >& pPositions, const sofa::defaulttype::Vec<3, SReal>& p);
-    void addPosition(helper::vector<sofa::defaulttype::Vec<3, SReal> >& pPositions,  SReal x, SReal y, SReal z);
+    void addPosition(helper::vector< sofa::type::Vec<3, SReal> >& pPositions, const sofa::type::Vec<3, SReal>& p);
+    void addPosition(helper::vector<sofa::type::Vec<3, SReal> >& pPositions,  SReal x, SReal y, SReal z);
 
     void addPolyline(helper::vector<Polyline>& pPolylines, Polyline p);
 
@@ -244,12 +244,12 @@ protected:
     "in the v21.06 release. This should use a reference instead of a pointer.")]]
 
     DEPRECATE_POINTER
-    void addPosition(helper::vector< sofa::defaulttype::Vec<3, SReal> >* pPositions, const sofa::defaulttype::Vec<3, SReal>& p)
+    void addPosition(helper::vector< sofa::type::Vec<3, SReal> >* pPositions, const sofa::type::Vec<3, SReal>& p)
     {
         addPosition(*pPositions, p);
     }
     DEPRECATE_POINTER
-    void addPosition(helper::vector<sofa::defaulttype::Vec<3, SReal> >* pPositions, SReal x, SReal y, SReal z)
+    void addPosition(helper::vector<sofa::type::Vec<3, SReal> >* pPositions, SReal x, SReal y, SReal z)
     {
         addPosition(*pPositions, x,y,z);
     }

@@ -321,7 +321,7 @@ void MeshLoader::updateElements()
         for (Size i = 0; i < hexahedra.size(); ++i)
         {
             Hexahedron h = hexahedra[i];
-            helper::fixed_array< Quad, 6 > e;
+            type::stdtype::fixed_array< Quad, 6 > e;
             e[0] = Quad(h[0], h[3], h[2], h[1]);
             e[1] = Quad(h[4], h[5], h[6], h[7]);
             e[2] = Quad(h[0], h[1], h[5], h[4]);
@@ -633,7 +633,7 @@ void MeshLoader::updatePoints()
         {
             return;    // all points are attached
         }
-        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3, SReal> > > > waPositions = d_positions;
+        helper::WriteAccessor<Data<helper::vector<sofa::type::Vec<3, SReal> > > > waPositions = d_positions;
         helper::vector<Topology::ElemID> old2new;
         old2new.resize(waPositions.size());
         Topology::ElemID p = 0;
@@ -709,7 +709,7 @@ void MeshLoader::updatePoints()
 
 void MeshLoader::updateNormals()
 {
-    helper::ReadAccessor<Data<helper::vector<sofa::defaulttype::Vec<3, SReal> > > > raPositions = d_positions;
+    helper::ReadAccessor<Data<helper::vector<sofa::type::Vec<3, SReal> > > > raPositions = d_positions;
     helper::ReadAccessor<Data< helper::vector< Triangle > > > raTriangles = d_triangles;
     helper::ReadAccessor<Data< helper::vector< Quad > > > raQuads = d_quads;
 
@@ -719,16 +719,16 @@ void MeshLoader::updateNormals()
         return;
     }
 
-    helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3, SReal> > > > waNormals = d_normals;
+    helper::WriteAccessor<Data<helper::vector<sofa::type::Vec<3, SReal> > > > waNormals = d_normals;
 
     waNormals.resize(raPositions.size());
 
     for (Size i = 0; i < raTriangles.size() ; i++)
     {
-        const sofa::defaulttype::Vec<3, SReal>  v1 = raPositions[raTriangles[i][0]];
-        const sofa::defaulttype::Vec<3, SReal>  v2 = raPositions[raTriangles[i][1]];
-        const sofa::defaulttype::Vec<3, SReal>  v3 = raPositions[raTriangles[i][2]];
-        sofa::defaulttype::Vec<3, SReal> n = cross(v2 - v1, v3 - v1);
+        const sofa::type::Vec<3, SReal>  v1 = raPositions[raTriangles[i][0]];
+        const sofa::type::Vec<3, SReal>  v2 = raPositions[raTriangles[i][1]];
+        const sofa::type::Vec<3, SReal>  v3 = raPositions[raTriangles[i][2]];
+        sofa::type::Vec<3, SReal> n = cross(v2 - v1, v3 - v1);
 
         n.normalize();
         waNormals[raTriangles[i][0]] += n;
@@ -738,14 +738,14 @@ void MeshLoader::updateNormals()
     }
     for (Size i = 0; i < raQuads.size() ; i++)
     {
-        const sofa::defaulttype::Vec<3, SReal>& v1 = raPositions[raQuads[i][0]];
-        const sofa::defaulttype::Vec<3, SReal>& v2 = raPositions[raQuads[i][1]];
-        const sofa::defaulttype::Vec<3, SReal>& v3 = raPositions[raQuads[i][2]];
-        const sofa::defaulttype::Vec<3, SReal>& v4 = raPositions[raQuads[i][3]];
-        sofa::defaulttype::Vec<3, SReal> n1 = cross(v2 - v1, v4 - v1);
-        sofa::defaulttype::Vec<3, SReal> n2 = cross(v3 - v2, v1 - v2);
-        sofa::defaulttype::Vec<3, SReal> n3 = cross(v4 - v3, v2 - v3);
-        sofa::defaulttype::Vec<3, SReal> n4 = cross(v1 - v4, v3 - v4);
+        const sofa::type::Vec<3, SReal>& v1 = raPositions[raQuads[i][0]];
+        const sofa::type::Vec<3, SReal>& v2 = raPositions[raQuads[i][1]];
+        const sofa::type::Vec<3, SReal>& v3 = raPositions[raQuads[i][2]];
+        const sofa::type::Vec<3, SReal>& v4 = raPositions[raQuads[i][3]];
+        sofa::type::Vec<3, SReal> n1 = cross(v2 - v1, v4 - v1);
+        sofa::type::Vec<3, SReal> n2 = cross(v3 - v2, v1 - v2);
+        sofa::type::Vec<3, SReal> n3 = cross(v4 - v3, v2 - v3);
+        sofa::type::Vec<3, SReal> n4 = cross(v1 - v4, v3 - v4);
         n1.normalize();
         n2.normalize();
         n3.normalize();
@@ -770,21 +770,21 @@ void MeshLoader::applyTransformation(Matrix4 const& T)
         msg_info() << "applyTransformation: ignored matrix which is not a transformation T=" << T ;
         return;
     }
-    sofa::helper::WriteAccessor <Data< helper::vector<sofa::defaulttype::Vec<3, SReal> > > > my_positions = d_positions;
+    sofa::helper::WriteAccessor <Data< helper::vector<sofa::type::Vec<3, SReal> > > > my_positions = d_positions;
     for (Size i = 0; i < my_positions.size(); i++)
     {
         my_positions[i] = T.transform(my_positions[i]);
     }
 }
 
-void MeshLoader::addPosition(helper::vector<sofa::defaulttype::Vec<3, SReal> >& pPositions, const sofa::defaulttype::Vec<3, SReal>& p)
+void MeshLoader::addPosition(helper::vector<sofa::type::Vec<3, SReal> >& pPositions, const sofa::type::Vec<3, SReal>& p)
 {
     pPositions.push_back(p);
 }
 
-void MeshLoader::addPosition(helper::vector<sofa::defaulttype::Vec<3, SReal> >& pPositions,  SReal x, SReal y, SReal z)
+void MeshLoader::addPosition(helper::vector<sofa::type::Vec<3, SReal> >& pPositions,  SReal x, SReal y, SReal z)
 {
-    addPosition(pPositions, sofa::defaulttype::Vec<3, SReal>(x, y, z));
+    addPosition(pPositions, sofa::type::Vec<3, SReal>(x, y, z));
 }
 
 void MeshLoader::addPolyline(helper::vector<Polyline>& pPolylines, Polyline p)

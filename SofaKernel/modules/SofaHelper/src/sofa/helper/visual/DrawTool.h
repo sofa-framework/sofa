@@ -43,10 +43,10 @@ class DrawTool
 
 public:
     typedef sofa::helper::types::RGBAColor RGBAColor;
-    typedef sofa::defaulttype::Vec3f   Vec3f;
-    typedef sofa::defaulttype::Vector3 Vector3;
-    typedef sofa::defaulttype::Vec<3,int> Vec3i;
-    typedef sofa::defaulttype::Vec<2,int> Vec2i;
+    typedef sofa::type::Vec3f   Vec3f;
+    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec<3,int> Vec3i;
+    typedef sofa::type::Vec<2,int> Vec2i;
     typedef sofa::defaulttype::Quaternion Quaternion;
 
     DrawTool() { clear(); }
@@ -223,7 +223,7 @@ public:
     virtual void clear() {}
 
     /// Compatibility wrapper functions 
-    using Vec4f = sofa::defaulttype::Vec4f;
+    using Vec4f = sofa::type::Vec4f;
 #define DEPRECATE_VEC4F \
     [[deprecated("This function has been deprecated in #PR 1626. The function will be removed " \
     "in the v21.06 release. Vec4f defining a color is deprecated, use RGBAColor instead.")]]

@@ -163,7 +163,7 @@ public:
     using InheritForceField::getPotentialEnergy;
 
 protected:
-    typedef defaulttype::Vec<24, Real> Displacement;                ///< the displacement vector
+    typedef type::Vec<24, Real> Displacement;                ///< the displacement vector
 
     typedef defaulttype::Mat<6, 6, Real> MaterialStiffness;         ///< the matrix of material stiffness
     typedef helper::vector<MaterialStiffness> VecMaterialStiffness; ///< a vector of material stiffness matrices
@@ -194,7 +194,7 @@ protected:
     inline const VecElement *getIndexedElements(){ return & (m_topology->getHexahedra()); }
 
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M,
-                                          const helper::fixed_array<Coord,8> &nodes, const sofa::Index elementIndice,
+                                          const type::stdtype::fixed_array<Coord,8> &nodes, const sofa::Index elementIndice,
                                           double stiffnessFactor=1.0);
     Mat33 integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1,
                               const Real u, const Real v, const Real w, const Mat33& J_1  );
@@ -205,7 +205,7 @@ protected:
 
 
     ////////////// large displacements method
-    helper::vector<helper::fixed_array<Coord,8> > _rotatedInitialElements;   ///< The initials positions in its frame
+    helper::vector<type::stdtype::fixed_array<Coord,8> > _rotatedInitialElements;   ///< The initials positions in its frame
     helper::vector<Transformation> _rotations;
     helper::vector<Transformation> _initialrotations;
     void initLarge(int i, const Element&elem);
@@ -214,7 +214,7 @@ protected:
 
     ////////////// polar decomposition method
     void initPolar(int i, const Element&elem);
-    void computeRotationPolar( Transformation &r, defaulttype::Vec<8,Coord> &nodes);
+    void computeRotationPolar( Transformation &r, type::Vec<8,Coord> &nodes);
     virtual void accumulateForcePolar( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem  );
 
     ////////////// small decomposition method

@@ -33,6 +33,7 @@ namespace sofa
 namespace helper
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Mesh* mesh)
@@ -162,10 +163,10 @@ void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Me
     mass.inertiaMatrix /= mass.mass;
 }
 
-void generateRigid( defaulttype::Rigid3Mass& mass, defaulttype::Vector3& center, helper::io::Mesh* mesh
+void generateRigid( defaulttype::Rigid3Mass& mass, type::Vector3& center, helper::io::Mesh* mesh
                                   , SReal density
-                                  , const defaulttype::Vector3& scale
-                                  , const defaulttype::Vector3& rotation /*Euler angles*/
+                                  , const type::Vector3& scale
+                                  , const type::Vector3& rotation /*Euler angles*/
                                   )
 {
     if( scale != Vector3(1, 1, 1) ) {
@@ -214,7 +215,7 @@ bool generateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFil
 bool generateRigid(GenerateRigidInfo& res
                                   , const std::string& meshFilename
                                   , SReal density
-                                  , const defaulttype::Vector3& scale
+                                  , const type::Vector3& scale
                                   , const Vector3 &rotation)
 {
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
@@ -231,7 +232,7 @@ void generateRigid( GenerateRigidInfo& res
                                   , io::Mesh *mesh
                                   , std::string const& meshName
                                   , SReal density
-                                  , const defaulttype::Vector3& scale
+                                  , const type::Vector3& scale
                                   , const Vector3 &rotation
                                   )
 {

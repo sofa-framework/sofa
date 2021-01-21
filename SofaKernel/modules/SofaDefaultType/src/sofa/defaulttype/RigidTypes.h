@@ -22,7 +22,7 @@
 #ifndef SOFA_DEFAULTTYPE_RIGIDTYPES_H
 #define SOFA_DEFAULTTYPE_RIGIDTYPES_H
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
@@ -64,10 +64,10 @@ public:
     typedef real value_type;
     typedef sofa::Size Size;
     typedef real Real;
-    typedef Vec<3,Real> Pos;
-    typedef Vec<3,Real> Rot;
-    typedef Vec<3,Real> Vec3;
-    typedef Vec<6,Real> VecAll;
+    typedef type::Vec<3,Real> Pos;
+    typedef type::Vec<3,Real> Rot;
+    typedef type::Vec<3,Real> Vec3;
+    typedef type::Vec<6,Real> VecAll;
     typedef helper::Quater<Real> Quat;
 
 protected:
@@ -92,7 +92,7 @@ public:
     {}
 
     template<typename real2>
-    RigidDeriv(const Vec<6,real2> &v)
+    RigidDeriv(const type::Vec<6,real2> &v)
         : vCenter(Vec<3,real2>(v.data())), vOrientation(Vec<3,real2>(v.data()+3))
     {}
 
@@ -116,16 +116,16 @@ public:
     }
 
     template<typename real2>
-    void operator=(const Vec<3,real2>& v)
+    void operator=(const type::Vec<3,real2>& v)
     {
         vCenter = v;
     }
 
     template<typename real2>
-    void operator=(const Vec<6,real2>& v)
+    void operator=(const type::Vec<6,real2>& v)
     {
         vCenter = v;
-        vOrientation = Vec<3,real2>(v.data()+3);
+        vOrientation = type::Vec<3,real2>(v.data()+3);
     }
 
     void operator+=(const RigidDeriv& a)
@@ -334,7 +334,7 @@ const typename RigidDeriv<N,T>::Rot& getVOrientation(const RigidDeriv<N,T>& v)
 
 /// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
 template<typename T, typename R>
-Vec<3,T> velocityAtRotatedPoint(const RigidDeriv<3,R>& v, const Vec<3,T>& p)
+type::Vec<3,T> velocityAtRotatedPoint(const RigidDeriv<3,R>& v, const type::Vec<3,T>& p)
 {
     return getLinear(v) + cross( getAngular(v),p );
 }
@@ -346,13 +346,13 @@ public:
     typedef real value_type;
     typedef sofa::Size Size;
     typedef real Real;
-    typedef Vec<3,Real> Pos;
+    typedef type::Vec<3,Real> Pos;
     typedef helper::Quater<Real> Rot;
-    typedef Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
     typedef helper::Quater<Real> Quat;
     typedef RigidDeriv<3,Real> Deriv;
     typedef Mat<4,4,Real> HomogeneousMat;
-    typedef Vec<4,Real> HomogeneousVec;
+    typedef type::Vec<4,Real> HomogeneousVec;
 
 protected:
     Vec3 center;
@@ -817,7 +817,7 @@ public:
     typedef RigidDeriv<3,real> Deriv;
     typedef typename Coord::Vec3 Vec3;
     typedef typename Coord::Quat Quat;
-    typedef Vec<3,Real> AngularVector;
+    typedef type::Vec<3,Real> AngularVector;
 
     enum { spatial_dimensions = Coord::spatial_dimensions };
     enum { coord_total_size = Coord::total_size };
@@ -830,8 +830,8 @@ public:
     static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
     static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
 
-    typedef Vec<3,real> DPos;
-    typedef Vec<3,real> DRot;
+    typedef type::Vec<3,real> DPos;
+    typedef type::Vec<3,real> DRot;
     static const DPos& getDPos(const Deriv& d) { return getVCenter(d); }
     static void setDPos(Deriv& d, const DPos& v) { getVCenter(d) = v; }
     static const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
@@ -916,12 +916,12 @@ public:
 
     static Deriv coordDifference(const Coord& c1, const Coord& c2)
     {
-        defaulttype::Vector3 vCenter = c1.getCenter() - c2.getCenter();
+        type::Vector3 vCenter = c1.getCenter() - c2.getCenter();
         defaulttype::Quat quat, quat1(c1.getOrientation()), quat2(c2.getOrientation());
         // Transformation between c2 and c1 frames
         quat = quat1*quat2.inverse();
         quat.normalize();
-        defaulttype::Vector3 axis; defaulttype::Quat::value_type angle; quat.quatToAxis(axis, angle);
+        type::Vector3 axis; defaulttype::Quat::value_type angle; quat.quatToAxis(axis, angle);
         axis*=angle;
         return Deriv(vCenter, axis);
     }
@@ -942,7 +942,7 @@ public:
             Real angle = acos(q[3]) * 2;
 
             // Axis extraction from the orientation quaternion.
-            defaulttype::Vec<3,Real> v(q[0], q[1], q[2]);
+            type::Vec<3,Real> v(q[0], q[1], q[2]);
             Real norm = v.norm();
             if (norm > 0.0005)
             {
@@ -1027,10 +1027,10 @@ public:
     typedef real value_type;
     typedef sofa::Size Size;
     typedef real Real;
-    typedef Vec<2,Real> Pos;
+    typedef type::Vec<2,Real> Pos;
     typedef Real Rot;
-    typedef Vec<2,Real> Vec2;
-    typedef Vec<3,Real> VecAll;
+    typedef type::Vec<2,Real> Vec2;
+    typedef type::Vec<3,Real> VecAll;
 
 private:
     Vec2 vCenter;
@@ -1045,12 +1045,12 @@ public:
     }
 
     template<typename real2>
-    RigidDeriv(const Vec<2,real2> &velCenter, const real2 &velOrient)
+    RigidDeriv(const type::Vec<2,real2> &velCenter, const real2 &velOrient)
         : vCenter(velCenter), vOrientation((Real)velOrient)
     {}
 
     template<typename real2>
-    RigidDeriv(const Vec<3,real2> &v)
+    RigidDeriv(const type::Vec<3,real2> &v)
         : vCenter(Vec<2,real2>(v.data())), vOrientation((Real)v[2])
     {}
 
@@ -1068,13 +1068,13 @@ public:
     }
 
     template<typename real2>
-    void operator=(const Vec<2,real2>& v)
+    void operator=(const type::Vec<2,real2>& v)
     {
         vCenter = v;
     }
 
     template<typename real2>
-    void operator=(const Vec<3,real2>& v)
+    void operator=(const type::Vec<3,real2>& v)
     {
         vCenter = v;
         vOrientation = (Real)v[2];
@@ -1237,7 +1237,7 @@ inline RigidDeriv<2,real> operator/(RigidDeriv<2,real> r, real2 a)
 
 /// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
 template<typename R, typename T>
-Vec<2,R> velocityAtRotatedPoint(const RigidDeriv<2,T>& v, const Vec<2,R>& p)
+type::Vec<2,R> velocityAtRotatedPoint(const RigidDeriv<2,T>& v, const type::Vec<2,R>& p)
 {
     return getVCenter(v) + Vec<2,R>(-p[1], p[0]) * getVOrientation(v);
 }
@@ -1251,11 +1251,11 @@ public:
     typedef real value_type;
     typedef sofa::Size Size;
     typedef real Real;
-    typedef Vec<2,Real> Pos;
+    typedef type::Vec<2,Real> Pos;
     typedef Real Rot;
-    typedef Vec<2,Real> Vec2;
+    typedef type::Vec<2,Real> Vec2;
     typedef Mat<3,3,Real> HomogeneousMat;
-    typedef Vec<3,Real> HomogeneousVec;
+    typedef type::Vec<3,Real> HomogeneousVec;
 private:
     Vec2 center;
     Real orientation;
@@ -1686,7 +1686,7 @@ class StdRigidTypes<2, real>
 {
 public:
     typedef real Real;
-    typedef Vec<2,real> Vec2;
+    typedef type::Vec<2,real> Vec2;
 
     typedef RigidDeriv<2,Real> Deriv;
     typedef RigidCoord<2,Real> Coord;
@@ -1703,7 +1703,7 @@ public:
     static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
     static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
 
-    typedef Vec<2,real> DPos;
+    typedef type::Vec<2,real> DPos;
     typedef real DRot;
     static const DPos& getDPos(const Deriv& d) { return getVCenter(d); }
     static void setDPos(Deriv& d, const DPos& v) { getVCenter(d) = v; }
@@ -1877,7 +1877,7 @@ static void rotate( V1& v, Rot rotation )
 template<class V1, class V2>
 static void rigidTransform ( V1& points, V2& velocities, SReal tx, SReal ty, SReal tz, SReal rx, SReal ry, SReal rz )
 {
-    typedef defaulttype::Vec<3,SReal> Vec3;
+    typedef type::Vec<3,SReal> Vec3;
     typedef helper::Quater<SReal> Quat;
     Vec3 translation(tx,ty,tz);
     Quat rotation = Quat::createQuaterFromEuler(Vec3(rx,ry,rz));

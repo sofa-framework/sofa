@@ -29,7 +29,7 @@
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -271,7 +271,7 @@ void Mesh2PointTopologicalMapping::init()
 }
 
 /// Check consistency of internal maps and output topology
-bool Mesh2PointTopologicalMapping::internalCheck(const char* step, const helper::fixed_array <size_t, NB_ELEMENTS >& nbInputRemoved)
+bool Mesh2PointTopologicalMapping::internalCheck(const char* step, const type::stdtype::fixed_array <size_t, NB_ELEMENTS >& nbInputRemoved)
 {
     bool ok = true;
     unsigned int nbPOut = (unsigned int)toModel->getNbPoints();
@@ -570,7 +570,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
         //HexahedronSetTopologyModifier *toHexahedronMod = nullptr;
         toModel->getContext()->get(toPointMod, sofa::core::objectmodel::BaseContext::Local);
         bool check = false;
-        helper::fixed_array <size_t, NB_ELEMENTS > nbInputRemoved;
+        type::stdtype::fixed_array <size_t, NB_ELEMENTS > nbInputRemoved;
         nbInputRemoved.assign(0);
         std::string laststep = "";
         while( changeIt != itEnd )

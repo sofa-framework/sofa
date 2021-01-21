@@ -23,7 +23,7 @@
 #include <SofaMeshCollision/PointModel.h>
 
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
 #include <SofaBaseCollision/CubeModel.h>
@@ -145,8 +145,8 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         for (Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
-            const defaulttype::Vector3& pt = p.p();
-            cubeModel->setParentOf(i, pt - defaulttype::Vector3(distance,distance,distance), pt + defaulttype::Vector3(distance,distance,distance));
+            const type::Vector3& pt = p.p();
+            cubeModel->setParentOf(i, pt - type::Vector3(distance,distance,distance), pt + type::Vector3(distance,distance,distance));
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
@@ -172,7 +172,7 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, in
 
     if (computeNormals.getValue()) updateNormals();
 
-    defaulttype::Vector3 minElem, maxElem;
+    type::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
@@ -183,8 +183,8 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, in
         for (Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
-            const defaulttype::Vector3& pt = p.p();
-            const defaulttype::Vector3 ptv = pt + p.v()*dt;
+            const type::Vector3& pt = p.p();
+            const type::Vector3 ptv = pt + p.v()*dt;
 
             for (int c = 0; c < 3; c++)
             {
@@ -304,10 +304,10 @@ void PointCollisionModel<DataTypes>::updateNormals()
 }
 
 template<class DataTypes>
-bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFactor, double &coneExtension)
+bool TPoint<DataTypes>::testLMD(const type::Vector3 &PQ, double &coneFactor, double &coneExtension)
 {
 
-    defaulttype::Vector3 pt = p();
+    type::Vector3 pt = p();
 
     sofa::core::topology::BaseMeshTopology* mesh = this->model->l_topology.get();
     const typename DataTypes::VecCoord& x = (*this->model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue());
@@ -315,13 +315,13 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
     const auto& trianglesAroundVertex = mesh->getTrianglesAroundVertex(this->index);
     const auto& edgesAroundVertex = mesh->getEdgesAroundVertex(this->index);
 
-    defaulttype::Vector3 nMean;
+    type::Vector3 nMean;
 
     for (Index i=0; i<trianglesAroundVertex.size(); i++)
     {
         Index t = trianglesAroundVertex[i];
         const auto& ptr = mesh->getTriangle(t);
-        defaulttype::Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
+        type::Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
         nCur.normalize();
         nMean += nCur;
     }
@@ -332,7 +332,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
         {
             Index e = edgesAroundVertex[i];
             const auto& ped = mesh->getEdge(e);
-            defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
+            type::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
             l.normalize();
             nMean += l;
         }
@@ -346,7 +346,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
     {
         Index e = edgesAroundVertex[i];
         const auto& ped = mesh->getEdge(e);
-        defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
+        type::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
         l.normalize();
         double computedAngleCone = dot(nMean , l) * coneFactor;
         if (computedAngleCone<0)
@@ -392,7 +392,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
     for (Size i=0; i<size; i++)
     {
         Element e(this,i);
-        const defaulttype::Vector3& p = e.p();
+        const type::Vector3& p = e.p();
 
         for (int c=0; c<3; c++)
         {
@@ -427,8 +427,8 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
         if (npoints != size)
             return;
 
-        std::vector< defaulttype::Vector3 > pointsP;
-        std::vector< defaulttype::Vector3 > pointsL;
+        std::vector< type::Vector3 > pointsP;
+        std::vector< type::Vector3 > pointsL;
         for (Size i = 0; i < size; i++)
         {
             TPoint<DataTypes> p(this, i);
@@ -449,7 +449,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
 
         if (m_displayFreePosition.getValue())
         {
-            std::vector< defaulttype::Vector3 > pointsPFree;
+            std::vector< type::Vector3 > pointsPFree;
 
             for (Size i = 0; i < size; i++)
             {

@@ -86,7 +86,7 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
     typedef OutDeriv Deriv;
     enum { N=Out::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Vec<N,Real> Vector ;
+    typedef type::Vec<N,Real> Vector ;
 
     OutVecCoord rotatedPoints;
     DeformableOnRigidFrameMappingInternalData<In, Out> data;

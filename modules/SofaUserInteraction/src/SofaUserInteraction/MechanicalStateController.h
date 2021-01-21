@@ -114,12 +114,12 @@ public:
     /**
      * @brief Set the direction of the controlled DOF corresponding to the Mouse vertical axis.
      */
-    void setMainDirection(const sofa::defaulttype::Vec<3,Real>);
+    void setMainDirection(const sofa::type::Vec<3,Real>);
 
     /**
      * @brief Return the direction of the controlled DOF corresponding to the Mouse vertical axis.
      */
-    const sofa::defaulttype::Vec<3,Real> &getMainDirection() const;
+    const sofa::type::Vec<3,Real> &getMainDirection() const;
 
     //@}
 
@@ -135,7 +135,7 @@ protected:
 
     core::behavior::MechanicalState<DataTypes> *mState; ///< Controlled MechanicalState.
 
-    Data< sofa::defaulttype::Vec<3,Real> > mainDirection; ///< Direction corresponding to the Mouse vertical axis. Default value is (0.0,0.0,-1.0), Z axis.
+    Data< sofa::type::Vec<3,Real> > mainDirection; ///< Direction corresponding to the Mouse vertical axis. Default value is (0.0,0.0,-1.0), Z axis.
 
     enum MouseMode { None=0, BtLeft, BtRight, BtMiddle, Wheel }; ///< Mouse current mode.
     bool device;
@@ -144,7 +144,7 @@ protected:
     int eventX, eventY; ///< Mouse current position in pixel
     double deviceX, deviceY, deviceZ;
     int mouseSavedPosX, mouseSavedPosY; ///< Last recorded mouse position
-    sofa::defaulttype::Vector3 position;
+    sofa::type::Vector3 position;
     sofa::defaulttype::Quat orientation;
     bool buttonDevice;
 };
