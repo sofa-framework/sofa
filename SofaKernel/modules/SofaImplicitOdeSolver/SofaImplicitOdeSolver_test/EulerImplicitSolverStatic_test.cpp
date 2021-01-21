@@ -37,6 +37,7 @@
 namespace sofa {
 
 using namespace modeling;
+using namespace sofa::type;
 using namespace defaulttype;
 using core::objectmodel::New;
 

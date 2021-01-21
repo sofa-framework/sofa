@@ -33,6 +33,7 @@ using testing::Types;
 #include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 using sofa::core::objectmodel::ComponentState;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 #include <SofaEngine/BoxROI.h>

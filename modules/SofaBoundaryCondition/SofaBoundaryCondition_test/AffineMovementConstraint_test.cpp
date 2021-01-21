@@ -29,7 +29,7 @@
 
 #include <SofaTest/TestMessageHandler.h>
 
-
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 namespace sofa {

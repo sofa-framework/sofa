@@ -71,6 +71,7 @@ namespace qt
 
 using std::cout;
 using std::endl;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 using sofa::simulation::getSimulation;
@@ -826,8 +827,8 @@ void QtViewer::drawScene(void)
             {
                 width /= 2;
                 viewport = true;
-                vpleft = sofa::helper::make_array(0,0,width,height);
-                vpright = sofa::helper::make_array(_W-width,0,width,height);
+                vpleft = sofa::type::stdtype::make_array(0,0,width,height);
+                vpright = sofa::type::stdtype::make_array(_W-width,0,width,height);
                 if (smode == sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE_HALF)
                     width = _W; // keep the original ratio for camera
                 break;
@@ -843,8 +844,8 @@ void QtViewer::drawScene(void)
                 else // other resolutions
                     height /= 2;
                 viewport = true;
-                vpleft = sofa::helper::make_array(0,0,width,height);
-                vpright = sofa::helper::make_array(0,_H-height,width,height);
+                vpleft = sofa::type::stdtype::make_array(0,0,width,height);
+                vpright = sofa::type::stdtype::make_array(0,_H-height,width,height);
                 if (smode == sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM_HALF)
                     height = _H; // keep the original ratio for camera
                 break;
@@ -961,7 +962,7 @@ void QtViewer::drawScene(void)
         }
         if (viewport)
         {
-            vparams->viewport() = sofa::helper::make_array(0,0,_W,_H);
+            vparams->viewport() = sofa::type::stdtype::make_array(0,0,_W,_H);
             glViewport(0, 0, _W, _H);
             glScissor(0, 0, _W, _H);
             glDisable(GL_SCISSOR_TEST);
@@ -1031,7 +1032,7 @@ void QtViewer::calcProjection(int width, int height)
     //Update vparams
     vparams->zNear() = currentCamera->getZNear();
     vparams->zFar() = currentCamera->getZFar();
-    vparams->viewport() = sofa::helper::make_array(0, 0, width, height);
+    vparams->viewport() = sofa::type::stdtype::make_array(0, 0, width, height);
     vparams->setProjectionMatrix(projectionMatrix);
 }
 

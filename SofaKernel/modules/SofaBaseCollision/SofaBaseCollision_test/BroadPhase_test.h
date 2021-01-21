@@ -31,7 +31,7 @@
 
 using sofa::core::objectmodel::New;
 using sofa::core::objectmodel::Data;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 using sofa::defaulttype::Rigid3Types;
 using sofa::defaulttype::Quaternion;
 

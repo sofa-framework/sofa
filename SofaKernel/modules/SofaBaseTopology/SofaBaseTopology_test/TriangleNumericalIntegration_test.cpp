@@ -36,6 +36,7 @@
 namespace sofa {
 
 using namespace component;
+using namespace sofa::type;
 using namespace defaulttype;
 /**  Patch test in 2D and 3D.
 A movement is applied to the borders of a mesh. The points within should have a bilinear movement relative to the border movements.*/

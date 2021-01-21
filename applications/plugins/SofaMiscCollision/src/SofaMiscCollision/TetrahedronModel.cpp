@@ -41,6 +41,7 @@ namespace component
 namespace collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int TetrahedronCollisionModelClass = core::RegisterObject("collision model using a tetrahedral mesh, as described in BaseMeshTopology")

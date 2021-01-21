@@ -64,6 +64,7 @@ namespace qgl
 {
 
 using std::endl;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::gl;
 using sofa::simulation::getSimulation;

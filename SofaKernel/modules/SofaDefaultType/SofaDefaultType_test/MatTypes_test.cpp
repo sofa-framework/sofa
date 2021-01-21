@@ -28,6 +28,7 @@ using namespace sofa::helper::testing ;
 
 using namespace sofa;
 using namespace sofa::helper;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 void test_transformInverse(Matrix4 const& M)
