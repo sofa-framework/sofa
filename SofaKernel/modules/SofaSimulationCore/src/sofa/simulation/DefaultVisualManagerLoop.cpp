@@ -160,6 +160,10 @@ void DefaultVisualManagerLoop::computeBBoxStep(sofa::core::visual::VisualParams*
     }
 }
 
+simulation::Node* DefaultVisualManagerLoop::getNodeFromContext(BaseContext* context)
+{
+    return dynamic_cast<simulation::Node*>(context);
+}
 
 
 } // namespace simulation

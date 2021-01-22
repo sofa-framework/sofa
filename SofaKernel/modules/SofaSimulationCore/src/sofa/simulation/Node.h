@@ -57,6 +57,7 @@
 #include <sofa/simulation/MutationListener.h>
 #include <sofa/simulation/VisitorScheduler.h>
 
+#include <sofa/simulation/fwd.h>
 #include <type_traits>
 
 namespace sofa

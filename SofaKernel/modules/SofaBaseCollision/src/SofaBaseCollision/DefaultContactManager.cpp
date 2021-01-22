@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/Tag.h>
-
+#include <sofa/simulation/Node.h>
 
 namespace sofa::component::collision
 {
@@ -48,9 +48,12 @@ DefaultContactManager::~DefaultContactManager()
     //clear();
 }
 
-sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(core::collision::Pipeline *pipeline)
+sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(sofa::core::objectmodel::BaseContext *context)
 {
     std::set<std::string> listResponse;
+
+    sofa::simulation::Node* node = sofa::simulation::getNodeFromContext(context);
+    sofa::core::collision::Pipeline* pipeline = node->collisionPipeline;
     if (pipeline) listResponse=pipeline->getResponseList();
     else
     {
@@ -70,8 +73,7 @@ void DefaultContactManager::init()
 {
     if (response.getValue().size() == 0)
     {
-        core::collision::Pipeline *pipeline=static_cast<simulation::Node*>(getContext())->collisionPipeline;
-        response.setValue(initializeResponseOptions(pipeline));
+        response.setValue(initializeResponseOptions(getContext()));
     }
 }
 

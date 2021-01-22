@@ -28,7 +28,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/fixed_array.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/gui/qt/WDoubleLineEdit.h>
 
 #include <QDialog>
@@ -48,6 +47,7 @@
 #include <QVBoxLayout>
 #include <QTextBrowser>
 
+#include <sofa/simulation/fwd.h>
 
 namespace sofa
 {
