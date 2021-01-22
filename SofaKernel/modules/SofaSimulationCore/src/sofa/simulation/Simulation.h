@@ -23,9 +23,6 @@
 #define SOFA_SIMULATION_CORE_SIMULATION_H
 
 #include <sofa/simulation/config.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/visual/DisplayFlags.h>
-#include <memory>
 
 namespace sofa::simulation {
     class Node;
@@ -47,7 +44,9 @@ class SOFA_SIMULATION_CORE_API Simulation: public virtual sofa::core::objectmode
 public:
     SOFA_CLASS(Simulation, sofa::core::objectmodel::Base);
 
-    typedef sofa::core::visual::DisplayFlags DisplayFlags;
+    [[deprecated("Simulation::DisplayFlags is deprecated use sofa::core::visual::DisplayFlags instead.")]]
+    typedef int DisplayFlags;
+
     Simulation();
     ~Simulation() override;
 	
