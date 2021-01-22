@@ -25,6 +25,7 @@
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa
 {
