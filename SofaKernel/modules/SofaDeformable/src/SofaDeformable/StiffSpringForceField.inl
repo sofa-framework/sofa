@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <SofaDeformable/StiffSpringForceField.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
+
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>
