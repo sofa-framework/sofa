@@ -402,7 +402,7 @@ void Fluid2D::updateVisual()
 
     for (unsigned int i=0; i<facets.size(); i++)
     {
-        sofa::defaulttype::Vec3f n = cross(points[facets[i].p[1]].p-points[facets[i].p[0]].p,points[facets[i].p[2]].p-points[facets[i].p[0]].p);
+        sofa::type::Vec3f n = cross(points[facets[i].p[1]].p-points[facets[i].p[0]].p,points[facets[i].p[2]].p-points[facets[i].p[0]].p);
         n.normalize();
         points[facets[i].p[0]].n += n;
         points[facets[i].p[1]].n += n;

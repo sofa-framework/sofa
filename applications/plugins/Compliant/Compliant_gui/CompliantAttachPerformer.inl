@@ -96,7 +96,7 @@ void CompliantAttachPerformer<DataTypes>::clear()
 // And while the mouse did not move, we do not update anything
 // (otherwise it would be update with the wrong position)
 // As soon as the mouse is moving, the position is OK.
-static defaulttype::Vec3d initialMousePos(0,0,0);
+static type::Vec3d initialMousePos(0,0,0);
 
 
 template <class DataTypes>
@@ -207,7 +207,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     // set target point to closest point on the ray
     SReal distanceFromMouse=picked.rayLength;
     Ray ray = this->interactor->getMouseRayModel()->getRay(0);
-    defaulttype::Vector3 pointOnRay = ray.origin() + ray.direction()*distanceFromMouse;
+    type::Vector3 pointOnRay = ray.origin() + ray.direction()*distanceFromMouse;
 //    ray.setOrigin(pointOnRay);
     this->interactor->setMouseAttached(true);
     this->interactor->setDistanceFromMouse(distanceFromMouse);

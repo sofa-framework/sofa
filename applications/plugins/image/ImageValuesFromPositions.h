@@ -141,7 +141,7 @@ public:
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
 
-    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
+    typedef helper::vector<type::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     Data< SeqPositions > position; ///< input positions
 

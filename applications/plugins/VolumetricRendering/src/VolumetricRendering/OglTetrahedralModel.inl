@@ -148,11 +148,11 @@ template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::initVisual()
 {
     const helper::vector<Coord> tmpvertices = m_positions.getValue();
-    helper::vector<defaulttype::Vec3f> vertices;
+    helper::vector<type::Vec3f> vertices;
 
     for (unsigned int i = 0; i<tmpvertices.size(); i++)
     {
-        vertices.push_back(defaulttype::Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
+        vertices.push_back(type::Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
     }
 
     m_mappingTableValues->initVisual();
@@ -350,10 +350,10 @@ template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::updateVertexBuffer()
 {
     const helper::vector<Coord> tmpvertices = m_positions.getValue();
-    helper::vector<defaulttype::Vec3f> vertices;
+    helper::vector<type::Vec3f> vertices;
     for (unsigned int i = 0; i<tmpvertices.size(); i++)
     {
-        vertices.push_back(defaulttype::Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
+        vertices.push_back(type::Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
     }
 
     unsigned positionsBufferSize;

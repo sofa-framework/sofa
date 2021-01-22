@@ -57,7 +57,7 @@ public:
     Data<double> d_penOffset; ///< Distance at which there is no reaction force.
 
 protected:
-    sofa::defaulttype::Vec3d m_contactForce;
+    sofa::type::Vec3d m_contactForce;
 
     EnslavementForceFeedback( core::CollisionModel* collModel1 = nullptr, core::CollisionModel* collModel2 = nullptr );
     ~EnslavementForceFeedback(){}

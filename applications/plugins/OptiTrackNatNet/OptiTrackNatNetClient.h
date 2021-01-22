@@ -73,8 +73,8 @@ public:
     sofa::core::objectmodel::Data<std::string> clientName; ///< IP to bind this client to (default to localhost)
     sofa::core::objectmodel::Data<double> scale; ///< Scale factor to apply to coordinates (using the global frame as fixed point)
 
-    sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > trackedMarkers; ///< Position of received known markers
-    sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > otherMarkers; ///< Position of received unknown markers
+    sofa::core::objectmodel::Data<sofa::helper::vector<sofa::type::Vec3f> > trackedMarkers; ///< Position of received known markers
+    sofa::core::objectmodel::Data<sofa::helper::vector<sofa::type::Vec3f> > otherMarkers; ///< Position of received unknown markers
 
     sofa::core::objectmodel::MultiLink<OptiTrackNatNetClient, OptiTrackNatNetDataReceiver, 0> natNetReceivers;
 
@@ -87,9 +87,9 @@ public:
     virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
 
     sofa::core::objectmodel::Data<float> drawTrackedMarkersSize; ///< Size of displayed markers
-    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawTrackedMarkersColor; ///< Color of displayed markers
+    sofa::core::objectmodel::Data<sofa::type::Vec4f> drawTrackedMarkersColor; ///< Color of displayed markers
     sofa::core::objectmodel::Data<float> drawOtherMarkersSize; ///< Size of displayed unknown markers
-    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawOtherMarkersColor; ///< Color of displayed unknown markers
+    sofa::core::objectmodel::Data<sofa::type::Vec4f> drawOtherMarkersColor; ///< Color of displayed unknown markers
 
 public:
 
@@ -117,8 +117,8 @@ protected:
     virtual void processModelDef(const ModelDef* data);
 
     std::string serverString;
-    sofa::helper::fixed_array<unsigned char,4> serverVersion; // sending app's version [major.minor.build.revision]
-    sofa::helper::fixed_array<unsigned char,4> natNetVersion; // sending app's NatNet version [major.minor.build.revision]
+    sofa::type::stdtype::fixed_array<unsigned char,4> serverVersion; // sending app's version [major.minor.build.revision]
+    sofa::type::stdtype::fixed_array<unsigned char,4> natNetVersion; // sending app's NatNet version [major.minor.build.revision]
 
     bool serverInfoReceived;
     bool modelInfoReceived;
@@ -145,7 +145,7 @@ struct RigidDef
     const char* name;
     int ID;
     int parentID;
-    sofa::defaulttype::Vec3f offset;
+    sofa::type::Vec3f offset;
 };
 
 struct SkeletonDef
@@ -170,16 +170,16 @@ struct PointCloudData
 {
     const char* name;
     int nMarkers;
-    const sofa::defaulttype::Vec3f* markersPos;
+    const sofa::type::Vec3f* markersPos;
 };
 
 struct RigidData
 {
     int ID;
-    sofa::defaulttype::Vec3f pos;
+    sofa::type::Vec3f pos;
     sofa::defaulttype::Quatf rot;
     int nMarkers;
-    const sofa::defaulttype::Vec3f* markersPos;
+    const sofa::type::Vec3f* markersPos;
     const int* markersID; // optional (2.0+)
     const float* markersSize; // optional (2.0+)
     float meanError; // optional (2.0+)
@@ -205,7 +205,7 @@ struct FrameData
     float latency;
     // unidentified markers
     int nOtherMarkers;
-    const sofa::defaulttype::Vec3f* otherMarkersPos;
+    const sofa::type::Vec3f* otherMarkersPos;
 };
 
 } // namespace SofaOptiTrackNatNet

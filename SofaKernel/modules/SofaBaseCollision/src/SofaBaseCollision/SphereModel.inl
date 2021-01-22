@@ -120,7 +120,7 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    using namespace sofa::defaulttype;
+    using namespace sofa::type;
 
     if (!this->isActive()) return;
     //if (!vparams->isSupported(core::visual::API_OpenGL)) return;

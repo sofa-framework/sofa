@@ -84,7 +84,7 @@ public:
     typedef sofa::component::linearsolver::AssembledSystem::rmat SMatrix;
 
     typedef sofa::component::topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
     typedef sofa::component::forcefield::UniformCompliance<defaulttype::Vec1Types> UniformCompliance1;
 
     // Vec3-Vec1

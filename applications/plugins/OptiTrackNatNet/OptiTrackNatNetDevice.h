@@ -104,7 +104,7 @@ public:
     sofa::core::objectmodel::Data<sofa::helper::vector<int> > markersID; ///< Output: markers IDs
     sofa::core::objectmodel::Data<sofa::helper::vector<Real> > markersSize; ///< Output: markers sizes
 
-    sofa::core::objectmodel::Data<sofa::helper::fixed_array<int,2> > distanceMarkersID; ///< Input: ID of markers ID used to measure distance (for articulated instruments)
+    sofa::core::objectmodel::Data<sofa::type::stdtype::fixed_array<int,2> > distanceMarkersID; ///< Input: ID of markers ID used to measure distance (for articulated instruments)
     sofa::core::objectmodel::Data<sofa::helper::vector<CPos> > distanceMarkersPos; ///< Output: Positions of markers used to measure distance (for articulated instruments)
     sofa::core::objectmodel::Data<Real> openDistance; ///< Input: Distance considered as open
     sofa::core::objectmodel::Data<Real> closedDistance; ///< Input: Distance considered as closed
@@ -119,10 +119,10 @@ public:
     sofa::core::objectmodel::Data<Real> jointClosedAngle; ///< Input: rotation angle when closed (for articulated instruments)
 
 
-    sofa::core::objectmodel::Data<sofa::defaulttype::Vec3f> drawAxisSize; ///< Size of displayed axis
+    sofa::core::objectmodel::Data<sofa::type::Vec3f> drawAxisSize; ///< Size of displayed axis
     sofa::core::objectmodel::Data<float> drawMarkersSize; ///< Size of displayed markers
     sofa::core::objectmodel::Data<float> drawMarkersIDSize; ///< Size of displayed markers ID
-    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawMarkersColor; ///< Color of displayed markers
+    sofa::core::objectmodel::Data<sofa::type::Vec4f> drawMarkersColor; ///< Color of displayed markers
 
 protected:
     int writeInMarkersMesh;

@@ -70,7 +70,7 @@ public:
         NOut = sofa::defaulttype::DataTypeInfo<Deriv>::Size
     };
     typedef defaulttype::Mat<N, N, Real> Mat;
-    typedef defaulttype::Vec<N, Real> Vector;
+    typedef type::Vec<N, Real> Vector;
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
@@ -80,7 +80,7 @@ public:
 
     void beginAddContactPoint() override;
 
-    int addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
+    int addContactPointFromInputMapping(const sofa::type::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
 
     int keepContactPointFromInputMapping(const int index) override;
 

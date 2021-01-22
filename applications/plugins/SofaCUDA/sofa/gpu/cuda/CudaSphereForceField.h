@@ -36,7 +36,7 @@ namespace cuda
 
 struct GPUSphere
 {
-    defaulttype::Vec3f center;
+    type::Vec3f center;
     float r;
     float stiffness;
     float damping;
@@ -57,7 +57,7 @@ class SphereForceFieldInternalData<gpu::cuda::CudaVec3fTypes>
 {
 public:
     gpu::cuda::GPUSphere sphere;
-    gpu::cuda::CudaVector<defaulttype::Vec4f> penetration;
+    gpu::cuda::CudaVector<type::Vec4f> penetration;
 };
 
 template <>
@@ -71,7 +71,7 @@ class SphereForceFieldInternalData<gpu::cuda::CudaVec3f1Types>
 {
 public:
     gpu::cuda::GPUSphere sphere;
-    gpu::cuda::CudaVector<defaulttype::Vec4f> penetration;
+    gpu::cuda::CudaVector<type::Vec4f> penetration;
 };
 
 template <>

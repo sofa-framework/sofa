@@ -192,11 +192,11 @@ void LabelGridImageToolBoxAction::executeButtonClick()
     //std::cout << "exitButton"<<std::endl;
 }
 
-void LabelGridImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int /*axis*/,const sofa::defaulttype::Vec3d& /*imageposition*/,const sofa::defaulttype::Vec3d& /*position3D*/,const QString& /*value*/)
+void LabelGridImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int /*axis*/,const sofa::type::Vec3d& /*imageposition*/,const sofa::type::Vec3d& /*position3D*/,const QString& /*value*/)
 {
 /*
     select->setChecked(false);
-    disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+    disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     
     sofa::component::engine::LabelGridImageToolBox* lp = LGITB();
     
@@ -215,12 +215,12 @@ void LabelGridImageToolBoxAction::selectionPointButtonClick(bool b)
     if(b)
     {
         //select->setChecked(true);
-        connect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        connect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     }
     else
     {
         //select->setChecked(false);
-        disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     }
     
 }*/
@@ -243,7 +243,7 @@ void LabelGridImageToolBoxAction::addOnGraphs()
     updateColor();
 }
 
-void LabelGridImageToolBoxAction::moveTo(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition)
+void LabelGridImageToolBoxAction::moveTo(const unsigned int axis,const sofa::type::Vec3d& imageposition)
 {
     QPainterPath poly;
     int ximage,yimage;
@@ -268,7 +268,7 @@ void LabelGridImageToolBoxAction::moveTo(const unsigned int axis,const sofa::def
     path[axis]->setPath(poly);
 }
 
-void LabelGridImageToolBoxAction::lineTo(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition)
+void LabelGridImageToolBoxAction::lineTo(const unsigned int axis,const sofa::type::Vec3d& imageposition)
 {
     QPainterPath poly;
     int ximage,yimage;
@@ -299,7 +299,7 @@ void LabelGridImageToolBoxAction::updateGraphs()
     //int axis = l->d_axis.getValue();
     //this->setAxis(axis);
 
-    helper::vector<sofa::defaulttype::Vec3d>& pos = *(l->d_outImagePosition.beginEdit());
+    helper::vector<sofa::type::Vec3d>& pos = *(l->d_outImagePosition.beginEdit());
     sofa::component::engine::LabelGridImageToolBoxNoTemplated::Edges& edges = *(l->d_outEdges.beginEdit());
 
     path[0]->setPath(QPainterPath());
@@ -308,8 +308,8 @@ void LabelGridImageToolBoxAction::updateGraphs()
 
     for(unsigned int i=0;i<edges.size();i++)
     {
-        sofa::defaulttype::Vec3d p1 = pos[edges[i][0]];
-        sofa::defaulttype::Vec3d p2 = pos[edges[i][1]];
+        sofa::type::Vec3d p1 = pos[edges[i][0]];
+        sofa::type::Vec3d p2 = pos[edges[i][1]];
         moveTo(0,p1);
         moveTo(1,p1);
         moveTo(2,p1);
@@ -332,9 +332,9 @@ void LabelGridImageToolBoxAction::updateColor()
 void LabelGridImageToolBoxAction::sectionButtonClick()
 {
    // std::cout << "LabelGridImageToolBoxAction::sectionButtonClick()"<<std::endl;
-    sofa::defaulttype::Vec3d pos = LGITB()->d_ip.getValue();
+    sofa::type::Vec3d pos = LGITB()->d_ip.getValue();
     
-    sofa::defaulttype::Vec3i pos2(round(pos.x()),round(pos.y()),round(pos.z()));
+    sofa::type::Vec3i pos2(round(pos.x()),round(pos.y()),round(pos.z()));
 
     emit sectionChanged(pos2);
 }*/

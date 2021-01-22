@@ -182,7 +182,7 @@ public:
         const helper::vector<unsigned>& ind = indices.getValue();
         const helper::vector<unsigned>& targetIndices = d_targetIndices.getValue();
 
-        helper::vector< sofa::defaulttype::Vector3 > points;
+        helper::vector< sofa::type::Vector3 > points;
         if( ind.empty() )
         {
             points.resize(2*pos.size());
@@ -206,7 +206,7 @@ public:
         }
 
         SReal scale = d_showObjectScale.getValue();
-        const defaulttype::Vec4f& color = d_color.getValue();
+        const auto& color = d_color.getValue();
         if( scale == 0 )
             vparams->drawTool()->drawLines ( points, 1, color );
         else

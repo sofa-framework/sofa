@@ -478,7 +478,7 @@ public:
     sofa::core::objectmodel::DataFileName fileCudaRigidDistanceGrid;
     Data< double > scale; ///< scaling factor for input file
     Data< double > sampling; ///< if not zero: sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
-    Data< helper::fixed_array<CudaDistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data< type::stdtype::fixed_array<CudaDistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
     Data< int > nx; ///< number of values on X axis
     Data< int > ny; ///< number of values on Y axis
     Data< int > nz; ///< number of values on Z axis

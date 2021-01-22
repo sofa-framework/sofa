@@ -47,7 +47,7 @@ public:
 
     typedef Grid2D::real real;
     typedef Grid2D::vec2 vec2;
-    typedef sofa::defaulttype::Vec<3,real> vec3;
+    typedef sofa::type::Vec<3,real> vec3;
 protected:
 
     Grid2D* fluid;

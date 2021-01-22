@@ -439,7 +439,7 @@ protected:
 //    }
 
     /// @internal copying the contact normals to the given vector
-    typedef helper::vector< defaulttype::Vec<3, real> > normal_type;
+    typedef helper::vector< type::Vec<3, real> > normal_type;
     void copyNormals( normal_type& res ) const {
         const unsigned size = mappedContacts.size();
         assert( size );
@@ -466,7 +466,7 @@ protected:
     }
 
     /// @internal copying the contact pair indices to the given vector
-    void copyPairs( helper::vector< defaulttype::Vec<2, unsigned> >& res ) const {
+    void copyPairs( helper::vector< type::Vec<2, unsigned> >& res ) const {
         const unsigned size = mappedContacts.size();
         assert( size );
         assert( size == contacts->size() );

@@ -50,7 +50,7 @@ class SOFA_EULERIAN_FLUID_API Grid2D
 public:
 
     typedef float real;
-    typedef sofa::defaulttype::Vec<2,real> vec2;
+    typedef sofa::type::Vec<2,real> vec2;
 
     struct Cell
     {

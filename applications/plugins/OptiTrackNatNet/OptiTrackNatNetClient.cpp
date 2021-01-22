@@ -107,9 +107,9 @@ OptiTrackNatNetClient::OptiTrackNatNetClient()
     , otherMarkers(initData(&otherMarkers,"otherMarkers", "Position of received unknown markers"))
     , natNetReceivers(initLink("natNetReceivers", "List of data receiver components"))
     , drawTrackedMarkersSize(initData(&drawTrackedMarkersSize, 0.01f, "drawTrackedMarkersSize", "Size of displayed markers"))
-    , drawTrackedMarkersColor(initData(&drawTrackedMarkersColor, sofa::defaulttype::Vec4f(1,1,1,1), "drawTrackedMarkersColor", "Color of displayed markers"))
+    , drawTrackedMarkersColor(initData(&drawTrackedMarkersColor, sofa::type::Vec4f(1,1,1,1), "drawTrackedMarkersColor", "Color of displayed markers"))
     , drawOtherMarkersSize(initData(&drawOtherMarkersSize, 0.01f, "drawOtherMarkersSize", "Size of displayed unknown markers"))
-    , drawOtherMarkersColor(initData(&drawOtherMarkersColor, sofa::defaulttype::Vec4f(1,0,1,1), "drawOtherMarkersColor", "Color of displayed unknown markers"))
+    , drawOtherMarkersColor(initData(&drawOtherMarkersColor, sofa::type::Vec4f(1,0,1,1), "drawOtherMarkersColor", "Color of displayed unknown markers"))
     , command_socket(NULL)
     , data_socket(NULL)
     , recv_command_packet(new sPacket)
@@ -598,7 +598,7 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
     }
     // Copy markers to stored Data
     {
-        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > > markers = this->otherMarkers;
+        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<sofa::type::Vec3f> > > markers = this->otherMarkers;
         markers.resize(nOtherMarkers);
         int m0 = 0;
         for (int i = 0; i < frame.nOtherMarkers; ++i)
@@ -608,7 +608,7 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
     }
 
     {
-        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > > markers = this->trackedMarkers;
+        sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<sofa::type::Vec3f> > > markers = this->trackedMarkers;
         markers.resize(nTrackedMarkers);
         int m0 = 0;
 
@@ -644,12 +644,12 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
     {
         const double scale = this->scale.getValue();
         {
-            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > > markers = this->trackedMarkers;
+            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<sofa::type::Vec3f> > > markers = this->trackedMarkers;
             for (unsigned int i=0; i<markers.size(); ++i)
                 markers[i] *= scale;
         }
         {
-            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > > markers = this->otherMarkers;
+            sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::helper::vector<sofa::type::Vec3f> > > markers = this->otherMarkers;
             for (unsigned int i=0; i<markers.size(); ++i)
                 markers[i] *= scale;
         }
@@ -970,18 +970,18 @@ void OptiTrackNatNetClient::draw(const sofa::core::visual::VisualParams* vparams
     const float trackedMarkersSize = drawTrackedMarkersSize.getValue();
     if (trackedMarkersSize > 0)
     {
-        //sofa::helper::vector<sofa::defaulttype::Vector3> markers = trackedMarkers.getValue();
-        const sofa::helper::vector<sofa::defaulttype::Vec3f>& val = trackedMarkers.getValue();
-        sofa::helper::vector<sofa::defaulttype::Vector3> markers(val.size());
+        //sofa::helper::vector<sofa::type::Vector3> markers = trackedMarkers.getValue();
+        const sofa::helper::vector<sofa::type::Vec3f>& val = trackedMarkers.getValue();
+        sofa::helper::vector<sofa::type::Vector3> markers(val.size());
         for (unsigned int i=0; i<val.size(); ++i) markers[i] = val[i];
         vparams->drawTool()->drawSpheres(markers, trackedMarkersSize, drawTrackedMarkersColor.getValue());
     }
     const float otherMarkersSize = drawOtherMarkersSize.getValue();
     if (otherMarkersSize > 0)
     {
-        //sofa::helper::vector<sofa::defaulttype::Vector3> markers = otherMarkers.getValue();
-        const sofa::helper::vector<sofa::defaulttype::Vec3f>& val = otherMarkers.getValue();
-        sofa::helper::vector<sofa::defaulttype::Vector3> markers(val.size());
+        //sofa::helper::vector<sofa::type::Vector3> markers = otherMarkers.getValue();
+        const sofa::helper::vector<sofa::type::Vec3f>& val = otherMarkers.getValue();
+        sofa::helper::vector<sofa::type::Vector3> markers(val.size());
         for (unsigned int i=0; i<val.size(); ++i) markers[i] = val[i];
         vparams->drawTool()->drawSpheres(markers, otherMarkersSize, drawOtherMarkersColor.getValue());
     }

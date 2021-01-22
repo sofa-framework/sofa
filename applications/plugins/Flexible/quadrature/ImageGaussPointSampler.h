@@ -113,7 +113,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
         typedef typename ImageGaussPointSamplerT::raTransform raTransform;
         typedef typename ImageGaussPointSamplerT::factType factType;
 
-        typedef defaulttype::Vec<3,int> iCoord;
+        typedef type::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
 
         // retrieve data
@@ -315,7 +315,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaultty
         typedef typename ImageGaussPointSamplerT::Coord Coord;
         typedef typename ImageGaussPointSamplerT::factType factType;
 
-        typedef defaulttype::Vec<3,int> iCoord;
+        typedef type::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
 
         // retrieve data
@@ -660,7 +660,7 @@ protected:
 
         helper::vector<helper::vector<unsigned int> > index(nb);
         helper::vector<helper::vector<Real> > w(nb);
-        helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw(nb);
+        helper::vector<helper::vector<type::Vec<spatial_dimensions,Real> > > dw(nb);
         helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw(nb);
 
         for(unsigned int i=0; i<nb; i++)

@@ -51,17 +51,17 @@
 //Typedef for ManifoldEdgeSetGeometryAlgorithms
 typedef sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::StdRigidTypes<3, double> > ManifoldEdgeSetGeometryAlgorithmsRigid3d;
 typedef sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::StdRigidTypes<2, double> > ManifoldEdgeSetGeometryAlgorithmsRigid2d;
-typedef sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > ManifoldEdgeSetGeometryAlgorithms1d;
-typedef sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > ManifoldEdgeSetGeometryAlgorithms2d;
-typedef sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ManifoldEdgeSetGeometryAlgorithms3d;
+typedef sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::type::Vec<1, double>, sofa::type::Vec<1, double>, double> > ManifoldEdgeSetGeometryAlgorithms1d;
+typedef sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::type::Vec<2, double>, sofa::type::Vec<2, double>, double> > ManifoldEdgeSetGeometryAlgorithms2d;
+typedef sofa::component::topology::ManifoldEdgeSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::type::Vec<3, double>, sofa::type::Vec<3, double>, double> > ManifoldEdgeSetGeometryAlgorithms3d;
 
 
 
 
 //---------------------------------------------------------------------------------------------
 //Typedef for ManifoldTriangleSetTopologyAlgorithms
-typedef sofa::component::topology::ManifoldTriangleSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > ManifoldTriangleSetGeometryAlgorithms1d;
-typedef sofa::component::topology::ManifoldTriangleSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > ManifoldTriangleSetGeometryAlgorithms2d;
-typedef sofa::component::topology::ManifoldTriangleSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ManifoldTriangleSetGeometryAlgorithms3d;
+typedef sofa::component::topology::ManifoldTriangleSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::type::Vec<1, double>, sofa::type::Vec<1, double>, double> > ManifoldTriangleSetGeometryAlgorithms1d;
+typedef sofa::component::topology::ManifoldTriangleSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::type::Vec<2, double>, sofa::type::Vec<2, double>, double> > ManifoldTriangleSetGeometryAlgorithms2d;
+typedef sofa::component::topology::ManifoldTriangleSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::type::Vec<3, double>, sofa::type::Vec<3, double>, double> > ManifoldTriangleSetGeometryAlgorithms3d;
 
 #endif

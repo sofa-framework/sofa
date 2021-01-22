@@ -32,7 +32,7 @@ namespace sofa::component::mapping
 {
 
 using helper::vector;
-using defaulttype::Vec;
+using type::Vec;
 
 /** input: pendulum angle; output: coordinates of the endpoint of the pendulum
  */

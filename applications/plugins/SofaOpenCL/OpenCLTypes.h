@@ -127,18 +127,18 @@ public:
     static const char* Name();
 };
 
-typedef sofa::defaulttype::Vec3f Vec3f;
-typedef sofa::defaulttype::Vec2f Vec2f;
+typedef sofa::type::Vec3f Vec3f;
+typedef sofa::type::Vec2f Vec2f;
 
-using defaulttype::Vec;
+using type::Vec;
 using defaulttype::NoInit;
 using defaulttype::NOINIT;
 
 template<class Real>
-class Vec3r1 : public sofa::defaulttype::Vec<3,Real>
+class Vec3r1 : public sofa::type::Vec<3,Real>
 {
 public:
-    typedef sofa::defaulttype::Vec<3,Real> Inherit;
+    typedef sofa::type::Vec<3,Real> Inherit;
     typedef Real real;
     enum { N=3 };
     Vec3r1() : dummy(0.0f) {}
@@ -474,7 +474,7 @@ public:
             Real angle = acos(q[3]) * 2;
 
             // Axis extraction from the orientation quaternion.
-            defaulttype::Vec<3,Real> v(q[0], q[1], q[2]);
+            type::Vec<3,Real> v(q[0], q[1], q[2]);
             Real norm = v.norm();
             if (norm > 0.0005)
             {
@@ -525,8 +525,8 @@ inline const char* OpenCLRigid3fTypes::Name()
 
 // support for double precision
 
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Vec2d;
+using sofa::type::Vec3d;
+using sofa::type::Vec2d;
 typedef Vec3r1<double> Vec3d1;
 
 typedef OpenCLVectorTypes<Vec3d,Vec3d,double> OpenCLVec3dTypes;
@@ -568,7 +568,7 @@ inline const char* OpenCLRigid3dTypes::Name()
 
 
 template<class real, class real2>
-inline real operator*(const sofa::defaulttype::Vec<3,real>& v1, const sofa::gpu::opencl::Vec3r1<real2>& v2)
+inline real operator*(const sofa::type::Vec<3,real>& v1, const sofa::gpu::opencl::Vec3r1<real2>& v2)
 {
     real r = (real)(v1[0]*v2[0]);
     for (int i=1; i<3; i++)
@@ -577,7 +577,7 @@ inline real operator*(const sofa::defaulttype::Vec<3,real>& v1, const sofa::gpu:
 }
 
 template<class real, class real2>
-inline real operator*(const sofa::gpu::opencl::Vec3r1<real>& v1, const sofa::defaulttype::Vec<3,real2>& v2)
+inline real operator*(const sofa::gpu::opencl::Vec3r1<real>& v1, const sofa::type::Vec<3,real2>& v2)
 {
     real r = (real)(v1[0]*v2[0]);
     for (int i=1; i<3; i++)

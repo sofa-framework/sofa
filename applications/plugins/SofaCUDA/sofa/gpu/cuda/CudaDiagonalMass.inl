@@ -95,7 +95,7 @@ void DiagonalMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams*
     //const VecCoord& x = d_x.getValue();
     //const VecDeriv& v = d_v.getValue();
 
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
     const MassVector &masses= d_vertexMass.getValue();
     DiagonalMassCuda_addForcef(masses.size(),masses.deviceRead(),g.ptr(), f.deviceWrite());
 

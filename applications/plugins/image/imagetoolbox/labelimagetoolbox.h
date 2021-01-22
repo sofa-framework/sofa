@@ -62,7 +62,7 @@ namespace engine
 {
 
 using helper::vector;
-using defaulttype::Vec;
+using type::Vec;
 using defaulttype::Mat;
 using namespace cimg_library;
 
@@ -80,7 +80,7 @@ public:
     
     
     Data< bool > d_islinkedToToolBox; ///< true if a toobbox use this Label
-    Data< sofa::defaulttype::Vec4d > d_color;
+    Data< sofa::type::Vec4d > d_color;
 
 //    virtual std::string getTemplateName() const    { return templateName(this);    }
 //    static std::string templateName(const LabelImageToolBox* = NULL) { return ImageTypes::Name();    }

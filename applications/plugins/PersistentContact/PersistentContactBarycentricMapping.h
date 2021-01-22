@@ -49,7 +49,7 @@ public:
     /**
      * @brief Add a new contact point in the mapper associated to a persistent contact barycentric mapping.
      */
-    virtual int addContactPointFromInputMapping(const InVecDeriv& /*in*/, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/) = 0;
+    virtual int addContactPointFromInputMapping(const InVecDeriv& /*in*/, const sofa::type::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/) = 0;
 
     /**
      * @brief Add a previously existed contact point in the mapper associated to a persistent contact barycentric mapping.
@@ -91,7 +91,7 @@ public:
     {
     }
 
-    int addContactPointFromInputMapping(const InVecDeriv& /*in*/, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
+    int addContactPointFromInputMapping(const InVecDeriv& /*in*/, const sofa::type::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
 };
 
 
@@ -126,7 +126,7 @@ public:
     {
     }
 
-    int addContactPointFromInputMapping(const InVecDeriv& /*in*/, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
+    int addContactPointFromInputMapping(const InVecDeriv& /*in*/, const sofa::type::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
 
     int keepContactPointFromInputMapping(const int /*index*/);
 
@@ -168,7 +168,7 @@ public:
     {
     }
 
-    int addContactPointFromInputMapping(const InVecDeriv& /*in*/, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
+    int addContactPointFromInputMapping(const InVecDeriv& /*in*/, const sofa::type::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
 
     int keepContactPointFromInputMapping(const int /*index*/);
 
@@ -229,7 +229,7 @@ public:
 
     void beginAddContactPoint() override;
 
-    int addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
+    int addContactPointFromInputMapping(const sofa::type::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
 
     int keepContactPointFromInputMapping(const int) override;
 

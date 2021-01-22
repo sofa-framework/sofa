@@ -16,7 +16,7 @@ class ParametricTriangleTopologyContainer : public TriangleSetTopologyContainer
 {
 public:
     SOFA_CLASS(ParametricTriangleTopologyContainer,TriangleSetTopologyContainer);
-    typedef defaulttype::Vector2 UV;
+    typedef type::Vector2 UV;
     typedef helper::vector<UV> SeqUV;
 
     void init() override;

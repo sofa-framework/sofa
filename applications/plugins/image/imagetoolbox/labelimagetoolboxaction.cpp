@@ -44,7 +44,7 @@ void LabelImageToolBoxAction::setGraphScene(QGraphicsScene *XY,QGraphicsScene *X
     {
         QPixmap pix(20,20);
         
-        sofa::defaulttype::Vec4f v = p_label->d_color.getValue();
+        sofa::type::Vec4f v = p_label->d_color.getValue();
         QColor c;
         c.setRgbF(v.x(),v.y(),v.z(),v.w());
         
@@ -59,7 +59,7 @@ void LabelImageToolBoxAction::setGraphScene(QGraphicsScene *XY,QGraphicsScene *X
     
     void LabelImageToolBoxAction::clickColor()
     {
-        sofa::defaulttype::Vec4f v = p_label->d_color.getValue();
+        const auto& v = p_label->d_color.getValue();
         QColor c;
         c.setRgbF(v.x(),v.y(),v.z(),v.w());
         
@@ -76,7 +76,7 @@ void LabelImageToolBoxAction::setGraphScene(QGraphicsScene *XY,QGraphicsScene *X
     {
         QColorDialog *diag = qobject_cast<QColorDialog*>(sender());
         
-        sofa::defaulttype::Vec4f v(c.redF(),c.greenF(),c.blueF(),c.alphaF());
+        sofa::type::Vec4f v(c.redF(),c.greenF(),c.blueF(),c.alphaF());
         p_label->d_color.setValue(v);
         
        /* QPixmap pix(20,20);
@@ -92,7 +92,7 @@ void LabelImageToolBoxAction::setGraphScene(QGraphicsScene *XY,QGraphicsScene *X
     
     QColor LabelImageToolBoxAction::color()
     {
-        sofa::defaulttype::Vec4f v = p_label->d_color.getValue();
+        const auto& v = p_label->d_color.getValue();
         QColor c;
         c.setRgbF(v.x(),v.y(),v.z(),v.w());
         return c;

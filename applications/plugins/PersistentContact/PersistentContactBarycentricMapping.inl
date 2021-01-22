@@ -38,7 +38,7 @@ namespace mapping
 {
 
 template <class In, class Out>
-int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::defaulttype::Vector3& _pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
+int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::type::Vector3& _pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
     this->updateJ = true;
     int retValue = 0;
@@ -49,7 +49,7 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
 
     sofa::helper::vector<defaulttype::Matrix3> bases;
-    sofa::helper::vector<defaulttype::Vector3> centers;
+    sofa::helper::vector<type::Vector3> centers;
 
     if ( tetrahedra.empty() && cubes.empty() )
     {
@@ -62,14 +62,14 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
                 return retValue;
 
             sofa::helper::vector< SReal >   lengthEdges;
-            sofa::helper::vector< defaulttype::Vector3 > unitaryVectors;
+            sofa::helper::vector< type::Vector3 > unitaryVectors;
 
             unsigned int e;
             for ( e=0; e<edges.size(); e++ )
             {
                 lengthEdges.push_back ( ( in[edges[e][1]]-in[edges[e][0]] ).norm() );
 
-                defaulttype::Vector3 V12 = ( in[edges[e][1]]-in[edges[e][0]] );
+                type::Vector3 V12 = ( in[edges[e][1]]-in[edges[e][0]] );
                 V12.normalize();
                 unitaryVectors.push_back ( V12 );
             }
@@ -78,9 +78,9 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
             for ( e=0; e<edges.size(); e++ )
             {
                 SReal lengthEdge = lengthEdges[e];
-                defaulttype::Vector3 V12 = unitaryVectors[e];
+                type::Vector3 V12 = unitaryVectors[e];
 
-                coef = ( V12 ) * defaulttype::Vector3 ( _pos - in[edges[e][0]] ) / lengthEdge;
+                coef = ( V12 ) * type::Vector3 ( _pos - in[edges[e][0]] ) / lengthEdge;
                 if ( coef >= 0 && coef <= 1 )
                 {
                     retValue = this->addPointInLine ( e,&coef );
@@ -120,13 +120,13 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
                 centers[c0+c] = ( in[quads[c][0]]+in[quads[c][1]]+in[quads[c][2]]+in[quads[c][3]] ) *0.25;
             }
 
-            defaulttype::Vector3 coefs;
+            type::Vector3 coefs;
             int index = -1;
             double distance = 1e10;
 
             for ( unsigned int t = 0; t < triangles.size(); t++ )
             {
-                defaulttype::Vec3d v = bases[t] * ( _pos - in[triangles[t][0]] );
+                type::Vec3d v = bases[t] * ( _pos - in[triangles[t][0]] );
                 double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01,v[0]+v[1]-1 ) );
                 if ( d>0 ) d = ( _pos-centers[t] ).norm2();
                 if ( d<distance ) { coefs = v; distance = d; index = t; }
@@ -134,7 +134,7 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
 
             for ( unsigned int c = 0; c < quads.size(); c++ )
             {
-                defaulttype::Vec3d v = bases[c0+c] * ( _pos - in[quads[c][0]] );
+                type::Vec3d v = bases[c0+c] * ( _pos - in[quads[c][0]] );
                 double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( v[1]-1,v[0]-1 ),std::max ( v[2]-0.01,-v[2]-0.01 ) ) );
                 if ( d>0 ) d = ( _pos-centers[c0+c] ).norm2();
                 if ( d<distance ) { coefs = v; distance = d; index = c0+c; }
@@ -174,13 +174,13 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
             centers[c0+c] = ( in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]+in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]] ) *0.125;
         }
 
-        defaulttype::Vector3 coefs;
+        type::Vector3 coefs;
         int index = -1;
         double distance = 1e10;
 
         for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
         {
-            defaulttype::Vector3 v = bases[t] * ( _pos - in[tetrahedra[t][0]] );
+            type::Vector3 v = bases[t] * ( _pos - in[tetrahedra[t][0]] );
             double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
             if ( d>0 )
                 d = ( _pos-centers[t] ).norm2();
@@ -194,7 +194,7 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
 
         for ( unsigned int c = 0; c < cubes.size(); c++ )
         {
-            defaulttype::Vector3 v = bases[c0+c] * ( _pos - in[cubes[c][0]] );
+            type::Vector3 v = bases[c0+c] * ( _pos - in[cubes[c][0]] );
             double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( -v[2],v[0]-1 ),std::max ( v[1]-1,v[2]-1 ) ) );
             if ( d>0 )
                 d = ( _pos-centers[c0+c] ).norm2();
@@ -217,7 +217,7 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
 
 
 template <class In, class Out>
-int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
+int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::type::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
     if (this->f_printLog.getValue())
     {
@@ -229,7 +229,7 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPoin
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
 
     sofa::helper::vector<defaulttype::Matrix3> bases;
-    sofa::helper::vector<defaulttype::Vector3> centers;
+    sofa::helper::vector<type::Vector3> centers;
 
     bases.resize ( cubes.size() );
     centers.resize ( cubes.size() );
@@ -251,7 +251,7 @@ int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPoin
 
     for ( unsigned int c = 0; c < cubes.size(); c++ )
     {
-        defaulttype::Vector3 v = bases[c] * ( pos - in[cubes[c][0]] );
+        type::Vector3 v = bases[c] * ( pos - in[cubes[c][0]] );
         double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( -v[2],v[0]-1 ),std::max ( v[1]-1,v[2]-1 ) ) );
         if (d > 0)
             d = (pos - centers[c]).norm2();
@@ -296,7 +296,7 @@ void PersistentContactBarycentricMapperSparseGridTopology<In,Out>::storeBarycent
 
 
 template <class In, class Out>
-int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::defaulttype::Vector3& pos
+int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::type::Vector3& pos
         , std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
     if (this->f_printLog.getValue())
@@ -307,7 +307,7 @@ int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::addContact
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
 
     sofa::helper::vector<defaulttype::Matrix3> bases;
-    sofa::helper::vector<defaulttype::Vector3> centers;
+    sofa::helper::vector<type::Vector3> centers;
 
     bases.resize ( tetrahedra.size() );
     centers.resize ( tetrahedra.size() );
@@ -322,12 +322,12 @@ int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::addContact
         centers[t] = ( in[tetrahedra[t][0]]+in[tetrahedra[t][1]]+in[tetrahedra[t][2]]+in[tetrahedra[t][3]] ) *0.25;
     }
 
-    defaulttype::Vector3 coefs;
+    type::Vector3 coefs;
     int index = -1;
     double distance = 1e10;
     for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
     {
-        defaulttype::Vec3d v = bases[t] * ( pos - in[tetrahedra[t][0]] );
+        type::Vec3d v = bases[t] * ( pos - in[tetrahedra[t][0]] );
         double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
 
         if (d > 0)
@@ -396,7 +396,7 @@ void PersistentContactBarycentricMapping<TIn, TOut>::beginAddContactPoint()
 
 
 template <class TIn, class TOut>
-int PersistentContactBarycentricMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::defaulttype::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords)
+int PersistentContactBarycentricMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::type::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords)
 {
     if (m_persistentMapper)
     {

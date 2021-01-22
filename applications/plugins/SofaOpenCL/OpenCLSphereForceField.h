@@ -37,7 +37,7 @@ namespace opencl
 
 struct GPUSphere
 {
-    defaulttype::Vec3f center;
+    type::Vec3f center;
     float r;
     float stiffness;
     float damping;
@@ -60,7 +60,7 @@ class SphereForceFieldInternalData<gpu::opencl::OpenCLVec3fTypes>
 {
 public:
     gpu::opencl::GPUSphere sphere;
-    gpu::opencl::OpenCLVector<defaulttype::Vec4f> penetration;
+    gpu::opencl::OpenCLVector<type::Vec4f> penetration;
 };
 
 template <>
@@ -74,7 +74,7 @@ class SphereForceFieldInternalData<gpu::opencl::OpenCLVec3f1Types>
 {
 public:
     gpu::opencl::GPUSphere sphere;
-    gpu::opencl::OpenCLVector<defaulttype::Vec4f> penetration;
+    gpu::opencl::OpenCLVector<type::Vec4f> penetration;
 };
 
 template <>

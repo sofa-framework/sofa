@@ -72,7 +72,7 @@ public:
     /** @name position data */
     //@{
     static const unsigned int spatial_dimensions = 3;
-    typedef defaulttype::Vec<spatial_dimensions,Real> Coord;   // TODO: put as a template to handle the 2D case (currently the conversion 3D-> 2D is done in the deformation mapping) ?
+    typedef type::Vec<spatial_dimensions,Real> Coord;   // TODO: put as a template to handle the 2D case (currently the conversion 3D-> 2D is done in the deformation mapping) ?
     typedef helper::vector<Coord> SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
@@ -147,15 +147,15 @@ protected:
             switch( drawMode.getValue() ) {
             case 1:
                 vparams->drawTool()->setLightingEnabled(true);
-                vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
+                vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),type::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
                 break;
             default:
-                vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
+                vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),type::Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
                 break;
             }
         }
         if (showIndicesScale.getValue()>0) {
-            vparams->drawTool()->draw3DText_Indices(this->f_position.getValue(), showIndicesScale.getValue(), defaulttype::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
+            vparams->drawTool()->draw3DText_Indices(this->f_position.getValue(), showIndicesScale.getValue(), type::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
         }
 
         vparams->drawTool()->restoreLastState();

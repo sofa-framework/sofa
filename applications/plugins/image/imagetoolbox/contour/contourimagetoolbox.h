@@ -22,8 +22,8 @@ namespace engine
 {
 
 using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Vector3;
+using type::Vec;
+using type::Vector3;
 using namespace sofa::defaulttype;
 
 
@@ -33,8 +33,8 @@ public:
     SOFA_CLASS(ContourImageToolBoxNoTemplated,LabelImageToolBox);
 
     typedef Vec<3,unsigned int> pixCoord;
-    typedef sofa::defaulttype::Vec3d Coord;
-    typedef vector<Vec3d> VecCoord;
+    typedef sofa::type::Vec3d Coord;
+    typedef vector<type::Vec3d> VecCoord;
     typedef vector<pixCoord> VecPixCoord;
     
     ContourImageToolBoxNoTemplated():LabelImageToolBox()
@@ -73,7 +73,7 @@ public:
     
 public:
     Data<pixCoord> d_ip;
-    Data<Vec3d> d_p;
+    Data<type::Vec3d> d_p;
     Data<unsigned int> d_axis;
     Data<std::string> d_value;
     Data<VecCoord> d_vecCoord; ///< Output list of space position of each pixel on contour

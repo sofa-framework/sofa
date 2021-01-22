@@ -58,8 +58,8 @@ namespace container
 {
 
 using namespace cimg_library;
-using defaulttype::Vec;
-using defaulttype::Vector3;
+using type::Vec;
+using type::Vector3;
 
 void* globalKinectClassPointer;
 
@@ -106,7 +106,7 @@ public:
     Data<helper::OptionsGroup> depthMode; ///< depth mode
     Data<helper::OptionsGroup> ledMode; ///< led mode
     Data<int> tiltAngle; ///< tilt angle in [-30,30]
-    Data<defaulttype::Vector3> accelerometer; ///< Accelerometer data
+    Data<type::Vector3> accelerometer; ///< Accelerometer data
     Data<bool> drawBB; ///< draw bounding box
     Data<bool> drawGravity; ///< draw acceleration
     Data<float> showArrowSize; ///< size of the axis

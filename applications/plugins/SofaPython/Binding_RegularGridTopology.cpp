@@ -27,7 +27,7 @@
 
 using namespace sofa::component::topology;
 using namespace sofa::core::objectmodel;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 
 /// getting a RegularGridTopology* from a PyObject*
 static inline RegularGridTopology* get_RegularGridTopology(PyObject* obj) {

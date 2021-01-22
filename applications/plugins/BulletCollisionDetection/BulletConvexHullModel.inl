@@ -297,7 +297,7 @@ void TBulletConvexHullModel<DataTypes>::draw_without_decomposition(const core::v
         vparams->drawTool()->setPolygonMode(1,false);
 
         std::vector< Vector3 > points;
-        std::vector< sofa::defaulttype::Vec<3,int> > indices;
+        std::vector< sofa::type::Vec<3,int> > indices;
         std::vector< Vector3 > normals;
 
         int index=0;
@@ -313,7 +313,7 @@ void TBulletConvexHullModel<DataTypes>::draw_without_decomposition(const core::v
             points.push_back(pt1);
             points.push_back(pt2);
             points.push_back(pt3);
-            indices.push_back(sofa::defaulttype::Vec<3,int>(index,index+1,index+2));
+            indices.push_back(sofa::type::Vec<3,int>(index,index+1,index+2));
             index+=3;
         }
 

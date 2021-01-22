@@ -66,7 +66,7 @@ public:
     typedef typename Inherit::Hessian Hessian;
     typedef typename Inherit::VHessian VHessian;
 
-    typedef defaulttype::StdVectorTypes<defaulttype::Vec<Inherit::spatial_dimensions,Real>,defaulttype::Vec<Inherit::spatial_dimensions,Real>,Real> VecSpatialDimensionType;
+    typedef defaulttype::StdVectorTypes<type::Vec<Inherit::spatial_dimensions,Real>,type::Vec<Inherit::spatial_dimensions,Real>,Real> VecSpatialDimensionType;
     typedef defaulttype::LinearJacobianBlock<TIn,VecSpatialDimensionType> PointMapperType;
     typedef defaulttype::DefGradientTypes<Inherit::spatial_dimensions, Inherit::material_dimensions, 0, Real> FType;
     typedef defaulttype::LinearJacobianBlock<TIn,FType> DeformationGradientMapperType;

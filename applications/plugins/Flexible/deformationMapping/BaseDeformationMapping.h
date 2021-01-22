@@ -102,13 +102,13 @@ protected:
     BasePointMapper& operator=(const BasePointMapper& b);
 
 public:
-    typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
+    typedef type::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
 
     virtual void ForwardMapping(Coord& p,const Coord& p0)=0;      ///< returns spatial coord p in deformed configuration corresponding to the rest coord p0
     virtual void BackwardMapping(Coord& p0,const Coord& p,const Real Thresh=1e-5, const size_t NbMaxIt=10)=0;     ///< iteratively approximate spatial coord p0 in rest configuration corresponding to the deformed coord p (warning! p0 need to be initialized in the object first, for instance using closest point matching)
     virtual unsigned int getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree=false)=0; ///< returns closest mapped point x from input point p, its rest pos x0, and its index
 
-    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)=0; /// resizing given custom positions and weights
+    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<type::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)=0; /// resizing given custom positions and weights
 };
 
 
@@ -181,7 +181,7 @@ public:
 
     /** @name  Coord types    */
     //@{
-    typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
+    typedef type::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
     typedef helper::vector<Coord> VecCoord;
     typedef defaulttype::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;     ///< local liner transformation from material space to world space = deformation gradient type
     typedef helper::vector<MaterialToSpatial> VMaterialToSpatial;
@@ -205,7 +205,7 @@ public:
 
     ///@brief Update \see f_index_parentToChild from \see f_index
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
-    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0) override; /// resizing given custom positions and weights
+    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<type::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0) override; /// resizing given custom positions and weights
 
     /*!
      * \brief Resize all required data and initialize jacobian blocks

@@ -119,7 +119,7 @@ protected:
 
 public:
     // UV point coordinates
-    Data<helper::vector<sofa::defaulttype::Vector2> > _uv; ///< UV coordinates
+    Data<helper::vector<sofa::type::Vector2> > _uv; ///< UV coordinates
 
     // Deflection parameter for tesselation
     Data<double> _aDeflection; ///< Deflection parameter for tesselation
@@ -132,7 +132,7 @@ public:
     Data<bool> _keepDuplicate; ///< if true, keep duplicated vertices
 
     // Shape number, number of vertices and of triangles of the shape
-    Data<helper::vector<helper::fixed_array <unsigned int,3> > > _indicesComponents; ///< Shape # | number of nodes | number of triangles
+    Data<helper::vector<type::stdtype::fixed_array <unsigned int,3> > > _indicesComponents; ///< Shape # | number of nodes | number of triangles
 };
 
 }

@@ -430,7 +430,7 @@ template<int S, class real>
 bool invertMatrix(MatSym<S,real>& dest, const MatSym<S,real>& from)
 {
     int i, j, k;
-    Vec<S,int> r, c, row, col;
+    type::Vec<S,int> r, c, row, col;
 
     MatSym<S,real> m1 = from;
     MatSym<S,real> m2;

@@ -70,16 +70,16 @@ sofa::component::engine::LabelBoxImageToolBox* LabelBoxImageToolBoxAction::LBITB
     return dynamic_cast<sofa::component::engine::LabelBoxImageToolBox*>(this->p_label);
 }
 
-void LabelBoxImageToolBoxAction::selectionPointEvent(int mouseevent, const unsigned int /*axis*/,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& /*value*/)
+void LabelBoxImageToolBoxAction::selectionPointEvent(int mouseevent, const unsigned int /*axis*/,const sofa::type::Vec3d& imageposition,const sofa::type::Vec3d& position3D,const QString& /*value*/)
 {
     if(mouseevent != 0)return;
 //    select->setChecked(false);
-//    disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+//    disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     
     sofa::component::engine::LabelBoxImageToolBox* l = LBITB();
     
-    helper::vector<sofa::defaulttype::Vec3d>& vip = *(l->d_ip.beginEdit());
-    helper::vector<sofa::defaulttype::Vec3d>& vp = *(l->d_p.beginEdit());
+    helper::vector<sofa::type::Vec3d>& vip = *(l->d_ip.beginEdit());
+    helper::vector<sofa::type::Vec3d>& vp = *(l->d_p.beginEdit());
 
     vip.push_back(imageposition);
     vp.push_back(position3D);
@@ -98,12 +98,12 @@ void LabelBoxImageToolBoxAction::selectionPointButtonClick(bool b)
     if(b)
     {
         //select->setChecked(true);
-        connect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        connect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     }
     else
     {
         //select->setChecked(false);
-        disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     }
     
 }
@@ -149,7 +149,7 @@ void LabelBoxImageToolBoxAction::updateGraphs()
     sofa::component::engine::LabelBoxImageToolBox* l = LBITB();
 
 
-    helper::vector<sofa::defaulttype::Vec3d>& vip = *(l->d_ip.beginEdit());
+    helper::vector<sofa::type::Vec3d>& vip = *(l->d_ip.beginEdit());
 
     QPainterPath pp[3];
 
@@ -157,7 +157,7 @@ void LabelBoxImageToolBoxAction::updateGraphs()
     if(vip.size()>=2)point2 = true;
     for(unsigned int i=0;i<vip.size();i++)
     {
-        sofa::defaulttype::Vec3d &v = vip[i];
+        sofa::type::Vec3d &v = vip[i];
 
         pp[0].moveTo(v.x()-1,v.y());
         pp[0].lineTo(v.x()+1,v.y());
@@ -182,7 +182,7 @@ void LabelBoxImageToolBoxAction::updateGraphs()
 
     l->d_ip.endEdit();
 
-    const sofa::defaulttype::Vec6d &v = l->d_ipbox.getValue();
+    const sofa::type::Vec6d &v = l->d_ipbox.getValue();
 
 
     if(point2)
@@ -274,14 +274,14 @@ void LabelBoxImageToolBoxAction::deleteButtonClick()
    // std::cout << "LabelBoxImageToolBoxAction::sectionButtonClick()"<<std::endl;
 
     sofa::component::engine::LabelBoxImageToolBox* l = LBITB();
-    helper::vector<sofa::defaulttype::Vec3d>& vip = *(l->d_ip.beginEdit());
-    helper::vector<sofa::defaulttype::Vec3d>& vp = *(l->d_ip.beginEdit());
+    helper::vector<sofa::type::Vec3d>& vip = *(l->d_ip.beginEdit());
+    helper::vector<sofa::type::Vec3d>& vp = *(l->d_ip.beginEdit());
 
     vip.clear();
     vp.clear();
 
-    l->d_ipbox.setValue(sofa::defaulttype::Vec6d());
-    l->d_pbox.setValue(sofa::defaulttype::Vec6d());
+    l->d_ipbox.setValue(sofa::type::Vec6d());
+    l->d_pbox.setValue(sofa::type::Vec6d());
 
     l->d_ip.endEdit();
     l->d_p.endEdit();
@@ -303,7 +303,7 @@ void LabelBoxImageToolBoxAction::loadButtonClick()
 }
 
 
-void LabelBoxImageToolBoxAction::optionChangeSection(sofa::defaulttype::Vec3i v)
+void LabelBoxImageToolBoxAction::optionChangeSection(sofa::type::Vec3i v)
 {
     sectionPosition = v;
 
@@ -314,10 +314,10 @@ void LabelBoxImageToolBoxAction::optionChangeSection(sofa::defaulttype::Vec3i v)
 
 void LabelBoxImageToolBoxAction::validView()
 {
-    sofa::defaulttype::Vec3i &v = sectionPosition;
+    sofa::type::Vec3i &v = sectionPosition;
 
     sofa::component::engine::LabelBoxImageToolBox* l = LBITB();
-    const sofa::defaulttype::Vec6d box = l->d_ipbox.getValue();
+    const sofa::type::Vec6d box = l->d_ipbox.getValue();
 
     bool section[3];
 

@@ -194,9 +194,9 @@ struct ShapeFunctionTypes
     typedef Real_ Real;
     typedef helper::vector<unsigned int> VRef;
     typedef helper::vector<Real> VReal;
-    typedef defaulttype::Vec<spatial_dimensions_,Real> Coord;                          ///< Spatial coordinates in world space
+    typedef type::Vec<spatial_dimensions_,Real> Coord;                          ///< Spatial coordinates in world space
     typedef helper::vector<Coord> VCoord;
-    typedef defaulttype::Vec<spatial_dimensions_,Real> Gradient;                       ///< Gradient of a scalar value in world space
+    typedef type::Vec<spatial_dimensions_,Real> Gradient;                       ///< Gradient of a scalar value in world space
     typedef helper::vector<Gradient> VGradient;
     typedef defaulttype::Mat<spatial_dimensions_,spatial_dimensions_,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in world space
     typedef helper::vector<Hessian> VHessian;

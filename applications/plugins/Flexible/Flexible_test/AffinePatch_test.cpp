@@ -62,7 +62,7 @@ namespace sofa {
         typedef projectiveconstraintset::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
         typedef container::MechanicalObject<DataTypes> MechanicalObject;
         typedef defaulttype::Quat Quat;
-        typedef defaulttype::Vector3 Vec3;
+        typedef type::Vector3 Vec3;
 
         /// Root of the scene graph
         simulation::Node::SPtr root;      

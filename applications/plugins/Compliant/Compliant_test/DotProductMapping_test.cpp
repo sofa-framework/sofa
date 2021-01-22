@@ -37,7 +37,7 @@ struct DotProductMappingTest : public Mapping_test<Mapping>
     typedef DotProductMappingTest self;
     typedef Mapping_test<Mapping> base;
 
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
     
     Mapping* mapping;
 
@@ -172,7 +172,7 @@ struct DotProductFromTargetMappingTest : public Mapping_test<Mapping>
     typedef DotProductFromTargetMappingTest self;
     typedef Mapping_test<Mapping> base;
 
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
 
     Mapping* mapping;
 

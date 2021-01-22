@@ -71,17 +71,17 @@ protected:
     void loadMesh();
 
 public:
-    Data<helper::vector<sofa::defaulttype::Vector3> > _positionsI; ///< input: vertices position of whole mesh
-    Data<helper::vector<sofa::defaulttype::Vector3> > _positionsO; ///< output: vertices position of the component
-    Data<helper::vector<helper::fixed_array <unsigned int,2> > > _edgesI; ///< input: edges of whole mesh
-    Data<helper::vector<helper::fixed_array <unsigned int,2> > > _edgesO; ///< output: edges of the component
-    Data<helper::vector<helper::fixed_array <unsigned int,3> > > _trianglesI; ///< input: triangles of whole mesh
-    Data<helper::vector<helper::fixed_array <unsigned int,3> > > _trianglesO; ///< output: triangles of the component
-    Data<helper::vector<sofa::defaulttype::Vector3> > _normalsI; ///< input: normals of the whole mesh
-    Data<helper::vector<sofa::defaulttype::Vector3> > _normalsO; ///< output: normals of the component
-    Data<helper::vector<sofa::defaulttype::Vector2> > _uvI; ///< input: UV coordinates of the whole mesh
-    Data<helper::vector<sofa::defaulttype::Vector2> > _uvO; ///< output: UV coordinates of the component
-    Data<helper::vector<helper::fixed_array <unsigned int,3> > > _indicesComponents; ///< Shape # | number of nodes | number of triangles
+    Data<helper::vector<sofa::type::Vector3> > _positionsI; ///< input: vertices position of whole mesh
+    Data<helper::vector<sofa::type::Vector3> > _positionsO; ///< output: vertices position of the component
+    Data<helper::vector<type::stdtype::fixed_array <unsigned int,2> > > _edgesI; ///< input: edges of whole mesh
+    Data<helper::vector<type::stdtype::fixed_array <unsigned int,2> > > _edgesO; ///< output: edges of the component
+    Data<helper::vector<type::stdtype::fixed_array <unsigned int,3> > > _trianglesI; ///< input: triangles of whole mesh
+    Data<helper::vector<type::stdtype::fixed_array <unsigned int,3> > > _trianglesO; ///< output: triangles of the component
+    Data<helper::vector<sofa::type::Vector3> > _normalsI; ///< input: normals of the whole mesh
+    Data<helper::vector<sofa::type::Vector3> > _normalsO; ///< output: normals of the component
+    Data<helper::vector<sofa::type::Vector2> > _uvI; ///< input: UV coordinates of the whole mesh
+    Data<helper::vector<sofa::type::Vector2> > _uvO; ///< output: UV coordinates of the component
+    Data<helper::vector<type::stdtype::fixed_array <unsigned int,3> > > _indicesComponents; ///< Shape # | number of nodes | number of triangles
     Data<int> _numberShape; ///< Shape number to be loaded (see Outputs tab of STEPLoader for a description of the shapes)
 };
 

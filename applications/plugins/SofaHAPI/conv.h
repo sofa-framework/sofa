@@ -37,25 +37,25 @@ namespace sofa
 	namespace component
 	{
 
-		using sofa::defaulttype::Vec3d;
+		using sofa::type::Vec3d;
 		using sofa::defaulttype::Quat;
 
-		extern inline sofa::defaulttype::Vec3f conv(const H3DUtil::Vec3f& v)
+		extern inline sofa::type::Vec3f conv(const H3DUtil::Vec3f& v)
 		{
-			return sofa::defaulttype::Vec3f(v.x,v.y,v.z);
+			return sofa::type::Vec3f(v.x,v.y,v.z);
 		}
 
-		extern inline sofa::defaulttype::Vec3d conv(const H3DUtil::Vec3d& v)
+		extern inline sofa::type::Vec3d conv(const H3DUtil::Vec3d& v)
 		{
-			return sofa::defaulttype::Vec3d(v.x,v.y,v.z);
+			return sofa::type::Vec3d(v.x,v.y,v.z);
 		}
 
-		extern inline H3DUtil::Vec3f conv(const sofa::defaulttype::Vec3f& v)
+		extern inline H3DUtil::Vec3f conv(const sofa::type::Vec3f& v)
 		{
 			return H3DUtil::Vec3f(v[0],v[1],v[2]);
 		}
 
-		extern inline H3DUtil::Vec3d conv(const sofa::defaulttype::Vec3d& v)
+		extern inline H3DUtil::Vec3d conv(const sofa::type::Vec3d& v)
 		{
 			return H3DUtil::Vec3d(v[0],v[1],v[2]);
 		}

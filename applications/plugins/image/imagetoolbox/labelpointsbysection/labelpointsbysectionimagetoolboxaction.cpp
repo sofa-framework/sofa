@@ -60,7 +60,7 @@ sofa::component::engine::LabelPointsBySectionImageToolBox* LabelPointsBySectionI
     return dynamic_cast<sofa::component::engine::LabelPointsBySectionImageToolBox*>(this->p_label);
 }
 
-void LabelPointsBySectionImageToolBoxAction::selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value)
+void LabelPointsBySectionImageToolBoxAction::selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::type::Vec3d& imageposition,const sofa::type::Vec3d& position3D,const QString& value)
 {
     if(mouseevent==0)
     {
@@ -85,12 +85,12 @@ void LabelPointsBySectionImageToolBoxAction::selectionPointButtonClick(bool b)
     if(b)
     {
         //select->setChecked(true);
-        connect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        connect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     }
     else
     {
         //select->setChecked(false);
-        disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     }
     
 }
@@ -123,7 +123,7 @@ void LabelPointsBySectionImageToolBoxAction::addOnGraphs()
 
 void LabelPointsBySectionImageToolBoxAction::updateGraphs()
 {
-    //sofa::defaulttype::Vec3d pos = LPBSITB()->d_ip.getValue();
+    //sofa::type::Vec3d pos = LPBSITB()->d_ip.getValue();
     //this->updateData();
 }
 
@@ -141,9 +141,9 @@ void LabelPointsBySectionImageToolBoxAction::updateColor()
 /*void LabelPointsBySectionImageToolBoxAction::sectionButtonClick()
 {
    // std::cout << "LabelPointsBySectionImageToolBoxAction::sectionButtonClick()"<<std::endl;
-    sofa::defaulttype::Vec3d pos = LPBSITB()->d_ip.getValue();
+    sofa::type::Vec3d pos = LPBSITB()->d_ip.getValue();
     
-    sofa::defaulttype::Vec3i pos2(round(pos.x()),round(pos.y()),round(pos.z()));
+    sofa::type::Vec3i pos2(round(pos.x()),round(pos.y()),round(pos.z()));
 
     emit sectionChanged(pos2);
 }*/
@@ -311,14 +311,14 @@ void LabelPointsBySectionImageToolBoxAction::setAxis(int axis)
 
 void LabelPointsBySectionImageToolBoxAction::changeSection(int i)
 {
-    sofa::defaulttype::Vec3i v = changeSection2(i);
+    sofa::type::Vec3i v = changeSection2(i);
 
     emit sectionChanged(v);
 }
 
-sofa::defaulttype::Vec3i LabelPointsBySectionImageToolBoxAction::changeSection2(int i,bool force)
+sofa::type::Vec3i LabelPointsBySectionImageToolBoxAction::changeSection2(int i,bool force)
 {
-    sofa::defaulttype::Vec3i v;
+    sofa::type::Vec3i v;
 
     switch(currentAxis())
     {
@@ -376,7 +376,7 @@ sofa::defaulttype::Vec3i LabelPointsBySectionImageToolBoxAction::changeSection2(
     return v;
 }
 
-void LabelPointsBySectionImageToolBoxAction::mouseMove(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& )
+void LabelPointsBySectionImageToolBoxAction::mouseMove(const unsigned int axis,const sofa::type::Vec3d& imageposition,const sofa::type::Vec3d& position3D,const QString& )
 {
     if(!addPoints)return;
     if((int)axis!=this->currentAxis())return;
@@ -413,7 +413,7 @@ void LabelPointsBySectionImageToolBoxAction::mouseMove(const unsigned int axis,c
     tablewidget->setSection(currentSlide);
 }
 
-void LabelPointsBySectionImageToolBoxAction::addToPath(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition, bool forceMoveTo)
+void LabelPointsBySectionImageToolBoxAction::addToPath(const unsigned int axis,const sofa::type::Vec3d& imageposition, bool forceMoveTo)
 {
     QPainterPath poly;
     int ximage,yimage;
@@ -443,7 +443,7 @@ void LabelPointsBySectionImageToolBoxAction::addToPath(const unsigned int axis,c
 }
 
 
-void LabelPointsBySectionImageToolBoxAction::optionChangeSection(sofa::defaulttype::Vec3i v)
+void LabelPointsBySectionImageToolBoxAction::optionChangeSection(sofa::type::Vec3i v)
 {
 
     switch (currentAxis())
@@ -473,8 +473,8 @@ void LabelPointsBySectionImageToolBoxAction::updateData()
 
     l->d_axis.setValue(c);
 
-    helper::vector<sofa::defaulttype::Vec3d>& vip = *(l->d_ip.beginEdit());
-    helper::vector<sofa::defaulttype::Vec3d>& vp = *(l->d_p.beginEdit());
+    helper::vector<sofa::type::Vec3d>& vip = *(l->d_ip.beginEdit());
+    helper::vector<sofa::type::Vec3d>& vp = *(l->d_p.beginEdit());
 
     //QMapIterator<unsigned int,VecPointSection> i(mapsection);
     QList<unsigned int> list_keys = mapsection.keys();
@@ -503,8 +503,8 @@ void LabelPointsBySectionImageToolBoxAction::reloadData()
     int axis = l->d_axis.getValue();
     this->setAxis(axis);
 
-    helper::vector<sofa::defaulttype::Vec3d>& vip = *(l->d_ip.beginEdit());
-    helper::vector<sofa::defaulttype::Vec3d>& vp = *(l->d_p.beginEdit());
+    helper::vector<sofa::type::Vec3d>& vip = *(l->d_ip.beginEdit());
+    helper::vector<sofa::type::Vec3d>& vp = *(l->d_p.beginEdit());
 
     int size = vip.size();
     if(vip.size() != vp.size())

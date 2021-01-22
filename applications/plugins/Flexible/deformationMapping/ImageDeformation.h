@@ -84,7 +84,7 @@ public:
     Data<helper::OptionsGroup> deformationMethod; ///< forward, backward
     Data<helper::OptionsGroup> interpolation; ///< Nearest,Linear,Cubic
     Data<bool> weightByVolumeChange; ///< for images representing densities, weight intensities according to the local volume variation
-    Data< defaulttype::Vec<3,unsigned int> > dimensions; ///< output image dimensions
+    Data< type::Vec<3,unsigned int> > dimensions; ///< output image dimensions
 
     typedef helper::vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
@@ -100,7 +100,7 @@ public:
         , deformationMethod ( initData ( &deformationMethod,"deformationMethod","" ) )
         , interpolation ( initData ( &interpolation,"interpolation","" ) )
         , weightByVolumeChange ( initData ( &weightByVolumeChange,false,"weightByVolumeChange","for images representing densities, weight intensities according to the local volume variation" ) )
-        , dimensions ( initData ( &dimensions,defaulttype::Vec<3,unsigned int>(1,1,1),"dimensions","output image dimensions" ) )
+        , dimensions ( initData ( &dimensions,type::Vec<3,unsigned int>(1,1,1),"dimensions","output image dimensions" ) )
         , param ( initData ( &param,"param","Parameters" ) )
         , inputImage(initData(&inputImage,ImageTypes(),"inputImage",""))
         , inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))

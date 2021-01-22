@@ -65,11 +65,11 @@ sofa::component::engine::ZoneGeneratorImageToolBoxNoTemplated* ZoneGeneratorImag
 }
 
 
-void ZoneGeneratorImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int /*axis*/,const sofa::defaulttype::Vec3d& /*imageposition*/,const sofa::defaulttype::Vec3d& /*position3D*/,const QString& /*value*/)
+void ZoneGeneratorImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int /*axis*/,const sofa::type::Vec3d& /*imageposition*/,const sofa::type::Vec3d& /*position3D*/,const QString& /*value*/)
 {
  /*
     select->setChecked(false);
-    disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+    disconnect(this,SIGNAL(clickImage(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SLOT(selectionPointEvent(int,unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
     
     sofa::component::engine::ZoneGeneratorImageToolBoxNoTemplated* lp = CITB();
 
@@ -180,7 +180,7 @@ void ZoneGeneratorImageToolBoxAction::drawSegment()
 
     VecPixCoord& vip = *(l->d_vecPixCoord.beginEdit());
 
-    sofa::defaulttype::Vec3i &pos = sectionPosition;
+    sofa::type::Vec3i &pos = sectionPosition;
 
 
     VecPixCoord v1,v2,v3;
@@ -206,7 +206,7 @@ void ZoneGeneratorImageToolBoxAction::drawSegment()
 
 void ZoneGeneratorImageToolBoxAction::updateGraphs()
 {
-/*    sofa::defaulttype::Vec3d pos = CITB()->d_ip.getValue();
+/*    sofa::type::Vec3d pos = CITB()->d_ip.getValue();
     
     //QRectF boundaryXY = GraphXY->itemsBoundingRect();
     
@@ -239,9 +239,9 @@ void ZoneGeneratorImageToolBoxAction::updateColor()
 void ZoneGeneratorImageToolBoxAction::sectionButtonClick()
 {
     //std::cout << "ZoneGeneratorImageToolBoxAction::sectionButtonClick()"<<std::endl;
-    sofa::defaulttype::Vec3d pos = CITB()->d_ip.getValue();
+    sofa::type::Vec3d pos = CITB()->d_ip.getValue();
     
-    sofa::defaulttype::Vec3i pos2(round(pos.x()),round(pos.y()),round(pos.z()));
+    sofa::type::Vec3i pos2(round(pos.x()),round(pos.y()),round(pos.z()));
 
     emit sectionChanged(pos2);
 }
@@ -263,7 +263,7 @@ void ZoneGeneratorImageToolBoxAction::createPosition()
     setImageSize(x, y, z);
 
 
-    sofa::defaulttype::Vec3d pos = lp->d_ip.getValue();
+    sofa::type::Vec3d pos = lp->d_ip.getValue();
     vecX->setValue(round(pos.x()));
     vecY->setValue(round(pos.y()));
     vecZ->setValue(round(pos.z()));
@@ -329,7 +329,7 @@ void ZoneGeneratorImageToolBoxAction::createThreshold()
 void ZoneGeneratorImageToolBoxAction::positionModified()
 {
     //std::cout << "positionModified" << std::endl;
-    sofa::defaulttype::Vec3d v(vecX->value(),vecY->value(),vecZ->value());
+    sofa::type::Vec3d v(vecX->value(),vecY->value(),vecZ->value());
     
     sofa::component::engine::ZoneGeneratorImageToolBoxNoTemplated* lp = CITB();
     
@@ -369,7 +369,7 @@ void ZoneGeneratorImageToolBoxAction::thresholdModified()
     //emit updateImage();
 }
 */
-void ZoneGeneratorImageToolBoxAction::optionChangeSection(sofa::defaulttype::Vec3i /*v*/)
+void ZoneGeneratorImageToolBoxAction::optionChangeSection(sofa::type::Vec3i /*v*/)
 {
   //  sectionPosition = v;
 

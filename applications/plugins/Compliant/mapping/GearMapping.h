@@ -74,8 +74,8 @@ namespace mapping
             (void) in;
         }
 
-        typedef defaulttype::Vec<2, unsigned> Index;
-        typedef defaulttype::Vec<2, Index> index_pair;
+        typedef type::Vec<2, unsigned> Index;
+        typedef type::Vec<2, Index> index_pair;
         typedef helper::vector< index_pair > pairs_type;
 
         Data< pairs_type > d_pairs; ///< index pairs for computing deltas, 4 values per pair (dofindex0,kinematicdofindex0,dofindex1,kinematicdofindex1) 

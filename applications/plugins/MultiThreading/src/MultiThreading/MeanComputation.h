@@ -50,9 +50,9 @@ namespace sofa
                 typedef typename DataTypes::Coord         Coord;
                 typedef typename DataTypes::VecCoord      VecCoord;
                 typedef typename DataTypes::Real          Real;
-                //typedef sofa::defaulttype::Vec<1, Real>                       Coord1D;
-                //typedef sofa::defaulttype::Vec<2, Real>                       Coord2D;
-                //typedef sofa::defaulttype::Vec<3, Real>                       Coord3D;
+                //typedef sofa::type::Vec<1, Real>                       Coord1D;
+                //typedef sofa::type::Vec<2, Real>                       Coord2D;
+                //typedef sofa::type::Vec<3, Real>                       Coord3D;
                 typedef sofa::helper::vector <Coord>       VectorCoord;
                 typedef sofa::helper::vector <VecCoord>    VectorVecCoord;
                 //typedef sofa::helper::vector <Coord3D>    VecCoord3D;

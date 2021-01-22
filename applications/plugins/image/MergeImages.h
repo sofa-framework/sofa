@@ -176,13 +176,13 @@ protected:
         inputTransforms.resize(nb);
         if(!nb) return;
 
-        defaulttype::Vec<2,Coord> BB = this->getBB(0);//bounding box of the output image
+        type::Vec<2,Coord> BB = this->getBB(0);//bounding box of the output image
         Coord minScale;
         for (unsigned int j = 0 ; j < this->getScale(0).size(); j++)
             minScale[j] = fabs(this->getScale(0)[j]);
         for(unsigned int j=1; j<nb; j++)
         {
-            defaulttype::Vec<2,Coord> bb = this->getBB(j);
+            type::Vec<2,Coord> bb = this->getBB(j);
             for(unsigned int k=0; k<bb[0].size(); k++)
             {
                 //BB is axis-aligned
@@ -320,22 +320,22 @@ protected:
         msg_info() << "Created merged image from " << nb << " input images.";
     }
 
-    defaulttype::Vec<2,Coord> getBB(unsigned int i) // get image corners
+    type::Vec<2,Coord> getBB(unsigned int i) // get image corners
     {
-        defaulttype::Vec<2,Coord> BB;
+        type::Vec<2,Coord> BB;
         raImage rimage(this->inputImages[i]);
         raTransform rtransform(this->inputTransforms[i]);
 
         const imCoord dim= rimage->getDimensions();
-        defaulttype::Vec<8,Coord> p;
-        p[0]=defaulttype::Vector3(0,0,0);
-        p[1]=defaulttype::Vector3(dim[0]-1,0,0);
-        p[2]=defaulttype::Vector3(0,dim[1]-1,0);
-        p[3]=defaulttype::Vector3(dim[0]-1,dim[1]-1,0);
-        p[4]=defaulttype::Vector3(0,0,dim[2]-1);
-        p[5]=defaulttype::Vector3(dim[0]-1,0,dim[2]-1);
-        p[6]=defaulttype::Vector3(0,dim[1]-1,dim[2]-1);
-        p[7]=defaulttype::Vector3(dim[0]-1,dim[1]-1,dim[2]-1);
+        type::Vec<8,Coord> p;
+        p[0]=type::Vector3(0,0,0);
+        p[1]=type::Vector3(dim[0]-1,0,0);
+        p[2]=type::Vector3(0,dim[1]-1,0);
+        p[3]=type::Vector3(dim[0]-1,dim[1]-1,0);
+        p[4]=type::Vector3(0,0,dim[2]-1);
+        p[5]=type::Vector3(dim[0]-1,0,dim[2]-1);
+        p[6]=type::Vector3(0,dim[1]-1,dim[2]-1);
+        p[7]=type::Vector3(dim[0]-1,dim[1]-1,dim[2]-1);
 
         Coord tp=rtransform->fromImage(p[0]);
         BB[0]=tp;

@@ -47,7 +47,7 @@ struct Translation <defaulttype::Affine3Types> : public TransformOperation<defau
     {
         p.getCenter()+=t;
     }
-    void configure(const defaulttype::Vector3 &_t, bool inverse)
+    void configure(const type::Vector3 &_t, bool inverse)
     {
         if (inverse) { for(unsigned int i=0;i<DataTypes::spatial_dimensions;i++) t[i]=(Real)-_t[i]; }
         else { for(unsigned int i=0;i<DataTypes::spatial_dimensions;i++)  t[i]=(Real)_t[i]; }
@@ -77,7 +77,7 @@ struct Scale<defaulttype::Affine3Types> : public TransformOperation<defaulttype:
         p.getAffine() = affine;
     }
 
-    void configure(const defaulttype::Vector3 &_s, bool inverse)
+    void configure(const type::Vector3 &_s, bool inverse)
     {
         if (inverse) { for(unsigned int i=0;i<DataTypes::spatial_dimensions;i++) s[i]=(Real)(1.0/_s[i]); }
         else { for(unsigned int i=0;i<DataTypes::spatial_dimensions;i++)  s[i]=_s[i]; }
@@ -103,7 +103,7 @@ struct RotationSpecialized<defaulttype::Affine3Types, 3, false> : public Transfo
         p.getAffine() = affine;
     }
 
-    void configure(const defaulttype::Vector3 &r, bool inverse)
+    void configure(const type::Vector3 &r, bool inverse)
     {
         q=helper::Quater<Real>::createQuaterFromEuler( r*(M_PI/180.0));
         if (inverse) q = q.inverse();

@@ -93,22 +93,22 @@ void SingleComponent<DataTypes>::doUpdate()
 template <class DataTypes>
 void SingleComponent<DataTypes>::loadMesh()
 {
-    const helper::vector<sofa::defaulttype::Vector3>& positionsI = _positionsI.getValue();
-    const helper::vector<helper::fixed_array <unsigned int,3> >& trianglesI = _trianglesI.getValue();
-    const helper::vector<sofa::defaulttype::Vector3>& normalsI = _normalsI.getValue();
-    const helper::vector<sofa::defaulttype::Vector2>& uvI = _uvI.getValue();
+    const helper::vector<sofa::type::Vector3>& positionsI = _positionsI.getValue();
+    const helper::vector<type::stdtype::fixed_array <unsigned int,3> >& trianglesI = _trianglesI.getValue();
+    const helper::vector<sofa::type::Vector3>& normalsI = _normalsI.getValue();
+    const helper::vector<sofa::type::Vector2>& uvI = _uvI.getValue();
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(_positionsO.beginEdit());
-    helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(_trianglesO.beginEdit());
-    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(_normalsO.beginEdit());
-    helper::vector<sofa::defaulttype::Vector2>& my_uv = *(_uvO.beginEdit());
+    helper::vector<sofa::type::Vector3>& my_positions = *(_positionsO.beginEdit());
+    helper::vector<type::stdtype::fixed_array <unsigned int,3> >& my_triangles = *(_trianglesO.beginEdit());
+    helper::vector<sofa::type::Vector3>& my_normals = *(_normalsO.beginEdit());
+    helper::vector<sofa::type::Vector2>& my_uv = *(_uvO.beginEdit());
 
     my_positions.clear();
     my_triangles.clear();
     my_normals.clear();
     my_uv.clear();
 
-    const helper::vector<helper::fixed_array <unsigned int,3> >& my_indicesComponents = _indicesComponents.getValue();
+    const helper::vector<type::stdtype::fixed_array <unsigned int,3> >& my_indicesComponents = _indicesComponents.getValue();
 
     unsigned int my_numberShape = _numberShape.getValue();
 
@@ -136,7 +136,7 @@ void SingleComponent<DataTypes>::loadMesh()
                 {
                     for (unsigned int j=0; j<my_indicesComponents[i][2]; ++j)
                     {
-                        helper::fixed_array <unsigned int,3> triangleTemp(trianglesI[j+numTriangles][0]-numNodes, trianglesI[j+numTriangles][1]-numNodes, trianglesI[j+numTriangles][2]-numNodes);
+                        type::stdtype::fixed_array <unsigned int,3> triangleTemp(trianglesI[j+numTriangles][0]-numNodes, trianglesI[j+numTriangles][1]-numNodes, trianglesI[j+numTriangles][2]-numNodes);
                         my_triangles.push_back(triangleTemp);
                     }
                 }

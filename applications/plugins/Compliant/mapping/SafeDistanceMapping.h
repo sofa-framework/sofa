@@ -41,7 +41,7 @@ class SOFA_Compliant_API SafeDistanceMapping : public AssembledMapping<TIn, TOut
 
     typedef SafeDistanceMapping self;
 
-    typedef defaulttype::Vec<2, unsigned> index_pair;
+    typedef type::Vec<2, unsigned> index_pair;
     typedef helper::vector< index_pair > pairs_type;
 
     Data< pairs_type > d_pairs; ///< index pairs for computing distance
@@ -56,7 +56,7 @@ class SOFA_Compliant_API SafeDistanceMapping : public AssembledMapping<TIn, TOut
 
 protected:
 
-    typedef defaulttype::Vec<TIn::spatial_dimensions,SReal> Direction;
+    typedef type::Vec<TIn::spatial_dimensions,SReal> Direction;
 
     helper::vector<Direction> m_directions;   ///< Unit vectors in the directions of the lines
     helper::vector<SReal> m_lengths, m_invlengths;       ///< inverse of current distances. Null represents the infinity (null distance)
@@ -310,11 +310,11 @@ public:
 
         if( !scale )
         {
-            helper::vector< defaulttype::Vector3 > points(p.size()*2);
+            helper::vector< type::Vector3 > points(p.size()*2);
             for(unsigned i=0; i<p.size(); i++ )
             {
-                points[i*2  ] = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
-                points[i*2+1] = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
+                points[i*2  ] = type::Vector3( TIn::getCPos(pos[p[i][0]]) );
+                points[i*2+1] = type::Vector3( TIn::getCPos(pos[p[i][1]]) );
             }
             vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
         }
@@ -322,8 +322,8 @@ public:
         {
             for(unsigned i=0; i<p.size(); i++ )
             {
-                defaulttype::Vector3 p0 = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
-                defaulttype::Vector3 p1 = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
+                type::Vector3 p0 = type::Vector3( TIn::getCPos(pos[p[i][0]]) );
+                type::Vector3 p1 = type::Vector3( TIn::getCPos(pos[p[i][1]]) );
                 vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
             }
         }
@@ -385,7 +385,7 @@ class SOFA_Compliant_API SafeDistanceFromTargetMapping : public AssembledMapping
     Data< typename self::InVecCoord > d_targetPositions; ///< positions the distances are measured from
     Data< helper::vector< SReal > > d_restLengths; ///< rest lengths
 
-    typedef defaulttype::Vec<TIn::spatial_dimensions,SReal> Direction;
+    typedef type::Vec<TIn::spatial_dimensions,SReal> Direction;
     Data< helper::vector<Direction> > d_directions; ///< Unit vectors in the directions of the lines
 
     Data< SReal > d_epsilonLength; ///< Threshold to consider a length too close to 0
@@ -393,7 +393,7 @@ class SOFA_Compliant_API SafeDistanceFromTargetMapping : public AssembledMapping
     Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     Data< SReal > d_showObjectScale; ///< drawing size
-    Data< defaulttype::Vec4f > d_color; ///< drawing color
+    Data< type::Vec4f > d_color; ///< drawing color
 
 protected:
 
@@ -410,7 +410,7 @@ protected:
         , d_epsilonLength( initData(&d_epsilonLength, 1e-4, "epsilonLength", "Threshold to consider a length too close to 0") )
         , d_geometricStiffness( initData(&d_geometricStiffness, 2u, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(-1), "showObjectScale", "Scale for object display"))
-        , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
+        , d_color(initData(&d_color, type::Vec4f(1,1,0,1), "showColor", "Color for object display"))
     {}
 
     enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
@@ -643,11 +643,11 @@ public:
 
         if( !scale )
         {
-            helper::vector< defaulttype::Vector3 > points(indices.size()*2);
+            helper::vector< type::Vector3 > points(indices.size()*2);
             for(unsigned i=0; i<indices.size(); i++ )
             {
-                points[i*2  ] = defaulttype::Vector3( TIn::getCPos(pos[indices[i]]) );
-                points[i*2+1] = defaulttype::Vector3( TIn::getCPos(targets[i] ) );
+                points[i*2  ] = type::Vector3( TIn::getCPos(pos[indices[i]]) );
+                points[i*2+1] = type::Vector3( TIn::getCPos(targets[i] ) );
             }
             vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
         }
@@ -655,8 +655,8 @@ public:
         {
             for(unsigned i=0; i<indices.size(); i++ )
             {
-                defaulttype::Vector3 p0 = defaulttype::Vector3( TIn::getCPos(pos[indices[i]]) );
-                defaulttype::Vector3 p1 = defaulttype::Vector3( TIn::getCPos(targets[i]));
+                type::Vector3 p0 = type::Vector3( TIn::getCPos(pos[indices[i]]) );
+                type::Vector3 p1 = type::Vector3( TIn::getCPos(targets[i]));
                 vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
             }
         }

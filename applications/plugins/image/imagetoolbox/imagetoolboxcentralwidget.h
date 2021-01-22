@@ -52,7 +52,7 @@ namespace qt
 
 using namespace helper;
 using namespace cimg_library;
-using defaulttype::Vec;
+using type::Vec;
 
 
 
@@ -146,7 +146,7 @@ public slots:
     virtual void setVisibleZY(bool)=0;
     virtual void setVisualModel(bool)=0;
 
-    virtual void setSliders(sofa::defaulttype::Vec3i v)=0;
+    virtual void setSliders(sofa::type::Vec3i v)=0;
     virtual void changeSlider()=0;
     
 signals:
@@ -160,8 +160,8 @@ signals:
     void mousereleaseevent();
     
     
-    void sliderChanged(sofa::defaulttype::Vec3i v);
-    void onPlane(const unsigned in,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&);
+    void sliderChanged(sofa::type::Vec3i v);
+    void onPlane(const unsigned in,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&);
 };
 
 
@@ -217,7 +217,7 @@ public:
         //std::cout << "TImageToolBoxCentralWidget::createWidgets" << std::endl;
         info = new ImagePlaneInfoWidget(parent);
         
-        QObject::connect(this,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),info,SLOT(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+        QObject::connect(this,SIGNAL(onPlane(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),info,SLOT(onPlane(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
 
         //togglemodels = new QCheckBox(QString("Visual Models"),parent); togglemodels->setChecked(true);
 
@@ -225,9 +225,9 @@ public:
         {
             graphXY = new Graph(parent,2,d);
          //   QObject::connect(togglemodels, SIGNAL( stateChanged(int) ), graphXY, SLOT( togglemodels(int) ) );
-         //   QObject::connect(graphXY,SIGNAL(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)));
+         //   QObject::connect(graphXY,SIGNAL(onPlane(const unsigned int,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&)));
             
-            QObject::connect(graphXY,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+            QObject::connect(graphXY,SIGNAL(onPlane(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SIGNAL(onPlane(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
             
             if(d.getDimensions()[2]>1)
             {
@@ -245,9 +245,9 @@ public:
         {
             graphXZ = new Graph(parent,1,d);
          //   QObject::connect(togglemodels, SIGNAL( stateChanged(int) ), graphXZ, SLOT( togglemodels(int) ) );
-         //   QObject::connect(graphXZ,SIGNAL(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)));
+         //   QObject::connect(graphXZ,SIGNAL(onPlane(const unsigned int,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&)));
             
-            QObject::connect(graphXZ,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+            QObject::connect(graphXZ,SIGNAL(onPlane(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SIGNAL(onPlane(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
             
             if(d.getDimensions()[1]>1)
             {
@@ -264,9 +264,9 @@ public:
         {
             graphZY = new Graph(parent,0,d);
           //  QObject::connect(togglemodels, SIGNAL( stateChanged(int) ), graphZY, SLOT( togglemodels(int) ) );
-         //   QObject::connect(graphZY,SIGNAL(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)));
+         //   QObject::connect(graphZY,SIGNAL(onPlane(const unsigned int,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&)));
             
-            QObject::connect(graphZY,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)),this,SIGNAL(onPlane(unsigned int,sofa::defaulttype::Vec3d,sofa::defaulttype::Vec3d,QString)));
+            QObject::connect(graphZY,SIGNAL(onPlane(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)),this,SIGNAL(onPlane(unsigned int,sofa::type::Vec3d,sofa::type::Vec3d,QString)));
             
             if(d.getDimensions()[0]>1)
             {
@@ -403,7 +403,7 @@ public:
         this->graphXZ->togglemodels(val);
     }
     
-    void setSliders(sofa::defaulttype::Vec3i v) override
+    void setSliders(sofa::type::Vec3i v) override
     {
         this->optionsXY->setSlider(v.z());
         this->optionsXZ->setSlider(v.y());
@@ -412,7 +412,7 @@ public:
 
     void changeSlider() override
     {
-        sofa::defaulttype::Vec3i v;
+        sofa::type::Vec3i v;
 
         v.set(this->optionsZY->getSlider()->value(),this->optionsXZ->getSlider()->value(),this->optionsXY->getSlider()->value());
 

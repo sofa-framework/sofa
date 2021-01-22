@@ -84,7 +84,7 @@ public:
     typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
     typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
 
-    typedef defaulttype::Vec<2, unsigned> IndexPair;
+    typedef type::Vec<2, unsigned> IndexPair;
     typedef sofa::helper::vector< IndexPair > PairVector;
     typedef sofa::helper::vector<core::collision::DetectionOutput> DetectionOutputVector;
 
@@ -179,7 +179,7 @@ protected:
 
             if( self::Nout==2 )
             {
-                Eigen::Matrix<real, 3, 1> n = utils::map( (defaulttype::Vec<3, real>)(*contacts)[i].normal );
+                Eigen::Matrix<real, 3, 1> n = utils::map( (type::Vec<3, real>)(*contacts)[i].normal );
                 try{
                     local_frame.template rightCols<2>() = ker( n );
                 }
@@ -192,7 +192,7 @@ protected:
             else
             {
                 // first vector is normal
-                local_frame.col(0) = utils::map( (defaulttype::Vec<3, real>)(*contacts)[i].normal );
+                local_frame.col(0) = utils::map( (type::Vec<3, real>)(*contacts)[i].normal );
 
                 // possibly tangent directions
                 if( self::Nout == 3 ) {

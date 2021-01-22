@@ -33,8 +33,8 @@ class CPUSPHFluidForceField
 public:
     enum {NUM_ELEMENTS=1000};
 
-    typedef sofa::defaulttype::Vec4f float4 ;
-    typedef sofa::defaulttype::Vec3f float3 ;
+    typedef sofa::type::Vec4f float4 ;
+    typedef sofa::type::Vec3f float3 ;
 
     typedef struct
     {

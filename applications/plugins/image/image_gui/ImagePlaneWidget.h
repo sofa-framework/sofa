@@ -140,8 +140,8 @@ signals:
     void roiResized();		// to synchronize different views (scrollBars on/off)
 
     void sliceModified();	// when the slice index is modified using slider or wheel -> set widget dirty
-    void onMouseDoubleClicked(const sofa::defaulttype::Vec3d&);
-    void onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&);  // when the mouse is on image -> update info
+    void onMouseDoubleClicked(const sofa::type::Vec3d&);
+    void onPlane(const unsigned int,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&);  // when the mouse is on image -> update info
 
 public:
     ImagePlaneGraphWidget(QWidget *parent )	: QGraphicsView(parent),scene(nullptr)   {	 this->setMouseTracking(true); }
@@ -504,7 +504,7 @@ public:
 
 public slots:
 
-    void onPlane(const unsigned int /*axis*/,const sofa::defaulttype::Vec3d& ip,const sofa::defaulttype::Vec3d& p,const QString& val)
+    void onPlane(const unsigned int /*axis*/,const sofa::type::Vec3d& ip,const sofa::type::Vec3d& p,const QString& val)
     {
         label1->setText("Pixel value = " + val);
         label2->setText("Image position = [ " + QString().setNum((int)sofa::helper::round(ip[0])) + "," + QString().setNum((int)sofa::helper::round(ip[1])) + "," + QString().setNum((int)sofa::helper::round(ip[2]))+ " ]");
@@ -539,7 +539,7 @@ public:
 
 public slots:
 
-    void onMouseDoubleClicked(const sofa::defaulttype::Vec3d& p)
+    void onMouseDoubleClicked(const sofa::type::Vec3d& p)
     {
         QString newText ("\n Point " + QString().setNum((int)(indexPoint)) + " [ " + QString().setNum((float)p[0]) + "," + QString().setNum((float)p[1]) + "," +QString().setNum((float)p[2]) + " ]" );
         QString textToWrite = textEdit->toPlainText() + newText;
@@ -633,8 +633,8 @@ public:
         {
             graphXY = new Graph(parent,2,d);
             QObject::connect(togglemodels, SIGNAL( stateChanged(int) ), graphXY, SLOT( togglemodels(int) ) );
-            QObject::connect(graphXY,SIGNAL(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)));
-            QObject::connect(graphXY,SIGNAL(onMouseDoubleClicked(const sofa::defaulttype::Vec3d&)),pointList,SLOT(onMouseDoubleClicked(const sofa::defaulttype::Vec3d&)));
+            QObject::connect(graphXY,SIGNAL(onPlane(const unsigned int,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&)));
+            QObject::connect(graphXY,SIGNAL(onMouseDoubleClicked(const sofa::type::Vec3d&)),pointList,SLOT(onMouseDoubleClicked(const sofa::type::Vec3d&)));
             if(d.getDimensions()[2]>1)
             {
                 optionsXY = new Options(graphXY,parent,0,graphXY->getIndexMax(),graphXY->getIndex(),optionheight);
@@ -648,8 +648,8 @@ public:
         {
             graphXZ = new Graph(parent,1,d);
             QObject::connect(togglemodels, SIGNAL( stateChanged(int) ), graphXZ, SLOT( togglemodels(int) ) );
-            QObject::connect(graphXZ,SIGNAL(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)));
-            QObject::connect(graphXZ,SIGNAL(onMouseDoubleClicked(const sofa::defaulttype::Vec3d&)),pointList,SLOT(onMouseDoubleClicked(const sofa::defaulttype::Vec3d&)));
+            QObject::connect(graphXZ,SIGNAL(onPlane(const unsigned int,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&)));
+            QObject::connect(graphXZ,SIGNAL(onMouseDoubleClicked(const sofa::type::Vec3d&)),pointList,SLOT(onMouseDoubleClicked(const sofa::type::Vec3d&)));
             if(d.getDimensions()[1]>1)
             {
                 optionsXZ = new Options(graphXZ,parent,0,graphXZ->getIndexMax(),graphXZ->getIndex(),optionheight);
@@ -663,8 +663,8 @@ public:
         {
             graphZY = new Graph(parent,0,d);
             QObject::connect(togglemodels, SIGNAL( stateChanged(int) ), graphZY, SLOT( togglemodels(int) ) );
-            QObject::connect(graphZY,SIGNAL(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::defaulttype::Vec3d&,const sofa::defaulttype::Vec3d&,const QString&)));
-            QObject::connect(graphZY,SIGNAL(onMouseDoubleClicked(const sofa::defaulttype::Vec3d&)),pointList,SLOT(onMouseDoubleClicked(const sofa::defaulttype::Vec3d&)));
+            QObject::connect(graphZY,SIGNAL(onPlane(const unsigned int,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&)),info,SLOT(onPlane(const unsigned int,const sofa::type::Vec3d&,const sofa::type::Vec3d&,const QString&)));
+            QObject::connect(graphZY,SIGNAL(onMouseDoubleClicked(const sofa::type::Vec3d&)),pointList,SLOT(onMouseDoubleClicked(const sofa::type::Vec3d&)));
             if(d.getDimensions()[0]>1)
             {
                 optionsZY = new Options(graphZY,parent,0,graphZY->getIndexMax(),graphZY->getIndex(),optionheight);

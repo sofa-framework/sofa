@@ -40,7 +40,7 @@ protected:
     Layout *mainlayout;
 
     
-    sofa::defaulttype::Vec3i d_section;
+    sofa::type::Vec3i d_section;
     
     QGraphicsScene *GraphXY;
     QGraphicsScene *GraphXZ;
@@ -85,15 +85,15 @@ public slots:
     QColor color();
     void clickColor();
 
-    virtual void mouseMove(const unsigned int /*axis*/,const sofa::defaulttype::Vec3d& /*imageposition*/,const sofa::defaulttype::Vec3d& /*position3D*/,const QString& /*value*/){}
-    virtual void optionChangeSection(sofa::defaulttype::Vec3i){}
+    virtual void mouseMove(const unsigned int /*axis*/,const sofa::type::Vec3d& /*imageposition*/,const sofa::type::Vec3d& /*position3D*/,const QString& /*value*/){}
+    virtual void optionChangeSection(sofa::type::Vec3i){}
     
 signals:
-    void clickImage(int mouseevent, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
+    void clickImage(int mouseevent, const unsigned int axis,const sofa::type::Vec3d& imageposition,const sofa::type::Vec3d& position3D,const QString& value);
 
-    void sectionChanged(sofa::defaulttype::Vec3i);
+    void sectionChanged(sofa::type::Vec3i);
     
-    void guiChangeSection(defaulttype::Vec3i s);
+    void guiChangeSection(type::Vec3i s);
 
     void colorChanged();
 

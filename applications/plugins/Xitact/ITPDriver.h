@@ -84,8 +84,8 @@ public:
     Data<double> Scale; ///< Default scale applied to the Phantom Coordinates. 
     Data<bool> permanent; ///< Apply the force feedback permanently
     Data <int> indexTool; ///< index of the tool to simulate (if more than 1). Index 0 correspond to first tool.
-    Data <sofa::defaulttype::Vec3d> direction; ///< index of the tool to simulate (if more than 1). Index 0 correspond to first tool.
-    Data <sofa::defaulttype::Vec3d> position; ///< index of the tool to simulate (if more than 1). Index 0 correspond to first tool.
+    Data <sofa::type::Vec3d> direction; ///< index of the tool to simulate (if more than 1). Index 0 correspond to first tool.
+    Data <sofa::type::Vec3d> position; ///< index of the tool to simulate (if more than 1). Index 0 correspond to first tool.
 
     XiToolDataITP	data;
 

@@ -206,7 +206,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
 
 
 template <class JacobianBlockType1,class JacobianBlockType2>
-void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
+void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<type::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
 {
     {
         // TODO this must be done before resizeOut() but is done again in Inherit::init();
@@ -690,8 +690,8 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
 
     if (vparams->displayFlags().getShowMechanicalMappings())
     {
-        helper::vector< defaulttype::Vector3 > edge;     edge.resize(2);
-        defaulttype::Vec<4,float> col;
+        helper::vector< type::Vector3 > edge;     edge.resize(2);
+        type::Vec<4,float> col;
 
         for(size_t i=0; i<out.size(); i++ )
         {
@@ -712,9 +712,9 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
         const Data<OutVecDeriv>* outf = this->toModel->read(core::ConstVecDerivId::force());
         glEnable ( GL_LIGHTING );
         float scale=showDeformationGradientScale.getValue();
-        defaulttype::Vec<4,float> col( 0.5, 0.5, 0.0, 1.0 );
+        type::Vec<4,float> col( 0.5, 0.5, 0.0, 1.0 );
         defaulttype::Mat<3,3,float> F;
-        defaulttype::Vec<3,float> p;
+        type::Vec<3,float> p;
 
         static const int subdiv = 8;
 
@@ -726,22 +726,22 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
             if(showDeformationGradientStyle.getValue().getSelectedId()==0)
                 for(int j=0; j<material_dimensions; j++)
                 {
-                    defaulttype::Vec<3,float> u=F.transposed()(j)*0.5*scale;
+                    type::Vec<3,float> u=F.transposed()(j)*0.5*scale;
                     vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
                 }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==1)
             {
-                defaulttype::Vec<3,float> u=F.transposed()(0)*0.5*scale;
+                type::Vec<3,float> u=F.transposed()(0)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==2)
             {
-                defaulttype::Vec<3,float> u=F.transposed()(1)*0.5*scale;
+                type::Vec<3,float> u=F.transposed()(1)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==3)
             {
-                defaulttype::Vec<3,float> u=F.transposed()(2)*0.5*scale;
+                type::Vec<3,float> u=F.transposed()(2)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==4) // strain
@@ -782,7 +782,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
         if(triangles) nb+=triangles->size();
         if(extTriangles) nb+=extTriangles->size();
 
-        std::vector< defaulttype::Vector3 > points(3*nb),normals;
+        std::vector< type::Vector3 > points(3*nb),normals;
         std::vector< sofa::helper::types::RGBAColor > colors(3*nb);
         size_t count=0;
 

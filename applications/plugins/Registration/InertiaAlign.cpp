@@ -66,7 +66,7 @@ void InertiaAlign::init()
     sourceInertiaMatrix.setPersistent(false);
     // Allow to edit an output data
 
-    helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3,SReal> > > > waPositions = m_positions;
+    helper::WriteAccessor<Data<helper::vector<sofa::type::Vec<3,SReal> > > > waPositions = m_positions;
 
 
     Eigen::MatrixXd eigenSourceInertiaMatrix(3,3);
@@ -601,7 +601,7 @@ void InertiaAlign::init()
  * Compute the distance from a point to a point cloud
  */
 
-SReal InertiaAlign::distance(sofa::defaulttype::Vec<3,SReal> p, helper::vector<sofa::defaulttype::Vec<3,SReal> > S)
+SReal InertiaAlign::distance(sofa::type::Vec<3,SReal> p, helper::vector<sofa::type::Vec<3,SReal> > S)
 {
     SReal min = std::numeric_limits<SReal>::max();
 
@@ -617,7 +617,7 @@ SReal InertiaAlign::distance(sofa::defaulttype::Vec<3,SReal> p, helper::vector<s
 /**
  * Compute distances between both point clouds (symmetrical and non-symmetrical distances)
  */
-SReal InertiaAlign::computeDistances( helper::vector<sofa::defaulttype::Vec<3,SReal> > S, helper::vector<sofa::defaulttype::Vec<3,SReal> > T)
+SReal InertiaAlign::computeDistances( helper::vector<sofa::type::Vec<3,SReal> > S, helper::vector<sofa::type::Vec<3,SReal> > T)
 {
     SReal maxST = 0.0;
     for (unsigned int i = 0 ; i < S.size(); i++)

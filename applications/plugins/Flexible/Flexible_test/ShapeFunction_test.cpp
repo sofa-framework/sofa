@@ -63,7 +63,7 @@ namespace sofa {
         typedef component::container::MechanicalObject<In> InDOFs;
         typedef component::container::MechanicalObject<Out> OutDOFs;
         typedef defaulttype::Quat Quat;
-        typedef defaulttype::Vector3 Vec3;
+        typedef type::Vector3 Vec3;
 
         /// Tested quaternion: random quaternion
         Quat testedQuaternion;

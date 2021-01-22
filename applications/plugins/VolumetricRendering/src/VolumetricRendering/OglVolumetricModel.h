@@ -62,7 +62,7 @@ public:
     Data<float> d_volumeScale; ///< Scale for each volumetric primitive
     Data<bool> d_depthTest; ///< Set Depth Test
     Data<bool> d_blending; ///< Set Blending
-    Data<defaulttype::Vec4f> d_defaultColor; ///< Color for each volume (if the attribute a_vertexColor is not detected)
+    Data<type::Vec4f> d_defaultColor; ///< Color for each volume (if the attribute a_vertexColor is not detected)
 
     ~OglVolumetricModel() override;
 

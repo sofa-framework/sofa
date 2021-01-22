@@ -34,7 +34,7 @@ using std::cerr;
 using std::endl;
 using namespace core;
 using namespace component;
-using defaulttype::Vec;
+using type::Vec;
 using defaulttype::Mat;
 using mapping::TetrahedronVolumeMapping;
 

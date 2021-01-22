@@ -33,7 +33,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 	
     typedef DotProductMapping<TIn,TOut> self;
 	
-    typedef defaulttype::Vec<2, std::size_t> index_pair;
+    typedef type::Vec<2, std::size_t> index_pair;
     typedef helper::vector< index_pair > pairs_type;
 
     Data< pairs_type > pairs; ///< index pairs for computing deltas
@@ -234,8 +234,8 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
         }
 
 
-        typedef defaulttype::Vec<2, unsigned> index_pair;
-        typedef defaulttype::Vec<2, index_pair> pair;
+        typedef type::Vec<2, unsigned> index_pair;
+        typedef type::Vec<2, index_pair> pair;
         typedef helper::vector< pair > pairs_type;
         Data< pairs_type > pairs; ///< index pairs for computing deltas
 

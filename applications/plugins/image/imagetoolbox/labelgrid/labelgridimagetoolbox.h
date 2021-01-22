@@ -38,9 +38,9 @@ public:
 
     typedef sofa::core::objectmodel::DataFileName DataFileName;
 
-    typedef sofa::defaulttype::Vec3d Coord3;
-    typedef sofa::defaulttype::Vec3d Deriv3;
-    typedef sofa::defaulttype::Vec6d Vec6d;
+    typedef sofa::type::Vec3d Coord3;
+    typedef sofa::type::Vec3d Deriv3;
+    typedef sofa::type::Vec6d Vec6d;
     typedef helper::vector< Coord3 > VecCoord3;
     typedef helper::vector< double > VecReal;
     typedef std::map<int, VecCoord3> MapSection;
@@ -65,7 +65,7 @@ public:
 
     //typedef typename TransformType::Coord Coord;
 
-    typedef sofa::defaulttype::Vec<2, unsigned int> Vec2ui;
+    typedef sofa::type::Vec<2, unsigned int> Vec2ui;
 
     struct InterpolationItem
     {
@@ -152,7 +152,7 @@ public:
         unsigned int axis = labelpoints->d_axis.getValue();
         helper::vector<int> list;
 
-        helper::vector<sofa::defaulttype::Vec3d>& vip = *(labelpoints->d_ip.beginEdit());
+        helper::vector<sofa::type::Vec3d>& vip = *(labelpoints->d_ip.beginEdit());
 
         list.push_back((int) (vip[vip.size()-1])[axis]);
         for(int i=vip.size()-2;i>=0;i--)
@@ -624,7 +624,7 @@ public:
 
     void createGrid()
     {
-        helper::vector<sofa::defaulttype::Vec3d>& out = *(d_outImagePosition.beginEdit());
+        helper::vector<sofa::type::Vec3d>& out = *(d_outImagePosition.beginEdit());
 
         //std::cout << "jhj"<<std::endl;
         out.clear();
@@ -690,12 +690,12 @@ public:
 
     void calculateNormals()
     {
-        //helper::vector<sofa::defaulttype::Vec3d>& out = *(d_outNormalImagePosition.beginEdit());
-        helper::vector<sofa::defaulttype::Vec3d>& out2 = *(d_outNormalImagePositionBySection.beginEdit());
-        helper::vector<sofa::defaulttype::Vec3d>& pos = *(d_outImagePosition.beginEdit());
+        //helper::vector<sofa::type::Vec3d>& out = *(d_outNormalImagePosition.beginEdit());
+        helper::vector<sofa::type::Vec3d>& out2 = *(d_outNormalImagePositionBySection.beginEdit());
+        helper::vector<sofa::type::Vec3d>& pos = *(d_outImagePosition.beginEdit());
 
 
-        //helper::vector<sofa::defaulttype::Vec3d> out2tmp;
+        //helper::vector<sofa::type::Vec3d> out2tmp;
         //Quads& outQuad = *(d_outQuads.beginEdit());
 
         /*
@@ -838,16 +838,16 @@ public:
     }
 
 public:
-//    Data< helper::vector<sofa::defaulttype::Vec3d> > d_ip;
-//    Data< helper::vector<sofa::defaulttype::Vec3d> > d_p;
+//    Data< helper::vector<sofa::type::Vec3d> > d_ip;
+//    Data< helper::vector<sofa::type::Vec3d> > d_p;
     Data< Vec2ui > d_reso;
     DataFileName d_filename;
     Data< TransformType> d_transform; ///< Transform
     Data< Quads > d_outQuads;
     Data< Edges > d_outEdges;
-    Data< helper::vector<sofa::defaulttype::Vec3d> > d_outImagePosition;
-//    Data< helper::vector<sofa::defaulttype::Vec3d> > d_outNormalImagePosition;
-    Data< helper::vector<sofa::defaulttype::Vec3d> > d_outNormalImagePositionBySection;
+    Data< helper::vector<sofa::type::Vec3d> > d_outImagePosition;
+//    Data< helper::vector<sofa::type::Vec3d> > d_outNormalImagePosition;
+    Data< helper::vector<sofa::type::Vec3d> > d_outNormalImagePositionBySection;
     Data< std::string > d_tagFilter;
 
 

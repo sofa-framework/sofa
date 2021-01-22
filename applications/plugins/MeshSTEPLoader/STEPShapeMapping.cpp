@@ -59,19 +59,19 @@ void STEPShapeExtractor::doUpdate()
         return;
     }
 
-    const helper::vector<sofa::defaulttype::Vector3>& positionsI = input->d_positions.getValue();
+    const helper::vector<sofa::type::Vector3>& positionsI = input->d_positions.getValue();
     const helper::vector<Triangle >& trianglesI = input->d_triangles.getValue();
-    const helper::vector<sofa::defaulttype::Vector2>& uvI = input->_uv.getValue();
+    const helper::vector<sofa::type::Vector2>& uvI = input->_uv.getValue();
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(output->seqPoints.beginEdit());
+    helper::vector<sofa::type::Vector3>& my_positions = *(output->seqPoints.beginEdit());
     helper::vector<Triangle >& my_triangles = *(output->seqTriangles.beginEdit());
-    helper::vector<sofa::defaulttype::Vector2>& my_uv = *(output->seqUVs.beginEdit());
+    helper::vector<sofa::type::Vector2>& my_uv = *(output->seqUVs.beginEdit());
 
     my_positions.clear();
     my_triangles.clear();
     my_uv.clear();
 
-    const helper::vector<helper::fixed_array <unsigned int,3> >& my_indicesComponents = input->_indicesComponents.getValue();
+    const helper::vector<type::stdtype::fixed_array <unsigned int,3> >& my_indicesComponents = input->_indicesComponents.getValue();
 
     unsigned int my_numberShape = shapeNumber.getValue();
 

@@ -79,7 +79,7 @@ public:
 
     typedef helper::vector<double> ParamTypes;
 	typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
-	typedef sofa::defaulttype::Vec<3,SReal> Vector3;
+	typedef sofa::type::Vec<3,SReal> Vector3;
 	// -------- Datas ----------------------------
 	Data< InImageTypes > inputImage;
     Data< TransformType > inputTransform;

@@ -54,6 +54,7 @@ using namespace sofa::helper;
 
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::component;
 
@@ -276,14 +277,14 @@ static PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
         SP_MESSAGE_ERROR( "setViewerCamera: no Viewer!" )
         return Py_BuildValue("i",-1);
     }
-    viewer->setView(sofa::defaulttype::Vector3(px,py,pz),sofa::defaulttype::Quat(qx,qy,qz,qw));
+    viewer->setView(sofa::type::Vector3(px,py,pz),sofa::defaulttype::Quat(qx,qy,qz,qw));
 
     return Py_BuildValue("i",0);
 }
 
 
 static PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *) {
-    sofa::defaulttype::Vector3 pos;
+    sofa::type::Vector3 pos;
     sofa::defaulttype::Quat orient;
 
 

@@ -822,7 +822,7 @@ inline real trace(const Mat<N,N,real>& m)
 template<sofa::Size N, class real>
 inline type::Vec<N,real> diagonal(const Mat<N,N,real>& m)
 {
-    Vec<N,real> v;
+    type::Vec<N,real> v;
     for(sofa::Size i=0 ; i<N ; ++i ) v[i] = m[i][i];
     return v;
 }

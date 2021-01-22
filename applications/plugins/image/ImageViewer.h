@@ -401,20 +401,20 @@ public:
     }
 
 
-    void getCorners(defaulttype::Vec<8,defaulttype::Vector3> &c) // get image corners
+    void getCorners(type::Vec<8,type::Vector3> &c) // get image corners
     {
         raImage rimage(this->image);
         const imCoord dim= rimage->getDimensions();
 
-        defaulttype::Vec<8,defaulttype::Vector3> p;
-        p[0]=defaulttype::Vector3(-0.5,-0.5,-0.5);
-        p[1]=defaulttype::Vector3(dim[0]-0.5,-0.5,-0.5);
-        p[2]=defaulttype::Vector3(-0.5,dim[1]-0.5,-0.5);
-        p[3]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
-        p[4]=defaulttype::Vector3(-0.5,-0.5,dim[2]-0.5);
-        p[5]=defaulttype::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
-        p[6]=defaulttype::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
-        p[7]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
+        type::Vec<8,type::Vector3> p;
+        p[0]=type::Vector3(-0.5,-0.5,-0.5);
+        p[1]=type::Vector3(dim[0]-0.5,-0.5,-0.5);
+        p[2]=type::Vector3(-0.5,dim[1]-0.5,-0.5);
+        p[3]=type::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
+        p[4]=type::Vector3(-0.5,-0.5,dim[2]-0.5);
+        p[5]=type::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
+        p[6]=type::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
+        p[7]=type::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
 
         raTransform rtransform(this->transform);
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
@@ -426,7 +426,7 @@ public:
         SOFA_UNUSED(onlyVisible);
         //if( onlyVisible) return;
 
-        defaulttype::Vec<8,defaulttype::Vector3> c;
+        type::Vec<8,type::Vector3> c;
         getCorners(c);
 
         Real bbmin[3]  = {c[0][0],c[0][1],c[0][2]} , bbmax[3]  = {c[0][0],c[0][1],c[0][2]};
@@ -458,8 +458,8 @@ protected:
 
         double size = rVis->getShapeScale();
         imCoord dims=rplane->getDimensions();
-        defaulttype::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
-        defaulttype::Vec4f colour(1.0,0.5,0.5,1.0);
+        type::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
+        type::Vec4f colour(1.0,0.5,0.5,1.0);
 
         unsigned int x,y,z;
         for (z=0;z<3;z++)
@@ -491,7 +491,7 @@ protected:
 
         double size = rVis->getShapeScale();
         imCoord dims=rplane->getDimensions();
-        defaulttype::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
+        type::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
 
         int counter=0;
 
@@ -647,8 +647,8 @@ protected:
                     if(i==1 || rplane->getDimensions()[1]>1)
                         if(i==2 || rplane->getDimensions()[2]>1)
                         {
-                            defaulttype::Vec<4,defaulttype::Vector3> pts = rplane->get_sliceCoord(rplane->getPlane()[i],i);
-                            defaulttype::Vector3 n=cross(pts[1]-pts[0],pts[2]-pts[0]); n.normalize();
+                            type::Vec<4,type::Vector3> pts = rplane->get_sliceCoord(rplane->getPlane()[i],i);
+                            type::Vector3 n=cross(pts[1]-pts[0],pts[2]-pts[0]); n.normalize();
 
                             glEnable( GL_TEXTURE_2D );
                             glDisable( GL_LIGHTING);

@@ -87,7 +87,7 @@ public:
 
     void computeTransform();
 
-    sofa::helper::fixed_array<bool, 2> oldStates;
+    sofa::type::stdtype::fixed_array<bool, 2> oldStates;
 
     
     void handleEvent(core::objectmodel::Event *) override;    
@@ -95,7 +95,7 @@ public:
 public:
     sofa::simulation::TaskScheduler* _taskScheduler;
     sofa::simulation::CpuTask::Status _simStepStatus;
-    sofa::defaulttype::Vector3 m_toolForceFeedBack;
+    sofa::type::Vector3 m_toolForceFeedBack;
 
     std::mutex lockPosition;
 

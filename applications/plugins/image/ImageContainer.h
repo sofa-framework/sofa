@@ -163,11 +163,11 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
                 if (!fileStream.is_open()) { container->serr << "Cannot open " << fname << container->sendl; return false; }
                 std::string str;
                 fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32);
-                defaulttype::Vec<3,unsigned int> dim;  fileStream >> str; fileStream >> dim;
+                type::Vec<3,unsigned int> dim;  fileStream >> str; fileStream >> dim;
                 if (!container->transformIsSet)
                 {
-                    defaulttype::Vec<3,double> translation; fileStream >> str; fileStream >> translation;        for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
-                    defaulttype::Vec<3,double> scale; fileStream >> str; fileStream >> scale;     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
+                    type::Vec<3,double> translation; fileStream >> str; fileStream >> translation;        for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
+                    type::Vec<3,double> scale; fileStream >> str; fileStream >> scale;     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
                 }
                 fileStream.close();
 
@@ -476,20 +476,20 @@ protected:
     }
 
 
-    void getCorners(defaulttype::Vec<8,defaulttype::Vector3> &c) // get image corners
+    void getCorners(type::Vec<8,type::Vector3> &c) // get image corners
     {
         raImage rimage(this->image);
         const imCoord dim= rimage->getDimensions();
 
-        defaulttype::Vec<8,defaulttype::Vector3> p;
-        p[0]=defaulttype::Vector3(-0.5,-0.5,-0.5);
-        p[1]=defaulttype::Vector3(dim[0]-0.5,-0.5,-0.5);
-        p[2]=defaulttype::Vector3(-0.5,dim[1]-0.5,-0.5);
-        p[3]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
-        p[4]=defaulttype::Vector3(-0.5,-0.5,dim[2]-0.5);
-        p[5]=defaulttype::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
-        p[6]=defaulttype::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
-        p[7]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
+        type::Vec<8,type::Vector3> p;
+        p[0]=type::Vector3(-0.5,-0.5,-0.5);
+        p[1]=type::Vector3(dim[0]-0.5,-0.5,-0.5);
+        p[2]=type::Vector3(-0.5,dim[1]-0.5,-0.5);
+        p[3]=type::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
+        p[4]=type::Vector3(-0.5,-0.5,dim[2]-0.5);
+        p[5]=type::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
+        p[6]=type::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
+        p[7]=type::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
 
         raTransform rtransform(this->transform);
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
@@ -501,7 +501,7 @@ protected:
 
         if( onlyVisible && !drawBB.getValue()) return;
 
-        defaulttype::Vec<8,defaulttype::Vector3> c;
+        type::Vec<8,type::Vector3> c;
         getCorners(c);
 
         Real bbmin[3]  = {c[0][0],c[0][1],c[0][2]} , bbmax[3]  = {c[0][0],c[0][1],c[0][2]};
@@ -522,11 +522,11 @@ protected:
 
         vparams->drawTool()->saveLastState();
 
-        const sofa::defaulttype::Vec4f color(1.,0.5,0.5,0.5);
+        const sofa::type::Vec4f color(1.,0.5,0.5,0.5);
         vparams->drawTool()->setMaterial(color);
 
-        std::vector<defaulttype::Vector3> corners;
-        defaulttype::Vec<8,defaulttype::Vector3> c;
+        std::vector<type::Vector3> corners;
+        type::Vec<8,type::Vector3> c;
         corners.resize(8);
         getCorners(c);
         for(unsigned int i=0;i<8;i++)

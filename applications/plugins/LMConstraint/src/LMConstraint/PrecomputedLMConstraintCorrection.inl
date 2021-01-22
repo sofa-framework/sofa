@@ -60,9 +60,9 @@ void PrecomputedLMConstraintCorrection<DataTypes>::bwdInit()
         this->invM->data = new Real[this->nbRows * this->nbCols];
 
         // for the intial computation, the gravity has to be put at 0
-        const sofa::defaulttype::Vec3d gravity = this->getContext()->getGravity();
+        const sofa::type::Vec3d gravity = this->getContext()->getGravity();
 
-        const sofa::defaulttype::Vec3d gravity_zero(0.0,0.0,0.0);
+        const sofa::type::Vec3d gravity_zero(0.0,0.0,0.0);
         this->getContext()->setGravity(gravity_zero);
 
         sofa::component::odesolver::EulerImplicitSolver* eulerSolver;

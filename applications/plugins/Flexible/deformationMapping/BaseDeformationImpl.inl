@@ -39,7 +39,7 @@ namespace mapping
 {
 
 template<Size matdim,typename Real>
-void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const defaulttype::Vec<3,Real> &p, const float& scale)
+void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const type::Vec<3,Real> &p, const float& scale)
 {
 #ifndef SOFA_NO_OPENGL
     glPushMatrix();
@@ -53,7 +53,7 @@ void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const defaulttype:
     }
     else if(matdim==2)
     {
-        defaulttype::Vec<3,Real> w=cross(F.transposed()[0],F.transposed()[1]); w.normalize();
+        type::Vec<3,Real> w=cross(F.transposed()[0],F.transposed()[1]); w.normalize();
         for(Size i=0; i<3; i++)  transformMatrix[8+i]=(double)w[i]*scale*0.01; // arbitrarily small thickness
     }
 
@@ -93,7 +93,7 @@ inline static void invert(defaulttype::Mat<1,L,Real> &Minv, const defaulttype::M
 template <typename Real>
 inline static void invert(defaulttype::Mat<2,3,Real> &Minv, const defaulttype::Mat<3,2,Real> &M)
 {
-    defaulttype::Vec<3,Real> u=M.transposed()[0],v=M.transposed()[1],w=cross(u,v);
+    type::Vec<3,Real> u=M.transposed()[0],v=M.transposed()[1],w=cross(u,v);
     w.normalize();
     defaulttype::Mat<3,3,Real> Mc; for(Size i=0; i<3; i++) {Mc[i][0]=M[i][0]; Mc[i][1]=M[i][1]; Mc[i][2]=w[i];}
     defaulttype::Mat<3,3,Real> Mcinv; invert(Mcinv,Mc);

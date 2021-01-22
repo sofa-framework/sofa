@@ -66,21 +66,21 @@ PSDEDataFactory* getFactoryInstance(){
 
         // vectors
         s_localfactory->registerCreator(
-                    "Vec2d", new DataCreator<sofa::defaulttype::Vec2d>());
+                    "Vec2d", new DataCreator<sofa::type::Vec2d>());
         s_localfactory->registerCreator(
-                    "Vec3d", new DataCreator<sofa::defaulttype::Vec3d>());
+                    "Vec3d", new DataCreator<sofa::type::Vec3d>());
         s_localfactory->registerCreator(
-                    "Vec4d", new DataCreator<sofa::defaulttype::Vec4d>());
+                    "Vec4d", new DataCreator<sofa::type::Vec4d>());
         s_localfactory->registerCreator(
-                    "Vec6d", new DataCreator<sofa::defaulttype::Vec6d>());
+                    "Vec6d", new DataCreator<sofa::type::Vec6d>());
         s_localfactory->registerCreator(
-                    "Vec2f", new DataCreator<sofa::defaulttype::Vec2f>());
+                    "Vec2f", new DataCreator<sofa::type::Vec2f>());
         s_localfactory->registerCreator(
-                    "Vec3f", new DataCreator<sofa::defaulttype::Vec3f>());
+                    "Vec3f", new DataCreator<sofa::type::Vec3f>());
         s_localfactory->registerCreator(
-                    "Vec4f", new DataCreator<sofa::defaulttype::Vec4f>());
+                    "Vec4f", new DataCreator<sofa::type::Vec4f>());
         s_localfactory->registerCreator(
-                    "Vec6f", new DataCreator<sofa::defaulttype::Vec6f>());
+                    "Vec6f", new DataCreator<sofa::type::Vec6f>());
 
         // Matrices
         s_localfactory->registerCreator(
@@ -129,21 +129,21 @@ PSDEDataFactory* getFactoryInstance(){
 
             // vectors
             s_localfactory->registerCreator(
-                        container + "<Vec2d>", new DataCreator<vector<sofa::defaulttype::Vec2d>>());
+                        container + "<Vec2d>", new DataCreator<vector<sofa::type::Vec2d>>());
             s_localfactory->registerCreator(
-                        container + "<Vec3d>", new DataCreator<vector<sofa::defaulttype::Vec3d>>());
+                        container + "<Vec3d>", new DataCreator<vector<sofa::type::Vec3d>>());
             s_localfactory->registerCreator(
-                        container + "<Vec4d>", new DataCreator<vector<sofa::defaulttype::Vec4d>>());
+                        container + "<Vec4d>", new DataCreator<vector<sofa::type::Vec4d>>());
             s_localfactory->registerCreator(
-                        container + "<Vec6d>", new DataCreator<vector<sofa::defaulttype::Vec6d>>());
+                        container + "<Vec6d>", new DataCreator<vector<sofa::type::Vec6d>>());
             s_localfactory->registerCreator(
-                        container + "<Vec2f>", new DataCreator<vector<sofa::defaulttype::Vec2f>>());
+                        container + "<Vec2f>", new DataCreator<vector<sofa::type::Vec2f>>());
             s_localfactory->registerCreator(
-                        container + "<Vec3f>", new DataCreator<vector<sofa::defaulttype::Vec3f>>());
+                        container + "<Vec3f>", new DataCreator<vector<sofa::type::Vec3f>>());
             s_localfactory->registerCreator(
-                        container + "<Vec4f>", new DataCreator<vector<sofa::defaulttype::Vec4f>>());
+                        container + "<Vec4f>", new DataCreator<vector<sofa::type::Vec4f>>());
             s_localfactory->registerCreator(
-                        container + "<Vec6f>", new DataCreator<vector<sofa::defaulttype::Vec6f>>());
+                        container + "<Vec6f>", new DataCreator<vector<sofa::type::Vec6f>>());
 
             // Matrices
             s_localfactory->registerCreator(

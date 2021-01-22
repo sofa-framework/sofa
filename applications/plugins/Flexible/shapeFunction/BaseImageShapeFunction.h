@@ -106,7 +106,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::Image<T>>
         }
 
         // prepare neighborood
-        sofa::defaulttype::Vec<27,  Coord > lpos;      // precomputed local positions
+        sofa::type::Vec<27,  Coord > lpos;      // precomputed local positions
         int count=0;
         for (int k=-1; k<=1; k++) for (int j=-1; j<=1; j++) for (int i=-1; i<=1; i++) lpos[count++]= inT->fromImage(P+Coord(i,j,k)) - childPosition;
 

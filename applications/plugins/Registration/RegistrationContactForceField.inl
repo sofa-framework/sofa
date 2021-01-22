@@ -165,7 +165,7 @@ void RegistrationContactForceField<DataTypes>::draw(const core::visual::VisualPa
 
     glDisable(GL_LIGHTING);
 
-    std::vector< defaulttype::Vector3 > points[4];
+    std::vector< type::Vector3 > points[4];
 
     for (unsigned int i=0; i<cc.size(); i++)
 	{
@@ -194,13 +194,13 @@ void RegistrationContactForceField<DataTypes>::draw(const core::visual::VisualPa
 				points[3].push_back(p2[c.m2]);
 			  }
 	}
-        vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(1,0,1,1));
-        vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0,1,1,1));
-        vparams->drawTool()->drawLines(points[2], 1, defaulttype::Vec<4,float>(1,0,0,1));
-        vparams->drawTool()->drawLines(points[3], 1, defaulttype::Vec<4,float>(0,1,0,1));
+        vparams->drawTool()->drawLines(points[0], 1, type::Vec<4,float>(1,0,1,1));
+        vparams->drawTool()->drawLines(points[1], 1, type::Vec<4,float>(0,1,1,1));
+        vparams->drawTool()->drawLines(points[2], 1, type::Vec<4,float>(1,0,0,1));
+        vparams->drawTool()->drawLines(points[3], 1, type::Vec<4,float>(0,1,0,1));
 
 
-	std::vector< defaulttype::Vector3 > pointsN;
+	std::vector< type::Vector3 > pointsN;
 	if (vparams->displayFlags().getShowNormals())
 	{
         for (unsigned int i=0; i<cc.size(); i++)
@@ -215,7 +215,7 @@ void RegistrationContactForceField<DataTypes>::draw(const core::visual::VisualPa
 			pointsN.push_back(p2[c.m2]);
 			pointsN.push_back(p);
 		}
-                vparams->drawTool()->drawLines(pointsN, 1, defaulttype::Vec<4,float>(1,1,0,1));
+                vparams->drawTool()->drawLines(pointsN, 1, type::Vec<4,float>(1,1,0,1));
 	}
 #endif
 }
@@ -225,7 +225,7 @@ template<class DataTypes>
     void RegistrationContactForceField<DataTypes>::grabPoint(
     const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
     const helper::vector< unsigned int > &index,
-    helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
+    helper::vector< std::pair< core::objectmodel::BaseObject*, type::Vec3f> > &result,
     helper::vector< unsigned int > &triangle,
     helper::vector< unsigned int > &index_point)
 {

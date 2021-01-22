@@ -22,7 +22,7 @@ template<class U>
 static bool use_dlog( ::sofa::defaulttype::RigidCoord<3, U>* ) { return false; }
 
 template<class U>
-static bool use_dlog( ::sofa::defaulttype::Vec<6, U>* ) { return true; }
+static bool use_dlog( ::sofa::type::Vec<6, U>* ) { return true; }
 
 // dispatch on output type
 template<class U, class V>
@@ -33,7 +33,7 @@ void fill( ::sofa::defaulttype::RigidCoord<3, U>& out,
 
 // use log coords for vec6
 template<class U, class V>
-void fill( ::sofa::defaulttype::Vec<6, U>& out,
+void fill( ::sofa::type::Vec<6, U>& out,
            const ::sofa::defaulttype::RigidCoord<3, V>& in) {
     
     typedef SE3<V> se3;
@@ -71,7 +71,7 @@ public:
 	SOFA_CLASS(SOFA_TEMPLATE2(RigidJointMultiMapping,TIn,TOut), 
 			   SOFA_TEMPLATE2(AssembledMultiMapping,TIn,TOut));
 	
-	typedef defaulttype::Vec<2, unsigned> index_pair;
+	typedef type::Vec<2, unsigned> index_pair;
 
     typedef helper::vector< index_pair > pairs_type;
 	Data< pairs_type > pairs; ///< index pairs (parent, child) for each joint

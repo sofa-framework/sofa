@@ -262,9 +262,9 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
     {
 
         //Get the 8 indices of the coarser Hexa
-        const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->_virtualFinerLevels[0]->getHexahedra()[elementIndice];
+        const type::stdtype::fixed_array<unsigned int,8>& points = this->_sparseGrid->_virtualFinerLevels[0]->getHexahedra()[elementIndice];
         //Get the 8 points of the coarser Hexa
-        helper::fixed_array<Coord,8> nodes;
+        type::stdtype::fixed_array<Coord,8> nodes;
 #ifndef SOFA_NEW_HEXA
         for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[0]->getPointPos(points[this->_indices[k]]);
 #else
@@ -300,7 +300,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
     }
     else
     {
-        helper::fixed_array<int,8> finerChildren;
+        type::stdtype::fixed_array<int,8> finerChildren;
         if (level == 0)
         {
             finerChildren = this->_sparseGrid->_hierarchicalCubeMap[elementIndice];

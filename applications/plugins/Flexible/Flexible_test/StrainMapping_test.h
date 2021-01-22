@@ -20,7 +20,7 @@ namespace sofa {
     using std::endl;
     using namespace core;
     using namespace component;
-    using defaulttype::Vec;
+    using type::Vec;
     using defaulttype::Mat;
     using testing::Types;
 

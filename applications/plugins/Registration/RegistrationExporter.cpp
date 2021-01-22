@@ -71,12 +71,12 @@ void RegistrationExporter::init()
             if (this->f_printLog.getValue()) std::cout<<"RegistrationExporter: "<<this->inFileNames.back()<<"  ->  "<<this->outFileNames.back()<<std::endl;
 
             // get inverse transforms applied in loader
-                        defaulttype::Vector3 scale=loaders[l]->getScale();
+                        type::Vector3 scale=loaders[l]->getScale();
                         Mat4x4 m_scale; m_scale.fill(0);   for(unsigned int i=0;i<3;i++)	 m_scale[i][i]=1./scale[i]; m_scale[3][3]=1.;
-                        defaulttype::Quaternion q = helper::Quater< SReal >::createQuaterFromEuler(defaulttype::Vec< 3, SReal >(loaders[l]->getRotation()) * M_PI / 180.0);
+                        defaulttype::Quaternion q = helper::Quater< SReal >::createQuaterFromEuler(type::Vec< 3, SReal >(loaders[l]->getRotation()) * M_PI / 180.0);
                         defaulttype::Mat<4,4,SReal> m33; q.inverse().toMatrix(m33);
                         Mat4x4 m_rot; m_rot.fill(0);   for(unsigned int i=0;i<3;i++)  for(unsigned int j=0;j<3;j++)	 m_rot[i][j]=m33[i][j];  m_rot[3][3]=1.;
-                        defaulttype::Vector3 translation=loaders[l]->getTranslation();
+                        type::Vector3 translation=loaders[l]->getTranslation();
                         Mat4x4 m_translation; m_translation.fill(0);   for(unsigned int i=0;i<3;i++)	 m_translation[i][3]=-translation[i];  for(unsigned int i=0;i<4;i++)	 m_translation[i][i]=1;
                         this->inverseTransforms.push_back(m_scale*m_rot*m_translation);
                         if (this->f_printLog.getValue()) std::cout<<"RegistrationExporter: transform = "<<this->inverseTransforms.back()<<std::endl;
@@ -107,7 +107,7 @@ void RegistrationExporter::writeMesh()
 
                         values >> token;
                         if (token == "v") {
-                            defaulttype::Vec< 4, SReal > p(raPositions[count][0],raPositions[count][1],raPositions[count][2],1);
+                            type::Vec< 4, SReal > p(raPositions[count][0],raPositions[count][1],raPositions[count][2],1);
                                                          if(applyInverseTransform.getValue()) p=inverseTransforms[l]*p;
                             if(count<raPositions.size()) fileOut<<"v "<<p[0]<<" "<<p[1]<<" "<<p[2]<<std::endl;
                             count++;

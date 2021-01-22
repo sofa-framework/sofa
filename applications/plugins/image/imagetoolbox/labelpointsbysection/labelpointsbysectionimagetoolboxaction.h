@@ -77,15 +77,15 @@ public slots:
     void addOnGraphs() override;
     void updateGraphs() override;
     void updateColor() override;
-    void optionChangeSection(sofa::defaulttype::Vec3i) override;
+    void optionChangeSection(sofa::type::Vec3i) override;
     void changeSection(int);
-    sofa::defaulttype::Vec3i changeSection2(int,bool force=false);
-    void mouseMove(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value) override;
-    void addToPath(const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,bool forceMoveTo=false);
+    sofa::type::Vec3i changeSection2(int,bool force=false);
+    void mouseMove(const unsigned int axis,const sofa::type::Vec3d& imageposition,const sofa::type::Vec3d& position3D,const QString& value) override;
+    void addToPath(const unsigned int axis,const sofa::type::Vec3d& imageposition,bool forceMoveTo=false);
 
 private slots:
     void selectionPointButtonClick(bool);
-    void selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
+    void selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::type::Vec3d& imageposition,const sofa::type::Vec3d& position3D,const QString& value);
     //void sectionButtonClick();
     void axisChecked(bool b);
 

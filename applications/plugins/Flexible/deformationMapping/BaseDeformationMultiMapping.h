@@ -137,7 +137,7 @@ public:
 
     /** @name  Coord types    */
     //@{
-    typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
+    typedef type::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
     typedef helper::vector<Coord> VecCoord;
     typedef defaulttype::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;           ///< local liner transformation from material space to world space
     typedef helper::vector<MaterialToSpatial> VMaterialToSpatial;
@@ -167,7 +167,7 @@ public:
 
 
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
-    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0) override; /// resizing given custom positions and weights
+    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<type::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0) override; /// resizing given custom positions and weights
 
     /** @name Mapping functions */
     //@{

@@ -445,7 +445,7 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::draw(const sofa::core::vis
         helper::ReadAccessor< Data< vector<int> > > tetraDomain = d_tetraDomain;
 
         vparams->drawTool()->setLightingEnabled(false);
-        std::vector< std::vector<defaulttype::Vector3> > pointsDomains[4];
+        std::vector< std::vector<type::Vector3> > pointsDomains[4];
         for(unsigned int i=0; i<4; ++i)
             pointsDomains[i].resize(m_tetraDomainLabels.size());
         int domainLabel = 0;
@@ -482,10 +482,10 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::draw(const sofa::core::vis
 
         for(size_t i=0; i<m_tetraDomainLabels.size(); i++)
         {
-            vparams->drawTool()->drawTriangles(pointsDomains[0][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5), fmod(0.5-fmod(i*0.5,1.5),1.5)-0.1, 1.0-fmod(i*0.5,1.5), 1));
-            vparams->drawTool()->drawTriangles(pointsDomains[1][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5)-0.1, fmod(0.5-fmod(i*0.5,1.5),1.5)-0.2, 1.0-fmod(i*0.5,1.5), 1));
-            vparams->drawTool()->drawTriangles(pointsDomains[2][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5)-0.2, fmod(0.5-fmod(i*0.5,1.5),1.5)-0.3, 1.0-fmod(i*0.5,1.5), 1));
-            vparams->drawTool()->drawTriangles(pointsDomains[3][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5)-0.3, fmod(0.5-fmod(i*0.5,1.5),1.5), 1.0-fmod(i*0.5,1.5), 1));
+            vparams->drawTool()->drawTriangles(pointsDomains[0][i], type::Vec<4,float>(fmod(i*0.5,1.5), fmod(0.5-fmod(i*0.5,1.5),1.5)-0.1, 1.0-fmod(i*0.5,1.5), 1));
+            vparams->drawTool()->drawTriangles(pointsDomains[1][i], type::Vec<4,float>(fmod(i*0.5,1.5)-0.1, fmod(0.5-fmod(i*0.5,1.5),1.5)-0.2, 1.0-fmod(i*0.5,1.5), 1));
+            vparams->drawTool()->drawTriangles(pointsDomains[2][i], type::Vec<4,float>(fmod(i*0.5,1.5)-0.2, fmod(0.5-fmod(i*0.5,1.5),1.5)-0.3, 1.0-fmod(i*0.5,1.5), 1));
+            vparams->drawTool()->drawTriangles(pointsDomains[3][i], type::Vec<4,float>(fmod(i*0.5,1.5)-0.3, fmod(0.5-fmod(i*0.5,1.5),1.5), 1.0-fmod(i*0.5,1.5), 1));
         }
     }
 }

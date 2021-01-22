@@ -44,7 +44,7 @@ namespace qt
 
 using namespace helper;
 using namespace cimg_library;
-using defaulttype::Vec;
+using type::Vec;
 
 
 class SOFA_IMAGE_GUI_API imagetoolbox_data_widget_container: public QObject

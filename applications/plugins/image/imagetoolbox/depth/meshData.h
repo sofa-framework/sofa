@@ -14,11 +14,11 @@
 struct MeshDataImageToolBox
 {
 public:
-    typedef sofa::defaulttype::Vec3d Coord3;
-    typedef sofa::defaulttype::Vec3d Deriv3;
-    typedef sofa::defaulttype::Vec<3, unsigned int> Index3;
-    typedef sofa::defaulttype::Vec<4, unsigned int> Index4;
-    typedef sofa::defaulttype::Vec<8, unsigned int> Index8;
+    typedef sofa::type::Vec3d Coord3;
+    typedef sofa::type::Vec3d Deriv3;
+    typedef sofa::type::Vec<3, unsigned int> Index3;
+    typedef sofa::type::Vec<4, unsigned int> Index4;
+    typedef sofa::type::Vec<8, unsigned int> Index8;
     typedef sofa::helper::vector< unsigned int > VecIndex;
     typedef sofa::helper::vector< Index3 > VecIndex3;
     typedef sofa::helper::vector< Index4 > VecIndex4;

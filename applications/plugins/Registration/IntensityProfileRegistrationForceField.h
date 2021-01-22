@@ -170,7 +170,7 @@ protected :
     /// the width of the resulting image is 2*searchRange
     void udpateSimilarity();
 
-    Data< defaulttype::Vec<2,unsigned int> > Sizes; ///< Inwards/outwards profile size.
+    Data< type::Vec<2,unsigned int> > Sizes; ///< Inwards/outwards profile size.
     Data< Real > Step; ///< Spacing of the profile discretization.
     Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubi
     Data< helper::OptionsGroup > SimilarityMeasure;  ///< ssd,ncc

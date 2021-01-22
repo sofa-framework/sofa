@@ -37,7 +37,7 @@ struct SafeDistanceMappingTest : public Mapping_test<Mapping>
     typedef SafeDistanceMappingTest self;
     typedef Mapping_test<Mapping> base;
 
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
     
     Mapping* mapping;
 
@@ -116,7 +116,7 @@ struct SafeDistanceFromTargetMappingTest : public Mapping_test<Mapping>
     typedef SafeDistanceFromTargetMappingTest self;
     typedef Mapping_test<Mapping> base;
 
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
 
     Mapping* mapping;
 
@@ -192,10 +192,10 @@ struct SafeDistanceFromTargetMappingTest : public Mapping_test<Mapping>
         restLengths[2] = 1;
         mapping->d_restLengths.setValue(restLengths);
 
-        helper::vector<defaulttype::Vector3> directions(3);
-        directions[0] = defaulttype::Vector3(325,23,-54);
-        directions[1] = defaulttype::Vector3(1,0,0);
-        directions[2] = defaulttype::Vector3(1,0,0);
+        helper::vector<type::Vector3> directions(3);
+        directions[0] = type::Vector3(325,23,-54);
+        directions[1] = type::Vector3(1,0,0);
+        directions[2] = type::Vector3(1,0,0);
         mapping->d_directions.setValue(directions);
 
         mapping->d_geometricStiffness.setValue(1); // exact

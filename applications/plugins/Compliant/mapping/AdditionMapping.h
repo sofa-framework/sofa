@@ -37,7 +37,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
 
     typedef AdditionMapping self;
 
-    typedef defaulttype::Vec<2, unsigned> index_pair;
+    typedef type::Vec<2, unsigned> index_pair;
     typedef helper::vector< index_pair > pairs_type;
 
     Data< pairs_type > pairs; ///< index pairs for computing deltas
@@ -134,11 +134,11 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
 
         if( !scale )
         {
-            helper::vector< defaulttype::Vector3 > points(p.size()*2);
+            helper::vector< type::Vector3 > points(p.size()*2);
             for(unsigned i=0; i<p.size(); i++ )
             {
-                points[i*2  ] = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
-                points[i*2+1] = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
+                points[i*2  ] = type::Vector3( TIn::getCPos(pos[p[i][0]]) );
+                points[i*2+1] = type::Vector3( TIn::getCPos(pos[p[i][1]]) );
             }
             vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
         }
@@ -146,8 +146,8 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
         {
             for(unsigned i=0; i<p.size(); i++ )
             {
-                defaulttype::Vector3 p0 = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
-                defaulttype::Vector3 p1 = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
+                type::Vector3 p0 = type::Vector3( TIn::getCPos(pos[p[i][0]]) );
+                type::Vector3 p1 = type::Vector3( TIn::getCPos(pos[p[i][1]]) );
                 vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
             }
         }
@@ -259,7 +259,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
         }
 
 
-        typedef defaulttype::Vec<2, unsigned> index_pair;
+        typedef type::Vec<2, unsigned> index_pair;
         typedef helper::vector< index_pair > pairs_type;
 
         Data< pairs_type > pairs; ///< index pairs for computing deltas

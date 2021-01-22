@@ -46,10 +46,10 @@ Q_OBJECT
     QDoubleSpinBox *threshold;
     QGroupBox *posGroup, *radiusGroup, *thresholdGroup;
 
-    sofa::defaulttype::Vec3i sectionPosition;
+    sofa::type::Vec3i sectionPosition;
 
 public:
-    typedef sofa::defaulttype::Vec<3,unsigned int> PixCoord;
+    typedef sofa::type::Vec<3,unsigned int> PixCoord;
     typedef helper::vector<PixCoord> VecPixCoord;
 
     ContourImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent);
@@ -73,12 +73,12 @@ public slots:
     void addOnGraphs() override;
     void updateGraphs() override;
     void updateColor() override;
-    void optionChangeSection(sofa::defaulttype::Vec3i) override;
+    void optionChangeSection(sofa::type::Vec3i) override;
 
     
 private slots:
     void selectionPointButtonClick(bool);
-    void selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value);
+    void selectionPointEvent(int mouseevent, const unsigned int axis,const sofa::type::Vec3d& imageposition,const sofa::type::Vec3d& position3D,const QString& value);
     void sectionButtonClick();
     
     void positionModified();

@@ -126,7 +126,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::Image<T>>
         typedef typename VoronoiShapeFunction::IndTypes IndTypes;
         typedef typename VoronoiShapeFunction::waInd waInd;
 
-        typedef defaulttype::Vec<3,int> iCoord;
+        typedef type::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
 
         // retrieve data
@@ -165,7 +165,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::Image<T>>
         typedef typename VoronoiShapeFunction::IndTypes IndTypes;
         typedef typename VoronoiShapeFunction::waInd waInd;
 
-        typedef defaulttype::Vec<3,int> iCoord;
+        typedef type::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
 
         // retrieve data
@@ -282,7 +282,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::Image<T>>
         typedef typename VoronoiShapeFunction::IndTypes IndTypes;
         typedef typename VoronoiShapeFunction::waInd waInd;
 
-        typedef defaulttype::Vec<3,int> iCoord;
+        typedef type::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
 
         typedef NaturalNeighborData<Real> NNData;
@@ -304,7 +304,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::Image<T>>
 
         Coord voxelsize(inT->getScale());
         Real pixelvol=voxelsize[0]*voxelsize[1]*voxelsize[2];
-        defaulttype::Vec<3,Real> pixelsurf(voxelsize[1]*voxelsize[2],voxelsize[0]*voxelsize[2],voxelsize[0]*voxelsize[1]);
+        type::Vec<3,Real> pixelsurf(voxelsize[1]*voxelsize[2],voxelsize[0]*voxelsize[2],voxelsize[0]*voxelsize[1]);
         unsigned int indexPt=This->f_position.getValue().size()+1; // voronoi index of points that will be added to compute NNI
 
         // compute weights voxel-by-voxel
@@ -410,7 +410,7 @@ public:
     typedef typename Inherit::waInd waInd;
     Data< IndTypes > f_voronoi;
 
-    typedef defaulttype::Vec<3,int> iCoord;
+    typedef type::Vec<3,int> iCoord;
     typedef std::pair<Real,iCoord > DistanceToPoint;
 
     //@}

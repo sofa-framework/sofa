@@ -61,13 +61,13 @@ public:
     }
 
 
-    sofa::defaulttype::Vec6d calculatebox(helper::vector<sofa::defaulttype::Vec3d>& vip)
+    sofa::type::Vec6d calculatebox(helper::vector<sofa::type::Vec3d>& vip)
     {
-        sofa::defaulttype::Vec6d box;
+        sofa::type::Vec6d box;
 
         for(unsigned int i=0;i<vip.size();i++)
         {
-            sofa::defaulttype::Vec3d& v = vip[i];
+            sofa::type::Vec3d& v = vip[i];
 
             if(i==0)
             {
@@ -90,8 +90,8 @@ public:
 
     void calculatebox()
     {
-        helper::vector<sofa::defaulttype::Vec3d>& vip = *(d_ip.beginEdit());
-        helper::vector<sofa::defaulttype::Vec3d>& vp = *(d_p.beginEdit());
+        helper::vector<sofa::type::Vec3d>& vip = *(d_ip.beginEdit());
+        helper::vector<sofa::type::Vec3d>& vp = *(d_p.beginEdit());
 
         d_ipbox.setValue(calculatebox(vip));
         d_pbox.setValue(calculatebox(vp));
@@ -120,8 +120,8 @@ public:
     bool writeData(std::ofstream &file, const char* /*filename*/)
     {
 
-        const sofa::defaulttype::Vec6d &bip = d_ipbox.getValue();
-        const sofa::defaulttype::Vec6d &bp = d_pbox.getValue();
+        const sofa::type::Vec6d &bip = d_ipbox.getValue();
+        const sofa::type::Vec6d &bp = d_pbox.getValue();
 
         std::ostringstream values1, values2;
 
@@ -156,8 +156,8 @@ public:
 
     bool readData(std::ifstream &file, const char* /*filename*/)
     {
-        helper::vector<sofa::defaulttype::Vec3d>& vip = *(d_ip.beginEdit());
-        helper::vector<sofa::defaulttype::Vec3d>& vp = *(d_p.beginEdit());
+        helper::vector<sofa::type::Vec3d>& vip = *(d_ip.beginEdit());
+        helper::vector<sofa::type::Vec3d>& vp = *(d_p.beginEdit());
 
         vip.clear();
         vp.clear();
@@ -172,8 +172,8 @@ public:
 
             if(numline==0)
             {
-                sofa::defaulttype::Vec3d ip1;
-                sofa::defaulttype::Vec3d ip2;
+                sofa::type::Vec3d ip1;
+                sofa::type::Vec3d ip2;
 
                 values >> ip1[0] >> ip1[1] >> ip1[2] >> ip2[0] >> ip2[1] >> ip2[2];
 
@@ -182,8 +182,8 @@ public:
             }
             else if(numline==1)
             {
-                sofa::defaulttype::Vec3d ip1;
-                sofa::defaulttype::Vec3d ip2;
+                sofa::type::Vec3d ip1;
+                sofa::type::Vec3d ip2;
 
                 values >> ip1[0] >> ip1[1] >> ip1[2] >> ip2[0] >> ip2[1] >> ip2[2];
 
@@ -242,10 +242,10 @@ public:
     }
     
 public:
-    Data<helper::vector <sofa::defaulttype::Vec3d> > d_ip;
-    Data<helper::vector <sofa::defaulttype::Vec3d> > d_p;
-    Data<sofa::defaulttype::Vec6d> d_ipbox;
-    Data<sofa::defaulttype::Vec6d> d_pbox;
+    Data<helper::vector <sofa::type::Vec3d> > d_ip;
+    Data<helper::vector <sofa::type::Vec3d> > d_p;
+    Data<sofa::type::Vec6d> d_ipbox;
+    Data<sofa::type::Vec6d> d_pbox;
     DataFileName d_filename;
 };
 

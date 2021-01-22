@@ -43,7 +43,7 @@ public:
 	
 	typedef typename DataTypes::Real real;
 	typedef helper::vector<real> mass_type;
-	typedef helper::vector< defaulttype::Vec<3, real> > inertia_type;
+	typedef helper::vector< type::Vec<3, real> > inertia_type;
 	
 	Data<mass_type> mass; ///< mass of each rigid body
 	Data<inertia_type> inertia; ///< inertia of each rigid body
@@ -123,7 +123,7 @@ public:
             const real& m11 = inertia.getValue()[index][1];
             const real& m22 = inertia.getValue()[index][2];
 			
-            defaulttype::Vec3d len;
+            type::Vec3d len;
             len[0] = std::sqrt(m11+m22-m00);
             len[1] = std::sqrt(m00+m22-m11);
             len[2] = std::sqrt(m00+m11-m22);
@@ -203,7 +203,7 @@ public:
                                const DataVecCoord& _x  ) const override {
 		helper::ReadAccessor< DataVecCoord >  x(_x);
 				
-		defaulttype::Vec3d g ( this->getContext()->getGravity() );
+		type::Vec3d g ( this->getContext()->getGravity() );
 
         SReal res = 0;
 

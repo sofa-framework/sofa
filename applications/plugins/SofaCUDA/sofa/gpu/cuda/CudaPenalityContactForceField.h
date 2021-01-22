@@ -77,7 +77,7 @@ public:
         int age;      ///< how old is this contact
     };
     */
-    sofa::gpu::cuda::CudaVector<sofa::defaulttype::Vec4f> contacts;
+    sofa::gpu::cuda::CudaVector<sofa::type::Vec4f> contacts;
     sofa::gpu::cuda::CudaVector<float> pen;
 
     // contacts from previous frame

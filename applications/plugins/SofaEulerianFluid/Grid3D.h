@@ -50,7 +50,7 @@ class SOFA_EULERIAN_FLUID_API Grid3D
 public:
 
     typedef float real;
-    typedef sofa::defaulttype::Vec<3,real> vec3;
+    typedef sofa::type::Vec<3,real> vec3;
 
     struct Cell
     {

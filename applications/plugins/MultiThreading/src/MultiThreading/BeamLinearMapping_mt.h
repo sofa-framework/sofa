@@ -66,7 +66,7 @@ namespace mapping
         enum { NOut = BeamLinearMappingInOut::NOut };
         
         typedef defaulttype::Mat<N, N, Real> Mat;
-        typedef defaulttype::Vec<N, Real> Vector;
+        typedef type::Vec<N, Real> Vector;
         typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
         typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
         

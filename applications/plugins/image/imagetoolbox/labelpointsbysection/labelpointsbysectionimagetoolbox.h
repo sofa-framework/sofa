@@ -90,8 +90,8 @@ public:
 
     bool writePointList(std::ofstream &file, const char* /*filename*/)
     {
-        helper::vector<sofa::defaulttype::Vec3d>& vip = *(d_ip.beginEdit());
-        helper::vector<sofa::defaulttype::Vec3d>& vp = *(d_p.beginEdit());
+        helper::vector<sofa::type::Vec3d>& vip = *(d_ip.beginEdit());
+        helper::vector<sofa::type::Vec3d>& vp = *(d_p.beginEdit());
 
         int size = vip.size();
         if(vip.size() != vp.size())
@@ -111,8 +111,8 @@ public:
             std::ostringstream values;
 
 
-            sofa::defaulttype::Vec3d &ip = vip[i];
-            sofa::defaulttype::Vec3d &p = vp[i];
+            sofa::type::Vec3d &ip = vip[i];
+            sofa::type::Vec3d &p = vp[i];
 
             values << ip[0] << " "<< ip[1] <<" "<< ip[2] <<" "<< p[0] <<" "<< p[1] <<" "<< p[2];
 
@@ -147,8 +147,8 @@ public:
 
     bool readPointList(std::ifstream &file, const char* /*filename*/)
     {
-        helper::vector<sofa::defaulttype::Vec3d>& vip = *(d_ip.beginEdit());
-        helper::vector<sofa::defaulttype::Vec3d>& vp = *(d_p.beginEdit());
+        helper::vector<sofa::type::Vec3d>& vip = *(d_ip.beginEdit());
+        helper::vector<sofa::type::Vec3d>& vp = *(d_p.beginEdit());
 
         bool firstline=true;
         std::string line;
@@ -170,8 +170,8 @@ public:
             }
             else
             {
-                sofa::defaulttype::Vec3d ip;
-                sofa::defaulttype::Vec3d p;
+                sofa::type::Vec3d ip;
+                sofa::type::Vec3d p;
 
                 values >> ip[0] >> ip[1] >> ip[2] >> p[0] >> p[1] >> p[2];
 
@@ -228,8 +228,8 @@ public:
     }
     
 public:
-    Data< helper::vector<sofa::defaulttype::Vec3d> > d_ip;
-    Data< helper::vector<sofa::defaulttype::Vec3d> >d_p;
+    Data< helper::vector<sofa::type::Vec3d> > d_ip;
+    Data< helper::vector<sofa::type::Vec3d> >d_p;
     Data<unsigned int> d_axis;
     DataFileName d_filename;
 };

@@ -307,7 +307,7 @@ template<class DataTypes>
 int ManifoldTriangleSetGeometryAlgorithms< DataTypes >::SplitAlongPath(Index pa, Coord& a, Index pb, Coord& b,
         sofa::helper::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
         sofa::helper::vector<Index>& indices_list,
-        sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
+        sofa::helper::vector< sofa::type::Vec<3, double> >& coords_list,
         sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder)
 {
 

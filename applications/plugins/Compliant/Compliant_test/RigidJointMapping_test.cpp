@@ -42,7 +42,7 @@ struct RigidJointMappingTest : public Mapping_test<Mapping>
     typedef Mapping_test<Mapping> base;
 
     typedef SE3< typename self::Real > se3;
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
     
     Mapping* mapping;
 

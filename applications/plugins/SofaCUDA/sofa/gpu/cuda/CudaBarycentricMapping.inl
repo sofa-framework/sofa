@@ -140,14 +140,14 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
     clear(out.size());
     for (unsigned int i=0; i<out.size(); i++)
     {
-        defaulttype::Vector3 coefs;
-        int cube = topology->findCube(defaulttype::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+        type::Vector3 coefs;
+        int cube = topology->findCube(type::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
         if (cube==-1)
         {
             ++outside;
-            cube = topology->findNearestCube(defaulttype::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+            cube = topology->findNearestCube(type::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
-        defaulttype::Vec<3,SReal> baryCoords = coefs;
+        type::Vec<3,SReal> baryCoords = coefs;
         addPointInCube(cube, baryCoords.ptr());
     }
 }
@@ -241,14 +241,14 @@ void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,
     clear(out.size());
     for (unsigned int i=0; i<out.size(); i++)
     {
-        defaulttype::Vector3 coefs;
-        int cube = topology->findCube(defaulttype::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+        type::Vector3 coefs;
+        int cube = topology->findCube(type::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
         if (cube==-1)
         {
             ++outside;
-            cube = topology->findNearestCube(defaulttype::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+            cube = topology->findNearestCube(type::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
-        defaulttype::Vec<3,SReal> baryCoords = coefs;
+        type::Vec<3,SReal> baryCoords = coefs;
         addPointInCube(cube, baryCoords.ptr());
     }
 
@@ -542,7 +542,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
     const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
     const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
     sofa::helper::vector<defaulttype::Matrix3> bases;
-    sofa::helper::vector<defaulttype::Vector3> centers;
+    sofa::helper::vector<type::Vector3> centers;
     clear(out.size()); // reserve space for mapping
     if (tetras.empty() && cubes.empty())
     {
@@ -572,20 +572,20 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
         }
         for (unsigned int i=0; i<out.size(); i++)
         {
-            defaulttype::Vector3 pos = out[i];
-            defaulttype::Vector3 coefs;
+            type::Vector3 pos = out[i];
+            type::Vector3 coefs;
             int index = -1;
             double distance = 1e10;
             for (unsigned int t = 0; t < triangles.size(); t++)
             {
-                defaulttype::Vec3d v = bases[t] * (pos - in[triangles[t][0]]);
+                type::Vec3d v = bases[t] * (pos - in[triangles[t][0]]);
                 double d = std::max(std::max(-v[0],-v[1]),std::max((v[2]<0?-v[2]:v[2])-0.01,v[0]+v[1]-1));
                 if (d>0) d = (pos-centers[t]).norm2();
                 if (d<distance) { coefs = v; distance = d; index = t; }
             }
             for (unsigned int c = 0; c < quads.size(); c++)
             {
-                defaulttype::Vec3d v = bases[c0+c] * (pos - in[quads[c][0]]);
+                type::Vec3d v = bases[c0+c] * (pos - in[quads[c][0]]);
                 double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(v[1]-1,v[0]-1),std::max(v[2]-0.01,-v[2]-0.01)));
                 if (d>0) d = (pos-centers[c0+c]).norm2();
                 if (d<distance) { coefs = v; distance = d; index = c0+c; }
@@ -628,20 +628,20 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
         }
         for (unsigned int i=0; i<out.size(); i++)
         {
-            defaulttype::Vector3 pos = out[i];
-            defaulttype::Vector3 coefs;
+            type::Vector3 pos = out[i];
+            type::Vector3 coefs;
             int index = -1;
             double distance = 1e10;
             for (unsigned int t = 0; t < tetras.size(); t++)
             {
-                defaulttype::Vector3 v = bases[t] * (pos - in[tetras[t][0]]);
+                type::Vector3 v = bases[t] * (pos - in[tetras[t][0]]);
                 double d = std::max(std::max(-v[0],-v[1]),std::max(-v[2],v[0]+v[1]+v[2]-1));
                 if (d>0) d = (pos-centers[t]).norm2();
                 if (d<distance) { coefs = v; distance = d; index = t; }
             }
             for (unsigned int c = 0; c < cubes.size(); c++)
             {
-                defaulttype::Vector3 v = bases[c0+c] * (pos - in[cubes[c][0]]);
+                type::Vector3 v = bases[c0+c] * (pos - in[cubes[c][0]]);
                 double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(-v[2],v[0]-1),std::max(v[1]-1,v[2]-1)));
                 if (d>0) d = (pos-centers[c0+c]).norm2();
                 if (d<distance) { coefs = v; distance = d; index = c0+c; }

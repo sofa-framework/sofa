@@ -46,7 +46,7 @@ OglVolumetricModel::OglVolumetricModel()
     , d_volumeScale(initData(&d_volumeScale, (float)1.0, "volumeScale", "Scale for each volumetric primitive"))
     , d_depthTest(initData(&d_depthTest, (bool)false, "depthTest", "Set Depth Test"))
     , d_blending(initData(&d_blending, (bool)false, "blending", "Set Blending"))
-    , d_defaultColor(initData(&d_defaultColor, defaulttype::Vec4f(), "defaultColor", "Color for each volume (if the attribute a_vertexColor is not detected)"))
+    , d_defaultColor(initData(&d_defaultColor, type::Vec4f(), "defaultColor", "Color for each volume (if the attribute a_vertexColor is not detected)"))
     , b_modified(false)
     , b_useTopology(false)
     , b_tboCreated(false)
@@ -206,11 +206,11 @@ void OglVolumetricModel::initVisual()
         m_vertexColors->setID("a_vertexColor");
         m_vertexColors->setIndexShader(0);
     }
-    sofa::helper::vector<defaulttype::Vec4f>& vertexColors = *(m_vertexColors->beginEdit());
+    sofa::helper::vector<type::Vec4f>& vertexColors = *(m_vertexColors->beginEdit());
     unsigned int nbPositions = m_positions.getValue().size();
     if ((vertexColors.size() != nbPositions))
     {
-        const defaulttype::Vec4f& defaultColor = d_defaultColor.getValue();
+        const type::Vec4f& defaultColor = d_defaultColor.getValue();
         vertexColors.clear();
         for (unsigned int i = 0; i < nbPositions; i++)
         {

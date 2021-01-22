@@ -68,14 +68,14 @@ protected:
     cimg_library::CImg<unsigned int> histogram;	// output image of size [dimx,1,1,nbChannels]
     cimg_library::CImg<bool> image;				// output image of size [dimx,dimy,1,nbChannels]
 
-    Vec<2,T> clamp;					// stored clamp values (for visualization)
+    type::Vec<2,T> clamp;					// stored clamp values (for visualization)
 
 public:
     static const char* Name() { return "Histogram"; }
 
     Histogram(const unsigned int _dimx=256, const unsigned int _dimy=256, const bool _mergeChannels=false)
         :img(NULL),dimx(_dimx),dimy(_dimy),mergeChannels(_mergeChannels),
-          clamp(Vec<2,T>(cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()))
+          clamp(type::Vec<2,T>(cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()))
     { }
 
     void setInput(const ImageTypes& _img)
@@ -86,14 +86,14 @@ public:
 
     const cimg_library::CImg<bool>& getImage() const {return image;}
     const cimg_library::CImg<unsigned int>& getHistogram() const {return histogram;}
-    const Vec<2,T>& getClamp() const {return clamp;}
-    void setClamp(const Vec<2,T> _clamp)  { clamp[0] = _clamp[0]; clamp[1] = _clamp[1];	}
+    const type::Vec<2,T>& getClamp() const {return clamp;}
+    void setClamp(const type::Vec<2,T> _clamp)  { clamp[0] = _clamp[0]; clamp[1] = _clamp[1];	}
     const bool& getMergeChannels() const {return this->mergeChannels;}
     void setMergeChannels(const bool _mergeChannels)
     {
         if(this->mergeChannels==_mergeChannels) return;
         this->mergeChannels=_mergeChannels;
-        this->setClamp(Vec<2,T>(cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()));
+        this->setClamp(type::Vec<2,T>(cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()));
         this->update();
     }
 
@@ -122,7 +122,7 @@ public:
 
     inline friend std::istream& operator >> ( std::istream& in, Histogram& h )
     {
-        Vec<2,T> clamp;
+        type::Vec<2,T> clamp;
         in>>clamp;
         h.setClamp(clamp);
         return in;
@@ -147,7 +147,7 @@ struct ImagePlane
     typedef _T T;
     typedef Image<T> ImageTypes;
     typedef typename ImageTypes::imCoord imCoord;
-    typedef Vec<3,unsigned int> pCoord;
+    typedef type::Vec<3,unsigned int> pCoord;
 
     typedef SReal Real; // put as template param ?
     typedef ImageTransform<Real> TransformTypes;
@@ -166,7 +166,7 @@ protected:
     Coord point;				// Point double-clicked on slice 3D for navigation
     pCoord plane;				// input [x,y,z] coord of a selected planes. >=dimensions means no selection
     unsigned int time;			// input selected time
-    Vec<2,T> clamp;				// input clamp values
+    type::Vec<2,T> clamp;				// input clamp values
 
     bool newPointClicked;		// True when a point is double-clicked on an image plane
     bool imagePlaneDirty;			// Dirty when output plane images should be updated
@@ -176,7 +176,7 @@ public:
     static const char* Name() { return "ImagePlane"; }
 
     ImagePlane()
-        :img(NULL), plane(pCoord(0,0,0)), time(0), clamp(Vec<2,T>(cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()))
+        :img(NULL), plane(pCoord(0,0,0)), time(0), clamp(type::Vec<2,T>(cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()))
         , newPointClicked(false), imagePlaneDirty(true), mergeChannels(false)//, point(0,0,0) // set by user or other objects
     {
     }
@@ -192,7 +192,7 @@ public:
 
     const pCoord& getPlane() const {return plane;}
     const unsigned int& getTime() const {return time;}
-    const Vec<2,T>& getClamp() const {return clamp;}
+    const type::Vec<2,T>& getClamp() const {return clamp;}
     imCoord getDimensions() const {  if(!this->img)  { imCoord c; c.fill(0); return c;} else return img->getDimensions(); }
     const bool& isImagePlaneDirty() const {return this->imagePlaneDirty;}
     const bool& isnewPointClicked() const {return this->newPointClicked;}
@@ -235,7 +235,7 @@ public:
     }
 
 
-    void setClamp(const Vec<2,T> _clamp)
+    void setClamp(const type::Vec<2,T> _clamp)
     {
         if(clamp[0]!=_clamp[0] || clamp[1]!=_clamp[0])
         {
@@ -335,9 +335,9 @@ public:
     Coord get_pointCoord(const Coord& ip) const { return transform->fromImage(ip); }
     Coord get_pointImageCoord(const Coord& ip) const { return transform->toImage(ip); }
     // returns the 4 slice corners
-    Vec<4,Coord> get_sliceCoord(const unsigned int index,const unsigned int axis,const Mat<2,3,unsigned int>& roi) const
+    type::Vec<4,Coord> get_sliceCoord(const unsigned int index,const unsigned int axis,const Mat<2,3,unsigned int>& roi) const
     {
-        Vec<4,Coord> ip;
+        type::Vec<4,Coord> ip;
         if(axis==0) // zy
         {
             ip[0] = Coord(index,roi[0][1]-0.5,roi[0][2]-0.5);
@@ -360,12 +360,12 @@ public:
             ip[3] = Coord(roi[0][0]-0.5,roi[1][1]+0.5,index);
         }
 
-        Vec<4,Coord> ret;
+        type::Vec<4,Coord> ret;
         for(unsigned int i=0; i<4; i++) ret[i] = transform->fromImage(ip[i]);
 
         return ret;
     }
-    Vec<4,Coord> get_sliceCoord(const unsigned int index,const unsigned int axis) const
+    type::Vec<4,Coord> get_sliceCoord(const unsigned int index,const unsigned int axis) const
     {
         Mat<2,3,unsigned int> roi;
         for(unsigned int i=0; i<3; i++) { roi[0][i]=0; roi[1][i]=img->getDimensions()[i]-1; }
@@ -378,7 +378,7 @@ public:
 
     inline friend std::istream& operator >> ( std::istream& in, ImagePlane& p )
     {
-        Vec<3,int> _plane;
+        type::Vec<3,int> _plane;
         in>>_plane;
         p.setPlane(pCoord((unsigned int)_plane[0],(unsigned int)_plane[1],(unsigned int)_plane[2]));
         return in;

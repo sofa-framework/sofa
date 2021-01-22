@@ -112,7 +112,7 @@ bool cholInv(Mat<n,n,real>& Inv, const Mat<n,n,real>& M )
     if( !cholDcmp(L,M) ) return false;
     for(Size i=0; i<n; i++ )
     {
-        Vec<n,real> v; // initialized to 0
+        type::Vec<n,real> v; // initialized to 0
         v[i]=1;
         cholBksb(Inv[i], L, v);
     }

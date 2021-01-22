@@ -27,7 +27,7 @@ protected:
     ImagePlaneType *p_plane;
     VecLabel v_label;
     
-     Vec<2,T> clamp;				// input clamp values
+     type::Vec<2,T> clamp;				// input clamp values
     
 public:
     ImageToolBoxData()
@@ -69,14 +69,14 @@ public:
     
     int getLabelsSize()const {return (int)v_label.size();}
     
-    const Vec<2,T>& getClamp() const {return clamp;}
-    void setClamp(const Vec<2,T> _clamp)  { clamp[0] = _clamp[0]; clamp[1] = _clamp[1];	}
+    const type::Vec<2,T>& getClamp() const {return clamp;}
+    void setClamp(const type::Vec<2,T> _clamp)  { clamp[0] = _clamp[0]; clamp[1] = _clamp[1];	}
     const bool& getMergeChannels() const {return this->mergeChannels;}
     void setMergeChannels(const bool _mergeChannels)
     {
         if(this->mergeChannels==_mergeChannels) return;
         this->mergeChannels=_mergeChannels;
-        this->setClamp(Vec<2,T>(cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()));
+        this->setClamp(type::Vec<2,T>(cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()));
         this->update();
     }
     
@@ -87,7 +87,7 @@ public:
     
     inline friend std::istream& operator >> ( std::istream& in, ImageToolBoxData& h )
     {
-        Vec<2,T> clamp;
+        type::Vec<2,T> clamp;
         in>>clamp;
         h.setClamp(clamp);
         return in;

@@ -39,13 +39,13 @@ struct SE3 {
     
 	// easy mappings between sofa/eigen vectors
     template<sofa::Size I>
-	static Eigen::Map< Eigen::Matrix<real, I, 1> > map(::sofa::defaulttype::Vec<I, real>& v) {
+	static Eigen::Map< Eigen::Matrix<real, I, 1> > map(::sofa::type::Vec<I, real>& v) {
 		return Eigen::Map< Eigen::Matrix<real, I, 1> >(v.ptr());
 	}
 
 
     template<sofa::Size I>
-	static Eigen::Map<const Eigen::Matrix<real, I, 1> > map(const ::sofa::defaulttype::Vec<I, real>& v) {
+	static Eigen::Map<const Eigen::Matrix<real, I, 1> > map(const ::sofa::type::Vec<I, real>& v) {
 		return Eigen::Map<const Eigen::Matrix<real, I, 1> >(v.ptr());
 	}
 

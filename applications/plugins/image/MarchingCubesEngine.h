@@ -59,7 +59,7 @@ public:
     typedef SReal Real;
 
     Data< Real > isoValue; ///< pixel value to extract isosurface
-    Data< defaulttype::Vec<3,unsigned int> > subdiv; ///< number of subdividions in x,y,z directions (use image dimension if =0)
+    Data< type::Vec<3,unsigned int> > subdiv; ///< number of subdividions in x,y,z directions (use image dimension if =0)
     Data< bool > invertNormals; ///< invert triangle vertex order
     Data< bool > showMesh; ///< show reconstructed mesh
 
@@ -74,7 +74,7 @@ public:
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
 
-    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
+    typedef helper::vector<type::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position; ///< output positions
@@ -87,7 +87,7 @@ public:
 
     MarchingCubesEngine()    :   Inherited()
         , isoValue(initData(&isoValue,(Real)(1.0),"isoValue","pixel value to extract isosurface"))
-        , subdiv(initData(&subdiv,defaulttype::Vec<3,unsigned int>(0,0,0),"subdiv","number of subdividions in x,y,z directions (use image dimension if =0)"))
+        , subdiv(initData(&subdiv,type::Vec<3,unsigned int>(0,0,0),"subdiv","number of subdividions in x,y,z directions (use image dimension if =0)"))
         , invertNormals(initData(&invertNormals,true,"invertNormals","invert triangle vertex order"))
         , showMesh(initData(&showMesh,false,"showMesh","show reconstructed mesh"))
         , image(initData(&image,ImageTypes(),"image",""))
@@ -125,7 +125,7 @@ protected:
         const cimg_library::CImg<T>& img = in->getCImg(this->time);
 
         // get subdivision
-        defaulttype::Vec<3,int> r((int)this->subdiv.getValue()[0],(int)this->subdiv.getValue()[1],(int)this->subdiv.getValue()[2]);
+        type::Vec<3,int> r((int)this->subdiv.getValue()[0],(int)this->subdiv.getValue()[1],(int)this->subdiv.getValue()[2]);
         for(unsigned int i=0; i<3; i++) if(!r[i]) r[i]=-100;
 
         // get isovalue
@@ -185,8 +185,8 @@ protected:
         vparams->drawTool()->enableLighting();
 
         std::size_t size = tri.size();
-        std::vector<defaulttype::Vector3> points;
-        std::vector<defaulttype::Vector3> normals;
+        std::vector<type::Vector3> points;
+        std::vector<type::Vector3> normals;
         std::vector<sofa::helper::types::RGBAColor> colors;
         points.resize(3*size);
         normals.resize(size);

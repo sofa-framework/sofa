@@ -79,7 +79,7 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
-    typedef helper::fixed_array <unsigned int,3> tri;
+    typedef type::stdtype::fixed_array <unsigned int,3> tri;
     typedef helper::kdTree<Coord> KDT;
     typedef typename KDT::distanceSet distanceSet;
     typedef typename KDT::distanceToPoint distanceToPoint;

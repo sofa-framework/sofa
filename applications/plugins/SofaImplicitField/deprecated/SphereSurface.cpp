@@ -7,7 +7,7 @@ namespace component
 namespace container
 {
 
-double SphereSurface::getDistance(defaulttype::Vec3d& Pos, int& domain)
+double SphereSurface::getDistance(type::Vec3d& Pos, int& domain)
 {
     SOFA_UNUSED(domain) ;
     double result = m_radius - sqrt((Pos[0] - m_center[0])*(Pos[0] - m_center[0]) +
@@ -16,7 +16,7 @@ double SphereSurface::getDistance(defaulttype::Vec3d& Pos, int& domain)
     return m_inside ? result : -result;
 }
 
-double SphereSurface::getDistance(defaulttype::Vec3d& /*Pos*/, double value, double grad_norm, int &domain)
+double SphereSurface::getDistance(type::Vec3d& /*Pos*/, double value, double grad_norm, int &domain)
 {
     (void)domain;
     if (grad_norm < 0) // use value

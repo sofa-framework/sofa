@@ -37,7 +37,7 @@ struct NormalizationMappingTest : public Mapping_test<Mapping>
     typedef NormalizationMappingTest self;
     typedef Mapping_test<Mapping> base;
 
-    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::type::Vec<3,SReal> Vec3;
     
     Mapping* mapping;
 

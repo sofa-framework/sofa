@@ -69,7 +69,7 @@ public:
 
     Data< helper::vector<Real> > voxelSize; ///< should be a Vec<3,Real>, but it is easier to be backward-compatible that way
     typedef helper::WriteOnlyAccessor<Data< helper::vector<Real> > > waVecReal;
-    Data< defaulttype::Vec<3,unsigned> > nbVoxels; ///< number of voxel (redondant with and priority over voxelSize)
+    Data< type::Vec<3,unsigned> > nbVoxels; ///< number of voxel (redondant with and priority over voxelSize)
     Data< bool > rotateImage; ///< orient the image bounding box according to the mesh (OBB)
     Data< unsigned int > padSize; ///< size of border in number of voxels
     Data< unsigned int > subdiv; ///< number of subdivisions for face rasterization (if needed, increase to avoid holes)
@@ -87,7 +87,7 @@ public:
     typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     Data< TransformType > transform;
 
-    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
+    typedef helper::vector<type::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     helper::vectorData< SeqPositions > vf_positions;
@@ -128,7 +128,7 @@ public:
 
     MeshToImageEngine()    :   Inherited()
       , voxelSize(initData(&voxelSize,helper::vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
-      , nbVoxels(initData(&nbVoxels,defaulttype::Vec<3,unsigned>(0,0,0),"nbVoxels","number of voxel (redondant with and priority over voxelSize)"))
+      , nbVoxels(initData(&nbVoxels,type::Vec<3,unsigned>(0,0,0),"nbVoxels","number of voxel (redondant with and priority over voxelSize)"))
       , rotateImage(initData(&rotateImage,false,"rotateImage","orient the image bounding box according to the mesh (OBB)"))
       , padSize(initData(&padSize,(unsigned int)(0),"padSize","size of border in number of voxels"))
       , subdiv(initData(&subdiv,(unsigned int)(4),"subdiv","number of subdivisions for face rasterization (if needed, increase to avoid holes)"))

@@ -51,12 +51,12 @@ public:
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
 
 public:
-    Data< defaulttype::Vector3 > pivot; ///< Pivot point position
+    Data< type::Vector3 > pivot; ///< Pivot point position
     Data< defaulttype::Quat > rotation; ///< TODO-rotation
 protected:
     LaparoscopicRigidMapping()
         : Inherit()
-        , pivot(initData(&pivot, defaulttype::Vector3(0,0,0), "pivot","Pivot point position"))
+        , pivot(initData(&pivot, type::Vector3(0,0,0), "pivot","Pivot point position"))
         , rotation(initData(&rotation, defaulttype::Quat(0,0,0,1), "rotation", "TODO-rotation"))
     {
     }
@@ -66,7 +66,7 @@ protected:
     }
 public:
 
-    //void setPivot(const defaulttype::Vector3& val) { this->pivot = val; }
+    //void setPivot(const type::Vector3& val) { this->pivot = val; }
     //void setRotation(const defaulttype::Quat& val) { this->rotation = val; this->rotation.normalize(); }
 
     void init() override;

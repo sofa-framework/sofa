@@ -47,7 +47,7 @@ public:
     Data< VecCoord > d_x; ///< Current position
 
     // The dual quaternions, as vector of Vec4f
-    Data< helper::vector< defaulttype::Vec4f > > d_dualQuats; ///< Dual quaternions, computed from x (or x*x0^-1 if x0 is provided). DualQuats are stored as two vec4f elements, first the orientation, then the dual.
+    Data< helper::vector< type::Vec4f > > d_dualQuats; ///< Dual quaternions, computed from x (or x*x0^-1 if x0 is provided). DualQuats are stored as two vec4f elements, first the orientation, then the dual.
 
 
 };

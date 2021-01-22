@@ -69,7 +69,7 @@ void ComputeDualQuatEngine< DataTypes >::doUpdate()
 
 
     // Clean the output
-    helper::vector< defaulttype::Vec4f >& dualQuats = *d_dualQuats.beginWriteOnly();
+    helper::vector< type::Vec4f >& dualQuats = *d_dualQuats.beginWriteOnly();
     dualQuats.clear();
 
     const size_t size = x.size();
@@ -100,10 +100,10 @@ void ComputeDualQuatEngine< DataTypes >::doUpdate()
         DualQuat dualQuat( p );
 
         // Insert into the output
-        sofa::defaulttype::Vec<4,Real> orientation = dualQuat.getOrientation();
-        sofa::defaulttype::Vec<4,Real> dual = dualQuat.getDual();
-        dualQuats.push_back( defaulttype::Vec4f( orientation[0], orientation[1], orientation[2], orientation[3] ) );
-        dualQuats.push_back( defaulttype::Vec4f( dual[0], dual[1], dual[2], dual[3] ) );
+        sofa::type::Vec<4,Real> orientation = dualQuat.getOrientation();
+        sofa::type::Vec<4,Real> dual = dualQuat.getDual();
+        dualQuats.push_back( type::Vec4f( orientation[0], orientation[1], orientation[2], orientation[3] ) );
+        dualQuats.push_back( type::Vec4f( dual[0], dual[1], dual[2], dual[3] ) );
     }
 
     d_dualQuats.endEdit();

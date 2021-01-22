@@ -89,7 +89,7 @@ void MeshMatrixMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParam
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
 
     MeshMatrixMassCuda_addForce3f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), g.ptr(), (float) m_massLumpingCoeff);
     d_f.endEdit();
@@ -138,7 +138,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParam
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
 
     MeshMatrixMassCuda_addForce2f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), g.ptr(), (float) m_massLumpingCoeff);
     d_f.endEdit();
@@ -187,7 +187,7 @@ void MeshMatrixMass<CudaVec1fTypes, float>::addForce(const core::MechanicalParam
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
 
     MeshMatrixMassCuda_addForce1f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), g.ptr(), (float) m_massLumpingCoeff);
     d_f.endEdit();

@@ -27,7 +27,7 @@ using sofa::core::RegisterObject ;
 namespace sofa::component::geometry::_BottleField_
 {
 
-using sofa::defaulttype::Vec2;
+using sofa::type::Vec2;
 
 BottleField::BottleField()
     : d_inside(initData(&d_inside, false, "inside", "If true the field is oriented inside (resp. outside) the bottle-shaped object. (default = false)"))

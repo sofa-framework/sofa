@@ -61,7 +61,7 @@ public:
     typedef typename sofa::defaulttype::Vec3dTypes::Coord Point;
     typedef typename sofa::defaulttype::Vec3dTypes::Coord Coord;
     typedef typename sofa::defaulttype::Vec3dTypes::VecCoord VecCoord;
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::type::Vector3 Vector3;
 
     typedef sofa::core::topology::BaseMeshTopology::Tetra Tetra;
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;

@@ -38,7 +38,7 @@ namespace sofa
 	{
 
 		using sofa::helper::vector;
-		using sofa::defaulttype::Vec3d;
+		using sofa::type::Vec3d;
 		using sofa::defaulttype::Quat;
 		typedef sofa::defaulttype::SolidTypes<double>::Transform Transform;
 		using sofa::core::objectmodel::Data;

@@ -92,7 +92,7 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
 
             double scale[3]; for(unsigned int i=0; i<3; i++) scale[i]=(double)rtransform->getScale()[i];
             double translation[3]; for(unsigned int i=0; i<3; i++) translation[i]=(double)rtransform->getTranslation()[i];
-            defaulttype::Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
+            type::Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
             helper::Quater< Real > q = helper::Quater< Real >::createQuaterFromEuler(rotation);
             defaulttype::Mat<3,3,Real> R;  q.toMatrix(R);
             double affine[9]; for(unsigned int i=0; i<3; i++) for(unsigned int j=0; j<3; j++) affine[3*i+j]=(double)R[i][j];
@@ -162,7 +162,7 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
             header.nifti_QForm = 1; //method 2
             header.nifti_SForm = 0;
 
-            defaulttype::Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
+            type::Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
             helper::Quater<Real> q = helper::Quater<Real>::createQuaterFromEuler(rotation);
 
             for (unsigned int i = 0; i< 3; i++)

@@ -78,12 +78,12 @@ public:
     typedef helper::ReadAccessor<Data< TextureTypes > > raTexture;
     Data< TextureTypes > texImage;
 
-    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
+    typedef helper::vector<type::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position; ///< output positions
 
-    typedef helper::fixed_array<Real,2> TexCoord;
+    typedef type::stdtype::fixed_array<Real,2> TexCoord;
     typedef helper::vector<TexCoord> SeqTexCoords;
     typedef helper::ReadAccessor<Data< SeqTexCoords > > raTexCoords;
     typedef helper::WriteOnlyAccessor<Data< SeqTexCoords > > waTexCoords;
@@ -264,10 +264,10 @@ protected:
         glBegin(GL_TRIANGLES);
         for (std::size_t i=0; i<tri.size(); ++i)
         {
-            const defaulttype::Vec<3,Real>& a = pos[ tri[i][0] ];
-            const defaulttype::Vec<3,Real>& b = pos[ tri[i][1] ];
-            const defaulttype::Vec<3,Real>& c = pos[ tri[i][2] ];
-            defaulttype::Vec<3,Real> n = cross((c-a),(b-a));	n.normalize();
+            const type::Vec<3,Real>& a = pos[ tri[i][0] ];
+            const type::Vec<3,Real>& b = pos[ tri[i][1] ];
+            const type::Vec<3,Real>& c = pos[ tri[i][2] ];
+            type::Vec<3,Real> n = cross((c-a),(b-a));	n.normalize();
             glNormal3d(n[0],n[1],n[2]);
 
             glTexCoord2d(tc[tri[i][0]][0],tc[tri[i][0]][1]); glVertex3d(a[0],a[1],a[2]);

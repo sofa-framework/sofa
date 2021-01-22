@@ -36,8 +36,8 @@ namespace sofa::component::mapping
 
 using helper::ReadAccessor;
 using helper::WriteAccessor;
-using defaulttype::Vec;
-using defaulttype::Vector3;
+using type::Vec;
+using type::Vector3;
 
 
 template <class In, class Out>

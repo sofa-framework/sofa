@@ -30,7 +30,7 @@ namespace sofa::component::geometry
 namespace _StarShapedField_
 {
 
-using sofa::defaulttype::Vec3d;
+using sofa::type::Vec3d;
 using sofa::defaulttype::Mat3x3;
 
 /**

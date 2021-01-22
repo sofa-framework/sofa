@@ -91,7 +91,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addContact(int /*m1*/, int /*m2*
        c.age = 0;
     }
     */
-    sofa::defaulttype::Vec4f c(norm, dist);
+    sofa::type::Vec4f c(norm, dist);
     Real fact = helper::rsqrt(ks);
     c *= fact;
     contacts.push_back(c);
@@ -111,7 +111,7 @@ void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffn
         Real distance = (useDistance) ? d0 + o->distance : d0;
         Real ks = (distance > 1.0e-10) ? stiffness / distance : stiffness;
         Coord n = (normXForm)?(*normXForm)*o->normal : o->normal;
-        defaulttype::Vec4f c(n, distance);
+        type::Vec4f c(n, distance);
         c *= helper::rsqrt(ks);
         contacts[i] = c;
         pen[i] = 0;
@@ -146,7 +146,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addForce(const core::MechanicalP
 #if 0
     for (unsigned int i=0; i<contacts.size(); i++)
     {
-        sofa::defaulttype::Vec4f c = contacts[i];
+        sofa::type::Vec4f c = contacts[i];
         //Coord u = x2[c.m2]-x1[c.m1];
         Coord u = x2[i]-x1[i];
         Coord norm(c[0],c[1],c[2]);
@@ -186,7 +186,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addDForce(const core::Mechanical
     {
         if (pen[i] > 0) // + dpen > 0)
         {
-            sofa::defaulttype::Vec4f c = contacts[i];
+            sofa::type::Vec4f c = contacts[i];
             //Coord du = dx2[c.m2]-dx1[c.m1];
             Coord du = dx2[i]-dx1[i];
             Coord norm(c[0],c[1],c[2]);
@@ -226,7 +226,7 @@ void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualP
     glBegin(GL_LINES);
     for (unsigned int i=0; i<contacts.size(); i++)
     {
-        sofa::defaulttype::Vec4f c = contacts[i];
+        sofa::type::Vec4f c = contacts[i];
         Coord u = p2[i]-p1[i];
         Coord norm(c[0],c[1],c[2]);
         //c.pen = c.dist - u*c.norm;
@@ -252,7 +252,7 @@ void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualP
         glBegin(GL_LINES);
         for (unsigned int i=0; i<contacts.size(); i++)
         {
-            sofa::defaulttype::Vec4f c = contacts[i];
+            sofa::type::Vec4f c = contacts[i];
             Coord norm(c[0],c[1],c[2]); norm.normalize();
             Coord p = p1[i] - norm*0.1;
             helper::gl::glVertexT(p1[i]);

@@ -183,7 +183,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
         cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg_library::cimg::type<Real>::max();
 
         // list of seed points
-        std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
+        std::set<std::pair<Real,sofa::type::Vec<3,int> > > trial;
 
         // add fixed points
         helper::vector<unsigned int> fpos_voronoiIndex;
@@ -255,7 +255,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
         }
 
         // add 3D points
-        std::vector<defaulttype::Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
+        std::vector<type::Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
         for(unsigned int i=0; i<pos_VoxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_VoxelIndex[i]));
         sampler->position.endEdit();
 
@@ -298,7 +298,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
         cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg_library::cimg::type<Real>::max();
 
         // list of seed points
-        std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
+        std::set<std::pair<Real,sofa::type::Vec<3,int> > > trial;
 
         // add fixed points
         helper::vector<unsigned int> fpos_voronoiIndex;
@@ -405,7 +405,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
         }
 
         // add 3D points
-        std::vector<defaulttype::Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
+        std::vector<type::Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
         for(unsigned int i=0; i<pos_VoxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_VoxelIndex[i]));
         sampler->position.endEdit();
 
@@ -464,7 +464,7 @@ public:
 
     //@name sample data (points+connectivity)
     /**@{*/
-    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
+    typedef helper::vector<type::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position; ///< output positions
@@ -646,31 +646,31 @@ protected:
             case 1:
                 glPushAttrib(GL_LIGHTING_BIT);
                 vparams->drawTool()->enableLighting();
-                vparams->drawTool()->drawSpheres(this->position.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.1,0.7,0.1,1));
-                vparams->drawTool()->drawSpheres(this->fixedPosition.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.1,0.7,0.1,1));
+                vparams->drawTool()->drawSpheres(this->position.getValue(),showSamplesScale.getValue(),type::Vec4f(0.1,0.7,0.1,1));
+                vparams->drawTool()->drawSpheres(this->fixedPosition.getValue(),showSamplesScale.getValue(),type::Vec4f(0.1,0.7,0.1,1));
                 glPopAttrib();
             default:
-                vparams->drawTool()->drawPoints(this->position.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.2,1,0.2,1));
-                vparams->drawTool()->drawPoints(this->fixedPosition.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(1,0.2,0.2,1));
+                vparams->drawTool()->drawPoints(this->position.getValue(),showSamplesScale.getValue(),type::Vec4f(0.2,1,0.2,1));
+                vparams->drawTool()->drawPoints(this->fixedPosition.getValue(),showSamplesScale.getValue(),type::Vec4f(1,0.2,0.2,1));
             }
         }
 
 
         if (this->showEdges.getValue())
         {
-            std::vector<defaulttype::Vector3> points;
+            std::vector<type::Vector3> points;
             points.resize(2*e.size());
             for (unsigned int i=0; i<e.size(); ++i)
             {
                 points[2*i][0]=pos[e[i][0]][0];            points[2*i][1]=pos[e[i][0]][1];            points[2*i][2]=pos[e[i][0]][2];
                 points[2*i+1][0]=pos[e[i][1]][0];          points[2*i+1][1]=pos[e[i][1]][1];          points[2*i+1][2]=pos[e[i][1]][2];
             }
-            vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(0.7,0,0.7,1));
-            //vparams->drawTool()->drawTriangles(points, defaulttype::Vec4f(0.7,0,0.7,1));
+            vparams->drawTool()->drawLines(points,2.0,type::Vec4f(0.7,0,0.7,1));
+            //vparams->drawTool()->drawTriangles(points, type::Vec4f(0.7,0,0.7,1));
         }
         if (this->showGraph.getValue())
         {
-            std::vector<defaulttype::Vector3> points;
+            std::vector<type::Vector3> points;
             points.resize(2*g.size());
             for (unsigned int i=0; i<g.size(); ++i)
                 for (unsigned int j=0; j<2; ++j)
@@ -679,24 +679,24 @@ protected:
                     else {points[2*i+j][0]=pos[g[i][j]-fpos.size()][0];            points[2*i+j][1]=pos[g[i][j]-fpos.size()][1];            points[2*i+j][2]=pos[g[i][j]-fpos.size()][2];}
 
                 }
-            vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(1,1,0.5,1));
+            vparams->drawTool()->drawLines(points,2.0,type::Vec4f(1,1,0.5,1));
         }
 
         if(this->showFaces.getValue())
         {
             //Tableau des points du cube
-            std::vector<defaulttype::Vector3> points;
+            std::vector<type::Vector3> points;
             points.resize(36);
 
             //Tableau des normales de ces faces
-            std::vector<defaulttype::Vector3> normales;
+            std::vector<type::Vector3> normales;
 
             //Tableau des couleurs des faces
             std::vector<defaulttype::Vector4> couleurs;
 
             int tmp[] = {0,1,2, 0,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 3,2,6, 3,6,7, 0,3,7, 0,7,4, 7,4,5, 7,5,6};
             int ns1, ns2, ns3;
-            defaulttype::Vector3 s1, s2, s3;
+            type::Vector3 s1, s2, s3;
             for(size_t iH=0;iH<this->hexahedra.getValue().size(); iH++)
             {
                 sofa::core::topology::Topology::Hexahedron currentCube = hexahedra.getValue().at(iH);
@@ -721,20 +721,20 @@ protected:
                     points.push_back(s3);
 
                     //Calcul de la normale de la surface
-                    defaulttype::Vector3 ab = s2 - s1;
-                    defaulttype::Vector3 ac = s3 - s1;
-                    defaulttype::Vector3 normal = ab.cross(ac);
+                    type::Vector3 ab = s2 - s1;
+                    type::Vector3 ac = s3 - s1;
+                    type::Vector3 normal = ab.cross(ac);
                     normal.normalize();
                     normales.push_back(normal);
 
                     //Calcul de la couleur de la face
-                    couleurs.push_back(defaulttype::Vec4f(0.7,0,0.7,1));
+                    couleurs.push_back(type::Vec4f(0.7,0,0.7,1));
 
 
                 }
 
             }
-            vparams->drawTool()->drawTriangles(points,defaulttype::Vec4f(1,1,1,1));
+            vparams->drawTool()->drawTriangles(points,type::Vec4f(1,1,1,1));
         }
 
 #endif /* SOFA_NO_OPENGL */
