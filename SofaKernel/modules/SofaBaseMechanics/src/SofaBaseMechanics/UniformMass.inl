@@ -28,6 +28,7 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 
 namespace sofa::component::mass

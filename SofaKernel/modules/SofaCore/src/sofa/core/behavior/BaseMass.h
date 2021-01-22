@@ -25,8 +25,10 @@
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/TopologyTypes.h>
+
+namespace sofa::defaulttype { class BaseMatrix; }
+namespace sofa::core::behavior { class MultiMatrixAccessor; }
 
 namespace sofa
 {
