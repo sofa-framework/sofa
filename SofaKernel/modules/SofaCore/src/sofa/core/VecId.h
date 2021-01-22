@@ -22,9 +22,6 @@
 #ifndef SOFA_CORE_VECID_H
 #define SOFA_CORE_VECID_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
-
-
 namespace sofa
 {
 
