@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/simulation/Node.h>
 
 
 namespace sofa::component::linearsolver {
