@@ -1,13 +1,14 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: linux-postinstall-fixup.sh <build-dir> <install-dir> [qt-dir]"
+    echo "Usage: linux-postinstall-fixup.sh <build-dir> <install-dir> [qt-lib-dir] [qt-data-dir]"
 }
 
 if [ "$#" -ge 2 ]; then
     BUILD_DIR="$(cd $1 && pwd)"
     INSTALL_DIR="$(cd $2 && pwd)"
-    QT_DIR="$3"
+    QT_LIB_DIR="$3"
+    QT_DATA_DIR="$4"
 
     OUTPUT_TMP="all_deps.tmp"
 else
@@ -48,34 +49,29 @@ rm -rf "$INSTALL_DIR/plugins/platforms"
 rm -rf "$INSTALL_DIR/plugins/styles"
 rm -rf "$INSTALL_DIR/plugins/xcbglintegrations"
 
-# Qt plugins
-QT_PLUGIN_DIR="$QT_DIR/plugins"
-
-# Qt installed via Fedora RPM
-if ! [ -d "$QT_PLUGIN_DIR" ] && [ -d "/usr/lib64/qt5/plugins" ] ; then
-  QT_PLUGIN_DIR="/usr/lib64/qt5/plugins"
-fi
-
-# Qt installed via Ubuntu DEB
-if ! [ -d "$QT_PLUGIN_DIR" ] && [ -d "/usr/lib/x86_64-linux-gnu/qt5/plugins" ] ; then
-  QT_PLUGIN_DIR="/usr/lib/x86_64-linux-gnu/qt5/plugins"
+QT_PLUGINS_DIR="$QT_DATA_DIR/plugins"
+QT_LIBEXEC_DIR="$QT_DATA_DIR/libexec"
+if [[ "$QT_LIB_DIR" == "/usr/lib"* ]]; then
+    QT_WEBENGINE_DATA_DIR="/usr/share/qt5/resources"
+else
+    QT_WEBENGINE_DATA_DIR="$QT_DATA_DIR"
 fi
 
 if [ -d "$QT_DIR" ]; then
-    if [ -d "$QT_PLUGIN_DIR/iconengines" ]; then
-        cp -R "$QT_PLUGIN_DIR/iconengines" "$INSTALL_DIR/bin"
+    if [ -d "$QT_PLUGINS_DIR/iconengines" ]; then
+        cp -R "$QT_PLUGINS_DIR/iconengines" "$INSTALL_DIR/bin"
     fi
-    if [ -d "$QT_PLUGIN_DIR/imageformats" ]; then
-        cp -R "$QT_PLUGIN_DIR/imageformats" "$INSTALL_DIR/bin"
+    if [ -d "$QT_PLUGINS_DIR/imageformats" ]; then
+        cp -R "$QT_PLUGINS_DIR/imageformats" "$INSTALL_DIR/bin"
     fi
-    if [ -d "$QT_PLUGIN_DIR/platforms" ]; then
-        cp -R "$QT_PLUGIN_DIR/platforms" "$INSTALL_DIR/bin"
+    if [ -d "$QT_PLUGINS_DIR/platforms" ]; then
+        cp -R "$QT_PLUGINS_DIR/platforms" "$INSTALL_DIR/bin"
     fi
-    if [ -d "$QT_PLUGIN_DIR/styles" ]; then
-        cp -R "$QT_PLUGIN_DIR/styles" "$INSTALL_DIR/bin"
+    if [ -d "$QT_PLUGINS_DIR/styles" ]; then
+        cp -R "$QT_PLUGINS_DIR/styles" "$INSTALL_DIR/bin"
     fi
-    if [ -d "$QT_PLUGIN_DIR/xcbglintegrations" ]; then
-        cp -R "$QT_PLUGIN_DIR/xcbglintegrations" "$INSTALL_DIR/bin"
+    if [ -d "$QT_PLUGINS_DIR/xcbglintegrations" ]; then
+        cp -R "$QT_PLUGINS_DIR/xcbglintegrations" "$INSTALL_DIR/bin"
     fi
 fi
 
@@ -116,8 +112,8 @@ for group in $groups; do
     for lib_name in $lib_names; do
         echo_debug "lib_name = $lib_name"
         # take first path found for the dep lib (paths are sorted so "/a/b/c" comes before "not found")
-		if [[ "$group" == "libQt" ]] && [ -e "$QT_DIR/lib/$lib_name" ]; then
-			lib_path="$QT_DIR/lib/$lib_name"
+		if [[ "$group" == "libQt" ]] && [ -e "$QT_LIB_DIR/$lib_name" ]; then
+			lib_path="$QT_LIB_DIR/$lib_name"
 		else
 			lib_path="$(cat $OUTPUT_TMP | grep "${lib_name} =>" | sed -e 's/.* => //g' | sort | uniq | head -n 1)"
 		fi
@@ -140,11 +136,11 @@ for group in $groups; do
 done
 
 # Add QtWebEngine dependencies
-if [ -e "$INSTALL_DIR/lib/libQt5WebEngineCore.so.5" ] && [ -d "$QT_DIR" ]; then
-	cp "$QT_DIR/libexec/QtWebEngineProcess" "$INSTALL_DIR/bin" # not in INSTALL_DIR/libexec ; see our custom bin/qt.conf
+if [ -e "$INSTALL_DIR/lib/libQt5WebEngineCore.so.5" ] && [ -d "$QT_LIBEXEC_DIR" ] && [ -d "$QT_WEBENGINE_DATA_DIR" ]; then
+	cp "$QT_LIBEXEC_DIR/QtWebEngineProcess" "$INSTALL_DIR/bin" # not in INSTALL_DIR/libexec ; see our custom bin/qt.conf
 	mkdir "$INSTALL_DIR/translations"
-	cp -R "$QT_DIR/translations/qtwebengine_locales" "$INSTALL_DIR/translations"
-	cp -R "$QT_DIR/resources" "$INSTALL_DIR"
+	cp -R "$QT_WEBENGINE_DATA_DIR/translations/qtwebengine_locales" "$INSTALL_DIR/translations"
+	cp -R "$QT_WEBENGINE_DATA_DIR/resources" "$INSTALL_DIR"
 fi
 
 # Fixup RPATH/RUNPATH
