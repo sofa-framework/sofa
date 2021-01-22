@@ -8,7 +8,7 @@ if [ "$#" -ge 2 ]; then
     BUILD_DIR="$(cd $1 && pwd)"
     INSTALL_DIR="$(cd $2 && pwd)"
     QT_DIR="$3"
-    
+
     OUTPUT_TMP="all_deps.tmp"
 else
     usage; exit 1
@@ -146,6 +146,25 @@ if [ -e "$INSTALL_DIR/lib/libQt5WebEngineCore.so.5" ] && [ -d "$QT_DIR" ]; then
 	cp -R "$QT_DIR/translations/qtwebengine_locales" "$INSTALL_DIR/translations"
 	cp -R "$QT_DIR/resources" "$INSTALL_DIR"
 fi
+
+# Fixup RPATH/RUNPATH
+echo "  Fixing RPATH..."
+if [ -x "$(command -v patchelf)" ]; then
+    defaultRPATH='$ORIGIN/../lib:$$ORIGIN/../lib'
+    (
+    find "$INSTALL_DIR" -type f -name "*.so.*"
+    find "$INSTALL_DIR" -type f -name "runSofa" -path "*/bin/*"
+    ) | while read lib; do
+        if [[ "$(patchelf --print-rpath $lib)" == "" ]]; then
+            echo "    $lib: RPATH = $defaultRPATH"
+            patchelf --set-rpath $defaultRPATH $lib
+        fi
+        patchelf --shrink-rpath $lib
+    done
+else
+    echo "    WARNING: patchelf command not found, RPATH fixing skipped."
+fi
+echo "  Done."
 
 echo "Done."
 rm -f "$OUTPUT_TMP"
