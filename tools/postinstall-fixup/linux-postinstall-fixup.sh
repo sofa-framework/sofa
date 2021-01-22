@@ -106,7 +106,7 @@ get-lib-deps-assoc() {
 get-lib-deps-assoc "$BUILD_DIR" "$INSTALL_DIR" "$OUTPUT_TMP"
 
 # Copy libs
-groups="libQt libpng libicu libmng libxcb libxkb libpcre2 libjbig libwebp libjpeg"
+groups="libQt libpng libicu libmng libxcb libxkb libpcre2 libjbig libwebp libjpeg libsnappy"
 for group in $groups; do
     echo_debug "group = $group"
     # read all dep lib names matching the group
