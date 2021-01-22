@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 #include <SofaSimulationGraph/config.h>
 #include <memory>
 
