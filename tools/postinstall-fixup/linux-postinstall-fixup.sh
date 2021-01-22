@@ -48,21 +48,34 @@ rm -rf "$INSTALL_DIR/plugins/platforms"
 rm -rf "$INSTALL_DIR/plugins/styles"
 rm -rf "$INSTALL_DIR/plugins/xcbglintegrations"
 
+# Qt plugins
+QT_PLUGIN_DIR="$QT_DIR/plugins"
+
+# Qt installed via Fedora RPM
+if ! [ -d "$QT_PLUGIN_DIR" ] && [ -d "/usr/lib64/qt5/plugins" ] ; then
+  QT_PLUGIN_DIR="/usr/lib64/qt5/plugins"
+fi
+
+# Qt installed via Ubuntu DEB
+if ! [ -d "$QT_PLUGIN_DIR" ] && [ -d "/usr/lib/x86_64-linux-gnu/qt5/plugins" ] ; then
+  QT_PLUGIN_DIR="/usr/lib/x86_64-linux-gnu/qt5/plugins"
+fi
+
 if [ -d "$QT_DIR" ]; then
-    if [ -d "$QT_DIR/plugins/iconengines" ]; then
-        cp -R "$QT_DIR/plugins/iconengines" "$INSTALL_DIR/bin"
+    if [ -d "$QT_PLUGIN_DIR/iconengines" ]; then
+        cp -R "$QT_PLUGIN_DIR/iconengines" "$INSTALL_DIR/bin"
     fi
-    if [ -d "$QT_DIR/plugins/imageformats" ]; then
-        cp -R "$QT_DIR/plugins/imageformats" "$INSTALL_DIR/bin"
+    if [ -d "$QT_PLUGIN_DIR/imageformats" ]; then
+        cp -R "$QT_PLUGIN_DIR/imageformats" "$INSTALL_DIR/bin"
     fi
-    if [ -d "$QT_DIR/plugins/platforms" ]; then
-        cp -R "$QT_DIR/plugins/platforms" "$INSTALL_DIR/bin"
+    if [ -d "$QT_PLUGIN_DIR/platforms" ]; then
+        cp -R "$QT_PLUGIN_DIR/platforms" "$INSTALL_DIR/bin"
     fi
-    if [ -d "$QT_DIR/plugins/styles" ]; then
-        cp -R "$QT_DIR/plugins/styles" "$INSTALL_DIR/bin"
+    if [ -d "$QT_PLUGIN_DIR/styles" ]; then
+        cp -R "$QT_PLUGIN_DIR/styles" "$INSTALL_DIR/bin"
     fi
-    if [ -d "$QT_DIR/plugins/xcbglintegrations" ]; then
-        cp -R "$QT_DIR/plugins/xcbglintegrations" "$INSTALL_DIR/bin"
+    if [ -d "$QT_PLUGIN_DIR/xcbglintegrations" ]; then
+        cp -R "$QT_PLUGIN_DIR/xcbglintegrations" "$INSTALL_DIR/bin"
     fi
 fi
 
@@ -93,7 +106,7 @@ get-lib-deps-assoc() {
 get-lib-deps-assoc "$BUILD_DIR" "$INSTALL_DIR" "$OUTPUT_TMP"
 
 # Copy libs
-groups="libQt libpng libicu libmng libxcb libxkb libOpenGL"
+groups="libQt libpng libicu libmng libxcb libxkb libpcre2 libjbig libwebp libjpeg"
 for group in $groups; do
     echo_debug "group = $group"
     # read all dep lib names matching the group
