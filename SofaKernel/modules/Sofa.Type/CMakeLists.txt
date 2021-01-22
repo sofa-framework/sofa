@@ -17,14 +17,17 @@ set(SOURCE_FILES
     ${SOFATYPESRC_ROOT}/stdtype/fixed_array.cpp
 )
 
+# Compatibility files
+set (COMPATSRC_ROOT "compat/")
 set(COMPAT_HEADER_FILES
-    src/sofa/defaulttype/Vec.h
-    src/sofa/helper/fixed_array.h
-    src/sofa/helper/fixed_array_algorithms.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Vec.h
+    ${COMPATSRC_ROOT}/sofa/helper/fixed_array.h
+    ${COMPATSRC_ROOT}/sofa/helper/fixed_array_algorithms.h
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
 source_group("compat" FILES ${COMPAT_HEADER_FILES})
 
 sofa_add_targets_to_package(
