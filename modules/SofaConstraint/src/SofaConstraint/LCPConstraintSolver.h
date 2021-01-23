@@ -24,6 +24,7 @@
 
 #include <SofaConstraint/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/BaseConstraint.h>
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>

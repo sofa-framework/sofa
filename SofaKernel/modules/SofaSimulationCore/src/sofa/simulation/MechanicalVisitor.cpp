@@ -23,6 +23,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/LocalStorage.h>
+#include <sofa/core/behavior/BaseInteractionConstraint.h>
 #include <iostream>
 
 namespace sofa
@@ -239,6 +240,18 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node)
     ctx.node = node;
     ctx.nodeData = rootData;
     processNodeBottomUp(node, &ctx);
+}
+
+/// Process all the InteractionConstraint
+Visitor::Result BaseMechanicalVisitor::fwdInteractionProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseInteractionProjectiveConstraintSet* c)
+{
+    return fwdProjectiveConstraintSet(ctx->node, c);
+}
+
+/// Process all the InteractionConstraint
+Visitor::Result BaseMechanicalVisitor::fwdInteractionConstraint(VisitorContext* ctx, core::behavior::BaseInteractionConstraint* c)
+{
+    return fwdConstraintSet(ctx->node, c);
 }
 
 

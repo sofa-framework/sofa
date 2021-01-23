@@ -32,7 +32,6 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/BaseInteractionConstraint.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
@@ -265,16 +264,10 @@ public:
     }
 
     /// Process all the InteractionConstraint
-    virtual Result fwdInteractionProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseInteractionProjectiveConstraintSet* c)
-    {
-        return fwdProjectiveConstraintSet(ctx->node, c);
-    }
+    virtual Result fwdInteractionProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseInteractionProjectiveConstraintSet* c);
 
     /// Process all the InteractionConstraint
-    virtual Result fwdInteractionConstraint(VisitorContext* ctx, core::behavior::BaseInteractionConstraint* c)
-    {
-        return fwdConstraintSet(ctx->node, c);
-    }
+    virtual Result fwdInteractionConstraint(VisitorContext* ctx, core::behavior::BaseInteractionConstraint* c);
 
     ///@}
 

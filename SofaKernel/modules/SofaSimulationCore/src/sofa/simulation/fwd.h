@@ -21,7 +21,9 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/simulation/config.h>
 #include <sofa/core/sptr.h>
+
 namespace sofa::core::objectmodel { class BaseContext; }
 
 namespace sofa::simulation
@@ -36,5 +38,5 @@ namespace sofa::simulation
     class MutationListener;
     class Visitor;
 
-    Node* getNodeFromContext(sofa::core::objectmodel::BaseContext*);
+    Node* SOFA_SIMULATION_CORE_API getNodeFromContext(sofa::core::objectmodel::BaseContext*);
 }
