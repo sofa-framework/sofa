@@ -21,8 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-#include <sofa/simulation/Node.h>
-
 
 namespace sofa::component::linearsolver {
 
@@ -108,9 +106,8 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
 
     if (!this->frozen)
     {
-        simulation::Node* root = dynamic_cast<simulation::Node*>(this->getContext());
         SReal dim = 0;
-        simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(root);
+        simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(this->getContext());
         currentGroup->systemSize = Size(dim);
         currentGroup->matrixAccessor.setDoPrintInfo( this->f_printLog.getValue() ) ;
 

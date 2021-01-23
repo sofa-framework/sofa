@@ -25,6 +25,7 @@
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/Node.h>
 
 
 namespace sofa

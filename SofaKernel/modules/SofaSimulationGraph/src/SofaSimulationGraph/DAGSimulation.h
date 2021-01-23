@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/Node.h>
 #include <SofaSimulationGraph/config.h>
+#include <sofa/simulation/fwd.h>
 #include <memory>
 
 
@@ -43,10 +43,10 @@ public:
     ~DAGSimulation() override; // this is a terminal class
 
     /// create a new graph(or tree) and return its root node.
-    virtual Node::SPtr createNewGraph(const std::string& name) override;
+    virtual NodeSPtr createNewGraph(const std::string& name) override;
 
     /// creates and returns a new node.
-    virtual Node::SPtr createNewNode(const std::string& name) override;
+    virtual NodeSPtr createNewNode(const std::string& name) override;
 
     /// Can the simulation handle a directed acyclic graph?
     bool isDirectedAcyclicGraph() override { return true; }
