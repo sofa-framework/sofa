@@ -23,6 +23,7 @@
 #define SOFA_CORE_VECID_H
 
 #include <string>
+#include <sstream>
 
 namespace sofa
 {
