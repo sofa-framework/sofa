@@ -22,6 +22,8 @@
 #ifndef SOFA_CORE_VECID_H
 #define SOFA_CORE_VECID_H
 
+#include <string>
+
 namespace sofa
 {
 
