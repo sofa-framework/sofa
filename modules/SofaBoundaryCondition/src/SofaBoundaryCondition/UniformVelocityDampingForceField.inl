@@ -22,6 +22,7 @@
 #pragma once
 
 #include "UniformVelocityDampingForceField.h"
+#include <sofa/defaulttype/BaseMatrix.h>
 
 namespace sofa::component::forcefield
 {

@@ -19,22 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_CPP
-#include <SofaBoundaryCondition/SkeletalMotionConstraint.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/simulation/Node.h>
+#pragma once
 
-namespace sofa::component::projectiveconstraintset
+namespace sofa::defaulttype
 {
-
-//declaration of the class, for the factory
-int SkeletalMotionConstraintClass = core::RegisterObject("animate a skeleton")
-        .add< SkeletalMotionConstraint<defaulttype::Rigid3Types> >()
-
-        ;
-
-template class SOFA_SOFABOUNDARYCONDITION_API SkeletalMotionConstraint<defaulttype::Rigid3Types>;
-
-} // namespace sofa::component::projectiveconstraintset
+    class BaseMatrix;
+}
