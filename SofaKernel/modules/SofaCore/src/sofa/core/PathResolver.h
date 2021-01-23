@@ -65,7 +65,7 @@ public:
         return result != nullptr;
     }
 
-    static void* FindLinkDestClass(Base* context, const BaseClass* destType, const std::string& path, const BaseLink* link);
+    static Base* FindLinkDestClass(Base* context, const BaseClass* destType, const std::string& path, const BaseLink* link);
 
     template<class T>
     static bool CheckPath(Base* context, const std::string& path)
@@ -78,8 +78,8 @@ public:
     template<class T>
     static bool FindLinkDest(Base* base, T*& ptr, const std::string& path, const BaseLink* link)
     {
-        void* result = FindLinkDestClass(base, T::GetClass(), path, link);
-        ptr = reinterpret_cast<T*>(result);
+        Base* result = FindLinkDestClass(base, T::GetClass(), path, link);
+        ptr=dynamic_cast<T*>(result);
         return (result != nullptr);
     }
 

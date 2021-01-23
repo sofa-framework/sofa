@@ -362,7 +362,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
     if( geometricStiffnessMatrix.compressedMatrix.nonZeros() ) // assembled version
     {
             const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
-                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get(mparams)].write();
+                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get()].write();
                   geometricStiffnessMatrix.addMult( InF, inDx, (InReal)mparams->kFactor() );
     }
     else
@@ -372,7 +372,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
         {
             updateK( mparams, childForceId );
             const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
-                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get(mparams)].write();
+                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get()].write();
             geometricStiffnessMatrix.addMult( InF, inDx, (InReal)mparams->kFactor() );
             geometricStiffnessMatrix.resize(0,0); // forgot about this matrix
         }
@@ -382,7 +382,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
             assert( !mparams->symmetricMatrix() );
 
             helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel));
-            helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get(mparams)].write());
+            helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get()].write());
             helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
             InReal kfactor = (InReal)mparams->kFactor();
 
@@ -573,6 +573,7 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
 {
+    SOFA_UNUSED(mparams);
     unsigned geomStiff = geometricStiffness.getValue();
 
     if( !geomStiff ) { geometricStiffnessMatrix.resize(0,0); return; }
@@ -585,7 +586,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
     dJ.resize( insize, insize );
     dJ.setZero(); // necessary ?
 
-    const VecDeriv& childForces = childForceId[this->toModel.get(mparams)].read()->getValue();
+    const VecDeriv& childForces = childForceId[this->toModel.get()].read()->getValue();
 
     // sorted in-out
     typedef std::map<unsigned, helper::vector<unsigned> > in_out_type;

@@ -64,7 +64,7 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDe
 {
     if (mparams)
     {
-            addForce(mparams, *fId[mstate.get(mparams)].write() , *mparams->readX(mstate), *mparams->readV(mstate));
+            addForce(mparams, *fId[mstate.get()].write() , *mparams->readX(mstate), *mparams->readV(mstate));
             updateForceMask();
     }
 }
@@ -79,7 +79,7 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
             mparams->setKFactorUsed(false);
 #endif
 
-        addDForce(mparams, *dfId[mstate.get(mparams)].write(), *mparams->readDx(mstate.get(mparams)));
+        addDForce(mparams, *dfId[mstate.get()].write(), *mparams->readDx(mstate.get()));
 
 #ifndef NDEBUG
         if (!mparams->getKFactorUsed())
@@ -94,7 +94,7 @@ void ForceField<DataTypes>::addClambda(const MechanicalParams* mparams, MultiVec
 {
     if (mparams)
     {
-        addClambda(mparams, *resId[mstate.get(mparams)].write(), *lambdaId[mstate.get(mparams)].read(), cFactor);
+        addClambda(mparams, *resId[mstate.get()].write(), *lambdaId[mstate.get()].read(), cFactor);
     }
 }
 
