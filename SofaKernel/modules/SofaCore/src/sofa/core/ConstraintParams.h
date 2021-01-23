@@ -25,7 +25,6 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
 
-
 namespace sofa
 {
 
