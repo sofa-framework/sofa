@@ -72,6 +72,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.inl
     ${SRC_ROOT}/behavior/RotationMatrix.h
+    ${SRC_ROOT}/behavior/fwd.h
     ${SRC_ROOT}/collision/BroadPhaseDetection.h
     ${SRC_ROOT}/collision/CollisionAlgorithm.h
     ${SRC_ROOT}/collision/CollisionGroupManager.h
@@ -192,6 +193,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/PairInteractionForceField.cpp
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.cpp
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.cpp
+    ${SRC_ROOT}/behavior/fwd.cpp
     ${SRC_ROOT}/collision/Contact.cpp
     ${SRC_ROOT}/collision/Intersection.cpp
     ${SRC_ROOT}/collision/Pipeline.cpp
@@ -251,6 +253,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${SRC_ROOT}/objectmodel/BaseObject.h ${SRC_ROOT}/objectmodel/BaseContext.h)
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)
