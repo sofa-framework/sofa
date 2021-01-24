@@ -31,12 +31,16 @@
 namespace sofa::component::misc
 {
 
+using defaulttype::Vector3;
+
 ReadState::ReadState()
     : d_filename( initData(&d_filename, "filename", "output file name"))
     , d_interval( initData(&d_interval, 0.0, "interval", "time duration between inputs"))
     , d_shift( initData(&d_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
     , d_loop( initData(&d_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , d_scalePos( initData(&d_scalePos, 1.0, "scalePos", "scale the input mechanical object"))
+    , d_rotation( initData(&d_rotation, Vector3(0.,0.,0.), "rotation", "rotate the input mechanical object"))
+    , d_translation( initData(&d_translation, Vector3(0.,0.,0.), "translation", "translate the input mechanical object"))
     , mmodel(nullptr)
     , infile(nullptr)
 #if SOFAGENERALLOADER_HAVE_ZLIB
@@ -47,6 +51,9 @@ ReadState::ReadState()
     , loopTime(0)
 {
     this->f_listening.setValue(true);
+    d_scalePos.setGroup("Transformation");
+    d_rotation.setGroup("Transformation");
+    d_translation.setGroup("Transformation");
 }
 
 ReadState::~ReadState()
@@ -230,8 +237,16 @@ void ReadState::processReadState()
         str >> cmd;
         if (cmd == "X=")
         {
-            mmodel->readVec(core::VecId::position(), str);            
-            mmodel->applyScale(d_scalePos.getValue(), d_scalePos.getValue(), d_scalePos.getValue());
+            mmodel->readVec(core::VecId::position(), str);
+
+            if (d_scalePos.getValue() != 1.)
+                mmodel->applyScale(d_scalePos.getValue(), d_scalePos.getValue(), d_scalePos.getValue());
+
+            if (d_rotation.getValue() != Vector3(0,0,0))
+                mmodel->applyRotation(d_rotation.getValue()[0],d_rotation.getValue()[1],d_rotation.getValue()[2]);
+
+            if (d_translation.getValue() != Vector3(0,0,0))
+                mmodel->applyTranslation(d_translation.getValue()[0],d_translation.getValue()[1],d_translation.getValue()[2]);
 
             updated = true;
         }
