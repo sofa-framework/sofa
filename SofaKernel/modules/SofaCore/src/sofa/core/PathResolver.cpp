@@ -78,7 +78,7 @@ bool PathResolver::FindDataLinkDest(Base* context, BaseData*& ptr, const std::st
     return context->findDataLinkDest(ptr, path, link);
 }
 
-void* PathResolver::FindLinkDestClass(Base* context, const BaseClass* destType, const std::string& path, const BaseLink* link)
+Base* PathResolver::FindLinkDestClass(Base* context, const BaseClass* destType, const std::string& path, const BaseLink* link)
 {
     if(context==nullptr)
         return nullptr;

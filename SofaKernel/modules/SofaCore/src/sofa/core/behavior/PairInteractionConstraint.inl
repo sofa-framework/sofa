@@ -83,7 +83,7 @@ void PairInteractionConstraint<DataTypes>::buildConstraintMatrix(const Constrain
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams, *cId[mstate1.get(cParams)].write(), *cId[mstate2.get(cParams)].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
+        buildConstraintMatrix(cParams, *cId[mstate1.get()].write(), *cId[mstate2.get()].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
         updateForceMask();
     }
 }
@@ -93,7 +93,7 @@ void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams* c
 {
     if (cParams)
     {
-        storeLambda(cParams, *res[mstate1.get(cParams)].write(), *res[mstate2.get(cParams)].write(), *cParams->readJ(mstate1), *cParams->readJ(mstate2), lambda);
+        storeLambda(cParams, *res[mstate1.get()].write(), *res[mstate2.get()].write(), *cParams->readJ(mstate1), *cParams->readJ(mstate2), lambda);
     }
 }
 

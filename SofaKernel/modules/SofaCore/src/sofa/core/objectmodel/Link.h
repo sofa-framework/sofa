@@ -777,6 +777,7 @@ public:
         return Inherit::getPath(0);
     }
 
+    [[deprecated("2020-01-12: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     DestType* get(const core::ExecParams*) const { return get(); }
     DestType* get() const
     {

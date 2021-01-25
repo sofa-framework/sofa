@@ -185,7 +185,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
     }
 }
 
-void* BaseObject::findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link)
+Base* BaseObject::findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link)
 {
     if (this->getContext() == BaseContext::getDefault())
         return nullptr;
