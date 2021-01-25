@@ -426,16 +426,6 @@ public:
         return OwnerType::GetClass();
     }
 
-    static const BaseClass* GetDestClass()
-    {
-        return DestType::GetClass();
-    }
-
-    static const BaseClass* GetOwnerClass()
-    {
-        return OwnerType::GetClass();
-    }
-
     size_t getSize() const override
     {
         return size();
@@ -609,6 +599,18 @@ protected:
 
     virtual void added(DestPtr ptr, std::size_t index) = 0;
     virtual void removed(DestPtr ptr, std::size_t index) = 0;
+
+    [[deprecated("2021-01-01: GetDestClass is there only for backward compatibility while deprecating Link::CheckPath.")]]
+    static const BaseClass* GetDestClass()
+    {
+        return DestType::GetClass();
+    }
+
+    [[deprecated("2021-01-01: GetOwnerClass is there only for backward compatibility while deprecating Link::CheckPath.")]]
+    static const BaseClass* GetOwnerClass()
+    {
+        return OwnerType::GetClass();
+    }
 };
 
 /**
