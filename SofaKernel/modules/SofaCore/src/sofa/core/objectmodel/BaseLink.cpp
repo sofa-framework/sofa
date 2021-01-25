@@ -93,7 +93,7 @@ std::string BaseLink::getValueTypeString() const
     return t;
 }
 
-bool BaseLink::ParseString(const std::string& text, std::string* path, std::string* data, const Base* owner)
+bool BaseLink::ParseString(const std::string& text, std::string* path, std::string* data, Base* owner)
 {
     if (text.empty())
     {
