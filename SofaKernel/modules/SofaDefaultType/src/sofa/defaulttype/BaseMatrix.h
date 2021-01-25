@@ -28,8 +28,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <utility> // for std::pair
 #include <cstddef> // for nullptr and std::size_t
-#include <iostream>
-#include <vector>
+#include <iosfwd>
 #include <climits>
 
 namespace sofa
@@ -1200,9 +1199,9 @@ public:
     /// @}
 
     /// Declare that the operator << is friend so they can use private data.
-    friend std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix& m );
+    friend SOFA_DEFAULTTYPE_API std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix& m );
     /// Declare that the operator >> is friend so they can use private data.
-    friend std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m );
+    friend SOFA_DEFAULTTYPE_API std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m );
 };
 
 /// Declare that the operator >> exists but is defined in a BaseMatrix.cpp
