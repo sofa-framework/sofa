@@ -39,6 +39,8 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/topological_sort.hpp>
 
+#include <sofa/core/objectmodel/LinkableContainer.h>
+
 /// If you want to activate/deactivate that please set them to true/false
 #define DEBUG_VISITOR false
 #define DEBUG_LINK false
@@ -51,28 +53,24 @@ namespace simulation
 using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;
 
+template<class Target>
+class NodeContainerLink : public sofa::core::objectmodel::LinkableContainer<Node, Target>
+{
+    NodeContainerLink(Target& c, const std::string& name, const std::string& help) : sofa::core::objectmodel::LinkableContainer<Node,Target>(c, name, help){}
+};
+
 Node::Node(const std::string& name)
     : core::objectmodel::BaseNode()
     , sofa::core::objectmodel::Context()
     , child(initLink("child", "Child nodes"))
     , object(initLink("object","All objects attached to this node"))
-
-    , animationManager(initLink("animationLoop","The AnimationLoop attached to this node (only valid for root node)"))
-    , visualLoop(initLink("visualLoop", "The VisualLoop attached to this node (only valid for root node)"))
-
     , behaviorModel(initLink("behaviorModel", "The BehaviorModel attached to this node (only valid for root node)"))
     , mapping(initLink("mapping", "The (non-mechanical) Mapping(s) attached to this node (only valid for root node)"))
 
     , solver(initLink("odeSolver", "The OdeSolver(s) attached to this node (controlling the mechanical time integration of this branch)"))
     , constraintSolver(initLink("constraintSolver", "The ConstraintSolver(s) attached to this node"))
     , linearSolver(initLink("linearSolver", "The LinearSolver(s) attached to this node"))
-    , topology(initLink("topology", "The Topology attached to this node"))
-    , meshTopology(initLink("meshTopology", "The MeshTopology / TopologyContainer attached to this node"))
     , topologyObject(initLink("topologyObject", "The topology-related objects attached to this node"))
-    , state(initLink("state", "The State attached to this node (storing vectors such as position, velocity)"))
-    , mechanicalState(initLink("mechanicalState", "The MechanicalState attached to this node (storing all state vectors)"))
-    , mechanicalMapping(initLink("mechanicalMapping", "The MechanicalMapping attached to this node"))
-    , mass(initLink("mass", "The Mass attached to this node"))
     , forceField(initLink("forceField", "The (non-interaction) ForceField(s) attached to this node"))
     , interactionForceField(initLink("interactionForceField", "The InteractionForceField(s) attached to this node"))
     , projectiveConstraintSet(initLink("projectiveConstraintSet", "The ProjectiveConstraintSet(s) attached to this node"))
@@ -85,7 +83,6 @@ Node::Node(const std::string& name)
     , visualManager(initLink("visualManager", "The VisualManager(s) attached to this node"))
 
     , collisionModel(initLink("collisionModel", "The CollisionModel(s) attached to this node"))
-    , collisionPipeline(initLink("collisionPipeline", "The collision Pipeline attached to this node"))
 
     , unsorted(initLink("unsorted", "The remaining objects attached to this node"))
 
@@ -96,6 +93,17 @@ Node::Node(const std::string& name)
     _context = this;
     setName(name);
     f_printLog.setValue(DEBUG_LINK);
+
+
+    addLink(new NodeContainerLink(animationManager, "animationLoop","The AnimationLoop attached to this node (only valid for root node)"));
+    addLink(new NodeContainerLink(visualLoop, "visualLoop", "The VisualLoop attached to this node (only valid for root node)"));
+    addLink(new NodeContainerLink(topology, "topology", "The Topology attached to this node"));
+    addLink(new NodeContainerLink(meshTopology, "meshTopology", "The MeshTopology / TopologyContainer attached to this node"));
+    addLink(new NodeContainerLink(state, "state", "The State attached to this node (storing vectors such as position, velocity)"));
+    addLink(new NodeContainerLink(mechanicalState, "mechanicalState", "The MechanicalState attached to this node (storing all state vectors)"));
+    addLink(new NodeContainerLink(mechanicalMapping, "mechanicalMapping", "The MechanicalMapping attached to this node"));
+    addLink(new NodeContainerLink(mass, "mass", "The Mass attached to this node"));
+    addLink(new NodeContainerLink(collisionPipeline, "collisionPipeline", "The collision Pipeline attached to this node"));
 }
 
 
@@ -400,7 +408,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
         int index = atoi(pathStr.c_str()+ppos+1);
 
         if(DEBUG_LINK)
-           dmsg_info() << "  index-based path to " << index ;
+            dmsg_info() << "  index-based path to " << index ;
 
         ObjectReverseIterator it = object.rbegin();
         ObjectReverseIterator itend = object.rend();
@@ -437,7 +445,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
     while(ppos < psize)
     {
         if ((ppos+1 < psize && pathStr.substr(ppos,2) == "./")
-            || pathStr.substr(ppos) == ".")
+                || pathStr.substr(ppos) == ".")
         {
             // this must be this node
             if(DEBUG_LINK)
@@ -447,7 +455,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
             based = true;
         }
         else if ((ppos+2 < psize && pathStr.substr(ppos,3) == "../") // relative
-                || pathStr.substr(ppos) == "..")
+                 || pathStr.substr(ppos) == "..")
         {
             ppos += 3;
             if (master)

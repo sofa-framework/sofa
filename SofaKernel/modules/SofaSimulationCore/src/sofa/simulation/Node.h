@@ -84,6 +84,43 @@ class VisualParams;
 namespace simulation
 {
 
+/// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
+/// UPDATE: it is now an alias for the Link pointer container
+template < class T >
+class NodeContainerSingle
+{
+    T* data {nullptr};
+public:
+    typedef T pointed_type;
+    typedef T* value_type;
+    typedef const value_type* iterator;
+    typedef const value_type* const_iterator;
+
+    value_type& operator[](const size_t){ return data; }
+    size_t size() const { return data != nullptr; }
+    bool empty() const {return size()==0;}
+    operator pointed_type*() { return data; }
+    operator pointed_type*() const { return data; }
+    operator const pointed_type*() const { return data; }
+
+    operator bool() const { return data != nullptr; }
+    void set(value_type newData){ data = newData ;}
+    value_type get(){ return data;}
+    void remove(value_type fdata)
+    {
+        if(data==fdata)
+            data=nullptr;
+    }
+    value_type operator->() const { return data; }
+    const_iterator begin() const { return &data; }
+    const_iterator end() const {
+        if(data==nullptr)
+            return (&data);
+        else
+            return (&data)+1;
+    }
+};
+
 /**
    Implements the object (component) management of the core::Context.
    Contains objects in lists and provides accessors.
@@ -210,40 +247,6 @@ public:
         }
     };
 
-    /// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
-    /// UPDATE: it is now an alias for the Link pointer container
-    template < class T, bool duplicate = true >
-    class Single : public SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)>
-    {
-    public:
-        typedef SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)> Inherit;
-        typedef T pointed_type;
-        typedef typename Inherit::DestPtr value_type;
-        //typedef TPtr value_type;
-        typedef typename Inherit::const_iterator const_iterator;
-        typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
-        typedef const_iterator iterator;
-        typedef const_reverse_iterator reverse_iterator;
-
-        Single(const BaseLink::InitLink<Node>& init)
-            : Inherit(init)
-        {
-        }
-
-        T* operator->() const
-        {
-            return this->get();
-        }
-        T& operator*() const
-        {
-            return *this->get();
-        }
-        operator T*() const
-        {
-            return this->get();
-        }
-    };
-
     Sequence<Node,true> child;
     typedef Sequence<Node,true>::iterator ChildIterator;
 
@@ -251,8 +254,8 @@ public:
     typedef Sequence<sofa::core::objectmodel::BaseObject,true>::iterator ObjectIterator;
     typedef Sequence<sofa::core::objectmodel::BaseObject,true>::reverse_iterator ObjectReverseIterator;
 
-    Single<sofa::core::behavior::BaseAnimationLoop> animationManager;
-    Single<sofa::core::visual::VisualLoop> visualLoop;
+    NodeContainerSingle<sofa::core::behavior::BaseAnimationLoop> animationManager;
+    NodeContainerSingle<sofa::core::visual::VisualLoop> visualLoop;
 
     Sequence<sofa::core::BehaviorModel> behaviorModel;
     Sequence<sofa::core::BaseMapping> mapping;
@@ -261,14 +264,14 @@ public:
     Sequence<sofa::core::behavior::ConstraintSolver> constraintSolver;
     Sequence<sofa::core::behavior::BaseLinearSolver> linearSolver;
 
-    Single<sofa::core::topology::Topology> topology;
-    Single<sofa::core::topology::BaseMeshTopology> meshTopology;
+    NodeContainerSingle<sofa::core::topology::Topology> topology;
+    NodeContainerSingle<sofa::core::topology::BaseMeshTopology> meshTopology;
     Sequence<sofa::core::topology::BaseTopologyObject> topologyObject;
 
-    Single<sofa::core::BaseState> state;
-    Single<sofa::core::behavior::BaseMechanicalState> mechanicalState;
-    Single<sofa::core::BaseMapping> mechanicalMapping;
-    Single<sofa::core::behavior::BaseMass> mass;
+    NodeContainerSingle<sofa::core::BaseState> state;
+    NodeContainerSingle<sofa::core::behavior::BaseMechanicalState> mechanicalState;
+    NodeContainerSingle<sofa::core::BaseMapping> mechanicalMapping;
+    NodeContainerSingle<sofa::core::behavior::BaseMass> mass;
     Sequence<sofa::core::behavior::BaseForceField> forceField;
     Sequence<sofa::core::behavior::BaseInteractionForceField> interactionForceField;
     Sequence<sofa::core::behavior::BaseProjectiveConstraintSet> projectiveConstraintSet;
@@ -281,7 +284,7 @@ public:
     Sequence<sofa::core::visual::VisualManager> visualManager;
 
     Sequence<sofa::core::CollisionModel> collisionModel;
-    Single<sofa::core::collision::Pipeline> collisionPipeline;
+    NodeContainerSingle<sofa::core::collision::Pipeline> collisionPipeline;
 
     Sequence<sofa::core::objectmodel::BaseObject> unsorted;
 
@@ -608,6 +611,10 @@ public:
     virtual void add##FUNCTIONNAME( CLASSNAME* obj ) override { SEQUENCENAME.add(obj); } \
     virtual void remove##FUNCTIONNAME( CLASSNAME* obj ) override { SEQUENCENAME.remove(obj); }
 
+#define NODE_ADD_IN_SINGLE( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
+    virtual void add##FUNCTIONNAME( CLASSNAME* obj ) override { SEQUENCENAME.set(obj); } \
+    virtual void remove##FUNCTIONNAME( CLASSNAME* obj ) override { SEQUENCENAME.remove(obj); }
+
     // WARNINGS subtilities:
     // an InteractioFF is NOT in the FF Sequence
     // a MechanicalMapping is NOT in the Mapping Sequence
@@ -616,20 +623,20 @@ public:
 
 public:
 
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
-    NODE_ADD_IN_SEQUENCE( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
+    NODE_ADD_IN_SINGLE( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
+    NODE_ADD_IN_SINGLE( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
     NODE_ADD_IN_SEQUENCE( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
     NODE_ADD_IN_SEQUENCE( sofa::core::BaseMapping, Mapping, mapping )
     NODE_ADD_IN_SEQUENCE( sofa::core::behavior::OdeSolver, OdeSolver, solver )
     NODE_ADD_IN_SEQUENCE( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
     NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
-    NODE_ADD_IN_SEQUENCE( sofa::core::topology::Topology, Topology, topology )
-    NODE_ADD_IN_SEQUENCE( sofa::core::topology::BaseMeshTopology, MeshTopology, meshTopology )
+    NODE_ADD_IN_SINGLE( sofa::core::topology::Topology, Topology, topology )
+    NODE_ADD_IN_SINGLE( sofa::core::topology::BaseMeshTopology, MeshTopology, meshTopology )
     NODE_ADD_IN_SEQUENCE( sofa::core::topology::BaseTopologyObject, TopologyObject, topologyObject )
-    NODE_ADD_IN_SEQUENCE( sofa::core::BaseState, State, state )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
-    NODE_ADD_IN_SEQUENCE( sofa::core::BaseMapping, MechanicalMapping, mechanicalMapping )
-    NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseMass, Mass, mass )
+    NODE_ADD_IN_SINGLE( sofa::core::BaseState, State, state )
+    NODE_ADD_IN_SINGLE( sofa::core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
+    NODE_ADD_IN_SINGLE( sofa::core::BaseMapping, MechanicalMapping, mechanicalMapping )
+    NODE_ADD_IN_SINGLE( sofa::core::behavior::BaseMass, Mass, mass )
     NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseForceField, ForceField, forceField )
     NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseInteractionForceField, InteractionForceField, interactionForceField )
     NODE_ADD_IN_SEQUENCE( sofa::core::behavior::BaseProjectiveConstraintSet, ProjectiveConstraintSet, projectiveConstraintSet )
@@ -640,7 +647,7 @@ public:
     NODE_ADD_IN_SEQUENCE( sofa::core::visual::VisualModel, VisualModel, visualModel )
     NODE_ADD_IN_SEQUENCE( sofa::core::visual::VisualManager, VisualManager, visualManager )
     NODE_ADD_IN_SEQUENCE( sofa::core::CollisionModel, CollisionModel, collisionModel )
-    NODE_ADD_IN_SEQUENCE( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
+    NODE_ADD_IN_SINGLE( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
 
 #undef NODE_ADD_IN_SEQUENCE
 
