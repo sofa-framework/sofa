@@ -54,7 +54,6 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/MutationListener.h>
 #include <sofa/simulation/VisitorScheduler.h>
 
 #include <sofa/simulation/fwd.h>
