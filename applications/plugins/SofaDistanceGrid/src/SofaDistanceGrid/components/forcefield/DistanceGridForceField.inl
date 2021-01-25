@@ -31,6 +31,7 @@
 #include <cassert>
 #include <iostream>
 
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 
 namespace sofa
