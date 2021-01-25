@@ -77,15 +77,11 @@ Node::Node(const std::string& name)
     , constraintSet(initLink("constraintSet", "The ConstraintSet(s) attached to this node"))
     , contextObject(initLink("contextObject", "The ContextObject(s) attached to this node"))
     , configurationSetting(initLink("configurationSetting", "The ConfigurationSetting(s) attached to this node"))
-
     , shaders(initLink("shaders", "The shaders attached to this node"))
     , visualModel(initLink("visualModel", "The VisualModel(s) attached to this node"))
     , visualManager(initLink("visualManager", "The VisualManager(s) attached to this node"))
-
     , collisionModel(initLink("collisionModel", "The CollisionModel(s) attached to this node"))
-
     , unsorted(initLink("unsorted", "The remaining objects attached to this node"))
-
     , debug_(false)
     , initialized(false)
     , depend(initData(&depend,"depend","Dependencies between the nodes.\nname 1 name 2 name3 name4 means that name1 must be initialized before name2 and name3 before name4"))
@@ -95,15 +91,15 @@ Node::Node(const std::string& name)
     f_printLog.setValue(DEBUG_LINK);
 
 
-    addLink(new NodeContainerLink(animationManager, "animationLoop","The AnimationLoop attached to this node (only valid for root node)"));
-    addLink(new NodeContainerLink(visualLoop, "visualLoop", "The VisualLoop attached to this node (only valid for root node)"));
-    addLink(new NodeContainerLink(topology, "topology", "The Topology attached to this node"));
-    addLink(new NodeContainerLink(meshTopology, "meshTopology", "The MeshTopology / TopologyContainer attached to this node"));
-    addLink(new NodeContainerLink(state, "state", "The State attached to this node (storing vectors such as position, velocity)"));
-    addLink(new NodeContainerLink(mechanicalState, "mechanicalState", "The MechanicalState attached to this node (storing all state vectors)"));
-    addLink(new NodeContainerLink(mechanicalMapping, "mechanicalMapping", "The MechanicalMapping attached to this node"));
-    addLink(new NodeContainerLink(mass, "mass", "The Mass attached to this node"));
-    addLink(new NodeContainerLink(collisionPipeline, "collisionPipeline", "The collision Pipeline attached to this node"));
+//    addLink(new NodeContainerLink(animationManager, "animationLoop","The AnimationLoop attached to this node (only valid for root node)"));
+//    addLink(new NodeContainerLink(visualLoop, "visualLoop", "The VisualLoop attached to this node (only valid for root node)"));
+//    addLink(new NodeContainerLink(topology, "topology", "The Topology attached to this node"));
+//    addLink(new NodeContainerLink(meshTopology, "meshTopology", "The MeshTopology / TopologyContainer attached to this node"));
+//    addLink(new NodeContainerLink(state, "state", "The State attached to this node (storing vectors such as position, velocity)"));
+//    addLink(new NodeContainerLink(mechanicalState, "mechanicalState", "The MechanicalState attached to this node (storing all state vectors)"));
+//    addLink(new NodeContainerLink(mechanicalMapping, "mechanicalMapping", "The MechanicalMapping attached to this node"));
+//    addLink(new NodeContainerLink(mass, "mass", "The Mass attached to this node"));
+//    addLink(new NodeContainerLink(collisionPipeline, "collisionPipeline", "The collision Pipeline attached to this node"));
 }
 
 
