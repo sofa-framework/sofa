@@ -57,7 +57,7 @@ public:
     /**
      * @brief Get the sender name
      */
-    const sofa::simulation::NodeSPtr getSender(void) const {return m_sender;}
+    const sofa::simulation::NodeSPtr getSender(void) const;
 
     /**
      * @brief Get the event name

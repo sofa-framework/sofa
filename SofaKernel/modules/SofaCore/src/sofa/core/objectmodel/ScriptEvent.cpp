@@ -42,6 +42,11 @@ ScriptEvent::ScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventN
 
 }
 
+const sofa::simulation::NodeSPtr ScriptEvent::getSender(void) const
+{
+    return m_sender;
+}
+
 ScriptEvent::~ScriptEvent()
 {
 

@@ -23,8 +23,7 @@
 #define SOFA_GUI_QT_MODIFYOBJECT_H
 
 #include <sofa/gui/qt/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-
+#include <sofa/core/fwd.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/fixed_array.h>
@@ -135,7 +134,7 @@ public:
 
     void createDialog(core::objectmodel::Base* node);
     void createDialog(core::objectmodel::BaseData* data);
-    bool hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;}
+    bool hideData(core::objectmodel::BaseData* data);
     void readOnlyData(QTableWidget *widget, core::objectmodel::BaseData* data);
     void readOnlyData(QWidget *widget, core::objectmodel::BaseData* data);
 
