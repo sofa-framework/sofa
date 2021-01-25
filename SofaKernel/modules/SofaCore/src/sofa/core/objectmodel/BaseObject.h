@@ -434,7 +434,7 @@ public:
     /// Use it before scene graph insertion
     void setSrc(const std::string &v, const BaseObject *loader, std::vector< std::string > *attributeList=nullptr);
 
-    void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override;
+    Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override;
 
 
     /// Return the full path name of this object

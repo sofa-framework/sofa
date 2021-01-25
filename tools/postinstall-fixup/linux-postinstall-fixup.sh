@@ -16,20 +16,28 @@ fi
 
 # Keep plugin_list as short as possible
 echo "" > "$INSTALL_DIR/lib/plugin_list.conf"
+disabled_plugins='plugins_ignored_by_default'
 for plugin in \
-        SofaExporter       \
-        SofaSparseSolver   \
-        SofaPreconditioner \
-        SofaValidation     \
-        SofaDenseSolver    \
-        SofaNonUniformFem  \
-        SofaOpenglVisual   \
-        SofaSphFluid       \
-        CImgPlugin         \
-        SofaMiscCollision  \
+        SofaEulerianFluid     \
+        SofaDistanceGrid      \
+        SofaImplicitField     \
+        MultiThreading        \
+        DiffusionSolver       \
+        image                 \
+        Compliant             \
+        SofaPython            \
+        Flexible              \
+        Registration          \
+        ExternalBehaviorModel \
+        ManifoldTopologies    \
+        ManualMapping         \
+        THMPGSpatialHashing   \
+        SofaCarving           \
+        RigidScale            \
     ; do
-    grep "$plugin" "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
+    disabled_plugins=$disabled_plugins'\|'$plugin
 done
+grep -v $disabled_plugins "$INSTALL_DIR/lib/plugin_list.conf.default" >> "$INSTALL_DIR/lib/plugin_list.conf"
 
 echo "Fixing up libs..."
 
@@ -125,6 +133,25 @@ if [ -e "$INSTALL_DIR/lib/libQt5WebEngineCore.so.5" ] && [ -d "$QT_DIR" ]; then
 	cp -R "$QT_DIR/translations/qtwebengine_locales" "$INSTALL_DIR/translations"
 	cp -R "$QT_DIR/resources" "$INSTALL_DIR"
 fi
+
+# Fixup RPATH/RUNPATH
+echo "  Fixing RPATH..."
+if [ -x "$(command -v patchelf)" ]; then
+    defaultRPATH='$ORIGIN/../lib:$$ORIGIN/../lib'
+    (
+    find "$INSTALL_DIR" -type f -name "*.so.*" 
+    find "$INSTALL_DIR" -type f -name "runSofa" -path "*/bin/*"
+    ) | while read lib; do
+        if [[ "$(patchelf --print-rpath $lib)" == "" ]]; then
+            echo "    $lib: RPATH = $defaultRPATH"
+            patchelf --set-rpath $defaultRPATH $lib
+        fi
+        patchelf --shrink-rpath $lib
+    done
+else
+    echo "    WARNING: patchelf command not found, RPATH fixing skipped."
+fi
+echo "  Done."
 
 echo "Done."
 rm -f "$OUTPUT_TMP"

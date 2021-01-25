@@ -5,10 +5,6 @@ find_package(SofaFramework REQUIRED) # SofaSimulationCore
 find_package(SofaBaseVisual REQUIRED)
 find_package(Sofa.GL REQUIRED)
 
-if(NOT Sofa.GL_FOUND)
-    message(FATAL_ERROR "Sofa.GL not enabled, cannot build the SofaOpenglVisual plugin")
-endif()
-
 set(HEADER_FILES
     src/SofaOpenglVisual/config.h
     src/SofaOpenglVisual/initOpenGLVisual.h

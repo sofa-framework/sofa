@@ -44,8 +44,8 @@ public:
 
 TEST_F(Data_test, getValueTypeString)
 {
-    EXPECT_EQ(dataInt.getValueTypeString(), "int");
-    EXPECT_EQ(dataFloat.getValueTypeString(), "float");
+    EXPECT_EQ(dataInt.getValueTypeString(), "i");
+    EXPECT_EQ(dataFloat.getValueTypeString(), "f");
     EXPECT_EQ(dataBool.getValueTypeString(), "bool");
     EXPECT_EQ(dataVec3.getValueTypeString(), "Vec3d");
     EXPECT_EQ(dataVectorVec3.getValueTypeString(), "vector<Vec3d>");
@@ -54,8 +54,8 @@ TEST_F(Data_test, getValueTypeString)
 
 TEST_F(Data_test, getNameWithValueTypeInfo)
 {
-    EXPECT_EQ(dataInt.getValueTypeInfo()->name(), "int");
-    EXPECT_EQ(dataFloat.getValueTypeInfo()->name(), "float");
+    EXPECT_EQ(dataInt.getValueTypeInfo()->name(), "i");
+    EXPECT_EQ(dataFloat.getValueTypeInfo()->name(), "f");
     EXPECT_EQ(dataBool.getValueTypeInfo()->name(), "bool");
     EXPECT_EQ(dataVec3.getValueTypeInfo()->name(), "Vec3d");
     EXPECT_EQ(dataVectorVec3.getValueTypeInfo()->name(), "vector<Vec3d>");
