@@ -56,6 +56,7 @@ public:
         FLAG_PERSISTENT = 1 << 2, ///< The Data contains persistent information.
         FLAG_AUTOLINK   = 1 << 3, ///< The Data should be autolinked when using the src="..." syntax.
         FLAG_REQUIRED = 1 << 4, ///< True if the Data has to be set for the owner component to be valid (a warning is displayed at init otherwise)
+        FLAG_WITH_DEFAULT_VALUE = 1 << 5, /// True if the Data has a default value to be used.
         FLAG_ANIMATION_INSTANCE = 1 << 10,
         FLAG_VISUAL_INSTANCE = 1 << 11,
         FLAG_HAPTICS_INSTANCE = 1 << 12,
@@ -64,7 +65,7 @@ public:
     typedef unsigned DataFlags;
 
     /// Default value used for flags.
-    enum { FLAG_DEFAULT = FLAG_DISPLAYED | FLAG_PERSISTENT | FLAG_AUTOLINK | FLAG_REQUIRED };
+    enum { FLAG_DEFAULT = FLAG_DISPLAYED | FLAG_PERSISTENT | FLAG_AUTOLINK | FLAG_REQUIRED | FLAG_WITH_DEFAULT_VALUE };
 
     /// This internal class is used by the initData() methods to store initialization parameters of a Data
     class BaseInitData
@@ -198,6 +199,8 @@ public:
     bool isAutoLink() const { return getFlag(FLAG_AUTOLINK); }
     /// Return whether the Data has to be set by the user for the owner component to be valid
     bool isRequired() const { return getFlag(FLAG_REQUIRED); }
+    /// Return whether the Data has to be set by the user for the owner component to be valid
+    bool hasDefaultValue() const { return getFlag(FLAG_WITH_DEFAULT_VALUE); }
 
     /// Set whether this %Data should be displayed in GUIs.
     void setDisplayed(bool b)  { setFlag(FLAG_DISPLAYED,b); }
@@ -209,6 +212,8 @@ public:
     void setAutoLink(bool b) { setFlag(FLAG_AUTOLINK,b); }
     /// Set whether the Data has to be set by the user for the owner component to be valid.
     void setRequired(bool b) { setFlag(FLAG_REQUIRED,b); }
+    /// Set whether the Data has a default value.
+    void setWithDefaultValue(bool b) { setFlag(FLAG_WITH_DEFAULT_VALUE,b); }
     /// @}
 
     /// If we use the Data as a link and not as value directly
