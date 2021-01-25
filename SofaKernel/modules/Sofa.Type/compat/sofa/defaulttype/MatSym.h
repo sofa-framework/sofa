@@ -28,8 +28,8 @@ SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/MatSym.h")
 
 namespace sofa::defaulttype
 {
-    template <std::size_t N, typename real = float>
-    using MatSym = sofa::type::MatSym<N, real>;
+    template <int D, class real = float>
+    using MatSym = sofa::type::MatSym<D, real>;
 
     //template<class real>
     //inline real determinant(const Mat<2, 2, real>& m)
