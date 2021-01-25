@@ -47,7 +47,7 @@ namespace topology
 {
 
 /** A class that will interact on a topological Data */
-class TopologyEngine : public sofa::core::DataEngine
+class SOFA_CORE_API TopologyEngine : public sofa::core::DataEngine
 {
 public:
     SOFA_ABSTRACT_CLASS(TopologyEngine, DataEngine);

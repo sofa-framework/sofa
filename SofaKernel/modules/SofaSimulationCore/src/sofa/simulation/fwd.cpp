@@ -29,4 +29,9 @@ namespace sofa::simulation
     {
         return dynamic_cast<sofa::simulation::Node*>(context);
     }
+
+    sofa::core::objectmodel::BaseContext* getContextFromNode(sofa::simulation::Node* node)
+    {
+        return static_cast<sofa::simulation::Node*>(node);
+    }
 }
