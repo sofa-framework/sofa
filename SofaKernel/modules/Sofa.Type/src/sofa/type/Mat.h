@@ -19,30 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_MAT_H
-#define SOFA_DEFAULTTYPE_MAT_H
+#pragma once
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/rmath.h>
+#include <sofa/type/config.h>
+
+#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/type/Vec.h>
 #include <iostream>
-#include <sofa/defaulttype/config.h>
-#include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace defaulttype
+namespace sofa::type
 {
 
 template <sofa::Size L, sofa::Size C, class real=float>
-class Mat : public helper::fixed_array<VecNoInit<C,real>, L>
+class Mat : public stdtype::fixed_array<VecNoInit<C,real>, L>
 {
 public:
 
     enum { N = L*C };
 
-    typedef typename helper::fixed_array<real, N>::size_type Size;
+    typedef typename stdtype::fixed_array<real, N>::size_type Size;
 
     typedef real Real;
     typedef Vec<C,real> Line;
@@ -999,7 +994,7 @@ std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)
 }
 
 template <sofa::Size L, sofa::Size C, typename real>
-std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
+std::istream& operator>>(std::istream& in, Mat<L,C,real>& m)
 {
     sofa::Size c;
     c = in.peek();
@@ -1098,7 +1093,7 @@ inline real scalarProduct(const Mat<L,C,real>& left,const Mat<L,C,real>& right)
 /// skew-symmetric mapping
 /// crossProductMatrix(v) * x = v.cross(x)
 template<class Real>
-inline defaulttype::Mat<3, 3, Real> crossProductMatrix(const defaulttype::Vec<3, Real>& v)
+inline Mat<3, 3, Real> crossProductMatrix(const Vec<3, Real>& v)
 {
     defaulttype::Mat<3, 3, Real> res;
     res[0][0]=0;
@@ -1131,8 +1126,4 @@ static Mat<L,L,Real> tensorProduct(const Vec<L,Real> a, const Vec<L,Real> b )
     return m;
 }
 
-} // namespace defaulttype
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::type

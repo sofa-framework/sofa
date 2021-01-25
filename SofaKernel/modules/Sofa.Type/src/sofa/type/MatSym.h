@@ -19,20 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_MATSYM_H
-#define SOFA_DEFAULTTYPE_MATSYM_H
+#pragma once
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
+
 #include <cassert>
 #include <iostream>
-#include <sofa/defaulttype/Mat.h>
 
 
 
-namespace sofa
-{
-
-namespace defaulttype
+namespace sofa::type
 {
 ////class for 3*3 symmetric matrix only
 
@@ -636,10 +633,4 @@ inline real scalarProduct(const Mat<D,D,real>& left, const MatSym<D,real>& right
     return scalarProduct(right, left);
 }
 
-} // namespace defaulttype
-
-} // namespace sofa
-
-// iostream
-
-#endif
+} // namespace sofa::type
