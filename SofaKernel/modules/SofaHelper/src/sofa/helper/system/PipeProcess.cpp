@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <WinNt.h>
 #include <cstdio>
 typedef int ssize_t;
 typedef HANDLE fd_t;
