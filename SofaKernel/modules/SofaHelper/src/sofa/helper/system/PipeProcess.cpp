@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <WinNt.h>
+#include <winsock.h>
 #include <cstdio>
 typedef int ssize_t;
 typedef HANDLE fd_t;
