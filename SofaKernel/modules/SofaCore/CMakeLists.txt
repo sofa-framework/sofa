@@ -198,7 +198,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/collision/Contact.cpp
     ${SRC_ROOT}/collision/Intersection.cpp
     ${SRC_ROOT}/collision/Pipeline.cpp
-    ${SRC_ROOT}/init.cpp
+    ${SRC_ROOT}/init.cpp    
+    ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/loader/BaseLoader.cpp
     ${SRC_ROOT}/loader/MeshLoader.cpp
     ${SRC_ROOT}/loader/SceneLoader.cpp
@@ -238,6 +239,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/BaseMeshTopology.cpp
     ${SRC_ROOT}/topology/BaseTopology.cpp
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp
+    ${SRC_ROOT}/topology/BaseTopologyEngine.cpp
     ${SRC_ROOT}/topology/Topology.cpp
     ${SRC_ROOT}/topology/TopologyChange.cpp
     ${SRC_ROOT}/topology/TopologyElementHandler.cpp

@@ -345,30 +345,13 @@ public:
     virtual bool read(std::istream& in);
 
     /// Output  stream
-    friend std::ostream& operator<< ( std::ostream& out, const TopologyChange* t )
-    {
-        if (t)
-        {
-            t->write(out);
-        }
-        return out;
-    }
+    friend std::ostream& operator<< ( std::ostream& out, const TopologyChange* t );
 
     /// Input (empty) stream
-    friend std::istream& operator>> ( std::istream& in, TopologyChange*& t )
-    {
-        if (t)
-        {
-            t->read(in);
-        }
-        return in;
-    }
-    
+    friend std::istream& operator>> ( std::istream& in, TopologyChange*& t );
+
     /// Input (empty) stream
-    friend std::istream& operator>> ( std::istream& in, const TopologyChange*& )
-    {
-        return in;
-    }
+    friend std::istream& operator>> ( std::istream& in, const TopologyChange*& );
 
 protected:
     TopologyChange( TopologyChangeType changeType = BASE )
