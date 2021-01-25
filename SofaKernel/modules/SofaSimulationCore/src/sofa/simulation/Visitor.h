@@ -22,6 +22,8 @@
 #ifndef SOFA_SIMULATION_VISITOR_H
 #define SOFA_SIMULATION_VISITOR_H
 
+#include <string>
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/config.h>
 #include <sofa/helper/system/thread/CTime.h>
 #ifdef SOFA_DUMP_VISITOR_INFO

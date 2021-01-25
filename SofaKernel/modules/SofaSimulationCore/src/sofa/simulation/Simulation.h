@@ -23,8 +23,11 @@
 #define SOFA_SIMULATION_CORE_SIMULATION_H
 
 #include <sofa/simulation/config.h>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/fwd.h>
 
-namespace sofa::simulation {
+namespace sofa::simulation
+{
     class Node;
     typedef sofa::core::sptr<Node> NodeSPtr;
 }

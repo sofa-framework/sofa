@@ -22,7 +22,9 @@
 #ifndef SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_H
 #define SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_H
 
+#include <sofa/core/config.h>
 #include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/core/fwd.h>
 
 namespace sofa::core::behavior { class BaseMechanicalState; }
 

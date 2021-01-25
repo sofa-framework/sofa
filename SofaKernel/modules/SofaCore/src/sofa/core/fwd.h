@@ -1,6 +1,12 @@
 #pragma once
 #include <sofa/core/config.h>
 #include <iosfwd>
+
+namespace sofa::core
+{
+    class BaseMapping;
+}
+
 namespace sofa::core::objectmodel
 {
     class Base;
@@ -9,6 +15,13 @@ namespace sofa::core::objectmodel
     class BaseContext;
     class BaseData;
     class BaseLink;
+}
+
+namespace sofa::core::behavior
+{
+    class BaseForceField;
+    class BaseMass;
+    class BaseMechanicalState;
 }
 
 namespace sofa::core::topology
@@ -23,4 +36,9 @@ namespace sofa::core::topology
 
     /// Input (empty) stream
     SOFA_CORE_API std::istream& operator>> ( std::istream& in, const sofa::core::topology::TopologyChange*& );
+}
+
+namespace sofa::core::visual
+{
+    class VisualParams;
 }
