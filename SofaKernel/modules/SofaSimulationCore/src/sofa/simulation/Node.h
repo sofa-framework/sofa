@@ -67,7 +67,6 @@ class Visitor;
 }
 }
 
-#include <sofa/helper/system/thread/CTime.h>
 #include <string>
 #include <stack>
 
