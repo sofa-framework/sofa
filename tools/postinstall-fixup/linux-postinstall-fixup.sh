@@ -57,22 +57,26 @@ else
     QT_WEBENGINE_DATA_DIR="$QT_DATA_DIR"
 fi
 
-if [ -d "$QT_DIR" ]; then
-    if [ -d "$QT_PLUGINS_DIR/iconengines" ]; then
-        cp -R "$QT_PLUGINS_DIR/iconengines" "$INSTALL_DIR/bin"
-    fi
-    if [ -d "$QT_PLUGINS_DIR/imageformats" ]; then
-        cp -R "$QT_PLUGINS_DIR/imageformats" "$INSTALL_DIR/bin"
-    fi
-    if [ -d "$QT_PLUGINS_DIR/platforms" ]; then
-        cp -R "$QT_PLUGINS_DIR/platforms" "$INSTALL_DIR/bin"
-    fi
-    if [ -d "$QT_PLUGINS_DIR/styles" ]; then
-        cp -R "$QT_PLUGINS_DIR/styles" "$INSTALL_DIR/bin"
-    fi
-    if [ -d "$QT_PLUGINS_DIR/xcbglintegrations" ]; then
-        cp -R "$QT_PLUGINS_DIR/xcbglintegrations" "$INSTALL_DIR/bin"
-    fi
+echo "QT_LIB_DIR = $QT_LIB_DIR"
+echo "QT_DATA_DIR = $QT_DATA_DIR"
+echo "QT_PLUGINS_DIR = $QT_PLUGINS_DIR"
+echo "QT_LIBEXEC_DIR = $QT_LIBEXEC_DIR"
+echo "QT_WEBENGINE_DATA_DIR = $QT_WEBENGINE_DATA_DIR"
+
+if [ -d "$QT_PLUGINS_DIR/iconengines" ]; then
+    cp -R "$QT_PLUGINS_DIR/iconengines" "$INSTALL_DIR/bin"
+fi
+if [ -d "$QT_PLUGINS_DIR/imageformats" ]; then
+    cp -R "$QT_PLUGINS_DIR/imageformats" "$INSTALL_DIR/bin"
+fi
+if [ -d "$QT_PLUGINS_DIR/platforms" ]; then
+    cp -R "$QT_PLUGINS_DIR/platforms" "$INSTALL_DIR/bin"
+fi
+if [ -d "$QT_PLUGINS_DIR/styles" ]; then
+    cp -R "$QT_PLUGINS_DIR/styles" "$INSTALL_DIR/bin"
+fi
+if [ -d "$QT_PLUGINS_DIR/xcbglintegrations" ]; then
+    cp -R "$QT_PLUGINS_DIR/xcbglintegrations" "$INSTALL_DIR/bin"
 fi
 
 echo_debug() {
