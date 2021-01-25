@@ -82,7 +82,7 @@ check-all-deps() {
     (
     find "$INSTALL_DIR" -type f -name "Qt*" -path "*/Qt*.framework/Versions/*/Qt*" | grep -v "Headers"
     find "$INSTALL_DIR" -type f -name "*.dylib"
-    find "$INSTALL_DIR" -type f -name "runSofa" -path "*/bin/*"
+    find "$INSTALL_DIR" -type f -name "runSofa*" -path "*/bin/*"
     ) | while read lib; do
         echo "  Checking (pass $pass) $lib"
 
@@ -143,7 +143,7 @@ check-all-deps() {
                 else
                     rpathlib="$libname"
                 fi
-                #echo "install_name_tool -change $dep @rpath/$rpathlib $lib"
+                echo "install_name_tool -change $dep @rpath/$rpathlib $libname"
                 install_name_tool -change $dep @rpath/$rpathlib $lib
             fi
         done
@@ -155,18 +155,48 @@ if [ -d "$BUNDLE_DIR" ]; then
     chmod -R 755 $BUNDLE_DIR/Contents/MacOS/lib
 
     INSTALL_DIR=$BUNDLE_DIR
-    check-all-deps "fixup" "1/1"
 
     # remove duplicated libs
-    ls $BUNDLE_DIR/Contents/Frameworks | while read libname; do
-        rm -rf $BUNDLE_DIR/Contents/MacOS/lib/$libname
+    find "$BUNDLE_DIR/Contents/MacOS" -type f -name "*.dylib" | while read lib; do
+        libname="$(basename $lib)"
+        # libs in all dirs should not be in Frameworks/*
+        rm -rf $BUNDLE_DIR/Contents/Frameworks/$libname*
+        if [[ "$lib" == *"Contents/MacOS/plugins/"* ]]; then
+            # libs in plugins/* should not be in lib/*
+            rm -rf $BUNDLE_DIR/Contents/Contents/MacOS/lib/$libname*
+        fi
     done
+
+    check-all-deps "fixup" "1/1"
 else
     check-all-deps "copy" "1/4"
     check-all-deps "copy" "2/4"
     check-all-deps "copy" "3/4"
     chmod -R 755 $INSTALL_DIR/lib
     check-all-deps "fixup" "4/4"
+fi
+
+if [ -d "$BUNDLE_DIR" ]; then
+    # Adding default RPATH to all libs and to runSofa
+    (
+    find "$BUNDLE_DIR/Contents/MacOS" -type f -name "*.dylib"
+    find "$BUNDLE_DIR" -type f -name "runSofa*" -path "*/bin/*"
+    ) | while read lib; do
+        install_name_tool -add_rpath "@loader_path/../lib" $lib
+        install_name_tool -add_rpath "@executable_path/../lib" $lib
+        if [[ "$lib" == *"Contents/MacOS/plugins/"* ]]; then
+            install_name_tool -add_rpath "@loader_path/../../../../Frameworks" $lib
+            install_name_tool -add_rpath "@executable_path/../../../../Frameworks" $lib
+        else
+            install_name_tool -add_rpath "@loader_path/../../Frameworks" $lib
+            install_name_tool -add_rpath "@executable_path/../../Frameworks" $lib
+        fi
+    done
+    ls -d $BUNDLE_DIR/Contents/MacOS/plugins/*/ | while read plugin; do
+        pluginname="$(basename $plugin)"
+        install_name_tool -add_rpath "@loader_path/../plugins/$pluginname/lib" "$BUNDLE_DIR/Contents/MacOS/bin/runSofa"
+        install_name_tool -add_rpath "@executable_path/../plugins/$pluginname/lib" "$BUNDLE_DIR/Contents/MacOS/bin/runSofa"
+    done
 fi
 
 echo "Done."
