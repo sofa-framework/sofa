@@ -27,6 +27,19 @@
 #include <sofa/type/Vec.h>
 #include <iostream>
 
+namespace // anonymous
+{
+    template<typename real>
+    real rabs(const real r)
+    {
+        if constexpr (std::is_signed<real>())
+            return std::abs(r);
+        else
+            return r;
+    }
+
+} // anonymous namespace
+
 namespace sofa::type
 {
 
@@ -396,9 +409,9 @@ public:
         for (Size i=0; i<L; i++)
         {
             for (Size j=0; j<i-1; j++)
-                if( helper::rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
+                if( rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
             for (Size j=i+1; j<C; j++)
-                if( helper::rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
+                if( rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
         }
         return true;
     }
@@ -783,7 +796,7 @@ inline real oneNorm(const Mat<3,3,real>& A)
     real norm = 0.0;
     for (sofa::Size i=0; i<3; i++)
     {
-        real columnAbsSum = helper::rabs(A(0,i)) + helper::rabs(A(1,i)) + helper::rabs(A(2,i));
+        real columnAbsSum = rabs(A(0,i)) + rabs(A(1,i)) + rabs(A(2,i));
         if (columnAbsSum > norm)
             norm = columnAbsSum;
     }
@@ -797,7 +810,7 @@ inline real infNorm(const Mat<3,3,real>& A)
     real norm = 0.0;
     for (sofa::Size i=0; i<3; i++)
     {
-        real rowSum = helper::rabs(A(i,0)) + helper::rabs(A(i,1)) + helper::rabs(A(i,2));
+        real rowSum = rabs(A(i,0)) + rabs(A(i,1)) + rabs(A(i,2));
         if (rowSum > norm)
             norm = rowSum;
     }
@@ -1092,7 +1105,7 @@ inline real scalarProduct(const Mat<L,C,real>& left,const Mat<L,C,real>& right)
 template<class Real>
 inline Mat<3, 3, Real> crossProductMatrix(const Vec<3, Real>& v)
 {
-    defaulttype::Mat<3, 3, Real> res;
+    type::Mat<3, 3, Real> res;
     res[0][0]=0;
     res[0][1]=-v[2];
     res[0][2]=v[1];
