@@ -270,6 +270,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                 RGBAColor color = isnan(triData[i])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(triData[i]));
+                color[3] = transparency;
                 const Triangle& t = m_topology->getTriangle(i);
                 vparams->drawTool()->drawTriangle(
                     x[ t[0] ], x[ t[1] ], x[ t[2] ],
@@ -286,15 +287,18 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             glBegin(GL_TRIANGLES);
             for (unsigned int i=0; i<nbTriangles; i++)
             {
-                sofa::helper::types::RGBAColor color0 = isnan(pointTriData[i*3])
+                RGBAColor color0 = isnan(pointTriData[i*3])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointTriData[i*3]));
+                color0[3] = transparency;
                 Vec4f color1 = isnan(pointTriData[i*3+1])
                         ? f_colorNaN.getValue()
                         : RGBAColor::fromVec4(eval(pointTriData[i*3+1]));
+                color1[3] = transparency;
                 Vec4f color2 = isnan(pointTriData[i*3+2])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointTriData[i*3+2]));
+                color2[3] = transparency;
                 const Triangle& t = m_topology->getTriangle(i);
 
                 glNormal3fv(m_normals[t[0]].ptr());
@@ -322,6 +326,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                 RGBAColor color = isnan(quadData[i])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(quadData[i]));
+                color[3] = transparency;
                 const Quad& t = m_topology->getQuad(i);
                 vparams->drawTool()->drawQuad(
                     x[ t[0] ], x[ t[1] ], x[ t[2] ], x[ t[3] ],
@@ -336,18 +341,21 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             glBegin(GL_QUADS);
             for (unsigned int i=0; i<nbQuads; i++)
             {
-                sofa::helper::types::RGBAColor color0 = isnan(pointQuadData[i*4])
+                RGBAColor color0 = isnan(pointQuadData[i*4])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointQuadData[i*4]));
                 Vec4f color1 = isnan(pointQuadData[i*4+1])
                         ? f_colorNaN.getValue()
                         : RGBAColor::fromVec4(eval(pointQuadData[i*4+1]));
+                color1[3] = transparency;
                 Vec4f color2 = isnan(pointQuadData[i*4+2])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointQuadData[i*4+2]));
+                color2[3] = transparency;
                 Vec4f color3 = isnan(pointQuadData[i*4+3])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointQuadData[i*4+3]));
+                color1[3] = transparency;
                 const Quad& q = m_topology->getQuad(i);
 
                 glNormal3fv(m_normals[q[0]].ptr());
@@ -380,6 +388,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             RGBAColor color = isnan(ptData[i])
                 ? f_colorNaN.getValue()
                 : RGBAColor::fromVec4(eval(ptData[i]));
+            color[3] = transparency;
             vparams->drawTool()->drawPoint(x[i], color);
         }
 
@@ -392,7 +401,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         for (sofa::core::topology::Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
         {
             const Triangle &t = m_topology->getTriangle(i);
-            sofa::helper::types::RGBAColor color[3];
+            RGBAColor color[3];
             for (int j=0; j<3; j++) {
                 color[j] = isnan(ptData[t[j]])
                         ? f_colorNaN.getValue()
@@ -419,12 +428,13 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         for (sofa::core::topology::Topology::QuadID i=0; i<m_topology->getNbQuads(); ++i)
         {
             const Quad &q = m_topology->getQuad(i);
-            sofa::helper::types::RGBAColor color[4];
+            RGBAColor color[4];
             for (int j=0; j<4; j++)
             {
                 color[j] = isnan(ptData[q[j]])
                 ? f_colorNaN.getValue()
-                : sofa::helper::types::RGBAColor::fromVec4(eval(ptData[q[j]]));
+                : RGBAColor::fromVec4(eval(ptData[q[j]]));
+                color[j][3] = transparency;
             }
 
             glNormal3fv(m_normals[q[0]].ptr());
