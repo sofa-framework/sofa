@@ -84,7 +84,6 @@ public:
 protected:
     void computeNormals();
     helper::vector<defaulttype::Vec3f> m_normals;
-    helper::ColorMap m_ColorMap;
 
     DataDisplay();
 };
