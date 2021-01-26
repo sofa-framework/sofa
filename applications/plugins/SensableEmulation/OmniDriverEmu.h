@@ -27,6 +27,7 @@
 
 #include <sofa/core/behavior/MechanicalState.h>
 
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/SolidTypes.h>
 
@@ -57,7 +58,7 @@ typedef struct
 {
     int nupdates;
     int m_buttonState;					/* Has the device button has been pressed. */
-    Vec3d pos;
+    type::Vec3d pos;
     Quat quat;
     bool ready;
     bool stop;
@@ -100,9 +101,9 @@ public:
     SOFA_CLASS(OmniDriverEmu, Controller);
     Data<double> forceScale; ///< Default forceScale applied to the force feedback.
     Data<double> scale; ///< Default scale applied to the Phantom Coordinates.
-    Data<Vec3d> positionBase; ///< Position of the interface base in the scene world coordinates
+    Data<type::Vec3d> positionBase; ///< Position of the interface base in the scene world coordinates
     Data<Quat> orientationBase; ///< Orientation of the interface base in the scene world coordinates
-    Data<Vec3d> positionTool; ///< Position of the tool in the omni end effector frame
+    Data<type::Vec3d> positionTool; ///< Position of the tool in the omni end effector frame
     Data<Quat> orientationTool; ///< Orientation of the tool in the omni end effector frame
     Data<bool> permanent; ///< Apply the force feedback permanently
     Data<bool> omniVisu; ///< Visualize the position of the interface in the virtual scene
@@ -157,7 +158,7 @@ private:
     bool noDevice;
 
     bool moveOmniBase;
-    Vec3d positionBase_buf;
+    type::Vec3d positionBase_buf;
 
     core::behavior::MechanicalState<Rigid3dTypes> *mState; ///< Controlled MechanicalState.
 

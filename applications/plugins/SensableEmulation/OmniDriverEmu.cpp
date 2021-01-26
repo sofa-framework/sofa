@@ -60,9 +60,9 @@ namespace component
 namespace controller
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace core::behavior;
-using namespace sofa::defaulttype;
 using helper::vector;
 
 OmniDriverEmu::OmniDriverEmu()
@@ -185,7 +185,7 @@ void hapticSimuExecute(std::atomic<bool>& terminate, void *ptr )
     unsigned int actSeg = 0;
     unsigned int actStep = 0;
     sofa::helper::Quater<double> actualRot;
-    sofa::defaulttype::Vec3d actualPos = pts[0].getCenter();
+    auto actualPos = pts[0].getCenter();
 
     double timeScale = 1.0 / (double)helper::system::thread::CTime::getTicksPerSec();
     double startTime, endTime, totalTime, realTimePrev = -1.0, realTimeAct;
@@ -369,7 +369,7 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
 
         visu_base = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-        visu_base->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_base->m_scale.setValue({scale.getValue(),scale.getValue(),scale.getValue()});
         visu_base->setColor(1.0f,1.0f,1.0f,1.0f);
         visu_base->init();
         visu_base->initVisual();
@@ -379,7 +379,7 @@ void OmniDriverEmu::draw(const core::visual::VisualParams *)
 
         visu_end = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_end->fileMesh.setValue("mesh/stylus.obj");
-        visu_end->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
+        visu_end->m_scale.setValue({scale.getValue(),scale.getValue(),scale.getValue()});
         visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
         visu_end->init();
         visu_end->initVisual();
