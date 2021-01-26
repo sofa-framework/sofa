@@ -92,6 +92,7 @@ check-all-deps() {
         libglew=""
         libjpeg=""
         libpng=""
+        libtiff=""
         dependencies="$( otool -L $lib | tail -n +2 | perl -p -e 's/^[\t ]+(.*) \(.*$/\1/g' )"
 
         is_fixup_needed="false"
@@ -120,7 +121,12 @@ check-all-deps() {
                 libname="$libjpeg"
             elif libpng="$(echo $dep | egrep -o "/libpng[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libpng" ]; then
                 libname="$libpng"
+            elif libtiff="$(echo $dep | egrep -o "/libtiff[^\/]*?\.dylib$" | cut -c2-)" && [ -n "$libtiff" ]; then
+                libname="$libtiff"
             else
+                if [[ "$dep" == "/usr/local/"* ]]; then
+                    echo "WARNING: no fixup rule set for: $lib"
+                fi
                 # this dep is not a lib to fixup
                 continue
             fi
@@ -143,7 +149,8 @@ check-all-deps() {
                 else
                     rpathlib="$libname"
                 fi
-                echo "install_name_tool -change $dep @rpath/$rpathlib $libname"
+                libbasename="$(basename $lib)"
+                echo "install_name_tool -change $dep @rpath/$rpathlib $libbasename"
                 install_name_tool -change $dep @rpath/$rpathlib $lib
             fi
         done
