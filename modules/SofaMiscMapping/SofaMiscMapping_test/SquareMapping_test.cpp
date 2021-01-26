@@ -22,7 +22,7 @@
 
 #include <SofaTest/Mapping_test.h>
 #include <SofaMiscMapping/SquareMapping.h>
-
+#include <sofa/core/Mapping.h>
 
 namespace sofa {
 namespace {

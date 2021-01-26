@@ -25,7 +25,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-
+#include <sofa/core/Mapping.h>
 
 namespace sofa {
   namespace {

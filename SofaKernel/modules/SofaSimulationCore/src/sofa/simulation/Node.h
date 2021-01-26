@@ -36,22 +36,14 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/visual/Shader.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/visual/VisualLoop.h>
-#include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/VisitorScheduler.h>
@@ -125,6 +117,17 @@ public:
             m_updateNofication();
     }
 };
+
+#ifndef SOFA_SIMULATION_CORE_NODE_DEFINITION
+extern template class NodeContainerSingle<sofa::core::behavior::BaseAnimationLoop>;
+extern template class NodeContainerSingle<sofa::core::visual::VisualLoop>;
+extern template class NodeContainerSingle<sofa::core::topology::Topology>;
+extern template class NodeContainerSingle<sofa::core::topology::BaseMeshTopology>;
+extern template class NodeContainerSingle<sofa::core::behavior::BaseMechanicalState>;
+extern template class NodeContainerSingle<sofa::core::BaseMapping>;
+extern template class NodeContainerSingle<sofa::core::behavior::BaseMass>;
+extern template class NodeContainerSingle<sofa::core::collision::Pipeline>;
+#endif
 
 /**
    Implements the object (component) management of the core::Context.
@@ -618,9 +621,8 @@ public:
     virtual void remove##FUNCTIONNAME( CLASSNAME* obj ) override { SEQUENCENAME.remove(obj); }
 
 #define NODE_ADD_IN_SINGLE( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
-    virtual void add##FUNCTIONNAME( CLASSNAME* obj ) override { SEQUENCENAME.set(obj); } \
-    virtual void remove##FUNCTIONNAME( CLASSNAME* obj ) override { SEQUENCENAME.remove(obj); }
-
+    virtual void add##FUNCTIONNAME( CLASSNAME* obj ) override; \
+    virtual void remove##FUNCTIONNAME( CLASSNAME* obj ) override;
     // WARNINGS subtilities:
     // an InteractioFF is NOT in the FF Sequence
     // a MechanicalMapping is NOT in the Mapping Sequence

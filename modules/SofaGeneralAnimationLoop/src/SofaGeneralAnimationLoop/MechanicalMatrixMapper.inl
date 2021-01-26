@@ -25,6 +25,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/rmath.h>
 
+#include <sofa/core/behavior/BaseMass.h>
+
 // accumulate jacobian
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/BaseContext.h>

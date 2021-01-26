@@ -30,6 +30,8 @@
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/simulation/Node.h>
 
+#include <sofa/core/BaseMapping.h>
+
 using sofa::component::InfoComponent ;
 
 #include "resources/icons/iconmultinode.xpm"

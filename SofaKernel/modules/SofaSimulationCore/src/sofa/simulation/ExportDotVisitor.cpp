@@ -24,9 +24,11 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Colors.h>
 #include <sofa/simulation/ExportDotVisitor.h>
-
+#include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
+#include <sofa/core/BaseMapping.h>
+#include <sofa/core/collision/Pipeline.h>
 
 namespace sofa::simulation::graph
 {

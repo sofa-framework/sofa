@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_SIMULATION_CORE_NODE_DEFINITION true
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Node.inl>
 #include <sofa/simulation/PropagateEventVisitor.h>
@@ -29,6 +30,15 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
+
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/visual/VisualLoop.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/Mapping.h>
+#include <sofa/core/collision/Pipeline.h>
 
 #include <sofa/simulation/MutationListener.h>
 #include <sofa/core/ObjectFactory.h>
@@ -1084,6 +1094,31 @@ void Node::setSleeping(bool val)
         notifySleepChanged(this);
     }
 }
+
+
+
+#define NODE_ADD_IN_SINGLE2( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
+    void Node::add##FUNCTIONNAME( CLASSNAME* obj ) { SEQUENCENAME.set(obj); } \
+    void Node::remove##FUNCTIONNAME( CLASSNAME* obj ) { SEQUENCENAME.remove(obj); }
+
+NODE_ADD_IN_SINGLE2(sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
+NODE_ADD_IN_SINGLE2(sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
+NODE_ADD_IN_SINGLE2(sofa::core::topology::Topology, Topology, topology )
+NODE_ADD_IN_SINGLE2(sofa::core::topology::BaseMeshTopology, MeshTopology, meshTopology )
+NODE_ADD_IN_SINGLE2(sofa::core::BaseState, State, state )
+NODE_ADD_IN_SINGLE2(sofa::core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
+NODE_ADD_IN_SINGLE2(sofa::core::BaseMapping, MechanicalMapping, mechanicalMapping )
+NODE_ADD_IN_SINGLE2(sofa::core::behavior::BaseMass, Mass, mass )
+NODE_ADD_IN_SINGLE2(sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
+
+template class NodeContainerSingle<sofa::core::behavior::BaseAnimationLoop>;
+template class NodeContainerSingle<sofa::core::visual::VisualLoop>;
+template class NodeContainerSingle<sofa::core::topology::Topology>;
+template class NodeContainerSingle<sofa::core::topology::BaseMeshTopology>;
+template class NodeContainerSingle<sofa::core::behavior::BaseMechanicalState>;
+template class NodeContainerSingle<sofa::core::BaseMapping>;
+template class NodeContainerSingle<sofa::core::behavior::BaseMass>;
+template class NodeContainerSingle<sofa::core::collision::Pipeline>;
 
 }
 
