@@ -93,7 +93,7 @@ public:
 
     template<typename real2>
     RigidDeriv(const type::Vec<6,real2> &v)
-        : vCenter(Vec<3,real2>(v.data())), vOrientation(Vec<3,real2>(v.data()+3))
+        : vCenter(type::Vec<3,real2>(v.data())), vOrientation(type::Vec<3,real2>(v.data()+3))
     {}
 
     template<typename real2>
@@ -1051,7 +1051,7 @@ public:
 
     template<typename real2>
     RigidDeriv(const type::Vec<3,real2> &v)
-        : vCenter(Vec<2,real2>(v.data())), vOrientation((Real)v[2])
+        : vCenter(type::Vec<2,real2>(v.data())), vOrientation((Real)v[2])
     {}
 
     void clear()
