@@ -343,7 +343,7 @@ typedef testing::Types<
 
 
 //// ========= Tests to run for each instanciated type
-TYPED_TEST_CASE( ImageDataEngine_test, TestTypes );
+TYPED_TEST_SUITE( ImageDataEngine_test, TestTypes );
 
 //// test number of call to DataEngine::update
 TYPED_TEST( ImageDataEngine_test , basic_test )

@@ -282,7 +282,7 @@ typedef testing::Types<
 > DataTypes; 
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(MooneyRivlinHexahedraMaterial_test, DataTypes);
+TYPED_TEST_SUITE(MooneyRivlinHexahedraMaterial_test, DataTypes);
 
 TYPED_TEST( MooneyRivlinHexahedraMaterial_test , test_MR_Hexahedra_InTraction )
 {
