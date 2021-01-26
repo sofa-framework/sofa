@@ -52,6 +52,7 @@ std::string HeadlessRecorder::recordTypeRaw = "wallclocktime";
 RecordMode HeadlessRecorder::recordType = RecordMode::wallclocktime;
 float HeadlessRecorder::skipTime = 0;
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using sofa::simulation::getSimulation;
 
@@ -461,7 +462,7 @@ void HeadlessRecorder::calcProjection()
             yFactor = 1.0;
         }
     }
-    vparams->viewport() = sofa::helper::make_array(0, 0, width, height);
+    vparams->viewport() = sofa::type::stdtype::make_array(0, 0, width, height);
 
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
