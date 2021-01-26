@@ -123,8 +123,8 @@ bool AssimpLoader::convertAssimpScene()
     msg_info() << "m_assimpScene->mNumMeshes: " << m_assimpScene->mNumMeshes;
     msg_info() << "m_assimpScene->mNumMaterials: " << m_assimpScene->mNumMaterials;
 
-    WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3, SReal> > > > waPositions = d_positions;
-    WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3, SReal> > > > waNormals = d_normals;
+    WriteAccessor<Data<helper::vector<sofa::type::Vec<3, SReal> > > > waPositions = d_positions;
+    WriteAccessor<Data<helper::vector<sofa::type::Vec<3, SReal> > > > waNormals = d_normals;
 
     WriteAccessor<Data<helper::vector< Edge > > > waEdges = d_edges; 
     WriteAccessor<Data<helper::vector< Quad > > > waQuads = d_quads;
@@ -158,14 +158,14 @@ bool AssimpLoader::convertAssimpScene()
         for (unsigned int j = 0; j<nbr_pos; ++j)
         {
             // create position array
-            sofa::defaulttype::Vec<3, SReal>& pos = waPositions[j + cpt_pos];
+            auto& pos = waPositions[j + cpt_pos];
             const aiVector3D& aiPos = currentMesh->mVertices[j];
             pos[0] = aiPos.x;
             pos[1] = aiPos.y;
             pos[2] = aiPos.z;
 
             // create normal array
-            sofa::defaulttype::Vec<3, SReal>& normal = waNormals[j + cpt_norm];
+            auto& normal = waNormals[j + cpt_norm];
             const aiVector3D& aiNorm = currentMesh->mNormals[j];
             normal[0] = aiNorm.x;
             normal[1] = aiNorm.y;
