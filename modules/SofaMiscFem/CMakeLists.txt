@@ -50,14 +50,14 @@ if(Newmat_FOUND)
         ${SOFAMISCFEM_SRC}/TriangularAnisotropicFEMForceField.inl
         ${SOFAMISCFEM_SRC}/TriangularFEMForceField.h
         ${SOFAMISCFEM_SRC}/TriangularFEMForceField.inl
-	    ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.h
-	    ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.inl
+	${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.h
+	${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.inl
         )
     list(APPEND SOURCE_FILES
         ${SOFAMISCFEM_SRC}/PlasticMaterial.cpp
         ${SOFAMISCFEM_SRC}/TriangularAnisotropicFEMForceField.cpp
         ${SOFAMISCFEM_SRC}/TriangularFEMForceField.cpp
-	    ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.cpp
+	${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.cpp
         )
 endif()
 
