@@ -82,6 +82,7 @@ check-all-deps() {
     (
     find "$INSTALL_DIR" -type f -name "Qt*" -path "*/Qt*.framework/Versions/*/Qt*" | grep -v "Headers"
     find "$INSTALL_DIR" -type f -name "*.dylib"
+    find "$INSTALL_DIR" -type f -name "*.so"
     find "$INSTALL_DIR" -type f -name "runSofa*" -path "*/bin/*"
     ) | while read lib; do
         echo "  Checking (pass $pass) $lib"
@@ -187,6 +188,7 @@ if [ -d "$BUNDLE_DIR" ]; then
     # Adding default RPATH to all libs and to runSofa
     (
     find "$BUNDLE_DIR/Contents/MacOS" -type f -name "*.dylib"
+    find "$BUNDLE_DIR/Contents/MacOS" -type f -name "*.so"
     find "$BUNDLE_DIR" -type f -name "runSofa*" -path "*/bin/*"
     ) | while read lib; do
         install_name_tool -add_rpath "@loader_path/../lib" $lib
