@@ -37,13 +37,13 @@ void THMPGHashTable::refersh(SReal timeStamp){
 
     for(;c.getIndex() < cube_model->getSize() ; ++c){
         ++nb_added_elems;
-        const defaulttype::Vector3 & minVec = c.minVect();
+        const auto & minVec = c.minVect();
 
         mincell[0] = (int)std::floor((minVec[0] - _alarmDistd2)/cell_size);
         mincell[1] = (int)std::floor((minVec[1] - _alarmDistd2)/cell_size);
         mincell[2] = (int)std::floor((minVec[2] - _alarmDistd2)/cell_size);
 
-        const defaulttype::Vector3 & maxVec = c.maxVect();
+        const auto & maxVec = c.maxVect();
         maxcell[0] = (int)std::floor((maxVec[0] + _alarmDistd2)/cell_size);
         maxcell[1] = (int)std::floor((maxVec[1] + _alarmDistd2)/cell_size);
         maxcell[2] = (int)std::floor((maxVec[2] + _alarmDistd2)/cell_size);
