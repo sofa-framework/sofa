@@ -291,7 +291,7 @@ std::string BaseLink::getLinkedPath(const std::size_t index) const
     std::string path = _doGetLinkedPath_(index);
     if(path.empty())
         return CreateString(getLinkedBase(index), getOwner());
-    return "";
+    return path;
 }
 
 /// Update pointers in case the pointed-to objects have appeared

@@ -40,6 +40,7 @@
 #include <boost/graph/topological_sort.hpp>
 
 #include <sofa/core/objectmodel/LinkableContainer.h>
+#include <memory>
 
 /// If you want to activate/deactivate that please set them to true/false
 #define DEBUG_VISITOR false
@@ -53,11 +54,17 @@ namespace simulation
 using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;
 
+
 template<class Target>
 class NodeContainerLink : public sofa::core::objectmodel::LinkableContainer<Node, Target>
 {
-    NodeContainerLink(Target& c, const std::string& name, const std::string& help) : sofa::core::objectmodel::LinkableContainer<Node,Target>(c, name, help){}
+public:
+    NodeContainerLink(Target& c, const std::string& name, const std::string& help, Node* owner) :
+        sofa::core::objectmodel::LinkableContainer<Node,Target>(c, name, help, owner){
+        owner->addLink(this);
+    }
 };
+
 
 Node::Node(const std::string& name)
     : core::objectmodel::BaseNode()
@@ -90,21 +97,23 @@ Node::Node(const std::string& name)
     setName(name);
     f_printLog.setValue(DEBUG_LINK);
 
-
-//    addLink(new NodeContainerLink(animationManager, "animationLoop","The AnimationLoop attached to this node (only valid for root node)"));
-//    addLink(new NodeContainerLink(visualLoop, "visualLoop", "The VisualLoop attached to this node (only valid for root node)"));
-//    addLink(new NodeContainerLink(topology, "topology", "The Topology attached to this node"));
-//    addLink(new NodeContainerLink(meshTopology, "meshTopology", "The MeshTopology / TopologyContainer attached to this node"));
-//    addLink(new NodeContainerLink(state, "state", "The State attached to this node (storing vectors such as position, velocity)"));
-//    addLink(new NodeContainerLink(mechanicalState, "mechanicalState", "The MechanicalState attached to this node (storing all state vectors)"));
-//    addLink(new NodeContainerLink(mechanicalMapping, "mechanicalMapping", "The MechanicalMapping attached to this node"));
-//    addLink(new NodeContainerLink(mass, "mass", "The Mass attached to this node"));
-//    addLink(new NodeContainerLink(collisionPipeline, "collisionPipeline", "The collision Pipeline attached to this node"));
+    m_properties.push_back(new NodeContainerLink(animationManager, "animationLoop","The AnimationLoop attached to this node (only valid for root node)", this));
+    m_properties.push_back(new NodeContainerLink(visualLoop, "visualLoop", "The VisualLoop attached to this node (only valid for root node)", this));
+    m_properties.push_back(new NodeContainerLink(topology, "topology", "The Topology attached to this node", this));
+    m_properties.push_back(new NodeContainerLink(meshTopology, "meshTopology", "The MeshTopology / TopologyContainer attached to this node", this));
+    m_properties.push_back(new NodeContainerLink(state, "state", "The State attached to this node (storing vectors such as position, velocity)", this));
+    m_properties.push_back(new NodeContainerLink(mechanicalState, "mechanicalState", "The MechanicalState attached to this node (storing all state vectors)", this));
+    m_properties.push_back(new NodeContainerLink(mechanicalMapping, "mechanicalMapping", "The MechanicalMapping attached to this node", this));
+    m_properties.push_back(new NodeContainerLink(mass, "mass", "The Mass attached to this node", this));
+    m_properties.push_back(new NodeContainerLink(collisionPipeline, "collisionPipeline", "The collision Pipeline attached to this node", this));
 }
 
 
 Node::~Node()
 {
+    for(auto property : m_properties)
+        delete property;
+    m_properties.clear();
 }
 
 void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )

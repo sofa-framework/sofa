@@ -100,12 +100,13 @@ class SingleLink_simutest : public BaseLink_test {};
 
 TEST_P(SingleLink_simutest, CheckPath)
 {
+    typedef sofa::core::objectmodel::SingleLink<Node, Node, sofa::core::objectmodel::BaseLink::FLAG_DOUBLELINK> SLink;
     ASSERT_NE(node,nullptr);
     auto& t = GetParam();
     if(t[2]=="true")
-        ASSERT_TRUE(node->mechanicalState.CheckPath(t[0], node)) << t[1] << " " << t[2];
+        ASSERT_TRUE(SLink::CheckPath(t[0], node)) << t[1] << " " << t[2];
     else
-        ASSERT_FALSE(node->mechanicalState.CheckPath(t[0], node)) << t[1] << " " << t[2];
+        ASSERT_FALSE(SLink::CheckPath(t[0], node)) << t[1] << " " << t[2];
 }
 
 std::vector<std::vector<std::string>> singleLinkValues={

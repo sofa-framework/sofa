@@ -30,28 +30,48 @@ class LinkableContainer : public BaseLink
 {
     T& container;
 public:
-    LinkableContainer(T& c, const std::string& name, const std::string& help) : BaseLink{ BaseLink::FLAG_NONE }, container{c}
+    LinkableContainer(T& c, const std::string& name, const std::string& help, Owner* owner) : BaseLink{ BaseLink::FLAG_STRONGLINK | BaseLink::FLAG_STOREPATH }, container{c}
     {
         setName(name);
         setHelp(help);
+        m_owner = owner;
     }
 
     const BaseClass* getDestClass() const { return T::pointed_type::GetClass(); }
     const BaseClass* getOwnerClass() const { return Owner::GetClass(); }
-    virtual void clear(){}
+
+    Base* getOwnerBase() const override {
+        return m_owner; }
+    BaseData* getOwnerData() const override { return nullptr;}
+    BaseData* getLinkedData(std::size_t=0) const override {return nullptr;}
+
+    virtual void clear(){ container.clear(); }
     virtual bool contains(Base* item){ return container[0] == item ; }
     virtual size_t size() const { return container.size(); }
-    virtual Base* _doGet_(const size_t index) const { return container[index]; }
+    virtual size_t getSize() const override { return container.size(); }
+    Base* _doGetOwner_() const override {
+        return m_owner; }
+    void _doSetOwner_(Base* owner) override { m_owner = dynamic_cast<Owner*>(owner); }
+    void _doClear_() override { container.clear(); }
+    virtual Base* _doGet_(const size_t index) const {
+        return container[index]; }
     virtual bool _doAdd_(Base* target, const std::string&) { container.set(dynamic_cast<typename T::pointed_type*>(target)); return true; }
     virtual bool _doRemoveAt_(size_t) { return true; }
-    virtual bool _doSet_(Base* target, const size_t index) { set(dynamic_cast<typename T::pointed_type*>(const_cast<Base*>(target))); return true; }
-    virtual bool _doSet_(Base* target, const std::string&, size_t index=0) { container[index] =dynamic_cast<typename T::pointed_type*>(target); return true; }
+    virtual bool _doSet_(Base* target, const size_t index) {
+        set(dynamic_cast<typename T::pointed_type*>(const_cast<Base*>(target))); return true; }
+    virtual bool _doSet_(Base* target, const std::string&, size_t index=0) {
+        container[index] =dynamic_cast<typename T::pointed_type*>(target); return true; }
     virtual bool _isCompatibleOwnerType_(const Base* b) const { return dynamic_cast<typename T::pointed_type*>(const_cast<Base*>(b))==nullptr; }
+
+    std::string _doGetLinkedPath_(const size_t index=0) const override {
+        return _doGetPath_(index); }
     virtual std::string _doGetPath_(const size_t index) const {
         if(container[index]==nullptr)
             return "";
-        return container[index]->getPathName();
+        return "@"+container[index]->getPathName();
     }
+
+    Base* m_owner {nullptr};
 };
 
 }

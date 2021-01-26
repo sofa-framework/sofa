@@ -58,28 +58,11 @@
 
 #include <sofa/simulation/fwd.h>
 #include <type_traits>
-
-namespace sofa
-{
-namespace simulation
-{
-class Visitor;
-}
-}
-
 #include <string>
 #include <stack>
 
 namespace sofa
 {
-
-namespace core
-{
-namespace visual
-{
-class VisualParams;
-} // namespace visual
-} // namespace core
 
 namespace simulation
 {
@@ -102,7 +85,7 @@ public:
     operator pointed_type*() { return data; }
     operator pointed_type*() const { return data; }
     operator const pointed_type*() const { return data; }
-
+    void clear(){ data = nullptr;}
     operator bool() const { return data != nullptr; }
     void set(value_type newData){ data = newData ;}
     value_type get(){ return data;}
@@ -154,8 +137,6 @@ public:
     bool isInitialized() {return initialized;}
     /// Apply modifications to the components
     void reinit(const sofa::core::ExecParams* params);
-    /// Do one step forward in time
-//    void animate(const core::ExecParams* params, SReal dt);
     /// Draw the objects (using visual visitors)
     void draw(sofa::core::visual::VisualParams* params);
     /// @}
@@ -246,6 +227,9 @@ public:
             wb = tmp;
         }
     };
+
+    template<class Target>
+    using Single = NodeContainerSingle<Target>;
 
     Sequence<Node,true> child;
     typedef Sequence<Node,true>::iterator ChildIterator;
@@ -653,6 +637,8 @@ public:
 
     /// @}
 
+    private:
+        std::vector<BaseLink*> m_properties;
 };
 
 }
