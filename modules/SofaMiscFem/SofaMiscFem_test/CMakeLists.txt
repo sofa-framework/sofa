@@ -16,6 +16,8 @@ if(SOFA_WITH_DEPRECATED_COMPONENTS)
     list(APPEND HEADER_FILES
         LennardJonesForceField_test.h
         LennardJonesForceField_test.inl
+        ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.h
+	    ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.inl
         )
     list(APPEND SOURCE_FILES
         LennardJonesForceField_test.cpp
