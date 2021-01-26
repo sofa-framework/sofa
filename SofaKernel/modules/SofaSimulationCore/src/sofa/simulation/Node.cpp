@@ -60,8 +60,18 @@ class NodeContainerLink : public sofa::core::objectmodel::LinkableContainer<Node
 {
 public:
     NodeContainerLink(Target& c, const std::string& name, const std::string& help, Node* owner) :
-        sofa::core::objectmodel::LinkableContainer<Node,Target>(c, name, help, owner){
+        sofa::core::objectmodel::LinkableContainer<Node,Target>(c, name, help, owner)
+    {
+
         owner->addLink(this);
+        c.setNotificationCallback([this]()
+        {
+            this->updateCounter();
+        });
+    }
+    virtual ~NodeContainerLink()
+    {
+        this->container.setNotificationCallback(nullptr);
     }
 };
 
@@ -112,7 +122,9 @@ Node::Node(const std::string& name)
 Node::~Node()
 {
     for(auto property : m_properties)
+    {
         delete property;
+    }
     m_properties.clear();
 }
 

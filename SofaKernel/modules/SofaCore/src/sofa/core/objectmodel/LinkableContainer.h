@@ -28,8 +28,9 @@ namespace sofa::core::objectmodel
 template<class Owner, class T>
 class LinkableContainer : public BaseLink
 {
+    public:
     T& container;
-public:
+
     LinkableContainer(T& c, const std::string& name, const std::string& help, Owner* owner) : BaseLink{ BaseLink::FLAG_STRONGLINK | BaseLink::FLAG_STOREPATH }, container{c}
     {
         setName(name);

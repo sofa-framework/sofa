@@ -72,6 +72,7 @@ namespace simulation
 template < class T >
 class NodeContainerSingle
 {
+    std::function<void()> m_updateNofication;
     T* data {nullptr};
 public:
     typedef T pointed_type;
@@ -79,28 +80,49 @@ public:
     typedef const value_type* iterator;
     typedef const value_type* const_iterator;
 
-    value_type& operator[](const size_t){ return data; }
+    value_type& operator[](const size_t)
+    {
+        notifyUpdate();
+        return data;
+    }
     size_t size() const { return data != nullptr; }
     bool empty() const {return size()==0;}
     operator pointed_type*() { return data; }
     operator pointed_type*() const { return data; }
     operator const pointed_type*() const { return data; }
-    void clear(){ data = nullptr;}
+    void clear(){
+        data = nullptr;
+        notifyUpdate();
+    }
     operator bool() const { return data != nullptr; }
-    void set(value_type newData){ data = newData ;}
+    void set(value_type newData)
+    {
+        data = newData ;
+        notifyUpdate();
+    }
     value_type get(){ return data;}
     void remove(value_type fdata)
     {
         if(data==fdata)
             data=nullptr;
+        notifyUpdate();
     }
     value_type operator->() const { return data; }
     const_iterator begin() const { return &data; }
-    const_iterator end() const {
+    const_iterator end() const
+    {
         if(data==nullptr)
             return (&data);
         else
             return (&data)+1;
+        notifyUpdate();
+    }
+
+    void setNotificationCallback(std::function<void()> f){ m_updateNofication = f; }
+    void notifyUpdate() const
+    {
+        if(m_updateNofication)
+            m_updateNofication();
     }
 };
 
@@ -197,7 +219,7 @@ public:
     template < class T, bool strong = false >
     class Sequence : public MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)>
     {
-    public:
+        public:
         typedef MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)> Inherit;
         typedef T pointed_type;
         typedef typename Inherit::DestPtr value_type;
@@ -350,7 +372,7 @@ public:
     template<class Object, class Container>
     void getNodeObjects(Container* list)
     {
-       return BaseContext::getObjects<Object, Container>(list, Local) ;
+        return BaseContext::getObjects<Object, Container>(list, Local) ;
     }
 
     /// Returns a list of object of type passed as a parameter.
