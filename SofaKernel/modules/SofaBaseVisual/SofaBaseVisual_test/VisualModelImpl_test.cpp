@@ -47,7 +47,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(VisualModelImpl_test, DataTypes);
+TYPED_TEST_SUITE(VisualModelImpl_test, DataTypes);
 
 template <class T>
 bool Vector_Comparison(helper::vector< T > expected, helper::vector< T > actual)

@@ -232,7 +232,7 @@ using testing::Types;
 typedef Types<mapping::RigidScaleToRigidMultiMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types, defaulttype::Rigid3Types> > DataTypes; // the types to instantiate.
 
 // Test suite for all the instantiations
-TYPED_TEST_CASE(RigidScaleToRigidMultiMappingTest, DataTypes);
+TYPED_TEST_SUITE(RigidScaleToRigidMultiMappingTest, DataTypes);
 // first test case
 TYPED_TEST( RigidScaleToRigidMultiMappingTest , test)
 {
