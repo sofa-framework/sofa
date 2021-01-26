@@ -292,11 +292,11 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointTriData[i*3]));
                 color0[3] = transparency;
-                Vec4f color1 = isnan(pointTriData[i*3+1])
+                RGBAColor color1 = isnan(pointTriData[i*3+1])
                         ? f_colorNaN.getValue()
                         : RGBAColor::fromVec4(eval(pointTriData[i*3+1]));
                 color1[3] = transparency;
-                Vec4f color2 = isnan(pointTriData[i*3+2])
+                RGBAColor color2 = isnan(pointTriData[i*3+2])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointTriData[i*3+2]));
                 color2[3] = transparency;
@@ -345,15 +345,15 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                 RGBAColor color0 = isnan(pointQuadData[i*4])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointQuadData[i*4]));
-                Vec4f color1 = isnan(pointQuadData[i*4+1])
+                RGBAColor color1 = isnan(pointQuadData[i*4+1])
                         ? f_colorNaN.getValue()
                         : RGBAColor::fromVec4(eval(pointQuadData[i*4+1]));
                 color1[3] = transparency;
-                Vec4f color2 = isnan(pointQuadData[i*4+2])
+                RGBAColor color2 = isnan(pointQuadData[i*4+2])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointQuadData[i*4+2]));
                 color2[3] = transparency;
-                Vec4f color3 = isnan(pointQuadData[i*4+3])
+                RGBAColor color3 = isnan(pointQuadData[i*4+3])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointQuadData[i*4+3]));
                 color1[3] = transparency;
