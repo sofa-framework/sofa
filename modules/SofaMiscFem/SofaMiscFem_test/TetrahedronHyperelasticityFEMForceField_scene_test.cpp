@@ -149,7 +149,7 @@ typedef testing::Types<component::forcefield::TetrahedronHyperelasticityFEMForce
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(TetrahedronHyperelasticityFEMForceField_scene_test, TestTypes);
+TYPED_TEST_SUITE(TetrahedronHyperelasticityFEMForceField_scene_test, TestTypes);
 
 // test case
 TYPED_TEST( TetrahedronHyperelasticityFEMForceField_scene_test , extension )

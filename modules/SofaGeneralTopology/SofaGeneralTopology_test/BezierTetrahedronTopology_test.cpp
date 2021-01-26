@@ -300,7 +300,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(BezierTetrahedronTopology_test, DataTypes);
+TYPED_TEST_SUITE(BezierTetrahedronTopology_test, DataTypes);
 
 // first test topology
 TYPED_TEST( BezierTetrahedronTopology_test , testTopology )
