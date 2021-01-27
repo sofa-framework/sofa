@@ -216,7 +216,7 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
 using testing::Types;
 typedef Types<Vec3Types> DataTypes;
 
-TYPED_TEST_CASE(MeshROI_test, DataTypes);
+TYPED_TEST_SUITE(MeshROI_test, DataTypes);
 
 TYPED_TEST(MeshROI_test, attributesTests) {
     EXPECT_MSG_NOEMIT(Error) ;

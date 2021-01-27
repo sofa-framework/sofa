@@ -146,7 +146,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(PartialFixedConstraint_test, DataTypes);
+TYPED_TEST_SUITE(PartialFixedConstraint_test, DataTypes);
 
 // test cases
 TYPED_TEST( PartialFixedConstraint_test , testContraintExplicit )

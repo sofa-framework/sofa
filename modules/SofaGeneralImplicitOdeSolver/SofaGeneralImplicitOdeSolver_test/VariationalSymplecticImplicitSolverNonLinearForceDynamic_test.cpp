@@ -242,7 +242,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(VariationalSymplecticImplicitSolverNonLinearForceDynamic_test, DataTypes);
+TYPED_TEST_SUITE(VariationalSymplecticImplicitSolverNonLinearForceDynamic_test, DataTypes);
 
 // Test case: h=0.001
 TYPED_TEST( VariationalSymplecticImplicitSolverNonLinearForceDynamic_test , variationalSymplecticImplicitSolverGravitationForceTest)

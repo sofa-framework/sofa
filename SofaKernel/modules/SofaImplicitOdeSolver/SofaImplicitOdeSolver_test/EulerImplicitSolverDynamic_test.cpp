@@ -197,7 +197,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(EulerImplicitDynamic_test, DataTypes);
+TYPED_TEST_SUITE(EulerImplicitDynamic_test, DataTypes);
 
 // Test case: h=0.1 k=100 m =10 rm=0 rk=0
 TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_high_dt_without_damping)
