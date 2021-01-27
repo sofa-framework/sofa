@@ -22,6 +22,8 @@
 #pragma once
 #include <SofaEigen2Solver/config.h>
 
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>

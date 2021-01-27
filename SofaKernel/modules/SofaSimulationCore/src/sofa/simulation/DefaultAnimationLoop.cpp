@@ -22,6 +22,7 @@
 #include <sofa/simulation/DefaultAnimationLoop.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>

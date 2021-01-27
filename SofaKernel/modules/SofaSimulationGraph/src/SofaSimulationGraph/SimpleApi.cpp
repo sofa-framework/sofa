@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/simulation/Node.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
 

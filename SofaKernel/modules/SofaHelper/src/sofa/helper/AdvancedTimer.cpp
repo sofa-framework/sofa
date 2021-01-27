@@ -21,8 +21,7 @@
 ******************************************************************************/
 #define SOFA_HELPER_ADVANCEDTIMER_CPP
 #include <sofa/helper/AdvancedTimer.h>
-
-#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/map.h>
 #include <iomanip>
