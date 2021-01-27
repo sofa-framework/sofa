@@ -29,6 +29,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QValidator>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 #define TEXTSIZE_THRESHOLD 45
 

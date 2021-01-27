@@ -29,6 +29,7 @@
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/Node.h>
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;

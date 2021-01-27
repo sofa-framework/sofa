@@ -661,4 +661,7 @@ QString ModifyObject::parseDataModified()
     return cat;
 }
 
+bool ModifyObject::hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;}
+
+
 } // namespace sofa::gui::qt

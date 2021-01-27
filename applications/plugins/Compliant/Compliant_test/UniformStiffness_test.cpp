@@ -96,7 +96,7 @@ component::forcefield::UniformStiffness<defaulttype::Vec1Types>
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(UniformStiffness_test, TestTypes);
+TYPED_TEST_SUITE(UniformStiffness_test, TestTypes);
 
 
 

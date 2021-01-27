@@ -22,7 +22,6 @@
 #ifndef SOFA_CORE_BASEMAPPING_H
 #define SOFA_CORE_BASEMAPPING_H
 
-
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>

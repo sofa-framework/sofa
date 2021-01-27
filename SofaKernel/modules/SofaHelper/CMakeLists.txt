@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaHelper)
 
 # DEPENDENCIES
+# find_package(Sofa.Type REQUIRED)
+
 # Boost
 sofa_find_package(Boost REQUIRED
     COMPONENTS system filesystem program_options
@@ -101,6 +103,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/random.h
     ${SRC_ROOT}/rmath.h
     ${SRC_ROOT}/set.h
+    ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/stable_vector.h
     ${SRC_ROOT}/system/DynamicLibrary.h
     ${SRC_ROOT}/system/FileSystem.h
@@ -330,6 +333,8 @@ if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif()
 
 # DEPENDENCY LINKS AND INCLUDE DIRS
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type)
+
 # System libs
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)

@@ -34,8 +34,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/simulation/Node.h>
-
 
 namespace sofa::component::collision
 {

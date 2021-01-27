@@ -21,12 +21,10 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gui/qt/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-
+#include <sofa/core/fwd.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/fixed_array.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/gui/qt/WDoubleLineEdit.h>
 
 #include <QDialog>
@@ -46,6 +44,7 @@
 #include <QVBoxLayout>
 #include <QTextBrowser>
 
+#include <sofa/simulation/fwd.h>
 
 namespace sofa::gui::qt
 {
@@ -127,7 +126,7 @@ public:
 
     void createDialog(core::objectmodel::Base* node);
     void createDialog(core::objectmodel::BaseData* data);
-    bool hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;}
+    bool hideData(core::objectmodel::BaseData* data);
     void readOnlyData(QTableWidget *widget, core::objectmodel::BaseData* data);
     void readOnlyData(QWidget *widget, core::objectmodel::BaseData* data);
 

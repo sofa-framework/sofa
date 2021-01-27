@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/simulation/Node.h>
+
+#include <sofa/simulation/fwd.h>
 
 #include <QWidget>
 #include <QTextEdit>

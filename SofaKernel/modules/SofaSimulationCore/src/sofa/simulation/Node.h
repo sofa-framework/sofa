@@ -54,9 +54,9 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/MutationListener.h>
 #include <sofa/simulation/VisitorScheduler.h>
 
+#include <sofa/simulation/fwd.h>
 #include <type_traits>
 
 namespace sofa
@@ -67,7 +67,6 @@ class Visitor;
 }
 }
 
-#include <sofa/helper/system/thread/CTime.h>
 #include <string>
 #include <stack>
 

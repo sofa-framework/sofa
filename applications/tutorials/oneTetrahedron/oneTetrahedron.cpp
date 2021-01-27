@@ -32,6 +32,7 @@ using VecCoord3 = sofa::helper::vector<Coord3>;
 #include <SofaGui/initSofaGui.h>
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/Node.h>
 
 #include <SofaBase/initSofaBase.h>
 

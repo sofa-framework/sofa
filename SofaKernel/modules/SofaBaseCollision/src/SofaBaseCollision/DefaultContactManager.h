@@ -23,7 +23,7 @@
 #include <SofaBaseCollision/config.h>
 
 #include <sofa/core/collision/ContactManager.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map_ptr_stable_compare.h>
 
@@ -49,12 +49,10 @@ public :
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-
         if (context)
         {
             context->addObject(obj);
-            core::collision::Pipeline *pipeline = static_cast<simulation::Node*>(context)->collisionPipeline;
-            sofa::helper::OptionsGroup options = initializeResponseOptions(pipeline);
+            sofa::helper::OptionsGroup options = initializeResponseOptions(context);
             obj->response.setValue(options);
         }
 
@@ -95,7 +93,7 @@ protected:
 
     void changeInstance(Instance inst) override ;
 
-    static sofa::helper::OptionsGroup initializeResponseOptions(core::collision::Pipeline *pipeline);
+    static sofa::helper::OptionsGroup initializeResponseOptions(sofa::core::objectmodel::BaseContext *pipeline);
 
     // count failure messages, so we don't continuously repeat them
     std::map<std::pair<std::string,std::pair<std::string,std::string> >, int> errorMsgCount;

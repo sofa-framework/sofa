@@ -23,10 +23,7 @@
 #pragma once
 #include <sofa/gui/qt/config.h>
 #include "ModifyObject.h"
-#include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/system/FileRepository.h>
 

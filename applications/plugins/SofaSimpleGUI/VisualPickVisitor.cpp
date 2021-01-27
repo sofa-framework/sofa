@@ -5,7 +5,7 @@ using std::cerr;
 using std::endl;
 
 #include <sofa/helper/system/gl.h>
-
+#include <sofa/simulation/Node.h>
 namespace sofa
 {
 

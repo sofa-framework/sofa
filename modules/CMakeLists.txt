@@ -35,7 +35,12 @@ sofa_add_module(SofaDenseSolver SofaDenseSolver ${Newmat_FOUND})
 sofa_add_module(SofaNonUniformFem SofaNonUniformFem ON)
 
 find_package(Sofa.GL QUIET)
-sofa_add_module(SofaOpenglVisual SofaOpenglVisual ${Sofa.GL_FOUND})
+if(Sofa.GL_FOUND)
+    sofa_add_module(SofaOpenglVisual SofaOpenglVisual ON)
+else()
+    sofa_add_module(SofaOpenglVisual SofaOpenglVisual OFF)
+    message("-- SofaOpenGLVisual: Sofa.GL not found; disabled")
+endif()
 
 # Misc
 sofa_add_module(SofaMiscTopology SofaMiscTopology ON)

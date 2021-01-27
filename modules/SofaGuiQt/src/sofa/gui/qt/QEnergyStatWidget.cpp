@@ -22,6 +22,7 @@
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
+#include <sofa/simulation/Node.h>
 
 namespace sofa::gui::qt
 {

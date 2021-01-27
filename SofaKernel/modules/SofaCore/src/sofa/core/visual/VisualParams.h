@@ -27,6 +27,7 @@
 #include <sofa/helper/visual/DrawTool.h>
 #include <sofa/helper/visual/Transformation.h>
 #include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/core/ExecParams.h>
 
 namespace sofa::core::visual
 {

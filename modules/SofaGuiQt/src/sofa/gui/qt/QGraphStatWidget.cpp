@@ -25,6 +25,7 @@
 #include <QtCharts/QChart>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
+#include <sofa/simulation/Node.h>
 
 namespace sofa::gui::qt
 {

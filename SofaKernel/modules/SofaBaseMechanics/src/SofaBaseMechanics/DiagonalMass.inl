@@ -27,6 +27,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 namespace sofa::component::mass
 {

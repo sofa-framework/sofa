@@ -24,6 +24,8 @@
 #include <sofa/config.h>
 #include <sofa/config/sharedlibrary_defines.h>
 
+#define SOFAGENERALENGINE_HAVE_SOFA_GL @SOFAGENERALENGINE_HAVE_SOFA.GL@
+
 #define SOFAGENERALENGINE_VERSION @PROJECT_VERSION@
 
 #ifdef SOFA_BUILD_SOFAGENERALENGINE
