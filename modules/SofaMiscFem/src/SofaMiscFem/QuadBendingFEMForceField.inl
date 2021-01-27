@@ -4,10 +4,7 @@
 *		       Developer: Nguyen Huu Nhan                             *
 *                                  					      *
 ******************************************************************************/
-
-
-#ifndef SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_INL
+#pragma once
 
 #include "QuadBendingFEMForceField.h"
 
@@ -27,8 +24,7 @@
 #include <iostream> //for debugging
 #include <vector>
 #include <sofa/defaulttype/VecTypes.h>
-#include "config.h"
-#include <math.h> 
+#include <math.h>
 #include <algorithm>
 #include <limits>
 #include <chrono>
@@ -41,14 +37,10 @@
 #include <string>
 
 
-namespace sofa
+namespace sofa::component::forcefield
+
 {
 
-namespace component
-{
-
-namespace forcefield
-{
 using namespace sofa::core::topology;
 
 // --------------------------------------------------------------------------------------
@@ -129,14 +121,14 @@ void QuadBendingFEMForceField<DataTypes>::init()
     if (m_topology == nullptr)
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentstate.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     if (m_topology->getNbQuads() == 0)
     {
         msg_warning() << "No quads found in linked Topology.";
     }
-// Create specific handler for QuadData
+    // Create specific handler for QuadData
     quadInfo.createTopologicalEngine(m_topology, quadHandler);
     quadInfo.registerTopologicalData();
 
@@ -1266,21 +1258,4 @@ void QuadBendingFEMForceField<DataTypes>::addDForce(const core::MechanicalParams
   df.endEdit();
 }
 
-
-
-
-  
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_H
-  
-  
-  
-  
-  
-  
-
+} // namespace sofa::component::forcefield

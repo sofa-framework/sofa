@@ -4,11 +4,9 @@
 *		       Developer: Nguyen Huu Nhan                             *
 *                                  					      *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_H
-#include "config.h"
+#pragma once
 
-
+#include <SofaMiscFem/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -19,13 +17,7 @@
 #include <map>
 #include <sofa/helper/map.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template<class DataTypes>
@@ -46,7 +38,7 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    typedef sofa::core::topology::BaseMeshTopology::index_type Index;
+    typedef sofa::core::topology::BaseMeshTopology::Index Index;
     typedef sofa::core::topology::BaseMeshTopology::Quad Element;
     typedef sofa::core::topology::BaseMeshTopology::SeqQuads VecElement;
     typedef sofa::core::topology::BaseMeshTopology::QuadsAroundVertex QuadsAroundVertex;
@@ -232,6 +224,7 @@ protected :
     
     /*bool updateMatrix;
     int lastFracturedEdgeIndex;*/
+
 public:
 
     /// Forcefield intern paramaters
@@ -253,11 +246,4 @@ extern template class SOFA_MISC_FEM_API QuadBendingFEMForceField<defaulttype::Ve
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_CPP)
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_H
-
+} // namespace sofa::component::forcefield
