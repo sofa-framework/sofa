@@ -238,7 +238,7 @@ typedef Types<Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(BilateralInteractionConstraint_test, DataTypes);
+TYPED_TEST_SUITE(BilateralInteractionConstraint_test, DataTypes);
 
 //TODO(dmarchal): Needs a serious refactor !!!
 TYPED_TEST( BilateralInteractionConstraint_test , checkVec3ConstrainedPositions )

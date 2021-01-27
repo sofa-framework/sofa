@@ -143,7 +143,7 @@ using testing::Types;
 typedef Types<mapping::RigidScaleToAffineMultiMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types, defaulttype::Affine3Types> > DataTypes; // the types to instantiate.
 
 // Test suite for all the instantiations
-TYPED_TEST_CASE(RigidScaleToAffineMultiMappingTest, DataTypes);
+TYPED_TEST_SUITE(RigidScaleToAffineMultiMappingTest, DataTypes);
 // first test case
 TYPED_TEST( RigidScaleToAffineMultiMappingTest , two_parents_one_child )
 {

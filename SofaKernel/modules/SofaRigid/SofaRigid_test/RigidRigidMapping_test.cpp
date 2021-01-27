@@ -280,7 +280,7 @@ using testing::Types;
 typedef Types<mapping::RigidRigidMapping<defaulttype::Rigid3Types,defaulttype::Rigid3Types> > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(RigidRigidMappingTest, DataTypes);
+TYPED_TEST_SUITE(RigidRigidMappingTest, DataTypes);
 
 TYPED_TEST( RigidRigidMappingTest , test_translation )
 {

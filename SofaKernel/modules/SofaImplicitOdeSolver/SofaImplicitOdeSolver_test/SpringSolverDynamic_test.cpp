@@ -127,7 +127,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(SpringSolverDynamic_test, DataTypes);
+TYPED_TEST_SUITE(SpringSolverDynamic_test, DataTypes);
 
 // Test case EulerImplicit Solver
 TYPED_TEST( SpringSolverDynamic_test , EulerImplicitSolverDynamicTest )

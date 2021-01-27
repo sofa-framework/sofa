@@ -213,7 +213,7 @@ component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types> 
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(StiffSpringForceField_test, TestTypes);
+TYPED_TEST_SUITE(StiffSpringForceField_test, TestTypes);
 
 // first test case: extension, no velocity
 TYPED_TEST( StiffSpringForceField_test , extension )
