@@ -108,7 +108,7 @@ bool BaseData::validParent(BaseData* parent)
     return false;
 }
 
-bool BaseData::setParent(BaseData* parent, const std::string& path)
+bool BaseData::setParent(const BaseData* parent, const std::string& path)
 {
     /// First remove previous parents
     while (!this->inputs.empty())
@@ -284,6 +284,24 @@ bool BaseData::copyValue(const BaseData* parent)
     if (updateFromParentValue(parent))
         return true;
     return false;
+}
+
+/// Get current value as a void pointer (use getValueTypeInfo to find how to access it)
+const void* BaseData::getValueVoidPtr() const
+{
+    return _doGetValueVoidPtr_();
+}
+
+/// Begin edit current value as a void pointer (use getValueTypeInfo to find how to access it)
+void* BaseData::beginEditVoidPtr()
+{
+    return _doBeginEditVoidPtr_();
+}
+
+/// End edit current value as a void pointer (use getValueTypeInfo to find how to access it)
+void BaseData::endEditVoidPtr()
+{
+    _doEndEditVoidPtr_();
 }
 
 std::string BaseData::decodeTypeName(const std::type_info& t)

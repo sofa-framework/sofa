@@ -134,17 +134,17 @@ public:
     ///
     /// This pointer should be used via the instance of AbstractTypeInfo
     /// returned by getValueTypeInfo().
-    virtual const void* getValueVoidPtr() const = 0;
+    const void* getValueVoidPtr() const;
 
     /// Get a void pointer to the value held in this %Data, to be used with AbstractTypeInfo.
     ///
     /// This pointer should be used via the instance of AbstractTypeInfo
     /// returned by getValueTypeInfo().
     /// \warning You must call endEditVoidPtr() once you're done modifying the value.
-    virtual void* beginEditVoidPtr() = 0;
+    void* beginEditVoidPtr();
 
     /// Must be called after beginEditVoidPtr(), after you are finished modifying this %Data.
-    virtual void endEditVoidPtr() = 0;
+    void endEditVoidPtr();
 
     /// Copy the value from another Data.
     ///
@@ -267,7 +267,7 @@ public:
     /// @}
 
     /// Link to a parent data. The value of this data will automatically duplicate the value of the parent data.
-    bool setParent(BaseData* parent, const std::string& path = std::string());
+    bool setParent(const BaseData* parent, const std::string& path = std::string());
     bool setParent(const std::string& path);
 
     /// Check if a given Data can be linked as a parent of this data
@@ -286,6 +286,10 @@ protected:
 
     /// Update this %Data from the value of its parent
     virtual bool updateFromParentValue(const BaseData* parent);
+
+    virtual const void* _doGetValueVoidPtr_() const = 0;
+    virtual void* _doBeginEditVoidPtr_() = 0;
+    virtual void _doEndEditVoidPtr_() = 0;
 
     /// Help message
     std::string help {""};

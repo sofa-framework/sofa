@@ -62,55 +62,11 @@ public:
     ~TData() override
     {}
 
-    inline void printValue(std::ostream& out) const override;
-    inline std::string getValueString() const override;
-    inline std::string getValueTypeString() const override;
-
-    /// Get info about the value type of the associated variable
-    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
-    {
-        return sofa::defaulttype::VirtualTypeInfo<T>::get();
-    }
-
-    virtual const T& virtualGetValue() const = 0;
-    virtual void virtualSetValue(const T& v) = 0;
-    virtual void virtualSetLink(const BaseData& bd) = 0;
-    virtual T* virtualBeginEdit() = 0;
-    virtual void virtualEndEdit() = 0;
-
-    /// Get current value as a void pointer (use getValueTypeInfo to find how to access it)
-    const void* getValueVoidPtr() const override
-    {
-        return &(virtualGetValue());
-    }
-
-    /// Begin edit current value as a void pointer (use getValueTypeInfo to find how to access it)
-    void* beginEditVoidPtr() override
-    {
-        return virtualBeginEdit();
-    }
-
-    /// End edit current value as a void pointer (use getValueTypeInfo to find how to access it)
-    void endEditVoidPtr() override
-    {
-        virtualEndEdit();
-    }
-
-    /** Try to read argument value from an input stream.
-    Return false if failed
-     */
-    virtual bool read( const std::string& s ) override;
-
     bool isCounterValid() const override {return true;}
-
-    bool copyValue(const TData<T>* parent);
-
-    bool copyValue(const BaseData* parent) override;
 
     bool validParent(BaseData* parent) override;
 
 protected:
-
     bool updateFromParentValue(const BaseData* parent) override;
 };
 
@@ -300,32 +256,23 @@ public:
     }
     SOFA_END_DEPRECATION_AS_ERROR
 
-
-
     /// @}
 
-    /// @name Virtual edition and retrieval API (for generic TData parent API, deprecated)
-    /// @{
 
-    virtual const T& virtualGetValue() const { return getValue(); }
-    virtual void virtualSetValue(const T& v) { setValue(v); }
 
-    virtual void virtualSetLink(const BaseData& bd)
+    /// Get info about the value type of the associated variable
+    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
     {
-        const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
-        if (d)
-        {
-            m_value = d->m_value;
-            m_counter++;
-            m_isSet = true;
-            BaseData::setDirtyOutputs();
-        }
+        return sofa::defaulttype::VirtualTypeInfo<T>::get();
     }
 
-    virtual T* virtualBeginEdit() { return beginEdit(); }
-    virtual void virtualEndEdit() { endEdit(); }
-
-    /// @}
+    /** Try to read argument value from an input stream.
+    Return false if failed
+     */
+    bool read( const std::string& s ) override;
+    void printValue(std::ostream& out) const override;
+    std::string getValueString() const override;
+    std::string getValueTypeString() const override;
 
     inline friend std::ostream & operator << (std::ostream &out, const Data& df)
     {
@@ -333,31 +280,54 @@ public:
         return out;
     }
 
-SOFA_BEGIN_DEPRECATION_AS_ERROR
+    SOFA_BEGIN_DEPRECATION_AS_ERROR
     [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")]]
-    inline bool operator ==( const T& value ) const
+    bool operator ==( const T& value ) const
     {
-            return getValue()==value;
+        return getValue()==value;
     }
 
     [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")]]
-    inline bool operator !=( const T& value ) const
-    {
-            return getValue()!=value;
-    }
-SOFA_END_DEPRECATION_AS_ERROR
+    bool operator!=( const T& value ) const {return getValue()!=value; }
+    SOFA_END_DEPRECATION_AS_ERROR
 
-    inline void operator =( const T& value )
+    void operator =( const T& value )
     {
-        this->setValue(value);
+            this->setValue(value);
     }
 
+    bool copyValue(const Data<T>* parent);
+    bool copyValue(const BaseData* parent) override;
 protected:
 
     typedef DataContentValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
 
     /// Value
     ValueType m_value;
+
+    //void _doSetValue_(const T& v) override { setValue(v); }
+    //    void _doSetLink_(const BaseData& bd) override
+    //    {
+    //        const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
+    //        if (d)
+    //        {
+    //            m_value = d->m_value;
+    //            m_counter++;
+    //            m_isSet = true;
+    //            BaseData::setDirtyOutputs();
+    //        }
+    //    }
+
+    //virtual const void* _doGetValueVoidPtr_() const = 0;
+    //virtual void* _doBeginEditVoidPtr_() = 0;
+    //virtual void _doEndEditVoidPtr_() = 0;
+    const void* _doGetValueVoidPtr_() const override { return &getValue(); }
+    void* _doBeginEditVoidPtr_() override  { return beginEdit(); }
+    void _doEndEditVoidPtr_() override  { endEdit(); }
+
+
+
+    /// @}
 
 private:
     Data(const Data& );
@@ -368,51 +338,51 @@ class EmptyData : public Data<void*> {};
 
 /// Specialization for reading strings
 template<>
-bool TData<std::string>::read( const std::string& str );
+bool Data<std::string>::read( const std::string& str );
 
 
 /// Specialization for reading booleans
 template<>
-bool TData<bool>::read( const std::string& str );
+bool Data<bool>::read( const std::string& str );
 
 
 /// General case for printing default value
 template<class T>
 inline
-void TData<T>::printValue( std::ostream& out) const
+void Data<T>::printValue( std::ostream& out) const
 {
-    out << virtualGetValue() << " ";
+    out << getValue() << " ";
 }
 
 /// General case for printing default value
 template<class T>
 inline
-std::string TData<T>::getValueString() const
+std::string Data<T>::getValueString() const
 {
     std::ostringstream out;
-    out << virtualGetValue();
+    out << getValue();
     return out.str();
 }
 
 template<class T>
 inline
-std::string TData<T>::getValueTypeString() const
+std::string Data<T>::getValueTypeString() const
 {
-    return BaseData::typeName(&virtualGetValue());
+    return BaseData::typeName(&getValue());
 }
 
 template <class T>
-bool TData<T>::read(const std::string& s)
+bool Data<T>::read(const std::string& s)
 {
     if (s.empty())
     {
-        bool resized = getValueTypeInfo()->setSize( virtualBeginEdit(), 0 );
-        virtualEndEdit();
+        bool resized = getValueTypeInfo()->setSize( BaseData::beginEditVoidPtr(), 0 );
+        BaseData::endEditVoidPtr();
         return resized;
     }
     std::istringstream istr( s.c_str() );
-    istr >> *virtualBeginEdit();
-    virtualEndEdit();
+    istr >> *beginEdit();
+    endEdit();
     if( istr.fail() )
     {
         return false;
@@ -421,19 +391,19 @@ bool TData<T>::read(const std::string& s)
 }
 
 template <class T>
-bool TData<T>::copyValue(const TData<T>* parent)
+bool Data<T>::copyValue(const Data<T>* parent)
 {
-    virtualSetValue(parent->virtualGetValue());
+    setValue(parent->_doGetValue_());
     return true;
 }
 
 template <class T>
-bool TData<T>::copyValue(const BaseData* parent)
+bool Data<T>::copyValue(const BaseData* parent)
 {
-    const TData<T>* p = dynamic_cast<const TData<T>*>(parent);
+    const Data<T>* p = dynamic_cast<const Data<T>*>(parent);
     if (p)
     {
-        virtualSetValue(p->virtualGetValue());
+        setValue(p->getValue());
         return true;
     }
     return BaseData::copyValue(parent);
@@ -454,7 +424,7 @@ bool TData<T>::updateFromParentValue(const BaseData* parent)
     auto typedParent = dynamic_cast<const TData<T>*>(parent);
     if (typedParent)
     {
-        virtualSetLink(*parent);
+        setParent(parent);
         return true;
     }
     else
