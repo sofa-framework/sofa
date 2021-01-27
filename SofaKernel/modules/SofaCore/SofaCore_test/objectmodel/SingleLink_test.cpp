@@ -123,7 +123,7 @@ TEST_F(SingleLink_test, checkClearSetValue  )
     ASSERT_EQ( m_link.size(), 0 ) << "The size of a link container should be zero after clear().";
     m_link.set(nullptr);
     ASSERT_EQ( m_link.size(), 1 ) << "The size of a link container should be one after set(nullptr).";
-    ASSERT_EQ( m_link.getPath(), "@[]" ) << "The path should be empty because of the the previously used set(nullptr).";
+    ASSERT_EQ( m_link.getPath(), "" ) << "The path should be empty because of the the previously used set(nullptr).";
 }
 
 TEST_F(SingleLink_test, checkClearSetPath  )
@@ -139,4 +139,6 @@ TEST_F(SingleLink_test, checkEmptyness  )
 {
     m_link.set(nullptr);
     ASSERT_EQ( m_link.size(), 1 );
+    m_link.clear();
+    ASSERT_EQ( m_link.size(), 0 );
 }
