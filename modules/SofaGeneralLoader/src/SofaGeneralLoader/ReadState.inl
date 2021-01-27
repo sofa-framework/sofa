@@ -237,16 +237,13 @@ void ReadState::processReadState()
         str >> cmd;
         if (cmd == "X=")
         {
+            double scale = d_scalePos.getValue();
+            Vector3 rotation = d_rotation.getValue();
+            Vector3 translation = d_translation.getValue();
             mmodel->readVec(core::VecId::position(), str);
-
-            if (d_scalePos.getValue() != 1.)
-                mmodel->applyScale(d_scalePos.getValue(), d_scalePos.getValue(), d_scalePos.getValue());
-
-            if (d_rotation.getValue() != Vector3(0,0,0))
-                mmodel->applyRotation(d_rotation.getValue()[0],d_rotation.getValue()[1],d_rotation.getValue()[2]);
-
-            if (d_translation.getValue() != Vector3(0,0,0))
-                mmodel->applyTranslation(d_translation.getValue()[0],d_translation.getValue()[1],d_translation.getValue()[2]);
+            mmodel->applyScale(scale,scale,scale);
+            mmodel->applyRotation(rotation[0],rotation[1],rotation[2]);
+            mmodel->applyTranslation(translation[0],translation[1],translation[2]);
 
             updated = true;
         }
