@@ -163,8 +163,6 @@ void QuadBendingFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Ind
   helper::vector<QuadInformation>& quadInf = *(quadInfo.beginEdit());
 
   QuadInformation *qinfo = &quadInf[i];
-  //Real Inthalflength;
-  //Real Inthalfheight;
   Coord IntlengthElement;
   Coord IntheightElement;
   Coord Intcentroid;
@@ -197,11 +195,8 @@ void QuadBendingFEMForceField<DataTypes>::initLarge()
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::reinit()
 {   
-    /*if (f_method.getValue() == "small")
-      method = SMALL;
-    else if (f_method.getValue() == "large")
-      method = LARGE;*/
-    //---------- check lai topology data----------------
+
+    //---------- check topology data----------------
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
     helper::vector<QuadInformation>& quadInf = *(quadInfo.beginEdit());
     // prepare to store info in the quad array
@@ -288,7 +283,7 @@ void QuadBendingFEMForceField<DataTypes>::computeDisplacementSmall(Displacement 
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::computeBendingStrainDisplacement(StrainDisplacement &Jb, /*Index elementIndex*/ float gauss1, float gauss2, float l, float h/*Coord a, Coord b, Coord c, Coord d*/ )
 {
-  
+
 for(int idx=0;idx<4;idx++)
 {
   if(idx == 0)
@@ -454,8 +449,8 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
   
   Coord length_vec = p[idx1] - p[idx0];
   Coord height_vec = p[idx3] - p[idx0];
-  float length = (sqrt(length_vec[0]*length_vec[0]+length_vec[1]*length_vec[1]+length_vec[2]*length_vec[2]))/2.0f; // do dai` a (chieu dai)
-  float height = (sqrt(height_vec[0]*height_vec[0]+height_vec[1]*height_vec[1]+height_vec[2]*height_vec[2]))/2.0f; // do dai` b (chieu cao)
+  float length = (sqrt(length_vec[0]*length_vec[0]+length_vec[1]*length_vec[1]+length_vec[2]*length_vec[2]))/2.0f; // length of quad element
+  float height = (sqrt(height_vec[0]*height_vec[0]+height_vec[1]*height_vec[1]+height_vec[2]*height_vec[2]))/2.0f; // height of quad element
   //Coord centroid = (p[idx0]+p[idx2])/2.0f;
  
   // Bending component of strain displacement
