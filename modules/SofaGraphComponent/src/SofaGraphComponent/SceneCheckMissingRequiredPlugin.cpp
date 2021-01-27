@@ -27,6 +27,7 @@
 #include <sofa/helper/system/PluginManager.h>
 
 #include <SofaBaseUtils/RequiredPlugin.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa::simulation::_scenechecking_
 {

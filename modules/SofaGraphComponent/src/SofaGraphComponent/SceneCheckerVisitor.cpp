@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <sofa/version.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa::simulation::_scenechecking_
 {

@@ -23,6 +23,7 @@
 #define SOFA_CORE_BEHAVIOR_FORCEFIELD_INL
 
 #include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <iostream>
 
 namespace sofa

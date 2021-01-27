@@ -30,6 +30,7 @@
 #include <SofaDeformable/SpringForceField.inl>
 #include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/helper/cast.h>
+#include <sofa/simulation/Node.h>
 
 using namespace sofa::component::interactionforcefield;
 using namespace sofa::core::objectmodel;
