@@ -114,7 +114,7 @@ typedef testing::Types<
 
 
 // Tests to run for each instantiated type
-TYPED_TEST_CASE(QuadPressureForceField_test, TestTypes);
+TYPED_TEST_SUITE(QuadPressureForceField_test, TestTypes);
 
 // first test case: test force value
 TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)

@@ -31,7 +31,12 @@ option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 # https://cmake.org/cmake/help/v3.19/command/target_precompile_headers.html
 option(SOFA_BUILD_WITH_PCH_ENABLED "Compile Sofa using precompiled header (to accelerate the build process)" OFF)
 if(SOFA_BUILD_WITH_PCH_ENABLED)
-    message("-- Precompiled headers: Yes (SOFA_BUILD_WITH_PCH_ENABLED variable is ON).")
+    if(${CMAKE_VERSION} VERSION_GREATER "3.16.0")
+        message("-- Precompiled headers: Yes (SOFA_BUILD_WITH_PCH_ENABLED variable is ON).")
+    else()
+        message("-- Precompiled headers: No (SOFA_BUILD_WITH_PCH_ENABLED variable is ON but cmake version is <3.16).")
+        set(DISABLE_PRECOMPILE_HEADERS ON)   # https://cmake.org/cmake/help/v3.19/prop_tgt/DISABLE_PRECOMPILE_HEADERS.html
+    endif()
 else()
     message("-- Precompiled headers: No (SOFA_BUILD_WITH_PCH_ENABLED variable is OFF).")
     set(DISABLE_PRECOMPILE_HEADERS ON)   # https://cmake.org/cmake/help/v3.19/prop_tgt/DISABLE_PRECOMPILE_HEADERS.html

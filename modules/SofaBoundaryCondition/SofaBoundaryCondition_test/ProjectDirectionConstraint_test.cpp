@@ -233,7 +233,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(ProjectDirectionConstraint_test, DataTypes);
+TYPED_TEST_SUITE(ProjectDirectionConstraint_test, DataTypes);
 
 // first test case
 TYPED_TEST( ProjectDirectionConstraint_test , oneConstrainedParticle )

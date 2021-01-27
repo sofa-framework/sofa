@@ -107,7 +107,7 @@ component::forcefield::DiagonalStiffness<defaulttype::Vec1Types>
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(DiagonalStiffness_test, TestTypes);
+TYPED_TEST_SUITE(DiagonalStiffness_test, TestTypes);
 
 
 
