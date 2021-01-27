@@ -151,8 +151,6 @@ void QuadBendingFEMForceField<DataTypes>::init()
     else if (f_method.getValue() == "large")
         method = LARGE;*/
 
-    //lastFracturedEdgeIndex = -1; // chua hieu cai nay lam gi
-
     reinit();
 }
   
@@ -207,14 +205,14 @@ void QuadBendingFEMForceField<DataTypes>::reinit()
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
     helper::vector<QuadInformation>& quadInf = *(quadInfo.beginEdit());
     // prepare to store info in the quad array
-    quadInf.resize(m_topology->getNbQuads()); //set size cho quadInfo theo so luong quad element
+    quadInf.resize(m_topology->getNbQuads()); 
 
     // prepare to store info in the edge array
     edgeInf.resize(m_topology->getNbEdges());
   
-    unsigned int nbPoints = m_topology->getNbPoints();  // check va save lai so luong node
-    helper::vector<VertexInformation>& vi = *(vertexInfo.beginEdit()); //save vao trong vertexInformation thong qua bien vi
-    vi.resize(nbPoints); // sua lai size cho vi
+    unsigned int nbPoints = m_topology->getNbPoints(); 
+    helper::vector<VertexInformation>& vi = *(vertexInfo.beginEdit()); 
+    vi.resize(nbPoints);
     vertexInfo.endEdit(); 
   
     for (Topology::QuadID i=0; i<m_topology->getNbQuads(); ++i)
@@ -248,10 +246,6 @@ void QuadBendingFEMForceField<DataTypes>::computeDisplacementSmall(Displacement 
     Index idx2 = m_topology->getQuad(elementIndex)[2];
     Index idx3 = m_topology->getQuad(elementIndex)[3];   
 
-    /*Coord length_vec = p[idx1] - p[idx0];
-    Coord height_vec = p[idx3] - p[idx0];
-    float length = (length_vec.norm())/2.0f; // do dai` a (chieu dai)
-    float height = (height_vec.norm())/2.0f; // do dai` b (chieu cao)*/
     Coord centroid = (p[idx0]+p[idx2])/2.0f;
 
     helper::vector<QuadInformation>& quadInf = *(quadInfo.beginEdit());
@@ -265,24 +259,24 @@ void QuadBendingFEMForceField<DataTypes>::computeDisplacementSmall(Displacement 
     D[0] = quadInf[elementIndex].InitialPosElements[0][0] - deform_t0[0];
     D[1] = quadInf[elementIndex].InitialPosElements[0][1] - deform_t0[1];
     D[2] = quadInf[elementIndex].InitialPosElements[0][2] - deform_t0[2];
-    D[3] = 0;  // Assume la khong co rotational displacement (i.e., phix va phiy bang 0)
+    D[3] = 0;  // Assume that the rotational displacements at node are zero
     D[4] = 0;
 
     D[5] = quadInf[elementIndex].InitialPosElements[1][0] - deform_t1[0];
     D[6] = quadInf[elementIndex].InitialPosElements[1][1] - deform_t1[1];
     D[7] = quadInf[elementIndex].InitialPosElements[1][2] - deform_t1[2];
-    D[8] = 0;  // Assume la khong co rotational displacement (i.e., phix va phiy bang 0)
+    D[8] = 0;  
     D[9] = 0;
 
     D[10] = quadInf[elementIndex].InitialPosElements[2][0] - deform_t2[0];
     D[11] = quadInf[elementIndex].InitialPosElements[2][1] - deform_t2[1];
     D[12] = quadInf[elementIndex].InitialPosElements[2][2] - deform_t2[2];
-    D[13] = 0;  // Assume la khong co rotational displacement (i.e., phix va phiy bang 0)
+    D[13] = 0; 
     D[14] = 0;
     D[15] = quadInf[elementIndex].InitialPosElements[3][0] - deform_t3[0];
     D[16] = quadInf[elementIndex].InitialPosElements[3][1] - deform_t3[1];
     D[17] = quadInf[elementIndex].InitialPosElements[3][2] - deform_t3[2];
-    D[18] = 0;  // Assume la khong co rotational displacement (i.e., phix va phiy bang 0)
+    D[18] = 0;  
     D[19] = 0;
 
     quadInfo.endEdit();
@@ -294,11 +288,6 @@ void QuadBendingFEMForceField<DataTypes>::computeDisplacementSmall(Displacement 
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::computeBendingStrainDisplacement(StrainDisplacement &Jb, /*Index elementIndex*/ float gauss1, float gauss2, float l, float h/*Coord a, Coord b, Coord c, Coord d*/ )
 {
-  
-  /*Coord lengthElement = b - a;  // vector ab
-  Coord heightElement = d - a;  // vector ad
-  float l = (lengthElement.norm())/2.0f; // magnitude cua vector ab/2 bang chieu dai a
-  float h = (heightElement.norm())/2.0f; // magnitude cua vector ad/2 bang chieu cao b*/
   
 for(int idx=0;idx<4;idx++)
 {
@@ -339,10 +328,6 @@ for(int idx=0;idx<4;idx++)
 template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::computeShearStrainDisplacement(StrainDisplacement &Js, /*Index elementIndex*/ float l, float h/*Coord a, Coord b, Coord c, Coord d*/  )
 {
-  /*Coord lengthElement = b - a;  // vector ab
-  Coord heightElement = d - a;  // vector ad
-  float l = (lengthElement.norm())/2.0f; // magnitude cua vector ab/2 bang chieu dai a
-  float h = (heightElement.norm())/2.0f; // magnitude cua vector ad/2 bang chieu cao b*/
   
 for(int idx=0;idx<4;idx++)
   {
@@ -1090,12 +1075,12 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
 
   // Stiffness matrix of a element: K = Kb + Ks
   K = Kb + Ks;
-  // luu cac gia tri stiffness
+  // save stiffness
   quadInf[elementIndex].Bendingstiffness=Kb;
   quadInf[elementIndex].Shearstiffness=Ks;
   quadInfo.endEdit();
 
- int nbQuads = m_topology->getNbQuads();
+ /*int nbQuads = m_topology->getNbQuads();
     //count number line of file 
     int numLines = 0;
     std::ifstream in("/home/nhnhanbk/Desktop/Sofa/sofa/nhnhan/IoTouch/K.txt");
@@ -1113,7 +1098,7 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
         myfile.flush();
         myfile <<K<<"\n";
         myfile.close();
-    }
+    }*/
 
 }
   
@@ -1149,7 +1134,7 @@ void QuadBendingFEMForceField<DataTypes>::computeForce(Displacement &F, Index el
     F[17]=K[17][2]*D[2]+K[17][7]*D[7]+K[17][12]*D[12]+K[17][17]*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
     F[18]=0;
     F[19]=0; //F[19]=K[19][2]*D[2]+K[19][7]*D[7]+K[19][12]*D[12]+K[19][17]*D[17];   //Assume: D[3]=D[4]=D[8]=D[9]=D[13]=D[14]=D[18]=D[19]=0
-    quadInf[elementIndex].stiffness = K; // co the la da duoc luu roi` nen ko can`
+    quadInf[elementIndex].stiffness = K; 
 
 quadInfo.endEdit();
 }
@@ -1171,7 +1156,7 @@ void QuadBendingFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real 
     Index idx1 = m_topology->getQuad(i)[1];
     Index idx2 = m_topology->getQuad(i)[2];
     Index idx3 = m_topology->getQuad(i)[3];
-    // Tinh displacement cua cac node trong global frame
+    // Displacement in global frame
     D[0] = x[idx0][0];
     D[1] = x[idx0][1];
     D[2] = x[idx0][2];
