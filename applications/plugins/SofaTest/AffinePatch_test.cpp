@@ -270,7 +270,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(AffinePatch_sofa_test, DataTypes);
+TYPED_TEST_SUITE(AffinePatch_sofa_test, DataTypes);
 
 // first test case
 TYPED_TEST( AffinePatch_sofa_test , patchTest2D )

@@ -132,7 +132,7 @@ component::forcefield::HexahedronFEMForceField<defaulttype::Vec3Types>
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(HexahedronFEMForceField_test, TestTypes);
+TYPED_TEST_SUITE(HexahedronFEMForceField_test, TestTypes);
 
 // test case
 TYPED_TEST( HexahedronFEMForceField_test , extension )

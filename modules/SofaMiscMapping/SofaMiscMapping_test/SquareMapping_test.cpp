@@ -77,7 +77,7 @@ component::mapping::SquareMapping<defaulttype::Vec1Types,defaulttype::Vec1Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE( SquareMappingTest, DataTypes );
+TYPED_TEST_SUITE( SquareMappingTest, DataTypes );
 
 // test case
 TYPED_TEST( SquareMappingTest , test )

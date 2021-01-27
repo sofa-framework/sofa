@@ -144,7 +144,7 @@ struct ClusteringEngine_test : public Sofa_test<typename _DataTypes::Real>,
 using testing::Types;
 typedef Types<Vec3Types> DataTypes;
 
-TYPED_TEST_CASE(ClusteringEngine_test, DataTypes);
+TYPED_TEST_SUITE(ClusteringEngine_test, DataTypes);
 
 TYPED_TEST(ClusteringEngine_test, NormalBehavior) {
     ASSERT_NO_THROW(this->normalTests()) ;
