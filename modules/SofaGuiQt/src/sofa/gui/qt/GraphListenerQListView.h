@@ -30,12 +30,8 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 
-
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/simulation/MutationListener.h>
-
-
 
 namespace sofa
 {

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-
+#include <sofa/simulation/Node.h>
 namespace sofa
 {
 

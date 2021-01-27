@@ -24,6 +24,7 @@
 
 #include <sofa/simulation/VelocityThresholdVisitor.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/simulation/Node.h>
 #include <iostream>
 
 namespace sofa
