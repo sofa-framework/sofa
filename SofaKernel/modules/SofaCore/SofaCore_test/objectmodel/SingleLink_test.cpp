@@ -42,7 +42,7 @@ public:
 class SingleLink_test: public BaseTest
 {
 public:
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK > m_link ;
+    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK|BaseLink::FLAG_STOREPATH > m_link ;
     BaseObject::SPtr m_dst ;
     BaseObject::SPtr m_src ;
 
@@ -115,4 +115,30 @@ TEST_F(SingleLink_test, getOwnerBase)
 
     m_link.setOwner(aBaseObject.get());
     ASSERT_EQ(m_link.getOwnerBase(), aBaseObject.get());
+}
+
+TEST_F(SingleLink_test, checkClearSetValue  )
+{
+    m_link.clear();
+    ASSERT_EQ( m_link.size(), 0 ) << "The size of a link container should be zero after clear().";
+    m_link.set(nullptr);
+    ASSERT_EQ( m_link.size(), 1 ) << "The size of a link container should be one after set(nullptr).";
+    ASSERT_EQ( m_link.getPath(), "" ) << "The path should be empty because of the the previously used set(nullptr).";
+}
+
+TEST_F(SingleLink_test, checkClearSetPath  )
+{
+    m_link.clear();
+    ASSERT_EQ( m_link.size(), 0 )  << "The size of a link container should be zero after clear().";
+    m_link.setPath("@/ThisIsAPath");
+    ASSERT_EQ( m_link.size(), 1 ) << "The size of a link container should be one after setPath().";
+    ASSERT_EQ( m_link.getPath(), "@/ThisIsAPath" ) << "The path should not be empty as it was set previously.";
+}
+
+TEST_F(SingleLink_test, checkEmptyness  )
+{
+    m_link.set(nullptr);
+    ASSERT_EQ( m_link.size(), 1 );
+    m_link.clear();
+    ASSERT_EQ( m_link.size(), 0 );
 }
