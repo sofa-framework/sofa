@@ -451,7 +451,7 @@ struct UniformMassTest :  public BaseTest
 typedef Types<
 TemplateTypes<Vec3Types, Vec3Types::Real>> DataTypes;
 
-TYPED_TEST_CASE(UniformMassTest, DataTypes);
+TYPED_TEST_SUITE(UniformMassTest, DataTypes);
 
 
 TYPED_TEST(UniformMassTest, attributesTests) {

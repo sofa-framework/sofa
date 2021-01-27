@@ -195,7 +195,7 @@ TEST_P( MeshExporter_test, checkSimulationWriteEachNbStep) {
                                                         tempdir+"/exporterA00004."+params[0]}, 20)) ;
 }
 
-INSTANTIATE_TEST_CASE_P(checkAllBehavior,
+INSTANTIATE_TEST_SUITE_P(checkAllBehavior,
                         MeshExporter_test,
                         ::testing::ValuesIn(params));
 
