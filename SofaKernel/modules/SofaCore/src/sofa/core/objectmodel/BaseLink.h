@@ -146,7 +146,6 @@ public:
 
     std::string getLinkedPath(const std::size_t index=0) const;
 
-    [[deprecated("2021-01-01: This function was in Link.h. Does not use it")]]
     std::string getPath(std::size_t index=0) const { return getLinkedPath(index); }
 
     /// @name Serialization API

@@ -230,7 +230,7 @@ std::string BaseLink::getLinkedPath(const std::size_t index) const
         return "";
 
     std::string path = _doGetLinkedPath_(index);
-    if(path.empty())
+    if(path.empty() && getLinkedBase(index))
         return CreateString(getLinkedBase(index), getOwner());
     return path;
 }
