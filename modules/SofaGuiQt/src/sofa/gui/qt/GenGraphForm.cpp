@@ -23,6 +23,7 @@
 
 #ifdef WIN32
 #include <windows.h>
+#include <shellapi.h>
 #endif
 
 #include <fstream>

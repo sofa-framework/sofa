@@ -560,8 +560,6 @@ public:
         return PathResolver::CheckPath(context, GetDestClass(), path);
     }
 
-
-
 protected:
     OwnerType* m_owner {nullptr};
     Container m_value;
@@ -626,6 +624,7 @@ protected:
     {
         m_owner = dynamic_cast<OwnerType*>(owner);
     }
+
 };
 
 /**
