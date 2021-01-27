@@ -252,7 +252,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
 
-if((NOT DISABLE_PRECOMPILE_HEADERS) AND (${CMAKE_VERSION} VERSION_GREATER "3.16.0"))
+if(SOFA_BUILD_WITH_PCH_ENABLED)
     message("Adding precompiled header for SofaCore")
     target_precompile_headers(${PROJECT_NAME} PUBLIC ${SRC_ROOT}/objectmodel/BaseObject.h ${SRC_ROOT}/objectmodel/Data.h)
 endif()
