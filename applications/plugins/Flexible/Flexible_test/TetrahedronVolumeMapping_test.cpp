@@ -105,7 +105,7 @@ TetrahedronVolumeMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(TetrahedronVolumeMappingTest, DataTypes);
+TYPED_TEST_SUITE(TetrahedronVolumeMappingTest, DataTypes);
 
 TYPED_TEST( TetrahedronVolumeMappingTest, test_perTetra )
 {

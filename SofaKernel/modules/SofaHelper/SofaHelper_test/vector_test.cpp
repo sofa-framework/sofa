@@ -136,7 +136,7 @@ std::vector<std::vector<std::string>> intvalues={
     {"zero 1 2 trois quatre cinq 6", "0 1 2 0 0 0 6", "Warning"},
     {"3.14 4.15 5.16", "0 0 0", "Warning"}
 };
-INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
+INSTANTIATE_TEST_SUITE_P(checkReadWriteBehavior,
                         vector_test_int,
                         ::testing::ValuesIn(intvalues));
 
@@ -183,7 +183,7 @@ std::vector<std::vector<std::string>> uintvalues={
     {"3.14 4.15 5.16", "0 0 0", "Warning"},
     {"5 6---10 0", "5 0 0", "Warning"}
 };
-INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
+INSTANTIATE_TEST_SUITE_P(checkReadWriteBehavior,
                         vector_test_unsigned_int,
                         ::testing::ValuesIn(uintvalues));
 
@@ -244,7 +244,7 @@ TEST_P(vector_benchmark_unsigned_int, benchmark)
    this->benchmark(GetParam());
 }
 
-INSTANTIATE_TEST_CASE_P(benchmark,
+INSTANTIATE_TEST_SUITE_P(benchmark,
                         vector_benchmark_unsigned_int,
                         ::testing::ValuesIn(benchvalues));
 
@@ -254,6 +254,6 @@ TEST_P(vector_benchmark_int, benchmark)
    this->benchmark(GetParam());
 }
 
-INSTANTIATE_TEST_CASE_P(benchmark,
+INSTANTIATE_TEST_SUITE_P(benchmark,
                         vector_benchmark_int,
                         ::testing::ValuesIn(benchvalues));

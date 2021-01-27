@@ -93,7 +93,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(SafeDistanceMappingTest, DataTypes);
+TYPED_TEST_SUITE(SafeDistanceMappingTest, DataTypes);
 
 TYPED_TEST( SafeDistanceMappingTest, test )
 {
@@ -224,7 +224,7 @@ typedef Types<
 > DataTypes2; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(SafeDistanceFromTargetMappingTest, DataTypes2);
+TYPED_TEST_SUITE(SafeDistanceFromTargetMappingTest, DataTypes2);
 
 TYPED_TEST( SafeDistanceFromTargetMappingTest, test_differencefailsafe )
 {

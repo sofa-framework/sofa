@@ -112,7 +112,7 @@ component::mapping::SquareDistanceMapping<defaulttype::Vec3Types,defaulttype::Ve
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE( SquareDistanceMappingTest, DataTypes );
+TYPED_TEST_SUITE( SquareDistanceMappingTest, DataTypes );
 
 // test case
 TYPED_TEST( SquareDistanceMappingTest , test )

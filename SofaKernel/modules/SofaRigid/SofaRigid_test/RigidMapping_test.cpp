@@ -196,7 +196,7 @@ mapping::RigidMapping<defaulttype::Rigid3Types,defaulttype::Vec3Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(RigidMappingTest, DataTypes);
+TYPED_TEST_SUITE(RigidMappingTest, DataTypes);
 // first test case
 TYPED_TEST( RigidMappingTest , oneRigid_fourParticles_localCoords )
 {

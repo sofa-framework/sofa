@@ -82,7 +82,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(WinchMultiMappingTest, DataTypes);
+TYPED_TEST_SUITE(WinchMultiMappingTest, DataTypes);
 
 TYPED_TEST( WinchMultiMappingTest, test )
 {

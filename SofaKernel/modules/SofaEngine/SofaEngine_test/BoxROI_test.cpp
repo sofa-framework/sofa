@@ -359,7 +359,7 @@ typedef Types<
 
 > DataTypes;
 
-TYPED_TEST_CASE(BoxROITest, DataTypes);
+TYPED_TEST_SUITE(BoxROITest, DataTypes);
 
 
 TYPED_TEST(BoxROITest, attributesTests) {

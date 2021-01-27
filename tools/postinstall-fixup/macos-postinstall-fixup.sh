@@ -2,13 +2,14 @@
 # set -o errexit # Exit on error
 
 usage() {
-    echo "Usage: macos-postinstall-fixup.sh <install-dir> [qt-dir] [macdeployqt]"
+    echo "Usage: macos-postinstall-fixup.sh <install-dir> [qt-lib-dir] [qt-data-dir] [macdeployqt]"
 }
 
 if [ "$#" -ge 1 ]; then
     INSTALL_DIR="$(cd $1 && pwd)"
-    QT_DIR="$2"
-    MACDEPLOYQT_EXE="$3"
+    QT_LIB_DIR="$2"
+    QT_DATA_DIR="$3"
+    MACDEPLOYQT_EXE="$4"
 else
     usage; exit 1
 fi
@@ -20,7 +21,8 @@ fi
 
 echo "INSTALL_DIR = $INSTALL_DIR"
 echo "BUNDLE_DIR = $BUNDLE_DIR"
-echo "QT_DIR = $QT_DIR"
+echo "QT_LIB_DIR = $QT_LIB_DIR"
+echo "QT_DATA_DIR = $QT_DATA_DIR"
 echo "MACDEPLOYQT_EXE = $MACDEPLOYQT_EXE"
 
 # Keep plugin_list as short as possible
@@ -64,11 +66,11 @@ if [ -d "$BUNDLE_DIR" ] && [ -e "$MACDEPLOYQT_EXE" ]; then
     cp -R $BUNDLE_DIR/Contents/PlugIns/* $BUNDLE_DIR/Contents/MacOS/bin && rm -rf $BUNDLE_DIR/Contents/PlugIns
 
     printf "[Paths] \n    Plugins = MacOS/bin \n" > $BUNDLE_DIR/Contents/Resources/qt.conf
-elif [ -d "$QT_DIR" ]; then
-    cp -Rf $QT_DIR/plugins/iconengines $INSTALL_DIR/bin
-    cp -Rf $QT_DIR/plugins/imageformats $INSTALL_DIR/bin
-    cp -Rf $QT_DIR/plugins/platforms $INSTALL_DIR/bin
-    cp -Rf $QT_DIR/plugins/styles $INSTALL_DIR/bin
+elif [ -d "$QT_DATA_DIR" ]; then
+    cp -Rf $QT_DATA_DIR/plugins/iconengines $INSTALL_DIR/bin
+    cp -Rf $QT_DATA_DIR/plugins/imageformats $INSTALL_DIR/bin
+    cp -Rf $QT_DATA_DIR/plugins/platforms $INSTALL_DIR/bin
+    cp -Rf $QT_DATA_DIR/plugins/styles $INSTALL_DIR/bin
 fi
 
 echo "Fixing up libs manually ..."
@@ -125,7 +127,7 @@ check-all-deps() {
 
             if [[ "$mode" == "copy" ]]; then
                 if [ -n "$libqt" ]; then
-                    originlib="$QT_DIR/lib/$libqt.framework"
+                    originlib="$QT_LIB_DIR/$libqt.framework"
                     destlib="$INSTALL_DIR/lib/$libqt.framework"
                 else
                     originlib="$dep"

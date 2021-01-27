@@ -256,7 +256,7 @@ struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE( FlexibleDataEngine_test, TestTypes );
+TYPED_TEST_SUITE( FlexibleDataEngine_test, TestTypes );
 
 // test number of call to DataEngine::update
 TYPED_TEST( FlexibleDataEngine_test, basic_test )

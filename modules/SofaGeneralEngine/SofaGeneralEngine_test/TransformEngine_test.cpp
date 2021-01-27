@@ -138,8 +138,8 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(TransformEngine_test, DataTypes);
-TYPED_TEST_CASE(TransformEngine_test_uninitialized, DataTypes);
+TYPED_TEST_SUITE(TransformEngine_test, DataTypes);
+TYPED_TEST_SUITE(TransformEngine_test_uninitialized, DataTypes);
 
 // test dirty flag on inputs, uninitialized
 TYPED_TEST( TransformEngine_test_uninitialized , uninitialized )

@@ -170,7 +170,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(FixedConstraint_test, DataTypes);
+TYPED_TEST_SUITE(FixedConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( FixedConstraint_test , testValueImplicitWithCG )
 {

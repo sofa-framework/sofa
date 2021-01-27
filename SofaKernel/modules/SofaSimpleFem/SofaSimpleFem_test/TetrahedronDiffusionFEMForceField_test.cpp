@@ -203,7 +203,7 @@ typedef testing::Types<component::forcefield::TetrahedronDiffusionFEMForceField<
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(TetrahedronDiffusionFEMForceField_test, TestTypes);
+TYPED_TEST_SUITE(TetrahedronDiffusionFEMForceField_test, TestTypes);
 
 // test case
 TYPED_TEST( TetrahedronDiffusionFEMForceField_test , extension )

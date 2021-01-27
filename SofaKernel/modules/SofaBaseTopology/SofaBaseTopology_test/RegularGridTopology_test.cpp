@@ -259,6 +259,6 @@ TEST_P(RegularGridTopology_test, regularGridSize)
     }
 }
 
-INSTANTIATE_TEST_CASE_P(regularGridSize3D,
+INSTANTIATE_TEST_SUITE_P(regularGridSize3D,
                         RegularGridTopology_test,
                         ::testing::ValuesIn(dimvalues));

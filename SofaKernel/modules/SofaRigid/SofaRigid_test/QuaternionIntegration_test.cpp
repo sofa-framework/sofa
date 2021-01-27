@@ -74,7 +74,7 @@ using testing::Types;
 typedef Types<defaulttype::Rigid3Types> DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(QuaternionIntegrationTest, DataTypes);
+TYPED_TEST_SUITE(QuaternionIntegrationTest, DataTypes);
 
 // first test case
 TYPED_TEST( QuaternionIntegrationTest, quaternion_angle) {

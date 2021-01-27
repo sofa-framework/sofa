@@ -104,7 +104,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(RandomPointDistributionInSurface_test, DataTypes);
+TYPED_TEST_SUITE(RandomPointDistributionInSurface_test, DataTypes);
 
 // test data setup
 TYPED_TEST(RandomPointDistributionInSurface_test, data_setup)

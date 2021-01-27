@@ -355,7 +355,7 @@ typedef Types<
 > DataTypes;
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(PlaneForceField_test, DataTypes);// first test case
+TYPED_TEST_SUITE(PlaneForceField_test, DataTypes);// first test case
 TYPED_TEST( PlaneForceField_test , testPlaneForceField )
 {
     this->setupDefaultScene();
