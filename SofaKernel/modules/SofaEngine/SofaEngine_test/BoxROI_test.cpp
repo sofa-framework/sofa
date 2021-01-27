@@ -39,8 +39,8 @@ using namespace sofa::defaulttype;
 #include <SofaEngine/BoxROI.h>
 using sofa::component::engine::BoxROI;
 
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-using sofa::component::initSofaBaseMechanics;
+#include <SofaBase/initSofaBase.h>
+using sofa::component::initSofaBase;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation;
@@ -61,9 +61,10 @@ using sofa::simulation::SceneLoaderXML;
 using sofa::helper::logging::MessageDispatcher;
 
 #include <sofa/helper/testing/TestMessageHandler.h>
+#include <sofa/helper/testing/BaseTest.h>
 
 template <typename TDataType>
-struct BoxROITest :  public ::testing::Test
+struct BoxROITest :  public sofa::helper::testing::BaseTest
 {
     typedef BoxROI<TDataType> TheBoxROI;
     Simulation* m_simu  {nullptr};
@@ -73,7 +74,7 @@ struct BoxROITest :  public ::testing::Test
 
     void SetUp() override
     {
-        initSofaBaseMechanics();
+        initSofaBase();
         setSimulation( m_simu = new DAGSimulation() );
         m_root = m_simu->createNewGraph("root");
 
@@ -124,11 +125,9 @@ struct BoxROITest :  public ::testing::Test
                 "</Node>                                                       ";
 
         EXPECT_MSG_EMIT(Error); // Unable to find a MechanicalObject for this component.
-
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.c_str(),
                                                           scene.size());
-
         EXPECT_NE(root.get(), nullptr);
         root->init(ExecParams::defaultInstance());
 

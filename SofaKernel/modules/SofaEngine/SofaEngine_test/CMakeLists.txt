@@ -4,12 +4,9 @@ project(SofaEngine_test)
 
 
 set(HEADER_FILES
-    TestEngine.h
         )
 
 set(SOURCE_FILES
-    Engine_test.cpp
-    TestEngine.cpp
     BoxROI_test.cpp
     )
     
