@@ -24,10 +24,7 @@
 
 #include <sofa/type/Vec.h>
 
-SOFA_PRAGMA_WARNING( \
-    This header is deprecated and will be removed at SOFA v21.12.      \
-    To fix this warning you must include either sofa/defaulttype/Data_Vec.h if using Vec with Data<> \
-    or sofa/type/Vec.h if you do not intend to use Data<> or DataTypeInfo. )
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Vec.h")
 
 namespace sofa::defaulttype
 {

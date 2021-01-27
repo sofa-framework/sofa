@@ -23,7 +23,7 @@
 
 #include <sofa/type/stdtype/fixed_array.h>
 
-SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/fixed_array.h")
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/fixed_array.h")
 
 namespace sofa::helper
 {
