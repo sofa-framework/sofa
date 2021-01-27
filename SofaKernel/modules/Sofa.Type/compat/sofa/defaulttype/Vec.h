@@ -24,7 +24,7 @@
 
 #include <sofa/type/Vec.h>
 
-//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Vec.h")
+SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Vec.h")
 
 namespace sofa::defaulttype
 {
