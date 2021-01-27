@@ -27,6 +27,7 @@
 #include <SofaUserInteraction/MouseInteractor.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <sofa/core/Mapping.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa::component::collision
 {

@@ -68,7 +68,11 @@ public:
           m_topologyHandler(nullptr)
     {}
 
-    virtual ~TopologyDataImpl();
+    virtual ~TopologyDataImpl(){
+        if (this->m_topologyHandler)
+            delete m_topologyHandler;
+
+    }
 
 
     /** Public functions to handle topological engine creation */

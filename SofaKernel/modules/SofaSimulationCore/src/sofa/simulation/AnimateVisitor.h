@@ -23,9 +23,9 @@
 #define SOFA_SIMULATION_ANIMATEACTION_H
 
 #include <sofa/simulation/config.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/core/VecId.h>
+#include <sofa/core/behavior/fwd.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MechanicalParams.h>

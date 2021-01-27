@@ -25,13 +25,12 @@
 #include <sofa/helper/Factory.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/simulation/Node.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/RigidCapsuleModel.h>
 #include <SofaBaseCollision/CylinderModel.h>
-
+#include <sofa/simulation/fwd.h>
 namespace sofa::component::collision
 {
 
@@ -54,7 +53,7 @@ public:
     using Index = sofa::Index;
 
     MCollisionModel* model;
-    simulation::Node::SPtr child;
+    simulation::NodeSPtr child;
     typename MMapping::SPtr mapping;
     typename MMechanicalState::SPtr outmodel;
     Size nbp;
