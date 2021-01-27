@@ -585,6 +585,11 @@ public:
         return PathResolver::CheckPath(context, GetDestClass(), path);
     }
 
+    void clear()
+    {
+        TraitsContainer::clear(m_value);
+    }
+
 protected:
     OwnerType* m_owner {nullptr};
     Container m_value;
