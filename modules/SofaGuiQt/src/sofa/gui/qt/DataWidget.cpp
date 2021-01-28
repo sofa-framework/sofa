@@ -25,6 +25,9 @@
 #include "ModifyObject.h"
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 #include <QToolTip>
 

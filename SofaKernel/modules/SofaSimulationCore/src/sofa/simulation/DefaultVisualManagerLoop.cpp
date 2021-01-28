@@ -28,7 +28,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
-
+#include <sofa/simulation/Node.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -160,6 +160,10 @@ void DefaultVisualManagerLoop::computeBBoxStep(sofa::core::visual::VisualParams*
     }
 }
 
+simulation::Node* DefaultVisualManagerLoop::getNodeFromContext(BaseContext* context)
+{
+    return dynamic_cast<simulation::Node*>(context);
+}
 
 
 } // namespace simulation

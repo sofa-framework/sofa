@@ -22,9 +22,9 @@
 #ifndef SOFA_SIMULATION_VISITORSCHEDULER_H
 #define SOFA_SIMULATION_VISITORSCHEDULER_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/config.h>
-#include "ClassSystem.h"
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/simulation/fwd.h>
 
 namespace sofa
 {

@@ -24,7 +24,6 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ExecParams.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <iostream>
@@ -58,12 +57,7 @@ public:
     virtual void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm) = 0;
     virtual void processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* /*o*/) {}
 
-    Result processNodeTopDown(simulation::Node* node) override
-    {
-        for_each(this, node, node->object, &VisualVisitor::processObject);
-        for_each(this, node, node->visualModel, &VisualVisitor::processVisualModel);
-        return RESULT_CONTINUE;
-    }
+    Result processNodeTopDown(simulation::Node* node) override;
 
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
@@ -131,14 +125,7 @@ public:
     virtual void processMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* vm);
     virtual void processVisualModel(simulation::Node*, core::visual::VisualModel* vm);
 
-    Result processNodeTopDown(simulation::Node* node) override
-    {
-        for_each(this, node, node->behaviorModel,  &VisualComputeBBoxVisitor::processBehaviorModel);
-        for_each(this, node, node->mechanicalState, &VisualComputeBBoxVisitor::processMechanicalState);
-        for_each(this, node, node->visualModel,     &VisualComputeBBoxVisitor::processVisualModel);
-
-        return RESULT_CONTINUE;
-    }
+    Result processNodeTopDown(simulation::Node* node) override;
     const char* getClassName() const override { return "VisualComputeBBoxVisitor"; }
 };
 

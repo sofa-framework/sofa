@@ -23,6 +23,7 @@
 #include <SofaEigen2Solver/config.h>
 
 #include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/SortedPermutation.h>

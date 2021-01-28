@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_QT_QGRAPHSTATWIDGET_H
 #define SOFA_GUI_QT_QGRAPHSTATWIDGET_H
 
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 
 #include <QWidget>
 #include <QTextEdit>

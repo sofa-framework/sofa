@@ -39,7 +39,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/Quater.h>
 
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 
 #include <fstream>
 #include <sstream>

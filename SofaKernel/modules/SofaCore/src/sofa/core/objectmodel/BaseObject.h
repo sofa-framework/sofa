@@ -486,7 +486,6 @@ public:
     /// so the Node does not have to test its type against every known types.
     /// \returns true iff the component was removed
     virtual bool removeInNode( BaseNode* /*node*/ ) { return false; }
-
 };
 
 } // namespace objectmodel
