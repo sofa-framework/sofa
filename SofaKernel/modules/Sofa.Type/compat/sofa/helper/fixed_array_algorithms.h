@@ -19,70 +19,49 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/type/init.h>
+#pragma once
 
-#include <iostream>
+#include <sofa/type/stdtype/fixed_array_algorithms.h>
 
-namespace sofa::type
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/fixed_array_algorithms.h")
+
+namespace sofa::helper::pairwise
 {
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-SOFA_TYPE_API void init()
+template<class T>
+const T& stdclamp(const T& v, const T& lo, const T& hi)
 {
-    if (!s_initialized)
-    {
-        s_initialized = true;
-    }
+    return sofa::type::stdtype::pairwise::stdclamp(v, lo, hi);
 }
 
-SOFA_TYPE_API bool isInitialized()
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T clamp(const T& in, const TT& minValue, const TT& maxValue)
 {
-    return s_initialized;
+    return sofa::type::stdtype::pairwise::clamp(in,minValue,maxValue);
 }
 
-SOFA_TYPE_API void cleanup()
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T operator+(const T& l, const T& r)
 {
-    if (!s_cleanedUp)
-    {
-        s_cleanedUp = true;
-    }
+    return sofa::type::stdtype::pairwise::operator+(l, r);
 }
 
-SOFA_TYPE_API bool isCleanedUp()
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T operator-(const T& l, const T& r)
 {
-    return s_cleanedUp;
+    return sofa::type::stdtype::pairwise::operator-(l, r);
 }
 
-SOFA_TYPE_API void printUninitializedLibraryWarning(const std::string& library,
-                                                      const std::string& initFunction)
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T operator*(const T& r, const typename T::value_type& f)
 {
-    std::cerr << "WARNING: " << library << " : the library has not been initialized ("
-              << initFunction << " has never been called, see sofa/type/init.h)"
-              << std::endl;
+    return sofa::type::stdtype::pairwise::operator*(r, f);
 }
 
-SOFA_TYPE_API void printLibraryNotCleanedUpWarning(const std::string& library,
-                                                     const std::string& cleanupFunction)
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T operator/(const T& r, const typename T::value_type& f)
 {
-    std::cerr << "WARNING: " << library << " : the library has not been cleaned up ("
-              << cleanupFunction << " has never been called, see sofa/type/init.h)"
-              << std::endl;
+    return sofa::type::stdtype::pairwise::operator/(r, f);
 }
 
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck()
-    {
-
-    }
-    ~CleanupCheck()
-    {
-        if (type::isInitialized() && !type::isCleanedUp())
-            type::printLibraryNotCleanedUpWarning("Sofa.Type", "sofa::type::cleanup()");
-    }
-} check;
-
-} // namespace sofa::type
+} // namespace sofa::helper::pairwise

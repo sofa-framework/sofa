@@ -30,7 +30,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/TypeInfoRegistry.h
     ${SRC_ROOT}/TypeInfoRegistryTools.h
     ${SRC_ROOT}/TopologyTypes.h
-    ${SRC_ROOT}/Vec.h
     ${SRC_ROOT}/Ray.h
     ${SRC_ROOT}/VecTypes.h
     ${SRC_ROOT}/defaulttype.h
