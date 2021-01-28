@@ -44,7 +44,7 @@ class FlagTreeItem;
 SOFA_CORE_API std::ostream& operator<< ( std::ostream& os, const FlagTreeItem& root );
 SOFA_CORE_API std::istream& operator>> ( std::istream& in, FlagTreeItem& root );
 
-class DislpayFlags;
+class DisplayFlags;
 SOFA_CORE_API std::ostream& operator<< ( std::ostream& os, const DisplayFlags& flags );
 SOFA_CORE_API std::istream& operator>> ( std::istream& in, DisplayFlags& flags );
 }
