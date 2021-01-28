@@ -24,7 +24,6 @@
 #include <SofaMiscCollision/SolverMerger.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

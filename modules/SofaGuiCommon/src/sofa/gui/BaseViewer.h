@@ -44,7 +44,6 @@
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 

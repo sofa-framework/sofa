@@ -23,7 +23,7 @@
 #define SOFA_SIMULATION_SCENELOADERFACTORY_H
 
 #include <sofa/simulation/config.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/helper/system/SetDirectory.h>
 
 
@@ -66,14 +66,14 @@ public:
     virtual bool canWriteFileExtension(const char * /*extension*/) { return false; }
 
     /// load the file
-    sofa::simulation::Node::SPtr load(const std::string& filename, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0))
+    sofa::simulation::NodeSPtr load(const std::string& filename, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0))
     {
         if(reload)
             notifyReloadingSceneBefore();
         else
             notifyLoadingSceneBefore();
 
-        sofa::simulation::Node::SPtr root = doLoad(filename, sceneArgs);
+        sofa::simulation::NodeSPtr root = doLoad(filename, sceneArgs);
 
         if(reload)
             notifyReloadingSceneAfter(root);
@@ -82,7 +82,7 @@ public:
 
         return root;
     }
-    virtual sofa::simulation::Node::SPtr doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs) = 0;
+    virtual sofa::simulation::NodeSPtr doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs) = 0;
 
     /// write scene graph in the file
     virtual void write(sofa::simulation::Node* /*node*/, const char * /*filename*/) {}
@@ -99,10 +99,10 @@ public:
     struct Listener
     {
         virtual void rightBeforeLoadingScene() {} ///< callback called just before loading the scene file
-        virtual void rightAfterLoadingScene(sofa::simulation::Node::SPtr) {} ///< callback called just after loading the scene file
+        virtual void rightAfterLoadingScene(sofa::simulation::NodeSPtr) {} ///< callback called just after loading the scene file
 
         virtual void rightBeforeReloadingScene() { this->rightBeforeLoadingScene(); } ///< callback called just before reloading the scene file
-        virtual void rightAfterReloadingScene(sofa::simulation::Node::SPtr root) { this->rightAfterLoadingScene(root); } ///< callback called just after reloading the scene file
+        virtual void rightAfterReloadingScene(sofa::simulation::NodeSPtr root) { this->rightAfterLoadingScene(root); } ///< callback called just after reloading the scene file
     };
 
     /// adding a listener
@@ -118,8 +118,8 @@ protected:
     static Listeners s_listeners;
     static void notifyLoadingSceneBefore() { for( auto* l : s_listeners ) l->rightBeforeLoadingScene(); }
     static void notifyReloadingSceneBefore() { for( auto* l : s_listeners ) l->rightBeforeReloadingScene(); }
-    static void notifyLoadingSceneAfter(sofa::simulation::Node::SPtr node) { for( auto* l : s_listeners ) l->rightAfterLoadingScene(node); }
-    static void notifyReloadingSceneAfter(sofa::simulation::Node::SPtr node) { for( auto* l : s_listeners ) l->rightAfterReloadingScene(node); }
+    static void notifyLoadingSceneAfter(sofa::simulation::NodeSPtr node) { for( auto* l : s_listeners ) l->rightAfterLoadingScene(node); }
+    static void notifyReloadingSceneAfter(sofa::simulation::NodeSPtr node) { for( auto* l : s_listeners ) l->rightAfterReloadingScene(node); }
 
 };
 

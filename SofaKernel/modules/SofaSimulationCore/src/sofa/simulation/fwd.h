@@ -38,6 +38,7 @@ namespace sofa::simulation
     class MutationListener;
     class Visitor;
 
+    SOFA_SIMULATION_CORE_API Node* getNodeFromBase(sofa::core::objectmodel::Base*);
     SOFA_SIMULATION_CORE_API Node* getNodeFromContext(sofa::core::objectmodel::BaseContext*);
     SOFA_SIMULATION_CORE_API sofa::core::objectmodel::BaseContext* getContextFromNode(Node*);
 }

@@ -22,7 +22,6 @@
 #include "SceneCreator.h"
 #include "SceneUtils.h"
 
-#include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include "GetVectorVisitor.h"
 #include "GetAssembledSizeVisitor.h"

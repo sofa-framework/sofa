@@ -36,7 +36,7 @@
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message ;
 
-
+#include <sofa/simulation/Node.h>
 #include <iostream>
 
 #include <QPushButton>
@@ -277,7 +277,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
 #if SOFAGUIQT_HAVE_QT5_CHARTS
         //Energy Widget
-        if (simulation::Node* real_node = dynamic_cast<simulation::Node*>(node))
+        if (simulation::Node* real_node = sofa::simulation::getNodeFromBase(node))
         {
             if (dialogFlags_.REINIT_FLAG)
             {
@@ -287,7 +287,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         }
 
         //Momentum Widget
-        if (simulation::Node* real_node = dynamic_cast<simulation::Node*>(node))
+        if (simulation::Node* real_node = sofa::simulation::getNodeFromBase(node))
         {
             if (dialogFlags_.REINIT_FLAG)
             {
@@ -503,11 +503,11 @@ void ModifyObject::updateValues()
     //Make the update of all the values
     if (node)
     {
-        bool isNode =( dynamic_cast< simulation::Node *>(node) != nullptr);
+        bool isNode =( sofa::simulation::getNodeFromBase(node) != nullptr);
         //If the current element is a node of the graph, we first apply the transformations
         if (transformation && dialogFlags_.REINIT_FLAG && isNode)
         {
-            simulation::Node* current_node = dynamic_cast< simulation::Node *>(node);
+            simulation::Node* current_node = sofa::simulation::getNodeFromBase(node);
             if (!transformation->isDefaultValues())
                 transformation->applyTransformation(current_node);
             transformation->setDefaultValues();
@@ -519,7 +519,7 @@ void ModifyObject::updateValues()
             {
                 obj->reinit();
             }
-            else if (simulation::Node *n = dynamic_cast< simulation::Node *>(node)) n->reinit(sofa::core::ExecParams::defaultInstance());
+            else if (simulation::Node *n = sofa::simulation::getNodeFromBase(node)) n->reinit(sofa::core::ExecParams::defaultInstance());
         }
 
     }

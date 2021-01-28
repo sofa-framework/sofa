@@ -23,9 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_DATACALLBACK_H
 
 #include <functional>
-#include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/simulation/Node.h>
-
+#include <sofa/core/fwd.h>
 namespace sofa
 {
 

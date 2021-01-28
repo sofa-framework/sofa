@@ -25,7 +25,6 @@
 #include "TableDataWidget.h"
 #include "FileManagement.h"
 
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/system/SetDirectory.h>
 
 #include <SofaBaseTopology/TopologyData.h>

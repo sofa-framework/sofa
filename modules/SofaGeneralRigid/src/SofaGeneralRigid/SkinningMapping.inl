@@ -27,7 +27,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/io/Mesh.h>
 #include <limits>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/Vec.h>
 
 #include <string>

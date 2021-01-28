@@ -21,7 +21,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SceneLoaderFactory.h"
-
+#include <sofa/simulation/Node.h>
 
 
 

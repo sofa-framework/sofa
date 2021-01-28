@@ -47,6 +47,7 @@
 #include <sofa/simulation/Node.h>
 #endif
 
+
 #include <QScreen>
 #include "QSofaListView.h"
 #include "QDisplayPropertyWidget.h"
@@ -82,6 +83,7 @@ using sofa::gui::GuiDataRepository;
 #include <sofa/simulation/SceneLoaderFactory.h>
 using sofa::simulation::SceneLoaderFactory;
 
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 
 #include <QHBoxLayout>
@@ -816,7 +818,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     if( currentSimulation() ) this->unloadScene();
 
     const std::vector<std::string> sceneArgs = sofa::helper::ArgumentParser::extra_args();
-    mSimulation = simulation::getSimulation()->load ( filename, reload, sceneArgs );
+    mSimulation = sofa::simulation::getSimulation()->load ( filename, reload, sceneArgs );
 
     simulation::getSimulation()->init ( mSimulation.get() );
     if ( mSimulation == nullptr )
