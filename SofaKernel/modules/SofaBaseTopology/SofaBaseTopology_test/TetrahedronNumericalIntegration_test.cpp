@@ -147,7 +147,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(TetrahedronNumericalIntegration_test, DataTypes);
+TYPED_TEST_SUITE(TetrahedronNumericalIntegration_test, DataTypes);
 
 // first test topology
 TYPED_TEST( TetrahedronNumericalIntegration_test , testNumericalIntegration )

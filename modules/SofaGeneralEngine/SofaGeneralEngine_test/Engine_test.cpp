@@ -196,8 +196,10 @@ TEST_F(Engine_test , check_propagation )
 
 //////////////////////////
 
+#include <SofaGeneralEngine/config.h>
 #include <SofaGeneralEngine/AverageCoord.h>
 #include <SofaEngine/BoxROI.h>
+#include <SofaTest/TestMessageHandler.h>
 #include <SofaGeneralEngine/PairBoxRoi.h>
 #include <SofaGeneralEngine/PlaneROI.h>
 #include <SofaGeneralEngine/SphereROI.h>
@@ -232,7 +234,9 @@ TEST_F(Engine_test , check_propagation )
 #include <SofaGeneralEngine/SmoothMeshEngine.h>
 #include <SofaGeneralEngine/Spiral.h>
 #include <SofaGeneralEngine/Vertex2Frame.h>
+#if SOFAGENERALENGINE_HAVE_SOFA_GL
 #include <SofaGeneralEngine/TextureInterpolation.h>
+#endif // SOFAGENERALENGINE_HAVE_SOFA_GL
 #include <SofaGeneralEngine/SubsetTopology.h>
 #include <SofaGeneralEngine/RigidToQuatEngine.h>
 #include <SofaGeneralEngine/QuatToRigidEngine.h>
@@ -304,7 +308,9 @@ TestDataEngine< component::engine::RandomPointDistributionInSurface<defaulttype:
 TestDataEngine< component::engine::SmoothMeshEngine<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::Spiral<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::Vertex2Frame<defaulttype::Rigid3Types> >,
+#if SOFAGENERALENGINE_HAVE_SOFA_GL
 TestDataEngine< component::engine::TextureInterpolation<defaulttype::Vec3Types> >,
+#endif // SOFAGENERALENGINE_HAVE_SOFA_GL
 TestDataEngine< component::engine::SubsetTopology<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::RigidToQuatEngine<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::QuatToRigidEngine<defaulttype::Vec3Types> >,
@@ -323,7 +329,7 @@ TestDataEngine< component::engine::DifferenceEngine<defaulttype::Vector3> >
 > TestTypes; // the types to instanciate.
 
 //// ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(DataEngine_test, TestTypes);
+TYPED_TEST_SUITE(DataEngine_test, TestTypes);
 
 //// test number of call to DataEngine::update
 TYPED_TEST( DataEngine_test , basic_test )

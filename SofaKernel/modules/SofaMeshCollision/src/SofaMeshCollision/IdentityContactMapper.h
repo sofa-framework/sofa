@@ -25,7 +25,6 @@
 #include <sofa/helper/Factory.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/simulation/Node.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/PointModel.h>

@@ -25,6 +25,7 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 #if SOFAGENERALLOADER_HAVE_ZLIB
 #include <zlib.h>

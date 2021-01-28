@@ -30,6 +30,8 @@
 #include <zlib.h>
 #endif
 
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 #include <fstream>
 
 namespace sofa::component::misc

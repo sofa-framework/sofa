@@ -229,7 +229,7 @@ namespace sofa {
     > DataTypes; // the types to instantiate.
 
     // Test suite for all the instantiations
-    TYPED_TEST_CASE(ShapeFunction_test, DataTypes);
+    TYPED_TEST_SUITE(ShapeFunction_test, DataTypes);
 
     // test case: voronoi shape function test
     TYPED_TEST( ShapeFunction_test , VoronoiShapeFunctionTest)

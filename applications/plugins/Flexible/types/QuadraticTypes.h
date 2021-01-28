@@ -40,6 +40,24 @@ namespace defaulttype
 {
 
 
+template<typename Real>
+static Vec<2,Real> convertSpatialToQuadraticCoord(const Vec<1,Real>& p)
+{
+    return Vec<5,Real>( p[0], p[0]*p[0]);
+}
+
+template<typename Real>
+static Vec<5,Real> convertSpatialToQuadraticCoord(const Vec<2,Real>& p)
+{
+    return Vec<5,Real>( p[0], p[1], p[0]*p[0], p[1]*p[1], p[0]*p[1]);
+}
+
+template<typename Real>
+static Vec<9,Real> convertSpatialToQuadraticCoord(const Vec<3,Real>& p)
+{
+    return Vec<9,Real>( p[0], p[1], p[2], p[0]*p[0], p[1]*p[1], p[2]*p[2], p[0]*p[1], p[1]*p[2], p[0]*p[2]);
+}
+
 /** DOF types associated with 2nd order deformable frames. Each deformable frame generates an quadratic displacement field, with 30 independent degrees of freedom.
 */
 template< Size _spatial_dimensions, typename _Real>
@@ -504,25 +522,6 @@ public:
 
 
 };
-
-
-template<typename Real>
-static Vec<2,Real> convertSpatialToQuadraticCoord(const Vec<1,Real>& p)
-{
-    return Vec<5,Real>( p[0], p[0]*p[0]);
-}
-
-template<typename Real>
-static Vec<5,Real> convertSpatialToQuadraticCoord(const Vec<2,Real>& p)
-{
-    return Vec<5,Real>( p[0], p[1], p[0]*p[0], p[1]*p[1], p[0]*p[1]);
-}
-
-template<typename Real>
-static Vec<9,Real> convertSpatialToQuadraticCoord(const Vec<3,Real>& p)
-{
-    return Vec<9,Real>( p[0], p[1], p[2], p[0]*p[0], p[1]*p[1], p[2]*p[2], p[0]*p[1], p[1]*p[2], p[0]*p[2]);
-}
 
 
 // returns dp^* / dp

@@ -296,7 +296,7 @@ typedef testing::Types<
 > DataTypes; 
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(HexahedraMaterial_test, DataTypes);
+TYPED_TEST_SUITE(HexahedraMaterial_test, DataTypes);
 
 // Test traction cylinder
 TYPED_TEST( HexahedraMaterial_test , test_Hooke_Hexahedra_InTraction )

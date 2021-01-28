@@ -19,36 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_DEFAULTTYPE_VEC_CPP
+#pragma once
 
-#include <sofa/defaulttype/Vec.h>
-
-namespace sofa
+namespace sofa::core::behavior
 {
-namespace defaulttype
-{
-
- template class Vec<2,float>;
- template class Vec<2,int>;
- template class Vec<2,double>;
- template class Vec<2,unsigned>;
-
- template class Vec<3,float>;
- template class Vec<3,int>;
- template class Vec<3,double>;
- template class Vec<3,unsigned>;
-
- template class Vec<4,float>;
- template class Vec<4,int>;
- template class Vec<4,double>;
- template class Vec<4,unsigned>;
-
- template class Vec<6,float>;
- template class Vec<6,int>;
- template class Vec<6,double>;
- template class Vec<6,unsigned>;
-
-
-} // namespace defaulttype
-} // namespace sofa
-
+    class BaseAnimationLoop;
+    class BaseConstraint;
+    class BaseConstraintCorrection;
+    class BaseController;
+    class BaseForceField;
+    class BaseInteractionConstraint;
+    class BaseInteractionForceField;
+    class BaseInteractionProjectiveConstraintSet;
+    class BaseMass;
+    class BaseMechanicalState;
+    class MultiMatrixAccessor;
+}

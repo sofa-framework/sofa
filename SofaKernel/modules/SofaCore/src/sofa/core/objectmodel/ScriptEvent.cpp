@@ -21,6 +21,7 @@
 ******************************************************************************/
 
 #include <sofa/core/objectmodel/ScriptEvent.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {
@@ -39,6 +40,11 @@ ScriptEvent::ScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventN
     , m_eventName(eventName)
 {
 
+}
+
+const sofa::simulation::NodeSPtr ScriptEvent::getSender(void) const
+{
+    return m_sender;
 }
 
 ScriptEvent::~ScriptEvent()

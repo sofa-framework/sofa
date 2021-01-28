@@ -207,7 +207,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(NewmarkImplicitDynamic_test, DataTypes);
+TYPED_TEST_SUITE(NewmarkImplicitDynamic_test, DataTypes);
 
 // Test case: h=0.001
 TYPED_TEST( NewmarkImplicitDynamic_test , newmarkImplicitSolverDynamicTest_high_dt_without_damping)

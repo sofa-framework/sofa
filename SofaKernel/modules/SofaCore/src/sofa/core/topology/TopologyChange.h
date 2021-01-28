@@ -345,30 +345,13 @@ public:
     virtual bool read(std::istream& in);
 
     /// Output  stream
-    friend std::ostream& operator<< ( std::ostream& out, const TopologyChange* t )
-    {
-        if (t)
-        {
-            t->write(out);
-        }
-        return out;
-    }
+    SOFA_CORE_API friend std::ostream& operator<< ( std::ostream& out, const TopologyChange* t );
 
     /// Input (empty) stream
-    friend std::istream& operator>> ( std::istream& in, TopologyChange*& t )
-    {
-        if (t)
-        {
-            t->read(in);
-        }
-        return in;
-    }
-    
+    SOFA_CORE_API friend std::istream& operator>> ( std::istream& in, TopologyChange*& t );
+
     /// Input (empty) stream
-    friend std::istream& operator>> ( std::istream& in, const TopologyChange*& )
-    {
-        return in;
-    }
+    SOFA_CORE_API friend std::istream& operator>> ( std::istream& in, const TopologyChange*& );
 
 protected:
     TopologyChange( TopologyChangeType changeType = BASE )

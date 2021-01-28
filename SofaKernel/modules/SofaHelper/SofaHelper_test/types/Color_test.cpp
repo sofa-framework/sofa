@@ -312,7 +312,7 @@ TEST_P(Color_Test, checkStreamingOperator)
         FAIL() << "There is a problem with this test.";
 }
 
-INSTANTIATE_TEST_CASE_P(checkStreamingOperator,
+INSTANTIATE_TEST_SUITE_P(checkStreamingOperator,
                         Color_Test,
                         ::testing::ValuesIn(testvalues));
 

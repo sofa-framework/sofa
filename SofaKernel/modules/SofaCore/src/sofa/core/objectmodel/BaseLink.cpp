@@ -289,9 +289,9 @@ std::string BaseLink::getLinkedPath(const std::size_t index) const
         return "";
 
     std::string path = _doGetLinkedPath_(index);
-    if(path.empty())
+    if(path.empty() && getLinkedBase(index))
         return CreateString(getLinkedBase(index), getOwner());
-    return "";
+    return path;
 }
 
 /// Update pointers in case the pointed-to objects have appeared
@@ -308,15 +308,18 @@ bool BaseLink::updateLinks()
         Base* ptr;
         std::string path = getLinkedPath(i);
         /// Search for path and if any returns the pointer to the proper object.
-        if(!path.empty())
+        /// Search for path and if any returns the pointer to the proper object.
+        if(!getLinkedBase() && !path.empty())
         {
-            if(!PathResolver::FindLinkDest(getOwner(), ptr, path, this))
+            ptr = PathResolver::FindBaseFromClassAndPath(getOwner(), getDestClass(), path);
+            if(!ptr)
                 ok = false;
             set(ptr,i);
         }
     }
     return ok;
 }
+
 
 void BaseLink::setLinkedBase(Base* link)
 {

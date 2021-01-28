@@ -830,13 +830,13 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
             defaulttype::Vector3 a,u;
 
             typedef Eigen::Matrix<SReal,3,3> EigenM33;
-            EigenM33 emat = eigenMat(EEt);
+            EigenM33 emat = helper::eigenMat(EEt);
             Eigen::JacobiSVD<EigenM33> jacobi(emat, Eigen::ComputeFullU | Eigen::ComputeFullV);
             Eigen::Matrix<SReal,3,1> solution;
 
             // axis x
             a=defaulttype::Vector3(1,0,0);
-            solution = jacobi.solve( eigenVec(a) );
+            solution = jacobi.solve( helper::eigenVec(a) );
             // least-squares solve EEt.u=x
             for(int i=0; i<3; i++)
                 u[i] = solution(i);
@@ -847,7 +847,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
 
             // axis y
             a=defaulttype::Vector3(0,1,0);
-            solution = jacobi.solve( eigenVec(a) );
+            solution = jacobi.solve(helper::eigenVec(a) );
             // least-squares solve EEt.u=y
             for(int i=0; i<3; i++)
                 u[i] = solution(i);
@@ -858,7 +858,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
 
             // axis z
             a=defaulttype::Vector3(0,0,1);
-            solution = jacobi.solve( eigenVec(a) );
+            solution = jacobi.solve(helper::eigenVec(a) );
             // least-squares solve EEt.u=z
             for(int i=0; i<3; i++)
                 u[i] = solution(i);

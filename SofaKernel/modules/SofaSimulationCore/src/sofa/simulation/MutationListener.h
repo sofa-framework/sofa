@@ -22,8 +22,9 @@
 #ifndef SOFA_SIMULATION_CORE_MUTATIONLISTENER_H
 #define SOFA_SIMULATION_CORE_MUTATIONLISTENER_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/config.h>
+#include <sofa/simulation/fwd.h>
+#include <sofa/core/fwd.h>
 
 namespace sofa
 {
