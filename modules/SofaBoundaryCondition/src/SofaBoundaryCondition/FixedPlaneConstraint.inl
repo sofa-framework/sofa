@@ -22,6 +22,7 @@
 #pragma once
 
 #include <SofaBoundaryCondition/FixedPlaneConstraint.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>

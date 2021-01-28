@@ -24,7 +24,6 @@
 
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/simulation/Node.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaMeshCollision/TriangleModel.h>

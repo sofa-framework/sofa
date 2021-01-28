@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_H
 #include <SofaDistanceGrid/config.h>
 #include <SofaDistanceGrid/DistanceGrid.h>
-
+#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>

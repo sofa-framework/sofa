@@ -22,6 +22,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/core/VecId.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {

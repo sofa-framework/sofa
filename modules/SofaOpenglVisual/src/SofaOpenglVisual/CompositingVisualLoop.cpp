@@ -24,7 +24,7 @@
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/simulation/VisualVisitor.h>
-
+#include <sofa/simulation/Node.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 

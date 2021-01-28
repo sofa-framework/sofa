@@ -25,6 +25,7 @@
 #include <sofa/gui/config.h>
 #include "OperationFactory.h"
 
+#include <sofa/simulation/fwd.h>
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
@@ -126,7 +127,7 @@ protected:
     MOUSE_BUTTON mouseButton;
 
 
-    Node::SPtr                mouseNode;
+    sofa::simulation::NodeSPtr     mouseNode;
     MouseContainer::SPtr      mouseContainer;
     MouseCollisionModel::SPtr mouseCollision;
 

@@ -31,7 +31,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
 #include <SofaBaseTopology/TopologyData.inl>
-
 #include <string>
 
 namespace sofa::component::visualmodel

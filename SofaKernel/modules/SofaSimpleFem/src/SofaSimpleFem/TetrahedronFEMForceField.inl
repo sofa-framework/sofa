@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
-
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/GridTopology.h>

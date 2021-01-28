@@ -32,7 +32,6 @@
 
 #include "../shapeFunction/BaseShapeFunction.h"
 #include "../quadrature/BaseGaussPointSampler.h"
-#include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/visual/VisualParams.h>

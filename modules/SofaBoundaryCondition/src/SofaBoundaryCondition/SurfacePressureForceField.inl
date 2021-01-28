@@ -21,8 +21,10 @@
 ******************************************************************************/
 #pragma once
 
+
 #include <SofaBoundaryCondition/SurfacePressureForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <vector>

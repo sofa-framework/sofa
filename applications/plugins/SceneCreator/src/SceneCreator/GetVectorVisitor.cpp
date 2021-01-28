@@ -30,7 +30,9 @@
 //
 //
 #include "GetVectorVisitor.h"
+
 #include <sofa/type/Vec.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {

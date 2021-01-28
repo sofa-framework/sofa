@@ -3,7 +3,7 @@
 
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
-
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include "../utils/se3.h"
 #include "../utils/map.h"
 

@@ -27,7 +27,7 @@
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/OdeSolver.h>
-
+#include <sofa/core/behavior/BaseConstraint.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 
 #include <sofa/simulation/CollisionAnimationLoop.h>

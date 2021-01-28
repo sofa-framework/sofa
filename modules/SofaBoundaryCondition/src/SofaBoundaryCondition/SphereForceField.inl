@@ -26,6 +26,7 @@
 #include <sofa/helper/rmath.h>
 #include <cassert>
 #include <iostream>
+#include <sofa/defaulttype/BaseMatrix.h>
 
 namespace sofa::component::forcefield
 {

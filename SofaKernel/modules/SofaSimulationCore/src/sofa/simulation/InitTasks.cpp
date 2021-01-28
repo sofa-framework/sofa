@@ -7,7 +7,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-
 namespace sofa
 {
 

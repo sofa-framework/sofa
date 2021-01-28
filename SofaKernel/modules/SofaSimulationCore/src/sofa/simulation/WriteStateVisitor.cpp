@@ -20,7 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/WriteStateVisitor.h>
+
 #include <sofa/type/Vec.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {

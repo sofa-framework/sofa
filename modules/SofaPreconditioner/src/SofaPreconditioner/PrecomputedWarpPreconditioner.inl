@@ -52,6 +52,8 @@
 #include <SofaGeneralLinearSolver/CholeskySolver.h>
 #endif
 
+#include <sofa/simulation/Node.h>
+
 
 namespace sofa
 {

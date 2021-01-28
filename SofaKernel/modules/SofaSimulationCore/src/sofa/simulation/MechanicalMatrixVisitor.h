@@ -35,6 +35,7 @@
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
+#include <sofa/core/BaseMapping.h>
 #include <iostream>
 
 #include <sofa/core/ExecParams.h>

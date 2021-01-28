@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaBaseCollision/CapsuleModel.h>
 
+#include <sofa/helper/visual/DrawTool.h>
 #include <sofa/type/Vec.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>

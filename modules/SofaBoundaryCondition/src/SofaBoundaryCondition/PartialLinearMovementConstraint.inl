@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <SofaBoundaryCondition/PartialLinearMovementConstraint.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>

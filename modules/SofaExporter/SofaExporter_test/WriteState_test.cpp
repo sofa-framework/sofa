@@ -35,7 +35,7 @@ using sofa::helper::testing::BaseTest;
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaExporter/WriteState.h>
-
+#include <sofa/simulation/Node.h>
 #include <SofaBase/initSofaBase.h>
 
 namespace sofa {

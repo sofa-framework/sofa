@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include "HexahedralFEMForceField.h"
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/helper/decompose.h>

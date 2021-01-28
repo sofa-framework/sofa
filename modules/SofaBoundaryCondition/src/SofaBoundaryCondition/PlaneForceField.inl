@@ -30,6 +30,7 @@
 #include <iostream>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <limits>
+#include <sofa/simulation/Node.h>
 
 namespace sofa::component::forcefield
 {

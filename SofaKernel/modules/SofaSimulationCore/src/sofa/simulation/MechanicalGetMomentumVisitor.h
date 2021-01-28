@@ -25,7 +25,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/type/Vec.h>
 #include <sofa/core/MechanicalParams.h>
-
+#include <sofa/core/behavior/BaseMass.h>
 namespace sofa
 {
 

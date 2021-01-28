@@ -27,7 +27,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <iostream>
 
 namespace sofa::component::projectiveconstraintset
