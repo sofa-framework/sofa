@@ -110,7 +110,7 @@ void ClosestPointRegistrationForceField<DataTypes>::init()
         this->getContext()->get( meshobjLoader, core::objectmodel::BaseContext::Local);
         if (meshobjLoader)
         {
-            if(sourceTriangles.copyValueFrom(meshobjLoader->d_triangles))
+            if(sourceTriangles.copyValueFrom(&meshobjLoader->d_triangles))
                 msg_info()<<"imported triangles from "<<meshobjLoader->getName();
             else
                 msg_warning()<<"unable to import triangles from "<<meshobjLoader->getName();

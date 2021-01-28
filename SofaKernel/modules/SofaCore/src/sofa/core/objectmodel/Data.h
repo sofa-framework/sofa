@@ -260,7 +260,6 @@ public:
         return out;
     }
 
-    SOFA_BEGIN_DEPRECATION_AS_ERROR
     [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")]]
     bool operator ==( const T& value ) const
     {
@@ -268,15 +267,14 @@ public:
     }
 
     [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")]]
-    bool operator!=( const T& value ) const {return getValue()!=value; }
-            SOFA_END_DEPRECATION_AS_ERROR
-
+    bool operator!=( const T& value ) const {return getValue()!=value;}
             void operator =( const T& value )
     {
             this->setValue(value);
-    }
+}
 
-      bool copyValueFrom(const Data<T>* parent);
+            bool copyValueFrom(const BaseData* data){ _doCopyValueFrom_(data); }
+            bool copyValueFrom(const Data<T>* data);
 
 protected:
     typedef DataContentValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
