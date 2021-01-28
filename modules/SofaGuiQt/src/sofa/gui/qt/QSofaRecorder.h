@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QSOFARECORDER_H
-#define SOFA_GUI_QT_QSOFARECORDER_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
 #include <cmath>
@@ -36,15 +34,7 @@
 #include <QTimer>
 
 
-namespace sofa
-{
-namespace simulation
-{
-class Node;
-}
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 class QSofaRecorder : public QWidget
@@ -126,8 +116,5 @@ protected slots:
     void slot_sliderValue(int value, bool updateTime = true);
     void loadSimulation(bool one_step = false);
 };
-}
-}
-}
 
-#endif //SOFA_GUI_QT_QSOFARECORDER_H
+} // namespace sofa::gui::qt

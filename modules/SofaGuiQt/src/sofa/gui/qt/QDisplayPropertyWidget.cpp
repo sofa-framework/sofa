@@ -32,13 +32,7 @@
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message ;
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 QDisplayTreeItemWidget::QDisplayTreeItemWidget(QWidget* parent, QTreeWidgetItem* item) : QWidget(parent)
@@ -703,8 +697,4 @@ Qt::DropActions QDisplayPropertyWidget::supportedDropActions() const
     return Qt::CopyAction | Qt::MoveAction;
 }*/
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

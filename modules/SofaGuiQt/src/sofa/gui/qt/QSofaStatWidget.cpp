@@ -33,11 +33,8 @@
 
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+
+namespace sofa::gui::qt
 {
 
 QSofaStatWidget::QSofaStatWidget(QWidget* parent)
@@ -47,7 +44,6 @@ QSofaStatWidget::QSofaStatWidget(QWidget* parent)
     statsLabel = new QLabel(this);
     statsLabel->setText(QString("Collision Elements present :"));
     statsLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-//        statsLabel->setObjectName(QString("statsLabel"));
     statsLabel->setWordWrap(false);
 
     layout->addWidget(statsLabel);
@@ -55,28 +51,7 @@ QSofaStatWidget::QSofaStatWidget(QWidget* parent)
     statsCounter = new QTreeWidget(this);
     statsCounter->setHeaderLabels(QStringList() << "Name" << "Type" << "Size" << "Groups");
 
-//    QTreeWidgetItem* item = new QTreeWidgetItem();
-
-//    statsCounter->addColumn(QString("Name"));
-//    statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
-//    statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
-//    statsCounter->addColumn(QString("Type"));
-//    statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
-//    statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
-//    statsCounter->addColumn(QString("Size"));
-//    statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
-//    statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
-//    statsCounter->addColumn(QString("Groups"));
-//    statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
-//    statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
-//    statsCounter->setResizeMode(QTreeWidget::LastColumn);
-//    statsCounter->header()->setLabel(0, QString("Name"));
-//    statsCounter->header()->setLabel(1, QString("Type"));
-//    statsCounter->header()->setLabel(2, QString("Size"));
-//    statsCounter->header()->setLabel(3, QString("Groups"));
     layout->addWidget(statsCounter);
-
-
 
 }
 
@@ -169,6 +144,4 @@ void QSofaStatWidget::addSummary()
     statsLabel->update();
 }
 
-}//qt
-}//gui
-}//sofa
+} // namespace sofa::gui::qt

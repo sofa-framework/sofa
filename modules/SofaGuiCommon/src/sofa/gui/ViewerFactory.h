@@ -19,18 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_VIEWERFACTORY_H
-#define SOFA_GUI_VIEWERFACTORY_H
-
+#pragma once
 #include <sofa/gui/config.h>
 #include <sofa/helper/Factory.inl>
 #include "BaseViewer.h"
 
 class QWidget;
 
-namespace sofa
-{
-namespace gui
+namespace sofa::gui
 {
 
 class BaseViewerArgument
@@ -72,12 +68,9 @@ protected:
     QWidget* parent;
 };
 
-}
-}
+} // namespace sofa::gui
 
-namespace sofa
-{
-namespace helper
+namespace sofa::helper
 {
 
 template < >
@@ -162,13 +155,9 @@ public:
     }
 };
 
-#if  !defined(SOFA_BUILD_SOFAGUI)
+#if !defined(SOFA_BUILD_SOFAGUI)
 extern template class SOFA_SOFAGUICOMMON_API Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& >;
 #endif
 
 
-}
-}
-
-#endif //SOFA_GUI_VIEWERFACTORY_H
-
+} // namespace sofa::helper

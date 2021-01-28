@@ -26,13 +26,7 @@
 #include <sofa/gui/qt/PickHandlerCallBacks.h>
 #include <sofa/gui/BaseGUI.h>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
-{
-namespace viewer
+namespace sofa::gui::qt::viewer
 {
 
 SofaViewer::SofaViewer()
@@ -550,8 +544,4 @@ void SofaViewer::setBackgroundImage(std::string imageFileName)
 
 }
 
-
-}
-}
-}
-}
+} // namespace sofa::gui::qt::viewer

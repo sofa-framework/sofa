@@ -20,10 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef GRAPHLISTENERQTreeWidget_H
-#define GRAPHLISTENERQTreeWidget_H
-
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
 #include <QAbstractItemView>
@@ -33,13 +30,8 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/MutationListener.h>
 
-namespace sofa
-{
 
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 using sofa::simulation::Node;
 using sofa::simulation::Simulation;
@@ -82,7 +74,4 @@ public:
 
 };
 
-}
-}
-}
-#endif
+} // namespace sofa::gui::qt
