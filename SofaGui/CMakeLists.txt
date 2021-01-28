@@ -7,7 +7,6 @@ set(SOFAGUI_TARGETS "")
 
 # SofaGuiCommon
 add_subdirectory(../modules/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
-set_target_properties(SofaGuiCommon PROPERTIES FOLDER SofaGui)
 list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 
 # SofaGuiQt
