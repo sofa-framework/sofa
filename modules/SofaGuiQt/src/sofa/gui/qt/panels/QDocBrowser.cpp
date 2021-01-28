@@ -41,11 +41,7 @@ using sofa::helper::system::FileSystem ;
 
 #include <iostream>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt 
 {
 
 ///////////////////////////// PRIVATE OBJECTS //////////////////////////////////
@@ -311,6 +307,4 @@ void DocBrowser::showEvent(QShowEvent *)
     emit visibilityChanged(isVisible()) ;
 }
 
-} ///namespace qt
-} ///namespace gui
-} ///namespace sofa
+} // namespace sofa::gui::qt 

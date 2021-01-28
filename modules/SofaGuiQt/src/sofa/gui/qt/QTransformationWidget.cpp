@@ -32,12 +32,7 @@
 #endif
 
 
-namespace sofa
-{
-
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 QTransformationWidget::QTransformationWidget(QWidget* parent, QString name):QGroupBox(parent), numWidgets_(2)
 
@@ -146,7 +141,4 @@ void QTransformationWidget::applyTransformation(simulation::Node *node)
 }
 
 
-} // qt
-} //gui
-} //sofa
-
+} //namespace sofa::gui::qt

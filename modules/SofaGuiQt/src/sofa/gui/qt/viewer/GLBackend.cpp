@@ -29,13 +29,7 @@ using sofa::helper::system::SetDirectory;
 #include <sofa/helper/Utils.h>
 using sofa::helper::Utils;
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
-{
-namespace viewer
+namespace sofa::gui::qt::viewer
 {
 
 GLBackend::GLBackend()
@@ -161,7 +155,4 @@ void GLBackend::drawBackgroundImage(const int screenWidth, const int screenHeigh
 }
 
 
-}
-}
-}
-}
+} // namespace sofa::gui::qt::viewer

@@ -20,10 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_GUI_QT_DATAWIDGET_H
-#define SOFA_GUI_QT_DATAWIDGET_H
-
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 #include "ModifyObject.h"
 #include <sofa/core/objectmodel/Data.h>
@@ -44,23 +41,7 @@
 #define MAX_NUM_ELEM 100
 
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
-{
-class Base;
-
-}
-}
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 /**
@@ -283,22 +264,15 @@ protected:
 
 typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument> DataWidgetFactory;
 
-
-
-} // namespace qt
-} // namespace gui
+} //namespace sofa::gui::qt
 
 //MOC_SKIP_BEGIN
 #if  !defined(SOFA_BUILD_SOFAGUIQT)
-namespace helper
+namespace sofa::helper
 {
 //delay load of the specialized Factory class. unique definition reside in the cpp file
 extern template class SOFA_SOFAGUIQT_API Factory<std::string, gui::qt::DataWidget, gui::qt::DataWidget::CreatorArgument>;
-}
+} // namespace sofa::helper
+
 #endif
 //MOC_SKIP_END
-
-} // namespace sofa
-
-#endif // SOFA_GUI_QT_DATAWIDGET_H
-

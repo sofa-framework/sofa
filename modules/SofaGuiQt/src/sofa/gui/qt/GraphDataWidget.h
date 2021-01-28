@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_GRAPHDATAWIDGET_H
-#define SOFA_GUI_QT_GRAPHDATAWIDGET_H
-
+#pragma once
 #include "TableDataWidget.h"
 #include "FileManagement.h"
 
@@ -41,13 +39,7 @@ using namespace QtCharts;
 
 #include <fstream>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 template<class T>
@@ -388,11 +380,4 @@ public:
     }
 };
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-
-#endif
+} //namespace sofa::gui::qt
