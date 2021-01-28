@@ -267,16 +267,18 @@ public:
     /// @}
 
     /// Link to a parent data. The value of this data will automatically duplicate the value of the parent data.
-    bool setParent(const BaseData* parent, const std::string& path = std::string());
+    bool setParent(BaseData* parent, const std::string& path = std::string());
     bool setParent(const std::string& path);
 
     /// Check if a given Data can be linked as a parent of this data
-    virtual bool validParent(BaseData* parent);
+    virtual bool validParent(const BaseData *parent);
 
     BaseData* getParent() { return parentData.getTarget(); }
 
     /// Update the value of this %Data
     void update() override;
+
+    bool copyValueFrom(const BaseData* parent);
 
 protected:
     /// @}
@@ -284,12 +286,15 @@ protected:
     /// Delegates from DDGNode.
     void doDelInput(DDGNode* n) override;
 
-    /// Update this %Data from the value of its parent
-    virtual bool updateFromParentValue(const BaseData* parent);
+    /// Try to update this Data from the value of its parent in "fast mode";
+    bool genericCopyValueFrom(const BaseData* parent);
+    virtual bool _doCopyValueFrom_(const BaseData* parent) = 0;
 
+    virtual bool _isExactSameDataType_(const BaseData* parent) = 0;
     virtual const void* _doGetValueVoidPtr_() const = 0;
     virtual void* _doBeginEditVoidPtr_() = 0;
     virtual void _doEndEditVoidPtr_() = 0;
+    virtual void _doOnUpdate_() {};
 
     /// Help message
     std::string help {""};

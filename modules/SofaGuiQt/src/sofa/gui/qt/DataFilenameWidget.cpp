@@ -45,7 +45,7 @@ bool DataFileNameWidget::createWidgets()
     QHBoxLayout* layout = new QHBoxLayout(this);
 
     openFilePath = new QLineEdit(this);
-    const std::string& filepath = this->getData()->virtualGetValue();
+    const std::string& filepath = this->getData()->getValue();
     openFilePath->setText( QString(filepath.c_str()) );
 
     openFileButton = new QPushButton(this);

@@ -87,26 +87,6 @@ public:
     {
     }
 
-    SOFA_BEGIN_DEPRECATION_AS_ERROR
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]    
-    void endEdit(const core::ExecParams*)
-    {
-        endEdit();
-    }
-    SOFA_END_DEPRECATION_AS_ERROR
-
-
-    void endEdit()
-    {
-        updatePath();
-        Inherit::endEdit();
-    }
-
-    void setValue(const std::string& v)
-    {
-        *beginEdit()=v;
-        endEdit();
-    }
 
     void setPathType(PathType pathType)
     {
@@ -118,8 +98,6 @@ public:
         return m_pathType;
     }
 
-    virtual void virtualEndEdit() { endEdit(); }
-    virtual void virtualSetValue(const std::string& v) { setValue(v); }
     virtual bool read(const std::string& s );
 
     virtual const std::string& getRelativePath() const
@@ -203,26 +181,13 @@ public:
         updatePath();
     }
 
-    virtual ~DataFileNameVector();
+    ~DataFileNameVector() override;
 
-    void endEdit()
+    void endEdit() override
     {
         updatePath();
         Inherit::endEdit();
     }
-
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]    
-    void endEdit(const core::ExecParams*)
-    {
-        endEdit();
-    }
-
-    void setValue(const sofa::helper::vector<std::string>& v)
-    {
-        *beginEdit() = v;
-        endEdit();
-    }
-    virtual void virtualEndEdit() { endEdit(); }
 
     void addPath(const std::string& v, bool clear = false)
     {
@@ -239,9 +204,8 @@ public:
         ss >> val;
         endEdit();
     }
-    virtual void virtualSetValueAsString(const std::string& v) { setValueAsString(v); }
 
-    virtual bool read(const std::string& s )
+    bool read(const std::string& s ) override
     {
         bool ret = Inherit::read(s);
         if (ret || m_fullpath.empty()) updatePath();
@@ -260,9 +224,8 @@ public:
         return m_fullpath[i];
     }
 
-    virtual void update()
+    void _doOnUpdate_() override
     {
-        this->Inherit::update();
         this->updatePath();
     }
 
