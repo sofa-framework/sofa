@@ -189,6 +189,22 @@ public:
     }
 
     SOFA_BEGIN_DEPRECATION_AS_ERROR
+
+    [[deprecated("2021-01-21: virtualSetLink has been deprecated. You can update your code by using copyValueFrom() or setParent() depending on the expected behavior.")]]
+    void virtualSetLink(const BaseData& bd) { copyValueFrom(bd); }
+
+    [[deprecated("2021-01-21: virtualGetValue has been deprecated. You can update your code by using .")]]
+    void virtualSetValue(const T& v){ setValue(v); }
+
+    [[deprecated("2021-01-21: virtualGetValue has been deprecated. You can update your code by using .")]]
+    const T& virtualGetValue() { return getValue(); }
+
+    [[deprecated("2021-01-21: virtualBeginEdit has been deprecated. You can update your code by using .")]]
+    T* virtualBeginEdit() { return beginEdit(); }
+
+    [[deprecated("2021-01-21: virtualEndEdit has been deprecated. You can update your code by using .")]]
+    void virtualEndEdit() { return endEdit(); }
+
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     void endEdit(const core::ExecParams*)
     {
@@ -258,11 +274,10 @@ public:
             void operator =( const T& value )
     {
             this->setValue(value);
-}
+    }
 
-            bool copyValueFrom(const Data<T>* parent);
+      bool copyValueFrom(const Data<T>* parent);
 
-    bool isCounterValid() const override {return true;}
 protected:
     typedef DataContentValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
 
@@ -286,7 +301,6 @@ class EmptyData : public Data<void*> {};
 template<>
 bool Data<std::string>::read( const std::string& str );
 
-
 /// Specialization for reading booleans
 template<>
 bool Data<bool>::read( const std::string& str );
@@ -294,7 +308,6 @@ bool Data<bool>::read( const std::string& str );
 
 /// General case for printing default value
 template<class T>
-
 void Data<T>::printValue( std::ostream& out) const
 {
     out << getValue() << " ";
@@ -302,7 +315,6 @@ void Data<T>::printValue( std::ostream& out) const
 
 /// General case for printing default value
 template<class T>
-
 std::string Data<T>::getValueString() const
 {
     std::ostringstream out;
@@ -311,7 +323,6 @@ std::string Data<T>::getValueString() const
 }
 
 template<class T>
-
 std::string Data<T>::getValueTypeString() const
 {
     return BaseData::typeName(&getValue());

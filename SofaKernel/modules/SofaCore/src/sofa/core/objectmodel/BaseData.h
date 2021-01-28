@@ -146,12 +146,6 @@ public:
     /// Must be called after beginEditVoidPtr(), after you are finished modifying this %Data.
     void endEditVoidPtr();
 
-    /// Copy the value from another Data.
-    ///
-    /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
-    /// @return true if the copy was successful.
-    virtual bool copyValue(const BaseData* parent);
-
     /// Get a help message that describes this %Data.
     const std::string& getHelp() const { return help; }
 
@@ -177,7 +171,8 @@ public:
     void setWidget(const char* val) { widget = val; }
 
     /// True if the counter of modification gives valid information.
-    virtual bool isCounterValid() const = 0;
+    [[deprecated("2021-01-01: This method has been removed as Data<> must have, by design, their counter valid.")]]
+    bool isCounterValid() const { return true; }
 
     /// @name Flags
     /// @{
@@ -213,6 +208,7 @@ public:
 
     /// If we use the Data as a link and not as value directly
     virtual std::string getLinkPath() const { return parentData.getPath(); }
+
     /// Return whether this %Data can be used as a linkPath.
     ///
     /// True by default.
@@ -278,7 +274,18 @@ public:
     /// Update the value of this %Data
     void update() override;
 
-    bool copyValueFrom(const BaseData* parent);
+    /// Copy the value from another Data.
+    ///
+    /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
+    /// @return true if the copy was successful.
+    [[deprecated("2021-01-01: This method has been replaced with copyValueFrom(), please update your code.")]]
+    bool copyValue(const BaseData* data);
+
+    /// Copy the value from another Data.
+    ///
+    /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
+    /// @return true if the copy was successful.
+    bool copyValueFrom(const BaseData* data);
 
 protected:
     /// @}
