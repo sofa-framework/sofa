@@ -64,8 +64,8 @@ public:
     bool negative() const { return id < 0; }
     Tag operator-() const { return Tag(-id); }
 
-    friend std::ostream& operator<<(std::ostream& o, const Tag& t);
-    friend std::istream& operator>>(std::istream& i, Tag& t);
+    SOFA_CORE_API friend std::ostream& operator<<(std::ostream& o, const Tag& t);
+    SOFA_CORE_API friend std::istream& operator>>(std::istream& i, Tag& t);
 
 protected:
     int id;

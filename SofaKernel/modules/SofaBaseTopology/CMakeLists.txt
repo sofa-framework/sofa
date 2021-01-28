@@ -5,6 +5,7 @@ set(SOFABASETOPOLOGY_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFABASETOPOLOGY_SRC}/config.h.in
+    ${SOFABASETOPOLOGY_SRC}/fwd.h
     ${SOFABASETOPOLOGY_SRC}/initSofaBaseTopology.h
     ${SOFABASETOPOLOGY_SRC}/CommonAlgorithms.h
     ${SOFABASETOPOLOGY_SRC}/EdgeSetGeometryAlgorithms.h
