@@ -191,7 +191,7 @@ public:
     SOFA_BEGIN_DEPRECATION_AS_ERROR
 
     [[deprecated("2021-01-21: virtualSetLink has been deprecated. You can update your code by using copyValueFrom() or setParent() depending on the expected behavior.")]]
-    void virtualSetLink(const BaseData& bd) { copyValueFrom(&bd); }
+    void virtualSetLink(const BaseData& bd) { BaseData::copyValueFrom(&bd); }
 
     [[deprecated("2021-01-21: virtualGetValue has been deprecated. You can update your code by using .")]]
     void virtualSetValue(const T& v){ setValue(v); }
