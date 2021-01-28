@@ -52,7 +52,6 @@ public:
     static Base* FindBaseFromClassAndPath(const Base* base, const BaseClass* destType, const std::string& path);
     static BaseData* FindBaseDataFromPath(Base* base, const std::string& path);
     static BaseData* FindBaseDataFromPath(const BaseData* context, const std::string& path);
-    static Base* FindBaseFromClassAndPath(const Base* context, const BaseClass* tclass, const std::string& path);
     static bool PathHasValidSyntax(const std::string& path);
 
     /////// ALL THE FOLLOWING IS DUPLICATING THE SOFA API.....
