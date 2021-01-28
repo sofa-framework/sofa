@@ -72,7 +72,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -978,20 +978,20 @@
    </hints>
   </connection>
   <connection>
-    <sender>DataGraphAction</sender>
-    <signal>triggered()</signal>
-    <receiver>GUI</receiver>
-    <slot>showWindowDataGraph()</slot>
-    <hints>
-      <hint type="sourcelabel">
-        <x>-1</x>
-        <y>-1</y>
-      </hint>
-      <hint type="destinationlabel">
-        <x>20</x>
-        <y>20</y>
-      </hint>
-    </hints>
+   <sender>DataGraphAction</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>showWindowDataGraph()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>editGnuplotDirectoryAction</sender>
@@ -1042,4 +1042,19 @@
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>showDocBrowser()</slot>
+  <slot>fileNew()</slot>
+  <slot>popupOpenFileSelector()</slot>
+  <slot>fileReload()</slot>
+  <slot>fileSave()</slot>
+  <slot>fileSaveAs()</slot>
+  <slot>fileExit()</slot>
+  <slot>editRecordDirectory()</slot>
+  <slot>showPluginManager()</slot>
+  <slot>showMouseManager()</slot>
+  <slot>showWindowDataGraph()</slot>
+  <slot>editGnuplotDirectory()</slot>
+  <slot>showVideoRecorderManager()</slot>
+ </slots>
 </ui>

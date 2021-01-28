@@ -679,7 +679,7 @@ void openInExternalEditor(const std::string filename, const int fileloc)
 
     params.replace("${filename}", f.absoluteFilePath());
     params.replace("${fileno}", QString::number(fileloc));
-    QStringList paramsAsList = params.split(QRegExp("(\\ )"));
+    QStringList paramsAsList = params.split(QRegularExpression("(\\ )"));
     if ( QProcess::execute(editor, paramsAsList) != 0 )
     {
         msg_warning("QSofaListView") << "Unable to execute \"" << editor.toStdString() << " "
