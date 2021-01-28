@@ -50,6 +50,3 @@ sofa_add_module(SofaMiscEngine SofaMiscEngine ON)
 sofa_add_module(SofaMiscSolver SofaMiscSolver ON)
 sofa_add_module(SofaMiscFem SofaMiscFem ON)
 sofa_add_module(SofaMiscMapping SofaMiscMapping ON)
-
-# All the other targets visible in "modules" are not real module
-# and are contained in packages (SofaGeneral, SofaAdvanced, SofaGui).

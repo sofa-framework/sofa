@@ -37,13 +37,7 @@
 #include <qevent.h>
 
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
   AddObject::AddObject( std::vector< std::string > *list_object_, QWidget* parent, bool , Qt::WindowFlags ): list_object(list_object_)
@@ -167,9 +161,4 @@ void AddObject::buttonUpdate(bool optionSet)
         openFileButton->hide();
     }
 }
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
+} //namespace sofa::gui::qt

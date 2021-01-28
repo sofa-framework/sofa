@@ -30,10 +30,7 @@
 
 #include <boost/program_options.hpp>
 
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 
 const signed int BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS = 1000;
@@ -179,6 +176,4 @@ int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
     return 0;
 }
 
-} // namespace gui
-
-} // namespace sofaa
+} // namespace sofa::gui

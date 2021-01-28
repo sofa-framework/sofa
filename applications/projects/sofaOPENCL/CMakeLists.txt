@@ -9,4 +9,4 @@ set(RC_FILES sofa.rc)
 
 include_directories(../plugins)
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGuiMain SofaOpenCL)
+target_link_libraries(${PROJECT_NAME} SofaGui SofaOpenCL)

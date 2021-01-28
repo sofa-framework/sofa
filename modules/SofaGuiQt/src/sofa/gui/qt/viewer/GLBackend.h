@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GLBACKEND_H
-#define SOFA_GLBACKEND_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
 #include <sofa/gui/qt/viewer/EngineBackend.h>
@@ -33,16 +31,7 @@
 #include <sofa/gl/VideoRecorderFFMPEG.h>
 
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
-{
-
-namespace viewer
+namespace sofa::gui::qt::viewer
 {
 
 class SOFA_SOFAGUIQT_API GLBackend : public EngineBackend
@@ -68,12 +57,4 @@ private:
     gl::VideoRecorderFFMPEG m_videoRecorderFFMPEG;
 };
 
-} // namespace viewer
-
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif // SOFA_GLBACKEND_H
+} // namespace sofa::gui::qt::viewer

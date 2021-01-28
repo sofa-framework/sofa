@@ -28,11 +28,7 @@
 
 #include <QStatusBar>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 InformationOnPickCallBack::InformationOnPickCallBack()
@@ -106,6 +102,4 @@ void ColourPickingRenderCallBack::render(ColourPickingVisitor::ColourCode code)
 
 }
 
-}
-}
-}
+} // namespace sofa::gui::qt
