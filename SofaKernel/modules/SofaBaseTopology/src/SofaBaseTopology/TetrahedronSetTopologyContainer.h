@@ -288,8 +288,8 @@ public:
     /** \brief Returns the type of the topology */
     sofa::core::topology::TopologyElementType getTopologyType() const override {return sofa::core::topology::TopologyElementType::TETRAHEDRON;}
 
-    friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
-    friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
+    SOFA_SOFABASETOPOLOGY_API friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
+    SOFA_SOFABASETOPOLOGY_API friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
 
 protected:
     /** \brief Creates the EdgeSet array.

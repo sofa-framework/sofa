@@ -120,8 +120,8 @@ protected:
     FlagTreeItem* m_parent;
     sofa::helper::vector<FlagTreeItem*> m_child;
 
-    typedef helper::vector<FlagTreeItem*>::iterator ChildIterator;
-    typedef helper::vector<FlagTreeItem*>::const_iterator ChildConstIterator;
+    SOFA_CORE_API typedef helper::vector<FlagTreeItem*>::iterator ChildIterator;
+    SOFA_CORE_API typedef helper::vector<FlagTreeItem*>::const_iterator ChildConstIterator;
 
 public:
     FlagTreeItem(const std::string& showName, const std::string& hideName, FlagTreeItem* parent = nullptr);
