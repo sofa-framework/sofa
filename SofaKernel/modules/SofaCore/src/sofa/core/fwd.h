@@ -6,6 +6,7 @@ namespace sofa::core
 {
     class BaseMapping;
     class ConstraintParams;
+    class ExecParams;
 }
 
 namespace sofa::core::objectmodel
