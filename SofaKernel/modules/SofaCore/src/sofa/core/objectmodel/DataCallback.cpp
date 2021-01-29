@@ -31,6 +31,9 @@ namespace core
 namespace objectmodel
 {
 
+namespace _datacallback_
+{
+
 void DataCallback::addInputs(std::initializer_list<BaseData*> data)
 {
     for(BaseData* d : data)
@@ -63,6 +66,8 @@ void DataCallback::notifyEndEdit()
 
 void DataCallback::update()
 {
+
+}
 
 }
 
