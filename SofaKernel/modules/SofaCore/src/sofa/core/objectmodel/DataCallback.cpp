@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/DataCallback.h>
+#include <sofa/core/objectmodel/BaseData.h>
 
 namespace sofa
 {
