@@ -748,8 +748,8 @@ __device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_deriveSPKTen
         }
     }
 
-    //SPKTensorGeneral=((inversematrix*(Real)(-1.0/3.0)*I1+ID)*(Real)(1.0/2.0)*pow(sinfo->J,(Real)(-2.0/3.0))+(inversematrix*(Real)(-2.0/3.0)*I1*I1+ID*(Real)2.0*I1)*(Real)(1.0/160.0)*pow(sinfo->J,(Real)(-4.0/3.0))+(ID*(Real)3.0*I1*I1-inversematrix*I1*I1*I1)*(Real)(11.0/(1050.0*8*8))*pow(sinfo->J,(Real)(-2.0))
-    ////	+(inversematrix*(Real)(-4.0/3.0)*pow(I1,(Real)4.0)+ID*(Real)4.0*pow(I1,(Real)3.0))*(Real)(19.0/(7000.0*8.0*8.0*8.0))*pow(sinfo->J,(Real)(-8.0/3.0))+(inversematrix*(Real)(-5.0/3.0)*pow(I1,(Real)5.0)+ID*(Real)5.0*pow(I1,(Real)4.0))*(Real)(519.0/(673750.0*8.0*8.0*8.0*8.0))*pow(sinfo->J,(Real)(-10.0/3.0)))*2.0*mu
+    //SPKTensorGeneral=((inversematrix*(Real)(-1.0/3.0)*I1+ID)*(Real)(1.0/2.0)*powf(sinfo->J,(Real)(-2.0/3.0))+(inversematrix*(Real)(-2.0/3.0)*I1*I1+ID*(Real)2.0*I1)*(Real)(1.0/160.0)*powf(sinfo->J,(Real)(-4.0/3.0))+(ID*(Real)3.0*I1*I1-inversematrix*I1*I1*I1)*(Real)(11.0/(1050.0*8*8))*powf(sinfo->J,(Real)(-2.0))
+    ////	+(inversematrix*(Real)(-4.0/3.0)*powf(I1,(Real)4.0)+ID*(Real)4.0*powf(I1,(Real)3.0))*(Real)(19.0/(7000.0*8.0*8.0*8.0))*powf(sinfo->J,(Real)(-8.0/3.0))+(inversematrix*(Real)(-5.0/3.0)*powf(I1,(Real)5.0)+ID*(Real)5.0*powf(I1,(Real)4.0))*(Real)(519.0/(673750.0*8.0*8.0*8.0*8.0))*powf(sinfo->J,(Real)(-10.0/3.0)))*2.0*mu
     ////	+inversematrix*k0*log(sinfo->J);
 
     //result = inversematrix * (-1.0/3.0) * I1
@@ -762,7 +762,7 @@ __device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_deriveSPKTen
         {
             result[j][k] = inversematrix[j][k] * (-1.0/3.0) * I1;
             result[j][k] = result[j][k] + ID[j][k];
-            result[j][k] = result[j][k] * (1.0/2.0) * pow(J, (real)(-2.0/3.0));
+            result[j][k] = result[j][k] * (1.0/2.0) * powf(J, (real)(-2.0/3.0));
         }
     }
 
@@ -774,7 +774,7 @@ __device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_deriveSPKTen
             real temp = inversematrix[j][k] * (-2.0/3.0) * I1 * I1;
             real temp2 = ID[j][k] * 2.0 * I1;
             temp = temp + temp2;
-            temp = temp * (1.0/160.0) * pow(J, (real)(-4.0/3.0));
+            temp = temp * (1.0/160.0) * powf(J, (real)(-4.0/3.0));
 
             result[j][k] += temp;
         }
@@ -786,9 +786,9 @@ __device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_deriveSPKTen
         for(int k=0; k<3; k++)
         {
             real temp = ID[j][k] * 3.0 * I1 * I1;
-            real temp2 = inversematrix[j][k] * pow(I1,3);
+            real temp2 = inversematrix[j][k] * powf(I1,3);
             temp = temp - temp2;
-            temp = temp * (11.0/(1050.0*8.0*8.0)) * pow(J, -2);
+            temp = temp * (11.0/(1050.0*8.0*8.0)) * powf(J, -2);
             result[j][k] += temp;
         }
     }
@@ -798,10 +798,10 @@ __device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_deriveSPKTen
     {
         for(int k=0; k<3; k++)
         {
-            real temp = inversematrix[j][k] * (real)(-4.0/3.0) * pow(I1,(real)4.0);
-            real temp2 = ID[j][k] * (real)4.0 * pow(I1,(real)3.0);
+            real temp = inversematrix[j][k] * (real)(-4.0/3.0) * powf(I1,(real)4.0);
+            real temp2 = ID[j][k] * (real)4.0 * powf(I1,(real)3.0);
             temp = temp+temp2;
-            temp = temp * (real)(19.0 / (7000.0*8.0*8.0*8.0) ) * pow(J, (real)(-8.0/3.0));
+            temp = temp * (real)(19.0 / (7000.0*8.0*8.0*8.0) ) * powf(J, (real)(-8.0/3.0));
             result[j][k] += temp;
         }
 
@@ -812,10 +812,10 @@ __device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_deriveSPKTen
     {
         for(int k=0; k<3; k++)
         {
-            real temp = inversematrix[j][k] * (-5.0/3.0) * pow(I1, 5);
-            real temp2 = ID[j][k] * 5.0 * pow(I1, 4);
+            real temp = inversematrix[j][k] * (-5.0/3.0) * powf(I1, 5);
+            real temp2 = ID[j][k] * 5.0 * powf(I1, 4);
             temp = temp + temp2;
-            temp = temp * (519.0 / (673750.0* pow((real) 8,4))) * pow(J, (real)(-10.0/3.0));
+            temp = temp * (519.0 / (673750.0* powf((real) 8,4))) * powf(J, (real)(-10.0/3.0));
             result[j][k] += temp;
         }
     }
@@ -1064,11 +1064,11 @@ __device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_ElasticityTe
     //Real k0=param.parameterArray[1];
     real k0 = param1;
 
-    //outputTensor=((((trC_HC_*(Real)(1.0/3.0)*I1-trID_HC_)*(Real)(1.0/3.0)-trC_HID*(Real)(1.0/3.0)+C_H_C*(Real)(1.0/3.0)*I1)*(Real)(1.0/2.0)*pow(sinfo->J,(Real)(-2.0/3.0))
-    //	+((trC_HC_*(Real)(2.0/3.0)*I1*I1-trID_HC_*(Real)2.0*I1)*(Real)(2.0/3.0)-trC_HID*(Real)(4.0/3.0)*I1+C_H_C*(Real)(2.0/3.0)*I1*I1+trIDHID*(Real)2.0)*(Real)(1.0/160.0)*pow(sinfo->J,(Real)(-4.0/3.0))
-    //	+(trC_HC_*I1*I1*I1-trID_HC_*(Real)3.0*I1*I1-trC_HID*(Real)3.0*I1*I1+C_H_C*I1*I1*I1+trIDHID*(Real)6.0*I1)*(Real)(11.0/(1050.0*8.0*8.0))*pow(sinfo->J,(Real)-2.0)
-    //	+((trC_HC_*(Real)(4.0/3.0)*pow(I1,(Real)4.0)-trID_HC_*(Real)4.0*pow(I1,(Real)3.0))*(Real)(4.0/3.0)-trC_HID*(Real)(16.0/3.0)*pow(I1,(Real)3.0)+C_H_C*(Real)(4.0/3.0)*pow(I1,(Real)4.0)+trIDHID*(Real)12.0*I1*I1)*(Real)(19.0/(7000.0*8.0*8.0*8.0))*pow(sinfo->J,(Real)(-8.0/3.0))
-    //	+((trC_HC_*(Real)(5.0/3.0)*pow(I1,(Real)5.0)-trID_HC_*(Real)5*pow(I1,(Real)4.0))*(Real)(5.0/3.0)-trC_HID*(Real)(25.0/3.0)*pow(I1,(Real)4.0)+C_H_C*(Real)(5.0/3.0)*pow(I1,(Real)5.0)+trIDHID*(Real)20.0*pow(I1,(Real)3.0))*(Real)(519.0/(673750.0*8.0*8.0*8.0*8.0))*pow(sinfo->J,(Real)(-10.0/3.0)))*2.0*mu
+    //outputTensor=((((trC_HC_*(Real)(1.0/3.0)*I1-trID_HC_)*(Real)(1.0/3.0)-trC_HID*(Real)(1.0/3.0)+C_H_C*(Real)(1.0/3.0)*I1)*(Real)(1.0/2.0)*powf(sinfo->J,(Real)(-2.0/3.0))
+    //	+((trC_HC_*(Real)(2.0/3.0)*I1*I1-trID_HC_*(Real)2.0*I1)*(Real)(2.0/3.0)-trC_HID*(Real)(4.0/3.0)*I1+C_H_C*(Real)(2.0/3.0)*I1*I1+trIDHID*(Real)2.0)*(Real)(1.0/160.0)*powf(sinfo->J,(Real)(-4.0/3.0))
+    //	+(trC_HC_*I1*I1*I1-trID_HC_*(Real)3.0*I1*I1-trC_HID*(Real)3.0*I1*I1+C_H_C*I1*I1*I1+trIDHID*(Real)6.0*I1)*(Real)(11.0/(1050.0*8.0*8.0))*powf(sinfo->J,(Real)-2.0)
+    //	+((trC_HC_*(Real)(4.0/3.0)*powf(I1,(Real)4.0)-trID_HC_*(Real)4.0*powf(I1,(Real)3.0))*(Real)(4.0/3.0)-trC_HID*(Real)(16.0/3.0)*powf(I1,(Real)3.0)+C_H_C*(Real)(4.0/3.0)*powf(I1,(Real)4.0)+trIDHID*(Real)12.0*I1*I1)*(Real)(19.0/(7000.0*8.0*8.0*8.0))*powf(sinfo->J,(Real)(-8.0/3.0))
+    //	+((trC_HC_*(Real)(5.0/3.0)*powf(I1,(Real)5.0)-trID_HC_*(Real)5*powf(I1,(Real)4.0))*(Real)(5.0/3.0)-trC_HID*(Real)(25.0/3.0)*powf(I1,(Real)4.0)+C_H_C*(Real)(5.0/3.0)*powf(I1,(Real)5.0)+trIDHID*(Real)20.0*powf(I1,(Real)3.0))*(Real)(519.0/(673750.0*8.0*8.0*8.0*8.0))*powf(sinfo->J,(Real)(-10.0/3.0)))*2.0*mu
     //	+trC_HC_*(Real)k0/(Real)2.0-C_H_C*k0*log(sinfo->J))*2.0;
 
     // (trC_HC_*(Real)(1.0/3.0)*I1 - trID_HC_)
@@ -1076,7 +1076,7 @@ __device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_ElasticityTe
     //  - trC_HID*(Real)(1.0/3.0)
     //  + C_H_C*(Real)(1.0/3.0)*I1
     //  )
-    //  *(Real)(1.0/2.0)*pow(sinfo->J,(Real)(-2.0/3.0))
+    //  *(Real)(1.0/2.0)*powf(sinfo->J,(Real)(-2.0/3.0))
 
     for(int j=0; j<6; j++)
     {
@@ -1089,7 +1089,7 @@ __device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_ElasticityTe
             outputTensor[j][k] = outputTensor[j][k] - temp;
             temp = C_H_C[j][k] * (1.0/3.0) * I1;
             outputTensor[j][k] = outputTensor[j][k] + temp;
-            outputTensor[j][k] = outputTensor[j][k] * (1.0/2.0) * pow(J, (real)(-2.0/3.0));
+            outputTensor[j][k] = outputTensor[j][k] * (1.0/2.0) * powf(J, (real)(-2.0/3.0));
         }
     }
 
@@ -1100,7 +1100,7 @@ __device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_ElasticityTe
     //   - trC_HID*(Real)(4.0/3.0)*I1
     //   + C_H_C*(Real)(2.0/3.0)*I1*I1
     //   + trIDHID*(Real)2.0
-    // )*(Real)(1.0/160.0)*pow(sinfo->J,(Real)(-4.0/3.0))
+    // )*(Real)(1.0/160.0)*powf(sinfo->J,(Real)(-4.0/3.0))
     for(int j=0; j<6; j++)
     {
         for(int k=0; k<6; k++)
@@ -1115,7 +1115,7 @@ __device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_ElasticityTe
             temp = temp + temp2;
             temp2 = trIDHID[j][k] * 2.0;
             temp = temp + temp2;
-            temp = temp * (1.0/160.0) * pow(J, (real)(-4.0/3.0));
+            temp = temp * (1.0/160.0) * powf(J, (real)(-4.0/3.0));
             outputTensor[j][k] = outputTensor[j][k] + temp;
         }
     }
@@ -1131,7 +1131,7 @@ __device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_ElasticityTe
     //    +
     //    trIDHID*(Real)6.0*I1
     // )
-    // *(Real)(11.0/(1050.0*8.0*8.0))*pow(sinfo->J,(Real)-2.0)
+    // *(Real)(11.0/(1050.0*8.0*8.0))*powf(sinfo->J,(Real)-2.0)
     for(int j=0; j<6; j++)
     {
         for(int k=0; k<6; k++)
@@ -1145,62 +1145,62 @@ __device__ void StandardTetrahedralFEMForceFieldCuda_BoyceAndArruda_ElasticityTe
             temp = temp + temp2;
             temp2 = trIDHID[j][k] * 6.0 * I1;
             temp = temp + temp2;
-            temp = temp * (11.0/(1050.0*8.0*8.0)) * pow(J, (real)-2.0);
+            temp = temp * (11.0/(1050.0*8.0*8.0)) * powf(J, (real)-2.0);
             outputTensor[j][k] = outputTensor[j][k] + temp;
         }
     }
     //  ((
-    //      trC_HC_*(Real)(4.0/3.0)*pow(I1,(Real)4.0)
-    //      - trID_HC_*(Real)4.0*pow(I1,(Real)3.0)
+    //      trC_HC_*(Real)(4.0/3.0)*powf(I1,(Real)4.0)
+    //      - trID_HC_*(Real)4.0*powf(I1,(Real)3.0)
     //   )
     //   *(Real)(4.0/3.0)
-    //   - trC_HID*(Real)(16.0/3.0)*pow(I1,(Real)3.0)
-    //   + C_H_C*(Real)(4.0/3.0)*pow(I1,(Real)4.0)
+    //   - trC_HID*(Real)(16.0/3.0)*powf(I1,(Real)3.0)
+    //   + C_H_C*(Real)(4.0/3.0)*powf(I1,(Real)4.0)
     //   + trIDHID*(Real)12.0*I1*I1
-    // )*(Real)(19.0/(7000.0*8.0*8.0*8.0))*pow(sinfo->J,(Real)(-8.0/3.0))
+    // )*(Real)(19.0/(7000.0*8.0*8.0*8.0))*powf(sinfo->J,(Real)(-8.0/3.0))
 
     for(int j=0; j<6; j++)
     {
         for(int k=0; k<6; k++)
         {
-            real temp = trC_HC_[j][k] * (4.0/3.0) * pow(I1, (real)4.0);
-            real temp2 = trID_HC_[j][k] * 4.0 * pow(I1, (real)3.0);
+            real temp = trC_HC_[j][k] * (4.0/3.0) * powf(I1, (real)4.0);
+            real temp2 = trID_HC_[j][k] * 4.0 * powf(I1, (real)3.0);
             temp = temp - temp2;
             temp = temp * (4.0/3.0);
             temp2 = trC_HID[j][k] * (16.0/3.0);
-            temp2 = temp2 * pow(I1, (real)3.0);
+            temp2 = temp2 * powf(I1, (real)3.0);
             temp = temp - temp2;
-            temp2 = C_H_C[j][k] * (4.0/3.0) * pow(I1,(real)4.0);
+            temp2 = C_H_C[j][k] * (4.0/3.0) * powf(I1,(real)4.0);
             temp = temp + temp2;
             temp2 = trIDHID[j][k] * 12.0 * I1 * I1;
             temp = temp + temp2;
-            temp = temp * (19.0/(7000.0*8.0*8.0*8.0)) * pow(J,(real)(-8.0/3.0));
+            temp = temp * (19.0/(7000.0*8.0*8.0*8.0)) * powf(J,(real)(-8.0/3.0));
             outputTensor[j][k] = outputTensor[j][k] + temp;
         }
     }
     //  ((
-    //     trC_HC_*(Real)(5.0/3.0)*pow(I1,(Real)5.0)
-    //     - trID_HC_*(Real)5*pow(I1,(Real)4.0)
+    //     trC_HC_*(Real)(5.0/3.0)*powf(I1,(Real)5.0)
+    //     - trID_HC_*(Real)5*powf(I1,(Real)4.0)
     //  )*(Real)(5.0/3.0)
-    //  - trC_HID*(Real)(25.0/3.0)*pow(I1,(Real)4.0)
-    //  + C_H_C*(Real)(5.0/3.0)*pow(I1,(Real)5.0)
-    //  + trIDHID*(Real)20.0*pow(I1,(Real)3.0)
-    //  )* (Real)(519.0/(673750.0*8.0*8.0*8.0*8.0))*pow(sinfo->J,(Real)(-10.0/3.0))
+    //  - trC_HID*(Real)(25.0/3.0)*powf(I1,(Real)4.0)
+    //  + C_H_C*(Real)(5.0/3.0)*powf(I1,(Real)5.0)
+    //  + trIDHID*(Real)20.0*powf(I1,(Real)3.0)
+    //  )* (Real)(519.0/(673750.0*8.0*8.0*8.0*8.0))*powf(sinfo->J,(Real)(-10.0/3.0))
     for(int j=0; j<6; j++)
     {
         for(int k=0; k<6; k++)
         {
-            real temp = trC_HC_[j][k] * (5.0/3.0) * pow(I1,(real)5.0);
-            real temp2 = trID_HC_[j][k] * 5.0 * pow(I1,(real)4.0);
+            real temp = trC_HC_[j][k] * (5.0/3.0) * powf(I1,(real)5.0);
+            real temp2 = trID_HC_[j][k] * 5.0 * powf(I1,(real)4.0);
             temp = temp - temp2;
             temp = temp * (5.0/3.0);
-            temp2 = trC_HID[j][k] * (25.0/3.0) * pow(I1,(real)4.0);
+            temp2 = trC_HID[j][k] * (25.0/3.0) * powf(I1,(real)4.0);
             temp = temp - temp2;
-            temp2 = C_H_C[j][k] * (5.0/3.0) * pow(I1,(real)5.0);
+            temp2 = C_H_C[j][k] * (5.0/3.0) * powf(I1,(real)5.0);
             temp = temp + temp2;
-            temp2 = trIDHID[j][k] * 20.0 * pow(I1,(real)3.0);
+            temp2 = trIDHID[j][k] * 20.0 * powf(I1,(real)3.0);
             temp = temp + temp2;
-            temp = temp * (519.0/(673750.0*8.0*8.0*8.0*8.0)) * pow(J,(real)(-10.0/3.0));
+            temp = temp * (519.0/(673750.0*8.0*8.0*8.0*8.0)) * powf(J,(real)(-10.0/3.0));
             outputTensor[j][k] = outputTensor[j][k] + temp;
         }
     }
