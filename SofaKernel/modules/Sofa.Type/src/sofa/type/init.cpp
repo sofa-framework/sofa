@@ -59,7 +59,7 @@ SOFA_TYPE_API void printUninitializedLibraryWarning(const std::string& library,
                                                       const std::string& initFunction)
 {
     std::cerr << "WARNING: " << library << " : the library has not been initialized ("
-              << initFunction << " has never been called, see sofa/types/init.h)"
+              << initFunction << " has never been called, see sofa/type/init.h)"
               << std::endl;
 }
 
@@ -67,7 +67,7 @@ SOFA_TYPE_API void printLibraryNotCleanedUpWarning(const std::string& library,
                                                      const std::string& cleanupFunction)
 {
     std::cerr << "WARNING: " << library << " : the library has not been cleaned up ("
-              << cleanupFunction << " has never been called, see sofa/types/init.h)"
+              << cleanupFunction << " has never been called, see sofa/type/init.h)"
               << std::endl;
 }
 

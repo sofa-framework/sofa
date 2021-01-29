@@ -147,19 +147,12 @@ using sofa::core::ExecParams;
 #include <boost/program_options.hpp>
 
 
-namespace sofa
-{
-
 #ifdef SOFA_PML
-using namespace filemanager::pml;
+using namespace sofa::gui::filemanager::pml;
 #endif
 
-namespace gui
+namespace sofa::gui::qt
 {
-
-namespace qt
-{
-
 
 using sofa::core::objectmodel::BaseObject;
 using namespace sofa::helper::system::thread;
@@ -2646,8 +2639,4 @@ void RealGUI::appendToDataLogFile(QString dataModifiedString)
 
 //======================= SIGNALS-SLOTS ========================= }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} // namespace sofa::gui::qt

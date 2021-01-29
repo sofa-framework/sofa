@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QSOFALISTVIEW_H
-#define SOFA_GUI_QT_QSOFALISTVIEW_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
 #include <QWidget>
@@ -38,12 +36,7 @@
 
 #include <map>
 
-namespace sofa
-{
-
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 class AddObject;
@@ -179,10 +172,4 @@ protected:
 
 };
 
-} //sofa
-} //gui
-}//qt
-
-#endif // SOFA_GUI_QT_QSOFALISTVIEW_H
-
-
+} //namespace sofa::gui::qt

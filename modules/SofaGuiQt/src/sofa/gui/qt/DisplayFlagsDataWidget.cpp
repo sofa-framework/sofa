@@ -25,11 +25,7 @@
 #include <QVBoxLayout>
 #include <QLayout>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 using namespace sofa::core::objectmodel;
 using namespace sofa::core::visual;
@@ -217,10 +213,4 @@ void DisplayFlagsDataWidget::writeToData()
 
 }
 
-
-
-
-}
-}
-}
-
+} // namespace sofa::gui::qt

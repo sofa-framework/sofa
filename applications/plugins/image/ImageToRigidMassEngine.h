@@ -148,7 +148,7 @@ protected:
             rigidMass->mass+=m;
             Coord p = inT->fromImage(Coord(x,y,z));
             pos->getCenter()+=p*m;
-            C+=dyad(p,p)*m; // covariance matrix
+            C+=defaulttype::dyad(p,p)*m; // covariance matrix
         }
 
         if(rigidMass->mass)
@@ -156,7 +156,7 @@ protected:
             d_mass.setValue(rigidMass->mass);
 
             pos->getCenter()/=rigidMass->mass;
-            C-=dyad(pos->getCenter(),pos->getCenter())*rigidMass->mass; // recenter covariance matrix around mean
+            C-=defaulttype::dyad(pos->getCenter(),pos->getCenter())*rigidMass->mass; // recenter covariance matrix around mean
             rigidMass->inertiaMatrix = Mat3x3::s_identity*trace(C) - C;   // covariance matrix to inertia matrix
 
             typename RigidMass::Mat3x3 R;

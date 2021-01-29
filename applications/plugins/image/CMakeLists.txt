@@ -5,7 +5,7 @@ find_package(SofaBase REQUIRED)
 find_package(SofaGeneralVisual REQUIRED)
 find_package(Sofa.GL REQUIRED)
 
-sofa_find_package(SofaGui QUIET)
+sofa_find_package(SofaGuiQt QUIET)
 sofa_find_package(CImgPlugin REQUIRED)
 sofa_find_package(Newmat REQUIRED)
 sofa_find_package(SofaPython QUIET)
@@ -148,7 +148,7 @@ if(SOFA_BUILD_TESTS)
     endif()
 endif()
 
-if(SofaGui_FOUND AND SOFAGUI_HAVE_SOFAGUIQT)
+if(SofaGuiQt_FOUND)
     add_subdirectory(image_gui)
 endif()
 

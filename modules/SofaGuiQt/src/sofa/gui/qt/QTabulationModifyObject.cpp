@@ -32,13 +32,7 @@
 // uncomment to show traces of GUI operations in this file
 //#define DEBUG_GUI
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
@@ -204,8 +198,4 @@ void QTabulationModifyObject::addStretch()
     dynamic_cast<QVBoxLayout*>(this->layout())->addStretch();
 }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

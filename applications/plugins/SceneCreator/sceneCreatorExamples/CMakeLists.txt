@@ -14,4 +14,4 @@ set( SOURCES
     )
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
-target_link_libraries(${PROJECT_NAME} SofaGuiMain SceneCreator)
+target_link_libraries(${PROJECT_NAME} SofaGui SceneCreator)

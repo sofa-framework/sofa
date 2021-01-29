@@ -24,7 +24,7 @@
 #include <sofa/helper/ArgumentParser.h>
 
 #include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
+#include <SofaGui/initSofaGui.h>
 
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGNode.h>
@@ -138,7 +138,7 @@ int main(int argc, char** argv)
     }
 
     // init GUI
-    sofa::gui::initMain();
+    sofa::gui::initSofaGui();
     sofa::gui::GUIManager::Init(argv[0]);
 
     // Create simulation tree

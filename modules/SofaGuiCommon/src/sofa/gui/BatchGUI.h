@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_BATCHGUI_H
-#define SOFA_GUI_BATCHGUI_H
+#pragma once
 
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/simulation/fwd.h>
@@ -29,10 +28,7 @@
 
 using sofa::helper::ArgumentParser;
 
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 
 class SOFA_SOFAGUICOMMON_API BatchGUI : public BaseGUI
@@ -100,8 +96,4 @@ protected:
     static std::string nbIterInp;
 };
 
-} // namespace gui
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gui

@@ -29,11 +29,7 @@
 
 #include <algorithm>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 helper::Creator<DataWidgetFactory,DataFileNameWidget> DW_Datafilename("widget_filename",false);
@@ -101,7 +97,4 @@ void DataFileNameWidget::raiseDialog()
 }
 
 
-}
-}
-}
-
+} // namespace sofa::gui::qt
