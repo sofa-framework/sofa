@@ -23,6 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_DATACALLBACK_H
 
 #include <functional>
+#include <vector>
 #include <sofa/core/config.h>
 #include <sofa/core/fwd.h>
 #include <sofa/core/objectmodel/DDGNode.h>
