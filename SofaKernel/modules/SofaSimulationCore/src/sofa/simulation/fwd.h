@@ -23,6 +23,7 @@
 
 #include <sofa/simulation/config.h>
 #include <sofa/core/sptr.h>
+#include <sofa/core/fwd.h>
 
 namespace sofa::core::objectmodel { class BaseContext; }
 
