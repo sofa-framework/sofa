@@ -48,6 +48,7 @@ int CudaRigidDistanceGridCollisionModelClass = core::RegisterObject("GPU-based g
         .addAlias("CudaDistanceGrid")
         ;
 
+using namespace type;
 using namespace defaulttype;
 
 ////////////////////////////////////////////////////////////////////////////////
