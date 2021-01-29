@@ -135,19 +135,16 @@ void GLBackend::drawBackgroundImage(const int screenWidth, const int screenHeigh
 
     m_texLogo->bind();
 
-    double coordWidth = 4.0* screenWidth/w;
-    double coordHeight = 4.0* screenHeight/h;
+    double coordWidth = 2.0* screenWidth/w;
+    double coordHeight = 2.0* screenHeight/h;
 
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_QUADS);
-    glTexCoord2d(0, 0); glVertex3d(-screenWidth, screenHeight, 0.0);
-    glTexCoord2d(coordWidth, 0); glVertex3d( screenWidth, screenHeight, 0.0);
-    glTexCoord2d(coordWidth, coordHeight); glVertex3d( screenWidth, -screenHeight, 0.0);
-    glTexCoord2d(0, coordHeight); glVertex3d(-screenWidth, -screenHeight, 0.0);
+    glTexCoord2d(0, 0); glVertex3d(-screenWidth, -screenHeight, 0.0);
+    glTexCoord2d(coordWidth, 0); glVertex3d( screenWidth, -screenHeight, 0.0);
+    glTexCoord2d(coordWidth, coordHeight); glVertex3d( screenWidth, screenHeight, 0.0);
+    glTexCoord2d(0, coordHeight); glVertex3d(-screenWidth, screenHeight, 0.0);
     glEnd();
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 
     glBindTexture(GL_TEXTURE_2D, 0);
