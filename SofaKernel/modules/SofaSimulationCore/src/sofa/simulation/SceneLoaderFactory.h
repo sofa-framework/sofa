@@ -25,7 +25,7 @@
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/fwd.h>
 #include <sofa/helper/system/SetDirectory.h>
-
+#include <set>
 
 namespace sofa
 {
