@@ -32,13 +32,7 @@
 #include <QLabel>
 
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 DataWidget *QMouseOperation::createWidgetFromData(sofa::core::objectmodel::BaseData* data)
@@ -430,8 +424,4 @@ double QAddSutureOperation::getDamping() const
 
 //*******************************************************************************************
 
-} // namespace sofa
-} // namespace gui
-} // namespace qt
-
-
+} //namespace sofa::gui::qt

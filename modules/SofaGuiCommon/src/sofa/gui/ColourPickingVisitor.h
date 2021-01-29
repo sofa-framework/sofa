@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_COLOURPICKING_VISITOR
-#define SOFA_GUI_COLOURPICKING_VISITOR
-
+#pragma once
 #include <sofa/gui/config.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/CollisionModel.h>
@@ -30,10 +28,7 @@
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaUserInteraction/MouseInteractor.h>
 
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 
 void SOFA_SOFAGUICOMMON_API decodeCollisionElement( const sofa::defaulttype::Vec4f colour, sofa::component::collision::BodyPicked& body );
@@ -91,11 +86,4 @@ private:
     ColourCode method;
 };
 
-
-
-}
-}
-
-
-
-#endif // SOFA_GUI_COLOURPICKING_VISITOR
+} // namespace sofa::gui

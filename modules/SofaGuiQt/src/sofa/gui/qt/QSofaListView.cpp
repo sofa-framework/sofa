@@ -44,13 +44,9 @@
 
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
-namespace sofa
-{
-namespace gui
-{
-namespace qt
-{
 
+namespace sofa::gui::qt
+{
 
 QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
         QWidget* parent,
@@ -870,9 +866,4 @@ void QSofaListView::transformObject ( Node *node, double dx, double dy, double d
 
 
 
-} //sofa
-} // gui
-} //qt
-
-
-
+} //namespace sofa::gui::qt
