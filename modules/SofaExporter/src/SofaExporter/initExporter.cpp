@@ -23,6 +23,7 @@
 #include <SofaExporter/config.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/Node.h>
 
 #if SOFAEXPORTER_HAVE_SOFAPYTHON
 #include <SofaPython/PythonEnvironment.h>
