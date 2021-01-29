@@ -36,7 +36,7 @@
 
 #include <SofaSphFluid/SpatialGridContainer.h>
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {

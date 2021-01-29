@@ -26,6 +26,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/helper/OptionsGroup.h>

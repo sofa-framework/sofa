@@ -26,7 +26,7 @@
 #include "CudaCommon.h"
 #include "mycuda.h"
 #include <sofa/helper/system/gl.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/accessor.h>
@@ -200,13 +200,13 @@ public:
 };
 
 typedef sofa::type::Vec3f Vec3f;
-typedef sofa::defaulttype::Vec1f Vec1f;
+typedef sofa::type::Vec1f Vec1f;
 typedef sofa::type::Vec2f Vec2f;
-typedef sofa::defaulttype::Vec6f Vec6f;
+typedef sofa::type::Vec6f Vec6f;
 
 using type::Vec;
-using defaulttype::NoInit;
-using defaulttype::NOINIT;
+using type::NoInit;
+using type::NOINIT;
 
 template<class Real>
 class Vec3r1 : public sofa::type::Vec<3,Real>

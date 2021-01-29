@@ -193,7 +193,7 @@ public:
     /// Varying data associated with each element
     struct GPUElementForce
     {
-        Vec<4,Real> fA,fB,fC,fD;
+        type::Vec<4,Real> fA,fB,fC,fD;
     };
 
     gpu::cuda::CudaVector<GPUElementState> initState;
