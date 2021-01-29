@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_QDISPLAYPROPERTYWIDGET_H
-#define SOFA_GUI_QT_QDISPLAYPROPERTYWIDGET_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 #include <sofa/gui/qt/ModifyObject.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -58,13 +56,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 class SOFA_SOFAGUIQT_API QDisplayTreeItemWidget : public QWidget
@@ -164,10 +156,4 @@ private:
 
 };
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif // SOFA_GUI_QT_QDISPLAYPROPERTYWIDGET_H
+} //namespace sofa::gui::qt

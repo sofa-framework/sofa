@@ -20,10 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_GUI_QT_QMODELVIEWTABLEUPDATER_H
-#define SOFA_GUI_QT_QMODELVIEWTABLEUPDATER_H
-
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
 #include <QDebug>
@@ -32,11 +29,7 @@
 #include <QStandardItemModel>
 
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 class QTableViewUpdater : public QTableView
@@ -69,7 +62,4 @@ public slots:
     void resizeTableH( int number );
 };
 
-}
-}
-}
-#endif
+} // namespace sofa::gui::qt

@@ -28,11 +28,7 @@
 #include <QStandardItemModel>
 #include <QApplication>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 QTableViewUpdater::QTableViewUpdater(QWidget * parent )
@@ -128,8 +124,4 @@ void QTableModelUpdater::resizeTableH( int number )
     }
 }
 
-
-}
-}
-}
-
+} // namespace sofa::gui::qt

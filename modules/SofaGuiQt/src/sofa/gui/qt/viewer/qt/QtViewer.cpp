@@ -53,22 +53,8 @@
 
 #include <QImage>
 
-namespace sofa
+namespace sofa::gui::qt::viewer::qt
 {
-
-namespace gui
-{
-
-namespace qt
-{
-
-namespace viewer
-{
-
-namespace qt
-{
-
-
 using std::cout;
 using std::endl;
 using namespace sofa::type;
@@ -1675,12 +1661,4 @@ void QtViewer::screenshot(const std::string& filename, int compression_level)
     }
 }
 
-}// namespace qt
-
-} // namespace viewer
-
-}
-
-} // namespace gui
-
-} // namespace sofa
+} // namespace sofa::gui::qt::viewer::qt

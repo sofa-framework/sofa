@@ -23,16 +23,7 @@
 
 #include "ViewerFactory.h"
 
-namespace sofa
-{
-namespace gui
-{
-}
-}
-
-namespace sofa
-{
-namespace helper
+namespace sofa::helper
 {
 
 template class SOFA_SOFAGUICOMMON_API Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& >;
@@ -73,7 +64,7 @@ const char* SofaViewerFactory::getAcceleratedViewerName(Key key)
     {
         creator = (*it).second;
         const char* acceleratedName = creator->acceleratedName();
-        if(acceleratedName != nullptr )
+        if (acceleratedName != nullptr)
         {
             return acceleratedName;
         }
@@ -81,7 +72,6 @@ const char* SofaViewerFactory::getAcceleratedViewerName(Key key)
     }
     //	msg_info()<<"Object type "<<key<<" creation failed."<<std::endl;
     return nullptr;
+}
 
-}
-}
-}
+} // namespace sofa::helper

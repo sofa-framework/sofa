@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef MATERIAL_DATAWIDGET_H
-#define MATERIAL_DATAWIDGET_H
+#pragma once
 #include "DataWidget.h"
 #include <sofa/helper/types/Material.h>
 #include <sofa/type/Vec.h>
@@ -42,15 +41,10 @@
 
 #include "QRGBAColorPicker.h"
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
-{
 /// Private namespace
-namespace materialdatawidget_h
+namespace sofa::gui::qt::materialdatawidget_h
 {
+
 using sofa::gui::qt::QRGBAColorPicker ;
 using sofa::helper::types::Material ;
 using sofa::core::objectmodel::Data ;
@@ -121,13 +115,9 @@ protected slots:
     void changeMaterial( int );
 };
 
-} /// namespace materialdatawidget_h
+} // namespace sofa::gui::qt::materialdatawidget_h
 
-using materialdatawidget_h::MaterialDataWidget ;
-
-} /// namespace qt
-} /// namespace gui
-} /// namespace ssofa
-
-#endif
-
+namespace sofa::gui::qt
+{
+    using sofa::gui::qt::materialdatawidget_h::MaterialDataWidget;
+} // namespace sofa::gui::qt

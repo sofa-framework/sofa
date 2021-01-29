@@ -29,9 +29,7 @@
 #include <sofa/gl/BasicShapes.h>
 #endif // SOFAGUICOMMON_HAVE_SOFA_GL
 
-namespace sofa
-{
-namespace gui
+namespace sofa::gui
 {
 
 using namespace sofa::component::collision;
@@ -215,7 +213,4 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
 #endif // SOFAGUICOMMON_HAVE_SOFA_GL
 }
 
-
-
-}
-}
+} // namespace sofa::gui

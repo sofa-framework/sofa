@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QGLVIEWER_QTVIEWER_H
-#define SOFA_GUI_QGLVIEWER_QTVIEWER_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
 #include <sofa/gl/gl.h>
@@ -50,19 +48,7 @@
 
 #define TRACKING_MOUSE
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
-{
-
-namespace viewer
-{
-
-namespace qgl
+namespace sofa::gui::qt::viewer::qgl
 {
 
 class SOFA_SOFAGUIQT_API QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::OglModelSofaViewer
@@ -242,16 +228,4 @@ signals:
     void quit();
 };
 
-} // namespace qgl
-
-} // namespace viewer
-
-} //namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif
-
-
+} // namespace sofa::gui::qt::viewer::qgl

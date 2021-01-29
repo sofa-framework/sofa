@@ -27,9 +27,7 @@
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
-namespace sofa
-{
-namespace gui
+namespace sofa::gui
 {
 
 BaseViewer::BaseViewer()
@@ -277,10 +275,4 @@ void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
     redraw();
 }
 
-
-
-
-
-}
-}
-
+} // namespace sofa::gui

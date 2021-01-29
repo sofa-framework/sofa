@@ -25,13 +25,7 @@
 #include <sofa/helper/Factory.inl>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 using sofa::helper::Creator;
@@ -132,8 +126,4 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::JointSpring<sofa::defaulttype::Rigid3Types> > > > DWClass_vectorJointSpring3f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::GearSpring<sofa::defaulttype::Rigid3Types> > > > DWClass_vectorGearSpring3f("default",true);
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

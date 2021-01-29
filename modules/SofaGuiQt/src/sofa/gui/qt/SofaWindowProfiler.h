@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_WINDOWPROFILER_H
-#define SOFA_WINDOWPROFILER_H
-
+#pragma once
 #include <ui_WindowProfiler.h>
 #include "PieWidget.h"
 #include "QVisitorControlPanel.h"
@@ -45,13 +43,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <deque>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 typedef sofa::helper::system::thread::ctime_t ctime_t;
@@ -242,10 +234,4 @@ protected:
     std::string m_selectedParentStep;
 };
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif // SOFA_WINDOWPROFILER_H
+} //namespace sofa::gui::qt

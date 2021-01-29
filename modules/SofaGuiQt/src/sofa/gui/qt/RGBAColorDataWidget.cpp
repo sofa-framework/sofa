@@ -21,15 +21,8 @@
 ******************************************************************************/
 #include "RGBAColorDataWidget.h"
 
-namespace sofa
+namespace sofa::gui::qt::rgbacolordatawidget_h
 {
-namespace gui
-{
-namespace qt
-{
-namespace rgbacolordatawidget_h
-{
-
 helper::Creator<DataWidgetFactory, RGBAColorDataWidget> DWClass("default",true);
 
 bool RGBAColorDataWidget::createWidgets()
@@ -65,7 +58,4 @@ void RGBAColorDataWidget::writeToData()
     getData()->virtualEndEdit();
 }
 
-} /// namespace rgbacolordatawidget
-} /// namespace qt
-} /// namespace gui
-} /// namespace sofa
+} //namespace sofa::gui::qt::rgbacolordatawidget_h

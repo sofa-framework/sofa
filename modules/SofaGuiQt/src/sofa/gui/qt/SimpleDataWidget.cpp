@@ -25,13 +25,7 @@
 #include <sofa/core/objectmodel/Tag.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 using sofa::helper::Creator;
@@ -230,8 +224,4 @@ void RadioDataWidget::writeToData()
 
 
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt
