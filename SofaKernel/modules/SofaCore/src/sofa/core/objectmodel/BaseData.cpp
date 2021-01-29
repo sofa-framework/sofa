@@ -161,6 +161,7 @@ void BaseData::doDelInput(DDGNode* n)
 
 void BaseData::update()
 {
+    std::cout << "CLEAN DATA PATH" << std::endl;
     cleanDirty();
     for(DDGLinkIterator it=inputs.begin(); it!=inputs.end(); ++it)
     {

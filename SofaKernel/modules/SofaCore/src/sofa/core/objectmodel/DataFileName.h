@@ -98,7 +98,14 @@ public:
         return m_pathType;
     }
 
-    virtual bool read(const std::string& s );
+    bool read(const std::string& s ) override;
+
+    void endEdit() override
+    {
+        updatePath();
+        Data::notifyEndEdit();
+    }
+
 
     virtual const std::string& getRelativePath() const
     {
@@ -122,14 +129,12 @@ public:
         return m_extension;
     }
 
-    virtual void update()
+    void _doOnUpdate_() override
     {
-        this->Inherit::update();
-        this->updatePath();
+        updatePath();
     }
 
 protected:
-
     void updatePath();
 
     std::string m_fullpath;
