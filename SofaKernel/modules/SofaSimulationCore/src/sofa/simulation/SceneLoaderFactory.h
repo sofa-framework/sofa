@@ -22,10 +22,11 @@
 #ifndef SOFA_SIMULATION_SCENELOADERFACTORY_H
 #define SOFA_SIMULATION_SCENELOADERFACTORY_H
 
+#include <set>
+#include <vector>
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/fwd.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <set>
 
 namespace sofa
 {
