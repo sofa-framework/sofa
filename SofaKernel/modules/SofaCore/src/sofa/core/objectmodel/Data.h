@@ -273,7 +273,7 @@ public:
             this->setValue(value);
 }
 
-            bool copyValueFrom(const BaseData* data){ _doCopyValueFrom_(data); }
+            bool copyValueFrom(const BaseData* data){ return _doCopyValueFrom_(data); }
             bool copyValueFrom(const Data<T>* data);
 
 protected:
