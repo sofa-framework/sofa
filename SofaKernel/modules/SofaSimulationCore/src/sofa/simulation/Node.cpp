@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/Node.h>
+#include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/Node.inl>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
@@ -35,9 +36,6 @@
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>
 #include <iostream>
-
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/topological_sort.hpp>
 
 /// If you want to activate/deactivate that please set them to true/false
 #define DEBUG_VISITOR false
