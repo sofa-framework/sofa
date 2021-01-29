@@ -13,8 +13,8 @@ fi
 
 # Adapt INSTALL_DIR to NSIS install
 INSTALL_DIR_BIN="$INSTALL_DIR/bin"
-if [[ "$INSTALL_DIR" == *"/NSIS/"* ]] && [[ -e "$INSTALL_DIR/applications/bin" ]]; then
-    INSTALL_DIR_BIN="$INSTALL_DIR/applications/bin"
+if [[ "$INSTALL_DIR" == *"/NSIS/"* ]] && [[ -e "$INSTALL_DIR/../applications/bin" ]]; then
+    INSTALL_DIR_BIN="$INSTALL_DIR/../applications/bin"
 fi
 
 echo "BUILD_DIR = $BUILD_DIR"
