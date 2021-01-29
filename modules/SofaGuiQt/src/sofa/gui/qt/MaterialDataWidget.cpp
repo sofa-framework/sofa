@@ -22,15 +22,8 @@
 #include "MaterialDataWidget.h"
 #include <limits>
 
-namespace sofa
+namespace sofa::gui::qt::materialdatawidget_h
 {
-namespace gui
-{
-namespace qt
-{
-namespace materialdatawidget_h
-{
-
 helper::Creator<DataWidgetFactory,MaterialDataWidget> DWClass_MeshMaterial("default",true);
 helper::Creator<DataWidgetFactory,VectorMaterialDataWidget> DWClass_MeshVectorMaterial("default",true);
 
@@ -249,7 +242,4 @@ void VectorMaterialDataWidget::writeToData()
     getData()->endEdit();
 }
 
-} /// namespace materialdatawidget_h
-} /// namespace qt
-} /// namespace gui
-} /// namespace sofa
+} // namespace sofa::gui::qt::materialdatawidget_h

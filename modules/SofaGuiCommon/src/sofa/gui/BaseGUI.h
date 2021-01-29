@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_BASEGUI_H
-#define SOFA_GUI_BASEGUI_H
+#pragma once
 
 #include <sofa/gui/config.h>
 #include <sofa/defaulttype/Vec.h>
@@ -33,10 +32,7 @@ using sofa::helper::ArgumentParser;
 #include <list>
 
 
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 
 class BaseViewer;
@@ -123,16 +119,4 @@ protected:
     static ArgumentParser* mArgumentParser;
 };
 
-////// TO declare into BaseViewer
-///setScene();
-///resetView();
-///setBackgroundColour(...)
-///setBackgroundImage(...)
-///setScene()
-///getSceneFileName()
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gui

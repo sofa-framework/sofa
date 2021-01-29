@@ -38,13 +38,7 @@
 #include <QRadioButton>
 #include <sofa/simulation/ExportDotVisitor.h>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 GenGraphForm::GenGraphForm(QWidget *parent)
@@ -486,8 +480,4 @@ std::set<std::string> GenGraphForm::getCurrentFilter()
     return filt;
 }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

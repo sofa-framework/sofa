@@ -33,14 +33,9 @@
 
 #define TEXTSIZE_THRESHOLD 45
 
-namespace sofa
-{
+using namespace sofa::core::objectmodel;
 
-using namespace core::objectmodel;
-
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
@@ -346,7 +341,4 @@ void QPoissonRatioWidget::changeSliderValue()
 
 helper::Creator<DataWidgetFactory, QPoissonRatioWidget> DWClass_Poissonratio("poissonRatio",false);
 
-} // qt
-} //gui
-} //sofa
-
+} //namespace sofa::gui::qt

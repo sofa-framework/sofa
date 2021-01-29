@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_DISPLAYFLAGSDATAWIDGET_H
-#define SOFA_GUI_QT_DISPLAYFLAGSDATAWIDGET_H
-
+#pragma once
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
@@ -32,11 +30,7 @@
 #include <QFrame>
 #include <QGroupBox>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 
@@ -114,11 +108,4 @@ protected:
 
 };
 
-}
-
-}
-
-}
-
-
-#endif // SOFA_GUI_QT_DISPLAYFLAGSDATAWIDGET_H
+} // namespace sofa::gui::qt

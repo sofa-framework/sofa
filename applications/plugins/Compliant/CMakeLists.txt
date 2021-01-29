@@ -3,7 +3,7 @@ project(Compliant VERSION 0.1)
 
 find_package(SofaMiscMapping REQUIRED)
 find_package(SofaMiscCollision REQUIRED)
-find_package(SofaGui QUIET)
+find_package(SofaGuiQt QUIET)
 sofa_find_package(SofaPython QUIET)
 
 # Previous Eigen versions have a critical bug (v.noalias()+=w does not work in some situations)
@@ -283,7 +283,7 @@ if(SOFA_BUILD_TESTS)
     endif()
 endif()
 
-if(SofaGui_FOUND AND SOFAGUI_HAVE_SOFAGUIQT)
+if(SofaGuiQt_FOUND)
     add_subdirectory(Compliant_gui)
 endif()
 

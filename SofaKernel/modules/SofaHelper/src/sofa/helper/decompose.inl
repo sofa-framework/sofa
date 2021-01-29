@@ -24,6 +24,7 @@
 #include "decompose.h"
 
 #include <limits>
+#include <sofa/helper/rmath.h>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa

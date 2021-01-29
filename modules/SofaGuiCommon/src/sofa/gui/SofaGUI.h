@@ -19,13 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_SOFAGUI_H
-#define SOFA_GUI_SOFAGUI_H
-
-// Backward compatibility header
-
+#pragma once
 #include <sofa/gui/config.h>
 
 SOFA_DEPRECATED_HEADER(v21.06, "sofa/gui/config.h")
-
-#endif

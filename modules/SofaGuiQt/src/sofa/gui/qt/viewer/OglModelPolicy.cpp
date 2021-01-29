@@ -24,13 +24,7 @@
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/visual/DrawToolGL.h>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
-{
-namespace viewer
+namespace sofa::gui::qt::viewer
 {
 
 void OglModelPolicy::load()
@@ -51,8 +45,4 @@ void OglModelPolicy::unload()
 
 }
 
-} // namespace viewer
-} // namespace qt
-} // namespace gui
-} // namespace sofa
-
+} // namespace sofa::gui::qt::viewer

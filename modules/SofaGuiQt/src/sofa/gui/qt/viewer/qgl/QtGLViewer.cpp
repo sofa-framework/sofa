@@ -48,19 +48,7 @@
 #include <sofa/gui/qt/GLPickHandler.h>
 #include <sofa/gui/qt/viewer/GLBackend.h>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
-{
-
-namespace viewer
-{
-
-namespace qgl
+namespace sofa::gui::qt::viewer::qgl
 {
 
 using std::endl;
@@ -1147,16 +1135,4 @@ QString QtGLViewer::helpString() const
     return text;
 }
 
-
-
-
-
-} // namespace qgl
-
-} // namespace viewer
-
-} //namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} // namespace sofa::gui::qt::viewer::qgl
