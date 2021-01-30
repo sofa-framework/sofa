@@ -3,6 +3,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <cmath>
+#include <sofa/helper/rmath.h>
 
 namespace sofa {
 namespace component {

@@ -114,10 +114,11 @@ class LinkTraitsContainer;
 
 
 /// Class to hold 0-or-1 pointer. The interface is similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
-template < class T, class TPtr = T* >
+template < class T, class TDestPtr, class TPtr = T* >
 class SinglePtr
 {
 protected:
+    bool isEmpty {true};
     TPtr elems[1];
 public:
     typedef T pointed_type;
@@ -135,7 +136,7 @@ public:
     }
     const_iterator end() const
     {
-        return (!elems[0])?elems:elems+1;
+        return (isEmpty)?elems:elems+1;
     }
     const_reverse_iterator rbegin() const
     {
@@ -163,14 +164,22 @@ public:
     }
     std::size_t size() const
     {
-        return (!elems[0])?0:1;
+        return !isEmpty;
+    }
+    void resize(size_t size)
+    {
+        if(size == 1)
+            isEmpty=false;
+        else
+            isEmpty=true;
     }
     bool empty() const
     {
-        return !elems[0];
+        return isEmpty;
     }
     void clear()
     {
+        isEmpty = true;
         elems[0] = TPtr();
     }
     const TPtr& get() const
@@ -180,6 +189,11 @@ public:
     TPtr& get()
     {
         return elems[0];
+    }
+    void add(TDestPtr v)
+    {
+        isEmpty = false;
+        elems[0] = v;
     }
     const TPtr& operator[](std::size_t i) const
     {
@@ -211,14 +225,18 @@ template<class TDestType, class TDestPtr, class TValueType>
 class LinkTraitsContainer<TDestType, TDestPtr, TValueType, false>
 {
 public:
-    typedef SinglePtr<TDestType, TValueType> T;
+    typedef SinglePtr<TDestType, TDestPtr, TValueType> T;
+    static void resize(T& c, size_t newsize)
+    {
+        c.resize(newsize);
+    }
     static void clear(T& c)
     {
         c.clear();
     }
     static std::size_t add(T& c, TDestPtr v)
     {
-        c.get() = v;
+        c.add(v);
         return 0;
     }
     static std::size_t find(const T& c, TDestPtr v)
@@ -352,6 +370,10 @@ public:
         return m_value.crend();
     }
     SOFA_END_DEPRECATION_AS_ERROR
+    void clear()
+    {
+        TraitsContainer::clear(m_value);
+    }
 
     bool add(DestPtr v)
     {
@@ -559,22 +581,6 @@ public:
     }
 
 
-    /// Check that a given path is valid, that the pointed object exists and is of the right type
-    template <class TContext>
-    static bool CheckPath( const std::string& path, TContext* context)
-    {
-        if (path.empty())
-            return false;
-        if (!context)
-        {
-            std::string p,d;
-            return BaseLink::ParseString(path, &p, nullptr, context);
-        }
-
-        DestType* ptr = nullptr;
-        return context->findLinkDest(ptr, path, nullptr);
-    }
-
     /// @}
 
     sofa::core::objectmodel::Base* getOwnerBase() const override
@@ -595,6 +601,12 @@ public:
         m_owner->addLink(this);
     }
 
+    [[deprecated("2021-01-01: CheckPath as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPath(Base*, BaseClass*, string).")]]
+    static bool CheckPath(const std::string& path, Base* context)
+    {
+        return PathResolver::CheckPath(context, GetDestClass(), path);
+    }
+
 protected:
     OwnerType* m_owner {nullptr};
     Container m_value;
@@ -609,6 +621,18 @@ protected:
 
     virtual void added(DestPtr ptr, std::size_t index) = 0;
     virtual void removed(DestPtr ptr, std::size_t index) = 0;
+
+    [[deprecated("2021-01-01: GetDestClass is there only for backward compatibility while deprecating Link::CheckPath.")]]
+    static const BaseClass* GetDestClass()
+    {
+        return DestType::GetClass();
+    }
+
+    [[deprecated("2021-01-01: GetOwnerClass is there only for backward compatibility while deprecating Link::CheckPath.")]]
+    static const BaseClass* GetOwnerClass()
+    {
+        return OwnerType::GetClass();
+    }
 };
 
 /**
@@ -653,22 +677,6 @@ public:
         m_validator = fn;
     }
 
-    /// Check that a given list of path is valid, that the pointed object exists and is of the right type
-    template<class TContext>
-    static bool CheckPaths( const std::string& str, TContext* context)
-    {
-        if (str.empty())
-            return false;
-        std::istringstream istr( str.c_str() );
-        std::string path;
-        bool ok = true;
-        while (istr >> path)
-        {
-            ok &= TLink<TOwnerType,TDestType,TFlags|BaseLink::FLAG_MULTILINK>::CheckPath(path, context);
-        }
-        return ok;
-    }
-
     /// Update pointers in case the pointed-to objects have appeared
     /// @return false if there are broken links
     virtual bool updateLinks()
@@ -704,7 +712,6 @@ public:
     }
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-
     DestType* get(std::size_t index, const core::ExecParams*) const { return get(index); }
     DestType* get(std::size_t index) const
     {
@@ -717,6 +724,12 @@ public:
     DestType* operator[](std::size_t index) const
     {
         return get(index);
+    }
+
+    [[deprecated("2021-01-01: CheckPaths as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPaths(Base*, BaseClass*, string).")]]
+    static bool CheckPaths(const std::string& pathes, Base* context)
+    {
+        return PathResolver::CheckPaths(context, Inherit::GetDestClass(), pathes);
     }
 
 protected:
@@ -802,6 +815,7 @@ public:
 
     void set(DestPtr v)
     {
+        TraitsContainer::resize(m_value, 1);
         ValueType& value = m_value.get();
         const DestPtr before = TraitsValueType::get(value);
         if (v == before) return;
@@ -812,6 +826,7 @@ public:
 
     void set(DestPtr v, const std::string& path)
     {
+        TraitsContainer::resize(m_value, 1);
         ValueType& value = m_value.get();
         const DestPtr before = TraitsValueType::get(value);
         if (v != before)
@@ -824,6 +839,7 @@ public:
 
     void setPath(const std::string& path)
     {
+        TraitsContainer::resize(m_value, 1);
         if (path.empty())
         {
             set(nullptr);

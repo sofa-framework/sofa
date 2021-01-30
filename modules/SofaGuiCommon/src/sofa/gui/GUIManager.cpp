@@ -29,14 +29,12 @@
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/Node.h>
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 
 /*STATIC FIELD DEFINITIONS */
@@ -310,8 +308,4 @@ void GUIManager::SaveScreenshot(const char* filename)
 }
 
 
-}
-// namespace gui
-
-}
-// namespace sofa
+} // namespace sofa::gui

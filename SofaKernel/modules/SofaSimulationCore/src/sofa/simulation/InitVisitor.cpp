@@ -25,8 +25,7 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/BoundingBox.h>
-
-//#include "MechanicalIntegration.h"
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {

@@ -191,7 +191,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(AffineMovementConstraint_test, DataTypes);
+TYPED_TEST_SUITE(AffineMovementConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( AffineMovementConstraint_test , testValue )
 {

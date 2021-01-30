@@ -174,7 +174,7 @@ void pushToList( const std::string& templateCombination, const char separator, s
 {
     size_t curPos = 0;
     size_t oldPos = 0;
-    std::string chunk;
+    
     while ( ( curPos = templateCombination.find(separator, oldPos) ) != std::string::npos )
     {
         templateList.push_back( templateCombination.substr(oldPos,curPos) );

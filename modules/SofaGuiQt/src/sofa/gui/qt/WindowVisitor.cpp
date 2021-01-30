@@ -27,13 +27,7 @@
 #include <QPainter>
 #include <QGridLayout>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 QPixmap *WindowVisitor::icons[WindowVisitor::OTHER+1];
 

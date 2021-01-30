@@ -19,32 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_PICKHANDLER_H
-#define SOFA_GUI_PICKHANDLER_H
-
+#pragma once
 #include <sofa/gui/config.h>
 #include "OperationFactory.h"
 
+#include <sofa/simulation/fwd.h>
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace collision
+namespace sofa::component::collision
 {
     class ComponentMouseInteraction;
     class RayCollisionModel;
-}
-namespace configurationsetting
+} // namespace sofa::component::collision
+
+namespace sofa::component::configurationsetting
 {
     class MouseButtonSetting;
-}
-}
+} // namespace sofa::component::configurationsetting
 
 
-namespace gui
+namespace sofa::gui
 {
 
 using simulation::Node;
@@ -126,7 +121,7 @@ protected:
     MOUSE_BUTTON mouseButton;
 
 
-    Node::SPtr                mouseNode;
+    sofa::simulation::NodeSPtr     mouseNode;
     MouseContainer::SPtr      mouseContainer;
     MouseCollisionModel::SPtr mouseCollision;
 
@@ -163,7 +158,5 @@ protected:
     /// Default length of the ray. Set by constructor.
     double m_defaultLength;
 };
-}
-}
 
-#endif
+} // namespace sofa::gui

@@ -112,7 +112,7 @@ struct ComplementaryROI_test : public Sofa_test<typename _DataTypes::Real>,
 using testing::Types;
 typedef Types<Vec3Types> DataTypes;
 
-TYPED_TEST_CASE(ComplementaryROI_test, DataTypes);
+TYPED_TEST_SUITE(ComplementaryROI_test, DataTypes);
 
 TYPED_TEST(ComplementaryROI_test, NormalBehavior) {
     EXPECT_MSG_NOEMIT(Error) ;

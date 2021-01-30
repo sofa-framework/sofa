@@ -19,21 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_ADVANCEDTIMER_H
-#define SOFA_HELPER_ADVANCEDTIMER_H
+#pragma once
 #include <sofa/helper/config.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
+#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/helper/vector.h>
 
 #include <iostream>
 #include <string>
-#include <vector>
+#include <map>
 
-
-namespace sofa
+namespace sofa::simulation
 {
+    class Node;
+}
 
-namespace helper
+namespace sofa::helper
 {
 
 /**
@@ -534,9 +535,5 @@ struct ScopedAdvancedTimer {
     }
 };
 
-
 }
 
-}
-
-#endif

@@ -27,13 +27,7 @@
 #include <QHeaderView>
 #include <QSplitter>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 std::vector< defaulttype::Vec<3,int> > PieWidget::colorArray;

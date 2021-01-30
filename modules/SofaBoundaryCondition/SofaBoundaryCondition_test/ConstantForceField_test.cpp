@@ -233,7 +233,7 @@ TypeTuple<Rigid2Types, Rigid2Mass>
 > DataTypes;
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(ConstantForceField_test, DataTypes);// first test case
+TYPED_TEST_SUITE(ConstantForceField_test, DataTypes);// first test case
 TYPED_TEST( ConstantForceField_test , testBasicAttributes )
 {
     ASSERT_NO_THROW (this->testBasicAttributes());

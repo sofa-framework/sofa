@@ -27,6 +27,19 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Option for packaging
 option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 
+# Option to accelerate the compilation
+# see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html
+# and https://cmake.org/cmake/help/v3.16/prop_tgt/DISABLE_PRECOMPILE_HEADERS.html
+cmake_dependent_option(SOFA_BUILD_WITH_PCH_ENABLED 
+    "Compile SOFA using precompiled header (to accelerate the build process)" OFF
+    "CMAKE_VERSION VERSION_GREATER_EQUAL 3.16" OFF)
+if(SOFA_BUILD_WITH_PCH_ENABLED)
+    message("-- Precompiled headers: enabled (SOFA_BUILD_WITH_PCH_ENABLED is ON).")
+else()
+    message("-- Precompiled headers: disabled (SOFA_BUILD_WITH_PCH_ENABLED is OFF or CMake < 3.16).")
+    set(DISABLE_PRECOMPILE_HEADERS ON)
+endif()
+
 ## Change default install prefix
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
