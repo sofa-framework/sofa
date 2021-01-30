@@ -71,7 +71,7 @@ public:
     virtual void getExtensionList(ExtensionList* list) = 0;
 
     /// to be able to inform when a scene is loaded
-    struct Listener
+    struct SOFA_SIMULATION_CORE_API Listener
     {
         virtual void rightBeforeLoadingScene();  ///< callback called just before loading the scene file
         virtual void rightAfterLoadingScene(sofa::simulation::NodeSPtr); ///< callback called just after loading the scene file
