@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.12)
 project(SofaGuiQt)
 
 # Qt dependencies
@@ -11,8 +11,10 @@ set(SOFAGUIQT_HAVE_QT6 0)
 
 # Will only use Qt6 if Qt6 is found and Qt5 is not found
 # if Qt5 and Qt6 are both found, Qt5 will take priority
-
-find_package(Qt6 COMPONENTS Widgets OpenGLWidgets QUIET)
+# Qt6 needs cmake >= 3.16, https://doc.qt.io/qt-6/cmake-get-started.html 
+if(${CMAKE_VERSION} VERSION_GREATER "3.16.0")
+    find_package(Qt6 COMPONENTS Widgets OpenGLWidgets QUIET)
+endif()
 find_package(Qt5 COMPONENTS Core Gui OpenGL QUIET)
 
 if (Qt6_FOUND AND NOT Qt5_FOUND)
