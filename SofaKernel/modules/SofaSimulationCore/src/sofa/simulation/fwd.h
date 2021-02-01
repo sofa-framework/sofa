@@ -38,6 +38,16 @@ namespace sofa::simulation
     class MutationListener;
     class Visitor;
 
+    /// Set the (unique) simulation which controls the scene
+    SOFA_SIMULATION_CORE_API void setSimulation(Simulation* s);
+
+    /** Get the (unique) simulation which controls the scene.
+        Automatically creates one if no Simulation has been set.
+     */
+    SOFA_SIMULATION_CORE_API Simulation* getSimulation();
+
+    SOFA_SIMULATION_CORE_API sofa::core::objectmodel::Base* getBaseFromNode(Node*);
     SOFA_SIMULATION_CORE_API Node* getNodeFromContext(sofa::core::objectmodel::BaseContext*);
+    SOFA_SIMULATION_CORE_API double getTimeFromContext(sofa::core::objectmodel::BaseContext*);
     SOFA_SIMULATION_CORE_API sofa::core::objectmodel::BaseContext* getContextFromNode(Node*);
 }

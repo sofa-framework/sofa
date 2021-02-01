@@ -30,7 +30,7 @@
 
 
 #include <sofa/gui/qt/config.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
@@ -63,7 +63,7 @@ public:
     sofa::core::objectmodel::Base* asBase()
     {
         if( isNode() )
-            return dynamic_cast<sofa::core::objectmodel::Base*>(ptr.Node);
+            return sofa::simulation::getBaseFromNode(ptr.Node);
         if( isObject() )
             return dynamic_cast<sofa::core::objectmodel::Base*>(ptr.Object);
         return nullptr;

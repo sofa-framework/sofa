@@ -22,6 +22,7 @@
 #pragma once
 #include <SofaConstraint/LMDNewProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <SofaMeshCollision/EmptyFilter.h>
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>

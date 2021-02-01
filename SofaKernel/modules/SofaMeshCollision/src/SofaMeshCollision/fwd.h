@@ -36,4 +36,6 @@ class TTriangle;
 
 template<class DataTypes>
 class PointCollisionModel;
+
+class LocalMinDistanceFilter;
 }

@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Tag.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Simulation.h>
 
 namespace sofa::component::topology
@@ -272,10 +272,10 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
         sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
+        sofa::simulation::Node* context = sofa::simulation::getNodeFromContext(this->getContext());
         const auto & color4 = sofa::helper::types::RGBAColor::white();
 
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        sofa::simulation::getSimulation()->computeBBox(context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
         float scale = getIndicesScale();
 

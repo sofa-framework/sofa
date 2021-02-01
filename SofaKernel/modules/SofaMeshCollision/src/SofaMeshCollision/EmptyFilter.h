@@ -19,62 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
-#define SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
-#include "config.h"
+#pragma once
+#include <SofaMeshCollision/config.h>
+#include <sofa/defaulttype/Vec.h>
 
-#include <sofa/simulation/fwd.h>
-#include <sofa/core/behavior/BaseController.h>
-#include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
 
-namespace controller
+/**
+ * @brief
+ */
+class SOFA_SOFAMESHCOLLISION_API EmptyFilter
 {
-
-/// Base class implementing forcefeedback as a force field
-class SOFA_SOFAHAPTICS_API ForceFeedback : public virtual core::behavior::BaseController
-{
-
 public:
-    SOFA_ABSTRACT_CLASS(ForceFeedback,core::behavior::BaseController);
-    Data<bool> d_activate; ///< boolean to activate or deactivate the forcefeedback
-    Data<int> d_indice; ///< Tool indice in the OmniDriver
-
-    simulation::Node *context;
-
-    void init() override;
-
-    virtual void computeForce(SReal x, SReal y, SReal z,
-                              SReal u, SReal v, SReal w,
-                              SReal q, SReal& fx, SReal& fy, SReal& fz) = 0;
-
-    virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &,
-                               const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &,
-                               sofa::defaulttype::SolidTypes<SReal>::SpatialVector & )=0;
-
-    virtual void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition);
-    virtual bool isEnabled();
-
-    /// Abstract method to lock or unlock the force feedback computation. To be implemented by child class if needed
-    virtual void setLock(bool value)
+    /**
+     * @brief Point Collision Primitive validation method.
+     */
+    bool validPoint(const Index /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
     {
-        SOFA_UNUSED(value);
+        return true;
     }
 
-protected:
-    ForceFeedback();
+    /**
+     * @brief Line Collision Primitive validation method.
+     */
+    bool validLine(const Index /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    {
+        return true;
+    }
+
+    /**
+     * @brief Triangle Collision Primitive validation method.
+     */
+    bool validTriangle(const Index /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    {
+        return true;
+    }
 };
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

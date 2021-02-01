@@ -38,7 +38,7 @@ ForceFeedback::ForceFeedback():
 
 void ForceFeedback::init()
 {
-    context = dynamic_cast<simulation::Node *>(this->getContext());
+    context = sofa::simulation::getNodeFromContext(getContext());
 }
 
 void ForceFeedback::setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition)

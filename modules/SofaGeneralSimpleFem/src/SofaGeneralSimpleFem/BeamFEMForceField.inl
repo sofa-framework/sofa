@@ -31,8 +31,8 @@
 #include <set>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/simulation/Node.h>
 
 #include "StiffnessContainer.h"
 #include "PoissonContainer.h"

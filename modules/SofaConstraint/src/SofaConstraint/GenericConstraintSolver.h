@@ -133,7 +133,7 @@ protected:
     std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
 
 
-    simulation::Node *context;
+    sofa::core::objectmodel::BaseContext *context;
 
     sofa::core::MultiVecDerivId m_lambdaId;
     sofa::core::MultiVecDerivId m_dxId;
