@@ -76,7 +76,9 @@ struct ImageEngine_test : public Sofa_test<>
             data1.getValue().getCImg().display("data1");
 
         // Set data link
-        sofa::modeling::setDataLink(&data1,&data2);
+        //sofa::modeling::setDataLink(&data1,&data2);
+        ASSERT_TRUE(data2.setParent(&data1));
+
         data1.getValue();
 
         if(DO_DISPLAY)

@@ -135,9 +135,6 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
     {
         addInput(parent);
         BaseData::setDirtyValue();
-        if (!isCounterValid())
-            update();
-
         m_counter++;
         m_isSet = true;
     }else if (!path.empty())
@@ -161,7 +158,6 @@ void BaseData::doDelInput(DDGNode* n)
 
 void BaseData::update()
 {
-    std::cout << "CLEAN DATA PATH" << std::endl;
     cleanDirty();
     for(DDGLinkIterator it=inputs.begin(); it!=inputs.end(); ++it)
     {
@@ -177,7 +173,7 @@ void BaseData::update()
         if (m_owner)
             dmsg_warning(m_owner) << "Data " << m_name << ": update from parent " << parentBaseData->m_name;
 #endif
-        copyValueFrom(parent);
+        updateValueFromLink(parent);
         // If the value is dirty clean it
         if(this->isDirty())
         {
@@ -187,14 +183,26 @@ void BaseData::update()
     _doOnUpdate_();
 }
 
+bool BaseData::updateValueFromLink(const BaseData* parent)
+{
+    /// Try if the fast path succeeded, in general this means that the two Data are
+    /// of exactly the same internal types.
+    if(_doSetValueFromLink_(parent))
+    {
+        return true;
+    }
+    return copyValueFrom(parent);
+}
+
 /// Update this Data from the value of its parent
 bool BaseData::copyValueFrom(const BaseData* parent)
 {
     /// Try if the fast path succeeded, in general this means that the two Data are
     /// of exactly the same internal types.
     if(_doCopyValueFrom_(parent))
+    {
         return true;
-
+    }
     /// If the fast path didn't succeeded we try to do copy using a much less efficient approach.
     return genericCopyValueFrom(parent);
 }
