@@ -21,8 +21,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SceneLoaderFactory.h"
-
-
+#include <sofa/simulation/Node.h>
+#include <sofa/helper/system/SetDirectory.h>
 
 
 namespace sofa
@@ -31,6 +31,55 @@ namespace simulation
 {
 
 SceneLoader::Listeners SceneLoader::s_listeners;
+
+/// load the file
+sofa::simulation::NodeSPtr SceneLoader::load(const std::string& filename, bool reload, const std::vector<std::string>& sceneArgs)
+{
+    if(reload)
+        notifyReloadingSceneBefore();
+    else
+        notifyLoadingSceneBefore();
+
+    sofa::simulation::NodeSPtr root = doLoad(filename, sceneArgs);
+
+    if(reload)
+        notifyReloadingSceneAfter(root);
+    else
+        notifyLoadingSceneAfter(root);
+
+    return root;
+}
+
+void SceneLoader::notifyLoadingSceneBefore() { for( auto* l : s_listeners ) l->rightBeforeLoadingScene(); }
+void SceneLoader::notifyReloadingSceneBefore() { for( auto* l : s_listeners ) l->rightBeforeReloadingScene(); }
+void SceneLoader::notifyLoadingSceneAfter(sofa::simulation::NodeSPtr node) { for( auto* l : s_listeners ) l->rightAfterLoadingScene(node); }
+void SceneLoader::notifyReloadingSceneAfter(sofa::simulation::NodeSPtr node) { for( auto* l : s_listeners ) l->rightAfterReloadingScene(node); }
+
+bool SceneLoader::canLoadFileName(const char *filename)
+{
+    std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
+    return canLoadFileExtension(ext.c_str());
+}
+
+/// Pre-saving check
+bool SceneLoader::canWriteFileName(const char *filename)
+{
+    std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
+    return canWriteFileExtension(ext.c_str());
+}
+
+void SceneLoader::Listener::rightBeforeLoadingScene() {} ///< callback called just before loading the scene file
+void SceneLoader::Listener::rightAfterLoadingScene(sofa::simulation::NodeSPtr) {} ///< callback called just after loading the scene file
+
+void SceneLoader::Listener::rightBeforeReloadingScene() { this->rightBeforeLoadingScene(); } ///< callback called just before reloading the scene file
+void SceneLoader::Listener::rightAfterReloadingScene(sofa::simulation::NodeSPtr root) { this->rightAfterLoadingScene(root); } ///< callback called just after reloading the scene file
+
+/// adding a listener
+void SceneLoader::addListener( Listener* l ) { s_listeners.insert(l); }
+
+/// removing a listener
+void SceneLoader::removeListener( Listener* l ) { s_listeners.erase(l); }
+
 
 SceneLoaderFactory* SceneLoaderFactory::getInstance()
 {
@@ -117,8 +166,6 @@ SceneLoader* SceneLoaderFactory::addEntry(SceneLoader *loader)
     registry.push_back(loader);
     return loader;
 }
-
-
 
 } // namespace simulation
 

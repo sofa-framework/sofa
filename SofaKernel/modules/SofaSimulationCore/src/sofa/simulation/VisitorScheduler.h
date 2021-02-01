@@ -32,14 +32,13 @@ namespace sofa
 namespace simulation
 {
 
-
 class Visitor;
 
 /// Abstract class defining custom schedule of action execution through the graph.
-class SOFA_SIMULATION_CORE_API VisitorScheduler : public virtual core::objectmodel::BaseObject
+class SOFA_SIMULATION_CORE_API VisitorScheduler : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_ABSTRACT_CLASS(VisitorScheduler, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(VisitorScheduler, sofa::core::objectmodel::BaseObject);
 
     virtual void executeVisitor(simulation::Node* node, Visitor* act) = 0;
 

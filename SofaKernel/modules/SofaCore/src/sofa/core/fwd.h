@@ -5,6 +5,8 @@
 namespace sofa::core
 {
     class BaseMapping;
+    class ConstraintParams;
+    class ExecParams;
 }
 
 namespace sofa::core::objectmodel
@@ -15,6 +17,8 @@ namespace sofa::core::objectmodel
     class BaseContext;
     class BaseData;
     class BaseLink;
+    class BaseNode;
+    class Event;
 }
 
 namespace sofa::core::behavior
@@ -22,10 +26,15 @@ namespace sofa::core::behavior
     class BaseForceField;
     class BaseMass;
     class BaseMechanicalState;
+    class BaseConstraint;
+    class BaseConstraintSet;
+    class ConstraintSolver;
+    class ConstraintResolution;
 }
 
 namespace sofa::core::topology
 {
+    class Topology;
     class TopologyChange;
 
     /// Output  stream
@@ -41,4 +50,5 @@ namespace sofa::core::topology
 namespace sofa::core::visual
 {
     class VisualParams;
+    class DisplayFlags;
 }

@@ -23,6 +23,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <iostream>
 #include <sstream>

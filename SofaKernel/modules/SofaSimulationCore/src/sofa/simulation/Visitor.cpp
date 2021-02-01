@@ -22,8 +22,6 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/Simulation.h>
-
 
 namespace sofa
 {
