@@ -44,11 +44,12 @@
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
 
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
 #include <sofa/simulation/Simulation.h>
-
 
 namespace sofa::component::mapping
 {
@@ -470,16 +471,23 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::to
 template<class TIn, class TOut>
 const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
 {
+    typedef linearsolver::EigenSparseMatrix<InDataTypes, OutDataTypes> eigen_type;
+    if(internalMatrix==nullptr)
+    {
+        internalMatrix = new eigen_type();
+    }
+
     typedef typename Mapper::MatrixType mat_type;
     const sofa::defaulttype::BaseMatrix* matJ = getJ();
 
     const auto * mat = dynamic_cast<const mat_type*>(matJ);
-    assert( mat );
+    if(mat==nullptr)
+        throw std::runtime_error("Unable to downcast the matrix");
 
-    eigen.copyFrom( *mat );   // woot
+    static_cast<eigen_type*>(internalMatrix)->copyFrom(*mat);
 
     js.resize( 1 );
-    js[0] = &eigen;
+    js[0] = internalMatrix;
     return &js;
 }
 

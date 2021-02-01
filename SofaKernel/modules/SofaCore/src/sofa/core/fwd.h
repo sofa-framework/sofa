@@ -4,7 +4,11 @@
 
 namespace sofa::core
 {
+    class ExecParams;
+    class ConstraintParams;
     class BaseMapping;
+    class CollisionModel;
+    class CollisionElementIterator;
 }
 
 namespace sofa::core::objectmodel
@@ -22,6 +26,9 @@ namespace sofa::core::behavior
     class BaseForceField;
     class BaseMass;
     class BaseMechanicalState;
+
+    template<class T>
+    class MechanicalState;
 }
 
 namespace sofa::core::topology

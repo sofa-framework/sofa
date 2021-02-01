@@ -5,6 +5,7 @@ set(SOFAMESHCOLLISION_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
     ${SOFAMESHCOLLISION_SRC}/config.h.in
+    ${SOFAMESHCOLLISION_SRC}/fwd.h
     ${SOFAMESHCOLLISION_SRC}/initSofaMeshCollision.h
     ${SOFAMESHCOLLISION_SRC}/BarycentricContactMapper.h
     ${SOFAMESHCOLLISION_SRC}/BarycentricContactMapper.inl

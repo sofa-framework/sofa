@@ -21,9 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <SofaUserInteraction/config.h>
-
+#include <sofa/core/fwd.h>
 #include <sofa/core/CollisionModel.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <set>
 
@@ -106,34 +105,6 @@ inline Ray::Ray(RayCollisionModel* model, int index)
 inline Ray::Ray(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<RayCollisionModel>(static_cast<RayCollisionModel*>(i.getCollisionModel()), i.getIndex())
 {
-}
-
-inline const defaulttype::Vector3& Ray::origin() const
-{
-    return model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue()[index];
-}
-
-inline const defaulttype::Vector3& Ray::direction() const
-{
-    return model->direction[index];
-}
-
-inline defaulttype::Vector3::value_type Ray::l() const
-{
-    return model->length[index];
-}
-
-inline void Ray::setOrigin(const defaulttype::Vector3& newOrigin)
-{
-    helper::WriteAccessor<Data<helper::vector<defaulttype::Vector3> > > xData =
-        *model->getMechanicalState()->write(core::VecCoordId::position());
-    xData.wref()[index] = newOrigin;
-
-    helper::WriteAccessor<Data<helper::vector<defaulttype::Vector3> > > xDataFree =
-        *model->getMechanicalState()->write(core::VecCoordId::freePosition());
-    defaulttype::Vec3Types::VecCoord& freePos = xDataFree.wref();
-    freePos.resize(model->getMechanicalState()->getSize());
-    freePos[index] = newOrigin;
 }
 
 inline void Ray::setDirection(const defaulttype::Vector3& newDirection)

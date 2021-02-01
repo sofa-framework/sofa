@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralLoader/config.h>
-
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>

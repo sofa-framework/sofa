@@ -23,7 +23,6 @@
 #include <SofaBaseMechanics/config.h>
 
 #include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MechanicalParams.h>
@@ -90,7 +89,7 @@ public:
     }
 
 protected:
-    typedef linearsolver::EigenSparseMatrix<InDataTypes, OutDataTypes> eigen_type;
+    //typedef linearsolver::EigenSparseMatrix<InDataTypes, OutDataTypes> eigen_type;
 
     BarycentricMapping(core::State<In>* from, core::State<Out>* to,
                        typename Mapper::SPtr m_mapper);
@@ -101,7 +100,7 @@ protected:
     void updateForceMask() override;
 
     /// eigen matrix for use with Compliant plugin
-    eigen_type eigen;
+    defaulttype::BaseMatrix *internalMatrix;
     helper::vector< defaulttype::BaseMatrix* > js;
 
 private:
