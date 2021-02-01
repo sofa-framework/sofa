@@ -453,35 +453,10 @@ public:
         return size();
     }
 
-    std::string getPath(std::size_t index) const
-    {
-        if (index >= m_value.size())
-            return std::string();
-        std::string path;
-        const ValueType& value = m_value[index];
-        if (!TraitsValueType::path(value, path))
-        {
-            DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
-            if (ptr)
-                path = BaseLink::CreateString(ptr, nullptr, m_owner);
-        }
-        return path;
-    }
-
-    Base* getLinkedBase(std::size_t index=0) const override
-    {
-        return getIndex(index);
-    }
-
     [[deprecated("This function has been deprecated in PR#1503 and will be removed soon. Link<> cannot hold BaseData anymore. To make link between Data use DataLink instead.")]]
     BaseData* getLinkedData(std::size_t =0) const override
     {
         return nullptr;
-    }
-
-    std::string getLinkedPath(std::size_t index=0) const override
-    {
-        return getPath(index);
     }
 
     /// @name Serialization API
@@ -615,8 +590,7 @@ protected:
     {
         if (index < m_value.size())
             return TraitsDestPtr::get(TraitsValueType::get(m_value[index]));
-        else
-            return nullptr;
+        return nullptr;
     }
 
     virtual void added(DestPtr ptr, std::size_t index) = 0;
@@ -633,6 +607,46 @@ protected:
     {
         return OwnerType::GetClass();
     }
+
+    /// Returns false on type mismatch
+    bool _doSet_(Base* baseptr, const size_t index) override
+    {
+        assert(index < m_value.size());
+        auto destptr = dynamic_cast<DestType*>(baseptr);
+
+        if(!destptr)
+            return false;
+
+        TraitsValueType::set(m_value[index], destptr);
+        return true;
+    }
+
+    Base* _doGet_(const size_t index=0) const override
+    {
+        return getIndex(index);
+    }
+
+    std::string _doGetLinkedPath_(const std::size_t index=0) const override
+    {
+        if (index >= m_value.size())
+            return std::string();
+        std::string path;
+        const ValueType& value = m_value[index];
+        if (!TraitsValueType::path(value, path))
+        {
+            DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
+            if (ptr)
+                path = BaseLink::CreateString(ptr, nullptr, m_owner);
+        }
+        return path;
+    }
+
+    Base* _doGetOwner_() const override { return m_owner; }
+    void _doSetOwner_(Base* owner) override
+    {
+        m_owner = dynamic_cast<OwnerType*>(owner);
+    }
+
 };
 
 /**
@@ -675,40 +689,6 @@ public:
     void setValidator(ValidatorFn fn)
     {
         m_validator = fn;
-    }
-
-    /// Update pointers in case the pointed-to objects have appeared
-    /// @return false if there are broken links
-    virtual bool updateLinks()
-    {
-        if (!this->m_owner) return false;
-        bool ok = true;
-        std::size_t n = this->getSize();
-        for (std::size_t i = 0; i<n; ++i)
-        {
-            ValueType& value = this->m_value[i];
-            std::string path;
-            if (TraitsValueType::path(value, path))
-            {
-                DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
-                if (!ptr)
-                {
-                    PathResolver::FindLinkDest(this->m_owner, ptr, path, this);
-                    if (ptr)
-                    {
-                        DestPtr v = ptr;
-                        TraitsValueType::set(value,v);
-                        this->updateCounter();
-                        this->added(v, i);
-                    }
-                    else
-                    {
-                        ok = false;
-                    }
-                }
-            }
-        }
-        return ok;
     }
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
@@ -796,11 +776,6 @@ public:
         m_validator = fn;
     }
 
-    std::string getPath() const
-    {
-        return Inherit::getPath(0);
-    }
-
     [[deprecated("2020-01-12: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     DestType* get(const core::ExecParams*) const { return get(); }
     DestType* get() const
@@ -850,33 +825,6 @@ public:
         if (m_owner)
             PathResolver::FindLinkDest(m_owner, ptr, path, this);
         set(ptr, path);
-    }
-
-    /// Update pointers in case the pointed-to objects have appeared
-    /// @return false if there are broken links
-    virtual bool updateLinks()
-    {
-        if (!m_owner) return false;
-        bool ok = true;
-        ValueType& value = m_value.get();
-        std::string path;
-        if (TraitsValueType::path(value, path))
-        {
-            DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
-            if (!ptr)
-            {
-                PathResolver::FindLinkDest(m_owner, ptr, path, this);
-                if (ptr)
-                {
-                    set(ptr, path);
-                }
-                else
-                {
-                    ok = false;
-                }
-            }
-        }
-        return ok;
     }
 
     /// Convenient operators to make a SingleLink appear as a regular pointer

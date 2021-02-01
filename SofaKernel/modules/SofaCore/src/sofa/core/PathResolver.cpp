@@ -48,6 +48,18 @@ Base* PathResolver::FindBaseFromPath(const Base* context, const std::string& pat
     return b;
 }
 
+Base* PathResolver::FindBaseFromClassAndPath(const Base* context, const BaseClass* tclass, const std::string& path)
+{
+    if(context==nullptr)
+        return nullptr;
+
+    if(tclass==nullptr)
+        return nullptr;
+
+    Base* b = const_cast<Base*>(context)->findLinkDestClass(tclass, path, nullptr);
+    return b;
+}
+
 BaseData* PathResolver::FindBaseDataFromPath(const BaseData* datacontext, const std::string& path)
 {
     if(datacontext==nullptr)

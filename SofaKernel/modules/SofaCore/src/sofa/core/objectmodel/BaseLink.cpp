@@ -224,6 +224,44 @@ std::string BaseLink::CreateString(Base* object, BaseData* data, Base* from)
     return CreateString(CreateStringPath(object,from),CreateStringData(data));
 }
 
+std::string BaseLink::getLinkedPath(const std::size_t index) const
+{
+    if(index >= getSize())
+        return "";
+
+    std::string path = _doGetLinkedPath_(index);
+    if(path.empty() && getLinkedBase(index))
+        return CreateString(getLinkedBase(index), getOwner());
+    return path;
+}
+
+/// Update pointers in case the pointed-to objects have appeared
+/// @return false if there are broken links
+bool BaseLink::updateLinks()
+{
+    if (!getOwner())
+        return false;
+
+    bool ok = true;
+    std::size_t n = getSize();
+    for (std::size_t i = 0; i<n; ++i)
+    {
+        Base* ptr;
+        std::string path = getLinkedPath(i);
+        /// Search for path and if any returns the pointer to the proper object.
+        /// Search for path and if any returns the pointer to the proper object.
+        if(!getLinkedBase() && !path.empty())
+        {
+            ptr = PathResolver::FindBaseFromClassAndPath(getOwner(), getDestClass(), path);
+            if(!ptr)
+                ok = false;
+            set(ptr,i);
+        }
+    }
+    return ok;
+}
+
+
 void BaseLink::setLinkedBase(Base* link)
 {
     auto owner = getOwnerBase();
