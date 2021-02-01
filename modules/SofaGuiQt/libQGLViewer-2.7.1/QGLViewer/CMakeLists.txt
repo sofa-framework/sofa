@@ -2,17 +2,14 @@ cmake_minimum_required(VERSION 3.12)
 project(QGLViewer VERSION 2.7.1)
 
 sofa_find_package(OpenGL REQUIRED)
-sofa_find_package(Qt6 COMPONENTS  Widgets OpenGLWidgets )
-if (NOT Qt6_FOUND)
-    sofa_find_package(Qt5 COMPONENTS Core Gui Xml OpenGL Widgets QUIET)
-    if(NOT Qt5Core_FOUND)
-        message(SEND_ERROR "QGLViewer: Qt5 is required and was not found.\n"
-            "Add Qt5 directory to CMAKE_PREFIX_PATH or disable QGLViewer by setting SOFAGUI_QGLVIEWER to OFF.")
-    endif()
-    set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets)
-else()
-    set(QT_TARGETS Qt::Core Qt::Gui Qt::Widgets Qt::OpenGLWidgets )
+sofa_find_package(Qt5 COMPONENTS Core Gui Xml OpenGL Widgets QUIET)
+
+if(NOT Qt5Core_FOUND)
+    message(SEND_ERROR "QGLViewer: Qt5 is required and was not found.\n"
+        "Add Qt5 directory to CMAKE_PREFIX_PATH or disable QGLViewer by setting SOFAGUI_QGLVIEWER to OFF.")
 endif()
+
+set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets)
 
 set(MOC_HEADER_FILES
     camera.h
@@ -115,11 +112,6 @@ sofa_create_package_with_targets(
 
 # Qt deployment
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-    if(Qt6_FOUND)
-        include(windeployqt6)
-        windeployqt6(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/bin bin)
-    else()
-        include(windeployqt)
-        windeployqt(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/bin bin)
-    endif()
+    include(windeployqt)
+    windeployqt(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/bin bin)
 endif()
