@@ -22,18 +22,9 @@
 #pragma once
 
 #include <sofa/defaulttype/config.h>
-namespace sofa::helper
-{
-    template<class T>
-    class Quater;
-}
 
 namespace sofa::defaulttype
 {
     class BaseMatrix;
 
-    typedef sofa::helper::Quater<float> Quatf;
-    typedef sofa::helper::Quater<double> Quatd;
-    typedef sofa::helper::Quater<SReal> Quat;
-    typedef Quat Quaternion;
 }

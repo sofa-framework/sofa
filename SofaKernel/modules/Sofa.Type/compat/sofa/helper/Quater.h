@@ -19,24 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_QUAT_H
-#define SOFA_DEFAULTTYPE_QUAT_H
+#pragma once
 
-#include <sofa/helper/Quater.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Quat.h>
+#include <sofa/type/Quat.h>
 
-namespace sofa
+SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Quat.h")
+
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
+
+namespace sofa::helper
 {
+    template <typename real>
+    using Quater = sofa::type::Quat<real>;
 
-namespace defaulttype
-{
-typedef helper::Quater<double> Quatd; ///< alias
-typedef helper::Quater<float>  Quatf; ///< alias
-typedef helper::Quater<SReal>  Quat; ///< alias
-typedef Quat Quaternion; ///< alias
-} // namespace defaulttype
+} // namespace sofa::helper
 
-} // namespace sofa
-
-#endif
-
+//needs to have a way to know if Quater has been declared
+//to avoid a redefinition warning with defaulttype/fwd.h
+#define SOFA_DEFAULTTYPE_QUATER_DEFINED

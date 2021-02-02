@@ -19,24 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_QUATER_CPP
-#include "Quater.inl"
+#define SOFA_TYPE_QUAT_CPP
 
-namespace sofa
-{
+#include <sofa/type/Quat.inl>
 
-namespace helper
+namespace sofa::type
 {
 
 // instanciate the classes
-template class SOFA_HELPER_API Quater<double>;
-template class SOFA_HELPER_API Quater<float>;
+template class SOFA_TYPE_API Quat<double>;
+template class SOFA_TYPE_API Quat<float>;
 
-// instanciate the friend methods
-//template std::ostream& operator<<(std::ostream& out, Quater<float> Q);
-//template std::ostream& operator<<(std::ostream& out, Quater<double> Q);
-
-} // namespace helper
-
-} // namespace sofa
-
+} // namespace sofa::type

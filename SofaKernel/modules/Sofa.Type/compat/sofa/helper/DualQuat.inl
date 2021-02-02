@@ -19,19 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_QUAT_H
-#define SOFA_DEFAULTTYPE_QUAT_H
+#pragma once
 
-#include <sofa/helper/Quater.h>
+#include <sofa/type/DualQuat.inl>
 
-namespace sofa
-{
-
-namespace defaulttype
-{
-
-} // namespace defaulttype
-
-} // namespace sofa
-
-#endif
+SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/DualQuat.inl")
