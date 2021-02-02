@@ -73,7 +73,7 @@ set(SOURCE_FILES
 find_package(SofaFramework REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)
