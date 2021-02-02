@@ -8,6 +8,7 @@ set(SOFAGUICOMMON_HAVE_SOFA.GL @SOFAGUICOMMON_HAVE_SOFA.GL@)
 find_package(SofaBase QUIET REQUIRED)
 find_package(SofaUserInteraction QUIET REQUIRED)
 find_package(SofaGraphComponent QUIET REQUIRED)
+find_package(SofaSimulationCommon QUIET REQUIRED)
 
 if(SOFAGUICOMMON_HAVE_SOFA.GL)
     find_package(Sofa.GL QUIET REQUIRED)

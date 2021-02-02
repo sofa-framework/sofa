@@ -4,7 +4,6 @@
 #include "BulletRigidContactMapper.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <iostream>
 

@@ -2,7 +2,9 @@
 
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
-find_package(SofaMiscMapping REQUIRED)
+find_package(SofaMiscMapping QUIET REQUIRED)
+find_package(SofaSimulationCommon QUIET REQUIRED)
+
 #find_package(Boost QUIET COMPONENTS thread)
 
 if(NOT TARGET MultiThreading)

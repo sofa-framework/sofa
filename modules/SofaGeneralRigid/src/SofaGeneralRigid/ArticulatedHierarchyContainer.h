@@ -24,12 +24,11 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/simulation/Node.h>
 #include <SofaGeneralRigid/bvh/BVHLoader.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-
+#include <sofa/simulation/fwd.h>
 namespace sofa::component::container
 {
 

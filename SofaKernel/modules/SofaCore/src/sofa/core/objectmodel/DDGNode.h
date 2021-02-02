@@ -21,13 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/stable_vector.h>
 #include <sofa/core/config.h>
-
-namespace sofa::core
-{
-    class ExecParams;
-}
+#include <sofa/core/fwd.h>
+#include <sofa/helper/stable_vector.h>
 
 namespace sofa::core::objectmodel
 {

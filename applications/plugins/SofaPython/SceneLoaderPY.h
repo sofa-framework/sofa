@@ -24,7 +24,7 @@
 
 #include <SofaPython/config.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
-
+#include <sofa/simulation/fwd.h>
 
 #include <sofa/simulation/Visitor.h>
 #include <string>
@@ -50,11 +50,11 @@ public:
     bool canWriteFileExtension(const char *extension) override;
 
     /// load the file
-    virtual Node::SPtr doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs) override;
+    virtual NodeSPtr doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs) override;
 
     // max: added out parameter to get the root *before* createScene is called
-    void loadSceneWithArguments(const std::string& filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = nullptr);
-    virtual void doLoadSceneWithArguments(const std::string& filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = nullptr);
+    void loadSceneWithArguments(const std::string& filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), NodeSPtr* root_out = nullptr);
+    virtual void doLoadSceneWithArguments(const std::string& filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), NodeSPtr* root_out = nullptr);
     bool loadTestWithArguments(const std::string& filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
 
     /// write the file
