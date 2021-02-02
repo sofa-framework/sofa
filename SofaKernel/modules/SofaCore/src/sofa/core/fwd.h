@@ -4,7 +4,9 @@
 
 namespace sofa::core
 {
-class BaseMapping;
+    class BaseMapping;
+    class ConstraintParams;
+    class ExecParams;
 }
 
 namespace sofa::core::objectmodel
@@ -15,6 +17,8 @@ class BaseNode;
 class BaseContext;
 class BaseData;
 class BaseLink;
+class BaseNode;
+class Event;
 
 class Tag;
 SOFA_CORE_API std::ostream& operator<<(std::ostream& o, const Tag& t);
@@ -26,6 +30,10 @@ namespace sofa::core::behavior
 class BaseForceField;
 class BaseMass;
 class BaseMechanicalState;
+class BaseConstraint;
+class BaseConstraintSet;
+class ConstraintSolver;
+class ConstraintResolution;
 }
 
 namespace sofa::core::topology
@@ -34,6 +42,9 @@ class TopologyChange;
 SOFA_CORE_API std::ostream& operator<< ( std::ostream& out, const sofa::core::topology::TopologyChange* t );
 SOFA_CORE_API std::istream& operator>> ( std::istream& in, sofa::core::topology::TopologyChange*& t );
 SOFA_CORE_API std::istream& operator>> ( std::istream& in, const sofa::core::topology::TopologyChange*& );
+
+class Topology;
+class TopologyChange;
 }
 
 namespace sofa::core::visual

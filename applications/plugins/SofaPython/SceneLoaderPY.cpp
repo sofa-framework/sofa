@@ -26,9 +26,10 @@
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/ArgumentParser.h>
+#include <sofa/helper/system/SetDirectory.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
-
+#include <sofa/simulation/Node.h>
 #include <sstream>
 #include <fstream>
 

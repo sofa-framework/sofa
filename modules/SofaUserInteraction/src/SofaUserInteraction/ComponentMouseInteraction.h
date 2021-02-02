@@ -22,12 +22,11 @@
 #pragma once
 #include <SofaUserInteraction/config.h>
 
-#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <SofaUserInteraction/MouseInteractor.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <sofa/core/Mapping.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 
 namespace sofa::component::collision
 {
@@ -60,7 +59,7 @@ public:
     }
 
     //Components
-    simulation::Node::SPtr nodeRayPick;
+    simulation::NodeSPtr nodeRayPick;
     sofa::core::behavior::BaseMechanicalState::SPtr mouseInSofa;
     sofa::component::collision::BaseMouseInteractor::SPtr mouseInteractor;
 };

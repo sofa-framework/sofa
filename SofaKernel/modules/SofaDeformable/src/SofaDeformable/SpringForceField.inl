@@ -24,7 +24,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/io/XspLoader.h>
 #include <cassert>
 #include <iostream>
