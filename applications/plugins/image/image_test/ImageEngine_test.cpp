@@ -88,7 +88,7 @@ struct ImageEngine_test : public Sofa_test<>
         // Check if pointers are equal
         if(&data1.getValue()!= &data2.getValue())
         {
-            ADD_FAILURE() << "Data Link duplicates the datas ! " << std::endl;
+            ADD_FAILURE() << "Data Link shouldn't duplicates the datas !";
         }
 
         // Change value of data1

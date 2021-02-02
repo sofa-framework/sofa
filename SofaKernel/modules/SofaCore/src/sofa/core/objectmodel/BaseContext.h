@@ -22,6 +22,8 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASECONTEXT_H
 #define SOFA_CORE_OBJECTMODEL_BASECONTEXT_H
 
+#include <sofa/core/fwd.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/ClassInfo.h>
 
@@ -30,20 +32,11 @@
 namespace sofa
 {
 
-namespace simulation
-{
-class Visitor;
-}
-
 namespace core
 {
 
-// forward declaration of classes accessible from the context
-
 namespace objectmodel
 {
-class BaseObject;
-class Event;
 
 /**
  *  \brief Base class for Context classes, storing shared variables and parameters.

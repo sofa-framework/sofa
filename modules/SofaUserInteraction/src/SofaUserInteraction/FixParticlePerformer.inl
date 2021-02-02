@@ -24,8 +24,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 
-#include <sofa/simulation/Simulation.h>
-
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/Node.h>

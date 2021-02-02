@@ -46,7 +46,7 @@
 #include <sofa/simulation/init.h>
 #include <sofa/simulation/DefaultAnimationLoop.h>
 #include <sofa/simulation/DefaultVisualManagerLoop.h>
-
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/init.h>

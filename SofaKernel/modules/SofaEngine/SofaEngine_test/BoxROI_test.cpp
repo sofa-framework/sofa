@@ -45,6 +45,7 @@ using sofa::component::initSofaBase;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation;
 using sofa::simulation::graph::DAGSimulation;
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 using sofa::simulation::setSimulation;
 using sofa::core::objectmodel::BaseObject;

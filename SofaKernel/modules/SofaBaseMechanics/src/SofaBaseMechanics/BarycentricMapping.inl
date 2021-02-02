@@ -47,8 +47,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
-#include <sofa/simulation/Simulation.h>
-
 
 namespace sofa::component::mapping
 {

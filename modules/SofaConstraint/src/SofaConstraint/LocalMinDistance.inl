@@ -31,12 +31,6 @@
 #include <iostream>
 #include <algorithm>
 
-#include <sofa/simulation/Node.h>
-
-#include <iostream>
-#include <algorithm>
-
-
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 
 namespace sofa::component::collision

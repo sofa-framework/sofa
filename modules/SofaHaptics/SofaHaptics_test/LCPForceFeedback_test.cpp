@@ -28,7 +28,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaHaptics/LCPForceFeedback.h>
 #include <thread>
-
+#include <sofa/simulation/Node.h>
 
 namespace sofa 
 {

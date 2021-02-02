@@ -23,7 +23,6 @@
 
 #include <SofaMiscForceField/LennardJonesForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Simulation.h>
 #include <cmath>
 #include <iostream>
 

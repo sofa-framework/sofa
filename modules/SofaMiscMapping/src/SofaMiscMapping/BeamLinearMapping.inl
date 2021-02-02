@@ -25,9 +25,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
-
-#include <sofa/simulation/Simulation.h>
-
 #include <string>
 
 namespace sofa::component::mapping
