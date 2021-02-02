@@ -24,7 +24,6 @@
 
 #include <sofa/gui/BaseGUI.h>
 
-#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>

@@ -26,8 +26,6 @@
 #include <cassert>
 #include <iostream>
 
-#include <sofa/simulation/Simulation.h>
-
 namespace sofa::component::interactionforcefield
 {
 

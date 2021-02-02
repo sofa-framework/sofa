@@ -32,7 +32,6 @@
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/AnimateEndEvent.h>

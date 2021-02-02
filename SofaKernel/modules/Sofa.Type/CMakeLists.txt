@@ -37,7 +37,9 @@ set(COMPAT_HEADER_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
+target_include_directories(${PROJECT_NAME} PUBLIC
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
+                           $<INSTALL_INTERFACE:include/SofaFramework/compat>)
 source_group("compat" FILES ${COMPAT_HEADER_FILES})
 
 sofa_add_targets_to_package(

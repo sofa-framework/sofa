@@ -142,7 +142,8 @@ public:
     [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
     virtual BaseData* getLinkedData(std::size_t index=0) const = 0;
 
-
+    // Remove all links
+    void clear() { _doClear_(); }
 
     std::string getLinkedPath(const std::size_t index=0) const;
 
@@ -152,7 +153,7 @@ public:
     /// @{
 
     /// Read the command line
-    virtual bool read( const std::string& str ) = 0;
+    bool read( const std::string& str );
 
     /// Update pointers in case the pointed-to objects have appeared
     /// @return false if there are broken links
@@ -189,6 +190,9 @@ public:
     Base* getOwner() const { return _doGetOwner_(); }
     void setOwner(Base* owner){ return _doSetOwner_(owner); }
 
+    /// Add a new target to the link.
+    bool add(Base* baseptr, const std::string& path) { return _doAdd_(baseptr, path); }
+
     /// Change the link's target at the provided index.
     bool set(Base* baseptr, size_t index=0) { return _doSet_(baseptr, index); }
 
@@ -200,6 +204,8 @@ protected:
     virtual Base* _doGetOwner_() const = 0 ;
     virtual void _doSetOwner_(Base* owner) = 0;
     virtual Base* _doGet_(const size_t=0) const = 0;
+    virtual bool _doAdd_(Base* target, const std::string&) = 0;
+    virtual void _doClear_() = 0;
     virtual std::string _doGetLinkedPath_(const size_t=0) const = 0;
 
     unsigned int m_flags;

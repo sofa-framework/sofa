@@ -224,6 +224,65 @@ std::string BaseLink::CreateString(Base* object, BaseData* data, Base* from)
     return CreateString(CreateStringPath(object,from),CreateStringData(data));
 }
 
+/// Returns false if:
+///     -  one or multiple string entries fails to be read. In this case the valid
+///        link address are initialized.
+/// Returns true if:
+///     - string is empty
+///     - all the linkpath are leading to a valid object or not available there.
+bool BaseLink::read( const std::string& str )
+{
+    if (str.empty())
+        return true;
+
+    std::istringstream istr(str.c_str());
+    std::string path;
+
+    /// Find the target of each path, and stores each targets in
+    /// a temporary vector of (pointer, path) pairs.
+    /// A boolean is used to indicates if one of the target has been
+    /// found but is of invalid type.
+    bool ok = true;
+    std::vector< std::pair<Base*, std::string> > entries;
+
+    /// Cut the path using space as a separator. THis has several
+    /// questionnable consequence among which space are not allowed in part of a path (so no name containing space)
+    /// tokenizing the path using '@' as a separator would solve  the issue.
+    auto owner = getOwner();
+    while (istr >> path)
+    {
+        Base* ptr = PathResolver::FindBaseFromClassAndPath(owner, getDestClass(), path);
+        /// Check if the path is pointing to any object of Base type.
+        if (owner && !ptr)
+        {
+            /// If not, this is not an error, as the destination can be added later in the graph
+            /// instead, we will check for failed links after init is completed
+        }
+        else if (path[0] != '@')
+        {
+            ok = false;
+        }
+        /// We found either a valid Base object or none.
+        entries.push_back({ptr, path});
+    }
+
+    /// Check for the case where multiple link has been read while we are a single multilink.
+    /// In that case we return false to indicate the parsing error and keep only one of the link.
+    if(entries.size() > 1 && !getFlag(BaseLink::FLAG_MULTILINK))
+    {
+        ok = false;
+        entries.resize(1);
+    }
+
+    /// Add the detected objects that are not already present to the container of this Link
+    clear();
+    for (auto& [base, path] : entries)
+    {
+        ok = add(base, path)?ok:false;
+    }
+    return ok;
+}
+
 std::string BaseLink::getLinkedPath(const std::size_t index) const
 {
     if(index >= getSize())

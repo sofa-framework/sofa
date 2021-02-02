@@ -27,13 +27,12 @@
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/fwd.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 
 #include <sofa/simulation/CollisionAnimationLoop.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/Node.h>
-
+#include <sofa/simulation/fwd.h>
 
 #include <vector>
 
