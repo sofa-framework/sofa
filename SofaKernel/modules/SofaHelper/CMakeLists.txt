@@ -38,8 +38,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/cast.h
     ${SRC_ROOT}/ColorMap.h
     ${SRC_ROOT}/ComponentChange.h
-    ${SRC_ROOT}/DualQuat.h
-    ${SRC_ROOT}/DualQuat.inl
     ${SRC_ROOT}/Factory.h
     ${SRC_ROOT}/Factory.inl
     ${SRC_ROOT}/TypeInfo.h
@@ -59,8 +57,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/StateMask.h
     ${SRC_ROOT}/Polynomial_LD.h
     ${SRC_ROOT}/Polynomial_LD.inl
-    ${SRC_ROOT}/Quater.h
-    ${SRC_ROOT}/Quater.inl
     ${SRC_ROOT}/RandomGenerator.h
     ${SRC_ROOT}/SVector.h
     ${SRC_ROOT}/SimpleTimer.h
@@ -157,7 +153,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/BackTrace.cpp
     ${SRC_ROOT}/ColorMap.cpp
     ${SRC_ROOT}/ComponentChange.cpp
-    ${SRC_ROOT}/DualQuat.cpp
     ${SRC_ROOT}/Factory.cpp
     ${SRC_ROOT}/GenerateRigid.cpp
     ${SRC_ROOT}/LCPcalc.cpp
@@ -167,7 +162,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/StateMask.cpp
     ${SRC_ROOT}/SVector.cpp
     ${SRC_ROOT}/Polynomial_LD.cpp
-    ${SRC_ROOT}/Quater.cpp
     ${SRC_ROOT}/RandomGenerator.cpp
     ${SRC_ROOT}/StringUtils.cpp
     ${SRC_ROOT}/TagFactory.cpp

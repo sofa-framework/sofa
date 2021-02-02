@@ -12,8 +12,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/Frame.h
     ${SRC_ROOT}/MapMapSparseMatrix.h
     ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h
-    ${SRC_ROOT}/Quat.h
-    ${SRC_ROOT}/Quat.inl
     ${SRC_ROOT}/RGBAColor.h
     ${SRC_ROOT}/RigidTypes.h
     ${SRC_ROOT}/RigidVec6Types.h

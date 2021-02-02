@@ -12,6 +12,10 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/Mat_solve_Cholesky.h
     ${SOFATYPESRC_ROOT}/Mat_solve_LU.h
     ${SOFATYPESRC_ROOT}/Mat_solve_SVD.h
+    ${SOFATYPESRC_ROOT}/Quat.h
+    ${SOFATYPESRC_ROOT}/Quat.inl
+    ${SOFATYPESRC_ROOT}/DualQuat.h
+    ${SOFATYPESRC_ROOT}/DualQuat.inl
     ${SOFATYPESRC_ROOT}/stdtype/fixed_array.h
     ${SOFATYPESRC_ROOT}/stdtype/fixed_array_algorithms.h
 )
@@ -19,6 +23,8 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SOFATYPESRC_ROOT}/init.cpp
     ${SOFATYPESRC_ROOT}/Vec.cpp
+    ${SOFATYPESRC_ROOT}/Quat.cpp
+    ${SOFATYPESRC_ROOT}/DualQuat.cpp
     ${SOFATYPESRC_ROOT}/stdtype/fixed_array.cpp
 )
 
@@ -28,11 +34,17 @@ set(COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/defaulttype/Vec.h
     ${COMPATSRC_ROOT}/sofa/defaulttype/Mat.h
     ${COMPATSRC_ROOT}/sofa/defaulttype/MatSym.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.inl
     ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_Cholesky.h
     ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_LU.h
     ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_SVD.h
     ${COMPATSRC_ROOT}/sofa/helper/fixed_array.h
     ${COMPATSRC_ROOT}/sofa/helper/fixed_array_algorithms.h
+    ${COMPATSRC_ROOT}/sofa/helper/Quater.h
+    ${COMPATSRC_ROOT}/sofa/helper/Quater.inl
+    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.h
+    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.inl
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
