@@ -276,6 +276,8 @@ public:
             bool copyValueFrom(const BaseData* data){ return _doCopyValueFrom_(data); }
             bool copyValueFrom(const Data<T>* data);
 
+    bool isCopyOnWrite(){ return sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite; }
+
 protected:
     typedef DataContentValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
 
@@ -284,6 +286,7 @@ protected:
 
     bool _isExactSameDataType_(const BaseData* parent) override;
     bool _doCopyValueFrom_(const BaseData* parent) override;
+    bool _doSetValueFromLink_(const BaseData* parent) override;
     const void* _doGetValueVoidPtr_() const override { return &getValue(); }
     void* _doBeginEditVoidPtr_() override  { return beginEdit(); }
     void _doEndEditVoidPtr_() override  { endEdit(); }
@@ -361,6 +364,21 @@ bool Data<T>::_doCopyValueFrom_(const BaseData* data)
 
     return copyValueFrom(typedata);
 }
+
+template <class T>
+bool Data<T>::_doSetValueFromLink_(const BaseData* data)
+{
+    const Data<T>* typedata = dynamic_cast<const Data<T>*>(data);
+    if(!typedata)
+        return false;
+
+    m_value = typedata->m_value;
+    m_counter++;
+    m_isSet = true;
+    BaseData::setDirtyOutputs();
+    return true;
+}
+
 
 template <class T>
 bool Data<T>::_isExactSameDataType_(const BaseData* parent)

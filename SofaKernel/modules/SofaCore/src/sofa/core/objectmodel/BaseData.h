@@ -286,7 +286,7 @@ public:
     /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
     /// @return true if the copy was successful.
     bool copyValueFrom(const BaseData* data);
-
+    bool updateValueFromLink(const BaseData* data);
 protected:
     /// @}
 
@@ -296,6 +296,7 @@ protected:
     /// Try to update this Data from the value of its parent in "fast mode";
     bool genericCopyValueFrom(const BaseData* parent);
     virtual bool _doCopyValueFrom_(const BaseData* parent) = 0;
+    virtual bool _doSetValueFromLink_(const BaseData* parent) = 0;
 
     virtual bool _isExactSameDataType_(const BaseData* parent) = 0;
     virtual const void* _doGetValueVoidPtr_() const = 0;
