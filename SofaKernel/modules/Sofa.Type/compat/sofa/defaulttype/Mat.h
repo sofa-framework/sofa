@@ -29,10 +29,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/logging/Messaging.h>
 
-SOFA_PRAGMA_WARNING( \
-    This header is deprecated and will be removed at SOFA v21.12.      \
-    To fix this warning you must include either sofa/defaulttype/Data_Mat.h if using Vec with Data<> \
-    or sofa/type/Mat.h if you do not intend to use Data<> or DataTypeInfo. )
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Mat.h")
 
 namespace sofa::defaulttype
 {
