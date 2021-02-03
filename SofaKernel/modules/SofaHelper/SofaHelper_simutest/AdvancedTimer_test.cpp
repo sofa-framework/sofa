@@ -99,8 +99,8 @@ TEST_F(AdvancedTimerTest, End)
 	using namespace sofa::helper;
 	initScene();
 
-	ASSERT_TRUE(AdvancedTimer::end("validId", root.get()) == std::string(""));
-	ASSERT_TRUE(AdvancedTimer::end("", root.get())  == std::string(""));
+	ASSERT_TRUE(AdvancedTimer::end("validId", root->getTime(), root->getDt()) == std::string(""));
+	ASSERT_TRUE(AdvancedTimer::end("", root->getTime(), root->getDt())  == std::string(""));
 	EXPECT_NO_FATAL_FAILURE(AdvancedTimer::end("validId", nullptr));
 }
 
