@@ -146,7 +146,6 @@ void GLBackend::drawBackgroundImage(const int screenWidth, const int screenHeigh
     glTexCoord2d(0.0,            coordHeight*2.0); glVertex3d( -w*coordWidth,  h*coordHeight, 0.0 );
     glEnd();
 
-
     glBindTexture(GL_TEXTURE_2D, 0);
 
     glMatrixMode(GL_PROJECTION);
