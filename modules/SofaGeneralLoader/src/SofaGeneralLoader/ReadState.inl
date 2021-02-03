@@ -230,6 +230,11 @@ void ReadState::processReadState()
     std::vector<std::string> validLines;
     if (!readNext(time, validLines)) return;
     bool updated = false;
+
+    const double scale = d_scalePos.getValue();
+    const Vector3 rotation = d_rotation.getValue();
+    const Vector3 translation = d_translation.getValue();
+
     for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
     {
         std::istringstream str(*it);
@@ -237,9 +242,6 @@ void ReadState::processReadState()
         str >> cmd;
         if (cmd == "X=")
         {
-            double scale = d_scalePos.getValue();
-            Vector3 rotation = d_rotation.getValue();
-            Vector3 translation = d_translation.getValue();
             mmodel->readVec(core::VecId::position(), str);
             mmodel->applyScale(scale,scale,scale);
             mmodel->applyRotation(rotation[0],rotation[1],rotation[2]);
