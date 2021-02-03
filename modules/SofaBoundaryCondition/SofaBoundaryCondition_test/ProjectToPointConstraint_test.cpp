@@ -224,7 +224,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(ProjectToPointConstraint_test, DataTypes);
+TYPED_TEST_SUITE(ProjectToPointConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( ProjectToPointConstraint_test , oneConstrainedParticle )
 {

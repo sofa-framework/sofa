@@ -5,6 +5,7 @@ set(SRC_ROOT "src/sofa/simulation")
 
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/simulationcore.h
     ${SRC_ROOT}/AnimateBeginEvent.h
     ${SRC_ROOT}/AnimateEndEvent.h
@@ -131,6 +132,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/WriteStateVisitor.cpp
     ${SRC_ROOT}/XMLPrintVisitor.cpp
     ${SRC_ROOT}/init.cpp
+    ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/MechanicalComputeEnergyVisitor.cpp
     ${SRC_ROOT}/BaseSimulationExporter.cpp
     ${SRC_ROOT}/TaskScheduler.cpp

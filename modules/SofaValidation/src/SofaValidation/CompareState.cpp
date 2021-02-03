@@ -28,6 +28,7 @@
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/simulation/Node.h>
 
 #include <sstream>
 #include <algorithm>

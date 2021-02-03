@@ -221,7 +221,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(CentralDifferenceExplicitSolverDynamic_test, DataTypes);
+TYPED_TEST_SUITE(CentralDifferenceExplicitSolverDynamic_test, DataTypes);
 
 // Test case: h=0.01 k=100 m =10 rm=0.1 rk=0.1
 TYPED_TEST( CentralDifferenceExplicitSolverDynamic_test , centralDifferenceExplicitSolverDynamicTest_medium_dt_without_damping)

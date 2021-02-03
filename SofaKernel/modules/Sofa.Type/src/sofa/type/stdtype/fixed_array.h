@@ -45,10 +45,9 @@
 
 // FF added operator <
 // JA added constructors from tuples
-#ifndef SOFA_HELPER_FIXED_ARRAY_H
-#define SOFA_HELPER_FIXED_ARRAY_H
+#pragma once
 
-#include <sofa/helper/config.h>
+#include <sofa/type/config.h>
 
 #include <cstddef>
 #include <stdexcept>
@@ -57,12 +56,10 @@
 #include <cmath>
 #include <cassert>
 #include <iostream>
+#include <type_traits>
 
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::type::stdtype
 {
 
 template<class T, sofa::Size N>
@@ -494,27 +491,23 @@ inline fixed_array<T, 10> make_array(const T& v0, const T& v1, const T& v2, cons
 }
 
 #ifndef FIXED_ARRAY_CPP
-extern template class SOFA_HELPER_API fixed_array<float, 2>;
-extern template class SOFA_HELPER_API fixed_array<double, 2>;
+extern template class SOFA_TYPE_API fixed_array<float, 2>;
+extern template class SOFA_TYPE_API fixed_array<double, 2>;
 
-extern template class SOFA_HELPER_API fixed_array<float, 3>;
-extern template class SOFA_HELPER_API fixed_array<double, 3>;
+extern template class SOFA_TYPE_API fixed_array<float, 3>;
+extern template class SOFA_TYPE_API fixed_array<double, 3>;
 
-extern template class SOFA_HELPER_API fixed_array<float, 4>;
-extern template class SOFA_HELPER_API fixed_array<double, 4>;
+extern template class SOFA_TYPE_API fixed_array<float, 4>;
+extern template class SOFA_TYPE_API fixed_array<double, 4>;
 
-extern template class SOFA_HELPER_API fixed_array<float, 5>;
-extern template class SOFA_HELPER_API fixed_array<double, 5>;
+extern template class SOFA_TYPE_API fixed_array<float, 5>;
+extern template class SOFA_TYPE_API fixed_array<double, 5>;
 
-extern template class SOFA_HELPER_API fixed_array<float, 6>;
-extern template class SOFA_HELPER_API fixed_array<double, 6>;
+extern template class SOFA_TYPE_API fixed_array<float, 6>;
+extern template class SOFA_TYPE_API fixed_array<double, 6>;
 
-extern template class SOFA_HELPER_API fixed_array<float, 7>;
-extern template class SOFA_HELPER_API fixed_array<double, 7>;
+extern template class SOFA_TYPE_API fixed_array<float, 7>;
+extern template class SOFA_TYPE_API fixed_array<double, 7>;
 #endif //
 
-} // namespace helper
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::type::stdtype

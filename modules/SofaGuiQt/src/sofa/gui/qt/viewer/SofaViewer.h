@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_VIEWER_H
-#define SOFA_VIEWER_H
-
+#pragma once
 #include <sofa/gui/BaseViewer.h>
 #include <sofa/gui/qt/PickHandlerCallBacks.h>
 #include <sofa/gui/qt/config.h>
@@ -37,18 +35,7 @@
 #include <QTabWidget>
 #include <QTimer>
 
-//#include <qcursor.h>
-
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
-{
-
-namespace viewer
+namespace sofa::gui::qt::viewer
 {
 
 enum
@@ -112,9 +99,4 @@ signals:
     virtual void resizeH(int) = 0;
 };
 
-}
-}
-}
-}
-
-#endif
+} // namespace sofa::gui::qt::viewer

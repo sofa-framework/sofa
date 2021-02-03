@@ -77,7 +77,7 @@ component::mapping::DistanceMapping<defaulttype::Rigid3Types,defaulttype::Vec1Ty
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE( DistanceMappingTest, DataTypes );
+TYPED_TEST_SUITE( DistanceMappingTest, DataTypes );
 
 // test case
 TYPED_TEST( DistanceMappingTest , test )

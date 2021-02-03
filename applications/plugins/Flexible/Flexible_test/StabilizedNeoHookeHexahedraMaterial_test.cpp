@@ -268,7 +268,7 @@ typedef testing::Types<
 
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(StabilizedNeoHookeHexahedraMaterial_test, DataTypes);
+TYPED_TEST_SUITE(StabilizedNeoHookeHexahedraMaterial_test, DataTypes);
 
 // Test NeoHooke with principal stretches mapping
 TYPED_TEST( StabilizedNeoHookeHexahedraMaterial_test , test_StabilizedNeoHooke_Hexahedra_InTraction )

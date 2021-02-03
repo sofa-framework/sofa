@@ -152,7 +152,7 @@ namespace sofa {
     > DataTypes; // the types to instantiate.
 
     // Test suite for all the instantiations
-    TYPED_TEST_CASE(AffineLinearDeformationMappings_test, DataTypes);
+    TYPED_TEST_SUITE(AffineLinearDeformationMappings_test, DataTypes);
 
     // test case: polarcorotationalStrainMapping 
     TYPED_TEST( AffineLinearDeformationMappings_test , AffineStrainDeformationPatchTest)

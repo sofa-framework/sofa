@@ -24,7 +24,8 @@
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
-
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/Link.h>
 
 namespace sofa
 {

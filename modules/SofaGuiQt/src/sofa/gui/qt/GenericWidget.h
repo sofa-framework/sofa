@@ -2,11 +2,7 @@
 
 #include <sofa/gui/qt/DataWidget.h>
 
-namespace sofa {
-
-namespace gui {
-
-namespace qt {
+namespace sofa::gui::qt {
 
 
 template<class DATA,class WIDGET>

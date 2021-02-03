@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_PLUGINMANAGER_H
-#define SOFA_PLUGINMANAGER_H
-
+#pragma once
 #include <ui_PluginManager.h>
 #include <sofa/gui/qt/config.h>
 #include <QTreeWidgetItem>
@@ -29,11 +27,7 @@
 #include <set>
 
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 class SOFA_SOFAGUIQT_API SofaPluginManager: public QDialog, public Ui_PluginManager
@@ -63,8 +57,4 @@ private:
 };
 
 
-}
-}
-}
-
-#endif
+} // namespace sofa::gui::qt

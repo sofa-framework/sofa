@@ -22,13 +22,7 @@
 
 #include <sofa/gui/qt/viewer/VisualModelPolicy.h>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
-{
-namespace viewer
+namespace sofa::gui::qt::viewer
 {
 
 VisualModelPolicy::VisualModelPolicy(core::visual::VisualParams* vparams)
@@ -41,8 +35,4 @@ VisualModelPolicy::~VisualModelPolicy()
 
 }
 
-} // namespace viewer
-} // namespace qt
-} // namespace gui
-} // namespace sofa
-
+} // namespace sofa::gui::qt::viewer
