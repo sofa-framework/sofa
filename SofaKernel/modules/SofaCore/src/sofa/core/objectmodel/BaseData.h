@@ -287,22 +287,6 @@ public:
     /// @return true if the copy was successful.
     bool copyValueFrom(const BaseData* data);
     bool updateValueFromLink(const BaseData* data);
-protected:
-    /// @}
-
-    /// Delegates from DDGNode.
-    void doDelInput(DDGNode* n) override;
-
-    /// Try to update this Data from the value of its parent in "fast mode";
-    bool genericCopyValueFrom(const BaseData* parent);
-    virtual bool _doCopyValueFrom_(const BaseData* parent) = 0;
-    virtual bool _doSetValueFromLink_(const BaseData* parent) = 0;
-
-    virtual bool _isExactSameDataType_(const BaseData* parent) = 0;
-    virtual const void* _doGetValueVoidPtr_() const = 0;
-    virtual void* _doBeginEditVoidPtr_() = 0;
-    virtual void _doEndEditVoidPtr_() = 0;
-    virtual void _doOnUpdate_() {};
 
     /// Help message
     std::string help {""};
@@ -340,6 +324,23 @@ public:
         else
             return decodeTypeName(typeid(T));
     }
+
+protected:
+    /// Try to update this Data from the value of its parent in "fast mode";
+    bool genericCopyValueFrom(const BaseData* parent);
+
+private:
+    /// Delegates from DDGNode.
+    void doDelInput(DDGNode* n) override;
+
+    virtual bool _doCopyValueFrom_(const BaseData* parent) = 0;
+    virtual bool _doSetValueFromLink_(const BaseData* parent) = 0;
+
+    virtual bool _isExactSameDataType_(const BaseData* parent) = 0;
+    virtual const void* _doGetValueVoidPtr_() const = 0;
+    virtual void* _doBeginEditVoidPtr_() = 0;
+    virtual void _doEndEditVoidPtr_() = 0;
+    virtual void _doOnUpdate_() {};
 };
 
 /** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container

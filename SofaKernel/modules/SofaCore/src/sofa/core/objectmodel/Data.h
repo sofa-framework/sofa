@@ -271,10 +271,10 @@ public:
             void operator =( const T& value )
     {
             this->setValue(value);
-}
+    }
 
-            bool copyValueFrom(const BaseData* data){ return _doCopyValueFrom_(data); }
-            bool copyValueFrom(const Data<T>* data);
+    bool copyValueFrom(const BaseData* data){ return _doCopyValueFrom_(data); }
+    bool copyValueFrom(const Data<T>* data);
 
     bool isCopyOnWrite(){ return sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite; }
 
@@ -284,16 +284,16 @@ protected:
     /// Value
     ValueType m_value;
 
+private:
+    Data(const Data& );
+    Data& operator=(const Data& );
+
     bool _isExactSameDataType_(const BaseData* parent) override;
     bool _doCopyValueFrom_(const BaseData* parent) override;
     bool _doSetValueFromLink_(const BaseData* parent) override;
     const void* _doGetValueVoidPtr_() const override { return &getValue(); }
     void* _doBeginEditVoidPtr_() override  { return beginEdit(); }
     void _doEndEditVoidPtr_() override  { endEdit(); }
-
-private:
-    Data(const Data& );
-    Data& operator=(const Data& );
 };
 
 class EmptyData : public Data<void*> {};
