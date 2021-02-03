@@ -232,8 +232,8 @@ void ReadState::processReadState()
     bool updated = false;
 
     const double scale = d_scalePos.getValue();
-    const Vector3 rotation = d_rotation.getValue();
-    const Vector3 translation = d_translation.getValue();
+    const Vector3& rotation = d_rotation.getValue();
+    const Vector3& translation = d_translation.getValue();
 
     for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
     {
