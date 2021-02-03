@@ -374,17 +374,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 # Json (header only) needed by AdvancedTimer
 if(JSON_FOUND)
-    install(DIRECTORY "${JSON_INCLUDE_DIR}/"
-        COMPONENT headers
-        DESTINATION "include/extlibs/json"
-        PATTERN "*.in" EXCLUDE
-        PATTERN "*.txt" EXCLUDE
-        PATTERN "*.cpp" EXCLUDE
-        )
-    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
-        "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>"
-        "$<INSTALL_INTERFACE:include/extlibs/json>"
-        )
+    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>")
 endif()
 
 sofa_add_targets_to_package(
