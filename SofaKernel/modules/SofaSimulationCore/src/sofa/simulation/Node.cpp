@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/Node.h>
+#include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/Node.inl>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
@@ -35,9 +36,6 @@
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>
 #include <iostream>
-
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/topological_sort.hpp>
 
 /// If you want to activate/deactivate that please set them to true/false
 #define DEBUG_VISITOR false
@@ -91,7 +89,6 @@ Node::Node(const std::string& name)
 
     , debug_(false)
     , initialized(false)
-    , depend(initData(&depend,"depend","Dependencies between the nodes.\nname 1 name 2 name3 name4 means that name1 must be initialized before name2 and name3 before name4"))
 {
     _context = this;
     setName(name);
@@ -816,7 +813,6 @@ void Node::initialize()
     initialized = true;  // flag telling is the node is initialized
 
     initVisualContext();
-    sortComponents();
     updateSimulationContext();
 }
 
@@ -979,72 +975,6 @@ void Node::printComponents()
 
     msg_info() << sstream.str();
 }
-
-/** @name Dependency graph
-This graph reflects the dependencies between the components. It is used internally to ensure that the initialization order is comform to the dependencies.
-*/
-/// @{
-// Vertices
-struct component_t
-{
-    typedef boost::vertex_property_tag kind;
-};
-typedef boost::property<component_t, BaseObject::SPtr> VertexProperty;
-
-// Graph
-typedef ::boost::adjacency_list < ::boost::vecS, ::boost::vecS, ::boost::bidirectionalS, VertexProperty > DependencyGraph;
-
-void Node::sortComponents()
-{
-    if (depend.getValue().empty())
-        return;
-    typedef DependencyGraph::vertex_descriptor Vertex;
-    DependencyGraph dependencyGraph;
-    // map vertex->component
-    boost::property_map< DependencyGraph, component_t >::type  component_from_vertex = boost::get( component_t(), dependencyGraph );
-    // map component->vertex
-    std::map< BaseObject::SPtr, Vertex > vertex_from_component;
-
-    // build the graph
-    for (int i = int(object.size()) - 1; i >= 0; i--) // in the reverse order for a final order more similar to the current one
-    {
-        Vertex v = add_vertex( dependencyGraph );
-        component_from_vertex[v] = object[unsigned(i)];
-        vertex_from_component[object[unsigned(i)]] = v;
-    }
-    assert( depend.getValue().size()%2 == 0 ); // must contain only pairs
-    for ( unsigned i=0; i<depend.getValue().size(); i+=2 )
-    {
-        BaseObject* o1 = getObject( depend.getValue()[i] );
-        BaseObject* o2 = getObject( depend.getValue()[i+1] );
-        if ( o1==nullptr ) {
-            msg_warning() <<" Node::sortComponent, could not find object called "<<depend.getValue()[i];
-        }else if ( o2==nullptr ) {
-            msg_warning() <<" Node::sortComponent, could not find object called "<<depend.getValue()[i+1];
-        }else
-        {
-            boost::add_edge( vertex_from_component[o1], vertex_from_component[o2], dependencyGraph );
-        }
-    }
-
-    // sort the components according to the dependencies
-    typedef std::vector< Vertex > container;
-    container c;
-    boost::topological_sort(dependencyGraph, std::back_inserter(c));
-
-    // remove all the components
-    for ( container::reverse_iterator ii=c.rbegin(); ii!=c.rend(); ++ii)
-    {
-        removeObject(component_from_vertex[*ii]);
-    }
-
-    // put the components in the right order
-    for ( container::reverse_iterator ii=c.rbegin(); ii!=c.rend(); ++ii)
-    {
-        addObject(component_from_vertex[*ii]);
-    }
-}
-
 
 Node::SPtr Node::create( const std::string& name )
 {
