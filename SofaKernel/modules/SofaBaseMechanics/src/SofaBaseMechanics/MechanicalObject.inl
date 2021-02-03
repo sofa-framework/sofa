@@ -1228,8 +1228,8 @@ void MechanicalObject<DataTypes>::init()
     f.registerTopologicalData();
 #endif
 
-    const Vector3 _rotation2 = rotation2.getValue();
-    const Vector3 _translation2 = translation2.getValue();
+    const Vector3& _rotation2 = rotation2.getValue();
+    const Vector3& _translation2 = translation2.getValue();
     this->applyRotation(_rotation2[0],_rotation2[1],_rotation2[2]);
     this->applyTranslation(_translation2[0],_translation2[1],_translation2[2]);
 
@@ -1243,9 +1243,9 @@ void MechanicalObject<DataTypes>::init()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reinit()
 {
-    const Vector3 _scale = scale.getValue();
-    const Vector3 _rotation = rotation.getValue();
-    const Vector3 _translation = translation.getValue();
+    const Vector3& _scale = scale.getValue();
+    const Vector3& _rotation = rotation.getValue();
+    const Vector3& _translation = translation.getValue();
 
     this->applyScale(_scale[0],_scale[1],_scale[2]);
     this->applyRotation(_rotation[0],_rotation[1],_rotation[2]);
