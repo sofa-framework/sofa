@@ -102,6 +102,8 @@ PythonEnvironmentData* PythonEnvironment::getStaticData()
     return m_staticdata;
 }
 
+std::string PythonEnvironment::pluginLibraryPath = "";
+
 PyMODINIT_FUNC initModulesHelper(const std::string& name, PyMethodDef* methodDef)
 {
     PythonEnvironment::gil lock(__func__);
@@ -213,10 +215,23 @@ void PythonEnvironment::Init()
 
     // python modules are automatically reloaded at each scene loading
     setAutomaticModuleReload( true );
+
+    // Initialize pluginLibraryPath by reading PluginManager's map
+    std::map<std::string, Plugin>& map = PluginManager::getInstance().getPluginMap();
+    for( const auto& elem : map)
+    {
+        Plugin p = elem.second;
+        if ( p.getModuleName() == sofa_tostring(SOFA_TARGET) )
+        {
+            pluginLibraryPath = elem.first;
+        }
+    }
 }
 
 void PythonEnvironment::Release()
 {
+    removePluginManagerCallback();
+
     // Finish the Python Interpreter
 
     // obviously can't use raii here
@@ -317,6 +332,33 @@ void PythonEnvironment::addPythonModulePathsForPluginsByName(const std::string& 
         }
     }
     msg_warning("PythonEnvironment") << pluginName << " not found in PluginManager's map.";
+}
+
+void PythonEnvironment::addPluginManagerCallback()
+{
+    PluginManager::getInstance().addOnPluginLoadedCallback(pluginLibraryPath,
+        [](const std::string& pluginLibraryPath, const Plugin& plugin) {
+            // WARNING:
+            // Loaded plugin must be organized like plugin_name/lib/plugin_name.so
+
+            // pluginRoot must be 2 levels above the library
+            std::string pluginRoot = FileSystem::getParentDirectory(
+                                         FileSystem::getParentDirectory(
+                                            pluginLibraryPath
+                                     ));
+            // pluginRoot basename must be pluginName
+            std::string pluginName = plugin.getModuleName();
+            if(FileSystem::stripDirectory(pluginRoot) == pluginName)
+            {
+                PythonEnvironment::addPythonModulePathsForPlugins(pluginRoot);
+            }
+        }
+    );
+}
+
+void PythonEnvironment::removePluginManagerCallback()
+{
+    PluginManager::getInstance().removeOnPluginLoadedCallback(pluginLibraryPath);
 }
 
 // some basic RAII stuff to handle init/termination cleanly
