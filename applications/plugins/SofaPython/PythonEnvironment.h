@@ -122,7 +122,7 @@ public:
 
 private:
     static PythonEnvironmentData* getStaticData() ;
-    static std::string PythonEnvironment::pluginLibraryPath;
+    static std::string pluginLibraryPath;
 };
 
 
