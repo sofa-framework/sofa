@@ -129,7 +129,7 @@ public:
         return m_extension;
     }
 
-    void _doOnUpdate_() override
+    void doOnUpdate() override
     {
         updatePath();
     }
@@ -229,7 +229,7 @@ public:
         return m_fullpath[i];
     }
 
-    void _doOnUpdate_() override
+    void doOnUpdate() override
     {
         this->updatePath();
     }

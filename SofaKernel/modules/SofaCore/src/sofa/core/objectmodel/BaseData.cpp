@@ -99,7 +99,7 @@ BaseData::~BaseData()
 bool BaseData::validParent(const BaseData* parent)
 {
     /// Query the implementation side to see if they two are similar.
-    if(_isExactSameDataType_(parent))
+    if(doIsExactSameDataType(parent))
         return true;
 
     /// If not, check if automatic conversion is possible
@@ -180,14 +180,14 @@ void BaseData::update()
             cleanDirty();
         }
     }
-    _doOnUpdate_();
+    doOnUpdate();
 }
 
 bool BaseData::updateValueFromLink(const BaseData* parent)
 {
     /// Try if the fast path succeeded, in general this means that the two Data are
     /// of exactly the same internal types.
-    if(_doSetValueFromLink_(parent))
+    if(doSetValueFromLink(parent))
     {
         return true;
     }
@@ -199,7 +199,7 @@ bool BaseData::copyValueFrom(const BaseData* parent)
 {
     /// Try if the fast path succeeded, in general this means that the two Data are
     /// of exactly the same internal types.
-    if(_doCopyValueFrom_(parent))
+    if(doCopyValueFrom(parent))
     {
         return true;
     }
@@ -318,19 +318,19 @@ bool BaseData::copyValue(const BaseData* data)
 /// Get current value as a void pointer (use getValueTypeInfo to find how to access it)
 const void* BaseData::getValueVoidPtr() const
 {
-    return _doGetValueVoidPtr_();
+    return doGetValueVoidPtr();
 }
 
 /// Begin edit current value as a void pointer (use getValueTypeInfo to find how to access it)
 void* BaseData::beginEditVoidPtr()
 {
-    return _doBeginEditVoidPtr_();
+    return doBeginEditVoidPtr();
 }
 
 /// End edit current value as a void pointer (use getValueTypeInfo to find how to access it)
 void BaseData::endEditVoidPtr()
 {
-    _doEndEditVoidPtr_();
+    doEndEditVoidPtr();
 }
 
 std::string BaseData::decodeTypeName(const std::type_info& t)
