@@ -839,7 +839,7 @@ inline Vec<N,real> diagonal(const Mat<N,N,real>& m)
 
 /// Matrix inversion (general case).
 template<sofa::Size S, class real>
-[[nodiscard("Check if the matrix is invertible")]] bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
+[[nodiscard]] bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
     sofa::Size i, j, k;
     Vec<S, sofa::Size> r, c, row, col;
@@ -907,7 +907,7 @@ template<sofa::Size S, class real>
 
 /// Matrix inversion (special case 3x3).
 template<class real>
-[[nodiscard("Check if the matrix is invertible")]] bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
+[[nodiscard]] bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
 {
     real det=determinant(from);
 
