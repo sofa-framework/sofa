@@ -130,7 +130,7 @@ get-lib-deps-assoc() {
             #echo "[build_deps_file] libpath = $libpath"
             if [ -e "$libpath" ]; then
                 echo_debug "      $libname found by build_deps_file at $libpath"
-                sed -i 's/$libname.* not found.*/$libname => $libpath/g' "$output"
+                sed -i 's:'"$libname"'.* not found.*:'"$libname"' => '"$libpath"':g' "$output"
                 found="true"
             fi
         fi
