@@ -33,6 +33,11 @@
 #include <map>
 #include <sofa/helper/map.h>
 
+namespace sofa::helper
+{
+    class ColorMap;
+}
+
 namespace sofa::component::forcefield
 {
 
@@ -331,6 +336,9 @@ public:
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graphOrientation; ///< Graph of the orientation of the principal stress direction corresponding to the element id
 #endif
 
+private:
+    bool p_computeDrawInfo;
+    sofa::helper::ColorMap* p_drawColorMap;
 };
 
 
