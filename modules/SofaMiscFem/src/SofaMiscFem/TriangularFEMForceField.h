@@ -237,8 +237,6 @@ public:
     void setMethod(const std::string& methodName);
 
 public:
-
-    Index getFracturedEdge();
     void getFractureCriteria(int element, Deriv& direction, Real& value);
     /// Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
     void computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &direction, const defaulttype::Vec<3,Real> &stress);
@@ -303,7 +301,6 @@ public:
     Data< sofa::helper::vector <Transformation> > m_initialTransformation; ///< Flag activating rendering of stress directions within each triangle
 
     /// Fracture parameters
-    Data<bool> f_fracturable;
     Data<Real> hosfordExponant; ///< Exponant in the Hosford yield criteria
     Data<Real> criteriaValue; ///< Fracturable threshold used to draw fracturable triangles
 

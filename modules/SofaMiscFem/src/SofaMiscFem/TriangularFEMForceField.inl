@@ -92,7 +92,6 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , m_rotatedInitialElements(initData(&m_rotatedInitialElements,"rotatedInitialElements","Flag activating rendering of stress directions within each triangle"))
     , m_initialTransformation(initData(&m_initialTransformation,"initialTransformation","Flag activating rendering of stress directions within each triangle"))
-    , f_fracturable(initData(&f_fracturable,false,"fracturable","the forcefield computes the next fracturable Edge"))
     , hosfordExponant(initData(&hosfordExponant, (Real)1.0, "hosfordExponant","Exponant in the Hosford yield criteria"))
     , criteriaValue(initData(&criteriaValue, (Real)1e15, "criteriaValue","Fracturable threshold used to draw fracturable triangles"))
     , showStressValue(initData(&showStressValue,false,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
@@ -505,35 +504,6 @@ void TriangularFEMForceField<DataTypes>::getFractureCriteria(int elementIndex, D
         value = 0;
     }
 }
-
-template<class DataTypes>
-typename TriangularFEMForceField<DataTypes>::Index TriangularFEMForceField<DataTypes>::getFracturedEdge()
-{
-    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
-
-    if (f_fracturable.getValue())
-    {
-        std::size_t nbEdges = m_topology->getNbEdges();
-
-        for(Size i=0; i<nbEdges; i++ )
-        {
-            if (edgeInf[i].fracturable)
-            {
-                return i;
-            }
-        }
-    }
-
-    edgeInfo.endEdit();
-
-    return sofa::InvalidID;
-}
-
-
-
-
-
-
 
 
 // --------------------------------------------------------------------------------------
@@ -1422,7 +1392,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     unsigned int nbTriangles=m_topology->getNbTriangles();
 
-    if (!f_fracturable.getValue() && !this->showFracturableTriangles.getValue())
+    if (!this->showFracturableTriangles.getValue())
     {
         for(unsigned int i=0; i<nbTriangles; ++i)
         {
