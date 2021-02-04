@@ -25,7 +25,8 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/vector.h>
 
-#include <iostream>
+#include <ostream>
+#include <istream>
 #include <string>
 #include <map>
 
@@ -328,10 +329,11 @@ public:
     /**
      * @brief getTimeAnalysis Return the result of the AdvancedTimer
      * @param id IdTimer, id of the timer
-     * @param node Node*, pointeur on a node to get the scene simulation context
+     * @param time double, current time (from the context)
+     * @param time dt, current delta time or dt (from the context)
      * @return The timer value in JSON
      */
-    static std::string getTimeAnalysis(IdTimer id, simulation::Node* node);
+    static std::string getTimeAnalysis(IdTimer id, double time, double dt);
 
     /**
      * @brief getSteps Return the vector of IDStep of the AdvancedTimer given execution
@@ -371,10 +373,26 @@ public:
     /**
      * @brief end Ovveride fo the end method in which you can use JSON or old format
      * @param id IdTimer, the id of the used timer
-     * @param node Node*, node used to get the scene cotext
+     * @param time double, current time (from the context)
+     * @param time dt, current delta time or dt (from the context)
      * @return std::string, the output if JSON format is set
      */
-    static std::string end(IdTimer id, simulation::Node* node);
+    static std::string end(IdTimer id, double time, double dt);
+
+    /**
+     * @brief end Deprecated version with a node Pointer ; does not do anything.
+     * @param id IdTimer, the id of the used timer
+     * @param node simulation::Node* 
+     * @return std::string, the output if JSON format is set
+     */
+    [[deprecated("This function has been deprecated in #PR XXXX because of simulation::Node dependency." \
+        "This function does not take into account the node argument, and will be removed in the v21.06 release." \
+        "Use end(id, node->getTime(), node->getDt()) instead.")]]
+    static std::string end(IdTimer id, simulation::Node* node)
+    {
+        end(id);
+        return std::string("");
+    }
 
     static bool isActive();
 

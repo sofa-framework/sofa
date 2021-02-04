@@ -95,8 +95,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/map.h
     ${SRC_ROOT}/map_ptr_stable_compare.h
     ${SRC_ROOT}/pair.h
-    ${SRC_ROOT}/polygon_cube_intersection/polygon_cube_intersection.h
-    ${SRC_ROOT}/polygon_cube_intersection/vec.h
     ${SRC_ROOT}/proximity.h
     ${SRC_ROOT}/random.h
     ${SRC_ROOT}/rmath.h
@@ -191,8 +189,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/io/TriangleLoader.cpp
     ${SRC_ROOT}/io/XspLoader.cpp
     ${SRC_ROOT}/kdTree.cpp
-    ${SRC_ROOT}/polygon_cube_intersection/fast_polygon_cube_intersection.cpp
-    ${SRC_ROOT}/polygon_cube_intersection/polygon_cube_intersection.cpp
     ${SRC_ROOT}/proximity.cpp
     ${SRC_ROOT}/system/DynamicLibrary.cpp
     ${SRC_ROOT}/system/FileSystem.cpp
@@ -374,17 +370,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 # Json (header only) needed by AdvancedTimer
 if(JSON_FOUND)
-    install(DIRECTORY "${JSON_INCLUDE_DIR}/"
-        COMPONENT headers
-        DESTINATION "include/extlibs/json"
-        PATTERN "*.in" EXCLUDE
-        PATTERN "*.txt" EXCLUDE
-        PATTERN "*.cpp" EXCLUDE
-        )
-    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
-        "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>"
-        "$<INSTALL_INTERFACE:include/extlibs/json>"
-        )
+    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>")
 endif()
 
 sofa_add_targets_to_package(

@@ -28,8 +28,6 @@ namespace sofa::component::topology
 {
 class TetrahedronSetTopologyModifier;
 
-
-
 /** a class that stores a set of tetrahedra and provides access with adjacent triangles, edges and vertices */
 class SOFA_SOFABASETOPOLOGY_API TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
 {
@@ -290,64 +288,10 @@ public:
     /** \brief Returns the type of the topology */
     sofa::core::topology::TopologyElementType getTopologyType() const override {return sofa::core::topology::TopologyElementType::TETRAHEDRON;}
 
-    inline friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t)
-    {
-        helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
-        out  << m_tetrahedron<< " "
-                << t.m_edgesInTetrahedron<< " "
-                << t.m_trianglesInTetrahedron;
-
-        out << " "<< t.m_tetrahedraAroundVertex.size();
-        for (size_t i=0; i<t.m_tetrahedraAroundVertex.size(); i++)
-        {
-            out << " " << t.m_tetrahedraAroundVertex[i];
-        }
-        out <<" "<< t.m_tetrahedraAroundEdge.size();
-        for (size_t i=0; i<t.m_tetrahedraAroundEdge.size(); i++)
-        {
-            out << " " << t.m_tetrahedraAroundEdge[i];
-        }
-        out <<" "<< t.m_tetrahedraAroundTriangle.size();
-        for (size_t i=0; i<t.m_tetrahedraAroundTriangle.size(); i++)
-        {
-            out << " " << t.m_tetrahedraAroundTriangle[i];
-        }
-        return out;
-    }
-
-    inline friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t)
-    {
-        unsigned int s=0;
-        sofa::helper::vector< HexahedronID > value;
-        helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
-
-        in >> m_tetrahedron >> t.m_edgesInTetrahedron >> t.m_trianglesInTetrahedron;
-
-
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            in >> value;
-            t.m_tetrahedraAroundVertex.push_back(value);
-        }
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            in >> value;
-            t.m_tetrahedraAroundEdge.push_back(value);
-        }
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            in >> value;
-            t.m_tetrahedraAroundTriangle.push_back(value);
-        }
-        return in;
-    }
-
+    SOFA_SOFABASETOPOLOGY_API friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
+    SOFA_SOFABASETOPOLOGY_API friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
 
 protected:
-
     /** \brief Creates the EdgeSet array.
      *
      * Create the set of edges when needed.
