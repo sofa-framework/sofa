@@ -380,19 +380,14 @@ public:
     static std::string end(IdTimer id, double time, double dt);
 
     /**
-     * @brief end Deprecated version with a node Pointer ; does not do anything.
+     * @brief end Deleted version with a node Pointer ; will throw an error at compile-time if called.
      * @param id IdTimer, the id of the used timer
      * @param node simulation::Node* 
      * @return std::string, the output if JSON format is set
      */
-    [[deprecated("This function has been deprecated in #PR XXXX because of simulation::Node dependency." \
-        "This function does not take into account the node argument, and will be removed in the v21.06 release." \
+    [[deprecated("This function has been deleted in #PR 1770 because of simulation::Node dependency." \
         "Use end(id, node->getTime(), node->getDt()) instead.")]]
-    static std::string end(IdTimer id, simulation::Node* node)
-    {
-        end(id);
-        return std::string("");
-    }
+    static std::string end(IdTimer id, simulation::Node* node) = delete;
 
     static bool isActive();
 
