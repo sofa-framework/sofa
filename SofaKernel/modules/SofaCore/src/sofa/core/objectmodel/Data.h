@@ -273,7 +273,7 @@ public:
             this->setValue(value);
     }
 
-    bool copyValueFrom(const BaseData* data){ return _doCopyValueFrom_(data); }
+    bool copyValueFrom(const BaseData* data){ return doCopyValueFrom(data); }
     bool copyValueFrom(const Data<T>* data);
 
     bool isCopyOnWrite(){ return sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite; }
@@ -288,12 +288,12 @@ private:
     Data(const Data& );
     Data& operator=(const Data& );
 
-    bool _isExactSameDataType_(const BaseData* parent) override;
-    bool _doCopyValueFrom_(const BaseData* parent) override;
-    bool _doSetValueFromLink_(const BaseData* parent) override;
-    const void* _doGetValueVoidPtr_() const override { return &getValue(); }
-    void* _doBeginEditVoidPtr_() override  { return beginEdit(); }
-    void _doEndEditVoidPtr_() override  { endEdit(); }
+    bool doIsExactSameDataType(const BaseData* parent) override;
+    bool doCopyValueFrom(const BaseData* parent) override;
+    bool doSetValueFromLink(const BaseData* parent) override;
+    const void* doGetValueVoidPtr() const override { return &getValue(); }
+    void* doBeginEditVoidPtr() override  { return beginEdit(); }
+    void doEndEditVoidPtr() override  { endEdit(); }
 };
 
 class EmptyData : public Data<void*> {};
@@ -356,7 +356,7 @@ bool Data<T>::copyValueFrom(const Data<T>* data)
 }
 
 template <class T>
-bool Data<T>::_doCopyValueFrom_(const BaseData* data)
+bool Data<T>::doCopyValueFrom(const BaseData* data)
 {
     const Data<T>* typedata = dynamic_cast<const Data<T>*>(data);
     if(!typedata)
@@ -366,7 +366,7 @@ bool Data<T>::_doCopyValueFrom_(const BaseData* data)
 }
 
 template <class T>
-bool Data<T>::_doSetValueFromLink_(const BaseData* data)
+bool Data<T>::doSetValueFromLink(const BaseData* data)
 {
     const Data<T>* typedata = dynamic_cast<const Data<T>*>(data);
     if(!typedata)
@@ -381,7 +381,7 @@ bool Data<T>::_doSetValueFromLink_(const BaseData* data)
 
 
 template <class T>
-bool Data<T>::_isExactSameDataType_(const BaseData* parent)
+bool Data<T>::doIsExactSameDataType(const BaseData* parent)
 {
     return dynamic_cast<const Data<T>*>(parent) != nullptr;
 }

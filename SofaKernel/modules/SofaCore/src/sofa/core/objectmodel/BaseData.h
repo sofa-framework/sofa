@@ -333,14 +333,14 @@ private:
     /// Delegates from DDGNode.
     void doDelInput(DDGNode* n) override;
 
-    virtual bool _doCopyValueFrom_(const BaseData* parent) = 0;
-    virtual bool _doSetValueFromLink_(const BaseData* parent) = 0;
+    virtual bool doCopyValueFrom(const BaseData* parent) = 0;
+    virtual bool doSetValueFromLink(const BaseData* parent) = 0;
 
-    virtual bool _isExactSameDataType_(const BaseData* parent) = 0;
-    virtual const void* _doGetValueVoidPtr_() const = 0;
-    virtual void* _doBeginEditVoidPtr_() = 0;
-    virtual void _doEndEditVoidPtr_() = 0;
-    virtual void _doOnUpdate_() {};
+    virtual bool doIsExactSameDataType(const BaseData* parent) = 0;
+    virtual const void* doGetValueVoidPtr() const = 0;
+    virtual void* doBeginEditVoidPtr() = 0;
+    virtual void doEndEditVoidPtr() = 0;
+    virtual void doOnUpdate() {};
 };
 
 /** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container
