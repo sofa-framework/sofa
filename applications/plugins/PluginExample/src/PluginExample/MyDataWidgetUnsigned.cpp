@@ -35,7 +35,7 @@ helper::Creator<DataWidgetFactory, MyDataWidgetUnsigned> DW_myData("widget_myDat
 
 bool MyDataWidgetUnsigned::createWidgets()
 {
-    unsigned myData_value = getData()->virtualGetValue();
+    unsigned myData_value = getData()->getValue();
 
     m_qslider = new QSlider(Qt::Horizontal, this);
     m_qslider->setTickPosition(QSlider::TicksBelow);
@@ -73,7 +73,7 @@ void MyDataWidgetUnsigned::setDataReadOnly(bool readOnly)
 
 void MyDataWidgetUnsigned::readFromData()
 {
-    m_qslider->setValue((int)getData()->virtualGetValue());
+    m_qslider->setValue((int)getData()->getValue());
 
     QString label1_text("myData current value = ");
     label1_text.append(getData()->getValueString().c_str());

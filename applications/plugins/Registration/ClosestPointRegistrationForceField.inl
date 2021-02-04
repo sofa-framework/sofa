@@ -109,8 +109,10 @@ void ClosestPointRegistrationForceField<DataTypes>::init()
         this->getContext()->get( meshobjLoader, core::objectmodel::BaseContext::Local);
         if (meshobjLoader)
         {
-            sourceTriangles.virtualSetLink(meshobjLoader->d_triangles);
-            msg_info()<<"imported triangles from "<<meshobjLoader->getName();
+            if(sourceTriangles.setParent(&meshobjLoader->d_triangles))
+                msg_info()<<"imported triangles from "<<meshobjLoader->getName();
+            else
+                msg_warning()<<"unable to import triangles from "<<meshobjLoader->getName();
         }
     }
     // Get source normals

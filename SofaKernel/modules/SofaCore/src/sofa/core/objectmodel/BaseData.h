@@ -134,23 +134,17 @@ public:
     ///
     /// This pointer should be used via the instance of AbstractTypeInfo
     /// returned by getValueTypeInfo().
-    virtual const void* getValueVoidPtr() const = 0;
+    const void* getValueVoidPtr() const;
 
     /// Get a void pointer to the value held in this %Data, to be used with AbstractTypeInfo.
     ///
     /// This pointer should be used via the instance of AbstractTypeInfo
     /// returned by getValueTypeInfo().
     /// \warning You must call endEditVoidPtr() once you're done modifying the value.
-    virtual void* beginEditVoidPtr() = 0;
+    void* beginEditVoidPtr();
 
     /// Must be called after beginEditVoidPtr(), after you are finished modifying this %Data.
-    virtual void endEditVoidPtr() = 0;
-
-    /// Copy the value from another Data.
-    ///
-    /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
-    /// @return true if the copy was successful.
-    virtual bool copyValue(const BaseData* parent);
+    void endEditVoidPtr();
 
     /// Get a help message that describes this %Data.
     const std::string& getHelp() const { return help; }
@@ -177,7 +171,8 @@ public:
     void setWidget(const char* val) { widget = val; }
 
     /// True if the counter of modification gives valid information.
-    virtual bool isCounterValid() const = 0;
+    [[deprecated("2021-01-01: This method has been removed as Data<> must have, by design, their counter valid.")]]
+    bool isCounterValid() const { return true; }
 
     /// @name Flags
     /// @{
@@ -213,6 +208,7 @@ public:
 
     /// If we use the Data as a link and not as value directly
     virtual std::string getLinkPath() const { return parentData.getPath(); }
+
     /// Return whether this %Data can be used as a linkPath.
     ///
     /// True by default.
@@ -271,21 +267,26 @@ public:
     bool setParent(const std::string& path);
 
     /// Check if a given Data can be linked as a parent of this data
-    virtual bool validParent(BaseData* parent);
+    virtual bool validParent(const BaseData *parent);
 
     BaseData* getParent() { return parentData.getTarget(); }
 
     /// Update the value of this %Data
     void update() override;
 
-protected:
-    /// @}
+    /// Copy the value from another Data.
+    ///
+    /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
+    /// @return true if the copy was successful.
+    [[deprecated("2021-01-01: This method has been replaced with copyValueFrom(), please update your code.")]]
+    bool copyValue(const BaseData* data);
 
-    /// Delegates from DDGNode.
-    void doDelInput(DDGNode* n) override;
-
-    /// Update this %Data from the value of its parent
-    virtual bool updateFromParentValue(const BaseData* parent);
+    /// Copy the value from another Data.
+    ///
+    /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
+    /// @return true if the copy was successful.
+    bool copyValueFrom(const BaseData* data);
+    bool updateValueFromLink(const BaseData* data);
 
     /// Help message
     std::string help {""};
@@ -323,6 +324,23 @@ public:
         else
             return decodeTypeName(typeid(T));
     }
+
+protected:
+    /// Try to update this Data from the value of its parent in "fast mode";
+    bool genericCopyValueFrom(const BaseData* parent);
+
+private:
+    /// Delegates from DDGNode.
+    void doDelInput(DDGNode* n) override;
+
+    virtual bool doCopyValueFrom(const BaseData* parent) = 0;
+    virtual bool doSetValueFromLink(const BaseData* parent) = 0;
+
+    virtual bool doIsExactSameDataType(const BaseData* parent) = 0;
+    virtual const void* doGetValueVoidPtr() const = 0;
+    virtual void* doBeginEditVoidPtr() = 0;
+    virtual void doEndEditVoidPtr() = 0;
+    virtual void doOnUpdate() {};
 };
 
 /** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container
