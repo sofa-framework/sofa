@@ -128,18 +128,18 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
 
 bool FileSystem::createDirectory(const std::string& path)
 {
-    std::string error;
+    std::string error = "FileSystem::createdirectory()";
 #ifdef WIN32
     if (CreateDirectory(Utils::widenString(path).c_str(), nullptr) == 0)
     {
         DWORD errorCode = ::GetLastError();
-        msg_error("FileSystem::createdirectory()") << path << ": " << Utils::GetLastError();
+        msg_error(error) << path << ": " << Utils::GetLastError();
         return true;
     }
 #else
     if (mkdir(path.c_str(), 0755))
     {
-        msg_error("FileSystem::createdirectory()") << path << ": " << strerror(errno);
+        msg_error(error) << path << ": " << strerror(errno);
         return true;
     }
 #endif
