@@ -344,7 +344,7 @@ void PythonEnvironment::addPluginManagerCallback()
                 std::string pluginRoot = FileSystem::cleanPath( path + "/" + plugin.getModuleName() );
                 if ( FileSystem::isDirectory(pluginRoot) )
                 {
-                    PythonEnvironment::addPythonModulePathsForPlugins(pluginRoot);
+                    addPythonModulePathsForPlugins(pluginRoot);
                     return;
                 }
             }
