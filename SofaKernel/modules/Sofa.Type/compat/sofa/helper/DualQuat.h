@@ -28,6 +28,9 @@ SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/DualQuat.h")
 namespace sofa::helper
 {
     template <typename real>
-    using DualQuat = sofa::type::DualQuat<real>;
+    using DualQuatCoord3 = sofa::type::DualQuatCoord3<real>;
+
+    using DualQuatCoordd = DualQuatCoord3<double>;
+    using DualQuatCoordf = DualQuatCoord3<double>;
 
 } // namespace sofa::helper

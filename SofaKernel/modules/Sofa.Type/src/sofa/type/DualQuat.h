@@ -25,6 +25,7 @@
 
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
+#include <sofa/type/Quat.h>
 #include <iostream>
 
 namespace // anonymous
@@ -37,7 +38,12 @@ namespace // anonymous
 
 } // anonymous namespace
 
-
+// used to deprecate the constructor with RigidCoord
+namespace sofa::defaulttype
+{
+    template<unsigned int, typename real2>
+    class RigidCoord;
+}
 
 namespace sofa::type
 {
@@ -65,12 +71,17 @@ public:
     DualQuatCoord3(const DualQuatCoord3<real2>& c)
         : dual(c.getDual()), orientation(c.getOrientation()) {}
 
-    //template<typename real2>
-    //DualQuatCoord3(const sofa::defaulttype::RigidCoord<3,real2>& c)
-    //{
-    //    for(unsigned int i=0; i<4; i++) orientation[i] =  (real)c.getOrientation()[i];
-    //    setTranslation(c.getCenter());
-    //}
+    template<typename real2>
+    [[deprecated("This constructor has been deleted in #PR 1XXX because of dependency on Defaulttype." \
+        "Use DualQuatCoord3(c.getCenter(), c.getOrientation()) instead.")]]
+    DualQuatCoord3(const sofa::defaulttype::RigidCoord<3, real2>& c) = delete;
+
+    DualQuatCoord3(const Pos& p, const sofa::type::Quat<real>& q)
+    {
+        for (unsigned int i = 0; i < 4; i++)
+            orientation[i] = q[i];
+        setTranslation(p);
+    }
 
     DualQuatCoord3 () { clear(); }
     void clear() { dual[0]=dual[1]=dual[2]=dual[3]=orientation[0]=orientation[1]=orientation[2]=orientation[3]=(real)0.; }
@@ -267,8 +278,8 @@ public:
 
 };
 
-typedef DualQuatCoord3<double> DualQuatCoordd; ///< alias
-typedef DualQuatCoord3<float> DualQuatCoordf; ///< alias
+using DualQuatCoordd = DualQuatCoord3<double>;
+using DualQuatCoordf = DualQuatCoord3<double>;
 
 #if !defined(SOFA_TYPE_DUALQUAT_CPP)
 extern template class SOFA_TYPE_API DualQuatCoord3<double>;
