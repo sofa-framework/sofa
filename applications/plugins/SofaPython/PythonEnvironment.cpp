@@ -342,7 +342,7 @@ void PythonEnvironment::addPluginManagerCallback()
             for ( auto path : sofa::helper::system::PluginRepository.getPaths() )
             {
                 std::string pluginRoot = FileSystem::cleanPath( path + "/" + plugin.getModuleName() );
-                if ( FileSystem::isDirectory(pluginRoot) )
+                if ( FileSystem::exists(pluginRoot) && FileSystem::isDirectory(pluginRoot) )
                 {
                     addPythonModulePathsForPlugins(pluginRoot);
                     return;
