@@ -91,6 +91,20 @@ bool TagSet::includes(const TagSet& t) const
     return true;
 }
 
+std::ostream& operator<<(std::ostream& o, const Tag& t)
+{
+    return o << std::string(t);
+}
+
+std::istream& operator>>(std::istream& i, Tag& t)
+{
+    std::string s;
+    i >> s;
+    t = Tag(s);
+    return i;
+}
+
+
 } // namespace objectmodel
 
 } // namespace core

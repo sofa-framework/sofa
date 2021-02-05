@@ -878,7 +878,7 @@ static PyObject * Sofa_timerEnd(PyObject* /*self*/, PyObject *args)
 
     node = down_cast<Node>(((PySPtr<Base>*)tempNode)->object->toBaseNode());
 
-    result = AdvancedTimer::end(id, node);
+    result = AdvancedTimer::end(id, node->getTime(), node->getDt());
 
     if(std::string("null").compare(result) == 0)
         Py_RETURN_NONE;

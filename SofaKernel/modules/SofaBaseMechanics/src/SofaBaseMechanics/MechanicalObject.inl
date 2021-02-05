@@ -1227,17 +1227,10 @@ void MechanicalObject<DataTypes>::init()
     f.registerTopologicalData();
 #endif
 
-
-
-    if (rotation2.getValue()[0]!=0.0 || rotation2.getValue()[1]!=0.0 || rotation2.getValue()[2]!=0.0)
-    {
-        this->applyRotation(rotation2.getValue()[0],rotation2.getValue()[1],rotation2.getValue()[2]);
-    }
-
-    if (translation2.getValue()[0]!=0.0 || translation2.getValue()[1]!=0.0 || translation2.getValue()[2]!=0.0)
-    {
-        this->applyTranslation( translation2.getValue()[0],translation2.getValue()[1],translation2.getValue()[2]);
-    }
+    const Vector3& _rotation2 = rotation2.getValue();
+    const Vector3& _translation2 = translation2.getValue();
+    this->applyRotation(_rotation2[0],_rotation2[1],_rotation2[2]);
+    this->applyTranslation(_translation2[0],_translation2[1],_translation2[2]);
 
     m_initialized = true;
 
@@ -1249,14 +1242,13 @@ void MechanicalObject<DataTypes>::init()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reinit()
 {
-    if (scale.getValue() != Vector3(1.0,1.0,1.0))
-        this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
+    const Vector3& _scale = scale.getValue();
+    const Vector3& _rotation = rotation.getValue();
+    const Vector3& _translation = translation.getValue();
 
-    if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
-        this->applyRotation(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]);
-
-    if (translation.getValue()[0]!=0.0 || translation.getValue()[1]!=0.0 || translation.getValue()[2]!=0.0)
-        this->applyTranslation( translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
+    this->applyScale(_scale[0],_scale[1],_scale[2]);
+    this->applyRotation(_rotation[0],_rotation[1],_rotation[2]);
+    this->applyTranslation(_translation[0],_translation[1],_translation[2]);
 }
 
 template <class DataTypes>

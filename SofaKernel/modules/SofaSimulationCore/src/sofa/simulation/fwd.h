@@ -23,6 +23,7 @@
 
 #include <sofa/simulation/config.h>
 #include <sofa/core/sptr.h>
+#include <sofa/core/fwd.h>
 
 namespace sofa::core::objectmodel { class BaseContext; }
 
@@ -47,6 +48,7 @@ namespace sofa::simulation
     SOFA_SIMULATION_CORE_API Simulation* getSimulation();
 
     SOFA_SIMULATION_CORE_API sofa::core::objectmodel::Base* getBaseFromNode(Node*);
+    SOFA_SIMULATION_CORE_API Node* getNodeFromBase(sofa::core::objectmodel::Base*);
     SOFA_SIMULATION_CORE_API Node* getNodeFromContext(sofa::core::objectmodel::BaseContext*);
     SOFA_SIMULATION_CORE_API double getTimeFromContext(sofa::core::objectmodel::BaseContext*);
     SOFA_SIMULATION_CORE_API sofa::core::objectmodel::BaseContext* getContextFromNode(Node*);

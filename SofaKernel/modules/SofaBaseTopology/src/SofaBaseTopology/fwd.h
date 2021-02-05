@@ -20,20 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/LocalMinDistance.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/proximity.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/core/collision/Intersection.inl>
-#include <iostream>
-#include <algorithm>
 
-#define DYNAMIC_CONE_ANGLE_COMPUTATION
-
-namespace sofa::component::collision
+#include <SofaBaseTopology/config.h>
+#include <iosfwd>
+namespace sofa::component::topology
 {
-
-} //namespace sofa::component::collision
+class TetrahedronSetTopologyContainer;
+SOFA_SOFABASETOPOLOGY_API std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
+SOFA_SOFABASETOPOLOGY_API std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
+}

@@ -96,15 +96,20 @@ BaseData::~BaseData()
 {
 }
 
-bool BaseData::validParent(BaseData* parent)
+bool BaseData::validParent(const BaseData* parent)
 {
-    // Check if automatic conversion is possible
+    /// Query the implementation side to see if they two are similar.
+    if(doIsExactSameDataType(parent))
+        return true;
+
+    /// If not, check if automatic conversion is possible
     if (this->getValueTypeInfo()->ValidInfo() && parent->getValueTypeInfo()->ValidInfo())
         return true;
-    // Check if one of the data is a simple string
+
+    /// If not, check if one of the data is a simple string
     if (this->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name() || parent->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name())
         return true;
-    // No conversion found
+
     return false;
 }
 
@@ -130,9 +135,6 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
     {
         addInput(parent);
         BaseData::setDirtyValue();
-        if (!isCounterValid())
-            update();
-
         m_counter++;
         m_isSet = true;
     }else if (!path.empty())
@@ -161,6 +163,9 @@ void BaseData::update()
     {
         (*it)->updateIfDirty();
     }
+
+    /// Check if there is a parent (so a predecessor in the DDG), if so
+    /// update the internal value.
     auto parent = parentData.resolvePathAndGetTarget();
     if (parent)
     {
@@ -168,17 +173,43 @@ void BaseData::update()
         if (m_owner)
             dmsg_warning(m_owner) << "Data " << m_name << ": update from parent " << parentBaseData->m_name;
 #endif
-        updateFromParentValue(parent);
+        updateValueFromLink(parent);
         // If the value is dirty clean it
         if(this->isDirty())
         {
             cleanDirty();
         }
     }
+    doOnUpdate();
+}
+
+bool BaseData::updateValueFromLink(const BaseData* parent)
+{
+    /// Try if the fast path succeeded, in general this means that the two Data are
+    /// of exactly the same internal types.
+    if(doSetValueFromLink(parent))
+    {
+        return true;
+    }
+    return copyValueFrom(parent);
 }
 
 /// Update this Data from the value of its parent
-bool BaseData::updateFromParentValue(const BaseData* parent)
+bool BaseData::copyValueFrom(const BaseData* parent)
+{
+    /// Try if the fast path succeeded, in general this means that the two Data are
+    /// of exactly the same internal types.
+    if(doCopyValueFrom(parent))
+    {
+        return true;
+    }
+    /// If the fast path didn't succeeded we try to do copy using a much less efficient approach.
+    return genericCopyValueFrom(parent);
+}
+
+
+/// Update this Data from the value of its parent
+bool BaseData::genericCopyValueFrom(const BaseData* parent)
 {
     const defaulttype::AbstractTypeInfo* dataInfo = this->getValueTypeInfo();
     const defaulttype::AbstractTypeInfo* parentInfo = parent->getValueTypeInfo();
@@ -279,11 +310,27 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
 /// Copy the value of another Data.
 /// Note that this is a one-time copy and not a permanent link (otherwise see setParent)
 /// @return true if copy was successfull
-bool BaseData::copyValue(const BaseData* parent)
+bool BaseData::copyValue(const BaseData* data)
 {
-    if (updateFromParentValue(parent))
-        return true;
-    return false;
+   return copyValueFrom(data);
+}
+
+/// Get current value as a void pointer (use getValueTypeInfo to find how to access it)
+const void* BaseData::getValueVoidPtr() const
+{
+    return doGetValueVoidPtr();
+}
+
+/// Begin edit current value as a void pointer (use getValueTypeInfo to find how to access it)
+void* BaseData::beginEditVoidPtr()
+{
+    return doBeginEditVoidPtr();
+}
+
+/// End edit current value as a void pointer (use getValueTypeInfo to find how to access it)
+void BaseData::endEditVoidPtr()
+{
+    doEndEditVoidPtr();
 }
 
 std::string BaseData::decodeTypeName(const std::type_info& t)

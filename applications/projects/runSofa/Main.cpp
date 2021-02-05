@@ -480,7 +480,7 @@ int main(int argc, char** argv)
     sofa::simulation::getSimulation()->init(groot.get());
     if( computationTimeAtBegin )
     {
-        msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot.get());
+        msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot->getTime(), groot->getDt());
     }
 
     //=======================================

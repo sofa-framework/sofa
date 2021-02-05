@@ -26,7 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <iostream>
@@ -110,8 +109,10 @@ void ClosestPointRegistrationForceField<DataTypes>::init()
         this->getContext()->get( meshobjLoader, core::objectmodel::BaseContext::Local);
         if (meshobjLoader)
         {
-            sourceTriangles.virtualSetLink(meshobjLoader->d_triangles);
-            msg_info()<<"imported triangles from "<<meshobjLoader->getName();
+            if(sourceTriangles.setParent(&meshobjLoader->d_triangles))
+                msg_info()<<"imported triangles from "<<meshobjLoader->getName();
+            else
+                msg_warning()<<"unable to import triangles from "<<meshobjLoader->getName();
         }
     }
     // Get source normals

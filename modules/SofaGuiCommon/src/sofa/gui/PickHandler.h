@@ -24,9 +24,10 @@
 #include "OperationFactory.h"
 
 #include <sofa/simulation/fwd.h>
+#include <sofa/simulation/Node.h>
+
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-
 namespace sofa::component::collision
 {
     class ComponentMouseInteraction;

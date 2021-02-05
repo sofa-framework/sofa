@@ -29,7 +29,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-
+#include <sofa/simulation/fwd.h>
 namespace sofa::component::container
 {
 
