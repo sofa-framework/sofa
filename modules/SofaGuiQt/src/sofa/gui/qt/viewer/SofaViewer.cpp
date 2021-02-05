@@ -83,7 +83,15 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_B:
         // --- change background
     {
-        _background = (_background + 1) % 3;
+        _background = (_background + 1) % 4;
+        if(_background==0)
+        {
+            setBackgroundImage("textures/SOFA_logo.bmp");
+        }
+        if (_background==1)
+        {
+            setBackgroundImage("textures/SOFA_logo_white.bmp");
+        }
         break;
     }
     case Qt::Key_R:
@@ -526,7 +534,6 @@ void SofaViewer::screenshot(const std::string& filename, int compression_level)
 
 void SofaViewer::setBackgroundImage(std::string imageFileName)
 {
-    _background = 0;
     if( sofa::helper::system::DataRepository.findFile(imageFileName) )
     {
         backgroundImageFile = sofa::helper::system::DataRepository.getFile(imageFileName);
@@ -547,7 +554,6 @@ void SofaViewer::setBackgroundImage(std::string imageFileName)
             m_backend->setBackgroundImage(image);
         }
     }
-
 }
 
 
