@@ -190,11 +190,11 @@ public:
         if (devicePointer!=NULL) mycudaFree(devicePointer);
     }
 
-    Size getSizeX() const {
+    Size colSize() const {
         return sizeX;
     }
 
-    Size getSizeY() const {
+    Size rowSize() const {
         return sizeY;
     }
 
