@@ -23,7 +23,7 @@
 
 #include <sofa/type/Quat.h>
 
-SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Quat.h")
+// SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Quat.h")
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
