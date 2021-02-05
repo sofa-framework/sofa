@@ -338,19 +338,15 @@ void PythonEnvironment::addPluginManagerCallback()
 {
     PluginManager::getInstance().addOnPluginLoadedCallback(pluginLibraryPath,
         [](const std::string& pluginLibraryPath, const Plugin& plugin) {
-            // WARNING:
-            // Loaded plugin must be organized like plugin_name/lib/plugin_name.so
-
-            // pluginRoot must be 2 levels above the library
-            std::string pluginRoot = FileSystem::getParentDirectory(
-                                         FileSystem::getParentDirectory(
-                                            pluginLibraryPath
-                                     ));
-            // pluginRoot basename must be pluginName
-            std::string pluginName = plugin.getModuleName();
-            if(FileSystem::stripDirectory(pluginRoot) == pluginName)
+            // WARNING: loaded plugin must be organized like plugin_name/lib/plugin_name.so
+            for ( auto path : sofa::helper::system::PluginRepository.getPaths() )
             {
-                PythonEnvironment::addPythonModulePathsForPlugins(pluginRoot);
+                std::string pluginRoot = FileSystem::cleanPath( path + "/" + plugin.getModuleName() );
+                if ( FileSystem::isDirectory(pluginRoot) )
+                {
+                    PythonEnvironment::addPythonModulePathsForPlugins(pluginRoot);
+                    return;
+                }
             }
         }
     );
