@@ -455,10 +455,10 @@ public:
     friend std::ostream& operator<< ( std::ostream& os, const Matrix & mat ) {
         mat.hostRead();
         os << "[\n";
-        for (unsigned j=0; j<mat.getSizeY(); j++)
+        for (unsigned j=0; j<mat.rowSize(); j++)
         {
             os << "[ ";
-            for (unsigned i=0; i<mat.getSizeX(); i++)
+            for (unsigned i=0; i<mat.colSize(); i++)
             {
                 os << " " << mat[j][i];
             }
