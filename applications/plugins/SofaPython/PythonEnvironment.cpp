@@ -311,7 +311,7 @@ void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& plugin
 
     if(!added)
     {
-        msg_warning("PythonEnvironment") << "No python dir found in " << pluginsDirectory;
+        msg_info("PythonEnvironment") << "No python dir found in " << pluginsDirectory;
     }
 }
 
@@ -331,7 +331,7 @@ void PythonEnvironment::addPythonModulePathsForPluginsByName(const std::string& 
             return;
         }
     }
-    msg_warning("PythonEnvironment") << pluginName << " not found in PluginManager's map.";
+    msg_info("PythonEnvironment") << pluginName << " not found in PluginManager's map.";
 }
 
 void PythonEnvironment::addPluginManagerCallback()
