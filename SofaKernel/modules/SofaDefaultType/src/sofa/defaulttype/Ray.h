@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sofa/type/Vec.h>
+#include <sofa/defaulttype/config.h>
 
 namespace sofa
 {    
