@@ -28,7 +28,6 @@
 #include <sofa/helper/gl/template.h>
 #include <iostream>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Simulation.h>
 
 
 namespace sofa

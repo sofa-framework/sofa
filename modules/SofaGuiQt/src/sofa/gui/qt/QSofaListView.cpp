@@ -26,12 +26,13 @@
 #include "ModifyObject.h"
 #include "GenGraphForm.h"
 #include "RealGUI.h"
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <SofaSimulationCommon/TransformationVisitor.h>
 #include <SofaSimulationCommon/xml/BaseElement.h>
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/helper/cast.h>
-
+#include <sofa/simulation/Simulation.h>
 #include <QMenu>
 #include <QtGlobal> // version macro
 #include <QMessageBox>
@@ -44,13 +45,9 @@
 
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
-namespace sofa
-{
-namespace gui
-{
-namespace qt
-{
 
+namespace sofa::gui::qt
+{
 
 QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
         QWidget* parent,
@@ -870,9 +867,4 @@ void QSofaListView::transformObject ( Node *node, double dx, double dy, double d
 
 
 
-} //sofa
-} // gui
-} //qt
-
-
-
+} //namespace sofa::gui::qt

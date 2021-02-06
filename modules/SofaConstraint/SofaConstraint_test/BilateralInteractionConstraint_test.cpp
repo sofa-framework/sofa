@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/testing/NumericTest.h>
 using sofa::helper::testing::NumericTest;
-
+#include <sofa/simulation/Node.h>
 #include <SofaSimulationGraph/SimpleApi.h>
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>

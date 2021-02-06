@@ -32,6 +32,7 @@
 #include <sofa/core/visual/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 #include <sofa/helper/gl/Texture.h>
+#include <sofa/simulation/Node.h>
 
 #include <map>
 

@@ -19,36 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_DEFAULTTYPE_VEC_CPP
+#define FIXED_ARRAY_CPP
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/stdtype/fixed_array.h>
 
-namespace sofa
-{
-namespace defaulttype
+namespace sofa::type::stdtype
 {
 
- template class Vec<2,float>;
- template class Vec<2,int>;
- template class Vec<2,double>;
- template class Vec<2,unsigned>;
+template class SOFA_TYPE_API fixed_array<float, 2>;
+template class SOFA_TYPE_API fixed_array<double, 2>;
 
- template class Vec<3,float>;
- template class Vec<3,int>;
- template class Vec<3,double>;
- template class Vec<3,unsigned>;
+template class SOFA_TYPE_API fixed_array<float, 3>;
+template class SOFA_TYPE_API fixed_array<double, 3>;
 
- template class Vec<4,float>;
- template class Vec<4,int>;
- template class Vec<4,double>;
- template class Vec<4,unsigned>;
+template class SOFA_TYPE_API fixed_array<float, 4>;
+template class SOFA_TYPE_API fixed_array<double, 4>;
 
- template class Vec<6,float>;
- template class Vec<6,int>;
- template class Vec<6,double>;
- template class Vec<6,unsigned>;
+template class SOFA_TYPE_API fixed_array<float, 5>;
+template class SOFA_TYPE_API fixed_array<double, 5>;
 
+template class SOFA_TYPE_API fixed_array<float, 6>;
+template class SOFA_TYPE_API fixed_array<double, 6>;
 
-} // namespace defaulttype
-} // namespace sofa
+template class SOFA_TYPE_API fixed_array<float, 7>;
+template class SOFA_TYPE_API fixed_array<double, 7>;
+
+} // namespace sofa::helper::stdtype
 

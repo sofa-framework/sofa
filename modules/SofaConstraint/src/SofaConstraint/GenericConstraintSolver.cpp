@@ -25,8 +25,11 @@
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <SofaConstraint/ConstraintStoreLambdaVisitor.h>
 #include <algorithm>
+#include <sofa/core/behavior/MultiVec.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa::component::constraintset
 {

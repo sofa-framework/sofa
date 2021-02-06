@@ -35,11 +35,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 #define LOCATION_COLUMN 3
@@ -281,7 +277,4 @@ void SofaPluginManager::loadPluginsFromIniFile()
 }
 
 
-}
-}
-}
-
+} // namespace sofa::gui::qt

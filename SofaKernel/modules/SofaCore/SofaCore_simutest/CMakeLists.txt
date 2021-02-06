@@ -7,6 +7,8 @@ find_package(SofaBase REQUIRED)
 set(SOURCE_FILES
     objectmodel/Base_test.cpp
     objectmodel/BaseContext_test.cpp
+    objectmodel/BaseLink_simutest.cpp
+    objectmodel/PathResolver_simutest.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

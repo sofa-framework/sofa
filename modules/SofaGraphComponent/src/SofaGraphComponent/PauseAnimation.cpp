@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaGraphComponent/PauseAnimation.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa::component::misc
 {

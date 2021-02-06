@@ -21,10 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-
+#include <sofa/simulation/Node.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/simulation/Simulation.h>
 #include <iostream>
 #include <sofa/helper/cast.h>
 

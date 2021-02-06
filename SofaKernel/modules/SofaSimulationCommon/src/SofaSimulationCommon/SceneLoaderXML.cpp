@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaSimulationCommon/SceneLoaderXML.h>
-
+#include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/Locale.h>
 #include <sofa/helper/cast.h>
 

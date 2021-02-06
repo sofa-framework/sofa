@@ -24,9 +24,10 @@
 
 #include <SofaConstraint/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/behavior/BaseConstraint.h>
 
-#include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/fwd.h>
 
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
@@ -196,7 +197,7 @@ public:
 
 
     /// common built-unbuilt
-    simulation::Node *context;
+    sofa::core::objectmodel::BaseContext *context;
     sofa::component::linearsolver::FullVector<double> *_dFree, *_result;
     ///
     sofa::helper::system::thread::CTime timer;

@@ -22,7 +22,6 @@
 #pragma once
 #include <LMConstraint/DOFBlockerLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Simulation.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/helper/types/RGBAColor.h>
 

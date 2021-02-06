@@ -38,7 +38,7 @@
 #include <SofaSimulationGraph/DAGSimulation.h>
 
 #include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
+#include <SofaGui/initSofaGui.h>
 #include <sofa/helper/init.h>
 
 #include <sofa/gui/BaseGUI.h>
@@ -219,7 +219,7 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
         }
         else
         {
-          sofa::gui::initMain();
+          sofa::gui::initSofaGui();
 
           char* argv[]= { const_cast<char*>("a") };
 

@@ -23,6 +23,8 @@ list(APPEND SOURCE_FILES
     IndexValueMapper_test.cpp
     JoinPoints_test.cpp
     RandomPointDistributionInSurface_test.cpp
+    Engine_test.cpp
+    TestEngine.cpp
     )
 
 find_package(SofaGeneralEngine REQUIRED)

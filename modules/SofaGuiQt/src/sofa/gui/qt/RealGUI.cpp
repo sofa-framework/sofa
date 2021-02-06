@@ -47,6 +47,7 @@
 #include <sofa/simulation/Node.h>
 #endif
 
+
 #include <QScreen>
 #include "QSofaListView.h"
 #include "QDisplayPropertyWidget.h"
@@ -82,6 +83,7 @@ using sofa::gui::GuiDataRepository;
 #include <sofa/simulation/SceneLoaderFactory.h>
 using sofa::simulation::SceneLoaderFactory;
 
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 
 #include <QHBoxLayout>
@@ -145,19 +147,12 @@ using sofa::core::ExecParams;
 #include <boost/program_options.hpp>
 
 
-namespace sofa
-{
-
 #ifdef SOFA_PML
-using namespace filemanager::pml;
+using namespace sofa::gui::filemanager::pml;
 #endif
 
-namespace gui
+namespace sofa::gui::qt
 {
-
-namespace qt
-{
-
 
 using sofa::core::objectmodel::BaseObject;
 using namespace sofa::helper::system::thread;
@@ -816,7 +811,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     if( currentSimulation() ) this->unloadScene();
 
     const std::vector<std::string> sceneArgs = sofa::helper::ArgumentParser::extra_args();
-    mSimulation = simulation::getSimulation()->load ( filename, reload, sceneArgs );
+    mSimulation = sofa::simulation::getSimulation()->load ( filename, reload, sceneArgs );
 
     simulation::getSimulation()->init ( mSimulation.get() );
     if ( mSimulation == nullptr )
@@ -2644,8 +2639,4 @@ void RealGUI::appendToDataLogFile(QString dataModifiedString)
 
 //======================= SIGNALS-SLOTS ========================= }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} // namespace sofa::gui::qt

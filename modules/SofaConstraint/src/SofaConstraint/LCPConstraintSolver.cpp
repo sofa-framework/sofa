@@ -285,7 +285,7 @@ void LCPConstraintSolver::init()
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
         constraintCorrections[i]->addConstraintSolver(this);
 
-    context = (simulation::Node*) getContext();
+    context = getContext();
 }
 
 void LCPConstraintSolver::cleanup()
