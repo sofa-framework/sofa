@@ -13,7 +13,7 @@ namespace
 
 /// Representation of rays.
 /// A ray is an infinite line starting at origin and going in some direction.
-class SOFA_DEFAULTTYPE_API Ray
+class Ray
 {
 public:
     Ray(const Vec3& origin = Vec3(0,0,0), const Vec3& direction = Vec3(0,0,0))
