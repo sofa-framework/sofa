@@ -51,7 +51,6 @@ SOFA_CORE_API std::istream& operator>> ( std::istream& in, sofa::core::topology:
 SOFA_CORE_API std::istream& operator>> ( std::istream& in, const sofa::core::topology::TopologyChange*& );
 
 class Topology;
-class TopologyChange;
 }
 
 namespace sofa::core::visual

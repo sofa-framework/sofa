@@ -1,11 +1,15 @@
 #pragma once
 
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/config.h>
 
-namespace sofa
-{    
-namespace defaulttype
+namespace sofa::defaulttype
 {
+
+namespace
+{
+    using sofa::type::Vec3;
+}
 
 /// Representation of rays.
 /// A ray is an infinite line starting at origin and going in some direction.
@@ -33,5 +37,5 @@ private:
     Vec3 m_origin;
     Vec3 m_direction;
 };
-} /// namespace defaulttype   
+
 } /// namespace sofa
