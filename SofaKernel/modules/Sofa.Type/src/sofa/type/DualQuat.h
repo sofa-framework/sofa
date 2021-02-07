@@ -72,8 +72,9 @@ public:
         : dual(c.getDual()), orientation(c.getOrientation()) {}
 
     template<typename real2>
-    [[deprecated("This constructor has been deleted in #PR 1XXX because of dependency on Defaulttype." \
-        "Use DualQuatCoord3(c.getCenter(), c.getOrientation()) instead.")]]
+    // Deprecated flag is commented, as MSVC2017 cannot handle the associated template syntax. (works well with MSVC2019)
+    //[[deprecated("This constructor has been deleted in #PR 1790 because of dependency on Defaulttype." \
+    //    "Use DualQuatCoord3(c.getCenter(), c.getOrientation()) instead.")]]
     DualQuatCoord3(const sofa::defaulttype::RigidCoord<3, real2>& c) = delete;
 
     DualQuatCoord3(const Pos& p, const sofa::type::Quat<real>& q)
