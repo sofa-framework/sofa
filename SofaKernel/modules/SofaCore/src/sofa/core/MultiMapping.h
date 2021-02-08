@@ -213,7 +213,7 @@ public:
             arg->logError("The 'input' data attribute is empty. It should contain a valid path "
                           "to one or more mechanical states of type '" + std::string(TIn::Name()) + "'.");
             return false;
-        } else if (!LinkFromModels::CheckPaths( input, context )) {
+        } else if (!PathResolver::CheckPaths(context, LinkFromModels::DestType::GetClass(), input)) {
             arg->logError("The 'input' data attribute does not contain a valid path to one or more mechanical "
                           "states of type '" + std::string(TIn::Name()) + "'.");
             return false;
@@ -224,7 +224,7 @@ public:
             arg->logError("The 'output' data attribute is empty. It should contain a valid path "
                           "to one or more mechanical states. of type '" + std::string(TOut::Name()) + "'.");
             return false;
-        } else if (!LinkToModels::CheckPaths( output, context )) {
+        } else if (!PathResolver::CheckPaths(context, LinkToModels::DestType::GetClass(), output)) {
             arg->logError("The 'output' data attribute does not contain a valid path to one or more mechanical "
                           "states of type '" + std::string(TOut::Name()) + "'.");
             return false;

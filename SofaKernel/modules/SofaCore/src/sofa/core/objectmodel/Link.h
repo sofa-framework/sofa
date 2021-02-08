@@ -613,10 +613,7 @@ public:
     }
 
     [[deprecated("2021-01-01: CheckPaths as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPaths(Base*, BaseClass*, string).")]]
-    static bool CheckPaths(const std::string& pathes, Base* context)
-    {
-        return PathResolver::CheckPaths(context, Inherit::GetDestClass(), pathes);
-    }
+    static bool CheckPaths(const std::string& pathes, Base* context) = delete;
 
 protected:
     ValidatorFn m_validator;
