@@ -7,7 +7,7 @@
     <RequiredPlugin pluginName='SofaLoader'/>
 
     <!-- Using the VisualStyle choose your visual options! -->
-    <!-- ACTIVATE: showVisual showBehavior showForceFields showInteractionForceFields showCollision showCollisionModels showWireFrame -->\
+    <!-- ACTIVATE: showVisual showBehavior showForceFields showInteractionForceFields showCollision showCollisionModels showWireFrame -->
     <!-- DE-ACTIVATE: hideVisual hideBehavior hideForceFields hideInteractionForceFields hideCollision hideCollisionModels hideWireFrame -->
     <VisualStyle displayFlags="showVisual showCollisionModels" />
     
