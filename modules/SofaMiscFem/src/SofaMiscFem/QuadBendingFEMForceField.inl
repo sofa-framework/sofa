@@ -1,8 +1,8 @@
 /******************************************************************************
-*									      *
-*			Ho Lab - IoTouch Project			      *
-*		       Developer: Nguyen Huu Nhan                             *
-*                                  					      *
+*									                                                            *
+*			   TouchIoT: Smart Tangible Sensing Enabler for Tactile Internet			  *
+*		                     Developer: Nguyen Huu Nhan                           *
+*                                  					                                  *
 ******************************************************************************/
 #pragma once
 
@@ -30,7 +30,6 @@
 #include <chrono>
 #include <ctime>    
 #include <string.h>
-#include <chrono>
 
 #include <iomanip>
 #include <sstream>
@@ -66,11 +65,7 @@ void QuadBendingFEMForceField<DataTypes>::QuadHandler::applyCreateFunction(unsig
             ff->computeBendingMaterialStiffness(quadIndex,idx0,idx1,idx2,idx3);
             ff->computeShearMaterialStiffness(quadIndex,idx0,idx1,idx2,idx3);
             break;
-        /*case LARGE :
-            ff->initLarge();
-            ff->computeBendingMaterialStiffness(quadIndex,idx0,idx1,idx2,idx3);
-            ff->computeShearMaterialStiffness(quadIndex,idx0,idx1,idx2,idx3);
-            break;*/
+
         }
     }
 }
@@ -90,6 +85,9 @@ QuadBendingFEMForceField<DataTypes>::QuadBendingFEMForceField()
   , f_young(initData(&f_young,helper::vector<Real>(1,static_cast<Real>(1000.0)),"youngModulus","Young modulus in Hooke's law (vector)"))
   , f_thickness(initData(&f_thickness,Real(1.),"thickness","Thickness of the elements"))
   , l_topology(initLink("topology", "link to the topology container"))
+  , directory(initData(&directory, std::string("/home/K.txt"), "directory", "directory to K"))
+
+
 {
     quadHandler = new QuadHandler(this, &quadInfo);
 }
@@ -137,11 +135,6 @@ void QuadBendingFEMForceField<DataTypes>::init()
 
     vertexInfo.createTopologicalEngine(m_topology);
     vertexInfo.registerTopologicalData(); 
-  
-    /*if (f_method.getValue() == "small")
-        method = SMALL;
-    else if (f_method.getValue() == "large")
-        method = LARGE;*/
 
     reinit();
 }
@@ -172,14 +165,6 @@ void QuadBendingFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Ind
   quadInfo.endEdit();
 }
   
-// --------------------------------------------------------------------------------------
-// --- Store the initial position of the nodes (large deformation method)
-// --------------------------------------------------------------------------------------
-/*template <class DataTypes>
-void QuadBendingFEMForceField<DataTypes>::initLarge()
-{
-  
-}*/
   
 // --------------------------------------------------------------------------------------
 // --- Re-initialization (called when we change a parameter through the GUI)
@@ -303,8 +288,7 @@ for(int idx=0;idx<4;idx++)
     Jb[24][15] = Jb[26][16] = m*(1.0f+n*gauss2)/(4.0f*l);  // Ni/x : J[idx0][0][0] = (1*(-1)*(1+(-1)*gauss2))/(4*l)
     Jb[25][16] = Jb[26][15] = n*(1.0f+m*gauss1)/(4.0f*h);  // Ni/y : J[idx0][1][1] = (1*(-1)*(1+(-1)*gauss1))/(4*h)
     }
-  //const float w = 1.0f; //weight coeff of gauss intergration method for 2x2 quadrupter
-  //Jb *= w;
+
 
   }
 }
@@ -358,8 +342,6 @@ for(int idx=0;idx<4;idx++)
       Js[31][17] = n/(4.0f*h);   //gauss1 = 0
       Js[30][18] = Js[31][19] = -1.0f/4.0f; // -Ni : gauss1 = 0 va gauss2 = 0
       }
-  //const float w = 4.0f;   //weight2 coeff of gauss intergration method for 1x1 quadrupter w = 2 * 2
-  //Js *= w;
 
   }
 }
@@ -443,7 +425,6 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
   Coord height_vec = p[idx3] - p[idx0];
   float length = (sqrt(length_vec[0]*length_vec[0]+length_vec[1]*length_vec[1]+length_vec[2]*length_vec[2]))/2.0f; // length of quad element
   float height = (sqrt(height_vec[0]*height_vec[0]+height_vec[1]*height_vec[1]+height_vec[2]*height_vec[2]))/2.0f; // height of quad element
-  //Coord centroid = (p[idx0]+p[idx2])/2.0f;
  
   // Bending component of strain displacement
   defaulttype::Mat<20, 32, Real> Jb0_t;
@@ -468,388 +449,44 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
   // Bending component of material stiffness
   MaterialStiffness Cb;
   Cb = quadInf[elementIndex].BendingmaterialMatrix ;
-  /*// expand Cb from 8x8 to 32x32 diagonal matrix
-  defaulttype::Mat<32,32,Real> Cb_e;
-  for (unsigned i = 0;i<4;i++)
-  {
-    for(unsigned j = 0;j<4;j++)
-    {
-      for(unsigned k = 0;k<8;k++)
-      {
-        for(unsigned l = 0;l<8;l++)
-        {
-          Cb_e[8*i+k][8*j+l] = Cb[k][l]; //20x20 matrix
-        }
-      }
-    }
-  }*/
+  
   // Stiffness matrix for bending component
   const float wb = 1.0f; // weight coff of gauss integration 2x2
   Stiffness Kb0;
-  Kb0[0][0]=length*height*(Jb0_t[0][0]*Cb[0][0]*Jb0[0][0]+Jb0_t[0][2]*Cb[2][2]*Jb0[2][0])*wb;
-  Kb0[0][1]=length*height*(Jb0_t[0][0]*Cb[0][1]*Jb0[1][1]+Jb0_t[0][2]*Cb[2][2]*Jb0[2][1])*wb;
-  Kb0[0][5]=length*height*(Jb0_t[0][0]*Cb[0][0]*Jb0[8][5]+Jb0_t[0][2]*Cb[2][2]*Jb0[10][5])*wb;
-  Kb0[0][6]=length*height*(Jb0_t[0][0]*Cb[0][1]*Jb0[9][6]+Jb0_t[0][2]*Cb[2][2]*Jb0[10][6])*wb;
-  Kb0[0][10]=length*height*(Jb0_t[0][0]*Cb[0][0]*Jb0[16][10]+Jb0_t[0][2]*Cb[2][2]*Jb0[18][10])*wb;
-  Kb0[0][11]=length*height*(Jb0_t[0][0]*Cb[0][1]*Jb0[17][11]+Jb0_t[0][2]*Cb[2][2]*Jb0[18][11])*wb;
-  Kb0[0][15]=length*height*(Jb0_t[0][0]*Cb[0][0]*Jb0[24][15]+Jb0_t[0][2]*Cb[2][2]*Jb0[26][15])*wb;
-  Kb0[0][16]=length*height*(Jb0_t[0][0]*Cb[0][1]*Jb0[25][16]+Jb0_t[0][2]*Cb[2][2]*Jb0[26][16])*wb;
-
-  Kb0[1][0]=length*height*(Jb0_t[1][1]*Cb[1][0]*Jb0[0][0]+Jb0_t[1][2]*Cb[2][2]*Jb0[2][0])*wb;
-  Kb0[1][1]=length*height*(Jb0_t[1][1]*Cb[1][1]*Jb0[1][1]+Jb0_t[1][2]*Cb[2][2]*Jb0[2][1])*wb;
-  Kb0[1][5]=length*height*(Jb0_t[1][1]*Cb[1][0]*Jb0[8][5]+Jb0_t[1][2]*Cb[2][2]*Jb0[10][5])*wb;
-  Kb0[1][6]=length*height*(Jb0_t[1][1]*Cb[1][1]*Jb0[9][6]+Jb0_t[1][2]*Cb[2][2]*Jb0[10][6])*wb;
-  Kb0[1][10]=length*height*(Jb0_t[1][1]*Cb[1][0]*Jb0[16][10]+Jb0_t[1][2]*Cb[2][2]*Jb0[18][10])*wb;
-  Kb0[1][11]=length*height*(Jb0_t[1][1]*Cb[1][1]*Jb0[17][11]+Jb0_t[1][2]*Cb[2][2]*Jb0[18][11])*wb;
-  Kb0[1][15]=length*height*(Jb0_t[1][1]*Cb[1][0]*Jb0[24][15]+Jb0_t[1][2]*Cb[2][2]*Jb0[26][15])*wb;
-  Kb0[1][16]=length*height*(Jb0_t[1][1]*Cb[1][1]*Jb0[25][16]+Jb0_t[1][2]*Cb[2][2]*Jb0[26][16])*wb;
-
-  Kb0[5][0]=length*height*(Jb0_t[5][8]*Cb[0][0]*Jb0[0][0]+Jb0_t[5][10]*Cb[2][2]*Jb0[2][0])*wb;
-  Kb0[5][1]=length*height*(Jb0_t[5][8]*Cb[0][1]*Jb0[1][1]+Jb0_t[5][10]*Cb[2][2]*Jb0[2][1])*wb;
-  Kb0[5][5]=length*height*(Jb0_t[5][8]*Cb[0][0]*Jb0[8][5]+Jb0_t[5][10]*Cb[2][2]*Jb0[10][5])*wb;
-  Kb0[5][6]=length*height*(Jb0_t[5][8]*Cb[0][1]*Jb0[9][6]+Jb0_t[5][10]*Cb[2][2]*Jb0[10][6])*wb;
-  Kb0[5][10]=length*height*(Jb0_t[5][8]*Cb[0][0]*Jb0[16][10]+Jb0_t[5][10]*Cb[2][2]*Jb0[18][10])*wb;
-  Kb0[5][11]=length*height*(Jb0_t[5][8]*Cb[0][1]*Jb0[17][11]+Jb0_t[5][10]*Cb[2][2]*Jb0[18][11])*wb;
-  Kb0[5][15]=length*height*(Jb0_t[5][8]*Cb[0][0]*Jb0[24][15]+Jb0_t[5][10]*Cb[2][2]*Jb0[26][15])*wb;
-  Kb0[5][16]=length*height*(Jb0_t[5][8]*Cb[0][1]*Jb0[25][16]+Jb0_t[5][10]*Cb[2][2]*Jb0[26][16])*wb;
-
-  Kb0[6][0]=length*height*(Jb0_t[6][9]*Cb[1][0]*Jb0[0][0]+Jb0_t[6][10]*Cb[2][2]*Jb0[2][0])*wb;
-  Kb0[6][1]=length*height*(Jb0_t[6][9]*Cb[1][1]*Jb0[1][1]+Jb0_t[6][10]*Cb[2][2]*Jb0[2][1])*wb;
-  Kb0[6][5]=length*height*(Jb0_t[6][9]*Cb[1][0]*Jb0[8][5]+Jb0_t[6][10]*Cb[2][2]*Jb0[10][5])*wb;
-  Kb0[6][6]=length*height*(Jb0_t[6][9]*Cb[1][1]*Jb0[9][6]+Jb0_t[6][10]*Cb[2][2]*Jb0[10][6])*wb;
-  Kb0[6][10]=length*height*(Jb0_t[6][9]*Cb[1][0]*Jb0[16][10]+Jb0_t[6][10]*Cb[2][2]*Jb0[18][10])*wb;
-  Kb0[6][11]=length*height*(Jb0_t[6][9]*Cb[1][1]*Jb0[17][11]+Jb0_t[6][10]*Cb[2][2]*Jb0[18][11])*wb;
-  Kb0[6][15]=length*height*(Jb0_t[6][9]*Cb[1][0]*Jb0[24][15]+Jb0_t[6][10]*Cb[2][2]*Jb0[26][15])*wb;
-  Kb0[6][16]=length*height*(Jb0_t[6][9]*Cb[1][1]*Jb0[25][16]+Jb0_t[6][10]*Cb[2][2]*Jb0[26][16])*wb;
-
-  Kb0[10][0]=length*height*(Jb0_t[10][16]*Cb[0][0]*Jb0[0][0]+Jb0_t[10][18]*Cb[2][2]*Jb0[2][0])*wb;
-  Kb0[10][1]=length*height*(Jb0_t[10][16]*Cb[0][1]*Jb0[1][1]+Jb0_t[10][18]*Cb[2][2]*Jb0[2][1])*wb;
-  Kb0[10][5]=length*height*(Jb0_t[10][16]*Cb[0][0]*Jb0[8][5]+Jb0_t[10][18]*Cb[2][2]*Jb0[10][5])*wb;
-  Kb0[10][6]=length*height*(Jb0_t[10][16]*Cb[0][1]*Jb0[9][6]+Jb0_t[10][18]*Cb[2][2]*Jb0[10][6])*wb;
-  Kb0[10][10]=length*height*(Jb0_t[10][16]*Cb[0][0]*Jb0[16][10]+Jb0_t[10][18]*Cb[2][2]*Jb0[18][10])*wb;
-  Kb0[10][11]=length*height*(Jb0_t[10][16]*Cb[0][1]*Jb0[17][11]+Jb0_t[10][18]*Cb[2][2]*Jb0[18][11])*wb;
-  Kb0[10][15]=length*height*(Jb0_t[10][16]*Cb[0][0]*Jb0[24][15]+Jb0_t[10][18]*Cb[2][2]*Jb0[26][15])*wb;
-  Kb0[10][16]=length*height*(Jb0_t[10][16]*Cb[0][1]*Jb0[25][16]+Jb0_t[10][18]*Cb[2][2]*Jb0[26][16])*wb;
-
-  Kb0[11][0]=length*height*(Jb0_t[11][17]*Cb[1][0]*Jb0[0][0]+Jb0_t[11][18]*Cb[2][2]*Jb0[2][0])*wb;
-  Kb0[11][1]=length*height*(Jb0_t[11][17]*Cb[1][1]*Jb0[1][1]+Jb0_t[11][18]*Cb[2][2]*Jb0[2][1])*wb;
-  Kb0[11][5]=length*height*(Jb0_t[11][17]*Cb[1][0]*Jb0[8][5]+Jb0_t[11][18]*Cb[2][2]*Jb0[10][5])*wb;
-  Kb0[11][6]=length*height*(Jb0_t[11][17]*Cb[1][1]*Jb0[9][6]+Jb0_t[11][18]*Cb[2][2]*Jb0[10][6])*wb;
-  Kb0[11][10]=length*height*(Jb0_t[11][17]*Cb[1][0]*Jb0[16][10]+Jb0_t[11][18]*Cb[2][2]*Jb0[18][10])*wb;
-  Kb0[11][11]=length*height*(Jb0_t[11][17]*Cb[1][1]*Jb0[17][11]+Jb0_t[11][18]*Cb[2][2]*Jb0[18][11])*wb;
-  Kb0[11][15]=length*height*(Jb0_t[11][17]*Cb[1][0]*Jb0[24][15]+Jb0_t[11][18]*Cb[2][2]*Jb0[26][15])*wb;
-  Kb0[11][16]=length*height*(Jb0_t[11][17]*Cb[1][1]*Jb0[25][16]+Jb0_t[11][18]*Cb[2][2]*Jb0[26][16])*wb;
-
-  Kb0[15][0]=length*height*(Jb0_t[15][24]*Cb[0][0]*Jb0[0][0]+Jb0_t[15][26]*Cb[2][2]*Jb0[2][0])*wb;
-  Kb0[15][1]=length*height*(Jb0_t[15][24]*Cb[0][1]*Jb0[1][1]+Jb0_t[15][26]*Cb[2][2]*Jb0[2][1])*wb;
-  Kb0[15][5]=length*height*(Jb0_t[15][24]*Cb[0][0]*Jb0[8][5]+Jb0_t[15][26]*Cb[2][2]*Jb0[10][5])*wb;
-  Kb0[15][6]=length*height*(Jb0_t[15][24]*Cb[0][1]*Jb0[9][6]+Jb0_t[15][26]*Cb[2][2]*Jb0[10][6])*wb;
-  Kb0[15][10]=length*height*(Jb0_t[15][24]*Cb[0][0]*Jb0[16][10]+Jb0_t[15][26]*Cb[2][2]*Jb0[18][10])*wb;
-  Kb0[15][11]=length*height*(Jb0_t[15][24]*Cb[0][1]*Jb0[17][11]+Jb0_t[15][26]*Cb[2][2]*Jb0[18][11])*wb;
-  Kb0[15][15]=length*height*(Jb0_t[15][24]*Cb[0][0]*Jb0[24][15]+Jb0_t[15][26]*Cb[2][2]*Jb0[26][15])*wb;
-  Kb0[15][16]=length*height*(Jb0_t[15][24]*Cb[0][1]*Jb0[25][16]+Jb0_t[15][26]*Cb[2][2]*Jb0[26][16])*wb;
-
-  Kb0[16][0]=length*height*(Jb0_t[16][25]*Cb[1][0]*Jb0[0][0]+Jb0_t[16][26]*Cb[2][2]*Jb0[2][0])*wb;
-  Kb0[16][1]=length*height*(Jb0_t[16][25]*Cb[1][1]*Jb0[1][1]+Jb0_t[16][26]*Cb[2][2]*Jb0[2][1])*wb;
-  Kb0[16][5]=length*height*(Jb0_t[16][25]*Cb[1][0]*Jb0[8][5]+Jb0_t[16][26]*Cb[2][2]*Jb0[10][5])*wb;
-  Kb0[16][6]=length*height*(Jb0_t[16][25]*Cb[1][1]*Jb0[9][6]+Jb0_t[16][26]*Cb[2][2]*Jb0[10][6])*wb;
-  Kb0[16][10]=length*height*(Jb0_t[16][25]*Cb[1][0]*Jb0[16][10]+Jb0_t[16][26]*Cb[2][2]*Jb0[18][10])*wb;
-  Kb0[16][11]=length*height*(Jb0_t[16][25]*Cb[1][1]*Jb0[17][11]+Jb0_t[16][26]*Cb[2][2]*Jb0[18][11])*wb;
-  Kb0[16][15]=length*height*(Jb0_t[16][25]*Cb[1][0]*Jb0[24][15]+Jb0_t[16][26]*Cb[2][2]*Jb0[26][15])*wb;
-  Kb0[16][16]=length*height*(Jb0_t[16][25]*Cb[1][1]*Jb0[25][16]+Jb0_t[16][26]*Cb[2][2]*Jb0[26][16])*wb;
-
   Stiffness Kb1;
-  Kb1[0][0]=length*height*(Jb1_t[0][0]*Cb[0][0]*Jb1[0][0]+Jb1_t[0][2]*Cb[2][2]*Jb1[2][0])*wb;
-  Kb1[0][1]=length*height*(Jb1_t[0][0]*Cb[0][1]*Jb1[1][1]+Jb1_t[0][2]*Cb[2][2]*Jb1[2][1])*wb;
-  Kb1[0][5]=length*height*(Jb1_t[0][0]*Cb[0][0]*Jb1[8][5]+Jb1_t[0][2]*Cb[2][2]*Jb1[10][5])*wb;
-  Kb1[0][6]=length*height*(Jb1_t[0][0]*Cb[0][1]*Jb1[9][6]+Jb1_t[0][2]*Cb[2][2]*Jb1[10][6])*wb;
-  Kb1[0][10]=length*height*(Jb1_t[0][0]*Cb[0][0]*Jb1[16][10]+Jb1_t[0][2]*Cb[2][2]*Jb1[18][10])*wb;
-  Kb1[0][11]=length*height*(Jb1_t[0][0]*Cb[0][1]*Jb1[17][11]+Jb1_t[0][2]*Cb[2][2]*Jb1[18][11])*wb;
-  Kb1[0][15]=length*height*(Jb1_t[0][0]*Cb[0][0]*Jb1[24][15]+Jb1_t[0][2]*Cb[2][2]*Jb1[26][15])*wb;
-  Kb1[0][16]=length*height*(Jb1_t[0][0]*Cb[0][1]*Jb1[25][16]+Jb1_t[0][2]*Cb[2][2]*Jb1[26][16])*wb;
-
-  Kb1[1][0]=length*height*(Jb1_t[1][1]*Cb[1][0]*Jb1[0][0]+Jb1_t[1][2]*Cb[2][2]*Jb1[2][0])*wb;
-  Kb1[1][1]=length*height*(Jb1_t[1][1]*Cb[1][1]*Jb1[1][1]+Jb1_t[1][2]*Cb[2][2]*Jb1[2][1])*wb;
-  Kb1[1][5]=length*height*(Jb1_t[1][1]*Cb[1][0]*Jb1[8][5]+Jb1_t[1][2]*Cb[2][2]*Jb1[10][5])*wb;
-  Kb1[1][6]=length*height*(Jb1_t[1][1]*Cb[1][1]*Jb1[9][6]+Jb1_t[1][2]*Cb[2][2]*Jb1[10][6])*wb;
-  Kb1[1][10]=length*height*(Jb1_t[1][1]*Cb[1][0]*Jb1[16][10]+Jb1_t[1][2]*Cb[2][2]*Jb1[18][10])*wb;
-  Kb1[1][11]=length*height*(Jb1_t[1][1]*Cb[1][1]*Jb1[17][11]+Jb1_t[1][2]*Cb[2][2]*Jb1[18][11])*wb;
-  Kb1[1][15]=length*height*(Jb1_t[1][1]*Cb[1][0]*Jb1[24][15]+Jb1_t[1][2]*Cb[2][2]*Jb1[26][15])*wb;
-  Kb1[1][16]=length*height*(Jb1_t[1][1]*Cb[1][1]*Jb1[25][16]+Jb1_t[1][2]*Cb[2][2]*Jb1[26][16])*wb;
-
-  Kb1[5][0]=length*height*(Jb1_t[5][8]*Cb[0][0]*Jb1[0][0]+Jb1_t[5][10]*Cb[2][2]*Jb1[2][0])*wb;
-  Kb1[5][1]=length*height*(Jb1_t[5][8]*Cb[0][1]*Jb1[1][1]+Jb1_t[5][10]*Cb[2][2]*Jb1[2][1])*wb;
-  Kb1[5][5]=length*height*(Jb1_t[5][8]*Cb[0][0]*Jb1[8][5]+Jb1_t[5][10]*Cb[2][2]*Jb1[10][5])*wb;
-  Kb1[5][6]=length*height*(Jb1_t[5][8]*Cb[0][1]*Jb1[9][6]+Jb1_t[5][10]*Cb[2][2]*Jb1[10][6])*wb;
-  Kb1[5][10]=length*height*(Jb1_t[5][8]*Cb[0][0]*Jb1[16][10]+Jb1_t[5][10]*Cb[2][2]*Jb1[18][10])*wb;
-  Kb1[5][11]=length*height*(Jb1_t[5][8]*Cb[0][1]*Jb1[17][11]+Jb1_t[5][10]*Cb[2][2]*Jb1[18][11])*wb;
-  Kb1[5][15]=length*height*(Jb1_t[5][8]*Cb[0][0]*Jb1[24][15]+Jb1_t[5][10]*Cb[2][2]*Jb1[26][15])*wb;
-  Kb1[5][16]=length*height*(Jb1_t[5][8]*Cb[0][1]*Jb1[25][16]+Jb1_t[5][10]*Cb[2][2]*Jb1[26][16])*wb;
-
-  Kb1[6][0]=length*height*(Jb1_t[6][9]*Cb[1][0]*Jb1[0][0]+Jb1_t[6][10]*Cb[2][2]*Jb1[2][0])*wb;
-  Kb1[6][1]=length*height*(Jb1_t[6][9]*Cb[1][1]*Jb1[1][1]+Jb1_t[6][10]*Cb[2][2]*Jb1[2][1])*wb;
-  Kb1[6][5]=length*height*(Jb1_t[6][9]*Cb[1][0]*Jb1[8][5]+Jb1_t[6][10]*Cb[2][2]*Jb1[10][5])*wb;
-  Kb1[6][6]=length*height*(Jb1_t[6][9]*Cb[1][1]*Jb1[9][6]+Jb1_t[6][10]*Cb[2][2]*Jb1[10][6])*wb;
-  Kb1[6][10]=length*height*(Jb1_t[6][9]*Cb[1][0]*Jb1[16][10]+Jb1_t[6][10]*Cb[2][2]*Jb1[18][10])*wb;
-  Kb1[6][11]=length*height*(Jb1_t[6][9]*Cb[1][1]*Jb1[17][11]+Jb1_t[6][10]*Cb[2][2]*Jb1[18][11])*wb;
-  Kb1[6][15]=length*height*(Jb1_t[6][9]*Cb[1][0]*Jb1[24][15]+Jb1_t[6][10]*Cb[2][2]*Jb1[26][15])*wb;
-  Kb1[6][16]=length*height*(Jb1_t[6][9]*Cb[1][1]*Jb1[25][16]+Jb1_t[6][10]*Cb[2][2]*Jb1[26][16])*wb;
-
-  Kb1[10][0]=length*height*(Jb1_t[10][16]*Cb[0][0]*Jb1[0][0]+Jb1_t[10][18]*Cb[2][2]*Jb1[2][0])*wb;
-  Kb1[10][1]=length*height*(Jb1_t[10][16]*Cb[0][1]*Jb1[1][1]+Jb1_t[10][18]*Cb[2][2]*Jb1[2][1])*wb;
-  Kb1[10][5]=length*height*(Jb1_t[10][16]*Cb[0][0]*Jb1[8][5]+Jb1_t[10][18]*Cb[2][2]*Jb1[10][5])*wb;
-  Kb1[10][6]=length*height*(Jb1_t[10][16]*Cb[0][1]*Jb1[9][6]+Jb1_t[10][18]*Cb[2][2]*Jb1[10][6])*wb;
-  Kb1[10][10]=length*height*(Jb1_t[10][16]*Cb[0][0]*Jb1[16][10]+Jb1_t[10][18]*Cb[2][2]*Jb1[18][10])*wb;
-  Kb1[10][11]=length*height*(Jb1_t[10][16]*Cb[0][1]*Jb1[17][11]+Jb1_t[10][18]*Cb[2][2]*Jb1[18][11])*wb;
-  Kb1[10][15]=length*height*(Jb1_t[10][16]*Cb[0][0]*Jb1[24][15]+Jb1_t[10][18]*Cb[2][2]*Jb1[26][15])*wb;
-  Kb1[10][16]=length*height*(Jb1_t[10][16]*Cb[0][1]*Jb1[25][16]+Jb1_t[10][18]*Cb[2][2]*Jb1[26][16])*wb;
-
-  Kb1[11][0]=length*height*(Jb1_t[11][17]*Cb[1][0]*Jb1[0][0]+Jb1_t[11][18]*Cb[2][2]*Jb1[2][0])*wb;
-  Kb1[11][1]=length*height*(Jb1_t[11][17]*Cb[1][1]*Jb1[1][1]+Jb1_t[11][18]*Cb[2][2]*Jb1[2][1])*wb;
-  Kb1[11][5]=length*height*(Jb1_t[11][17]*Cb[1][0]*Jb1[8][5]+Jb1_t[11][18]*Cb[2][2]*Jb1[10][5])*wb;
-  Kb1[11][6]=length*height*(Jb1_t[11][17]*Cb[1][1]*Jb1[9][6]+Jb1_t[11][18]*Cb[2][2]*Jb1[10][6])*wb;
-  Kb1[11][10]=length*height*(Jb1_t[11][17]*Cb[1][0]*Jb1[16][10]+Jb1_t[11][18]*Cb[2][2]*Jb1[18][10])*wb;
-  Kb1[11][11]=length*height*(Jb1_t[11][17]*Cb[1][1]*Jb1[17][11]+Jb1_t[11][18]*Cb[2][2]*Jb1[18][11])*wb;
-  Kb1[11][15]=length*height*(Jb1_t[11][17]*Cb[1][0]*Jb1[24][15]+Jb1_t[11][18]*Cb[2][2]*Jb1[26][15])*wb;
-  Kb1[11][16]=length*height*(Jb1_t[11][17]*Cb[1][1]*Jb1[25][16]+Jb1_t[11][18]*Cb[2][2]*Jb1[26][16])*wb;
-
-  Kb1[15][0]=length*height*(Jb1_t[15][24]*Cb[0][0]*Jb1[0][0]+Jb1_t[15][26]*Cb[2][2]*Jb1[2][0])*wb;
-  Kb1[15][1]=length*height*(Jb1_t[15][24]*Cb[0][1]*Jb1[1][1]+Jb1_t[15][26]*Cb[2][2]*Jb1[2][1])*wb;
-  Kb1[15][5]=length*height*(Jb1_t[15][24]*Cb[0][0]*Jb1[8][5]+Jb1_t[15][26]*Cb[2][2]*Jb1[10][5])*wb;
-  Kb1[15][6]=length*height*(Jb1_t[15][24]*Cb[0][1]*Jb1[9][6]+Jb1_t[15][26]*Cb[2][2]*Jb1[10][6])*wb;
-  Kb1[15][10]=length*height*(Jb1_t[15][24]*Cb[0][0]*Jb1[16][10]+Jb1_t[15][26]*Cb[2][2]*Jb1[18][10])*wb;
-  Kb1[15][11]=length*height*(Jb1_t[15][24]*Cb[0][1]*Jb1[17][11]+Jb1_t[15][26]*Cb[2][2]*Jb1[18][11])*wb;
-  Kb1[15][15]=length*height*(Jb1_t[15][24]*Cb[0][0]*Jb1[24][15]+Jb1_t[15][26]*Cb[2][2]*Jb1[26][15])*wb;
-  Kb1[15][16]=length*height*(Jb1_t[15][24]*Cb[0][1]*Jb1[25][16]+Jb1_t[15][26]*Cb[2][2]*Jb1[26][16])*wb;
-
-  Kb1[16][0]=length*height*(Jb1_t[16][25]*Cb[1][0]*Jb1[0][0]+Jb1_t[16][26]*Cb[2][2]*Jb1[2][0])*wb;
-  Kb1[16][1]=length*height*(Jb1_t[16][25]*Cb[1][1]*Jb1[1][1]+Jb1_t[16][26]*Cb[2][2]*Jb1[2][1])*wb;
-  Kb1[16][5]=length*height*(Jb1_t[16][25]*Cb[1][0]*Jb1[8][5]+Jb1_t[16][26]*Cb[2][2]*Jb1[10][5])*wb;
-  Kb1[16][6]=length*height*(Jb1_t[16][25]*Cb[1][1]*Jb1[9][6]+Jb1_t[16][26]*Cb[2][2]*Jb1[10][6])*wb;
-  Kb1[16][10]=length*height*(Jb1_t[16][25]*Cb[1][0]*Jb1[16][10]+Jb1_t[16][26]*Cb[2][2]*Jb1[18][10])*wb;
-  Kb1[16][11]=length*height*(Jb1_t[16][25]*Cb[1][1]*Jb1[17][11]+Jb1_t[16][26]*Cb[2][2]*Jb1[18][11])*wb;
-  Kb1[16][15]=length*height*(Jb1_t[16][25]*Cb[1][0]*Jb1[24][15]+Jb1_t[16][26]*Cb[2][2]*Jb1[26][15])*wb;
-  Kb1[16][16]=length*height*(Jb1_t[16][25]*Cb[1][1]*Jb1[25][16]+Jb1_t[16][26]*Cb[2][2]*Jb1[26][16])*wb;
-
   Stiffness Kb2;
-  Kb2[0][0]=length*height*(Jb2_t[0][0]*Cb[0][0]*Jb2[0][0]+Jb2_t[0][2]*Cb[2][2]*Jb2[2][0])*wb;
-  Kb2[0][1]=length*height*(Jb2_t[0][0]*Cb[0][1]*Jb2[1][1]+Jb2_t[0][2]*Cb[2][2]*Jb2[2][1])*wb;
-  Kb2[0][5]=length*height*(Jb2_t[0][0]*Cb[0][0]*Jb2[8][5]+Jb2_t[0][2]*Cb[2][2]*Jb2[10][5])*wb;
-  Kb2[0][6]=length*height*(Jb2_t[0][0]*Cb[0][1]*Jb2[9][6]+Jb2_t[0][2]*Cb[2][2]*Jb2[10][6])*wb;
-  Kb2[0][10]=length*height*(Jb2_t[0][0]*Cb[0][0]*Jb2[16][10]+Jb2_t[0][2]*Cb[2][2]*Jb2[18][10])*wb;
-  Kb2[0][11]=length*height*(Jb2_t[0][0]*Cb[0][1]*Jb2[17][11]+Jb2_t[0][2]*Cb[2][2]*Jb2[18][11])*wb;
-  Kb2[0][15]=length*height*(Jb2_t[0][0]*Cb[0][0]*Jb2[24][15]+Jb2_t[0][2]*Cb[2][2]*Jb2[26][15])*wb;
-  Kb2[0][16]=length*height*(Jb2_t[0][0]*Cb[0][1]*Jb2[25][16]+Jb2_t[0][2]*Cb[2][2]*Jb2[26][16])*wb;
-
-  Kb2[1][0]=length*height*(Jb2_t[1][1]*Cb[1][0]*Jb2[0][0]+Jb2_t[1][2]*Cb[2][2]*Jb2[2][0])*wb;
-  Kb2[1][1]=length*height*(Jb2_t[1][1]*Cb[1][1]*Jb2[1][1]+Jb2_t[1][2]*Cb[2][2]*Jb2[2][1])*wb;
-  Kb2[1][5]=length*height*(Jb2_t[1][1]*Cb[1][0]*Jb2[8][5]+Jb2_t[1][2]*Cb[2][2]*Jb2[10][5])*wb;
-  Kb2[1][6]=length*height*(Jb2_t[1][1]*Cb[1][1]*Jb2[9][6]+Jb2_t[1][2]*Cb[2][2]*Jb2[10][6])*wb;
-  Kb2[1][10]=length*height*(Jb2_t[1][1]*Cb[1][0]*Jb2[16][10]+Jb2_t[1][2]*Cb[2][2]*Jb2[18][10])*wb;
-  Kb2[1][11]=length*height*(Jb2_t[1][1]*Cb[1][1]*Jb2[17][11]+Jb2_t[1][2]*Cb[2][2]*Jb2[18][11])*wb;
-  Kb2[1][15]=length*height*(Jb2_t[1][1]*Cb[1][0]*Jb2[24][15]+Jb2_t[1][2]*Cb[2][2]*Jb2[26][15])*wb;
-  Kb2[1][16]=length*height*(Jb2_t[1][1]*Cb[1][1]*Jb2[25][16]+Jb2_t[1][2]*Cb[2][2]*Jb2[26][16])*wb;
-
-  Kb2[5][0]=length*height*(Jb2_t[5][8]*Cb[0][0]*Jb2[0][0]+Jb2_t[5][10]*Cb[2][2]*Jb2[2][0])*wb;
-  Kb2[5][1]=length*height*(Jb2_t[5][8]*Cb[0][1]*Jb2[1][1]+Jb2_t[5][10]*Cb[2][2]*Jb2[2][1])*wb;
-  Kb2[5][5]=length*height*(Jb2_t[5][8]*Cb[0][0]*Jb2[8][5]+Jb2_t[5][10]*Cb[2][2]*Jb2[10][5])*wb;
-  Kb2[5][6]=length*height*(Jb2_t[5][8]*Cb[0][1]*Jb2[9][6]+Jb2_t[5][10]*Cb[2][2]*Jb2[10][6])*wb;
-  Kb2[5][10]=length*height*(Jb2_t[5][8]*Cb[0][0]*Jb2[16][10]+Jb2_t[5][10]*Cb[2][2]*Jb2[18][10])*wb;
-  Kb2[5][11]=length*height*(Jb2_t[5][8]*Cb[0][1]*Jb2[17][11]+Jb2_t[5][10]*Cb[2][2]*Jb2[18][11])*wb;
-  Kb2[5][15]=length*height*(Jb2_t[5][8]*Cb[0][0]*Jb2[24][15]+Jb2_t[5][10]*Cb[2][2]*Jb2[26][15])*wb;
-  Kb2[5][16]=length*height*(Jb2_t[5][8]*Cb[0][1]*Jb2[25][16]+Jb2_t[5][10]*Cb[2][2]*Jb2[26][16])*wb;
-
-  Kb2[6][0]=length*height*(Jb2_t[6][9]*Cb[1][0]*Jb2[0][0]+Jb2_t[6][10]*Cb[2][2]*Jb2[2][0])*wb;
-  Kb2[6][1]=length*height*(Jb2_t[6][9]*Cb[1][1]*Jb2[1][1]+Jb2_t[6][10]*Cb[2][2]*Jb2[2][1])*wb;
-  Kb2[6][5]=length*height*(Jb2_t[6][9]*Cb[1][0]*Jb2[8][5]+Jb2_t[6][10]*Cb[2][2]*Jb2[10][5])*wb;
-  Kb2[6][6]=length*height*(Jb2_t[6][9]*Cb[1][1]*Jb2[9][6]+Jb2_t[6][10]*Cb[2][2]*Jb2[10][6])*wb;
-  Kb2[6][10]=length*height*(Jb2_t[6][9]*Cb[1][0]*Jb2[16][10]+Jb2_t[6][10]*Cb[2][2]*Jb2[18][10])*wb;
-  Kb2[6][11]=length*height*(Jb2_t[6][9]*Cb[1][1]*Jb2[17][11]+Jb2_t[6][10]*Cb[2][2]*Jb2[18][11])*wb;
-  Kb2[6][15]=length*height*(Jb2_t[6][9]*Cb[1][0]*Jb2[24][15]+Jb2_t[6][10]*Cb[2][2]*Jb2[26][15])*wb;
-  Kb2[6][16]=length*height*(Jb2_t[6][9]*Cb[1][1]*Jb2[25][16]+Jb2_t[6][10]*Cb[2][2]*Jb2[26][16])*wb;
-
-  Kb2[10][0]=length*height*(Jb2_t[10][16]*Cb[0][0]*Jb2[0][0]+Jb2_t[10][18]*Cb[2][2]*Jb2[2][0])*wb;
-  Kb2[10][1]=length*height*(Jb2_t[10][16]*Cb[0][1]*Jb2[1][1]+Jb2_t[10][18]*Cb[2][2]*Jb2[2][1])*wb;
-  Kb2[10][5]=length*height*(Jb2_t[10][16]*Cb[0][0]*Jb2[8][5]+Jb2_t[10][18]*Cb[2][2]*Jb2[10][5])*wb;
-  Kb2[10][6]=length*height*(Jb2_t[10][16]*Cb[0][1]*Jb2[9][6]+Jb2_t[10][18]*Cb[2][2]*Jb2[10][6])*wb;
-  Kb2[10][10]=length*height*(Jb2_t[10][16]*Cb[0][0]*Jb2[16][10]+Jb2_t[10][18]*Cb[2][2]*Jb2[18][10])*wb;
-  Kb2[10][11]=length*height*(Jb2_t[10][16]*Cb[0][1]*Jb2[17][11]+Jb2_t[10][18]*Cb[2][2]*Jb2[18][11])*wb;
-  Kb2[10][15]=length*height*(Jb2_t[10][16]*Cb[0][0]*Jb2[24][15]+Jb2_t[10][18]*Cb[2][2]*Jb2[26][15])*wb;
-  Kb2[10][16]=length*height*(Jb2_t[10][16]*Cb[0][1]*Jb2[25][16]+Jb2_t[10][18]*Cb[2][2]*Jb2[26][16])*wb;
-
-  Kb2[11][0]=length*height*(Jb2_t[11][17]*Cb[1][0]*Jb2[0][0]+Jb2_t[11][18]*Cb[2][2]*Jb2[2][0])*wb;
-  Kb2[11][1]=length*height*(Jb2_t[11][17]*Cb[1][1]*Jb2[1][1]+Jb2_t[11][18]*Cb[2][2]*Jb2[2][1])*wb;
-  Kb2[11][5]=length*height*(Jb2_t[11][17]*Cb[1][0]*Jb2[8][5]+Jb2_t[11][18]*Cb[2][2]*Jb2[10][5])*wb;
-  Kb2[11][6]=length*height*(Jb2_t[11][17]*Cb[1][1]*Jb2[9][6]+Jb2_t[11][18]*Cb[2][2]*Jb2[10][6])*wb;
-  Kb2[11][10]=length*height*(Jb2_t[11][17]*Cb[1][0]*Jb2[16][10]+Jb2_t[11][18]*Cb[2][2]*Jb2[18][10])*wb;
-  Kb2[11][11]=length*height*(Jb2_t[11][17]*Cb[1][1]*Jb2[17][11]+Jb2_t[11][18]*Cb[2][2]*Jb2[18][11])*wb;
-  Kb2[11][15]=length*height*(Jb2_t[11][17]*Cb[1][0]*Jb2[24][15]+Jb2_t[11][18]*Cb[2][2]*Jb2[26][15])*wb;
-  Kb2[11][16]=length*height*(Jb2_t[11][17]*Cb[1][1]*Jb2[25][16]+Jb2_t[11][18]*Cb[2][2]*Jb2[26][16])*wb;
-
-  Kb2[15][0]=length*height*(Jb2_t[15][24]*Cb[0][0]*Jb2[0][0]+Jb2_t[15][26]*Cb[2][2]*Jb2[2][0])*wb;
-  Kb2[15][1]=length*height*(Jb2_t[15][24]*Cb[0][1]*Jb2[1][1]+Jb2_t[15][26]*Cb[2][2]*Jb2[2][1])*wb;
-  Kb2[15][5]=length*height*(Jb2_t[15][24]*Cb[0][0]*Jb2[8][5]+Jb2_t[15][26]*Cb[2][2]*Jb2[10][5])*wb;
-  Kb2[15][6]=length*height*(Jb2_t[15][24]*Cb[0][1]*Jb2[9][6]+Jb2_t[15][26]*Cb[2][2]*Jb2[10][6])*wb;
-  Kb2[15][10]=length*height*(Jb2_t[15][24]*Cb[0][0]*Jb2[16][10]+Jb2_t[15][26]*Cb[2][2]*Jb2[18][10])*wb;
-  Kb2[15][11]=length*height*(Jb2_t[15][24]*Cb[0][1]*Jb2[17][11]+Jb2_t[15][26]*Cb[2][2]*Jb2[18][11])*wb;
-  Kb2[15][15]=length*height*(Jb2_t[15][24]*Cb[0][0]*Jb2[24][15]+Jb2_t[15][26]*Cb[2][2]*Jb2[26][15])*wb;
-  Kb2[15][16]=length*height*(Jb2_t[15][24]*Cb[0][1]*Jb2[25][16]+Jb2_t[15][26]*Cb[2][2]*Jb2[26][16])*wb;
-
-  Kb2[16][0]=length*height*(Jb2_t[16][25]*Cb[1][0]*Jb2[0][0]+Jb2_t[16][26]*Cb[2][2]*Jb2[2][0])*wb;
-  Kb2[16][1]=length*height*(Jb2_t[16][25]*Cb[1][1]*Jb2[1][1]+Jb2_t[16][26]*Cb[2][2]*Jb2[2][1])*wb;
-  Kb2[16][5]=length*height*(Jb2_t[16][25]*Cb[1][0]*Jb2[8][5]+Jb2_t[16][26]*Cb[2][2]*Jb2[10][5])*wb;
-  Kb2[16][6]=length*height*(Jb2_t[16][25]*Cb[1][1]*Jb2[9][6]+Jb2_t[16][26]*Cb[2][2]*Jb2[10][6])*wb;
-  Kb2[16][10]=length*height*(Jb2_t[16][25]*Cb[1][0]*Jb2[16][10]+Jb2_t[16][26]*Cb[2][2]*Jb2[18][10])*wb;
-  Kb2[16][11]=length*height*(Jb2_t[16][25]*Cb[1][1]*Jb2[17][11]+Jb2_t[16][26]*Cb[2][2]*Jb2[18][11])*wb;
-  Kb2[16][15]=length*height*(Jb2_t[16][25]*Cb[1][0]*Jb2[24][15]+Jb2_t[16][26]*Cb[2][2]*Jb2[26][15])*wb;
-  Kb2[16][16]=length*height*(Jb2_t[16][25]*Cb[1][1]*Jb2[25][16]+Jb2_t[16][26]*Cb[2][2]*Jb2[26][16])*wb;
-
   Stiffness Kb3;
-  Kb3[0][0]=length*height*(Jb3_t[0][0]*Cb[0][0]*Jb3[0][0]+Jb3_t[0][2]*Cb[2][2]*Jb3[2][0])*wb;
-  Kb3[0][1]=length*height*(Jb3_t[0][0]*Cb[0][1]*Jb3[1][1]+Jb3_t[0][2]*Cb[2][2]*Jb3[2][1])*wb;
-  Kb3[0][5]=length*height*(Jb3_t[0][0]*Cb[0][0]*Jb3[8][5]+Jb3_t[0][2]*Cb[2][2]*Jb3[10][5])*wb;
-  Kb3[0][6]=length*height*(Jb3_t[0][0]*Cb[0][1]*Jb3[9][6]+Jb3_t[0][2]*Cb[2][2]*Jb3[10][6])*wb;
-  Kb3[0][10]=length*height*(Jb3_t[0][0]*Cb[0][0]*Jb3[16][10]+Jb3_t[0][2]*Cb[2][2]*Jb3[18][10])*wb;
-  Kb3[0][11]=length*height*(Jb3_t[0][0]*Cb[0][1]*Jb3[17][11]+Jb3_t[0][2]*Cb[2][2]*Jb3[18][11])*wb;
-  Kb3[0][15]=length*height*(Jb3_t[0][0]*Cb[0][0]*Jb3[24][15]+Jb3_t[0][2]*Cb[2][2]*Jb3[26][15])*wb;
-  Kb3[0][16]=length*height*(Jb3_t[0][0]*Cb[0][1]*Jb3[25][16]+Jb3_t[0][2]*Cb[2][2]*Jb3[26][16])*wb;
-
-  Kb3[1][0]=length*height*(Jb3_t[1][1]*Cb[1][0]*Jb3[0][0]+Jb3_t[1][2]*Cb[2][2]*Jb3[2][0])*wb;
-  Kb3[1][1]=length*height*(Jb3_t[1][1]*Cb[1][1]*Jb3[1][1]+Jb3_t[1][2]*Cb[2][2]*Jb3[2][1])*wb;
-  Kb3[1][5]=length*height*(Jb3_t[1][1]*Cb[1][0]*Jb3[8][5]+Jb3_t[1][2]*Cb[2][2]*Jb3[10][5])*wb;
-  Kb3[1][6]=length*height*(Jb3_t[1][1]*Cb[1][1]*Jb3[9][6]+Jb3_t[1][2]*Cb[2][2]*Jb3[10][6])*wb;
-  Kb3[1][10]=length*height*(Jb3_t[1][1]*Cb[1][0]*Jb3[16][10]+Jb3_t[1][2]*Cb[2][2]*Jb3[18][10])*wb;
-  Kb3[1][11]=length*height*(Jb3_t[1][1]*Cb[1][1]*Jb3[17][11]+Jb3_t[1][2]*Cb[2][2]*Jb3[18][11])*wb;
-  Kb3[1][15]=length*height*(Jb3_t[1][1]*Cb[1][0]*Jb3[24][15]+Jb3_t[1][2]*Cb[2][2]*Jb3[26][15])*wb;
-  Kb3[1][16]=length*height*(Jb3_t[1][1]*Cb[1][1]*Jb3[25][16]+Jb3_t[1][2]*Cb[2][2]*Jb3[26][16])*wb;
-
-  Kb3[5][0]=length*height*(Jb3_t[5][8]*Cb[0][0]*Jb3[0][0]+Jb3_t[5][10]*Cb[2][2]*Jb3[2][0])*wb;
-  Kb3[5][1]=length*height*(Jb3_t[5][8]*Cb[0][1]*Jb3[1][1]+Jb3_t[5][10]*Cb[2][2]*Jb3[2][1])*wb;
-  Kb3[5][5]=length*height*(Jb3_t[5][8]*Cb[0][0]*Jb3[8][5]+Jb3_t[5][10]*Cb[2][2]*Jb3[10][5])*wb;
-  Kb3[5][6]=length*height*(Jb3_t[5][8]*Cb[0][1]*Jb3[9][6]+Jb3_t[5][10]*Cb[2][2]*Jb3[10][6])*wb;
-  Kb3[5][10]=length*height*(Jb3_t[5][8]*Cb[0][0]*Jb3[16][10]+Jb3_t[5][10]*Cb[2][2]*Jb3[18][10])*wb;
-  Kb3[5][11]=length*height*(Jb3_t[5][8]*Cb[0][1]*Jb3[17][11]+Jb3_t[5][10]*Cb[2][2]*Jb3[18][11])*wb;
-  Kb3[5][15]=length*height*(Jb3_t[5][8]*Cb[0][0]*Jb3[24][15]+Jb3_t[5][10]*Cb[2][2]*Jb3[26][15])*wb;
-  Kb3[5][16]=length*height*(Jb3_t[5][8]*Cb[0][1]*Jb3[25][16]+Jb3_t[5][10]*Cb[2][2]*Jb3[26][16])*wb;
-
-  Kb3[6][0]=length*height*(Jb3_t[6][9]*Cb[1][0]*Jb3[0][0]+Jb3_t[6][10]*Cb[2][2]*Jb3[2][0])*wb;
-  Kb3[6][1]=length*height*(Jb3_t[6][9]*Cb[1][1]*Jb3[1][1]+Jb3_t[6][10]*Cb[2][2]*Jb3[2][1])*wb;
-  Kb3[6][5]=length*height*(Jb3_t[6][9]*Cb[1][0]*Jb3[8][5]+Jb3_t[6][10]*Cb[2][2]*Jb3[10][5])*wb;
-  Kb3[6][6]=length*height*(Jb3_t[6][9]*Cb[1][1]*Jb3[9][6]+Jb3_t[6][10]*Cb[2][2]*Jb3[10][6])*wb;
-  Kb3[6][10]=length*height*(Jb3_t[6][9]*Cb[1][0]*Jb3[16][10]+Jb3_t[6][10]*Cb[2][2]*Jb3[18][10])*wb;
-  Kb3[6][11]=length*height*(Jb3_t[6][9]*Cb[1][1]*Jb3[17][11]+Jb3_t[6][10]*Cb[2][2]*Jb3[18][11])*wb;
-  Kb3[6][15]=length*height*(Jb3_t[6][9]*Cb[1][0]*Jb3[24][15]+Jb3_t[6][10]*Cb[2][2]*Jb3[26][15])*wb;
-  Kb3[6][16]=length*height*(Jb3_t[6][9]*Cb[1][1]*Jb3[25][16]+Jb3_t[6][10]*Cb[2][2]*Jb3[26][16])*wb;
-
-  Kb3[10][0]=length*height*(Jb3_t[10][16]*Cb[0][0]*Jb3[0][0]+Jb3_t[10][18]*Cb[2][2]*Jb3[2][0])*wb;
-  Kb3[10][1]=length*height*(Jb3_t[10][16]*Cb[0][1]*Jb3[1][1]+Jb3_t[10][18]*Cb[2][2]*Jb3[2][1])*wb;
-  Kb3[10][5]=length*height*(Jb3_t[10][16]*Cb[0][0]*Jb3[8][5]+Jb3_t[10][18]*Cb[2][2]*Jb3[10][5])*wb;
-  Kb3[10][6]=length*height*(Jb3_t[10][16]*Cb[0][1]*Jb3[9][6]+Jb3_t[10][18]*Cb[2][2]*Jb3[10][6])*wb;
-  Kb3[10][10]=length*height*(Jb3_t[10][16]*Cb[0][0]*Jb3[16][10]+Jb3_t[10][18]*Cb[2][2]*Jb3[18][10])*wb;
-  Kb3[10][11]=length*height*(Jb3_t[10][16]*Cb[0][1]*Jb3[17][11]+Jb3_t[10][18]*Cb[2][2]*Jb3[18][11])*wb;
-  Kb3[10][15]=length*height*(Jb3_t[10][16]*Cb[0][0]*Jb3[24][15]+Jb3_t[10][18]*Cb[2][2]*Jb3[26][15])*wb;
-  Kb3[10][16]=length*height*(Jb3_t[10][16]*Cb[0][1]*Jb3[25][16]+Jb3_t[10][18]*Cb[2][2]*Jb3[26][16])*wb;
-
-  Kb3[11][0]=length*height*(Jb3_t[11][17]*Cb[1][0]*Jb3[0][0]+Jb3_t[11][18]*Cb[2][2]*Jb3[2][0])*wb;
-  Kb3[11][1]=length*height*(Jb3_t[11][17]*Cb[1][1]*Jb3[1][1]+Jb3_t[11][18]*Cb[2][2]*Jb3[2][1])*wb;
-  Kb3[11][5]=length*height*(Jb3_t[11][17]*Cb[1][0]*Jb3[8][5]+Jb3_t[11][18]*Cb[2][2]*Jb3[10][5])*wb;
-  Kb3[11][6]=length*height*(Jb3_t[11][17]*Cb[1][1]*Jb3[9][6]+Jb3_t[11][18]*Cb[2][2]*Jb3[10][6])*wb;
-  Kb3[11][10]=length*height*(Jb3_t[11][17]*Cb[1][0]*Jb3[16][10]+Jb3_t[11][18]*Cb[2][2]*Jb3[18][10])*wb;
-  Kb3[11][11]=length*height*(Jb3_t[11][17]*Cb[1][1]*Jb3[17][11]+Jb3_t[11][18]*Cb[2][2]*Jb3[18][11])*wb;
-  Kb3[11][15]=length*height*(Jb3_t[11][17]*Cb[1][0]*Jb3[24][15]+Jb3_t[11][18]*Cb[2][2]*Jb3[26][15])*wb;
-  Kb3[11][16]=length*height*(Jb3_t[11][17]*Cb[1][1]*Jb3[25][16]+Jb3_t[11][18]*Cb[2][2]*Jb3[26][16])*wb;
-
-  Kb3[15][0]=length*height*(Jb3_t[15][24]*Cb[0][0]*Jb3[0][0]+Jb3_t[15][26]*Cb[2][2]*Jb3[2][0])*wb;
-  Kb3[15][1]=length*height*(Jb3_t[15][24]*Cb[0][1]*Jb3[1][1]+Jb3_t[15][26]*Cb[2][2]*Jb3[2][1])*wb;
-  Kb3[15][5]=length*height*(Jb3_t[15][24]*Cb[0][0]*Jb3[8][5]+Jb3_t[15][26]*Cb[2][2]*Jb3[10][5])*wb;
-  Kb3[15][6]=length*height*(Jb3_t[15][24]*Cb[0][1]*Jb3[9][6]+Jb3_t[15][26]*Cb[2][2]*Jb3[10][6])*wb;
-  Kb3[15][10]=length*height*(Jb3_t[15][24]*Cb[0][0]*Jb3[16][10]+Jb3_t[15][26]*Cb[2][2]*Jb3[18][10])*wb;
-  Kb3[15][11]=length*height*(Jb3_t[15][24]*Cb[0][1]*Jb3[17][11]+Jb3_t[15][26]*Cb[2][2]*Jb3[18][11])*wb;
-  Kb3[15][15]=length*height*(Jb3_t[15][24]*Cb[0][0]*Jb3[24][15]+Jb3_t[15][26]*Cb[2][2]*Jb3[26][15])*wb;
-  Kb3[15][16]=length*height*(Jb3_t[15][24]*Cb[0][1]*Jb3[25][16]+Jb3_t[15][26]*Cb[2][2]*Jb3[26][16])*wb;
-
-  Kb3[16][0]=length*height*(Jb3_t[16][25]*Cb[1][0]*Jb3[0][0]+Jb3_t[16][26]*Cb[2][2]*Jb3[2][0])*wb;
-  Kb3[16][1]=length*height*(Jb3_t[16][25]*Cb[1][1]*Jb3[1][1]+Jb3_t[16][26]*Cb[2][2]*Jb3[2][1])*wb;
-  Kb3[16][5]=length*height*(Jb3_t[16][25]*Cb[1][0]*Jb3[8][5]+Jb3_t[16][26]*Cb[2][2]*Jb3[10][5])*wb;
-  Kb3[16][6]=length*height*(Jb3_t[16][25]*Cb[1][1]*Jb3[9][6]+Jb3_t[16][26]*Cb[2][2]*Jb3[10][6])*wb;
-  Kb3[16][10]=length*height*(Jb3_t[16][25]*Cb[1][0]*Jb3[16][10]+Jb3_t[16][26]*Cb[2][2]*Jb3[18][10])*wb;
-  Kb3[16][11]=length*height*(Jb3_t[16][25]*Cb[1][1]*Jb3[17][11]+Jb3_t[16][26]*Cb[2][2]*Jb3[18][11])*wb;
-  Kb3[16][15]=length*height*(Jb3_t[16][25]*Cb[1][0]*Jb3[24][15]+Jb3_t[16][26]*Cb[2][2]*Jb3[26][15])*wb;
-  Kb3[16][16]=length*height*(Jb3_t[16][25]*Cb[1][1]*Jb3[25][16]+Jb3_t[16][26]*Cb[2][2]*Jb3[26][16])*wb;
-
   Stiffness Kb;
-  //Kb = length*height*(Jb0_t*Cb_e*Jb0+Jb1_t*Cb_e*Jb1+Jb2_t*Cb_e*Jb2+Jb3_t*Cb_e*Jb3)*wb;  // bending stiffness
-  Kb[0][0]=Kb0[0][0]+Kb1[0][0]+Kb2[0][0]+Kb3[0][0];
-  Kb[0][1]=Kb0[0][1]+Kb1[0][1]+Kb2[0][1]+Kb3[0][1];
-  Kb[0][5]=Kb0[0][5]+Kb1[0][5]+Kb2[0][5]+Kb3[0][5];
-  Kb[0][6]=Kb0[0][6]+Kb1[0][6]+Kb2[0][6]+Kb3[0][6];
-  Kb[0][10]=Kb0[0][10]+Kb1[0][10]+Kb2[0][10]+Kb3[0][10];
-  Kb[0][11]=Kb0[0][11]+Kb1[0][11]+Kb2[0][11]+Kb3[0][11];
-  Kb[0][15]=Kb0[0][15]+Kb1[0][15]+Kb2[0][15]+Kb3[0][15];
-  Kb[0][16]=Kb0[0][16]+Kb1[0][16]+Kb2[0][16]+Kb3[0][16];
+  for (int i = 0; i < 4; i++)
+  {
+    for (int j = 0; j < 4; j++)
+    {
+      Kb0[5*i][5*j]=length*height*(Jb0_t[5*i][8*i]*Cb[0][0]*Jb0[8*j][5*j]+Jb0_t[5*i][8*i+2]*Cb[2][2]*Jb0[8*j+2][5*j])*wb;
+      Kb0[5*i][5*j+1]=length*height*(Jb0_t[5*i][8*i]*Cb[0][1]*Jb0[8*j+1][5*j+1]+Jb0_t[5*i][8*i+2]*Cb[2][2]*Jb0[8*j+2][5*j+1])*wb;
+      Kb0[5*i+1][5*j]=length*height*(Jb0_t[5*i+1][8*i+1]*Cb[1][0]*Jb0[8*j][5*j]+Jb0_t[5*i+1][8*i+2]*Cb[2][2]*Jb0[8*j+2][5*j])*wb;
+      Kb0[5*i+1][5*j+1]=length*height*(Jb0_t[5*i+1][8*i+1]*Cb[1][1]*Jb0[8*j+1][5*j+1]+Jb0_t[5*i+1][8*i+2]*Cb[2][2]*Jb0[8*j+2][5*j+1])*wb;
 
-  Kb[1][0]=Kb0[1][0]+Kb1[1][0]+Kb2[1][0]+Kb3[1][0];
-  Kb[1][1]=Kb0[1][1]+Kb1[1][1]+Kb2[1][1]+Kb3[1][1];
-  Kb[1][5]=Kb0[1][5]+Kb1[1][5]+Kb2[1][5]+Kb3[1][5];
-  Kb[1][6]=Kb0[1][6]+Kb1[1][6]+Kb2[1][6]+Kb3[1][6];
-  Kb[1][10]=Kb0[1][10]+Kb1[1][10]+Kb2[1][10]+Kb3[1][10];
-  Kb[1][11]=Kb0[1][11]+Kb1[1][11]+Kb2[1][11]+Kb3[1][11];
-  Kb[1][15]=Kb0[1][15]+Kb1[1][15]+Kb2[1][15]+Kb3[1][15];
-  Kb[1][16]=Kb0[1][16]+Kb1[1][16]+Kb2[1][16]+Kb3[1][16];
+      Kb1[5*i][5*j]=length*height*(Jb1_t[5*i][8*i]*Cb[0][0]*Jb1[8*j][5*j]+Jb1_t[5*i][8*i+2]*Cb[2][2]*Jb1[8*j+2][5*j])*wb;
+      Kb1[5*i][5*j+1]=length*height*(Jb1_t[5*i][8*i]*Cb[0][1]*Jb1[8*j+1][5*j+1]+Jb1_t[5*i][8*i+2]*Cb[2][2]*Jb1[8*j+2][5*j+1])*wb;
+      Kb1[5*i+1][5*j]=length*height*(Jb1_t[5*i+1][8*i+1]*Cb[1][0]*Jb1[8*j][5*j]+Jb1_t[5*i+1][8*i+2]*Cb[2][2]*Jb1[8*j+2][5*j])*wb;
+      Kb1[5*i+1][5*j+1]=length*height*(Jb1_t[5*i+1][8*i+1]*Cb[1][1]*Jb1[8*j+1][5*j+1]+Jb1_t[5*i+1][8*i+2]*Cb[2][2]*Jb1[8*j+2][5*j+1])*wb;
 
-  Kb[5][0]=Kb0[5][0]+Kb1[5][0]+Kb2[5][0]+Kb3[5][0];
-  Kb[5][1]=Kb0[5][1]+Kb1[5][1]+Kb2[5][1]+Kb3[5][1];
-  Kb[5][5]=Kb0[5][5]+Kb1[5][5]+Kb2[5][5]+Kb3[5][5];
-  Kb[5][6]=Kb0[5][6]+Kb1[5][6]+Kb2[5][6]+Kb3[5][6];
-  Kb[5][10]=Kb0[5][10]+Kb1[5][10]+Kb2[5][10]+Kb3[5][10];
-  Kb[5][11]=Kb0[5][11]+Kb1[5][11]+Kb2[5][11]+Kb3[5][11];
-  Kb[5][15]=Kb0[5][15]+Kb1[5][15]+Kb2[5][15]+Kb3[5][15];
-  Kb[5][16]=Kb0[5][16]+Kb1[5][16]+Kb2[5][16]+Kb3[5][16];
+      Kb2[5*i][5*j]=length*height*(Jb2_t[5*i][8*i]*Cb[0][0]*Jb2[8*j][5*j]+Jb2_t[5*i][8*i+2]*Cb[2][2]*Jb2[8*j+2][5*j])*wb;
+      Kb2[5*i][5*j+1]=length*height*(Jb2_t[5*i][8*i]*Cb[0][1]*Jb2[8*j+1][5*j+1]+Jb2_t[5*i][8*i+2]*Cb[2][2]*Jb2[8*j+2][5*j+1])*wb;
+      Kb2[5*i+1][5*j]=length*height*(Jb2_t[5*i+1][8*i+1]*Cb[1][0]*Jb2[8*j][5*j]+Jb2_t[5*i+1][8*i+2]*Cb[2][2]*Jb2[8*j+2][5*j])*wb;
+      Kb2[5*i+1][5*j+1]=length*height*(Jb2_t[5*i+1][8*i+1]*Cb[1][1]*Jb2[8*j+1][5*j+1]+Jb2_t[5*i+1][8*i+2]*Cb[2][2]*Jb2[8*j+2][5*j+1])*wb;
 
-  Kb[6][0]=Kb0[6][0]+Kb1[6][0]+Kb2[6][0]+Kb3[6][0];
-  Kb[6][1]=Kb0[6][1]+Kb1[6][1]+Kb2[6][1]+Kb3[6][1];
-  Kb[6][5]=Kb0[6][5]+Kb1[6][5]+Kb2[6][5]+Kb3[6][5];
-  Kb[6][6]=Kb0[6][6]+Kb1[6][6]+Kb2[6][6]+Kb3[6][6];
-  Kb[6][10]=Kb0[6][10]+Kb1[6][10]+Kb2[6][10]+Kb3[6][10];
-  Kb[6][11]=Kb0[6][11]+Kb1[6][11]+Kb2[6][11]+Kb3[6][11];
-  Kb[6][15]=Kb0[6][15]+Kb1[6][15]+Kb2[6][15]+Kb3[6][15];
-  Kb[6][16]=Kb0[6][16]+Kb1[6][16]+Kb2[6][16]+Kb3[6][16];
+      Kb3[5*i][5*j]=length*height*(Jb3_t[5*i][8*i]*Cb[0][0]*Jb3[8*j][5*j]+Jb3_t[5*i][8*i+2]*Cb[2][2]*Jb3[8*j+2][5*j])*wb;
+      Kb3[5*i][5*j+1]=length*height*(Jb3_t[5*i][8*i]*Cb[0][1]*Jb3[8*j+1][5*j+1]+Jb3_t[5*i][8*i+2]*Cb[2][2]*Jb3[8*j+2][5*j+1])*wb;
+      Kb3[5*i+1][5*j]=length*height*(Jb3_t[5*i+1][8*i+1]*Cb[1][0]*Jb3[8*j][5*j]+Jb3_t[5*i+1][8*i+2]*Cb[2][2]*Jb3[8*j+2][5*j])*wb;
+      Kb3[5*i+1][5*j+1]=length*height*(Jb3_t[5*i+1][8*i+1]*Cb[1][1]*Jb3[8*j+1][5*j+1]+Jb3_t[5*i+1][8*i+2]*Cb[2][2]*Jb3[8*j+2][5*j+1])*wb;
 
-  Kb[10][0]=Kb0[10][0]+Kb1[10][0]+Kb2[10][0]+Kb3[10][0];
-  Kb[10][1]=Kb0[10][1]+Kb1[10][1]+Kb2[10][1]+Kb3[10][1];
-  Kb[10][5]=Kb0[10][5]+Kb1[10][5]+Kb2[10][5]+Kb3[10][5];
-  Kb[10][6]=Kb0[10][6]+Kb1[10][6]+Kb2[10][6]+Kb3[10][6];
-  Kb[10][10]=Kb0[10][10]+Kb1[10][10]+Kb2[10][10]+Kb3[10][10];
-  Kb[10][11]=Kb0[10][11]+Kb1[10][11]+Kb2[10][11]+Kb3[10][11];
-  Kb[10][15]=Kb0[10][15]+Kb1[10][15]+Kb2[10][15]+Kb3[10][15];
-  Kb[10][16]=Kb0[10][16]+Kb1[10][16]+Kb2[10][16]+Kb3[10][16];
-
-  Kb[11][0]=Kb0[11][0]+Kb1[11][0]+Kb2[11][0]+Kb3[11][0];
-  Kb[11][1]=Kb0[11][1]+Kb1[11][1]+Kb2[11][1]+Kb3[11][1];
-  Kb[11][5]=Kb0[11][5]+Kb1[11][5]+Kb2[11][5]+Kb3[11][5];
-  Kb[11][6]=Kb0[11][6]+Kb1[11][6]+Kb2[11][6]+Kb3[11][6];
-  Kb[11][10]=Kb0[11][10]+Kb1[11][10]+Kb2[11][10]+Kb3[11][10];
-  Kb[11][11]=Kb0[11][11]+Kb1[11][11]+Kb2[11][11]+Kb3[11][11];
-  Kb[11][15]=Kb0[11][15]+Kb1[11][15]+Kb2[11][15]+Kb3[11][15];
-  Kb[11][16]=Kb0[11][16]+Kb1[11][16]+Kb2[11][16]+Kb3[11][16];
-
-  Kb[15][0]=Kb0[15][0]+Kb1[15][0]+Kb2[15][0]+Kb3[15][0];
-  Kb[15][1]=Kb0[15][1]+Kb1[15][1]+Kb2[15][1]+Kb3[15][1];
-  Kb[15][5]=Kb0[15][5]+Kb1[15][5]+Kb2[15][5]+Kb3[15][5];
-  Kb[15][6]=Kb0[15][6]+Kb1[15][6]+Kb2[15][6]+Kb3[15][6];
-  Kb[15][10]=Kb0[15][10]+Kb1[15][10]+Kb2[15][10]+Kb3[15][10];
-  Kb[15][11]=Kb0[15][11]+Kb1[15][11]+Kb2[15][11]+Kb3[15][11];
-  Kb[15][15]=Kb0[15][15]+Kb1[15][15]+Kb2[15][15]+Kb3[15][15];
-  Kb[15][16]=Kb0[15][16]+Kb1[15][16]+Kb2[15][16]+Kb3[15][16];
-
-  Kb[16][0]=Kb0[16][0]+Kb1[16][0]+Kb2[16][0]+Kb3[16][0];
-  Kb[16][1]=Kb0[16][1]+Kb1[16][1]+Kb2[16][1]+Kb3[16][1];
-  Kb[16][5]=Kb0[16][5]+Kb1[16][5]+Kb2[16][5]+Kb3[16][5];
-  Kb[16][6]=Kb0[16][6]+Kb1[16][6]+Kb2[16][6]+Kb3[16][6];
-  Kb[16][10]=Kb0[16][10]+Kb1[16][10]+Kb2[16][10]+Kb3[16][10];
-  Kb[16][11]=Kb0[16][11]+Kb1[16][11]+Kb2[16][11]+Kb3[16][11];
-  Kb[16][15]=Kb0[16][15]+Kb1[16][15]+Kb2[16][15]+Kb3[16][15];
-  Kb[16][16]=Kb0[16][16]+Kb1[16][16]+Kb2[16][16]+Kb3[16][16];
+      Kb[5*i][5*j] = Kb0[5*i][5*j]+Kb1[5*i][5*j]+Kb2[5*i][5*j]+Kb3[5*i][5*j];
+      Kb[5*i][5*j+1] = Kb0[5*i][5*j+1]+Kb1[5*i][5*j+1]+Kb2[5*i][5*j+1]+Kb3[5*i][5*j+1];
+      Kb[5*i+1][5*j] = Kb0[5*i+1][5*j]+Kb1[5*i+1][5*j]+Kb2[5*i+1][5*j]+Kb3[5*i+1][5*j];
+      Kb[5*i+1][5*j+1] = Kb0[5*i+1][5*j+1]+Kb1[5*i+1][5*j+1]+Kb2[5*i+1][5*j+1]+Kb3[5*i+1][5*j+1];
+    }
+  }
 
   //Shear Component of strain displacement
   defaulttype::Mat<20, 32, Real> Js_t;
@@ -859,207 +496,27 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
   // Shear component of material stiffness
   MaterialStiffness Cs;
   Cs = quadInf[elementIndex].ShearmaterialMatrix ;
-  /*// expand Cs from 8x8 to 32x32 diagonal matrix
-  defaulttype::Mat<32,32,Real> Cs_e;
-  for (unsigned i = 0;i<4;i++)
-  {
-    for(unsigned j = 0;j<4;j++)
-    {
-      for(unsigned k = 0;k<8;k++)
-      {
-        for(unsigned l = 0;l<8;l++)
-        {
-          Cs_e[8*i+k][8*j+l] = Cs[k][l];
-        }
-      }
-    }
-  }*/
+
   // Stiffness matrix for bending component
   const float ws = 2.0f; // weight coff of gauss integration 1x1
   Stiffness Ks;
   //Ks = length*height*(Js_t*Cs_e*Js)*ws*ws;
-  Ks[2][2]=length*height*(Js_t[2][6]*Cs[6][6]*Js[6][2]+Js_t[2][7]*Cs[7][7]*Js[7][2])*ws*ws;
-  Ks[2][7]=length*height*(Js_t[2][6]*Cs[6][6]*Js[14][7]+Js_t[2][7]*Cs[7][7]*Js[15][7])*ws*ws;
-  Ks[2][12]=length*height*(Js_t[2][6]*Cs[6][6]*Js[22][12]+Js_t[2][7]*Cs[7][7]*Js[23][12])*ws*ws;
-  Ks[2][17]=length*height*(Js_t[2][6]*Cs[6][6]*Js[30][17]+Js_t[2][7]*Cs[7][7]*Js[31][17])*ws*ws;
-
-  Ks[2][3]=length*height*(Js_t[2][6]*Cs[6][6]*Js[6][3])*ws*ws;
-  Ks[2][8]=length*height*(Js_t[2][6]*Cs[6][6]*Js[14][8])*ws*ws;
-  Ks[2][13]=length*height*(Js_t[2][6]*Cs[6][6]*Js[22][13])*ws*ws;
-  Ks[2][18]=length*height*(Js_t[2][6]*Cs[6][6]*Js[30][18])*ws*ws;
-
-  Ks[2][4]=length*height*(Js_t[2][7]*Cs[7][7]*Js[7][4])*ws*ws;
-  Ks[2][9]=length*height*(Js_t[2][7]*Cs[7][7]*Js[15][9])*ws*ws;
-  Ks[2][14]=length*height*(Js_t[2][7]*Cs[7][7]*Js[23][14])*ws*ws;
-  Ks[2][19]=length*height*(Js_t[2][7]*Cs[7][7]*Js[31][19])*ws*ws;
-
-  Ks[3][2]=length*height*(Js_t[3][6]*Cs[6][6]*Js[6][2])*ws*ws;
-  Ks[3][7]=length*height*(Js_t[3][6]*Cs[6][6]*Js[14][7])*ws*ws;
-  Ks[3][12]=length*height*(Js_t[3][6]*Cs[6][6]*Js[22][12])*ws*ws;
-  Ks[3][17]=length*height*(Js_t[3][6]*Cs[6][6]*Js[30][17])*ws*ws;
+  for (int i = 0; i < 4; i++)
+  {
+    for (int j = 0; j < 4; j++)
+    {
+      Ks[5*i+2][5*j+2] = length*height*(Js_t[5*i+2][8*i+6]*Cs[6][6]*Js[8*j+6][5*j+2]+Js_t[5*i+2][8*i+7]*Cs[7][7]*Js[8*j+7][5*j+2])*ws*ws;
+      Ks[5*i+2][5*j+3] = length*height*(Js_t[5*i+2][8*i+6]*Cs[6][6]*Js[8*j+6][5*j+3])*ws*ws;
+      Ks[5*i+2][5*j+4] = length*height*(Js_t[5*i+2][8*i+7]*Cs[7][7]*Js[8*j+7][5*j+4])*ws*ws;
+      Ks[5*i+3][5*j+2] = length*height*(Js_t[5*i+3][8*i+6]*Cs[6][6]*Js[8*j+6][5*j+2])*ws*ws;
+      Ks[5*i+3][5*j+3] = length*height*(Js_t[5*i+3][8*i+3]*Cs[3][3]*Js[8*j+3][5*j+3]+Js_t[5*i+3][8*i+5]*Cs[5][5]*Js[8*j+5][5*j+3]+Js_t[5*i+3][8*i+6]*Cs[6][6]*Js[8*j+6][5*j+3])*ws*ws;
+      Ks[5*i+3][5*j+4] = length*height*(Js_t[5*i+3][8*i+3]*Cs[3][4]*Js[8*j+4][5*j+4]+Js_t[5*i+3][8*i+5]*Cs[5][5]*Js[8*j+5][5*j+4])*ws*ws;
+      Ks[5*i+4][5*j+2] = length*height*(Js_t[5*i+4][8*i+7]*Cs[7][7]*Js[8*j+7][5*j+2])*ws*ws;
+      Ks[5*i+4][5*j+3] = length*height*(Js_t[5*i+4][8*i+4]*Cs[4][3]*Js[8*j+3][5*j+3]+Js_t[5*i+4][8*i+5]*Cs[5][5]*Js[8*j+5][5*j+3])*ws*ws;
+      Ks[5*i+4][5*j+4] = length*height*(Js_t[5*i+4][8*i+4]*Cs[4][4]*Js[8*j+4][5*j+4]+Js_t[5*i+4][8*i+5]*Cs[5][5]*Js[8*j+5][5*j+4]+Js_t[5*i+4][8*i+7]*Cs[7][7]*Js[8*j+7][5*j+4])*ws*ws;
+    }
+  }
   
-  Ks[3][3]=length*height*(Js_t[3][3]*Cs[3][3]*Js[3][3]+Js_t[3][5]*Cs[5][5]*Js[5][3]+Js_t[3][6]*Cs[6][6]*Js[6][3])*ws*ws;
-  Ks[3][8]=length*height*(Js_t[3][3]*Cs[3][3]*Js[11][8]+Js_t[3][5]*Cs[5][5]*Js[13][8]+Js_t[3][6]*Cs[6][6]*Js[14][8])*ws*ws;
-  Ks[3][13]=length*height*(Js_t[3][3]*Cs[3][3]*Js[19][13]+Js_t[3][5]*Cs[5][5]*Js[21][13]+Js_t[3][6]*Cs[6][6]*Js[22][13])*ws*ws;
-  Ks[3][18]=length*height*(Js_t[3][3]*Cs[3][3]*Js[27][18]+Js_t[3][5]*Cs[5][5]*Js[29][18]+Js_t[3][6]*Cs[6][6]*Js[30][18])*ws*ws;
-
-  Ks[3][4]=length*height*(Js_t[3][3]*Cs[3][4]*Js[4][4]+Js_t[3][5]*Cs[5][5]*Js[5][4])*ws*ws;
-  Ks[3][9]=length*height*(Js_t[3][3]*Cs[3][4]*Js[12][9]+Js_t[3][5]*Cs[5][5]*Js[13][9])*ws*ws;
-  Ks[3][14]=length*height*(Js_t[3][3]*Cs[3][4]*Js[20][14]+Js_t[3][5]*Cs[5][5]*Js[21][14])*ws*ws;
-  Ks[3][19]=length*height*(Js_t[3][3]*Cs[3][4]*Js[28][19]+Js_t[3][5]*Cs[5][5]*Js[29][19])*ws*ws;
-
-  Ks[4][2]=length*height*(Js_t[4][7]*Cs[7][7]*Js[7][2])*ws*ws;
-  Ks[4][7]=length*height*(Js_t[4][7]*Cs[7][7]*Js[15][7])*ws*ws;
-  Ks[4][12]=length*height*(Js_t[4][7]*Cs[7][7]*Js[23][12])*ws*ws;
-  Ks[4][17]=length*height*(Js_t[4][7]*Cs[7][7]*Js[31][17])*ws*ws;
-
-  Ks[4][3]=length*height*(Js_t[4][4]*Cs[4][3]*Js[3][3]+Js_t[4][5]*Cs[5][5]*Js[5][3])*ws*ws;
-  Ks[4][8]=length*height*(Js_t[4][4]*Cs[4][3]*Js[11][8]+Js_t[4][5]*Cs[5][5]*Js[13][8])*ws*ws;
-  Ks[4][13]=length*height*(Js_t[4][4]*Cs[4][3]*Js[19][13]+Js_t[4][5]*Cs[5][5]*Js[21][13])*ws*ws;
-  Ks[4][18]=length*height*(Js_t[4][4]*Cs[4][3]*Js[27][18]+Js_t[4][5]*Cs[5][5]*Js[29][18])*ws*ws;
-
-  Ks[4][4]=length*height*(Js_t[4][4]*Cs[4][4]*Js[4][4]+Js_t[4][5]*Cs[5][5]*Js[5][4]+Js_t[4][7]*Cs[7][7]*Js[7][4])*ws*ws;
-  Ks[4][9]=length*height*(Js_t[4][4]*Cs[4][4]*Js[12][9]+Js_t[4][5]*Cs[5][5]*Js[13][9]+Js_t[4][7]*Cs[7][7]*Js[15][9])*ws*ws;
-  Ks[4][14]=length*height*(Js_t[4][4]*Cs[4][4]*Js[20][14]+Js_t[4][5]*Cs[5][5]*Js[21][14]+Js_t[4][7]*Cs[7][7]*Js[23][14])*ws*ws;
-  Ks[4][19]=length*height*(Js_t[4][4]*Cs[4][4]*Js[28][19]+Js_t[4][5]*Cs[5][5]*Js[29][19]+Js_t[4][7]*Cs[7][7]*Js[31][19])*ws*ws;
-
-  Ks[7][2]=length*height*(Js_t[7][14]*Cs[6][6]*Js[6][2]+Js_t[7][15]*Cs[7][7]*Js[7][2])*ws*ws;
-  Ks[7][7]=length*height*(Js_t[7][14]*Cs[6][6]*Js[14][7]+Js_t[7][15]*Cs[7][7]*Js[15][7])*ws*ws;
-  Ks[7][12]=length*height*(Js_t[7][14]*Cs[6][6]*Js[22][12]+Js_t[7][15]*Cs[7][7]*Js[23][12])*ws*ws;
-  Ks[7][17]=length*height*(Js_t[7][14]*Cs[6][6]*Js[30][17]+Js_t[7][15]*Cs[7][7]*Js[31][17])*ws*ws;
-
-  Ks[7][3]=length*height*(Js_t[7][14]*Cs[6][6]*Js[6][3])*ws*ws;
-  Ks[7][8]=length*height*(Js_t[7][14]*Cs[6][6]*Js[14][8])*ws*ws;
-  Ks[7][13]=length*height*(Js_t[7][14]*Cs[6][6]*Js[22][13])*ws*ws;
-  Ks[7][18]=length*height*(Js_t[7][14]*Cs[6][6]*Js[30][18])*ws*ws;
-
-  Ks[7][4]=length*height*(Js_t[7][15]*Cs[7][7]*Js[7][4])*ws*ws;
-  Ks[7][9]=length*height*(Js_t[7][15]*Cs[7][7]*Js[15][9])*ws*ws;
-  Ks[7][14]=length*height*(Js_t[7][15]*Cs[7][7]*Js[23][14])*ws*ws;
-  Ks[7][19]=length*height*(Js_t[7][15]*Cs[7][7]*Js[31][19])*ws*ws;
-
-  Ks[8][2]=length*height*(Js_t[8][14]*Cs[6][6]*Js[6][2])*ws*ws;
-  Ks[8][7]=length*height*(Js_t[8][14]*Cs[6][6]*Js[14][7])*ws*ws;
-  Ks[8][12]=length*height*(Js_t[8][14]*Cs[6][6]*Js[22][12])*ws*ws;
-  Ks[8][17]=length*height*(Js_t[8][14]*Cs[6][6]*Js[30][17])*ws*ws;
-  
-  Ks[8][3]=length*height*(Js_t[8][11]*Cs[3][3]*Js[3][3]+Js_t[8][13]*Cs[5][5]*Js[5][3]+Js_t[8][14]*Cs[6][6]*Js[6][3])*ws*ws;
-  Ks[8][8]=length*height*(Js_t[8][11]*Cs[3][3]*Js[11][8]+Js_t[8][13]*Cs[5][5]*Js[13][8]+Js_t[8][14]*Cs[6][6]*Js[14][8])*ws*ws;
-  Ks[8][13]=length*height*(Js_t[8][11]*Cs[3][3]*Js[19][13]+Js_t[8][13]*Cs[5][5]*Js[21][13]+Js_t[8][14]*Cs[6][6]*Js[22][13])*ws*ws;
-  Ks[8][18]=length*height*(Js_t[8][11]*Cs[3][3]*Js[27][18]+Js_t[8][13]*Cs[5][5]*Js[29][18]+Js_t[8][14]*Cs[6][6]*Js[30][18])*ws*ws;
-
-  Ks[8][4]=length*height*(Js_t[8][11]*Cs[3][4]*Js[4][4]+Js_t[8][13]*Cs[5][5]*Js[5][4])*ws*ws;
-  Ks[8][9]=length*height*(Js_t[8][11]*Cs[3][4]*Js[12][9]+Js_t[8][13]*Cs[5][5]*Js[13][9])*ws*ws;
-  Ks[8][14]=length*height*(Js_t[8][11]*Cs[3][4]*Js[20][14]+Js_t[8][13]*Cs[5][5]*Js[21][14])*ws*ws;
-  Ks[8][19]=length*height*(Js_t[8][11]*Cs[3][4]*Js[28][19]+Js_t[8][13]*Cs[5][5]*Js[29][19])*ws*ws;
-
-  Ks[9][2]=length*height*(Js_t[9][15]*Cs[7][7]*Js[7][2])*ws*ws;
-  Ks[9][7]=length*height*(Js_t[9][15]*Cs[7][7]*Js[15][7])*ws*ws;
-  Ks[9][12]=length*height*(Js_t[9][15]*Cs[7][7]*Js[23][12])*ws*ws;
-  Ks[9][17]=length*height*(Js_t[9][15]*Cs[7][7]*Js[31][17])*ws*ws;
-
-  Ks[9][3]=length*height*(Js_t[9][12]*Cs[4][3]*Js[3][3]+Js_t[9][13]*Cs[5][5]*Js[5][3])*ws*ws;
-  Ks[9][8]=length*height*(Js_t[9][12]*Cs[4][3]*Js[11][8]+Js_t[9][13]*Cs[5][5]*Js[13][8])*ws*ws;
-  Ks[9][13]=length*height*(Js_t[9][12]*Cs[4][3]*Js[19][13]+Js_t[9][13]*Cs[5][5]*Js[21][13])*ws*ws;
-  Ks[9][18]=length*height*(Js_t[9][12]*Cs[4][3]*Js[27][18]+Js_t[9][13]*Cs[5][5]*Js[29][18])*ws*ws;
-
-  Ks[9][4]=length*height*(Js_t[9][12]*Cs[4][4]*Js[4][4]+Js_t[9][13]*Cs[5][5]*Js[5][4]+Js_t[9][15]*Cs[7][7]*Js[7][4])*ws*ws;
-  Ks[9][9]=length*height*(Js_t[9][12]*Cs[4][4]*Js[12][9]+Js_t[9][13]*Cs[5][5]*Js[13][9]+Js_t[9][15]*Cs[7][7]*Js[15][9])*ws*ws;
-  Ks[9][14]=length*height*(Js_t[9][12]*Cs[4][4]*Js[20][14]+Js_t[9][13]*Cs[5][5]*Js[21][14]+Js_t[9][15]*Cs[7][7]*Js[23][14])*ws*ws;
-  Ks[9][19]=length*height*(Js_t[9][12]*Cs[4][4]*Js[28][19]+Js_t[9][13]*Cs[5][5]*Js[29][19]+Js_t[9][15]*Cs[7][7]*Js[31][19])*ws*ws;
-
-  Ks[12][2]=length*height*(Js_t[12][22]*Cs[6][6]*Js[6][2]+Js_t[12][23]*Cs[7][7]*Js[7][2])*ws*ws;
-  Ks[12][7]=length*height*(Js_t[12][22]*Cs[6][6]*Js[14][7]+Js_t[12][23]*Cs[7][7]*Js[15][7])*ws*ws;
-  Ks[12][12]=length*height*(Js_t[12][22]*Cs[6][6]*Js[22][12]+Js_t[12][23]*Cs[7][7]*Js[23][12])*ws*ws;
-  Ks[12][17]=length*height*(Js_t[12][22]*Cs[6][6]*Js[30][17]+Js_t[12][23]*Cs[7][7]*Js[31][17])*ws*ws;
-
-  Ks[12][3]=length*height*(Js_t[12][22]*Cs[6][6]*Js[6][3])*ws*ws;
-  Ks[12][8]=length*height*(Js_t[12][22]*Cs[6][6]*Js[14][8])*ws*ws;
-  Ks[12][13]=length*height*(Js_t[12][22]*Cs[6][6]*Js[22][13])*ws*ws;
-  Ks[12][18]=length*height*(Js_t[12][22]*Cs[6][6]*Js[30][18])*ws*ws;
-
-  Ks[12][4]=length*height*(Js_t[12][23]*Cs[7][7]*Js[7][4])*ws*ws;
-  Ks[12][9]=length*height*(Js_t[12][23]*Cs[7][7]*Js[15][9])*ws*ws;
-  Ks[12][14]=length*height*(Js_t[12][23]*Cs[7][7]*Js[23][14])*ws*ws;
-  Ks[12][19]=length*height*(Js_t[12][23]*Cs[7][7]*Js[31][19])*ws*ws;
-
-  Ks[13][2]=length*height*(Js_t[13][22]*Cs[6][6]*Js[6][2])*ws*ws;
-  Ks[13][7]=length*height*(Js_t[13][22]*Cs[6][6]*Js[14][7])*ws*ws;
-  Ks[13][12]=length*height*(Js_t[13][22]*Cs[6][6]*Js[22][12])*ws*ws;
-  Ks[13][17]=length*height*(Js_t[13][22]*Cs[6][6]*Js[30][17])*ws*ws;
- 
-  Ks[13][3]=length*height*(Js_t[13][19]*Cs[3][3]*Js[3][3]+Js_t[13][21]*Cs[5][5]*Js[5][3]+Js_t[13][22]*Cs[6][6]*Js[6][3])*ws*ws;
-  Ks[13][8]=length*height*(Js_t[13][19]*Cs[3][3]*Js[11][8]+Js_t[13][21]*Cs[5][5]*Js[13][8]+Js_t[13][22]*Cs[6][6]*Js[14][8])*ws*ws;
-  Ks[13][13]=length*height*(Js_t[13][19]*Cs[3][3]*Js[19][13]+Js_t[13][21]*Cs[5][5]*Js[21][13]+Js_t[13][22]*Cs[6][6]*Js[22][13])*ws*ws;
-  Ks[13][18]=length*height*(Js_t[13][19]*Cs[3][3]*Js[27][18]+Js_t[13][21]*Cs[5][5]*Js[29][18]+Js_t[13][22]*Cs[6][6]*Js[30][18])*ws*ws;
-
-  Ks[13][4]=length*height*(Js_t[13][19]*Cs[3][4]*Js[4][4]+Js_t[13][21]*Cs[5][5]*Js[5][4])*ws*ws;
-  Ks[13][9]=length*height*(Js_t[13][19]*Cs[3][4]*Js[12][9]+Js_t[13][21]*Cs[5][5]*Js[13][9])*ws*ws;
-  Ks[13][14]=length*height*(Js_t[13][19]*Cs[3][4]*Js[20][14]+Js_t[13][21]*Cs[5][5]*Js[21][14])*ws*ws;
-  Ks[13][19]=length*height*(Js_t[13][19]*Cs[3][4]*Js[28][19]+Js_t[13][21]*Cs[5][5]*Js[29][19])*ws*ws;
-
-  Ks[14][2]=length*height*(Js_t[14][23]*Cs[7][7]*Js[7][2])*ws*ws;
-  Ks[14][7]=length*height*(Js_t[14][23]*Cs[7][7]*Js[15][7])*ws*ws;
-  Ks[14][12]=length*height*(Js_t[14][23]*Cs[7][7]*Js[23][12])*ws*ws;
-  Ks[14][17]=length*height*(Js_t[14][23]*Cs[7][7]*Js[31][17])*ws*ws;
-
-  Ks[14][3]=length*height*(Js_t[14][20]*Cs[4][3]*Js[3][3]+Js_t[14][21]*Cs[5][5]*Js[5][3])*ws*ws;
-  Ks[14][8]=length*height*(Js_t[14][20]*Cs[4][3]*Js[11][8]+Js_t[14][21]*Cs[5][5]*Js[13][8])*ws*ws;
-  Ks[14][13]=length*height*(Js_t[14][20]*Cs[4][3]*Js[19][13]+Js_t[14][21]*Cs[5][5]*Js[21][13])*ws*ws;
-  Ks[14][18]=length*height*(Js_t[14][20]*Cs[4][3]*Js[27][18]+Js_t[14][21]*Cs[5][5]*Js[29][18])*ws*ws;
-
-  Ks[14][4]=length*height*(Js_t[14][20]*Cs[4][4]*Js[4][4]+Js_t[14][21]*Cs[5][5]*Js[5][4]+Js_t[14][23]*Cs[7][7]*Js[7][4])*ws*ws;
-  Ks[14][9]=length*height*(Js_t[14][20]*Cs[4][4]*Js[12][9]+Js_t[14][21]*Cs[5][5]*Js[13][9]+Js_t[14][23]*Cs[7][7]*Js[15][9])*ws*ws;
-  Ks[14][14]=length*height*(Js_t[14][20]*Cs[4][4]*Js[20][14]+Js_t[14][21]*Cs[5][5]*Js[21][14]+Js_t[14][23]*Cs[7][7]*Js[23][14])*ws*ws;
-  Ks[14][19]=length*height*(Js_t[14][20]*Cs[4][4]*Js[28][19]+Js_t[14][21]*Cs[5][5]*Js[29][19]+Js_t[14][23]*Cs[7][7]*Js[31][19])*ws*ws;
-
-  Ks[17][2]=length*height*(Js_t[17][30]*Cs[6][6]*Js[6][2]+Js_t[17][31]*Cs[7][7]*Js[7][2])*ws*ws;
-  Ks[17][7]=length*height*(Js_t[17][30]*Cs[6][6]*Js[14][7]+Js_t[17][31]*Cs[7][7]*Js[15][7])*ws*ws;
-  Ks[17][12]=length*height*(Js_t[17][30]*Cs[6][6]*Js[22][12]+Js_t[17][31]*Cs[7][7]*Js[23][12])*ws*ws;
-  Ks[17][17]=length*height*(Js_t[17][30]*Cs[6][6]*Js[30][17]+Js_t[17][31]*Cs[7][7]*Js[31][17])*ws*ws;
-
-  Ks[17][3]=length*height*(Js_t[17][30]*Cs[6][6]*Js[6][3])*ws*ws;
-  Ks[17][8]=length*height*(Js_t[17][30]*Cs[6][6]*Js[14][8])*ws*ws;
-  Ks[17][13]=length*height*(Js_t[17][30]*Cs[6][6]*Js[22][13])*ws*ws;
-  Ks[17][18]=length*height*(Js_t[17][30]*Cs[6][6]*Js[30][18])*ws*ws;
-
-  Ks[17][4]=length*height*(Js_t[17][31]*Cs[7][7]*Js[7][4])*ws*ws;
-  Ks[17][9]=length*height*(Js_t[17][31]*Cs[7][7]*Js[15][9])*ws*ws;
-  Ks[17][14]=length*height*(Js_t[17][31]*Cs[7][7]*Js[23][14])*ws*ws;
-  Ks[17][19]=length*height*(Js_t[17][31]*Cs[7][7]*Js[31][19])*ws*ws;
-
-  Ks[18][2]=length*height*(Js_t[18][30]*Cs[6][6]*Js[6][2])*ws*ws;
-  Ks[18][7]=length*height*(Js_t[18][30]*Cs[6][6]*Js[14][7])*ws*ws;
-  Ks[18][12]=length*height*(Js_t[18][30]*Cs[6][6]*Js[22][12])*ws*ws;
-  Ks[18][17]=length*height*(Js_t[18][30]*Cs[6][6]*Js[30][17])*ws*ws;
- 
-  Ks[18][3]=length*height*(Js_t[18][27]*Cs[3][3]*Js[3][3]+Js_t[18][29]*Cs[5][5]*Js[5][3]+Js_t[18][30]*Cs[6][6]*Js[6][3])*ws*ws;
-  Ks[18][8]=length*height*(Js_t[18][27]*Cs[3][3]*Js[11][8]+Js_t[18][29]*Cs[5][5]*Js[13][8]+Js_t[18][30]*Cs[6][6]*Js[14][8])*ws*ws;
-  Ks[18][13]=length*height*(Js_t[18][27]*Cs[3][3]*Js[19][13]+Js_t[18][29]*Cs[5][5]*Js[21][13]+Js_t[18][30]*Cs[6][6]*Js[22][13])*ws*ws;
-  Ks[18][18]=length*height*(Js_t[18][27]*Cs[3][3]*Js[27][18]+Js_t[18][29]*Cs[5][5]*Js[29][18]+Js_t[18][30]*Cs[6][6]*Js[30][18])*ws*ws;
-
-  Ks[18][4]=length*height*(Js_t[18][27]*Cs[3][4]*Js[4][4]+Js_t[18][29]*Cs[5][5]*Js[5][4])*ws*ws;
-  Ks[18][9]=length*height*(Js_t[18][27]*Cs[3][4]*Js[12][9]+Js_t[18][29]*Cs[5][5]*Js[13][9])*ws*ws;
-  Ks[18][14]=length*height*(Js_t[18][27]*Cs[3][4]*Js[20][14]+Js_t[18][29]*Cs[5][5]*Js[21][14])*ws*ws;
-  Ks[18][19]=length*height*(Js_t[18][27]*Cs[3][4]*Js[28][19]+Js_t[18][29]*Cs[5][5]*Js[29][19])*ws*ws;
-
-  Ks[19][2]=length*height*(Js_t[19][31]*Cs[7][7]*Js[7][2])*ws*ws;
-  Ks[19][7]=length*height*(Js_t[19][31]*Cs[7][7]*Js[15][7])*ws*ws;
-  Ks[19][12]=length*height*(Js_t[19][31]*Cs[7][7]*Js[23][12])*ws*ws;
-  Ks[19][17]=length*height*(Js_t[19][31]*Cs[7][7]*Js[31][17])*ws*ws;
-
-  Ks[19][3]=length*height*(Js_t[19][28]*Cs[4][3]*Js[3][3]+Js_t[19][29]*Cs[5][5]*Js[5][3])*ws*ws;
-  Ks[19][8]=length*height*(Js_t[19][28]*Cs[4][3]*Js[11][8]+Js_t[19][29]*Cs[5][5]*Js[13][8])*ws*ws;
-  Ks[19][13]=length*height*(Js_t[19][28]*Cs[4][3]*Js[19][13]+Js_t[19][29]*Cs[5][5]*Js[21][13])*ws*ws;
-  Ks[19][18]=length*height*(Js_t[19][28]*Cs[4][3]*Js[27][18]+Js_t[19][29]*Cs[5][5]*Js[29][18])*ws*ws;
-
-  Ks[19][4]=length*height*(Js_t[19][28]*Cs[4][4]*Js[4][4]+Js_t[19][29]*Cs[5][5]*Js[5][4]+Js_t[19][31]*Cs[7][7]*Js[7][4])*ws*ws;
-  Ks[19][9]=length*height*(Js_t[19][28]*Cs[4][4]*Js[12][9]+Js_t[19][29]*Cs[5][5]*Js[13][9]+Js_t[19][31]*Cs[7][7]*Js[15][9])*ws*ws;
-  Ks[19][14]=length*height*(Js_t[19][28]*Cs[4][4]*Js[20][14]+Js_t[19][29]*Cs[5][5]*Js[21][14]+Js_t[19][31]*Cs[7][7]*Js[23][14])*ws*ws;
-  Ks[19][19]=length*height*(Js_t[19][28]*Cs[4][4]*Js[28][19]+Js_t[19][29]*Cs[5][5]*Js[29][19]+Js_t[19][31]*Cs[7][7]*Js[31][19])*ws*ws;
-
-
-
   // Stiffness matrix of a element: K = Kb + Ks
   K = Kb + Ks;
   // save stiffness
@@ -1067,25 +524,27 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
   quadInf[elementIndex].Shearstiffness=Ks;
   quadInfo.endEdit();
 
- /*int nbQuads = m_topology->getNbQuads();
-    //count number line of file 
+  int nbQuads = m_topology->getNbQuads();
+  const char* path = strcpy(new char[directory.length()+1], directory.c_str());
+
+  std::cout << path;
     int numLines = 0;
-    std::ifstream in("/home/nhnhanbk/Desktop/Sofa/sofa/nhnhan/IoTouch/K.txt");
+    std::ifstream in(path);
     std::string unused;
     while (std::getline(in, unused))
         ++numLines;
     in.close();
 
-    if (numLines == nbQuads) {std::ofstream myfile("/home/nhnhanbk/Desktop/Sofa/sofa/nhnhan/IoTouch/K.txt", std::ios_base::app);
+    if (numLines == nbQuads) {std::ofstream myfile(path, std::ios_base::app);
 				myfile.close();
 				}
 	else
     {
-        std::ofstream myfile("/home/nhnhanbk/Desktop/Sofa/sofa/nhnhan/IoTouch/K.txt", std::ios_base::app);
+        std::ofstream myfile(path, std::ios_base::app);
         myfile.flush();
         myfile <<K<<"\n";
         myfile.close();
-    }*/
+    }
 
 }
   

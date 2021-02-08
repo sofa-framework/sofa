@@ -1,3 +1,9 @@
+/******************************************************************************
+*						                                          *
+*	     TouchIoT: Smart Tangible Sensing Enabler for Tactile Internet	*
+*		              Developer: Nguyen Huu Nhan                          *
+*                                  					                  *
+******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_CPP
 
 #include "QuadBendingFEMForceField.inl"

@@ -1,8 +1,8 @@
 /******************************************************************************
-*									      *
-*			Ho Lab - IoTouch Project			      *
-*		       Developer: Nguyen Huu Nhan                             *
-*                                  					      *
+*									                                          *
+*	     TouchIoT: Smart Tangible Sensing Enabler for Tactile Internet	      *
+*		                 Developer: Nguyen Huu Nhan                           *
+*                                  					                          *
 ******************************************************************************/
 #pragma once
 
@@ -46,7 +46,6 @@ public:
     typedef sofa::helper::Quater<Real> Quat;
 
     enum {
-        //LARGE = 0,   ///< Symbol of small displacements quad solver
         SMALL = 1,   ///< Symbol of large displacements quad solver
     };
 
@@ -55,11 +54,8 @@ protected:
     //bool _anisotropicMaterial;			                 	    /// used to turn on / off optimizations
     typedef defaulttype::Vec<20, Real> Displacement;					    ///< the displacement vector
     typedef defaulttype::Mat<8, 8, Real> MaterialStiffness;				    ///< the matrix of material stiffness
-    typedef sofa::helper::vector<MaterialStiffness> VecMaterialStiffness;   ///< a vector of material stiffness matrices
     typedef defaulttype::Mat<32, 20, Real> StrainDisplacement;				    ///< the strain-displacement matrix
     typedef defaulttype::Mat<20, 20, Real> Stiffness;					    ///< the stiffness matrix
-    typedef sofa::helper::vector<StrainDisplacement> VecStrainDisplacement; ///< a vector of strain-displacement matrices
-    //typedef defaulttype::Mat<3, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
     
 protected:
     /// ForceField API
@@ -118,9 +114,6 @@ public:
     {
     public:
         EdgeInformation(){}
-           /* :fracturable(false) {}
-
-        bool fracturable;*/
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& /*ei*/ )
@@ -140,13 +133,6 @@ public:
     {
     public:
         VertexInformation(){}
-           /* :sumEigenValues(0.0), stress(0.0) {}
-
-        Coord meanStrainDirection;
-        double sumEigenValues;
-        Transformation rotation;
-
-        double stress; //average stress of quads around (used only for drawing)*/
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const VertexInformation& /*vi*/)
@@ -194,8 +180,6 @@ public:
         helper::vector<Real> newY(1, val);
         f_young.setValue(newY);
     }
-    /*Real getDamping() { return f_damping.getValue(); }
-    void setDamping(Real val) { f_damping.setValue(val); }*/
     int  getMethod() { return method; }
     void setMethod(int val) { method = val; }
     void setMethod(const std::string& methodName); 
@@ -217,13 +201,6 @@ protected :
     //void accumulateDampingSmall( VecCoord& f, Index elementIndex );
     void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
     
-    ////////////// large displacements method
-    /*void initLarge(int i, Index&a, Index&b, Index&c, Index&d);
-    void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex);
-    void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );*/
-    
-    /*bool updateMatrix;
-    int lastFracturedEdgeIndex;*/
 
 public:
 
@@ -233,6 +210,7 @@ public:
     Data<helper::vector<Real> > f_poisson; ///< Poisson ratio in Hooke's law (vector)
     Data<helper::vector<Real> > f_young; ///< Young modulus in Hooke's law (vector)
     Data<Real> f_thickness;
+    Data<std::string> directory;
     QuadHandler* quadHandler;
 
     /// Link to be set to the topology container in the component graph.
