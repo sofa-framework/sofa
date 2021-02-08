@@ -2,6 +2,9 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaLoader'/>
     <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralLoader'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/>
     
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline verbose="0" name="CollisionPipeline" />

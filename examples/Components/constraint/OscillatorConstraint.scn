@@ -1,21 +1,24 @@
 <Node name="root" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <!-- <Simulation name="Simulation" /> -->
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralLoader'/>  
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/> 
+    <RequiredPlugin pluginName='SofaLoader'/>
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager response="default" name="collision response" />
     <DiscreteIntersection />
     <!--<DefaultCollisionGroupManager />-->
     <Node name="Liver" depend="topo dofs">
-        <!--<CGImplicit iterations="25"/>-->
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MechanicalObject name="dofs" />
-        <!-- Container for the tetrahedra-->
+                <!-- Container for the tetrahedra-->
         <MeshGmshLoader name="meshLoader0" filename="mesh/liver.msh" />
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader0" />
         <!-- Algorithms: used in DiagonalMass to compute the mass -->
-        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <MechanicalObject name="dofs" template="Vec3d"/>
         <DiagonalMass massDensity="1" name="computed using mass density" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />

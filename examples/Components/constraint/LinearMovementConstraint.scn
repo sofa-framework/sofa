@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 <Node name="Root"  dt="0.1" >
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaRigid'/> 
+
     <Node name="Spoon1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -20,7 +26,7 @@
         <Node name="Visu">
             <MeshObjLoader name="meshLoader_1" filename="mesh/liver.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_1" color="red" />
-            <RigidMapping template="Rigid3d,ExtVec3f" name="default161" input="@.." output="@Visual" />
+            <RigidMapping template="Rigid3d,Vec3d" name="default161" input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="Spoon2">
@@ -42,7 +48,7 @@
         <Node name="Visu">
             <MeshObjLoader name="meshLoader_0" filename="mesh/liver.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="green" />
-            <RigidMapping template="Rigid3d,ExtVec3f" name="default161" input="@.." output="@Visual"/>
+            <RigidMapping template="Rigid3d,Vec3d" name="default161" input="@.." output="@Visual"/>
         </Node>
     </Node>
     <Node name="Spoon3">
@@ -64,7 +70,7 @@
         <Node name="Visu">
             <MeshObjLoader name="meshLoader_2" filename="mesh/liver.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_2" color="blue" />
-            <RigidMapping template="Rigid3d,ExtVec3f" name="default161" input="@.." output="@Visual" />
+            <RigidMapping template="Rigid3d,Vec3d" name="default161" input="@.." output="@Visual" />
         </Node>
     </Node>
 </Node>
