@@ -24,10 +24,15 @@
 
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/rmath.h>
 
 namespace sofa::component::linearsolver
 {
+
+#if !defined(SOFA_NO_VECTOR_ACCESS_FAILURE) && !defined(NDEBUG)
+#define DO_CHECK_VECTOR_ACCESS true
+#else
+#define DO_CHECK_VECTOR_ACCESS false
+#endif ///
 
 template<typename T>
 class FullVector : public defaulttype::BaseVector
@@ -48,18 +53,14 @@ protected:
     Index cursize;
     Index allocsize;
 
-#if !defined(SOFA_NO_VECTOR_ACCESS_FAILURE) && !defined(NDEBUG)
     void checkIndex(Index n) const
     {
-        if (n >= cursize)
-            sofa::helper::vector_access_failure(this, cursize, n, typeid(*this));
+        if constexpr(DO_CHECK_VECTOR_ACCESS)
+        {
+            if (n >= cursize)
+                sofa::helper::vector_access_failure(this, cursize, n, typeid(*this));
+        }
     }
-#else
-    void checkIndex(Index) const
-    {
-    }
-#endif
-
 
 public:
 
@@ -307,13 +308,16 @@ public:
     static const char* Name() { return "FullVector"; }
 };
 
-#if  !defined(SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP)
-//extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<bool>;
-#endif
-
 template<> SOFA_SOFABASELINEARSOLVER_API void FullVector<bool>::set(Index i, SReal v);
 template<> SOFA_SOFABASELINEARSOLVER_API void FullVector<bool>::add(Index i, SReal v);
 template<> SOFA_SOFABASELINEARSOLVER_API bool FullVector<bool>::dot(const FullVector<Real>& a) const;
 template<> SOFA_SOFABASELINEARSOLVER_API double FullVector<bool>::norm() const;
+
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP)
+extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<float>;
+extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<double>;
+extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<bool>;
+#endif
+
 
 } // namespace sofa::component::linearsolver

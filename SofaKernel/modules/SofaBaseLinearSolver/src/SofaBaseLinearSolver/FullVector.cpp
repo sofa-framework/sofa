@@ -52,6 +52,8 @@ template<> double FullVector<bool>::norm() const
     return helper::rsqrt(r);
 }
 
+template class SOFA_SOFABASELINEARSOLVER_API FullVector<float>;
+template class SOFA_SOFABASELINEARSOLVER_API FullVector<double>;
 template class SOFA_SOFABASELINEARSOLVER_API FullVector<bool>;
 
 } // namespace sofa::component::linearsolver

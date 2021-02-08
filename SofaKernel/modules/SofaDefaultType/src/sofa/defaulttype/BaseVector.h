@@ -24,7 +24,6 @@
 
 #include <sofa/defaulttype/config.h>
 #include <iostream>
-#include <sofa/defaulttype/TopologyTypes.h>
 
 namespace sofa
 {
