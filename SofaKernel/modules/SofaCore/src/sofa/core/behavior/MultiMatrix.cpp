@@ -34,6 +34,31 @@ const MechanicalMatrix MechanicalMatrix::M(1,0,0);
 const MechanicalMatrix MechanicalMatrix::B(0,1,0);
 const MechanicalMatrix MechanicalMatrix::K(0,0,1);
 
+std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m )
+{
+    out << '(';
+    bool first = true;
+    for (unsigned int i=0; i<m.factors.size(); ++i)
+    {
+        SReal f = m.factors[i];
+        if (f!=0.0)
+        {
+            if (!first) out << ' ';
+            if (f == -1.0) out << '-';
+            else if (f < 0) out << f << ' ';
+            else
+            {
+                if (!first) out << '+';
+                if (f != 1.0) out << f << ' ';
+            }
+            out << ("MBK")[i];
+            first = false;
+        }
+    }
+    out << ')';
+    return out;
+}
+
 } // namespace behavior
 
 } // namespace core

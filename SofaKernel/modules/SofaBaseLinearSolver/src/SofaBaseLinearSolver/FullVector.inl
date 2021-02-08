@@ -22,6 +22,7 @@
 #pragma once
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/rmath.h>
 
 namespace sofa::component::linearsolver
 {

@@ -182,12 +182,9 @@ protected:
     /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
     virtual void updateForceMask() = 0;
 
-
 public:
-
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
-
 };
 
 } // namespace core
