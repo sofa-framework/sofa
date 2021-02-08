@@ -23,7 +23,7 @@
 #include <SofaBaseLinearSolver/config.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <vector>
-
+#include <map>
 namespace sofa::component::linearsolver
 {
 
