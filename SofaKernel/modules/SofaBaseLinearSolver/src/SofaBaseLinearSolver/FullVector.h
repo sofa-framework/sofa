@@ -23,7 +23,6 @@
 #include <SofaBaseLinearSolver/config.h>
 
 #include <sofa/defaulttype/BaseVector.h>
-#include <sofa/helper/vector.h>
 
 namespace sofa::component::linearsolver
 {
@@ -53,14 +52,7 @@ protected:
     Index cursize;
     Index allocsize;
 
-    void checkIndex(Index n) const
-    {
-        if constexpr(DO_CHECK_VECTOR_ACCESS)
-        {
-            if (n >= cursize)
-                sofa::helper::vector_access_failure(this, cursize, n, typeid(*this));
-        }
-    }
+    void checkIndex(Index n) const;
 
 public:
 
@@ -114,84 +106,48 @@ public:
     ConstIterator begin() const { return data; }
     ConstIterator end()   const { return data+cursize; }
 
-    void fastResize(Index dim)
-    {
-        if (dim == cursize) return;
-        if (allocsize >= 0)
-        {
-            if (dim > allocsize)
-            {
-                if (allocsize > 0)
-                    delete[] data;
-                allocsize = dim;
-                data = new T[dim];
-            }
-        }
-        else
-        {
-            if (dim > -allocsize)
-            {
-                msg_error("FullVector") << "Cannot resize preallocated vector to size "<<dim ;
-                return;
-            }
-        }
-        cursize = dim;
-    }
+    void fastResize(Index dim);
 
-    void resize(Index dim) override
-    {
-        fastResize(dim);
-        clear();
-    }
+    void resize(Index dim) override;
+    void clear() override;
 
-    void clear() override
-    {
-        if (cursize > 0)
-            std::fill( this->begin(), this->end(), T() );
-    }
-
-    void swap(FullVector<T>& v)
-    {
-        Index t;
-        t = cursize; cursize = v.cursize; v.cursize = t;
-        t = allocsize; allocsize = v.allocsize; v.allocsize = t;
-        T* d;
-        d = data; data = v.data; v.data = d;
-    }
+    void swap(FullVector<T>& v);
 
     // for compatibility with baseVector
-    void clear(Index dim) override
-    {
-        resize(dim);
-    }
+    void clear(Index dim) override;
 
     T& operator[](Index i)
     {
-        checkIndex(i);
+        if constexpr(DO_CHECK_VECTOR_ACCESS)
+            checkIndex(i);
         return data[i];
     }
 
     const T& operator[](Index i) const
     {
-        checkIndex(i);
+        if constexpr(DO_CHECK_VECTOR_ACCESS)
+            checkIndex(i);
         return data[i];
     }
 
     SReal element(Index i) const override
     {
-        checkIndex(i);
+        if constexpr(DO_CHECK_VECTOR_ACCESS)
+            checkIndex(i);
         return (SReal) data[i];
     }
 
     void set(Index i, SReal v) override
     {
-        checkIndex(i);
+        if constexpr(DO_CHECK_VECTOR_ACCESS)
+            checkIndex(i);
         data[i] = (Real)v;
     }
 
     void add(Index i, SReal v) override
     {
-        checkIndex(i);
+        if constexpr(DO_CHECK_VECTOR_ACCESS)
+            checkIndex(i);
         data[i] +=  (Real)v;
     }
 
@@ -202,14 +158,22 @@ public:
 
     FullVector<T> sub(Index i, Index n)
     {
-        if (n > 0) checkIndex(i+n-1);
+        if constexpr(DO_CHECK_VECTOR_ACCESS)
+        {
+            if (n > 0)
+                checkIndex(i+n-1);
+        }
         return FullVector<T>(data+i,n);
     }
 
     template<class TV>
     void getsub(Index i, Index n, TV& v)
     {
-        if (n > 0) checkIndex(i+n-1);
+        if constexpr(DO_CHECK_VECTOR_ACCESS)
+        {
+            if (n > 0)
+                checkIndex(i+n-1);
+        }
         v = FullVector<T>(data+i,n);
     }
 
@@ -221,91 +185,37 @@ public:
     }
 
     /// v = a
-    void operator=(const FullVector<T>& a)
-    {
-        fastResize(a.size());
-        std::copy(a.begin(), a.end(), begin());
-    }
+    void operator=(const FullVector<T>& a);
 
-    void operator=(const T& a)
-    {
-        std::fill(begin(), end(), a);
-    }
+    void operator=(const T& a);
 
     /// v += a
-    template<typename Real2>
-    void operator+=(const FullVector<Real2>& a)
-    {
-        for(Index i=0; i<cursize; ++i)
-            (*this)[i] += (Real)a[i];
-    }
+    void operator+=(const FullVector<Real>& a);
 
     /// v -= a
-    template<typename Real2>
-    void operator-=(const FullVector<Real2>& a)
-    {
-        for(Index i=0; i<cursize; ++i)
-            (*this)[i] -= (Real)a[i];
-    }
+    void operator-=(const FullVector<Real>& a);
 
     /// v = a*f
-    template<typename Real2,typename Real3>
-    void eq(const FullVector<Real2>& a, Real3 f)
-    {
-        for(Index i=0; i<cursize; ++i)
-            (*this)[i] = (Real)(a[i]*f);
-    }
+    void eq(const FullVector<Real>& a, Real f);
 
     /// v = a+b*f
-    template<typename Real2,typename Real3>
-    void eq(const FullVector<Real2>& a, const FullVector<Real2>& b, Real3 f=1.0)
-    {
-        for(Index i=0; i<cursize; ++i)
-            (*this)[i] = (Real)(a[i]+b[i]*f);
-    }
+    void eq(const FullVector<Real>& a, const FullVector<Real>& b, Real f=1.0);
 
     /// v += a*f
-    template<typename Real2,typename Real3>
-    void peq(const FullVector<Real2>& a, Real3 f)
-    {
-        for(Index i=0; i<cursize; ++i)
-            (*this)[i] += (Real)(a[i]*f);
-    }
+    void peq(const FullVector<Real>& a, Real f);
 
     /// v *= f
-    template<typename Real2>
-    void operator*=(Real2 f)
-    {
-        for(Index i=0; i<cursize; ++i)
-            (*this)[i] *= (Real)f;
-    }
+    void operator*=(Real f);
 
     /// \return v.a
-    Real dot(const FullVector<Real>& a) const
-    {
-        Real r = 0;
-        for(Index i=0; i<cursize; ++i)
-            r += (*this)[i]*a[i];
-        return r;
-    }
+    Real dot(const FullVector<Real>& a) const;
 
     /// \return sqrt(v.v)
-    double norm() const
-    {
-        return helper::rsqrt(dot(*this));
-    }
-
-    friend std::ostream& operator << (std::ostream& out, const FullVector<Real>& v )
-    {
-        for (Index i=0,s=v.size(); i<s; ++i)
-        {
-            if (i) out << ' ';
-            out << v[i];
-        }
-        return out;
-    }
+    double norm() const;
 
     static const char* Name() { return "FullVector"; }
+
+    friend std::ostream& operator << (std::ostream& out, const FullVector<Real>& v );
 };
 
 template<> SOFA_SOFABASELINEARSOLVER_API void FullVector<bool>::set(Index i, SReal v);
@@ -313,7 +223,7 @@ template<> SOFA_SOFABASELINEARSOLVER_API void FullVector<bool>::add(Index i, SRe
 template<> SOFA_SOFABASELINEARSOLVER_API bool FullVector<bool>::dot(const FullVector<Real>& a) const;
 template<> SOFA_SOFABASELINEARSOLVER_API double FullVector<bool>::norm() const;
 
-#if !defined(SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP)
+#if !defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
 extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<float>;
 extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<double>;
 extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<bool>;

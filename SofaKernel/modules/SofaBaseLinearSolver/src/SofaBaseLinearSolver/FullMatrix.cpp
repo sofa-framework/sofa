@@ -20,44 +20,23 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
-#include <SofaBaseLinearSolver/FullVector.inl>
-#include <sofa/helper/rmath.h>
+#include <SofaBaseLinearSolver/FullMatrix.inl>
 
 namespace sofa::component::linearsolver
 {
 
-template<> void FullVector<bool>::set(Index i, SReal v)
-{
-    data[i] = (v!=0);
-}
+#if defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
+template class FullMatrix<double>;
+template class FullMatrix<float>;
+template class FullMatrix<bool>;
 
-template<> void FullVector<bool>::add(Index i, SReal v)
-{
-    data[i] |= (v!=0);
-}
+std::ostream& operator<<(std::ostream& out, const FullMatrix<double>& v ){ return readFromStream(out, v); }
+std::ostream& operator<<(std::ostream& out, const FullMatrix<float>& v ){ return readFromStream(out, v); }
+std::ostream& operator<<(std::ostream& out, const FullMatrix<bool>& v ){ return readFromStream(out, v); }
 
-template<> bool FullVector<bool>::dot(const FullVector<Real>& a) const
-{
-    Real r = false;
-    for(Index i=0; i<cursize && !r; ++i)
-        r = (*this)[i] && a[i];
-    return r;
-}
-
-template<> double FullVector<bool>::norm() const
-{
-    double r = 0.0;
-    for(Index i=0; i<cursize; ++i)
-        r += (*this)[i] ? 1.0 : 0.0;
-    return helper::rsqrt(r);
-}
-
-std::ostream& operator <<(std::ostream& out, const FullVector<float>& v){ return readFromStream(out, v); }
-std::ostream& operator <<(std::ostream& out, const FullVector<double>& v){ return readFromStream(out, v); }
-std::ostream& operator <<(std::ostream& out, const FullVector<bool>& v){ return readFromStream(out, v); }
-
-template class SOFA_SOFABASELINEARSOLVER_API FullVector<float>;
-template class SOFA_SOFABASELINEARSOLVER_API FullVector<double>;
-template class SOFA_SOFABASELINEARSOLVER_API FullVector<bool>;
+template class LPtrFullMatrix<double>;
+template class LPtrFullMatrix<float>;
+template class LPtrFullMatrix<bool>;
+#endif /// SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
 
 } /// namespace sofa::component::linearsolver
