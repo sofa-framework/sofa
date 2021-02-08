@@ -23,7 +23,7 @@
 #define SOFA_DEFAULTTYPE_BASEVECTOR_H
 
 #include <sofa/defaulttype/config.h>
-#include <iostream>
+#include <iosfwd>
 
 namespace sofa
 {
@@ -169,6 +169,9 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const BaseVector& v );
 };
+
+/// Declare that the operator >> exists but is defined in a BaseMatrix.cpp
+SOFA_DEFAULTTYPE_API std::ostream& operator<<(std::ostream& out, const  BaseVector& v );
 
 } // nampespace defaulttype
 

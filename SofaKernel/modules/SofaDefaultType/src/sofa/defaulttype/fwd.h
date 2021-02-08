@@ -37,4 +37,30 @@ namespace sofa::defaulttype
     typedef sofa::helper::Quater<double> Quatd;
     typedef sofa::helper::Quater<SReal> Quat;
     typedef Quat Quaternion;
+
+    template <sofa::Size L, sofa::Size C, class Real>
+    class Mat;
+
+    typedef Mat<1,1,float> Mat1x1f;
+    typedef Mat<1,1,double> Mat1x1d;
+
+    typedef Mat<2,2,float> Mat2x2f;
+    typedef Mat<2,2,double> Mat2x2d;
+
+    typedef Mat<3,3,float> Mat3x3f;
+    typedef Mat<3,3,double> Mat3x3d;
+
+    typedef Mat<3,4,float> Mat3x4f;
+    typedef Mat<3,4,double> Mat3x4d;
+
+    typedef Mat<4,4,float> Mat4x4f;
+    typedef Mat<4,4,double> Mat4x4d;
+
+    typedef Mat<2,2,SReal> Mat2x2;
+    typedef Mat<3,3,SReal> Mat3x3;
+    typedef Mat<4,4,SReal> Mat4x4;
+
+    typedef Mat<2,2,SReal> Matrix2;
+    typedef Mat<3,3,SReal> Matrix3;
+    typedef Mat<4,4,SReal> Matrix4;
 }
