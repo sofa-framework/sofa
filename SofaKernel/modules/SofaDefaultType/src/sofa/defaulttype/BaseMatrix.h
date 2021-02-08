@@ -27,9 +27,7 @@
 #include <sofa/defaulttype/fwd.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <utility> // for std::pair
-#include <cstddef> // for nullptr and std::size_t
 #include <iosfwd>
-#include <climits>
 
 namespace sofa
 {

@@ -167,7 +167,16 @@ public:
     /// Reset the value of element i to 0
     virtual void clear(Index i) { set(i,0.0); }
 
-    friend std::ostream& operator << (std::ostream& out, const BaseVector& v );
+    friend std::ostream& operator << (std::ostream& out, const BaseVector& v )
+    {
+        Index ny = v.size();
+        for (Index y=0; y<ny; ++y)
+        {
+            out << " " << v.element(y);
+        }
+        return out;
+    }
+
 };
 
 } // nampespace defaulttype
