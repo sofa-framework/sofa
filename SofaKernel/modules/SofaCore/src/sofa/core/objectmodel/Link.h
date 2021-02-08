@@ -450,7 +450,7 @@ public:
     }
 
     [[deprecated("This function has been deprecated in PR#1503 and will be removed soon. Link<> cannot hold BaseData anymore. To make link between Data use DataLink instead.")]]
-    BaseData* getLinkedData(std::size_t =0) const override = delete;
+    BaseData* getLinkedData(std::size_t =0) const = delete;
     sofa::core::objectmodel::Base* getOwnerBase() const override
     {
         return m_owner;
