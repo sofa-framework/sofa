@@ -188,57 +188,36 @@ public:
         return m_value.getValue();
     }
 
-    SOFA_BEGIN_DEPRECATION_AS_ERROR
-
     [[deprecated("2021-01-21: virtualSetLink has been deprecated. You can update your code by using copyValueFrom() or setParent() depending on the expected behavior.")]]
-    void virtualSetLink(const BaseData& bd) { BaseData::copyValueFrom(&bd); }
+    void virtualSetLink(const BaseData& bd) = delete;
 
     [[deprecated("2021-01-21: virtualGetValue has been deprecated. You can update your code by using .")]]
-    void virtualSetValue(const T& v){ setValue(v); }
+    void virtualSetValue(const T& v) = delete;
 
     [[deprecated("2021-01-21: virtualGetValue has been deprecated. You can update your code by using .")]]
-    const T& virtualGetValue() { return getValue(); }
+    const T& virtualGetValue() = delete;
 
     [[deprecated("2021-01-21: virtualBeginEdit has been deprecated. You can update your code by using .")]]
-    T* virtualBeginEdit() { return beginEdit(); }
+    T* virtualBeginEdit() = delete;
 
     [[deprecated("2021-01-21: virtualEndEdit has been deprecated. You can update your code by using .")]]
-    void virtualEndEdit() { return endEdit(); }
+    void virtualEndEdit() = delete;
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    void endEdit(const core::ExecParams*)
-    {
-        endEdit();
-    }
+    void endEdit(const core::ExecParams*) = delete;
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    T* beginWriteOnly(const core::ExecParams*)
-    {
-        return beginWriteOnly();
-    }
+    T* beginWriteOnly(const core::ExecParams*) = delete;
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    T* beginEdit(const core::ExecParams*)
-    {
-        return beginEdit();
-    }
+    T* beginEdit(const core::ExecParams*) = delete;
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    void setValue(const core::ExecParams*, const T& value)
-    {
-        setValue(value);
-    }
+    void setValue(const core::ExecParams*, const T& value) = delete;
 
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
-    const T& getValue(const core::ExecParams*) const
-    {
-        return getValue();
-    }
-    SOFA_END_DEPRECATION_AS_ERROR
-
+    const T& getValue(const core::ExecParams*) const = delete;
     /// @}
-
-
 
     /// Get info about the value type of the associated variable
     const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
@@ -261,16 +240,14 @@ public:
     }
 
     [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")]]
-    bool operator ==( const T& value ) const
-    {
-        return getValue()==value;
-    }
+    bool operator ==( const T& value ) const = delete;
 
     [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")]]
-    bool operator!=( const T& value ) const {return getValue()!=value;}
-            void operator =( const T& value )
+    bool operator!=( const T& value ) const = delete;
+
+    void operator =( const T& value )
     {
-            this->setValue(value);
+        this->setValue(value);
     }
 
     bool copyValueFrom(const BaseData* data){ return doCopyValueFrom(data); }

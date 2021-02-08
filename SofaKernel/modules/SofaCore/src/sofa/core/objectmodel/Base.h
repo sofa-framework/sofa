@@ -531,14 +531,11 @@ public:
 
     Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< the object state
 
-    SOFA_BEGIN_DEPRECATION_AS_ERROR
     [[deprecated("m_componentstate was renamed to d_componentState in PR#1358. Please upgrade your code. Notification to be removed at v20.12")]]
     DeprecatedAndRemoved m_componentstate;
 
     [[deprecated("d_componentState was renamed to d_componentState in PR#1358. Please upgrade your code. Notification to be removed at v20.12")]]
     DeprecatedAndRemoved d_componentstate;
-    SOFA_END_DEPRECATION_AS_ERROR
-
 
     std::string m_definitionSourceFileName        {""};
     int         m_definitionSourceFilePos         {-1};
