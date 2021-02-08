@@ -32,7 +32,7 @@ namespace sofa::component::collision
 
 class RayCollisionModel;
 
-class Ray : public core::TCollisionElementIterator<RayCollisionModel>
+class SOFA_SOFAUSERINTERACTION_API Ray : public core::TCollisionElementIterator<RayCollisionModel>
 {
 public:
     Ray(RayCollisionModel* model, int index);
