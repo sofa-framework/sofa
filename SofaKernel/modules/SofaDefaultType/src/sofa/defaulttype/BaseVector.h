@@ -38,7 +38,7 @@ namespace defaulttype
 class BaseVector
 {
 public:
-    typedef int Index;
+    typedef sofa::Index Index;
 
     virtual ~BaseVector() {}
 

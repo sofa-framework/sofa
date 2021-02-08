@@ -23,8 +23,8 @@
 #define SOFA_DEFAULTTYPE_BASEMATRIX_H
 
 #include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/fwd.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <utility> // for std::pair
 #include <cstddef> // for nullptr and std::size_t
@@ -45,7 +45,7 @@ namespace defaulttype
 class SOFA_DEFAULTTYPE_API BaseMatrix
 {
 public:
-    typedef BaseVector::Index Index;
+    typedef sofa::Index Index;
 
     BaseMatrix();
     virtual ~BaseMatrix();

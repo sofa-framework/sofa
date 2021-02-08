@@ -31,6 +31,7 @@ namespace sofa::helper
 namespace sofa::defaulttype
 {
     class BaseMatrix;
+    class BaseVector;
 
     typedef sofa::helper::Quater<float> Quatf;
     typedef sofa::helper::Quater<double> Quatd;

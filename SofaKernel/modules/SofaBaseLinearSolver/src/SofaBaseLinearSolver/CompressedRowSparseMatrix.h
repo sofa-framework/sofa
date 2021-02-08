@@ -41,7 +41,7 @@ namespace sofa::component::linearsolver
 #define EMIT_EXTRA_MESSAGE false
 #endif // defined(SPARSEMATRIX_VERBOSE) && (SPARSEMATRIX_VERBOSE == true)
 
-template<typename TBloc, typename TVecBloc = helper::vector<TBloc>, typename TVecIndex = helper::vector<defaulttype::BaseMatrix::Index> >
+template<typename TBloc, typename TVecBloc = helper::vector<TBloc>, typename TVecIndex = helper::vector<sofa::Index> >
 class CompressedRowSparseMatrix : public defaulttype::BaseMatrix
 {
 public:

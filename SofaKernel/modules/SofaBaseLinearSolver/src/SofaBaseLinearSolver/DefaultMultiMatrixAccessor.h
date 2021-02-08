@@ -21,11 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseLinearSolver/config.h>
-
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <vector>
-
 
 namespace sofa::component::linearsolver
 {
