@@ -23,6 +23,7 @@
 #define SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_H
 
 #include <sofa/core/config.h>
+#include <sofa/core/fwd.h>
 #include <sofa/defaulttype/fwd.h>
 
 namespace sofa
