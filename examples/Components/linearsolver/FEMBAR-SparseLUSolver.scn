@@ -1,5 +1,5 @@
 <Node name="root" dt="0.02" gravity="0 -10 0">
-    <RequiredPlugin name="SofaSparseSolver"/>
+    <RequiredPlugin pluginName="SofaSparseSolver"/>
     <RequiredPlugin pluginName='SofaBoundaryCondition'/>
     <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
     <RequiredPlugin pluginName='SofaMiscCollision'/>
