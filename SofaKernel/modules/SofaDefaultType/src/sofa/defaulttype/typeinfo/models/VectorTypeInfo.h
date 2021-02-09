@@ -24,6 +24,7 @@
 #include <sstream>
 
 #include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa::defaulttype
 {

@@ -92,7 +92,7 @@ public:
 
     template<class T2> struct rebind
     {
-        typedef vector< T2,CPUMemoryManager<T2>, TypeInfoManager<T> > other;
+        typedef vector< T2,CPUMemoryManager<T2>, TypeInfoManager<T2> > other;
     };
 
     /// Basic constructor
@@ -112,13 +112,13 @@ public:
     /// Move constructor
     vector(std::vector<T,Alloc>&& v): std::vector<T,Alloc>(std::move(v)) {}
     /// Copy operator
-    vector<T, Alloc>& operator=(const std::vector<T, Alloc>& x)
+    vector<T, Alloc, typeinfo>& operator=(const std::vector<T, Alloc>& x)
     {
         std::vector<T,Alloc>::operator=(x);
         return *this;
     }
     /// Move assignment operator
-    vector<T, Alloc>& operator=(std::vector<T,Alloc>&& v)
+    vector<T, Alloc, typeinfo>& operator=(std::vector<T,Alloc>&& v)
     {
         std::vector<T,Alloc>::operator=(std::move(v));
         return *this;

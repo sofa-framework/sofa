@@ -47,7 +47,7 @@ struct DataTypeInfoManager
     using DataTypeInfo = sofa::defaulttype::DataTypeInfo<T>;
     template<class T2> struct rebind
     {
-        typedef DataTypeInfoRebound<T2> other;
+        typedef DataTypeInfoManager<T2> other;
     };
 
 };
