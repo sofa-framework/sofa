@@ -29,6 +29,9 @@
 #include <iostream>
 #include <sstream>
 
+#include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::DataRepository;
+
 namespace sofa::gui::qt
 {
 
@@ -38,6 +41,13 @@ AboutSOFADialog::AboutSOFADialog(QWidget *parent)
     setupUi(this);
     // SLOTS CONNECTION
     this->connect(buttonOk, SIGNAL(clicked() ),  this, SLOT( clickSupportUs() ));
+
+    std::string file = "icons/AboutSOFA.png";
+    if (DataRepository.findFile(file))
+    {
+        QPixmap pix(QPixmap::fromImage(QImage(DataRepository.getFile ( file ).c_str())));
+        label_2->setPixmap(pix);
+    }
 }
 
 
