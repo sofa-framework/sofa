@@ -23,7 +23,7 @@
 
 #include <sofa/type/Quat.h>
 
-SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Quat.h")
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Quat.h")
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -34,7 +34,3 @@ namespace sofa::helper
     using Quater = sofa::type::Quat<real>;
 
 } // namespace sofa::helper
-
-//needs to have a way to know if Quater has been declared
-//to avoid a redefinition warning with defaulttype/fwd.h
-#define SOFA_DEFAULTTYPE_QUATER_DEFINED

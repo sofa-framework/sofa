@@ -24,7 +24,7 @@
 
 #include <sofa/type/MatSym.h>
 
-SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/MatSym.h")
+// SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/MatSym.h")
 
 namespace sofa::defaulttype
 {

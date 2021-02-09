@@ -23,4 +23,4 @@
 
 #include <sofa/type/Quat.inl>
 
-SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Quat.inl")
+// SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Quat.inl")
