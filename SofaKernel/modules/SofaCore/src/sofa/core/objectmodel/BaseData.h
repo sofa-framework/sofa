@@ -277,7 +277,7 @@ public:
     /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
     /// @return true if the copy was successful.
     [[deprecated("2021-01-01: This method has been replaced with copyValueFrom(), please update your code.")]]
-    bool copyValue(const BaseData* data) = delete;
+    bool copyValue(const BaseData* data) { return copyValueFrom(data); }
 
     /// Copy the value from another Data.
     ///
