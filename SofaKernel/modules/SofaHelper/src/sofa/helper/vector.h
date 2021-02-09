@@ -57,8 +57,18 @@ int SOFA_HELPER_API getInteger(const std::string& s, std::stringstream& msg, uns
 /// is incremented.
 unsigned int SOFA_HELPER_API getUnsignedInteger(const std::string& s, std::stringstream& msg, unsigned int& numErrors) ;
 
+template <typename T>
+struct TypeInfoManager
+{
+    // Not used here, just for reference
+    enum class DataTypeInfo
+    {
+        SimpleCopy = 1,
+        ZeroConstructor = 1
+    };
+};
 
-template <class T, class MemoryManager = CPUMemoryManager<T> >
+template <class T, class MemoryManager = CPUMemoryManager<T>, class DataTypeInfoManager = TypeInfoManager<T> >
 class vector;
 
 /// Regular vector
@@ -66,10 +76,12 @@ class vector;
 ///  - string serialization (making it usable in Data)
 ///  - operator[] is checking if the index is within the bounds in debug
 template <class T>
-class SOFA_HELPER_API vector<T, CPUMemoryManager<T> > : public std::vector<T, std::allocator<T> >
+class SOFA_HELPER_API vector<T, CPUMemoryManager<T>, TypeInfoManager<T> > : public std::vector<T, std::allocator<T> >
 {
 public:
     typedef CPUMemoryManager<T> memory_manager;
+    typedef TypeInfoManager<T> typeinfo;
+
     typedef std::allocator<T> Alloc;
     /// Size
     typedef typename std::vector<T,Alloc>::size_type Size;
@@ -80,7 +92,7 @@ public:
 
     template<class T2> struct rebind
     {
-        typedef vector< T2,CPUMemoryManager<T2> > other;
+        typedef vector< T2,CPUMemoryManager<T2>, TypeInfoManager<T> > other;
     };
 
     /// Basic constructor

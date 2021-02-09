@@ -268,20 +268,20 @@ public:
     WriteAccessor(container_type& c) : Inherit(c) {}
 };
 
-template<class T, class Alloc>
-class ReadAccessor< helper::vector<T,Alloc> > : public ReadAccessorVector< helper::vector<T,Alloc> >
+template<class T, class Alloc, class DataTypeInfo>
+class ReadAccessor< helper::vector<T,Alloc, DataTypeInfo> > : public ReadAccessorVector< helper::vector<T,Alloc, DataTypeInfo> >
 {
 public:
-    typedef ReadAccessorVector< helper::vector<T,Alloc> > Inherit;
+    typedef ReadAccessorVector< helper::vector<T,Alloc, DataTypeInfo> > Inherit;
     typedef typename Inherit::container_type container_type;
     ReadAccessor(const container_type& c) : Inherit(c) {}
 };
 
-template<class T, class Alloc>
-class WriteAccessor< helper::vector<T,Alloc> > : public WriteAccessorVector< helper::vector<T,Alloc> >
+template<class T, class Alloc, class DataTypeInfo>
+class WriteAccessor< helper::vector<T,Alloc, DataTypeInfo> > : public WriteAccessorVector< helper::vector<T,Alloc, DataTypeInfo> >
 {
 public:
-    typedef WriteAccessorVector< helper::vector<T,Alloc> > Inherit;
+    typedef WriteAccessorVector< helper::vector<T,Alloc, DataTypeInfo> > Inherit;
     typedef typename Inherit::container_type container_type;
     WriteAccessor(container_type& c) : Inherit(c) {}
 };

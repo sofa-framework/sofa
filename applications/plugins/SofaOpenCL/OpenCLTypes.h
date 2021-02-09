@@ -41,17 +41,29 @@ namespace gpu
 namespace opencl
 {
 
+template<typename T>
+struct DataTypeInfoManager
+{
+    using DataTypeInfo = sofa::defaulttype::DataTypeInfo<T>;
+    template<class T2> struct rebind
+    {
+        typedef DataTypeInfoRebound<T2> other;
+    };
+
+};
+
 template<class T>
-class OpenCLVector : public helper::vector<T,OpenCLMemoryManager<T> >
+class OpenCLVector : public helper::vector<T,OpenCLMemoryManager<T>, DataTypeInfoManager<T> >
 {
 public :
+    using Inherit = helper::vector<T, OpenCLMemoryManager<T>, DataTypeInfoManager<T> >;
     typedef size_t size_type;
 
-    OpenCLVector() : helper::vector<T,OpenCLMemoryManager<T> >() {}
+    OpenCLVector() : Inherit() {}
 
-    OpenCLVector(size_type n) : helper::vector<T,OpenCLMemoryManager<T> >(n) {}
+    OpenCLVector(size_type n) : Inherit(n) {}
 
-    OpenCLVector(const helper::vector<T,OpenCLMemoryManager< T > >& v) : helper::vector<T,OpenCLMemoryManager<T> >(v) {}
+    OpenCLVector(const Inherit& v) : Inherit(v) {}
 
 };
 
