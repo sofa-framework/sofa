@@ -92,7 +92,7 @@ public:
     virtual Base* getOwnerBase() const = 0;
 
     [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
-    virtual sofa::core::objectmodel::BaseData* getOwnerData() const = delete;
+    sofa::core::objectmodel::BaseData* getOwnerData() const = delete;
 
     /// Set one of the flags.
     void setFlag(LinkFlagsEnum flag, bool b)
@@ -138,7 +138,7 @@ public:
     Base* getLinkedBase(std::size_t index=0) const { return _doGet_(index); }
 
     [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
-    virtual BaseData* getLinkedData(std::size_t index=0) const = delete;
+    BaseData* getLinkedData(std::size_t index=0) const = delete;
 
     // Remove all links
     void clear() { _doClear_(); }
