@@ -19,30 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_MAT_H
-#define SOFA_DEFAULTTYPE_MAT_H
+#pragma once
 
-#include <sofa/helper/fixed_array.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/rmath.h>
+#include <sofa/type/config.h>
+
+#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/type/Vec.h>
 #include <iostream>
-#include <sofa/defaulttype/config.h>
-#include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
+namespace // anonymous
 {
+    template<typename real>
+    real rabs(const real r)
+    {
+        if constexpr (std::is_signed<real>())
+            return std::abs(r);
+        else
+            return r;
+    }
 
-namespace defaulttype
+} // anonymous namespace
+
+namespace sofa::type
 {
 
 template <sofa::Size L, sofa::Size C, class real=float>
-class Mat : public helper::fixed_array<VecNoInit<C,real>, L>
+class Mat : public stdtype::fixed_array<VecNoInit<C,real>, L>
 {
 public:
 
     enum { N = L*C };
 
-    typedef typename helper::fixed_array<real, N>::size_type Size;
+    typedef typename stdtype::fixed_array<real, N>::size_type Size;
 
     typedef real Real;
     typedef Vec<C,real> Line;
@@ -401,9 +409,9 @@ public:
         for (Size i=0; i<L; i++)
         {
             for (Size j=0; j<i-1; j++)
-                if( helper::rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
+                if( rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
             for (Size j=i+1; j<C; j++)
-                if( helper::rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
+                if( rabs( this->elems[i][j] ) > EQUALITY_THRESHOLD ) return false;
         }
         return true;
     }
@@ -788,7 +796,7 @@ inline real oneNorm(const Mat<3,3,real>& A)
     real norm = 0.0;
     for (sofa::Size i=0; i<3; i++)
     {
-        real columnAbsSum = helper::rabs(A(0,i)) + helper::rabs(A(1,i)) + helper::rabs(A(2,i));
+        real columnAbsSum = rabs(A(0,i)) + rabs(A(1,i)) + rabs(A(2,i));
         if (columnAbsSum > norm)
             norm = columnAbsSum;
     }
@@ -802,7 +810,7 @@ inline real infNorm(const Mat<3,3,real>& A)
     real norm = 0.0;
     for (sofa::Size i=0; i<3; i++)
     {
-        real rowSum = helper::rabs(A(i,0)) + helper::rabs(A(i,1)) + helper::rabs(A(i,2));
+        real rowSum = rabs(A(i,0)) + rabs(A(i,1)) + rabs(A(i,2));
         if (rowSum > norm)
             norm = rowSum;
     }
@@ -831,7 +839,7 @@ inline Vec<N,real> diagonal(const Mat<N,N,real>& m)
 
 /// Matrix inversion (general case).
 template<sofa::Size S, class real>
-bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
+[[nodiscard]] bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
     sofa::Size i, j, k;
     Vec<S, sofa::Size> r, c, row, col;
@@ -864,7 +872,6 @@ bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 
         if (pivot <= (real) MIN_DETERMINANT)
         {
-            msg_error("Mat") << "invertMatrix (general case) finds too small determinant: " << pivot << " for matrix = " << from;
             return false;
         }
 
@@ -900,13 +907,12 @@ bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 
 /// Matrix inversion (special case 3x3).
 template<class real>
-bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
+[[nodiscard]] bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
 {
     real det=determinant(from);
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        msg_error("Mat") << "invertMatrix (special case 3x3) finds too small determinant: " << det << " for matrix = " << from;
         return false;
     }
 
@@ -931,7 +937,6 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        msg_error("Mat") << "invertMatrix (special case 2x2) finds too small determinant: " << det << " for matrix = " << from;
         return false;
     }
 
@@ -999,7 +1004,7 @@ std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)
 }
 
 template <sofa::Size L, sofa::Size C, typename real>
-std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
+std::istream& operator>>(std::istream& in, Mat<L,C,real>& m)
 {
     sofa::Size c;
     c = in.peek();
@@ -1098,9 +1103,9 @@ inline real scalarProduct(const Mat<L,C,real>& left,const Mat<L,C,real>& right)
 /// skew-symmetric mapping
 /// crossProductMatrix(v) * x = v.cross(x)
 template<class Real>
-inline defaulttype::Mat<3, 3, Real> crossProductMatrix(const defaulttype::Vec<3, Real>& v)
+inline Mat<3, 3, Real> crossProductMatrix(const Vec<3, Real>& v)
 {
-    defaulttype::Mat<3, 3, Real> res;
+    type::Mat<3, 3, Real> res;
     res[0][0]=0;
     res[0][1]=-v[2];
     res[0][2]=v[1];
@@ -1131,8 +1136,4 @@ static Mat<L,L,Real> tensorProduct(const Vec<L,Real> a, const Vec<L,Real> b )
     return m;
 }
 
-} // namespace defaulttype
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::type
