@@ -185,10 +185,10 @@ public:
     {
         Frame m;
 #ifdef DEBUG
-        bool invertible = invertMatrix(m,c.getAffine());
+        bool invertible = defaulttype::invertMatrix(m,c.getAffine());
         assert(invertible);
 #else
-        invertMatrix(m,c.getAffine());
+        defaulttype::invertMatrix(m,c.getAffine());
 #endif
         return Coord( -(m*c.getCenter()),m );
     }
@@ -279,7 +279,7 @@ public:
                     // the projection matrix is however non symmetric..
 
                     // Compute velocity tensor W = Adot.Ainv
-                    Frame Ainv;  invertMatrix(Ainv,c.getAffine());
+                    Frame Ainv;  defaulttype::invertMatrix(Ainv,c.getAffine());
                     Frame W = getVAffine() * Ainv;
 
                     // make it skew-symmetric

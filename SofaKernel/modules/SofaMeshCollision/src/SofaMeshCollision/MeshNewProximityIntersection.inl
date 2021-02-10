@@ -95,7 +95,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const SReal det = determinant(A);
+    const SReal det = defaulttype::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -197,7 +197,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const SReal det = determinant(A);
+    const SReal det = defaulttype::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
@@ -341,7 +341,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& 
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const SReal det = determinant(A);
+    const SReal det = defaulttype::determinant(A);
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
