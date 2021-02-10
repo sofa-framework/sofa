@@ -24,6 +24,7 @@
 
 #include <sofa/helper/config.h>
 #include <sofa/helper/vector.h>
+#include <iosfwd>
 
 namespace sofa
 {
@@ -72,6 +73,9 @@ public:
     operator  const_reference () const { return  *vref; }
     const_pointer   operator->() const { return vref; }
     const_reference operator* () const { return  *vref; }
+
+    [[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+    friend std::ostream& operator<< ( std::ostream& os, const ReadAccessor<T>& vec ) = delete;
 };
 
 /** A WriteAccessor is a proxy class, holding a reference to a given container
@@ -124,6 +128,12 @@ public:
     {
         vref = &v;
     }
+
+    [[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+    friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<T>& vec ) = delete;
+
+    [[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+    friend std::istream& operator>> ( std::istream& in, WriteAccessor<T>& vec ) =delete;
 };
 
 
@@ -174,6 +184,9 @@ public:
 
     const_iterator begin() const { return vref->begin(); }
     const_iterator end() const { return vref->end(); }
+
+    [[deprecated("FUXk")]]
+    friend std::ostream& operator<< ( std::ostream& os, const ReadAccessorVector<T>& vec ) = delete;
 };
 
 /// WriteAccessor implementation class for vector types
@@ -213,6 +226,7 @@ public:
     void resize(Size s, bool /*init*/ = true) { vref->resize(s); }
     void reserve(Size s) { vref->reserve(s); }
     void push_back(const value_type& v) { vref->push_back(v); }
+
 };
 
 // Support for std::vector
