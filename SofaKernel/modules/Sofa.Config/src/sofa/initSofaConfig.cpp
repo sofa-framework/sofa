@@ -28,7 +28,7 @@ namespace sofa
 // this is obviously useless
 // but it forces MSVC to generate a .lib file.
 // once Sofa.Config becomes a header-only library, this can be deleted.
-SOFA_EXPORT_DYNAMIC_LIBRARY void initConfig()
+SOFA_EXPORT_DYNAMIC_LIBRARY void initSofaConfig()
 {
     ;
 }

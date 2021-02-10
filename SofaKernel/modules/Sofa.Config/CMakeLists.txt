@@ -125,7 +125,7 @@ set(HEADER_FILES
     ${SOFACONFIGSRC_ROOT}/version.h.in
 )
 set(SOURCE_FILES
-    ${SOFACONFIGSRC_ROOT}/config.cpp # necessary to build a library
+    ${SOFACONFIGSRC_ROOT}/initSofaConfig.cpp # necessary to build a library
     )
 set(SOFACONFIG_BUILD_OPTIONS_SRC
     ${SOFACONFIGSRC_ROOT}/config/sharedlibrary_defines.h.in
@@ -324,7 +324,7 @@ sofa_create_package_with_targets(
     )
 
 # Propagate variables (which were in Sofa's global cmakelist)
-# Put instead into a target_property ?
+# TODO: Put instead into a target_property ?
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
 set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH}" PARENT_SCOPE)
 set(SOFA_WITH_FLOAT "${SOFA_WITH_FLOAT}" PARENT_SCOPE)
