@@ -89,10 +89,10 @@ echo_debug() {
 }
 
 get-lib-deps-assoc() {
-	local base_dir="$1"
+    local base_dir="$1"
     local output="$2"
     local build_deps_file="$3"
-	local libs="$(
+    local libs="$(
         find "$base_dir" -type f -name "*.so*" -path "$base_dir/lib/*";
         find "$base_dir" -type f -name "*.so*" -path "$base_dir/bin/*";
         find "$base_dir" -type f -name "runSofa*" -path "$base_dir/bin/*";
@@ -101,7 +101,7 @@ get-lib-deps-assoc() {
 
     printf "" > "$output" # create empty output
 
-	ldd $libs | # get all deps from libs in build_dir/[bin,lib] and install_dir/[bin,lib]
+    ldd $libs | # get all deps from libs in build_dir/[bin,lib] and install_dir/[bin,lib]
         grep " => [^ \.].* " | # remove unneeded results
         grep -v "$base_dir" | # remove deps already satisfied locally
         cut -c2- | # remove tabulation at beggining of each line
@@ -209,10 +209,10 @@ done
 
 # Add QtWebEngine dependencies
 if [ -e "$INSTALL_DIR/lib/libQt5WebEngineCore.so.5" ] && [ -d "$QT_LIBEXEC_DIR" ] && [ -d "$QT_WEBENGINE_DATA_DIR" ]; then
-	cp "$QT_LIBEXEC_DIR/QtWebEngineProcess" "$INSTALL_DIR/bin" # not in INSTALL_DIR/libexec ; see our custom bin/qt.conf
-	mkdir "$INSTALL_DIR/translations"
-	cp -R "$QT_WEBENGINE_DATA_DIR/translations/qtwebengine_locales" "$INSTALL_DIR/translations"
-	cp -R "$QT_WEBENGINE_DATA_DIR/resources" "$INSTALL_DIR"
+    cp "$QT_LIBEXEC_DIR/QtWebEngineProcess" "$INSTALL_DIR/bin" # not in INSTALL_DIR/libexec ; see our custom bin/qt.conf
+    mkdir "$INSTALL_DIR/translations"
+    cp -R "$QT_WEBENGINE_DATA_DIR/translations/qtwebengine_locales" "$INSTALL_DIR/translations"
+    cp -R "$QT_WEBENGINE_DATA_DIR/resources" "$INSTALL_DIR"
 fi
 
 # Fixup RPATH/RUNPATH
