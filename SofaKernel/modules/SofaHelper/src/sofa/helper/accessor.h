@@ -24,7 +24,6 @@
 
 #include <sofa/helper/config.h>
 #include <sofa/helper/vector.h>
-#include <iostream>
 
 namespace sofa
 {
@@ -73,11 +72,6 @@ public:
     operator  const_reference () const { return  *vref; }
     const_pointer   operator->() const { return vref; }
     const_reference operator* () const { return  *vref; }
-
-    inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessor<T>& vec )
-    {
-        return os << *vec.vref;
-    }
 };
 
 /** A WriteAccessor is a proxy class, holding a reference to a given container
@@ -130,16 +124,6 @@ public:
     {
         vref = &v;
     }
-
-    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<T>& vec )
-    {
-        return os << *vec.vref;
-    }
-
-    inline friend std::istream& operator>> ( std::istream& in, WriteAccessor<T>& vec )
-    {
-        return in >> *vec.vref;
-    }
 };
 
 
@@ -190,12 +174,6 @@ public:
 
     const_iterator begin() const { return vref->begin(); }
     const_iterator end() const { return vref->end(); }
-
-    inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessorVector<T>& vec )
-    {
-        return os << *vec.vref;
-    }
-
 };
 
 /// WriteAccessor implementation class for vector types
@@ -235,17 +213,6 @@ public:
     void resize(Size s, bool /*init*/ = true) { vref->resize(s); }
     void reserve(Size s) { vref->reserve(s); }
     void push_back(const value_type& v) { vref->push_back(v); }
-
-    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessorVector<T>& vec )
-    {
-        return os << *vec.vref;
-    }
-
-    inline friend std::istream& operator>> ( std::istream& in, WriteAccessorVector<T>& vec )
-    {
-        return in >> *vec.vref;
-    }
-
 };
 
 // Support for std::vector
