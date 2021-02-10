@@ -24,6 +24,7 @@
 
 #include <sofa/core/topology/Topology.h>
 #include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/Node.h>
 
 class fake_TopologyScene
 {

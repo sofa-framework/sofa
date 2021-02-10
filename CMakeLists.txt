@@ -3,7 +3,7 @@ project(Sofa) # Cannot use VERSION with patch like "00"
 
 # Manually define VERSION
 set(Sofa_VERSION_MAJOR 20)
-set(Sofa_VERSION_MINOR 06)
+set(Sofa_VERSION_MINOR 12)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
@@ -36,6 +36,19 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTOR
 
 # Option for packaging
 option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
+
+# Option to accelerate the compilation
+# see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html
+# and https://cmake.org/cmake/help/v3.16/prop_tgt/DISABLE_PRECOMPILE_HEADERS.html
+cmake_dependent_option(SOFA_BUILD_WITH_PCH_ENABLED 
+    "Compile SOFA using precompiled header (to accelerate the build process)" OFF
+    "CMAKE_VERSION VERSION_GREATER_EQUAL 3.16" OFF)
+if(SOFA_BUILD_WITH_PCH_ENABLED)
+    message("-- Precompiled headers: enabled (SOFA_BUILD_WITH_PCH_ENABLED is ON).")
+else()
+    message("-- Precompiled headers: disabled (SOFA_BUILD_WITH_PCH_ENABLED is OFF or CMake < 3.16).")
+    set(DISABLE_PRECOMPILE_HEADERS ON)
+endif()
 
 ## Change default install prefix
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)

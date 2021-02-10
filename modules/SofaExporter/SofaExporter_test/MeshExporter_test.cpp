@@ -34,6 +34,8 @@ using sofa::core::objectmodel::BaseObject ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
+
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
@@ -195,7 +197,7 @@ TEST_P( MeshExporter_test, checkSimulationWriteEachNbStep) {
                                                         tempdir+"/exporterA00004."+params[0]}, 20)) ;
 }
 
-INSTANTIATE_TEST_CASE_P(checkAllBehavior,
+INSTANTIATE_TEST_SUITE_P(checkAllBehavior,
                         MeshExporter_test,
                         ::testing::ValuesIn(params));
 

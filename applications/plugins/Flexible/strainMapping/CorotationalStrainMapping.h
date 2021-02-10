@@ -346,7 +346,7 @@ protected:
         if( !f_geometricStiffness.getValue() ) return;
         if(BlockType::constant) return;
 
-        Data<typename Inherit::InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
+        Data<typename Inherit::InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get()].write();
         const Data<typename Inherit::InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
         const Data<typename Inherit::OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
 

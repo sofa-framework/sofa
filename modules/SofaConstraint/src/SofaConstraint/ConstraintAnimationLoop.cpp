@@ -42,6 +42,8 @@
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/core/behavior/BaseConstraint.h> ///< ConstraintResolution.
+
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 

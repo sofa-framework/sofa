@@ -123,7 +123,7 @@ public:
 
 
     virtual void apply(typename self::out_pos_type& out,
-        const helper::vector<typename self::in_pos_type>& in) {
+        const helper::vector<typename self::in_pos_type>& /*in*/) {
 		
 		// local frames have been computed in assemble
         assert( contacts->size() == out.size() || std::count( mask.begin(),mask.end(),true)==out.size() );
@@ -154,7 +154,7 @@ protected:
     PairVector* pairs;
 
 
-	virtual void assemble( const helper::vector<typename self::in_pos_type>& in ) {
+    virtual void assemble( const helper::vector<typename self::in_pos_type>& /*in*/ ) override {
 
 
         Eigen::Matrix<real, 3, self::Nout> local_frame;

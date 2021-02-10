@@ -23,13 +23,14 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_INL
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Simulation.h>
 #include "DistanceGridForceField.h"
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/gl/template.h>
 #include <cassert>
 #include <iostream>
 
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 
 namespace sofa

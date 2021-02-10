@@ -40,11 +40,11 @@ public:
     static SceneCheckerListener* getInstance();
     virtual ~SceneCheckerListener() {}
 
-    virtual void rightAfterLoadingScene(Node::SPtr node) override;
+    virtual void rightAfterLoadingScene(NodeSPtr node) override;
 
     // Do nothing on reload
     virtual void rightBeforeReloadingScene() override {}
-    virtual void rightAfterReloadingScene(Node::SPtr node) override
+    virtual void rightAfterReloadingScene(NodeSPtr node) override
     {
         SOFA_UNUSED(node);
     }

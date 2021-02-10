@@ -30,12 +30,7 @@
 
 
 
-namespace sofa
-{
-
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 void QDataDescriptionWidget::addRow(QGridLayout* grid, const std::string& title,
                                     const std::string& value, unsigned int row,
@@ -169,7 +164,4 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
 
 
 
-} // qt
-} //gui
-} //sofa
-
+} //namespace sofa::gui::qt

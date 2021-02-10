@@ -23,6 +23,7 @@ endif()
 set(HEADER_FILES
     include/gtest/gtest.h
     include/gtest/gtest-death-test.h
+    include/gtest/gtest-matchers.h
     include/gtest/gtest-message.h
     include/gtest/gtest-param-test.h
     include/gtest/gtest_pred_impl.h

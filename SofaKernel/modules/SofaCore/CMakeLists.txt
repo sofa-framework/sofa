@@ -39,7 +39,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseInteractionConstraint.h
     ${SRC_ROOT}/behavior/BaseInteractionForceField.h
     ${SRC_ROOT}/behavior/BaseInteractionProjectiveConstraintSet.h
-    ${SRC_ROOT}/behavior/BaseLMConstraint.h
     ${SRC_ROOT}/behavior/BaseMass.h
     ${SRC_ROOT}/behavior/BaseMechanicalState.h
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.h
@@ -52,8 +51,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/ConstraintSolver.h
     ${SRC_ROOT}/behavior/ForceField.h
     ${SRC_ROOT}/behavior/ForceField.inl
-    ${SRC_ROOT}/behavior/LMConstraint.h
-    ${SRC_ROOT}/behavior/LMConstraint.inl
     ${SRC_ROOT}/behavior/LinearSolver.h
     ${SRC_ROOT}/behavior/Mass.h
     ${SRC_ROOT}/behavior/Mass.inl
@@ -75,6 +72,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.inl
     ${SRC_ROOT}/behavior/RotationMatrix.h
+    ${SRC_ROOT}/behavior/fwd.h
     ${SRC_ROOT}/collision/BroadPhaseDetection.h
     ${SRC_ROOT}/collision/CollisionAlgorithm.h
     ${SRC_ROOT}/collision/CollisionGroupManager.h
@@ -90,6 +88,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/core.h
     ${SRC_ROOT}/init.h
+    ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/loader/BaseLoader.h
     ${SRC_ROOT}/loader/ImageLoader.h
     ${SRC_ROOT}/loader/Material.h
@@ -176,7 +175,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/BaseConstraintSet.cpp
     ${SRC_ROOT}/behavior/BaseForceField.cpp
     ${SRC_ROOT}/behavior/BaseInteractionForceField.cpp
-    ${SRC_ROOT}/behavior/BaseLMConstraint.cpp
     ${SRC_ROOT}/behavior/BaseMass.cpp
     ${SRC_ROOT}/behavior/BaseMechanicalState.cpp
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.cpp
@@ -184,7 +182,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/ConstraintCorrection.cpp
     ${SRC_ROOT}/behavior/ConstraintSolver.cpp
     ${SRC_ROOT}/behavior/ForceField.cpp
-    ${SRC_ROOT}/behavior/LMConstraint.cpp
     ${SRC_ROOT}/behavior/LinearSolver.cpp
     ${SRC_ROOT}/behavior/Mass.cpp
     ${SRC_ROOT}/behavior/MechanicalState.cpp
@@ -197,10 +194,12 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/PairInteractionForceField.cpp
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.cpp
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.cpp
+    ${SRC_ROOT}/behavior/fwd.cpp
     ${SRC_ROOT}/collision/Contact.cpp
     ${SRC_ROOT}/collision/Intersection.cpp
     ${SRC_ROOT}/collision/Pipeline.cpp
-    ${SRC_ROOT}/init.cpp
+    ${SRC_ROOT}/init.cpp    
+    ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/loader/BaseLoader.cpp
     ${SRC_ROOT}/loader/MeshLoader.cpp
     ${SRC_ROOT}/loader/SceneLoader.cpp
@@ -240,6 +239,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/BaseMeshTopology.cpp
     ${SRC_ROOT}/topology/BaseTopology.cpp
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp
+    ${SRC_ROOT}/topology/BaseTopologyEngine.cpp
     ${SRC_ROOT}/topology/Topology.cpp
     ${SRC_ROOT}/topology/TopologyChange.cpp
     ${SRC_ROOT}/topology/TopologyElementHandler.cpp
@@ -256,6 +256,17 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
+#target_precompile_headers(${PROJECT_NAME} PUBLIC ${SRC_ROOT}/objectmodel/BaseObject.h ${SRC_ROOT}/objectmodel/BaseContext.h)
+
+if(SOFA_BUILD_WITH_PCH_ENABLED)
+    message("Adding precompiled header for SofaCore")
+    target_precompile_headers(${PROJECT_NAME} PUBLIC ${SRC_ROOT}/objectmodel/BaseObject.h ${SRC_ROOT}/objectmodel/Data.h)
+endif()
+
+if(SOFA_BUILD_WITH_PCH_ENABLED)
+    message("Adding precompiled header for SofaCore")
+    target_precompile_headers(${PROJECT_NAME} PUBLIC ${SRC_ROOT}/objectmodel/BaseObject.h ${SRC_ROOT}/objectmodel/Data.h)
+endif()
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)

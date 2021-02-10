@@ -27,7 +27,7 @@
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/SphereModel.h>
@@ -37,13 +37,9 @@
 #include <iostream>
 #include <limits>
 
+using namespace sofa::component::collision;
 
-namespace sofa
-{
-using namespace component::collision;
-
-
-namespace gui
+namespace sofa::gui
 {
 
 PickHandler::PickHandler(double defaultLength):
@@ -481,10 +477,4 @@ component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding(con
     return result;
 }
 
-
-
-
-
-}
-}
-
+} // namespace sofa::gui

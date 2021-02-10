@@ -22,12 +22,9 @@
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
+#include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 QEnergyStatWidget::QEnergyStatWidget( QWidget* parent, simulation::Node* node )
@@ -74,8 +71,4 @@ void QEnergyStatWidget::stepImpl()
 }
 
 
-} // qt
-} // gui
-} //sofa
-
-
+} //namespace sofa::gui::qt

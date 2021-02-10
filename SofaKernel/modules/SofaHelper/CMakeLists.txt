@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaHelper)
 
 # DEPENDENCIES
+# find_package(Sofa.Type REQUIRED)
+
 # Boost
 sofa_find_package(Boost REQUIRED
     COMPONENTS system filesystem program_options
@@ -71,8 +73,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/decompose.h
     ${SRC_ROOT}/decompose.inl
     ${SRC_ROOT}/deque.h
-    ${SRC_ROOT}/fixed_array.h
-    ${SRC_ROOT}/fixed_array_algorithms.h
     ${SRC_ROOT}/hash.h
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/integer_id.h
@@ -95,12 +95,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/map.h
     ${SRC_ROOT}/map_ptr_stable_compare.h
     ${SRC_ROOT}/pair.h
-    ${SRC_ROOT}/polygon_cube_intersection/polygon_cube_intersection.h
-    ${SRC_ROOT}/polygon_cube_intersection/vec.h
     ${SRC_ROOT}/proximity.h
     ${SRC_ROOT}/random.h
     ${SRC_ROOT}/rmath.h
     ${SRC_ROOT}/set.h
+    ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/stable_vector.h
     ${SRC_ROOT}/system/DynamicLibrary.h
     ${SRC_ROOT}/system/FileSystem.h
@@ -190,8 +189,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/io/TriangleLoader.cpp
     ${SRC_ROOT}/io/XspLoader.cpp
     ${SRC_ROOT}/kdTree.cpp
-    ${SRC_ROOT}/polygon_cube_intersection/fast_polygon_cube_intersection.cpp
-    ${SRC_ROOT}/polygon_cube_intersection/polygon_cube_intersection.cpp
     ${SRC_ROOT}/proximity.cpp
     ${SRC_ROOT}/system/DynamicLibrary.cpp
     ${SRC_ROOT}/system/FileSystem.cpp
@@ -206,7 +203,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/system/thread/debug.cpp
     ${SRC_ROOT}/system/FileRepository.cpp
     ${SRC_ROOT}/vector.cpp
-    ${SRC_ROOT}/types/fixed_array.cpp
     ${SRC_ROOT}/types/RGBAColor.cpp
     ${SRC_ROOT}/types/Material.cpp
     ${SRC_ROOT}/types/PrimitiveGroup.cpp
@@ -289,6 +285,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaSimulationCore/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaDefaultType/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaCore/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Sofa.Type/src>")
+
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
 source_group("compat" FILES ${COMPAT_HEADER_FILES} )
 
@@ -302,6 +300,7 @@ endif()
 set_property(SOURCE ${SRC_ROOT}/system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
 
 # DEPENDENCY LINKS AND INCLUDE DIRS
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config )
 
 # System libs
@@ -344,17 +343,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 # Json (header only) needed by AdvancedTimer
 if(JSON_FOUND)
-    install(DIRECTORY "${JSON_INCLUDE_DIR}/"
-        COMPONENT headers
-        DESTINATION "include/extlibs/json"
-        PATTERN "*.in" EXCLUDE
-        PATTERN "*.txt" EXCLUDE
-        PATTERN "*.cpp" EXCLUDE
-        )
-    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
-        "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>"
-        "$<INSTALL_INTERFACE:include/extlibs/json>"
-        )
+    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>")
 endif()
 
 sofa_add_targets_to_package(

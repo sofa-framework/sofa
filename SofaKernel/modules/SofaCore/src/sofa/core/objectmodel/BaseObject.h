@@ -24,30 +24,15 @@
 
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/DataTracker.h>
+#include <sofa/core/fwd.h>
 namespace sofa
 {
 
 namespace core
 {
 
-// forward declaration of referenced classes
-namespace topology
-{
-class Topology;
-} // namespace topology
-
-namespace visual
-{
-class VisualParams;
-class DisplayFlags;
-}
-
-
 namespace objectmodel
 {
-
-class Event;
-class BaseNode;
 
 /**
  *  \brief Base class for simulation components.
@@ -434,7 +419,7 @@ public:
     /// Use it before scene graph insertion
     void setSrc(const std::string &v, const BaseObject *loader, std::vector< std::string > *attributeList=nullptr);
 
-    void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override;
+    Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override;
 
 
     /// Return the full path name of this object
@@ -486,7 +471,6 @@ public:
     /// so the Node does not have to test its type against every known types.
     /// \returns true iff the component was removed
     virtual bool removeInNode( BaseNode* /*node*/ ) { return false; }
-
 };
 
 } // namespace objectmodel

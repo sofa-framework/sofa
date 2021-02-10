@@ -22,6 +22,7 @@
 #include <SofaBaseCollision/CubeModel.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/visual/DrawTool.h>
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
 

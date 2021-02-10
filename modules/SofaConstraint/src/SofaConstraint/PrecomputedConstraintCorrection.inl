@@ -39,8 +39,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/Quater.h>
 
-#include <SofaConstraint/LMConstraintSolver.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 
 #include <fstream>
 #include <sstream>
@@ -263,21 +262,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             return;
         }
 
-        helper::vector< sofa::component::constraintset::LMConstraintSolver* > listLMConstraintSolver;
-        solvernode->get< sofa::component::constraintset::LMConstraintSolver >(&listLMConstraintSolver, core::objectmodel::BaseContext::SearchDown);
-        helper::vector< ConstraintActivation > listConstraintActivation(listLMConstraintSolver.size());
-        for (unsigned int i=0; i<listLMConstraintSolver.size(); ++i)
-        {
-            listConstraintActivation[i].acc=listLMConstraintSolver[i]->constraintAcc.getValue();
-            listLMConstraintSolver[i]->constraintAcc.setValue(false);
-
-            listConstraintActivation[i].vel=listLMConstraintSolver[i]->constraintVel.getValue();
-            listLMConstraintSolver[i]->constraintVel.setValue(false);
-
-            listConstraintActivation[i].pos=listLMConstraintSolver[i]->constraintPos.getValue();
-            listLMConstraintSolver[i]->constraintPos.setValue(false);
-        }
-
         // Change the solver parameters
         double buf_tolerance = 0, buf_threshold = 0;
         int	   buf_maxIter = 0;
@@ -394,13 +378,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         // Restore position
         for (unsigned int i = 0; i < pos.size(); i++)
             pos[i] = prev_pos[i];
-
-        for (unsigned int i=0; i<listLMConstraintSolver.size(); ++i)
-        {
-            listLMConstraintSolver[i]->constraintAcc.setValue(listConstraintActivation[i].acc);
-            listLMConstraintSolver[i]->constraintVel.setValue(listConstraintActivation[i].vel);
-            listLMConstraintSolver[i]->constraintPos.setValue(listConstraintActivation[i].pos);
-        }
     }
 
     appCompliance = invM->data;

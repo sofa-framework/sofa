@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_SIMPLEDATAWIDGET_H
-#define SOFA_GUI_QT_SIMPLEDATAWIDGET_H
-
+#pragma once
 #include "DataWidget.h"
 #include "ModifyObject.h"
 #include <sofa/defaulttype/Vec.h>
@@ -46,13 +44,7 @@
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
 #endif
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 using sofa::helper::Quater;
@@ -182,7 +174,7 @@ public:
     {}
     virtual bool createWidgets()
     {
-        const data_type& d = this->getData()->virtualGetValue();
+        const data_type& d = this->getData()->getValue();
         if (!container.createWidgets(this, d, ! this->isEnabled() ) )
             return false;
 
@@ -973,11 +965,4 @@ protected:
 };
 
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-
-#endif
+} //namespace sofa::gui::qt

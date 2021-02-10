@@ -35,11 +35,11 @@
 
 
 #include <sofa/core/behavior/BaseController.h>
+#include <sofa/simulation/Node.h>
+
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaUserInteraction/Controller.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 
@@ -49,7 +49,6 @@
 #include <SofaHaptics/LCPForceFeedback.h>
 #include <SofaHaptics/NullForceFeedbackT.h>
 
-#include <sofa/simulation/Node.h>
 #include <cstring>
 
 #include <SofaOpenglVisual/OglModel.h>
@@ -60,7 +59,6 @@
 
 namespace sofa
 {
-namespace simulation { class Node; }
 
 namespace component
 {

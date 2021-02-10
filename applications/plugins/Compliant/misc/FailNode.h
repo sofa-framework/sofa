@@ -81,7 +81,7 @@ public:
     /// Return the path from this node to the root node
     virtual std::string getRootPath() const override;
 
-    virtual void* findLinkDestClass(const core::objectmodel::BaseClass* destType, 
+    virtual Base* findLinkDestClass(const core::objectmodel::BaseClass* destType,
 									const std::string& path, 
                                     const BaseLink* link) override;
 

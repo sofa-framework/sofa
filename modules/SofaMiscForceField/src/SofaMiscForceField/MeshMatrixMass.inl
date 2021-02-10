@@ -27,7 +27,6 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
@@ -37,7 +36,7 @@
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 namespace sofa::component::mass
 {

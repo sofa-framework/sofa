@@ -74,7 +74,7 @@ TEST_P(PythonBinding_tests, scene)
    this->runTest(GetParam());
 }
 
-INSTANTIATE_TEST_CASE_P(PythonBinding,
+INSTANTIATE_TEST_SUITE_P(PythonBinding,
 						PythonBinding_tests,
                         ::testing::ValuesIn(scenes.m_scenes));
 

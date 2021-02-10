@@ -31,12 +31,6 @@ namespace sofa::component::topology
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template <typename TopologyElementType, typename VecT>
-TopologyDataImpl <TopologyElementType, VecT>::~TopologyDataImpl()
-{
-    if (this->m_topologyHandler)
-        delete m_topologyHandler;
-}
 
 
 template <typename TopologyElementType, typename VecT>

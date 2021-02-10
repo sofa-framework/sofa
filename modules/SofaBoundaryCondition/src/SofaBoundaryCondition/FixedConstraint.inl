@@ -21,11 +21,11 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
@@ -307,7 +307,8 @@ void FixedConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /
 template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
+    SOFA_UNUSED(mparams);
+    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get());
     if(r)
     {
         const unsigned int N = Deriv::size();
@@ -345,7 +346,8 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    int o = matrix->getGlobalOffset(this->mstate.get(mparams));
+    SOFA_UNUSED(mparams);
+    int o = matrix->getGlobalOffset(this->mstate.get());
     if (o >= 0)
     {
         unsigned int offset = (unsigned int)o;

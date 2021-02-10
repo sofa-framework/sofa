@@ -22,12 +22,11 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASE_H
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/defaulttype/BoundingBox.h>                    //NOTE-FOR-SELF: Remove
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/Link.h>
-#include <sofa/core/DataTracker.h>
+#include <sofa/core/objectmodel/Link.h>                      //NOTE-FOR-SELF: Remove
 #include <sofa/core/objectmodel/BaseClass.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>     //NOTE-FOR-SELF: Remove
 #include <sofa/core/objectmodel/Tag.h>
 #include <list>
 #include <sofa/core/sptr.h>
@@ -70,7 +69,6 @@ namespace behavior {
     class BaseInteractionProjectiveConstraintSet;
     class BaseConstraintSet;
     class BaseConstraint;
-    class BaseLMConstraint;
 } // namespace behavior
 namespace visual {
     class VisualModel;
@@ -134,12 +132,6 @@ public:
     using MyClass = TClass< Base, void >;
     static const BaseClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
-
-    template<class T>
-    static void dynamicCast(T*& ptr, Base* b)
-    {
-        ptr = dynamic_cast<T*>(b);
-    }
 
 protected:
     /// Constructor cannot be called directly
@@ -350,12 +342,12 @@ public:
     const MapLink& getLinkAliases() const { return m_aliasLink; }
 
     virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
-    virtual void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
+    virtual Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
     template<class T>
     bool findLinkDest(T*& ptr, const std::string& path, const BaseLink* link)
     {
-        void* result = findLinkDestClass(T::GetClass(), path, link);
-        ptr = reinterpret_cast<T*>(result);
+        Base* result = findLinkDestClass(T::GetClass(), path, link);
+        ptr = dynamic_cast<T*>(result);
         return (result != nullptr);
     }
 
@@ -593,7 +585,6 @@ public:
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionProjectiveConstraintSet )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraintSet                      )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraint                         )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseLMConstraint                       )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualModel                            )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualManager                          )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualLoop                             )

@@ -23,11 +23,7 @@
 #include "FileManagement.h"
 #include <iostream>
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 #include <QDir>
@@ -121,9 +117,4 @@ void getFilesInDirectory( const QString &p, std::vector< QString > &files, bool 
     }
 }
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
+} //namespace sofa::gui::qt

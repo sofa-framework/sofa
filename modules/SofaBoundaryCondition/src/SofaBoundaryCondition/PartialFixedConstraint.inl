@@ -22,8 +22,8 @@
 #pragma once
 
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <SofaBoundaryCondition/PartialFixedConstraint.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
@@ -213,7 +213,8 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
+    SOFA_UNUSED(mparams);
+    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get());
     if(r)
     {
         const unsigned int N = Deriv::size();

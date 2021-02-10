@@ -48,7 +48,7 @@ struct MechanicalObject_test :  public BaseTest
 
 using namespace sofa::defaulttype;
 typedef ::testing::Types<Vec1Types, Vec2Types, Vec3Types> DataTypesList;
-TYPED_TEST_CASE(MechanicalObject_test, DataTypesList);
+TYPED_TEST_SUITE(MechanicalObject_test, DataTypesList);
 
 namespace TestHelpers
 {
