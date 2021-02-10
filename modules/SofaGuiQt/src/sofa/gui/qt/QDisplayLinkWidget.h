@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_DISPLAYLINKWIDGET_H
-#define SOFA_GUI_QT_DISPLAYLINKWIDGET_H
-
+#pragma once
 #include "LinkWidget.h"
 #include "ModifyObject.h"
 
@@ -32,13 +30,7 @@
 #include <QSlider>
 #include <sofa/helper/system/FileRepository.h>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 class LinkWidget;
@@ -113,10 +105,4 @@ protected:
     QSimpleEdit innerWidget_;
 };
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif // SOFA_GUI_QT_DISPLAYLINKWIDGET_H
+} //namespace sofa::gui::qt

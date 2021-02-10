@@ -109,23 +109,27 @@ macro(sofa_add_generic directory name type)
         if(${option})
             message("Adding ${type_lower} ${name}")
             add_subdirectory(${directory})
-            #Check if the target has been successfully added
-            if(TARGET ${name})
-                set_target_properties(${name} PROPERTIES FOLDER ${type}s) # IDE folder
-                set_target_properties(${name} PROPERTIES DEBUG_POSTFIX "_d")
+        endif()
+
+        if(TARGET ${name})
+            set(target ${name})
+            get_target_property(aliased_target ${target} ALIASED_TARGET)
+            if(aliased_target)
+                set(target ${aliased_target})
             endif()
-        endif()
 
-        # Add current target in the internal list only if not present already
-        get_property(_allTargets GLOBAL PROPERTY __GlobalTargetList__)
-        get_property(_allTargetNames GLOBAL PROPERTY __GlobalTargetNameList__)
+            set_target_properties(${target} PROPERTIES FOLDER ${type}s) # IDE folder
+            set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")
 
-        if(NOT ${name} IN_LIST _allTargets)
-            set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${name})
-        endif()
-
-        if(NOT ${option} IN_LIST _allTargetNames)
-            set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${option})
+            # Add current target in the internal list only if not present already
+            get_property(_allTargets GLOBAL PROPERTY __GlobalTargetList__)
+            get_property(_allTargetNames GLOBAL PROPERTY __GlobalTargetNameList__)
+            if(NOT ${target} IN_LIST _allTargets)
+                set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${target})
+            endif()
+            if(NOT ${option} IN_LIST _allTargetNames)
+                set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${option})
+            endif()
         endif()
     else()
         message("The ${type_lower} ${name} (${CMAKE_CURRENT_LIST_DIR}/${directory}) does not exist and will be ignored.")
@@ -344,4 +348,22 @@ macro(sofa_find_package name)
             sofa_set_01(${project_upper}_HAVE_${name_upper} VALUE FALSE ${scopes})
         endif()
     endif()
+endmacro()
+
+
+# sofa_set_targets_release_only
+#
+# Force dependency targets to link with their Release version
+# (even if we are building in Debug mode).
+# It eases deps management, especially on Windows with the WinDepPack.
+macro(sofa_set_targets_release_only)
+    foreach(target ${ARGN})
+        if(TARGET ${target})
+            set_target_properties(${target} PROPERTIES
+                MAP_IMPORTED_CONFIG_MINSIZEREL Release
+                MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release
+                MAP_IMPORTED_CONFIG_DEBUG Release
+                )
+        endif()
+    endforeach()
 endmacro()

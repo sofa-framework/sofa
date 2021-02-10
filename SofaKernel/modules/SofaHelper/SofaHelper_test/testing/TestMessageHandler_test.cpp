@@ -31,7 +31,7 @@ AssertionResult AtLeastOneFailure(const char* /* results_expr */,
                               const char* /* substr_expr */,
                               const TestPartResultArray& results,
                               TestPartResult::Type type,
-                              const string& substr) {
+                              const std::string& substr) {
   const std::string expected(type == TestPartResult::kFatalFailure ?
                         "at least 1 fatal failure" :
                         "at least 1 non-fatal failure");
@@ -72,12 +72,12 @@ class GTEST_API_ AnyFailureChecker {
   // The constructor remembers the arguments.
   AnyFailureChecker(const TestPartResultArray* results,
                        TestPartResult::Type type,
-                       const string& substr);
+                       const std::string& substr);
   ~AnyFailureChecker();
  private:
   const TestPartResultArray* const results_;
   const TestPartResult::Type type_;
-  const string substr_;
+  const std::string substr_;
 
   GTEST_DISALLOW_COPY_AND_ASSIGN_(AnyFailureChecker);
 };
@@ -89,7 +89,7 @@ class GTEST_API_ AnyFailureChecker {
 AnyFailureChecker:: AnyFailureChecker(
     const TestPartResultArray* results,
     TestPartResult::Type type,
-    const string& substr)
+    const std::string& substr)
     : results_(results),
       type_(type),
       substr_(substr) {}

@@ -19,24 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_ENGINEBACKEND_H
-#define SOFA_ENGINEBACKEND_H
-
+#pragma once
 #include <sofa/gui/PickHandler.h>
 #include <SofaGraphComponent/ViewerSetting.h>
 
 #include <sofa/helper/io/Image.h>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
-{
-
-namespace viewer
+namespace sofa::gui::qt::viewer
 {
 
 class EngineBackend
@@ -60,12 +49,4 @@ private:
 
 };
 
-} // namespace viewer
-
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif // SOFA_ENGINEBACKEND_H
+} // namespace sofa::gui::qt::viewer

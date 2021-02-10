@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CONFIG_H
-#define SOFA_CONFIG_H
+#pragma once
 
 #include <sofa/config/sharedlibrary_defines.h>
 #include <sofa/config/build_option_dump_visitor.h>
@@ -29,6 +28,7 @@
 #include <sofa/config/build_option_bbox.h>
 
 #include <cstddef> // For nullptr
+#include <limits> // std::numeric_limits<>
 
 // fixes CGAL plugin build errors (default value: 5)
 #define BOOST_PARAMETER_MAX_ARITY 12
@@ -73,7 +73,9 @@ typedef double SReal;
 #endif
 
 #ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
+#undef WIN32_LEAN_AND_MEAN
 #endif
 
 #ifdef BOOST_NO_EXCEPTIONS
@@ -112,6 +114,21 @@ typedef unsigned __int64	uint64_t;
 
 #define sofa_do_tostring(a) #a
 #define sofa_tostring(a) sofa_do_tostring(a)
+
+///////////////////// These macros can be used to convert deprecation attributes as error.
+#if defined(_MSC_VER)
+#define SOFA_BEGIN_DEPRECATION_AS_ERROR __pragma(warning( push )) \
+                                        __pragma(warning(error: 4996))
+#define SOFA_END_DEPRECATION_AS_ERROR __pragma(warning( pop ))
+#elif defined(__GNUC__)
+#define SOFA_BEGIN_DEPRECATION_AS_ERROR _Pragma("GCC diagnostic push") \
+                                   _Pragma("GCC diagnostic error \"-Wdeprecated-declarations\"")
+#define SOFA_END_DEPRECATION_AS_ERROR _Pragma("GCC diagnostic pop")
+#else /// clang
+#define SOFA_BEGIN_DEPRECATION_AS_ERROR _Pragma("clang diagnostic push") \
+                                   _Pragma("clang diagnostic error \"-Wdeprecated-declarations\"")
+#define SOFA_END_DEPRECATION_AS_ERROR _Pragma("clang diagnostic pop")
+#endif
 
 #ifdef _WIN32
 #  define SOFA_PRAGMA_MESSAGE(text) __pragma(message(__FILE__ "(" sofa_tostring(__LINE__) "): " #text))
@@ -153,4 +170,14 @@ typedef unsigned __int64	uint64_t;
 #  define SOFA_SOFAFRAMEWORK_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif
+namespace sofa
+{
+	
+using Index = uint32_t;
+using Size = uint32_t;
+
+constexpr Index InvalidID = (std::numeric_limits<Index>::max)(); 
+
+}
+
+

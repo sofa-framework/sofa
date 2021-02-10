@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaHelper)
 
 # DEPENDENCIES
+# find_package(Sofa.Type REQUIRED)
+
 # Boost
 sofa_find_package(Boost REQUIRED
     COMPONENTS system filesystem program_options
@@ -14,11 +16,6 @@ if(SOFAHELPER_HAVE_BOOST_SYSTEM
     sofa_set_01(SOFAHELPER_HAVE_BOOST VALUE TRUE BOTH_SCOPES)
 else()
     sofa_set_01(SOFAHELPER_HAVE_BOOST VALUE FALSE BOTH_SCOPES)
-endif()
-# OpenGL (gl, glu) + GLEW
-if(NOT SOFA_NO_OPENGL)
-    sofa_find_package(OpenGL REQUIRED BOTH_SCOPES)
-    sofa_find_package(GLEW BOTH_SCOPES)
 endif()
 # GTest
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
@@ -76,11 +73,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/decompose.h
     ${SRC_ROOT}/decompose.inl
     ${SRC_ROOT}/deque.h
-    ${SRC_ROOT}/fixed_array.h
-    ${SRC_ROOT}/fixed_array_algorithms.h
     ${SRC_ROOT}/hash.h
-    ${SRC_ROOT}/gl/Trackball.h
-    ${SRC_ROOT}/gl/Transformation.h
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/integer_id.h
     ${SRC_ROOT}/io/BaseFileAccess.h
@@ -96,23 +89,17 @@ set(HEADER_FILES
     ${SRC_ROOT}/io/MeshTopologyLoader.h
     ${SRC_ROOT}/io/SphereLoader.h
     ${SRC_ROOT}/io/TriangleLoader.h
-    ${SRC_ROOT}/io/bvh/BVHChannels.h
-    ${SRC_ROOT}/io/bvh/BVHJoint.h
-    ${SRC_ROOT}/io/bvh/BVHLoader.h
-    ${SRC_ROOT}/io/bvh/BVHMotion.h
-    ${SRC_ROOT}/io/bvh/BVHOffset.h
     ${SRC_ROOT}/kdTree.h
     ${SRC_ROOT}/kdTree.inl
     ${SRC_ROOT}/list.h
     ${SRC_ROOT}/map.h
     ${SRC_ROOT}/map_ptr_stable_compare.h
     ${SRC_ROOT}/pair.h
-    ${SRC_ROOT}/polygon_cube_intersection/polygon_cube_intersection.h
-    ${SRC_ROOT}/polygon_cube_intersection/vec.h
     ${SRC_ROOT}/proximity.h
     ${SRC_ROOT}/random.h
     ${SRC_ROOT}/rmath.h
     ${SRC_ROOT}/set.h
+    ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/stable_vector.h
     ${SRC_ROOT}/system/DynamicLibrary.h
     ${SRC_ROOT}/system/FileSystem.h
@@ -125,8 +112,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/config.h
     ${SRC_ROOT}/system/console.h
     ${SRC_ROOT}/system/console_internal.h
-    ${SRC_ROOT}/system/gl.h
-    ${SRC_ROOT}/system/glu.h
     ${SRC_ROOT}/system/thread/CTime.h
     ${SRC_ROOT}/system/thread/CircularQueue.h
     ${SRC_ROOT}/system/thread/CircularQueue.inl
@@ -142,6 +127,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/types/RGBAColor.h
     ${SRC_ROOT}/types/RGBAColor_fwd.h
     ${SRC_ROOT}/types/Material.h
+    ${SRC_ROOT}/types/PrimitiveGroup.h
     ${SRC_ROOT}/logging/Messaging.h
     ${SRC_ROOT}/logging/Message.h
     ${SRC_ROOT}/logging/ComponentInfo.h
@@ -161,6 +147,9 @@ set(HEADER_FILES
     ${SRC_ROOT}/logging/DefaultStyleMessageFormatter.h
     ${SRC_ROOT}/logging/ExceptionMessageHandler.h
     ${SRC_ROOT}/messaging/FileMessage.h
+    ${SRC_ROOT}/visual/Transformation.h
+    ${SRC_ROOT}/visual/DrawTool.h
+    ${SRC_ROOT}/visual/Trackball.h
 )
 set(SOURCE_FILES
     ${SRC_ROOT}/AdvancedTimer.cpp
@@ -185,8 +174,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/UnitTest.cpp
     ${SRC_ROOT}/Utils.cpp
     ${SRC_ROOT}/decompose.cpp
-    ${SRC_ROOT}/gl/Trackball.cpp
-    ${SRC_ROOT}/gl/Transformation.cpp
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/io/BaseFileAccess.cpp
     ${SRC_ROOT}/io/FileAccess.cpp
@@ -201,12 +188,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/io/SphereLoader.cpp
     ${SRC_ROOT}/io/TriangleLoader.cpp
     ${SRC_ROOT}/io/XspLoader.cpp
-    ${SRC_ROOT}/io/bvh/BVHJoint.cpp
-    ${SRC_ROOT}/io/bvh/BVHLoader.cpp
-    ${SRC_ROOT}/io/bvh/BVHMotion.cpp
     ${SRC_ROOT}/kdTree.cpp
-    ${SRC_ROOT}/polygon_cube_intersection/fast_polygon_cube_intersection.cpp
-    ${SRC_ROOT}/polygon_cube_intersection/polygon_cube_intersection.cpp
     ${SRC_ROOT}/proximity.cpp
     ${SRC_ROOT}/system/DynamicLibrary.cpp
     ${SRC_ROOT}/system/FileSystem.cpp
@@ -221,9 +203,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/system/thread/debug.cpp
     ${SRC_ROOT}/system/FileRepository.cpp
     ${SRC_ROOT}/vector.cpp
-    ${SRC_ROOT}/types/fixed_array.cpp
     ${SRC_ROOT}/types/RGBAColor.cpp
     ${SRC_ROOT}/types/Material.cpp
+    ${SRC_ROOT}/types/PrimitiveGroup.cpp
     ${SRC_ROOT}/logging/Message.cpp
     ${SRC_ROOT}/logging/MessageDispatcher.cpp
     ${SRC_ROOT}/logging/MessageFormatter.cpp
@@ -239,6 +221,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/logging/RoutingMessageHandler.cpp
     ${SRC_ROOT}/logging/ExceptionMessageHandler.cpp
     ${SRC_ROOT}/messaging/FileMessage.cpp
+    ${SRC_ROOT}/visual/Transformation.cpp
+    ${SRC_ROOT}/visual/Trackball.cpp
 )
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_linux.cpp)
@@ -267,52 +251,30 @@ if(Boost_FILESYSTEM_FOUND)
     list(APPEND HEADER_FILES ${SRC_ROOT}/system/FileRepository.h)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/system/FileRepository.cpp)
 endif()
-set(SHADER_FILES "")
-if(NOT SOFA_NO_OPENGL)
-    list(APPEND HEADER_FILES
-        ${SRC_ROOT}/gl/Capture.h
-        ${SRC_ROOT}/gl/Color.h
-        ${SRC_ROOT}/gl/RAII.h
-        ${SRC_ROOT}/gl/template.h
-        ${SRC_ROOT}/system/gl.h
-        ${SRC_ROOT}/system/glu.h
-        ${SRC_ROOT}/gl/Axis.h
-        ${SRC_ROOT}/gl/BasicShapes.h
-        ${SRC_ROOT}/gl/BasicShapesGL.h
-        ${SRC_ROOT}/gl/BasicShapesGL.inl
-        ${SRC_ROOT}/gl/Cylinder.h
-        ${SRC_ROOT}/gl/Texture.h
-        ${SRC_ROOT}/gl/Trackball.h
-        ${SRC_ROOT}/gl/Transformation.h
-        ${SRC_ROOT}/gl/VideoRecorderFFMPEG.h
-        ${SRC_ROOT}/gl/glText.h
-        ${SRC_ROOT}/gl/glText.inl
+
+# Compatibility files
+set (COMPATSRC_ROOT "compat/")
+set (COMPAT_HEADER_FILES
+    ${COMPATSRC_ROOT}/sofa/core/visual/DrawTool.h
+    ${COMPATSRC_ROOT}/sofa/core/visual/DrawToolGL.h
+    ${COMPATSRC_ROOT}/sofa/helper/system/gl.h
+    ${COMPATSRC_ROOT}/sofa/helper/system/glu.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/Trackball.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/template.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/Texture.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/FrameBufferObject.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/GLSLShader.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/Transformation.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/RAII.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/BasicShapes.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/Capture.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/VideoRecorderFFMPEG.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/Axis.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/glText.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/glText.inl
+    ${COMPATSRC_ROOT}/sofa/helper/gl/Color.h
+    ${COMPATSRC_ROOT}/sofa/helper/gl/Cylinder.h
     )
-    list(APPEND SOURCE_FILES
-        ${SRC_ROOT}/gl/Axis.cpp
-        ${SRC_ROOT}/gl/BasicShapesGL.cpp
-        ${SRC_ROOT}/gl/Cylinder.cpp
-        ${SRC_ROOT}/gl/glText.cpp
-        ${SRC_ROOT}/gl/Capture.cpp
-        ${SRC_ROOT}/gl/Texture.cpp
-        ${SRC_ROOT}/gl/VideoRecorderFFMPEG.cpp
-        ${SRC_ROOT}/gl/Color.cpp
-        ${SRC_ROOT}/system/gl.cpp
-    )
-    if(GLEW_FOUND)
-        list(APPEND HEADER_FILES
-            ${SRC_ROOT}/gl/FrameBufferObject.h
-            ${SRC_ROOT}/gl/GLSLShader.h
-        )
-        list(APPEND SOURCE_FILES
-            ${SRC_ROOT}/gl/FrameBufferObject.cpp
-            ${SRC_ROOT}/gl/GLSLShader.cpp
-        )
-        list(APPEND SHADER_FILES
-            ${SRC_ROOT}/gl/shaders/generateSphere.cppglsl
-        )
-    endif()
-endif()
 
 # Create build and install versions of etc/sofa.ini:
 #   - In build dir, sofa.ini contains absolute paths to distant (in source) share/ and examples/ dirs
@@ -326,11 +288,16 @@ configure_file("etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini COMPONENT applications)
 
 # LIBRARY
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaSimulationCore/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaDefaultType/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaCore/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Sofa.Type/src>")
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
+source_group("compat" FILES ${COMPAT_HEADER_FILES} )
+
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
 endif()
@@ -355,7 +322,14 @@ if(MSVC)
     endif()
 endif()
 
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
+
 # DEPENDENCY LINKS AND INCLUDE DIRS
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type)
+
 # System libs
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
@@ -370,29 +344,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     target_link_libraries(${PROJECT_NAME} PRIVATE Shlwapi)
 endif()
 
-# OpenGL (gl, glu) + GLEW
-if(NOT SOFA_NO_OPENGL)
-    if(TARGET OpenGL::GL AND TARGET OpenGL::GLU) # Imported targets defined since CMake 3.8
-        target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL OpenGL::GLU)
-    else()
-        target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENGL_LIBRARIES})
-        target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${OPENGL_INCLUDE_DIR})
-    endif()
-    if(CMAKE_SYSTEM_NAME STREQUAL Linux AND SOFA_BUILD_RELEASE_PACKAGE AND OPENGL_GLU_FOUND)
-        # Add GLU to Linux binaries
-        sofa_install_libraries(PATHS ${OPENGL_glu_LIBRARY})
-    endif()
-
-    if(GLEW_FOUND)
-        target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW)
-        if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
-            sofa_install_libraries(TARGETS GLEW::GLEW)
-        endif()
-    else()
-        message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
-    endif()
-endif()
-
 # Boost
 if(Boost_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::system Boost::filesystem Boost::program_options)
@@ -401,6 +352,11 @@ if(Boost_FOUND)
     endif()
     if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
         sofa_install_libraries(PATHS ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
+    endif()
+
+    if(MSVC)
+        #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
+        target_compile_definitions(${PROJECT_NAME} PUBLIC BOOST_ALL_DYN_LINK)
     endif()
 endif()
 
@@ -414,17 +370,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 # Json (header only) needed by AdvancedTimer
 if(JSON_FOUND)
-    install(DIRECTORY "${JSON_INCLUDE_DIR}/"
-        COMPONENT headers
-        DESTINATION "include/extlibs/json"
-        PATTERN "*.in" EXCLUDE
-        PATTERN "*.txt" EXCLUDE
-        PATTERN "*.cpp" EXCLUDE
-        )
-    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
-        "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>"
-        "$<INSTALL_INTERFACE:include/extlibs/json>"
-        )
+    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>")
 endif()
 
 sofa_add_targets_to_package(

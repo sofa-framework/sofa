@@ -131,14 +131,14 @@ class SOFA_CORE_API HexahedraRenumbering;
 /// Topology identification of a primitive element
 struct TopologyElemID
 {
-    TopologyElemID() : type(POINT), index((Topology::ElemID)-1) {}
+    TopologyElemID() : type(TopologyElementType::POINT), index((Topology::ElemID)-1) {}
 
-    TopologyElemID(TopologyObjectType _type, Topology::ElemID _index)
+    TopologyElemID(TopologyElementType _type, Topology::ElemID _index)
         : type(_type)
         , index(_index)
     {}
 
-    TopologyObjectType type;
+    TopologyElementType type;
     Topology::ElemID index;
 };
 
@@ -150,15 +150,15 @@ struct PointAncestorElem
 {
     typedef defaulttype::Vec<3, double> LocalCoords;
 
-    PointAncestorElem() : type(POINT), index((Topology::ElemID)-1) {}
+    PointAncestorElem() : type(TopologyElementType::POINT), index((Topology::ElemID)-1) {}
 
-    PointAncestorElem(TopologyObjectType _type, Topology::ElemID _index, const LocalCoords& _localCoords)
+    PointAncestorElem(TopologyElementType _type, Topology::ElemID _index, const LocalCoords& _localCoords)
         : type(_type)
         , index(_index)
         , localCoords(_localCoords)
     {}
     
-    TopologyObjectType type;
+    TopologyElementType type;
     Topology::ElemID index;
     LocalCoords localCoords;
 };
@@ -345,30 +345,13 @@ public:
     virtual bool read(std::istream& in);
 
     /// Output  stream
-    friend std::ostream& operator<< ( std::ostream& out, const TopologyChange* t )
-    {
-        if (t)
-        {
-            t->write(out);
-        }
-        return out;
-    }
+    SOFA_CORE_API friend std::ostream& operator<< ( std::ostream& out, const TopologyChange* t );
 
     /// Input (empty) stream
-    friend std::istream& operator>> ( std::istream& in, TopologyChange*& t )
-    {
-        if (t)
-        {
-            t->read(in);
-        }
-        return in;
-    }
-    
+    SOFA_CORE_API friend std::istream& operator>> ( std::istream& in, TopologyChange*& t );
+
     /// Input (empty) stream
-    friend std::istream& operator>> ( std::istream& in, const TopologyChange*& )
-    {
-        return in;
-    }
+    SOFA_CORE_API friend std::istream& operator>> ( std::istream& in, const TopologyChange*& );
 
 protected:
     TopologyChange( TopologyChangeType changeType = BASE )

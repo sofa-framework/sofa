@@ -38,7 +38,7 @@ std::map<std::string, Deprecated> deprecatedComponents = {
 
 std::map<std::string, ComponentChange> uncreatableComponents = {
     // SofaDistanceGrid was pluginized in #389
-    {"BarycentricPenalityContact", Pluginized("v17.12", "SofaDistanceGrid")},
+    {"BarycentricPenalityContact", Pluginized("v17.12", "SofaMeshCollision")},
     {"DistanceGridCollisionModel", Pluginized("v17.12", "SofaDistanceGrid")},
     {"FFDDistanceGridDiscreteIntersection", Pluginized("v17.12", "SofaDistanceGrid")},
     {"RayDistanceGridContact", Pluginized("v17.12", "SofaDistanceGrid")},
@@ -188,7 +188,378 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "RecordedCamera", Pluginized("v20.12", "SofaGeneralVisual") },
     { "VisualTransform", Pluginized("v20.12", "SofaGeneralVisual") },
     { "Visual3DText", Pluginized("v20.12", "SofaGeneralVisual") },
+        
+    // SofaGraphComponent was pluginized in #1531
+    { "AddFrameButtonSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "AddRecordedCameraButtonSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "AttachBodyButtonSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "FixPickedParticleButtonSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "Gravity", Pluginized("v20.12", "SofaGraphComponent") },
+    { "InteractingBehaviorModel", Pluginized("v20.12", "SofaGraphComponent") },
+    { "MouseButtonSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "PauseAnimation", Pluginized("v20.12", "SofaGraphComponent") },
+    { "PauseAnimationOnEvent", Pluginized("v20.12", "SofaGraphComponent") },
+    { "SofaDefaultPathSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "StatsSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "ViewerSetting", Pluginized("v20.12", "SofaGraphComponent") },
+    { "APIVersion", Pluginized("v20.12", "SofaGraphComponent") },
 
+    // SofaBoundaryCondition was pluginized in #1556
+    { "AffineMovementConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "ConicalForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "ConstantForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "DiagonalVelocityDampingForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "EdgePressureForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "EllipsoidForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "FixedConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "FixedPlaneConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "FixedRotationConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "FixedTranslationConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "HermiteSplineConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "LinearForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "LinearMovementConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "LinearVelocityConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "OscillatingTorsionPressureForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "OscillatorConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "ParabolicConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "PartialFixedConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "PartialLinearMovementConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "PatchTestMovementConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "PlaneForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "PointConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "PositionBasedDynamicsConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "QuadPressureForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "SkeletalMotionConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "SphereForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "SurfacePressureForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "TaitSurfacePressureForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "TorsionForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "TrianglePressureForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "UniformVelocityDampingForceField", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "ProjectToLineConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "ProjectToPlaneConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "ProjectToPointConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+    { "ProjectDirectionConstraint", Pluginized("v20.12", "SofaBoundaryCondition") },
+
+    // SofaGeneralAnimationLoop was pluginized in #1563
+    { "MechanicalMatrixMapper", Pluginized("v20.12", "SofaGeneralAnimationLoop") },
+    { "MultiStepAnimationLoop", Pluginized("v20.12", "SofaGeneralAnimationLoop") },
+    { "MultiTagAnimationLoop", Pluginized("v20.12", "SofaGeneralAnimationLoop") },
+
+    // SofaGeneralDeformable was pluginized in #1564
+    { "FastTriangularBendingSprings", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "FrameSpringForceField", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "QuadBendingSprings", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "RegularGridSpringForceField", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "QuadularBendingSprings", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "TriangleBendingSprings", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "TriangularBendingSprings", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "TriangularBiquadraticSpringsForceField", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "TriangularQuadraticSpringsForceField", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "TriangularTensorMassForceField", Pluginized("v20.12", "SofaGeneralDeformable") },
+    { "VectorSpringForceField", Pluginized("v20.12", "SofaGeneralDeformable") },
+
+    // SofaGeneralEngine was pluginized in #1565
+    { "AverageCoord", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "ClusteringEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "ComplementaryROI", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "DilateEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "DifferenceEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "ExtrudeEdgesAndGenerateQuads", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "ExtrudeQuadsAndGenerateHexas", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "ExtrudeSurface", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "GenerateCylinder", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "GenerateGrid", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "GenerateRigidMass", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "GenerateSphere", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "GroupFilterYoungModulus", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "HausdorffDistance", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "IndexValueMapper", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "Indices2ValuesMapper", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "IndicesFromValues", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "JoinPoints", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MapIndices", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MathOp", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MergeMeshes", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MergePoints", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MergeROIs", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MergeSets", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MergeVectors", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MeshBarycentricMapperEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MeshClosingEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MeshBoundaryROI", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MeshROI", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MeshSampler", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MeshSplittingEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "MeshSubsetEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "NearestPointROI", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "NormEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "NormalsFromPoints", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "PairBoxRoi", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "PlaneROI", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "PointsFromIndices", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "ProximityROI", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "QuatToRigidEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "ROIValueMapper", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "RandomPointDistributionInSurface", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "RigidToQuatEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "SelectLabelROI", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "SelectConnectedLabelsROI", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "ShapeMatching", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "SmoothMeshEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "SphereROI", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "Spiral", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "SubsetTopology", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "SumEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "TextureInterpolation", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "TransformEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "TransformMatrixEngine", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "TransformPosition", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "ValuesFromIndices", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "ValuesFromPositions", Pluginized("v20.12", "SofaGeneralEngine") },
+    { "Vertex2Frame", Pluginized("v20.12", "SofaGeneralEngine") },
+
+    // SofaGeneralExplicitOdeSolver was pluginized in #1566
+    { "CentralDifferenceSolver", Pluginized("v20.12", "SofaGeneralExplicitOdeSolver") },
+    { "RungeKutta2Solver", Pluginized("v20.12", "SofaGeneralExplicitOdeSolver") },
+    { "RungeKutta4Solver", Pluginized("v20.12", "SofaGeneralExplicitOdeSolver") },
+
+    // SofaGeneralImplicitOdeSolver was pluginized in #1572
+    { "VariationalSymplecticSolver", Pluginized("v20.12", "SofaGeneralImplicitOdeSolver") },
+
+    // SofaGeneralLinearSolver was pluginized in #1575
+    { "BTDLinearSolver", Pluginized("v20.12", "SofaGeneralLinearSolver") },
+    { "CholeskySolver", Pluginized("v20.12", "SofaGeneralLinearSolver") },
+    { "MinResLinearSolver", Pluginized("v20.12", "SofaGeneralLinearSolver") },
+
+    // SofaGeneralRigid was pluginized in #1579
+    { "ArticulatedHierarchyContainer", Pluginized("v20.12", "SofaGeneralRigid") },
+    { "ArticulationCenter", Pluginized("v20.12", "SofaGeneralRigid") },
+    { "Articulation", Pluginized("v20.12", "SofaGeneralRigid") },
+    { "ArticulatedSystemMapping", Pluginized("v20.12", "SofaGeneralRigid") },
+    { "LineSetSkinningMapping", Pluginized("v20.12", "SofaGeneralRigid") },
+    { "SkinningMapping", Pluginized("v20.12", "SofaGeneralRigid") },
+
+    // SofaGeneralObjectInteraction was pluginized in #1580
+    { "AttachConstraint", Pluginized("v20.12", "SofaGeneralObjectInteraction") },
+    { "BoxStiffSpringForceField", Pluginized("v20.12", "SofaGeneralObjectInteraction") },
+    { "InteractionEllipsoidForceField", Pluginized("v20.12", "SofaGeneralObjectInteraction") },
+    { "RepulsiveSpringForceField", Pluginized("v20.12", "SofaGeneralObjectInteraction") },
+
+    // SofaGeneralSimpleFem was pluginized in #1582
+    { "BeamFEMForceField", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "HexahedralFEMForceField", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "HexahedralFEMForceFieldAndMass", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "LengthContainer", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "PoissonContainer", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "RadiusContainer", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "StiffnessContainer", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "TetrahedralCorotationalFEMForceField", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+    { "TriangularFEMForceFieldOptim", Pluginized("v20.12", "SofaGeneralSimpleFem") },
+
+    // SofaGeneralTopology was pluginized in #1583
+    { "CubeTopology", Pluginized("v20.12", "SofaGeneralTopology") },
+    { "CylinderGridTopology", Pluginized("v20.12", "SofaGeneralTopology") },
+    { "SphereGridTopology", Pluginized("v20.12", "SofaGeneralTopology") },
+    { "SphereQuadTopology", Pluginized("v20.12", "SofaGeneralTopology") },
+
+    // SofaGeneralTopology was pluginized in #1586
+    { "CenterPointTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Edge2QuadTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Hexa2QuadTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Hexa2TetraTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "IdentityTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Mesh2PointMechanicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Mesh2PointTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Quad2TriangleTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "SimpleTesselatedHexaTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "SimpleTesselatedTetraMechanicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "SimpleTesselatedTetraTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "SubsetTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Tetra2TriangleTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+    { "Triangle2EdgeTopologicalMapping", Pluginized("v20.12", "SofaTopologyMapping") },
+
+    // SofaUserInteraction was pluginized in #1588
+    { "MechanicalStateController", Pluginized("v20.12", "SofaUserInteraction") },
+    { "MouseInteractor", Pluginized("v20.12", "SofaUserInteraction") },
+    { "RayModel", Pluginized("v20.12", "SofaUserInteraction") },
+    { "RayTraceDetection", Pluginized("v20.12", "SofaUserInteraction") },
+    { "SleepController", Pluginized("v20.12", "SofaUserInteraction") },
+
+    // SofaConstraint was pluginized in #1592
+    { "BilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "ConstraintAnimationLoop", Pluginized("v20.12", "SofaConstraint") },
+    { "FreeMotionAnimationLoop", Pluginized("v20.12", "SofaConstraint") },
+    { "GenericConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "GenericConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LCPConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
+    { "LinearSolverConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "LMDNewProximityIntersection", Pluginized("v20.12", "SofaConstraint") },
+    { "LocalMinDistance", Pluginized("v20.12", "SofaConstraint") },
+    { "MappingGeometricStiffnessForceField", Pluginized("v20.12", "SofaConstraint") },
+    { "PrecomputedConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "SlidingConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "StopperConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "UncoupledConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
+    { "UniformConstraint", Pluginized("v20.12", "SofaConstraint") },
+    { "UnilateralInteractionConstraint", Pluginized("v20.12", "SofaConstraint") },
+
+    // LMConstraint was pluginized in #1659
+    { "BaseLMConstraint", Pluginized("v20.12", "LMConstraint") },
+    { "LMConstraint", Pluginized("v20.12", "LMConstraint") },
+    { "TetrahedronBarycentricDistanceLMConstraintContact", Pluginized("v20.12", "LMConstraint") },
+    { "BarycentricDistanceLMConstraintContact_DistanceGrid", Pluginized("v20.12", "LMConstraint") },
+    { "BarycentricDistanceLMConstraintContact", Pluginized("v20.12", "LMConstraint") },
+    { "DistanceLMConstraint", Pluginized("v20.12", "LMConstraint") },
+    { "DistanceLMContactConstraint", Pluginized("v20.12", "LMConstraint") },
+    { "DOFBlockerLMConstraint", Pluginized("v20.12", "LMConstraint") },
+    { "FixedLMConstraint", Pluginized("v20.12", "LMConstraint") },
+    { "LMConstraintSolver", Pluginized("v20.12", "LMConstraint") },
+    { "LMConstraintDirectSolver", Pluginized("v20.12", "LMConstraint") },
+
+
+
+    // SofaGeneralLoader was pluginized in #1595
+    { "GIDMeshLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "GridMeshCreator", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "InputEventReader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshGmshLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshOffLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshSTLLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshTrianLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "MeshXspLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "OffSequenceLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "ReadState", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "ReadTopology", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "SphereLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "StringMeshCreator", Pluginized("v20.12", "SofaGeneralLoader") },
+    { "VoxelGridLoader", Pluginized("v20.12", "SofaGeneralLoader") },
+
+     // SofaSimpleFem was pluginized in #1598
+    { "HexahedronFEMForceField", Pluginized("v20.12", "SofaSimpleFem") },
+    { "TetrahedronDiffusionFEMForceField", Pluginized("v20.12", "SofaSimpleFem") },
+    { "TetrahedronFEMForceField", Pluginized("v20.12", "SofaSimpleFem") },
+
+    // SofaRigid was pluginized in #1599
+    { "JointSpringForceField", Pluginized("v20.12", "SofaRigid") },
+    { "RigidMapping", Pluginized("v20.12", "SofaRigid") },
+    { "RigidRigidMapping", Pluginized("v20.12", "SofaRigid") },
+
+    // SofaDeformable was pluginized in #1600
+    { "AngularSpringForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "MeshSpringForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "PolynomialRestShapeSpringsForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "PolynomialSpringsForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "RestShapeSpringsForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "SpringForceField", Pluginized("v20.12", "SofaDeformable") },
+    { "StiffSpringForceField", Pluginized("v20.12", "SofaDeformable") },
+
+    // SofaObjectInteraction was pluginized in #1601
+    { "PenalityContactForceField", Pluginized("v20.12", "SofaObjectInteraction") },
+
+    // SofaMeshCollision was pluginized in #1602
+    { "LineLocalMinDistanceFilter", Pluginized("v20.12", "SofaMeshCollision") },
+    { "LineCollisionModel", Pluginized("v20.12", "SofaMeshCollision") },
+    { "PointLocalMinDistanceFilter", Pluginized("v20.12", "SofaMeshCollision") },
+    { "PointCollisionModel", Pluginized("v20.12", "SofaMeshCollision") },
+    { "TriangleLocalMinDistanceFilter", Pluginized("v20.12", "SofaMeshCollision") },
+    { "TriangleCollisionModel", Pluginized("v20.12", "SofaMeshCollision") },
+
+    // SofaEngine was pluginized in #1603
+    { "BoxROI", Pluginized("v20.12", "SofaEngine") },
+
+    // SofaExplicitOdeSolver was pluginized in #1606
+    { "EulerExplicitSolver", Pluginized("v20.12", "SofaExplicitOdeSolver") },
+
+    // SofaImplicitOdeSolver was pluginized in #1607
+    { "EulerImplicitSolver", Pluginized("v20.12", "SofaImplicitOdeSolver") },
+    { "StaticSolver", Pluginized("v20.12", "SofaImplicitOdeSolver") },
+
+    // SofaLoader was pluginized in #1608
+    { "MeshObjLoader", Pluginized("v20.12", "SofaLoader") },
+    { "MeshVTKLoader", Pluginized("v20.12", "SofaLoader") },
+
+    // SofaEigen2Solver was pluginized in #1635
+    { "SVDLinearSolver", Pluginized("v20.12", "SofaEigen2Solver") },
+
+    // SofaBaseUtils was packaged in #1640
+    //{ "AddResourceRepository", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "AddPluginRepository", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "InfoComponent", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "MakeAliasComponent", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "MakeDataAliasComponent", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "MessageHandlerComponent", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "FileMessageHandlerComponent", Pluginized("v20.12", "SofaBaseUtils") },
+    //{ "RequiredPlugin", Pluginized("v20.12", "SofaBaseUtils") },
+
+    // SofaBaseCollision was packaged in #1653
+    //{ "BruteForceDetection", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "CapsuleCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "ContactListener", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "CubeCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "CylinderCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "DefaultContactManager", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "DefaultPipeline", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "DiscreteIntersection", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "MinProximityIntersection", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "NewProximityIntersection", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "OBBCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "RigidCapsuleCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
+    //{ "SphereCollisionModel", Pluginized("v20.12", "SofaBaseCollision") },
+
+    // SofaBaseLinearSolver was packaged in #1655
+    //{ "CGLinearSolver", Pluginized("v20.12", "SofaBaseLinearSolver") },
+
+    // SofaBaseTopology was packaged in #1676
+    //{ "EdgeSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "EdgeSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "EdgeSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "GridTopology", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "HexahedronSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "HexahedronSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "HexahedronSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "MeshTopology", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "PointSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "PointSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "PointSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "QuadSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "QuadSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "QuadSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "RegularGridTopology", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "SparseGridTopology", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "TetrahedronSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "TetrahedronSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "TetrahedronSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "TriangleSetGeometryAlgorithms", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "TriangleSetTopologyContainer", Pluginized("v20.12", "SofaBaseTopology") },
+    //{ "TriangleSetTopologyModifier", Pluginized("v20.12", "SofaBaseTopology") },
+
+    // SofaBaseVisual was packaged in #1677
+    //{ "BackgroundSetting", Pluginized("v20.12", "SofaBaseVisual") },
+    //{ "Camera", Pluginized("v20.12", "SofaBaseVisual") },
+    //{ "InteractiveCamera", Pluginized("v20.12", "SofaBaseVisual") },
+    //{ "VisualModelImpl", Pluginized("v20.12", "SofaBaseVisual") },
+    //{ "VisualStyle", Pluginized("v20.12", "SofaBaseVisual") },
+
+    // SofaBaseMechanics was packaged in #1680
+    //{ "BarycentricMapping", Pluginized("v20.12", "SofaBaseMechanics") },
+    //{ "DiagonalMass", Pluginized("v20.12", "SofaBaseMechanics") },
+    //{ "IdentityMapping", Pluginized("v20.12", "SofaBaseMechanics") },
+    //{ "MappedObject", Pluginized("v20.12", "SofaBaseMechanics") },
+    //{ "MechanicalObject", Pluginized("v20.12", "SofaBaseMechanics") },
+    //{ "SubsetMapping", Pluginized("v20.12", "SofaBaseMechanics") },
+    //{ "UniformMass", Pluginized("v20.12", "SofaBaseMechanics") },
+        
+    /***********************/
+    // REMOVED SINCE v20.12
+    { "DynamicSparseGridTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "HexahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "TetrahedronSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "QuadSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "TriangleSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "EdgeSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    { "PointSetTopologyAlgorithms", Removed("v20.12", "v20.12") },
+    
     /***********************/
     // REMOVED SINCE v20.06
 

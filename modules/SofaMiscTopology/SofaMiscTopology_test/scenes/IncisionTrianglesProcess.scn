@@ -3,6 +3,11 @@
     <RequiredPlugin name='SofaMiscCollision'/>
     <RequiredPlugin name='SofaMiscTopology'/>
     <RequiredPlugin name='SofaMiscFem'/>
+    <RequiredPlugin name='SofaTopologyMapping'/>
+    <RequiredPlugin name='SofaGeneralLoader'/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name='SofaEngine'/>
+    
     <VisualStyle displayFlags="showVisual showWireframe" />
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
@@ -16,10 +21,9 @@
         <MechanicalObject src="@loader" template="Vec3d" name="default4" scale3d="10 10 10" restScale="1" />
         <TriangleSetTopologyContainer src="@loader" name="Triangle_topo" />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <DiagonalMass template="Vec3d" name="default5" massDensity="1.5" />
-  	<BoxROI template="Vec3d" name="box_roi1" box="0 9.5 -0.5 10 10.5 0.5"/>
+  	    <BoxROI template="Vec3d" name="box_roi1" box="0 9.5 -0.5 10 10.5 0.5"/>
         <FixedConstraint template="Vec3d" name="fixedConstraint1" indices="@box_roi1.indices"/>
         <BoxROI template="Vec3d" name="box_roi2" box="0 -0.5 -0.5 10 0.5 0.5"/>
         <FixedConstraint template="Vec3d" name="fixedConstraint1" indices="@box_roi2.indices"/>
@@ -29,7 +33,6 @@
         <Node name="edges">
             <EdgeSetTopologyContainer name="Edge_topo" />
             <EdgeSetTopologyModifier name="Modifier" />
-            <EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawEdges="1" />
             <Triangle2EdgeTopologicalMapping name="Mapping" input="@../Triangle_topo" output="@Edge_topo" />
         </Node>

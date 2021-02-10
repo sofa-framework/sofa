@@ -14,7 +14,6 @@
         <TriangleSetTopologyContainer src="@loader" />
         <MechanicalObject src="@loader" template="Vec3d" name="DOFs" />
         <TriangleSetTopologyModifier />
-        <TriangleSetTopologyAlgorithms />
         <TriangleSetGeometryAlgorithms />
         <BoxConstraint box="-10 -10 -10  10 -5 10" />
         <TriangularFEMForceFieldOptim name="FEM" youngModulus="10000" poissonRatio="0.4" restScale="0.97" method="large" />

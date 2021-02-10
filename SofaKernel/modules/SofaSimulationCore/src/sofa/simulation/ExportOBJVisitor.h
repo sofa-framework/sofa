@@ -24,7 +24,7 @@
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/fwd.h>
 #include <string>
 #include <iostream>
 #include <sofa/defaulttype/TopologyTypes.h>
@@ -53,9 +53,9 @@ public:
 
 protected:
     int ID;
-    sofa::defaulttype::index_type vindex;
-    sofa::defaulttype::index_type nindex;
-    sofa::defaulttype::index_type tindex;
+    sofa::Index vindex;
+    sofa::Index nindex;
+    sofa::Index tindex;
     int count;
 };
 

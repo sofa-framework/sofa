@@ -199,7 +199,7 @@ void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualPar
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const Real h = distance.getValue();
 
-    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::helper::types::RGBAColor> colorVector;
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     for (unsigned int i=0; i<particles.size(); i++)
@@ -212,11 +212,11 @@ void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualPar
             float f = r_h*2;
             if (f < 1)
             {
-                colorVector.push_back(sofa::defaulttype::Vec4f(0,1-f,f,1-r_h));
+                colorVector.push_back({0.0f, 1.0f - f, f, 1.0f - r_h});
             }
             else
             {
-                colorVector.push_back(sofa::defaulttype::Vec4f(f-1,0,2-f,1-r_h));
+                colorVector.push_back({f - 1.0f, 0.0f, 2.0f - f, 1.0f - r_h});
             }
             vertices.push_back(sofa::defaulttype::Vector3(x[i]));
             vertices.push_back(sofa::defaulttype::Vector3(x[j]));

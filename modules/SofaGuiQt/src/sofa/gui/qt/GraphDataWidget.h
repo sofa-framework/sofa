@@ -19,13 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_GRAPHDATAWIDGET_H
-#define SOFA_GUI_QT_GRAPHDATAWIDGET_H
-
+#pragma once
 #include "TableDataWidget.h"
 #include "FileManagement.h"
 
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/system/SetDirectory.h>
 
 #include <SofaBaseTopology/TopologyData.h>
@@ -41,13 +38,7 @@ using namespace QtCharts;
 
 #include <fstream>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 
 template<class T>
@@ -75,7 +66,7 @@ public:
     }
 
     virtual QLineSeries* copy() const { return new QDataSeries<T>(*this); }
-    virtual size_t size() const
+    virtual sofa::Size size() const
     {
         if (data0 == NULL)
             return 0;
@@ -89,7 +80,7 @@ public:
         m_xMin = m_yMin = 1000000000.0;
         m_xMax = m_yMax = -1000000000.0;
 
-        for (auto i = 0; i < this->size(); i++)
+        for (sofa::Index i = 0; i < this->size(); i++)
         {
             QPointF data = sample(i);
             append(data);
@@ -106,7 +97,7 @@ public:
         }
     }
 
-    virtual QPointF sample (size_t i) const
+    virtual QPointF sample (sofa::Index i) const
     {
         if (i >= size())
             return QPointF();
@@ -199,8 +190,7 @@ public:
         double maxY = -1000000000.0;
         currentData=d0;
         const data_type& d = currentData;
-        int nbCurves = m_curves.size();
-        int nbData = trait::size(d);
+        auto nbData = trait::size(d);
 
         for (int i = 0; i < nbData; ++i)
         {
@@ -261,9 +251,6 @@ public:
     void exportImage(const std::string &baseFileName) const
     {
         const std::string filename= baseFileName + ".png";
-
-        const float resolution = 72.f; // dpi
-        const float inch2mm = 25.4f;
 
         QPixmap p(w->size());
         QPainter *paint = new QPainter(&p);
@@ -392,11 +379,4 @@ public:
     }
 };
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-
-#endif
+} //namespace sofa::gui::qt

@@ -27,11 +27,7 @@
 #include <algorithm>
 
 
-namespace sofa
-{
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 
 void QMenuFilesRecentlyOpened::updateWidget()
@@ -62,7 +58,4 @@ void QMenuFilesRecentlyOpened::openFile(const std::string &file)
 }
 
 
-}
-}
-}
-
+} // namespace sofa::gui::qt

@@ -19,19 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+/******************************************************************************
+*  Contributors:
+*  - damien.marchal@univ-lille.fr
+*  - olivier.goury@inria.fr
+******************************************************************************/
+
 #ifndef SOFAIMPLICITFIELD_COMPONENT_SCALARFIELD_H
 #define SOFAIMPLICITFIELD_COMPONENT_SCALARFIELD_H
 #include <SofaImplicitField/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/Mat.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace geometry
+namespace sofa::component::geometry
 {
 
 namespace _scalarfield_
@@ -39,6 +40,7 @@ namespace _scalarfield_
 
 using sofa::core::objectmodel::BaseObject ;
 using sofa::defaulttype::Vec3d ;
+using sofa::defaulttype::Mat3x3 ;
 
 ////////////////// ///////////////
 class SOFA_SOFAIMPLICITFIELD_API ScalarField : public BaseObject
@@ -51,7 +53,8 @@ public:
     /// This is of lower precision compared to analytical gradient computed by derivating
     /// the equations.
     Vec3d getGradientByFinitDifference(Vec3d& pos, int& domain) ;
-
+    void getHessianByCentralFiniteDifference(const Vec3d& x, const double dx,
+                                             Mat3x3& hessian);
     virtual int getDomain(Vec3d& pos, int domain) {
         SOFA_UNUSED(pos);
         SOFA_UNUSED(domain);
@@ -65,6 +68,7 @@ public:
     /// If you have analytical derivative don't hesitate to override this function.
     virtual Vec3d getGradient(Vec3d& pos, int& domain);
     inline Vec3d getGradient(Vec3d& pos) {int domain=-1; return getGradient(pos,domain); }
+    virtual void getHessian(Vec3d &Pos, Mat3x3& h);
 
     /// Returns the value and the gradiant by evaluating one after an other.
     /// For some computation it is possible to implement more efficiently the computation
@@ -114,7 +118,11 @@ public:
 
 
 protected:
-    ScalarField( ) { }
+    Data< double > d_epsilon;
+    ScalarField( )
+        : d_epsilon(initData(&d_epsilon,0.00001,"epsilon","Tolerance when evaluating the gradient and/or the hessian of the implicit surface numerically"))
+    {
+    }
     ~ScalarField() override { }
 
 private:
@@ -127,11 +135,7 @@ private:
 
 using _scalarfield_::ScalarField ;
 
-} /// namespace geometry
-
-} /// namespace component
-
-} /// namespace sofa
+} /// namespace sofa::component::geometry
 
 #endif
 

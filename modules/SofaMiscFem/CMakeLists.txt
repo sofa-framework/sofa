@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaMiscFem VERSION 1.0 LANGUAGES CXX)
-
-# Dependencies
-sofa_find_package(Newmat BOTH_SCOPES)
-find_package(SofaCommon REQUIRED) # SofaSimpleFem
+project(SofaMiscFem LANGUAGES CXX)
 
 set(SOFAMISCFEM_SRC "src/${PROJECT_NAME}")
 
@@ -62,15 +58,20 @@ if(Newmat_FOUND)
         )
 endif()
 
+# Dependencies
+sofa_find_package(Newmat BOTH_SCOPES)
+find_package(SofaBase REQUIRED) 
+find_package(SofaSimpleFem REQUIRED) 
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaBaseMechanics)
 if(Newmat_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
 endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
-    PACKAGE_VERSION ${PROJECT_VERSION}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"

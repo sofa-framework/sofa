@@ -35,10 +35,8 @@ using sofa::helper::testing::BaseTest;
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaExporter/WriteState.h>
-
+#include <sofa/simulation/Node.h>
 #include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaGeneral/initSofaGeneral.h>
 
 namespace sofa {
 
@@ -77,8 +75,6 @@ namespace sofa {
         void SetUp()
         {
             sofa::component::initSofaBase();
-            sofa::component::initSofaCommon();
-            sofa::component::initSofaGeneral();
             // Init simulation
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
             root = simulation::getSimulation()->createNewGraph("root");
@@ -236,7 +232,7 @@ namespace sofa {
     typedef testing::Types< Vec3Types > DataTypes;
 
     // Test suite for all the instantiations
-    TYPED_TEST_CASE(WriteState_test, DataTypes);
+    TYPED_TEST_SUITE(WriteState_test, DataTypes);
 
     // Test 1 : write position of a particle falling under gravity (required to use SymplecticSolver
     TYPED_TEST( WriteState_test , test_write_position)

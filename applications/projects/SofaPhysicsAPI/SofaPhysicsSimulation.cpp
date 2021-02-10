@@ -27,7 +27,6 @@
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/gl/RAII.h>
 
-#include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -36,8 +35,10 @@
 #include <SofaGeneral/initSofaGeneral.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
 
+#include <SofaSimulationGraph/DAGSimulation.h>
+
 #include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
+#include <SofaGui/initSofaGui.h>
 #include <sofa/helper/init.h>
 
 #include <sofa/gui/BaseGUI.h>
@@ -218,7 +219,7 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
         }
         else
         {
-          sofa::gui::initMain();
+          sofa::gui::initSofaGui();
 
           char* argv[]= { const_cast<char*>("a") };
 
@@ -241,7 +242,7 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
     lastH = 0;
     vparams = sofa::core::visual::VisualParams::defaultInstance();
 
-    m_Simulation = new sofa::simulation::tree::TreeSimulation();
+    m_Simulation = new sofa::simulation::graph::DAGSimulation();
     sofa::simulation::setSimulation(m_Simulation);
 
     sofa::component::initSofaGeneral();

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaHaptics/ForceFeedback.h>
-
+#include <sofa/simulation/Node.h>
 namespace sofa
 {
 

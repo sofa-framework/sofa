@@ -39,16 +39,16 @@ namespace sofa
 namespace defaulttype
 {
 
-template<std::size_t N, typename real>
+template<sofa::Size N, typename real>
 class RigidDeriv;
 
-template<std::size_t N, typename real>
+template<sofa::Size N, typename real>
 class RigidCoord;
 
-template<std::size_t N, typename real>
+template<sofa::Size N, typename real>
 class RigidMass;
 
-template<std::size_t N, typename real>
+template<sofa::Size N, typename real>
 class StdRigidTypes;
 
 //=============================================================================
@@ -62,7 +62,7 @@ class RigidDeriv<3, real>
 {
 public:
     typedef real value_type;
-    typedef std::size_t size_type;
+    typedef sofa::Size Size;
     typedef real Real;
     typedef Vec<3,Real> Pos;
     typedef Vec<3,Real> Rot;
@@ -233,10 +233,10 @@ public:
     real* ptr() { return vCenter.ptr(); }
     const real* ptr() const { return vCenter.ptr(); }
 
-    static size_type size() {return 6;}
+    static Size size() {return 6;}
 
     /// Access to i-th element.
-    real& operator[](size_type i)
+    real& operator[](Size i)
     {
         if (i<3)
             return this->vCenter(i);
@@ -245,7 +245,7 @@ public:
     }
 
     /// Const access to i-th element.
-    const real& operator[](size_type i) const
+    const real& operator[](Size i) const
     {
         if (i<3)
             return this->vCenter(i);
@@ -284,49 +284,49 @@ inline RigidDeriv<3,real> operator/(RigidDeriv<3, real> r,real2 a)
     return r;
 }
 
-template<std::size_t N,typename T>
+template<sofa::Size N,typename T>
 typename RigidDeriv<N,T>::Pos& getLinear(RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
-template<std::size_t N, typename T>
+template<sofa::Size N, typename T>
 const typename RigidDeriv<N,T>::Pos& getLinear(const RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
-template<std::size_t N, typename T>
+template<sofa::Size N, typename T>
 typename RigidDeriv<N,T>::Rot& getAngular(RigidDeriv<N,T>& v)
 {
     return v.getAngular();
 }
 
-template<std::size_t N, typename T>
+template<sofa::Size N, typename T>
 const typename RigidDeriv<N,T>::Rot& getAngular(const RigidDeriv<N,T>& v)
 {
     return v.getAngular();
 }
 
-template<std::size_t N,typename T>
+template<sofa::Size N,typename T>
 typename RigidDeriv<N,T>::Pos& getVCenter(RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
-template<std::size_t N, typename T>
+template<sofa::Size N, typename T>
 const typename RigidDeriv<N,T>::Pos& getVCenter(const RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
-template<std::size_t N, typename T>
+template<sofa::Size N, typename T>
 typename RigidDeriv<N,T>::Rot& getVOrientation(RigidDeriv<N,T>& v)
 {
     return v.getAngular();
 }
 
-template<std::size_t N, typename T>
+template<sofa::Size N, typename T>
 const typename RigidDeriv<N,T>::Rot& getVOrientation(const RigidDeriv<N,T>& v)
 {
     return v.getAngular();
@@ -344,7 +344,7 @@ class RigidCoord<3,real>
 {
 public:
     typedef real value_type;
-    typedef std::size_t size_type;
+    typedef sofa::Size Size;
     typedef real Real;
     typedef Vec<3,Real> Pos;
     typedef helper::Quater<Real> Rot;
@@ -656,7 +656,7 @@ public:
 #endif // NDEBUG
         return in;
     }
-    static size_type max_size()
+    static Size max_size()
     {
         return 3;
     }
@@ -669,10 +669,10 @@ public:
     real* ptr() { return center.ptr(); }
     const real* ptr() const { return center.ptr(); }
 
-    static size_type size() {return 7;}
+    static Size size() {return 7;}
 
     /// Access to i-th element.
-    real& operator[](size_type i)
+    real& operator[](Size i)
     {
         if (i<3)
             return this->center(i);
@@ -681,7 +681,7 @@ public:
     }
 
     /// Const access to i-th element.
-    const real& operator[](size_type i) const
+    const real& operator[](Size i) const
     {
         if (i<3)
             return this->center(i);
@@ -932,7 +932,7 @@ public:
 
         Coord c;
 
-        for (std::size_t i = 0; i < ancestors.size(); i++)
+        for (sofa::Size i = 0; i < ancestors.size(); i++)
         {
             // Position interpolation.
             c.getCenter() += ancestors[i].getCenter() * coefs[i];
@@ -970,7 +970,7 @@ public:
 
         Deriv d;
 
-        for (std::size_t i = 0; i < ancestors.size(); i++)
+        for (sofa::Size i = 0; i < ancestors.size(); i++)
         {
             d += ancestors[i] * coefs[i];
         }
@@ -1025,7 +1025,7 @@ class RigidDeriv<2,real>
 {
 public:
     typedef real value_type;
-    typedef std::size_t size_type;
+    typedef sofa::Size Size;
     typedef real Real;
     typedef Vec<2,Real> Pos;
     typedef Real Rot;
@@ -1184,10 +1184,10 @@ public:
     real* ptr() { return vCenter.ptr(); }
     const real* ptr() const { return vCenter.ptr(); }
 
-    static size_type size() {return 3;}
+    static Size size() {return 3;}
 
     /// Access to i-th element.
-    real& operator[](size_type i)
+    real& operator[](Size i)
     {
         if (i<2)
             return this->vCenter(i);
@@ -1196,7 +1196,7 @@ public:
     }
 
     /// Const access to i-th element.
-    const real& operator[](size_type i) const
+    const real& operator[](Size i) const
     {
         if (i<2)
             return this->vCenter(i);
@@ -1249,7 +1249,7 @@ class RigidCoord<2,real>
 {
 public:
     typedef real value_type;
-    typedef std::size_t size_type;
+    typedef sofa::Size Size;
     typedef real Real;
     typedef Vec<2,Real> Pos;
     typedef Real Rot;
@@ -1522,7 +1522,7 @@ public:
         in>>v.center>>v.orientation;
         return in;
     }
-    static size_type max_size()
+    static Size max_size()
     {
         return 3;
     }
@@ -1535,10 +1535,10 @@ public:
     real* ptr() { return center.ptr(); }
     const real* ptr() const { return center.ptr(); }
 
-    static size_type size() {return 3;}
+    static Size size() {return 3;}
 
     /// Access to i-th element.
-    real& operator[](size_type i)
+    real& operator[](Size i)
     {
         if (i<2)
             return this->center(i);
@@ -1547,7 +1547,7 @@ public:
     }
 
     /// Const access to i-th element.
-    const real& operator[](size_type i) const
+    const real& operator[](Size i) const
     {
         if (i<2)
             return this->center(i);
@@ -1786,7 +1786,7 @@ public:
 
         Coord c;
 
-        for (std::size_t i = 0; i < ancestors.size(); i++)
+        for (sofa::Size i = 0; i < ancestors.size(); i++)
         {
             c += ancestors[i] * coefs[i];
         }
@@ -1800,7 +1800,7 @@ public:
 
         Deriv d;
 
-        for (std::size_t i = 0; i < ancestors.size(); i++)
+        for (sofa::Size i = 0; i < ancestors.size(); i++)
         {
             d += ancestors[i] * coefs[i];
         }
@@ -1839,32 +1839,6 @@ template<> inline const char* Rigid2fTypes::Name() { return "Rigid2f"; }
 typedef StdRigidTypes<2,SReal> Rigid2Types;
 typedef RigidMass<2,SReal> Rigid2Mass;
 
-template<std::size_t N, typename real>
-struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidDeriv<N,real>, sofa::defaulttype::RigidDeriv<N,real>::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "RigidDeriv<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
-};
-
-template<std::size_t N, typename real>
-struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidCoord<N,real>, sofa::defaulttype::RigidCoord<N,real>::total_size >
-{
-    static std::string name() { std::ostringstream o; o << "RigidCoord<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
-};
-
-// The next line hides all those methods from the doxygen documentation
-/// \cond TEMPLATE_OVERRIDES
-
-
-template<> struct DataTypeName< defaulttype::Rigid2Types::Coord > { static const char* name() { return "Rigid2Types::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid2Types::Deriv > { static const char* name() { return "Rigid2Types::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid3Types::Coord > { static const char* name() { return "Rigid3Types::Coord"; } };
-template<> struct DataTypeName< defaulttype::Rigid3Types::Deriv > { static const char* name() { return "Rigid3Types::Deriv"; } };
-template<> struct DataTypeName< defaulttype::Rigid2Mass > { static const char* name() { return "Rigid2Mass"; } };
-template<> struct DataTypeName< defaulttype::Rigid3Mass > { static const char* name() { return "Rigid3Mass"; } };
-
-
-
-
 /// \endcond
 
 
@@ -1887,7 +1861,7 @@ static Vec3 rigidVelocity( const Vec3& omega, const Vec3& v, const Vec3& pv, con
 template<class V1, class Vec, class Rot>
 static void displace( V1& v, Vec translation, Rot rotation )
 {
-    for(std::size_t i=0; i<v.size(); i++)
+    for(sofa::Size i=0; i<v.size(); i++)
         v[i] = translation + rotation.rotate(v[i]);
 }
 
@@ -1895,7 +1869,7 @@ static void displace( V1& v, Vec translation, Rot rotation )
 template<class V1, class Rot>
 static void rotate( V1& v, Rot rotation )
 {
-    for(std::size_t i=0; i<v.size(); i++)
+    for(sofa::Size i=0; i<v.size(); i++)
         v[i] = rotation.rotate(v[i]);
 }
 

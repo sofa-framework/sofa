@@ -3,6 +3,9 @@
     <RequiredPlugin name="SofaMiscCollision" />
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaMiscTopology'/>
+    <RequiredPlugin name='SofaTopologyMapping'/>
+    <RequiredPlugin name='SofaGeneralSimpleFem'/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
 
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline verbose="0" />
@@ -17,7 +20,6 @@
         <MechanicalObject src="@loader" name="Hexa" />
         <HexahedronSetTopologyContainer name="Hexa_topo" src="@loader" />
         <HexahedronSetTopologyModifier name="Modifier" />
-        <HexahedronSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
         <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         <TopologicalChangeProcessor listening="1" filename="RemovingHexa2QuadProcess.txt" />
         <HexahedralFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3" method="large" />
@@ -27,7 +29,6 @@
         <Node name="Q">
             <QuadSetTopologyContainer name="Quad_topo" src="@" tags=" " />
             <QuadSetTopologyModifier name="Modifier" />
-            <QuadSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
             <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawQuads="1" />
             <Hexa2QuadTopologicalMapping input="@../Hexa_topo" output="@Quad_topo" />
             <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />

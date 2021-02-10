@@ -4,6 +4,7 @@ An assemblage of all the previous steps altogether
 -->
 <Node name="root" dt="0.05">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="SofaGraphComponent"/>
 
     <RequiredPlugin pluginName="SofaPython"/>
 
@@ -47,7 +48,6 @@ An assemblage of all the previous steps altogether
             <Node name="TongueCollisionModel">
                 <TriangleSetTopologyContainer name="TriContainer" />
                 <TriangleSetTopologyModifier name="Modifier" />
-                <TriangleSetTopologyAlgorithms name="TopoAlgo" />
                 <TriangleSetGeometryAlgorithms name="GeomAlgo" />
                 <Tetra2TriangleTopologicalMapping name="mapping" input="@../volume" output="@TriContainer" flipNormals="true" />
                 <MechanicalObject name="colTongue" />

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaBaseTopology/SofaBaseTopology_test/fake_TopologyScene.h>
+#include "fake_TopologyScene.h"
 #include <sofa/helper/testing/BaseTest.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -67,7 +67,7 @@ bool TriangleSetTopology_test::testEmptyContainer()
 
 bool TriangleSetTopology_test::testTriangleBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyObjectType::TRIANGLE);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyElementType::TRIANGLE);
     TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
@@ -124,7 +124,7 @@ bool TriangleSetTopology_test::testTriangleBuffers()
 
     const TriangleSetTopologyContainer::Triangle& tri2 = topoCon->getTriangle(1000);
     for (int i = 0; i<elemSize; ++i)
-        EXPECT_EQ(tri2[i], sofa::defaulttype::InvalidID);
+        EXPECT_EQ(tri2[i], sofa::InvalidID);
 
 
     if(scene != nullptr)
@@ -136,7 +136,7 @@ bool TriangleSetTopology_test::testTriangleBuffers()
 
 bool TriangleSetTopology_test::testEdgeBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyObjectType::TRIANGLE);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyElementType::TRIANGLE);
     TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
@@ -231,7 +231,7 @@ bool TriangleSetTopology_test::testEdgeBuffers()
 
 bool TriangleSetTopology_test::testVertexBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyObjectType::TRIANGLE);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyElementType::TRIANGLE);
     TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)
@@ -266,7 +266,7 @@ bool TriangleSetTopology_test::testVertexBuffers()
 
     const TriangleSetTopologyContainer::Triangle &tri = topoCon->getTriangle(1);
     int vId = topoCon->getVertexIndexInTriangle(tri, 0);
-    EXPECT_NE(vId, sofa::defaulttype::InvalidID);
+    EXPECT_NE(vId, sofa::InvalidID);
     vId = topoCon->getVertexIndexInTriangle(tri, 20000);
     EXPECT_EQ(vId, -1);
 
@@ -277,7 +277,7 @@ bool TriangleSetTopology_test::testVertexBuffers()
 
 bool TriangleSetTopology_test::checkTopology()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyObjectType::TRIANGLE);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyElementType::TRIANGLE);
     TriangleSetTopologyContainer* topoCon = dynamic_cast<TriangleSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == nullptr)

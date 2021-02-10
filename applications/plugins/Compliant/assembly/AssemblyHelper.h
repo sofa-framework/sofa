@@ -1,11 +1,10 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-
+#include <sofa/simulation/Node.h>
 #include "../utils/sparse.h"
 
 #include <Compliant/config.h>
-
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/OwnershipSPtr.h>
 

@@ -88,7 +88,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const Me
         this->mask1 = &mstate1->forceMask;
         this->mask2 = &mstate2->forceMask;
 
-            projectResponse(mparams, *dxId[mstate1.get(mparams)].write(), *dxId[mstate2.get(mparams)].write());
+            projectResponse(mparams, *dxId[mstate1.get()].write(), *dxId[mstate2.get()].write());
     }
 }
 
@@ -101,7 +101,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(const Me
         this->mask1 = &mstate1->forceMask;
         this->mask2 = &mstate2->forceMask;
 
-            projectVelocity(mparams, *vId[mstate1.get(mparams)].write(), *vId[mstate2.get(mparams)].write());
+            projectVelocity(mparams, *vId[mstate1.get()].write(), *vId[mstate2.get()].write());
     }
 }
 
@@ -113,7 +113,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(const Me
     {
         this->mask1 = &mstate1->forceMask;
         this->mask2 = &mstate2->forceMask;
-            projectPosition(mparams, *xId[mstate1.get(mparams)].write(), *xId[mstate2.get(mparams)].write());
+            projectPosition(mparams, *xId[mstate1.get()].write(), *xId[mstate2.get()].write());
     }
 }
 

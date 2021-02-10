@@ -24,9 +24,9 @@
 
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <fstream>
-
 
 namespace sofa
 {
@@ -61,7 +61,7 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fi
 {
     if (mparams)
     {
-            addMDx(mparams, *fid[this->mstate.get(mparams)].write(), *mparams->readDx(this->mstate), factor);
+            addMDx(mparams, *fid[this->mstate.get()].write(), *mparams->readDx(this->mstate), factor);
     }
 }
 
@@ -77,7 +77,7 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId 
 {
     if(mparams)
     {
-            accFromF(mparams, *aid[this->mstate.get(mparams)].write(), *mparams->readF(this->mstate));
+            accFromF(mparams, *aid[this->mstate.get()].write(), *mparams->readF(this->mstate));
     }
     else msg_error() <<"Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) receives no mparam";
 }
@@ -110,7 +110,7 @@ void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId 
     this->ForceField<DataTypes>::addMBKdx(mparams, dfId);
     if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
     {
-        addMDx(mparams, *dfId[this->mstate.get(mparams)].write(), *mparams->readDx(this->mstate), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));
+        addMDx(mparams, *dfId[this->mstate.get()].write(), *mparams->readDx(this->mstate), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));
     }
 }
 
@@ -199,7 +199,7 @@ void Mass<DataTypes>::addGravityToV(const MechanicalParams* mparams, MultiVecDer
 {
     if(this->mstate)
     {
-        DataVecDeriv& v = *vid[this->mstate.get(mparams)].write();
+        DataVecDeriv& v = *vid[this->mstate.get()].write();
         addGravityToV(mparams, v);
     }
 }
@@ -240,14 +240,14 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, SReal time)
 }
 
 template <class DataTypes>
-SReal Mass<DataTypes>::getElementMass(sofa::defaulttype::index_type ) const
+SReal Mass<DataTypes>::getElementMass(sofa::Index ) const
 {
     msg_warning() << "Method getElementMass with Scalar not implemented";
     return 0.0;
 }
 
 template <class DataTypes>
-void Mass<DataTypes>::getElementMass(sofa::defaulttype::index_type, defaulttype::BaseMatrix *m) const
+void Mass<DataTypes>::getElementMass(sofa::Index, defaulttype::BaseMatrix *m) const
 {
     static const defaulttype::BaseMatrix::Index dimension = (defaulttype::BaseMatrix::Index) defaulttype::DataTypeInfo<Coord>::size();
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);

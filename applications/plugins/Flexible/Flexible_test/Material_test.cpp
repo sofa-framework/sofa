@@ -243,7 +243,7 @@ typedef testing::Types<
 > DataTypes; 
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(Material_test, DataTypes);
+TYPED_TEST_SUITE(Material_test, DataTypes);
 
 // Test traction cylinder
 TYPED_TEST( Material_test , testTractionCylinder )

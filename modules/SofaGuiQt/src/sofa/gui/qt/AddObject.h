@@ -19,31 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef ADDOBJECT_H
-#define ADDOBJECT_H
-
+#pragma once
 #include <sofa/gui/qt/config.h>
 
 #include <ui_DialogAddObject.h>
 #include <vector>
 
-namespace sofa
+namespace sofa::gui::qt
 {
-
-namespace gui
-{
-
-namespace qt
-{
-
-
 
 class AddObject : public QDialog, public Ui_DialogAddObject
 {
     Q_OBJECT
 public:
 
-    AddObject( std::vector<std::string> *list_object_, QWidget* parent, bool  modal= false, Qt::WindowFlags f= 0 );
+    AddObject( std::vector<std::string> *list_object_, QWidget* parent, bool  modal= false, Qt::WindowFlags f = Qt::WindowType::Widget );
 
 
     void setPath(const std::string path);
@@ -63,10 +53,4 @@ protected:
 
 };
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::gui::qt

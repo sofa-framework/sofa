@@ -20,14 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include<SofaDeformable/initDeformable.h>
-
 // some basic RAII stuff to automatically add a TestMessageHandler to every tests
 namespace {
     static struct raii {
       raii()
       {
-        sofa::component::initDeformable() ;
       }
     } singleton;
 }

@@ -2,6 +2,8 @@
 <Node 	name="sceneRoot" gravity="0 0 0" time="0" animate="0"  dt="0.02" >
   <RequiredPlugin pluginName="Flexible"/>
   <RequiredPlugin pluginName="Compliant"/>
+  <RequiredPlugin pluginName="SofaBoundaryCondition"/>
+  
   <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields" />
 
   <Node name="Patch" >

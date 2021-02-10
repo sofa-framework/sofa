@@ -22,8 +22,8 @@
 #ifndef SOFA_HELPER_VECTOR_DEVICE_H
 #define SOFA_HELPER_VECTOR_DEVICE_H
 
-#include "system/gl.h"
 #include <sofa/helper/vector.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 // maximum number of bytes we allow to increase the size when of a vector in a single step when we reserve on the host or device
 #define SOFA_VECTOR_HOST_STEP_SIZE 32768
@@ -53,17 +53,18 @@ namespace helper
 
 DEBUG_OUT_V(extern SOFA_HELPER_API int cptid;)
 
-template <class T, class MemoryManager >
+template <class T, class MemoryManager>
 class vector
 {
 public:
     typedef T      value_type;
-    typedef size_t size_type;
+    typedef size_t Size;
     typedef T&     reference;
     typedef const T& const_reference;
     typedef T*     iterator;
     typedef const T* const_iterator;
     typedef typename MemoryManager::device_pointer device_pointer;
+    typedef typename MemoryManager::buffer_id_type buffer_id_type;
 
     typedef MemoryManager memory_manager;
     template<class T2> struct rebind
@@ -72,22 +73,21 @@ public:
     };
 
 protected:
-    size_type     vectorSize;     ///< Current size of the vector
-    size_type     allocSize;      ///< Allocated size on host
-    mutable size_type      deviceVectorSize[MemoryManager::MAX_DEVICES];      ///< Initialized size on each device
-    mutable size_type      deviceAllocSize[MemoryManager::MAX_DEVICES];      ///< Allocated size on each device
+    Size     vectorSize;     ///< Current size of the vector
+    Size     allocSize;      ///< Allocated size on host
+    mutable Size      deviceVectorSize[MemoryManager::MAX_DEVICES];      ///< Initialized size on each device
+    mutable Size      deviceAllocSize[MemoryManager::MAX_DEVICES];      ///< Allocated size on each device
     mutable device_pointer devicePointer[MemoryManager::MAX_DEVICES];  ///< Pointer to the data on the GPU side
 #ifdef SOFA_VECTOR_DEVICE_CUSTOM_SIZE
-    mutable size_type      deviceReserveSize;      ///< Desired allocated size
+    mutable Size      deviceReserveSize;      ///< Desired allocated size
 #endif
-    mutable size_type      clearSize;  ///< when initializing missing device data, up to where entries should be set to zero ?
+    mutable Size      clearSize;  ///< when initializing missing device data, up to where entries should be set to zero ?
     T*            hostPointer;    ///< Pointer to the data on the CPU side
     mutable int   deviceIsValid;  ///< True if the data on the GPU is currently valid (up to the given deviceVectorSize of each device, i.e. additionnal space may need to be allocated and/or initialized)
     mutable bool  hostIsValid;    ///< True if the data on the CPU is currently valid
-    mutable bool  bufferIsRegistered;  ///< True if the OpenGL buffer is registered with CUDA
-#ifndef SOFA_NO_OPENGL
-    GLuint        bufferObject;   ///< Optionnal associated OpenGL buffer ID
-#endif
+    mutable bool  bufferIsRegistered;  ///< True if the buffer is registered with CUDA
+    buffer_id_type  bufferObject;   ///< Optionnal associated buffer ID
+
     enum { ALL_DEVICE_VALID = 0xFFFFFFFF };
 
     DEBUG_OUT_V(int id;)
@@ -97,9 +97,7 @@ public:
 
     vector()
         : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
-#ifndef SOFA_NO_OPENGL
-    , bufferObject(0)
-#endif // SOFA_NO_OPENGL
+        , bufferObject(0)
     {
         DEBUG_OUT_V(id = cptid);
         DEBUG_OUT_V(cptid++);
@@ -115,11 +113,9 @@ public:
 #endif
         clearSize = 0;
     }
-    vector ( size_type n )
+    vector ( Size n )
         : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
-#ifndef SOFA_NO_OPENGL
         , bufferObject(0)
-#endif // SOFA_NO_OPENGL
     {
         DEBUG_OUT_V(id = cptid);
         DEBUG_OUT_V(cptid++);
@@ -138,9 +134,7 @@ public:
     }
     vector ( const vector<T,MemoryManager >& v )
         : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( nullptr ), deviceIsValid ( ALL_DEVICE_VALID ), hostIsValid ( true ), bufferIsRegistered(false)
-#ifndef SOFA_NO_OPENGL
         , bufferObject(0)
-#endif // SOFA_NO_OPENGL
     {
         DEBUG_OUT_V(id = cptid);
         DEBUG_OUT_V(cptid++);
@@ -188,7 +182,7 @@ public:
         DEBUG_OUT_V(SPACEP << "operator=, id is " << v.id << "(" << v.hostIsValid << "," << (v.deviceIsValid&1) << ") " << std::endl);
         DEBUG_OUT_V(std::cout << v.id << " : " << "(" << v.hostIsValid << "," << (v.deviceIsValid&1) << ") " << ". operator= param " << id << std::endl);
 
-        size_type newSize = v.size();
+        Size newSize = v.size();
         clear();
 
         fastResize ( newSize );
@@ -200,13 +194,12 @@ public:
             clearSize = v.clearSize;
             if (v.deviceIsValid)
             {
-#ifndef SOFA_NO_OPENGL
                 if (MemoryManager::SUPPORT_GL_BUFFER)
                 {
                     if (bufferObject) mapBuffer();//COMM : necessaire????
                     if (v.bufferObject) v.mapBuffer();
                 }
-#endif // SOFA_NO_OPENGL
+
                 deviceIsValid = 0; /// we specify that we don't want to copy previous value of the current vector
                 for (int d=0; d<MemoryManager::numDevices(); d++)
                 {
@@ -241,7 +234,7 @@ public:
     ~vector()
     {
         if ( hostPointer!=nullptr ) MemoryManager::hostFree ( hostPointer );
-#ifndef SOFA_NO_OPENGL
+
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject )
         {
             unregisterBuffer();
@@ -249,7 +242,6 @@ public:
             devicePointer[MemoryManager::getBufferDevice()] = MemoryManager::null(); // already free
         }
         else
-#endif // SOFA_NO_OPENGL
         {
             for (int d=0; d<MemoryManager::numDevices(); d++)
             {
@@ -259,12 +251,12 @@ public:
         }
     }
 
-    size_type size() const
+    Size size() const
     {
         return vectorSize;
     }
 
-    size_type capacity() const
+    Size capacity() const
     {
         return allocSize;
     }
@@ -274,7 +266,7 @@ public:
         return vectorSize==0;
     }
 
-    void reserve (size_type s,size_type WARP_SIZE=MemoryManager::BSIZE)
+    void reserve (Size s,Size WARP_SIZE=MemoryManager::BSIZE)
     {
         s = ((s+WARP_SIZE-1 ) / WARP_SIZE) * WARP_SIZE;
 #ifdef SOFA_VECTOR_DEVICE_CUSTOM_SIZE
@@ -300,20 +292,18 @@ public:
         // always allocate multiples of WARP_SIZE values
         allocSize = ((allocSize+WARP_SIZE-1 ) / WARP_SIZE) * WARP_SIZE;
 
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject)
         {
             DEBUG_OUT_V(SPACEN << "BUFFEROBJ " << std::endl);
-            //COMM : if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)nullptr)<<"> : GL reserve("<<s<<")"<<std::endl;
+
             hostRead(); // make sure the host copy is valid
             unregisterBuffer();
-            //COMM fct opengl
-            glBindBuffer( GL_ARRAY_BUFFER, bufferObject);
-            glBufferData( GL_ARRAY_BUFFER, allocSize*sizeof ( T ), 0, GL_DYNAMIC_DRAW);
-            glBindBuffer( GL_ARRAY_BUFFER, 0);
+
+            MemoryManager::bufferAlloc(&bufferObject, allocSize * sizeof(T), false);
+
             if ( vectorSize > 0 ) deviceIsValid = 0;
         }
-#endif // SOFA_NO_OPENGL
+
         T* prevHostPointer = hostPointer;
         void* newHostPointer = nullptr;
         DEBUG_OUT_V(SPACEN<< "MemoryManager::hostAlloc " << allocSize << std::endl);
@@ -325,7 +315,7 @@ public:
     }
 
     /// resize the vector without calling constructors or destructors, and without synchronizing the device and host copy
-    void fastResize ( size_type s,size_type WARP_SIZE=MemoryManager::BSIZE)
+    void fastResize ( Size s,Size WARP_SIZE=MemoryManager::BSIZE)
     {
         if ( s == vectorSize ) return;
         DEBUG_OUT_V(SPACEP << "fastresize " << vectorSize << "->" << s << " (alloc=" << allocSize << ")" << std::endl);
@@ -344,7 +334,7 @@ public:
         DEBUG_OUT_V(SPACEM << "fastresize " << std::endl);
     }
     /// resize the vector discarding any old values, without calling constructors or destructors, and without synchronizing the device and host copy
-    void recreate( size_type s,size_type WARP_SIZE=MemoryManager::BSIZE)
+    void recreate( Size s,Size WARP_SIZE=MemoryManager::BSIZE)
     {
         clear();
         fastResize(s,WARP_SIZE);
@@ -394,7 +384,7 @@ public:
         deviceIsValid = 0;
     }
 
-    void resize ( size_type s,size_type WARP_SIZE=MemoryManager::BSIZE)
+    void resize ( Size s,Size WARP_SIZE=MemoryManager::BSIZE)
     {
         reserve(s, WARP_SIZE);
         if ( s == vectorSize ) return;
@@ -434,7 +424,7 @@ public:
                 DEBUG_OUT_V(SPACEN << "MemoryManager::memsetHost (new data) " << (s-vectorSize) << std::endl);
                 MemoryManager::memsetHost(hostPointer+vectorSize,0,(s-vectorSize)*sizeof(T));
                 // Call the constructor for the new elements
-                for ( size_type i = vectorSize; i < s; i++ ) ::new ( hostPointer+i ) T;
+                for ( Size i = vectorSize; i < s; i++ ) ::new ( hostPointer+i ) T;
 
                 if ( vectorSize == 0 )   // wait until the transfer is really necessary, as other modifications might follow
                 {
@@ -442,9 +432,7 @@ public:
                 }
                 else
                 {
-#ifndef SOFA_NO_OPENGL
                     if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject) mapBuffer();
-#endif // SOFA_NO_OPENGL
 
                     for (int d=0; d<MemoryManager::numDevices(); d++)
                     {
@@ -469,7 +457,7 @@ public:
             DEBUG_OUT_V(SPACEN << "SIMPLECOPY " << std::endl);
             copyToHost();
             // Call the destructor for the deleted elements
-            for ( size_type i = s; i < vectorSize; i++ )
+            for ( Size i = s; i < vectorSize; i++ )
             {
                 hostPointer[i].~T();
             }
@@ -493,8 +481,8 @@ public:
     {
         DEBUG_OUT_V(SPACEP << "swap " << std::endl);
 #define VSWAP(type, var) { type t = var; var = v.var; v.var = t; }
-        VSWAP ( size_type, vectorSize );
-        VSWAP ( size_type, allocSize );
+        VSWAP ( Size, vectorSize );
+        VSWAP ( Size, allocSize );
         VSWAP ( int, clearSize );
 #ifdef SOFA_VECTOR_DEVICE_CUSTOM_SIZE
         VSWAP ( int, deviceReserveSize );
@@ -506,9 +494,7 @@ public:
             VSWAP ( int    ,  deviceAllocSize[d] );
         }
         VSWAP ( T*       , hostPointer );
-#ifndef SOFA_NO_OPENGL
-        VSWAP ( GLuint   , bufferObject );
-#endif // SOFA_NO_OPENGL
+        VSWAP ( buffer_id_type, bufferObject );
         VSWAP ( int      , deviceIsValid );
         VSWAP ( bool     , hostIsValid );
         VSWAP ( bool     , bufferIsRegistered );
@@ -569,9 +555,8 @@ public:
         return hostPointer+i;
     }
 
-    /// Get the OpenGL Buffer Object ID for reading
-#ifndef SOFA_NO_OPENGL
-    GLuint bufferRead(bool create = false)
+    /// Get the Buffer Object ID for reading
+    buffer_id_type bufferRead(bool create = false)
     {
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
@@ -587,11 +572,9 @@ public:
         }
         return 0;
     }
-#endif
 
-    /// Get the OpenGL Buffer Object ID for writing
-#ifndef SOFA_NO_OPENGL
-    GLuint bufferWrite(bool create = false)
+    /// Get the Buffer Object ID for writing
+    buffer_id_type bufferWrite(bool create = false)
     {
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
@@ -609,11 +592,10 @@ public:
         }
         else return 0;
     }
-#endif
 
     void push_back ( const T& t )
     {
-        size_type i = size();
+        Size i = size();
         copyToHost();
         deviceIsValid = 0;
         fastResize ( i+1 );
@@ -625,13 +607,13 @@ public:
         if (!empty()) resize ( size()-1 );
     }
 
-    const T& operator[] ( size_type i ) const
+    const T& operator[] ( Size i ) const
     {
         checkIndex ( i );
         return *hostReadAt(i);
     }
 
-    T& operator[] ( size_type i )
+    T& operator[] ( Size i )
     {
         checkIndex ( i );
         return *hostWriteAt(i);
@@ -649,13 +631,13 @@ public:
         return hostWriteAt(0);
     }
 
-    const T& getCached ( size_type i ) const
+    const T& getCached ( Size i ) const
     {
         checkIndex ( i );
         return hostPointer[i];
     }
 
-    const T& getSingle ( size_type i ) const
+    const T& getSingle ( Size i ) const
     {
         copyToHostSingle(i);
         return hostPointer[i];
@@ -670,10 +652,10 @@ public:
     iterator erase(iterator position)
     {
         iterator p0 = begin();
-        size_type i = position - p0;
-        size_type n = size();
+        Size i = position - p0;
+        Size n = size();
         if (i >= n) return end();
-        for (size_type j=i+1; j<n; ++j)
+        for (Size j=i+1; j<n; ++j)
             *(p0+(j-1)) = *(p0+j);
         resize(n-1);
         return begin()+i;
@@ -681,12 +663,12 @@ public:
 
     iterator insert(iterator position, const T& x)
     {
-        size_type i = position - begin();
-        size_type n = size();
+        Size i = position - begin();
+        Size n = size();
         if (i > n) i = n;
         resize(n+1);
         iterator p0 = begin();
-        for (size_type j=n; j>i; --j)
+        for (Size j=n; j>i; --j)
             *(p0+j) = *(p0+(j-1));
         *(p0+i) = x;
         return p0+i;
@@ -759,9 +741,7 @@ protected:
         if ( hostIsValid ) return;
         DEBUG_OUT_V(SPACEP << "copyToHost " << std::endl);
 
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject) mapBuffer();
-#endif // SOFA_NO_OPENGL
 
         /// if host is not valid data are valid and allocated on a device
         for (int d=0; d<MemoryManager::numDevices(); d++)
@@ -798,9 +778,7 @@ protected:
     void copyToDevice(int d = 0) const
     {
         allocate(d);
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject) mapBuffer();
-#endif // SOFA_NO_OPENGL
         if (isDeviceValid(d)) return;
         DEBUG_OUT_V(SPACEP << "copyToDevice " << std::endl);
 
@@ -812,13 +790,11 @@ protected:
         DEBUG_OUT_V(SPACEM << "copyToDevice " << std::endl);
     }
 
-    void copyToHostSingle(size_type i) const
+    void copyToHostSingle(Size i) const
     {
         if ( hostIsValid ) return;
         DEBUG_OUT_V(SPACEP << "copyToHostSingle " << std::endl);
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER && bufferObject) mapBuffer();
-#endif // SOFA_NO_OPENGL
         for (int d=0; d<MemoryManager::numDevices(); d++)
         {
             if (isDeviceValid(d))
@@ -837,9 +813,9 @@ protected:
     }
 
 #ifdef NDEBUG
-    void checkIndex ( size_type ) const {}
+    void checkIndex ( Size ) const {}
 #else
-    void checkIndex ( size_type i ) const
+    void checkIndex ( Size i ) const
     {
         //assert ( i<this->size() );
         if (i>=this->size())
@@ -849,7 +825,6 @@ protected:
 
     void registerBuffer() const
     {
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
             if (allocSize > 0 && !bufferIsRegistered)
@@ -857,12 +832,10 @@ protected:
                 bufferIsRegistered = MemoryManager::bufferRegister(bufferObject);
             }
         }
-#endif // SOFA_NO_OPENGL
     }
 
     void mapBuffer() const
     {
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
             registerBuffer();
@@ -876,15 +849,13 @@ protected:
             }
             else
             {
-                std::cout << "CUDA: Unable to map buffer to opengl" << std::endl;
+                msg_error("vector (with gl buffer)") << " Unable to map buffer to opengl";
             }
         }
-#endif // SOFA_NO_OPENGL
     }
 
     void unmapBuffer() const
     {
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
             int dev = MemoryManager::getBufferDevice();
@@ -894,12 +865,10 @@ protected:
                 *((device_pointer*) &(devicePointer[dev])) = MemoryManager::null();
             }
         }
-#endif // SOFA_NO_OPENGL
     }
 
     void unregisterBuffer() const
     {
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
             unmapBuffer();
@@ -910,12 +879,10 @@ protected:
                 bufferIsRegistered = false;
             }
         }
-#endif // SOFA_NO_OPENGL
     }
 
     void createBuffer()
     {
-#ifndef SOFA_NO_OPENGL
         if (MemoryManager::SUPPORT_GL_BUFFER)
         {
             if (bufferObject) return;
@@ -939,7 +906,6 @@ protected:
                     MemoryManager::deviceFree(dev, prevDevicePointer);
             }
         }
-        #endif // SOFA_NO_OPENGL
     }
 };
 

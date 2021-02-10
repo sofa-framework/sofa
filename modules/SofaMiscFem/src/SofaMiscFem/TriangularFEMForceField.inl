@@ -49,7 +49,7 @@ using namespace sofa::core::topology;
 // --------------------------------------------------------------------------------------
 
 template< class DataTypes>
-void TriangularFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(index_type triangleIndex, TriangleInformation &, const core::topology::BaseMeshTopology::Triangle &t, const sofa::helper::vector<index_type> &, const sofa::helper::vector<double> &)
+void TriangularFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(Index triangleIndex, TriangleInformation &, const core::topology::BaseMeshTopology::Triangle &t, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -309,7 +309,7 @@ void TriangularFEMForceField<DataTypes>::reinit()
 
     for (Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
     {
-        triangleHandler->applyCreateFunction(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::helper::vector< index_type > )0, (const sofa::helper::vector< double >)0);
+        triangleHandler->applyCreateFunction(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::helper::vector< Index > )0, (const sofa::helper::vector< double >)0);
     }
 
     edgeInfo.endEdit();
@@ -354,7 +354,7 @@ SReal TriangularFEMForceField<DataTypes>::getPotentialEnergy(const core::Mechani
 // --- Get the rotation of node
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::getRotation(Transformation& R, index_type nodeIdx)
+void TriangularFEMForceField<DataTypes>::getRotation(Transformation& R, Index nodeIdx)
 {
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
     int numNeiTri=m_topology->getTrianglesAroundVertex(nodeIdx).size();
@@ -515,7 +515,7 @@ typename TriangularFEMForceField<DataTypes>::Index TriangularFEMForceField<DataT
     {
         std::size_t nbEdges = m_topology->getNbEdges();
 
-        for(std::size_t i=0; i<nbEdges; i++ )
+        for(Size i=0; i<nbEdges; i++ )
         {
             if (edgeInf[i].fracturable)
             {
@@ -526,7 +526,7 @@ typename TriangularFEMForceField<DataTypes>::Index TriangularFEMForceField<DataT
 
     edgeInfo.endEdit();
 
-    return sofa::defaulttype::InvalidID;
+    return sofa::InvalidID;
 }
 
 
@@ -1416,7 +1416,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     vparams->drawTool()->disableLighting();
 
     sofa::helper::types::RGBAColor color;
-    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::helper::types::RGBAColor> colorVector;
     std::vector<sofa::defaulttype::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();

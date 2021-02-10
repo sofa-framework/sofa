@@ -24,12 +24,14 @@
 #include <sofa/helper/ArgumentParser.h>
 
 #include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
+#include <SofaGui/initSofaGui.h>
 
-#include <SofaSimulationTree/init.h>
-#include <SofaSimulationTree/TreeSimulation.h>
+#include <sofa/simulation/Simulation.h>
+#include <SofaSimulationGraph/DAGNode.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
+#include <SofaSimulationGraph/init.h>
 
-#include <SofaCommon/initSofaCommon.h>
+
 #include <SofaBase/initSofaBase.h>
 
 #include <boost/program_options.hpp>
@@ -101,9 +103,8 @@ void fallingDrapExample(sofa::simulation::Node::SPtr root)
 
 int main(int argc, char** argv)
 {
-    sofa::simulation::tree::init();
+    sofa::simulation::graph::init();
     sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
 
     bool showHelp = false;
     unsigned int idExample = 0;
@@ -137,11 +138,11 @@ int main(int argc, char** argv)
     }
 
     // init GUI
-    sofa::gui::initMain();
+    sofa::gui::initSofaGui();
     sofa::gui::GUIManager::Init(argv[0]);
 
     // Create simulation tree
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
 
     // Create the graph root node with collision
@@ -178,7 +179,7 @@ int main(int argc, char** argv)
     // Run the main loop
     sofa::gui::GUIManager::MainLoop(root);
 
-    sofa::simulation::tree::cleanup();
+    sofa::simulation::graph::cleanup();
 
     return 0;
 }

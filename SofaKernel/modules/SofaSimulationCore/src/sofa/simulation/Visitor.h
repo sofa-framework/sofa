@@ -22,19 +22,17 @@
 #ifndef SOFA_SIMULATION_VISITOR_H
 #define SOFA_SIMULATION_VISITOR_H
 
+#include <string>
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/config.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/LocalStorage.h>
-
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/ExecParams.h>
-
-#include <sofa/helper/set.h>
-#include <iostream>
-
+#include <sofa/helper/system/thread/CTime.h>
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include <sofa/helper/system/thread/CTime.h>
 #endif
+
+namespace sofa::simulation { class Node; }
+namespace sofa::core { class ExecParams; }
+namespace sofa::core::behavior { class BaseMechanicalState; }
 
 namespace sofa
 {
@@ -105,8 +103,8 @@ public:
 #endif
 
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
-    template < class Visit, class VContext, class Container, class Object >
-    void for_each(Visit* visitor, VContext* ctx, const Container& list, void (Visit::*fn)(VContext*, Object*))
+    template < class Visit, class VContext, class Container, typename PointedType = typename Container::pointed_type >
+    void for_each(Visit* visitor, VContext* ctx, const Container& list, void (Visit::*fn)(VContext*, PointedType*))
     {
         for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
         {
@@ -123,8 +121,8 @@ public:
     }
 
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
-    template < class Visit, class VContext, class Container, class Object >
-    Visitor::Result for_each_r(Visit* visitor, VContext* ctx, const Container& list, Visitor::Result (Visit::*fn)(VContext*, Object*))
+    template < class Visit, class VContext, class Container, typename PointedType = typename Container::pointed_type>
+    Visitor::Result for_each_r(Visit* visitor, VContext* ctx, const Container& list, Visitor::Result (Visit::*fn)(VContext*, PointedType*))
     {
         Visitor::Result res = Visitor::RESULT_CONTINUE;
         for (typename Container::iterator it=list.begin(); it != list.end(); ++it)

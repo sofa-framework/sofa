@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaDenseSolver VERSION 1.0 LANGUAGES CXX)
+project(SofaDenseSolver LANGUAGES CXX)
 
 sofa_find_package(Newmat REQUIRED BOTH_SCOPES)
 sofa_find_package(SofaBase REQUIRED)
-sofa_find_package(SofaGeneral REQUIRED)
+sofa_find_package(SofaGeneralLinearSolver REQUIRED)
 
 set(SOFADENSESOLVER_SRC "src/${PROJECT_NAME}")
 
@@ -33,8 +33,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
-    PACKAGE_VERSION ${PROJECT_VERSION}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaDenseSolver"
+    RELOCATABLE "plugins"
 )

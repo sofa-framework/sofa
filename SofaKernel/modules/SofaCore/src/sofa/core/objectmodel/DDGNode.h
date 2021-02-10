@@ -21,13 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/stable_vector.h>
 #include <sofa/core/config.h>
-
-namespace sofa::core
-{
-    class ExecParams;
-}
+#include <sofa/core/fwd.h>
+#include <sofa/helper/stable_vector.h>
 
 namespace sofa::core::objectmodel
 {
@@ -73,6 +69,7 @@ public:
     /// Update this value
     virtual void update() = 0;
 
+    SOFA_BEGIN_DEPRECATION_AS_ERROR
     /// Returns true if the DDGNode needs to be updated
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     bool isDirty(const core::ExecParams*) const { return isDirty(); }
@@ -102,6 +99,7 @@ public:
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     void updateIfDirty(const core::ExecParams*) const { updateIfDirty(); }
     void updateIfDirty() const;
+    SOFA_END_DEPRECATION_AS_ERROR
 
 protected:
     DDGLinkContainer inputs;
@@ -112,10 +110,12 @@ protected:
     virtual void doAddOutput(DDGNode* n);
     virtual void doDelOutput(DDGNode* n);
 
+    SOFA_BEGIN_DEPRECATION_AS_ERROR
     /// the dirtyOutputs flags of all the inputs will be set to false
     [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
     void cleanDirtyOutputsOfInputs(const core::ExecParams*) { cleanDirtyOutputsOfInputs(); }
     void cleanDirtyOutputsOfInputs();
+    SOFA_END_DEPRECATION_AS_ERROR
 
 private:
 

@@ -3,7 +3,7 @@ project(Sofa) # Cannot use VERSION with patch like "00"
 
 # Manually define VERSION
 set(Sofa_VERSION_MAJOR 20)
-set(Sofa_VERSION_MINOR 06)
+set(Sofa_VERSION_MINOR 12)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
@@ -26,6 +26,19 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Option for packaging
 option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
+
+# Option to accelerate the compilation
+# see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html
+# and https://cmake.org/cmake/help/v3.16/prop_tgt/DISABLE_PRECOMPILE_HEADERS.html
+cmake_dependent_option(SOFA_BUILD_WITH_PCH_ENABLED 
+    "Compile SOFA using precompiled header (to accelerate the build process)" OFF
+    "CMAKE_VERSION VERSION_GREATER_EQUAL 3.16" OFF)
+if(SOFA_BUILD_WITH_PCH_ENABLED)
+    message("-- Precompiled headers: enabled (SOFA_BUILD_WITH_PCH_ENABLED is ON).")
+else()
+    message("-- Precompiled headers: disabled (SOFA_BUILD_WITH_PCH_ENABLED is OFF or CMake < 3.16).")
+    set(DISABLE_PRECOMPILE_HEADERS ON)
+endif()
 
 ## Change default install prefix
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -93,7 +106,6 @@ if(UNIX)
 
     # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
     set(CMAKE_INSTALL_RPATH
-        "../lib"
         "$ORIGIN/../lib"
         "$$ORIGIN/../lib"
         )
@@ -130,9 +142,6 @@ endif()
 
 ### Windows config
 if(MSVC)
-    #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
-    add_definitions(-DBOOST_ALL_DYN_LINK)
-
     # WinDepPack
     set(SOFA_DEPENDENCY_PACK_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH "Directory containing Windows Dependency Pack")
     if(NOT EXISTS ${SOFA_DEPENDENCY_PACK_DIR})
@@ -235,16 +244,13 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     # Depends on SofaSimulation
     add_subdirectory(tools/SofaGTestMain)
 endif()
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 
-# Temporary compatibility while modularizing SofaGeneral
-sofa_add_module(modules/SofaGeneralVisual SofaGeneralVisual ON)
-add_subdirectory(SofaGeneral)
+add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that
 ## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
+add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules)
 add_subdirectory(modules)
 
 # This is all the applications GUI stuff. As there is a dependency to this one
@@ -261,7 +267,7 @@ endif()
 ## Collections
 ## A collection is a "meta module" and containing several modules (usable at find level [find_package] and include/link level [add_library])
 # SofaAdvanced is legacy and deprecated since 20.06
-set(SOFA_LIST_OF_DEPRECATED_COLLECTIONS SofaAdvanced SofaMisc)
+set(SOFA_LIST_OF_DEPRECATED_COLLECTIONS ${SOFA_KERNEL_SOURCE_DIR}/SofaCommon SofaGeneral SofaAdvanced SofaMisc)
 option(SOFA_BUILD_DEPRECATED_COLLECTIONS "Build legacy collections (${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})." ON)
 if(SOFA_BUILD_DEPRECATED_COLLECTIONS)
     foreach(deprecated_collection ${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})
@@ -303,7 +309,7 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
-if(SOFA_BUILD_TESTS AND PLUGIN_SOFAPYTHON)
+if(SOFA_BUILD_TESTS AND PLUGIN_SOFAPYTHON AND SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
     # SofaPython_test is a special case, because it depends on
     # SofaTest, which may depend on SofaPython...
     add_subdirectory(applications/plugins/SofaPython/SofaPython_test)

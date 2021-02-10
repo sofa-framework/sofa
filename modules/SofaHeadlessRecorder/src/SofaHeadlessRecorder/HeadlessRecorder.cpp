@@ -26,6 +26,9 @@ using sofa::helper::Utils;
 #include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory;
 
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
+
 #include <boost/program_options.hpp>
 #include <thread>
 #include <chrono>

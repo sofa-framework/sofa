@@ -13,6 +13,8 @@ using sofa::core::objectmodel::BaseObject ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
+
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
@@ -22,7 +24,7 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
 
-#include <SofaBaseMechanics/initBaseMechanics.h>
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
@@ -43,7 +45,7 @@ class TestClipPlane : public BaseTest {
 public:
     void SetUp() override
     {
-        sofa::component::initBaseMechanics();
+        sofa::component::initSofaBaseMechanics();
         sofa::simulation::setSimulation(new DAGSimulation());
     }
 

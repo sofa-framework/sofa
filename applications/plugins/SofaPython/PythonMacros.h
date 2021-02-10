@@ -32,7 +32,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-
+#include <sofa/simulation/Node.h>
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/cast.h>

@@ -48,15 +48,15 @@ struct MechanicalObject_test :  public BaseTest
 
 using namespace sofa::defaulttype;
 typedef ::testing::Types<Vec1Types, Vec2Types, Vec3Types> DataTypesList;
-TYPED_TEST_CASE(MechanicalObject_test, DataTypesList);
+TYPED_TEST_SUITE(MechanicalObject_test, DataTypesList);
 
 namespace TestHelpers
 {
 
-template<typename T, std::size_t INDEX>
+template<typename T, Size INDEX>
 struct CheckPositionImpl;
 
-template<std::size_t N, typename REAL>
+template<Size N, typename REAL>
 struct CheckPositionImpl<Vec<N, REAL>, 1>
 {
     void operator () (const Vec<N, REAL>& vec)
@@ -65,7 +65,7 @@ struct CheckPositionImpl<Vec<N, REAL>, 1>
     }
 };
 
-template<std::size_t N, typename REAL>
+template<Size N, typename REAL>
 struct CheckPositionImpl<Vec<N, REAL>, 2>
 {
     void operator () (const Vec<N, REAL>& vec)
@@ -75,7 +75,7 @@ struct CheckPositionImpl<Vec<N, REAL>, 2>
     }
 };
 
-template<std::size_t N, typename REAL>
+template<Size N, typename REAL>
 struct CheckPositionImpl<Vec<N, REAL>, 3>
 {
     void operator () (const Vec<N, REAL>& vec)

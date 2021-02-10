@@ -4,6 +4,9 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaMiscFem'/>
     <RequiredPlugin name='SofaMiscTopology'/>
+    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name='SofaGeneralSimpleFem'/>
+    <RequiredPlugin name='SofaGeneralDeformable'/>
     
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline verbose="0" />
@@ -17,7 +20,6 @@
         <MechanicalObject name="dofs" src="@loader" template="Vec3" />
         <TriangleSetTopologyContainer name="Triangle_topo" src="@loader"/>
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetTopologyAlgorithms template="Vec3" name="TopoAlgo" />
         <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
         <DiagonalMass template="Vec3" name="mass" massDensity="1.0" />
         <FixedConstraint template="Vec3" name="fix" indices="0 1" />

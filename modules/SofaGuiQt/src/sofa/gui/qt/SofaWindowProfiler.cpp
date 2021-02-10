@@ -28,13 +28,7 @@
 #include <QGridLayout>
 #include <QDebug>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
+namespace sofa::gui::qt
 {
 using namespace sofa::helper;
 using namespace QtCharts;
@@ -587,8 +581,4 @@ void SofaWindowProfiler::onStepSelected(QTreeWidgetItem *item, int /*column*/)
 }
 
 
-} // namespace qt
-
-} // namespace gui
-
-} // namespace sofa
+} //namespace sofa::gui::qt

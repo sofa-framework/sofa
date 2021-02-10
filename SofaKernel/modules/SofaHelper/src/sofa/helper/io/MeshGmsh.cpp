@@ -93,7 +93,7 @@ void MeshGmsh::init (std::string filename)
 }
 
 
-void MeshGmsh::addInGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group, int tag, std::size_t /*eid*/)
+void MeshGmsh::addInGroup(helper::vector< sofa::helper::types::PrimitiveGroup>& group, int tag, std::size_t /*eid*/)
 {
     for (std::size_t i = 0; i<group.size(); i++) {
         if (tag == group[i].p0) {
@@ -106,10 +106,10 @@ void MeshGmsh::addInGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& g
     std::string s;
     ss << tag;
 
-    group.push_back(sofa::core::loader::PrimitiveGroup(tag, 1, s, s, -1));
+    group.push_back(sofa::helper::types::PrimitiveGroup(tag, 1, s, s, -1));
 }
 
-void MeshGmsh::normalizeGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group) 
+void MeshGmsh::normalizeGroup(helper::vector< sofa::helper::types::PrimitiveGroup>& group)
 {
     int start = 0;
     for (unsigned i = 0; i<group.size(); i++) {
@@ -278,9 +278,9 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
             {
                 HighOrderEdgePosition hoep;
                 for (j = 0; j<3; ++j) {
-                    size_t v0 = std::min(nodes[edgesInQuadraticTriangle[j][0]],
+                    auto v0 = std::min(nodes[edgesInQuadraticTriangle[j][0]],
                         nodes[edgesInQuadraticTriangle[j][1]]);
-                    size_t v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
+                    auto v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
                         nodes[edgesInQuadraticTriangle[j][1]]);
                     Topology::Edge e(v0, v1);
                     if (edgeSet.find(e) == edgeSet.end()) {
@@ -302,9 +302,9 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
             {
                 HighOrderEdgePosition hoep;
                 for (j = 0; j<6; ++j) {
-                    size_t v0 = std::min(nodes[edgesInQuadraticTetrahedron[j][0]],
+                    auto v0 = std::min(nodes[edgesInQuadraticTetrahedron[j][0]],
                         nodes[edgesInQuadraticTetrahedron[j][1]]);
-                    size_t v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
+                    auto v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
                         nodes[edgesInQuadraticTetrahedron[j][1]]);
                     Topology::Edge e(v0, v1);
                     if (edgeSet.find(e) == edgeSet.end()) {

@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/testing/NumericTest.h>
 using sofa::helper::testing::NumericTest;
-
+#include <sofa/simulation/Node.h>
 #include <SofaSimulationGraph/SimpleApi.h>
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
@@ -166,7 +166,6 @@ void BilateralInteractionConstraint_test<Rigid3fTypes>::checkRigid3fFixForBackwa
                                                       scene.str().size()) ;
     root->init(ExecParams::defaultInstance()) ;
 
-    return ;
 }
 
 
@@ -239,7 +238,7 @@ typedef Types<Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(BilateralInteractionConstraint_test, DataTypes);
+TYPED_TEST_SUITE(BilateralInteractionConstraint_test, DataTypes);
 
 //TODO(dmarchal): Needs a serious refactor !!!
 TYPED_TEST( BilateralInteractionConstraint_test , checkVec3ConstrainedPositions )

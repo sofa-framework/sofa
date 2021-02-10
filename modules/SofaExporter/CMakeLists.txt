@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaExporter VERSION 1.0 LANGUAGES CXX)
+project(SofaExporter LANGUAGES CXX)
 
-find_package(SofaSimulation REQUIRED)
-find_package(SofaBase REQUIRED) # SofaBaseVisual
+find_package(SofaBaseVisual REQUIRED)
 sofa_find_package(ZLIB REQUIRED)
 sofa_find_package(SofaPython QUIET)
 
@@ -61,7 +60,7 @@ else()
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree SofaBaseVisual)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual)
 target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     sofa_install_libraries(TARGETS ZLIB::ZLIB)
@@ -72,7 +71,7 @@ endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME SofaExporter
-    PACKAGE_VERSION ${PROJECT_VERSION}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaExporter"

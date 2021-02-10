@@ -22,15 +22,8 @@
 #include "MaterialDataWidget.h"
 #include <limits>
 
-namespace sofa
+namespace sofa::gui::qt::materialdatawidget_h
 {
-namespace gui
-{
-namespace qt
-{
-namespace materialdatawidget_h
-{
-
 helper::Creator<DataWidgetFactory,MaterialDataWidget> DWClass_MeshMaterial("default",true);
 helper::Creator<DataWidgetFactory,VectorMaterialDataWidget> DWClass_MeshVectorMaterial("default",true);
 
@@ -126,7 +119,7 @@ void MaterialDataWidget::setDataReadOnly(bool readOnly)
 }
 void MaterialDataWidget::readFromData()
 {
-    const Material& material = getData()->virtualGetValue();
+    const Material& material = getData()->getValue();
     _nameEdit->setText( QString( material.name.c_str() ) );
     _ambientCheckBox->setChecked( material.useAmbient );
     _emissiveCheckBox->setChecked( material.useEmissive );
@@ -151,7 +144,7 @@ void MaterialDataWidget::readFromData()
 }
 void MaterialDataWidget::writeToData()
 {
-    Material* material = getData()->virtualBeginEdit();
+    Material* material = getData()->beginEdit();
 
     material->name      = _nameEdit->text().toStdString();
     material->ambient   = _ambientPicker->getColor();
@@ -166,14 +159,14 @@ void MaterialDataWidget::writeToData()
     material->useSpecular = _specularCheckBox->isChecked();
 
 
-    getData()->virtualEndEdit();
+    getData()->endEdit();
 
 }
 
 
 bool VectorMaterialDataWidget::createWidgets()
 {
-    if( getData()->virtualGetValue().empty() )
+    if( getData()->getValue().empty() )
     {
         return false;
     }
@@ -201,7 +194,7 @@ void VectorMaterialDataWidget::setDataReadOnly(bool readOnly)
 void VectorMaterialDataWidget::readFromData()
 {
     VectorMaterial::const_iterator iter;
-    const VectorMaterial& vecMaterial = getData()->virtualGetValue();
+    const VectorMaterial& vecMaterial = getData()->getValue();
     if( vecMaterial.empty() )
     {
         return;
@@ -224,7 +217,7 @@ void VectorMaterialDataWidget::changeMaterial( int index )
 {
     //Save previous Material
     _materialDataWidget->updateDataValue();
-    Material mat(_currentMaterial.virtualGetValue() );
+    Material mat(_currentMaterial.getValue() );
     _vectorEditedMaterial[_currentMaterialPos] = mat;
 
     //Update current Material
@@ -239,17 +232,14 @@ void VectorMaterialDataWidget::changeMaterial( int index )
 void VectorMaterialDataWidget::writeToData()
 {
     _materialDataWidget->updateDataValue();
-    Material mat(_currentMaterial.virtualGetValue() );
+    Material mat(_currentMaterial.getValue() );
     _vectorEditedMaterial[_currentMaterialPos] = mat;
 
-    VectorMaterial* vecMaterial = getData()->virtualBeginEdit();
+    VectorMaterial* vecMaterial = getData()->beginEdit();
     assert(vecMaterial->size() == _vectorEditedMaterial.size() );
     std::copy(_vectorEditedMaterial.begin(), _vectorEditedMaterial.end(), vecMaterial->begin() );
 
-    getData()->virtualEndEdit();
+    getData()->endEdit();
 }
 
-} /// namespace materialdatawidget_h
-} /// namespace qt
-} /// namespace gui
-} /// namespace sofa
+} // namespace sofa::gui::qt::materialdatawidget_h

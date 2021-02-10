@@ -19,9 +19,4 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_VEC3TYPES_H
-#define SOFA_DEFAULTTYPE_VEC3TYPES_H
-
-#include "VecTypes.h"
-
-#endif
+#error This file will be removed after sofa 21.06 release. Update your code by replacing #include<sofa/defaulttype/Vec3Types.h> with #include<sofa/defaulttype/VecTypes.h>

@@ -24,8 +24,11 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/TopologyTypes.h>
+
+namespace sofa::defaulttype { class BaseMatrix; }
+namespace sofa::core::behavior { class MultiMatrixAccessor; }
 
 namespace sofa
 {
@@ -109,9 +112,9 @@ public:
     virtual void exportGnuplot(const MechanicalParams* mparams, SReal time)=0;
 
     /// Get the mass relative to the DOF at \a index.
-    virtual SReal getElementMass(sofa::defaulttype::index_type index) const =0;
+    virtual SReal getElementMass(sofa::Index index) const =0;
     /// Get the matrix relative to the DOF at \a index.
-    virtual void getElementMass(sofa::defaulttype::index_type index, defaulttype::BaseMatrix *m) const = 0;
+    virtual void getElementMass(sofa::Index index, defaulttype::BaseMatrix *m) const = 0;
 
     virtual bool isDiagonal() { return false; }
 

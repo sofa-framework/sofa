@@ -34,6 +34,8 @@ using sofa::core::objectmodel::BaseObject ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
+
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
@@ -46,7 +48,7 @@ using sofa::component::visualmodel::OglLabel ;
 #include <sofa/helper/types/RGBAColor.h>
 using sofa::helper::types::RGBAColor ;
 
-#include <SofaBaseMechanics/initBaseMechanics.h>
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
@@ -55,7 +57,7 @@ class OglLabelTest : public BaseTest
 public:
     void SetUp()
     {
-        sofa::component::initBaseMechanics();
+        sofa::component::initSofaBaseMechanics();
         sofa::simulation::setSimulation(new DAGSimulation());
     }
 

@@ -33,7 +33,6 @@
 
 #include <sofa/helper/config.h>
 #include <sofa/helper/MemoryManager.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/helper/logging/Messaging.h>
 
 #if !defined(NDEBUG) && !defined(SOFA_NO_VECTOR_ACCESS_FAILURE)
@@ -72,8 +71,8 @@ class SOFA_HELPER_API vector<T, CPUMemoryManager<T> > : public std::vector<T, st
 public:
     typedef CPUMemoryManager<T> memory_manager;
     typedef std::allocator<T> Alloc;
-    /// size_type
-    typedef typename std::vector<T,Alloc>::size_type size_type;
+    /// Size
+    typedef typename std::vector<T,Alloc>::size_type Size;
     /// reference to a value (read-write)
     typedef typename std::vector<T,Alloc>::reference reference;
     /// const reference to a value (read only)
@@ -87,13 +86,13 @@ public:
     /// Basic constructor
     vector() : std::vector<T,Alloc>() {}
     /// Constructor
-    vector(size_type n, const T& value): std::vector<T,Alloc>(n,value) {}
+    vector(Size n, const T& value): std::vector<T,Alloc>(n,value) {}
     /// Constructor
     vector(int n, const T& value): std::vector<T,Alloc>(n,value) {}
     /// Constructor
     vector(long n, const T& value): std::vector<T,Alloc>(n,value) {}
     /// Constructor
-    explicit vector(size_type n): std::vector<T,Alloc>(n) {}
+    explicit vector(Size n): std::vector<T,Alloc>(n) {}
     /// Constructor
     vector(const std::vector<T, Alloc>& x): std::vector<T,Alloc>(x) {}
     /// Brace initalizer constructor
@@ -127,7 +126,7 @@ public:
 #ifdef SOFA_VECTOR_ACCESS_FAILURE
 
     /// Read/write random access
-    reference operator[](size_type n)
+    reference operator[](Size n)
     {
         if (n>=this->size())
             vector_access_failure(this, this->size(), n, typeid(T));
@@ -136,7 +135,7 @@ public:
     }
 
     /// Read-only random access
-    const_reference operator[](size_type n) const
+    const_reference operator[](Size n) const
     {
         if (n>=this->size())
             vector_access_failure(this, this->size(), n, typeid(T));
@@ -151,7 +150,7 @@ public:
     {
         if( this->size()>0 )
         {
-            for( size_type i=0; i<this->size()-1; ++i )
+            for( Size i=0; i<this->size()-1; ++i )
                 os<<(*this)[i]<<" ";
             os<<(*this)[this->size()-1];
         }
@@ -190,7 +189,7 @@ public:
 
     /// this function is usefull for vector_device because it resize the vector without device operation (if device is not valid).
     /// Therefore the function is used in asynchronous code to safly resize a vector which is either cuda of helper::vector
-    void fastResize(size_type n) {
+    void fastResize(Size n) {
         this->resize(n);
     }
 
@@ -353,7 +352,7 @@ std::ostream& vector<unsigned char>::write(std::ostream& os) const
 {
     if( this->size()>0 )
     {
-        for( size_type i=0; i<this->size()-1; ++i )
+        for( Size i=0; i<this->size()-1; ++i )
             os<<(int)(*this)[i]<<" ";
         os<<(int)(*this)[this->size()-1];
     }

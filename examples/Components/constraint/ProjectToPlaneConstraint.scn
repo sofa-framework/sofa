@@ -13,7 +13,6 @@
                 <Node 	name="Boundary Edges"  >
                         <TriangleSetTopologyContainer name="Container" />
                         <TriangleSetTopologyModifier name="Modifier" />
-                        <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  drawTriangles="1" />
                         <Tetra2TriangleTopologicalMapping name="Mapping"  input="@../grid"  output="@Container" />
                         <BoxROI box="0.95 -0.05 -0.05    1.05 1.05 1.05" drawBoxes="1" position="@../mObject1.rest_position" drawTriangles="1" triangles="@Container.edges" name="pressureBox" />

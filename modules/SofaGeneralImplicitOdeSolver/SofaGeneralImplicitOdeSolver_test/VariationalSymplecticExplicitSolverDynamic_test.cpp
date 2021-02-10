@@ -202,7 +202,7 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(VariationalSymplecticExplicitSolverDynamic_test, DataTypes);
+TYPED_TEST_SUITE(VariationalSymplecticExplicitSolverDynamic_test, DataTypes);
 
 // Test case: h=0.001
 TYPED_TEST( VariationalSymplecticExplicitSolverDynamic_test , variationalSymplecticExplicitSolverDynamicTest_small_dt_without_damping)

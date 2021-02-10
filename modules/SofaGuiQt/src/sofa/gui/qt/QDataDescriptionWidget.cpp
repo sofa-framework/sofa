@@ -30,12 +30,7 @@
 
 
 
-namespace sofa
-{
-
-namespace gui
-{
-namespace qt
+namespace sofa::gui::qt
 {
 void QDataDescriptionWidget::addRow(QGridLayout* grid, const std::string& title,
                                     const std::string& value, unsigned int row,
@@ -74,7 +69,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
         addRow(boxLayout, "Name", object->getName(), 0);
         addRow(boxLayout, "Class", object->getClassName(), 1);
 
-        std::string namespacename = core::objectmodel::BaseClass::decodeNamespaceName(typeid(*object));
+        std::string namespacename = sofa::helper::NameDecoder::decodeNamespaceName(typeid(*object));
 
         int nextRow = 2;
         if (!namespacename.empty())
@@ -169,7 +164,4 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
 
 
 
-} // qt
-} //gui
-} //sofa
-
+} //namespace sofa::gui::qt

@@ -6,6 +6,7 @@
 
 #include "../shapeFunction/BaseShapeFunction.h"
 
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/helper/gl/template.h>
@@ -427,7 +428,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(c
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass(sofa::defaulttype::index_type index, defaulttype::BaseMatrix *m ) const
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass(sofa::Index index, defaulttype::BaseMatrix *m ) const
 {
     // warning the mass needs to be diagonal-lumped per dof
 

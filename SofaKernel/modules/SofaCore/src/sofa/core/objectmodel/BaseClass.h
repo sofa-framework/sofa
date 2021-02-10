@@ -96,11 +96,12 @@ public:
         return !((*this)==c);
     }
 
-    virtual void* dynamicCast(Base* obj) const = 0;
+    virtual Base* dynamicCast(Base* obj) const = 0;
     virtual bool isInstance(Base* obj) const = 0;
 
     ///////////////////////////////// DEPRECATED //////////////////////////////////////////////////
     /// Helper method to decode the type name
+    //SOFA_BEGIN_DEPRECATION_AS_ERROR
     [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
                  "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
     static std::string decodeFullName(const std::type_info& t);
@@ -133,6 +134,8 @@ public:
     {
         return sofa::helper::NameDecoder::decodeTypeName(typeid(T));
     }
+    //SOFA_END_DEPRECATION_AS_ERROR
+
 };
 
 class SOFA_CORE_API DeprecatedBaseClass : public BaseClass
@@ -140,7 +143,7 @@ class SOFA_CORE_API DeprecatedBaseClass : public BaseClass
 public:
     DeprecatedBaseClass();
 
-    void* dynamicCast(Base*) const override { return nullptr; }
+    Base* dynamicCast(Base*) const override { return nullptr; }
     bool isInstance(Base*) const override { return false; }
 
     static BaseClass* GetSingleton();
@@ -385,11 +388,9 @@ protected:
     }
     ~TClass() override {}
 
-    void* dynamicCast(Base* obj) const override
+    Base* dynamicCast(Base* obj) const override
     {
-        T* ptr = nullptr;
-        T::dynamicCast(ptr, obj);
-        return ptr;
+        return dynamic_cast<T*>(obj);
     }
 
     bool isInstance(Base* obj) const override

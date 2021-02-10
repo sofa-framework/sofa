@@ -16,7 +16,6 @@
 	<TetrahedronSetTopologyContainer name="Container"  src="@loader"/>
     <TriangleSetTopologyModifier name="Modifier" />
 	<TetrahedronSetTopologyModifier name="Modifier"/>
-	<TetrahedronSetTopologyAlgorithms  name="TopoAlgo"/>
 	<TetrahedronSetGeometryAlgorithms  name="GeomAlgo"/>
     <DiagonalMass  massDensity="0.15" />
     

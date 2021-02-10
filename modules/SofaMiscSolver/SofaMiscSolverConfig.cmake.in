@@ -1,13 +1,10 @@
 # CMake package configuration file for the SofaMiscSolver module
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
+find_package(SofaFramework QUIET REQUIRED)
 
-find_package(SofaSimulation REQUIRED)
-
-### Is the target existing ?
-if(NOT TARGET SofaMiscSolver)
-    ### If not we are building out of tree.
-    include("${CMAKE_CURRENT_LIST_DIR}/SofaMiscSolver.cmake")
+if(NOT TARGET @PROJECT_NAME@)
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 endif()
-
-check_required_components(SofaMiscSolver)
+check_required_components(@PROJECT_NAME@)

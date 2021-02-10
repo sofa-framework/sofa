@@ -27,17 +27,13 @@
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/BaseMapping.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/BaseInteractionConstraint.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
-
-//TO REMOVE ONCE THE CONVERGENCE IS DONE
-#include <sofa/core/behavior/BaseLMConstraint.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/map.h>
@@ -267,16 +263,10 @@ public:
     }
 
     /// Process all the InteractionConstraint
-    virtual Result fwdInteractionProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseInteractionProjectiveConstraintSet* c)
-    {
-        return fwdProjectiveConstraintSet(ctx->node, c);
-    }
+    virtual Result fwdInteractionProjectiveConstraintSet(VisitorContext* ctx, core::behavior::BaseInteractionProjectiveConstraintSet* c);
 
     /// Process all the InteractionConstraint
-    virtual Result fwdInteractionConstraint(VisitorContext* ctx, core::behavior::BaseInteractionConstraint* c)
-    {
-        return fwdConstraintSet(ctx->node, c);
-    }
+    virtual Result fwdInteractionConstraint(VisitorContext* ctx, core::behavior::BaseInteractionConstraint* c);
 
     ///@}
 
@@ -1722,60 +1712,6 @@ private:
 };
 
 
-class SOFA_SIMULATION_CORE_API MechanicalWriteLMConstraint : public BaseMechanicalVisitor
-{
-public:
-    MechanicalWriteLMConstraint(const sofa::core::ExecParams * params)
-        : BaseMechanicalVisitor(params)
-        , offset(0)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-
-    Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c) override;
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
-    {
-        return false; // !map->isMechanical();
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalWriteLMConstraint"; }
-    virtual std::string getInfos() const override ;
-
-    virtual void clear() {datasC.clear(); offset=0;}
-    virtual const std::vector< core::behavior::BaseLMConstraint *> &getConstraints() const {return datasC;}
-    virtual unsigned int numConstraint() {return static_cast<unsigned int>(datasC.size());}
-
-    virtual void setMultiVecId(core::MultiVecId i) {id=i;}
-    core::MultiVecId getMultiVecId() const { return id; }
-
-
-    virtual void setOrder(core::ConstraintParams::ConstOrder i) {order=i;}
-    core::ConstraintParams::ConstOrder getOrder() const { return order; }
-
-    bool isThreadSafe() const override
-    {
-        return false;
-    }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
-
-protected:
-    unsigned int offset;
-    sofa::core::ConstraintParams::ConstOrder order;
-    core::MultiVecId id;
-    helper::vector< core::behavior::BaseLMConstraint *> datasC;
-
-};
-
-
 /// Call each BaseConstraintSet to build the Jacobian matrices and accumulate it through the mappings up to the independant DOFs
 /// @deprecated use MechanicalBuildConstraintMatrix followed by MechanicalAccumulateMatrixDeriv
 class SOFA_SIMULATION_CORE_API MechanicalAccumulateConstraint : public BaseMechanicalVisitor
@@ -2179,7 +2115,7 @@ public:
 #endif
 
     /// get the closest pickable particle
-    void getClosestParticle( core::behavior::BaseMechanicalState*& mstate, sofa::defaulttype::index_type& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
+    void getClosestParticle( core::behavior::BaseMechanicalState*& mstate, sofa::Index& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
 
 
 };

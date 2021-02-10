@@ -26,6 +26,10 @@
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <SofaBaseUtils/InfoComponent.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/simulation/Node.h>
+
 using sofa::component::InfoComponent ;
 
 #include "resources/icons/iconmultinode.xpm"
@@ -40,13 +44,9 @@ using sofa::component::InfoComponent ;
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message ;
 
-namespace sofa
-{
-using namespace core::objectmodel;
-namespace gui
-{
+using namespace sofa::core::objectmodel;
 
-namespace qt
+namespace sofa::gui::qt
 {
 //***********************************************************************************************************
 
@@ -699,9 +699,4 @@ void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *paren
     }
 }
 
-
-
-
-} //qt
-} //gui
-} //sofa
+} //namespace sofa::gui::qt

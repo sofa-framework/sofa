@@ -67,7 +67,7 @@ public:
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
     typedef core::topology::BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
     typedef core::topology::BaseMeshTopology::Tetra Tetrahedron;
-    typedef sofa::defaulttype::index_type Index;
+    typedef sofa::Index Index;
     
 
 protected:    
@@ -111,7 +111,7 @@ protected:
     public:
         typedef typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
 
-        using index_type = sofa::defaulttype::index_type;
+        using Index = sofa::Index;
 
         FTCFTetrahedronHandler(FastTetrahedralCorotationalForceField<DataTypes>* ff,
                 topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> >* data )
@@ -121,9 +121,9 @@ protected:
 
         }
 
-        void applyCreateFunction(index_type, TetrahedronRestInformation &t,
+        void applyCreateFunction(Index, TetrahedronRestInformation &t,
                                  const core::topology::BaseMeshTopology::Tetrahedron&,
-                                 const sofa::helper::vector<index_type> &,
+                                 const sofa::helper::vector<Index> &,
                                  const sofa::helper::vector<double> &);
 
     protected:
@@ -152,10 +152,10 @@ protected:
     Real mu;    /// second Lame coefficient
 
     Data<bool> f_drawing; ///<  draw the forcefield if true
-    Data<defaulttype::Vec4f> drawColor1; ///<  draw color for faces 1
-    Data<defaulttype::Vec4f> drawColor2; ///<  draw color for faces 2
-    Data<defaulttype::Vec4f> drawColor3; ///<  draw color for faces 3
-    Data<defaulttype::Vec4f> drawColor4; ///<  draw color for faces 4
+    Data<sofa::helper::types::RGBAColor> drawColor1; ///<  draw color for faces 1
+    Data<sofa::helper::types::RGBAColor> drawColor2; ///<  draw color for faces 2
+    Data<sofa::helper::types::RGBAColor> drawColor3; ///<  draw color for faces 3
+    Data<sofa::helper::types::RGBAColor> drawColor4; ///<  draw color for faces 4
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<FastTetrahedralCorotationalForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

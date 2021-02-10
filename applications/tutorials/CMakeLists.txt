@@ -5,7 +5,6 @@ set(SOFATUTORIALS_TARGETS
     # anatomyModelling
     chainHybrid
     #compositeObject
-    #houseOfCards
     #mixedPendulum
     #oneParticle
     # Needs SofaTypedefs

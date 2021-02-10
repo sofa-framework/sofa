@@ -23,7 +23,6 @@
 
 #include <SofaMiscForceField/LennardJonesForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Simulation.h>
 #include <cmath>
 #include <iostream>
 
@@ -226,10 +225,10 @@ void LennardJonesForceField<DataTypes>::draw(const core::visual::VisualParams* v
             points[1].push_back(p1[df.b]);
         }
     }
-    vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(1,1,1,1));
-    vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0,0,1,1));
+    vparams->drawTool()->drawLines(points[0], 1, sofa::helper::types::RGBAColor::white());
+    vparams->drawTool()->drawLines(points[1], 1, sofa::helper::types::RGBAColor::blue());
 
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace namespace sofa::component::forcefield
+} // namespace sofa::component::forcefield

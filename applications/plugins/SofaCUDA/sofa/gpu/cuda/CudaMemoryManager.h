@@ -114,12 +114,14 @@ public :
         return mycudaGetBufferDevice();
     }
 
-    static bool bufferAlloc(gl_buffer* bId, int n)
+    static bool bufferAlloc(gl_buffer* bId, int n, bool createBuffer = true)
     {
 #ifndef SOFA_NO_OPENGL
         if (n > 0)
         {
-            glGenBuffers(1, bId);
+            if(createBuffer)
+                glGenBuffers(1, bId);
+
             glBindBuffer( GL_ARRAY_BUFFER, *bId);
             glBufferData( GL_ARRAY_BUFFER, n, 0, GL_DYNAMIC_DRAW);
             glBindBuffer( GL_ARRAY_BUFFER, 0);

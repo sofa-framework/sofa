@@ -12,6 +12,14 @@ set(SOFA_VERSION "${Sofa_VERSION_MAJOR}${Sofa_VERSION_MINOR}${Sofa_VERSION_PATCH
 set_property(GLOBAL PROPERTY __GlobalTargetList__ "")
 set_property(GLOBAL PROPERTY __GlobalTargetNameList__ "")
 
+# Help RELOCATABLE plugins to resolve their dependencies.
+# See SofaMacrosInstall.cmake for usage of this property.
+define_property(TARGET
+    PROPERTY "RELOCATABLE_INSTALL_DIR"
+    BRIEF_DOCS "Install directory of RELOCATABLE target"
+    FULL_DOCS "Install directory of RELOCATABLE target"
+    )
+
 # Options
 option(SOFA_DETECTIONOUTPUT_FREEMOTION "Compile Sofa with the DETECTIONOUTPUT_FREEMOTION macro defined." OFF)
 option(SOFA_NO_OPENGL "Compile Sofa with no OpenGL support. (This will define the SOFA_NO_OPENGL macro.)" OFF)
@@ -27,7 +35,12 @@ sofa_set_01(SOFA_WITH_DEPRECATED_COMPONENTS_ VALUE ${SOFA_WITH_DEPRECATED_COMPON
 sofa_set_01(SOFA_NO_UPDATE_BBOX_ VALUE ${SOFA_NO_UPDATE_BBOX}) # build_option_bbox.h.in
 
 # Package install include directory
-set(SOFAFRAMEWORK_TARGETS SofaCore SofaDefaultType SofaHelper SofaSimulationCore)
+set(SOFAFRAMEWORK_TARGETS Sofa.Type SofaHelper SofaDefaultType SofaCore SofaSimulationCore)
+if(NOT SOFA_NO_OPENGL)
+    list(APPEND SOFAFRAMEWORK_TARGETS Sofa.GL)
+endif()
+
+
 foreach(TARGET ${SOFAFRAMEWORK_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
     if(SOFA_BUILD_TESTS)

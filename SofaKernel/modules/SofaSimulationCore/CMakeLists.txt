@@ -5,6 +5,7 @@ set(SRC_ROOT "src/sofa/simulation")
 
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/simulationcore.h
     ${SRC_ROOT}/AnimateBeginEvent.h
     ${SRC_ROOT}/AnimateEndEvent.h
@@ -22,6 +23,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/DefaultAnimationLoop.h
     ${SRC_ROOT}/DefaultVisualManagerLoop.h
     ${SRC_ROOT}/DeleteVisitor.h
+    ${SRC_ROOT}/ExportDotVisitor.h
     ${SRC_ROOT}/ExportGnuplotVisitor.h
     ${SRC_ROOT}/ExportOBJVisitor.h
     ${SRC_ROOT}/InitVisitor.h
@@ -92,6 +94,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/DefaultAnimationLoop.cpp
     ${SRC_ROOT}/DefaultVisualManagerLoop.cpp
     ${SRC_ROOT}/DeleteVisitor.cpp
+    ${SRC_ROOT}/ExportDotVisitor.cpp
     ${SRC_ROOT}/ExportGnuplotVisitor.cpp
     ${SRC_ROOT}/ExportOBJVisitor.cpp
     ${SRC_ROOT}/InitVisitor.cpp
@@ -129,6 +132,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/WriteStateVisitor.cpp
     ${SRC_ROOT}/XMLPrintVisitor.cpp
     ${SRC_ROOT}/init.cpp
+    ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/MechanicalComputeEnergyVisitor.cpp
     ${SRC_ROOT}/BaseSimulationExporter.cpp
     ${SRC_ROOT}/TaskScheduler.cpp

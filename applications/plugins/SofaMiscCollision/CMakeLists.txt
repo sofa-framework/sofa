@@ -43,7 +43,6 @@ list(APPEND SOURCE_FILES
     ${SRC_ROOT}/TetrahedronModel.cpp
     ${SRC_ROOT}/TetrahedronRayContact.cpp
     ${SRC_ROOT}/TriangleModelInRegularGrid.cpp
-    ${SRC_ROOT}/TetrahedronBarycentricDistanceLMConstraintContact.cpp
     )
 message(STATUS "SofaMiscModule: build all maintained sofa components.")
 
@@ -55,14 +54,8 @@ else()
     message(STATUS "SofaMiscCollision: optional dependency SofaSphFluid not found de-activing: <SpatialGridPointModel>")
 endif()
 
-if(SOFA_HAVE_SMP)
-    list(APPEND HEADER_FILES ${SRC_ROOT}/ParallelCollisionPipeline.h)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/ParallelCollisionPipeline.cpp)
-endif()
-
 if(SofaDistanceGrid_FOUND)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/FrictionContact_DistanceGrid.cpp)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
@@ -73,6 +66,11 @@ if(SofaSphFluid_FOUND)
 endif()
 if(SofaDistanceGrid_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaDistanceGrid)
+endif()
+
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Silence attribute warnings (for example, ignored already defined external template)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
 endif()
 
 sofa_create_package_with_targets(
