@@ -1,5 +1,11 @@
 <Node name="root" dt="0.02">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralLoader'/>
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    
     <!-- <Simulation name="Simulation" /> -->
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
@@ -7,12 +13,12 @@
     <DiscreteIntersection />
     <!--<DefaultCollisionGroupManager />-->
     <Node name="Liver" depend="topo dofs">
+        <MeshGmshLoader name="meshLoader0" filename="mesh/liver.msh" />
         <!--<CGImplicit iterations="25"/>-->
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MechanicalObject name="dofs" />
+        <MechanicalObject name="dofs" src="@meshLoader0" />
         <!-- Container for the tetrahedra-->
-        <MeshGmshLoader name="meshLoader0" filename="mesh/liver.msh" />
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader0" />
         <!-- Algorithms: used in DiagonalMass to compute the mass -->
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
