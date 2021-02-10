@@ -287,29 +287,21 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* m
     SOFA_UNUSED(mparams);
 
     if(!d_projectVelocity.getValue()) return;
+
     const SetIndexArray & indices = this->d_indices.getValue();
     helper::WriteAccessor<DataVecDeriv> res (vData );
 
-    const VecDeriv &freeV = (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState()))->read(core::ConstVecDerivId::freeVelocity())->getValue();
-    size_t freeVsize = freeV.size();
-    if (d_fixAll.getValue() == true)    // fix everyting
+    if ( d_fixAll.getValue() )    // fix everyting
     {
-        for( unsigned i=0; i<res.size(); i++ )
-            if (freeVsize > i)
-                res[i] = freeV[i];
-            else
-                res[i] = Deriv();
+        for(Size i=0; i<res.size(); i++)
+            res[i] = Deriv();
     }
     else
     {
-        unsigned i = 0;
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i < res.size(); ++it, ++i)
+        std::for_each(indices.begin(), indices.end(),[](SetIndexArray* ind)
         {
-            if (freeVsize > *it)
-                res[*it] = freeV[*it];
-            else
-                res[*it] = Deriv();
-        }
+            res[ind] = Deriv();
+        });
     }
 }
 

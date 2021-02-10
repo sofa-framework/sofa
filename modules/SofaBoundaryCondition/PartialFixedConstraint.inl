@@ -44,7 +44,7 @@ namespace projectiveconstraintset
 template <class DataTypes>
 PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
     : d_fixedDirections( initData(&d_fixedDirections,"fixedDirections","for each direction, 1 if fixed, 0 if free") )
-    , f_projectVelocity(initData(&f_projectVelocity, false, "projectVelocity", "project velocity to ensure no drift of the fixed point"))
+    , d_projectVelocity(initData(&d_projectVelocity, false, "projectVelocity", "project velocity to ensure no drift of the fixed point"))
 {
     // default to indice 0
     this->d_indices.beginEdit()->push_back(0);
@@ -129,36 +129,35 @@ void PartialFixedConstraint<DataTypes>::projectResponse(const core::MechanicalPa
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
-    if (f_projectVelocity.getValue())
+    SOFA_UNUSED(mparams);
+
+    if(!d_projectVelocity.getValue()) return;
+
+    const unsigned int N = Deriv::size();
+    const VecBool& blockedDirection = d_fixedDirections.getValue();
+    helper::WriteAccessor<DataVecDeriv> res = vData;
+
+    if ( this->d_fixAll.getValue() )
     {
-        const unsigned int N = Deriv::size();
-        const VecBool& blockedDirection = d_fixedDirections.getValue();
-        helper::WriteAccessor<DataVecDeriv> res = vData;
-
-        if (this->d_fixAll.getValue() == true)
+        // fix everyting
+        for (Size i = 0; i < res.size(); i++)
         {
-            // fix everyting
-            for (unsigned i = 0; i < res.size(); i++)
+            for (unsigned int c = 0; c < N; ++c)
             {
-                for (unsigned int c = 0; c < N; ++c)
-                {
-                    if (blockedDirection[c]) res[i][c] = 0;
-                }
+                if (blockedDirection[c]) res[i][c] = 0;
             }
         }
-        else
+    }
+    else
+    {
+        std::for_each(indices.begin(), indices.end(),[](SetIndexArray* ind)
         {
-            const SetIndexArray & indices = this->d_indices.getValue();
-            unsigned i = 0;
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i < res.size(); ++it, ++i)
+            for (unsigned int c = 0; c < N; ++c)
             {
-
-                for (unsigned int c = 0; c < N; ++c)
-                {
-                    if (blockedDirection[c]) res[*it][c] = 0;
-                }
+                if (blockedDirection[c])
+                    res[ind][c] = 0;
             }
-        }
+        });
     }
 }
 
