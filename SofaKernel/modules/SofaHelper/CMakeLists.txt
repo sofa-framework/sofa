@@ -120,8 +120,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/FileMonitor.h
     ${SRC_ROOT}/system/FileRepository.h
     ${SRC_ROOT}/vector.h
-    ${SRC_ROOT}/vectorData.h
-    ${SRC_ROOT}/vectorLinks.h
     ${SRC_ROOT}/vector_algebra.h
     ${SRC_ROOT}/vector_device.h
     ${SRC_ROOT}/types/RGBAColor.h
