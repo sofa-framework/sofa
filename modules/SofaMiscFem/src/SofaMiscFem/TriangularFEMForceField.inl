@@ -1401,7 +1401,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     {
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         std::vector<sofa::defaulttype::Vector3> vertices;
-        for(unsigned int i=0; i< nbTriangles; ++i)
+        for(Size i=0; i< nbTriangles; ++i)
         {
             Triangle tri = m_topology->getTriangle(i);
             Index a = tri[0];
@@ -1447,7 +1447,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         std::vector<sofa::helper::types::RGBAColor> colorVector;
 
         helper::ColorMap::evaluator<double> evalColor = p_drawColorMap->getEvaluator(minStress, maxStress);
-        for(unsigned int i=0; i<nbTriangles; ++i)
+        for(Size i=0; i<nbTriangles; ++i)
         {
             Index a = m_topology->getTriangle(i)[0];
             Index b = m_topology->getTriangle(i)[1];
@@ -1474,7 +1474,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
         Real maxDifference = numeric_limits<Real>::min();
         Real minDifference = numeric_limits<Real>::max();
-        for (unsigned int i = 0 ; i < nbTriangles ; i++)
+        for (Size i = 0 ; i < nbTriangles ; i++)
         {
             if (triangleInf[i].differenceToCriteria > 0)
             {
@@ -1486,7 +1486,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             }
         }
 
-        for (unsigned int i = 0 ; i < nbTriangles ; i++)
+        for (Size i = 0 ; i < nbTriangles ; i++)
         {
             if (triangleInf[i].differenceToCriteria > 0)
             {
