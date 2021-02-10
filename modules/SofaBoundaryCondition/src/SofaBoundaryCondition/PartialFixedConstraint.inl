@@ -126,7 +126,6 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalPa
 
     if(!d_projectVelocity.getValue()) return;
 
-    const unsigned int N = Deriv::size();
     const VecBool& blockedDirection = d_fixedDirections.getValue();
     helper::WriteAccessor<DataVecDeriv> res = vData;
 
@@ -135,7 +134,7 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalPa
         // fix everyting
         for (Size i = 0; i < res.size(); i++)
         {
-            for (unsigned int c = 0; c < N; ++c)
+            for (unsigned int c = 0; c < NumDimensions; ++c)
             {
                 if (blockedDirection[c]) res[i][c] = 0;
             }
@@ -143,14 +142,15 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalPa
     }
     else
     {
-        std::for_each(indices.begin(), indices.end(),[](SetIndexArray* ind)
+        const SetIndexArray & indices = this->d_indices.getValue();
+        for(Index ind : indices)
         {
-            for (unsigned int c = 0; c < N; ++c)
+            for (unsigned int c = 0; c < NumDimensions; ++c)
             {
                 if (blockedDirection[c])
                     res[ind][c] = 0;
             }
-        });
+        }
     }
 }
 

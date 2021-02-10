@@ -281,7 +281,6 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* m
 
     if(!d_projectVelocity.getValue()) return;
 
-    const SetIndexArray & indices = this->d_indices.getValue();
     helper::WriteAccessor<DataVecDeriv> res (vData );
 
     if ( d_fixAll.getValue() )    // fix everyting
@@ -291,10 +290,11 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* m
     }
     else
     {
-        std::for_each(indices.begin(), indices.end(),[](SetIndexArray* ind)
+        const SetIndexArray & indices = this->d_indices.getValue();
+        for(Index ind : indices)
         {
             res[ind] = Deriv();
-        });
+        }
     }
 }
 
