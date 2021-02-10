@@ -31,3 +31,18 @@ std::istream& operator>> ( std::istream& in, const TopologyChange*& )
 
 }
 
+namespace sofa::core::objectmodel::basecontext
+{
+
+SReal getDt(sofa::core::objectmodel::BaseContext* context)
+{
+    return context->getDt();
+}
+
+SReal getTime(sofa::core::objectmodel::BaseContext* context)
+{
+    return context->getTime();
+}
+
+}
+

@@ -647,7 +647,7 @@ void PositionalLight::drawLight()
 void PositionalLight::drawSource(const core::visual::VisualParams* /*vparams*/)
 {
     Vector3 sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::getSimulation()->computeBBox(sofa::simulation::getNodeFromContext(this->getContext()), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+    sofa::simulation::getSimulation()->computeBBox(sofa::simulation::node::getFrom(this->getContext()), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
     float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
     scale *= 0.01f;
 

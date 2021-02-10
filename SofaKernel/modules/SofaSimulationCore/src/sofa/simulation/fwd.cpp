@@ -21,32 +21,27 @@
 ******************************************************************************/
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 
-namespace sofa::simulation
+namespace sofa::simulation::node
 {
-    sofa::core::objectmodel::Base* getBaseFromNode(Node* node)
-    {
-        return static_cast<sofa::core::objectmodel::Base*>(node);
-    }
+sofa::simulation::Node* getFrom(sofa::core::objectmodel::Base* context)
+{
+    return dynamic_cast<sofa::simulation::Node*>(context);
+}
 
-   
-    double getTimeFromContext(sofa::core::objectmodel::BaseContext* context)
-    {
-        return static_cast<sofa::simulation::Node*>(context)->getTime();
-    }
-    
-    sofa::simulation::Node* getNodeFromBase(sofa::core::objectmodel::Base* context)
-    {
-        return dynamic_cast<sofa::simulation::Node*>(context);
-    }
+sofa::simulation::Node* getFrom(sofa::core::objectmodel::BaseContext* context)
+{
+    return dynamic_cast<sofa::simulation::Node*>(context);
+}
 
-    sofa::simulation::Node* getNodeFromContext(sofa::core::objectmodel::BaseContext* context)
-    {
-        return dynamic_cast<sofa::simulation::Node*>(context);
-    }
+sofa::core::objectmodel::Base* toBase(Node* node)
+{
+    return static_cast<sofa::core::objectmodel::Base*>(node);
+}
 
-sofa::core::objectmodel::BaseContext* getContextFromNode(sofa::simulation::Node* node)
+sofa::core::objectmodel::BaseContext* toBaseContext(sofa::simulation::Node* node)
 {
     return static_cast<sofa::simulation::Node*>(node);
 }

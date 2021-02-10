@@ -35,10 +35,6 @@ namespace sofa::simulation
     class Simulation;
     typedef sofa::core::sptr<Simulation> SimulationSPtr;
 
-    class LocalStorage;
-    class MutationListener;
-    class Visitor;
-
     /// Set the (unique) simulation which controls the scene
     SOFA_SIMULATION_CORE_API void setSimulation(Simulation* s);
 
@@ -47,9 +43,15 @@ namespace sofa::simulation
      */
     SOFA_SIMULATION_CORE_API Simulation* getSimulation();
 
-    SOFA_SIMULATION_CORE_API sofa::core::objectmodel::Base* getBaseFromNode(Node*);
-    SOFA_SIMULATION_CORE_API Node* getNodeFromBase(sofa::core::objectmodel::Base*);
-    SOFA_SIMULATION_CORE_API Node* getNodeFromContext(sofa::core::objectmodel::BaseContext*);
-    SOFA_SIMULATION_CORE_API double getTimeFromContext(sofa::core::objectmodel::BaseContext*);
-    SOFA_SIMULATION_CORE_API sofa::core::objectmodel::BaseContext* getContextFromNode(Node*);
+    class LocalStorage;
+    class MutationListener;
+    class Visitor;
+}
+
+namespace sofa::simulation::node
+{
+SOFA_SIMULATION_CORE_API sofa::core::objectmodel::Base* toBase(Node*);
+SOFA_SIMULATION_CORE_API sofa::core::objectmodel::BaseContext* toBaseContext(Node*);
+SOFA_SIMULATION_CORE_API Node* getFrom(sofa::core::objectmodel::Base*);
+SOFA_SIMULATION_CORE_API Node* getFrom(sofa::core::objectmodel::BaseContext*);
 }

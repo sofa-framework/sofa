@@ -116,7 +116,7 @@ void QTabulationModifyObject::dataValueChanged(QString dataValue)
 
 void QTabulationModifyObject::updateListViewItem()
 {
-    if (simulation::Node *node=sofa::simulation::getNodeFromBase(object))
+    if (simulation::Node *node=sofa::simulation::node::getFrom(object))
     {
         item->setText(0,object->getName().c_str());
         emit nodeNameModification(node);
