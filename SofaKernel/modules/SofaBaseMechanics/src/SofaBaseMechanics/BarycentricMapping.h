@@ -89,7 +89,8 @@ public:
     }
 
 protected:
-    //typedef linearsolver::EigenSparseMatrix<InDataTypes, OutDataTypes> eigen_type;
+    [[deprecated("Mapping::eigen_type has been removed in PR1664. Use sofa::linearsolver::EigenSparseMatrix<Mapping::In, Mapping::Out>, if not possible contact developpers.")]]
+    typedef void eigen_type;
 
     BarycentricMapping(core::State<In>* from, core::State<Out>* to,
                        typename Mapper::SPtr m_mapper);
