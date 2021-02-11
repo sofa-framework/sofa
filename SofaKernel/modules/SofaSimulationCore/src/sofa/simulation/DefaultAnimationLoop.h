@@ -72,7 +72,7 @@ public:
     template<class T>
     static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
-        simulation::Node* gnode = node::getFrom(context);
+        simulation::Node* gnode = node::getNodeFrom(context);
         typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
         if (context) context->addObject(obj);
         if (arg) obj->parse(arg);

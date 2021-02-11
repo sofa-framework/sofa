@@ -52,6 +52,6 @@ namespace sofa::simulation::node
 {
 SOFA_SIMULATION_CORE_API sofa::core::objectmodel::Base* toBase(Node*);
 SOFA_SIMULATION_CORE_API sofa::core::objectmodel::BaseContext* toBaseContext(Node*);
-SOFA_SIMULATION_CORE_API Node* getFrom(sofa::core::objectmodel::Base*);
-SOFA_SIMULATION_CORE_API Node* getFrom(sofa::core::objectmodel::BaseContext*);
+SOFA_SIMULATION_CORE_API Node* getNodeFrom(sofa::core::objectmodel::Base*);
+SOFA_SIMULATION_CORE_API Node* getNodeFrom(sofa::core::objectmodel::BaseContext*);
 }

@@ -272,7 +272,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
         sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-        sofa::simulation::Node* context = sofa::simulation::node::getFrom(this->getContext());
+        sofa::simulation::Node* context = sofa::simulation::node::getNodeFrom(this->getContext());
         const auto & color4 = sofa::helper::types::RGBAColor::white();
 
         sofa::simulation::getSimulation()->computeBBox(context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());

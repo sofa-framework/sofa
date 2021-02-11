@@ -285,7 +285,7 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vpa
         unsigned int nbr = potentiels.size();
 
 
-        sofa::simulation::Node* context = sofa::simulation::node::getFrom(this->getContext());
+        sofa::simulation::Node* context = sofa::simulation::node::getNodeFrom(this->getContext());
         sofa::simulation::getSimulation()->computeBBox(context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
         if (sceneMinBBox[0] > 10000000) // hack when BB is not found

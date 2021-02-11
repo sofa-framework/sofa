@@ -75,6 +75,6 @@ SOFA_CORE_API std::istream& operator>>(std::istream& in, TetrahedronSetTopologyC
 
 namespace sofa::core::objectmodel::basecontext
 {
-SReal getDt(sofa::core::objectmodel::BaseContext* context);
-SReal getTime(sofa::core::objectmodel::BaseContext* context);
+SOFA_CORE_API SReal getDt(sofa::core::objectmodel::BaseContext* context);
+SOFA_CORE_API SReal getTime(sofa::core::objectmodel::BaseContext* context);
 }

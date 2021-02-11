@@ -26,12 +26,12 @@
 
 namespace sofa::simulation::node
 {
-sofa::simulation::Node* getFrom(sofa::core::objectmodel::Base* context)
+sofa::simulation::Node* getNodeFrom(sofa::core::objectmodel::Base* context)
 {
     return dynamic_cast<sofa::simulation::Node*>(context);
 }
 
-sofa::simulation::Node* getFrom(sofa::core::objectmodel::BaseContext* context)
+sofa::simulation::Node* getNodeFrom(sofa::core::objectmodel::BaseContext* context)
 {
     return dynamic_cast<sofa::simulation::Node*>(context);
 }
@@ -43,6 +43,6 @@ sofa::core::objectmodel::Base* toBase(Node* node)
 
 sofa::core::objectmodel::BaseContext* toBaseContext(sofa::simulation::Node* node)
 {
-    return static_cast<sofa::simulation::Node*>(node);
+    return static_cast<sofa::core::objectmodel::BaseContext*>(node);
 }
 }
