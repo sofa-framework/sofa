@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <Node 	 name="root"  dt="0.005"  >
+	<RequiredPlugin pluginName='SofaBoundaryCondition'/>
+	<RequiredPlugin pluginName='SofaDeformable'/>
+	<RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+
 	<VisualStyle name="visualStyle1"  displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
 	<Node 	 name="Poutre1"  >
 		<EulerImplicitSolver name="cg_odesolver"  printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -7,7 +11,7 @@
 		<Node 	 name="M1"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
 			<MechanicalObject template="Vec3d" showObject="1" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
-			<UniformMass template="Vec3d" name="uniformMass1"  mass="0.1" />
+			<UniformMass name="uniformMass1"  vertexMass="0.1" />
 			<FixedConstraint template="Vec3d" name="fixedConstraint1"  indices="0 3 6 9 12 15 18 21 24" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings1"  spring="0 9 100 5 3.5
  1 10 500 5 3.5
@@ -172,7 +176,7 @@
 		<Node 	 name="M5"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
 			<MechanicalObject template="Vec3d" name="mObject5" showObject="1" position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 42" />
-			<UniformMass template="Vec3d" name="uniformMass5"  mass="0.1" />
+			<UniformMass name="uniformMass5"  vertexMass="0.1" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings5"  spring="0 9 100 5 3.5
  1 10 500 5 3.5
  2 11 500 5 3.5
@@ -336,7 +340,7 @@
 		<Node 	 name="M4"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
 			<MechanicalObject template="Vec3d" name="mObject4" showObject="1" position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 31.5" />
-			<UniformMass template="Vec3d" name="uniformMass4"  mass="0.1" />
+			<UniformMass name="uniformMass4"  vertexMass="0.1" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings4"  spring="0 9 100 5 3.5
  1 10 500 5 3.5
  2 11 500 5 3.5
@@ -500,7 +504,7 @@
 		<Node 	 name="M3"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
 			<MechanicalObject template="Vec3d" showObject="1" name="mObject3"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 21" />
-			<UniformMass template="Vec3d" name="uniformMass3"  mass="0.1" />
+			<UniformMass name="uniformMass3"  vertexMass="0.1" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings3"  spring="0 9 100 5 3.5
  1 10 500 5 3.5
  2 11 500 5 3.5
@@ -664,7 +668,7 @@
 		<Node 	 name="M2"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
 			<MechanicalObject template="Vec3d" showObject="1" name="mObject2"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 10.5" />
-			<UniformMass template="Vec3d" name="uniformMass2"  mass="0.1" />
+			<UniformMass name="uniformMass2"  vertexMass="0.1" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings2"  spring="0 9 100 5 3.5
  1 10 500 5 3.5
  2 11 500 5 3.5

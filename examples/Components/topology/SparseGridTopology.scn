@@ -1,10 +1,14 @@
 <?xml version="1.0"?>
 <!-- SparseGrid examples -->
 <Node name="root" dt="0.02" gravity="0 -9 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name='SofaEngine'/>
-    <RequiredPlugin name='SofaLoader'/>
-    
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaDeformable'/>
+    <RequiredPlugin pluginName='SofaGeneralLoader'/> 
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/> 
+
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />

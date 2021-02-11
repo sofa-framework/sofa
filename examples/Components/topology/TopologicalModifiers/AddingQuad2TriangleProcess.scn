@@ -1,12 +1,14 @@
 <!-- Automatic Quad adding example with Quad2Triangle mapping: Element added are define in: ./AddingQuadsProcess.txt -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9.81 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name='SofaMiscCollision' />
-    <RequiredPlugin name='SofaMiscTopology'/>
-    <RequiredPlugin name='SofaTopologyMapping'/>  
-    <RequiredPlugin name='SofaEngine'/>
-    <RequiredPlugin name='SofaLoader'/>
-    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaMiscCollision' />
+    <RequiredPlugin pluginName='SofaMiscTopology'/>
+    <RequiredPlugin pluginName='SofaTopologyMapping'/>  
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/> 
     
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline verbose="0" />

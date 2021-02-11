@@ -329,7 +329,7 @@ protected:
             NEWMAT::Matrix V(3,3); V = 0.0;
             NEWMAT::Jacobi(e, D, V);
             for(size_t j=0; j<3; j++) for(size_t k=0; k<3; k++) M[j][k]=V(j+1,k+1);
-            if(determinant(M)<0) M*=(Real)-1.0;
+            if(defaulttype::determinant(M)<0) M*=(Real)-1.0;
             defaulttype::Mat<3,3,Real> MT=M.transposed();
 
             // get orientation from eigen vectors

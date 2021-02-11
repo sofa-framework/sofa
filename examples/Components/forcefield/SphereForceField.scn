@@ -1,6 +1,13 @@
 <!-- Mechanical SphereForceField Example -->
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaDeformable'/>
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaGeneralDeformable'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+
     <VisualStyle displayFlags="hideBehaviorModels showForceFields hideCollisionModels hideVisualModels" />
 
     <Node name="Floor">
@@ -24,8 +31,8 @@
         <QuadBendingSprings name="Bend" stiffness="2000" damping="1" />
 
         <!-- Two ForceFields mimicking collision : a sphere and plane model -->
-        <SphereForceField stiffness="1000" damping="1" center="0 1 3" radius="4" draw="1" />
-        <PlaneForceField stiffness="1000" damping="20" normal="0 1 0" d="-3" draw="1" />
+        <SphereForceField stiffness="1000" damping="1" center="0 1 3" radius="4"  />
+        <PlaneForceField stiffness="1000" damping="20" normal="0 1 0" d="-3" />
         
         <Node name="Visu">
             <OglModel name="Visual" color="green" />

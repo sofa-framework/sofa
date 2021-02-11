@@ -1,7 +1,15 @@
 <?xml version="1.0" ?>
 <!-- Mechanical DeformableOnRigidFrameMapping Example -->
 <Node name="root" dt="0.02">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaMiscMapping'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/> 
     <VisualStyle displayFlags="showBehavior showVisual" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
@@ -40,7 +48,7 @@
                         <MechanicalObject src="@loader" />
                         <TriangleCollisionModel group="2" />
                         <BarycentricMapping />
-                        <PlaneForceField name="Floor" normal="0 1 0" d="-4" stiffness="100" damping="1" draw="1" />
+                        <PlaneForceField name="Floor" normal="0 1 0" d="-4" stiffness="100" damping="1" />
                     </Node>
                     <Node name="Visu">
                         <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />

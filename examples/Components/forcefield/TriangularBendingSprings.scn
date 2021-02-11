@@ -1,6 +1,12 @@
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -90 10">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralDeformable'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaMiscFem'/>
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
@@ -19,7 +25,7 @@
         <TriangularBendingSprings name="BS" stiffness="300" damping="1.0" />
         <TriangleCollisionModel />
         <Node >
-          <VisualModel name="Visual" color="yellow" />
+          <OglModel name="Visual" color="yellow" />
           <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
