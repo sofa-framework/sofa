@@ -103,6 +103,126 @@ public:
     void addFromBuffer(VecId dst, const SReal* src, unsigned n) override ;
 };
 
+template<class R>
+void MechanicalState<R>::copyToBuffer(SReal* dst, ConstVecId src, unsigned n) const
+{
+    const auto size = this->getSize();
+
+    switch(src.type) {
+    case V_COORD: {
+        helper::ReadAccessor< Data<VecCoord> > vec = this->read(ConstVecCoordId(src));
+        const auto dim = defaulttype::DataTypeInfo<Coord>::size();
+        assert( n == dim * size );
+
+        for(Size i = 0; i < size; ++i) {
+            for(Size j = 0; j < dim; ++j) {
+                defaulttype::DataTypeInfo<Coord>::getValue(vec[i], j, *(dst++));
+            }
+        }
+
+    }; break;
+    case V_DERIV: {
+        helper::ReadAccessor< Data<VecDeriv> > vec = this->read(ConstVecDerivId(src));
+        const auto dim = defaulttype::DataTypeInfo<Deriv>::size();
+        assert( n == dim * size );
+
+        for(Size i = 0; i < size; ++i) {
+            for(Size j = 0; j < dim; ++j) {
+                defaulttype::DataTypeInfo<Deriv>::getValue(vec[i], j, *(dst++));
+            }
+        }
+
+    }; break;
+    default:
+        assert( false );
+    }
+
+    // get rid of unused parameter warnings in release build
+    (void) n;
+}
+
+template<class R>
+void MechanicalState<R>::copyFromBuffer(VecId dst, const SReal* src, unsigned n)
+{
+    const auto size = this->getSize();
+
+    switch(dst.type) {
+    case V_COORD: {
+        helper::WriteOnlyAccessor< Data<VecCoord> > vec = this->write(VecCoordId(dst));
+        const auto dim = defaulttype::DataTypeInfo<Coord>::size();
+        assert( n == dim * size );
+
+        for(Size i = 0; i < size; ++i) {
+            for(Size j = 0; j < dim; ++j) {
+                defaulttype::DataTypeInfo<Coord>::setValue(vec[i], j, *(src++));
+            }
+        }
+
+    }; break;
+    case V_DERIV: {
+        helper::WriteOnlyAccessor< Data<VecDeriv> > vec = this->write(VecDerivId(dst));
+        const auto dim = defaulttype::DataTypeInfo<Deriv>::size();
+        assert( n == dim * size );
+
+        for(Size i = 0; i < size; ++i) {
+            for(Size j = 0; j < dim; ++j) {
+                defaulttype::DataTypeInfo<Deriv>::setValue(vec[i], j, *(src++));
+            }
+        }
+
+    }; break;
+    default:
+        assert( false );
+    }
+
+    // get rid of unused parameter warnings in release build
+    (void) n;
+}
+
+template<class R>
+void MechanicalState<R>::addFromBuffer(VecId dst, const SReal* src, unsigned n)
+{
+    const auto size = this->getSize();
+
+    switch(dst.type) {
+    case V_COORD: {
+        helper::WriteAccessor< Data<VecCoord> > vec = this->write(VecCoordId(dst));
+        const auto dim = defaulttype::DataTypeInfo<Coord>::size();
+        assert( n == dim * size );
+
+        for(Size i = 0; i < size; ++i) {
+            for(Size j = 0; j < dim; ++j) {
+                typename Coord::value_type tmp;
+                defaulttype::DataTypeInfo<Coord>::getValue(vec[i], j, tmp);
+                tmp += (typename Coord::value_type) *(src++);
+                defaulttype::DataTypeInfo<Coord>::setValue(vec[i], j, tmp);
+            }
+        }
+
+    }; break;
+    case V_DERIV: {
+        helper::WriteAccessor< Data<VecDeriv> > vec = this->write(VecDerivId(dst));
+        const auto dim = defaulttype::DataTypeInfo<Deriv>::size();
+        assert( n == dim * size );
+
+        for(Size i = 0; i < size; ++i) {
+            for(Size j = 0; j < dim; ++j) {
+                typename Deriv::value_type tmp;
+                defaulttype::DataTypeInfo<Deriv>::getValue(vec[i], j, tmp);
+                tmp += (typename Coord::value_type) *(src++);
+                defaulttype::DataTypeInfo<Deriv>::setValue(vec[i], j, tmp);
+            }
+        }
+
+    }; break;
+    default:
+        assert( false );
+    }
+
+    // get rid of unused parameter warnings in release build
+    (void) n;
+}
+
 #if  !defined(SOFA_CORE_BEHAVIOR_MECHANICALSTATE_CPP)
 extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API MechanicalState<defaulttype::Vec2Types>;
