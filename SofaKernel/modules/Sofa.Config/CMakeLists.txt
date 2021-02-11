@@ -6,7 +6,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/lib/cmake")
 
 include(SofaMacros)
-include(CMakeDependentOption)
 
 # Clear internal target list (set by the macro sofa_add_generic() )
 set_property(GLOBAL PROPERTY __GlobalTargetList__ "")
@@ -122,6 +121,7 @@ install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME
 set(SOFACONFIGSRC_ROOT "src/sofa")
 set(HEADER_FILES
     ${SOFACONFIGSRC_ROOT}/config.h.in
+    ${SOFACONFIGSRC_ROOT}/config/qt.conf.h
     ${SOFACONFIGSRC_ROOT}/version.h.in
 )
 set(SOURCE_FILES
