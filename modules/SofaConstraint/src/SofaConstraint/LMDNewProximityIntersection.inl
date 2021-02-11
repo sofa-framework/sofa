@@ -50,7 +50,7 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
     A[0][1] = A[1][0] = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
-    const double det = determinant(A);
+    const double det = defaulttype::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;
@@ -199,7 +199,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const double det = determinant(A);
+    const double det = defaulttype::determinant(A);
 
     double alpha = 0.5;
     double beta = 0.5;

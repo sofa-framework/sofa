@@ -47,7 +47,7 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & e1,TCapsule<DataT
     Amat[0][1] = Amat[1][0] = -CD*AB;
     b[0] = AB*AC;
     b[1] = -CD*AC;
-    const SReal det = determinant(Amat);
+    const SReal det = defaulttype::determinant(Amat);
 
     SReal AB_norm2 = AB.norm2();
     SReal CD_norm2 = CD.norm2();
