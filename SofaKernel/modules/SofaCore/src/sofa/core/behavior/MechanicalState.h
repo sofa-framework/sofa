@@ -106,6 +106,7 @@ public:
 template<class R>
 void MechanicalState<R>::copyToBuffer(SReal* dst, ConstVecId src, unsigned n) const
 {
+    SOFA_UNUSED(n);
     const auto size = this->getSize();
 
     switch(src.type) {
@@ -136,14 +137,12 @@ void MechanicalState<R>::copyToBuffer(SReal* dst, ConstVecId src, unsigned n) co
     default:
         assert( false );
     }
-
-    // get rid of unused parameter warnings in release build
-    (void) n;
 }
 
 template<class R>
 void MechanicalState<R>::copyFromBuffer(VecId dst, const SReal* src, unsigned n)
 {
+    SOFA_UNUSED(n);
     const auto size = this->getSize();
 
     switch(dst.type) {
@@ -174,14 +173,12 @@ void MechanicalState<R>::copyFromBuffer(VecId dst, const SReal* src, unsigned n)
     default:
         assert( false );
     }
-
-    // get rid of unused parameter warnings in release build
-    (void) n;
 }
 
 template<class R>
 void MechanicalState<R>::addFromBuffer(VecId dst, const SReal* src, unsigned n)
 {
+    SOFA_UNUSED(n);
     const auto size = this->getSize();
 
     switch(dst.type) {
@@ -218,9 +215,6 @@ void MechanicalState<R>::addFromBuffer(VecId dst, const SReal* src, unsigned n)
     default:
         assert( false );
     }
-
-    // get rid of unused parameter warnings in release build
-    (void) n;
 }
 
 #if  !defined(SOFA_CORE_BEHAVIOR_MECHANICALSTATE_CPP)
