@@ -225,7 +225,7 @@ public:
     /// Thanks to https://github.com/mrdoob/three.js/blob/dev/src/math/Quatnion.js#L199
     enum class EulerOrder
     {
-        XYZ, YXZ, ZXY, ZYX, YZX, XZY, NONE
+        XYZ, YXZ, ZXY, ZYX, YZX, XZY
     };
 
     static Quat createQuaterFromEuler( type::Vec<3,Real> v, EulerOrder order = EulerOrder::ZYX)
@@ -260,12 +260,6 @@ public:
             quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
             quat[3] = c1 * c2 * c3 - s1 * s2 * s3;
             break;
-        case EulerOrder::ZYX:
-            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
-            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
-            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
-            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
-            break;
         case EulerOrder::YZX:
             quat[0] = s1 * c2 * c3 + c1 * s2 * s3;
             quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
@@ -278,11 +272,13 @@ public:
             quat[2] = c1 * c2 * s3 + s1 * s2 * c3;
             quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
             break;
-        case EulerOrder::NONE:
         default:
-            // msg_error("Quat") << "FromEuler: given order is not a valid order to create a Quatnion";
-            // throw exception ?
-            return Quat();
+        case EulerOrder::ZYX:
+            quat[0] = s1 * c2 * c3 - c1 * s2 * s3;
+            quat[1] = c1 * s2 * c3 + s1 * c2 * s3;
+            quat[2] = c1 * c2 * s3 - s1 * s2 * c3;
+            quat[3] = c1 * c2 * c3 + s1 * s2 * s3;
+            break;
         }
 
         Quat quatResult{ quat[0], quat[1], quat[2], quat[3] };
