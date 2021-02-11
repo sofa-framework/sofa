@@ -19,26 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_COLOR_H
-#define SOFA_DEFAULTTYPE_COLOR_H
+#pragma once
 
-#include <functional>
-#include <limits>
+#include <sofa/type/config.h>
+#include <sofa/type/RGBAColor.h>
 
-#include <sofa/helper/rmath.h>
-#include <sofa/helper/types/RGBAColor.h>
-
-#include <sofa/defaulttype/DataTypeInfo.h>
-
-
-namespace sofa
+namespace sofa::type
 {
-
-namespace defaulttype
-{
-    using sofa::helper::types::RGBAColor ;
+    using sofa::type::RGBAColor ;
 }
-}
-
-#endif
-

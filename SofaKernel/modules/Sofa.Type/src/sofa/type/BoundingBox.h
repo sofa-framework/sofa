@@ -19,19 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_BOUNDINGBOX_H
-#define SOFA_DEFAULTTYPE_BOUNDINGBOX_H
+#pragma once
+
+#include <sofa/type/config.h>
+
+#include <sofa/type/Vec.h>
 
 #include <utility> /// for std::pair
-#include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/Vec.h>
 
-namespace sofa
-{
-namespace defaulttype
+namespace sofa::type
 {
 
-class SOFA_DEFAULTTYPE_API BoundingBox
+class SOFA_TYPE_API BoundingBox
 {
 
 public:
@@ -67,19 +66,19 @@ public:
     Vector3& minBBox();
     Vector3& maxBBox();
 
-    bool contains( const sofa::defaulttype::Vector3& point) const;
+    bool contains( const sofa::type::Vector3& point) const;
     bool contains( const BoundingBox& other) const;
 
     bool intersect( const BoundingBox& other) const;
     void intersection( const BoundingBox& other);
 
-    void include( const sofa::defaulttype::Vector3& point);
+    void include( const sofa::type::Vector3& point);
     void include( const BoundingBox& other);
 
     void inflate( SReal amount );
 
     BoundingBox getIntersection( const BoundingBox& other ) const;
-    BoundingBox getInclude( const sofa::defaulttype::Vector3& point ) const;
+    BoundingBox getInclude( const sofa::type::Vector3& point ) const;
     BoundingBox getInclude( const BoundingBox& other ) const;
     BoundingBox getInflate( SReal amount ) const;
 
@@ -115,7 +114,7 @@ public:
 
 
 /// bounding rectangle
-class SOFA_DEFAULTTYPE_API BoundingBox2D
+class SOFA_TYPE_API BoundingBox2D
 {
 
 public:
@@ -151,19 +150,19 @@ public:
     Vector2& minBBox();
     Vector2& maxBBox();
 
-    bool contains( const sofa::defaulttype::Vector2& point) const;
+    bool contains( const sofa::type::Vector2& point) const;
     bool contains( const BoundingBox2D& other) const;
 
     bool intersect( const BoundingBox2D& other) const;
     void intersection( const BoundingBox2D& other);
 
-    void include( const sofa::defaulttype::Vector2& point);
+    void include( const sofa::type::Vector2& point);
     void include( const BoundingBox2D& other);
 
     void inflate( SReal amount);
 
     BoundingBox2D getIntersection( const BoundingBox2D& other ) const;
-    BoundingBox2D getInclude( const sofa::defaulttype::Vector2& point ) const;
+    BoundingBox2D getInclude( const sofa::type::Vector2& point ) const;
     BoundingBox2D getInclude( const BoundingBox2D& other ) const;
     BoundingBox2D getInflate( SReal amount ) const;
 
@@ -187,7 +186,7 @@ protected:
 
 
 /// bounding interval
-class SOFA_DEFAULTTYPE_API BoundingBox1D
+class SOFA_TYPE_API BoundingBox1D
 {
 
 public:
@@ -250,7 +249,4 @@ protected:
     bbox_t bbox;
 };
 
-}
-}
-
-#endif // SOFA_DEFAULTTYPE_BOUNDINGBOX_H
+} // namespace sofa::type
