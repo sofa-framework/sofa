@@ -467,7 +467,10 @@ public:
     }
 
     [[deprecated("2021-01-01: CheckPath as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPath(Base*, BaseClass*, string).")]]
-    static bool CheckPath(const std::string& path, Base* context) = delete;
+    static bool CheckPath(const std::string& path, Base* context)
+    {
+        return PathResolver::CheckPath(context, DestType::GetClass(), path);
+    }
 
 protected:
     OwnerType* m_owner {nullptr};
@@ -482,12 +485,6 @@ protected:
 
     virtual void added(DestPtr ptr, std::size_t index) = 0;
     virtual void removed(DestPtr ptr, std::size_t index) = 0;
-
-    [[deprecated("2021-01-01: GetDestClass is there only for backward compatibility while deprecating Link::CheckPath.")]]
-    static const BaseClass* GetDestClass() = delete;
-
-    [[deprecated("2021-01-01: GetOwnerClass is there only for backward compatibility while deprecating Link::CheckPath.")]]
-    static const BaseClass* GetOwnerClass() = delete;
 
     void _doClear_() override
     {
@@ -613,7 +610,10 @@ public:
     }
 
     [[deprecated("2021-01-01: CheckPaths as been deprecated for complete removal in PR. You can update your code by using PathResolver::CheckPaths(Base*, BaseClass*, string).")]]
-    static bool CheckPaths(const std::string& pathes, Base* context) = delete;
+    static bool CheckPaths(const std::string& pathes, Base* context)
+    {
+        return PathResolver::CheckPaths(context, DestType::GetDestClass(), pathes);
+    }
 
 protected:
     ValidatorFn m_validator;
