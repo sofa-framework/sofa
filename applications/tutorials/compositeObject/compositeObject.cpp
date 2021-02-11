@@ -31,8 +31,6 @@
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
-#include <SofaSimulationTree/init.h>
-#include <SofaSimulationTree/TreeSimulation.h>
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
