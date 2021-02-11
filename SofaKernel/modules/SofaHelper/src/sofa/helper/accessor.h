@@ -185,7 +185,7 @@ public:
     const_iterator begin() const { return vref->begin(); }
     const_iterator end() const { return vref->end(); }
 
-    [[deprecated("FUXk")]]
+    [[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
     friend std::ostream& operator<< ( std::ostream& os, const ReadAccessorVector<T>& vec ) = delete;
 };
 
