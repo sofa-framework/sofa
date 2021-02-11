@@ -60,6 +60,7 @@ using sofa::defaulttype::Matrix3;
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vec3d;
 using sofa::core::objectmodel::ComponentState;
+using sofa::component::linearsolver::EigenSparseMatrix;
 
 // 10/18 E.Coevoet: what's the difference between edge/line, tetra/tetrahedron, hexa/hexahedron?
 typedef typename sofa::core::topology::BaseMeshTopology::Line Edge;
@@ -93,6 +94,7 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::S
 {
     if (mapper)
         this->addSlave(mapper.get());
+    internalMatrix = new EigenSparseMatrix<InDataTypes, OutDataTypes>;
 }
 
 template <class TIn, class TOut>
@@ -107,6 +109,13 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::
         populateTopologies();
         createMapperFromTopology ();
     }
+    internalMatrix = new EigenSparseMatrix<InDataTypes, OutDataTypes>;
+}
+
+template <class TIn, class TOut>
+BarycentricMapping<TIn, TOut>::~BarycentricMapping()
+{
+    delete internalMatrix;
 }
 
 template <class TIn, class TOut>
@@ -471,12 +480,6 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::to
 template<class TIn, class TOut>
 const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
 {
-    typedef linearsolver::EigenSparseMatrix<InDataTypes, OutDataTypes> eigen_type;
-    if(internalMatrix==nullptr)
-    {
-        internalMatrix = new eigen_type();
-    }
-
     typedef typename Mapper::MatrixType mat_type;
     const sofa::defaulttype::BaseMatrix* matJ = getJ();
 
@@ -484,7 +487,7 @@ const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::
     if(mat==nullptr)
         throw std::runtime_error("Unable to downcast the matrix");
 
-    static_cast<eigen_type*>(internalMatrix)->copyFrom(*mat);
+    static_cast<EigenSparseMatrix<InDataTypes, OutDataTypes>*>(internalMatrix)->copyFrom(*mat);
 
     js.resize( 1 );
     js[0] = internalMatrix;

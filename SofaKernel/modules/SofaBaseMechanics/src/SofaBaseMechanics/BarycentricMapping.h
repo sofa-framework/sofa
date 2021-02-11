@@ -97,13 +97,11 @@ protected:
     BarycentricMapping(core::State<In>* from=nullptr, core::State<Out>* to=nullptr,
                        BaseMeshTopology * from_topology=nullptr );
 
-    ~BarycentricMapping() override {}
+    ~BarycentricMapping() override;
     void updateForceMask() override;
 
-    /// eigen matrix for use with Compliant plugin
-    defaulttype::BaseMatrix *internalMatrix;
+    defaulttype::BaseMatrix *internalMatrix;        ///< internally store a matrix for getJ/Compliant
     helper::vector< defaulttype::BaseMatrix* > js;
-
 private:
     void createMapperFromTopology();
     void populateTopologies();
