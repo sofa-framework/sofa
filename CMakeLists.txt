@@ -431,7 +431,7 @@ cpack_add_component(GTest_headers
     )
 cpack_add_component(libraries
     DISPLAY_NAME "Libraries"
-    GROUP development
+    GROUP runtime
     )
 cpack_add_component(resources
     DISPLAY_NAME "Resources"
@@ -449,7 +449,7 @@ set(CPACK_COMPONENT_RESOURCES_DISPLAY_NAME "Resources")
 set(CPACK_COMPONENT_APPLICATIONS_GROUP "Runtime")
 set(CPACK_COMPONENT_HEADERS_GROUP "Development")
 set(CPACK_COMPONENT_GTEST_HEADERS_GROUP "Development")
-set(CPACK_COMPONENT_LIBRARIES_GROUP "Development")
+set(CPACK_COMPONENT_LIBRARIES_GROUP "Runtime")
 set(CPACK_COMPONENT_RESOURCES_GROUP "Runtime")
 ##################
 
