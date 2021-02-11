@@ -202,7 +202,7 @@ void AffineMovementConstraint<DataTypes>::projectPosition(const core::Mechanical
     if (xf.size() == 0)
         this->initializeFinalPositions(indices,xData,x0,xf);
     // Update the intermediate Dofs positions computed by linear interpolation
-    SReal time = sofa::core::objectmodel::basecontext::getDt(this->getContext()->getRootContext());
+    SReal time = sofa::core::objectmodel::basecontext::getTime(this->getContext()->getRootContext());
     if( time > beginTime && time <= endTime && totalTime > 0)
     {
         for (auto index : indices)
