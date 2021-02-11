@@ -1,13 +1,17 @@
 <Node name="root" dt="0.03333">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="SofaGeneralMeshCollision"/>
-    
+    <RequiredPlugin pluginName='SofaGeneralDeformable'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/> 
+
     <DefaultPipeline verbose="0" depth="10" draw="0" />
     <RayTraceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7" />
     <DefaultContactManager name="Response" response="default" />
     <DefaultCollisionGroupManager name="Group" />
-    <Node name="Torus">
+    <Node name="Torus1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-11" />
@@ -23,11 +27,11 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctree />
+            <TriangleOctreeModel />
             <BarycentricMapping />
         </Node>
     </Node>
-    <Node name="Torus">
+    <Node name="Torus2">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-13" />
@@ -43,11 +47,11 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
-            <TriangleOctree />
+            <TriangleOctreeModel />
             <BarycentricMapping />
         </Node>
     </Node>
-    <Node name="Torus">
+    <Node name="Torus3">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-15" />
@@ -63,11 +67,11 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctree />
+            <TriangleOctreeModel />
             <BarycentricMapping />
         </Node>
     </Node>
-    <Node name="Torus">
+    <Node name="Torus4">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-17" />
@@ -83,11 +87,11 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctree />
+            <TriangleOctreeModel />
             <BarycentricMapping />
         </Node>
     </Node>
-    <Node name="Torus">
+    <Node name="Torus5">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-19" />
@@ -103,11 +107,11 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctree />
+            <TriangleOctreeModel />
             <BarycentricMapping />
         </Node>
     </Node>
-    <Node name="Torus">
+    <Node name="Torus6">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-23" />
@@ -123,11 +127,11 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctree />
+            <TriangleOctreeModel />
             <BarycentricMapping />
         </Node>
     </Node>
-    <Node name="Torus">
+    <Node name="Torus7">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-21" />
@@ -143,11 +147,11 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctree />
+            <TriangleOctreeModel />
             <BarycentricMapping />
         </Node>
     </Node>
-    <Node name="Torus">
+    <Node name="Torus8">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-29" />
@@ -163,11 +167,11 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctree />
+            <TriangleOctreeModel />
             <BarycentricMapping />
         </Node>
     </Node>
-    <Node name="Torus">
+    <Node name="Torus9">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-27" />
@@ -183,11 +187,11 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctree />
+            <TriangleOctreeModel />
             <BarycentricMapping />
         </Node>
     </Node>
-    <Node name="Torus">
+    <Node name="Torus10">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-25" />
@@ -203,7 +207,7 @@
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctree />
+            <TriangleOctreeModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -211,7 +215,7 @@
         <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="0.5" />
-        <TriangleOctree name="Floor" simulated="0" moving="0" />
+        <TriangleOctreeModel name="Floor" simulated="0" moving="0" />
         <MeshObjLoader name="meshLoader_4" filename="mesh/floor2b.obj" scale="0.5" handleSeams="1" />
         <OglModel name="FloorV" src="@meshLoader_4" texturename="textures/floor.bmp" color="lightgray" dy="-10" />
     </Node>

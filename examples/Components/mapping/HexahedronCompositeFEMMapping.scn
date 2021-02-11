@@ -1,6 +1,10 @@
 <Node name="root" gravity="0 0 0" dt="0.01">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaNonUniformFem"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaNonUniformFem"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/> 
     <!-- A soft grape containing a very stiff seed is deformed by using only one element. By using the HexahedronCompositeFEMMapping, the seed does not deform.  -->
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields" />
     <MeshObjLoader name="meshLoader_2" filename="mesh/plane_loop_2.obj" scale="1" handleSeams="1" />

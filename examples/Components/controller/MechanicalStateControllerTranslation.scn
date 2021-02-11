@@ -1,5 +1,12 @@
 <Node name="root" dt="0.005" gravity="0 -10 0">
     <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaConstraint'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaRigid'/>
+    <RequiredPlugin pluginName='SofaUserInteraction'/>
     <VisualStyle displayFlags="showForceFields showCollisionModels" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />

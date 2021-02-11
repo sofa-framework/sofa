@@ -1,4 +1,6 @@
 <Node name="root" gravity="0 -9.81 0" dt="0.01" time="0" animate="0">
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields" />
     <CGImplicitSolver>
         <Attribute type="name">
@@ -81,7 +83,7 @@
             <Data value="0 2" />
         </Attribute>
     </HermiteSplineConstraint>
-    <UniformMass template="Vec3d">
+    <UniformMass >
         <Attribute type="name">
             <Data value="particleMass" />
         </Attribute>

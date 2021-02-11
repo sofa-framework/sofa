@@ -3,6 +3,8 @@
     <RequiredPlugin name='SofaMiscForceField'/>
     <RequiredPlugin name='SofaExplicitOdeSolver'/>
     <RequiredPlugin name='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/>
     
     <Node name="DeformableObject">
 

@@ -1,7 +1,9 @@
 <!-- Mechanical TriangularFEMForceFieldOptim Example -->
 <Node name="root" dt="0.05" gravity="0 10 10" showBoundingTree="0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/> 
     
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showWireframe" />
     <!-- Activate this loader to use a square mesh with only two triangles (useful to debug base equations) -->

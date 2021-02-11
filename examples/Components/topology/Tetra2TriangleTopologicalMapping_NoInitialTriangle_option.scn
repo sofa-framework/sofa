@@ -1,6 +1,15 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaGeneralDeformable'/>
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaMiscFem'/>
+    <RequiredPlugin pluginName='SofaTopologyMapping'/>
+
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
@@ -18,7 +27,7 @@
         <FixedConstraint indices="0" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
         <TriangleCollisionModel />
-        <Node name="T">
+        <Node name="T1">
             <include href="Objects/TriangleSetTopology.xml" src="@" tags=" " />
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" noNewTriangles="1" />
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
@@ -28,7 +37,7 @@
                 <IdentityMapping input="@../../Volume" output="@Visual" />
             </Node>
         </Node>
-        <Node name="T">
+        <Node name="T2">
             <include href="Objects/TriangleSetTopology.xml" src="@" tags=" " />
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" noInitialTriangles="1" />
             <Node name="Visu">

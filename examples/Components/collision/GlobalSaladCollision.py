@@ -21,29 +21,30 @@ class GlobalCollision(Sofa.PythonScriptController):
 		# a container
 		floorNode = self.rootNode.createChild('Floor')
 		floorNode.createObject('MeshObjLoader', name='loader', filename='mesh/SaladBowl.obj')
-		floorNode.createObject('Mesh', src='@loader')
+		floorNode.createObject('MeshTopology', src='@loader')
 		mec=floorNode.createObject('MechanicalObject', src='@loader',name='the_bol')
 		mec.applyScale(50,50,50)
-		floorNode.createObject('Triangle', name='Floor', simulated=0, moving=0)
+		floorNode.createObject('TriangleCollisionModel', name='Floor', simulated=0, moving=0)
 		#floorNode.createObject('Line', name='Floor', simulated=0, moving=0)
-		floorNode.createObject('OglModel', name='FloorV', filename='mesh/SaladBowl.obj',texturename='textures/texture.bmp')#, texturename='textures/SaladBowl$.bmp')
-                floorNode.createObject('FixedConstraint',fixAll=True)
+		floorNode.createObject('MeshObjLoader', name='bowlLoader', filename='mesh/SaladBowl.obj')
+		floorNode.createObject('OglModel', name='FloorV', src='@bowlLoader',texturename='textures/texture.bmp')#, texturename='textures/SaladBowl$.bmp')
+		floorNode.createObject('FixedConstraint',fixAll=True)
 
 		space = 7
 
-		createCapsuleChain(self.rootNode,'capChain',10,-space,-space,space)
-		createCapsuleChain(self.rootNode,'capChain',10,-space/2,-space,space)
-		createCapsuleChain(self.rootNode,'capChain',10,-space/4,-space,space)
-		createCapsuleChain(self.rootNode,'capChain',10,-space,space,space)
-		createCapsuleChain(self.rootNode,'capChain',10,-space,space/2,space)
-		createCapsuleChain(self.rootNode,'capChain',10,-space,space/4,space)
-		createCapsuleChain(self.rootNode,'capChain',10,space,-space,space)
-		createCapsuleChain(self.rootNode,'capChain',10,space,-space/2,space)#
-		createCapsuleChain(self.rootNode,'capChain',10,space,-space/4,space)#
+		createCapsuleChain(self.rootNode,'capChain1',10,-space,-space,space)
+		createCapsuleChain(self.rootNode,'capChain2',10,-space/2,-space,space)
+		createCapsuleChain(self.rootNode,'capChain3',10,-space/4,-space,space)
+		createCapsuleChain(self.rootNode,'capChain4',10,-space,space,space)
+		createCapsuleChain(self.rootNode,'capChain5',10,-space,space/2,space)
+		createCapsuleChain(self.rootNode,'capChain6',10,-space,space/4,space)
+		createCapsuleChain(self.rootNode,'capChain7',10,space,-space,space)
+		createCapsuleChain(self.rootNode,'capChain8',10,space,-space/2,space)#
+		createCapsuleChain(self.rootNode,'capChain9',10,space,-space/4,space)#
 		#createCapsuleChain(self.rootNode,'capChain',10,space,-space,space/2)
-		createCapsuleChain(self.rootNode,'capChain',10,space,space,space)
-		createCapsuleChain(self.rootNode,'capChain',10,space/2,space,space)
-		createCapsuleChain(self.rootNode,'capChain',10,space/4,space,space)
+		createCapsuleChain(self.rootNode,'capChain10',10,space,space,space)
+		createCapsuleChain(self.rootNode,'capChain11',10,space/2,space,space)
+		createCapsuleChain(self.rootNode,'capChain12',10,space/4,space,space)
 		#self.generatePrimitives1(40)
 
 		return 0
