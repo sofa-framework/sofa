@@ -1,7 +1,9 @@
 <Node name="root" gravity="-1.8 0 100" dt="0.0001">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name='SofaExplicitOdeSolver'/>
-    <RequiredPlugin name='SofaLoader'/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaExplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/>
     
     <Node name="DeformableObject">
 
@@ -10,7 +12,7 @@
         <EulerExplicitSolver name="odeExplicitSolver" optimizedForDiagonalMatrix="1" />
 
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
-        <TetrahedronSetTopologyContainer src="@loader" name="topology"/>
+        <TetrahedronSetTopologyContainer src="@loader" name="topologyContainer"/>
         <TetrahedronSetGeometryAlgorithms name="geomAlgo"/>
         <MechanicalObject src="@loader" dx="60" />
         <DiagonalMass totalMass="15" topology="@topologyContainer"/>
