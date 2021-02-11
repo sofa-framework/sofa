@@ -117,7 +117,7 @@ namespace sofa::defaulttype
         auto res = type::invertMatrix(dest, from);
         if (!res)
         {
-            msg_error("Mat") << "invertMatrix (general case) finds too small determinant for matrix = " << from;
+            msg_error("Mat") << "invertMatrix (special case 2x2) finds too small determinant for matrix = " << from;
         }
         return res;
     }

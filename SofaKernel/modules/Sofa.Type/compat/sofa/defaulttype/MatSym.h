@@ -54,4 +54,77 @@ namespace sofa::defaulttype
     using Matrix3 = sofa::type::Matrix3;
     using Matrix4 = sofa::type::Matrix4;
 
+    template<class real>
+    inline real determinant(const MatSym<3, real>& m)
+    {
+        return type::determinant(m);
+    }
+
+    template<class real>
+    inline real determinant(const MatSym<2, real>& m)
+    {
+        return type::determinant(m);
+    }
+
+    template<class real>
+    inline real trace(const MatSym<3, real>& m)
+    {
+        return type::trace(m);
+    }
+
+    template<class real>
+    inline real trace(const MatSym<2, real>& m)
+    {
+        return type::trace(m);
+    }
+
+    template<int S, class real>
+    bool invertMatrix(MatSym<S, real>& dest, const MatSym<S, real>& from)
+    {
+        auto res = type::invertMatrix(dest, from);
+        if (!res)
+        {
+            msg_error("MatSym") << "invertMatrix (general case) finds too small determinant for matrix = " << from;
+        }
+        return res;
+    }
+
+    /// Matrix inversion (special case 3x3).
+    template<class real>
+    bool invertMatrix(MatSym<3, real>& dest, const MatSym<3, real>& from)
+    {
+        auto res = type::invertMatrix(dest, from);
+        if (!res)
+        {
+            msg_error("MatSym") << "invertMatrix (special case 3x3) finds too small determinant for matrix = " << from;
+        }
+        return res;
+    }
+
+    /// Matrix inversion (special case 2x2).
+    template<class real>
+    bool invertMatrix(MatSym<2, real>& dest, const MatSym<2, real>& from)
+    {
+        auto res = type::invertMatrix(dest, from);
+        if (!res)
+        {
+            msg_error("MatSym") << "invertMatrix (special case 2x2) finds too small determinant for matrix = " << from;
+        }
+        return res;
+    }
+
+    /// Compute the scalar product of two matrix (sum of product of all terms)
+    template <int D, typename real>
+    inline real scalarProduct(const MatSym<D, real>& left, const MatSym<D, real>& right)
+    {
+        return type::scalarProduct(left, right);
+    }
+
+    template <int D, typename real>
+    inline real scalarProduct(const MatSym<D, real>& left, const type::Mat<D, D, real>& right)
+    {
+        return type::scalarProduct(left, right);
+    }
+
+
 } // namespace sofa::defaulttype
