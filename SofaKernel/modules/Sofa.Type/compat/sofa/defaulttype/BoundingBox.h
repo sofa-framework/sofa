@@ -27,5 +27,11 @@
 
 namespace sofa::defaulttype
 {
+    using BoundingBox = sofa::type::BoundingBox;
+    using BoundingBox1D = sofa::type::BoundingBox1D;
+    using BoundingBox2D = sofa::type::BoundingBox2D;
 
-} // namespace sofa::helper
+    template <typename TReal>
+    using TBoundingBox = sofa::type::TBoundingBox<TReal>;
+
+} // namespace sofa::defaulttype

@@ -24,4 +24,4 @@
 namespace sofa::type
 {
     class RGBAColor;
-}
+} // namespace sofa::type
