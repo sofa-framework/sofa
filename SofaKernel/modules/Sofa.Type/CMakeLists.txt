@@ -34,7 +34,6 @@ set(SOURCE_FILES
     ${SOFATYPESRC_ROOT}/Quat.cpp
     ${SOFATYPESRC_ROOT}/DualQuat.cpp
     ${SOFATYPESRC_ROOT}/BoundingBox.cpp
-    ${SOFATYPESRC_ROOT}/Color.cpp
     ${SOFATYPESRC_ROOT}/Frame.cpp
     ${SOFATYPESRC_ROOT}/Material.cpp
     ${SOFATYPESRC_ROOT}/PrimitiveGroup.cpp

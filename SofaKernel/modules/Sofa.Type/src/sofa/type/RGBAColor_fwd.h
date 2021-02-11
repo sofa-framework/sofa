@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-namespace sofa::helper::types
+namespace sofa::type
 {
     class RGBAColor;
 }

@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/config.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/config.h>
+#include <sofa/type/RGBAColor.h>
 
-namespace sofa::helper::types
+namespace sofa::type
 {
 
-class SOFA_HELPER_API Material
+class SOFA_TYPE_API Material
 {
 public:
     std::string 	name;		        /* name of material */
@@ -47,8 +47,8 @@ public:
     std::string   textureFilename; // path to the texture linked to the material
     std::string   bumpTextureFilename; // path to the bump texture linked to the material
 
-    friend SOFA_HELPER_API std::ostream& operator << (std::ostream& out, const Material& m ) ;
-    friend SOFA_HELPER_API std::istream& operator >> (std::istream& in, Material &m ) ;
+    friend SOFA_TYPE_API std::ostream& operator << (std::ostream& out, const Material& m ) ;
+    friend SOFA_TYPE_API std::istream& operator >> (std::istream& in, Material &m ) ;
 
     void setColor(float r, float g, float b, float a) ;
 
@@ -57,5 +57,4 @@ public:
     Material & operator= (const Material& other);
 };
 
-} /// namespace sofa::helper::types
-
+} /// namespace sofa::type
