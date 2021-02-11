@@ -11,8 +11,19 @@ else
     usage; exit 1
 fi
 
+# Adapt INSTALL_DIR to NSIS install
+INSTALL_DIR_BIN="$INSTALL_DIR/bin"
+if [[ "$INSTALL_DIR" == *"/NSIS/"* ]] && [[ -e "$INSTALL_DIR/../applications/bin" ]]; then
+    INSTALL_DIR="$(cd $INSTALL_DIR/.. && pwd)"
+    INSTALL_DIR_BIN="$INSTALL_DIR/applications/bin"
+fi
+
+echo "BUILD_DIR = $BUILD_DIR"
+echo "INSTALL_DIR = $INSTALL_DIR"
+echo "INSTALL_DIR_BIN = $INSTALL_DIR_BIN"
+
 # Keep plugin_list as short as possible
-echo "" > "$INSTALL_DIR/bin/plugin_list.conf"
+echo "" > "$INSTALL_DIR_BIN/plugin_list.conf"
 disabled_plugins='plugins_ignored_by_default'
 for plugin in \
         SofaEulerianFluid     \
@@ -34,10 +45,9 @@ for plugin in \
     ; do
     disabled_plugins=$disabled_plugins'\|'$plugin
 done
-grep -v $disabled_plugins "$INSTALL_DIR/bin/plugin_list.conf.default" >> "$INSTALL_DIR/bin/plugin_list.conf"
+grep -v $disabled_plugins "$INSTALL_DIR_BIN/plugin_list.conf.default" >> "$INSTALL_DIR_BIN/plugin_list.conf"
 
-# Link all plugin libs in install/bin to make them easily findable
-cd "$INSTALL_DIR" && find "plugins" -name "*.dll" | while read lib; do
-    libname="$(basename $lib)"
-    ln -s "../$lib" "bin/$libname"
+# Copy all plugin libs in install/bin to make them easily findable
+cd "$INSTALL_DIR" && find -name "*.dll" -path "*/plugins/*" | while read lib; do
+    cp "$lib" "$INSTALL_DIR_BIN"
 done

@@ -4,10 +4,15 @@
 	Accuracy of matrix computation can compare with the iterative solver (CG) 
 -->
 <Node name="root" gravity="0 0 -9.8" dt="0.01">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaValidation"/>
-    <RequiredPlugin name="SofaDenseSolver"/>
-  
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaValidation"/>
+    <RequiredPlugin pluginName="SofaDenseSolver"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaDeformable'/>
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline name="default21" verbose="0" />
     <BruteForceDetection name="N2" />
@@ -24,18 +29,18 @@
             <MechanicalObject name="MS1" />
             <DiagonalMass massDensity="0.02" name="massA" />
             <FixedConstraint indices="0 3 7 4" name="fixedHexa" />
-            <HexahedralFEMForceField name="HexaFF1" youngModulus="20" poissonRatio="0.3" method="large" drawing="0" />
+            <HexahedralFEMForceField name="HexaFF1" youngModulus="20" poissonRatio="0.3" method="large" />
             <Node name="MappedTetrahedronA">
                 <TetrahedronSetTopologyContainer name="tetraContainer" position="3.0 0.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.2 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.8 0.2 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                 4.0 0.2 0.8" tetrahedra="0 1 2 3" />
                 <TetrahedronSetTopologyModifier name="tetraModifier" />
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS3" />
-                <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large" drawing="1" />
+                <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large" />
                 <BarycentricMapping template="Vec3d,Vec3d" name="mapping13"  mapMatrices="true" input="@../MS1" output="@MS3" />
             </Node>
             <Node name="VisuA">
-                <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-                <IdentityMapping template="Vec3d,ExtVec3f" name="visualMapping" input="@../MS1" output="@Visual" />
+                <OglModel template="Vec3d" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+                <IdentityMapping template="Vec3d,Vec3d" name="visualMapping" input="@../MS1" output="@Visual" />
             </Node>
         </Node>
         <Node name="Point">
@@ -65,8 +70,8 @@
                 <BarycentricMapping template="Vec3d,Vec3d" name="mapping13" input="@../MS1" output="@MS3" />
             </Node>
             <Node name="VisuA">
-                <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-                <IdentityMapping template="Vec3d,ExtVec3f" name="visualMapping" input="@../MS1" output="@Visual" />
+                <OglModel template="Vec3d" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+                <IdentityMapping template="Vec3d,Vec3d" name="visualMapping" input="@../MS1" output="@Visual" />
             </Node>
         </Node>
         <Node name="Point">
