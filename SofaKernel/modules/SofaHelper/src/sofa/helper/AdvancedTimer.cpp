@@ -32,6 +32,7 @@
 #include <algorithm>
 #include <cctype>
 #include <iostream>
+#include <atomic>
 
 #define DEFAULT_INTERVAL 100
 

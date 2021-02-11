@@ -28,6 +28,7 @@
 #include <cassert>
 #include <iostream>
 #include <sofa/helper/config.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {

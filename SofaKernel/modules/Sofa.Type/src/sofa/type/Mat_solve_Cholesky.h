@@ -19,15 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_MAT_SOLVE_CHOLESKY_H
-#define SOFA_DEFAULTTYPE_MAT_SOLVE_CHOLESKY_H
+#pragma once
 
 #include <sofa/defaulttype/Mat.h>
 
-namespace sofa
-{
-
-namespace defaulttype
+namespace sofa::type
 {
 
 /** Cholesky decomposition: compute triangular matrix L such that M=L.Lt
@@ -119,8 +115,4 @@ bool cholInv(Mat<n,n,real>& Inv, const Mat<n,n,real>& M )
     return true;
 }
 
-} // namespace defaulttype
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::type
