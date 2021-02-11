@@ -21,21 +21,61 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/config.h>
-#include <sofa/type/fwd.h>
-namespace sofa::helper
+#include <sofa/type/config.h>
+
+namespace sofa::type
 {
-    template<class T>
-    class Quater;
+template <sofa::Size L, sofa::Size C, class Real>
+class Mat;
+
+typedef Mat<1,1,float> Mat1x1f;
+typedef Mat<1,1,double> Mat1x1d;
+
+typedef Mat<2,2,float> Mat2x2f;
+typedef Mat<2,2,double> Mat2x2d;
+
+typedef Mat<3,3,float> Mat3x3f;
+typedef Mat<3,3,double> Mat3x3d;
+
+typedef Mat<3,4,float> Mat3x4f;
+typedef Mat<3,4,double> Mat3x4d;
+
+typedef Mat<4,4,float> Mat4x4f;
+typedef Mat<4,4,double> Mat4x4d;
+
+typedef Mat<2,2,SReal> Mat2x2;
+typedef Mat<3,3,SReal> Mat3x3;
+typedef Mat<4,4,SReal> Mat4x4;
+
+typedef Mat<2,2,SReal> Matrix2;
+typedef Mat<3,3,SReal> Matrix3;
+typedef Mat<4,4,SReal> Matrix4;
 }
 
+/// Deprecated namespace.
 namespace sofa::defaulttype
 {
-    class BaseMatrix;
-    class BaseVector;
+using sofa::type::Mat;
+using sofa::type::Mat1x1f;
+using sofa::type::Mat1x1d;
 
-    typedef sofa::helper::Quater<float> Quatf;
-    typedef sofa::helper::Quater<double> Quatd;
-    typedef sofa::helper::Quater<SReal> Quat;
-    typedef Quat Quaternion;
+using sofa::type::Mat2x2f;
+using sofa::type::Mat2x2d;
+
+using sofa::type::Mat3x3f;
+using sofa::type::Mat3x3d;
+
+using sofa::type::Mat3x4f;
+using sofa::type::Mat3x4d;
+
+using sofa::type::Mat4x4f;
+using sofa::type::Mat4x4d;
+
+using sofa::type::Mat2x2;
+using sofa::type::Mat3x3;
+using sofa::type::Mat4x4;
+
+using sofa::type::Matrix2;
+using sofa::type::Matrix3;
+using sofa::type::Matrix4;
 }

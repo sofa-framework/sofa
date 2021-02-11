@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/type/config.h>
+#include <sofa/type/fwd.h>
 
 #include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/type/Vec.h>
