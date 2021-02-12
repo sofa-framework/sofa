@@ -771,13 +771,18 @@ void QSofaListView::Export()
     Node* root = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
     GenGraphForm* form = new sofa::gui::qt::GenGraphForm(this);
     form->setScene ( root );
-    std::string gname(((RealGUI*) (QApplication::topLevelWidgets()[0]))->windowFilePath().toStdString());
-    std::size_t gpath = gname.find_last_of("/\\");
-    std::size_t gext = gname.rfind('.');
-    if (gext != std::string::npos && (gpath == std::string::npos || gext > gpath))
-        gname = gname.substr(0,gext);
-    form->filename->setText(gname.c_str());
-    form->show();
+    auto gui = dynamic_cast<RealGUI*>(QApplication::topLevelWidgets()[0]);
+    if(gui)
+    {
+        std::string gname = gui->windowFilePath().toStdString();
+        std::size_t gpath = gname.find_last_of("/\\");
+        std::size_t gext = gname.rfind('.');
+        if (gext != std::string::npos && (gpath == std::string::npos || gext > gpath))
+            gname = gname.substr(0,gext);
+        form->filename->setText(gname.c_str());
+        form->show();
+    }
+    msg_error("runSofa") << "Missing RealGUI, cannot export";
 }
 
 
