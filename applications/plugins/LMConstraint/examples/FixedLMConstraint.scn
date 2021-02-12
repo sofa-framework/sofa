@@ -3,6 +3,8 @@
 The outcome of this scene is a still object. The MechanicalObject is comprised by two Rigids connected with a jointspring. The first end is Fixed through the FixedLMConstraint on rigid. The second end is fixed as well, but because all the dofs that are mapped to this end are fixed as well. -->   
 
 <Node 	name="Root" dt="0.02"  >
+    <RequiredPlugin name="LMConstraint"/>
+
   <VisualStyle displayFlags="showCollisionModels showBehaviorModels" />
 	<EulerImplicitSolver   rayleighStiffness="0.1" rayleighMass="0.1" />
 	<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5" />

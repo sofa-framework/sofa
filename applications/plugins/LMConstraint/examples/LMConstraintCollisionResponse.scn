@@ -4,6 +4,9 @@ This scene involves collision between rigid and deformable ojects with different
 and stiffness coefficients for the collision models. 
 -->
 <Node >
+    <RequiredPlugin name="LMConstraint"/>
+    <RequiredPlugin name="SofaDistanceGrid"/>
+    
     <VisualStyle displayFlags="showBehaviorModels showCollisionModels" />
     <DefaultPipeline />
     <BruteForceDetection />
