@@ -121,7 +121,6 @@ install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME
 set(SOFACONFIGSRC_ROOT "src/sofa")
 set(HEADER_FILES
     ${SOFACONFIGSRC_ROOT}/config.h.in
-    ${SOFACONFIGSRC_ROOT}/config/qt.conf.h
     ${SOFACONFIGSRC_ROOT}/version.h.in
 )
 set(SOURCE_FILES
