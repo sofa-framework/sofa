@@ -425,29 +425,22 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 
     for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin();
-        typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
-
         for (unsigned int ito = 0; ito < numDofs; ito++)
         {
             DPos v;
             DRot omega = DRot();
             bool needToInsert = false;
 
-            for (unsigned int cpt = 0; cpt < points.getValue().size() && colIt != colItEnd; cpt++)
+            for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
             {
-                unsigned int rigidIndex = getRigidIndex( cpt );
-                if( rigidIndex != ito )
-                    continue;
-                if (colIt.index() != cpt)
+                unsigned int rigidIndex = getRigidIndex( colIt.index() );
+                if(rigidIndex != ito)
                     continue;
 
                 needToInsert = true;
                 const Deriv f = colIt.val();
                 v += f;
-                omega += (DRot) cross(rotatedPoints[cpt], f);
-
-                ++colIt;
+                omega += (DRot) cross(rotatedPoints[colIt.index()], f);
             }
 
             if (needToInsert)
@@ -459,7 +452,6 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
             }
         }
     }
-
 
     dmsg_info() << "new J on input  DOFs = " << out ;
 
