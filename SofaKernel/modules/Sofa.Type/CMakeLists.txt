@@ -35,7 +35,11 @@ set(COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/helper/fixed_array_algorithms.h
 )
 
+find_package(Sofa.Config REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
+
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>

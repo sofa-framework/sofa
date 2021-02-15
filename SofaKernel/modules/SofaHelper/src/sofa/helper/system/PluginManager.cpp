@@ -186,7 +186,29 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
     p.initExternalModule();
 
     msg_info("PluginManager") << "Loaded plugin: " << pluginPath;
+
+    for (const auto& [key, callback] : m_onPluginLoadedCallbacks)
+    {
+        if(callback)
+        {
+            callback(pluginPath, p);
+        }
+    }
+
     return true;
+}
+
+void PluginManager::addOnPluginLoadedCallback(const std::string& key, std::function<void(const std::string&, const Plugin&)> callback)
+{
+    if(m_onPluginLoadedCallbacks.find(key) == m_onPluginLoadedCallbacks.end())
+    {
+        m_onPluginLoadedCallbacks[key] = callback;
+    }
+}
+
+void PluginManager::removeOnPluginLoadedCallback(const std::string& key)
+{
+    m_onPluginLoadedCallbacks.erase(key);
 }
 
 bool PluginManager::loadPluginByName(const std::string& pluginName, const std::string& suffix, bool ignoreCase, bool recursive, std::ostream* errlog)
@@ -231,6 +253,7 @@ bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* er
     else
     {
         m_pluginMap.erase(m_pluginMap.find(pluginPath));
+        removeOnPluginLoadedCallback(pluginPath);
         return true;
     }
 }
