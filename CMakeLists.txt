@@ -90,7 +90,33 @@ install(FILES
     COMPONENT headers
     )
 
-include(SofaMacros)
+## RPATH
+if(UNIX)
+    # RPATH is a field in ELF binaries that is used as a hint by the system
+    # loader to find needed shared libraries.
+    #
+    # In the build directory, cmake creates binaries with absolute paths in
+    # RPATH.  And by default, it strips RPATH from installed binaries.  Here we
+    # use CMAKE_INSTALL_RPATH to set a relative RPATH.  By doing so, we avoid
+    # the need to play with LD_LIBRARY_PATH to get applications to run.
+
+    # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
+    set(CMAKE_INSTALL_RPATH
+        "$ORIGIN/../lib"
+        "$$ORIGIN/../lib"
+        )
+
+    if(APPLE)
+        set(CMAKE_MACOSX_RPATH ON)
+        list(APPEND CMAKE_INSTALL_RPATH
+            "@loader_path/../lib"
+            "@executable_path/../lib"
+            "@loader_path/../../Frameworks"
+            "@executable_path/../../Frameworks"
+            )
+        set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+    endif()
+endif(UNIX)
 
 ## Boost (1.54.0 or higher) is now mandatory.
 set(BOOST_MIN_VERSION "1.54.0")
