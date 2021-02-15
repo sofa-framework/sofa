@@ -125,7 +125,7 @@ RGBAColor RGBAColor::fromString(const std::string& c)
     RGBAColor color(1.0,1.0,1.0,1.0) ;
     if( !RGBAColor::read(c, color) )
     {
-        //msg_info("RGBAColor") << "Unable to scan color from string '" << c << "'" ;
+        throw std::invalid_argument("Unable to scan color from string '" + c + "'");
     }
     return color;
 }
