@@ -111,6 +111,7 @@ set(MOC_HEADER_FILES
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/SofaGuiQt.h
+    ${SRC_ROOT}/qt.conf.h
     ${SRC_ROOT}/FileManagement.h
     ${SRC_ROOT}/GraphListenerQListView.h
     ${SRC_ROOT}/PickHandlerCallBacks.h

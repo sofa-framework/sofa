@@ -1,0 +1,121 @@
+/****************************************************************************
+** Resource object code
+**
+** Created by: The Resource Compiler for Qt version 5.15.2
+**
+** WARNING! All changes made in this file will be lost!
+*****************************************************************************/
+
+#include <sofa/config.h>
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <vector>
+
+static const unsigned char qt_resource_name[] = {
+  // qt
+  0x0,0x2,
+  0x0,0x0,0x7,0x84,
+  0x0,0x71,
+  0x0,0x74,
+  // etc
+  0x0,0x3,
+  0x0,0x0,0x6c,0xa3,
+  0x0,0x65,
+  0x0,0x74,0x0,0x63,
+  // qt.conf
+  0x0,0x7,
+  0x8,0x74,0xa6,0xa6,
+  0x0,0x71,
+  0x0,0x74,0x0,0x2e,0x0,0x63,0x0,0x6f,0x0,0x6e,0x0,0x66,
+};
+
+static const unsigned char qt_resource_struct[] = {
+  // :
+  0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x1,
+  0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+  // :/qt
+  0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x2,
+  0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+  // :/qt/etc
+  0x0,0x0,0x0,0xa,0x0,0x2,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x3,
+  0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+  // :/qt/etc/qt.conf
+  0x0,0x0,0x0,0x16,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,
+  0x0,0x0,0x1,0x77,0x8c,0x80,0xb6,0x81,
+};
+
+#ifdef QT_NAMESPACE
+#  define QT_RCC_PREPEND_NAMESPACE(name) ::QT_NAMESPACE::name
+#  define QT_RCC_MANGLE_NAMESPACE0(x) x
+#  define QT_RCC_MANGLE_NAMESPACE1(a, b) a##_##b
+#  define QT_RCC_MANGLE_NAMESPACE2(a, b) QT_RCC_MANGLE_NAMESPACE1(a,b)
+#  define QT_RCC_MANGLE_NAMESPACE(name) QT_RCC_MANGLE_NAMESPACE2( \
+        QT_RCC_MANGLE_NAMESPACE0(name), QT_RCC_MANGLE_NAMESPACE0(QT_NAMESPACE))
+#else
+#   define QT_RCC_PREPEND_NAMESPACE(name) name
+#   define QT_RCC_MANGLE_NAMESPACE(name) name
+#endif
+
+#ifdef QT_NAMESPACE
+namespace QT_NAMESPACE {
+#endif
+
+bool qRegisterResourceData(int, const unsigned char *, const unsigned char *, const unsigned char *);
+bool qUnregisterResourceData(int, const unsigned char *, const unsigned char *, const unsigned char *);
+
+#ifdef QT_NAMESPACE
+}
+#endif
+
+
+namespace sofa::gui::qt {
+bool loadQtConfWithCustomPrefix(const std::string& qtConfPath, const std::string& prefix)
+{
+    std::ifstream inputFile2(qtConfPath);
+    if ( ! inputFile2.is_open() )
+    {
+        return false;
+    }
+
+    std::stringstream output;
+    std::string inputLine;
+    while ( std::getline(inputFile2, inputLine) )
+    {
+        if ( inputLine.find("Prefix") != std::string::npos )
+        {
+            output << "  Prefix = " << prefix;
+        }
+        else
+        {
+            output << inputLine;
+        }
+#if defined(WIN32)
+        output << '\r' << '\n';
+#elif defined(__APPLE__)
+        output << '\r';
+#else
+        output << '\n';
+#endif
+    }
+
+    std::vector<char> data = std::vector<char>(std::istreambuf_iterator<char>(output), std::istreambuf_iterator<char>());
+    int dataSize = data.size();
+    static std::vector<unsigned char> byteArray(4 + dataSize);
+    for ( int i = 0 ; i < 4 + dataSize ; i++ )
+    {
+        if ( i < 4 ) // first 4 bytes are for size
+        {
+            byteArray[3 - i] = (dataSize >> (i * 8));
+        }
+        else // next bytes are for data
+        {
+            byteArray[i] = data[i - 4];
+        }
+    }
+
+    return QT_RCC_PREPEND_NAMESPACE(qRegisterResourceData)(3, qt_resource_struct, qt_resource_name, &byteArray[0]);
+}
+} // namespace sofa::gui::qt
