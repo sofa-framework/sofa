@@ -61,6 +61,7 @@ target_link_libraries(${PROJECT_NAME} Flexible SofaTest SofaGTestMain CImgPlugin
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
+    target_compile_definitions(${PROJECT_NAME} "FLEXIBLE_TEST_WITH_IMAGE")
 endif()
 
 
