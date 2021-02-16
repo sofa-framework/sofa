@@ -1210,7 +1210,7 @@ void TetrahedronSetTopologyContainer::updateTopologyEngineGraph()
 std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t)
 {
     helper::ReadAccessor< Data< sofa::helper::vector<TetrahedronSetTopologyContainer::Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
-    out  << m_tetrahedron<< " "
+    out  << m_tetrahedron.ref() << " "
             << t.m_edgesInTetrahedron<< " "
             << t.m_trianglesInTetrahedron;
 
@@ -1238,7 +1238,7 @@ std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t)
     sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedronID > value;
     helper::WriteAccessor< Data< sofa::helper::vector<TetrahedronSetTopologyContainer::Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
 
-    in >> m_tetrahedron >> t.m_edgesInTetrahedron >> t.m_trianglesInTetrahedron;
+    in >> m_tetrahedron.wref() >> t.m_edgesInTetrahedron >> t.m_trianglesInTetrahedron;
 
 
     in >> s;

@@ -79,8 +79,8 @@ public:
     typedef typename Main::SetIndexArray SetIndexArray;
 
     // min/max fixed indices for contiguous constraints
-    int minIndex;
-    int maxIndex;
+    Index minIndex;
+    Index maxIndex;
     // vector of indices for general case
     gpu::cuda::CudaVector<int> cudaIndices;
 

@@ -19,15 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SofaFramework/initSofaFramework.h>
 
-#include <sofa/config.h>
+#include <sofa/core/init.h>
+#include <sofa/defaulttype/init.h>
+#include <sofa/helper/init.h>
+#include <sofa/simulation/init.h>
 
 namespace sofa
 {
 
-void SOFA_SOFAFRAMEWORK_API initSofaFramework();
+void initSofaFramework()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+
+    sofa::core::init();
+    sofa::defaulttype::init();
+    sofa::helper::init();
+    sofa::simulation::core::init();
+}
 
 } // namespace sofa
-
-

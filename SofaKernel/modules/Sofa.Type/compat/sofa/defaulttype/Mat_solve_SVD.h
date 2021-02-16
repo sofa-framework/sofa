@@ -19,28 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSofaFramework.h"
+#pragma once
 
-#include <sofa/core/init.h>
-#include <sofa/defaulttype/init.h>
-#include <sofa/helper/init.h>
-#include <sofa/simulation/init.h>
+#include <sofa/type/Mat_solve_SVD.h>
 
-namespace sofa
-{
-
-void initSofaFramework()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    sofa::core::init();
-    sofa::defaulttype::init();
-    sofa::helper::init();
-    sofa::simulation::core::init();
-}
-
-} // namespace sofa
+SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Mat_solve_SVD.h")

@@ -19,15 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_MAT_SOLVE_LU_H
-#define SOFA_DEFAULTTYPE_MAT_SOLVE_LU_H
+#pragma once
 
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 
-namespace sofa
-{
-
-namespace defaulttype
+namespace sofa::type
 {
 
 /// Compute the LU decomposition of matrix a. a is replaced by its pivoted LU decomposition. indx stores pivoting indices.
@@ -135,8 +131,4 @@ void luinv( Mat<n,n,Real> &inv, Mat<n,n,Real> &m )
     }
 }
 
-} // namespace defaulttype
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::type

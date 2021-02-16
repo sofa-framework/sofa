@@ -146,7 +146,7 @@ const char* GUIManager::GetValidGUIName()
         }
         else
         {
-            msg_info("GUIManager") << "LastUsedGUI.ini not found; using default GUI.";
+            msg_info("GUIManager") << "lastUsedGUI.ini not found; using default GUI.";
         }
 
         std::list<GUICreator>::iterator it =guiCreators.begin();
