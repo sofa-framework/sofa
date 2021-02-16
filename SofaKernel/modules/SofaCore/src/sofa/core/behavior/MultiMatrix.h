@@ -59,7 +59,7 @@ public:
     MechanicalMatrix operator / (SReal f) const { return MechanicalMatrix(factors / f); }
 
     /// Declares that the operator<< is our friend so he can access the our private/protected members
-    friend std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m );
+    friend SOFA_CORE_API std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m );
 };
 
 /// Declares that there is an function operator<< for MechanicalMatrix.
