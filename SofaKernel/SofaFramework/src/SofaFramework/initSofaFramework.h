@@ -19,32 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_MULTI2MAPPING_CPP
-#include <sofa/core/Multi2Mapping.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#pragma once
+
+#include <SofaFramework/config.h>
 
 namespace sofa
 {
 
-namespace core
-{
+void SOFA_SOFAFRAMEWORK_API initSofaFramework();
 
-using namespace sofa::defaulttype;
-using namespace core::behavior;
+} // namespace sofa
 
 
-
-template class SOFA_CORE_API Multi2Mapping< Vec1Types, Rigid3Types, Rigid3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec3Types, Rigid3Types, Vec3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec3Types, Rigid3Types, Rigid3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec3Types, Vec3Types, Vec3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec3Types, Vec1Types, Vec3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec1Types, Vec3Types, Rigid3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec1Types, Rigid3Types, Vec3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec1Types, Vec1Types, Rigid3Types >;
-
-
-}
-
-}

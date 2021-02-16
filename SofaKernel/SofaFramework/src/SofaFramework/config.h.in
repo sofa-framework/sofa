@@ -19,28 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSofaFramework.h"
+#pragma once
 
-#include <sofa/core/init.h>
-#include <sofa/defaulttype/init.h>
-#include <sofa/helper/init.h>
-#include <sofa/simulation/init.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace sofa
-{
+#define SOFAFRAMEWORK_VERSION @PROJECT_VERSION@
 
-void initSofaFramework()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    sofa::core::init();
-    sofa::defaulttype::init();
-    sofa::helper::init();
-    sofa::simulation::core::init();
-}
-
-} // namespace sofa
+#ifdef SOFA_BUILD_SOFAFRAMEWORK
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_SOFAFRAMEWORK_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAFRAMEWORK_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif

@@ -19,32 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_MULTI2MAPPING_CPP
-#include <sofa/core/Multi2Mapping.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
 namespace sofa
 {
 
-namespace core
+// this is obviously useless
+// but it forces MSVC to generate a .lib file.
+// once Sofa.Config becomes a header-only library, this can be deleted.
+SOFA_EXPORT_DYNAMIC_LIBRARY void initSofaConfig()
 {
-
-using namespace sofa::defaulttype;
-using namespace core::behavior;
-
-
-
-template class SOFA_CORE_API Multi2Mapping< Vec1Types, Rigid3Types, Rigid3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec3Types, Rigid3Types, Vec3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec3Types, Rigid3Types, Rigid3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec3Types, Vec3Types, Vec3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec3Types, Vec1Types, Vec3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec1Types, Vec3Types, Rigid3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec1Types, Rigid3Types, Vec3Types >;
-template class SOFA_CORE_API Multi2Mapping< Vec1Types, Vec1Types, Rigid3Types >;
-
-
+    ;
 }
 
-}
+} // namespace sofa

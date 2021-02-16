@@ -77,32 +77,31 @@ std::string cleanPath( const std::string& path )
 // Initialize PluginRepository and DataRepository
 #ifdef WIN32
 FileRepository PluginRepository(
-        "SOFA_PLUGIN_PATH", {
-            Utils::getExecutableDirectory(),
-            Utils::getSofaPathTo("bin"),
-            Utils::getSofaPathTo("plugins")
-        }
+    "SOFA_PLUGIN_PATH",
+    {
+        Utils::getSofaPathTo("plugins"),
+        Utils::getSofaPathTo("bin"),
+        Utils::getExecutableDirectory(),
+    }
 );
 #else
 FileRepository PluginRepository(
-        "SOFA_PLUGIN_PATH", {
-            Utils::getSofaPathTo("lib"),
-            Utils::getSofaPathTo("plugins"),
-        }
+    "SOFA_PLUGIN_PATH",
+    {
+        Utils::getSofaPathTo("plugins"),
+        Utils::getSofaPathTo("lib"),
+    }
 );
 #endif
 FileRepository DataRepository(
-        "SOFA_DATA_PATH",
-        {
-                Utils::getSofaPathTo("share/sofa"),
-                Utils::getSofaPathTo("share/sofa/examples")
-        },
-        {
-            {
-                Utils::getSofaPathTo("etc/sofa.ini"),
-                {"SHARE_DIR", "EXAMPLES_DIR"}
-            }
-        }
+    "SOFA_DATA_PATH",
+    {
+        Utils::getSofaPathTo("share/sofa"),
+        Utils::getSofaPathTo("share/sofa/examples")
+    },
+    {
+        { Utils::getSofaPathTo("etc/sofa.ini"), {"SHARE_DIR", "EXAMPLES_DIR"} }
+    }
 );
 
 FileRepository::FileRepository(const char* envVar, const std::vector<std::string> & paths, const fileKeysMap& iniFilesAndKeys) {
