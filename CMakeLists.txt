@@ -190,6 +190,7 @@ add_subdirectory(extlibs)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Testing)
     # Depends on SofaSimulation
     add_subdirectory(tools/SofaGTestMain)
 endif()
