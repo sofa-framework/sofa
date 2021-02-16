@@ -34,6 +34,7 @@ const MechanicalMatrix MechanicalMatrix::M(1,0,0);
 const MechanicalMatrix MechanicalMatrix::B(0,1,0);
 const MechanicalMatrix MechanicalMatrix::K(0,0,1);
 
+/// Definition of the operator<< for MechanicalMatrix.
 std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m )
 {
     out << '(';
