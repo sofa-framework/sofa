@@ -221,11 +221,11 @@ template<> SOFA_SOFABASELINEARSOLVER_API void FullVector<bool>::add(Index i, SRe
 template<> SOFA_SOFABASELINEARSOLVER_API bool FullVector<bool>::dot(const FullVector<Real>& a) const;
 template<> SOFA_SOFABASELINEARSOLVER_API double FullVector<bool>::norm() const;
 
-#if !defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
 SOFA_SOFABASELINEARSOLVER_API std::ostream& operator <<(std::ostream& out, const FullVector<float>& v);
 SOFA_SOFABASELINEARSOLVER_API std::ostream& operator <<(std::ostream& out, const FullVector<double>& v);
 SOFA_SOFABASELINEARSOLVER_API std::ostream& operator <<(std::ostream& out, const FullVector<bool>& v);
 
+#if !defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
 extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<float>;
 extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<double>;
 extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<bool>;
