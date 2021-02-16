@@ -28,6 +28,9 @@ namespace sofa::type
 template <sofa::Size L, sofa::Size C, class Real>
 class Mat;
 
+template <sofa::Size L, sofa::Size C, class Real>
+class MatNoInit;
+
 typedef Mat<1,1,float> Mat1x1f;
 typedef Mat<1,1,double> Mat1x1d;
 

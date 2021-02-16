@@ -33,12 +33,6 @@
 
 namespace sofa::defaulttype
 {
-    template <sofa::Size L, sofa::Size C, class real = float>
-    using Mat = sofa::type::Mat<L, C, real>;
-
-    template <sofa::Size L, sofa::Size C, class real = float>
-    using MatNoInit = sofa::type::MatNoInit<L, C, real>;
-
     template<class real>
     inline real determinant(const Mat<3, 3, real>& m)
     {
