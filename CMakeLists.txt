@@ -186,6 +186,12 @@ add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Testing)
+    
+    # add tests of previous projects, now that we have Sofa.Testing enabled
+    set(SOFAKERNEL_LIST_TARGET_UNITTESTS SofaHelper SofaDefaultType SofaCore SofaSimulationCore SofaSimulationGraph)
+    foreach(target ${SOFAKERNEL_LIST_TARGET_UNITTESTS})
+        add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/${target}/${target}_test)
+    endforeach()
 endif()
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)

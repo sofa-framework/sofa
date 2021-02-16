@@ -17,10 +17,7 @@ if(SOFAHELPER_HAVE_BOOST_SYSTEM
 else()
     sofa_set_01(SOFAHELPER_HAVE_BOOST VALUE FALSE BOTH_SCOPES)
 endif()
-# GTest
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    sofa_find_package(GTest CONFIG BOTH_SCOPES)
-endif()
+
 # Eigen (header only)
 find_package(Eigen3 REQUIRED)
 # Json (header only) needed by AdvancedTimer
@@ -321,11 +318,6 @@ if(Boost_FOUND)
     endif()
 endif()
 
-# GTest
-if((SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE) AND GTest_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC gtest)
-endif()
-
 # Eigen (header only)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
@@ -340,7 +332,3 @@ sofa_add_targets_to_package(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaFramework"
     )
-
-if(SOFA_BUILD_TESTS)
-    add_subdirectory(SofaHelper_test)
-endif()

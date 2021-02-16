@@ -26,9 +26,6 @@ endif()
 if(SOFAHELPER_HAVE_GLEW)
     find_package(GLEW QUIET REQUIRED)
 endif()
-if(SOFAHELPER_HAVE_GTEST)
-    find_package(GTest CONFIG QUIET REQUIRED)
-endif()
 
 # Eigen3 is required by SofaDefaultType and SofaHelper
 find_package(Eigen3 QUIET REQUIRED)

@@ -21,24 +21,25 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaSimulationGraph/config.h>
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/config.h>
+
+#include <sofa/testing/BaseTest.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa::helper::testing
+namespace sofa::testing
 {
 using sofa::simulation::Node ;
 using sofa::simulation::Simulation ;
 
-class SOFA_SOFASIMULATIONGRAPH_API BaseSimulationTest : public virtual BaseTest
+class SOFA_TESTING_API BaseSimulationTest : public virtual BaseTest
 {
 public:
     BaseSimulationTest() ;
 
     bool importPlugin(const std::string& name) ;
 
-    class SOFA_SOFASIMULATIONGRAPH_API SceneInstance
+    class SOFA_TESTING_API SceneInstance
     {
     public:
          SceneInstance(const std::string& rootname="root") ;
@@ -56,4 +57,4 @@ public:
     } ;
 };
 
-} // namespace sofa::helper::testing
+} // namespace sofa::testing

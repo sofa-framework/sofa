@@ -279,7 +279,3 @@ sofa_add_targets_to_package(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaFramework"
     )
-
-if(SOFA_BUILD_TESTS)
-    add_subdirectory(SofaCore_test)
-endif()

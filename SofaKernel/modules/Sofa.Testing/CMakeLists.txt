@@ -19,6 +19,7 @@ set(HEADER_FILES
     ${SOFATESTINGSRC_ROOT}/BaseTest.h
     ${SOFATESTINGSRC_ROOT}/NumericTest.h
     ${SOFATESTINGSRC_ROOT}/TestMessageHandler.h
+    ${SOFATESTINGSRC_ROOT}/BaseSimulationTest.h
 )
 
 set(SOURCE_FILES
@@ -26,6 +27,7 @@ set(SOURCE_FILES
     ${SOFATESTINGSRC_ROOT}/BaseTest.cpp
     ${SOFATESTINGSRC_ROOT}/NumericTest.cpp
     ${SOFATESTINGSRC_ROOT}/TestMessageHandler.cpp
+    ${SOFATESTINGSRC_ROOT}/BaseSimulationTest.cpp
 )
 
 
@@ -35,10 +37,14 @@ set (COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/helper/testing/BaseTest.h
 	${COMPATSRC_ROOT}/sofa/helper/testing/NumericTest.h
 	${COMPATSRC_ROOT}/sofa/helper/testing/TestMessageHandler.h
+    ${COMPATSRC_ROOT}/SofaSimulationGraph/testing/BaseSimulationTest.h
 )
 
+find_package(SofaFramework REQUIRED)
+find_package(SofaSimulationGraph REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType SofaCore gtest SofaGTestMain)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType SofaCore gtest SofaGTestMain SofaSimulationGraph)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
 source_group("compat" FILES ${COMPAT_HEADER_FILES} )

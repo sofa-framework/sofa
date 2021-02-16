@@ -21,13 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/testing/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
 
-//SOFA_DEPRECATED_HEADER(v21.12, "sofa/testing/TestMessageHandler.h")
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/testing/BaseSimulationTest.h")
 
-namespace sofa::helper::logging
+namespace sofa::helper
 {
-    using sofa::testing::MessageAsTestFailure;
-    using sofa::testing::IgnoreMessage;
-    using sofa::testing::MainGtestMessageHandler;
+    namespace testing = sofa::testing;
 }
