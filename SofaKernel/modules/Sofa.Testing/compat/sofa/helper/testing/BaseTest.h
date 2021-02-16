@@ -19,7 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <sofa/testing/NumericTest.h>
+#include <sofa/testing/BaseTest.h>
 
-template struct SOFA_TESTING_API sofa::testing::NumericTest<double>;
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/testing/BaseTest.h")
+
+namespace sofa::helper
+{
+    namespace testing = sofa::testing;
+}
+
+//{
+//    const SReal g_minDeltaErrorRatio = sofa::testing::g_minDeltaErrorRatio;
+//
+//    using BaseTest = sofa::testing::BaseTest;
+//
+//} // namespace sofa::helper::testing

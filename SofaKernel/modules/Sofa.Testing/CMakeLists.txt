@@ -28,9 +28,20 @@ set(SOURCE_FILES
     ${SOFATESTINGSRC_ROOT}/TestMessageHandler.cpp
 )
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+
+# Compatibility files
+set (COMPATSRC_ROOT "compat/")
+set (COMPAT_HEADER_FILES
+    ${COMPATSRC_ROOT}/sofa/helper/testing/BaseTest.h
+	${COMPATSRC_ROOT}/sofa/helper/testing/NumericTest.h
+	${COMPATSRC_ROOT}/sofa/helper/testing/TestMessageHandler.h
+)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType SofaCore gtest SofaGTestMain)
 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
+source_group("compat" FILES ${COMPAT_HEADER_FILES} )
 
 # own include dir, the macro does not handle "independent" package for SofaFramework-style include 
 # i.e NOT the name of package first (sofa/testing is wanted, instead of Sofa.Testing/)

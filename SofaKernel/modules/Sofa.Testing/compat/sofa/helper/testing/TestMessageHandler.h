@@ -19,7 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <sofa/testing/NumericTest.h>
+#include <sofa/testing/TestMessageHandler.h>
 
-template struct SOFA_TESTING_API sofa::testing::NumericTest<double>;
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/testing/TestMessageHandler.h")
+
+namespace sofa::helper
+{
+    namespace testing = sofa::testing;
+}
