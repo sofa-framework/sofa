@@ -59,6 +59,8 @@ typedef Mat<4,4,SReal> Matrix4;
 namespace sofa::defaulttype
 {
 using sofa::type::Mat;
+using sofa::type::MatNoInit;
+
 using sofa::type::Mat1x1f;
 using sofa::type::Mat1x1d;
 
