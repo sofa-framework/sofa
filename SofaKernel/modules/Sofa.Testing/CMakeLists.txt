@@ -5,9 +5,9 @@ project(Sofa.Testing LANGUAGES CXX)
 enable_testing()
 
 # add gtest library
-# add_subdirectory(extlibs/gtest)
-# Depends on SofaSimulation
-# add_subdirectory(tools/SofaGTestMain)
+add_subdirectory(extlibs/gtest)
+# add custom gtest main
+add_subdirectory(SofaGTestMain)
 
 set(SOFATESTINGSRC_ROOT "src/sofa/testing")
 
@@ -39,4 +39,4 @@ sofa_create_package_with_targets(
     RELOCATABLE "plugins"
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaFramework)
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Testing)
