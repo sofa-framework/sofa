@@ -25,10 +25,10 @@
 
 namespace sofa::type
 {
-template <sofa::Size L, sofa::Size C, class Real>
+template <sofa::Size L, sofa::Size C, class Real=float>
 class Mat;
 
-template <sofa::Size L, sofa::Size C, class Real>
+template <sofa::Size L, sofa::Size C, class Real=float>
 class MatNoInit;
 
 typedef Mat<1,1,float> Mat1x1f;

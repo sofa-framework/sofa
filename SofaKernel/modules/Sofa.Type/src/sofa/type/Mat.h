@@ -46,7 +46,7 @@ namespace // anonymous
 namespace sofa::type
 {
 
-template <sofa::Size L, sofa::Size C, class real=float>
+template <sofa::Size L, sofa::Size C, class real>
 class Mat : public stdtype::fixed_array<VecNoInit<C,real>, L>
 {
 public:
@@ -734,7 +734,7 @@ template <sofa::Size L, sofa::Size C, typename real> Mat<L,L,real> Mat<L,C,real>
 
 
 /// Same as Mat except the values are not initialized by default
-template <sofa::Size L, sofa::Size C, typename real=float>
+template <sofa::Size L, sofa::Size C, typename real>
 class MatNoInit : public Mat<L,C,real>
 {
 public:
