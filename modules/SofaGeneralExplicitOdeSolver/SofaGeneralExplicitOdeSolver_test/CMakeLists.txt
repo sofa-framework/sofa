@@ -13,6 +13,6 @@ list(APPEND SOURCE_FILES
 find_package(SofaGeneralExplicitOdeSolver REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaGeneralExplicitOdeSolver)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest SofaGeneralExplicitOdeSolver)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

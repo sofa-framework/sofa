@@ -342,7 +342,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
               TypeTuple<Rigid3Types, Rigid3Mass>
               ,TypeTuple<Vec1dTypes, double>

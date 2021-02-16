@@ -141,7 +141,7 @@ public:
 /// The macros are mimicking the way gtest macros are working... and thus as any macro are really
 /// hard to understand and error prone.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#define IGNORE_MSG(t) sofa::helper::logging::IgnoreMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarI_, __LINE__) ( sofa::helper::logging::Message::t)
+#define IGNORE_MSG(t) sofa::testing::IgnoreMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarI_, __LINE__) ( sofa::helper::logging::Message::t)
 
 ///From http://en.cppreference.com/w/cpp/preprocessor/replace
 #define EXPECT_MSG_PASTER(x,y) x ## _ ## y

@@ -28,7 +28,7 @@ using std::vector;
 using std::string;
 
 #include <gtest/gtest.h>
-using testing::Types;
+using ::testing::Types;
 
 #include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>

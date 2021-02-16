@@ -220,7 +220,7 @@ struct ConstantForceField_test : public Sofa_test<>
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
 TypeTuple<Rigid2Types, Rigid2Mass>
 ,TypeTuple<Vec1dTypes, double>

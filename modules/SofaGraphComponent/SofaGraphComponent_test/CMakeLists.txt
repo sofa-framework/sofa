@@ -12,6 +12,6 @@ find_package(SofaGraphComponent REQUIRED)
 
 #add_definitions("-DSOFAGENERALTOPOLOGY_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaGraphComponent)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest SofaGraphComponent)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

@@ -221,7 +221,7 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public Elasticity_test<
 };
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
+using ::testing::Types;
 typedef Types<
     Vec3Types
 > DataTypes; // the types to instanciate.
