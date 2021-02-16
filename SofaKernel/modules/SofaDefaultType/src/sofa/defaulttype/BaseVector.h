@@ -35,7 +35,7 @@ namespace defaulttype
 ///
 /// Note that accessing values using this class is rather slow and should only be used in codes where the
 /// provided genericity is necessary.
-class BaseVector
+class SOFA_DEFAULTTYPE_API BaseVector
 {
 public:
     typedef sofa::Index Index;
@@ -167,7 +167,7 @@ public:
     /// Reset the value of element i to 0
     virtual void clear(Index i) { set(i,0.0); }
 
-    friend std::ostream& operator << (std::ostream& out, const BaseVector& v );
+    friend SOFA_DEFAULTTYPE_API std::ostream& operator << (std::ostream& out, const BaseVector& v );
 };
 
 /// Declare that the operator >> exists but is defined in a BaseMatrix.cpp
