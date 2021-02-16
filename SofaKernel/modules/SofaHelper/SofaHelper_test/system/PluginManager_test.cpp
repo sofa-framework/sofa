@@ -97,8 +97,12 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
 {
     PluginManager&pm = PluginManager::getInstance();
 
-    std::string pluginPath = FileSystem::cleanPath(pluginDir + separator + prefix + pluginFileName + dotExt);
-    std::string nonpluginPath = FileSystem::cleanPath(pluginDir + separator + prefix + nonpluginName + dotExt);
+    std::string pluginPath = pluginDir + separator + prefix + pluginFileName + dotExt;
+    std::string nonpluginPath = pluginDir + separator + prefix + nonpluginName + dotExt;
+
+    std::cout << "PluginManager_test.loadTestPluginByPath: "
+              << "pluginPath = " << pluginPath
+              << std::endl;
 
     /// Check that existing plugins are correctly handled and returns no
     /// error/warning message.
@@ -107,9 +111,6 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
 
         std::cout << "PluginManager_test.loadTestPluginByPath: "
                   << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
-                  << std::endl;
-        std::cout << "PluginManager_test.loadTestPluginByPath: "
-                  << "pluginPath = " << pluginPath
                   << std::endl;
         ASSERT_TRUE(pm.loadPluginByPath(pluginPath));
         ASSERT_GT(pm.findPlugin(pluginName).size(), 0u);
