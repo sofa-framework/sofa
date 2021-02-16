@@ -215,7 +215,8 @@ public:
 
     static const char* Name() { return "FullVector"; }
 
-    friend std::ostream& operator << (std::ostream& out, const FullVector<Real>& v );
+    template<typename Real2>
+    friend std::ostream& operator << (std::ostream& out, const FullVector<Real2>& v );
 };
 
 template<> SOFA_SOFABASELINEARSOLVER_API void FullVector<bool>::set(Index i, SReal v);
@@ -224,6 +225,10 @@ template<> SOFA_SOFABASELINEARSOLVER_API bool FullVector<bool>::dot(const FullVe
 template<> SOFA_SOFABASELINEARSOLVER_API double FullVector<bool>::norm() const;
 
 #if !defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
+template<> SOFA_SOFABASELINEARSOLVER_API std::ostream& operator <<(std::ostream& out, const FullVector<float>& v);
+template<> SOFA_SOFABASELINEARSOLVER_API std::ostream& operator <<(std::ostream& out, const FullVector<double>& v);
+template<> SOFA_SOFABASELINEARSOLVER_API std::ostream& operator <<(std::ostream& out, const FullVector<bool>& v);
+
 extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<float>;
 extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<double>;
 extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<bool>;
