@@ -11,19 +11,25 @@ add_subdirectory(SofaGTestMain)
 
 set(SOFATESTINGSRC_ROOT "src/sofa/testing")
 
-sofa_find_package(Sofa.Config REQUIRED BOTH_SCOPES)
+find_package(SofaFramework REQUIRED)
 
 set(HEADER_FILES
     ${SOFATESTINGSRC_ROOT}/config.h.in
     ${SOFATESTINGSRC_ROOT}/initSofa.Testing.h
+    ${SOFATESTINGSRC_ROOT}/BaseTest.h
+    ${SOFATESTINGSRC_ROOT}/NumericTest.h
+    ${SOFATESTINGSRC_ROOT}/TestMessageHandler.h
 )
 
 set(SOURCE_FILES
     ${SOFATESTINGSRC_ROOT}/initSofa.Testing.cpp
+    ${SOFATESTINGSRC_ROOT}/BaseTest.cpp
+    ${SOFATESTINGSRC_ROOT}/NumericTest.cpp
+    ${SOFATESTINGSRC_ROOT}/TestMessageHandler.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config gtest)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType SofaCore gtest SofaGTestMain)
 
 
 # own include dir, the macro does not handle "independent" package for SofaFramework-style include 

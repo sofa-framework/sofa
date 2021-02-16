@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/testing/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// This file organization:
@@ -27,14 +27,10 @@
 ///     - PRIVATE DEFINITION   (the implementation of the private classes)
 ///     - PUBLIC  DEFINITION   (the implementation of the public classes)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace sofa
+namespace sofa::testing
 {
 
-namespace helper
-{
-
-namespace logging
-{
+ using namespace helper::logging;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// PRIVATE DECLARATION /////////////////////////////////////////////////
@@ -86,7 +82,7 @@ public:
 
 
 
-class SOFA_HELPER_API GtestMessageHandler : public MessageHandler
+class SOFA_TESTING_API GtestMessageHandler : public MessageHandler
 {
     std::vector<std::vector<GtestMessageFrame*> > m_gtestframes;
 
@@ -100,7 +96,7 @@ public:
     void popFrame(Message::Type type) ;
 };
 
-class SOFA_HELPER_API MainGtestMessageHandlerPrivate
+class SOFA_TESTING_API MainGtestMessageHandlerPrivate
 {
 public:
     static GtestMessageHandler& getInstance() ;
@@ -261,9 +257,4 @@ IgnoreMessage::~IgnoreMessage(){
 }
 
 
-} // logging
-} // helper
-
-} // sofa
-
-
+} // namespace sofa::testing

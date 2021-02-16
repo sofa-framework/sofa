@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/BaseTest.h>
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
@@ -39,23 +40,23 @@ using sofa::helper::BackTrace;
 
 #include <sofa/helper/system/console.h>
 
-#include <sofa/helper/testing/TestMessageHandler.h>
+#include <sofa/helper/logging/MessageDispatcher.h>
 using sofa::helper::logging::MessageDispatcher ;
-using sofa::helper::logging::MainGtestMessageHandler ;
+
+#include <sofa/testing/TestMessageHandler.h>
+using sofa::testing::MainGtestMessageHandler ;
 
 #include <sofa/helper/random.h>
 
-#include "BaseTest.h"
 
-namespace sofa {
-namespace helper {
-namespace testing {
+namespace sofa::testing
+{
 
 void initializeOnce()
 {
     static bool initialized = false ;
     if(!initialized){
-        console::setStatus(console::Status::Off) ;
+        helper::console::setStatus(helper::console::Status::Off) ;
 
         MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() ) ;
         BackTrace::autodump() ;
@@ -81,7 +82,7 @@ BaseTest::BaseTest() :
 
     ///gtest already use color so we remove the color from the sofa message to make the distinction
     ///clean and avoid ambiguity.
-    console::setStatus(console::Status::Off);
+    helper::console::setStatus(helper::console::Status::Off);
 
     ///Repeating this for each class is harmless because addHandler test if the handler is already installed and
     ///if so it don't install it again.
@@ -101,8 +102,4 @@ void BaseTest::TearDown()
 }
 
 
-} /// testing
-} /// helper
-} /// sofa
-
-
+} // namespace sofa::testing

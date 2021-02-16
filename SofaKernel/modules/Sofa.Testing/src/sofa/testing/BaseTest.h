@@ -19,27 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_BASETEST_H
-#define SOFA_BASETEST_H
+#pragma once
+
+#include <sofa/testing/config.h>
 
 #include <gtest/gtest.h>
-#include <sofa/helper/testing/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 
-namespace sofa {
-namespace helper {
-namespace testing {
+namespace sofa::testing
+{
 /// acceptable ratio between finite difference delta and error threshold
 const SReal g_minDeltaErrorRatio = .1;
 
 /** @brief Base class for Sofa test fixtures.
   */
-class SOFA_HELPER_API BaseTest : public ::testing::Test
+class SOFA_TESTING_API BaseTest : public ::testing::Test
 {
 public:
     /// To prevent that you simply need to add the line
     /// EXPECT_MSG_EMIT(Error); Where you want to allow a message.
-    sofa::helper::logging::MessageAsTestFailure m_fatal ;
-    sofa::helper::logging::MessageAsTestFailure m_error ;
+    sofa::testing::MessageAsTestFailure m_fatal ;
+    sofa::testing::MessageAsTestFailure m_error ;
 
     /// Initialize Sofa and the random number generator
     BaseTest() ;
@@ -56,9 +56,4 @@ private:
     void TearDown() override ;
 };
 
-} /// namespace testing
-} /// namespace helper
-} /// namespace sofa
-
-
-#endif // SOFA_BASETEST_H
+} // namespace sofa::testing

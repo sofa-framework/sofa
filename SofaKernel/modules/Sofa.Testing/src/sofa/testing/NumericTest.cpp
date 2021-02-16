@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "NumericTest.h"
+#include <sofa/testing/NumericTest.h>
 
-template struct SOFA_HELPER_API sofa::helper::testing::NumericTest<double>;
+template struct SOFA_TESTING_API sofa::testing::NumericTest<double>;
 

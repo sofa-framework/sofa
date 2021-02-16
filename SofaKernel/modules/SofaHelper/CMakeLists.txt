@@ -231,18 +231,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_windows.cpp)
 endif()
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    list(APPEND HEADER_FILES
-        ${SRC_ROOT}/testing/BaseTest.h
-        ${SRC_ROOT}/testing/NumericTest.h
-        ${SRC_ROOT}/testing/TestMessageHandler.h
-        )
-    list(APPEND SOURCE_FILES
-        ${SRC_ROOT}/testing/BaseTest.cpp
-        ${SRC_ROOT}/testing/NumericTest.cpp
-        ${SRC_ROOT}/testing/TestMessageHandler.cpp
-        )
-endif()
 if(Boost_THREAD_FOUND)
     list(APPEND HEADER_FILES ${SRC_ROOT}/system/thread/TimeoutWatchdog.h)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/system/thread/TimeoutWatchdog.cpp)

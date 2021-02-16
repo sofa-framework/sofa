@@ -19,8 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef TESTMESSAGEHANDLER_H
-#define TESTMESSAGEHANDLER_H
+#pragma once
+
+#include <sofa/testing/config.h>
 
 #include <sofa/helper/vector.h>
 #include <sofa/helper/logging/CountingMessageHandler.h>
@@ -61,13 +62,7 @@
 /// NB: This is done automatically if you are inhering from Sofa_test.
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::testing
 {
 /// Forward declaration of private classes.
 class GtestMessageFrame;
@@ -77,10 +72,10 @@ class GtestMessageFrame;
 ///    EXPECT_MSG_NOEMIT(Error) as a more 'good looking' version of
 ///
 /// sofa::helper::logging::MessageAsTestFailure failure(sofa::helper::logging::Message::Error, __FILE__, __LINE__);
-class SOFA_HELPER_API MessageAsTestFailure
+class SOFA_TESTING_API MessageAsTestFailure
 {
 public:
-    MessageAsTestFailure(Message::Type t,
+    MessageAsTestFailure(helper::logging::Message::Type t,
                            const char* filename="unknown", int lineno=0) ;
 
     virtual ~MessageAsTestFailure() ;
@@ -95,10 +90,10 @@ private:
 ///    EXPECT_MSG_EMIT(Error) as a more 'good looking' version of
 ///
 /// sofa::helper::logging::ExpectMessage failure(sofa::helper::logging::Message::Error, __FILE__, __LINE__);
-class SOFA_HELPER_API ExpectMessage
+class SOFA_TESTING_API ExpectMessage
 {
 public:
-    ExpectMessage(Message::Type t,
+    ExpectMessage(helper::logging::Message::Type t,
                    const char* filename="unknown", int lineno=0) ;
 
     virtual ~ExpectMessage() ;
@@ -113,10 +108,10 @@ private:
 ///    IGNORE_MSG(Error) as a more 'good looking' version of
 ///
 /// sofa::helper::logging::IgnoreMessage ignore(sofa::helper::logging::Message::Error);
-class SOFA_HELPER_API IgnoreMessage
+class SOFA_TESTING_API IgnoreMessage
 {
 public:
-    IgnoreMessage(Message::Type t) ;
+    IgnoreMessage(helper::logging::Message::Type t) ;
     virtual ~IgnoreMessage() ;
 
 private:
@@ -126,10 +121,10 @@ private:
 /// Inherited from MessageHandler, this handler must be installed to have the testing subsystem
 /// working. By default it is added in Sofa_test but if you are not inheriting from Sofa_test
 /// you have to install it manually.
-class SOFA_HELPER_API MainGtestMessageHandler
+class SOFA_TESTING_API MainGtestMessageHandler
 {
 public:
-    static MessageHandler* getInstance() ;
+    static helper::logging::MessageHandler* getInstance() ;
 };
 
 ////////////////////////////// MACROS TO EASE THE USERS ////////////////////////////////////////////
@@ -182,10 +177,4 @@ public:
 
 #define EXPECT_MSG_NOEMIT(...) EXPECT_MSG_NOEMIT_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
-} // logging
-} // helper
-
-} // sofa
-
-#endif // TESTMESSAGEHANDLER_H
-
+} // namespace sofa::testing
