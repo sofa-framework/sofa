@@ -1503,8 +1503,10 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
                 colorVector.push_back(color);
                 vertices.push_back(sofa::defaulttype::Vector3(x[c]));
             }
-            vparams->drawTool()->drawTriangles(vertices,color);
         }
+        vparams->drawTool()->drawTriangles(vertices, colorVector);
+        vertices.clear();
+        colorVector.clear();
     }    
 
     vparams->drawTool()->restoreLastState();
