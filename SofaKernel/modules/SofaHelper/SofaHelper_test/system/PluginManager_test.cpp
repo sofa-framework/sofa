@@ -61,7 +61,7 @@ struct PluginManager_test: public BaseTest
         // Set pluginDir by searching pluginFileName in the PluginRepository
         for ( std::string path : sofa::helper::system::PluginRepository.getPaths() )
         {
-            if ( FileSystem::exists(path + separator + pluginFileName + dotExt) )
+            if ( FileSystem::exists(path + separator + prefix + pluginFileName + dotExt) )
             {
                 pluginDir = path;
                 break;
