@@ -127,7 +127,6 @@ public:
     /// res = this^T * m
     void mulT( FullMatrix<Real>& res, const FullMatrix<Real>& m ) const;
 
-    friend std::ostream& operator << (std::ostream& out, const FullMatrix<Real>& v );
 
     static const char* Name();
 };
@@ -155,10 +154,16 @@ template<> const char* FullMatrix<float>::Name();
 
 
 #if !defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
+std::ostream& operator << (std::ostream& out, const FullMatrix<double>& v );
+std::ostream& operator << (std::ostream& out, const FullMatrix<float>& v );
+std::ostream& operator << (std::ostream& out, const FullMatrix<bool>& v );
 extern template class FullMatrix<double>;
 extern template class FullMatrix<float>;
 extern template class FullMatrix<bool>;
 
+std::ostream& operator << (std::ostream& out, const LPtrFullMatrix<double>& v );
+std::ostream& operator << (std::ostream& out, const LPtrFullMatrix<float>& v );
+std::ostream& operator << (std::ostream& out, const LPtrFullMatrix<bool>& v );
 extern template class LPtrFullMatrix<double>;
 extern template class LPtrFullMatrix<float>;
 extern template class LPtrFullMatrix<bool>;

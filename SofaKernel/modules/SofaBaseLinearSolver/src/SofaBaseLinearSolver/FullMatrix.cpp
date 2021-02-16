@@ -26,14 +26,16 @@ namespace sofa::component::linearsolver
 {
 
 #if defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
+std::ostream& operator<<(std::ostream& out, const FullMatrix<double>& v ){ return readFromStream(out, v); }
+std::ostream& operator<<(std::ostream& out, const FullMatrix<float>& v ){ return readFromStream(out, v); }
+std::ostream& operator<<(std::ostream& out, const FullMatrix<bool>& v ){ return readFromStream(out, v); }
 template class FullMatrix<double>;
 template class FullMatrix<float>;
 template class FullMatrix<bool>;
 
-std::ostream& operator<<(std::ostream& out, const FullMatrix<double>& v ){ return readFromStream(out, v); }
-std::ostream& operator<<(std::ostream& out, const FullMatrix<float>& v ){ return readFromStream(out, v); }
-std::ostream& operator<<(std::ostream& out, const FullMatrix<bool>& v ){ return readFromStream(out, v); }
-
+std::ostream& operator<<(std::ostream& out, const LPtrFullMatrix<double>& v ){ return readFromStream(out, v); }
+std::ostream& operator<<(std::ostream& out, const LPtrFullMatrix<float>& v ){ return readFromStream(out, v); }
+std::ostream& operator<<(std::ostream& out, const LPtrFullMatrix<bool>& v ){ return readFromStream(out, v); }
 template class LPtrFullMatrix<double>;
 template class LPtrFullMatrix<float>;
 template class LPtrFullMatrix<bool>;
