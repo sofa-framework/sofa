@@ -198,6 +198,12 @@ public:
         return sizeY;
     }
 
+    [[deprecated("2021-02-17: Method has been depreciate in PR #1788. Please use rowSize instead")]]
+    Size getSizeY() const {return  rowSize();}
+
+    [[deprecated("2021-02-17: Method has been depreciate in PR #1788. Please use colSize instead")]]
+    Size getSizeX() const {return  colSize();}
+
     Size getPitchDevice() const {
         return pitch_device;
     }
