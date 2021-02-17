@@ -171,7 +171,7 @@ public:
     void setWidget(const char* val) { widget = val; }
 
     /// True if the counter of modification gives valid information.
-    [[deprecated("2021-01-01: This method has been removed as Data<> must have, by design, their counter valid.")]]
+    SOFA_DEPRECATE_BASEDATA_API("This method has been removed as Data<> must have, by design, their counter valid.")
     bool isCounterValid() const { return true; }
 
     /// @name Flags
@@ -277,7 +277,7 @@ public:
     /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
     /// @return true if the copy was successful.
     SOFA_DEPRECATE_BASEDATA_API("The method is replaced by copyValueFrom().")
-    bool copyValue(const BaseData* data);
+    bool copyValue(const BaseData* data){ return copyValueFrom(data); }
 
     /// Copy the value from another Data.
     ///
