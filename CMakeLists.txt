@@ -1,11 +1,16 @@
 cmake_minimum_required(VERSION 3.12)
 project(Sofa) # Cannot use VERSION with patch like "00"
 
+include(CMakeDependentOption)
+
 # Manually define VERSION
 set(Sofa_VERSION_MAJOR 20)
 set(Sofa_VERSION_MINOR 12)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
+
+set(SOFA_VERSION_STR "\"${Sofa_VERSION}\"")
+set(SOFA_VERSION "${Sofa_VERSION_MAJOR}${Sofa_VERSION_MINOR}${Sofa_VERSION_PATCH}")
 
 set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel")
 if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR})
@@ -18,11 +23,18 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-include(CMakeDependentOption)
-
-# Enable the organisation in folders for generators that support
-# it. (E.g. some versions of Visual Studio have 'solution folders')
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+# Output Directories definition
+set(ARCHIVE_OUTPUT_DIRECTORY lib)
+set(RUNTIME_OUTPUT_DIRECTORY bin)
+if(WIN32)
+    set(LIBRARY_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
+else()
+    set(LIBRARY_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
+endif()
+## Set the output directories globally
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
 
 # Option for packaging
 option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
@@ -57,31 +69,17 @@ message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 # Remove generated CMake files, this prevents CMake from finding packages that
 # were disabled (like, unchecked in cmake-gui) after being built once.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/cmake)
+file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/lib/cmake)
 # Remove generated SofaPython configuration files, to prevent SofaPython from
 # adding paths to disabled plugins.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 
-set(ARCHIVE_OUTPUT_DIRECTORY lib)
-set(RUNTIME_OUTPUT_DIRECTORY bin)
+# Sofa.Config sets the environment (options, compiler flags, global variables)
+add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Config ${CMAKE_CURRENT_BINARY_DIR}/Sofa.Config)
 
-if(WIN32)
-    set(LIBRARY_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
-else()
-    set(LIBRARY_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
-endif()
-
-## Set the output directories globally
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
-
-## Environment
-list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/cmake")
-list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/cmake/Modules")
-list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/SofaFramework")
+## Custom Environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
 list(APPEND CMAKE_IGNORE_PATH "${CMAKE_INSTALL_PREFIX}") # ignore install directory for findXXX commands
 
 install(FILES
@@ -91,8 +89,6 @@ install(FILES
     DESTINATION lib/cmake/Modules
     COMPONENT headers
     )
-
-include(SofaMacros)
 
 ## RPATH
 if(UNIX)
@@ -121,8 +117,6 @@ if(UNIX)
         set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
     endif()
 endif(UNIX)
-
-include(CompilerOptions)
 
 ## Boost (1.54.0 or higher) is now mandatory.
 set(BOOST_MIN_VERSION "1.54.0")
@@ -158,14 +152,6 @@ if(MSVC)
     install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
 endif()
 
-### Mask
-option(SOFA_USE_MASK "Use mask optimization" OFF)
-
-### SOFA_DEV_TOOL
-option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
-
-### Threading
-option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL/EXPERIMENTAL)" ON)
 
 ### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
@@ -196,43 +182,6 @@ option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit 
 # This option is useful to compile SOFA + internal plugins without SofaPython soft dependencies (SofaExporter, SofaTest, Compliant, image, ...)
 # it simplifies binaries generation and future cohabitation between SofaPython and SofaPython3
 option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to SofaPython" ON)
-
-### Sofa using type double or float or both
-set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
-    "Type used for floating point values in SOFA. It actually determines:
-    - what template instanciations will be compiled (via the definition of the
-    SOFA_FLOAT and SOFA_DOUBLE macros)
-    - what is the type behind the 'SReal' typedef used throughout SOFA. (If 'both'
-    is selected, SReal defaults to double.)")
-set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
-
-if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
-    set(SOFA_DOUBLE 1)          # Used in sofa/config.h.in
-elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
-    set(SOFA_FLOAT 1)           # Used in sofa/config.h.in
-endif()
-
-# If you really don't understand the negated logics of SOFA_DOUBLE and
-# SOFA_FLOAT please consider using SOFA_WITH_FLOAT and SOFA_WITH_DOUBLE.
-# Eg: SOFA_WITH_FLOAT indicate that you need to generate the
-# float code and SOFA_WITH_DOUBLE indicates that you
-# nedd to generate the double related code.
-if(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
-    set(SOFA_WITH_FLOAT 1)
-endif()
-if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
-    set(SOFA_WITH_DOUBLE 1)
-endif()
-if(${SOFA_FLOATING_POINT_TYPE} STREQUAL both)
-    set(SOFA_WITH_FLOAT 1)
-    set(SOFA_WITH_DOUBLE 1)
-endif()
-
-### Deprecated components
-option(SOFA_WITH_DEPRECATED_COMPONENTS "Compile SOFA with all deprecated components" ON)
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    message(DEPRECATION "Deprecated components are activated (SOFA_WITH_DEPRECATED_COMPONENTS variable is ON)")
-endif()
 
 ### Extlibs
 add_subdirectory(extlibs)

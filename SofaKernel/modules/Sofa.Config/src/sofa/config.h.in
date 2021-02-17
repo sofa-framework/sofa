@@ -163,13 +163,6 @@ typedef unsigned __int64	uint64_t;
 // Macro definition is kept to avoid breaking all external plugins.
 #define SOFA_EXTERN_TEMPLATE
 
-#ifdef SOFA_BUILD_SOFAFRAMEWORK
-#  define SOFA_TARGET SofaFramework
-#  define SOFA_SOFAFRAMEWORK_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFAFRAMEWORK_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
 namespace sofa
 {
 	

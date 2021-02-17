@@ -150,7 +150,7 @@ void ParticleSource<DataTypes>::projectPosition(const sofa::core::MechanicalPara
     VecCoord& x = *xData.beginEdit();
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);
     helper::ReadAccessor<Data<VecIndex> > _lastparticles = this->m_lastparticles;    
-    msg_info() << "projectPosition: " << _lastparticles;
+    msg_info() << "projectPosition: " << _lastparticles.ref();
     for (unsigned int s = 0; s < _lastparticles.size(); s++)
     {
         x[_lastparticles[s]] = m_lastpos[s];

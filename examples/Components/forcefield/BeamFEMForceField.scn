@@ -2,12 +2,16 @@
 
 <!-- BeamFEMForceField example -->
 <Node name="root" dt="0.01">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name='SofaMiscMapping'/> 
-    <RequiredPlugin name='SofaGeneralLinearSolver'/>
-    <RequiredPlugin name='SofaGeneralTopology'/>
-    <RequiredPlugin name='SofaImplicitOdeSolver'/>
-    <RequiredPlugin name='SofaGeneralSimpleFem'/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName='SofaMiscMapping'/> 
+    <RequiredPlugin pluginName='SofaGeneralLinearSolver'/>
+    <RequiredPlugin pluginName='SofaGeneralTopology'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaDenseSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin pluginName='SofaRigid'/>
     
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
@@ -68,7 +72,7 @@
 -->
         <Node name="Collision">
             <MechanicalObject />
-            <SphereCollisionModel radius=".2" position="0 0 0 0 0 0" />
+            <SphereCollisionModel radius=".2" />
             <RigidMapping index="1" />
         </Node>
     </Node>

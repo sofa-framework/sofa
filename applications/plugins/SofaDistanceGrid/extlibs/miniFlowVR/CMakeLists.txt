@@ -37,12 +37,14 @@ add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/extlibs/MiniFlowVR>")
 
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17) # static_assert needs at least C++11 (not by default with clang5)
+
 # The code must be relocatable if we want to link a shared library against it
 if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
     target_compile_options(${PROJECT_NAME} PRIVATE "-fPIC")
 endif()
 
-include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
+include(SofaMacros)
 sofa_create_package_with_targets(
     PACKAGE_NAME MiniFlowVR
     PACKAGE_VERSION 0.1

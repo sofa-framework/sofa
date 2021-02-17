@@ -34,6 +34,10 @@ SOFA_SOFAPYTHON_API void initExternalModule()
         sofa::simulation::PythonEnvironment::Init();
         firstPythonInit = false;
     }
+
+    // Add a callback in PluginManager
+    // to auto-add future loaded plugins to sys.path
+    sofa::simulation::PythonEnvironment::addPluginManagerCallback();
 }
 
 SOFA_SOFAPYTHON_API const char* getModuleName()

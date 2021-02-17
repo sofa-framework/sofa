@@ -36,7 +36,7 @@ def createRigidCapsule(parentNode,name,x,y,z,*args):
 	SurfNode = node.createChild('Surf')
 	SurfNode.createObject('MechanicalObject',template='Vec3d',name='falling_particle',position=str(x_rand)+' '+str(y_rand)+' '+str(capsule_height/2)+' '+str(-x_rand)+' '+str(-y_rand)+' '+str(- capsule_height/2))
 	SurfNode.createObject('MeshTopology', name='meshTopology34',edges='0 1',drawEdges='1')
-	SurfNode.createObject('TCapsuleModel',template='Vec3d',name='capsule_model',defaultRadius=str(radius))
+	SurfNode.createObject('CapsuleCollisionModel',template='Vec3d',name='capsule_model',defaultRadius=str(radius))
 	SurfNode.createObject('RigidMapping',template='Rigid,Vec3d',name='rigid_mapping',input='@../rigidDOF',output='@falling_particle')
 
 	return node
@@ -59,7 +59,7 @@ def createFlexCapsule(parentNode,name,x,y,z,*args):
 	node.createObject('MechanicalObject',template='Vec3d',name='falling_particle',position=str(x + x_rand)+' '+str(y + y_rand)+' '+str(z + z_rand + capsule_height)+' '+str(x - x_rand)+' '+str(y - y_rand)+' '+str(z - z_rand),velocity='0 0 '+str(falling_speed))
 	mass = node.createObject('UniformMass',name='mass')
 	node.createObject('MeshTopology', name='meshTopology34',edges='0 1',drawEdges='1')
-	node.createObject('TCapsuleModel',template='Vec3d',name='capsule_model',defaultRadius=str(radius))
+	node.createObject('CapsuleCollisionModel',template='Vec3d',name='capsule_model',defaultRadius=str(radius))
 
 	return node
 
@@ -103,7 +103,7 @@ def createCapsuleChain(parentNode,name,length,x,y,z):
 	node.createObject('StiffSpringForceField',template='Vec3d',name='springforcefield',stiffness='100',damping='1',spring=springs)
 	mass = node.createObject('UniformMass',name='mass')
 	node.createObject('MeshTopology', name='meshTopology34',edges=topo_edges,drawEdges='1')
-	node.createObject('TCapsuleModel',template='Vec3d',name='capsule_model',defaultRadius=str(radius))
+	node.createObject('CapsuleCollisionModel',template='Vec3d',name='capsule_model',defaultRadius=str(radius))
 
 	return node
 

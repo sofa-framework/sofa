@@ -270,16 +270,8 @@ set (COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/helper/gl/Cylinder.h
     )
 
-# Create build and install versions of etc/sofa.ini:
-#   - In build dir, sofa.ini contains absolute paths to distant (in source) share/ and examples/ dirs
-#   - In install dir, sofa.ini (generated later via installedSofa.ini) contains relative paths to local share/ and examples/ dirs
-set(SHARE_DIR "${CMAKE_SOURCE_DIR}/share")
-set(EXAMPLES_DIR "${CMAKE_SOURCE_DIR}/examples")
-configure_file("etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-set(SHARE_DIR "../share/sofa")
-set(EXAMPLES_DIR "../share/sofa/examples")
-configure_file("etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
-install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini COMPONENT applications)
+
+find_package(Sofa.Config REQUIRED)
 
 # LIBRARY
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
@@ -301,28 +293,9 @@ endif()
 # SofaFramework/config.h
 set_property(SOURCE ${SRC_ROOT}/system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
 
-# Compile options
-if(CMAKE_SYSTEM_NAME STREQUAL Linux AND NOT CMAKE_BUILD_TYPE MATCHES "Debug")
-    target_compile_definitions(${PROJECT_NAME} PUBLIC "NDEBUG")
-    # On Windows and MacOS, NDEBUG and _DEBUG are automatically
-    # set in the default c/cxx flags of the right configurations
-endif()
-if(MSVC)
-    # Increase Number of Sections in .Obj file
-    target_compile_options(${PROJECT_NAME} PUBLIC "/bigobj")
-    if(SOFA_VECTORIZE)
-        # SSE2 flags
-        target_compile_options(${PROJECT_NAME} PUBLIC "/arch:SSE2 /fp:fast")
-    endif()
-endif()
-
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Silence attribute warnings (for example, ignored already defined external template)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
-
 # DEPENDENCY LINKS AND INCLUDE DIRS
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config )
 
 # System libs
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)

@@ -1,9 +1,13 @@
 <?xml version="1.0"?>
 <!-- BilateralInteractionConstraint example -->
 <Node name="root" dt="0.001" gravity="0 -981 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaMiscCollision"/>
-    <RequiredPlugin name='SofaLoader'/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaMiscCollision"/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaConstraint'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMeshCollision'/> 
+    <RequiredPlugin pluginName='SofaRigid'/>
     
     <VisualStyle displayFlags="showForceFields" />
     <FreeMotionAnimationLoop />
