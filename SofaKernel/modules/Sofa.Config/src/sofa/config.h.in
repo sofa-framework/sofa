@@ -165,7 +165,8 @@ typedef unsigned __int64	uint64_t;
 
 namespace sofa
 {
-	
+
+using SignedIndex = int32_t;
 using Index = uint32_t;
 using Size = uint32_t;
 
