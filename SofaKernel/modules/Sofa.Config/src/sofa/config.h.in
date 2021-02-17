@@ -135,10 +135,19 @@ typedef unsigned __int64	uint64_t;
 #define SOFA_DEPRECATE_BASEDATA_API(toFixMsg) \
     [[deprecated("BaseData Api has changed since 2021-01-01 (see PR 1503)." toFixMsg)]]
 
+#define SOFA_DEPRECATE_DATA_API(toFixMsg) \
+    [[deprecated("Data Api has changed since 2021-01-01 (see PR 1753)." toFixMsg)]]
+
 #define SOFA_DEPRECATE_DATALINK(toFixMsg) \
     [[deprecated("Link Api has changed since 2020-10-03 (see PR 1503)." toFixMsg)]]
 
+#define SOFA_DEPRECATE_COMPONENTSTATE(toFixMsg) \
+    [[deprecated("The attribute was renamed to d_componentState in PR#1358. " toFixMsg)]]
 
+#define SOFA_DEPRECATE_CLASSNAME_INTROSPECTION(toFixMsg) \
+    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed " \
+                 "the 01.01.2021. Information on how to update your code is provided in the PR " \
+                 "description. Information on how to update your code is provided in the PR description.")]]
 
 #define SOFA_DECL_CLASS(name) // extern "C" { int sofa_concat(class_,name) = 0; }
 #define SOFA_LINK_CLASS(name) // extern "C" { extern int sofa_concat(class_,name); int sofa_concat(link_,name) = sofa_concat(class_,name); }

@@ -101,34 +101,28 @@ public:
 
     ///////////////////////////////// DEPRECATED //////////////////////////////////////////////////
     /// Helper method to decode the type name
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_DEPRECATE_CLASSNAME_INTROSPECTION()
     static std::string decodeFullName(const std::type_info& t);
 
     /// Helper method to decode the type name to a more readable form if possible
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-            "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_DEPRECATE_CLASSNAME_INTROSPECTION()
     static std::string decodeTypeName(const std::type_info& t);
 
     /// Helper method to extract the class name (removing namespaces and templates)
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-    "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_DEPRECATE_CLASSNAME_INTROSPECTION()
     static std::string decodeClassName(const std::type_info& t);
 
     /// Helper method to extract the namespace (removing class name and templates)
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_DEPRECATE_CLASSNAME_INTROSPECTION()
     static std::string decodeNamespaceName(const std::type_info& t);
 
     /// Helper method to extract the template name (removing namespaces and class name)
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-    "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_DEPRECATE_CLASSNAME_INTROSPECTION()
     static std::string decodeTemplateName(const std::type_info& t);
 
     /// Helper method to get the type name
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_DEPRECATE_CLASSNAME_INTROSPECTION()
     static std::string defaultTypeName(const T* = nullptr)
     {
         return sofa::helper::NameDecoder::decodeTypeName(typeid(T));

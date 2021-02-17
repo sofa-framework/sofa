@@ -434,8 +434,7 @@ public:
     /// \code  T* ptr = nullptr; std::string type = T::typeName(ptr); \endcode
     /// This way derived classes can redefine the typeName method
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_DEPRECATE_CLASSNAME_INTROSPECTION()
     static std::string typeName(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
@@ -448,8 +447,7 @@ public:
     /// \code  std::string type = Base::className<B>(); \endcode
     /// This way derived classes can redefine the className method
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_DEPRECATE_CLASSNAME_INTROSPECTION()
     static std::string className(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
@@ -462,8 +460,7 @@ public:
     /// \code  std::string type = Base::namespaceName<T>(); \endcode
     /// This way derived classes can redefine the namespaceName method
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_DEPRECATE_CLASSNAME_INTROSPECTION()
     static std::string namespaceName(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
@@ -476,8 +473,7 @@ public:
     /// \code  std::string type = Base::templateName<B>); \endcode
     /// This way derived classes can redefine the templateName method
     template<class T>
-    [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
-                 "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
+    SOFA_DEPRECATE_CLASSNAME_INTROSPECTION()
     static std::string templateName(const T* ptr = nullptr)
     {
         SOFA_UNUSED(ptr);
@@ -531,10 +527,10 @@ public:
 
     Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< the object state
 
-    [[deprecated("m_componentstate was renamed to d_componentState in PR#1358. Please upgrade your code. Notification to be removed at v20.12")]]
+    SOFA_DEPRECATE_COMPONENTSTATE("To fix your code, use d_componentState")
     DeprecatedAndRemoved m_componentstate;
 
-    [[deprecated("d_componentState was renamed to d_componentState in PR#1358. Please upgrade your code. Notification to be removed at v20.12")]]
+    SOFA_DEPRECATE_COMPONENTSTATE("To fix your code, use d_componentState")
     DeprecatedAndRemoved d_componentstate;
 
     std::string m_definitionSourceFileName        {""};
