@@ -261,8 +261,8 @@ const std::string TypePrincipalStretchesStabilizedNHHexaTest::sceneName= "Assemb
 
 
 // Define the list of DataTypes to instanciate
-using testing::Types;
-typedef testing::Types<
+using ::testing::Types;
+typedef ::testing::Types<
     TypePrincipalStretchesStabilizedNHHexaTest
 > DataTypes; 
 
