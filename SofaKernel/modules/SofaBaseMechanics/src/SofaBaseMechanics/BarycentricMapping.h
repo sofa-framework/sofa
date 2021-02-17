@@ -64,8 +64,6 @@ public:
     typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
     typedef typename Inherit1::ForceMask ForceMask;
 
-    using core::Mapping<TIn, TOut>::d_componentState;
-
 public:
     Data< bool > useRestPosition; ///< Use the rest position of the input and output models to initialize the mapping    
 

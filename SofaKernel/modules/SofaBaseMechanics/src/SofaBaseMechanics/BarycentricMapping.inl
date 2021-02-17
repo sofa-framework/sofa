@@ -238,7 +238,7 @@ end:
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::init()
 {
-    d_componentState.setValue(ComponentState::Invalid) ;
+    this->d_componentState.setValue(ComponentState::Invalid) ;
 
     Inherit1::init();
 
@@ -259,30 +259,27 @@ void BarycentricMapping<TIn, TOut>::init()
         return;
     }
 
-    if (!this->toModel || !this->fromModel)
+    if (!this->toModel)
         return;
 
-    d_componentState.setValue(ComponentState::Valid) ;
-
     initMapper();
+
+    this->d_componentState.setValue(ComponentState::Valid) ;
 }
 
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::reinit()
 {
-    if (d_componentState.getValue() != ComponentState::Valid)
-        return;
-
-    d_mapper->clear();
-    initMapper();
+    if ( d_mapper != nullptr )
+    {
+        d_mapper->clear();
+        initMapper();
+    }
 }
 
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::initMapper()
 {
-    if (d_componentState.getValue() != ComponentState::Valid)
-        return;
-
     if (useRestPosition.getValue())
         d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::restPosition())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::restPosition())->getValue() );
     else
