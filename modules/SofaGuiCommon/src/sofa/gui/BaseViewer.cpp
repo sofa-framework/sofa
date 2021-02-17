@@ -178,7 +178,7 @@ void BaseViewer::resetView()
 
 void BaseViewer::setBackgroundColour(float r, float g, float b)
 {
-    _background = 2;
+    _background = 3;
     backgroundColour[0] = r;
     backgroundColour[1] = g;
     backgroundColour[2] = b;
