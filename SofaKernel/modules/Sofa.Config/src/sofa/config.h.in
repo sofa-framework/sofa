@@ -127,6 +127,19 @@ typedef unsigned __int64	uint64_t;
     This header is deprecated and will be removed at SOFA untilVersion.      \
     To fix this warning you must include newHeader instead. )
 
+#define SOFA_DEPRECATE_ASPECT(toFixMsg) \
+    [[deprecated(" \
+    Aspect has been deprecated since 2020-03-25 (see PR 1269). \
+    Related functions have been removed since 2021-03-25 (see PR 1793). " toFixMsg)]]
+
+#define SOFA_DEPRECATE_BASEDATA_API(toFixMsg) \
+    [[deprecated("BaseData Api has changed since 2021-01-01 (see PR 1503)." toFixMsg)]]
+
+#define SOFA_DEPRECATE_DATALINK(toFixMsg) \
+    [[deprecated("Link Api has changed since 2020-10-03 (see PR 1503)." toFixMsg)]]
+
+
+
 #define SOFA_DECL_CLASS(name) // extern "C" { int sofa_concat(class_,name) = 0; }
 #define SOFA_LINK_CLASS(name) // extern "C" { extern int sofa_concat(class_,name); int sofa_concat(link_,name) = sofa_concat(class_,name); }
 
