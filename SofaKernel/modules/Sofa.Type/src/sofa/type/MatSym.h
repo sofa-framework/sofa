@@ -534,7 +534,6 @@ bool invertMatrix(MatSym<2,real>& dest, const MatSym<2,real>& from)
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        //msg_error("MatSym") << "invertMatrix (special case 2x2) finds too small determinant: " << det << " for matrix = " << from;
         return false;
     }
 

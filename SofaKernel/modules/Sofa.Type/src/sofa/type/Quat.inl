@@ -582,12 +582,12 @@ type::Vec<3,Real> Quat<Real>::toEulerVector() const
     return vEuler;
 }
 
-/*! Returns the slerp interpolation of Quatnions \p a and \p b, at time \p t.
+/*! Returns the slerp interpolation of Quaternions \p a and \p b, at time \p t.
 
  \p t should range in [0,1]. Result is \p a when \p t=0 and \p b when \p t=1.
 
  When \p allowFlip is \c true (default) the slerp interpolation will always use the "shortest path"
- between the Quatnions' orientations, by "flipping" the source Quatnion if needed (see
+ between the Quaternions' orientations, by "flipping" the source Quatnion if needed (see
  negate()). */
 template<class Real>
 void Quat<Real>::slerp(const Quat& a, const Quat& b, Real t, bool allowFlip)

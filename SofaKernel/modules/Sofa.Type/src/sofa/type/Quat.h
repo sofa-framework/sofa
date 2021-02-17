@@ -84,7 +84,7 @@ public:
         return this->_q;
     }
 
-    /// Returns true if norm of Quatnion is one, false otherwise.
+    /// Returns true if norm of Quaternion is one, false otherwise.
     bool isNormalized();
 
     /// Normalize a quaternion
@@ -181,12 +181,12 @@ public:
     type::Vec<3,Real> toEulerVector() const;
 
 
-    /*! Returns the slerp interpolation of Quatnions \p a and \p b, at time \p t.
+    /*! Returns the slerp interpolation of Quaternions \p a and \p b, at time \p t.
 
      \p t should range in [0,1]. Result is \p a when \p t=0 and \p b when \p t=1.
 
      When \p allowFlip is \c true (default) the slerp interpolation will always use the "shortest path"
-     between the Quatnions' orientations, by "flipping" the source Quatnion if needed (see
+     between the Quaternions' orientations, by "flipping" the source Quaternion if needed (see
      negate()). */
     void slerp(const Quat& a, const Quat& b, Real t, bool allowFlip=true);
 
@@ -222,7 +222,7 @@ public:
     }
 
     /// Create a quaternion from Euler angles
-    /// Thanks to https://github.com/mrdoob/three.js/blob/dev/src/math/Quatnion.js#L199
+    /// Thanks to https://github.com/mrdoob/three.js/blob/dev/src/math/Quaternion.js#L199
     enum class EulerOrder
     {
         XYZ, YXZ, ZXY, ZYX, YZX, XZY
