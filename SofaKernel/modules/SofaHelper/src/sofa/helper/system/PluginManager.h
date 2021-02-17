@@ -169,7 +169,7 @@ public:
     void init();
     void init(const std::string& pluginPath);
 
-    std::string findPlugin(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, int maxRecursiveDepth = 6);
+    std::string findPlugin(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, int maxRecursiveDepth = 3);
     bool pluginIsLoaded(const std::string& plugin);
     bool checkDuplicatedPlugin(const Plugin& plugin, const std::string& pluginPath);
 
