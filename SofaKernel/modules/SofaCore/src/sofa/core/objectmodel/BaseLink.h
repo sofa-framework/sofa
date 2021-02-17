@@ -91,7 +91,7 @@ public:
 
     virtual Base* getOwnerBase() const = 0;
 
-    [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
+    SOFA_DEPRECATE_BASEDATA_API("Link cannot hold Data anymore. To update your code your code you need to use a DataLink.")
     sofa::core::objectmodel::BaseData* getOwnerData() const = delete;
 
     /// Set one of the flags.
@@ -106,7 +106,7 @@ public:
 
     bool isMultiLink() const { return getFlag(FLAG_MULTILINK); }
 
-    [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
+    SOFA_DEPRECATE_BASEDATA_API("Link cannot hold Data anymore. To update your code your code you need to use a DataLink.")
     bool isDataLink() const = delete;
     bool isStrongLink() const { return getFlag(FLAG_STRONGLINK); }
     bool isDoubleLink() const { return getFlag(FLAG_DOUBLELINK); }
@@ -129,7 +129,7 @@ public:
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("ExecParams are not needed anymore. To upgrade your code please replace getCounter(param) with getCounter().")
     int getCounter(const core::ExecParams*) const  = delete;
 
     void setLinkedBase(Base* link);
@@ -137,7 +137,8 @@ public:
     virtual size_t getSize() const = 0;
     Base* getLinkedBase(std::size_t index=0) const { return _doGet_(index); }
 
-    [[deprecated("2020-10-03: Deprecated since PR #1503. BaseLink cannot hold Data anymore. Use DataLink instead. Please update your code. ")]]
+
+    SOFA_DEPRECATE_BASEDATA_API("Link cannot hold Data anymore. To update your code your code you need to use a DataLink.")
     BaseData* getLinkedData(std::size_t index=0) const = delete;
 
     // Remove all links

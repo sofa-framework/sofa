@@ -317,49 +317,49 @@ public:
     {
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     size_t size(const core::ExecParams*) const = delete;
     size_t size() const
     {
         return static_cast<size_t>(m_value.size());
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     bool empty(const core::ExecParams* param) const  = delete;
     bool empty() const
     {
         return m_value.empty();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     const Container& getValue(const core::ExecParams*) const = delete;
     const Container& getValue() const
     {
         return m_value;
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     const_iterator begin(const core::ExecParams*) const = delete;
     const_iterator begin() const
     {
         return m_value.cbegin();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     const_iterator end(const core::ExecParams*) const = delete;
     const_iterator end() const
     {
         return m_value.cend();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     const_reverse_iterator rbegin(const core::ExecParams*) const = delete;
     const_reverse_iterator rbegin() const
     {
         return m_value.crbegin();
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     const_reverse_iterator rend(const core::ExecParams*) const = delete;
     const_reverse_iterator rend() const
     {
@@ -449,14 +449,14 @@ public:
         return size();
     }
 
-    [[deprecated("This function has been deprecated in PR#1503 and will be removed soon. Link<> cannot hold BaseData anymore. To make link between Data use DataLink instead.")]]
+    SOFA_DEPRECATE_DATALINK("Link<> cannot hold BaseData anymore. To make a link between Datas use DataLink instead.")
     BaseData* getLinkedData(std::size_t =0) const = delete;
     sofa::core::objectmodel::Base* getOwnerBase() const override
     {
         return m_owner;
     }
 
-    [[deprecated("This function has been deprecated in PR#1503 and will be removed soon. Link<> cannot hold BaseData anymore. To make link between Data use DataLink instead.")]]
+    SOFA_DEPRECATE_DATALINK("Link<> cannot hold BaseData anymore. To make a link between Datas use DataLink instead.")
     sofa::core::objectmodel::BaseData* getOwnerData() const = delete;
 
     void setOwner(OwnerType* owner)
@@ -594,7 +594,7 @@ public:
         m_validator = fn;
     }
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     DestType* get(std::size_t index, const core::ExecParams*) const = delete;
     DestType* get(std::size_t index) const
     {
@@ -679,7 +679,7 @@ public:
         m_validator = fn;
     }
 
-    [[deprecated("2020-01-12: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     DestType* get(const core::ExecParams*) const = delete;
     DestType* get() const
     {

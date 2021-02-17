@@ -101,7 +101,6 @@ public:
 
     ///////////////////////////////// DEPRECATED //////////////////////////////////////////////////
     /// Helper method to decode the type name
-    //SOFA_BEGIN_DEPRECATION_AS_ERROR
     [[deprecated("This function has been deprecated in #PR 1283. The function will be removed "
                  "the 01.01.2021. Information on how to update your code is provided in the PR description.")]]
     static std::string decodeFullName(const std::type_info& t);
@@ -134,7 +133,7 @@ public:
     {
         return sofa::helper::NameDecoder::decodeTypeName(typeid(T));
     }
-    //SOFA_END_DEPRECATION_AS_ERROR
+
 
 };
 

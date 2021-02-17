@@ -188,34 +188,34 @@ public:
         return m_value.getValue();
     }
 
-    [[deprecated("2021-01-21: virtualSetLink has been deprecated. You can update your code by using copyValueFrom() or setParent() depending on the expected behavior.")]]
+    SOFA_DEPRECATE_DATA_API("virtualSetLink has been deprecated. You can update your code by using copyValueFrom() or setParent() depending on the expected behavior.")
     void virtualSetLink(const BaseData& bd) = delete;
 
-    [[deprecated("2021-01-21: virtualGetValue has been deprecated. You can update your code by using .")]]
+    SOFA_DEPRECATE_DATA_API("virtualGetValue has been deprecated. You can update your code by using setValue().")
     void virtualSetValue(const T& v) = delete;
 
-    [[deprecated("2021-01-21: virtualGetValue has been deprecated. You can update your code by using .")]]
+    SOFA_DEPRECATE_DATA_API("virtualGetValue has been deprecated. You can update your code by using getValue().")
     const T& virtualGetValue() = delete;
 
-    [[deprecated("2021-01-21: virtualBeginEdit has been deprecated. You can update your code by using .")]]
+    SOFA_DEPRECATE_DATA_API("virtualBeginEdit has been deprecated. You can update your code by using beginEdit().")
     T* virtualBeginEdit() = delete;
 
-    [[deprecated("2021-01-21: virtualEndEdit has been deprecated. You can update your code by using .")]]
+    SOFA_DEPRECATE_DATA_API("virtualEndEdit has been deprecated. You can update your code by using endEdit().")
     void virtualEndEdit() = delete;
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("ExecParams are not needed anymore. Update your code by removing it from the function call.")
     void endEdit(const core::ExecParams*) = delete;
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("ExecParams are not needed anymore. Update your code by removing it from the function call.")
     T* beginWriteOnly(const core::ExecParams*) = delete;
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("ExecParams are not needed anymore. Update your code by removing it from the function call.")
     T* beginEdit(const core::ExecParams*) = delete;
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("ExecParams are not needed anymore. Update your code by removing it from the function call.")
     void setValue(const core::ExecParams*, const T& value) = delete;
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("ExecParams are not needed anymore. Update your code by removing it from the function call.")
     const T& getValue(const core::ExecParams*) const = delete;
     /// @}
 
@@ -239,10 +239,10 @@ public:
         return out;
     }
 
-    [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")]]
+    SOFA_DEPRECATE_DATA_API("Deprecated before definitive removal. Please update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")
     bool operator ==( const T& value ) const = delete;
 
-    [[deprecated("Deprecated before definitive removal (see PR#1639). Please update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")]]
+    SOFA_DEPRECATE_DATA_API("Deprecated before definitive removal. Please update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")
     bool operator!=( const T& value ) const = delete;
 
     void operator =( const T& value )
@@ -392,10 +392,10 @@ public:
     ReadAccessor(const data_container_type& d) : Inherit(d.getValue()) {}
     ReadAccessor(const data_container_type* d) : Inherit(d->getValue()) {}
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     ReadAccessor(const core::ExecParams*, const data_container_type& d) : Inherit(d.getValue()) {}
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     ReadAccessor(const core::ExecParams*, const data_container_type* d) : Inherit(d->getValue()) {}
 };
 
@@ -428,10 +428,10 @@ public:
     WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d) {}
     WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d) {}
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     WriteAccessor(const core::ExecParams*, data_container_type& d) : WriteAccessor(d) {}
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     WriteAccessor(const core::ExecParams*, data_container_type* d) : WriteAccessor(d) {}
     ~WriteAccessor() { data.endEdit(); }
 };
@@ -459,10 +459,10 @@ public:
     WriteOnlyAccessor(data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
     WriteOnlyAccessor(data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     WriteOnlyAccessor(const core::ExecParams*, data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     WriteOnlyAccessor(const core::ExecParams*, data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 };
 

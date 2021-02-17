@@ -70,32 +70,32 @@ public:
     virtual void update() = 0;
 
     /// Returns true if the DDGNode needs to be updated
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("Update your code by removing the ExecParam parameter at function call.")
     bool isDirty(const core::ExecParams*) const = delete;
     bool isDirty() const { return dirtyFlags.dirtyValue; }
 
     /// Indicate the value needs to be updated
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("Update your code by removing the ExecParam parameter at function call.")
     virtual void setDirtyValue(const core::ExecParams*) final = delete;
     virtual void setDirtyValue();
 
     /// Indicate the outputs needs to be updated. This method must be called after changing the value of this node.
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("Update your code by removing the ExecParam parameter at function call.")
     virtual void setDirtyOutputs(const core::ExecParams*) final = delete;
     virtual void setDirtyOutputs();
 
     /// Set dirty flag to false
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("Update your code by removing the ExecParam parameter at function call.")
     void cleanDirty(const core::ExecParams*) = delete;
     void cleanDirty();
 
     /// Notify links that the DGNode has been modified
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("Update your code by removing the ExecParam parameter at function call.")
     virtual void notifyEndEdit(const core::ExecParams*) final = delete;
     virtual void notifyEndEdit();
 
     /// Utility method to call update if necessary. This method should be called before reading of writing the value of this node.
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("Update your code by removing the ExecParam parameter at function call.")
     void updateIfDirty(const core::ExecParams*) const = delete;
     void updateIfDirty() const;
 
@@ -109,7 +109,7 @@ protected:
     virtual void doDelOutput(DDGNode* n);
 
     /// the dirtyOutputs flags of all the inputs will be set to false
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
     void cleanDirtyOutputsOfInputs(const core::ExecParams*) = delete;
     void cleanDirtyOutputsOfInputs();
 

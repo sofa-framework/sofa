@@ -133,18 +133,18 @@ public:
     }
 
     ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("Aspects have been removed, you can safely remove the function from your code.")
     int aspectID() const = delete;
 
-    /// Specify the aspect index of the current thread
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("Aspects have been removed, you can safely remove the function from your code.")
     ExecParams& setAspectID(int) = delete;
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("Aspects have been removed, you can safely remove the function from your code.")
     static int currentAspect() = delete;
 
-    [[deprecated("2020-03-25: Aspect have been deprecated for complete removal in PR #1269. If the feature was important to you contact sofa-dev. ")]]
+    SOFA_DEPRECATE_ASPECT("Aspects have been removed, you can safely remove the function from your code.")
     static int currentAspect(const core::ExecParams*) = delete;
+
 };
 
 } // namespace core
