@@ -42,7 +42,7 @@ namespace behavior
 class SOFA_CORE_API MultiMatrixAccessor
 {
 public:
-    using Index = sofa::Index ;
+    using Index = sofa::SignedIndex ;
 
     virtual ~MultiMatrixAccessor();
 
