@@ -816,7 +816,7 @@ void BTDLinearSolver<Matrix,Vector>::solve (Matrix& /*M*/, Vector& x, Vector& b)
     {
         x.asub(i,bsize) = alpha_inv[i]*(b.asub(i,bsize) - B[i]*x.asub((i-1),bsize));
     }
-    for (Index i=nb-2; i>=0; --i)
+    for (int i=nb-2; i>=0; --i)
     {
         x.asub(i,bsize) /* = Y.asub(i,bsize)- */ -= lambda[i]*x.asub((i+1),bsize);
     }
