@@ -23,6 +23,7 @@
 #define SOFA_CORE_MULTIMAPPING_INL
 
 #include <sofa/core/MultiMapping.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa
 {

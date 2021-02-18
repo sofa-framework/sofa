@@ -241,6 +241,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/BaseTopology.cpp
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp
     ${SRC_ROOT}/topology/BaseTopologyEngine.cpp
+    ${SRC_ROOT}/topology/TopologicalMapping.cpp
     ${SRC_ROOT}/topology/Topology.cpp
     ${SRC_ROOT}/topology/TopologyChange.cpp
     ${SRC_ROOT}/topology/TopologyElementHandler.cpp

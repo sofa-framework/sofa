@@ -29,7 +29,6 @@
 #include <SofaConstraint/ConstraintStoreLambdaVisitor.h>
 #include <algorithm>
 #include <sofa/core/behavior/MultiVec.h>
-#include <sofa/simulation/Node.h>
 
 namespace sofa::component::constraintset
 {
@@ -124,8 +123,7 @@ void GenericConstraintSolver::init()
     constraintCorrectionIsActive.resize(constraintCorrections.size());
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
         constraintCorrections[i]->addConstraintSolver(this);
-    context = (simulation::Node*) getContext();
-
+    context = getContext();
     simulation::common::VectorOperations vop(sofa::core::ExecParams::defaultInstance(), this->getContext());
     {
         sofa::core::behavior::MultiVecDeriv lambda(&vop, m_lambdaId);

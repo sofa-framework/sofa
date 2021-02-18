@@ -24,8 +24,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/simulation/Node.h>
-
 namespace sofa::component::projectiveconstraintset
 {
 

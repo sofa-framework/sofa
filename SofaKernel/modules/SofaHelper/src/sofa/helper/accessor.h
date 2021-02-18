@@ -24,7 +24,7 @@
 
 #include <sofa/helper/config.h>
 #include <sofa/helper/vector.h>
-#include <iostream>
+#include <iosfwd>
 
 namespace sofa
 {
@@ -74,11 +74,15 @@ public:
     const_pointer   operator->() const { return vref; }
     const_reference operator* () const { return  *vref; }
 
-    inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessor<T>& vec )
-    {
-        return os << *vec.vref;
-    }
+    /// To depreciate...
+    template<class U>
+    friend std::ostream& operator<<( std::ostream& os, const ReadAccessor<U>& vec );
 };
+
+template<class U>
+[[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+std::ostream& operator<<( std::ostream& os, const ReadAccessor<U>& vec ) = delete;
+
 
 /** A WriteAccessor is a proxy class, holding a reference to a given container
  *  and providing access to its data, using an unified interface (similar to
@@ -131,17 +135,22 @@ public:
         vref = &v;
     }
 
-    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<T>& vec )
-    {
-        return os << *vec.vref;
-    }
+    /// To depreciate...
+    template<class U>
+    friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<U>& vec );
 
-    inline friend std::istream& operator>> ( std::istream& in, WriteAccessor<T>& vec )
-    {
-        return in >> *vec.vref;
-    }
+    /// To depreciate...
+    template<class U>
+    friend std::istream& operator>> ( std::istream& in, WriteAccessor<U>& vec );
 };
 
+template<class U>
+[[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+std::ostream& operator<< ( std::ostream& os, const WriteAccessor<U>& vec ) = delete;
+
+template<class U>
+[[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+std::istream& operator>> ( std::istream& in, WriteAccessor<U>& vec ) = delete;
 
 /** Identical to WriteAccessor for default implementation, but different for some template specializations such as  core::objectmodel::Data<T>
 */
@@ -191,12 +200,15 @@ public:
     const_iterator begin() const { return vref->begin(); }
     const_iterator end() const { return vref->end(); }
 
-    inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessorVector<T>& vec )
-    {
-        return os << *vec.vref;
-    }
-
+    /// To depreciate.
+    template<class U>
+    friend std::ostream& operator<< ( std::ostream& os, const ReadAccessorVector<U>& vec );
 };
+
+template<class U>
+[[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+std::ostream& operator<< ( std::ostream& os, const ReadAccessorVector<U>& vec ) = delete;
+
 
 /// WriteAccessor implementation class for vector types
 template<class T>
@@ -235,16 +247,6 @@ public:
     void resize(Size s, bool /*init*/ = true) { vref->resize(s); }
     void reserve(Size s) { vref->reserve(s); }
     void push_back(const value_type& v) { vref->push_back(v); }
-
-    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessorVector<T>& vec )
-    {
-        return os << *vec.vref;
-    }
-
-    inline friend std::istream& operator>> ( std::istream& in, WriteAccessorVector<T>& vec )
-    {
-        return in >> *vec.vref;
-    }
 
 };
 

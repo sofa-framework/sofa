@@ -19,18 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_BEHAVIOR_MECHANICALSTATE_CPP
-#include <sofa/core/behavior/MechanicalState.inl>
+#pragma once
+#include <SofaMeshCollision/config.h>
+#include <sofa/defaulttype/Vec.h>
 
-namespace sofa::core::behavior
+namespace sofa::component::collision
 {
-using namespace sofa::defaulttype;
 
-template class SOFA_CORE_API MechanicalState<Vec3dTypes>;
-template class SOFA_CORE_API MechanicalState<Vec2Types>;
-template class SOFA_CORE_API MechanicalState<Vec1Types>;
-template class SOFA_CORE_API MechanicalState<Vec6Types>;
-template class SOFA_CORE_API MechanicalState<Rigid3Types>;
-template class SOFA_CORE_API MechanicalState<Rigid2Types>;
 
-} // namespace sofa
+/**
+ * @brief
+ */
+class SOFA_SOFAMESHCOLLISION_API EmptyFilter
+{
+public:
+    /**
+     * @brief Point Collision Primitive validation method.
+     */
+    bool validPoint(const Index /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    {
+        return true;
+    }
+
+    /**
+     * @brief Line Collision Primitive validation method.
+     */
+    bool validLine(const Index /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    {
+        return true;
+    }
+
+    /**
+     * @brief Triangle Collision Primitive validation method.
+     */
+    bool validTriangle(const Index /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    {
+        return true;
+    }
+};
+
+} // namespace sofa::component::collision

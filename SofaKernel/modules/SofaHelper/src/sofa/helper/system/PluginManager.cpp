@@ -395,18 +395,35 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
 
 bool PluginManager::pluginIsLoaded(const std::string& plugin)
 {
-    std::string pluginPath = plugin;
+    if (plugin.empty()) return false;
+
+    std::string pluginPath;
 
     /// If we are not providing a filename then we have either to iterate in the plugin
     /// map to check no plugin has the same name or check in there is no accessible path
     /// in the plugin repository matching the pluginName
-    if (!FileSystem::isFile(plugin))
+    if (FileSystem::cleanPath(plugin, FileSystem::SLASH).find('/') != std::string::npos)
     {
+        // plugin argument is a path
+        if (!FileSystem::isFile(plugin))
+        {
+            // path is invalid
+            msg_error("PluginManager") << "File not found: " << plugin;
+            return false;
+        }
+
+        pluginPath = plugin;
+    }
+    else
+    {
+        // plugin argument is a name
         /// Here is the iteration in the loaded plugin map
         for(auto k : m_pluginMap)
         {
             if(plugin == k.second.getModuleName())
+            {
                 return true;
+            }
         }
 
         /// At this point we have not found a loaded plugin, we try to

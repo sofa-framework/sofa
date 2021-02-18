@@ -92,10 +92,9 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , m_rotatedInitialElements(initData(&m_rotatedInitialElements,"rotatedInitialElements","Flag activating rendering of stress directions within each triangle"))
     , m_initialTransformation(initData(&m_initialTransformation,"initialTransformation","Flag activating rendering of stress directions within each triangle"))
-    , f_fracturable(initData(&f_fracturable,false,"fracturable","the forcefield computes the next fracturable Edge"))
     , hosfordExponant(initData(&hosfordExponant, (Real)1.0, "hosfordExponant","Exponant in the Hosford yield criteria"))
     , criteriaValue(initData(&criteriaValue, (Real)1e15, "criteriaValue","Fracturable threshold used to draw fracturable triangles"))
-    , showStressValue(initData(&showStressValue,false,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
+    , showStressValue(initData(&showStressValue,true,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
     , showStressVector(initData(&showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
     , showFracturableTriangles(initData(&showFracturableTriangles,false,"showFracturableTriangles","Flag activating rendering of triangles to fracture"))
     , f_computePrincipalStress(initData(&f_computePrincipalStress,false,"computePrincipalStress","Compute principal stress for each triangle"))
@@ -106,6 +105,7 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , f_graphCriteria( initData(&f_graphCriteria,"graphCriteria","Graph of the fracture criteria corresponding to the element id") )
     , f_graphOrientation( initData(&f_graphOrientation,"graphOrientation","Graph of the orientation of the principal stress direction corresponding to the element id"))
     #endif
+    , p_computeDrawInfo(false)
 {
     _anisotropicMaterial = false;
     triangleHandler = new TRQSTriangleHandler(this, &triangleInfo);
@@ -117,6 +117,7 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
 
     f_poisson.setRequired(true);
     f_young.setRequired(true);
+    p_drawColorMap = new helper::ColorMap(256, "Blue to Red");
 }
 
 
@@ -124,6 +125,7 @@ template <class DataTypes>
 TriangularFEMForceField<DataTypes>::~TriangularFEMForceField()
 {
     if(triangleHandler) delete triangleHandler;
+    if (p_drawColorMap) delete p_drawColorMap;
 }
 
 
@@ -357,9 +359,9 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::getRotation(Transformation& R, Index nodeIdx)
 {
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
-    int numNeiTri=m_topology->getTrianglesAroundVertex(nodeIdx).size();
+    size_t numNeiTri=m_topology->getTrianglesAroundVertex(nodeIdx).size();
     Transformation r;
-    for(int i=0; i<numNeiTri; i++)
+    for(size_t i=0; i<numNeiTri; i++)
     {
         int triIdx=m_topology->getTrianglesAroundVertex(nodeIdx)[i];
         TriangleInformation *tinfo = &triangleInf[triIdx];
@@ -433,7 +435,7 @@ void TriangularFEMForceField<DataTypes>::getRotations()
     for(int i=0; i<numPoint; i++)
     {
         VertexInformation *vinfo=&vertexInf[i];
-        int numNeiTri=m_topology->getTrianglesAroundVertex(i).size();
+        size_t numNeiTri=m_topology->getTrianglesAroundVertex(i).size();
         vinfo->rotation/=static_cast<Real>(numNeiTri);
 
         //orthogonalization
@@ -505,35 +507,6 @@ void TriangularFEMForceField<DataTypes>::getFractureCriteria(int elementIndex, D
         value = 0;
     }
 }
-
-template<class DataTypes>
-typename TriangularFEMForceField<DataTypes>::Index TriangularFEMForceField<DataTypes>::getFracturedEdge()
-{
-    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
-
-    if (f_fracturable.getValue())
-    {
-        std::size_t nbEdges = m_topology->getNbEdges();
-
-        for(Size i=0; i<nbEdges; i++ )
-        {
-            if (edgeInf[i].fracturable)
-            {
-                return i;
-            }
-        }
-    }
-
-    edgeInfo.endEdit();
-
-    return sofa::InvalidID;
-}
-
-
-
-
-
-
 
 
 // --------------------------------------------------------------------------------------
@@ -1365,7 +1338,7 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
     }
     f.endEdit();
 
-    if (f_computePrincipalStress.getValue())
+    if (f_computePrincipalStress.getValue() || p_computeDrawInfo)
     {
         unsigned int nbTriangles=m_topology->getNbTriangles();
         helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
@@ -1405,8 +1378,10 @@ void TriangularFEMForceField<DataTypes>::addDForce(const core::MechanicalParams*
 template<class DataTypes>
 void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowForceFields())
+    if (!vparams->displayFlags().getShowForceFields()) {
+        p_computeDrawInfo = false;
         return;
+    }
 
     vparams->drawTool()->saveLastState();
 
@@ -1415,56 +1390,29 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     vparams->drawTool()->disableLighting();
 
-    sofa::helper::types::RGBAColor color;
-    std::vector<sofa::helper::types::RGBAColor> colorVector;
-    std::vector<sofa::defaulttype::Vector3> vertices;
-
+    // Force stress computation to display ForceField
+    p_computeDrawInfo = showStressVector.getValue() | showStressValue.getValue() | showFracturableTriangles.getValue();
+    
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    unsigned int nbTriangles=m_topology->getNbTriangles();
-
-    if (!f_fracturable.getValue() && !this->showFracturableTriangles.getValue())
-    {
-        for(unsigned int i=0; i<nbTriangles; ++i)
-        {
-            Index a = m_topology->getTriangle(i)[0];
-            Index b = m_topology->getTriangle(i)[1];
-            Index c = m_topology->getTriangle(i)[2];
-
-            colorVector.push_back(sofa::helper::types::RGBAColor(0,1,0,1));
-            vertices.push_back(sofa::defaulttype::Vector3(x[a]));
-            colorVector.push_back(sofa::helper::types::RGBAColor(0,0.5,0.5,1));
-            vertices.push_back(sofa::defaulttype::Vector3(x[b]));
-            colorVector.push_back(sofa::helper::types::RGBAColor(0,0,1,1));
-            vertices.push_back(sofa::defaulttype::Vector3(x[c]));
-        }
-        vparams->drawTool()->drawTriangles(vertices,colorVector);
-        vertices.clear();
-        colorVector.clear();
-    }
-
-    helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
-
-    if (showStressVector.getValue() || showStressValue.getValue() || showFracturableTriangles.getValue())
-    {
-        for(unsigned int i=0; i<nbTriangles; ++i)
-            computePrincipalStress(i, triangleInf[i].stress);
-    }
-
+    const helper::vector<TriangleInformation>& triangleInf = triangleInfo.getValue();
+    Size nbTriangles = m_topology->getNbTriangles();
+      
     if (showStressVector.getValue())
     {
-        color = sofa::helper::types::RGBAColor(1,0,1,1);
-        for(unsigned int i=0; i<nbTriangles; ++i)
+        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+        std::vector<sofa::defaulttype::Vector3> vertices;
+        for(Size i=0; i< nbTriangles; ++i)
         {
-            Index a = m_topology->getTriangle(i)[0];
-            Index b = m_topology->getTriangle(i)[1];
-            Index c = m_topology->getTriangle(i)[2];
+            Triangle tri = m_topology->getTriangle(i);
+            Index a = tri[0];
+            Index b = tri[1];
+            Index c = tri[2];
             Coord center = (x[a]+x[b]+x[c])/3;
             Coord d = triangleInf[i].principalStressDirection*2.5; //was 0.25
             vertices.push_back(sofa::defaulttype::Vector3(center));
             vertices.push_back(sofa::defaulttype::Vector3(center+d));
         }
-        vparams->drawTool()->drawLines(vertices,1,color);
-        vertices.clear();
+        vparams->drawTool()->drawLines(vertices, 1, sofa::helper::types::RGBAColor(1, 0, 1, 1));
     }
 
     if (showStressValue.getValue())
@@ -1474,7 +1422,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         double maxStress = 0.0;
         for ( unsigned int i = 0 ; i < vertexInf.size() ; i++)
         {
-            core::topology::BaseMeshTopology::TrianglesAroundVertex triangles = m_topology->getTrianglesAroundVertex(i);
+            const core::topology::BaseMeshTopology::TrianglesAroundVertex& triangles = m_topology->getTrianglesAroundVertex(i);
             double averageStress = 0.0;
             double sumArea = 0.0;
             for ( unsigned int v = 0 ; v < triangles.size() ; v++)
@@ -1495,8 +1443,11 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
                 maxStress = averageStress;
         }
 
-        helper::ColorMap::evaluator<double> evalColor = helper::ColorMap::getDefault()->getEvaluator(minStress, maxStress);
-        for(unsigned int i=0; i<nbTriangles; ++i)
+        std::vector<sofa::defaulttype::Vector3> vertices;
+        std::vector<sofa::helper::types::RGBAColor> colorVector;
+
+        helper::ColorMap::evaluator<double> evalColor = p_drawColorMap->getEvaluator(minStress, maxStress);
+        for(Size i=0; i<nbTriangles; ++i)
         {
             Index a = m_topology->getTriangle(i)[0];
             Index b = m_topology->getTriangle(i)[1];
@@ -1512,13 +1463,18 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         vparams->drawTool()->drawTriangles(vertices,colorVector);
         vertices.clear();
         colorVector.clear();
+        vertexInfo.endEdit();
     }
 
     if (showFracturableTriangles.getValue())
     {
+        std::vector<sofa::helper::types::RGBAColor> colorVector;
+        std::vector<sofa::defaulttype::Vector3> vertices;
+        sofa::helper::types::RGBAColor color;
+
         Real maxDifference = numeric_limits<Real>::min();
         Real minDifference = numeric_limits<Real>::max();
-        for (unsigned int i = 0 ; i < nbTriangles ; i++)
+        for (Size i = 0 ; i < nbTriangles ; i++)
         {
             if (triangleInf[i].differenceToCriteria > 0)
             {
@@ -1530,11 +1486,11 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             }
         }
 
-        for (unsigned int i = 0 ; i < nbTriangles ; i++)
+        for (Size i = 0 ; i < nbTriangles ; i++)
         {
             if (triangleInf[i].differenceToCriteria > 0)
             {
-                color = sofa::helper::types::RGBAColor( 0.4 + 0.4 * (triangleInf[i].differenceToCriteria - minDifference ) /  (maxDifference - minDifference) , 0.0 , 0.0, 0.5);
+                color = sofa::helper::types::RGBAColor( float(0.4 + 0.4 * (triangleInf[i].differenceToCriteria - minDifference ) /  (maxDifference - minDifference)) , 0.0f , 0.0f, 0.5f);
 
                 Index a = m_topology->getTriangle(i)[0];
                 Index b = m_topology->getTriangle(i)[1];
@@ -1547,10 +1503,11 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
                 colorVector.push_back(color);
                 vertices.push_back(sofa::defaulttype::Vector3(x[c]));
             }
-            vparams->drawTool()->drawTriangles(vertices,color);
         }
-    }
-    triangleInfo.endEdit();
+        vparams->drawTool()->drawTriangles(vertices, colorVector);
+        vertices.clear();
+        colorVector.clear();
+    }    
 
     vparams->drawTool()->restoreLastState();
 }

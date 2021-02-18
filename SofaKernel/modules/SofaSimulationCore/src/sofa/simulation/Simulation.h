@@ -137,14 +137,6 @@ public:
 
 };
 
-/// Set the (unique) simulation which controls the scene
-SOFA_SIMULATION_CORE_API void setSimulation(Simulation* s);
-
-/** Get the (unique) simulation which controls the scene.
-    Automatically creates one if no Simulation has been set.
- */
-SOFA_SIMULATION_CORE_API Simulation* getSimulation();
-
 } // namespace simulation
 
 } // namespace sofa
