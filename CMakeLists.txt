@@ -310,6 +310,9 @@ install(DIRECTORY ${CMAKE_BINARY_DIR}/plugins/ DESTINATION plugins COMPONENT res
 # Post-install scripts (must be the last add_subdirectory)
 add_subdirectory(tools/postinstall-fixup)
 
+option(SOFA_ENABLE_CPACK "Enable CPack management" OFF)
+
+if(SOFA_ENABLE_CPACK)
 #######################
 # CPack configuration #
 #######################
@@ -489,3 +492,5 @@ if(APPLE AND SOFA_BUILD_APP_BUNDLE)
 endif()
 
 include(CPack)
+
+endif()
