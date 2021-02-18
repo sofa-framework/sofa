@@ -11,8 +11,6 @@ add_subdirectory(SofaGTestMain)
 
 set(SOFATESTINGSRC_ROOT "src/sofa/testing")
 
-find_package(SofaFramework REQUIRED)
-
 set(HEADER_FILES
     ${SOFATESTINGSRC_ROOT}/config.h.in
     ${SOFATESTINGSRC_ROOT}/initSofa.Testing.h
