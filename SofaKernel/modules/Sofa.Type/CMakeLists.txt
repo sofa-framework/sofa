@@ -28,35 +28,11 @@ set(SOURCE_FILES
     ${SOFATYPESRC_ROOT}/stdtype/fixed_array.cpp
 )
 
-# Compatibility files
-set (COMPATSRC_ROOT "compat/")
-set(COMPAT_HEADER_FILES
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Vec.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/MatSym.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.inl
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_Cholesky.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_LU.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_SVD.h
-    ${COMPATSRC_ROOT}/sofa/helper/fixed_array.h
-    ${COMPATSRC_ROOT}/sofa/helper/fixed_array_algorithms.h
-    ${COMPATSRC_ROOT}/sofa/helper/Quater.h
-    ${COMPATSRC_ROOT}/sofa/helper/Quater.inl
-    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.h
-    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.inl
-)
-
 find_package(Sofa.Config REQUIRED)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
-                           $<INSTALL_INTERFACE:include/SofaFramework/compat>)
-source_group("compat" FILES ${COMPAT_HEADER_FILES})
 
 sofa_add_targets_to_package(
     PACKAGE_NAME SofaFramework
