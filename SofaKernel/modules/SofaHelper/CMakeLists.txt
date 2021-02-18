@@ -270,6 +270,10 @@ set (COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/helper/gl/Cylinder.h
     ${COMPATSRC_ROOT}/sofa/helper/fixed_array.h
     ${COMPATSRC_ROOT}/sofa/helper/fixed_array_algorithms.h
+    ${COMPATSRC_ROOT}/sofa/helper/Quater.h
+    ${COMPATSRC_ROOT}/sofa/helper/Quater.inl
+    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.h
+    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.inl
     )
 
 

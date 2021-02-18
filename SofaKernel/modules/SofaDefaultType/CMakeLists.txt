@@ -95,6 +95,8 @@ set(COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_Cholesky.h
     ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_LU.h
     ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_SVD.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.inl
 )
 
 find_package(Eigen3 REQUIRED)
