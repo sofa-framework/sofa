@@ -44,9 +44,12 @@
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
 
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
+#include <sofa/simulation/Simulation.h>
 
 namespace sofa::component::mapping
 {
@@ -57,6 +60,7 @@ using sofa::defaulttype::Matrix3;
 using sofa::defaulttype::Mat3x3d;
 using sofa::defaulttype::Vec3d;
 using sofa::core::objectmodel::ComponentState;
+using sofa::component::linearsolver::EigenSparseMatrix;
 
 // 10/18 E.Coevoet: what's the difference between edge/line, tetra/tetrahedron, hexa/hexahedron?
 typedef typename sofa::core::topology::BaseMeshTopology::Line Edge;
@@ -90,6 +94,7 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping(core::State<In>* from, core::S
 {
     if (mapper)
         this->addSlave(mapper.get());
+    internalMatrix = new EigenSparseMatrix<InDataTypes, OutDataTypes>;
 }
 
 template <class TIn, class TOut>
@@ -104,6 +109,13 @@ BarycentricMapping<TIn, TOut>::BarycentricMapping (core::State<In>* from, core::
         populateTopologies();
         createMapperFromTopology ();
     }
+    internalMatrix = new EigenSparseMatrix<InDataTypes, OutDataTypes>;
+}
+
+template <class TIn, class TOut>
+BarycentricMapping<TIn, TOut>::~BarycentricMapping()
+{
+    delete internalMatrix;
 }
 
 template <class TIn, class TOut>
@@ -472,12 +484,13 @@ const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::
     const sofa::defaulttype::BaseMatrix* matJ = getJ();
 
     const auto * mat = dynamic_cast<const mat_type*>(matJ);
-    assert( mat );
+    if(mat==nullptr)
+        throw std::runtime_error("Unable to downcast the matrix");
 
-    eigen.copyFrom( *mat );   // woot
+    static_cast<EigenSparseMatrix<InDataTypes, OutDataTypes>*>(internalMatrix)->copyFrom(*mat);
 
     js.resize( 1 );
-    js[0] = &eigen;
+    js[0] = internalMatrix;
     return &js;
 }
 

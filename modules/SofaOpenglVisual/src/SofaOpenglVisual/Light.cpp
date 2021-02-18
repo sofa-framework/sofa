@@ -24,7 +24,9 @@
 #include <SofaOpenglVisual/LightManager.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Simulation.h>
+
 
 namespace sofa
 {
@@ -645,7 +647,7 @@ void PositionalLight::drawLight()
 void PositionalLight::drawSource(const core::visual::VisualParams* /*vparams*/)
 {
     Vector3 sceneMinBBox, sceneMaxBBox;
-    sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+    sofa::simulation::getSimulation()->computeBBox(sofa::simulation::node::getNodeFrom(this->getContext()), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
     float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
     scale *= 0.01f;
 

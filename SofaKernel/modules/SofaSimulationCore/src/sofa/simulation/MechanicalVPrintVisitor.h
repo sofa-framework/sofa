@@ -23,7 +23,6 @@
 #define SOFA_SIMULATION_MECHANICALVPRINTACTION_H
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <iostream>
 
 #include <sofa/core/ExecParams.h>
