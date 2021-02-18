@@ -198,7 +198,7 @@ endif()
 ## OpenMP
 option(SOFA_OPENMP "Compile Sofa with OpenMP multithreading." OFF)
 if(SOFA_OPENMP)
-    find_package(OpenMP QUIET)
+    sofa_find_package(OpenMP QUIET)
     if (OPENMP_FOUND)
         list(APPEND SOFACONFIG_COMPILE_OPTIONS "${OpenMP_CXX_FLAGS}")
         list(APPEND SOFACONFIG_LINK_OPTIONS "${OpenMP_CXX_FLAGS}")

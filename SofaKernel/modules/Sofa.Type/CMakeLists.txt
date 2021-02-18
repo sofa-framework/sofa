@@ -35,7 +35,7 @@ set(COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/helper/fixed_array_algorithms.h
 )
 
-find_package(Sofa.Config REQUIRED)
+sofa_find_package(Sofa.Config REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 

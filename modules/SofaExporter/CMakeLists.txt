@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaExporter LANGUAGES CXX)
 
-find_package(SofaBaseVisual REQUIRED)
+sofa_find_package(SofaBaseVisual REQUIRED)
 sofa_find_package(ZLIB REQUIRED)
 sofa_find_package(SofaPython QUIET)
 

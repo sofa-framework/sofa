@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGuiCommon)
 
-find_package(SofaBase REQUIRED)
-find_package(SofaUserInteraction REQUIRED)
-find_package(SofaGraphComponent REQUIRED)
-find_package(SofaSimulationCommon REQUIRED)
+sofa_find_package(SofaBase REQUIRED)
+sofa_find_package(SofaUserInteraction REQUIRED)
+sofa_find_package(SofaGraphComponent REQUIRED)
+sofa_find_package(SofaSimulationCommon REQUIRED)
 sofa_find_package(Sofa.GL QUIET) # ColourPickingVisitor
 if(Sofa.GL_FOUND)
     message("-- ${PROJECT_NAME}: Sofa.GL dependent features enabled.")
