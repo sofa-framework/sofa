@@ -274,6 +274,8 @@ set (COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/helper/gl/glText.inl
     ${COMPATSRC_ROOT}/sofa/helper/gl/Color.h
     ${COMPATSRC_ROOT}/sofa/helper/gl/Cylinder.h
+    ${COMPATSRC_ROOT}/sofa/helper/fixed_array.h
+    ${COMPATSRC_ROOT}/sofa/helper/fixed_array_algorithms.h
     )
 
 
@@ -287,8 +289,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaCore/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Sofa.Type/src>")
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
-source_group("compat" FILES ${COMPAT_HEADER_FILES} )
+target_include_directories(${PROJECT_NAME} PUBLIC
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
+                           $<INSTALL_INTERFACE:include/SofaFramework/compat>)
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaDefaultType/compat>")
+source_group("compat" FILES ${COMPAT_HEADER_FILES})
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
