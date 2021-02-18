@@ -188,34 +188,34 @@ public:
         return m_value.getValue();
     }
 
-    SOFA_DEPRECATE_DATA_API("virtualSetLink has been deprecated. You can update your code by using copyValueFrom() or setParent() depending on the expected behavior.")
+    SOFA_ATTRIBUTE_DISABLED("2021-01-21 PR#1753", "2021-02-08 PR#1793", "Update your code by using copyValueFrom() or setParent() depending on the expected behavior.")
     void virtualSetLink(const BaseData& bd) = delete;
 
-    SOFA_DEPRECATE_DATA_API("virtualGetValue has been deprecated. You can update your code by using setValue().")
+    SOFA_ATTRIBUTE_DISABLED("2021-01-21 PR#1753", "2021-02-08 PR#1793", "Update your code by using setValue().")
     void virtualSetValue(const T& v) = delete;
 
-    SOFA_DEPRECATE_DATA_API("virtualGetValue has been deprecated. You can update your code by using getValue().")
+    SOFA_ATTRIBUTE_DISABLED("2021-01-21 PR#1753", "2021-02-08 PR#1793", "Update your code by using getValue().")
     const T& virtualGetValue() = delete;
 
-    SOFA_DEPRECATE_DATA_API("virtualBeginEdit has been deprecated. You can update your code by using beginEdit().")
+    SOFA_ATTRIBUTE_DISABLED("2021-01-21 PR#1753", "2021-02-08 PR#1793", "Update your code by using beginEdit().")
     T* virtualBeginEdit() = delete;
 
-    SOFA_DEPRECATE_DATA_API("virtualEndEdit has been deprecated. You can update your code by using endEdit().")
+    SOFA_ATTRIBUTE_DISABLED("2021-01-21 PR#1753", "2021-02-08 PR#1793", "Update your code by using endEdit().")
     void virtualEndEdit() = delete;
 
-    SOFA_DEPRECATE_ASPECT("ExecParams are not needed anymore. Update your code by removing it from the function call.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     void endEdit(const core::ExecParams*) = delete;
 
-    SOFA_DEPRECATE_ASPECT("ExecParams are not needed anymore. Update your code by removing it from the function call.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     T* beginWriteOnly(const core::ExecParams*) = delete;
 
-    SOFA_DEPRECATE_ASPECT("ExecParams are not needed anymore. Update your code by removing it from the function call.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     T* beginEdit(const core::ExecParams*) = delete;
 
-    SOFA_DEPRECATE_ASPECT("ExecParams are not needed anymore. Update your code by removing it from the function call.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     void setValue(const core::ExecParams*, const T& value) = delete;
 
-    SOFA_DEPRECATE_ASPECT("ExecParams are not needed anymore. Update your code by removing it from the function call.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     const T& getValue(const core::ExecParams*) const = delete;
     /// @}
 
@@ -239,10 +239,10 @@ public:
         return out;
     }
 
-    SOFA_DEPRECATE_DATA_API("Deprecated before definitive removal. Please update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")
+    SOFA_ATTRIBUTE_DISABLED("2020-12-01 PR#1639", "2021-02-08 PR#1793", "Update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")
     bool operator ==( const T& value ) const = delete;
 
-    SOFA_DEPRECATE_DATA_API("Deprecated before definitive removal. Please update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")
+    SOFA_ATTRIBUTE_DISABLED("2020-12-01 PR#1639", "2021-02-08 PR#1793", "Update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")
     bool operator!=( const T& value ) const = delete;
 
     void operator =( const T& value )
@@ -392,10 +392,10 @@ public:
     ReadAccessor(const data_container_type& d) : Inherit(d.getValue()) {}
     ReadAccessor(const data_container_type* d) : Inherit(d->getValue()) {}
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DEPRECATED_EXECPARAMS("To fix your code you can remove it.")
     ReadAccessor(const core::ExecParams*, const data_container_type& d) : Inherit(d.getValue()) {}
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DEPRECATED_EXECPARAMS("To fix your code you can remove it.")
     ReadAccessor(const core::ExecParams*, const data_container_type* d) : Inherit(d->getValue()) {}
 };
 
@@ -428,10 +428,10 @@ public:
     WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d) {}
     WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d) {}
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DEPRECATED_EXECPARAMS("To fix your code you can remove it.")
     WriteAccessor(const core::ExecParams*, data_container_type& d) : WriteAccessor(d) {}
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DEPRECATED_EXECPARAMS("To fix your code you can remove it.")
     WriteAccessor(const core::ExecParams*, data_container_type* d) : WriteAccessor(d) {}
     ~WriteAccessor() { data.endEdit(); }
 };
@@ -459,10 +459,10 @@ public:
     WriteOnlyAccessor(data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
     WriteOnlyAccessor(data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DEPRECATED_EXECPARAMS("To fix your code you can remove it.")
     WriteOnlyAccessor(const core::ExecParams*, data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DEPRECATED_EXECPARAMS("To fix your code you can remove it.")
     WriteOnlyAccessor(const core::ExecParams*, data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 };
 

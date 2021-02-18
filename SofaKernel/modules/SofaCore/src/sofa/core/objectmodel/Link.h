@@ -317,49 +317,49 @@ public:
     {
     }
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     size_t size(const core::ExecParams*) const = delete;
     size_t size() const
     {
         return static_cast<size_t>(m_value.size());
     }
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     bool empty(const core::ExecParams* param) const  = delete;
     bool empty() const
     {
         return m_value.empty();
     }
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     const Container& getValue(const core::ExecParams*) const = delete;
     const Container& getValue() const
     {
         return m_value;
     }
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     const_iterator begin(const core::ExecParams*) const = delete;
     const_iterator begin() const
     {
         return m_value.cbegin();
     }
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     const_iterator end(const core::ExecParams*) const = delete;
     const_iterator end() const
     {
         return m_value.cend();
     }
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     const_reverse_iterator rbegin(const core::ExecParams*) const = delete;
     const_reverse_iterator rbegin() const
     {
         return m_value.crbegin();
     }
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     const_reverse_iterator rend(const core::ExecParams*) const = delete;
     const_reverse_iterator rend() const
     {
@@ -449,14 +449,14 @@ public:
         return size();
     }
 
-    SOFA_DEPRECATE_DATALINK("Link<> cannot hold BaseData anymore. To make a link between Datas use DataLink instead.")
+    SOFA_ATTRIBUTE_DISABLED("2020-10-03 PR#1503", "2021-02-08 PR#1793", "Link<> cannot hold BaseData anymore. To make a link between Datas use DataLink instead.")
     BaseData* getLinkedData(std::size_t =0) const = delete;
     sofa::core::objectmodel::Base* getOwnerBase() const override
     {
         return m_owner;
     }
 
-    SOFA_DEPRECATE_DATALINK("Link<> cannot hold BaseData anymore. To make a link between Datas use DataLink instead.")
+    SOFA_ATTRIBUTE_DISABLED("2020-10-03 PR#1503", "2021-02-08 PR#1793", "Link<> cannot hold BaseData anymore. To make a link between Datas use DataLink instead.")
     sofa::core::objectmodel::BaseData* getOwnerData() const = delete;
 
     void setOwner(OwnerType* owner)
@@ -594,7 +594,7 @@ public:
         m_validator = fn;
     }
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     DestType* get(std::size_t index, const core::ExecParams*) const = delete;
     DestType* get(std::size_t index) const
     {
@@ -679,7 +679,7 @@ public:
         m_validator = fn;
     }
 
-    SOFA_DEPRECATE_ASPECT("The ExecParams parameter is not needed anymore. To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DISABLED_EXECPARAMS()
     DestType* get(const core::ExecParams*) const = delete;
     DestType* get() const
     {
