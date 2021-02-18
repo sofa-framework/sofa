@@ -1,8 +1,23 @@
 /******************************************************************************
-*									                                                            *
-*			   TouchIoT: Smart Tangible Sensing Enabler for Tactile Internet			  *
-*		                     Developer: Nguyen Huu Nhan                           *
-*                                  					                                  *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
 
@@ -85,8 +100,6 @@ QuadBendingFEMForceField<DataTypes>::QuadBendingFEMForceField()
   , f_young(initData(&f_young,helper::vector<Real>(1,static_cast<Real>(1000.0)),"youngModulus","Young modulus in Hooke's law (vector)"))
   , f_thickness(initData(&f_thickness,Real(1.),"thickness","Thickness of the elements"))
   , l_topology(initLink("topology", "link to the topology container"))
-  , directory(initData(&directory, std::string("/home/K.txt"), "directory", "directory to K"))
-
 
 {
     quadHandler = new QuadHandler(this, &quadInfo);
@@ -523,28 +536,6 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
   quadInf[elementIndex].Bendingstiffness=Kb;
   quadInf[elementIndex].Shearstiffness=Ks;
   quadInfo.endEdit();
-
-  int nbQuads = m_topology->getNbQuads();
-  const char* path = strcpy(new char[directory.length()+1], directory.c_str());
-
-  std::cout << path;
-    int numLines = 0;
-    std::ifstream in(path);
-    std::string unused;
-    while (std::getline(in, unused))
-        ++numLines;
-    in.close();
-
-    if (numLines == nbQuads) {std::ofstream myfile(path, std::ios_base::app);
-				myfile.close();
-				}
-	else
-    {
-        std::ofstream myfile(path, std::ios_base::app);
-        myfile.flush();
-        myfile <<K<<"\n";
-        myfile.close();
-    }
 
 }
   

@@ -1,8 +1,23 @@
 /******************************************************************************
-*									                                          *
-*	     TouchIoT: Smart Tangible Sensing Enabler for Tactile Internet	      *
-*		                 Developer: Nguyen Huu Nhan                           *
-*                                  					                          *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
 
@@ -210,7 +225,6 @@ public:
     Data<helper::vector<Real> > f_poisson; ///< Poisson ratio in Hooke's law (vector)
     Data<helper::vector<Real> > f_young; ///< Young modulus in Hooke's law (vector)
     Data<Real> f_thickness;
-    Data<std::string> directory;
     QuadHandler* quadHandler;
 
     /// Link to be set to the topology container in the component graph.
