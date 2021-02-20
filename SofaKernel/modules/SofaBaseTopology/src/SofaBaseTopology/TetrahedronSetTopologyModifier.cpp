@@ -631,14 +631,14 @@ void TetrahedronSetTopologyModifier::removeItems(const sofa::helper::vector< Tet
 }
 
 void TetrahedronSetTopologyModifier::renumberPoints( const sofa::helper::vector<PointID> &index,
-        const sofa::helper::vector<PointID> &inv_index)
+        const sofa::helper::vector<PointID> &inv_index, const bool renumberDOF)
 {
     /// add the topological changes in the queue
-    renumberPointsWarning(index, inv_index);
+    renumberPointsWarning(index, inv_index, renumberDOF);
     // inform other objects that the triangles are going to be removed
     propagateTopologicalChanges();
     // now renumber the points
-    renumberPointsProcess(index, inv_index);
+    renumberPointsProcess(index, inv_index, renumberDOF);
 
     m_container->checkTopology();
 }

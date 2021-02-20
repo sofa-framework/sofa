@@ -217,7 +217,7 @@ public:
     /** \brief Generic method for points renumbering
     */
     void renumberPoints( const sofa::helper::vector<PointID> & index,
-            const sofa::helper::vector<PointID> & inv_index) override;
+            const sofa::helper::vector<PointID> & inv_index, const bool renumberDOF = true) override;
 
     /** \brief Swap a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by the edge pair ((p11, p21), (p12, p22))
     *

@@ -56,6 +56,12 @@ public:
     */
     virtual void swapPoints(const Index i1,const Index i2);
 
+    /** \brief Generic method for points renumbering
+    */
+    virtual void renumberPoints(const sofa::helper::vector< PointID >& index,
+        const sofa::helper::vector< PointID >& inv_index,
+        const bool renumberDOF = true);
+
     /** \brief Sends a message to warn that some points were added in this topology.
     *
     * \sa addPointsProcess
@@ -199,12 +205,6 @@ public:
     /** \brief Generic method to remove a list of items.
     */
     void removeItems(const sofa::helper::vector<  PointID  >& /*items*/) override
-    { }
-
-    /** \brief Generic method for points renumbering
-    */
-    virtual void renumberPoints( const sofa::helper::vector< PointID > &/*index*/,
-            const sofa::helper::vector< PointID > &/*inv_index*/)
     { }
 
 private:

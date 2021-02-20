@@ -238,7 +238,7 @@ public:
     /** \brief Generic method for points renumbering
      */
     void renumberPoints( const sofa::helper::vector<PointID> &index,
-            const sofa::helper::vector<PointID> &inv_index) override;
+            const sofa::helper::vector<PointID> &inv_index, const bool renumberDOF = true) override;
 
 
     /** \brief Move input points indices to input new coords.
