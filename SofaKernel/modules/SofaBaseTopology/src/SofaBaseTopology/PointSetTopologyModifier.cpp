@@ -347,6 +347,26 @@ void PointSetTopologyModifier::renumberPoints(const sofa::helper::vector< PointI
 }
 
 
+void PointSetTopologyModifier::removePoints(sofa::helper::vector< PointID >& indices, const bool removeDOF)
+{
+    sofa::helper::AdvancedTimer::stepBegin("Remove Points");
+
+    sofa::helper::AdvancedTimer::stepBegin("removePointsWarning");
+    removePointsWarning(indices, removeDOF);
+
+    sofa::helper::AdvancedTimer::stepNext("removePointsWarning", "propagateTopologicalChanges");
+    propagateTopologicalChanges();
+
+    sofa::helper::AdvancedTimer::stepNext("propagateTopologicalChanges", "removePointsProcess");
+    removePointsProcess(indices, removeDOF);
+
+    sofa::helper::AdvancedTimer::stepEnd("removePointsProcess");
+
+    sofa::helper::AdvancedTimer::stepEnd("Remove Points");
+}
+
+
+
 void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<PointID> &indices,
         const bool removeDOF)
 {

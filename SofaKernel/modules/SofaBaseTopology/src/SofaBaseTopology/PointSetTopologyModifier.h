@@ -119,6 +119,13 @@ public:
                     const bool addDOF = true);
 
 
+    /** \brief Generic method to remove a list of point
+    * @param indices: the indices of the point to remove fromt his topology
+    * @param removeDOF: Notify if the DOF from the mechanical container need to be updated as well.
+    */
+    virtual void removePoints(sofa::helper::vector< PointID >& indices, const bool removeDOF = true);
+
+
     /** \brief Sends a message to warn that some points are about to be deleted.
     *
     * \sa removePointsProcess
