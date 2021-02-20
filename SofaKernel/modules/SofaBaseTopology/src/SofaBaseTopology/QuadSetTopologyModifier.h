@@ -153,15 +153,6 @@ public:
     void removePointsProcess(const sofa::helper::vector<PointID> &indices,
             const bool removeDOF = true) override;
 
-    /** \brief Reorder this topology.
-    *
-    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
-    * \see MechanicalObject::renumberValues
-    */
-    void renumberPointsProcess( const sofa::helper::vector<PointID>& index,
-            const sofa::helper::vector<PointID>& inv_index,
-            const bool renumberDOF = true) override;
-
     /** \brief Remove a set  of quads
     @param quads an array of quad indices to be removed (note that the array is not const since it needs to be sorted)
     *
@@ -177,11 +168,15 @@ public:
     */
     void removeItems(const sofa::helper::vector< QuadID >& items) override;
 
-    /** \brief Generic method for points renumbering
+protected:
+    /** \brief Reorder this topology.
+    *
+    * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
+    * \see MechanicalObject::renumberValues
     */
-    void renumberPoints( const sofa::helper::vector<PointID>& index,
-            const sofa::helper::vector<PointID>& inv_index, const bool renumberDOF = true) override;
-
+    void renumberPointsProcess(const sofa::helper::vector<PointID>& index,
+        const sofa::helper::vector<PointID>& inv_index,
+        const bool renumberDOF = true) override;
 
 private:
     QuadSetTopologyContainer* 	m_container;

@@ -587,24 +587,6 @@ void TriangleSetTopologyModifier::renumberPointsProcess( const sofa::helper::vec
 }
 
 
-
-
-void TriangleSetTopologyModifier::renumberPoints( const sofa::helper::vector<PointID> &index,
-        const sofa::helper::vector<PointID> &inv_index, const bool renumberDOF)
-{
-
-    /// add the topological changes in the queue
-    renumberPointsWarning(index, inv_index, renumberDOF);
-    // inform other objects that the triangles are going to be removed
-    propagateTopologicalChanges();
-    // now renumber the points
-    renumberPointsProcess(index, inv_index, renumberDOF);
-
-    m_container->checkTopology();
-}
-
-
-
 void TriangleSetTopologyModifier::addRemoveTriangles( const sofa::Size nTri2Add,
         const sofa::helper::vector< Triangle >& triangles2Add,
         const sofa::helper::vector< TriangleID >& trianglesIndex2Add,

@@ -650,19 +650,6 @@ void EdgeSetTopologyModifier::removeItems(const sofa::helper::vector< EdgeID >& 
     removeEdges(items);
 }
 
-void EdgeSetTopologyModifier::renumberPoints( const sofa::helper::vector<EdgeID> &index,
-        const sofa::helper::vector<EdgeID> &inv_index, const bool renumberDOF)
-{
-    /// add the topological changes in the queue
-    renumberPointsWarning(index, inv_index, renumberDOF);
-    // inform other objects that the triangles are going to be removed
-    propagateTopologicalChanges();
-    // now renumber the points
-    renumberPointsProcess(index, inv_index, renumberDOF);
-
-    m_container->checkTopology();
-}
-
 void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges)
 {
     sofa::helper::AdvancedTimer::stepBegin("addEdges");
