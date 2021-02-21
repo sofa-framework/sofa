@@ -28,6 +28,8 @@ namespace sofa::component::topology
 {
 class TriangleSetTopologyContainer;
 
+template <class DataTypes>
+class TriangleSetGeometryAlgorithms;
 
 /**
  * A class that modifies the topology by adding and removing triangles
@@ -36,6 +38,9 @@ class SOFA_SOFABASETOPOLOGY_API TriangleSetTopologyModifier : public EdgeSetTopo
 {
 public:
     SOFA_CLASS(TriangleSetTopologyModifier,EdgeSetTopologyModifier);
+
+    template <class DataTypes>
+    friend class TriangleSetGeometryAlgorithms;
 
     typedef core::topology::BaseMeshTopology::TriangleID TriangleID;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;

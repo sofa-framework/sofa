@@ -28,6 +28,9 @@ namespace sofa::component::topology
 {
 class EdgeSetTopologyContainer;
 
+template <class DataTypes>
+class EdgeSetGeometryAlgorithms;
+
 
 /**
  * A class that can apply basic transformations on a set of edges.
@@ -36,6 +39,9 @@ class SOFA_SOFABASETOPOLOGY_API EdgeSetTopologyModifier : public PointSetTopolog
 {
 public:
     SOFA_CLASS(EdgeSetTopologyModifier,PointSetTopologyModifier);
+
+    template <class DataTypes>
+    friend class EdgeSetGeometryAlgorithms;
 
     typedef core::topology::BaseMeshTopology::EdgeID EdgeID;
     typedef core::topology::BaseMeshTopology::Edge Edge;

@@ -29,6 +29,8 @@ namespace sofa::component::topology
 {
 class PointSetTopologyContainer;
 
+template <class DataTypes>
+class PointSetGeometryAlgorithms;
 
 /**
 * A class that can apply basic topology transformations on a set of points.
@@ -37,6 +39,9 @@ class SOFA_SOFABASETOPOLOGY_API PointSetTopologyModifier : public core::topology
 {
 public:
     SOFA_CLASS(PointSetTopologyModifier,core::topology::TopologyModifier);
+
+    template <class DataTypes>
+    friend class PointSetGeometryAlgorithms;
 
     typedef core::topology::BaseMeshTopology::PointID PointID;
     Data<bool> d_propagateToDOF; ///< propagate changes to Mechanical object DOFs

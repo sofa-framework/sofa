@@ -28,6 +28,8 @@ namespace sofa::component::topology
 {
 class QuadSetTopologyContainer;
 
+template <class DataTypes>
+class QuadSetGeometryAlgorithms;
 
 /**
 * A class that modifies the topology by adding and removing quads
@@ -36,6 +38,9 @@ class SOFA_SOFABASETOPOLOGY_API QuadSetTopologyModifier : public EdgeSetTopology
 {
 public:
     SOFA_CLASS(QuadSetTopologyModifier,EdgeSetTopologyModifier);
+
+    template <class DataTypes>
+    friend class QuadSetGeometryAlgorithms;
 
     typedef core::topology::BaseMeshTopology::QuadID QuadID;
     typedef core::topology::BaseMeshTopology::Quad Quad;

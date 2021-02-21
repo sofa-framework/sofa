@@ -28,6 +28,8 @@ namespace sofa::component::topology
 {
 class TetrahedronSetTopologyContainer;
 
+template <class DataTypes>
+class TetrahedronSetGeometryAlgorithms;
 
 /**
 * A class that modifies the topology by adding and removing tetrahedra
@@ -37,6 +39,8 @@ class SOFA_SOFABASETOPOLOGY_API TetrahedronSetTopologyModifier : public Triangle
 public:
     SOFA_CLASS(TetrahedronSetTopologyModifier,TriangleSetTopologyModifier);
 
+    template <class DataTypes>
+    friend class TetrahedronSetGeometryAlgorithms;
 
     typedef core::topology::BaseMeshTopology::TetraID TetraID;
     typedef core::topology::BaseMeshTopology::TetrahedronID TetrahedronID;

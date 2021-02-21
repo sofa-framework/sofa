@@ -28,6 +28,8 @@ namespace sofa::component::topology
 {
 class HexahedronSetTopologyContainer;
 
+template <class DataTypes>
+class HexahedronSetGeometryAlgorithms;
 
 /**
 * A class that modifies the topology by adding and removing hexahedra
@@ -37,6 +39,8 @@ class SOFA_SOFABASETOPOLOGY_API HexahedronSetTopologyModifier : public QuadSetTo
 public:
     SOFA_CLASS(HexahedronSetTopologyModifier,QuadSetTopologyModifier);
 
+    template <class DataTypes>
+    friend class HexahedronSetGeometryAlgorithms;
 
     typedef core::topology::BaseMeshTopology::HexaID HexaID;
     typedef core::topology::BaseMeshTopology::HexahedronID HexahedronID;
