@@ -11,7 +11,6 @@ sofa_find_package(Boost REQUIRED
     BOTH_SCOPES)
 if(SOFAHELPER_HAVE_BOOST_SYSTEM
    AND SOFAHELPER_HAVE_BOOST_FILESYSTEM
-   AND SOFAHELPER_HAVE_BOOST_PROGRAM_OPTIONS
    AND SOFAHELPER_HAVE_BOOST_THREAD)
     sofa_set_01(SOFAHELPER_HAVE_BOOST VALUE TRUE BOTH_SCOPES)
 else()
@@ -319,7 +318,7 @@ endif()
 
 # Boost
 if(Boost_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::system Boost::filesystem Boost::program_options)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::system Boost::filesystem)
     if(Boost_THREAD_FOUND)
         target_link_libraries(${PROJECT_NAME} PUBLIC Boost::thread)
     endif()
