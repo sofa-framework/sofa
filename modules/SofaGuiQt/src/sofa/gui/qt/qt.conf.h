@@ -124,6 +124,10 @@ bool loadQtConfWithCustomPrefix(const std::string& qtConfPath, const std::string
         }
     }
 
-    return QT_RCC_PREPEND_NAMESPACE(qRegisterResourceData)(0x1, qt_resource_struct, qt_resource_name, &qt_resource_data[0]);
+    bool v1 = QT_RCC_PREPEND_NAMESPACE(qRegisterResourceData)(0x1, qt_resource_struct, qt_resource_name, &qt_resource_data[0]);
+    bool v2 = QT_RCC_PREPEND_NAMESPACE(qRegisterResourceData)(0x2, qt_resource_struct, qt_resource_name, &qt_resource_data[0]);
+    bool v3 = QT_RCC_PREPEND_NAMESPACE(qRegisterResourceData)(0x3, qt_resource_struct, qt_resource_name, &qt_resource_data[0]);
+
+    return ( v1 || v2 || v3 );
 }
 } // namespace sofa::gui::qt
