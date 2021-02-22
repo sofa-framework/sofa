@@ -33,9 +33,6 @@
 namespace sofa::topology
 {
 
-SOFA_TOPOLOGY_API TopologyElementType parseTopologyElementTypeFromString(const std::string& s);
-SOFA_TOPOLOGY_API std::string parseTopologyElementTypeToString(TopologyElementType t);
-
 class SOFA_TOPOLOGY_API Topology
 {
 public:

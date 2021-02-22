@@ -35,7 +35,9 @@ using TopologyElementType
 = sofa::topology::TopologyElementType;
 
 template<class TopologyElement>
-using TopologyElementInfo = sofa::topology::TopologyElementInfo<TopologyElement>;
+using TopologyElementInfo 
+[[deprecated("PR1xxx: sofa::core::topology::TopologyElementInfo has moved to sofa::topology::TopologyElementInfo. This compatibility layer will be removed for the v21.12 release.")]]
+= sofa::topology::TopologyElementInfo<TopologyElement>;
 
 class SOFA_CORE_API Topology : public sofa::topology::Topology, public virtual sofa::core::objectmodel::BaseObject
 {

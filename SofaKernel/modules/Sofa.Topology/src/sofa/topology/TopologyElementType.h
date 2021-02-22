@@ -40,5 +40,4 @@ enum class TopologyElementType
     PYRAMID    
 };
 
-
 } // namespace sofa::topology

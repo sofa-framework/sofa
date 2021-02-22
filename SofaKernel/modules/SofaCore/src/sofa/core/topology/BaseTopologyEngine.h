@@ -24,6 +24,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/fwd.h>
+#include <sofa/helper/list.h>
 
 #ifndef SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
 namespace std
