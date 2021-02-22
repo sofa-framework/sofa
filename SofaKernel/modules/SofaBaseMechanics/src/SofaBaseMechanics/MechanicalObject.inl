@@ -780,7 +780,7 @@ void MechanicalObject<DataTypes>::applyScale(const SReal sx,const SReal sy,const
     {
         for (unsigned int j=0; j<DataTypes::spatial_dimensions; ++j)
         {
-            //x_wA[i][j] = x_wA[i][j] * s[j];
+            x_wA[i][j] = x_wA[i][j] * s[j];
         }
     }
 }
