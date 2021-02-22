@@ -6,7 +6,7 @@ project(SofaHelper)
 
 # Boost
 sofa_find_package(Boost REQUIRED
-    COMPONENTS system filesystem program_options
+    COMPONENTS system filesystem
     OPTIONAL_COMPONENTS thread
     BOTH_SCOPES)
 if(SOFAHELPER_HAVE_BOOST_SYSTEM
