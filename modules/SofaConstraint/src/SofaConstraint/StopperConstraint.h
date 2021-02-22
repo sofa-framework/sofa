@@ -23,6 +23,7 @@
 #include <SofaConstraint/config.h>
 
 #include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/OdeSolver.h>
 

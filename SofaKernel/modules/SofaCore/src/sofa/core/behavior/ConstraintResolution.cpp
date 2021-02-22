@@ -19,22 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseConstraintSet.h"
-#include "BaseConstraint.h"
-#include "BaseInteractionConstraint.h"
+#include <sofa/core/behavior/ConstraintResolution.h>
+#include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
+namespace sofa::core::behavior
 {
 
-namespace core
+ConstraintResolution::ConstraintResolution(unsigned int nbLines, double tolerance)
+    :m_nbLines(nbLines)
+    ,m_tolerance(tolerance)
+{
+}
+
+ConstraintResolution::~ConstraintResolution()
 {
 
-namespace behavior
+}
+
+void ConstraintResolution::init(int /*line*/, double** /*w*/, double* /*force*/)
 {
 
+}
 
-} // namespace behavior
+void ConstraintResolution::initForce(int /*line*/, double* /*force*/)
+{
 
-} // namespace core
+}
 
-} // namespace sofa
+/// Resolution of the constraint for one Gauss-Seidel iteration
+void ConstraintResolution::resolution(int line, double** w, double* d, double* force, double * dFree)
+{
+    SOFA_UNUSED(line);
+    SOFA_UNUSED(w);
+    SOFA_UNUSED(d);
+    SOFA_UNUSED(force);
+    SOFA_UNUSED(dFree);
+    dmsg_error("ConstraintResolution")
+            << "resolution(int , double** , double* , double* , double * ) not implemented." ;
+}
+void ConstraintResolution::store(int /*line*/, double* /*force*/, bool /*convergence*/)
+{
+
+}
+
+} /// namespace sofa::core::behavior
+
