@@ -22,7 +22,6 @@
 #pragma once
 
 #include <sofa/core/config.h>
-#include <exception>
 
 namespace sofa::core::behavior
 {
