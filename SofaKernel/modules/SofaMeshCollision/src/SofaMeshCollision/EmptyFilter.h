@@ -30,7 +30,7 @@ namespace sofa::component::collision
 /**
  * @brief
  */
-class SOFA_SOFAMESHCOLLISION_API EmptyFilter
+class EmptyFilter
 {
 public:
     /**
