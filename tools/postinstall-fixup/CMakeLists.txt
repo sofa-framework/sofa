@@ -22,7 +22,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
         \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/qt.conf\"
         \"[Paths]\\n  Prefix = ..\\n  LibraryExecutables = bin\"
         )"
-        COMPONENT applications)
+        COMPONENT resources)
     install(CODE "execute_process(COMMAND /bin/bash
         \"${CMAKE_CURRENT_LIST_DIR}/linux-postinstall-fixup.sh\"
         \"${CMAKE_BINARY_DIR}\"
@@ -30,7 +30,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
         \"${QT_LIB_DIR}\"
         \"${QT_DATA_DIR}\"
         )"
-        COMPONENT applications)
+        COMPONENT resources)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     if(SOFA_BUILD_APP_BUNDLE)
         include(macdeployqt) # set MACDEPLOYQT_EXECUTABLE
@@ -41,7 +41,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
             \"${QT_DATA_DIR}\"
             \"${MACDEPLOYQT_EXECUTABLE}\"
             )"
-            COMPONENT applications)
+            COMPONENT resources)
     else()
         install(CODE "execute_process(COMMAND /bin/bash
             \"${CMAKE_CURRENT_LIST_DIR}/macos-postinstall-fixup.sh\"
@@ -49,18 +49,18 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
             \"${QT_LIB_DIR}\"
             \"${QT_DATA_DIR}\"
             )"
-            COMPONENT applications)
+            COMPONENT resources)
     endif()
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     install(CODE "file(WRITE
         \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/qt.conf\"
         \"[Paths]\\n  Plugins = .\"
         )"
-        COMPONENT applications)
+        COMPONENT resources)
     install(CODE "execute_process(COMMAND bash
         \"${CMAKE_CURRENT_LIST_DIR}/windows-postinstall-fixup.sh\"
         \"${CMAKE_BINARY_DIR}\"
         \"\$ENV{DESTDIR\}\${CMAKE_INSTALL_PREFIX\}\"
         )"
-        COMPONENT applications)
+        COMPONENT resources)
 endif()

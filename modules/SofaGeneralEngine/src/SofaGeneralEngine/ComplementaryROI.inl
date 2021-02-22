@@ -126,7 +126,7 @@ void ComplementaryROI<DataTypes>::doUpdate()
     for (unsigned int i=0;i<indices.size();++i)
         pointsInROI.push_back(position[indices[i]]);
 
-    msg_info() << "Created ROI containing " << indices.size() << " points not in " << nbSet << " sets" ;
+    msg_info() << "Created ROI containing " << indices.size() << " points not in " << nbSet.ref() << " sets" ;
 }
 
 } //namespace sofa::component::engine

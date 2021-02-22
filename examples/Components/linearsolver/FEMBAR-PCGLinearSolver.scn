@@ -1,5 +1,11 @@
 <Node name="root" dt="0.02" gravity="0 -10 0">
-    <RequiredPlugin name="SofaSparseSolver"/>
+    <RequiredPlugin pluginName="SofaSparseSolver"/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/> 
+    <RequiredPlugin pluginName='SofaPreconditioner'/>
+
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
@@ -8,7 +14,7 @@
     <DefaultCollisionGroupManager name="Group" />
     <Node name="M1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <PCGLinearSolver iterations="1000" threshold="1.0e-9" printLog="0" refresh="0" verbose="0" />
+        <ShewchukPCGLinearSolver iterations="1000" printLog="0" />
         <MechanicalObject />
         <UniformMass vertexMass="1" />
         <RegularGridTopology nx="4" ny="4" nz="20" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />

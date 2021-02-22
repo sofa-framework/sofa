@@ -22,6 +22,8 @@
 #ifndef SOFA_CORE_MAPPING_INL
 #define SOFA_CORE_MAPPING_INL
 
+#include <sofa/core/State.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/Mapping.h>
 #include <iostream>
 

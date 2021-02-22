@@ -24,7 +24,8 @@
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/config.h>
-
+#include <sofa/core/State.h>
+#include <sofa/helper/StateMask.h>
 
 namespace sofa
 {
@@ -311,6 +312,7 @@ extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec1Types, defau
 extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec3Types, defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec3Types, defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
 extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec3Types, defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec3Types, defaulttype::Vec1Types, defaulttype::Vec3Types >;
 extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec1Types, defaulttype::Vec3Types, defaulttype::Rigid3Types >;
 extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec1Types, defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec1Types, defaulttype::Vec1Types, defaulttype::Rigid3Types >;

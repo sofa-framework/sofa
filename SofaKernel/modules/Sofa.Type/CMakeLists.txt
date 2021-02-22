@@ -7,6 +7,11 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/config.h.in
     ${SOFATYPESRC_ROOT}/init.h
     ${SOFATYPESRC_ROOT}/Vec.h
+    ${SOFATYPESRC_ROOT}/Mat.h
+    ${SOFATYPESRC_ROOT}/MatSym.h
+    ${SOFATYPESRC_ROOT}/Mat_solve_Cholesky.h
+    ${SOFATYPESRC_ROOT}/Mat_solve_LU.h
+    ${SOFATYPESRC_ROOT}/Mat_solve_SVD.h
     ${SOFATYPESRC_ROOT}/stdtype/fixed_array.h
     ${SOFATYPESRC_ROOT}/stdtype/fixed_array_algorithms.h
 )
@@ -21,11 +26,20 @@ set(SOURCE_FILES
 set (COMPATSRC_ROOT "compat/")
 set(COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/defaulttype/Vec.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/MatSym.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_Cholesky.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_LU.h
+    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_SVD.h
     ${COMPATSRC_ROOT}/sofa/helper/fixed_array.h
     ${COMPATSRC_ROOT}/sofa/helper/fixed_array_algorithms.h
 )
 
+find_package(Sofa.Config REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
+
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>

@@ -19,15 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_MAT_SOLVE_SVD_H
-#define SOFA_DEFAULTTYPE_MAT_SOLVE_SVD_H
+#pragma once
 
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 
-namespace sofa
-{
-
-namespace defaulttype
+namespace sofa::type
 {
 
 /// return the max of two values
@@ -300,8 +296,4 @@ Real cond(Mat<m,n,Real> &a)
     return fabs(w[0]/w[n-1]);
 }
 
-} // namespace defaulttype
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::type

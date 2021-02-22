@@ -19,28 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSofaFramework.h"
+#pragma once
 
-#include <sofa/core/init.h>
-#include <sofa/defaulttype/init.h>
-#include <sofa/helper/init.h>
-#include <sofa/simulation/init.h>
+#include <sofa/config.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-void initSofaFramework()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+class TriangleLocalMinDistanceFilter;
 
-    sofa::core::init();
-    sofa::defaulttype::init();
-    sofa::helper::init();
-    sofa::simulation::core::init();
+template<class DataTypes>
+class TriangleCollisionModel;
+
+template<class TDataTypes>
+class TTriangle;
+
+template<class DataTypes>
+class PointCollisionModel;
+
+class LocalMinDistanceFilter;
 }
-
-} // namespace sofa

@@ -12,11 +12,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/Frame.h
     ${SRC_ROOT}/MapMapSparseMatrix.h
     ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h
-    ${SRC_ROOT}/Mat.h
-    ${SRC_ROOT}/MatSym.h
-    ${SRC_ROOT}/Mat_solve_Cholesky.h
-    ${SRC_ROOT}/Mat_solve_LU.h
-    ${SRC_ROOT}/Mat_solve_SVD.h
     ${SRC_ROOT}/Quat.h
     ${SRC_ROOT}/Quat.inl
     ${SRC_ROOT}/RGBAColor.h

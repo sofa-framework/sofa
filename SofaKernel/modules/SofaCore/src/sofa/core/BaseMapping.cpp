@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/objectmodel/BaseNode.h>
-
+#include <sofa/core/BaseState.h>
 namespace sofa
 {
 

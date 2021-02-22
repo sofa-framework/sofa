@@ -24,7 +24,6 @@
 #include <SofaMiscCollision/config.h>
 
 #include <sofa/core/collision/CollisionGroupManager.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/CleanupVisitor.h>
 
@@ -60,7 +59,7 @@ protected:
 
     void changeInstance(Instance inst) override;
 
-    void clearCollisionGroup(simulation::Node::SPtr group);
+    void clearCollisionGroup(simulation::NodeSPtr group);
 
     std::map<Instance,GroupMap> storedGroupSet;
 

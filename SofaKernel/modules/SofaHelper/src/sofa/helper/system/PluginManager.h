@@ -27,6 +27,7 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <functional>
 
 namespace sofa
 {
@@ -192,6 +193,9 @@ public:
 
     static std::string s_gui_postfix; ///< the postfix to gui plugin, default="gui" (e.g. myplugin_gui.so)
 
+    void addOnPluginLoadedCallback(const std::string& key, std::function<void(const std::string&, const Plugin&)> callback);
+    void removeOnPluginLoadedCallback(const std::string& key);
+
 private:
     PluginManager();
     ~PluginManager();
@@ -200,6 +204,7 @@ private:
     std::istream& readFromStream( std::istream& );
 private:
     PluginMap m_pluginMap;
+    std::map<std::string, std::function<void(const std::string&, const Plugin&)>> m_onPluginLoadedCallbacks;
 };
 
 

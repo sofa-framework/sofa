@@ -6,6 +6,7 @@
 
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/MechanicalState.inl>
 
 namespace sofa
 {
