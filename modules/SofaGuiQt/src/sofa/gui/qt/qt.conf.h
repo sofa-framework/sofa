@@ -12,6 +12,8 @@
 #include <sstream>
 #include <vector>
 
+static std::vector<unsigned char> qt_resource_data = {};
+
 static const unsigned char qt_resource_name[] = {
   // qt
   0x0,0x2,
@@ -72,15 +74,22 @@ bool qUnregisterResourceData(int, const unsigned char *, const unsigned char *, 
 namespace sofa::gui::qt {
 bool loadQtConfWithCustomPrefix(const std::string& qtConfPath, const std::string& prefix)
 {
-    std::ifstream inputFile2(qtConfPath);
-    if ( ! inputFile2.is_open() )
+    if( ! qt_resource_data.empty() )
     {
+        msg_warning("qt.conf.h") << "loadQtConfWithCustomPrefix can only be called once.";
+        return false;
+    }
+
+    std::ifstream inputFile(qtConfPath);
+    if ( ! inputFile.is_open() )
+    {
+        msg_warning("qt.conf.h") << "Cannot open file " << qtConfPath;
         return false;
     }
 
     std::stringstream output;
     std::string inputLine;
-    while ( std::getline(inputFile2, inputLine) )
+    while ( std::getline(inputFile, inputLine) )
     {
         if ( inputLine.find("Prefix") != std::string::npos )
         {
@@ -101,19 +110,20 @@ bool loadQtConfWithCustomPrefix(const std::string& qtConfPath, const std::string
 
     std::vector<char> data = std::vector<char>(std::istreambuf_iterator<char>(output), std::istreambuf_iterator<char>());
     int dataSize = data.size();
-    static std::vector<unsigned char> byteArray(4 + dataSize);
+    qt_resource_data.resize(4 + dataSize);
+
     for ( int i = 0 ; i < 4 + dataSize ; i++ )
     {
         if ( i < 4 ) // first 4 bytes are for size
         {
-            byteArray[3 - i] = (dataSize >> (i * 8));
+            qt_resource_data[3 - i] = static_cast<unsigned char>( (dataSize >> (i * 8)) & 0xFF );
         }
         else // next bytes are for data
         {
-            byteArray[i] = data[i - 4];
+            qt_resource_data[i] = static_cast<unsigned char>( data[i - 4] );
         }
     }
 
-    return QT_RCC_PREPEND_NAMESPACE(qRegisterResourceData)(3, qt_resource_struct, qt_resource_name, &byteArray[0]);
+    return QT_RCC_PREPEND_NAMESPACE(qRegisterResourceData)(0x1, qt_resource_struct, qt_resource_name, &qt_resource_data[0]);
 }
 } // namespace sofa::gui::qt
