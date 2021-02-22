@@ -133,16 +133,16 @@ public:
     }
 
     ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
-    SOFA_DEPRECATE_ASPECT("Aspects have been removed, you can safely remove the function from your code.")
+    SOFA_ATTRIBUTE_DISABLED__ASPECT("You can safely remove this function from your code.")
     int aspectID() const = delete;
 
-    SOFA_DEPRECATE_ASPECT("Aspects have been removed, you can safely remove the function from your code.")
+    SOFA_ATTRIBUTE_DISABLED__ASPECT("You can safely remove this function from your code.")
     ExecParams& setAspectID(int) = delete;
 
-    SOFA_DEPRECATE_ASPECT("Aspects have been removed, you can safely remove the function from your code.")
+    SOFA_ATTRIBUTE_DISABLED__ASPECT("You can safely remove this function from your code.")
     static int currentAspect() = delete;
 
-    SOFA_DEPRECATE_ASPECT("Aspects have been removed, you can safely remove the function from your code.")
+    SOFA_ATTRIBUTE_DISABLED__ASPECT("You can safely remove this function from your code.")
     static int currentAspect(const core::ExecParams*) = delete;
 
 };
