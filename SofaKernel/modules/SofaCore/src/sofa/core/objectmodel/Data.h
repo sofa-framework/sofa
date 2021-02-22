@@ -188,34 +188,34 @@ public:
         return m_value.getValue();
     }
 
-    SOFA_ATTRIBUTE_DISABLED_TDATA_INTO_DATA("Update your code by using copyValueFrom() or setParent() depending on the expected behavior.")
+    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using copyValueFrom() or setParent() depending on the expected behavior.")
     void virtualSetLink(const BaseData& bd) = delete;
 
-    SOFA_ATTRIBUTE_DISABLED_TDATA_INTO_DATA("Update your code by using setValue().")
+    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using setValue().")
     void virtualSetValue(const T& v) = delete;
 
-    SOFA_ATTRIBUTE_DISABLED_TDATA_INTO_DATA("Update your code by using getValue().")
+    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using getValue().")
     const T& virtualGetValue() = delete;
 
-    SOFA_ATTRIBUTE_DISABLED_TDATA_INTO_DATA("Update your code by using beginEdit().")
+    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using beginEdit().")
     T* virtualBeginEdit() = delete;
 
-    SOFA_ATTRIBUTE_DISABLED_TDATA_INTO_DATA("Update your code by using endEdit().")
+    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using endEdit().")
     void virtualEndEdit() = delete;
 
-    SOFA_ATTRIBUTE_DISABLED_ASPECT_EXECPARAMS()
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
     void endEdit(const core::ExecParams*) = delete;
 
-    SOFA_ATTRIBUTE_DISABLED_ASPECT_EXECPARAMS()
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
     T* beginWriteOnly(const core::ExecParams*) = delete;
 
-    SOFA_ATTRIBUTE_DISABLED_ASPECT_EXECPARAMS()
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
     T* beginEdit(const core::ExecParams*) = delete;
 
-    SOFA_ATTRIBUTE_DISABLED_ASPECT_EXECPARAMS()
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
     void setValue(const core::ExecParams*, const T& value) = delete;
 
-    SOFA_ATTRIBUTE_DISABLED_ASPECT_EXECPARAMS()
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
     const T& getValue(const core::ExecParams*) const = delete;
     /// @}
 
@@ -239,10 +239,10 @@ public:
         return out;
     }
 
-    SOFA_ATTRIBUTE_DISABLED_DATA_OPERATOR("Update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")
+    SOFA_ATTRIBUTE_DISABLED__DATA_OPERATOR("Update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")
     bool operator ==( const T& value ) const = delete;
 
-    SOFA_ATTRIBUTE_DISABLED_DATA_OPERATOR("Update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")
+    SOFA_ATTRIBUTE_DISABLED__DATA_OPERATOR("Update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")
     bool operator!=( const T& value ) const = delete;
 
     void operator =( const T& value )
@@ -392,10 +392,10 @@ public:
     ReadAccessor(const data_container_type& d) : Inherit(d.getValue()) {}
     ReadAccessor(const data_container_type* d) : Inherit(d->getValue()) {}
 
-    SOFA_ATTRIBUTE_DEPRECATED_ASPECT_EXECPARAMS("To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS("To fix your code you can remove it.")
     ReadAccessor(const core::ExecParams*, const data_container_type& d) : Inherit(d.getValue()) {}
 
-    SOFA_ATTRIBUTE_DEPRECATED_ASPECT_EXECPARAMS("To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS("To fix your code you can remove it.")
     ReadAccessor(const core::ExecParams*, const data_container_type* d) : Inherit(d->getValue()) {}
 };
 
@@ -428,10 +428,10 @@ public:
     WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d) {}
     WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d) {}
 
-    SOFA_ATTRIBUTE_DEPRECATED_ASPECT_EXECPARAMS("To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS("To fix your code you can remove it.")
     WriteAccessor(const core::ExecParams*, data_container_type& d) : WriteAccessor(d) {}
 
-    SOFA_ATTRIBUTE_DEPRECATED_ASPECT_EXECPARAMS("To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS("To fix your code you can remove it.")
     WriteAccessor(const core::ExecParams*, data_container_type* d) : WriteAccessor(d) {}
     ~WriteAccessor() { data.endEdit(); }
 };
@@ -459,10 +459,10 @@ public:
     WriteOnlyAccessor(data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
     WriteOnlyAccessor(data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 
-    SOFA_ATTRIBUTE_DEPRECATED_ASPECT_EXECPARAMS("To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS("To fix your code you can remove it.")
     WriteOnlyAccessor(const core::ExecParams*, data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
 
-    SOFA_ATTRIBUTE_DEPRECATED_ASPECT_EXECPARAMS("To fix your code you can remove it.")
+    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS("To fix your code you can remove it.")
     WriteOnlyAccessor(const core::ExecParams*, data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 };
 

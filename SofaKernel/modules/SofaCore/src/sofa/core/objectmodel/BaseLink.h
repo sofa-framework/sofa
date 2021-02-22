@@ -91,7 +91,7 @@ public:
 
     virtual Base* getOwnerBase() const = 0;
 
-    SOFA_ATTRIBUTE_DISABLED_DATALINK()
+    SOFA_ATTRIBUTE_DISABLED__DATALINK()
     sofa::core::objectmodel::BaseData* getOwnerData() const = delete;
 
     /// Set one of the flags.
@@ -106,7 +106,7 @@ public:
 
     bool isMultiLink() const { return getFlag(FLAG_MULTILINK); }
 
-    SOFA_ATTRIBUTE_DISABLED_DATALINK()
+    SOFA_ATTRIBUTE_DISABLED__DATALINK()
     bool isDataLink() const = delete;
     bool isStrongLink() const { return getFlag(FLAG_STRONGLINK); }
     bool isDoubleLink() const { return getFlag(FLAG_DOUBLELINK); }
@@ -129,7 +129,7 @@ public:
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    SOFA_ATTRIBUTE_DISABLED_ASPECT_EXECPARAMS("To upgrade your code please replace getCounter(param) with getCounter().")
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS("To upgrade your code please replace getCounter(param) with getCounter().")
     int getCounter(const core::ExecParams*) const = delete;
 
     void setLinkedBase(Base* link);
@@ -138,7 +138,7 @@ public:
     Base* getLinkedBase(std::size_t index=0) const { return _doGet_(index); }
 
 
-    SOFA_ATTRIBUTE_DISABLED_DATALINK()
+    SOFA_ATTRIBUTE_DISABLED__DATALINK()
     BaseData* getLinkedData(std::size_t index=0) const = delete;
 
     // Remove all links
