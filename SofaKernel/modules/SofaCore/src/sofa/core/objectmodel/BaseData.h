@@ -171,7 +171,7 @@ public:
     void setWidget(const char* val) { widget = val; }
 
     /// True if the counter of modification gives valid information.
-    SOFA_ATTRIBUTE_DEPRECATED("2020-10-03 PR#1503", "v21.12", "Data<> must have, by design, their counter valid.")
+    SOFA_ATTRIBUTE_DEPRECATED_TDATA_INTO_DATA("Data<> must have, by design, their counter valid.")
     bool isCounterValid() const { return true; }
 
     /// @name Flags
@@ -239,23 +239,23 @@ public:
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)s
-    SOFA_ATTRIBUTE_DEPRECATED_EXECPARAMS("Update your code by using isSet().")
+    SOFA_ATTRIBUTE_DEPRECATED_ASPECT_EXECPARAMS("Update your code by using isSet().")
     bool isSet(const core::ExecParams*) const { return isSet(); }
     bool isSet() const { return m_isSet; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
-    SOFA_ATTRIBUTE_DEPRECATED_EXECPARAMS("Update your code by using unset().")
+    SOFA_ATTRIBUTE_DEPRECATED_ASPECT_EXECPARAMS("Update your code by using unset().")
     void unset(const core::ExecParams*) { unset(); }
     void unset() { m_isSet = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    SOFA_ATTRIBUTE_DEPRECATED_EXECPARAMS("Update your code by using forceSet().")
+    SOFA_ATTRIBUTE_DEPRECATED_ASPECT_EXECPARAMS("Update your code by using forceSet().")
     void forceSet(const core::ExecParams*) { forceSet(); }
     void forceSet() { m_isSet = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    SOFA_ATTRIBUTE_DEPRECATED_EXECPARAMS("Update your code by using getCounter().")
+    SOFA_ATTRIBUTE_DEPRECATED_ASPECT_EXECPARAMS("Update your code by using getCounter().")
     int getCounter(const core::ExecParams*) const { return getCounter(); }
     int getCounter() const { return m_counter; }
     /// @}
@@ -276,7 +276,7 @@ public:
     ///
     /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
     /// @return true if the copy was successful.
-    SOFA_ATTRIBUTE_DEPRECATED("2020-10-03 PR#1503", "v21.12", "Use copyValueFrom() instead.")
+    SOFA_ATTRIBUTE_DEPRECATED_TDATA_INTO_DATA("Use copyValueFrom() instead.")
     bool copyValue(const BaseData* data){ return copyValueFrom(data); }
 
     /// Copy the value from another Data.

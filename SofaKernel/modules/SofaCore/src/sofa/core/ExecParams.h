@@ -133,16 +133,16 @@ public:
     }
 
     ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
-    SOFA_ATTRIBUTE_DISABLED("2020-03-25 PR#1269", "2021-02-08 PR#1793", "Aspects have been removed, you can safely remove the function from your code.")
+    SOFA_ATTRIBUTE_DISABLED_ASPECT("You can safely remove this function from your code.")
     int aspectID() const = delete;
 
-    SOFA_ATTRIBUTE_DISABLED("2020-03-25 PR#1269", "2021-02-08 PR#1793", "Aspects have been removed, you can safely remove the function from your code.")
+    SOFA_ATTRIBUTE_DISABLED_ASPECT("You can safely remove this function from your code.")
     ExecParams& setAspectID(int) = delete;
 
-    SOFA_ATTRIBUTE_DISABLED("2020-03-25 PR#1269", "2021-02-08 PR#1793", "Aspects have been removed, you can safely remove the function from your code.")
+    SOFA_ATTRIBUTE_DISABLED_ASPECT("You can safely remove this function from your code.")
     static int currentAspect() = delete;
 
-    SOFA_ATTRIBUTE_DISABLED("2020-03-25 PR#1269", "2021-02-08 PR#1793", "Aspects have been removed, you can safely remove the function from your code.")
+    SOFA_ATTRIBUTE_DISABLED_ASPECT("You can safely remove this function from your code.")
     static int currentAspect(const core::ExecParams*) = delete;
 
 };
