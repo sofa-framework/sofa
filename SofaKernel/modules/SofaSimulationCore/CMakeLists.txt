@@ -12,7 +12,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/AnimateVisitor.h
     ${SRC_ROOT}/BehaviorUpdatePositionVisitor.h
     ${SRC_ROOT}/CactusStackStorage.h
-    ${SRC_ROOT}/ClassSystem.h
     ${SRC_ROOT}/CleanupVisitor.h
     ${SRC_ROOT}/CollisionAnimationLoop.h
     ${SRC_ROOT}/CollisionBeginEvent.h
