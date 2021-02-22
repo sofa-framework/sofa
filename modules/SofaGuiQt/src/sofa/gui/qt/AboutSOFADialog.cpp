@@ -26,9 +26,6 @@
 #include <QDesktopServices>
 #include <QUrl>
 
-#include <iostream>
-#include <sstream>
-
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository;
 

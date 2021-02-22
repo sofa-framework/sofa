@@ -22,9 +22,6 @@
 #pragma once
 #include <ui_AboutDialog.h>
 #include <sofa/gui/qt/config.h>
-#include <QTreeWidgetItem>
-
-#include <set>
 
 
 namespace sofa::gui::qt
