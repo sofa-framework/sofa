@@ -1,0 +1,135 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#pragma once
+
+#include <sofa/core/config.h>
+#include <sofa/topology/Topology.h>
+#include <sofa/topology/TopologyElementType.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
+
+namespace sofa::core::topology
+{
+
+using TopologyElementType 
+[[deprecated("PR1xxx: sofa::core::topology::TopologyElementType has moved to sofa::topology::TopologyElementType. This compatibility layer will be removed for the v21.12 release.")]] 
+= sofa::topology::TopologyElementType;
+
+template<class TopologyElement>
+using TopologyElementInfo = sofa::topology::TopologyElementInfo<TopologyElement>;
+
+class SOFA_CORE_API Topology : public sofa::topology::Topology, public virtual sofa::core::objectmodel::BaseObject
+{
+public:
+    SOFA_CLASS(Topology, core::objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(Topology)
+
+    using Index = sofa::topology::Topology::Index;
+    static constexpr Index InvalidID = sofa::topology::Topology::InvalidID;
+
+    using ElemID = sofa::topology::Topology::ElemID;
+    using PointID = sofa::topology::Topology::PointID;
+    using EdgeID = sofa::topology::Topology::EdgeID;
+    using TriangleID = sofa::topology::Topology::TriangleID;
+    using QuadID = sofa::topology::Topology::QuadID;
+    using TetraID = sofa::topology::Topology::TetraID;
+    using TetrahedronID = sofa::topology::Topology::TetrahedronID;
+    using HexaID = sofa::topology::Topology::HexaID;
+    using HexahedronID = sofa::topology::Topology::HexahedronID;
+    using PentahedronID = sofa::topology::Topology::PentahedronID;
+    using PentaID = sofa::topology::Topology::PentaID;
+    using PyramidID = sofa::topology::Topology::PyramidID;
+
+    using SetIndex = sofa::helper::vector<Index>;
+    using SetIndices = sofa::helper::vector<Index>;
+
+    using Point = PointID;
+        
+    bool insertInNode(objectmodel::BaseNode* node) override;
+    bool removeInNode(objectmodel::BaseNode* node) override;
+
+protected:
+    Topology() {}
+    ~Topology() {}
+public:
+    // Access to embedded position information (in case the topology is a regular grid for instance)
+    // This is not very clean and is quit slow but it should only be used during initialization
+
+    virtual bool hasPos() const { return false; }
+    virtual Size getNbPoints() const { return 0; }
+    virtual void setNbPoints(Size /*n*/) {}
+    virtual SReal getPX(Index /*i*/) const { return 0.0; }
+    virtual SReal getPY(Index /*i*/) const { return 0.0; }
+    virtual SReal getPZ(Index /*i*/) const { return 0.0; }
+};
+
+} // namespace sofa::core::topology
+
+// Specialization of the defaulttype::DataTypeInfo type traits template
+
+namespace sofa::defaulttype
+{
+
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Edge > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,2> >
+{
+    static std::string name() { return "Edge"; }
+};
+
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Triangle > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,3> >
+{
+    static std::string name() { return "Triangle"; }
+};
+
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Quad > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
+{
+    static std::string name() { return "Quad"; }
+};
+
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Tetrahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
+{
+    static std::string name() { return "Tetrahedron"; }
+};
+
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Pyramid > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,5> >
+{
+    static std::string name() { return "Pyramid"; }
+};
+
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Pentahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,6> >
+{
+    static std::string name() { return "Pentahedron"; }
+};
+
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Hexahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,8> >
+{
+    static std::string name() { return "Hexahedron"; }
+};
+
+
+} // namespace sofa::defaulttype
