@@ -38,7 +38,7 @@ namespace defaulttype
 class SOFA_DEFAULTTYPE_API BaseVector
 {
 public:
-    typedef sofa::Index Index;
+    typedef sofa::SignedIndex Index;
 
     virtual ~BaseVector() {}
 

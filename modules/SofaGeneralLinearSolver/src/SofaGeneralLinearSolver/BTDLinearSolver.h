@@ -471,7 +471,7 @@ public:
     typedef typename Matrix::SubMatrixType SubMatrix;
     typedef typename Vector::Real Real;
     typedef typename Matrix::BlocType BlocType;
-    typedef typename sofa::Index Index;
+    typedef typename sofa::SignedIndex Index;
     typedef std::list<Index> ListIndex;
     typedef std::pair<Index,Index> IndexPair;
     typedef std::map<IndexPair, SubMatrix> MysparseM;
