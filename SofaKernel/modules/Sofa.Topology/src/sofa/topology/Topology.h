@@ -23,6 +23,7 @@
 
 #include <sofa/topology/config.h>
 
+#include <sofa/topology/TopologyElementType.h>
 #include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/helper/vector.h>
 
@@ -31,20 +32,6 @@
 
 namespace sofa::topology
 {
-
-/// The enumeration used to give unique identifiers to Topological objects.
-enum class TopologyElementType
-{
-    UNKNOWN,
-    POINT,
-    EDGE,
-    TRIANGLE,
-    QUAD,
-    TETRAHEDRON,
-    HEXAHEDRON,
-    PENTAHEDRON,
-    PYRAMID    
-};
 
 SOFA_TOPOLOGY_API TopologyElementType parseTopologyElementTypeFromString(const std::string& s);
 SOFA_TOPOLOGY_API std::string parseTopologyElementTypeToString(TopologyElementType t);
@@ -132,16 +119,6 @@ protected:
     Topology() {}
     ~Topology() {}
 public:
-    // Access to embedded position information (in case the topology is a regular grid for instance)
-    // This is not very clean and is quit slow but it should only be used during initialization
-
-    virtual bool hasPos() const { return false; }
-    virtual Size getNbPoints() const { return 0; }
-    virtual void setNbPoints(Size /*n*/) {}
-    virtual SReal getPX(Index /*i*/) const { return 0.0; }
-    virtual SReal getPY(Index /*i*/) const { return 0.0; }
-    virtual SReal getPZ(Index /*i*/) const { return 0.0; }
-
     // Declare invalid topology structures filled with Topology::InvalidID
     static const sofa::helper::vector<Topology::Index> InvalidSet;
     static const Edge                                       InvalidEdge;
@@ -214,62 +191,3 @@ struct TopologyElementInfo<Topology::Hexahedron>
 };
 
 } // namespace sofa::topology
-
-//
-//// Specialization of the defaulttype::DataTypeInfo type traits template
-//
-//namespace sofa
-//{
-//
-//namespace defaulttype
-//{
-//
-//template<>
-//struct DataTypeInfo< sofa::core::topology::Topology::Edge > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,2> >
-//{
-//    static std::string name() { return "Edge"; }
-//};
-//
-//template<>
-//struct DataTypeInfo< sofa::core::topology::Topology::Triangle > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,3> >
-//{
-//    static std::string name() { return "Triangle"; }
-//};
-//
-//template<>
-//struct DataTypeInfo< sofa::core::topology::Topology::Quad > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
-//{
-//    static std::string name() { return "Quad"; }
-//};
-//
-//template<>
-//struct DataTypeInfo< sofa::core::topology::Topology::Tetrahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
-//{
-//    static std::string name() { return "Tetrahedron"; }
-//};
-//
-//template<>
-//struct DataTypeInfo< sofa::core::topology::Topology::Pyramid > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,5> >
-//{
-//    static std::string name() { return "Pyramid"; }
-//};
-//
-//template<>
-//struct DataTypeInfo< sofa::core::topology::Topology::Pentahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,6> >
-//{
-//    static std::string name() { return "Pentahedron"; }
-//};
-//
-//template<>
-//struct DataTypeInfo< sofa::core::topology::Topology::Hexahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,8> >
-//{
-//    static std::string name() { return "Hexahedron"; }
-//};
-//
-//
-//
-//
-//
-//} // namespace defaulttype
-//
-//} // namespace sofa

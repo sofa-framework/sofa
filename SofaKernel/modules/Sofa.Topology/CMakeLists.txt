@@ -7,6 +7,7 @@ set(HEADER_FILES
     ${SOFATOPOLOGYSRC_ROOT}/config.h.in
     ${SOFATOPOLOGYSRC_ROOT}/init.h
     ${SOFATOPOLOGYSRC_ROOT}/Topology.h
+    ${SOFATOPOLOGYSRC_ROOT}/TopologyElementType.h
 )
 
 set(SOURCE_FILES
