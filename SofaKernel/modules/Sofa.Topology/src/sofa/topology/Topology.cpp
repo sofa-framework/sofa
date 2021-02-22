@@ -19,31 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "Topology.h"
-#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/topology/Topology.h>
 
-namespace sofa
+namespace sofa::topology
 {
-
-namespace core
-{
-
-namespace topology
-{
-
-bool Topology::insertInNode( objectmodel::BaseNode* node )
-{
-    node->addTopology(this);
-    Inherit1::insertInNode(node);
-    return true;
-}
-
-bool Topology::removeInNode( objectmodel::BaseNode* node )
-{
-    node->removeTopology(this);
-    Inherit1::removeInNode(node);
-    return true;
-}
 
 const sofa::helper::vector<Topology::Index> Topology::InvalidSet;
 const Topology::Edge Topology::InvalidEdge;
@@ -54,10 +33,4 @@ const Topology::Pyramid Topology::InvalidPyramid;
 const Topology::Pentahedron Topology::InvalidPentahedron;
 const Topology::Hexahedron Topology::InvalidHexahedron;
 
-
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
-
+} // namespace sofa::topology

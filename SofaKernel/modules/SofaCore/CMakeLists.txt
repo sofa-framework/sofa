@@ -136,7 +136,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/BaseTopologyEngine.h
     ${SRC_ROOT}/topology/BaseTopologyObject.h
     ${SRC_ROOT}/topology/TopologicalMapping.h
-    ${SRC_ROOT}/topology/Topology.h
     ${SRC_ROOT}/topology/TopologyChange.h
     ${SRC_ROOT}/topology/TopologyElementHandler.h
     ${SRC_ROOT}/topology/TopologyHandler.h
@@ -241,7 +240,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp
     ${SRC_ROOT}/topology/BaseTopologyEngine.cpp
     ${SRC_ROOT}/topology/TopologicalMapping.cpp
-    ${SRC_ROOT}/topology/Topology.cpp
     ${SRC_ROOT}/topology/TopologyChange.cpp
     ${SRC_ROOT}/topology/TopologyElementHandler.cpp
     ${SRC_ROOT}/topology/TopologyHandler.cpp
@@ -256,7 +254,7 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper Sofa.Topology SofaDefaultType)
 #target_precompile_headers(${PROJECT_NAME} PUBLIC ${SRC_ROOT}/objectmodel/BaseObject.h ${SRC_ROOT}/objectmodel/BaseContext.h)
 
 if(SOFA_BUILD_WITH_PCH_ENABLED)

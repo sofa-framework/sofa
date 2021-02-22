@@ -19,21 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_TOPOLOGY_TOPOLOGY_H
-#define SOFA_CORE_TOPOLOGY_TOPOLOGY_H
+#pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/helper/list.h>
-#include <sofa/defaulttype/TopologyTypes.h>
+#include <sofa/topology/config.h>
+
+#include <sofa/type/stdtype/fixed_array.h>
+#include <sofa/helper/vector.h>
+
 #include <climits>
+#include <string>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace topology
+namespace sofa::topology
 {
 
 /// The enumeration used to give unique identifiers to Topological objects.
@@ -50,30 +46,14 @@ enum class TopologyElementType
     PYRAMID    
 };
 
+SOFA_TOPOLOGY_API TopologyElementType parseTopologyElementTypeFromString(const std::string& s);
+SOFA_TOPOLOGY_API std::string parseTopologyElementTypeToString(TopologyElementType t);
 
-enum [[deprecated("This enum has been deprecated in PR #1593 and will be removed in release 21.06. Please use TopologyElementType instead.")]] TopologyObjectType
-{
-    POINT,
-    EDGE,
-    TRIANGLE,
-    QUAD,
-    TETRAHEDRON,
-    HEXAHEDRON,
-    PENTAHEDRON,
-    PYRAMID
-};
-
-
-
-SOFA_CORE_API TopologyElementType parseTopologyElementTypeFromString(const std::string& s);
-SOFA_CORE_API std::string parseTopologyElementTypeToString(TopologyElementType t);
-
-class SOFA_CORE_API Topology : public virtual core::objectmodel::BaseObject
+class SOFA_TOPOLOGY_API Topology
 {
 public:
     /// Topology global typedefs
-
-    typedef sofa::Index Index;
+    using Index = sofa::Index;
     static constexpr Index InvalidID = sofa::InvalidID;
 
     typedef Index                 ElemID;
@@ -94,68 +74,63 @@ public:
 
     typedef PointID                             Point;
     // in the following types, we use wrapper classes to have different types for each element, otherwise Quad and Tetrahedron would be the same
-    class Edge : public sofa::helper::fixed_array<PointID,2>
+    class Edge : public sofa::type::stdtype::fixed_array<PointID,2>
     {
     public:
-        Edge(): sofa::helper::fixed_array<PointID,2>(Topology::InvalidID, Topology::InvalidID){}
-        Edge(PointID a, PointID b) : sofa::helper::fixed_array<PointID,2>(a,b) {}
+        Edge(): sofa::type::stdtype::fixed_array<PointID,2>(Topology::InvalidID, Topology::InvalidID){}
+        Edge(PointID a, PointID b) : sofa::type::stdtype::fixed_array<PointID,2>(a,b) {}
     };
 
-    class Triangle : public sofa::helper::fixed_array<PointID,3>
+    class Triangle : public sofa::type::stdtype::fixed_array<PointID,3>
     {
     public:
-        Triangle(): sofa::helper::fixed_array<PointID,3>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
-        Triangle(PointID a, PointID b, PointID c) : sofa::helper::fixed_array<PointID,3>(a,b,c) {}
+        Triangle(): sofa::type::stdtype::fixed_array<PointID,3>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
+        Triangle(PointID a, PointID b, PointID c) : sofa::type::stdtype::fixed_array<PointID,3>(a,b,c) {}
     };
 
-    class Quad : public sofa::helper::fixed_array<PointID,4>
+    class Quad : public sofa::type::stdtype::fixed_array<PointID,4>
     {
     public:
-        Quad(): sofa::helper::fixed_array<PointID,4>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
-        Quad(PointID a, PointID b, PointID c, PointID d) : sofa::helper::fixed_array<PointID,4>(a,b,c,d) {}
+        Quad(): sofa::type::stdtype::fixed_array<PointID,4>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
+        Quad(PointID a, PointID b, PointID c, PointID d) : sofa::type::stdtype::fixed_array<PointID,4>(a,b,c,d) {}
     };
 
-    class Tetrahedron : public sofa::helper::fixed_array<PointID,4>
+    class Tetrahedron : public sofa::type::stdtype::fixed_array<PointID,4>
     {
     public:
-        Tetrahedron(): sofa::helper::fixed_array<PointID,4>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
-        Tetrahedron(PointID a, PointID b, PointID c, PointID d) : sofa::helper::fixed_array<PointID,4>(a,b,c,d) {}
+        Tetrahedron(): sofa::type::stdtype::fixed_array<PointID,4>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
+        Tetrahedron(PointID a, PointID b, PointID c, PointID d) : sofa::type::stdtype::fixed_array<PointID,4>(a,b,c,d) {}
     };
     typedef Tetrahedron                         Tetra;
 
-    class Pyramid : public sofa::helper::fixed_array<PointID,5>
+    class Pyramid : public sofa::type::stdtype::fixed_array<PointID,5>
     {
     public:
-        Pyramid(): sofa::helper::fixed_array<PointID,5>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
-        Pyramid(PointID a, PointID b, PointID c, PointID d, PointID e) : sofa::helper::fixed_array<PointID,5>(a,b,c,d,e) {}
+        Pyramid(): sofa::type::stdtype::fixed_array<PointID,5>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
+        Pyramid(PointID a, PointID b, PointID c, PointID d, PointID e) : sofa::type::stdtype::fixed_array<PointID,5>(a,b,c,d,e) {}
     };
 
-    class Pentahedron : public sofa::helper::fixed_array<PointID,6>
+    class Pentahedron : public sofa::type::stdtype::fixed_array<PointID,6>
     {
     public:
-        Pentahedron(): sofa::helper::fixed_array<PointID,6>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
-        Pentahedron(PointID a, PointID b, PointID c, PointID d, PointID e, PointID f) : sofa::helper::fixed_array<PointID,6>(a,b,c,d,e,f) {}
+        Pentahedron(): sofa::type::stdtype::fixed_array<PointID,6>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
+        Pentahedron(PointID a, PointID b, PointID c, PointID d, PointID e, PointID f) : sofa::type::stdtype::fixed_array<PointID,6>(a,b,c,d,e,f) {}
     };
     typedef Pentahedron                          Penta;
 
-    class Hexahedron : public sofa::helper::fixed_array<PointID,8>
+    class Hexahedron : public sofa::type::stdtype::fixed_array<PointID,8>
     {
     public:
-        Hexahedron(): sofa::helper::fixed_array<PointID,8>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID,
+        Hexahedron(): sofa::type::stdtype::fixed_array<PointID,8>(Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID,
                                                            Topology::InvalidID, Topology::InvalidID, Topology::InvalidID, Topology::InvalidID) {}
         Hexahedron(PointID a, PointID b, PointID c, PointID d,
-                   PointID e, PointID f, PointID g, PointID h) : sofa::helper::fixed_array<PointID,8>(a,b,c,d,e,f,g,h) {}
+                   PointID e, PointID f, PointID g, PointID h) : sofa::type::stdtype::fixed_array<PointID,8>(a,b,c,d,e,f,g,h) {}
     };
     typedef Hexahedron                          Hexa;
 
-
-
-    SOFA_CLASS(Topology, core::objectmodel::BaseObject);
-    SOFA_BASE_CAST_IMPLEMENTATION(Topology)
 protected:
-    Topology():BaseObject() {}
-    ~Topology() override
-    {}
+    Topology() {}
+    ~Topology() {}
 public:
     // Access to embedded position information (in case the topology is a regular grid for instance)
     // This is not very clean and is quit slow but it should only be used during initialization
@@ -166,10 +141,6 @@ public:
     virtual SReal getPX(Index /*i*/) const { return 0.0; }
     virtual SReal getPY(Index /*i*/) const { return 0.0; }
     virtual SReal getPZ(Index /*i*/) const { return 0.0; }
-
-
-    bool insertInNode( objectmodel::BaseNode* node ) override;
-    bool removeInNode( objectmodel::BaseNode* node ) override;
 
     // Declare invalid topology structures filled with Topology::InvalidID
     static const sofa::helper::vector<Topology::Index> InvalidSet;
@@ -242,71 +213,63 @@ struct TopologyElementInfo<Topology::Hexahedron>
     static const char* name() { return "Hexahedron"; }
 };
 
+} // namespace sofa::topology
 
-
-
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
-
-// Specialization of the defaulttype::DataTypeInfo type traits template
-
-namespace sofa
-{
-
-namespace defaulttype
-{
-
-template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Edge > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,2> >
-{
-    static std::string name() { return "Edge"; }
-};
-
-template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Triangle > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,3> >
-{
-    static std::string name() { return "Triangle"; }
-};
-
-template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Quad > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,4> >
-{
-    static std::string name() { return "Quad"; }
-};
-
-template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Tetrahedron > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,4> >
-{
-    static std::string name() { return "Tetrahedron"; }
-};
-
-template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Pyramid > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,5> >
-{
-    static std::string name() { return "Pyramid"; }
-};
-
-template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Pentahedron > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,6> >
-{
-    static std::string name() { return "Pentahedron"; }
-};
-
-template<>
-struct DataTypeInfo< sofa::core::topology::Topology::Hexahedron > : public FixedArrayTypeInfo<sofa::helper::fixed_array<Index,8> >
-{
-    static std::string name() { return "Hexahedron"; }
-};
-
-
-
-
-
-} // namespace defaulttype
-
-} // namespace sofa
-
-#endif
+//
+//// Specialization of the defaulttype::DataTypeInfo type traits template
+//
+//namespace sofa
+//{
+//
+//namespace defaulttype
+//{
+//
+//template<>
+//struct DataTypeInfo< sofa::core::topology::Topology::Edge > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,2> >
+//{
+//    static std::string name() { return "Edge"; }
+//};
+//
+//template<>
+//struct DataTypeInfo< sofa::core::topology::Topology::Triangle > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,3> >
+//{
+//    static std::string name() { return "Triangle"; }
+//};
+//
+//template<>
+//struct DataTypeInfo< sofa::core::topology::Topology::Quad > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
+//{
+//    static std::string name() { return "Quad"; }
+//};
+//
+//template<>
+//struct DataTypeInfo< sofa::core::topology::Topology::Tetrahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
+//{
+//    static std::string name() { return "Tetrahedron"; }
+//};
+//
+//template<>
+//struct DataTypeInfo< sofa::core::topology::Topology::Pyramid > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,5> >
+//{
+//    static std::string name() { return "Pyramid"; }
+//};
+//
+//template<>
+//struct DataTypeInfo< sofa::core::topology::Topology::Pentahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,6> >
+//{
+//    static std::string name() { return "Pentahedron"; }
+//};
+//
+//template<>
+//struct DataTypeInfo< sofa::core::topology::Topology::Hexahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,8> >
+//{
+//    static std::string name() { return "Hexahedron"; }
+//};
+//
+//
+//
+//
+//
+//} // namespace defaulttype
+//
+//} // namespace sofa

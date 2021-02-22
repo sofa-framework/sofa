@@ -6,10 +6,12 @@ set(SOFATOPOLOGYSRC_ROOT "src/sofa/topology")
 set(HEADER_FILES
     ${SOFATOPOLOGYSRC_ROOT}/config.h.in
     ${SOFATOPOLOGYSRC_ROOT}/init.h
+    ${SOFATOPOLOGYSRC_ROOT}/Topology.h
 )
 
 set(SOURCE_FILES
     ${SOFATOPOLOGYSRC_ROOT}/init.cpp
+    ${SOFATOPOLOGYSRC_ROOT}/Topology.cpp
 )
 
 # Compatibility files
@@ -22,7 +24,7 @@ find_package(Sofa.Config REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config Sofa.Type)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config Sofa.Type SofaHelper)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
