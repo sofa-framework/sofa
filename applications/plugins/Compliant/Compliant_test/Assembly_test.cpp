@@ -117,10 +117,10 @@ struct Assembly_test : public CompliantSolver_test
 
         // The solver
         complianceSolver = addNew<OdeSolver>(root);
-//        root->addObject( complianceSolver );
+        //        root->addObject( complianceSolver );
         complianceSolver->storeDynamicsSolution(true);
         linearSolver = addNew<LinearSolver>(root);
-//        root->addObject( linearSolver);
+        //        root->addObject( linearSolver);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
         linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
@@ -133,13 +133,18 @@ struct Assembly_test : public CompliantSolver_test
         ConstantForceField3::SPtr ff = New<ConstantForceField3>();
         string1->addObject(ff);
         helper::vector<unsigned>* indices = ff->d_indices.beginEdit(); // not managed to create a WriteAccessor with a resize function for a ConstantForceField::SetIndex
-        helper::WriteAccessor< Data<helper::vector<Vec3> > > forces( ff->d_forces );
-        (*indices).resize(2);
-        forces.resize(2);
-        // pull the left-hand particle to the left
-        (*indices)[0]= 0; forces[0]= Vec3(-1,0,0);
-        // pull the right-hand particle to the right
-        (*indices)[1]= n-1; forces[1]= Vec3(1,0,0);
+
+        /// It is mandatory to keep this scope otherwise the WriteAccessor will hold a
+        /// pointer to the ff that will be destroyed.
+        {
+            helper::WriteAccessor< Data<helper::vector<Vec3> > > forces( ff->d_forces );
+            (*indices).resize(2);
+            forces.resize(2);
+            // pull the left-hand particle to the left
+            (*indices)[0]= 0; forces[0]= Vec3(-1,0,0);
+            // pull the right-hand particle to the right
+            (*indices)[1]= n-1; forces[1]= Vec3(1,0,0);
+        }
         ff->d_indices.endEdit();
 
 
@@ -148,16 +153,6 @@ struct Assembly_test : public CompliantSolver_test
         assembled.M = getAssembledMassMatrix( root );
 
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
-
-        // actual results
-        //        cout<<"M = " << assembled.M << endl;
-        //        cout<<"J = " << complianceSolver->J() << endl;
-        //        cout<<"C = " << complianceSolver->C() << endl;
-        //        cout<<"P = " << complianceSolver->P() << endl;
-        //        cout<<"f = " << complianceSolver->getF().transpose() << endl;
-        //        cout<<"phi = " << complianceSolver->getPhi().transpose() << endl;
-        //        cout<<"dv = " << complianceSolver->getDv().transpose() << endl;
-        //        cout<<"lambda = " << complianceSolver->getLambda().transpose() << endl;
 
         // Expected results
         expected.M = expected.P = DenseMatrix::Identity( 3*n, 3*n );
@@ -414,8 +409,8 @@ struct Assembly_test : public CompliantSolver_test
         // The solver
         complianceSolver = addNew<OdeSolver>(solverObject);
         complianceSolver->storeDynamicsSolution(true);
-//        complianceSolver->f_printLog.setValue(true);
-//        complianceSolver->debug.setValue(true);
+        //        complianceSolver->f_printLog.setValue(true);
+        //        complianceSolver->debug.setValue(true);
         linearSolver = addNew<LinearSolver>(solverObject);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
@@ -485,9 +480,9 @@ struct Assembly_test : public CompliantSolver_test
 
 
         expected.lambda(n-1) = -g*n;
-//                cerr<<"expected J = " << endl << DenseMatrix(expected.J) << endl;
-//                cerr<<"expected dv = " << expected.dv.transpose() << endl;
-//                cerr<<"expected lambda = " << expected.lambda.transpose() << endl;
+        //                cerr<<"expected J = " << endl << DenseMatrix(expected.J) << endl;
+        //                cerr<<"expected dv = " << expected.dv.transpose() << endl;
+        //                cerr<<"expected lambda = " << expected.lambda.transpose() << endl;
 
 
         //  ================= Run
@@ -499,13 +494,13 @@ struct Assembly_test : public CompliantSolver_test
 
         // actual results
         //        cerr<<"M = " << endl << DenseMatrix(assembled.M) << endl;
-//                cerr<<"result, J = " << endl << DenseMatrix(complianceSolver->J()) << endl;
+        //                cerr<<"result, J = " << endl << DenseMatrix(complianceSolver->J()) << endl;
         //        cerr<<"result, C = " << endl << DenseMatrix(complianceSolver->C()) << endl;
         //        cerr<<"P = " << endl << DenseMatrix(complianceSolver->P()) << endl;
         //        cerr<<"f = " << complianceSolver->getF().transpose() << endl;
         //        cerr<<"phi = " << complianceSolver->getPhi().transpose() << endl;
-//                cerr<<"dv = " << complianceSolver->getDv().transpose() << endl;
-//                cerr<<"lambda = " << complianceSolver->getLambda().transpose() << endl;
+        //                cerr<<"dv = " << complianceSolver->getDv().transpose() << endl;
+        //                cerr<<"lambda = " << complianceSolver->getLambda().transpose() << endl;
         //        cerr<<"lambda - expected.lambda = " << (complianceSolver->getLambda()-expected.lambda).transpose() << endl;
 
     }
@@ -755,9 +750,7 @@ struct Assembly_test : public CompliantSolver_test
 
         DistanceMapping31::SPtr extensionMapping = addNew<DistanceMapping31>(extension);
         extensionMapping->setModels(pointPairDOF.get(),extensionDOF.get());
-        //        helper::WriteAccessor< Data< vector< Real > > > restLengths( extensionMapping->f_restLengths );
-        //        restLengths.resize(1);
-        //        restLengths[0] = 1.0;
+
 
         rigidDOF->forceMask.assign( rigidDOF->getSize(), true );
         particleOnRigidDOF->forceMask.assign( particleOnRigidDOF->getSize(), true );
@@ -848,8 +841,10 @@ struct Assembly_test : public CompliantSolver_test
         simulation::Node::SPtr node1 = root->createChild("node1");
         MechanicalObject3::SPtr dof1 = addNew<MechanicalObject3>(node1);
         dof1->resize(1);
-        MechanicalObject3::WriteVecCoord x1 = dof1->writePositions();
-        x1[0] = p0;
+        {
+            MechanicalObject3::WriteVecCoord x1 = dof1->writePositions();
+            x1[0] = p0;
+        }
         UniformMass3::SPtr mass1 = addNew<UniformMass3>(node1);
         mass1->setTotalMass( 1 );
 
@@ -857,8 +852,10 @@ struct Assembly_test : public CompliantSolver_test
         simulation::Node::SPtr node2 = root->createChild("node2");
         MechanicalObject3::SPtr dof2 = addNew<MechanicalObject3>(node2);
         dof2->resize(1);
-        MechanicalObject3::WriteVecCoord x2 = dof2->writePositions();
-        x2[0] = p1;
+        {
+            MechanicalObject3::WriteVecCoord x2 = dof2->writePositions();
+            x2[0] = p1;
+        }
         UniformMass3::SPtr mass2 = addNew<UniformMass3>(node2);
         mass1->setTotalMass( 1 );
 
@@ -912,7 +909,7 @@ struct Assembly_test : public CompliantSolver_test
 
         // The solver
         complianceSolver = addNew<OdeSolver>(root);
-//        complianceSolver->storeDynamicsSolution(true);
+        //        complianceSolver->storeDynamicsSolution(true);
         linearSolver = addNew<LinearSolver>(root);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
@@ -922,8 +919,10 @@ struct Assembly_test : public CompliantSolver_test
         node1 = root->createChild("node1");
         dof1 = addNew<MechanicalObject3>(node1);
         dof1->resize(1);
-        MechanicalObject3::WriteVecCoord x3 = dof1->writePositions();
-        x3[0] = p0;
+        {
+            MechanicalObject3::WriteVecCoord x3 = dof1->writePositions();
+            x3[0] = p0;
+        }
         mass1 = addNew<UniformMass3>(node1);
         mass1->setTotalMass( 1 );
 
@@ -931,8 +930,10 @@ struct Assembly_test : public CompliantSolver_test
         node2 = root->createChild("node2");
         dof2 = addNew<MechanicalObject3>(node2);
         dof2->resize(1);
-        MechanicalObject3::WriteVecCoord x4 = dof2->writePositions();
-        x4[0] = p1;
+        {
+            MechanicalObject3::WriteVecCoord x4 = dof2->writePositions();
+            x4[0] = p1;
+        }
         mass2 = addNew<UniformMass3>(node2);
         mass1->setTotalMass( 1 );
 
@@ -977,9 +978,11 @@ struct Assembly_test : public CompliantSolver_test
 
         dof1 = addNew<MechanicalObject3>(root);
         dof1->resize(2);
-        MechanicalObject3::WriteVecCoord x5 = dof1->writePositions();
-        x5[0] = p0;
-        x5[1] = p1;
+        {
+            MechanicalObject3::WriteVecCoord x5 = dof1->writePositions();
+            x5[0] = p0;
+            x5[1] = p1;
+        }
         mass1 = addNew<UniformMass3>(root);
         mass1->setMass( 1 );
         StiffSpringForceField3::SPtr ff = addNew<StiffSpringForceField3>(root);
@@ -999,7 +1002,7 @@ struct Assembly_test : public CompliantSolver_test
 
         // The solver
         complianceSolver = addNew<OdeSolver>(root);
-//        complianceSolver->storeDynamicsSolution(true);
+        //        complianceSolver->storeDynamicsSolution(true);
         linearSolver = addNew<LinearSolver>(root);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
@@ -1010,8 +1013,10 @@ struct Assembly_test : public CompliantSolver_test
         dof1 = addNew<MechanicalObject3>(node1);
         dof1->setName("dof1");
         dof1->resize(1);
-        MechanicalObject3::WriteVecCoord x6 = dof1->writePositions();
-        x6[0] = p0;
+        {
+            MechanicalObject3::WriteVecCoord x6 = dof1->writePositions();
+            x6[0] = p0;
+        }
         mass1 = addNew<UniformMass3>(node1);
         mass1->setTotalMass( 1 );
 
@@ -1020,8 +1025,10 @@ struct Assembly_test : public CompliantSolver_test
         dof2 = addNew<MechanicalObject3>(node2);
         dof2->setName("dof2");
         dof2->resize(1);
-        MechanicalObject3::WriteVecCoord x7 = dof2->writePositions();
-        x7[0] = p1;
+        {
+            MechanicalObject3::WriteVecCoord x7 = dof2->writePositions();
+            x7[0] = p1;
+        }
         mass2 = addNew<UniformMass3>(node2);
         mass1->setTotalMass( 1 );
 
@@ -1156,8 +1163,8 @@ TEST_F( Assembly_test, testRigidConnectedToString )
     unsigned numParticles=2;
     ::testing::Message() << "Assembly_test: hard string of " << numParticles << " particles connected to a rigid";
     testRigidConnectedToString(numParticles);
-//    cerr<<"expected.M = " << endl << expected.M << endl;
-//    cerr<<"assembled.M = " << endl << assembled.M << endl;
+    //    cerr<<"expected.M = " << endl << expected.M << endl;
+    //    cerr<<"assembled.M = " << endl << assembled.M << endl;
     ASSERT_TRUE(matricesAreEqual( expected.M, assembled.M ));
     ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
     ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
