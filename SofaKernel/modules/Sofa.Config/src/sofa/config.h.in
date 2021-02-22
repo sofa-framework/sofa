@@ -178,7 +178,7 @@ typedef unsigned __int64	uint64_t;
 
 #define SOFA_ATTRIBUTE_DEPRECATED__ASPECT(msg) \
     SOFA_ATTRIBUTE_DEPRECATED( \
-        "2021-02-08 PR#1793", "v21.12", \
+        "2020-03-25 PR#1269", "v21.12", \
         "Aspects have been removed. " msg)
 
 #define SOFA_ATTRIBUTE_DISABLED__ASPECT(msg) \
@@ -188,10 +188,13 @@ typedef unsigned __int64	uint64_t;
 
 #define SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS(msg) \
     SOFA_ATTRIBUTE_DEPRECATED__ASPECT( \
-        "ExecParams are not needed anymore. " msg)
+        "ExecParams are not needed anymore. " \
+        "Remove the ExecParams argument from your call. " msg)
 
 #define SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS(msg) \
-    SOFA_ATTRIBUTE_DISABLED__ASPECT("The ExecParams parameter is not needed anymore. " msg)
+    SOFA_ATTRIBUTE_DISABLED__ASPECT( \
+        "ExecParams are not needed anymore. " \
+        "Remove the ExecParams argument from your call. " msg)
 
 /**********************************************/
 

@@ -129,7 +129,7 @@ public:
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS("To upgrade your code please replace getCounter(param) with getCounter().")
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
     int getCounter(const core::ExecParams*) const = delete;
 
     void setLinkedBase(Base* link);
