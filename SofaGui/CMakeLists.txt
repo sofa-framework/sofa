@@ -3,8 +3,6 @@ project(SofaGui)
 
 find_package(SofaFramework REQUIRED)
 
-sofa_find_package(Boost REQUIRED COMPONENTS program_options BOTH_SCOPES)
-
 set(SOFAGUI_TARGETS "")
 
 # SofaGuiCommon
@@ -42,7 +40,6 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGUI_TARGETS} )
-target_link_libraries(${PROJECT_NAME} PUBLIC Boost::program_options)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

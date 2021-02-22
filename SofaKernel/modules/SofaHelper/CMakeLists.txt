@@ -32,7 +32,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/helper.h
     ${SRC_ROOT}/AdvancedTimer.h
-    ${SRC_ROOT}/ArgumentParser.h
     ${SRC_ROOT}/BackTrace.h
     ${SRC_ROOT}/cast.h
     ${SRC_ROOT}/ColorMap.h
@@ -152,7 +151,6 @@ set(HEADER_FILES
 )
 set(SOURCE_FILES
     ${SRC_ROOT}/AdvancedTimer.cpp
-    ${SRC_ROOT}/ArgumentParser.cpp
     ${SRC_ROOT}/BackTrace.cpp
     ${SRC_ROOT}/ColorMap.cpp
     ${SRC_ROOT}/ComponentChange.cpp
