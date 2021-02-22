@@ -23,7 +23,7 @@
 #include <SofaMeshCollision/config.h>
 
 #include <sofa/core/CollisionModel.h>
-#include <SofaMeshCollision/LocalMinDistanceFilter.h>
+#include <SofaMeshCollision/fwd.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -139,7 +139,6 @@ protected:
     VecDeriv normals;
 
     PointLocalMinDistanceFilter *m_lmdFilter;
-    EmptyFilter m_emptyFilter;
 
     Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
                                       

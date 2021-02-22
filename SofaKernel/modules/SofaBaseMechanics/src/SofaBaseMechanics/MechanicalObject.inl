@@ -21,9 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/MechanicalObject.h>
-
+#include <sofa/core/behavior/MechanicalState.inl>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
-
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyChange.h>

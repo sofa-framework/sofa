@@ -23,6 +23,7 @@
 #define SCENELOADERPY_H
 
 #include <SofaPython/config.h>
+#include <sofa/core/ExecParams.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 #include <sofa/simulation/fwd.h>
 

@@ -28,7 +28,7 @@ sofa_find_package(TinyXML REQUIRED)
 find_package(SofaBaseTopology REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaDefaultType)
 target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml) # Private because not exported in API
 
 sofa_create_package_with_targets(

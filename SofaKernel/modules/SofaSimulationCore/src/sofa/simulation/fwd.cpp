@@ -21,23 +21,28 @@
 ******************************************************************************/
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 
-namespace sofa::simulation
+namespace sofa::simulation::node
 {
-sofa::simulation::Node* getNodeFromBase(sofa::core::objectmodel::Base* context)
-{
-    return dynamic_cast<sofa::simulation::Node*>(context);
-}
-
-
-sofa::simulation::Node* getNodeFromContext(sofa::core::objectmodel::BaseContext* context)
+sofa::simulation::Node* getNodeFrom(sofa::core::objectmodel::Base* context)
 {
     return dynamic_cast<sofa::simulation::Node*>(context);
 }
 
-sofa::core::objectmodel::BaseContext* getContextFromNode(sofa::simulation::Node* node)
+sofa::simulation::Node* getNodeFrom(sofa::core::objectmodel::BaseContext* context)
 {
-    return static_cast<sofa::simulation::Node*>(node);
+    return dynamic_cast<sofa::simulation::Node*>(context);
+}
+
+sofa::core::objectmodel::Base* toBase(Node* node)
+{
+    return static_cast<sofa::core::objectmodel::Base*>(node);
+}
+
+sofa::core::objectmodel::BaseContext* toBaseContext(sofa::simulation::Node* node)
+{
+    return static_cast<sofa::core::objectmodel::BaseContext*>(node);
 }
 }

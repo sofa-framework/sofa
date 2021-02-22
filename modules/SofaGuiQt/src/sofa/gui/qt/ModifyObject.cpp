@@ -270,7 +270,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
 #if SOFAGUIQT_HAVE_QT5_CHARTS
         //Energy Widget
-        if (simulation::Node* real_node = sofa::simulation::getNodeFromBase(node))
+        if (simulation::Node* real_node = sofa::simulation::node::getNodeFrom(node))
         {
             if (dialogFlags_.REINIT_FLAG)
             {
@@ -280,7 +280,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         }
 
         //Momentum Widget
-        if (simulation::Node* real_node = sofa::simulation::getNodeFromBase(node))
+        if (simulation::Node* real_node = sofa::simulation::node::getNodeFrom(node))
         {
             if (dialogFlags_.REINIT_FLAG)
             {
@@ -496,11 +496,11 @@ void ModifyObject::updateValues()
     //Make the update of all the values
     if (node)
     {
-        bool isNode =( sofa::simulation::getNodeFromBase(node) != nullptr);
+        bool isNode =( sofa::simulation::node::getNodeFrom(node) != nullptr);
         //If the current element is a node of the graph, we first apply the transformations
         if (transformation && dialogFlags_.REINIT_FLAG && isNode)
         {
-            simulation::Node* current_node = sofa::simulation::getNodeFromBase(node);
+            simulation::Node* current_node = sofa::simulation::node::getNodeFrom(node);
             if (!transformation->isDefaultValues())
                 transformation->applyTransformation(current_node);
             transformation->setDefaultValues();
@@ -512,7 +512,7 @@ void ModifyObject::updateValues()
             {
                 obj->reinit();
             }
-            else if (simulation::Node *n = sofa::simulation::getNodeFromBase(node)) n->reinit(sofa::core::ExecParams::defaultInstance());
+            else if (simulation::Node *n = sofa::simulation::node::getNodeFrom(node)) n->reinit(sofa::core::ExecParams::defaultInstance());
         }
 
     }

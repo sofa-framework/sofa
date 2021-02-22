@@ -21,10 +21,9 @@
 ******************************************************************************/
 #pragma once
 #include <SofaMeshCollision/config.h>
-
+#include <sofa/core/fwd.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -124,6 +123,10 @@ public:
 
     void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
 
+    /// Import the draw(param, index) method from the parent scope, this is needed to make it accessible
+    /// in the current and child class. Otherwise the draw(param) will prevent name resolution
+    /// to locate it.
+    using Inherit1::draw;
     void draw(const core::visual::VisualParams* vparams) override;
 
     void handleTopologyChange() override;
@@ -179,7 +182,6 @@ protected:
 
 };
 
-
 template<class DataTypes>
 inline TLine<DataTypes>::TLine(ParentModel* model, Index index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
@@ -192,66 +194,13 @@ inline TLine<DataTypes>::TLine(const core::CollisionElementIterator& i)
 {
 }
 
-template<class DataTypes>
-inline sofa::Index TLine<DataTypes>::i1() const { return this->model->elems[this->index].p[0]; }
-
-template<class DataTypes>
-inline sofa::Index TLine<DataTypes>::i2() const { return this->model->elems[this->index].p[1]; }
-
-template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[0]]; }
-
-template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[1]]; }
-
-template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p(Index i) const {
-    return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[i]];
-}
-
-template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p1Free() const
-{
-    if (hasFreePosition())
-        return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->model->elems[this->index].p[0]];
-    else
-        return p1();
-}
-
-template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p2Free() const
-{
-    if (hasFreePosition())
-        return this->model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[this->model->elems[this->index].p[1]];
-    else
-        return p2();
-}
-
-template<class DataTypes>
-inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->model->elems[this->index].p[0]]; }
-
-template<class DataTypes>
-inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->model->elems[this->index].p[1]]; }
-
-template<class DataTypes>
-inline typename DataTypes::Deriv TLine<DataTypes>::n() const {return (this->model->mpoints->getNormal(this->i1()) + this->model->mpoints->getNormal( this->i2())).normalized();}
-
-template<class DataTypes>
-inline typename LineCollisionModel<DataTypes>::Deriv LineCollisionModel<DataTypes>::velocity(Index index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[1]])/((Real)(2.0)); }
-
-template<class DataTypes>
-inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(this->index); }
-
-template<class DataTypes>
-inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
-
 template <class TDataTypes> using TLineModel [[deprecated("The TLineModel is now deprecated, please use LineCollisionModel instead. Compatibility stops at v20.06")]] = LineCollisionModel<TDataTypes>;
 using  LineModel [[deprecated("The LineModel is now deprecated, please use LineCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = LineCollisionModel<sofa::defaulttype::Vec3Types>;
 using Line = TLine<sofa::defaulttype::Vec3Types>;
 
 #if  !defined(SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP)
-extern template class SOFA_SOFAMESHCOLLISION_API LineCollisionModel<defaulttype::Vec3Types>;
-
+extern template class SOFA_SOFAMESHCOLLISION_API TLine<sofa::defaulttype::Vec3dTypes>;
+extern template class SOFA_SOFAMESHCOLLISION_API LineCollisionModel<sofa::defaulttype::Vec3Types>;
 #endif
 
 } //namespace sofa::component::collision

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/type/config.h>
 #include <sofa/type/Vec.h>
 
 namespace sofa::type

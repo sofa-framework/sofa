@@ -24,7 +24,6 @@
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::mapping::_barycentricmapper_
 {
