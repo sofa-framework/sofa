@@ -195,7 +195,6 @@ public:
     Data< sofa::helper::OptionsGroup > _gatherPt; ///< use in GPU version
     Data< sofa::helper::OptionsGroup > _gatherBsize; ///< use in GPU version
     Data< bool > drawHeterogeneousTetra; ///< Draw Heterogeneous Tetra in different color
-    Data< bool > drawAsEdges; ///< Draw as edges instead of tetrahedra
 
     Real minYoung, maxYoung;
 
