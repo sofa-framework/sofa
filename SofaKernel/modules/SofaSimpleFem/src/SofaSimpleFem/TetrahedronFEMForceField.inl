@@ -59,11 +59,12 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , _vonMisesPerElement(initData(&_vonMisesPerElement, "vonMisesPerElement", "von Mises Stress per element"))
     , _vonMisesPerNode(initData(&_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
     , _vonMisesStressColors(initData(&_vonMisesStressColors, "vonMisesStressColors", "Vector of colors describing the VonMises stress"))
-    , _showStressColorMap(initData(&_showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
+    , _showStressColorMap(initData(&_showStressColorMap, std::string("Blue to Red"),"showStressColorMap", "Color map used to show stress values"))
     , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
     , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points  showing vonMises stress interpolated in nodes"))
     , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
     , l_topology(initLink("topology", "link to the tetrahedron topology container"))
+    , m_VonMisesColorMap(nullptr)
 {
     _poissonRatio.setRequired(true);
     _youngModulus.setRequired(true);
@@ -1309,6 +1310,9 @@ TetrahedronFEMForceField<DataTypes>::~TetrahedronFEMForceField()
     // Need to unaffect a vector to the pointer
     if (m_topology == nullptr && _indexedElements != nullptr)
         delete _indexedElements;
+
+    if (m_VonMisesColorMap != nullptr)
+        delete m_VonMisesColorMap;
 }
 
 
@@ -1497,6 +1501,11 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
 
         prevMaxStress = -1.0;
         updateVonMisesStress = true;
+
+        if (m_VonMisesColorMap == nullptr)
+        {
+            m_VonMisesColorMap = new helper::ColorMap(256, _showStressColorMap.getValue());
+        }
     }
 
     m_restVolume = 0;
@@ -1786,7 +1795,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     if (_showVonMisesStressPerNode.getValue()) {
         std::vector<sofa::helper::types::RGBAColor> nodeColors(x.size());
         std::vector<defaulttype::Vector3> pts(x.size());
-        helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVMN, maxVMN);
+        helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVMN, maxVMN);
         for (size_t nd = 0; nd < x.size(); nd++) {
             pts[nd] = x[nd];
             nodeColors[nd] = evalColor(vMN[nd]);
@@ -1907,7 +1916,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             } else
             {
                 if (_computeVonMisesStress.getValue() > 0) {
-                    helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVM, maxVM);
+                    helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
                     auto col = sofa::helper::types::RGBAColor::fromVec4(evalColor(vM[i]));
 
                     col[3] = 1.0f;
@@ -2598,7 +2607,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     unsigned int i = 0;
     for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
     {
-        helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVM, maxVM);
+        helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
         defaulttype::Vec4f col = evalColor(vME[i]);
         Tetrahedron tetra = (*_indexedElements)[i];
 
