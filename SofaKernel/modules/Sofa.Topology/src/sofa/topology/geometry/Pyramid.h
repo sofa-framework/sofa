@@ -19,10 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/topology/Topology.h>
+#pragma once
 
-namespace sofa::topology
+#include <sofa/topology/geometry/Point.h>
+#include <sofa/type/stdtype/fixed_array.h>
+
+namespace sofa::topology::geometry
 {
+    using PyramidID = Index;
 
+    class Pyramid : public sofa::type::stdtype::fixed_array<PointID, 5>
+    {
+    public:
+        Pyramid() : sofa::type::stdtype::fixed_array<PointID, 5>(InvalidID, InvalidID, InvalidID, InvalidID, InvalidID) {}
+        Pyramid(PointID a, PointID b, PointID c, PointID d, PointID e) : sofa::type::stdtype::fixed_array<PointID, 5>(a, b, c, d, e) {}
+    };
 
-} // namespace sofa::topology
+    inline static const Pyramid InvalidPyramid;
+}

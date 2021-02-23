@@ -19,10 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/topology/Topology.h>
+#pragma once
 
-namespace sofa::topology
+#include <sofa/topology/geometry/Point.h>
+#include <sofa/type/stdtype/fixed_array.h>
+
+namespace sofa::topology::geometry
 {
+    using TriangleID = Index;
 
+    class Triangle : public sofa::type::stdtype::fixed_array<PointID, 3>
+    {
+    public:
+        Triangle() : sofa::type::stdtype::fixed_array<PointID, 3>(InvalidID, InvalidID, InvalidID) {}
+        Triangle(PointID a, PointID b, PointID c) : sofa::type::stdtype::fixed_array<PointID, 3>(a, b, c) {}
+    };
 
-} // namespace sofa::topology
+    inline static const Triangle InvalidTriangle;
+}

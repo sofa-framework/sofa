@@ -19,10 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/topology/Topology.h>
+#pragma once
 
-namespace sofa::topology
+#include <sofa/topology/geometry/Point.h>
+#include <sofa/type/stdtype/fixed_array.h>
+
+namespace sofa::topology::geometry
 {
+    using EdgeID = Index;
 
+    class Edge : public sofa::type::stdtype::fixed_array<PointID, 2>
+    {
+    public:
+        Edge() : sofa::type::stdtype::fixed_array<PointID, 2>(InvalidID, InvalidID) {}
+        Edge(PointID a, PointID b) : sofa::type::stdtype::fixed_array<PointID, 2>(a, b) {}
+    };
 
-} // namespace sofa::topology
+    inline static const Edge InvalidEdge;
+}

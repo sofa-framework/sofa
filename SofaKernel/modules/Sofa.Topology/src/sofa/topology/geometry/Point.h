@@ -19,10 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/topology/Topology.h>
+#pragma once
 
-namespace sofa::topology
+#include <sofa/topology/config.h>
+
+#include <sofa/helper/vector.h>
+
+namespace sofa::topology::geometry
 {
+    using Index = sofa::Index;
+    static constexpr Index InvalidID = sofa::InvalidID;
 
+    using ElemID = Index;
+    using PointID = Index;
 
-} // namespace sofa::topology
+    using SetIndex = sofa::helper::vector<Index>;
+    using SetIndices = sofa::helper::vector<Index>;
+
+    using Point = PointID;
+
+    // inline variable (c++17): https://en.cppreference.com/w/cpp/language/inline
+    inline static const sofa::helper::vector<Index> InvalidSet;
+}

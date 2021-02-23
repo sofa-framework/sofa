@@ -39,30 +39,41 @@ using TopologyElementInfo
 [[deprecated("PR1xxx: sofa::core::topology::TopologyElementInfo has moved to sofa::topology::TopologyElementInfo. This compatibility layer will be removed for the v21.12 release.")]]
 = sofa::topology::TopologyElementInfo<TopologyElement>;
 
+// This class should be deprecated in the near future, and its only use is to be included in the Node topology Sequence.
+// As for now, it is mainly used for compatibility reason (and its inheritance on BaseObject...)
 class SOFA_CORE_API Topology : public sofa::topology::Topology, public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(Topology, core::objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(Topology)
 
-    using Index = sofa::topology::Topology::Index;
-    static constexpr Index InvalidID = sofa::topology::Topology::InvalidID;
+    using Index = sofa::topology::geometry::Index;
+    static constexpr Index InvalidID = sofa::topology::geometry::InvalidID;
 
-    using ElemID = sofa::topology::Topology::ElemID;
-    using PointID = sofa::topology::Topology::PointID;
-    using EdgeID = sofa::topology::Topology::EdgeID;
-    using TriangleID = sofa::topology::Topology::TriangleID;
-    using QuadID = sofa::topology::Topology::QuadID;
-    using TetraID = sofa::topology::Topology::TetraID;
-    using TetrahedronID = sofa::topology::Topology::TetrahedronID;
-    using HexaID = sofa::topology::Topology::HexaID;
-    using HexahedronID = sofa::topology::Topology::HexahedronID;
-    using PentahedronID = sofa::topology::Topology::PentahedronID;
-    using PentaID = sofa::topology::Topology::PentaID;
-    using PyramidID = sofa::topology::Topology::PyramidID;
+    using ElemID = sofa::topology::geometry::ElemID;
+    using PointID = sofa::topology::geometry::PointID;
+    using EdgeID = sofa::topology::geometry::EdgeID;
+    using TriangleID = sofa::topology::geometry::TriangleID;
+    using QuadID = sofa::topology::geometry::QuadID;
+    using TetraID = sofa::topology::geometry::TetraID;
+    using TetrahedronID = sofa::topology::geometry::TetrahedronID;
+    using HexaID = sofa::topology::geometry::HexaID;
+    using HexahedronID = sofa::topology::geometry::HexahedronID;
+    using PentahedronID = sofa::topology::geometry::PentahedronID;
+    using PentaID = sofa::topology::geometry::PentaID;
+    using PyramidID = sofa::topology::geometry::PyramidID;
 
-    using SetIndex = sofa::helper::vector<Index>;
-    using SetIndices = sofa::helper::vector<Index>;
+    inline static auto InvalidSet = sofa::topology::geometry::InvalidSet;
+    inline static auto InvalidEdge = sofa::topology::geometry::InvalidEdge;
+    inline static auto InvalidTriangle = sofa::topology::geometry::InvalidTriangle;
+    inline static auto InvalidQuad = sofa::topology::geometry::InvalidQuad;
+    inline static auto InvalidTetrahedron = sofa::topology::geometry::InvalidTetrahedron;
+    inline static auto InvalidPentahedron = sofa::topology::geometry::InvalidPentahedron;
+    inline static auto InvalidHexahedron = sofa::topology::geometry::InvalidHexahedron;
+    inline static auto InvalidPyramid = sofa::topology::geometry::InvalidPyramid;
+
+    using SetIndex = sofa::topology::geometry::SetIndex;
+    using SetIndices = sofa::topology::geometry::SetIndices;
 
     using Point = PointID;
         

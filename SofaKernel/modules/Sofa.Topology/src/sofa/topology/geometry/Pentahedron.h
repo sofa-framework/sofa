@@ -19,10 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/topology/Topology.h>
+#pragma once
 
-namespace sofa::topology
+#include <sofa/topology/geometry/Point.h>
+#include <sofa/type/stdtype/fixed_array.h>
+
+namespace sofa::topology::geometry
 {
+    using PentahedronID = Index;
+    using PentaID = Index;
 
+    class Pentahedron : public sofa::type::stdtype::fixed_array<PointID, 6>
+    {
+    public:
+        Pentahedron() : sofa::type::stdtype::fixed_array<PointID, 6>(InvalidID, InvalidID, InvalidID, InvalidID, InvalidID, InvalidID) {}
+        Pentahedron(PointID a, PointID b, PointID c, PointID d, PointID e, PointID f) : sofa::type::stdtype::fixed_array<PointID, 6>(a, b, c, d, e, f) {}
+    };
 
-} // namespace sofa::topology
+    using Penta = Pentahedron;
+
+    inline static const Pentahedron InvalidPentahedron;
+}
