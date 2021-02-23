@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaImplicitField VERSION 1.0)
 
 sofa_find_package(SofaDistanceGrid REQUIRED)
-sofa_find_package(SofaPython QUIET)
 
 set(HEADER_FILES
     config.h.in
