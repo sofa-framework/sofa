@@ -55,7 +55,7 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , _gatherBsize(initData(&_gatherBsize,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
     , drawHeterogeneousTetra(initData(&drawHeterogeneousTetra,false,"drawHeterogeneousTetra","Draw Heterogeneous Tetra in different color"))
     , drawAsEdges(initData(&drawAsEdges,false,"drawAsEdges","Draw as edges instead of tetrahedra"))
-    , _computeVonMisesStress(initData(&_computeVonMisesStress,0,"computeVonMisesStress","compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain"))
+    , _computeVonMisesStress(initData(&_computeVonMisesStress,0,"computeVonMisesStress","compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain. Set listening=1"))
     , _vonMisesPerElement(initData(&_vonMisesPerElement, "vonMisesPerElement", "von Mises Stress per element"))
     , _vonMisesPerNode(initData(&_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
     , _vonMisesStressColors(initData(&_vonMisesStressColors, "vonMisesStressColors", "Vector of colors describing the VonMises stress"))
@@ -1331,7 +1331,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
     }
 
-    if (_updateStiffness.getValue())
+    if (_updateStiffness.getValue() || _computeVonMisesStress.getValue())
         this->f_listening.setValue(true);
 
     // ParallelDataThrd is used to build the matrix asynchronusly (when listening = true)
@@ -1792,7 +1792,13 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     vparams->drawTool()->setLightingEnabled(false);
 
-    if (_showVonMisesStressPerNode.getValue()) {
+    if (_showVonMisesStressPerNode.getValue())
+    {
+        if (!_computeVonMisesStress.getValue())
+        {
+            msg_warning() << "Von Mises Stress Per Node can only be displayed if option computeVonMisesStress is set to true";
+        }
+    
         std::vector<sofa::helper::types::RGBAColor> nodeColors(x.size());
         std::vector<defaulttype::Vector3> pts(x.size());
         helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVMN, maxVMN);
