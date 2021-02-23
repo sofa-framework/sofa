@@ -21,13 +21,21 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/helper/config.h>
 #include<string>
 
 namespace sofa::helper
 {
 
 /// Scoped (RAII) AdvancedTimer to simplify a basic usage
-struct ScopedAdvancedTimer
+/// Example of use
+/// {   ///< open a scope to start measuring
+///     ScopedAdvancedTimer t("myMeasurement")
+///     ...
+///     ...
+/// }   ///< close the scope... the timer t is destructed and the
+///     measurement recorded.
+struct SOFA_HELPER_API ScopedAdvancedTimer
 {
     const char* message;
     ScopedAdvancedTimer(const std::string& message);
