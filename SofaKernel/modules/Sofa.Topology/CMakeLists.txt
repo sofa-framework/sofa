@@ -8,6 +8,7 @@ set(HEADER_FILES
     ${SOFATOPOLOGYSRC_ROOT}/init.h
     ${SOFATOPOLOGYSRC_ROOT}/Topology.h
     ${SOFATOPOLOGYSRC_ROOT}/TopologyElementType.h
+    ${SOFATOPOLOGYSRC_ROOT}/TopologyElementInfo.h
 )
 
 set(GEOMETRY_HEADER_FILES
@@ -24,6 +25,7 @@ set(GEOMETRY_HEADER_FILES
 set(SOURCE_FILES
     ${SOFATOPOLOGYSRC_ROOT}/init.cpp
     ${SOFATOPOLOGYSRC_ROOT}/Topology.cpp
+    ${SOFATOPOLOGYSRC_ROOT}/TopologyElementInfo.cpp
 )
 
 # Compatibility files

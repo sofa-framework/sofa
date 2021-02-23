@@ -23,7 +23,6 @@
 
 #include <sofa/topology/config.h>
 
-#include <sofa/topology/TopologyElementType.h>
 #include <sofa/topology/geometry/Point.h>
 #include <sofa/topology/geometry/Edge.h>
 #include <sofa/topology/geometry/Triangle.h>
@@ -33,47 +32,21 @@
 #include <sofa/topology/geometry/Pyramid.h>
 #include <sofa/topology/geometry/Hexahedron.h>
 
-#include <climits>
-#include <string>
-
 namespace sofa::topology
 {
 
-class SOFA_TOPOLOGY_API Topology
-{
-public:
-    /// compatibility
-    using Index = sofa::Index;
-    static constexpr Index InvalidID = sofa::InvalidID;
+template<class TopologyElement>
+struct TopologyElementInfo;
 
-    using ElemID = geometry::ElemID;
-    using PointID = geometry::PointID;
-    using EdgeID = geometry::EdgeID;
-    using TriangleID = geometry::TriangleID;
-    using QuadID = geometry::QuadID;
-    using TetraID = geometry::TetraID;
-    using TetrahedronID = geometry::TetrahedronID;
-    using HexaID = geometry::HexaID;
-    using HexahedronID = geometry::HexahedronID;
-    using PentahedronID = geometry::PentahedronID;
-    using PentaID = geometry::PentaID;
-    using PyramidID = geometry::PyramidID;
-
-    using Edge = geometry::Edge;
-    using Triangle = geometry::Triangle;
-    using Quad = geometry::Quad;
-    using Tetrahedron = geometry::Tetrahedron;
-    using Tetra = geometry::Tetra;
-    using Pentahedron = geometry::Pentahedron;
-    using Penta = geometry::Penta;
-    using Pyramid = geometry::Pyramid;
-    using Hexahedron = geometry::Hexahedron;
-    using Hexa = geometry::Hexa;
-
-protected:
-    Topology() {}
-    ~Topology() {}
-public:
-};
+#ifndef SOFA_TOPOLOGY_TOPOLOGYELEMENTINFO_DEFINITION
+template SOFA_TOPOLOGY_API struct TopologyElementInfo<geometry::Point>;
+template SOFA_TOPOLOGY_API struct TopologyElementInfo<geometry::Edge>;
+template SOFA_TOPOLOGY_API struct TopologyElementInfo<geometry::Triangle>;
+template SOFA_TOPOLOGY_API struct TopologyElementInfo<geometry::Quad>;
+template SOFA_TOPOLOGY_API struct TopologyElementInfo<geometry::Pentahedron>;
+template SOFA_TOPOLOGY_API struct TopologyElementInfo<geometry::Tetrahedron>;
+template SOFA_TOPOLOGY_API struct TopologyElementInfo<geometry::Pyramid>;
+template SOFA_TOPOLOGY_API struct TopologyElementInfo<geometry::Hexahedron>;
+#endif
 
 } // namespace sofa::topology
