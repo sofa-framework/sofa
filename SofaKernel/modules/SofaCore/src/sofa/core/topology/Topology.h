@@ -42,7 +42,7 @@ using TopologyElementInfo
 
 // This class should be deprecated in the near future, and its only use is to be included in the Node topology Sequence.
 // As for now, it is mainly used for compatibility reason (and its inheritance on BaseObject...)
-class SOFA_CORE_API Topology : public sofa::topology::Topology, public virtual sofa::core::objectmodel::BaseObject
+class SOFA_CORE_API Topology : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(Topology, core::objectmodel::BaseObject);
@@ -77,13 +77,23 @@ public:
     using SetIndices = sofa::topology::geometry::SetIndices;
 
     using Point = PointID;
+    using Edge = sofa::topology::geometry::Edge;
+    using Triangle = sofa::topology::geometry::Triangle;
+    using Quad = sofa::topology::geometry::Quad;
+    using Tetrahedron = sofa::topology::geometry::Tetrahedron;
+    using Tetra = sofa::topology::geometry::Tetra;
+    using Pentahedron = sofa::topology::geometry::Pentahedron;
+    using Penta = sofa::topology::geometry::Penta;
+    using Pyramid = sofa::topology::geometry::Pyramid;
+    using Hexahedron = sofa::topology::geometry::Hexahedron;
+    using Hexa = sofa::topology::geometry::Hexa;
         
     bool insertInNode(objectmodel::BaseNode* node) override;
     bool removeInNode(objectmodel::BaseNode* node) override;
 
 protected:
     Topology() {}
-    ~Topology() {}
+    virtual ~Topology() {}
 public:
     // Access to embedded position information (in case the topology is a regular grid for instance)
     // This is not very clean and is quit slow but it should only be used during initialization
