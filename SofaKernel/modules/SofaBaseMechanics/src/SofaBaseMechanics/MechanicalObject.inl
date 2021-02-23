@@ -34,6 +34,7 @@
 #include <sofa/simulation/Visitor.h>
 #endif
 
+#include <algorithm>
 #include <cassert>
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
@@ -72,7 +73,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , externalForces(initData(&externalForces, "externalForce", "externalForces vector of the degrees of freedom"))
     , dx(initData(&dx, "derivX", "dx vector of the degrees of freedom"))
     , xfree(initData(&xfree, "free_position", "free position coordinates of the degrees of freedom"))
-    , vfree(initData(&vfree, "free_velocity", "free velocity coordinates of the degrees of freedom"))    
+    , vfree(initData(&vfree, "free_velocity", "free velocity coordinates of the degrees of freedom"))
     , c(initData(&c, "constraint", "constraints applied to the degrees of freedom"))
     , m(initData(&m, "mappingJacobian", "mappingJacobian applied to the degrees of freedom"))
     , reset_position(initData(&reset_position, "reset_position", "reset position coordinates of the degrees of freedom"))
@@ -138,14 +139,14 @@ MechanicalObject<DataTypes>::MechanicalObject()
     x               .forceSet();
     //  x0              .forceSet();
     v               .forceSet();
-//    dx              .forceSet();
+    //    dx              .forceSet();
     f               .forceSet();
     externalForces  .forceSet();
 
     // there is no need for a common user to watch at these vectors
-//    dx.setDisplayed( false );
-//    freePosition.setDisplayed( false );
-//    freeVelocity.setDisplayed( false );
+    //    dx.setDisplayed( false );
+    //    freePosition.setDisplayed( false );
+    //    freeVelocity.setDisplayed( false );
 
     // do not forget to delete these in the destructor
     //    write(VecDerivId::dforce())->forceSet();
@@ -153,8 +154,8 @@ MechanicalObject<DataTypes>::MechanicalObject()
     // What is exactly the need for allocating null vectors?
     // if sofa crashes because of a wrong access to the null vector
     // I would suspect a bug in your algo rather than the need for allocating it
-//    write(VecCoordId::null())->forceSet();
-//    write(VecDerivId::null())->forceSet();
+    //    write(VecCoordId::null())->forceSet();
+    //    write(VecDerivId::null())->forceSet();
 
     // default size is 1
     resize(1);
@@ -173,14 +174,14 @@ MechanicalObject<DataTypes>::~MechanicalObject()
     for(unsigned i=core::VecCoordId::V_FIRST_DYNAMIC_INDEX; i<vectorsCoord.size(); i++)
         if( vectorsCoord[i] != nullptr ) { delete vectorsCoord[i]; vectorsCoord[i]=nullptr; }
     if( vectorsCoord[core::VecCoordId::null().getIndex()] != nullptr )
-        { delete vectorsCoord[core::VecCoordId::null().getIndex()]; vectorsCoord[core::VecCoordId::null().getIndex()] = nullptr; }
+    { delete vectorsCoord[core::VecCoordId::null().getIndex()]; vectorsCoord[core::VecCoordId::null().getIndex()] = nullptr; }
 
     for(unsigned i=core::VecDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsDeriv.size(); i++)
         if( vectorsDeriv[i] != nullptr )  { delete vectorsDeriv[i]; vectorsDeriv[i]=nullptr; }
     if( vectorsDeriv[core::VecDerivId::null().getIndex()] != nullptr )
-        { delete vectorsDeriv[core::VecDerivId::null().getIndex()]; vectorsDeriv[core::VecDerivId::null().getIndex()] = nullptr; }
+    { delete vectorsDeriv[core::VecDerivId::null().getIndex()]; vectorsDeriv[core::VecDerivId::null().getIndex()] = nullptr; }
     if( core::VecDerivId::dforce().getIndex()<vectorsDeriv.size() && vectorsDeriv[core::VecDerivId::dforce().getIndex()] != nullptr )
-        { delete vectorsDeriv[core::VecDerivId::dforce().getIndex()]; vectorsDeriv[core::VecDerivId::dforce().getIndex()] = nullptr; }
+    { delete vectorsDeriv[core::VecDerivId::dforce().getIndex()]; vectorsDeriv[core::VecDerivId::dforce().getIndex()] = nullptr; }
 
     for(unsigned i=core::MatrixDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsMatrixDeriv.size(); i++)
         if( vectorsMatrixDeriv[i] != nullptr )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=nullptr; }
@@ -778,11 +779,10 @@ void MechanicalObject<DataTypes>::applyScale(const SReal sx,const SReal sy,const
     helper::WriteAccessor< Data<VecCoord> > x_wA = this->writePositions();
 
     const sofa::defaulttype::Vec<3,Real> s((Real)sx, (Real)sy, (Real)sz);
-    for (unsigned int i=0; i<x_wA.size(); i++)
+    for (unsigned int i=0; i<x_wA.size(); ++i)
     {
-        x_wA[i][0] = x_wA[i][0] * s[0];
-        x_wA[i][1] = x_wA[i][1] * s[1];
-        x_wA[i][2] = x_wA[i][2] * s[2];
+        for (unsigned int j=0; j<std::min(3, (int)DataTypes::Coord::total_size); ++j)
+            x_wA[i][j] = x_wA[i][j] * s[j];
     }
 }
 
@@ -1078,25 +1078,25 @@ void MechanicalObject<DataTypes>::init()
     {
         msg_info() << "Initialization with topology " << l_topology->getTypeName() << " " << l_topology->getName() ;
     }
-  
+
     // Make sure the sizes of the vectors and the arguments of the scene matches
     const std::vector<std::pair<const std::string, const Size>> vector_sizes = {
-            {x.getName(),                x.getValue().size()},
-            {v.getName(),                v.getValue().size()},
-            {f.getName(),                f.getValue().size()},
-            {externalForces.getName(),   externalForces.getValue().size()},
-            {dx.getName(),               dx.getValue().size()},
-            {xfree.getName(),            xfree.getValue().size()},
-            {vfree.getName(),            vfree.getValue().size()},
-            {x0.getName(),               x0.getValue().size()},
-            {reset_position.getName(),   reset_position.getValue().size()},
-            {reset_velocity.getName(),   reset_velocity.getValue().size()}
+        {x.getName(),                x.getValue().size()},
+        {v.getName(),                v.getValue().size()},
+        {f.getName(),                f.getValue().size()},
+        {externalForces.getName(),   externalForces.getValue().size()},
+        {dx.getName(),               dx.getValue().size()},
+        {xfree.getName(),            xfree.getValue().size()},
+        {vfree.getName(),            vfree.getValue().size()},
+        {x0.getName(),               x0.getValue().size()},
+        {reset_position.getName(),   reset_position.getValue().size()},
+        {reset_velocity.getName(),   reset_velocity.getValue().size()}
     };
 
     // Get the maximum size of all argument's vectors
     auto maxElement = std::max_element(vector_sizes.begin(), vector_sizes.end(),
-       [] (const std::pair<const std::string, const Size> &a, const std::pair<const std::string, const Size> &b) {
-            return a.second < b.second;
+                                       [] (const std::pair<const std::string, const Size> &a, const std::pair<const std::string, const Size> &b) {
+        return a.second < b.second;
     });
 
     if (maxElement != vector_sizes.end()) {
@@ -1148,7 +1148,7 @@ void MechanicalObject<DataTypes>::init()
         {
             int nbp = l_topology->getNbPoints();
 
-          // copy the last specified velocity to all points
+            // copy the last specified velocity to all points
             if (v_wA.size() >= 1 && v_wA.size() < (unsigned)nbp)
             {
                 auto i = v_wA.size();
@@ -2524,8 +2524,8 @@ void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, cor
     {
         helper::WriteOnlyAccessor< Data<VecDeriv> > f( *this->write(fid) );
         for (unsigned i = 0; i < f.size(); ++i)
-//          if( this->forceMask.getEntry(i) ) // safe getter or not?
-                f[i] = Deriv();
+            //          if( this->forceMask.getEntry(i) ) // safe getter or not?
+            f[i] = Deriv();
     }
 }
 
@@ -2806,7 +2806,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
             vparams->drawTool()->drawSpheres(positions,scale, sofa::helper::types::RGBAColor::green());
             break;
         case 4:
-           vparams->drawTool()->setLightingEnabled(true);
+            vparams->drawTool()->setLightingEnabled(true);
             vparams->drawTool()->drawSpheres(positions,scale, sofa::helper::types::RGBAColor::blue());
             break;
         default:
