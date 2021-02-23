@@ -167,22 +167,6 @@ public:
     void removeEdgesProcess( const sofa::helper::vector<EdgeID> &indices,
             const bool removeIsolatedItems=false) override;
 
-    /** \brief Add some points to this topology.
-    *
-    * \sa addPointsWarning
-    */
-    void addPointsProcess(const sofa::Size nPoints) override;
-
-    /** \brief Remove a subset of points
-    *
-    * Elements corresponding to these points are removed form the mechanical object's state vectors.
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
-    * \sa removePointsWarning
-    * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
-    */
-    void removePointsProcess(const sofa::helper::vector<PointID> &indices, const bool removeDOF = true) override;
-
     /** \brief Remove a set  of tetrahedra
     @param tetrahedra an array of tetrahedron indices to be removed (note that the array is not const since it needs to be sorted)
     *
@@ -198,6 +182,22 @@ public:
     void RemoveTetraBall(TetrahedronID ind_ta, TetrahedronID ind_tb);
 
 protected:
+    /** \brief Add some points to this topology.
+    *
+    * \sa addPointsWarning
+    */
+    void addPointsProcess(const sofa::Size nPoints) override;
+
+    /** \brief Remove a subset of points
+    *
+    * Elements corresponding to these points are removed form the mechanical object's state vectors.
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
+    * \sa removePointsWarning
+    * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
+    */
+    void removePointsProcess(const sofa::helper::vector<PointID>& indices, const bool removeDOF = true) override;
+
     /** \brief Reorder this topology.
     *
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
