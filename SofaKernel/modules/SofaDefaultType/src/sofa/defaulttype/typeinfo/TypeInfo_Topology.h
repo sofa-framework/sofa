@@ -21,37 +21,53 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/config.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+#include <sofa/topology/Topology.h>
 
-#include <sofa/topology/TopologyElementType.h>
-#include <sofa/topology/geometry/Point.h>
-#include <sofa/topology/geometry/Edge.h>
-#include <sofa/topology/geometry/Triangle.h>
-#include <sofa/topology/geometry/Quad.h>
-#include <sofa/topology/geometry/Pentahedron.h>
-#include <sofa/topology/geometry/Tetrahedron.h>
-#include <sofa/topology/geometry/Pyramid.h>
-#include <sofa/topology/geometry/Hexahedron.h>
-
-namespace sofa::topology
+namespace sofa::defaulttype
 {
 
-template<typename TopologyElement>
-struct TopologyElementInfo
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Edge > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,2> >
 {
-    static TopologyElementType type();
-    static const char* name();
+    static std::string name() { return "Edge"; }
 };
 
-#ifndef SOFA_TOPOLOGY_TOPOLOGYELEMENTINFO_DEFINITION
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Point>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Edge>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Triangle>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Quad>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Pentahedron>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Tetrahedron>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Pyramid>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Hexahedron>;
-#endif
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Triangle > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,3> >
+{
+    static std::string name() { return "Triangle"; }
+};
 
-} // namespace sofa::topology
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Quad > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
+{
+    static std::string name() { return "Quad"; }
+};
+
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Tetrahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
+{
+    static std::string name() { return "Tetrahedron"; }
+};
+
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Pyramid > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,5> >
+{
+    static std::string name() { return "Pyramid"; }
+};
+
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Pentahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,6> >
+{
+    static std::string name() { return "Pentahedron"; }
+};
+
+template<>
+struct DataTypeInfo< sofa::topology::Topology::Hexahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,8> >
+{
+    static std::string name() { return "Hexahedron"; }
+};
+
+} // namespace sofa::defaulttype
+

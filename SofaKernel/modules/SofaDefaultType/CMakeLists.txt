@@ -50,6 +50,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/typeinfo/TypeInfo_Vector.h
     ${SRC_ROOT}/typeinfo/TypeInfo_Vec.h
     ${SRC_ROOT}/typeinfo/TypeInfo_VecTypes.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_Topology.h
 
     ${SRC_ROOT}/typeinfo/models/IncompleteTypeInfo.h
     ${SRC_ROOT}/typeinfo/models/BoolTypeInfo.h
@@ -86,6 +87,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/typeinfo/TypeInfo_Vector.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_Vec.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_VecTypes.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_Topology.cpp
 )
 
 find_package(Eigen3 REQUIRED)

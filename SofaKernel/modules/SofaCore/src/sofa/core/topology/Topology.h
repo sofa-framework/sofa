@@ -24,6 +24,7 @@
 #include <sofa/core/config.h>
 #include <sofa/topology/Topology.h>
 #include <sofa/topology/TopologyElementType.h>
+#include <sofa/topology/TopologyElementInfo.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
@@ -98,51 +99,3 @@ public:
 } // namespace sofa::core::topology
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
-
-namespace sofa::defaulttype
-{
-
-template<>
-struct DataTypeInfo< sofa::topology::Topology::Edge > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,2> >
-{
-    static std::string name() { return "Edge"; }
-};
-
-template<>
-struct DataTypeInfo< sofa::topology::Topology::Triangle > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,3> >
-{
-    static std::string name() { return "Triangle"; }
-};
-
-template<>
-struct DataTypeInfo< sofa::topology::Topology::Quad > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
-{
-    static std::string name() { return "Quad"; }
-};
-
-template<>
-struct DataTypeInfo< sofa::topology::Topology::Tetrahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,4> >
-{
-    static std::string name() { return "Tetrahedron"; }
-};
-
-template<>
-struct DataTypeInfo< sofa::topology::Topology::Pyramid > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,5> >
-{
-    static std::string name() { return "Pyramid"; }
-};
-
-template<>
-struct DataTypeInfo< sofa::topology::Topology::Pentahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,6> >
-{
-    static std::string name() { return "Pentahedron"; }
-};
-
-template<>
-struct DataTypeInfo< sofa::topology::Topology::Hexahedron > : public FixedArrayTypeInfo<sofa::type::stdtype::fixed_array<Index,8> >
-{
-    static std::string name() { return "Hexahedron"; }
-};
-
-
-} // namespace sofa::defaulttype
