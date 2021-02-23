@@ -5,6 +5,8 @@
 *****************************************************************************/
 
 #include <sofa/config.h>
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
 
 #include <iostream>
 #include <fstream>
@@ -76,10 +78,20 @@ bool loadQtConfWithCustomPrefix(const std::string& qtConfPath, const std::string
         return false;
     }
 
-    std::ifstream inputFile(qtConfPath);
+    // Qt wants paths with slashes
+    const std::string qtConfPathClean = FileSystem::cleanPath(qtConfPath, FileSystem::SLASH);
+    const std::string prefixClean = FileSystem::cleanPath(prefix, FileSystem::SLASH);
+
+    if ( ! FileSystem::isDirectory(prefixClean) )
+    {
+        msg_warning("qt.conf.h") << "Directory not found " << prefixClean;
+        return false;
+    }
+
+    std::ifstream inputFile(qtConfPathClean);
     if ( ! inputFile.is_open() )
     {
-        msg_warning("qt.conf.h") << "Cannot open file " << qtConfPath;
+        msg_warning("qt.conf.h") << "Cannot open file " << qtConfPathClean;
         return false;
     }
 
@@ -89,7 +101,7 @@ bool loadQtConfWithCustomPrefix(const std::string& qtConfPath, const std::string
     {
         if ( inputLine.find("Prefix") != std::string::npos )
         {
-            output << "  Prefix = " << prefix;
+            output << "  Prefix = " << prefixClean;
         }
         else
         {
