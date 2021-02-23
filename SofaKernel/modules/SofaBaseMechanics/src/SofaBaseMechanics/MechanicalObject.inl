@@ -779,7 +779,7 @@ void MechanicalObject<DataTypes>::applyScale(const SReal sx,const SReal sy,const
     const sofa::defaulttype::Vec<3,Real> s((Real)sx, (Real)sy, (Real)sz);
     for (unsigned int i=0; i<x_wA.size(); ++i)
     {
-        for (unsigned int j=0; j<std::min(3, (int)DataTypes::spatial_dimensions); ++j)
+        for (unsigned int j=0; j<std::min(3, (int)DataTypes::Coord::total_size); ++j)
             x_wA[i][j] = x_wA[i][j] * s[j];
     }
 }
