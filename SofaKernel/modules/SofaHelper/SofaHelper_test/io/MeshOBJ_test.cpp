@@ -27,8 +27,6 @@ using sofa::helper::testing::BaseTest ;
 
 namespace sofa {
 
-using namespace core::loader;
-
 class MeshOBJ_test : public BaseTest
 {
 protected:
