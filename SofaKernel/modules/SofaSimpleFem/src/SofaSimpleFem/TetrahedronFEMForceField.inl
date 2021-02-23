@@ -1841,23 +1841,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                 pd = (pd + center) * Real(0.6667);
             }
 
-            // create 4 triangles per tetrahedron
-            points.push_back(pa);
-            points.push_back(pb);
-            points.push_back(pc);
-
-            points.push_back(pb);
-            points.push_back(pc);
-            points.push_back(pd);
-
-            points.push_back(pc);
-            points.push_back(pd);
-            points.push_back(pa);
-
-            points.push_back(pd);
-            points.push_back(pa);
-            points.push_back(pb);
-            
+           
             // create corresponding colors
             sofa::helper::types::RGBAColor color[4];
             if(heterogeneous)
@@ -1890,15 +1874,18 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                 }
             }
 
-            for (int tri = 0; tri < 4; ++tri)
-            { 
-                for (int vert = 0; vert < 3; ++vert)
-                {
-                    colorVector.push_back(color[tri]);
-                }
-            }
+            // create 4 triangles per tetrahedron with corresponding colors
+            points.insert(points.end(), { pa, pb, pc });
+            colorVector.insert(colorVector.end(), { color[0], color[0], color[0] });
 
-            
+            points.insert(points.end(), { pb, pc, pd });
+            colorVector.insert(colorVector.end(), { color[1], color[1], color[1] });
+
+            points.insert(points.end(), { pc, pd, pa });
+            colorVector.insert(colorVector.end(), { color[2], color[2], color[2] });
+
+            points.insert(points.end(), { pd, pa, pb });
+            colorVector.insert(colorVector.end(), { color[3], color[3], color[3] });
         }
 
         vparams->drawTool()->drawTriangles(points, colorVector);
