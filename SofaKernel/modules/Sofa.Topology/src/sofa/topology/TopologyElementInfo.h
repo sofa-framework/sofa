@@ -39,8 +39,15 @@ namespace sofa::topology
 template<typename TopologyElement>
 struct TopologyElementInfo
 {
-    static TopologyElementType type();
-    static const char* name();
+    static TopologyElementType type()
+    {
+        return TopologyElementType();
+    }
+
+    static const char* name()
+    {
+        return "";
+    }
 };
 
 #ifndef SOFA_TOPOLOGY_TOPOLOGYELEMENTINFO_DEFINITION

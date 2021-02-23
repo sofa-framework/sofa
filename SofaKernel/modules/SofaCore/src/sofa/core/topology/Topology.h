@@ -41,7 +41,7 @@ using TopologyElementInfo
 = sofa::topology::TopologyElementInfo<TopologyElement>;
 
 // This class should be deprecated in the near future, and its only use is to be included in the Node topology Sequence.
-// As for now, it is mainly used for compatibility reason (and its inheritance on BaseObject...)
+// As for now, it is mainly used for compatibility reason (and its inheritance on BaseObject...) against BaseMeshTopology
 class SOFA_CORE_API Topology : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
@@ -107,5 +107,3 @@ public:
 };
 
 } // namespace sofa::core::topology
-
-// Specialization of the defaulttype::DataTypeInfo type traits template
