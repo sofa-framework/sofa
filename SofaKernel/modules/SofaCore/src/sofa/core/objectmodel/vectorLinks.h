@@ -19,25 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_VECTORLINKS_H
-#define SOFA_HELPER_VECTORLINKS_H
+#pragma once
+#include <sofa/core/config.h>
 
 #include <string>
 
+#include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/helper/config.h>
 
-namespace sofa
+namespace sofa::core::objectmodel
 {
-
-namespace helper
-{
-
-
-
 
 /** A helper class which implements a vector of a variable number of Links
  *
@@ -46,11 +40,11 @@ namespace helper
  * @author Matthieu Nesme @date 2015
  */
 template<class LinkType, class OwnerType>
-class VectorLinks : public vector< LinkType* > {
+class VectorLinks : public helper::vector< LinkType* > {
 
 public:
 
-    typedef vector< LinkType* > Inherit;
+    typedef helper::vector< LinkType* > Inherit;
 
     /// 'dataEngineInOut' is only valid if 'component' is a DataEngine
     VectorLinks(OwnerType* component, std::string const& name, std::string const& help)
@@ -120,8 +114,4 @@ protected:
     std::string m_name, m_help;
 };
 
-} // namespace helper
-
-} // namespace sofa
-
-#endif // SOFA_HELPER_VECTORDATA_H
+} // namespace sofa::core::objectmodel
