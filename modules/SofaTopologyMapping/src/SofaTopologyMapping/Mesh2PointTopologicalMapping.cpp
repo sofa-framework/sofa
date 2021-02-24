@@ -656,10 +656,8 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                                 toArray[i][j] = pointsMappedFrom[POINT][fromArray[i][j]][0];
                         msg_info() << "<IN: " << fromModel->getNbTriangles() << " OUT: " << toModel->getNbTriangles();
                         msg_info() << "     ToArray : " << toArray.size() << " : " << toArray;
-                        toTriangleMod->addTrianglesProcess(toArray);
                         msg_info() << "     triangleIndexArray : " << tAdd->triangleIndexArray.size() << " : " << tAdd->triangleIndexArray;
-                        toTriangleMod->addTrianglesWarning(tAdd->getNbAddedTriangles(), toArray, tAdd->triangleIndexArray, tAdd->ancestorsList, tAdd->coefs);
-                        toTriangleMod->propagateTopologicalChanges();
+                        toTriangleMod->addTriangles(toArray, tAdd->ancestorsList, tAdd->coefs);
                         msg_info() << ">IN: " << fromModel->getNbTriangles() << " OUT: " << toModel->getNbTriangles();
                     }
                 }
@@ -676,10 +674,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                     if (toTriangleMod)
                     {
                         msg_info() << "TRIANGLESREMOVED : " << tRem->getNbRemovedTriangles() << " : " << tab;
-                        auto toArray = tab;
-                        toTriangleMod->removeTrianglesWarning(toArray);
-                        toTriangleMod->propagateTopologicalChanges();
-                        toTriangleMod->removeTrianglesProcess(tab, false);
+                        toTriangleMod->removeTriangles(tab, false, false);
                     }
                 }
 

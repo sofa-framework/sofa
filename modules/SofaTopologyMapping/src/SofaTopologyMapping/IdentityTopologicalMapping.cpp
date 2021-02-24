@@ -187,9 +187,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toTriangleMod) break;
             const TrianglesAdded *tAdd = static_cast< const TrianglesAdded * >( topoChange );
             dmsg_info() << "TRIANGLESADDED : " << tAdd->getNbAddedTriangles() ;
-            toTriangleMod->addTrianglesProcess(tAdd->triangleArray);
-            toTriangleMod->addTrianglesWarning(tAdd->getNbAddedTriangles(), tAdd->triangleArray, tAdd->triangleIndexArray, tAdd->ancestorsList, tAdd->coefs);
-            toTriangleMod->propagateTopologicalChanges();
+            toTriangleMod->addTriangles(tAdd->triangleArray, tAdd->ancestorsList, tAdd->coefs);
             break;
         }
 
@@ -200,9 +198,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             const TrianglesRemoved *tRem = static_cast< const TrianglesRemoved * >( topoChange );
             auto tab = tRem->getArray();
             dmsg_info() << "TRIANGLESREMOVED : " << tab.size() ;
-            toTriangleMod->removeTrianglesWarning(tab);
-            toTriangleMod->propagateTopologicalChanges();
-            toTriangleMod->removeTrianglesProcess(tab, false);
+            toTriangleMod->removeTriangles(tab, false, false);
             break;
         }
 

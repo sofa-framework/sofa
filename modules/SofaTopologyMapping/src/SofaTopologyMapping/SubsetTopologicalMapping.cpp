@@ -858,9 +858,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             if (nDadd > 0)
             {
                 msg_info() << "    -> TRIANGLESADDED : " << nDadd  << " : " << triangleIndexArray << " : " << triangleArray;
-                toTriangleMod->addTrianglesProcess(triangleArray);
-                toTriangleMod->addTrianglesWarning(nDadd, triangleArray, triangleIndexArray, ancestors, coefs);
-                toTriangleMod->propagateTopologicalChanges();
+                toTriangleMod->addTriangles(triangleArray, ancestors, coefs);
             }
             break;
         }
@@ -905,9 +903,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             }
             if (!tab2.empty())
             {
-                toTriangleMod->removeTrianglesWarning(tab2);
-                toTriangleMod->propagateTopologicalChanges();
-                toTriangleMod->removeTrianglesProcess(tab2, !handleEdges.getValue());
+                toTriangleMod->removeTriangles(tab2, !handleEdges.getValue(), false);
                 // apply removals in tD2S
                 {
                     size_t last = tD2S.size() -1;
