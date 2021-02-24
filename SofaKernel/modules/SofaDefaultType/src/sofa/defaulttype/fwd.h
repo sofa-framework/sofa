@@ -25,17 +25,44 @@
 #include <sofa/type/fwd.h>
 namespace sofa::helper
 {
-    template<class T>
-    class Quater;
+template<class T>
+class Quater;
 }
 
 namespace sofa::defaulttype
 {
-    class BaseMatrix;
-    class BaseVector;
 
-    typedef sofa::helper::Quater<float> Quatf;
-    typedef sofa::helper::Quater<double> Quatd;
-    typedef sofa::helper::Quater<SReal> Quat;
-    typedef Quat Quaternion;
+using sofa::type::Mat;
+using sofa::type::MatNoInit;
+
+using sofa::type::Mat1x1f;
+using sofa::type::Mat1x1d;
+
+using sofa::type::Mat2x2f;
+using sofa::type::Mat2x2d;
+
+using sofa::type::Mat3x3f;
+using sofa::type::Mat3x3d;
+
+using sofa::type::Mat3x4f;
+using sofa::type::Mat3x4d;
+
+using sofa::type::Mat4x4f;
+using sofa::type::Mat4x4d;
+
+using sofa::type::Mat2x2;
+using sofa::type::Mat3x3;
+using sofa::type::Mat4x4;
+
+using sofa::type::Matrix2;
+using sofa::type::Matrix3;
+using sofa::type::Matrix4;
+
+class BaseMatrix;
+class BaseVector;
+
+typedef sofa::helper::Quater<float> Quatf;
+typedef sofa::helper::Quater<double> Quatd;
+typedef sofa::helper::Quater<SReal> Quat;
+typedef Quat Quaternion;
 }

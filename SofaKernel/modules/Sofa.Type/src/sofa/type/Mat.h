@@ -26,7 +26,6 @@
 
 #include <sofa/type/stdtype/fixed_array.h>
 #include <sofa/type/Vec.h>
-#include <sofa/helper/rmath.h>
 
 #include <iostream>
 

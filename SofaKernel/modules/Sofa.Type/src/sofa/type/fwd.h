@@ -54,33 +54,3 @@ typedef Mat<2,2,SReal> Matrix2;
 typedef Mat<3,3,SReal> Matrix3;
 typedef Mat<4,4,SReal> Matrix4;
 }
-
-/// Deprecated namespace.
-namespace sofa::defaulttype
-{
-using sofa::type::Mat;
-using sofa::type::MatNoInit;
-
-using sofa::type::Mat1x1f;
-using sofa::type::Mat1x1d;
-
-using sofa::type::Mat2x2f;
-using sofa::type::Mat2x2d;
-
-using sofa::type::Mat3x3f;
-using sofa::type::Mat3x3d;
-
-using sofa::type::Mat3x4f;
-using sofa::type::Mat3x4d;
-
-using sofa::type::Mat4x4f;
-using sofa::type::Mat4x4d;
-
-using sofa::type::Mat2x2;
-using sofa::type::Mat3x3;
-using sofa::type::Mat4x4;
-
-using sofa::type::Matrix2;
-using sofa::type::Matrix3;
-using sofa::type::Matrix4;
-}
