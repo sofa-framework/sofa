@@ -23,8 +23,8 @@
 
 #include <sofa/core/config.h>
 #include <sofa/topology/Topology.h>
-#include <sofa/topology/TopologyElementType.h>
-#include <sofa/topology/TopologyElementInfo.h>
+#include <sofa/topology/ElementType.h>
+#include <sofa/topology/ElementInfo.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
@@ -32,13 +32,13 @@ namespace sofa::core::topology
 {
 
 using TopologyElementType 
-[[deprecated("PR1xxx: sofa::core::topology::TopologyElementType has moved to sofa::topology::TopologyElementType. This compatibility layer will be removed for the v21.12 release.")]] 
-= sofa::topology::TopologyElementType;
+[[deprecated("PR1xxx: sofa::core::topology::TopologyElementType has moved to sofa::topology::ElementType. This compatibility layer will be removed for the v21.12 release.")]] 
+= sofa::topology::ElementType;
 
 template<class TopologyElement>
 using TopologyElementInfo 
-[[deprecated("PR1xxx: sofa::core::topology::TopologyElementInfo has moved to sofa::topology::TopologyElementInfo. This compatibility layer will be removed for the v21.12 release.")]]
-= sofa::topology::TopologyElementInfo<TopologyElement>;
+[[deprecated("PR1xxx: sofa::core::topology::TopologyElementInfo has moved to sofa::topology::ElementInfo. This compatibility layer will be removed for the v21.12 release.")]]
+= sofa::topology::ElementInfo<TopologyElement>;
 
 // This class should be deprecated in the near future, and its only use is to be included in the Node topology Sequence.
 // As for now, it is mainly used for compatibility reason (and its inheritance on BaseObject...) against BaseMeshTopology

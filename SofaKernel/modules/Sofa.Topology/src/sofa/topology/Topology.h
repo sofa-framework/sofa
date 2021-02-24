@@ -23,7 +23,7 @@
 
 #include <sofa/topology/config.h>
 
-#include <sofa/topology/TopologyElementType.h>
+#include <sofa/topology/ElementType.h>
 #include <sofa/topology/geometry/Point.h>
 #include <sofa/topology/geometry/Edge.h>
 #include <sofa/topology/geometry/Triangle.h>

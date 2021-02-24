@@ -23,7 +23,7 @@
 
 #include <sofa/topology/config.h>
 
-#include <sofa/topology/TopologyElementType.h>
+#include <sofa/topology/ElementType.h>
 #include <sofa/topology/geometry/Point.h>
 #include <sofa/topology/geometry/Edge.h>
 #include <sofa/topology/geometry/Triangle.h>
@@ -36,12 +36,12 @@
 namespace sofa::topology
 {
 
-template<typename TopologyElement>
-struct TopologyElementInfo
+template<typename Element>
+struct ElementInfo
 {
-    static TopologyElementType type()
+    static ElementType type()
     {
-        return TopologyElementType();
+        return ElementType();
     }
 
     static const char* name()
@@ -51,14 +51,14 @@ struct TopologyElementInfo
 };
 
 #ifndef SOFA_TOPOLOGY_TOPOLOGYELEMENTINFO_DEFINITION
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Point>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Edge>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Triangle>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Quad>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Pentahedron>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Tetrahedron>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Pyramid>;
-extern template struct SOFA_TOPOLOGY_API TopologyElementInfo<geometry::Hexahedron>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Point>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Edge>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Triangle>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Quad>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Pentahedron>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Tetrahedron>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Pyramid>;
+extern template struct SOFA_TOPOLOGY_API ElementInfo<geometry::Hexahedron>;
 #endif
 
 } // namespace sofa::topology

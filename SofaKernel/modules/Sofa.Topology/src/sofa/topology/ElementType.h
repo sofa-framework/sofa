@@ -27,7 +27,7 @@ namespace sofa::topology
 {
 
 /// The enumeration used to give unique identifiers to Topological objects.
-enum class TopologyElementType
+enum class ElementType
 {
     UNKNOWN,
     POINT,
