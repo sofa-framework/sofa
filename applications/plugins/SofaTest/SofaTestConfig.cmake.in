@@ -8,7 +8,7 @@ find_package(SofaMiscForceField REQUIRED)
 find_package(SofaMiscMapping REQUIRED)
 find_package(SceneCreator REQUIRED)
 
-set(SOFATEST_HAVE_SOFAPYTHON @SofaPython_FOUND@)
+set(SOFATEST_HAVE_SOFAPYTHON @SOFATEST_HAVE_SOFAPYTHON@)
 
 if(SOFATEST_HAVE_SOFAPYTHON)
     find_package(SofaPython REQUIRED)
