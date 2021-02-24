@@ -24,9 +24,9 @@
 #include <sofa/helper/system/Locale.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/helper/logging/Messaging.h>
 using sofa::defaulttype::Vector3;
 
-#include <sofa/core/objectmodel/Base.h>
 #include <cstdio>
 #include <iostream>
 #include <fstream>

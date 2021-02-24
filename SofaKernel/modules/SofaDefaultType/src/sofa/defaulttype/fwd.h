@@ -22,12 +22,6 @@
 #pragma once
 
 #include <sofa/defaulttype/config.h>
-#include <sofa/type/fwd.h>
-namespace sofa::helper
-{
-template<class T>
-class Quater;
-}
 
 namespace sofa::defaulttype
 {

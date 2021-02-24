@@ -38,8 +38,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/cast.h
     ${SRC_ROOT}/ColorMap.h
     ${SRC_ROOT}/ComponentChange.h
-    ${SRC_ROOT}/DualQuat.h
-    ${SRC_ROOT}/DualQuat.inl
     ${SRC_ROOT}/Factory.h
     ${SRC_ROOT}/Factory.inl
     ${SRC_ROOT}/TypeInfo.h
@@ -59,8 +57,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/StateMask.h
     ${SRC_ROOT}/Polynomial_LD.h
     ${SRC_ROOT}/Polynomial_LD.inl
-    ${SRC_ROOT}/Quater.h
-    ${SRC_ROOT}/Quater.inl
     ${SRC_ROOT}/RandomGenerator.h
     ${SRC_ROOT}/SVector.h
     ${SRC_ROOT}/SimpleTimer.h
@@ -120,8 +116,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/FileMonitor.h
     ${SRC_ROOT}/system/FileRepository.h
     ${SRC_ROOT}/vector.h
-    ${SRC_ROOT}/vectorData.h
-    ${SRC_ROOT}/vectorLinks.h
     ${SRC_ROOT}/vector_algebra.h
     ${SRC_ROOT}/vector_device.h
     ${SRC_ROOT}/types/RGBAColor.h
@@ -157,7 +151,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/BackTrace.cpp
     ${SRC_ROOT}/ColorMap.cpp
     ${SRC_ROOT}/ComponentChange.cpp
-    ${SRC_ROOT}/DualQuat.cpp
     ${SRC_ROOT}/Factory.cpp
     ${SRC_ROOT}/GenerateRigid.cpp
     ${SRC_ROOT}/LCPcalc.cpp
@@ -167,7 +160,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/StateMask.cpp
     ${SRC_ROOT}/SVector.cpp
     ${SRC_ROOT}/Polynomial_LD.cpp
-    ${SRC_ROOT}/Quater.cpp
     ${SRC_ROOT}/RandomGenerator.cpp
     ${SRC_ROOT}/StringUtils.cpp
     ${SRC_ROOT}/TagFactory.cpp
@@ -274,6 +266,12 @@ set (COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/sofa/helper/gl/glText.inl
     ${COMPATSRC_ROOT}/sofa/helper/gl/Color.h
     ${COMPATSRC_ROOT}/sofa/helper/gl/Cylinder.h
+    ${COMPATSRC_ROOT}/sofa/helper/fixed_array.h
+    ${COMPATSRC_ROOT}/sofa/helper/fixed_array_algorithms.h
+    ${COMPATSRC_ROOT}/sofa/helper/Quater.h
+    ${COMPATSRC_ROOT}/sofa/helper/Quater.inl
+    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.h
+    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.inl
     )
 
 
@@ -287,8 +285,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaCore/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Sofa.Type/src>")
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
-source_group("compat" FILES ${COMPAT_HEADER_FILES} )
+target_include_directories(${PROJECT_NAME} PUBLIC
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
+                           $<INSTALL_INTERFACE:include/SofaFramework/compat>)
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaDefaultType/compat>")
+source_group("compat" FILES ${COMPAT_HEADER_FILES})
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")

@@ -20,42 +20,22 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/config.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/core/config.h>
 
-namespace sofa::component::collision
+#include <sofa/core/objectmodel/vectorData.h>
+
+SOFA_DEPRECATED_HEADER(v21.12, "sofa/core/objectmodel/vectorData.h")
+
+namespace sofa::helper
 {
+    template<class T>
+    using vectorData = sofa::core::objectmodel::vectorData<T>;
 
+    using DataEngineDataType = sofa::core::objectmodel::DataEngineDataType;
 
-/**
- * @brief
- */
-class EmptyFilter
-{
-public:
-    /**
-     * @brief Point Collision Primitive validation method.
-     */
-    bool validPoint(const Index /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
+    // simulate the "enum"
+    constexpr auto DataEngineNothing = DataEngineDataType::DataEngineNothing;
+    constexpr auto DataEngineInput = DataEngineDataType::DataEngineInput;
+    constexpr auto DataEngineOutput = DataEngineDataType::DataEngineOutput;
 
-    /**
-     * @brief Line Collision Primitive validation method.
-     */
-    bool validLine(const Index /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-
-    /**
-     * @brief Triangle Collision Primitive validation method.
-     */
-    bool validTriangle(const Index /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-};
-
-} // namespace sofa::component::collision
+}

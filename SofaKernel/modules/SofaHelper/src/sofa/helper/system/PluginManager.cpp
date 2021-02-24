@@ -29,6 +29,7 @@ using sofa::helper::system::FileSystem;
 
 #include <boost/filesystem.hpp>
 #include <fstream>
+#include <array>
 
 using sofa::helper::Utils;
 
@@ -344,12 +345,20 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
 
     // First try: case sensitive
-    for (std::vector<std::string>::iterator i = searchPaths.begin(); i!=searchPaths.end(); i++)
-    {
-        const std::string path = *i + "/" + libName;
-        if (FileSystem::isFile(path))
-            return path;
+    for (const auto & prefix : searchPaths) {
+        const std::array<std::string, 4> paths = {
+                prefix + "/" + libName,
+                prefix + "/" + pluginName + "/" + libName,
+                prefix + "/" + pluginName + "/bin/" + libName,
+                prefix + "/" + pluginName + "/lib/" + libName
+        };
+        for (const auto & path : paths) {
+            if (FileSystem::isFile(path)) {
+                return path;
+            }
+        }
     }
+
     // Second try: case insensitive and recursive
     if (ignoreCase)
     {

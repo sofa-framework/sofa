@@ -19,43 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaMeshCollision/config.h>
-#include <sofa/defaulttype/Vec.h>
+#define SOFA_TYPE_QUAT_CPP
 
-namespace sofa::component::collision
+#include <sofa/type/Quat.inl>
+
+namespace sofa::type
 {
 
+// instanciate the classes
+template class SOFA_TYPE_API Quat<double>;
+template class SOFA_TYPE_API Quat<float>;
 
-/**
- * @brief
- */
-class EmptyFilter
-{
-public:
-    /**
-     * @brief Point Collision Primitive validation method.
-     */
-    bool validPoint(const Index /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-
-    /**
-     * @brief Line Collision Primitive validation method.
-     */
-    bool validLine(const Index /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-
-    /**
-     * @brief Triangle Collision Primitive validation method.
-     */
-    bool validTriangle(const Index /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-};
-
-} // namespace sofa::component::collision
+} // namespace sofa::type

@@ -19,24 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_QUATER_CPP
-#include "Quater.inl"
+#pragma once
 
-namespace sofa
-{
+#include <sofa/type/DualQuat.inl>
 
-namespace helper
-{
-
-// instanciate the classes
-template class SOFA_HELPER_API Quater<double>;
-template class SOFA_HELPER_API Quater<float>;
-
-// instanciate the friend methods
-//template std::ostream& operator<<(std::ostream& out, Quater<float> Q);
-//template std::ostream& operator<<(std::ostream& out, Quater<double> Q);
-
-} // namespace helper
-
-} // namespace sofa
-
+// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
+// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
+// (PR #1790)
+// SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/DualQuat.inl")

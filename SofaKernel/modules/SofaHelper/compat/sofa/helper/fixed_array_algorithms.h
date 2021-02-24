@@ -20,42 +20,51 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/config.h>
-#include <sofa/defaulttype/Vec.h>
 
-namespace sofa::component::collision
+#include <sofa/type/stdtype/fixed_array_algorithms.h>
+
+// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
+// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
+// (PR #1790)
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/fixed_array_algorithms.h")
+
+namespace sofa::helper::pairwise
 {
 
-
-/**
- * @brief
- */
-class EmptyFilter
+template<class T>
+const T& stdclamp(const T& v, const T& lo, const T& hi)
 {
-public:
-    /**
-     * @brief Point Collision Primitive validation method.
-     */
-    bool validPoint(const Index /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
+    return sofa::type::stdtype::pairwise::stdclamp(v, lo, hi);
+}
 
-    /**
-     * @brief Line Collision Primitive validation method.
-     */
-    bool validLine(const Index /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T clamp(const T& in, const TT& minValue, const TT& maxValue)
+{
+    return sofa::type::stdtype::pairwise::clamp(in,minValue,maxValue);
+}
 
-    /**
-     * @brief Triangle Collision Primitive validation method.
-     */
-    bool validTriangle(const Index /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-};
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T operator+(const T& l, const T& r)
+{
+    return sofa::type::stdtype::pairwise::operator+(l, r);
+}
 
-} // namespace sofa::component::collision
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T operator-(const T& l, const T& r)
+{
+    return sofa::type::stdtype::pairwise::operator-(l, r);
+}
+
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T operator*(const T& r, const typename T::value_type& f)
+{
+    return sofa::type::stdtype::pairwise::operator*(r, f);
+}
+
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T operator/(const T& r, const typename T::value_type& f)
+{
+    return sofa::type::stdtype::pairwise::operator/(r, f);
+}
+
+} // namespace sofa::helper::pairwise

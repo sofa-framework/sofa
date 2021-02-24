@@ -20,42 +20,24 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/config.h>
+
+#include <sofa/type/Quat.h>
+
+// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
+// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
+// (PR #1790)
+// SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Quat.h")
+
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/helper/Quater.h>
 
-namespace sofa::component::collision
+namespace sofa::defaulttype
 {
 
+using Quatd = type::Quat<double>;
+using Quatf = type::Quat<float>;
+using Quaternion = type::Quat<SReal>;
+using Quat = Quaternion;
 
-/**
- * @brief
- */
-class EmptyFilter
-{
-public:
-    /**
-     * @brief Point Collision Primitive validation method.
-     */
-    bool validPoint(const Index /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-
-    /**
-     * @brief Line Collision Primitive validation method.
-     */
-    bool validLine(const Index /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-
-    /**
-     * @brief Triangle Collision Primitive validation method.
-     */
-    bool validTriangle(const Index /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-};
-
-} // namespace sofa::component::collision
+} // namespace sofa::defaulttype

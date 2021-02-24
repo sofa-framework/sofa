@@ -20,48 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/core/config.h>
 
-#include <sofa/type/stdtype/fixed_array_algorithms.h>
+#include <sofa/core/objectmodel/vectorLinks.h>
 
-//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/fixed_array_algorithms.h")
+SOFA_DEPRECATED_HEADER(v21.12, "sofa/core/objectmodel/vectorLinks.h")
 
-namespace sofa::helper::pairwise
+namespace sofa::helper
 {
-
-template<class T>
-const T& stdclamp(const T& v, const T& lo, const T& hi)
-{
-    return sofa::type::stdtype::pairwise::stdclamp(v, lo, hi);
+    template<class LinkType, class OwnerType>
+    using VectorLinks = sofa::core::objectmodel::VectorLinks<LinkType, OwnerType>;
 }
-
-template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
-T clamp(const T& in, const TT& minValue, const TT& maxValue)
-{
-    return sofa::type::stdtype::pairwise::clamp(in,minValue,maxValue);
-}
-
-template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
-T operator+(const T& l, const T& r)
-{
-    return sofa::type::stdtype::pairwise::operator+(l, r);
-}
-
-template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
-T operator-(const T& l, const T& r)
-{
-    return sofa::type::stdtype::pairwise::operator-(l, r);
-}
-
-template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
-T operator*(const T& r, const typename T::value_type& f)
-{
-    return sofa::type::stdtype::pairwise::operator*(r, f);
-}
-
-template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
-T operator/(const T& r, const typename T::value_type& f)
-{
-    return sofa::type::stdtype::pairwise::operator/(r, f);
-}
-
-} // namespace sofa::helper::pairwise
