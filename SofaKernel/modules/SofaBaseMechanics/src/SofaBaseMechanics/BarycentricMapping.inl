@@ -264,10 +264,7 @@ void BarycentricMapping<TIn, TOut>::init()
     if (!this->toModel)
         return;
 
-    if (useRestPosition.getValue())
-        d_mapper->init ( ((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::restPosition())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::restPosition())->getValue() );
-    else
-        d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
+    initMapper();
 
     this->d_componentState.setValue(ComponentState::Valid) ;
 }
@@ -278,10 +275,21 @@ void BarycentricMapping<TIn, TOut>::reinit()
     if ( d_mapper != nullptr )
     {
         d_mapper->clear();
-        d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
+        initMapper();
     }
 }
 
+template <class TIn, class TOut>
+void BarycentricMapping<TIn, TOut>::initMapper()
+{
+    if (d_mapper != nullptr && this->toModel != nullptr && this->fromModel != nullptr)
+    {
+        if (useRestPosition.getValue())
+            d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::restPosition())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::restPosition())->getValue() );
+        else
+            d_mapper->init (((const core::State<Out> *)this->toModel)->read(core::ConstVecCoordId::position())->getValue(), ((const core::State<In> *)this->fromModel)->read(core::ConstVecCoordId::position())->getValue() );
+    }
+}
 
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * mparams, Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in)
