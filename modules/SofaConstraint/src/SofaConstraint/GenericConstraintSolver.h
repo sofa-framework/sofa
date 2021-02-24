@@ -104,6 +104,7 @@ public:
     Data<bool> allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
     Data<bool> schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
     Data<bool> unbuilt; ///< Compliance is not fully built
+    Data<bool> multithreading; ///< Compliances built concurrently
     Data<bool> computeGraphs; ///< Compute graphs of errors and forces during resolution
     Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors; ///< Sum of the constraints' errors at each iteration
     Data<std::map < std::string, sofa::helper::vector<double> > > graphConstraints; ///< Graph of each constraint's error at the end of the resolution
