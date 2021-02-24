@@ -930,7 +930,6 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
         ++count;
         ++itBegin;
     }
-    toPointMod->propagateTopologicalChanges();
 }
 
 } //namespace sofa::component::topology

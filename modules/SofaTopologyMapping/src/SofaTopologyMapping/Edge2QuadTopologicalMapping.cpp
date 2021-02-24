@@ -548,7 +548,6 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 ++itBegin;
             }
 
-            to_tstm->propagateTopologicalChanges();
             Loc2GlobDataVec.endEdit();
         }
     }

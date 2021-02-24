@@ -596,7 +596,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
 
                 for (unsigned int i=0; i < tab.size(); i++)
                     addInputEdge(tab[i], toPointMod);
-                toPointMod->propagateTopologicalChanges();
+
                 if (copyEdges.getValue())
                 {
                     if (!toEdgeMod) toModel->getContext()->get(toEdgeMod, sofa::core::objectmodel::BaseContext::Local);
@@ -641,7 +641,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
 
                 for (unsigned int i=0; i < tab.size(); i++)
                     addInputTriangle(tab[i], toPointMod);
-                toPointMod->propagateTopologicalChanges();
+
                 if (copyTriangles.getValue())
                 {
                     if (!toTriangleMod) toModel->getContext()->get(toTriangleMod, sofa::core::objectmodel::BaseContext::Local);
@@ -704,7 +704,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
 
                 for (unsigned int i=0; i < tab.size(); i++)
                     addInputTetrahedron(tab[i], toPointMod);
-                toPointMod->propagateTopologicalChanges();
+
                 if (copyTetrahedra.getValue())
                 {
                     if (!toTetrahedronMod) toModel->getContext()->get(toTetrahedronMod, sofa::core::objectmodel::BaseContext::Local);
@@ -779,7 +779,6 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                     toPointMod->removePoints(vitems);
 
                     toPointMod->notifyEndingEvent();
-                    toPointMod->propagateTopologicalChanges();
 
                     pointsToRemove.clear();
                 }
