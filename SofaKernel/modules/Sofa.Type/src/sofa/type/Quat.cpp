@@ -19,12 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_TYPE_QUAT_CPP
 
-#include <sofa/defaulttype/config.h>
+#include <sofa/type/Quat.inl>
 
-namespace sofa::defaulttype
+namespace sofa::type
 {
-    class BaseMatrix;
 
-}
+// instanciate the classes
+template class SOFA_TYPE_API Quat<double>;
+template class SOFA_TYPE_API Quat<float>;
+
+} // namespace sofa::type

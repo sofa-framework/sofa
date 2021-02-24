@@ -21,10 +21,19 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/config.h>
+#include <sofa/type/Quat.h>
 
-namespace sofa::defaulttype
+// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
+// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
+// (PR #1790)
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Quat.h")
+
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
+
+namespace sofa::helper
 {
-    class BaseMatrix;
+    template <typename real>
+    using Quater = sofa::type::Quat<real>;
 
-}
+} // namespace sofa::helper

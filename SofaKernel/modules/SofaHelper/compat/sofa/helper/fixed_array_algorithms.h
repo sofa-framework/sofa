@@ -21,10 +21,50 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/config.h>
+#include <sofa/type/stdtype/fixed_array_algorithms.h>
 
-namespace sofa::defaulttype
+// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
+// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
+// (PR #1790)
+//SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/stdtype/fixed_array_algorithms.h")
+
+namespace sofa::helper::pairwise
 {
-    class BaseMatrix;
 
+template<class T>
+const T& stdclamp(const T& v, const T& lo, const T& hi)
+{
+    return sofa::type::stdtype::pairwise::stdclamp(v, lo, hi);
 }
+
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T clamp(const T& in, const TT& minValue, const TT& maxValue)
+{
+    return sofa::type::stdtype::pairwise::clamp(in,minValue,maxValue);
+}
+
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T operator+(const T& l, const T& r)
+{
+    return sofa::type::stdtype::pairwise::operator+(l, r);
+}
+
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T operator-(const T& l, const T& r)
+{
+    return sofa::type::stdtype::pairwise::operator-(l, r);
+}
+
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T operator*(const T& r, const typename T::value_type& f)
+{
+    return sofa::type::stdtype::pairwise::operator*(r, f);
+}
+
+template<class T, class TT = typename T::value_type, size_t TN = T::static_size>
+T operator/(const T& r, const typename T::value_type& f)
+{
+    return sofa::type::stdtype::pairwise::operator/(r, f);
+}
+
+} // namespace sofa::helper::pairwise

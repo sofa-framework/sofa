@@ -29,6 +29,9 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/logging/Messaging.h>
 
+// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
+// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
+// (PR #1790)
 //SOFA_DEPRECATED_HEADER(v21.12, "sofa/type/Mat.h")
 
 namespace sofa::defaulttype
@@ -117,7 +120,7 @@ namespace sofa::defaulttype
         auto res = type::invertMatrix(dest, from);
         if (!res)
         {
-            msg_error("Mat") << "invertMatrix (general case) finds too small determinant for matrix = " << from;
+            msg_error("Mat") << "invertMatrix (special case 2x2) finds too small determinant for matrix = " << from;
         }
         return res;
     }
