@@ -148,23 +148,6 @@ public:
             const bool removeIsolatedEdges = false,
             const bool removeIsolatedPoints = false) override;
 
-    /** \brief Add some edges to this topology.
-    *
-    * \sa addEdgesWarning
-    */
-    void addEdgesProcess(const sofa::helper::vector< Edge > &edges) override;
-
-    /** \brief Remove a subset of edges
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeEdgesWarning
-    *
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-    * @param removeIsolatedItems if true remove isolated vertices
-    */
-    void removeEdgesProcess(const sofa::helper::vector<EdgeID> &indices,
-            const bool removeIsolatedItems = false) override;
-
     /** \brief Remove a set  of hexahedra
     @param hexahedra an array of hexahedron indices to be removed (note that the array is not const since it needs to be sorted)
     *
@@ -176,6 +159,24 @@ public:
     void removeItems(const sofa::helper::vector<HexahedronID> &items) override;
 
 protected:
+    /** \brief Add some edges to this topology.
+    *
+    * \sa addEdgesWarning
+    */
+    void addEdgesProcess(const sofa::helper::vector< Edge >& edges) override;
+
+    /** \brief Remove a subset of edges
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * \sa removeEdgesWarning
+    *
+    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+    * @param removeIsolatedItems if true remove isolated vertices
+    */
+    void removeEdgesProcess(const sofa::helper::vector<EdgeID>& indices,
+        const bool removeIsolatedItems = false) override;
+
+
     /** \brief Add some points to this topology.
     *
     * \sa addPointsWarning

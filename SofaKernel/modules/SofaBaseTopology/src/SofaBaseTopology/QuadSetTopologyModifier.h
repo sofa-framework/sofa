@@ -124,23 +124,6 @@ public:
             const bool removeIsolatedEdges=false,
             const bool removeIsolatedPoints=false);
 
-    /** \brief Add some edges to this topology.
-    *
-    * \sa addEdgesWarning
-    */
-    void addEdgesProcess(const sofa::helper::vector< Edge > &edges) override;
-
-    /** \brief Remove a subset of edges
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeEdgesWarning
-    *
-    * @param removeIsolatedItems if true isolated vertices are also removed
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-    */
-    void removeEdgesProcess( const sofa::helper::vector<QuadID> &indices,
-            const bool removeIsolatedItems=false) override;
-
     /** \brief Remove a set  of quads
     @param quads an array of quad indices to be removed (note that the array is not const since it needs to be sorted)
     *
@@ -157,6 +140,24 @@ public:
     void removeItems(const sofa::helper::vector< QuadID >& items) override;
 
 protected:
+    /** \brief Add some edges to this topology.
+    *
+    * \sa addEdgesWarning
+    */
+    void addEdgesProcess(const sofa::helper::vector< Edge >& edges) override;
+
+    /** \brief Remove a subset of edges
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * \sa removeEdgesWarning
+    *
+    * @param removeIsolatedItems if true isolated vertices are also removed
+    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+    */
+    void removeEdgesProcess(const sofa::helper::vector<QuadID>& indices,
+        const bool removeIsolatedItems = false) override;
+
+
     /** \brief Add some points to this topology.
     *
     * \sa addPointsWarning
