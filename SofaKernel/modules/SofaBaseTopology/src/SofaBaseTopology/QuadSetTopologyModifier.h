@@ -75,56 +75,11 @@ public:
             const sofa::helper::vector< sofa::helper::vector< QuadID > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
 
-
-    /** \brief Sends a message to warn that some quads were added in this topology.
-    *
-    * \sa addQuadsProcess
-    */
-    void addQuadsWarning(const size_t nQuads,
-            const sofa::helper::vector< Quad >& quadsList,
-            const sofa::helper::vector< QuadID >& quadsIndexList);
-
-    /** \brief Sends a message to warn that some quads were added in this topology.
-    *
-    * \sa addQuadsProcess
-    */
-    void addQuadsWarning(const size_t nQuads,
-            const sofa::helper::vector< Quad >& quadsList,
-            const sofa::helper::vector< QuadID >& quadsIndexList,
-            const sofa::helper::vector< sofa::helper::vector< QuadID > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
-
     /** \brief Effectively Add a quad.
     */
     void addQuadProcess(Quad e);
 
-    /** \brief Effectively Add some quads to this topology.
-    *
-    	* \sa addQuadsWarning
-    	*/
-    virtual void addQuadsProcess(const sofa::helper::vector< Quad > &quads);
-
-    /** \brief Sends a message to warn that some quads are about to be deleted.
-    *
-    * \sa removeQuadsProcess
-    *
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-    */
-    virtual void removeQuadsWarning( sofa::helper::vector<QuadID> &quads);
-
-    /** \brief Remove a subset of  quads. Eventually remove isolated edges and vertices
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeQuadsWarning
-    *
-    * @param removeIsolatedEdges if true isolated edges are also removed
-    * @param removeIsolatedPoints if true isolated vertices are also removed
-    */
-    virtual void removeQuadsProcess( const sofa::helper::vector<QuadID> &indices,
-            const bool removeIsolatedEdges=false,
-            const bool removeIsolatedPoints=false);
-
-    /** \brief Remove a set  of quads
+     /** \brief Remove a set  of quads
     @param quads an array of quad indices to be removed (note that the array is not const since it needs to be sorted)
     *
     @param removeIsolatedEdges if true isolated edges are also removed
@@ -140,6 +95,51 @@ public:
     void removeItems(const sofa::helper::vector< QuadID >& items) override;
 
 protected:
+    /** \brief Sends a message to warn that some quads were added in this topology.
+    *
+    * \sa addQuadsProcess
+    */
+    void addQuadsWarning(const size_t nQuads,
+        const sofa::helper::vector< Quad >& quadsList,
+        const sofa::helper::vector< QuadID >& quadsIndexList);
+
+    /** \brief Sends a message to warn that some quads were added in this topology.
+    *
+    * \sa addQuadsProcess
+    */
+    void addQuadsWarning(const size_t nQuads,
+        const sofa::helper::vector< Quad >& quadsList,
+        const sofa::helper::vector< QuadID >& quadsIndexList,
+        const sofa::helper::vector< sofa::helper::vector< QuadID > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
+
+    /** \brief Effectively Add some quads to this topology.
+    *
+     * \sa addQuadsWarning
+     */
+    virtual void addQuadsProcess(const sofa::helper::vector< Quad >& quads);
+
+    /** \brief Sends a message to warn that some quads are about to be deleted.
+    *
+    * \sa removeQuadsProcess
+    *
+    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+    */
+    virtual void removeQuadsWarning(sofa::helper::vector<QuadID>& quads);
+
+    /** \brief Remove a subset of  quads. Eventually remove isolated edges and vertices
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * \sa removeQuadsWarning
+    *
+    * @param removeIsolatedEdges if true isolated edges are also removed
+    * @param removeIsolatedPoints if true isolated vertices are also removed
+    */
+    virtual void removeQuadsProcess(const sofa::helper::vector<QuadID>& indices,
+        const bool removeIsolatedEdges = false,
+        const bool removeIsolatedPoints = false);
+
+
     /** \brief Add some edges to this topology.
     *
     * \sa addEdgesWarning

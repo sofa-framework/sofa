@@ -85,68 +85,9 @@ public:
             const sofa::helper::vector< sofa::helper::vector< HexahedronID > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
 
-    /** \brief Sends a message to warn that some hexahedra were added in this topology.
-    *
-    * \sa addHexahedraProcess
-    */
-    void addHexahedraWarning(const size_t nHexahedra,
-            const sofa::helper::vector< Hexahedron >& hexahedraList,
-            const sofa::helper::vector< HexahedronID >& hexahedraIndexList);
-
-    /** \brief Sends a message to warn that some hexahedra were added in this topology.
-    *
-    * \sa addHexahedraProcess
-    */
-    void addHexahedraWarning(const size_t nHexahedra,
-            const sofa::helper::vector< Hexahedron >& hexahedraList,
-            const sofa::helper::vector< HexahedronID >& hexahedraIndexList,
-            const sofa::helper::vector< sofa::helper::vector< HexahedronID > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
-
     /** \brief Add a hexahedron.
     */
     void addHexahedronProcess(Hexahedron e);
-
-    /** \brief Actually Add some hexahedra to this topology.
-    *
-    * \sa addHexahedraWarning
-    */
-    virtual void addHexahedraProcess(const sofa::helper::vector< Hexahedron > &hexahedra);
-
-    /** \brief Sends a message to warn that some hexahedra are about to be deleted.
-    *
-    * \sa removeHexahedraProcess
-    *
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-    */
-    virtual void removeHexahedraWarning( sofa::helper::vector<HexahedronID> &hexahedra);
-
-    /** \brief Remove a subset of hexahedra
-    *
-    * Elements corresponding to these points are removed form the mechanical object's state vectors.
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeHexahedraWarning
-    * @param removeIsolatedItems if true remove isolated quads, edges and vertices
-    */
-    virtual void removeHexahedraProcess(const sofa::helper::vector<HexahedronID>&indices,
-            const bool removeIsolatedItems = false);
-
-    /** \brief Actually Add some quads to this topology.
-    *
-    * \sa addQuadsWarning
-    */
-    void addQuadsProcess(const sofa::helper::vector< Quad > &quads) override;
-
-    /** \brief Remove a subset of quads
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * @param removeIsolatedEdges if true isolated edges are also removed
-    * @param removeIsolatedPoints if true isolated vertices are also removed
-    */
-    void removeQuadsProcess(const sofa::helper::vector<QuadID> &indices,
-            const bool removeIsolatedEdges = false,
-            const bool removeIsolatedPoints = false) override;
 
     /** \brief Remove a set  of hexahedra
     @param hexahedra an array of hexahedron indices to be removed (note that the array is not const since it needs to be sorted)
@@ -159,6 +100,66 @@ public:
     void removeItems(const sofa::helper::vector<HexahedronID> &items) override;
 
 protected:
+    /** \brief Sends a message to warn that some hexahedra were added in this topology.
+    *
+    * \sa addHexahedraProcess
+    */
+    void addHexahedraWarning(const size_t nHexahedra,
+        const sofa::helper::vector< Hexahedron >& hexahedraList,
+        const sofa::helper::vector< HexahedronID >& hexahedraIndexList);
+
+    /** \brief Sends a message to warn that some hexahedra were added in this topology.
+    *
+    * \sa addHexahedraProcess
+    */
+    void addHexahedraWarning(const size_t nHexahedra,
+        const sofa::helper::vector< Hexahedron >& hexahedraList,
+        const sofa::helper::vector< HexahedronID >& hexahedraIndexList,
+        const sofa::helper::vector< sofa::helper::vector< HexahedronID > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs);
+
+    /** \brief Actually Add some hexahedra to this topology.
+    *
+    * \sa addHexahedraWarning
+    */
+    virtual void addHexahedraProcess(const sofa::helper::vector< Hexahedron >& hexahedra);
+
+    /** \brief Sends a message to warn that some hexahedra are about to be deleted.
+    *
+    * \sa removeHexahedraProcess
+    *
+    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+    */
+    virtual void removeHexahedraWarning(sofa::helper::vector<HexahedronID>& hexahedra);
+
+    /** \brief Remove a subset of hexahedra
+    *
+    * Elements corresponding to these points are removed form the mechanical object's state vectors.
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * \sa removeHexahedraWarning
+    * @param removeIsolatedItems if true remove isolated quads, edges and vertices
+    */
+    virtual void removeHexahedraProcess(const sofa::helper::vector<HexahedronID>& indices,
+        const bool removeIsolatedItems = false);
+
+    /** \brief Actually Add some quads to this topology.
+    *
+    * \sa addQuadsWarning
+    */
+    void addQuadsProcess(const sofa::helper::vector< Quad >& quads) override;
+
+    /** \brief Remove a subset of quads
+    *
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * @param removeIsolatedEdges if true isolated edges are also removed
+    * @param removeIsolatedPoints if true isolated vertices are also removed
+    */
+    void removeQuadsProcess(const sofa::helper::vector<QuadID>& indices,
+        const bool removeIsolatedEdges = false,
+        const bool removeIsolatedPoints = false) override;
+
+
     /** \brief Add some edges to this topology.
     *
     * \sa addEdgesWarning
