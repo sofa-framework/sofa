@@ -143,7 +143,7 @@ typedef unsigned __int64	uint64_t;
 
 #define SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION(msg) \
     SOFA_ATTRIBUTE_DEPRECATED( \
-        "v20.06 (PR#1283)", "2021-01-01", \
+        "v20.06 (PR#1283)", "v21.06", \
         "Information on how to update your code is provided in the PR description. " msg)
 
 
