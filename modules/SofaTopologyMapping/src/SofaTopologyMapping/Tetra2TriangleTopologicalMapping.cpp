@@ -188,7 +188,6 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::ENDING_EVENT:
         {
             m_outTopoModifier->notifyEndingEvent();
-            m_outTopoModifier->propagateTopologicalChanges();
             break;
         }
 

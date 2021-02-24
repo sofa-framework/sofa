@@ -129,9 +129,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::ENDING_EVENT:
         {
             dmsg_info() << "ENDING_EVENT" ;
-            toPointMod->propagateTopologicalChanges();
             toPointMod->notifyEndingEvent();
-            toPointMod->propagateTopologicalChanges();
             break;
         }
 

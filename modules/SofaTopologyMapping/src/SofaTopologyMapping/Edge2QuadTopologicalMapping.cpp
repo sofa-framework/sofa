@@ -301,9 +301,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::ENDING_EVENT:
                 {
-                    to_tstm->propagateTopologicalChanges();
                     to_tstm->notifyEndingEvent();
-                    to_tstm->propagateTopologicalChanges();
                     break;
                 }
 

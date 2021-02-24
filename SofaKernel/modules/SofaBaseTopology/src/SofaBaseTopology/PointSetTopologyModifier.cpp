@@ -487,6 +487,8 @@ void PointSetTopologyModifier::notifyEndingEvent()
 {
     sofa::core::topology::EndingEvent *e=new sofa::core::topology::EndingEvent();
     m_container->addTopologyChange(e);
+
+    propagateTopologicalChanges();
 }
 
 } //namespace sofa::component::topology
