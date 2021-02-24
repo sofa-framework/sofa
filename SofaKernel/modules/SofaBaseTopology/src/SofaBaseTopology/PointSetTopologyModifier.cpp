@@ -445,19 +445,6 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     m_container->resetTopologyChangeList();
 }
 
-void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
-{
-    if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-    sofa::simulation::TopologyChangeVisitor a(params, m_container);
-
-    getContext()->executeVisitor(&a);
-
-    //TODO: temporary code to test topology engine pipeline. Commented by default for the moment
-    //this->propagateTopologicalEngineChanges();
-
-}
-
 
 void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 {

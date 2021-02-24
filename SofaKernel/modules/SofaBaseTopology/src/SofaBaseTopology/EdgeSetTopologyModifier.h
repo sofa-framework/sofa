@@ -122,7 +122,7 @@ public:
     *
     */
     virtual void removeEdges(const sofa::helper::vector<EdgeID> &edgeIds,
-            const bool removeIsolatedPoints = true, const bool resetTopoChange = true);
+            const bool removeIsolatedPoints = true);
 
     /** \brief Generic method to remove a list of items.
     */

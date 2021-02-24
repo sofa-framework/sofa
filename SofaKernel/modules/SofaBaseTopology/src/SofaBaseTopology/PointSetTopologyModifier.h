@@ -113,8 +113,8 @@ public:
     */
     void propagateTopologicalChanges() override;  // DEPRECATED
 
-    /// TODO: doc ??
-    void propagateTopologicalChangesWithoutReset();
+    /// This Method has been removed in PR #1860 as it was never used nor supported
+    void propagateTopologicalChangesWithoutReset() = delete;
 
     /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
     /// TODO: temporary duplication of topological events (commented by default)
