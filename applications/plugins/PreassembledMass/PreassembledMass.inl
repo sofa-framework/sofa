@@ -97,7 +97,7 @@ void PreassembledMass< DataTypes >::bwdInit()
     for(typename MassMatrix::Index r=0;r<massMatrix.rows();++r)
         for(typename MassMatrix::Index c=0;c<massMatrix.cols();++c)
             totalmass+=massMatrix.element(r,c);
-    ms_info()<<"total mass: "<<totalmass/this->mstate->getMatrixBlockSize();
+    msg_info()<<"total mass: "<<totalmass/this->mstate->getMatrixBlockSize();
 
     d_massMatrix.endEdit();
 }

@@ -72,7 +72,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -710,7 +710,7 @@
   </action>
   <action name="helpAboutAction">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>&amp;About</string>
@@ -720,6 +720,9 @@
    </property>
    <property name="shortcut">
     <string/>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>false</bool>
    </property>
    <property name="name" stdset="0">
     <cstring>helpAboutAction</cstring>
@@ -978,20 +981,20 @@
    </hints>
   </connection>
   <connection>
-    <sender>DataGraphAction</sender>
-    <signal>triggered()</signal>
-    <receiver>GUI</receiver>
-    <slot>showWindowDataGraph()</slot>
-    <hints>
-      <hint type="sourcelabel">
-        <x>-1</x>
-        <y>-1</y>
-      </hint>
-      <hint type="destinationlabel">
-        <x>20</x>
-        <y>20</y>
-      </hint>
-    </hints>
+   <sender>DataGraphAction</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>showWindowDataGraph()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>editGnuplotDirectoryAction</sender>

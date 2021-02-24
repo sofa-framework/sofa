@@ -498,6 +498,10 @@ RealGUI::RealGUI ( const char* viewername)
     connect(m_docbrowser, SIGNAL(visibilityChanged(bool)), this, SLOT(docBrowserVisibilityChanged(bool)));
 #endif
 
+    // Trigger QDialog for "About" section
+    connect(helpAboutAction, SIGNAL(triggered()), this, SLOT(showAbout()));
+
+
     m_filelistener = new RealGUIFileListener(this);
 }
 
@@ -1182,6 +1186,17 @@ void RealGUI::showDocBrowser()
     msg_warning("RealGUI") << "Doc browser has been disabled because Qt5WebEngine is not available";
 #endif
 }
+
+//------------------------------------
+
+void RealGUI::showAbout()
+{
+    //create the QDialog for About
+    AboutSOFADialog* aboutSOFA_dialog = new sofa::gui::qt::AboutSOFADialog(this);
+    aboutSOFA_dialog->show();
+}
+
+//------------------------------------
 
 void RealGUI::showPluginManager()
 {

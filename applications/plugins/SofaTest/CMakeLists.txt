@@ -49,7 +49,7 @@ find_package(SofaMiscMapping REQUIRED)
 find_package(SofaMiscFem REQUIRED)
 find_package(SceneCreator REQUIRED)
 
-find_package(SofaPython QUIET)
+sofa_find_package(SofaPython QUIET)
 if(SofaPython_FOUND)
     list(APPEND HEADER_FILES "Python_test.h")
     list(APPEND SOURCE_FILES "Python_test.cpp")
