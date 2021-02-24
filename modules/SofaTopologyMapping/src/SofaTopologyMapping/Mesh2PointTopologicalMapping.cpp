@@ -719,10 +719,8 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                                 toArray[i][j] = pointsMappedFrom[POINT][fromArray[i][j]][0];
                         msg_info() << "<IN: " << fromModel->getNbTetrahedra() << " OUT: " << toModel->getNbTetrahedra();
                         msg_info() << "     ToArray : " << toArray.size() << " : " << toArray;
-                        toTetrahedronMod->addTetrahedraProcess(toArray);
                         msg_info() << "     tetrahedronIndexArray : " << tAdd->tetrahedronIndexArray.size() << " : " << tAdd->tetrahedronIndexArray;
-                        toTetrahedronMod->addTetrahedraWarning(tAdd->getNbAddedTetrahedra(), toArray, tAdd->tetrahedronIndexArray, tAdd->ancestorsList, tAdd->coefs);
-                        toTetrahedronMod->propagateTopologicalChanges();
+                        toTetrahedronMod->addTetrahedra(toArray, tAdd->ancestorsList, tAdd->coefs);
                         msg_info() << ">IN: " << fromModel->getNbTetrahedra() << " OUT: " << toModel->getNbTetrahedra();
                     }
                 }
@@ -740,9 +738,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                     {
                         msg_info() << "TETRAHEDRAREMOVED : " << tRem->getNbRemovedTetrahedra() << " : " << tab;
                         auto toArray = tab;
-                        toTetrahedronMod->removeTetrahedraWarning(toArray);
-                        toTetrahedronMod->propagateTopologicalChanges();
-                        toTetrahedronMod->removeTetrahedraProcess(tab, false);
+                        toTetrahedronMod->removeTetrahedra(tab, false);
                     }
                 }
 
