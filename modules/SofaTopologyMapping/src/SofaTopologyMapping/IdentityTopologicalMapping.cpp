@@ -166,9 +166,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             if (!toEdgeMod) break;
             const EdgesAdded *eAdd = static_cast< const EdgesAdded * >( topoChange );
             dmsg_info() << "EDGESADDED : " << eAdd->getNbAddedEdges() ;
-            toEdgeMod->addEdgesProcess(eAdd->edgeArray);
-            toEdgeMod->addEdgesWarning(eAdd->getNbAddedEdges(), eAdd->edgeArray, eAdd->edgeIndexArray, eAdd->ancestorsList, eAdd->coefs);
-            toEdgeMod->propagateTopologicalChanges();
+            toEdgeMod->addEdges(eAdd->edgeArray, eAdd->ancestorsList, eAdd->coefs);
             break;
         }
 
@@ -179,9 +177,7 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
             const EdgesRemoved *eRem = static_cast< const EdgesRemoved * >( topoChange );
             auto tab = eRem->getArray();
             dmsg_info() << "EDGESREMOVED : " ;
-            toEdgeMod->removeEdgesWarning(tab);
-            toEdgeMod->propagateTopologicalChanges();
-            toEdgeMod->removeEdgesProcess(tab, false);
+            toEdgeMod->removeEdges(tab, false);
             break;
         }
 

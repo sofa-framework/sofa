@@ -714,9 +714,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             if (nDadd > 0)
             {
                 msg_info() << "    -> EDGESADDED : " << nDadd << " : " << edgeIndexArray << " : " << edgeArray;
-                toEdgeMod->addEdgesProcess(edgeArray);
-                toEdgeMod->addEdgesWarning(nDadd, edgeArray, edgeIndexArray, ancestors, coefs);
-                toEdgeMod->propagateTopologicalChanges();
+                toEdgeMod->addEdges(edgeArray, ancestors, coefs);
             }
             break;
         }
@@ -761,9 +759,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             }
             if (!tab2.empty())
             {
-                toEdgeMod->removeEdgesWarning(tab2);
-                toEdgeMod->propagateTopologicalChanges();
-                toEdgeMod->removeEdgesProcess(tab2, false);
+                toEdgeMod->removeEdges(tab2, false);
                 // apply removals in eD2S
                 {
                     size_t last = eD2S.size() -1;

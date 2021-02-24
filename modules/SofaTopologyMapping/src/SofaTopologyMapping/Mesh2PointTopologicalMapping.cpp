@@ -609,9 +609,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                         for (unsigned int i=0; i<fromArray.size(); ++i)
                             for (unsigned int j=0; j<fromArray[i].size(); ++j)
                                 toArray[i][j] = pointsMappedFrom[POINT][fromArray[i][j]][0];
-                        toEdgeMod->addEdgesProcess(toArray);
-                        toEdgeMod->addEdgesWarning(eAdd->getNbAddedEdges(), toArray, eAdd->edgeIndexArray, eAdd->ancestorsList, eAdd->coefs);
-                        toEdgeMod->propagateTopologicalChanges();
+                        toEdgeMod->addEdges(toArray, eAdd->ancestorsList, eAdd->coefs);
                     }
                 }
                 check = true;
@@ -627,10 +625,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
                     if (toEdgeMod)
                     {
                         msg_info() << "EDGESREMOVED : " << eRem->getNbRemovedEdges();
-                        auto toArray = tab;
-                        toEdgeMod->removeEdgesWarning(toArray);
-                        toEdgeMod->propagateTopologicalChanges();
-                        toEdgeMod->removeEdgesProcess(tab, false);
+                        toEdgeMod->removeEdges(tab, false);
                     }
                 }
 
