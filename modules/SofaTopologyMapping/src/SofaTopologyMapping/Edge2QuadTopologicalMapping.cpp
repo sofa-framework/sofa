@@ -82,7 +82,7 @@ void Edge2QuadTopologicalMapping::init()
 
     bool ellipse = false;
     double rhoFocal;
-    if (d_radiusFocal.isSet() and d_radiusFocal.getValue()>0.)
+    if (d_radiusFocal.isSet() && d_radiusFocal.getValue()>0.)
     {
         ellipse = true;
         rhoFocal = d_radiusFocal.getValue();
