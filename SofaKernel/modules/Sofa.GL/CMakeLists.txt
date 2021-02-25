@@ -80,11 +80,6 @@ else()
     message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
 endif()
 
-# own include dir, the macro does not handle "independent" package for SofaFramework-style include 
-# i.e NOT the name of package first (sofa/gl is wanted, instead of Sofa.GL/)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/${PROJECT_NAME}/${PROJECT_NAME}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}/${PROJECT_NAME}>")
-
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}

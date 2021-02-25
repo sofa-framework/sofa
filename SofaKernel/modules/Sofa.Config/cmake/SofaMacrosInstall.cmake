@@ -602,7 +602,8 @@ macro(sofa_install_targets_in_package)
                     if("${header_relative_dir_for_build}" STREQUAL "") # Headers are not in a subdirectory
                         set(header_relative_dir_for_build "${target}")
                     endif()
-                    if(NOT "${target}" STREQUAL "SofaFramework" AND
+                    if(NOT "${header_relative_dir_for_build}" MATCHES "^sofa$" AND
+                       NOT "${header_relative_dir_for_build}" MATCHES "^sofa/" AND
                        NOT "${ARG_INCLUDE_INSTALL_DIR}/${header_relative_dir_for_build}" MATCHES "${target}/${target}")
                         # Force include/PackageName/PackageName/... layout for package headers in build directory
                         set(header_relative_dir_for_build "${target}/${header_relative_dir_for_build}")
