@@ -57,6 +57,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SRC_ROOT}/AbstractTypeInfo.cpp
     ${SRC_ROOT}/BaseMatrix.cpp
+    ${SRC_ROOT}/BaseVector.cpp
     ${SRC_ROOT}/SolidTypes.cpp
     ${SRC_ROOT}/TemplatesAliases.cpp
     ${SRC_ROOT}/TypeInfoID.cpp

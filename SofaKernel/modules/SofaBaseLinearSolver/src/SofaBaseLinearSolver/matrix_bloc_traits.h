@@ -91,7 +91,6 @@ public:
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
     static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
-    static const char* Name();
 };
 
 template <Size L, Size C, class real, typename IndexType>
@@ -118,42 +117,42 @@ public:
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
     static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
-    static const char* Name();
+    //static const char* Name();
 };
 
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,float >, int >::Name() { return "1f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,double>, int >::Name() { return "1d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,float >, int >::Name() { return "2f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,double>, int >::Name() { return "2d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,float >, int >::Name() { return "3f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,double>, int >::Name() { return "3d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,float >, int >::Name() { return "4f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,double>, int >::Name() { return "4d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,float >, int >::Name() { return "6f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,double>, int >::Name() { return "6d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,float >, int >::Name() { return "8f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,double>, int >::Name() { return "8d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,float >, int >::Name() { return "9f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,double>, int >::Name() { return "9d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,float >, int >::Name() { return "12f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,double>, int >::Name() { return "12d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,float >, sofa::SignedIndex >::Name() { return "1f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,double>, sofa::SignedIndex  >::Name() { return "1d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,float >, sofa::SignedIndex >::Name() { return "2f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,double>, sofa::SignedIndex >::Name() { return "2d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,float >, sofa::SignedIndex >::Name() { return "3f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,double>, sofa::SignedIndex >::Name() { return "3d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,float >, sofa::SignedIndex >::Name() { return "4f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,double>, sofa::SignedIndex >::Name() { return "4d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,float >, sofa::SignedIndex >::Name() { return "6f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,double>, sofa::SignedIndex >::Name() { return "6d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,float >, sofa::SignedIndex >::Name() { return "8f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,double>, sofa::SignedIndex >::Name() { return "8d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,float >, sofa::SignedIndex >::Name() { return "9f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,double>, sofa::SignedIndex >::Name() { return "9d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,float >, sofa::SignedIndex >::Name() { return "12f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,double>, sofa::SignedIndex >::Name() { return "12d"; }
 
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,float >, Size >::Name() { return "1f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,double>, Size >::Name() { return "1d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,float >, Size >::Name() { return "2f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,double>, Size >::Name() { return "2d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,float >, Size >::Name() { return "3f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,double>, Size >::Name() { return "3d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,float >, Size >::Name() { return "4f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,double>, Size >::Name() { return "4d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,float >, Size >::Name() { return "6f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,double>, Size >::Name() { return "6d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,float >, Size >::Name() { return "8f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,double>, Size >::Name() { return "8d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,float >, Size >::Name() { return "9f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,double>, Size >::Name() { return "9d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,float >, Size >::Name() { return "12f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,double>, Size >::Name() { return "12d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,float >, Size >::Name() { return "1f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,double>, Size >::Name() { return "1d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,float >, Size >::Name() { return "2f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,double>, Size >::Name() { return "2d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,float >, Size >::Name() { return "3f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,double>, Size >::Name() { return "3d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,float >, Size >::Name() { return "4f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,double>, Size >::Name() { return "4d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,float >, Size >::Name() { return "6f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,double>, Size >::Name() { return "6d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,float >, Size >::Name() { return "8f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,double>, Size >::Name() { return "8d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,float >, Size >::Name() { return "9f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<9,9,double>, Size >::Name() { return "9d"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,float >, Size >::Name() { return "12f"; }
+//template<> inline const char* matrix_bloc_traits<defaulttype::Mat<12,12,double>, Size >::Name() { return "12d"; }
 
 template <typename IndexType>
 class matrix_bloc_traits < float, IndexType >
