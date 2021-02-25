@@ -19,18 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_BEHAVIOR_MECHANICALSTATE_CPP
-#include <sofa/core/behavior/MechanicalState.inl>
+#define SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
+#include <SofaBaseLinearSolver/FullMatrix.inl>
 
-namespace sofa::core::behavior
+namespace sofa::component::linearsolver
 {
-using namespace sofa::defaulttype;
 
-template class SOFA_CORE_API MechanicalState<Vec3dTypes>;
-template class SOFA_CORE_API MechanicalState<Vec2Types>;
-template class SOFA_CORE_API MechanicalState<Vec1Types>;
-template class SOFA_CORE_API MechanicalState<Vec6Types>;
-template class SOFA_CORE_API MechanicalState<Rigid3Types>;
-template class SOFA_CORE_API MechanicalState<Rigid2Types>;
+#if defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
+std::ostream& operator<<(std::ostream& out, const FullMatrix<double>& v ){ return readFromStream(out, v); }
+std::ostream& operator<<(std::ostream& out, const FullMatrix<float>& v ){ return readFromStream(out, v); }
+std::ostream& operator<<(std::ostream& out, const FullMatrix<bool>& v ){ return readFromStream(out, v); }
+template class FullMatrix<double>;
+template class FullMatrix<float>;
+template class FullMatrix<bool>;
 
-} // namespace sofa
+std::ostream& operator<<(std::ostream& out, const LPtrFullMatrix<double>& v ){ return readFromStream(out, v); }
+std::ostream& operator<<(std::ostream& out, const LPtrFullMatrix<float>& v ){ return readFromStream(out, v); }
+std::ostream& operator<<(std::ostream& out, const LPtrFullMatrix<bool>& v ){ return readFromStream(out, v); }
+template class LPtrFullMatrix<double>;
+template class LPtrFullMatrix<float>;
+template class LPtrFullMatrix<bool>;
+#endif /// SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
+
+} /// namespace sofa::component::linearsolver

@@ -12,6 +12,7 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/Mat_solve_Cholesky.h
     ${SOFATYPESRC_ROOT}/Mat_solve_LU.h
     ${SOFATYPESRC_ROOT}/Mat_solve_SVD.h
+    ${SOFATYPESRC_ROOT}/fwd.h
     ${SOFATYPESRC_ROOT}/Quat.h
     ${SOFATYPESRC_ROOT}/Quat.inl
     ${SOFATYPESRC_ROOT}/DualQuat.h
