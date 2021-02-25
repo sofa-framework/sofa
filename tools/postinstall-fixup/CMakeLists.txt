@@ -20,7 +20,7 @@ message("QT_DATA_DIR = ${QT_DATA_DIR}")
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     install(CODE "file(WRITE
         \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/qt.conf\"
-        \"[Paths]\\n  Prefix = ..\\n  LibraryExecutables = bin\"
+        \"[Paths]\\n  Prefix = ..\\n  Plugins = bin\\n  LibraryExecutables = bin\"
         )"
         COMPONENT resources)
     install(CODE "execute_process(COMMAND /bin/bash
@@ -54,7 +54,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     install(CODE "file(WRITE
         \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/qt.conf\"
-        \"[Paths]\\n  Plugins = .\"
+        \"[Paths]\\n  Prefix = ..\\n  Plugins = bin\\n  LibraryExecutables = bin\"
         )"
         COMPONENT resources)
     install(CODE "execute_process(COMMAND bash

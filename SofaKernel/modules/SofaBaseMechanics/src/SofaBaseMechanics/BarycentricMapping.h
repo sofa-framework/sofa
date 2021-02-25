@@ -105,6 +105,7 @@ protected:
 private:
     void createMapperFromTopology();
     void populateTopologies();
+    void initMapper();
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP)
