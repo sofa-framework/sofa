@@ -63,7 +63,7 @@ GenericConstraintSolver::GenericConstraintSolver()
     , allVerified( initData(&allVerified, false, "allVerified", "All contraints must be verified (each constraint's error < tolerance)"))
     , schemeCorrection( initData(&schemeCorrection, false, "schemeCorrection", "Apply new scheme where compliance is progressively corrected"))
     , unbuilt(initData(&unbuilt, false, "unbuilt", "Compliance is not fully built"))
-    , multithreading(initData(&multithreading, false, "multithreading", "Build compliances concurrently"))
+    , d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
     , computeGraphs(initData(&computeGraphs, false, "computeGraphs", "Compute graphs of errors and forces during resolution"))
     , graphErrors( initData(&graphErrors,"graphErrors","Sum of the constraints' errors at each iteration"))
     , graphConstraints( initData(&graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution"))
@@ -296,7 +296,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
         sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
         msg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
 
-        if(multithreading.getValue()){
+        if(d_multithreading.getValue()){
             helper::vector<std::thread> threads(constraintCorrections.size());
             helper::vector<sofa::component::linearsolver::LPtrFullMatrix<double>> Ws;
             Ws.resize(constraintCorrections.size());
@@ -305,38 +305,50 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
             for (unsigned int i=0; i<constraintCorrections.size(); i++)
             {
+                core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+                if (!cc->isActive())
+                    continue;
+
                 Ws[i].resize(current_cp->W.rowSize(),current_cp->W.colSize());
                 Ps[i] = *cParams;
                 auto Wi = &Ws[i];
                 auto Pi = Ps[i];
-                core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
                 threads[i] = std::thread([Pi, Wi, cc] {
-                    if (cc->isActive()) {
-                        cc->addComplianceInConstraintSpace(&Pi, Wi);
-                    }
+                    cc->addComplianceInConstraintSpace(&Pi, Wi);
                 });
             }
             for (auto& t : threads)
                 t.join();
 
+            auto & W = current_cp->W;
+            const sofa::Index rows = W.rowSize();
+            const sofa::Index cols = W.colSize();
+            const auto n_constraintCorrections = constraintCorrections.size();
+
+            // Accumulate the contribution of each constraints
+            // into the system's compliant matrix W
+            for (sofa::Index i = 0; i < n_constraintCorrections; i++) {
+                auto * cc = constraintCorrections[i];
+                const auto & Wi = Ws[i];
+
+                if (!cc->isActive())
+                    continue;
+
+                for (sofa::Index j = 0; j < rows; ++j)
+                    for (sofa::Index l = 0; l < cols; ++l)
+                        W.add(j, l, Wi.element(j,l));
+            }
+
+        } else {
             for (unsigned int i=0; i<constraintCorrections.size(); i++)
             {
                 core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
                 if (!cc->isActive())
                     continue;
-                for (int j=0; j<current_cp->W.rowSize(); j++)
-                    for (int l=0; l<current_cp->W.colSize(); l++)
-                        current_cp->W.add(j,l,Ws[i].element(j,l));
-            }
-        } else {
-            for (unsigned int i=0; i<constraintCorrections.size(); i++)
-            {
-                core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-                if (cc->isActive()) {
-                    sofa::helper::AdvancedTimer::stepBegin("Object name: "+cc->getName());
-                    cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
-                    sofa::helper::AdvancedTimer::stepEnd("Object name: "+cc->getName());
-                }
+
+                sofa::helper::AdvancedTimer::stepBegin("Object name: "+cc->getName());
+                cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
+                sofa::helper::AdvancedTimer::stepEnd("Object name: "+cc->getName());
             }
         }
 
