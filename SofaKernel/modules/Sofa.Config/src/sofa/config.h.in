@@ -133,7 +133,7 @@ typedef unsigned __int64	uint64_t;
 #define SOFA_ATTRIBUTE_DEPRECATED(deprecateDate, removeDate, toFixMsg) \
     [[deprecated( \
     "It is still usable but has been DEPRECATED since " deprecateDate ". " \
-    "Removal is planned for " removeDate ". " toFixMsg)]]
+    "You have until " removeDate " to fix your code. " toFixMsg)]]
 
 #define SOFA_ATTRIBUTE_DISABLED(deprecateDate, disableDate, toFixMsg) \
     [[deprecated( \
