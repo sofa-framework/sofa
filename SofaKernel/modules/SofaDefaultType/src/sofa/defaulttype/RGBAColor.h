@@ -29,10 +29,8 @@ namespace sofa
 {
 namespace defaulttype
 {
-    SOFA_BEGIN_DEPRECATION_AS_ERROR
     [[deprecated("sofa::helper::types::RGBAColor is now part in sofa::helper::types::RGBAColor. Please update your code.")]]
     typedef sofa::helper::types::RGBAColor RGBAColor;
-    SOFA_END_DEPRECATION_AS_ERROR
 } // namespace defaulttype
 } // namespace sofa
 

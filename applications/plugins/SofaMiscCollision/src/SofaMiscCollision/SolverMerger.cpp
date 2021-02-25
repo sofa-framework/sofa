@@ -57,7 +57,7 @@ typename T::SPtr copySolver(const T& s)
         core::objectmodel::BaseData* s = fields[i];
         core::objectmodel::BaseData* d = res->findData(s->getName());
         if (d)
-            d->copyValue(s);
+            d->copyValueFrom(s);
     }
     return res;
 }
