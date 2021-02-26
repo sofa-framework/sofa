@@ -118,90 +118,15 @@ protected:
 };
 
 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////   Point Topology Data Implementation   /////////////////////////////////////
+//////////////////////////////   Element Topology Data Implementation   ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template< class VecT >
-class PointSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Point, VecT>
-{
-public:
-    PointSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Point, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////   Edge Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class EdgeSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Edge, VecT>
-{
-public:
-    EdgeSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Edge, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   Triangle Topology Data Implementation   ///////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class TriangleSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>
-{
-public:
-    TriangleSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////   Quad Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class QuadSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Quad, VecT>
-{
-public:
-    QuadSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Quad, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////   Tetrahedron Topology Data Implementation   /////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class TetrahedronSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>
-{
-public:
-    TetrahedronSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   Hexahedron Topology Data Implementation   /////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class HexahedronSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>
-{
-public:
-    HexahedronSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>(data)
-    {}
-};
-
+template< class VecT > using PointSubsetData = TopologySubsetDataImpl<core::topology::BaseMeshTopology::Point, VecT>;
+template< class VecT > using EdgeSubsetData = TopologySubsetDataImpl<core::topology::BaseMeshTopology::Edge, VecT>;
+template< class VecT > using TriangleSubsetData = TopologySubsetDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>;
+template< class VecT > using QuadSubsetData = TopologySubsetDataImpl<core::topology::BaseMeshTopology::Quad, VecT>;
+template< class VecT > using TetrahedronSubsetData = TopologySubsetDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
+template< class VecT > using HexahedronSubsetData = TopologySubsetDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>;
 
 } //namespace sofa::component::topology

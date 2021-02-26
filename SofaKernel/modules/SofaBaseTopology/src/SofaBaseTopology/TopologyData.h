@@ -145,96 +145,17 @@ protected:
 
 };
 
-// In c++11, the following classes could be replaced by :
-// template< class VecT > using PointData       = TopologyDataImpl<Point      , VecT>;
-// template< class VecT > using EdgeData        = TopologyDataImpl<Edge       , VecT>;
-// template< class VecT > using TriangleData    = TopologyDataImpl<Triangle   , VecT>;
-// template< class VecT > using QuadData        = TopologyDataImpl<Quad       , VecT>;
-// template< class VecT > using TetrahedronData = TopologyDataImpl<Tetrahedron, VecT>;
-// template< class VecT > using HexahedronData  = TopologyDataImpl<Hexahedron , VecT>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////   Point Topology Data Implementation   /////////////////////////////////////
+//////////////////////////////   Element Topology Data Implementation   ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template< class VecT >
-class PointData : public TopologyDataImpl<core::topology::BaseMeshTopology::Point, VecT>
-{
-public:
-    PointData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologyDataImpl<core::topology::BaseMeshTopology::Point, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////   Edge Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class EdgeData : public TopologyDataImpl<core::topology::BaseMeshTopology::Edge, VecT>
-{
-public:
-    EdgeData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologyDataImpl<core::topology::BaseMeshTopology::Edge, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   Triangle Topology Data Implementation   ///////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class TriangleData : public TopologyDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>
-{
-public:
-    TriangleData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologyDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////   Quad Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class QuadData : public TopologyDataImpl<core::topology::BaseMeshTopology::Quad, VecT>
-{
-public:
-    QuadData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologyDataImpl<core::topology::BaseMeshTopology::Quad, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////   Tetrahedron Topology Data Implementation   /////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class TetrahedronData : public TopologyDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>
-{
-public:
-    TetrahedronData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologyDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   Hexahedron Topology Data Implementation   /////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class HexahedronData : public TopologyDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>
-{
-public:
-    HexahedronData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologyDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>(data)
-    {}
-};
+template< class VecT > using PointData       = TopologyDataImpl<core::topology::BaseMeshTopology::Point, VecT>;
+template< class VecT > using EdgeData        = TopologyDataImpl<core::topology::BaseMeshTopology::Edge, VecT>;
+template< class VecT > using TriangleData    = TopologyDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>;
+template< class VecT > using QuadData        = TopologyDataImpl<core::topology::BaseMeshTopology::Quad, VecT>;
+template< class VecT > using TetrahedronData = TopologyDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
+template< class VecT > using HexahedronData  = TopologyDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>;
 
 
 } //namespace sofa::component::topology

@@ -147,87 +147,15 @@ protected:
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////   Point Topology Data Implementation   /////////////////////////////////////
+//////////////////////////////   Element Topology Data Implementation   ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template< class VecT >
-class PointSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Point, VecT>
-{
-public:
-    PointSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Point, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////   Edge Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class EdgeSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Edge, VecT>
-{
-public:
-    EdgeSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Edge, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   Triangle Topology Data Implementation   ///////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class TriangleSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>
-{
-public:
-    TriangleSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////   Quad Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class QuadSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Quad, VecT>
-{
-public:
-    QuadSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Quad, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////   Tetrahedron Topology Data Implementation   /////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class TetrahedronSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>
-{
-public:
-    TetrahedronSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>(data)
-    {}
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   Hexahedron Topology Data Implementation   /////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT >
-class HexahedronSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>
-{
-public:
-    HexahedronSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>(data)
-    {}
-};
+template< class VecT > using PointSparseData = TopologySparseDataImpl<core::topology::BaseMeshTopology::Point, VecT>;
+template< class VecT > using EdgeSparseData = TopologySparseDataImpl<core::topology::BaseMeshTopology::Edge, VecT>;
+template< class VecT > using TriangleSparseData = TopologySparseDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>;
+template< class VecT > using QuadSparseData = TopologySparseDataImpl<core::topology::BaseMeshTopology::Quad, VecT>;
+template< class VecT > using TetrahedronSparseData = TopologySparseDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
+template< class VecT > using HexahedronSparseData = TopologySparseDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>;
 
 
 } //namespace sofa::component::topology
