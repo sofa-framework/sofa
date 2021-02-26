@@ -28,10 +28,10 @@ namespace sofa::component::collision
 
 using namespace defaulttype;
 
-ContactMapperCreator< ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types> > CylinderModelContactMapperClass("default", true);
-ContactMapperCreator< ContactMapper<RigidSphereModel,Vec3Types> > RigidSphereContactMapperClass("default", true);
-ContactMapperCreator< ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types> > OBBContactMapperClass("default", true);
-ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types> > RigidCapsuleContactMapperClass("default", true);
+ContactMapperCreator< ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types> > CylinderModelContactMapperClass("penality", true);
+ContactMapperCreator< ContactMapper<RigidSphereModel,Vec3Types> > RigidSphereContactMapperClass("penality", true);
+ContactMapperCreator< ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types> > OBBContactMapperClass("penality", true);
+ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types> > RigidCapsuleContactMapperClass("penality", true);
 
 
 template class SOFA_SOFAMESHCOLLISION_API ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types>;

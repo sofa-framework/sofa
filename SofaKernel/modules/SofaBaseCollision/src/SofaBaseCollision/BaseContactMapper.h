@@ -86,7 +86,7 @@ public:
     virtual void updateXfree() = 0;
 
     typedef helper::Factory< std::string, BaseContactMapper<DataTypes>, core::CollisionModel* > ContactMapperFactory;
-    static BaseContactMapper<DataTypes>* Create(core::CollisionModel* model, const std::string& name = std::string("default"))
+    static BaseContactMapper<DataTypes>* Create(core::CollisionModel* model, const std::string& name = std::string("penality"))
     {
         return ContactMapperFactory::CreateObject(name, model);
     }

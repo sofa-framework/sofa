@@ -64,8 +64,8 @@ sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(sofa
         }
     }
     sofa::helper::OptionsGroup responseOptions(listResponse);
-    if (listResponse.find("default") != listResponse.end())
-        responseOptions.setSelectedItem("default");
+    if (listResponse.find("penality") != listResponse.end())
+        responseOptions.setSelectedItem("penality");
     return responseOptions;
 }
 

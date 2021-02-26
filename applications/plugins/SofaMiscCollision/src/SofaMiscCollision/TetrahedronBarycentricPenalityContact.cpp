@@ -38,11 +38,11 @@ using namespace defaulttype;
 using simulation::Node;
 using namespace sofa::core::collision;
 
-Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronSpherePenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronPointPenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronLinePenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronTrianglePenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, TetrahedronCollisionModel> > TetrahedronTetrahedronPenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronSpherePenalityContactClass("penality",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronPointPenalityContactClass("penality",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronLinePenalityContactClass("penality",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronTrianglePenalityContactClass("penality",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, TetrahedronCollisionModel> > TetrahedronTetrahedronPenalityContactClass("penality",true);
 
 } // namespace collision
 
