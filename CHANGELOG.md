@@ -1,10 +1,65 @@
 # SOFA Changelog
 
 
+## [v20.12.01](https://github.com/sofa-framework/sofa/tree/v20.12.01)
 
-## [v20.12](https://github.com/sofa-framework/sofa/tree/v20.12)
+[Full log](https://github.com/sofa-framework/sofa/compare/v20.12.00...v20.12.01)
 
-[Full log](https://github.com/sofa-framework/sofa/compare/v20.06...v20.12)
+
+### Improvements
+**Modules**
+- [SofaGui] Improve background v20.12 [#1758](https://github.com/sofa-framework/sofa/pull/1758)
+- **[SofaHelper]** ADD PluginManager callback and use it in SofaPython [#1777](https://github.com/sofa-framework/sofa/pull/1777)
+
+**Plugins / Projects**
+- [SofaPython] ADD PluginManager callback and use it in SofaPython [#1777](https://github.com/sofa-framework/sofa/pull/1777)
+
+### Bug Fixes
+**Architecture**
+- [SofaMacros] Shorter name for relocatable targets [#1769](https://github.com/sofa-framework/sofa/pull/1769)
+
+**Modules**
+- [All] FIX build without SofaPython soft dependencies [#1829](https://github.com/sofa-framework/sofa/pull/1829)
+- [All] Fix invalid Memory access in MechanicalObject and Compliant_test [#1849](https://github.com/sofa-framework/sofa/pull/1849)
+- [All] Almost green dashboard [#1669](https://github.com/sofa-framework/sofa/pull/1669)
+- **[SofaCore_test]** Update the two failling tests so they match the new convention for TypeInfo [#1709](https://github.com/sofa-framework/sofa/pull/1709)
+- **[SofaDefaultType]** FIX compilation errors [#1761](https://github.com/sofa-framework/sofa/pull/1761)
+- **[SofaBaseMechanics]** fixes reinit of BarycentricMapping [#1815](https://github.com/sofa-framework/sofa/pull/1815)
+- [SofaGuiCommon] Fix computationTimeSampling [#1698](https://github.com/sofa-framework/sofa/pull/1698)
+- [SofaGuiCommon] fix BackgroundSetting [#1826](https://github.com/sofa-framework/sofa/pull/1826)
+- [SofaGuiQt] ADD qt.conf.h for custom qt.conf loading at runtime [#1820](https://github.com/sofa-framework/sofa/pull/1820)
+- [SofaGuiQt] Fix Export Graph option [#1785](https://github.com/sofa-framework/sofa/pull/1785)
+- [SofaGuiQt] Clean QtGLViewer with key events [#1850](https://github.com/sofa-framework/sofa/pull/1850)
+- **[SofaHelper]** FIX "name vs path" issue in PluginManager + FIX PluginManager_test [#1823](https://github.com/sofa-framework/sofa/pull/1823)
+- [SofaMiscFEM] Minor changes in TrianglePressureFF and TriangularFEMFF [#1779](https://github.com/sofa-framework/sofa/pull/1779)
+- **[SofaSimpleFEM]** Fix nasty bug in HexaFEMForceField' s draw() [#1766](https://github.com/sofa-framework/sofa/pull/1766)
+
+**Plugins / Projects**
+- [Geomagic] Fix GeomagicVisualModel compilation [#1776](https://github.com/sofa-framework/sofa/pull/1776)
+- [PreassembledMass] FIX typo in PreassembledMass.inl [#1833](https://github.com/sofa-framework/sofa/pull/1833)
+- [SofaCUDA] FIX compilation errors [#1761](https://github.com/sofa-framework/sofa/pull/1761)
+- [SofaCUDA] Fix CudaFixedConstraint when indices are not contiguous [#1780](https://github.com/sofa-framework/sofa/pull/1780)
+- [SofaOpenCL] Fix compilation [#1795](https://github.com/sofa-framework/sofa/pull/1795)
+- [SofaPardisoSolver] Fix plugin and add example [#1830](https://github.com/sofa-framework/sofa/pull/1830)
+- [SofaRigid] fixes applyJT of RigidMapping [#1813](https://github.com/sofa-framework/sofa/pull/1813)
+- [SofaSphFluid] Remove std::execution usage [#1684](https://github.com/sofa-framework/sofa/pull/1684)
+
+**Examples / Scenes**
+- [Scenes] Fix (new?) failing scenes on the CI [#1798](https://github.com/sofa-framework/sofa/pull/1798)
+
+### Cleanings
+**Plugins / Projects**
+- [SofaPython] CLEAN PythonEnvironment info messages [#1835](https://github.com/sofa-framework/sofa/pull/1835)
+- [SofaCUDA] Renaming cudaMatrix methods to use rowSize and colSize  [#1788](https://github.com/sofa-framework/sofa/pull/1788)
+
+
+____________________________________________________________
+
+
+
+## [v20.12.00](https://github.com/sofa-framework/sofa/tree/v20.12.00)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v20.06.01...v20.12.00)
 
 
 ### SOFA-NG
