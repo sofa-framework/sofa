@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaMiscSolver/NewmarkImplicitSolver.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>

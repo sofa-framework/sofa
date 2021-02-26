@@ -20,9 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <climits>
 
 namespace sofa
 {
@@ -107,6 +109,35 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
         }
     }
 };
+
+///Adding values from a 3x3d matrix this function may be overload to obtain better performances
+void BaseMatrix::add(Index _i, Index _j, const defaulttype::Mat3x3d & _M) {
+    for (unsigned i=0;i<3;i++)
+        for (unsigned j=0;j<3;j++)
+            add(_i+i,_j+j,_M[i][j]);
+}
+
+///Adding values from a 3x3f matrix this function may be overload to obtain better performances
+void BaseMatrix::add(Index _i, Index _j, const defaulttype::Mat3x3f & _M) {
+    for (unsigned i=0;i<3;i++)
+        for (unsigned j=0;j<3;j++)
+            add(_i+i,_j+j,_M[i][j]);
+}
+
+///Adding values from a 2x2d matrix this function may be overload to obtain better performances
+void BaseMatrix::add(Index _i, Index _j, const defaulttype::Mat2x2d & _M) {
+    for (unsigned i=0;i<2;i++)
+        for (unsigned j=0;j<2;j++)
+            add(_i+i,_j+j,_M[i][j]);
+}
+
+///Adding values from a 2x2f matrix this function may be overload to obtain better performances
+void BaseMatrix::add(Index _i, Index _j, const defaulttype::Mat2x2f & _M) {
+    for (unsigned i=0;i<2;i++)
+        for (unsigned j=0;j<2;j++)
+            add(_i+i,_j+j,_M[i][j]);
+}
+
 
 // specialication for 1x1 blocs
 template <class Real, bool add, bool transpose, class M, class V1, class V2>

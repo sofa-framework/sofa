@@ -55,6 +55,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/Mass.h
     ${SRC_ROOT}/behavior/Mass.inl
     ${SRC_ROOT}/behavior/MechanicalState.h
+    ${SRC_ROOT}/behavior/MechanicalState.inl
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.h
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.inl
     ${SRC_ROOT}/behavior/MixedInteractionForceField.h
@@ -130,7 +131,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/SPtr.h
     ${SRC_ROOT}/objectmodel/Tag.h
     ${SRC_ROOT}/objectmodel/DataCallback.h
-    ${SRC_ROOT}/topology/Topology.h
     ${SRC_ROOT}/topology/BaseMeshTopology.h
     ${SRC_ROOT}/topology/BaseTopology.h
     ${SRC_ROOT}/topology/BaseTopologyData.h
@@ -255,8 +255,16 @@ set(SOURCE_FILES
     ${SRC_ROOT}/logging/PerComponentLoggingMessageHandler.cpp
 )
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+# Compatibility files
+set (COMPATSRC_ROOT "compat/")
+set (COMPAT_HEADER_FILES
+    ${COMPATSRC_ROOT}/sofa/helper/vectorData.h
+    ${COMPATSRC_ROOT}/sofa/helper/vectorLinks.h
+    )
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper Sofa.Topology SofaDefaultType)
+
 #target_precompile_headers(${PROJECT_NAME} PUBLIC ${SRC_ROOT}/objectmodel/BaseObject.h ${SRC_ROOT}/objectmodel/BaseContext.h)
 
 if(SOFA_BUILD_WITH_PCH_ENABLED)
@@ -264,10 +272,8 @@ if(SOFA_BUILD_WITH_PCH_ENABLED)
     target_precompile_headers(${PROJECT_NAME} PUBLIC ${SRC_ROOT}/objectmodel/BaseObject.h ${SRC_ROOT}/objectmodel/Data.h)
 endif()
 
-if(SOFA_BUILD_WITH_PCH_ENABLED)
-    message("Adding precompiled header for SofaCore")
-    target_precompile_headers(${PROJECT_NAME} PUBLIC ${SRC_ROOT}/objectmodel/BaseObject.h ${SRC_ROOT}/objectmodel/Data.h)
-endif()
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
+source_group("compat" FILES ${COMPAT_HEADER_FILES} )
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)

@@ -25,6 +25,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
+#include <sofa/core/behavior/MultiMatrix.h>
 
 namespace sofa::component::odesolver
 {
