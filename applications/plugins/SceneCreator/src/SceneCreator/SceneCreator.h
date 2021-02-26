@@ -49,7 +49,7 @@ typedef enum
     MT_Identity
 } MappingType;
 
-SOFA_SCENECREATOR_API simulation::Node::SPtr createRootWithCollisionPipeline(const std::string &responseType=std::string("default"));
+SOFA_SCENECREATOR_API simulation::Node::SPtr createRootWithCollisionPipeline(const std::string &responseType=std::string("penality"));
 
 SOFA_SCENECREATOR_API simulation::Node::SPtr createEulerSolverNode(simulation::Node::SPtr parent,
                                                                    const std::string& name,

@@ -7,7 +7,7 @@
     
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager name="collision response" response="default" />
+    <DefaultContactManager name="collision response" response="penality" />
     <DiscreteIntersection/>
 
     <MeshObjLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />

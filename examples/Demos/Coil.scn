@@ -5,7 +5,7 @@
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="1.0" contactDistance="0.7" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="penality" />
     <DefaultCollisionGroupManager name="Group" />
     <include href="Objects/SaladBowl.xml" ry="-90" scale="15" dx="10" contactStiffness="500" color="1 0.7 0.55 0.3" />
     <include href="Objects/SaladBowl.xml" ry="90" scale="15" dx="2" contactStiffness="500" color="1 0.7 0.55 0.3" />

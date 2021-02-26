@@ -3,7 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager response="default" />
+    <DefaultContactManager response="penality" />
     <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="1" />
 
   <Node name="Grab">

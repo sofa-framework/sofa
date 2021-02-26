@@ -10,7 +10,7 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager response="default" />
+    <DefaultContactManager response="penality" />
     <DiscreteIntersection/>
     <Node name="LiverFFD-lowres">
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />

@@ -5,7 +5,7 @@
     <DefaultPipeline depth="6" draw="0" verbose="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection alarmDistance="0.3" contactDistance="0.2" name="Proximity" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="penality" />
 
     <MeshObjLoader name="loader_torus" filename="mesh/torus.obj" />
     <MeshObjLoader name="loader_torus2" filename="mesh/torus2.obj" />

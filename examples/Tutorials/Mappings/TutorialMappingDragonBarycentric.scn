@@ -4,7 +4,7 @@
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
     <BruteForceDetection name="Detection" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="penality" />
     <TreeCollisionGroupManager name="Group" />
     <Node name="Springs" gravity="0 -9.81 0">
         <EulerImplicitSolver name="default13" rayleighStiffness="0.5" rayleighMass="0.5" vdamping="0" />

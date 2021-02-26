@@ -9,7 +9,7 @@
     <DefaultPipeline verbose="0" />
     <NewProximityIntersection alarmDistance="0.5" contactDistance="0.3" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager response="default" />
+    <DefaultContactManager response="penality" />
     <Node name="Fluid">
         <RungeKutta4Solver />
         <PointSetTopologyContainer />

@@ -7,7 +7,7 @@
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
     <BruteForceDetection name="Detection" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="penality" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="MecaNode" gravity="0 0 0">
         <MeshGmshLoader name="loader" tags="meca" filename="mesh/square3.msh" />

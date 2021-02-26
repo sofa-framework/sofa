@@ -6,7 +6,7 @@
     <RequiredPlugin pluginName='SofaRigid'/>
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollisionModels showMechanicalMappings" />
     <BruteForceDetection name="default40" />
-    <DefaultContactManager name="default41" response="default" />
+    <DefaultContactManager name="default41" response="penality" />
     <DefaultPipeline name="default42" />
     <MinProximityIntersection name="default43" alarmDistance="1" contactDistance="0.5"/>
     <Node name="default44" gravity="0 -9.81 0">

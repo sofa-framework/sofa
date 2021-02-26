@@ -11,7 +11,7 @@
 	<RequiredPlugin pluginName='SofaTopologyMapping'/>
 	<DefaultPipeline name="defaultPipeline1"  verbose="0" />
 	<BruteForceDetection name="N2" />
-	<DefaultContactManager name="defaultContactManager1"  response="default" />
+	<DefaultContactManager name="defaultContactManager1"  response="penality" />
 	<MinProximityIntersection name="Proximity"  alarmDistance="0.8"  contactDistance="0.5" />
 	<DefaultCollisionGroupManager name="treeCollisionGroupManager1" />
 	<Node 	name="SquareGravity"  >

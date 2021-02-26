@@ -9,7 +9,7 @@
     <DefaultPipeline verbose="0" depth="10" draw="0" />
     <RayTraceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="penality" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="Torus1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

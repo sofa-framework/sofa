@@ -4,7 +4,7 @@
 	<DefaultPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-	<DefaultContactManager name="Response" response="default" />
+	<DefaultContactManager name="Response" response="penality" />
 	<DefaultCollisionGroupManager name="Group" />
 	
 	<Node name="M1" processor="0">

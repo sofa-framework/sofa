@@ -3,7 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager name="collision response" response="default" />
+    <DefaultContactManager name="collision response" response="penality" />
     <Node name="Liver" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />

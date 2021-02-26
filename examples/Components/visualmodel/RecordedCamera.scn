@@ -9,7 +9,7 @@
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
     <BruteForceDetection name="Detection" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.64" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="penality" />
     <DefaultCollisionGroupManager name="Group" />
     <!-- <InteractiveCamera name="cam" position="0 0 0" lookAt="0 -1 1"/> -->
     <RecordedCamera name="cam" position="0 10 0" rotationLookAt="0 30 0" rotationStartPoint="0 100 100" rotationCenter="0 100 0" listening="true" endTime="1000" drawRotation="1" rotationMode="1" />

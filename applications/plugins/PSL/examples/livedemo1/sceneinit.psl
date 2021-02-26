@@ -12,7 +12,7 @@ Template : {
             alarmDistance: "0.3"
             contactDistance: "0.2"
         }
-        DefaultContactManager : { response : "default" }
+        DefaultContactManager : { response : "penality" }
         DefaultCollisionGroupManager : {}
         CGLinearSolver : {
             iterations : "100"

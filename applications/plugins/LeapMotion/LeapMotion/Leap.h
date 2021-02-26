@@ -36,9 +36,9 @@ typedef unsigned __int64 uint64_t;
 #define LEAP_EXPORT_CLASS
 #define LEAP_EXPORT_PLUGIN __declspec(dllexport)
 #elif !defined(SWIG)
-#define LEAP_EXPORT __attribute__((visibility("default")))
-#define LEAP_EXPORT_CLASS __attribute__((visibility("default")))
-#define LEAP_EXPORT_PLUGIN __attribute__((visibility("default")))
+#define LEAP_EXPORT __attribute__((visibility("penality")))
+#define LEAP_EXPORT_CLASS __attribute__((visibility("penality")))
+#define LEAP_EXPORT_PLUGIN __attribute__((visibility("penality")))
 #else
 #define LEAP_EXPORT
 #define LEAP_EXPORT_CLASS

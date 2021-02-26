@@ -3,6 +3,6 @@
 	<CollisionPipeline name="DefaultCollisionPipeline" depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="Detection" />
 	<MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-	<CollisionResponse name="Response" response="default" />
+	<CollisionResponse name="Response" response="penality" />
 	<CollisionGroup name="Group" />
 </Node>

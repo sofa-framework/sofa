@@ -6,7 +6,7 @@
     <Gravity name="G" gravity="0.0 -9.81 0" />
     <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceDetection name="detection" />
-    <DefaultContactManager name="response" response="default" />
+    <DefaultContactManager name="response" response="penality" />
     <MinProximityIntersection name="proximity" alarmDistance="0.05" contactDistance="0.05" />
     <Node name="Head">
         <MeshObjLoader name="meshLoader_0" filename="data/mesh/head.obj" handleSeams="1" />

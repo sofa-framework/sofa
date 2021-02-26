@@ -8,7 +8,7 @@
     <VisualStyle displayFlags="showBehaviorModels showWireframe" />
     <DefaultPipeline />
     <BruteForceDetection  />
-    <DefaultContactManager response="default" />
+    <DefaultContactManager response="penality" />
     <MinProximityIntersection  alarmDistance="0.8" contactDistance="0.5" />
     <DefaultCollisionGroupManager  />
     <Node >

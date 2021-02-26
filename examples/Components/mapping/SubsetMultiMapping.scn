@@ -9,7 +9,7 @@
     
     <DefaultPipeline/>
     <BruteForceDetection/>
-    <DefaultContactManager response="default" />
+    <DefaultContactManager response="penality" />
     <DiscreteIntersection/>
     
     

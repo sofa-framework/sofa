@@ -9,7 +9,7 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager response="default" />
+    <DefaultContactManager response="penality" />
     <DiscreteIntersection />
     <!--<DefaultCollisionGroupManager />-->
     <Node name="Liver">

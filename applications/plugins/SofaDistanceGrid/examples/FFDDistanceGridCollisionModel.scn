@@ -4,7 +4,7 @@
     <Gravity name="G" gravity="0.0 -9.81 0" />
     <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceDetection name="detection" />
-    <DefaultContactManager name="response" response="default" />
+    <DefaultContactManager name="response" response="penality" />
     <DiscreteIntersection name="proximity" />
     
     <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

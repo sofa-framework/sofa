@@ -7,7 +7,7 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showVisual" />
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager response="default" name="collision response" />
+    <DefaultContactManager response="penality" name="collision response" />
     <DiscreteIntersection/>
     <Node name="MeshTopology">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

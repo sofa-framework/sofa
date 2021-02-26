@@ -13,7 +13,7 @@
     <DefaultPipeline verbose="0" name="CollisionPipeline"/>
     <BruteForceDetection name="N2" />
     <DiscreteIntersection/>
-    <DefaultContactManager response="default" name="collision response"/>
+    <DefaultContactManager response="penality" name="collision response"/>
 -->
     <VisualStyle displayFlags="showForceFields" />
     <Node name="input">

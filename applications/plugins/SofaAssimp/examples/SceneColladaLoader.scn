@@ -8,7 +8,7 @@
     <DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
     <BruteForceDetection name="Detection" />
     <NewProximityIntersection name="Proximity"  alarmDistance="5.0"  contactDistance="2.5" />
-    <DefaultContactManager name="Response"  response="default" />
+    <DefaultContactManager name="Response"  response="penality" />
 
     <EulerImplicitSolver name="cg_odesolver"  printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="40"  tolerance="1e-009"  threshold="1e-009" />

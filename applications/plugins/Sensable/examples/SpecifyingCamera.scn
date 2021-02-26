@@ -7,7 +7,7 @@
 
     <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
     <BruteForceDetection name="detection" />
-    <DefaultContactManager name="response" response="default" />
+    <DefaultContactManager name="response" response="penality" />
     <MinProximityIntersection name="proximity" alarmDistance="0.08" contactDistance="0.05" />
     <InteractiveCamera name="camera"  />
 

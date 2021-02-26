@@ -14,7 +14,7 @@
     <VisualStyle displayFlags="showVisual showWireframe" />
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager name="default1" response="default" />
+    <DefaultContactManager name="default1" response="penality" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultCollisionGroupManager name="default2" />
 

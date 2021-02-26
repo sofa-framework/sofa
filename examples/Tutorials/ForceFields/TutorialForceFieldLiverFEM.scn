@@ -5,7 +5,7 @@
     <VisualStyle displayFlags="showForceFields" />
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager name="collision response" response="default" />
+    <DefaultContactManager name="collision response" response="penality" />
     <DiscreteIntersection />
     <Node name="LiverFEM" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />

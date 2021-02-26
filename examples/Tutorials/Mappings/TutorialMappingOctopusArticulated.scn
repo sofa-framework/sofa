@@ -4,7 +4,7 @@
     <DefaultPipeline name="default94" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="default2" alarmDistance="3" contactDistance="2.5" />
-    <DefaultContactManager name="default3" response="default" />
+    <DefaultContactManager name="default3" response="penality" />
     <Node name="Super Teo" activated="1" gravity="0 0 -9.81" dt="0.01" time="0" animate="0" multiThreadSimulation="0" currentLevel="0" coarsestLevel="3" finestLevel="0">
         <EulerImplicitSolver name="default95"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="default96" iterations="25" tolerance="1e-5" threshold="1e-5"/>

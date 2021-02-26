@@ -9,7 +9,7 @@
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="penality" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="frog with several stiffnesses">
         <SparseGridMultipleTopology n="9 9 7" fileTopology="mesh/frog_body.obj" fileTopologies="mesh/frog_body.obj mesh/frog_eyes.obj mesh/frog_eyebrows.obj mesh/frog_lips.obj" stiffnessCoefs="10 100 100 .2" massCoefs="1 1 1 1" nbVirtualFinerLevels="1" />

@@ -8,7 +8,7 @@
     <RequiredPlugin pluginName='SofaTopologyMapping'/>
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager response="default" name="collision response" />
+    <DefaultContactManager response="penality" name="collision response" />
     <DiscreteIntersection/>
 
     <Node name="Cubes" >

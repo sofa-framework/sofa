@@ -5,7 +5,7 @@
     
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager name="collision response" response="default" />
+    <DefaultContactManager name="collision response" response="penality" />
     <DiscreteIntersection/>
     
     <Node name="Hyperelastic-Liver" gravity="0 -9.81 0">

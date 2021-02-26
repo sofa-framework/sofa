@@ -9,7 +9,7 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollision" />
     <DefaultPipeline verbose="0" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="penality" />
     <DefaultCollisionGroupManager name="Group" />
     <DiscreteIntersection />
     <Node name="cubeFEM">

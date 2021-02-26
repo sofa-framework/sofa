@@ -81,7 +81,7 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     createObject(m_root, "BruteForceDetection", { { "name","Detection" } });
     createObject(m_root, "CollisionResponse", {
         { "name", "Contact Manager" },
-        { "response", "default" }
+        { "response", "penality" }
     });
     createObject(m_root, "MinProximityIntersection", { { "name","Proximity" },
         { "alarmDistance", "0.5" },

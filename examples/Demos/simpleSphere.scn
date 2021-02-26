@@ -3,7 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager name="collision response" response="default" />
+    <DefaultContactManager name="collision response" response="penality" />
     <DiscreteIntersection/>
 
     <MeshObjLoader name="Sphere" filename="mesh/sphere_01.obj" />

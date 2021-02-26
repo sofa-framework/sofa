@@ -12,7 +12,7 @@
     <DefaultPipeline name="pipeline" depth="6" />
     <BruteForceDetection name="detection" />
 	<DiscreteIntersection />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="penality" />
 
     <LeapMotionDriver name="leapMotionDriver" scale="0.0025" rotation="90 0 0" translation="0 0. 0" displayHand="true" printLog="0"/>
 

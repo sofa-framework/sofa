@@ -9,7 +9,7 @@
 
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
-    <DefaultContactManager response="default" name="collision response" />
+    <DefaultContactManager response="penality" name="collision response" />
     <DiscreteIntersection />
     <!--<DefaultCollisionGroupManager />-->
     <Node name="Liver" depend="topo dofs">

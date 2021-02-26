@@ -12,7 +12,7 @@
     <OmniDriver scale="0.1" orientation="0 0 90"/>
 	<DefaultPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceDetection name="detection" />
-	<DefaultContactManager name="response" response="default" />
+	<DefaultContactManager name="response" response="penality" />
 	<MinProximityIntersection name="proximity" alarmDistance="0.03" contactDistance="0.03" />
 
 	<Node name="Tooth" >

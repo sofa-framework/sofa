@@ -3,7 +3,7 @@
         <RequiredPlugin name="ManifoldTopologies"/>
 	<DefaultPipeline name="default141" verbose="0"/>
 	<BruteForceDetection name="N2"/>
-	<DefaultContactManager name="default142" response="default"/>
+	<DefaultContactManager name="default142" response="penality"/>
 	<MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5"/>
 	<DefaultCollisionGroupManager name="default143"/>
 	<Node 	name="SquareGravity" gravity="0 -9.81 0"  >
