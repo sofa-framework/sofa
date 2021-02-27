@@ -19,5 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/behavior/MultiMatrix.h>
+#pragma once
+
+#include <sofa/core/config.h>
+#include <sofa/type/Vec.h>
+#include <iosfwd>
+
+namespace sofa::core::behavior
+{
+
+namespace
+{
+    using sofa::type::Vec;
+}
+
+/// Helper class allowing to construct mechanical expressions
+///
+class SOFA_CORE_API MechanicalMatrix
+{
+protected:
+    enum { MFACT = 0, BFACT = 1, KFACT = 2 };
+    Vec<3,SReal> factors;
+public:
+    MechanicalMatrix(SReal m, SReal b, SReal k) : factors(m,b,k) {}
+    explicit MechanicalMatrix(const Vec<3,SReal>& f) : factors(f) {}
+
+    static const MechanicalMatrix M;
+    static const MechanicalMatrix B;
+    static const MechanicalMatrix K;
+
+    SReal getMFact() const { return factors[MFACT]; }
+    SReal getBFact() const { return factors[BFACT]; }
+    SReal getKFact() const { return factors[KFACT]; }
+
+    MechanicalMatrix operator + (const MechanicalMatrix& m2) const { return MechanicalMatrix(factors + m2.factors); }
+    MechanicalMatrix operator - (const MechanicalMatrix& m2) const { return MechanicalMatrix(factors - m2.factors); }
+    MechanicalMatrix operator - () const { return MechanicalMatrix(- factors); }
+    MechanicalMatrix operator * (SReal f) const { return MechanicalMatrix(factors * f); }
+    MechanicalMatrix operator / (SReal f) const { return MechanicalMatrix(factors / f); }
+    friend std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m );
+};
+
+SOFA_CORE_API std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m );
+
+} /// namespace sofa::core::behavior
 
