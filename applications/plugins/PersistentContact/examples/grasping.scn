@@ -9,7 +9,7 @@
 	<BruteForceDetection name="N2" />
 	<LocalMinDistance name="Proximity" alarmDistance="3" contactDistance="0" coneFactor="0.5" angleCone="0.002"/>
 
-	<RuleBasedContactManager name="Response" response="FrictionContact" rules="	1 3 FrictionContact
+	<RuleBasedContactManager name="Response" response="LagrangeMultipliers" rules="	1 3 FrictionContact
 																				11 5 FrictionContact?mu=0.9
 																				110 5 PersistentFrictionContact?mu=0.9"/>
 	

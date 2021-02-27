@@ -46,7 +46,7 @@ Node : {
     } 
     DefaultContactManager : {
         name : "Response"
-        response : "FrictionContact"
+        response : "LagrangeMultipliers"
     } 
     DefaultVisualManagerLoop : {
         name : "defaultVisualManagerLoop"

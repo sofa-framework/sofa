@@ -14,7 +14,7 @@
     <DefaultPipeline depth="6" verbose="0" draw="0"/>
     <BruteForceDetection name="N2"/>
     <LocalMinDistance name="Proximity" alarmDistance="2.5" contactDistance="1.0" angleCone="0.0"/>
-    <DefaultContactManager name="Response" response="FrictionContact"/>
+    <DefaultContactManager name="Response" response="LagrangeMultipliers"/>
     <Node name="Torus1">
         <MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader"/>
         <MeshTopology src="@loader"/>

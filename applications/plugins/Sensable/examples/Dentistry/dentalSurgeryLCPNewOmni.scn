@@ -7,7 +7,7 @@
 	<Gravity name="G"  gravity="0 -9.8 0" />
 	<DefaultPipeline name="pipeline"  verbose="0"  depth="6" />
 	<BruteForceDetection name="detection" />
-	<DefaultContactManager name="response"  response="FrictionContact" />
+	<DefaultContactManager name="response"  response="LagrangeMultipliers" />
 	<LocalMinDistance name="proximity"  alarmDistance="0.3"  contactDistance="0.15"  angleCone="0" />
 	<FreeMotionAnimationLoop name="default37" />
 	<LCPConstraintSolver tolerance="0.001" maxIt="1000"/>

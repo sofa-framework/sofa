@@ -14,7 +14,7 @@
     <DefaultPipeline name="CollisionPipeline" />
     <BruteForceDetection name="BruteForceDetection" />
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultContactManager name="Response" response="LagrangeMultipliers" />
     <LCPConstraintSolver maxIt="1000" tolerance="0.001" maxIterations="1000"/>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
     <Node name="Cube1">

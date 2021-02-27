@@ -12,7 +12,7 @@
     <DefaultPipeline verbose="0" depth="10" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="1.2" contactDistance="0.1" />
-    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultContactManager name="Response" response="LagrangeMultipliers" />
 
     <MeshObjLoader name="loader_1" filename="mesh/n1.obj"/>
     <MeshObjLoader name="loader_0" filename="mesh/n0.obj"/>

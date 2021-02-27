@@ -6,7 +6,7 @@
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <CollisionResponse name="Response" response="FrictionContact" />
+    <CollisionResponse name="Response" response="LagrangeMultipliers" />
     <CollisionGroup name="Group" />
     <Node name="CUBE_0">
         <MechanicalObject dy="2.5" />

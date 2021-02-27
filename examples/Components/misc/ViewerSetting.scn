@@ -22,7 +22,7 @@
     <SpotLight name="light1" color="1 1 1" position="0 80 25" direction="0 -1 -0.8" cutoff="30" exponent="1" />
 	<SpotLight name="light2" color="1 1 1" position="0 40 100" direction="0 0 -1" cutoff="30" exponent="1" />
 
-    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultContactManager name="Response" response="LagrangeMultipliers" />
     <Node name="Snake" >
 
 		<SparseGridRamificationTopology n="4 12 3" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />

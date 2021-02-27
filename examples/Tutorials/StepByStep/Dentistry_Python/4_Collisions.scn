@@ -13,7 +13,7 @@ Collision algorythm & collision models
 
     <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceDetection name="detection" />
-    <DefaultContactManager name="response" response="FrictionContact" />
+    <DefaultContactManager name="response" response="LagrangeMultipliers" />
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" />
 
     <FreeMotionAnimationLoop />

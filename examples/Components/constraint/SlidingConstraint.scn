@@ -14,7 +14,7 @@
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultContactManager name="Response" response="LagrangeMultipliers" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="SlidingPoint">
         <MechanicalObject name="points" template="Vec3d" position="1 1.25 -0.2 &#x09;1 1.25 0.2" free_position="1 1.25 -0.2 &#x09;1 1.25 0.2" />

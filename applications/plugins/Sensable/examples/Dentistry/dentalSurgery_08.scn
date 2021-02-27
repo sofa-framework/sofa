@@ -13,7 +13,7 @@ Using LCP contact detection and resolution:
     <Gravity name="G" gravity="0 -9.8 0" />
     <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceDetection name="detection" />
-    <DefaultContactManager name="response" response="FrictionContact" />
+    <DefaultContactManager name="response" response="LagrangeMultipliers" />
     <LocalMinDistance name="proximity" alarmDistance="0.3" contactDistance="0.15" angleCone="0.0" />
     <FreeMotionAnimationLoop />
     <OmniDriver scale="0.1" orientation="0 180 0" />

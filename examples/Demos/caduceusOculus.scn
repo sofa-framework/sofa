@@ -17,7 +17,7 @@
 	<SpotLight name="light1"  color="1 1 1"  position="0 80 25"  direction="0 -1 -0.8"  cutoff="30"  exponent="1" />
 	<SpotLight name="light2"  color="1 1 1"  position="0 40 100"  direction="0 0 -1"  cutoff="30"  exponent="1" />
 	<VisualManagerPass name="visualManagerPass0"  tags="Visu"  listening="1" />
-	<DefaultContactManager name="Response"  response="FrictionContact" />
+	<DefaultContactManager name="Response"  response="LagrangeMultipliers" />
 	<VisualManagerSecondaryPass name="visualManagerSecondaryPass7"  listening="1"  renderToScreen="1"  input_tags="Visu"  fragFilename="shaders/correctionAbberationChromatique.frag" />
 	<CompositingVisualLoop name="compositingVisualLoop3" />
 	<OglShader name="oglShader0"  tags="Visu"  fileVertexShaders="['shaders/phong.vert']"  fileFragmentShaders="['shaders/phong.frag']" />
