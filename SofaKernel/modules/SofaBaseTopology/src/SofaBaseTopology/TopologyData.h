@@ -43,7 +43,7 @@ namespace sofa::component::topology
 * happen (non exhaustive list: element added, removed, fused, renumbered).
 */
 template< class TopologyElementType, class VecT>
-class TopologyDataImpl : public sofa::core::topology::BaseTopologyData<VecT>
+class TopologyData : public sofa::core::topology::BaseTopologyData<VecT>
 {
 
 public:
@@ -61,14 +61,14 @@ public:
 
 
     /// Constructor
-    TopologyDataImpl( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
+    TopologyData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
         : sofa::core::topology::BaseTopologyData< VecT >(data),
           m_topologicalEngine(nullptr),
           m_topology(nullptr),
           m_topologyHandler(nullptr)
     {}
 
-    virtual ~TopologyDataImpl(){
+    virtual ~TopologyData(){
         if (this->m_topologyHandler)
             delete m_topologyHandler;
 
@@ -150,12 +150,12 @@ protected:
 //////////////////////////////   Element Topology Data Implementation   ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template< class VecT > using PointData       = TopologyDataImpl<core::topology::BaseMeshTopology::Point, VecT>;
-template< class VecT > using EdgeData        = TopologyDataImpl<core::topology::BaseMeshTopology::Edge, VecT>;
-template< class VecT > using TriangleData    = TopologyDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>;
-template< class VecT > using QuadData        = TopologyDataImpl<core::topology::BaseMeshTopology::Quad, VecT>;
-template< class VecT > using TetrahedronData = TopologyDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
-template< class VecT > using HexahedronData  = TopologyDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>;
+template< class VecT > using PointData       = TopologyData<core::topology::BaseMeshTopology::Point, VecT>;
+template< class VecT > using EdgeData        = TopologyData<core::topology::BaseMeshTopology::Edge, VecT>;
+template< class VecT > using TriangleData    = TopologyData<core::topology::BaseMeshTopology::Triangle, VecT>;
+template< class VecT > using QuadData        = TopologyData<core::topology::BaseMeshTopology::Quad, VecT>;
+template< class VecT > using TetrahedronData = TopologyData<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
+template< class VecT > using HexahedronData  = TopologyData<core::topology::BaseMeshTopology::Hexahedron, VecT>;
 
 
 } //namespace sofa::component::topology
