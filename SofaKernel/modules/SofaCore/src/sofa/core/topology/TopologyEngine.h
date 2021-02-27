@@ -19,13 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYENGINE_H
-#define SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYENGINE_H
+#pragma once
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/fwd.h>
 
-#ifndef SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
+#ifndef SOFA_CORE_TOPOLOGY_TOPOLOGYENGINE_DEFINITION
 namespace std
 {
     extern template class list<const sofa::core::topology::TopologyChange*>;
@@ -35,7 +34,7 @@ namespace sofa::core::objectmodel
     extern template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
 }
 
-#endif /// SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
+#endif /// SOFA_CORE_TOPOLOGY_TOPOLOGYENGINE_DEFINITION
 
 namespace sofa
 {
@@ -88,5 +87,3 @@ protected:
 } // namespace component
 
 } // namespace sofa
-
-#endif // SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYENGINE_H

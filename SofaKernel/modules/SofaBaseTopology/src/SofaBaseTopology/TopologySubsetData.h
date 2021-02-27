@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <SofaBaseTopology/TopologyEngine.h>
+#include <SofaBaseTopology/TopologyDataEngine.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <SofaBaseTopology/TopologySubsetDataHandler.h>
 

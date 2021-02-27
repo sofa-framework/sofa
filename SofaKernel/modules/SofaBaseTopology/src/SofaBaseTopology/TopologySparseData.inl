@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseTopology/TopologySparseData.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <SofaBaseTopology/TopologyEngine.inl>
+#include <SofaBaseTopology/TopologyDataEngine.inl>
 #include <SofaBaseTopology/TopologySparseDataHandler.inl>
 
 namespace sofa::component::topology
@@ -46,7 +46,7 @@ void TopologySparseData <TopologyElementType, VecT>::createTopologicalEngine(sof
     this->m_topology = _topology;
     if (_topology && dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology))
     {
-        this->m_topologicalEngine = sofa::core::objectmodel::New< TopologyEngineImpl<VecT> >((sofa::component::topology::TopologySparseData<TopologyElementType, VecT>*)this, _topology, _topologyHandler);
+        this->m_topologicalEngine = sofa::core::objectmodel::New< TopologyDataEngine<VecT> >((sofa::component::topology::TopologySparseData<TopologyElementType, VecT>*)this, _topology, _topologyHandler);
         this->m_topologicalEngine->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("SparseEngine_"));
         if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine.get());
         this->m_topologicalEngine->init();

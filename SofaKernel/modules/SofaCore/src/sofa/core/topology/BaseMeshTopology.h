@@ -23,7 +23,7 @@
 #define SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 
 #include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/BaseTopologyEngine.h>
+#include <sofa/core/topology/TopologyEngine.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa

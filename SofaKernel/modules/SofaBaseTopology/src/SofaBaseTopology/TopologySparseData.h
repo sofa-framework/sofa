@@ -23,7 +23,7 @@
 #include <SofaBaseTopology/config.h>
 
 #include <SofaBaseTopology/TopologyData.h>
-#include <SofaBaseTopology/TopologyEngine.h>
+#include <SofaBaseTopology/TopologyDataEngine.h>
 #include <SofaBaseTopology/TopologySparseDataHandler.h>
 
 namespace sofa::component::topology
