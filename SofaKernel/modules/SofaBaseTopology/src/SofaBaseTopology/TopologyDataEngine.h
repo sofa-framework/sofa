@@ -71,6 +71,12 @@ public:
     TopologyDataEngine(t_topologicalData* _topologicalData,
             sofa::core::topology::BaseMeshTopology* _topology);
 
+
+    TopologyDataEngine(t_topologicalData* _topologicalData,
+        value_type defaultValue = value_type())
+        : TopologyEngine()
+        , m_topologyData(_topologicalData), m_defaultValue(defaultValue) {}
+
 public:
 
     void init() override;

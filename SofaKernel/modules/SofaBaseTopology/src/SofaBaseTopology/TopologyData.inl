@@ -61,10 +61,23 @@ void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::cor
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology *_topology)
+void TopologyData <TopologyElementType, VecT>::createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology)
 {
     this->m_topologyHandler = new TopologyDataHandler<TopologyElementType, VecT>(this);
     createTopologicalEngine(_topology, this->m_topologyHandler);
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::setTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyEngine* topoEngine)
+{
+    this->m_topology = _topology;
+    this->m_topologicalEngine = topoEngine;
+    this->m_topologicalEngine->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("Engine_"));
+    if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) 
+        dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine);
+    this->m_topologicalEngine->init();
+    this->linkToElementDataArray((TopologyElementType*)nullptr);
+    msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << "Topology.";   
 }
 
 
